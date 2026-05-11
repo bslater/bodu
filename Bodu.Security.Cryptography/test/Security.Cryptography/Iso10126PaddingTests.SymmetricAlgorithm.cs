@@ -28,7 +28,7 @@ public sealed partial class Iso10126PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void CryptoStream_WhenEmptyPlaintext_ShouldEmitOnePaddedBlockAndRoundTrip(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
@@ -52,7 +52,7 @@ public sealed partial class Iso10126PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
@@ -78,7 +78,7 @@ public sealed partial class Iso10126PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void CryptoStream_WhenResidualPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
@@ -106,7 +106,7 @@ public sealed partial class Iso10126PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);

@@ -32,7 +32,7 @@ public sealed partial class Pkcs7PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void Encrypt_WhenInputIsEmpty_ShouldProduceOneBlockAndRoundTrip(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
@@ -58,7 +58,7 @@ public sealed partial class Pkcs7PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void TransformFinalBlock_WhenInputCountIsZero_ShouldProduceOnePaddedBlock(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
@@ -82,7 +82,7 @@ public sealed partial class Pkcs7PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void TransformBlock_WhenInputCountIsZero_ShouldReturnZero(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
@@ -105,7 +105,7 @@ public sealed partial class Pkcs7PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void CryptoStream_WhenFlushedWithoutWritingAnyData_ShouldProduceOnePaddedBlock(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
@@ -134,7 +134,7 @@ public sealed partial class Pkcs7PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
@@ -159,7 +159,7 @@ public sealed partial class Pkcs7PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void CryptoStream_WhenResidualPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
@@ -190,7 +190,7 @@ public sealed partial class Pkcs7PaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]
     public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip(System.Type algorithmType)
     {
         using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
