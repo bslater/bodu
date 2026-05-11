@@ -10,12 +10,12 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies EAX mode to an underlying <see cref="IBlockCipher" />, providing two-pass authenticated
+/// Applies EAX mode to an underlying <see cref="IBlockCipher"/>, providing two-pass authenticated
 /// encryption with associated data (AEAD) per Bellare, Rogaway and Wagner (FSE 2004).
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — EAX instantiates the top pipeline as CTR mode and the bottom pipeline as three OMAC invocations over the nonce, associated data, and ciphertext whose outputs are XOR-combined to form the tag." />
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — EAX instantiates the top pipeline as CTR mode and the bottom pipeline as three OMAC invocations over the nonce, associated data, and ciphertext whose outputs are XOR-combined to form the tag."/>
 /// </para>
 /// <para>
 /// EAX is the <b>CTR + OMAC(N ‖ A ‖ C)</b> instantiation of the generic AEAD shape above. Three
@@ -38,7 +38,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The tag size is fixed at 16 bytes (the full OMAC output). The IV is the raw nonce: the class
 /// computes <c>N'</c> internally. Ciphertext is output as <c>C ‖ T</c> (ciphertext then tag),
-/// consistent with the <see cref="IAeadBlockCipherModeTransform" /> convention.
+/// consistent with the <see cref="IAeadBlockCipherModeTransform"/> convention.
 /// </para>
 /// <para>
 /// <strong>When to use EAX.</strong> Pick EAX when an unencumbered, two-pass AEAD with a flexible nonce
@@ -66,8 +66,8 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#eax--two-pass-fse-2004">EAX walk-through in the AEAD-modes guide</seealso>
-/// <seealso cref="AesBlockCipher" />
-/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
+/// <seealso cref="AesBlockCipher"/>
+/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class EaxModeTransform
     : IAeadBlockCipherModeTransform
     , IDisposable
@@ -82,7 +82,7 @@ public sealed class EaxModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="EaxModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="EaxModeTransform"/> class.
     /// </summary>
     /// <param name="cipher">The block cipher used for both OMAC and the CTR keystream.</param>
     /// <param name="iv">
@@ -90,10 +90,10 @@ public sealed class EaxModeTransform
     /// array is not modified.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.
+    /// <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="iv" /> length does not equal the cipher block size.
+    /// <paramref name="iv"/> length does not equal the cipher block size.
     /// </exception>
     public EaxModeTransform(IBlockCipher cipher, byte[] iv)
     {
@@ -128,7 +128,7 @@ public sealed class EaxModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        int required = plaintext.Length + TagSize;
+        var required = plaintext.Length + TagSize;
         if (output.Length < required)
             throw new ArgumentException(
                 $"Output buffer must be at least {required} bytes (plaintext + tag).",
@@ -153,7 +153,7 @@ public sealed class EaxModeTransform
 
             // Tag = N' XOR H' XOR C'.
             Span<byte> tag = output.Slice(plaintext.Length, TagSize);
-            for (int i = 0; i < TagSize; i++)
+            for (var i = 0; i < TagSize; i++)
                 tag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             return required;
@@ -178,7 +178,7 @@ public sealed class EaxModeTransform
                 $"Input must be at least {TagSize} bytes (tag only with no ciphertext).",
                 nameof(ciphertextWithTag));
 
-        int plaintextLength = ciphertextWithTag.Length - TagSize;
+        var plaintextLength = ciphertextWithTag.Length - TagSize;
         if (output.Length < plaintextLength)
             throw new ArgumentException(
                 $"Output buffer must be at least {plaintextLength} bytes.",
@@ -201,7 +201,7 @@ public sealed class EaxModeTransform
             cPrime = Omac(2, ciphertext);
 
             expectedTag = new byte[TagSize];
-            for (int i = 0; i < TagSize; i++)
+            for (var i = 0; i < TagSize; i++)
                 expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             // Constant-time tag comparison; throw before emitting any plaintext. On failure, also
@@ -228,7 +228,7 @@ public sealed class EaxModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. EAX transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted()
@@ -242,7 +242,7 @@ public sealed class EaxModeTransform
     /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
     /// </summary>
     /// <remarks>
-    /// The supplied <see cref="IBlockCipher" /> is not disposed by this type. Ownership remains with the caller.
+    /// The supplied <see cref="IBlockCipher"/> is not disposed by this type. Ownership remains with the caller.
     /// </remarks>
     public void Dispose()
     {
@@ -254,7 +254,7 @@ public sealed class EaxModeTransform
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -293,12 +293,12 @@ public sealed class EaxModeTransform
 
     /// <summary>
     /// Computes <c>OMAC_K^t(m) = CMAC_K([t]_n ‖ m)</c>, where <c>[t]_n</c> is the integer
-    /// <paramref name="t" /> encoded as a full-block big-endian prefix.
+    /// <paramref name="t"/> encoded as a full-block big-endian prefix.
     /// </summary>
     private byte[] Omac(byte t, ReadOnlySpan<byte> m)
     {
-        int blockSize = this._cipher.BlockSize;
-        byte[] prefixed = new byte[blockSize + m.Length];
+        var blockSize = this._cipher.BlockSize;
+        var prefixed = new byte[blockSize + m.Length];
 
         try
         {
@@ -314,18 +314,18 @@ public sealed class EaxModeTransform
     }
 
     /// <summary>
-    /// Computes AES-CMAC of <paramref name="message" /> under the mode's cipher, per RFC 4493.
+    /// Computes AES-CMAC of <paramref name="message"/> under the mode's cipher, per RFC 4493.
     /// </summary>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
-        byte[] zeroBlock = new byte[blockSize];
-        byte[] l = new byte[blockSize];
-        byte[] k1 = new byte[blockSize];
-        byte[] k2 = new byte[blockSize];
-        byte[] mac = new byte[blockSize];
-        byte[] lastBlock = new byte[blockSize];
+        var zeroBlock = new byte[blockSize];
+        var l = new byte[blockSize];
+        var k1 = new byte[blockSize];
+        var k2 = new byte[blockSize];
+        var mac = new byte[blockSize];
+        var lastBlock = new byte[blockSize];
 
         try
         {
@@ -338,8 +338,8 @@ public sealed class EaxModeTransform
             k1.CopyTo(k2, 0);
             Dbl(k2);
 
-            int totalBlocks = (message.Length + blockSize - 1) / blockSize;
-            bool lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
+            var totalBlocks = (message.Length + blockSize - 1) / blockSize;
+            var lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
 
             if (message.Length == 0)
             {
@@ -347,9 +347,9 @@ public sealed class EaxModeTransform
                 lastIsFull = false;
             }
 
-            for (int blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
+            for (var blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
             {
-                byte[] block = new byte[blockSize];
+                var block = new byte[blockSize];
 
                 try
                 {
@@ -366,8 +366,8 @@ public sealed class EaxModeTransform
             // Last block: pad with 0x80 || 0…0 if partial, then XOR K1 (full) or K2 (partial).
             if (message.Length > 0)
             {
-                int lastOffset = (totalBlocks - 1) * blockSize;
-                int lastLen = message.Length - lastOffset;
+                var lastOffset = (totalBlocks - 1) * blockSize;
+                var lastLen = message.Length - lastOffset;
 
                 message.Slice(lastOffset, lastLen).CopyTo(lastBlock);
 
@@ -379,7 +379,7 @@ public sealed class EaxModeTransform
                 lastBlock[0] = 0x80; // empty message: pad = 0x80 || 0...0
             }
 
-            byte[] subkey = lastIsFull ? k1 : k2;
+            var subkey = lastIsFull ? k1 : k2;
             Xor(lastBlock, subkey, lastBlock);
             Xor(mac, lastBlock, mac);
             this._cipher.Encrypt(mac, mac);
@@ -398,26 +398,26 @@ public sealed class EaxModeTransform
 
     /// <summary>
     /// Applies CTR mode: generates a keystream by encrypting successive big-endian increments of
-    /// <paramref name="counter" /> (copied defensively) and XORs it with <paramref name="input" />.
+    /// <paramref name="counter"/> (copied defensively) and XORs it with <paramref name="input"/>.
     /// The final block may be partial; remaining keystream bytes are discarded.
     /// </summary>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        int blockSize = this._cipher.BlockSize;
-        byte[] ctr = (byte[])counter.Clone();
+        var blockSize = this._cipher.BlockSize;
+        var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
         try
         {
-            for (int offset = 0; offset < input.Length; offset += blockSize)
+            for (var offset = 0; offset < input.Length; offset += blockSize)
             {
                 this._cipher.Encrypt(ctr, ks);
 
-                for (int i = ctr.Length - 1; i >= 0; i--)
+                for (var i = ctr.Length - 1; i >= 0; i--)
                     if (++ctr[i] != 0) break;
 
-                int len = Math.Min(blockSize, input.Length - offset);
-                for (int i = 0; i < len; i++)
+                var len = Math.Min(blockSize, input.Length - offset);
+                for (var i = 0; i < len; i++)
                     output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
             }
         }
@@ -429,14 +429,14 @@ public sealed class EaxModeTransform
     }
 
     /// <summary>
-    /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and
+    /// Doubles <paramref name="x"/> in-place in GF(2^128) with big-endian bit order and
     /// polynomial x^128 + x^7 + x^2 + x + 1.
     /// </summary>
     private static void Dbl(byte[] x)
     {
-        bool msb = (x[0] & 0x80) != 0;
+        var msb = (x[0] & 0x80) != 0;
 
-        for (int i = 0; i < x.Length - 1; i++)
+        for (var i = 0; i < x.Length - 1; i++)
             x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
         x[x.Length - 1] <<= 1;
@@ -446,16 +446,16 @@ public sealed class EaxModeTransform
     }
 
     /// <summary>
-    /// XORs two equally-sized input spans into <paramref name="result" />.
+    /// XORs two equally-sized input spans into <paramref name="result"/>.
     /// </summary>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (int i = 0; i < result.Length; i++)
+        for (var i = 0; i < result.Length; i++)
             result[i] = (byte)(a[i] ^ b[i]);
     }
 
     /// <summary>
-    /// Clears <paramref name="value" /> when it is not <see langword="null" />.
+    /// Clears <paramref name="value"/> when it is not <see langword="null"/>.
     /// </summary>
     private static void ClearIfNotNull(byte[]? value)
     {
@@ -464,7 +464,7 @@ public sealed class EaxModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
+    /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
     /// </summary>
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(this._disposed, this);

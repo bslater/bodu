@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// A full block of padding is always added when the input is already block-aligned so
-/// that <see cref="Unpad" /> can unambiguously recover the original length. The interior
+/// that <see cref="Unpad"/> can unambiguously recover the original length. The interior
 /// pad bytes are not reconstructable on decryption, so only the trailing length byte is
 /// validated. ISO 10126 was withdrawn by ISO in 2007; it is supported for interoperability
 /// with existing ciphertexts.
@@ -49,7 +49,7 @@ public sealed class Iso10126Padding : IPaddingStrategy
     /// <param name="input">The data to pad.</param>
     /// <param name="blockSize">The block size in bytes.</param>
     /// <returns>The padded data as a byte array.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
@@ -57,17 +57,17 @@ public sealed class Iso10126Padding : IPaddingStrategy
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
-        int paddingLength = blockSize - (input.Length % blockSize);
+        var paddingLength = blockSize - (input.Length % blockSize);
         if (paddingLength == 0)
             paddingLength = blockSize;
 
-        byte[] result = new byte[input.Length + paddingLength];
+        var result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
 
         // Fill the interior pad region with random bytes, then overwrite the final byte
         // with the pad length. paddingLength - 1 can be zero (when paddingLength == 1),
         // in which case the interior region is empty and only the length byte is written.
-        int interiorLength = paddingLength - 1;
+        var interiorLength = paddingLength - 1;
         if (interiorLength > 0)
         {
             Span<byte> interior = result.AsSpan(input.Length, interiorLength);
@@ -85,7 +85,7 @@ public sealed class Iso10126Padding : IPaddingStrategy
     /// <param name="input">The padded data.</param>
     /// <param name="blockSize">The block size in bytes.</param>
     /// <returns>The unpadded data as a byte array.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input" /> is empty or not aligned to the block size.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is empty or not aligned to the block size.</exception>
     /// <exception cref="CryptographicException">Thrown if the trailing length byte is out of range.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {
@@ -97,7 +97,7 @@ public sealed class Iso10126Padding : IPaddingStrategy
         if (input.Length == 0 || input.Length % blockSize != 0)
             throw new ArgumentException("Input is not a valid ISO 10126 padded block sequence.", nameof(input));
 
-        int length = input.Length;
+        var length = input.Length;
         int padLen = input[length - 1];
 
         // Only the trailing length byte can be validated; interior pad bytes are random.

@@ -9,7 +9,7 @@ using System;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Creates <see cref="IBlockCipherModeTransform" /> instances that wrap an <see cref="IBlockCipher" /> with a standard chaining mode.
+/// Creates <see cref="IBlockCipherModeTransform"/> instances that wrap an <see cref="IBlockCipher"/> with a standard chaining mode.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -42,17 +42,17 @@ namespace Bodu.Security.Cryptography;
 public static class BlockCipherModeFactory
 {
     /// <summary>
-    /// Creates a new <see cref="IBlockCipherModeTransform" /> instance for the specified block cipher mode.
+    /// Creates a new <see cref="IBlockCipherModeTransform"/> instance for the specified block cipher mode.
     /// </summary>
-    /// <param name="mode">The cipher mode to apply (for example <see cref="CipherBlockMode.CBC" />, <see cref="CipherBlockMode.CFB" />,
-    /// <see cref="CipherBlockMode.OFB" />, <see cref="CipherBlockMode.ECB" />, or <see cref="CipherBlockMode.CTR" />).</param>
+    /// <param name="mode">The cipher mode to apply (for example <see cref="CipherBlockMode.CBC"/>, <see cref="CipherBlockMode.CFB"/>,
+    /// <see cref="CipherBlockMode.OFB"/>, <see cref="CipherBlockMode.ECB"/>, or <see cref="CipherBlockMode.CTR"/>).</param>
     /// <param name="cipher">The underlying block cipher to wrap.</param>
-    /// <param name="iv">The initialisation vector or initial counter. Required by all modes except <see cref="CipherBlockMode.ECB" />
-    /// and must have the same length as <see cref="IBlockCipher.BlockSize" />.</param>
-    /// <returns>An <see cref="IBlockCipherModeTransform" /> that applies <paramref name="mode" /> over <paramref name="cipher" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="iv" /> is required but <see langword="null" /> or of the wrong length.</exception>
-    /// <exception cref="NotSupportedException">Thrown if <paramref name="mode" /> is not a supported <see cref="CipherBlockMode" /> value.</exception>
+    /// <param name="iv">The initialisation vector or initial counter. Required by all modes except <see cref="CipherBlockMode.ECB"/>
+    /// and must have the same length as <see cref="IBlockCipher.BlockSize"/>.</param>
+    /// <returns>An <see cref="IBlockCipherModeTransform"/> that applies <paramref name="mode"/> over <paramref name="cipher"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="iv"/> is required but <see langword="null"/> or of the wrong length.</exception>
+    /// <exception cref="NotSupportedException">Thrown if <paramref name="mode"/> is not a supported <see cref="CipherBlockMode"/> value.</exception>
     public static IBlockCipherModeTransform Create(
         CipherBlockMode mode,
         IBlockCipher cipher,
@@ -61,7 +61,7 @@ public static class BlockCipherModeFactory
         if (cipher == null)
             throw new ArgumentNullException(nameof(cipher));
 
-        int blockSize = cipher.BlockSize;
+        var blockSize = cipher.BlockSize;
 
         switch (mode)
         {
@@ -90,14 +90,14 @@ public static class BlockCipherModeFactory
     }
 
     /// <summary>
-    /// Validates that <paramref name="iv" /> is non-null and exactly
-    /// <paramref name="requiredLength" /> bytes long; otherwise throws
-    /// <see cref="ArgumentException" /> against the supplied parameter name.
+    /// Validates that <paramref name="iv"/> is non-null and exactly
+    /// <paramref name="requiredLength"/> bytes long; otherwise throws
+    /// <see cref="ArgumentException"/> against the supplied parameter name.
     /// </summary>
     /// <param name="name">The caller-visible parameter name reported in any exception.</param>
     /// <param name="iv">The initialisation vector to validate.</param>
-    /// <param name="requiredLength">The required length of <paramref name="iv" /> in bytes.</param>
-    /// <exception cref="ArgumentException"><paramref name="iv" /> is <see langword="null" /> or
+    /// <param name="requiredLength">The required length of <paramref name="iv"/> in bytes.</param>
+    /// <exception cref="ArgumentException"><paramref name="iv"/> is <see langword="null"/> or
     /// does not have the required length.</exception>
     private static void ValidateIv(string name, byte[]? iv, int requiredLength)
     {

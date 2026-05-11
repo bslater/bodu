@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconState.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// The ASCON permutation operates over a 320-bit state composed of five 64-bit words <c>S0</c>…<c>S4</c>.
-/// Each call to <see cref="Permute" /> applies a sequence of identical rounds, each consisting of three layers:
+/// Each call to <see cref="Permute"/> applies a sequence of identical rounds, each consisting of three layers:
 /// </para>
 /// <list type="number">
 /// <item>
@@ -39,8 +39,8 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// </list>
 /// <para>
-/// This struct is declared <see langword="internal" /> and is shared by <see cref="AsconHash{T}" />,
-/// <see cref="AsconAead128" />, <see cref="AsconXof128" />, and <see cref="AsconCxof128" />.
+/// This struct is declared <see langword="internal"/> and is shared by <see cref="AsconHash{T}"/>,
+/// <see cref="AsconAead128"/>, <see cref="AsconXof128"/>, and <see cref="AsconCxof128"/>.
 /// </para>
 /// </remarks>
 internal struct AsconState
@@ -68,16 +68,17 @@ internal struct AsconState
     /// 8 (Ascon-p8), and 12 (Ascon-p12).
     /// </param>
     /// <remarks>
-    /// Rounds are numbered 0–11; a call with <paramref name="rounds" /> = <c>r</c> applies rounds
+    /// Rounds are numbered 0–11; a call with <paramref name="rounds"/> = <c>r</c> applies rounds
     /// <c>12 − r</c> through <c>11</c>, preserving the standard constant-addition schedule.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The grouped state-word assignments mirror the bit-sliced Ascon permutation steps and preserve a compact, specification-like layout for the five-word state transformation.")]
     public void Permute(int rounds)
     {
         ulong s0 = this.S0, s1 = this.S1, s2 = this.S2, s3 = this.S3, s4 = this.S4;
 
-        int start = 12 - rounds;
-        for (int i = start; i < 12; i++)
+        var start = 12 - rounds;
+        for (var i = start; i < 12; i++)
         {
             // Constant addition: XOR round constant into s2. The constant for round i is (15-i)<<4 | i,
             // giving 0xf0 for round 0 down to 0x4b for round 11.
@@ -86,11 +87,11 @@ internal struct AsconState
             // Substitution layer: bit-sliced 5-bit Ascon S-box applied to all 64 bit-columns.
             s0 ^= s4; s4 ^= s3; s2 ^= s1;
 
-            ulong t0 = ~s0 & s1;
-            ulong t1 = ~s1 & s2;
-            ulong t2 = ~s2 & s3;
-            ulong t3 = ~s3 & s4;
-            ulong t4 = ~s4 & s0;
+            var t0 = ~s0 & s1;
+            var t1 = ~s1 & s2;
+            var t2 = ~s2 & s3;
+            var t3 = ~s3 & s4;
+            var t4 = ~s4 & s0;
 
             s0 ^= t1; s1 ^= t2; s2 ^= t3; s3 ^= t4; s4 ^= t0;
             s1 ^= s0; s0 ^= s4; s3 ^= s2; s2 = ~s2;
@@ -98,9 +99,9 @@ internal struct AsconState
             // Linear diffusion layer: each word XORed with two rotated copies.
             s0 ^= s0.RotateBitsRightUnchecked(19) ^ s0.RotateBitsRightUnchecked(28);
             s1 ^= s1.RotateBitsRightUnchecked(61) ^ s1.RotateBitsRightUnchecked(39);
-            s2 ^= s2.RotateBitsRightUnchecked( 1) ^ s2.RotateBitsRightUnchecked( 6);
+            s2 ^= s2.RotateBitsRightUnchecked(1) ^ s2.RotateBitsRightUnchecked(6);
             s3 ^= s3.RotateBitsRightUnchecked(10) ^ s3.RotateBitsRightUnchecked(17);
-            s4 ^= s4.RotateBitsRightUnchecked( 7) ^ s4.RotateBitsRightUnchecked(41);
+            s4 ^= s4.RotateBitsRightUnchecked(7) ^ s4.RotateBitsRightUnchecked(41);
         }
 
         this.S0 = s0; this.S1 = s1; this.S2 = s2; this.S3 = s3; this.S4 = s4;
@@ -128,7 +129,7 @@ internal struct AsconState
         this.S0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
 
     /// <summary>
-    /// Reads the current rate (128-bit, two-word) as 16 bytes into <paramref name="destination" />.
+    /// Reads the current rate (128-bit, two-word) as 16 bytes into <paramref name="destination"/>.
     /// </summary>
     /// <param name="destination">Destination span. Must be at least 16 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -139,7 +140,7 @@ internal struct AsconState
     }
 
     /// <summary>
-    /// Reads the current rate (64-bit, one-word) as 8 bytes into <paramref name="destination" />.
+    /// Reads the current rate (64-bit, one-word) as 8 bytes into <paramref name="destination"/>.
     /// </summary>
     /// <param name="destination">Destination span. Must be at least 8 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

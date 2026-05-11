@@ -24,12 +24,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This implementation inherits its residual buffer, byte-counter and lookahead-buffering loop from
-/// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" />: the final message block is not compressed until
-/// <see cref="HashAlgorithm.HashFinal" /> is called, at which point the <c>finalization</c> flag is set and the
+/// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>: the final message block is not compressed until
+/// <see cref="HashAlgorithm.HashFinal"/> is called, at which point the <c>finalization</c> flag is set and the
 /// output bytes are serialised in little-endian order then truncated to the configured output length.
 /// </para>
 /// <para>
-/// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.Key" /> switches the instance into
+/// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.Key"/> switches the instance into
 /// the keyed <c>BLAKE2s-MAC</c> mode defined in RFC 7693 Section 2.8. The key (1–32 bytes) is zero-padded to
 /// 64 bytes and prepended as the first message block, and the key length is encoded into the parameter block so
 /// that keyed and unkeyed digests of the same message are always distinct.
@@ -95,20 +95,20 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     private readonly uint[] _h = new uint[8];
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Blake2s" /> class with a 256-bit output hash size.
+    /// Initializes a new instance of the <see cref="Blake2s"/> class with a 256-bit output hash size.
     /// </summary>
     public Blake2s()
         : this(256)
     { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Blake2s" /> class with the specified output size.
+    /// Initializes a new instance of the <see cref="Blake2s"/> class with the specified output size.
     /// </summary>
     /// <param name="hashSize">
     /// The desired output size in bits. Must be one of 128, 160, 192, 224, or 256.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="hashSize" /> is not one of the supported output sizes.
+    /// <paramref name="hashSize"/> is not one of the supported output sizes.
     /// </exception>
     public Blake2s(int hashSize)
         : base(BlockSizeBytesValue, MaxKeySize)
@@ -147,8 +147,8 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// <remarks>
     /// The full BLAKE2s compression is always run using all 256 bits of internal state. Shorter output lengths
     /// are produced by truncating the serialised state after finalisation. The property may only be changed
-    /// before hashing has begun; once <see cref="HashAlgorithm.TransformBlock" /> or a <c>ComputeHash</c>
-    /// overload has been called, the value is immutable until <see cref="HashAlgorithm.Initialize" /> is called.
+    /// before hashing has begun; once <see cref="HashAlgorithm.TransformBlock"/> or a <c>ComputeHash</c>
+    /// overload has been called, the value is immutable until <see cref="HashAlgorithm.Initialize"/> is called.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The assigned value is not one of 128, 160, 192, 224, or 256.
@@ -180,19 +180,19 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="HashAlgorithm" /> and optionally releases the managed resources.
+    /// Releases the unmanaged resources used by the <see cref="HashAlgorithm"/> and optionally releases the managed resources.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release
     /// only unmanaged resources.
     /// </param>
     /// <remarks>
     /// <para>
-    /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue" /> array, and zeros
-    /// <see cref="HashAlgorithm.HashSizeValue" /> when <paramref name="disposing" /> is <see langword="true" />.
+    /// Clears the chaining state, releases the framework <see cref="HashAlgorithm.HashValue"/> array, and zeros
+    /// <see cref="HashAlgorithm.HashSizeValue"/> when <paramref name="disposing"/> is <see langword="true"/>.
     /// </para>
     /// <para>
-    /// Retained key material owned by <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}" /> is cleared by the base
+    /// Retained key material owned by <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/> is cleared by the base
     /// implementation when this method delegates to <c>base.Dispose(disposing)</c>. The inherited residual buffer is
     /// cleared further down the dispose chain.
     /// </para>
@@ -211,22 +211,22 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
 
     /// <summary>
     /// Compresses a single 64-byte block using the BLAKE2s <c>F</c> compression function. Invoked by
-    /// <see cref="DeferredFinalBlockHashAlgorithm{T}" /> with <paramref name="isFinal" /> set to <see langword="true" />
-    /// for the last call (which inverts the finalisation flag word) and to <see langword="false" /> otherwise.
+    /// <see cref="DeferredFinalBlockHashAlgorithm{T}"/> with <paramref name="isFinal"/> set to <see langword="true"/>
+    /// for the last call (which inverts the finalisation flag word) and to <see langword="false"/> otherwise.
     /// </summary>
     /// <param name="block">The 64-byte block to compress.</param>
     /// <param name="totalBytesIncludingThisBlock">
-    /// The cumulative byte count <em>including</em> the bytes in <paramref name="block" />. Used as the per-block
+    /// The cumulative byte count <em>including</em> the bytes in <paramref name="block"/>. Used as the per-block
     /// counter (the BLAKE2 <c>t0</c> / <c>t1</c> input pair).
     /// </param>
     /// <param name="isFinal">
-    /// <see langword="true" /> if this is the final block; causes the finalisation flag word to be inverted.
+    /// <see langword="true"/> if this is the final block; causes the finalisation flag word to be inverted.
     /// </param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
     {
         // Read the 16 message words in little-endian order.
         Span<uint> m = stackalloc uint[16];
-        for (int i = 0; i < 16; i++)
+        for (var i = 0; i < 16; i++)
             m[i] = BinaryPrimitives.ReadUInt32LittleEndian(block.Slice(i * 4, 4));
 
         // Initialise the 16-element working vector.
@@ -252,9 +252,9 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
             v[14] = ~v[14];
 
         // 10 rounds of G mixing.
-        for (int r = 0; r < 10; r++)
+        for (var r = 0; r < 10; r++)
         {
-            byte[] s = Blake2Constants.Sigma[r % 10];
+            var s = Blake2Constants.Sigma[r % 10];
 
             G(v, 0, 4, 8, 12, m[s[0]], m[s[1]]);
             G(v, 1, 5, 9, 13, m[s[2]], m[s[3]]);
@@ -267,7 +267,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
         }
 
         // Fold the working vector back into the hash state.
-        for (int i = 0; i < 8; i++)
+        for (var i = 0; i < 8; i++)
             this._h[i] ^= v[i] ^ v[i + 8];
     }
 
@@ -278,11 +278,12 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// </remarks>
     protected override byte[] ProcessFinalBlock()
     {
-        int outputBytes = this.HashSizeValue / 8;
-        byte[] output = new byte[outputBytes];
-        int wordCount = (outputBytes + 3) / 4;
+        var outputBytes = this.HashSizeValue / 8;
+        var output = new byte[outputBytes];
+        var wordCount = (outputBytes + 3) / 4;
 
-        for (int i = 0; i < wordCount; i++)
+        Span<byte> tmp = stackalloc byte[4];
+        for (var i = 0; i < wordCount; i++)
         {
             Span<byte> wordSpan = output.AsSpan(i * 4, Math.Min(4, outputBytes - i * 4));
             if (wordSpan.Length == 4)
@@ -292,9 +293,8 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
             else
             {
                 // Final word may be a partial write when the output size is not a multiple of 4 bytes.
-                Span<byte> tmp = stackalloc byte[4];
                 BinaryPrimitives.WriteUInt32LittleEndian(tmp, this._h[i]);
-                tmp.Slice(0, wordSpan.Length).CopyTo(wordSpan);
+                tmp[..wordSpan.Length].CopyTo(wordSpan);
             }
         }
 
@@ -311,8 +311,8 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
         s_iv.CopyTo(this._h, 0);
 
         // Parameter block: fan-out=1, max depth=1, digest length=nn, key length=kk.
-        int nn = this.HashSizeValue / 8;
-        int kk = this.KeyValue?.Length ?? 0;
+        var nn = this.HashSizeValue / 8;
+        var kk = this.KeyValue?.Length ?? 0;
         this._h[0] ^= 0x01010000U ^ ((uint)kk << 8) ^ (uint)nn;
     }
 

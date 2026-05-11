@@ -21,13 +21,13 @@ namespace Bodu.Security.Cryptography;
 /// regarded as one of the most conservative designs among the AES finalists.
 /// </para>
 /// <para>
-/// This class integrates with the standard <see cref="SymmetricAlgorithm" /> framework and supports the extended block-cipher
-/// modes exposed by <see cref="CipherBlockMode" />. The default configuration uses
-/// <see cref="CipherBlockMode.CBC" /> with <see cref="PaddingMode.PKCS7" />.
+/// This class integrates with the standard <see cref="SymmetricAlgorithm"/> framework and supports the extended block-cipher
+/// modes exposed by <see cref="CipherBlockMode"/>. The default configuration uses
+/// <see cref="CipherBlockMode.CBC"/> with <see cref="PaddingMode.PKCS7"/>.
 /// </para>
 /// <para>
-/// For larger block sizes with tweak support, see <see cref="Serpent256" />, <see cref="Serpent512" />, and
-/// <see cref="Serpent1024" />. Those variants are a non-standard Serpent-derived construction; the type on this page is the
+/// For larger block sizes with tweak support, see <see cref="Serpent256"/>, <see cref="Serpent512"/>, and
+/// <see cref="Serpent1024"/>. Those variants are a non-standard Serpent-derived construction; the type on this page is the
 /// canonical, externally vetted 128-bit cipher.
 /// </para>
 /// <para>
@@ -84,13 +84,13 @@ public sealed class Serpent128
     private CipherBlockMode _blockMode = CipherBlockMode.CBC;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Serpent128" /> class with default parameters.
+    /// Initializes a new instance of the <see cref="Serpent128"/> class with default parameters.
     /// </summary>
     /// <remarks>
     /// The default configuration uses a 128-bit block, a 128-bit key, CBC cipher mode, and PKCS7 padding. Call
-    /// <see cref="SymmetricAlgorithm.GenerateKey" /> and <see cref="SymmetricAlgorithm.GenerateIV" /> to produce random key
-    /// material, or assign <see cref="SymmetricAlgorithm.Key" /> and <see cref="SymmetricAlgorithm.IV" /> directly before
-    /// calling <see cref="CreateEncryptor(byte[], byte[])" /> or <see cref="CreateDecryptor(byte[], byte[])" />.
+    /// <see cref="SymmetricAlgorithm.GenerateKey"/> and <see cref="SymmetricAlgorithm.GenerateIV"/> to produce random key
+    /// material, or assign <see cref="SymmetricAlgorithm.Key"/> and <see cref="SymmetricAlgorithm.IV"/> directly before
+    /// calling <see cref="CreateEncryptor(byte[], byte[])"/> or <see cref="CreateDecryptor(byte[], byte[])"/>.
     /// </remarks>
     public Serpent128()
     {
@@ -108,11 +108,11 @@ public sealed class Serpent128
     /// <summary>
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
-    /// <value>One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.</value>
+    /// <value>One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.</value>
     /// <remarks>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
-    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />.
+    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property for use with
+    /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including
+    /// <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>.
     /// </remarks>
     public CipherBlockMode BlockMode
     {
@@ -127,9 +127,9 @@ public sealed class Serpent128
     }
 
     /// <summary>
-    /// Creates a new <see cref="Serpent128" /> instance with default parameters.
+    /// Creates a new <see cref="Serpent128"/> instance with default parameters.
     /// </summary>
-    /// <returns>A new <see cref="Serpent128" /> instance.</returns>
+    /// <returns>A new <see cref="Serpent128"/> instance.</returns>
     public new static Serpent128 Create() => new Serpent128();
 
     /// <inheritdoc />
@@ -184,19 +184,19 @@ public sealed class Serpent128
     }
 
     /// <summary>
-    /// Validates that <paramref name="key" /> and <paramref name="iv" /> match the algorithm's configured key size and block
+    /// Validates that <paramref name="key"/> and <paramref name="iv"/> match the algorithm's configured key size and block
     /// size.
     /// </summary>
     /// <param name="key">The key to validate.</param>
     /// <param name="iv">The initialisation vector to validate.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
     private void Validate(byte[] key, byte[]? iv)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(iv);
 
-        int keyBits = key.Length * 8;
+        var keyBits = key.Length * 8;
         if (keyBits != 128 && keyBits != 192 && keyBits != 256)
             throw new CryptographicException(
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, keyBits, CryptoHelpers.FormatLegalSizes(SerpentKeySizes)));
@@ -207,7 +207,7 @@ public sealed class Serpent128
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

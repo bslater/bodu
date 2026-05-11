@@ -19,9 +19,9 @@ namespace Bodu.Security.Cryptography;
 /// 128-bit blocks and supports 128-bit, 192-bit, and 256-bit keys.
 /// </para>
 /// <para>
-/// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block
-/// cipher modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" />
-/// with <see cref="PaddingMode.PKCS7" /> padding.
+/// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block
+/// cipher modes via the <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/>
+/// with <see cref="PaddingMode.PKCS7"/> padding.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// conservatism of that AES finalist.
 /// </para>
 /// <note type="important">
-/// For new general-purpose application encryption, prefer <see cref="Aes" /> unless Twofish compatibility is
+/// For new general-purpose application encryption, prefer <see cref="Aes"/> unless Twofish compatibility is
 /// specifically required.
 /// </note>
 /// </remarks>
@@ -91,7 +91,7 @@ public sealed class Twofish
     private CipherBlockMode _blockMode = CipherBlockMode.CBC;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Twofish" /> class with default parameters.
+    /// Initializes a new instance of the <see cref="Twofish"/> class with default parameters.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -115,7 +115,7 @@ public sealed class Twofish
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.
+    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
     /// </value>
     public CipherBlockMode BlockMode
     {
@@ -133,9 +133,9 @@ public sealed class Twofish
     }
 
     /// <summary>
-    /// Creates a new <see cref="Twofish" /> instance with default parameters.
+    /// Creates a new <see cref="Twofish"/> instance with default parameters.
     /// </summary>
-    /// <returns>A new <see cref="Twofish" /> instance.</returns>
+    /// <returns>A new <see cref="Twofish"/> instance.</returns>
     public new static Twofish Create() => new Twofish();
 
     /// <inheritdoc />

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CamelliaBlockCipher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,10 +30,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This type exposes the raw Camellia block primitive. Most callers should prefer the higher-level
-/// <see cref="Camellia" /> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use
-/// <see cref="CamelliaBlockCipher" /> directly only when composing the raw block primitive with an
-/// <see cref="IBlockCipherModeTransform" /> or <see cref="IPaddingStrategy" />.
+/// <see cref="Camellia"/> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use
+/// <see cref="CamelliaBlockCipher"/> directly only when composing the raw block primitive with an
+/// <see cref="IBlockCipherModeTransform"/> or <see cref="IPaddingStrategy"/>.
 /// </para>
 /// <list type="bullet">
 /// <item><description><b>Block size:</b> 16 bytes (128 bits)</description></item>
@@ -42,7 +42,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// </remarks>
 /// <seealso href="https://www.rfc-editor.org/rfc/rfc3713">RFC 3713 — A Description of the Camellia Encryption Algorithm</seealso>
-/// <seealso cref="Camellia" />
+/// <seealso cref="Camellia"/>
 public sealed class CamelliaBlockCipher
     : IBlockCipher
 {
@@ -111,13 +111,13 @@ public sealed class CamelliaBlockCipher
     private bool _disposed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CamelliaBlockCipher" /> class using the specified key.
+    /// Initializes a new instance of the <see cref="CamelliaBlockCipher"/> class using the specified key.
     /// </summary>
     /// <param name="key">
     /// The encryption key. Must be 16, 24, or 32 bytes (128, 192, or 256 bits) in length.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key" /> is not 16, 24, or 32 bytes in length.
+    /// <paramref name="key"/> is not 16, 24, or 32 bytes in length.
     /// </exception>
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
@@ -142,7 +142,7 @@ public sealed class CamelliaBlockCipher
     /// <param name="input">The ciphertext block to decrypt. Must be exactly 16 bytes.</param>
     /// <param name="output">The buffer that receives the plaintext block. Must be exactly 16 bytes.</param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input" /> or <paramref name="output" /> is not exactly 16 bytes in length.
+    /// <paramref name="input"/> or <paramref name="output"/> is not exactly 16 bytes in length.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
@@ -152,8 +152,8 @@ public sealed class CamelliaBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
 
         // Encryption produced (right ^ kw3) || (left ^ kw4) — restore the post-rounds halves first.
-        ulong right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
-        ulong left = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8)) ^ _kw[3];
+        var right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
+        var left = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8)) ^ _kw[3];
 
         if (!_usesExtendedKeySchedule)
         {
@@ -260,7 +260,7 @@ public sealed class CamelliaBlockCipher
     /// <param name="input">The plaintext block to encrypt. Must be exactly 16 bytes.</param>
     /// <param name="output">The buffer that receives the ciphertext block. Must be exactly 16 bytes.</param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input" /> or <paramref name="output" /> is not exactly 16 bytes in length.
+    /// <paramref name="input"/> or <paramref name="output"/> is not exactly 16 bytes in length.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
@@ -269,8 +269,8 @@ public sealed class CamelliaBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
 
-        ulong left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
-        ulong right = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8)) ^ _kw[1];
+        var left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
+        var right = BinaryPrimitives.ReadUInt64BigEndian(input.Slice(8)) ^ _kw[1];
 
         if (!_usesExtendedKeySchedule)
         {
@@ -363,8 +363,8 @@ public sealed class CamelliaBlockCipher
     /// <param name="key">The raw key material (16, 24, or 32 bytes).</param>
     private void ExpandKey(ReadOnlySpan<byte> key)
     {
-        ulong klHi = BinaryPrimitives.ReadUInt64BigEndian(key);
-        ulong klLo = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(8));
+        var klHi = BinaryPrimitives.ReadUInt64BigEndian(key);
+        var klLo = BinaryPrimitives.ReadUInt64BigEndian(key.Slice(8));
 
         ulong krHi;
         ulong krLo;
@@ -388,8 +388,8 @@ public sealed class CamelliaBlockCipher
         }
 
         // KA derivation: four Feistel rounds keyed by SIGMA1..SIGMA4.
-        ulong d1 = klHi ^ krHi;
-        ulong d2 = klLo ^ krLo;
+        var d1 = klHi ^ krHi;
+        var d2 = klLo ^ krLo;
 
         d2 ^= F(d1, s_sigma[0]);
         d1 ^= F(d2, s_sigma[1]);
@@ -400,8 +400,8 @@ public sealed class CamelliaBlockCipher
         d2 ^= F(d1, s_sigma[2]);
         d1 ^= F(d2, s_sigma[3]);
 
-        ulong kaHi = d1;
-        ulong kaLo = d2;
+        var kaHi = d1;
+        var kaLo = d2;
 
         if (!_usesExtendedKeySchedule)
         {
@@ -449,11 +449,11 @@ public sealed class CamelliaBlockCipher
         (_k[6], _k[7]) = RotL128(klHi, klLo, 45);
 
         // k9 = (KA <<< 45) >> 64 — upper half only.
-        (ulong hi, _) = RotL128(kaHi, kaLo, 45);
+        (var hi, _) = RotL128(kaHi, kaLo, 45);
         _k[8] = hi;
 
         // k10 = (KL <<< 60) & MASK64 — lower half only.
-        (_, ulong lo) = RotL128(klHi, klLo, 60);
+        (_, var lo) = RotL128(klHi, klLo, 60);
         _k[9] = lo;
 
         // k11, k12 = KA <<< 60
@@ -568,23 +568,23 @@ public sealed class CamelliaBlockCipher
         //   Positions 2, 5 → SBOX3
         //   Positions 3, 6 → SBOX4
         int t1 = s_sbox1[(int)(x >> 56)];
-        int t2 = SBox2((int)((x >> 48) & 0xFF));
-        int t3 = SBox3((int)((x >> 40) & 0xFF));
-        int t4 = SBox4((int)((x >> 32) & 0xFF));
-        int t5 = SBox2((int)((x >> 24) & 0xFF));
-        int t6 = SBox3((int)((x >> 16) & 0xFF));
-        int t7 = SBox4((int)((x >> 8) & 0xFF));
+        var t2 = SBox2((int)((x >> 48) & 0xFF));
+        var t3 = SBox3((int)((x >> 40) & 0xFF));
+        var t4 = SBox4((int)((x >> 32) & 0xFF));
+        var t5 = SBox2((int)((x >> 24) & 0xFF));
+        var t6 = SBox3((int)((x >> 16) & 0xFF));
+        var t7 = SBox4((int)((x >> 8) & 0xFF));
         int t8 = s_sbox1[(int)(x & 0xFF)];
 
         // P-function: byte-wise MDS-style diffusion (RFC 3713 §2.1).
-        int y1 = t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8;
-        int y2 = t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8;
-        int y3 = t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8;
-        int y4 = t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
-        int y5 = t1 ^ t2 ^ t6 ^ t7 ^ t8;
-        int y6 = t2 ^ t3 ^ t5 ^ t7 ^ t8;
-        int y7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
-        int y8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
+        var y1 = t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8;
+        var y2 = t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8;
+        var y3 = t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8;
+        var y4 = t2 ^ t3 ^ t4 ^ t5 ^ t6 ^ t7;
+        var y5 = t1 ^ t2 ^ t6 ^ t7 ^ t8;
+        var y6 = t2 ^ t3 ^ t5 ^ t7 ^ t8;
+        var y7 = t3 ^ t4 ^ t5 ^ t6 ^ t8;
+        var y8 = t1 ^ t4 ^ t5 ^ t6 ^ t7;
 
         return ((ulong)(y1 & 0xFF) << 56)
              | ((ulong)(y2 & 0xFF) << 48)
@@ -605,10 +605,10 @@ public sealed class CamelliaBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong Fl(ulong x, ulong key)
     {
-        uint x1 = (uint)(x >> 32);
-        uint x2 = (uint)x;
-        uint k1 = (uint)(key >> 32);
-        uint k2 = (uint)key;
+        var x1 = (uint)(x >> 32);
+        var x2 = (uint)x;
+        var k1 = (uint)(key >> 32);
+        var k2 = (uint)key;
 
         x2 ^= (x1 & k1).RotateBitsLeftUnchecked(1);
         x1 ^= x2 | k2;
@@ -625,10 +625,10 @@ public sealed class CamelliaBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong FlInv(ulong x, ulong key)
     {
-        uint y1 = (uint)(x >> 32);
-        uint y2 = (uint)x;
-        uint k1 = (uint)(key >> 32);
-        uint k2 = (uint)key;
+        var y1 = (uint)(x >> 32);
+        var y2 = (uint)x;
+        var k1 = (uint)(key >> 32);
+        var k2 = (uint)key;
 
         y1 ^= y2 | k2;
         y2 ^= (y1 & k1).RotateBitsLeftUnchecked(1);
@@ -638,7 +638,7 @@ public sealed class CamelliaBlockCipher
 
     /// <summary>
     /// Rotates a 128-bit value left by the specified number of bits. The value is represented as a (hi, lo) pair of
-    /// 64-bit words where <paramref name="hi" /> holds the most-significant bits.
+    /// 64-bit words where <paramref name="hi"/> holds the most-significant bits.
     /// </summary>
     /// <param name="hi">The upper 64 bits of the 128-bit value.</param>
     /// <param name="lo">The lower 64 bits of the 128-bit value.</param>
@@ -703,7 +703,7 @@ public sealed class CamelliaBlockCipher
     private static int RotateRight1(int x) => ((x >> 1) | (x << 7)) & 0xFF;
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this cipher instance has already been disposed.
+    /// Throws <see cref="ObjectDisposedException"/> if this cipher instance has already been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

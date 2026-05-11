@@ -14,21 +14,21 @@ namespace Bodu.Security.Cryptography;
 /// Base class for hash algorithms that consume input in fixed-size blocks and pad the final partial block before
 /// processing it (the Merkle&#8211;Damg&#229;rd shape). Handles block alignment and final-block padding orchestration on
 /// behalf of derived implementations; the residual buffer, running byte total, and disposal latch are inherited from
-/// <see cref="BufferedBlockHashAlgorithm{T}" />.
+/// <see cref="BufferedBlockHashAlgorithm{T}"/>.
 /// </summary>
 /// <typeparam name="T">The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
-/// Input data is accumulated into the inherited residual buffer until a complete block of <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes" />
-/// is available, at which point it is passed to <see cref="ProcessBlock" />. Any residual bytes left over at
-/// <see cref="HashAlgorithm.HashFinal" /> are padded via <see cref="PadBlock" /> before a final call to
-/// <see cref="ProcessFinalBlock" /> produces the digest.
+/// Input data is accumulated into the inherited residual buffer until a complete block of <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes"/>
+/// is available, at which point it is passed to <see cref="ProcessBlock"/>. Any residual bytes left over at
+/// <see cref="HashAlgorithm.HashFinal"/> are padded via <see cref="PadBlock"/> before a final call to
+/// <see cref="ProcessFinalBlock"/> produces the digest.
 /// </para>
 /// <para>Derived classes must implement the following:</para>
 /// <list type="bullet">
-/// <item><description><see cref="ProcessBlock" /> processes a single complete block of input data.</description></item>
-/// <item><description><see cref="PadBlock" /> pads the final input segment and encodes the total message length.</description></item>
-/// <item><description><see cref="ProcessFinalBlock" /> finalises the hash computation and returns the resulting digest.</description></item>
+/// <item><description><see cref="ProcessBlock"/> processes a single complete block of input data.</description></item>
+/// <item><description><see cref="PadBlock"/> pads the final input segment and encodes the total message length.</description></item>
+/// <item><description><see cref="ProcessFinalBlock"/> finalises the hash computation and returns the resulting digest.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm{T}"/> for any classic
@@ -51,7 +51,7 @@ public abstract class BlockHashAlgorithm<T>
     where T : BlockHashAlgorithm<T>, new()
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlockHashAlgorithm{T}" /> class using the specified input block size.
+    /// Initializes a new instance of the <see cref="BlockHashAlgorithm{T}"/> class using the specified input block size.
     /// </summary>
     /// <param name="blockSize">
     /// The block size, in bytes, that the algorithm uses to process input data. This value determines how data is buffered and
@@ -59,22 +59,22 @@ public abstract class BlockHashAlgorithm<T>
     /// </param>
     /// <remarks>
     /// <para>
-    /// The specified <paramref name="blockSize" /> defines the size of each complete block passed to the <see cref="ProcessBlock" />
+    /// The specified <paramref name="blockSize"/> defines the size of each complete block passed to the <see cref="ProcessBlock"/>
     /// method during hashing. Any input data not aligned to this size is temporarily stored in a residual buffer until enough bytes are
     /// accumulated for a full block.
     /// </para>
     /// <para>
-    /// This constructor delegates to <see cref="BufferedBlockHashAlgorithm{T}" />, which allocates the residual buffer used to
+    /// This constructor delegates to <see cref="BufferedBlockHashAlgorithm{T}"/>, which allocates the residual buffer used to
     /// accumulate and align partial input segments across multiple calls to
-    /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[], int)" /> and
-    /// <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)" />.
+    /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[], int)"/> and
+    /// <see cref="HashAlgorithm.TransformFinalBlock(byte[], int, int)"/>.
     /// </para>
     /// <para>
     /// The specified block size must match the expectations of the underlying algorithm implementation. For example, a SHA-like
     /// construction may expect 64 or 128 bytes per block.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     protected BlockHashAlgorithm(int blockSize)
         : base(blockSize)
     {
@@ -87,7 +87,7 @@ public abstract class BlockHashAlgorithm<T>
     protected virtual bool AllowUnalignedFinalBlock => false;
 
     /// <summary>
-    /// Processes the entirety of the input <paramref name="source" /> and feeds it into the computation pipeline. This method updates
+    /// Processes the entirety of the input <paramref name="source"/> and feeds it into the computation pipeline. This method updates
     /// the internal hash state accordingly by consuming the entire input span.
     /// </summary>
     /// <param name="source">The input byte span containing the data to hash.</param>
@@ -97,7 +97,7 @@ public abstract class BlockHashAlgorithm<T>
     /// <remarks>
     /// <para>
     /// This method is part of the core hashing process and is automatically invoked by methods such as
-    /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[], int)" /> and <see cref="HashAlgorithm.ComputeHash(byte[])" />.
+    /// <see cref="HashAlgorithm.TransformBlock(byte[], int, int, byte[], int)"/> and <see cref="HashAlgorithm.ComputeHash(byte[])"/>.
     /// It handles processing of raw byte array input and ensures the hash algorithm receives data in properly sized blocks.
     /// </para>
     /// <para>
@@ -144,7 +144,7 @@ public abstract class BlockHashAlgorithm<T>
             }
             else
             {
-                for (int i = 0; i < finalBlock.Length; i += this.BlockSizeBytes)
+                for (var i = 0; i < finalBlock.Length; i += this.BlockSizeBytes)
                     this.ProcessBlock(finalBlock.AsSpan(i, this.BlockSizeBytes));
             }
         }
@@ -164,7 +164,7 @@ public abstract class BlockHashAlgorithm<T>
     /// <param name="messageLength">The total number of bytes processed by the algorithm before padding, not including this block.</param>
     /// <returns>
     /// A padded byte array consisting of one or more full blocks that include the input data and message length encoding, ready to be
-    /// passed to <see cref="ProcessBlock(ReadOnlySpan{byte})" />.
+    /// passed to <see cref="ProcessBlock(ReadOnlySpan{byte})"/>.
     /// </returns>
     /// <remarks>
     /// The returned array must be aligned to the algorithm’s block size. Padding schemes often include a leading '1' bit, followed by
@@ -180,7 +180,7 @@ public abstract class BlockHashAlgorithm<T>
     /// This method performs the core transformation logic of the hash algorithm. It is called repeatedly with aligned input blocks and
     /// is not responsible for padding or finalization steps.
     /// </remarks>
-    /// <exception cref="ArgumentException">Thrown if the <paramref name="block" /> is not the expected size.</exception>
+    /// <exception cref="ArgumentException">Thrown if the <paramref name="block"/> is not the expected size.</exception>
     protected abstract void ProcessBlock(ReadOnlySpan<byte> block);
 
     /// <summary>
@@ -196,10 +196,10 @@ public abstract class BlockHashAlgorithm<T>
     /// <summary>
     /// Determines whether the final block of input data should be padded before processing.
     /// </summary>
-    /// <returns><see langword="true" /> if the final block should be padded; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true"/> if the final block should be padded; otherwise, <see langword="false"/>.</returns>
     /// <remarks>
     /// This method is used to decide whether padding is required for the final block of input data. Derived classes can override this
-    /// method to implement their own logic for padding behaviour. By default, this method returns <see langword="true" />, indicating
+    /// method to implement their own logic for padding behaviour. By default, this method returns <see langword="true"/>, indicating
     /// that padding is required.
     /// </remarks>
     protected virtual bool ShouldPadFinalBlock() => true;
@@ -214,7 +214,7 @@ public abstract class BlockHashAlgorithm<T>
     /// </remarks>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
-        int pos = 0;
+        var pos = 0;
         this._totalBytes += (ulong)buffer.Length;
 
         Span<byte> residualSpan = this._residualBlock.Span;
@@ -222,7 +222,7 @@ public abstract class BlockHashAlgorithm<T>
         // Attempt to fill a partial residual block if it exists
         if (this._residualBytes > 0)
         {
-            int remaining = this.BlockSizeBytes - this._residualBytes;
+            var remaining = this.BlockSizeBytes - this._residualBytes;
 
             if (buffer.Length >= remaining)
             {

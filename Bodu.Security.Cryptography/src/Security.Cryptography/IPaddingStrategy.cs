@@ -50,10 +50,10 @@ namespace Bodu.Security.Cryptography;
 public interface IPaddingStrategy
 {
     /// <summary>
-    /// Gets a value indicating whether <see cref="Unpad" /> inspects the final block
+    /// Gets a value indicating whether <see cref="Unpad"/> inspects the final block
     /// and may return fewer bytes than it received. Self-describing schemes such as
-    /// PKCS#7, ANSI X.923, ISO 10126 and ISO/IEC 7816-4 return <see langword="true" />;
-    /// pass-through schemes such as zero padding and no padding return <see langword="false" />.
+    /// PKCS#7, ANSI X.923, ISO 10126 and ISO/IEC 7816-4 return <see langword="true"/>;
+    /// pass-through schemes such as zero padding and no padding return <see langword="false"/>.
     /// </summary>
     /// <remarks>
     /// Streaming block-cipher transforms use this flag to decide whether the final
@@ -67,8 +67,8 @@ public interface IPaddingStrategy
     /// </summary>
     /// <param name="input">The input data to be padded.</param>
     /// <param name="blockSize">The block size in bytes that the padded output must align to.</param>
-    /// <returns>A new byte array containing the padded data. The length of the result will be a multiple of <paramref name="blockSize" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize" /> is less than or equal to zero.</exception>
+    /// <returns>A new byte array containing the padded data. The length of the result will be a multiple of <paramref name="blockSize"/>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     byte[] Pad(ReadOnlySpan<byte> input, int blockSize);
 
     /// <summary>
@@ -78,7 +78,7 @@ public interface IPaddingStrategy
     /// <param name="blockSize">The block size in bytes used during the original padding operation.</param>
     /// <returns>A new byte array containing the unpadded data.</returns>
     /// <exception cref="ArgumentException">
-    /// Thrown if the input does not conform to the expected padding scheme or is not a multiple of <paramref name="blockSize" />.
+    /// Thrown if the input does not conform to the expected padding scheme or is not a multiple of <paramref name="blockSize"/>.
     /// </exception>
     byte[] Unpad(ReadOnlySpan<byte> input, int blockSize);
 }

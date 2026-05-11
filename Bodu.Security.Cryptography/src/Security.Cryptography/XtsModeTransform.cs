@@ -11,17 +11,17 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Applies XEX-based Tweaked CodeBook mode with ciphertext Stealing (XTS) to an underlying
-/// pair of <see cref="IBlockCipher" /> instances, per IEEE Std 1619-2007 / NIST SP 800-38E.
+/// pair of <see cref="IBlockCipher"/> instances, per IEEE Std 1619-2007 / NIST SP 800-38E.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/xts-mode.svg" alt="XTS data flow — the tweak cipher encrypts the sector number, successive α multiplications in GF(2^128) derive per-block tweaks T_j, and each block is XORed with T_j before and after the data cipher." />
+/// <img src="../images/diagrams/xts-mode.svg" alt="XTS data flow — the tweak cipher encrypts the sector number, successive α multiplications in GF(2^128) derive per-block tweaks T_j, and each block is XORed with T_j before and after the data cipher."/>
 /// </para>
 /// <para>
 /// XTS requires two independent ciphers keyed with different material:
 /// <list type="bullet">
-/// <item><description><paramref name="dataCipher" /> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.</description></item>
-/// <item><description><paramref name="tweakCipher" /> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.</description></item>
+/// <item><description><paramref name="dataCipher"/> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.</description></item>
+/// <item><description><paramref name="tweakCipher"/> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.</description></item>
 /// </list>
 /// Using the same key for both reduces XTS to a single-key construction and weakens security.
 /// </para>
@@ -76,22 +76,22 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XtsModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="XtsModeTransform"/> class.
     /// </summary>
     /// <param name="dataCipher">
     /// The cipher keyed with Key₁, used to encrypt or decrypt data blocks.
     /// </param>
     /// <param name="tweakCipher">
     /// The cipher keyed with Key₂, used to encrypt the sector number. Must have the same
-    /// block size as <paramref name="dataCipher" />.
+    /// block size as <paramref name="dataCipher"/>.
     /// </param>
     /// <param name="tweak">
     /// The sector number encoded as a block-size byte array in little-endian order.
     /// A defensive copy is taken.
     /// </param>
-    /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// Block sizes differ, or <paramref name="tweak" /> length does not equal the block size.
+    /// Block sizes differ, or <paramref name="tweak"/> length does not equal the block size.
     /// </exception>
     public XtsModeTransform(IBlockCipher dataCipher, IBlockCipher tweakCipher, byte[] tweak)
     {
@@ -113,7 +113,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -125,18 +125,18 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
 
         Span<byte> buf = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             // XEX: out = cipher(in XOR T) XOR T
-            for (int i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
+            for (var i = 0; i < blockSize; i++) buf[i] = (byte)(inBlock[i] ^ T[i]);
             if (encrypt)
                 this._cipher.Encrypt(buf, outBlock);
             else
                 this._cipher.Decrypt(buf, outBlock);
-            for (int i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
+            for (var i = 0; i < blockSize; i++) outBlock[i] ^= T[i];
 
             // Advance tweak: T = α ⊗ T in GF(2^128), little-endian, poly 0x87 reduction.
             GfDouble(T);
@@ -148,7 +148,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the retained tweak so that
     /// key-equivalent state does not linger in memory after disposal. The underlying data and
-    /// tweak <see cref="IBlockCipher" /> instances are not disposed by this type — ownership
+    /// tweak <see cref="IBlockCipher"/> instances are not disposed by this type — ownership
     /// remains with the caller.
     /// </summary>
     /// <remarks>Idempotent.</remarks>
@@ -165,15 +165,15 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Multiplies <paramref name="T" /> by α in GF(2^128) using the IEEE 1619 polynomial
+    /// Multiplies <paramref name="T"/> by α in GF(2^128) using the IEEE 1619 polynomial
     /// x^128 + x^7 + x^2 + x + 1, with little-endian bit ordering (byte 0 = x^0..x^7).
     /// </summary>
     /// <param name="T">The 16-byte tweak block to double in GF(2<sup>128</sup>); updated in place.</param>
     private static void GfDouble(Span<byte> T)
     {
         // Left-shift the 128-bit little-endian value. Carry propagates from byte[0] upward.
-        int carry = 0;
-        for (int i = 0; i < T.Length; i++)
+        var carry = 0;
+        for (var i = 0; i < T.Length; i++)
         {
             int t = T[i];
             T[i] = (byte)((t << 1) | carry);

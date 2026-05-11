@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmExtensions.DecryptAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,16 +18,16 @@ public static partial class SymmetricAlgorithmExtensions
     /// Asynchronously decrypts data read from a source stream and writes the decrypted output to a target stream, using the default
     /// buffer size.
     /// </summary>
-    /// <param name="algorithm">The symmetric algorithm to use for decryption. Must not be <see langword="null" />.</param>
-    /// <param name="sourceStream">The stream to read encrypted data from. Must not be <see langword="null" />.</param>
-    /// <param name="targetStream">The stream to write the decrypted output to. Must not be <see langword="null" />.</param>
+    /// <param name="algorithm">The symmetric algorithm to use for decryption. Must not be <see langword="null"/>.</param>
+    /// <param name="sourceStream">The stream to read encrypted data from. Must not be <see langword="null"/>.</param>
+    /// <param name="targetStream">The stream to write the decrypted output to. Must not be <see langword="null"/>.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A <see cref="Task" /> representing the asynchronous decryption operation.</returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous decryption operation.</returns>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is <see langword="null" />.
+    /// <paramref name="algorithm"/>, <paramref name="sourceStream"/>, or <paramref name="targetStream"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// The operation was cancelled via <paramref name="cancellationToken" />.
+    /// The operation was cancelled via <paramref name="cancellationToken"/>.
     /// </exception>
     public static Task DecryptAsync(
         this SymmetricAlgorithm algorithm,
@@ -40,20 +40,20 @@ public static partial class SymmetricAlgorithmExtensions
     /// Asynchronously decrypts data read from a source stream and writes the decrypted output to a target stream, using the specified
     /// buffer size.
     /// </summary>
-    /// <param name="algorithm">The symmetric algorithm to use for decryption. Must not be <see langword="null" />.</param>
-    /// <param name="sourceStream">The stream to read encrypted data from. Must not be <see langword="null" />.</param>
-    /// <param name="targetStream">The stream to write the decrypted output to. Must not be <see langword="null" />.</param>
+    /// <param name="algorithm">The symmetric algorithm to use for decryption. Must not be <see langword="null"/>.</param>
+    /// <param name="sourceStream">The stream to read encrypted data from. Must not be <see langword="null"/>.</param>
+    /// <param name="targetStream">The stream to write the decrypted output to. Must not be <see langword="null"/>.</param>
     /// <param name="bufferSize">The size, in bytes, of the read buffer. Must be greater than zero.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
-    /// <returns>A <see cref="Task" /> representing the asynchronous decryption operation.</returns>
+    /// <returns>A <see cref="Task"/> representing the asynchronous decryption operation.</returns>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="algorithm" />, <paramref name="sourceStream" />, or <paramref name="targetStream" /> is <see langword="null" />.
+    /// <paramref name="algorithm"/>, <paramref name="sourceStream"/>, or <paramref name="targetStream"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="bufferSize" /> is less than or equal to zero.
+    /// <paramref name="bufferSize"/> is less than or equal to zero.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// The operation was cancelled via <paramref name="cancellationToken" />.
+    /// The operation was cancelled via <paramref name="cancellationToken"/>.
     /// </exception>
     /// <example>
     /// <code>

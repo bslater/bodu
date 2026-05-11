@@ -17,15 +17,15 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="T">The concrete derived algorithm type. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
-/// This class extends <see cref="BlockHashAlgorithm{T}" /> with key-handling logic shared by keyed block hashes such as
-/// <see cref="Poly1305" /> and <see cref="SipHash{T}" />. It centralises defensive copying, key-length validation, disposal of
-/// secret material, and the hook (<see cref="OnKeyChanged" />) used by derived classes to derive any key-dependent schedule or
+/// This class extends <see cref="BlockHashAlgorithm{T}"/> with key-handling logic shared by keyed block hashes such as
+/// <see cref="Poly1305"/> and <see cref="SipHash{T}"/>. It centralises defensive copying, key-length validation, disposal of
+/// secret material, and the hook (<see cref="OnKeyChanged"/>) used by derived classes to derive any key-dependent schedule or
 /// internal state.
 /// </para>
 /// <para>
-/// Derived classes supply the required key length via the <see cref="KeyedBlockHashAlgorithm{T}(int, int)" /> constructor. The
-/// <see cref="Key" /> property setter validates the supplied byte array against that length, stores a defensive copy in
-/// <see cref="KeyValue" />, and then invokes <see cref="OnKeyChanged" /> so the derived algorithm can rebuild any key-dependent state.
+/// Derived classes supply the required key length via the <see cref="KeyedBlockHashAlgorithm{T}(int, int)"/> constructor. The
+/// <see cref="Key"/> property setter validates the supplied byte array against that length, stores a defensive copy in
+/// <see cref="KeyValue"/>, and then invokes <see cref="OnKeyChanged"/> so the derived algorithm can rebuild any key-dependent state.
 /// </para>
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="KeyedBlockHashAlgorithm{T}"/> for keyed
@@ -46,11 +46,11 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// Internal storage for the key used by the algorithm. Always assigned via defensive copy and cleared on disposal.
     /// </summary>
     /// <remarks>
-    /// Declared <see cref="byte" />[] nullable to honestly reflect that the field can be observed in three states:
-    /// <see langword="null" /> on a freshly-constructed instance whose constructor has not yet seeded a key, after
-    /// <see cref="Dispose(bool)" /> has cleared it, and between assignments. The <see cref="Key" /> getter and
-    /// <see cref="Initialize" /> validation both treat a <see langword="null" /> value as a contract violation and
-    /// throw a <see cref="CryptographicException" />.
+    /// Declared <see cref="byte"/>[] nullable to honestly reflect that the field can be observed in three states:
+    /// <see langword="null"/> on a freshly-constructed instance whose constructor has not yet seeded a key, after
+    /// <see cref="Dispose(bool)"/> has cleared it, and between assignments. The <see cref="Key"/> getter and
+    /// <see cref="Initialize"/> validation both treat a <see langword="null"/> value as a contract violation and
+    /// throw a <see cref="CryptographicException"/>.
     /// </remarks>
     protected byte[]? KeyValue;
 
@@ -60,7 +60,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
     protected readonly int KeySizeValue;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="KeyedBlockHashAlgorithm{T}" /> class with the specified input block size and
+    /// Initializes a new instance of the <see cref="KeyedBlockHashAlgorithm{T}"/> class with the specified input block size and
     /// required key size.
     /// </summary>
     /// <param name="blockSize">
@@ -68,11 +68,11 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// underlying hash structure.
     /// </param>
     /// <param name="keySize">
-    /// The exact required key size, in bytes, that the derived algorithm accepts. Used by the <see cref="Key" /> setter to validate
+    /// The exact required key size, in bytes, that the derived algorithm accepts. Used by the <see cref="Key"/> setter to validate
     /// caller-supplied key material.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="blockSize" /> or <paramref name="keySize" /> is less than or equal to zero.
+    /// <paramref name="blockSize"/> or <paramref name="keySize"/> is less than or equal to zero.
     /// </exception>
     protected KeyedBlockHashAlgorithm(int blockSize, int keySize)
         : base(blockSize)
@@ -87,8 +87,8 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// <value>A byte array containing the key material. Both the getter and the setter operate on defensive copies.</value>
     /// <remarks>
     /// <para>
-    /// The key must be set prior to calling any hashing methods such as <see cref="HashAlgorithm.ComputeHash(byte[])" />. The setter
-    /// stores a private copy of the supplied array, then invokes <see cref="OnKeyChanged" /> so derived classes can rebuild any
+    /// The key must be set prior to calling any hashing methods such as <see cref="HashAlgorithm.ComputeHash(byte[])"/>. The setter
+    /// stores a private copy of the supplied array, then invokes <see cref="OnKeyChanged"/> so derived classes can rebuild any
     /// key-dependent internal state (for example, a polynomial key schedule or pre-computed state vectors).
     /// </para>
     /// <para>
@@ -99,7 +99,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// A hash computation has already started, and the key may not be reassigned while the algorithm is in use.
     /// </exception>
-    /// <exception cref="ArgumentNullException">The assigned value is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">The assigned value is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
     /// The length of the assigned key does not match the required key size for this algorithm.
     /// </exception>
@@ -138,7 +138,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
 
     /// <summary>
     /// Resets the algorithm to its initial state, ready to accept fresh input. Derived classes should override
-    /// <see cref="OnKeyChanged" /> — invoked automatically from here — to rebuild any key-dependent internal state.
+    /// <see cref="OnKeyChanged"/> — invoked automatically from here — to rebuild any key-dependent internal state.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicException">
@@ -161,14 +161,14 @@ public abstract class KeyedBlockHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Called after <see cref="KeyValue" /> has been assigned or the algorithm has been re-initialised. Derived classes override
+    /// Called after <see cref="KeyValue"/> has been assigned or the algorithm has been re-initialised. Derived classes override
     /// this to rebuild any key-dependent internal state such as a round-key schedule, precomputed vectors, or accumulator reset.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By contract, when this method runs <see cref="KeyValue" /> is guaranteed to be non-<see langword="null" /> and of length
-    /// <see cref="KeySizeValue" />. It is invoked from the <see cref="Key" /> setter, from <see cref="Initialize" />, and should be
-    /// invoked by derived constructors after they have placed a default key into <see cref="KeyValue" />.
+    /// By contract, when this method runs <see cref="KeyValue"/> is guaranteed to be non-<see langword="null"/> and of length
+    /// <see cref="KeySizeValue"/>. It is invoked from the <see cref="Key"/> setter, from <see cref="Initialize"/>, and should be
+    /// invoked by derived constructors after they have placed a default key into <see cref="KeyValue"/>.
     /// </para>
     /// <para>
     /// The default implementation is a no-op so that derived classes with no key-dependent precomputation pay no overhead.
@@ -183,7 +183,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.
     /// </param>
     /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
     protected override void Dispose(bool disposing)

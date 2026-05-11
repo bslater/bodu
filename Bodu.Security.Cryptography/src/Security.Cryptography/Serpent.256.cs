@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent.256.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,11 +15,11 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This variant runs the Serpent round function over an eight-word state for 48 rounds, injecting a tweak subkey every four
-/// rounds in the style of Threefish. It supports the extended block cipher modes exposed by <see cref="CipherBlockMode" /> via
-/// the <see cref="Serpent.BlockMode" /> property.
+/// rounds in the style of Threefish. It supports the extended block cipher modes exposed by <see cref="CipherBlockMode"/> via
+/// the <see cref="Serpent.BlockMode"/> property.
 /// </para>
 /// <para>
-/// For other block sizes, see <see cref="Serpent512" /> and <see cref="Serpent1024" />.
+/// For other block sizes, see <see cref="Serpent512"/> and <see cref="Serpent1024"/>.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <note type="important">
 /// Serpent-256 (this type) is a <strong>non-standard Serpent-derived construction</strong> and is not interoperable with any
-/// reference Serpent implementation. For standard, externally vetted Serpent, use <see cref="Serpent128" />.
+/// reference Serpent implementation. For standard, externally vetted Serpent, use <see cref="Serpent128"/>.
 /// </note>
 /// </remarks>
 /// <example>
@@ -61,20 +61,20 @@ public sealed class Serpent256
     : Serpent
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Serpent256" /> class using a 256-bit block size, 256-bit key, and 128-bit
+    /// Initializes a new instance of the <see cref="Serpent256"/> class using a 256-bit block size, 256-bit key, and 128-bit
     /// tweak.
     /// </summary>
     public Serpent256()
         : base(256, 128) { }
 
     /// <summary>
-    /// Creates a new <see cref="Serpent256" /> instance with default parameters.
+    /// Creates a new <see cref="Serpent256"/> instance with default parameters.
     /// </summary>
-    /// <returns>A new <see cref="Serpent256" /> instance.</returns>
+    /// <returns>A new <see cref="Serpent256"/> instance.</returns>
     /// <remarks>
     /// The key, initialisation vector, and tweak are generated on demand the first time they are accessed unless assigned
-    /// explicitly via <see cref="SymmetricAlgorithm.Key" />, <see cref="SymmetricAlgorithm.IV" />, or
-    /// <see cref="TweakableSymmetricAlgorithm.Tweak" />.
+    /// explicitly via <see cref="SymmetricAlgorithm.Key"/>, <see cref="SymmetricAlgorithm.IV"/>, or
+    /// <see cref="TweakableSymmetricAlgorithm.Tweak"/>.
     /// </remarks>
     public new static Serpent256 Create() => new Serpent256();
 

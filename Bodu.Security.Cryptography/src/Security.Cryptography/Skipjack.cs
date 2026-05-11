@@ -11,8 +11,8 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides a managed implementation of the Skipjack symmetric block cipher, exposing the <see cref="SkipjackBlockCipher" /> engine
-/// through the standard <see cref="SymmetricAlgorithm" /> framework. This class cannot be inherited.
+/// Provides a managed implementation of the Skipjack symmetric block cipher, exposing the <see cref="SkipjackBlockCipher"/> engine
+/// through the standard <see cref="SymmetricAlgorithm"/> framework. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -21,9 +21,9 @@ namespace Bodu.Security.Cryptography;
 /// is supported here for legacy and research scenarios only.
 /// </para>
 /// <para>
-/// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block cipher modes via the
-/// <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" /> with
-/// <see cref="PaddingMode.PKCS7" /> padding.
+/// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block cipher modes via the
+/// <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/> with
+/// <see cref="PaddingMode.PKCS7"/> padding.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -85,14 +85,14 @@ public sealed class Skipjack
     private bool _disposed = false;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Skipjack" /> class with the fixed 80-bit key size and 64-bit block size, CBC
+    /// Initializes a new instance of the <see cref="Skipjack"/> class with the fixed 80-bit key size and 64-bit block size, CBC
     /// cipher mode, and PKCS7 padding.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Call <see cref="SymmetricAlgorithm.GenerateKey" /> and <see cref="SymmetricAlgorithm.GenerateIV" /> to produce random key
-    /// material, or assign <see cref="SymmetricAlgorithm.Key" /> and <see cref="SymmetricAlgorithm.IV" /> directly before calling
-    /// <see cref="CreateEncryptor(byte[], byte[])" /> or <see cref="CreateDecryptor(byte[], byte[])" />.
+    /// Call <see cref="SymmetricAlgorithm.GenerateKey"/> and <see cref="SymmetricAlgorithm.GenerateIV"/> to produce random key
+    /// material, or assign <see cref="SymmetricAlgorithm.Key"/> and <see cref="SymmetricAlgorithm.IV"/> directly before calling
+    /// <see cref="CreateEncryptor(byte[], byte[])"/> or <see cref="CreateDecryptor(byte[], byte[])"/>.
     /// </para>
     /// </remarks>
     public Skipjack()
@@ -112,34 +112,34 @@ public sealed class Skipjack
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.
+    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
     /// </value>
     /// <remarks>
     /// <para>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
-    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />, which are not available via the standard
-    /// <see cref="CipherMode" /> enumeration.
+    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property for use with
+    /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including
+    /// <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>, which are not available via the standard
+    /// <see cref="CipherMode"/> enumeration.
     /// </para>
     /// </remarks>
     public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
     /// <summary>
-    /// Creates a symmetric <see cref="Skipjack" /> decryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Skipjack"/> decryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be exactly 10 bytes (80 bits) in length. Must not be
-    /// <see langword="null" />.
+    /// <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null" /> for any
+    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
     /// cipher mode other than ECB.
     /// </param>
-    /// <returns>A symmetric <see cref="Skipjack" /> decryptor object implementing <see cref="ICryptoTransform" />.</returns>
+    /// <returns>A symmetric <see cref="Skipjack"/> decryptor object implementing <see cref="ICryptoTransform"/>.</returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="rgbKey"/> or <paramref name="rgbIV"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="rgbKey" /> is not exactly 10 bytes in length, or <paramref name="rgbIV" /> is not exactly 8 bytes in length.
+    /// <paramref name="rgbKey"/> is not exactly 10 bytes in length, or <paramref name="rgbIV"/> is not exactly 8 bytes in length.
     /// </exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -151,21 +151,21 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Creates a symmetric <see cref="Skipjack" /> encryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Skipjack"/> encryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be exactly 10 bytes (80 bits) in length. Must not be
-    /// <see langword="null" />.
+    /// <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null" /> for any
+    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
     /// cipher mode other than ECB.
     /// </param>
-    /// <returns>A symmetric <see cref="Skipjack" /> encryptor object implementing <see cref="ICryptoTransform" />.</returns>
+    /// <returns>A symmetric <see cref="Skipjack"/> encryptor object implementing <see cref="ICryptoTransform"/>.</returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="rgbKey"/> or <paramref name="rgbIV"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="rgbKey" /> is not exactly 10 bytes in length, or <paramref name="rgbIV" /> is not exactly 8 bytes in length.
+    /// <paramref name="rgbKey"/> is not exactly 10 bytes in length, or <paramref name="rgbIV"/> is not exactly 8 bytes in length.
     /// </exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -177,7 +177,7 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV" />) suitable for use with the
+    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV"/>) suitable for use with the
     /// Skipjack algorithm.
     /// </summary>
     /// <remarks>
@@ -185,10 +185,10 @@ public sealed class Skipjack
     /// The generated IV length is determined by the algorithm block size.
     /// </para>
     /// <para>
-    /// The generated IV is assigned to <see cref="SymmetricAlgorithm.IV" />.
+    /// The generated IV is assigned to <see cref="SymmetricAlgorithm.IV"/>.
     /// </para>
     /// <para>
-    /// A new IV should be generated for each independent encryption operation when reusing a <see cref="Skipjack" /> instance with
+    /// A new IV should be generated for each independent encryption operation when reusing a <see cref="Skipjack"/> instance with
     /// the same key.
     /// </para>
     /// </remarks>
@@ -201,14 +201,14 @@ public sealed class Skipjack
 
     /// <summary>
     /// Generates a cryptographically random key for use with the Skipjack algorithm using the currently configured
-    /// <see cref="SymmetricAlgorithm.KeySize" />.
+    /// <see cref="SymmetricAlgorithm.KeySize"/>.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The generated key length is determined by <see cref="SymmetricAlgorithm.KeySize" />.
+    /// The generated key length is determined by <see cref="SymmetricAlgorithm.KeySize"/>.
     /// </para>
     /// <para>
-    /// The generated key is assigned to <see cref="SymmetricAlgorithm.Key" />.
+    /// The generated key is assigned to <see cref="SymmetricAlgorithm.Key"/>.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
@@ -219,10 +219,10 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="Skipjack" /> instance and, optionally, the managed resources.
+    /// Releases the unmanaged resources used by the <see cref="Skipjack"/> instance and, optionally, the managed resources.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged
     /// resources.
     /// </param>
     /// <remarks>
@@ -257,19 +257,19 @@ public sealed class Skipjack
     private int KeySizeBytes => this.KeySizeValue / 8;
 
     /// <summary>
-    /// Creates a new <see cref="SkipjackBlockCipher" /> engine initialised with the supplied key.
+    /// Creates a new <see cref="SkipjackBlockCipher"/> engine initialised with the supplied key.
     /// </summary>
     /// <param name="key">The 10-byte key material used to derive the round subkeys.</param>
-    /// <returns>An <see cref="IBlockCipher" /> configured for single-block encryption and decryption.</returns>
+    /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
     private static IBlockCipher CreateCipher(byte[] key) => new SkipjackBlockCipher(key);
 
     /// <summary>
-    /// Validates that <paramref name="key" /> and <paramref name="iv" /> match the algorithm's configured key size and block size
+    /// Validates that <paramref name="key"/> and <paramref name="iv"/> match the algorithm's configured key size and block size
     /// respectively.
     /// </summary>
     /// <param name="key">The key to validate.</param>
     /// <param name="iv">The initialisation vector to validate.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
     private void Validate(byte[] key, [NotNull] byte[]? iv)
     {
@@ -293,7 +293,7 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

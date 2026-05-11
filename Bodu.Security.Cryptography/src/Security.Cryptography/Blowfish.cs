@@ -20,9 +20,9 @@ namespace Bodu.Security.Cryptography;
 /// intensive by design, making brute-force attacks significantly more expensive.
 /// </para>
 /// <para>
-/// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block cipher modes via the
-/// <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" /> with
-/// <see cref="PaddingMode.PKCS7" /> padding.
+/// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block cipher modes via the
+/// <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/> with
+/// <see cref="PaddingMode.PKCS7"/> padding.
 /// </para>
 /// <para>
 /// For further details on the algorithm, see
@@ -85,36 +85,36 @@ public sealed class Blowfish
     internal const int MaxKeySizeBytes = 56;
 
     // Blowfish has a single fixed 64-bit block size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] BlowfishBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_blowfishBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
 
     // Legal key sizes span 32..448 bits in 8-bit (single-byte) increments.
-    private static readonly KeySizes[] BlowfishKeySizes = { new KeySizes(MinKeySizeBytes * 8, MaxKeySizeBytes * 8, 8) };
+    private static readonly KeySizes[] s_blowfishKeySizes = { new KeySizes(MinKeySizeBytes * 8, MaxKeySizeBytes * 8, 8) };
 
     private bool _disposed = false;
 
     private CipherBlockMode _blockMode = CipherBlockMode.CBC;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Blowfish" /> class with default parameters.
+    /// Initializes a new instance of the <see cref="Blowfish"/> class with default parameters.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The default configuration uses a 64-bit block, a 128-bit (16-byte) key, CBC cipher mode, and PKCS7 padding. Call
-    /// <see cref="SymmetricAlgorithm.GenerateKey" /> and <see cref="SymmetricAlgorithm.GenerateIV" /> to produce random key material,
-    /// or assign <see cref="SymmetricAlgorithm.Key" /> and <see cref="SymmetricAlgorithm.IV" /> directly before calling
-    /// <see cref="CreateEncryptor(byte[], byte[])" /> or <see cref="CreateDecryptor(byte[], byte[])" />.
+    /// <see cref="SymmetricAlgorithm.GenerateKey"/> and <see cref="SymmetricAlgorithm.GenerateIV"/> to produce random key material,
+    /// or assign <see cref="SymmetricAlgorithm.Key"/> and <see cref="SymmetricAlgorithm.IV"/> directly before calling
+    /// <see cref="CreateEncryptor(byte[], byte[])"/> or <see cref="CreateDecryptor(byte[], byte[])"/>.
     /// </para>
     /// </remarks>
     public Blowfish()
     {
         // Fixed 64-bit block — Blowfish does not support any other block size.
         this.BlockSizeValue = BlockSizeBits;
-        this.LegalBlockSizesValue = BlowfishBlockSizes;
+        this.LegalBlockSizesValue = s_blowfishBlockSizes;
 
         // Default to a 128-bit key, which sits in the middle of the permitted 32..448-bit range and matches common
         // expectations for modern symmetric usage.
         this.KeySizeValue = 128;
-        this.LegalKeySizesValue = BlowfishKeySizes;
+        this.LegalKeySizesValue = s_blowfishKeySizes;
 
         this.FeedbackSizeValue = BlockSizeBits;
         this.ModeValue = CipherMode.CBC;
@@ -125,19 +125,19 @@ public sealed class Blowfish
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.
+    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
     /// </value>
     /// <remarks>
     /// <para>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
-    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />, which are not available via the standard
-    /// <see cref="CipherMode" /> enumeration.
+    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property for use with
+    /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including
+    /// <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>, which are not available via the standard
+    /// <see cref="CipherMode"/> enumeration.
     /// </para>
     /// <para>
-    /// When the assigned value has a matching member in <see cref="CipherMode" /> (for example, CBC, ECB, CFB), the inherited
-    /// <see cref="SymmetricAlgorithm.Mode" /> is kept in sync so that consumers inspecting the base property observe a consistent
-    /// mode. Extended modes with no <see cref="CipherMode" /> equivalent leave the base property unchanged.
+    /// When the assigned value has a matching member in <see cref="CipherMode"/> (for example, CBC, ECB, CFB), the inherited
+    /// <see cref="SymmetricAlgorithm.Mode"/> is kept in sync so that consumers inspecting the base property observe a consistent
+    /// mode. Extended modes with no <see cref="CipherMode"/> equivalent leave the base property unchanged.
     /// </para>
     /// </remarks>
     public CipherBlockMode BlockMode
@@ -158,28 +158,28 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Creates a new <see cref="Blowfish" /> instance with default parameters.
+    /// Creates a new <see cref="Blowfish"/> instance with default parameters.
     /// </summary>
-    /// <returns>A new <see cref="Blowfish" /> instance.</returns>
+    /// <returns>A new <see cref="Blowfish"/> instance.</returns>
     public new static Blowfish Create() => new Blowfish();
 
     /// <summary>
-    /// Creates a symmetric <see cref="Blowfish" /> decryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Blowfish"/> decryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
-    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySizeBytes" /> and
-    /// <see cref="MaxKeySizeBytes" /> bytes in length. Must not be <see langword="null" />.
+    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySizeBytes"/> and
+    /// <see cref="MaxKeySizeBytes"/> bytes in length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null" /> for any
+    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
     /// cipher mode other than ECB.
     /// </param>
-    /// <returns>A symmetric <see cref="Blowfish" /> decryptor object implementing <see cref="ICryptoTransform" />.</returns>
+    /// <returns>A symmetric <see cref="Blowfish"/> decryptor object implementing <see cref="ICryptoTransform"/>.</returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="rgbKey"/> or <paramref name="rgbIV"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="rgbKey" /> is not within the permitted key size range, or <paramref name="rgbIV" /> has an invalid length for
-    /// the configured <see cref="BlockMode" />.
+    /// <paramref name="rgbKey"/> is not within the permitted key size range, or <paramref name="rgbIV"/> has an invalid length for
+    /// the configured <see cref="BlockMode"/>.
     /// </exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -191,22 +191,22 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Creates a symmetric <see cref="Blowfish" /> encryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Blowfish"/> encryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
-    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySizeBytes" /> and
-    /// <see cref="MaxKeySizeBytes" /> bytes in length. Must not be <see langword="null" />.
+    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySizeBytes"/> and
+    /// <see cref="MaxKeySizeBytes"/> bytes in length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null" /> for any
+    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
     /// cipher mode other than ECB.
     /// </param>
-    /// <returns>A symmetric <see cref="Blowfish" /> encryptor object implementing <see cref="ICryptoTransform" />.</returns>
+    /// <returns>A symmetric <see cref="Blowfish"/> encryptor object implementing <see cref="ICryptoTransform"/>.</returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="rgbKey"/> or <paramref name="rgbIV"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="rgbKey" /> is not within the permitted key size range, or <paramref name="rgbIV" /> has an invalid length for
-    /// the configured <see cref="BlockMode" />.
+    /// <paramref name="rgbKey"/> is not within the permitted key size range, or <paramref name="rgbIV"/> has an invalid length for
+    /// the configured <see cref="BlockMode"/>.
     /// </exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -218,7 +218,7 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV" />) suitable for use with the
+    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV"/>) suitable for use with the
     /// Blowfish algorithm.
     /// </summary>
     /// <remarks>
@@ -226,10 +226,10 @@ public sealed class Blowfish
     /// The generated IV length is determined by the algorithm block size.
     /// </para>
     /// <para>
-    /// The generated IV is assigned to <see cref="SymmetricAlgorithm.IV" />.
+    /// The generated IV is assigned to <see cref="SymmetricAlgorithm.IV"/>.
     /// </para>
     /// <para>
-    /// A new IV should be generated for each independent encryption operation when reusing a <see cref="Blowfish" /> instance with
+    /// A new IV should be generated for each independent encryption operation when reusing a <see cref="Blowfish"/> instance with
     /// the same key.
     /// </para>
     /// </remarks>
@@ -242,14 +242,14 @@ public sealed class Blowfish
 
     /// <summary>
     /// Generates a cryptographically random key for use with the Blowfish algorithm using the currently configured
-    /// <see cref="SymmetricAlgorithm.KeySize" />.
+    /// <see cref="SymmetricAlgorithm.KeySize"/>.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The generated key length is determined by <see cref="SymmetricAlgorithm.KeySize" />.
+    /// The generated key length is determined by <see cref="SymmetricAlgorithm.KeySize"/>.
     /// </para>
     /// <para>
-    /// The generated key is assigned to <see cref="SymmetricAlgorithm.Key" />.
+    /// The generated key is assigned to <see cref="SymmetricAlgorithm.Key"/>.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
@@ -260,10 +260,10 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="Blowfish" /> instance and, optionally, the managed resources.
+    /// Releases the unmanaged resources used by the <see cref="Blowfish"/> instance and, optionally, the managed resources.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged
     /// resources.
     /// </param>
     /// <remarks>
@@ -298,20 +298,28 @@ public sealed class Blowfish
     private int KeySizeBytes => this.KeySizeValue / 8;
 
     /// <summary>
-    /// Creates a new <see cref="BlowfishBlockCipher" /> engine initialised with the supplied key.
+    /// Creates a new <see cref="BlowfishBlockCipher"/> engine initialised with the supplied key.
     /// </summary>
     /// <param name="key">The key material used to derive the P-array and S-boxes.</param>
-    /// <returns>An <see cref="IBlockCipher" /> configured for single-block encryption and decryption.</returns>
+    /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
     private static IBlockCipher CreateCipher(byte[] key) => new BlowfishBlockCipher(key);
 
     /// <summary>
-    /// Validates that <paramref name="key" /> and <paramref name="iv" /> match the algorithm's configured key size and block size
+    /// Validates that <paramref name="key"/> and <paramref name="iv"/> match the algorithm's configured key size and block size
     /// respectively.
     /// </summary>
     /// <param name="key">The key to validate.</param>
     /// <param name="iv">The initialisation vector to validate.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Style",
+        "IDE0011:Add braces",
+        Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line throw expressions remain clear because each condition has only one control-flow outcome.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Roslynator",
+        "RCS1001:Add braces (when expression spans over multiple lines)",
+        Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
     private void Validate(byte[] key, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(key);
@@ -321,21 +329,23 @@ public sealed class Blowfish
         // schedule is driven from the caller-supplied material without padding or truncation.
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                              key.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidKeySize,
+                    key.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
         if (iv.Length != this.BlockSizeBytes)
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                              iv.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidIVSize,
+                    iv.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
                 nameof(iv));
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

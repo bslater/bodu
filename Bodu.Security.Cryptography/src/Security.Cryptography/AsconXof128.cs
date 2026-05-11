@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconXof128.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ namespace Bodu.Security.Cryptography;
 /// strength of 128 bits against collision, preimage, and second-preimage attacks (for output lengths ≥ 32 bytes).
 /// </para>
 /// <para>
-/// For a fixed-length 256-bit digest, consider <see cref="AsconHash256" />. For output with a customization string, use
-/// <see cref="AsconCxof128" />.
+/// For a fixed-length 256-bit digest, consider <see cref="AsconHash256"/>. For output with a customization string, use
+/// <see cref="AsconCxof128"/>.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -47,8 +47,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] output = xof.GetHash(64); // Produce 64 bytes of output
 /// </code>
 /// </example>
-/// <seealso cref="AsconCxof128" />
-/// <seealso cref="AsconHash256" />
+/// <seealso cref="AsconCxof128"/>
+/// <seealso cref="AsconHash256"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 public sealed class AsconXof128 : AsconXof<AsconXof128>
 {
@@ -62,7 +62,7 @@ public sealed class AsconXof128 : AsconXof<AsconXof128>
     private const ulong Iv4 = 0x4f3e0e32539493b6UL;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="AsconXof128" /> class.
+    /// Initializes a new instance of the <see cref="AsconXof128"/> class.
     /// </summary>
     public AsconXof128()
         : base(Iv0, Iv1, Iv2, Iv3, Iv4, 8, "ASCON-XOF128")

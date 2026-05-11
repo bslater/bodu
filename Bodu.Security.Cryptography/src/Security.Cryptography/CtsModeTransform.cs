@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Ciphertext Stealing (CTS) over CBC mode to an underlying <see cref="IBlockCipher" />, allowing
+/// Applies Ciphertext Stealing (CTS) over CBC mode to an underlying <see cref="IBlockCipher"/>, allowing
 /// encryption of inputs whose length is not a multiple of the block size without requiring padding.
 /// </summary>
 /// <remarks>
@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// </para>
 /// <para>
-/// The input to <see cref="Transform" /> must be at least one full block long. For inputs of exactly
+/// The input to <see cref="Transform"/> must be at least one full block long. For inputs of exactly
 /// one block, the result is identical to standard CBC encryption or decryption.
 /// </para>
 /// <para>
@@ -71,15 +71,15 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CtsModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="CtsModeTransform"/> class.
     /// </summary>
     /// <param name="cipher">The underlying block cipher.</param>
     /// <param name="iv">
     /// The initialisation vector for the CBC chain. Must equal the cipher block size. A defensive copy
     /// is taken; the caller's array is not modified.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="iv"/> length does not equal the cipher block size.</exception>
     public CtsModeTransform(IBlockCipher cipher, byte[] iv)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
@@ -96,7 +96,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
         if (input.Length < blockSize)
             throw new ArgumentException(
@@ -110,8 +110,8 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
             return encrypt ? EncryptCbc(input, output) : DecryptCbc(input, output);
 
         // Non-aligned input: number of complete blocks before the final partial.
-        int fullBlocks = input.Length / blockSize;   // blocks 0..fullBlocks-1 are complete
-        int tailBytes = input.Length % blockSize;   // 0 < tailBytes < blockSize
+        var fullBlocks = input.Length / blockSize;   // blocks 0..fullBlocks-1 are complete
+        var tailBytes = input.Length % blockSize;   // 0 < tailBytes < blockSize
 
         if (encrypt)
             return EncryptCts(input, output, fullBlocks, tailBytes, blockSize);
@@ -124,18 +124,18 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <summary>Standard CBC encryption (no stealing), used when input is block-aligned.</summary>
     /// <param name="input">The plaintext bytes to encrypt.</param>
     /// <param name="output">The destination span for the ciphertext.</param>
-    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
+    /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int EncryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
         Span<byte> block = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
-            for (int i = 0; i < blockSize; i++)
+            for (var i = 0; i < blockSize; i++)
                 block[i] = (byte)(inBlock[i] ^ this._currentIv[i]);
 
             this._cipher.Encrypt(block, outBlock);
@@ -148,19 +148,19 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <summary>Standard CBC decryption (no stealing), used when input is block-aligned.</summary>
     /// <param name="input">The ciphertext bytes to decrypt.</param>
     /// <param name="output">The destination span for the plaintext.</param>
-    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
+    /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int DecryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
         Span<byte> block = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
 
             this._cipher.Decrypt(inBlock, block);
-            for (int i = 0; i < blockSize; i++)
+            for (var i = 0; i < blockSize; i++)
                 outBlock[i] = (byte)(block[i] ^ this._currentIv[i]);
 
             inBlock.CopyTo(this._currentIv);
@@ -175,15 +175,15 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// </summary>
     /// <param name="input">The plaintext input.</param>
     /// <param name="output">The destination span for the ciphertext.</param>
-    /// <param name="fullBlocks">The number of complete blocks in <paramref name="input" />.</param>
-    /// <param name="tailBytes">The number of bytes in the final partial block (1 to <paramref name="blockSize" /> − 1).</param>
+    /// <param name="fullBlocks">The number of complete blocks in <paramref name="input"/>.</param>
+    /// <param name="tailBytes">The number of bytes in the final partial block (1 to <paramref name="blockSize"/> − 1).</param>
     /// <param name="blockSize">The underlying cipher block size in bytes.</param>
-    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
+    /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int EncryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
     {
         // Process all full blocks except the penultimate through standard CBC.
-        int bodyBlocks = fullBlocks - 1; // blocks before the CTS pair
-        int bodyLength = bodyBlocks * blockSize;
+        var bodyBlocks = fullBlocks - 1; // blocks before the CTS pair
+        var bodyLength = bodyBlocks * blockSize;
 
         if (bodyBlocks > 0)
             EncryptCbc(input[..bodyLength], output[..bodyLength]);
@@ -194,7 +194,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
 
         // CBC-encrypt the penultimate block: E = CBC_E(P_{n-1}).
         Span<byte> xored = stackalloc byte[blockSize];
-        for (int i = 0; i < blockSize; i++)
+        for (var i = 0; i < blockSize; i++)
             xored[i] = (byte)(penultimate[i] ^ this._currentIv[i]);
         this._cipher.Encrypt(xored, e);
 
@@ -223,15 +223,15 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// </summary>
     /// <param name="input">The ciphertext input.</param>
     /// <param name="output">The destination span for the plaintext.</param>
-    /// <param name="fullBlocks">The number of complete blocks in <paramref name="input" />.</param>
-    /// <param name="tailBytes">The number of bytes in the final partial block (1 to <paramref name="blockSize" /> − 1).</param>
+    /// <param name="fullBlocks">The number of complete blocks in <paramref name="input"/>.</param>
+    /// <param name="tailBytes">The number of bytes in the final partial block (1 to <paramref name="blockSize"/> − 1).</param>
     /// <param name="blockSize">The underlying cipher block size in bytes.</param>
-    /// <returns>The number of bytes written to <paramref name="output" />.</returns>
+    /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int DecryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
     {
         // Body blocks (all before the CTS pair).
-        int bodyBlocks = fullBlocks - 1;
-        int bodyLength = bodyBlocks * blockSize;
+        var bodyBlocks = fullBlocks - 1;
+        var bodyLength = bodyBlocks * blockSize;
 
         if (bodyBlocks > 0)
             DecryptCbc(input[..bodyLength], output[..bodyLength]);
@@ -257,7 +257,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
         Span<byte> block = stackalloc byte[blockSize];
         this._cipher.Decrypt(e, block);
         Span<byte> penultimateOut = output.Slice(bodyLength, blockSize);
-        for (int i = 0; i < blockSize; i++)
+        for (var i = 0; i < blockSize; i++)
             penultimateOut[i] = (byte)(block[i] ^ this._currentIv[i]);
 
         return input.Length;
@@ -266,7 +266,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the seed and running CBC chaining
     /// vector so that key-equivalent state does not linger in memory after disposal. The underlying
-    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// <see cref="IBlockCipher"/> is not disposed by this type — ownership remains with the caller.
     /// </summary>
     /// <remarks>Idempotent.</remarks>
     public void Dispose()

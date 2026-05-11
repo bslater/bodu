@@ -194,7 +194,7 @@ public sealed class MerkleTreeDiagnostics
         ArgumentNullException.ThrowIfNull(writer);
 
         var allNodes = this.GetAllNodes();
-        int levelCount = this.GetLevelCount();
+        var levelCount = this.GetLevelCount();
         var root = this.Root;
 
         // Build a reverse lookup from hex-encoded hash to node, used to annotate child
@@ -221,12 +221,12 @@ public sealed class MerkleTreeDiagnostics
 
         writer.WriteLine(heavy);
 
-        for (int level = 0; level < levelCount; level++)
+        for (var level = 0; level < levelCount; level++)
         {
             var levelNodes = this.GetLevel(level);
-            bool isRoot = level == levelCount - 1;
-            string label = level == 0 ? "leaf" : "internal";
-            string rootTag = isRoot ? "  ★  root" : string.Empty;
+            var isRoot = level == levelCount - 1;
+            var label = level == 0 ? "leaf" : "internal";
+            var rootTag = isRoot ? "  ★  root" : string.Empty;
 
             writer.WriteLine();
             writer.WriteLine($"  Level {level}  —  {levelNodes.Count} {label} node{(levelNodes.Count == 1 ? string.Empty : "s")}{rootTag}");
@@ -243,7 +243,7 @@ public sealed class MerkleTreeDiagnostics
                     var childRefs = node.ChildHashes
                         .Select(ch =>
                         {
-                            string hex = ToHex(ch);
+                            var hex = ToHex(ch);
                             return byHash.TryGetValue(hex, out var childNode)
                                 ? $"[{childNode.Level}:{childNode.Index}] {hex}"
                                 : hex;
@@ -259,8 +259,8 @@ public sealed class MerkleTreeDiagnostics
         // Optional validation summary.
         if (algorithmFactory is not null)
         {
-            bool valid = this.Validate(algorithmFactory, out var validationErrors);
-            int internalCount = allNodes.Count(n => !n.IsLeaf);
+            var valid = this.Validate(algorithmFactory, out var validationErrors);
+            var internalCount = allNodes.Count(n => !n.IsLeaf);
 
             writer.WriteLine(heavy);
 
@@ -290,19 +290,19 @@ public sealed class MerkleTreeDiagnostics
     /// strategy employed by <see cref="ParallelMerkleTreeHash"/>, and returns the resulting hash.
     /// </summary>
     /// <param name="hashes">The ordered child hashes to concatenate and re-hash.</param>
-    /// <param name="factory">A factory producing a fresh <see cref="HashAlgorithm" /> for this combination.</param>
+    /// <param name="factory">A factory producing a fresh <see cref="HashAlgorithm"/> for this combination.</param>
     /// <returns>The combined parent hash.</returns>
     private static byte[] CombineHashes(IReadOnlyList<byte[]> hashes, Func<HashAlgorithm> factory)
     {
         using var hasher = factory();
-        for (int i = 0; i < hashes.Count - 1; i++)
+        for (var i = 0; i < hashes.Count - 1; i++)
             hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
         hasher.TransformFinalBlock(hashes[^1], 0, hashes[^1].Length);
         return hasher.Hash!;
     }
 
     /// <summary>
-    /// Returns the upper-case hexadecimal representation of <paramref name="bytes" /> for
+    /// Returns the upper-case hexadecimal representation of <paramref name="bytes"/> for
     /// diagnostic display.
     /// </summary>
     /// <param name="bytes">The bytes to format.</param>

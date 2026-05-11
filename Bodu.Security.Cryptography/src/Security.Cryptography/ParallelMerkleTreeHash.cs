@@ -21,7 +21,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/parallel-merkle-tree.svg" alt="Swim-lane diagram showing the Dispatcher thread reading input chunks, slicing them into blocks, hashing each block into a leaf, and submitting leaves into ch L₀; one worker task per tree level consumes from its own channel, groups F incoming nodes, hashes them, and submits the parent to the next level's channel. Adjacent lanes are shown active at the same timestep to emphasise parallelism." />
+/// <img src="../images/diagrams/parallel-merkle-tree.svg" alt="Swim-lane diagram showing the Dispatcher thread reading input chunks, slicing them into blocks, hashing each block into a leaf, and submitting leaves into ch L₀; one worker task per tree level consumes from its own channel, groups F incoming nodes, hashes them, and submits the parent to the next level's channel. Adjacent lanes are shown active at the same timestep to emphasise parallelism."/>
 /// </para>
 /// <para>
 /// The swim-lane diagram above traces a single <c>ComputeHashAsync</c> call across wall-clock time.
@@ -35,8 +35,8 @@ namespace Bodu.Security.Cryptography;
 ///   <b>ch L₀</b> — the purple arrows leaving the amber boxes at the top of the diagram.
 /// </description></item>
 /// <item><description>
-///   <b>Level-worker lanes (consumers).</b> One <see cref="Channel{T}" /> and one background
-///   <see cref="Task" /> are created lazily per tree level as the input grows. Each worker awaits on
+///   <b>Level-worker lanes (consumers).</b> One <see cref="Channel{T}"/> and one background
+///   <see cref="Task"/> are created lazily per tree level as the input grows. Each worker awaits on
 ///   its channel, accumulates nodes until it has <c>fanOut</c> of them, concatenates and hashes that
 ///   group, and enqueues the parent into the next level's channel — the blue and teal boxes, with
 ///   purple channel arrows crossing the lane boundaries.
@@ -156,7 +156,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     private CancellationToken _activeToken;
 
     /// <summary>
-    /// Initialises a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
+    /// Initializes a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
     /// algorithm factory, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -188,7 +188,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     { }
 
     /// <summary>
-    /// Initialises a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
+    /// Initializes a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
     /// algorithm factory delegate, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -264,7 +264,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
 
             // Read in chunks larger than one block so that a single ReadAsync can feed several leaves,
             // keeping the I/O system ahead of the hashing pipeline.
-            byte[] readBuffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 8);
+            var readBuffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 8);
             try
             {
                 int bytesRead;
@@ -369,7 +369,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// constructor.
     /// </para>
     /// </remarks>
-    /// <param name="diagnostics">The diagnostics sink to capture per-level timings, or <see langword="null" />.</param>
+    /// <param name="diagnostics">The diagnostics sink to capture per-level timings, or <see langword="null"/>.</param>
     /// <param name="activeToken">The cancellation token associated with the current hashing session.</param>
     private void Reset(MerkleTreeDiagnostics? diagnostics, CancellationToken activeToken)
     {
@@ -404,7 +404,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     {
         while (!data.IsEmpty)
         {
-            int toWrite = Math.Min(this._blockSize - this._bufferLength, data.Length);
+            var toWrite = Math.Min(this._blockSize - this._bufferLength, data.Length);
             data.Slice(0, toWrite).CopyTo(this._blockBuffer.AsSpan(this._bufferLength));
             this._bufferLength += toWrite;
             data = data.Slice(toWrite);
@@ -422,7 +422,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// if diagnostics are enabled, and submits the hash to level 0.
     /// </summary>
     /// <param name="data">The leaf buffer (owned by the caller until consumed).</param>
-    /// <param name="length">The number of valid bytes in <paramref name="data" />.</param>
+    /// <param name="length">The number of valid bytes in <paramref name="data"/>.</param>
     private void SubmitLeaf(byte[] data, int length)
     {
         var hash = this.HashSpan(data.AsSpan(0, length));
@@ -436,8 +436,8 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Appends <paramref name="hash" /> to the intermediate buffer at the specified tree
-    /// <paramref name="level" />, creating the level's buffer lazily if it does not yet exist.
+    /// Appends <paramref name="hash"/> to the intermediate buffer at the specified tree
+    /// <paramref name="level"/>, creating the level's buffer lazily if it does not yet exist.
     /// </summary>
     /// <param name="level">The tree level (0 for leaves, incrementing upward).</param>
     /// <param name="hash">The hash bytes to append.</param>
@@ -451,7 +451,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     }
 
     /// <summary>
-    /// Grows the internal level buffer list to include <paramref name="level" />, allocating
+    /// Grows the internal level buffer list to include <paramref name="level"/>, allocating
     /// fresh buffers for any intermediate levels.
     /// </summary>
     /// <param name="level">The zero-based tree level that must be addressable.</param>
@@ -516,7 +516,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     private async Task RunLevelWorkerAsync(int level, Channel<byte[]> channel, CancellationToken token)
     {
         var pending = new List<byte[]>(this._fanOut);
-        int parentIndex = 0;
+        var parentIndex = 0;
 
         // Drain the channel. The worker below runs concurrently, so tree reduction at this
         // level overlaps with continued leaf production and lower-level promotion.
@@ -589,7 +589,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
 
         // Complete → await → advance: each iteration closes one level and waits for its
         // worker to finish all promotions before the next level's channel is closed.
-        for (int level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
+        for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
             channel.Writer.Complete();
             await this._levelWorkers[level];
@@ -614,7 +614,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <returns>A task that completes when every level worker has drained and exited.</returns>
     private async Task DrainWorkersAsync()
     {
-        for (int level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
+        for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
             channel.Writer.TryComplete();
             try { await this._levelWorkers[level]; }
@@ -634,7 +634,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// avoiding an intermediate heap copy of the input bytes.
     /// </remarks>
     /// <param name="data">The bytes to hash.</param>
-    /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm" />.</returns>
+    /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm"/>.</returns>
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
         using var hasher = this._algorithmFactory();
@@ -662,7 +662,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// </para>
     /// </remarks>
     /// <param name="hashes">The child hashes being combined.</param>
-    /// <param name="sourceLevel">The tree level that produced <paramref name="hashes" />.</param>
+    /// <param name="sourceLevel">The tree level that produced <paramref name="hashes"/>.</param>
     /// <param name="parentIndex">The zero-based index of the parent node being computed.</param>
     /// <returns>The combined parent hash.</returns>
     private byte[] CombineAndHash(List<byte[]> hashes, int sourceLevel, int parentIndex)
@@ -670,7 +670,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         using var hasher = this._algorithmFactory();
 
         // Feed all but the last child via TransformBlock — purely state accumulation, no output.
-        for (int i = 0; i < hashes.Count - 1; i++)
+        for (var i = 0; i < hashes.Count - 1; i++)
             hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
 
         // TransformFinalBlock finalises accumulation and populates hasher.Hash.

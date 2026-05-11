@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent.1024.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,10 +16,10 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// This variant runs the Serpent round function over a thirty-two-word state for 80 rounds, injecting a tweak subkey every
 /// four rounds in the style of Threefish. It supports the extended block cipher modes exposed by
-/// <see cref="CipherBlockMode" /> via the <see cref="Serpent.BlockMode" /> property.
+/// <see cref="CipherBlockMode"/> via the <see cref="Serpent.BlockMode"/> property.
 /// </para>
 /// <para>
-/// For other block sizes, see <see cref="Serpent256" /> and <see cref="Serpent512" />.
+/// For other block sizes, see <see cref="Serpent256"/> and <see cref="Serpent512"/>.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <note type="important">
 /// Serpent-1024 (this type) is a <strong>non-standard Serpent-derived construction</strong> and is not interoperable with any
-/// reference Serpent implementation. For standard, externally vetted Serpent, use <see cref="Serpent128" />.
+/// reference Serpent implementation. For standard, externally vetted Serpent, use <see cref="Serpent128"/>.
 /// </note>
 /// </remarks>
 /// <example>
@@ -61,20 +61,20 @@ public sealed class Serpent1024
     : Serpent
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Serpent1024" /> class using a 1024-bit block size, 1024-bit key, and
+    /// Initializes a new instance of the <see cref="Serpent1024"/> class using a 1024-bit block size, 1024-bit key, and
     /// 128-bit tweak.
     /// </summary>
     public Serpent1024()
         : base(1024, 128) { }
 
     /// <summary>
-    /// Creates a new <see cref="Serpent1024" /> instance with default parameters.
+    /// Creates a new <see cref="Serpent1024"/> instance with default parameters.
     /// </summary>
-    /// <returns>A new <see cref="Serpent1024" /> instance.</returns>
+    /// <returns>A new <see cref="Serpent1024"/> instance.</returns>
     /// <remarks>
     /// The key, initialisation vector, and tweak are generated on demand the first time they are accessed unless assigned
-    /// explicitly via <see cref="SymmetricAlgorithm.Key" />, <see cref="SymmetricAlgorithm.IV" />, or
-    /// <see cref="TweakableSymmetricAlgorithm.Tweak" />.
+    /// explicitly via <see cref="SymmetricAlgorithm.Key"/>, <see cref="SymmetricAlgorithm.IV"/>, or
+    /// <see cref="TweakableSymmetricAlgorithm.Tweak"/>.
     /// </remarks>
     public new static Serpent1024 Create() => new Serpent1024();
 
