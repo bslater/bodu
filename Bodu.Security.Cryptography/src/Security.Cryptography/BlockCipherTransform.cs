@@ -128,8 +128,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
     {
-        ThrowHelper.ThrowIfNull(cipher);
-        this._cipher = cipher;
+        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         this._encrypt = encrypt;
         this._mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
         this._padding = PaddingFactory.Create(paddingMode);
@@ -154,8 +153,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BoduPaddingMode paddingMode, byte[] iv, bool encrypt)
     {
-        ThrowHelper.ThrowIfNull(cipher);
-        this._cipher = cipher;
+        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         this._encrypt = encrypt;
         this._mode = BlockCipherModeFactory.Create(cipherMode, cipher, iv);
         this._padding = PaddingFactory.Create(paddingMode);
@@ -348,19 +346,6 @@ public abstract class BlockCipherTransform : ICryptoTransform
     }
 
     /// <summary>
-    /// Throws if this transform has already completed its final block operation.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">
-    /// This transform has already been finalised and cannot be reused.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfFinalized()
-    {
-        if (this._finalized)
-            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
-    }
-
-    /// <summary>
     /// Concatenates an optional deferred byte array with an incoming input span into a single contiguous byte array.
     /// </summary>
     /// <param name="first">The previously cached partial or complete block, or <see langword="null"/> if none was deferred.</param>
@@ -378,6 +363,19 @@ public abstract class BlockCipherTransform : ICryptoTransform
         Buffer.BlockCopy(first, 0, result, 0, first.Length);
         second.CopyTo(result.AsSpan(first.Length));
         return result;
+    }
+
+    /// <summary>
+    /// Throws if this transform has already completed its final block operation.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// This transform has already been finalised and cannot be reused.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected void ThrowIfFinalized()
+    {
+        if (this._finalized)
+            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
     }
 
     /// <summary>

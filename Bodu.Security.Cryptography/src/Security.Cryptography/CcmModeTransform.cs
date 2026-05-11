@@ -153,7 +153,7 @@ public sealed class CcmModeTransform
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
         {
-            CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+            CryptographicOperations.ZeroMemory(output[..plaintextLength]);
             this._completed = true;
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
         }

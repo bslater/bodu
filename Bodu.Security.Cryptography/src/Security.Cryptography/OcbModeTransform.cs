@@ -386,7 +386,7 @@ public sealed class OcbModeTransform
 
             if (!CryptographicOperations.FixedTimeEquals(tagInput.AsSpan(0, this._tagLen), receivedTag))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 

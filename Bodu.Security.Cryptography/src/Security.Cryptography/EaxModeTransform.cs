@@ -196,7 +196,7 @@ public sealed class EaxModeTransform
             // aligned with AsconAead128.Decrypt.
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 

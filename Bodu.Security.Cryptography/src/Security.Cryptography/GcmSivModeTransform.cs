@@ -202,7 +202,7 @@ public sealed class GcmSivModeTransform
             var expectedTag = ComputeTag(this._aad.AsSpan(), output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(
                     CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }

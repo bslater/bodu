@@ -211,7 +211,7 @@ public sealed class SivModeTransform
             expectedSiv = S2V(this._aad!, output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 

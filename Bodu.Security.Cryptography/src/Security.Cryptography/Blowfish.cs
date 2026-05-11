@@ -278,7 +278,7 @@ public sealed class Blowfish
             {
                 // Zero sensitive key material and IV buffers so their contents do not linger in managed memory after disposal.
                 CryptoHelpers.Clear(this.Key);
-                CryptoHelpers.Clear(this.IVValue!);
+                CryptoHelpers.Clear(this.IVValue);
             }
 
             this._disposed = true;

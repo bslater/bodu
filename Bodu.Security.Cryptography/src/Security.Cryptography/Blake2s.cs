@@ -224,24 +224,25 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
             m[i] = BinaryPrimitives.ReadUInt32LittleEndian(block.Slice(i * 4, 4));
 
         // Initialise the 16-element working vector.
-        Span<uint> v = stackalloc uint[16];
-        v[0] = this._h[0];
-        v[1] = this._h[1];
-        v[2] = this._h[2];
-        v[3] = this._h[3];
-        v[4] = this._h[4];
-        v[5] = this._h[5];
-        v[6] = this._h[6];
-        v[7] = this._h[7];
-        v[8] = s_iv[0];
-        v[9] = s_iv[1];
-        v[10] = s_iv[2];
-        v[11] = s_iv[3];
-        v[12] = s_iv[4] ^ (uint)(totalBytesIncludingThisBlock & 0xFFFFFFFFUL);   // counter low word
-        v[13] = s_iv[5] ^ (uint)(totalBytesIncludingThisBlock >> 32);            // counter high word
-        v[14] = s_iv[6];
-        v[15] = s_iv[7];
-
+        Span<uint> v =
+        [
+            this._h[0],
+            this._h[1],
+            this._h[2],
+            this._h[3],
+            this._h[4],
+            this._h[5],
+            this._h[6],
+            this._h[7],
+            s_iv[0],
+            s_iv[1],
+            s_iv[2],
+            s_iv[3],
+            s_iv[4] ^ (uint)(totalBytesIncludingThisBlock & 0xFFFFFFFFUL),   // counter low word
+            s_iv[5] ^ (uint)(totalBytesIncludingThisBlock >> 32),            // counter high word
+            s_iv[6],
+            s_iv[7],
+        ];
         if (isFinal)
             v[14] = ~v[14];
 

@@ -137,7 +137,9 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     /// <see cref="NonceBytes"/> bytes.
     /// </exception>
     public AsconAead128(byte[] key, byte[] nonce)
-        : this(ValidateNotNull(key, nameof(key)), ValidateNotNull(nonce, nameof(nonce)))
+        : this(
+            key is null ? throw new ArgumentNullException(nameof(key)) : key.AsSpan(),
+            nonce is null ? throw new ArgumentNullException(nameof(nonce)) : nonce.AsSpan())
     {
     }
 
@@ -192,7 +194,8 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
+        if (this._aadProcessed)
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_AssociatedDataAlreadyProcessed);
 
         if (!associatedData.IsEmpty)
         {
@@ -238,7 +241,10 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         this.ThrowIfAadNotProcessed();
 
         var required = plaintext.Length + TagBytes;
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
+        if (output.Length < required)
+            throw new ArgumentException(
+                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
+                nameof(output));
 
         try
         {
@@ -314,10 +320,16 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         this.ThrowIfCompleted();
         this.ThrowIfAadNotProcessed();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagBytes);
+        if (ciphertextWithTag.Length < TagBytes)
+            throw new ArgumentException(
+                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, TagBytes),
+                nameof(ciphertextWithTag));
 
         var ptLen = ciphertextWithTag.Length - TagBytes;
-        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, ptLen);
+        if (output.Length < ptLen)
+            throw new ArgumentException(
+                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, ptLen),
+                nameof(output));
 
         try
         {
@@ -363,7 +375,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
             if (!CryptographicOperations.FixedTimeEquals(inTag, expectedTag))
             {
-                CryptographicOperations.ZeroMemory(output.Slice(0, ptLen));
+                CryptographicOperations.ZeroMemory(output[..ptLen]);
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 
@@ -424,22 +436,6 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         BinaryPrimitives.WriteUInt64LittleEndian(tag[8..], this._state.S4 ^ k1);
     }
 
-    /// <summary>
-    /// Validates that <paramref name="value"/> is not <see langword="null"/> and returns it as a
-    /// <see cref="ReadOnlySpan{T}"/>, enabling null-safe constructor chaining from the <c>byte[]</c> overload.
-    /// </summary>
-    /// <param name="value">The byte array to validate.</param>
-    /// <param name="paramName">The caller-visible parameter name reported in any exception.</param>
-    /// <returns>A <see cref="ReadOnlySpan{Byte}"/> over <paramref name="value"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
-    private static ReadOnlySpan<byte> ValidateNotNull(byte[] value, string paramName)
-    {
-        if (value is null)
-            throw new ArgumentNullException(paramName);
-
-        return value.AsSpan();
-    }
-
     /// <summary>Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.</summary>
     private void ThrowIfDisposed()
     {
@@ -454,14 +450,20 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     /// <summary>
     /// Throws <see cref="InvalidOperationException"/> if this instance has already completed encryption or decryption.
     /// </summary>
-    private void ThrowIfCompleted() =>
-        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
+    }
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException"/> if <see cref="ProcessAssociatedData"/> has not yet been called.
     /// </summary>
-    private void ThrowIfAadNotProcessed() =>
-        CryptoHelpers.ThrowIfAssociatedDataNotProcessed(this._aadProcessed);
+    private void ThrowIfAadNotProcessed()
+    {
+        if (!this._aadProcessed)
+            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_AssociatedDataNotProcessed);
+    }
 
     /// <summary>
     /// Stores the retained 128-bit key material for an <see cref="AsconAead128"/> instance.

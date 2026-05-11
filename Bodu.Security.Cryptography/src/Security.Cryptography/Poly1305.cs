@@ -75,7 +75,7 @@ public sealed class Poly1305
 
     private const uint Mask26 = 0x3ffffff;
 
-    private static readonly int s_blockSize = 16;
+    private const int BlockSize = 16;
 
     private readonly uint[] _acc = new uint[5];
     private readonly uint[] _key = new uint[4];
@@ -98,7 +98,7 @@ public sealed class Poly1305
     /// failing to do so causes <see cref="HashAlgorithm.Initialize"/> to raise a <see cref="CryptographicException"/>.
     /// </remarks>
     public Poly1305()
-        : base(s_blockSize, KeySize)
+        : base(BlockSize, KeySize)
     {
         this.HashSizeValue = 128;
     }
@@ -164,12 +164,16 @@ public sealed class Poly1305
 
     /// <inheritdoc />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.ReadabilityRules",
+        "SA1107:Code should not contain multiple statements on one line",
+        Justification = "Grouped limb and accumulator assignments intentionally mirror the Poly1305 5-limb arithmetic steps, keeping related state transitions on one line so the implementation remains aligned with the algorithm structure.")]
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
         // Copy input to 16-byte buffer and append a single '1' byte if block is short (RFC: padding = 1 byte then zeros)
-        Span<byte> padded = stackalloc byte[s_blockSize];
+        Span<byte> padded = stackalloc byte[BlockSize];
         block.CopyTo(padded);
-        if (block.Length < s_blockSize)
+        if (block.Length < BlockSize)
             padded[block.Length] = 1;
 
         // Load accumulator state
@@ -185,7 +189,7 @@ public sealed class Poly1305
         h4 += (uint)((t1 >> 40) & 0x3ffffff);
 
         // If full 16 bytes were present, set highest bit (equivalent to adding 2^128 per RFC)
-        if (block.Length == s_blockSize)
+        if (block.Length == BlockSize)
             h4 += (1 << 24);
 
         // Load r and perform 130-bit polynomial multiplication: accumulator * r
@@ -216,6 +220,10 @@ public sealed class Poly1305
 
     /// <inheritdoc />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.ReadabilityRules",
+        "SA1107:Code should not contain multiple statements on one line",
+        Justification = "Grouped carry-propagation statements intentionally mirror the Poly1305 limb-normalisation and reduction steps, keeping each carry and mask operation together as one logical arithmetic transition.")]
     protected override byte[] ProcessFinalBlock()
     {
         // Final modular reduction: canonicalize accumulator to [0..2^130-5]
