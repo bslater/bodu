@@ -60,9 +60,9 @@ public sealed class AbaRoutingNumber
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        for (int i = 0; i < digits.Length; i++)
+        for (var i = 0; i < digits.Length; i++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
@@ -78,8 +78,8 @@ public sealed class AbaRoutingNumber
     public override char GetCurrentCheckDigit()
     {
         ReadOnlySpan<int> weights = new int[] { 7, 3, 1 };
-        int count = _digits.Count;
-        int sum = 0;
+        var count = _digits.Count;
+        var sum = 0;
         for (int i = count - 1, j = 0; i >= 0; i--, j++)
             sum += _digits[i] * weights[j % 3];
 

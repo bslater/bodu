@@ -4,14 +4,14 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing.Extensions;
+
 using System;
 using System.Buffers;
 using System.IO;
 using System.IO.Hashing;
 using System.Threading;
 using System.Threading.Tasks;
-
-namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
@@ -81,7 +81,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         cancellationToken.ThrowIfCancellationRequested();
 
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             int bytesRead;

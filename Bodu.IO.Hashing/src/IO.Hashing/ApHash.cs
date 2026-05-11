@@ -64,9 +64,9 @@ public sealed class ApHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this._workingHash;
-        ulong size = this._size;
-        foreach (byte b in source)
+        var v = this._workingHash;
+        var size = this._size;
+        foreach (var b in source)
         {
             if ((size & 1UL) == 0UL)
                 v ^= (v << 7) ^ b ^ (v >> 3);
