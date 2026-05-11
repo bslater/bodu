@@ -229,7 +229,9 @@ Every `.cs` file begins with the standard banner — preserve the separator line
 
 ### XML Documentation
 
-**All documentation must be in British English.**
+**All documentation must be in US English.**
+
+**All documentation must align to BCL standards.**
 
 **Documentation scope**
 - Provide complete XML documentation for **every** member of a declared type — `public`, `protected`, `internal`, **and** `private`. Private members are documented to the same standard as public members.
