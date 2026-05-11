@@ -317,6 +317,10 @@ public abstract class SipHash<T>
     /// <param name="iterations">The number of rounds to perform.</param>
     /// <remarks>Each round consists of multiple bitwise operations and rotations defined by the SipHash specification.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.ReadabilityRules",
+        "SA1107:Code should not contain multiple statements on one line",
+        Justification = "Grouped state assignments intentionally mirror the four-word SipHash state transition, keeping related state loads and write-backs together as single logical permutation steps.")]
     private void PerformSipRounds(int iterations)
     {
         ulong r0 = this._v0, r1 = this._v1, r2 = this._v2, r3 = this._v3;

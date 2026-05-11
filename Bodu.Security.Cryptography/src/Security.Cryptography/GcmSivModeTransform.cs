@@ -268,7 +268,10 @@ public sealed class GcmSivModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed) { this._aad = []; this._aadProcessed = true; }
+        if (!this._aadProcessed) {
+            this._aad = [];
+            this._aadProcessed = true;
+        }
     }
 
     /// <summary>

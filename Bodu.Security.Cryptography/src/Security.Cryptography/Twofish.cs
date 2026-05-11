@@ -197,22 +197,8 @@ public sealed class Twofish
 
     private void Validate(byte[] key, byte[] iv)
     {
-        ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
-
-        if (key.Length != this.KeySizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                              key.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
-                nameof(key));
-
-        if (iv.Length != this.BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                              iv.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
-                nameof(iv));
+        CryptoHelpers.ThrowIfInvalidKeySize(key, this.KeySizeBytes, this.LegalKeySizesValue);
+        CryptoHelpers.ThrowIfInvalidBlockSize(iv, this.BlockSizeBytes, this.LegalBlockSizesValue);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
