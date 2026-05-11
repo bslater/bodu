@@ -271,6 +271,11 @@ dotnet_diagnostic.SA1001.severity = warning # Commas should be spaced correctly
 # call site — suppression is the only option.
 dotnet_diagnostic.SA1010.severity = none
 
+# SA1011 incorrectly flags C# 8 nullable array types (byte[]?) as a spacing violation.
+# The rule predates nullable reference types; writing byte[] ? is syntactically invalid,
+# so the violation cannot be fixed at the call site — suppression is the only option.
+dotnet_diagnostic.SA1011.severity = none
+
 # IDE0290: Use primary constructor — suppressed; conflicts with XML <param> documentation standard.
 dotnet_diagnostic.IDE0290.severity = none
 
