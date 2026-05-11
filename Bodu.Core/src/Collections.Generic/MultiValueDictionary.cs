@@ -13,27 +13,87 @@ using System.Linq;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a mutable dictionary that maps each key to a collection of zero or more values.
+/// Represents a mutable dictionary that maps each key to zero or more values.
 /// </summary>
-/// <typeparam name="TKey">The type of keys.</typeparam>
-/// <typeparam name="TValue">The type of values associated with each key.</typeparam>
+/// <typeparam name="TKey">
+/// The type of keys.
+/// </typeparam>
+/// <typeparam name="TValue">
+/// The type of values associated with each key.
+/// </typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="MultiValueDictionary{TKey, TValue}" /> is a mutable one-to-many map. Multiple values may be
-/// associated with the same key, and values are stored in insertion order for each key.
+/// <see cref="MultiValueDictionary{TKey, TValue}" /> is a mutable one-to-many map, sometimes referred to as a
+/// multimap. A single key can have multiple associated values, and values for the same key are retained in
+/// insertion order.
 /// </para>
 /// <para>
 /// The <see cref="Count" /> property returns the total number of key-value entries across all keys. Use
 /// <see cref="KeyCount" /> to obtain the number of distinct keys currently held.
 /// </para>
 /// <para>
-/// Values returned by the indexer, <see cref="GetValues" />, <see cref="TryGetValues" />, and enumeration are live
-/// read-only views. They reflect later dictionary changes, but they do not expose the mutable backing
-/// <see cref="List{T}" /> used internally.
+/// The indexer returns the values for a key when the key is present, or an empty read-only list when the key is
+/// absent. Use <see cref="GetValues" /> when absence should be treated as an error, or
+/// <see cref="TryGetValues" /> when absence should be handled without throwing.
+/// </para>
+/// <para>
+/// Values returned by the indexer, <see cref="GetValues" />, <see cref="TryGetValues" />, and enumeration are
+/// live read-only views. They reflect later dictionary changes for the same key, but they do not expose the
+/// mutable backing <see cref="List{T}" /> used internally.
+/// </para>
+/// <para>
+/// Enumerators are invalidated by structural modification. Adding values, removing values, removing keys, or
+/// clearing the dictionary after enumeration begins causes the next enumeration step to throw
+/// <see cref="InvalidOperationException" />. Operations that do not change the dictionary, such as removing a
+/// missing key or adding an empty range, do not invalidate existing enumerators.
+/// </para>
+/// <para>
+/// The dictionary's regular enumeration yields one entry per distinct key, where each entry contains the key and
+/// its associated read-only value list. Use <see cref="Flatten" /> to enumerate one
+/// <see cref="KeyValuePair{TKey, TValue}" /> per stored value.
 /// </para>
 /// <para>
 /// This type is not thread-safe. Concurrent reads and writes require external synchronization.
 /// </para>
+/// <example>
+/// The following example stores multiple values under the same key:
+/// <code>
+/// <![CDATA[
+///var map = new MultiValueDictionary&lt;string, int&gt;();
+///
+///map.Add("odd", 1);
+///map.Add("odd", 3);
+///map.Add("even", 2);
+///
+///Console.WriteLine($"Count:    {map.Count}");    // Count is 3 because there are three key-value entries.
+///Console.WriteLine($"KeyCount: {map.KeyCount}"); // KeyCount is 2 because there are two distinct keys.
+/// ]]>
+/// </code>
+/// </example>
+/// <example>
+/// The following example retrieves values for a key:
+/// <code>
+/// <![CDATA[
+///IReadOnlyList&lt;int&gt; values = map["odd"];
+///
+///foreach (int value in values)
+///{
+///    Console.WriteLine(value);
+///}
+/// ]]>
+/// </code>
+/// </example>
+/// <example>
+/// The following example flattens the dictionary into one pair per value:
+/// <code>
+/// <![CDATA[
+///foreach (KeyValuePair&lt;string, int&gt; pair in map.Flatten())
+///{
+///    Console.WriteLine($"{pair.Key}: {pair.Value}");
+///}
+/// ]]>
+/// </code>
+/// </example>
 /// </remarks>
 [DebuggerDisplay("KeyCount = {KeyCount}, Count = {Count}")]
 [DebuggerTypeProxy(typeof(MultiValueDictionaryDebugView<,>))]
