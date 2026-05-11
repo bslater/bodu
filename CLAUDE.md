@@ -76,6 +76,50 @@ See **Test Tiers** below for the category convention each runsettings file appli
 - Tests live in `<Project>/test/` and are organised as **partial classes** that mirror the source layout — e.g. `CircularBuffer.cs` → `CircularBufferTests.Enqueue.cs`, `CircularBufferTests.Dequeue.cs`. Extend the existing partial class when adding tests for an existing type.
 - No shared test base classes; each test is self-contained.
 
+### Test File Organisation
+
+Default to grouping tests by the member under test. For a type `Foo`, use partial files named after the public method, property, constructor group, operator, or interface surface being validated.
+
+Examples:
+
+```text
+FooTests.cs
+FooTests.Ctors.cs
+FooTests.Count.cs
+FooTests.Add.cs
+FooTests.Remove.cs
+FooTests.IEnumerable.cs
+FooTests.IReadOnlyCollection.cs
+```
+
+Use member-based files for the majority of tests because they make it easy to locate coverage for a specific API. Put tests for a method or property in that member's file when the scenario is primarily about that member's contract, including normal behaviour, boundary cases, exception behaviour, and simple state transitions.
+
+Use subject-based partial files for cross-cutting behavioural contracts that span multiple members or would otherwise be duplicated across many member files. These files should still be specific, narrow, and named for the semantic contract being validated.
+
+Common subject-based groups:
+
+| Subject | Suggested file name | Use when |
+|---|---|---|
+| Null handling | `FooTests.Nulls.cs` | The type intentionally accepts, stores, rejects, or preserves `null` keys, values, elements, delegates, or options across multiple APIs. |
+| Value-type behaviour | `FooTests.ValueTypes.cs` or `FooTests.Structs.cs` | The type must preserve value equality, default values, struct keys, struct values, or generic value-type behaviour across multiple APIs. |
+| Reference-type behaviour | `FooTests.ReferenceTypes.cs` | The type must preserve reference identity, mutable reference values, aliasing semantics, or reference-equality expectations across multiple APIs. |
+| Interface contracts | `FooTests.IEnumerable.cs`, `FooTests.ICollection.cs`, `FooTests.IReadOnlyCollection.cs` | The type has explicit or implicit interface members, or behaviour differs when accessed through the interface. |
+| Enumeration/versioning | `FooTests.Enumeration.cs` | The type has iterator invalidation, reset/current semantics, fail-fast behaviour, or multiple enumeration shapes. |
+| Comparer/equality semantics | `FooTests.Comparer.cs` or `FooTests.Equality.cs` | A comparer or equality contract affects multiple lookup, add, remove, or containment APIs. |
+| Serialization/debugger contracts | `FooTests.Serialization.cs`, `FooTests.DebugView.cs` | The tests validate framework integration rather than a single public method. |
+
+For collection types, add subject-based files when the collection has explicit semantic support for `null`, structs, reference types, custom comparers, enumeration invalidation, or interface access. For example, a collection that permits `null` values should have a focused `CollectionTests.Nulls.cs` file that validates `null` values through add, lookup, enumeration, removal, and containment APIs. If `null` keys are rejected, validate that rejection consistently in either the relevant member files or a focused `Nulls` file when the rule applies across many members.
+
+Avoid creating broad catch-all files such as `FooTests.EdgeCases.cs`, `FooTests.Misc.cs`, or `FooTests.Behaviour.cs`. Prefer either the member name or a precise subject name.
+
+When a scenario could fit both a member file and a subject file, choose the file based on the primary purpose of the test:
+
+- If the test exists to validate a specific method/property contract, put it in the member file.
+- If the test exists to validate a type-wide semantic contract across multiple APIs, put it in the subject file.
+- If the test validates an explicit interface implementation, put it in the interface file even when the underlying behaviour overlaps with a concrete member.
+
+Keep each partial file cohesive. Do not move a test into a subject-based file merely because it uses a struct, `null`, or a reference type incidentally; use subject files only when that type characteristic is the behaviour being validated.
+
 ### Test Tiers (Smoke / BVT / Regression / Stress)
 
 The suite is partitioned into tiers via `[TestCategory(...)]` so the build can run a fast subset by default and the exhaustive set on demand. Tier names are also exposed as constants on `Bodu.Test.TestCategories` for projects that reference `Bodu.Test`; either the constant or the literal string works.
@@ -155,7 +199,7 @@ var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 -- Validate its message and other relevant properties where required by the contract.
 
 ```csharp
-  var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
 {
     sut.Execute();
 });
