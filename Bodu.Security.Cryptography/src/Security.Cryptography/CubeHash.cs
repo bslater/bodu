@@ -142,9 +142,8 @@ public sealed class CubeHash
     /// <summary>
     /// Initializes a new instance of the <see cref="CubeHash"/> class with fully specified algorithm parameters.
     /// </summary>
-    /// <param name="initializationRounds">
-    /// The number of initialisation rounds to run before processing input data.
-    /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
+    /// <param name="hashSize">
+    /// The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.
     /// </param>
     /// <param name="rounds">
     /// The number of transformation rounds applied to each full input block.
@@ -158,8 +157,9 @@ public sealed class CubeHash
     /// The number of finalisation rounds applied after all input has been processed.
     /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
     /// </param>
-    /// <param name="hashSize">
-    /// The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.
+    /// <param name="initializationRounds">
+    /// The number of initialisation rounds to run before processing input data.
+    /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <para><paramref name="initializationRounds"/>, <paramref name="rounds"/>, or <paramref name="finalizationRounds"/>

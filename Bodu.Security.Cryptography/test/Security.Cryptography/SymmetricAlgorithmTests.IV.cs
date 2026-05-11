@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.IV.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -92,7 +92,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void IV_WhenReturnedArrayIsModified_ShouldNotChangeInternalValue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int size = algorithm.BlockSize;
         byte[] expected = Enumerable.Range(1, size / 8).Select(i => (byte)i).ToArray();
 
@@ -129,16 +129,16 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void CreateEncryptor_WithInvalidIvLength_ShouldThrowArgumentException()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.GenerateKey();
 
         int blockSizeBytes = algorithm.BlockSize / 8;
         byte[] badIv = new byte[blockSizeBytes - 1];
         int expectedBitLength = badIv.Length * 8;
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            using var _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
+            using ICryptoTransform _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
         });
 
         Assert.IsTrue(

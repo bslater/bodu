@@ -185,7 +185,7 @@ public sealed partial class OcbModeTransformTests
 
     private static IEnumerable<object[]> OcbKatData()
     {
-        foreach (var kat in KnownAnswerTests)
+        foreach (OcbKat kat in KnownAnswerTests)
             yield return new object[]
             {
                 kat.Key, kat.Nonce, kat.AssociatedData,

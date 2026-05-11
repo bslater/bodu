@@ -32,7 +32,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         try
@@ -61,7 +61,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Dispose_WhenInstanceUntouched_ShouldNotThrow()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         try
         {
@@ -94,7 +94,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         object? currentValue;
         try
@@ -164,7 +164,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Dispose_WhenComputeHashWithBufferRangeCalledAfterDispose_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -179,7 +179,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Dispose_WhenComputeHashWithStreamCalledAfterDispose_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

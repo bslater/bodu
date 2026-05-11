@@ -1,8 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.LegalKeySizes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -24,9 +26,9 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void LegalKeySizes_WhenDefined_ShouldHaveValidRanges()
     {
-        var keySizes = CreateAlgorithm().LegalKeySizes;
+        KeySizes[] keySizes = CreateAlgorithm().LegalKeySizes;
 
-        foreach (var keySize in keySizes)
+        foreach (KeySizes keySize in keySizes)
         {
             Assert.IsTrue(keySize.MinSize <= keySize.MaxSize, "MinSize must be less than or equal to MaxSize.");
             Assert.IsTrue(keySize.SkipSize >= 0, "SkipSize must be greater than or equal to zero.");
@@ -39,10 +41,10 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void LegalKeySizes_WhenDefined_ShouldHaveNonOverlappingValues()
     {
-        var keySizes = CreateAlgorithm().LegalKeySizes;
+        KeySizes[] keySizes = CreateAlgorithm().LegalKeySizes;
         HashSet<int> uniqueSizes = new();
 
-        foreach (var keySize in keySizes)
+        foreach (KeySizes keySize in keySizes)
         {
             for (int size = keySize.MinSize; size <= keySize.MaxSize; size += keySize.SkipSize == 0 ? int.MaxValue : keySize.SkipSize)
             {

@@ -76,7 +76,7 @@ public partial class CubeHashTests
     [DataRow(int.MaxValue)]
     public void TransformBlockSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.TransformBlockSize = value);
     }
@@ -93,7 +93,7 @@ public partial class CubeHashTests
     [DataRow(128)]
     public void TransformBlockSize_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         algorithm.TransformBlockSize = size;
 
         Assert.AreEqual(size, algorithm.TransformBlockSize);
@@ -105,7 +105,7 @@ public partial class CubeHashTests
     [TestMethod]
     public void TransformBlockSize_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         int size = 64;
         int original = algorithm.TransformBlockSize;
         algorithm.TransformBlockSize = size;
@@ -146,7 +146,7 @@ public partial class CubeHashTests
     [TestMethod]
     public void TransformBlockSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         byte[] input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 

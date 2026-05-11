@@ -162,7 +162,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
             blockMode = value;
 
             // Keep the inherited ModeValue in sync for callers that inspect it directly.
-            if (Enum.TryParse<CipherMode>(value.ToString(), out var mode) && Enum.IsDefined(mode))
+            if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) && Enum.IsDefined(mode))
                 ModeValue = mode;
         }
     }

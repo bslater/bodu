@@ -62,7 +62,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] tag = mac.ComputeHash(message);
 /// </code>
 /// </example>
-public sealed class Blake2b : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
+public sealed class Blake2b
+    : KeyedDeferredFinalBlockHashAlgorithm<Blake2b>
 {
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.

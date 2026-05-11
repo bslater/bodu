@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso10126PaddingTests.SymmetricAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public sealed partial class Iso10126PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenEmptyPlaintext_ShouldEmitOnePaddedBlockAndRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
         int blockBytes = algorithm.BlockSize / 8;
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
@@ -55,7 +55,7 @@ public sealed partial class Iso10126PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
 
@@ -81,7 +81,7 @@ public sealed partial class Iso10126PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenResidualPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
 
@@ -109,7 +109,7 @@ public sealed partial class Iso10126PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.ISO10126);
         byte[] plaintext = Enumerable.Range(0, 41).Select(i => (byte)(i * 7 + 11)).ToArray();
         int[] chunkSizes = new[] { 1, 3, 5, 7, 11, 13 };
 

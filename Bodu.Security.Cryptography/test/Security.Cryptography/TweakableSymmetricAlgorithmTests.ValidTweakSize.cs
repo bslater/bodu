@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.ValidTweakSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,9 +17,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void ValidTweakSize_WhenLengthIsValid_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
-        foreach (var range in algorithm.LegalTweakSizes)
+        foreach (KeySizes range in algorithm.LegalTweakSizes)
         {
             int step = range.SkipSize == 0 ? range.MaxSize - range.MinSize : range.SkipSize;
 
@@ -44,7 +44,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void ValidTweakSize_WhenLengthIsInvalid_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         // Boundary sentinels that must always be invalid regardless of algorithm.
         foreach (int sentinel in new[] { int.MinValue, -1, 0, int.MaxValue })
@@ -89,7 +89,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
     private static bool IsLegalKeySize(int bits, KeySizes[] legalSizes)
     {
-        foreach (var range in legalSizes)
+        foreach (KeySizes range in legalSizes)
         {
             if (bits < range.MinSize || bits > range.MaxSize)
                 continue;

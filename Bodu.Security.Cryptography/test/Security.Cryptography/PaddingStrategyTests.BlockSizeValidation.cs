@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PaddingStrategyTests.BlockSizeValidation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     [TestMethod]
     public void Pad_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException_fix()
     {
-        var padding = CreatePadding();
+        TPadding padding = CreatePadding();
         byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -64,7 +64,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     [DataRow(int.MinValue)]
     public void Pad_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException_fix(int blockSize)
     {
-        var padding = CreatePadding();
+        TPadding padding = CreatePadding();
         byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -88,7 +88,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
             return;
         }
 
-        var padding = CreatePadding();
+        TPadding padding = CreatePadding();
         byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -114,7 +114,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
             return;
         }
 
-        var padding = CreatePadding();
+        TPadding padding = CreatePadding();
         byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

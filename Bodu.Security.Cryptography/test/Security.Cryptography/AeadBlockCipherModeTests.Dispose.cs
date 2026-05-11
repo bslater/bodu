@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AeadBlockCipherModeTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -49,7 +49,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
 
         transform.Dispose();
         transform.Dispose();
@@ -62,7 +62,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         transform.Dispose();
 
         var plaintext = new byte[ExpectedBlockSize];
@@ -79,7 +79,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Decrypt_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         transform.Dispose();
 
         var ciphertextWithTag = new byte[ExpectedBlockSize + 16];
@@ -96,7 +96,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void ProcessAssociatedData_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         transform.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -125,7 +125,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
             return;
         }
 
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
 
         transform.ProcessAssociatedData(new byte[] { 0x01, 0x02, 0x03, 0x04 });
 
@@ -165,7 +165,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
             return;
         }
 
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
 
         object? currentValue;
         try

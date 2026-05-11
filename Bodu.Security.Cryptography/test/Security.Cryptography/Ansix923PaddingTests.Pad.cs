@@ -16,7 +16,7 @@ public sealed partial class Ansix923PaddingTests
     [TestMethod]
     public void Pad_WhenInputHasResidual_ShouldWriteZeroInteriorAndTrailingLength()
     {
-        var padding = CreatePadding();
+        Ansix923Padding padding = CreatePadding();
         byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
         byte[] padded = padding.Pad(plaintext, BlockSize);

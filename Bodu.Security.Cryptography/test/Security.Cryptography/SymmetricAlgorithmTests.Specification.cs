@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.Specification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -109,7 +109,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            using var _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
+            using ICryptoTransform _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
         });
     }
 }

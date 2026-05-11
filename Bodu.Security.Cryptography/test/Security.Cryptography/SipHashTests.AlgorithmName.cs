@@ -15,7 +15,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(SipHashVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
         string expected = GetAlgorithmName(algorithm);
 
         Assert.AreEqual(expected, algorithm.AlgorithmName);

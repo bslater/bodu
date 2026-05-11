@@ -24,7 +24,7 @@ public partial class MerkleTreeHashTests
     [TestMethod]
     public void ComputeHash_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using MerkleTreeHash hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentNullException>(() => hasher.ComputeHash((Stream)null!));
     }
 
@@ -36,7 +36,7 @@ public partial class MerkleTreeHashTests
     [TestMethod]
     public void ComputeHash_WhenStreamProvided_ShouldReturnHashOfExpectedLength()
     {
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using MerkleTreeHash hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         using var stream = new IncrementingByteStream(8);
 
         byte[] result = hasher.ComputeHash(stream);
@@ -56,8 +56,8 @@ public partial class MerkleTreeHashTests
     {
         byte[] data = MakeData(13);
 
-        using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using MerkleTreeHash h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using MerkleTreeHash h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
         using var ms = new MemoryStream(data);
         byte[] fromStream = h1.ComputeHash(ms);
@@ -78,8 +78,8 @@ public partial class MerkleTreeHashTests
     {
         const int length = 37; // prime; exercises every partial-read boundary
 
-        using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using MerkleTreeHash h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using MerkleTreeHash h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
         using var stream = new IncrementingByteStream(length);
         byte[] fromStream = h1.ComputeHash(stream);

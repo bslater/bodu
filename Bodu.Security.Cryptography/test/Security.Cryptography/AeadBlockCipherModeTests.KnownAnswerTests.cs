@@ -34,12 +34,12 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         RandomNumberGenerator.Fill(aad);
         RandomNumberGenerator.Fill(plaintext);
 
-        var encTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
         encTransform.ProcessAssociatedData(aad);
         byte[] buf = new byte[plaintext.Length + encTransform.TagSize];
         encTransform.Encrypt(plaintext, buf);
 
-        var decTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
         decTransform.ProcessAssociatedData(aad);
         byte[] recovered = new byte[plaintext.Length];
         decTransform.Decrypt(buf, recovered);
@@ -65,7 +65,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         byte[] expectedTag)
     {
         using var cipher = new AesBlockCipherFixture(key);
-        var transform = CreateTransform(cipher, iv);
+        TTransform transform = CreateTransform(cipher, iv);
         if (aad.Length > 0) transform.ProcessAssociatedData(aad);
 
         byte[] output = new byte[plaintext.Length + transform.TagSize];
@@ -93,7 +93,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         byte[] tag)
     {
         using var cipher = new AesBlockCipherFixture(key);
-        var transform = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform transform = CreateTransform(cipher, (byte[])iv.Clone());
         if (aad.Length > 0) transform.ProcessAssociatedData(aad);
 
         byte[] input = new byte[ciphertext.Length + tag.Length];

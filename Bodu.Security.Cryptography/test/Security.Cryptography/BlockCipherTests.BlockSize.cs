@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTests.BlockSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(BlockCipherVariants))]
     public void BlockSize_WhenAccessed_ShouldReturnExpected(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var engine = CreateBlockCipher(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
+        using TCipher engine = CreateBlockCipher(variant);
 
         Assert.AreEqual(
             specification.BlockSize,

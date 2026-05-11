@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SipHashTests.FinalizationRounds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     [DataRow(32)]
     public void FinalizationRounds_WhenSetToValidValue_ShouldUpdateCorrectly(int size)
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int original = algorithm.FinalizationRounds;
         algorithm.FinalizationRounds = size;
 
@@ -34,13 +34,13 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
         byte[] hashWithRounds4;
         byte[] hashWithRounds8;
 
-        using (var algorithm = CreateAlgorithm())
+        using (TAlgorithm algorithm = CreateAlgorithm())
         {
             algorithm.FinalizationRounds = 4;
             hashWithRounds4 = algorithm.ComputeHash(input);
         }
 
-        using (var algorithm = CreateAlgorithm())
+        using (TAlgorithm algorithm = CreateAlgorithm())
         {
             algorithm.FinalizationRounds = 8;
             hashWithRounds8 = algorithm.ComputeHash(input);
@@ -63,7 +63,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     [DataRow(3)]
     public void FinalizationRounds_WhenSetBelowMinimum_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

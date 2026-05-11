@@ -24,7 +24,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     [DynamicData(nameof(HashAlgorithmVariants))]
     public virtual void ComputeHash_WhenInputStreamedInChunks_ShouldMatchSinglePassResult(TVariant variant)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
 
         // Cover sub-block, exact-block, and multi-block boundaries deterministically.
         int inputLength = (specification.InputBlockSize * 3) + (specification.InputBlockSize / 2) + 1;
@@ -33,12 +33,12 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
                                  .ToArray();
 
         byte[] expected;
-        using (var reference = CreateAlgorithm(variant))
+        using (TAlgorithm reference = CreateAlgorithm(variant))
             expected = reference.ComputeHash(input);
 
         foreach (int chunkSize in StreamingChunkSizes(specification))
         {
-            using var algorithm = CreateAlgorithm(variant);
+            using TAlgorithm algorithm = CreateAlgorithm(variant);
             int offset = 0;
 
             while (offset < input.Length)
@@ -70,16 +70,16 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     [DynamicData(nameof(HashAlgorithmVariants))]
     public virtual void ComputeHash_WhenInputIsUnaligned_ShouldProduceValidHash(TVariant variant)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         int expectedLength;
-        using (var reference = CreateAlgorithm())
+        using (TAlgorithm reference = CreateAlgorithm())
         {
             expectedLength = reference.HashSize / 8;
         }
 
         foreach (int length in UnalignedInputLengths(specification))
         {
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] input = Enumerable.Range(0, length).Select(i => (byte)i).ToArray();
 
             byte[] hash = algorithm.ComputeHash(input);
@@ -107,7 +107,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     public virtual void ComputeHash_WhenInputIsBlockAligned_ShouldMatchAcrossTransformSplits(TVariant variant)
     {
         const int blockCount = 4;
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         int blockSize = specification.InputBlockSize;
 
         byte[] input = Enumerable.Range(0, blockSize * blockCount)
@@ -115,10 +115,10 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
                                  .ToArray();
 
         byte[] expected;
-        using (var reference = CreateAlgorithm(variant))
+        using (TAlgorithm reference = CreateAlgorithm(variant))
             expected = reference.ComputeHash(input);
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         for (int i = 0; i < blockCount; i++)
             algorithm.TransformBlock(input, i * blockSize, blockSize, null, 0);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso7816_4PaddingTests.Unpad.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed partial class Iso7816_4PaddingTests
     [TestMethod]
     public void Unpad_WhenPlaintextEndsWithTerminatorValue_ShouldReturnOriginal()
     {
-        var padding = CreatePadding();
+        Iso7816_4Padding padding = CreatePadding();
 
         byte[] plaintext = new byte[BlockSize - 3];
         for (int i = 0; i < plaintext.Length - 1; i++)
@@ -38,7 +38,7 @@ public sealed partial class Iso7816_4PaddingTests
     [TestMethod]
     public void Unpad_WhenFinalBlockHasNoTerminator_ShouldThrowCryptographicException()
     {
-        var padding = CreatePadding();
+        Iso7816_4Padding padding = CreatePadding();
         byte[] input = new byte[BlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
@@ -51,7 +51,7 @@ public sealed partial class Iso7816_4PaddingTests
     [TestMethod]
     public void Unpad_WhenBytesAfterTerminatorAreNonZero_ShouldThrowCryptographicException()
     {
-        var padding = CreatePadding();
+        Iso7816_4Padding padding = CreatePadding();
 
         byte[] input = new byte[BlockSize];
         input[BlockSize - 3] = 0x80;

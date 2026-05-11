@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonitoringHashAlgorithmTests.Seed.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class MonitoringHashAlgorithmTests
     [TestMethod]
     public void Seed_WhenDefaultConstructed_ShouldBeZero()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.AreEqual<ulong>(0, algorithm.Seed);
     }
 
@@ -36,7 +36,7 @@ public partial class MonitoringHashAlgorithmTests
     [TestMethod]
     public void Seed_WhenSetAfterHashingStarted_ShouldThrow()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         byte[] input = new byte[] { 1, 2, 3 };
         algorithm.TransformBlock(input, 0, input.Length, input, 0);
 
@@ -49,7 +49,7 @@ public partial class MonitoringHashAlgorithmTests
     [TestMethod]
     public void Seed_WhenSetAfterHashing_ShouldNotThrow()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         byte[] input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTransformTests.TransformFinalBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void TransformFinalBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldPadAndEncrypt_fix()
     {
-        using var transform = CreateAlgorithm();
+        using TCryptoTransform transform = CreateAlgorithm();
 
         if (transform.InputBlockSize <= 1)
         {

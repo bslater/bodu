@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AeadBlockCipherModeTests.Reuse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,7 +29,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Decrypt_AfterEncryptCompleted_ShouldThrowInvalidOperationException()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         byte[] plaintext = new byte[ExpectedBlockSize];
         byte[] sealed_ = new byte[plaintext.Length + transform.TagSize];
         transform.Encrypt(plaintext, sealed_);
@@ -51,13 +51,13 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         byte[] iv = CreateInitializationVector();
         byte[] plaintext = new byte[ExpectedBlockSize];
 
-        var encTransform = CreateTransform(
+        TTransform encTransform = CreateTransform(
             new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA),
             (byte[])iv.Clone());
         byte[] sealed_ = new byte[plaintext.Length + encTransform.TagSize];
         encTransform.Encrypt(plaintext, sealed_);
 
-        var decTransform = CreateTransform(
+        TTransform decTransform = CreateTransform(
             new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA),
             (byte[])iv.Clone());
         decTransform.Decrypt(sealed_, new byte[plaintext.Length]);
@@ -88,14 +88,14 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         byte[] plaintext = new byte[ExpectedBlockSize];
         for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
-        var encTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
         byte[] sealed_ = new byte[plaintext.Length + encTransform.TagSize];
         encTransform.Encrypt(plaintext, sealed_);
 
         // Flip a bit in the tag to force authentication failure on Decrypt.
         sealed_[sealed_.Length - 1] ^= 0xFF;
 
-        var decTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
         Assert.ThrowsExactly<CryptographicException>(() =>
             decTransform.Decrypt(sealed_, new byte[plaintext.Length]),
             "Decrypt must throw CryptographicException on tag mismatch.");
@@ -119,7 +119,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         byte[] plaintext = new byte[ExpectedBlockSize];
         for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
-        var encTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
         byte[] sealed_ = new byte[plaintext.Length + encTransform.TagSize];
         encTransform.Encrypt(plaintext, sealed_);
 
@@ -129,7 +129,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         // Flip a bit in the tag to force authentication failure on the first Decrypt.
         sealed_[sealed_.Length - 1] ^= 0xFF;
 
-        var decTransform = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
         Assert.ThrowsExactly<CryptographicException>(() =>
             decTransform.Decrypt(sealed_, new byte[plaintext.Length]),
             "Decrypt must throw CryptographicException on tag mismatch.");

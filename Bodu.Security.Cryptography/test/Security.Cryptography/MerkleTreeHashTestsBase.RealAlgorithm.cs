@@ -50,8 +50,8 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         byte[] reversed = (byte[])forward.Clone();
         Array.Reverse(reversed);
 
-        using var h1 = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
-        using var h2 = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h1 = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h2 = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
 
         CollectionAssert.AreNotEqual(
             ComputeHash(h1, forward),
@@ -73,8 +73,8 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         for (int i = 0; i < 4; i++)
             (swapped[i], swapped[i + 4]) = (swapped[i + 4], swapped[i]);
 
-        using var h1 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
-        using var h2 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
+        using THasher h1 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
+        using THasher h2 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
 
         CollectionAssert.AreNotEqual(
             ComputeHash(h1, original),
@@ -94,7 +94,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_RealAlgorithm_WhenSha256Used_ShouldReturn32ByteRoot()
     {
-        using var hasher = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
         byte[] result = ComputeHash(hasher, MakeData(64));
 
         Assert.AreEqual(32, result.Length,
@@ -109,7 +109,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_RealAlgorithm_WhenCalledRepeatedly_ShouldProduceIdenticalResults()
     {
         byte[] data = MakeData(100);
-        using var hasher = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Sha256Factory, DefaultBlockSize, DefaultFanOut);
 
         byte[] first = ComputeHash(hasher, data);
         byte[] second = ComputeHash(hasher, data);
@@ -133,8 +133,8 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     {
         byte[] data = MakeData(64);
 
-        using var h2 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
-        using var h4 = Construct(Sha256Factory, blockSize: 4, fanOut: 4);
+        using THasher h2 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
+        using THasher h4 = Construct(Sha256Factory, blockSize: 4, fanOut: 4);
 
         CollectionAssert.AreNotEqual(
             ComputeHash(h2, data),
@@ -151,8 +151,8 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     {
         byte[] data = MakeData(64);
 
-        using var h4 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
-        using var h8 = Construct(Sha256Factory, blockSize: 8, fanOut: 2);
+        using THasher h4 = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
+        using THasher h8 = Construct(Sha256Factory, blockSize: 8, fanOut: 2);
 
         CollectionAssert.AreNotEqual(
             ComputeHash(h4, data),
@@ -185,7 +185,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
         byte[] expected = ComputeSha256MerkleRoot(data, blockSize: 4, fanOut: 2);
 
-        using var hasher = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -200,7 +200,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         byte[] data = MakeData(12); // three 4-byte leaves with fanOut=2 → uneven at level 1
         byte[] expected = ComputeSha256MerkleRoot(data, blockSize: 4, fanOut: 2);
 
-        using var hasher = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(Sha256Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 

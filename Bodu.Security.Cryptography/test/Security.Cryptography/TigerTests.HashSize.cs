@@ -16,7 +16,7 @@ public partial class TigerTests
     [TestMethod]
     public void HashSize_WhenDefaultConstructed_ShouldBe192()
     {
-        var algorithm = CreateAlgorithm();
+        Tiger algorithm = CreateAlgorithm();
         Assert.AreEqual(192, algorithm.HashSize);
     }
 
@@ -36,7 +36,7 @@ public partial class TigerTests
     [TestMethod]
     public void HashSize_WhenSetAfterHashing_ShouldNotThrow()
     {
-        var algorithm = CreateAlgorithm();
+        Tiger algorithm = CreateAlgorithm();
         byte[] input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
@@ -62,7 +62,7 @@ public partial class TigerTests
     [DataRow(int.MaxValue)]
     public void HashSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.HashSize = value);
     }
@@ -76,7 +76,7 @@ public partial class TigerTests
     [DataRow(192)]
     public void HashSize_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
         algorithm.HashSize = size;
 
         Assert.AreEqual(size, algorithm.HashSize);
@@ -88,7 +88,7 @@ public partial class TigerTests
     [TestMethod]
     public void HashSize_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
         int size = 160;
         int original = algorithm.HashSize;
         algorithm.HashSize = size;
@@ -121,7 +121,7 @@ public partial class TigerTests
     [TestMethod]
     public void HashSize_WhenAccessedAfterDispose_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        Tiger algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -138,7 +138,7 @@ public partial class TigerTests
     [TestMethod]
     public void HashSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
         byte[] input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 

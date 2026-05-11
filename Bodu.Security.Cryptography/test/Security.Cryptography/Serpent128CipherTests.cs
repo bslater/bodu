@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent128CipherTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,7 +33,7 @@ internal sealed class Serpent128CipherTests
     /// <inheritdoc />
     protected override Serpent128Cipher CreateBlockCipher(SingleTestVariant variant)
     {
-        var specification = GetSpecification(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
         return new Serpent128Cipher(specification.TestKey);
     }
 

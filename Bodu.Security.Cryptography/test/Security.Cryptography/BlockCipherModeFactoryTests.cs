@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherModeFactoryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed class BlockCipherModeFactoryTests
     [TestMethod]
     public void Create_WhenCipherIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = BlockCipherModeFactory.Create(CipherBlockMode.ECB, null!);
         });
@@ -54,7 +54,7 @@ public sealed class BlockCipherModeFactoryTests
     {
         var cipher = new SkipjackBlockCipher(new byte[10]);
 
-        var transform = BlockCipherModeFactory.Create(CipherBlockMode.ECB, cipher, iv: null);
+        IBlockCipherModeTransform transform = BlockCipherModeFactory.Create(CipherBlockMode.ECB, cipher, iv: null);
 
         Assert.IsNotNull(transform);
         Assert.IsInstanceOfType<EcbModeTransform>(transform);
@@ -74,7 +74,7 @@ public sealed class BlockCipherModeFactoryTests
     {
         var cipher = new SkipjackBlockCipher(new byte[10]);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = BlockCipherModeFactory.Create(mode, cipher, iv: null);
         });
@@ -100,7 +100,7 @@ public sealed class BlockCipherModeFactoryTests
     {
         var cipher = new SkipjackBlockCipher(new byte[10]);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = BlockCipherModeFactory.Create(mode, cipher, new byte[ivLength]);
         });

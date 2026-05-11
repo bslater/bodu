@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DeferredFinalBlockHashAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -127,7 +127,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
 
         Assert.AreEqual(1, sut.ProcessBlockInvocations.Count);
 
-        var (block, counter, isFinal) = sut.ProcessBlockInvocations[0];
+        (byte[]? block, ulong counter, bool isFinal) = sut.ProcessBlockInvocations[0];
         Assert.IsTrue(isFinal);
         Assert.AreEqual(3UL, counter);
 
@@ -148,13 +148,13 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
         byte[] input = SequentialBytes((2 * BlockSize) + 3);
 
         _ = sut.ComputeHash(input);
-        var firstRun = sut.ProcessBlockInvocations
+        (byte[] Block, ulong Counter, bool IsFinal)[] firstRun = sut.ProcessBlockInvocations
             .Select(invocation => (Block: (byte[])invocation.Block.Clone(), invocation.Counter, invocation.IsFinal))
             .ToArray();
 
         sut.ResetCapture();
         _ = sut.ComputeHash(input);
-        var secondRun = sut.ProcessBlockInvocations.ToArray();
+        (byte[] Block, ulong Counter, bool IsFinal)[] secondRun = sut.ProcessBlockInvocations.ToArray();
 
         Assert.AreEqual(firstRun.Length, secondRun.Length);
         for (int i = 0; i < firstRun.Length; i++)

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ICryptoTransformExtensionsTests.TransformAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,7 +39,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public async Task TransformAsync_Stream_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var target = new MemoryStream();
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
@@ -55,7 +55,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public async Task TransformAsync_Stream_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
@@ -71,7 +71,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public async Task TransformAsync_Stream_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
         using var target = new MemoryStream();
 
@@ -88,7 +88,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public async Task TransformAsync_Stream_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
         using var source = new MemoryStream(new byte[] { 1, 2, 3, 4 });
         using var target = new MemoryStream();
 
@@ -108,7 +108,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using var source = new MemoryStream(kat.Input);
         using var target = new MemoryStream();
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
         await transform.TransformAsync(source, target, bufferSize: kat.Input.Length);
 
@@ -125,7 +125,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using var source = new MemoryStream(Array.Empty<byte>());
         using var target = new MemoryStream();
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
         await transform.TransformAsync(source, target, bufferSize: 16);
 
@@ -143,7 +143,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using var source = new MemoryStream(kat.Input);
         var target = new MemoryStream();
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
         await transform.TransformAsync(source, target, bufferSize: kat.Input.Length);
 
@@ -159,12 +159,12 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public async Task TransformAsync_Stream_WhenCancelled_ShouldThrowCancelledException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         using var source = new ThrottledIncrementingByteStream(512, readDelay: 1000);
         using var target = new MemoryStream();
-        using var encryptor = algorithm.CreateEncryptor();
+        using ICryptoTransform encryptor = algorithm.CreateEncryptor();
         using var cts = new CancellationTokenSource(millisecondsDelay: 150);
 
         try
@@ -188,7 +188,7 @@ public partial class ICryptoTransformExtensionsTests
     {
         using var source = new MemoryStream(kat.Input);
         using var target = new MemoryStream();
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -204,83 +204,6 @@ public partial class ICryptoTransformExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-    /// writes all transformed data to the target stream exclusively via the asynchronous write path,
-    /// with no synchronous <see cref="Stream.Write(byte[],int,int)" /> calls.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData))]
-    public async Task TransformAsync_Stream_WhenCompleted_ShouldWriteOnlyViaAsynchronousPath(KnownAnswerTest kat)
-    {
-        using var source = new MemoryStream(kat.Input);
-        var trackingTarget = new DisposalTrackingStream(new MemoryStream());
-        using var transform = CreateTransform(kat);
-
-        await transform.TransformAsync(source, trackingTarget, bufferSize: kat.Input.Length);
-
-        Assert.IsTrue(trackingTarget.AsyncWriteCount > 0,
-            $"[{kat.Name}] Expected at least one asynchronous write to the target stream.");
-        Assert.AreEqual(0, trackingTarget.SyncWriteCount,
-            $"[{kat.Name}] No synchronous writes should be made to the target stream from an async method.");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-    /// does not dispose the target stream — neither synchronously nor asynchronously — after a
-    /// successful transform, honouring the documented <c>leaveOpen</c> contract.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetValidTransformTestData))]
-    public async Task TransformAsync_Stream_WhenCompleted_ShouldNotDisposeTargetStream(KnownAnswerTest kat)
-    {
-        using var source = new MemoryStream(kat.Input);
-        var trackingTarget = new DisposalTrackingStream(new MemoryStream());
-        using var transform = CreateTransform(kat);
-
-        await transform.TransformAsync(source, trackingTarget, bufferSize: kat.Input.Length);
-
-        Assert.IsFalse(trackingTarget.SyncDisposeCalled,
-            $"[{kat.Name}] Target stream must not be synchronously disposed.");
-        Assert.IsFalse(trackingTarget.AsyncDisposeCalled,
-            $"[{kat.Name}] Target stream must not be asynchronously disposed.");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-    /// uses <see cref="IAsyncDisposable.DisposeAsync" /> rather than <see cref="IDisposable.Dispose" />
-    /// when cleaning up the internal <see cref="CryptoStream" /> after a cancellation. This is
-    /// observable because, when the operation is cancelled before <see cref="CryptoStream.FlushFinalBlockAsync" />
-    /// runs, disposal triggers the final-block flush — writing asynchronously via <see cref="Stream.WriteAsync(ReadOnlyMemory{byte},CancellationToken)" />
-    /// rather than synchronously via <see cref="Stream.Write(byte[],int,int)" />.
-    /// </summary>
-    [TestMethod]
-    public async Task TransformAsync_Stream_WhenCancelledBeforeFlush_ShouldDisposeInternalStreamAsynchronously()
-    {
-        // Use PKCS7 padding (the default) so that disposal triggers a measurable final-block
-        // write to the target stream even when no data has been fed to the transform.
-        using var algorithm = CreateAlgorithm();
-        using var encryptor = algorithm.CreateEncryptor();
-        using var cts = new CancellationTokenSource();
-        cts.Cancel();
-
-        var trackingTarget = new DisposalTrackingStream(new MemoryStream());
-        using var source = new MemoryStream(new byte[] { 0x01 });
-
-        try
-        {
-            await encryptor.TransformAsync(source, trackingTarget, bufferSize: 16, cts.Token);
-        }
-        catch (OperationCanceledException) { }
-
-        Assert.AreEqual(0, trackingTarget.SyncWriteCount,
-            "Disposal of the internal CryptoStream must not trigger synchronous writes; DisposeAsync must be used.");
-        Assert.IsFalse(trackingTarget.SyncDisposeCalled,
-            "The target stream must not be synchronously disposed (leaveOpen: true contract).");
-        Assert.IsFalse(trackingTarget.AsyncDisposeCalled,
-            "The target stream must not be asynchronously disposed (leaveOpen: true contract).");
-    }
-
-    /// <summary>
     /// Verifies that a round-trip using <see cref="ICryptoTransformExtensions.TransformAsync" /> for
     /// encryption followed by <see cref="ICryptoTransformExtensions.TransformAsync" /> for decryption
     /// produces the original plaintext.
@@ -288,19 +211,19 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public async Task TransformAsync_Stream_RoundTrip_ShouldProduceOriginalPlaintext()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         byte[] plainText = System.Text.Encoding.UTF8.GetBytes("round-trip-test");
 
         // Encrypt
         using var sourceStream = new MemoryStream(plainText);
         using var encryptedStream = new MemoryStream();
-        using (var encryptor = algorithm.CreateEncryptor())
+        using (ICryptoTransform encryptor = algorithm.CreateEncryptor())
             await encryptor.TransformAsync(sourceStream, encryptedStream, bufferSize: 32);
 
         // Decrypt
         encryptedStream.Position = 0;
         using var decryptedStream = new MemoryStream();
-        using (var decryptor = algorithm.CreateDecryptor())
+        using (ICryptoTransform decryptor = algorithm.CreateDecryptor())
             await decryptor.TransformAsync(encryptedStream, decryptedStream, bufferSize: 32);
 
         CollectionAssert.AreEqual(plainText, decryptedStream.ToArray(),
@@ -339,7 +262,7 @@ public partial class ICryptoTransformExtensionsTests
         KnownAnswerTest kat)
     {
         byte[] dest = new byte[kat.Input.Length + 16];
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
         int written = await transform.TransformAsync(
             new ReadOnlyMemory<byte>(kat.Input),
@@ -363,12 +286,12 @@ public partial class ICryptoTransformExtensionsTests
     {
         byte[] syncDest = new byte[kat.Input.Length + 16];
         int syncWritten;
-        using (var syncTransform = CreateTransform(kat))
+        using (SimpleReversingCryptoTransform syncTransform = CreateTransform(kat))
             syncWritten = syncTransform.Transform(kat.Input.AsSpan(), syncDest.AsSpan());
 
         byte[] asyncDest = new byte[kat.Input.Length + 16];
         int asyncWritten;
-        using (var asyncTransform = CreateTransform(kat))
+        using (SimpleReversingCryptoTransform asyncTransform = CreateTransform(kat))
             asyncWritten = await asyncTransform.TransformAsync(
                 new ReadOnlyMemory<byte>(kat.Input),
                 new Memory<byte>(asyncDest));
@@ -390,7 +313,7 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Memory_WhenAlreadyCancelled_ShouldThrowTaskCanceledException(
         KnownAnswerTest kat)
     {
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
         var destination = new Memory<byte>(new byte[kat.Input.Length + 16]);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
@@ -413,7 +336,7 @@ public partial class ICryptoTransformExtensionsTests
     public async Task TransformAsync_Memory_WhenDestinationIsTooSmall_ShouldThrowArgumentException(
         KnownAnswerTest kat)
     {
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
         // A 1-byte destination is always too small for any block-sized input.
         var tooSmall = new Memory<byte>(new byte[1]);

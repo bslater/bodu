@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Dispose_WhenTransformIsDisposedAndReused_ShouldNotBeReusable()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.GenerateIV();
         algorithm.GenerateKey();
 
@@ -49,7 +49,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Dispose_WhenTransformIsDisposedTwice_ShouldNotThrow()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.GenerateIV();
         algorithm.GenerateKey();
 
@@ -73,7 +73,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         try
@@ -95,7 +95,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Dispose_WhenInstanceUntouched_ShouldNotThrow()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
 
         try
         {

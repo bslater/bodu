@@ -78,7 +78,7 @@ internal static partial class CryptoTestUtilities
 
     public static bool IsLegalKeySize(int bits, KeySizes[] legalSizes)
     {
-        foreach (var range in legalSizes)
+        foreach (KeySizes range in legalSizes)
         {
             if (bits < range.MinSize || bits > range.MaxSize)
                 continue;

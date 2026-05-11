@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ZeroPaddingTests.SymmetricAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public sealed partial class ZeroPaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenEmptyPlaintext_ShouldEmitEmptyCiphertext(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.Zeros);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.Zeros);
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
 
@@ -53,7 +53,7 @@ public sealed partial class ZeroPaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.Zeros);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.Zeros);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
 
@@ -80,7 +80,7 @@ public sealed partial class ZeroPaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenResidualPlaintext_ShouldRecoverPrefixWithTrailingZeros(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.Zeros);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.Zeros);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
 

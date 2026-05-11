@@ -16,7 +16,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void HashSize_Get_DeclaredHashSize_ShouldMatchComputedHashLength()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         byte[] result = algorithm.ComputeHash(Array.Empty<byte>());
         int computedBitLength = result.ToBitLength();
         Assert.AreEqual(computedBitLength, algorithm.HashSize);

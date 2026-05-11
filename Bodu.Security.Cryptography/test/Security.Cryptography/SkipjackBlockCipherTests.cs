@@ -23,7 +23,7 @@ internal sealed partial class SkipjackBlockCipherTests
     /// <inheritdocs/>
     protected override SkipjackBlockCipher CreateBlockCipher(SingleTestVariant variant)
     {
-        var specification = GetSpecification(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
         return new SkipjackBlockCipher(specification.TestKey);
     }
 

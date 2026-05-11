@@ -1,8 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.LegalTweakSizes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -25,10 +27,10 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void LegalTweakSizes_WhenDefined_ShouldHaveNonOverlappingValues()
     {
-        var blockSizes = CreateAlgorithm().LegalTweakSizes;
+        KeySizes[] blockSizes = CreateAlgorithm().LegalTweakSizes;
         HashSet<int> uniqueSizes = new();
 
-        foreach (var blockSize in blockSizes)
+        foreach (KeySizes blockSize in blockSizes)
         {
             for (int size = blockSize.MinSize; size <= blockSize.MaxSize; size += blockSize.SkipSize == 0 ? int.MaxValue : blockSize.SkipSize)
             {
@@ -43,9 +45,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void LegalTweakSizes_WhenDefined_ShouldHaveValidRanges()
     {
-        var blockSizes = CreateAlgorithm().LegalTweakSizes;
+        KeySizes[] blockSizes = CreateAlgorithm().LegalTweakSizes;
 
-        foreach (var blockSize in blockSizes)
+        foreach (KeySizes blockSize in blockSizes)
         {
             Assert.IsTrue(blockSize.MinSize <= blockSize.MaxSize, "MinSize must be less than or equal to MaxSize.");
             Assert.IsTrue(blockSize.SkipSize >= 0, "SkipSize must be greater than or equal to zero.");

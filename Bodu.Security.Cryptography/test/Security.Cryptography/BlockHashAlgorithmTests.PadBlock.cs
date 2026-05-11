@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockHashAlgorithmTests.PadBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     [TestMethod]
     public void PadBlock_OnHappyPath_ShouldNeverRaiseNotImplementedException()
     {
-        using var algo = CreateAlgorithm();
+        using TAlgorithm algo = CreateAlgorithm();
         try
         {
             byte[] tag = algo.ComputeHash(new byte[] { 1, 2, 3, 4, 5 });
@@ -48,13 +48,13 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void HashPipeline_ExceptionMessages_ShouldContainOnlyPrintableAscii(TVariant variant)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         // Exercise every residual length from 0 up to 2x the configured input block size
         // so we hit every branch of any residual-handling PadBlock path.
         int limit = Math.Max(16, specification.InputBlockSize * 2);
         for (int len = 0; len < limit; len++)
         {
-            using var algo = CreateAlgorithm();
+            using TAlgorithm algo = CreateAlgorithm();
             byte[] data = new byte[len];
             try
             {

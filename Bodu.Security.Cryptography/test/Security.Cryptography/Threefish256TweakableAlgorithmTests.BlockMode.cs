@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Threefish256TweakableAlgorithmTests.BlockMode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [DataRow(CipherBlockMode.CTR)]
     public void BlockMode_WhenSetToValidValue_ShouldNotThrow(CipherBlockMode mode)
     {
-        using var algorithm = CreateAlgorithm();
+        using Threefish256 algorithm = CreateAlgorithm();
 
         try
         {

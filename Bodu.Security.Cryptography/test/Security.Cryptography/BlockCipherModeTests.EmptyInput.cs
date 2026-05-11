@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherModeTests.EmptyInput.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -66,7 +66,7 @@ public abstract partial class BlockCipherModeTests<TMode>
         var iv = UsesInitializationVector
             ? CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize)
             : new byte[ExpectedBlockSize];
-        var transform = CreateTransform(cipher, iv);
+        TMode transform = CreateTransform(cipher, iv);
 
         int written = 0;
         try

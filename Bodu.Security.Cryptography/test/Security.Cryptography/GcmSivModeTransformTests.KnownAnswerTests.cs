@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GcmSivModeTransformTests.KnownAnswerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -71,7 +71,7 @@ public sealed partial class GcmSivModeTransformTests
         byte[] plaintext = Convert.FromHexString(ptHex);
         byte[] expected = Convert.FromHexString(expectedOutputHex);
 
-        var transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
+        GcmSivModeTransform transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
         var output = new byte[plaintext.Length + transform.TagSize];
         transform.Encrypt(plaintext, output);
 
@@ -91,7 +91,7 @@ public sealed partial class GcmSivModeTransformTests
         byte[] expectedPt = Convert.FromHexString(ptHex);
         byte[] ciphertextTag = Convert.FromHexString(expectedOutputHex);
 
-        var transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
+        GcmSivModeTransform transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
         int plaintextLength = ciphertextTag.Length - transform.TagSize;
         var output = new byte[plaintextLength];
         int written = transform.Decrypt(ciphertextTag, output);

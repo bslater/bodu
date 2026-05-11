@@ -16,7 +16,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Initialize_WhenCalledBetweenHashes_ShouldResetStateForNewHash()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] input1 = CryptoTestUtilities.SimpleTextAsciiBytes;
         byte[] input2 = CryptoTestUtilities.ByteSequence256;
@@ -36,7 +36,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Initialize_WhenCalledAfterFinalBlock_ShouldAllowNewHashComputation()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] input = CryptoTestUtilities.ByteSequence256;
         algorithm.TransformFinalBlock(input, 0, input.Length);
@@ -67,7 +67,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Initialize_MidHashing_ShouldResetPartialState()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] part1 = CryptoTestUtilities.SimpleTextAsciiBytes.Take(4).ToArray();
         byte[] part2 = CryptoTestUtilities.SimpleTextAsciiBytes.Skip(4).ToArray();
@@ -91,7 +91,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void Initialize_WhenDisposed_ShouldThrowExactly()
     {
         // Arrange
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         // Act & Assert
@@ -108,7 +108,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Initialize_WhenCalledAfterTransformBlock_ShouldDiscardPriorInput()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 128, null, 0);
         algorithm.Initialize();
@@ -127,8 +127,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public virtual void Initialize_AfterHashing_ShouldResetInternalState(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
         int blockSize = specification.InputBlockSize;
 
         // Feed partial input — do NOT finalise — then reset
@@ -142,7 +142,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         // After Initialize, finalising with empty input should equal a clean empty-input hash
         algorithm.TransformFinalBlock([], 0, 0);
 
-        using var reference = CreateAlgorithm(variant);
+        using TAlgorithm reference = CreateAlgorithm(variant);
         reference.TransformFinalBlock([], 0, 0);
 
         CollectionAssert.AreEqual(
@@ -161,7 +161,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public virtual void Initialize_AfterHashing_ShouldClearResidualBlockState(TVariant variant)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
 
         if (!specification.CanReuseTransform)
         {
@@ -170,7 +170,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
         int blockSize = specification.InputBlockSize;
         byte[] input = Enumerable.Range(0, blockSize + (blockSize / 2))
                                  .Select(i => (byte)((i * 31) + 7))
@@ -195,7 +195,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void Initialize_WhenCalledAfterDispose_ShouldThrowExactly(TVariant variant)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
 
         if (!specification.CanReuseTransform)
         {
@@ -203,7 +203,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
                 $"[{variant}] Algorithm does not support reuse after a completed transform; skipping residual state check.");
             return;
         }
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -226,10 +226,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         Buffer.BlockCopy(block1, 0, combined, 0, block1.Length);
         Buffer.BlockCopy(block2, 0, combined, block1.Length, block2.Length);
 
-        using var expectedAlgorithm = CreateAlgorithm();
+        using TAlgorithm expectedAlgorithm = CreateAlgorithm();
         byte[] expected = expectedAlgorithm.ComputeHash(combined);
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         algorithm.Initialize();
 
@@ -248,10 +248,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         byte[] input = CryptoTestUtilities.ByteSequence256[..128];
 
-        using var expectedAlgorithm = CreateAlgorithm();
+        using TAlgorithm expectedAlgorithm = CreateAlgorithm();
         byte[] expected = expectedAlgorithm.ComputeHash(input);
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         algorithm.Initialize();
         algorithm.Initialize();

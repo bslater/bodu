@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmTests.TransformBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformBlock_AfterComputeHashAndInitialize_ShouldNotThrow()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         _ = algorithm.ComputeHash(CryptoTestUtilities.SimpleTextAsciiBytes);
         algorithm.Initialize();
@@ -49,7 +49,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         // Begin the hashing operation
         byte[] buffer = new byte[8];
@@ -89,7 +89,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformBlock_WhenOutputBufferProvided_ShouldCopyInputToOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] input = CryptoTestUtilities.ByteSequence256[..32];
         byte[] output = new byte[input.Length];
@@ -106,7 +106,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformBlock_WhenOutputOffsetIsNonZero_ShouldCopyInputAtOutputOffset()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] input = CryptoTestUtilities.ByteSequence256[..32];
         byte[] output = Enumerable.Repeat((byte)0xA5, input.Length + 8).ToArray();
@@ -126,7 +126,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformBlock_WhenOutputBufferIsNull_ShouldSucceed()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] input = CryptoTestUtilities.ByteSequence256[..32];
 

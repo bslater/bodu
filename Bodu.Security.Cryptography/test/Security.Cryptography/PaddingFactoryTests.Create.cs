@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PaddingFactoryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class PaddingFactoryTests
     [TestMethod]
     public void Create_WhenPaddingModeIsInvalid_ShouldThrowWithCleanMessage()
     {
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             PaddingFactory.Create((PaddingMode)999);
         });
@@ -25,13 +25,13 @@ public partial class PaddingFactoryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PaddingFactory.Create(BlockPaddingMode)" /> rejects an
-    /// undefined <see cref="BlockPaddingMode" /> value with a clean exception message.
+    /// Verifies that <see cref="PaddingFactory.Create(BoduPaddingMode)" /> rejects an
+    /// undefined <see cref="BoduPaddingMode" /> value with a clean exception message.
     /// </summary>
     [TestMethod]
-    public void Create_WhenBlockPaddingModeIsInvalid_ShouldThrowWithCleanMessage()
+    public void Create_WhenBoduPaddingModeIsInvalid_ShouldThrowWithCleanMessage()
     {
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             PaddingFactory.Create((BlockPaddingMode)999);
         });
@@ -94,11 +94,11 @@ public partial class PaddingFactoryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PaddingFactory.Create(BlockPaddingMode)" /> returns an
-    /// <see cref="Iso7816_4Padding" /> for <see cref="BlockPaddingMode.ISO7816_4" />.
+    /// Verifies that <see cref="PaddingFactory.Create(BoduPaddingMode)" /> returns an
+    /// <see cref="Iso7816_4Padding" /> for <see cref="BoduPaddingMode.ISO7816_4" />.
     /// </summary>
     [TestMethod]
-    public void Create_WhenBlockPaddingModeIsIso7816_4_ShouldReturnIso7816_4Padding()
+    public void Create_WhenBoduPaddingModeIsIso7816_4_ShouldReturnIso7816_4Padding()
     {
         IPaddingStrategy strategy = PaddingFactory.Create(BlockPaddingMode.ISO7816_4);
         Assert.IsInstanceOfType<Iso7816_4Padding>(strategy);

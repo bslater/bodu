@@ -1,8 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.LegalBlockSizes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -24,9 +26,9 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void LegalBlockSizes_WhenDefined_ShouldHaveValidRanges()
     {
-        var blockSizes = CreateAlgorithm().LegalBlockSizes;
+        KeySizes[] blockSizes = CreateAlgorithm().LegalBlockSizes;
 
-        foreach (var blockSize in blockSizes)
+        foreach (KeySizes blockSize in blockSizes)
         {
             Assert.IsTrue(blockSize.MinSize <= blockSize.MaxSize, "MinSize must be less than or equal to MaxSize.");
             Assert.IsTrue(blockSize.SkipSize >= 0, "SkipSize must be greater than or equal to zero.");
@@ -39,10 +41,10 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void LegalBlockSizes_WhenDefined_ShouldHaveNonOverlappingValues()
     {
-        var blockSizes = CreateAlgorithm().LegalBlockSizes;
+        KeySizes[] blockSizes = CreateAlgorithm().LegalBlockSizes;
         HashSet<int> uniqueSizes = new();
 
-        foreach (var blockSize in blockSizes)
+        foreach (KeySizes blockSize in blockSizes)
         {
             for (int size = blockSize.MinSize; size <= blockSize.MaxSize; size += blockSize.SkipSize == 0 ? int.MaxValue : blockSize.SkipSize)
             {

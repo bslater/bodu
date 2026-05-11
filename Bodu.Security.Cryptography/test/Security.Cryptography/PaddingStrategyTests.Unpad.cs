@@ -24,7 +24,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
             return;
         }
 
-        var padding = CreatePadding();
+        TPadding padding = CreatePadding();
 
         byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 4);
         byte[] padded = padding.Pad(plaintext, BlockSize);
@@ -37,7 +37,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         int firstPaddingByteIndex = padded.Length - padLen;
         padded[firstPaddingByteIndex] ^= 0xFF;
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, BlockSize));
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, BlockSize));
         Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
         Assert.IsFalse(ex.Message.Contains(" t "), "Exception message must not contain stray ' t ' sequence.");
     }
@@ -54,7 +54,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
             return;
         }
 
-        var padding = CreatePadding();
+        TPadding padding = CreatePadding();
 
         byte[] input = new byte[BlockSize];
         for (int i = 0; i < BlockSize - 1; i++)
@@ -76,7 +76,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
             return;
         }
 
-        var padding = CreatePadding();
+        TPadding padding = CreatePadding();
 
         byte[] input = new byte[BlockSize];
         for (int i = 0; i < BlockSize - 1; i++)

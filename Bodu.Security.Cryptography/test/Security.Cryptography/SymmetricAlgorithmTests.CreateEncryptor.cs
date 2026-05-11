@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.CreateEncryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,12 +36,12 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void CreateEncryptor_WhenDisposes_ShouldReportConcreteTypeName()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         try
         {
-            using var _ = algorithm.CreateEncryptor();
+            using ICryptoTransform _ = algorithm.CreateEncryptor();
             Assert.Fail("Expected ObjectDisposedException after disposal.");
         }
         catch (ObjectDisposedException ex)
@@ -58,7 +58,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void CreateEncryptor_WhenKeyIsNull_ShouldThrowArgumentNullException_fix()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -73,7 +73,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void CreateEncryptor_WhenIvIsNull_ShouldThrowArgumentNullException_fix()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

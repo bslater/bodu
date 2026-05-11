@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OcbModeTransformTests.Decrypt.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,12 +33,12 @@ public sealed partial class OcbModeTransformTests
         var iv = new byte[ExpectedBlockSize];
         var plaintext = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
-        var enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
+        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
         var ct = new byte[plaintext.Length + tagLen];
         enc.Encrypt(plaintext, ct);
         ct[ct.Length - 1] ^= 0x01;         // flip last byte of tag
 
-        var dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
+        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
         Assert.ThrowsExactly<CryptographicException>(() =>
             dec.Decrypt(ct, new byte[plaintext.Length]),
             $"A tampered tag must always be rejected (tagLen = {tagLen}).");
@@ -61,11 +61,11 @@ public sealed partial class OcbModeTransformTests
         var iv = new byte[ExpectedBlockSize];
         var plaintext = new byte[ExpectedBlockSize];
 
-        var enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen: 16);
+        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen: 16);
         var ct = new byte[plaintext.Length + 16];
         enc.Encrypt(plaintext, ct);
 
-        var dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen: 12);
+        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen: 12);
         Assert.ThrowsExactly<CryptographicException>(() =>
             dec.Decrypt(ct, new byte[ct.Length - 12]),
             "Decrypting with a mismatched tagLen must fail tag verification.");

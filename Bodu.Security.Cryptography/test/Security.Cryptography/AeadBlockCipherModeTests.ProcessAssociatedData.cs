@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AeadBlockCipherModeTests.ProcessAssociatedData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowInvalidOperationException()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         transform.ProcessAssociatedData(new byte[] { 1, 2, 3 });
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -35,7 +35,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void ProcessAssociatedData_AfterEncrypt_ShouldThrowInvalidOperationException()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize];
         transform.Encrypt(plaintext, new byte[plaintext.Length + transform.TagSize]);
 
@@ -56,11 +56,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize];
 
-        var enc = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform enc = CreateTransform(cipher, (byte[])iv.Clone());
         var ct = new byte[plaintext.Length + enc.TagSize];
         enc.Encrypt(plaintext, ct);
 
-        var dec = CreateTransform(cipher, (byte[])iv.Clone());
+        TTransform dec = CreateTransform(cipher, (byte[])iv.Clone());
         dec.Decrypt(ct, new byte[plaintext.Length]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmExtensionsTests.TryCreateEncryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     [TestMethod]
     public void TryCreateEncryptor_WhenIVIsNull_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
-        bool result = algorithm.TryCreateEncryptor(new byte[algorithm.KeySize / 8], null!, new byte[algorithm.TweakSize / 8], out var transform);
+        using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
+        bool result = algorithm.TryCreateEncryptor(new byte[algorithm.KeySize / 8], null!, new byte[algorithm.TweakSize / 8], out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -31,13 +31,13 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     [TestMethod]
     public void TryCreateEncryptor_WhenIVSizeIsInvalid_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
 
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[(algorithm.BlockSize / 8) + 1]; // one byte too long
         var tweak = new byte[algorithm.TweakSize / 8];
 
-        bool result = algorithm.TryCreateEncryptor(key, iv, tweak, out var transform);
+        bool result = algorithm.TryCreateEncryptor(key, iv, tweak, out ICryptoTransform? transform);
         Assert.IsFalse(result);
         Assert.IsNull(transform);
     }
@@ -49,8 +49,8 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     [TestMethod]
     public void TryCreateEncryptor_WhenKeyIsNull_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
-        bool result = algorithm.TryCreateEncryptor(null!, new byte[algorithm.BlockSize / 8], new byte[algorithm.TweakSize / 8], out var transform);
+        using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
+        bool result = algorithm.TryCreateEncryptor(null!, new byte[algorithm.BlockSize / 8], new byte[algorithm.TweakSize / 8], out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -62,9 +62,9 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     [TestMethod]
     public void TryCreateEncryptor_WhenKeyIvAndTweakAreUnset_ShouldGenerateAndReturnTransform()
     {
-        using var algorithm = CreateAlgorithm();
+        using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateEncryptor(out var transform);
+        bool result = algorithm.TryCreateEncryptor(out ICryptoTransform? transform);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
@@ -77,14 +77,14 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     [TestMethod]
     public void TryCreateEncryptor_WhenKeySizeIsInvalid_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
 
         // One byte short of required key size
         var key = new byte[(algorithm.KeySize / 8) + 1];// one byte too long
         var iv = new byte[algorithm.BlockSize / 8];
         var tweak = new byte[algorithm.TweakSize / 8];
 
-        bool result = algorithm.TryCreateEncryptor(key, iv, tweak, out var transform);
+        bool result = algorithm.TryCreateEncryptor(key, iv, tweak, out ICryptoTransform? transform);
         Assert.IsFalse(result);
         Assert.IsNull(transform);
     }
@@ -96,8 +96,8 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     [TestMethod]
     public void TryCreateEncryptor_WhenTweakIsNull_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
-        bool result = algorithm.TryCreateEncryptor(new byte[algorithm.KeySize / 8], new byte[algorithm.BlockSize / 8], null!, out var transform);
+        using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
+        bool result = algorithm.TryCreateEncryptor(new byte[algorithm.KeySize / 8], new byte[algorithm.BlockSize / 8], null!, out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -110,13 +110,13 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     [TestMethod]
     public void TryCreateEncryptor_WhenTweakSizeIsInvalid_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
 
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[algorithm.BlockSize / 8];
         var tweak = new byte[(algorithm.TweakSize / 8) + 1]; // one bytes too long
 
-        bool result = algorithm.TryCreateEncryptor(key, iv, tweak, out var transform);
+        bool result = algorithm.TryCreateEncryptor(key, iv, tweak, out ICryptoTransform? transform);
         Assert.IsFalse(result);
         Assert.IsNull(transform);
     }
@@ -127,7 +127,7 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     [TestMethod]
     public void TryCreateEncryptor_WhenValid_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
 
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[algorithm.BlockSize / 8];

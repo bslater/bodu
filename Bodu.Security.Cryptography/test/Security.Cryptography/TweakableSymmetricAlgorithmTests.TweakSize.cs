@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.TweakSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,7 +14,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenGetMultipleTimes_ShouldReturnDistinctCopies()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int size = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
@@ -32,7 +32,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenSet_ShouldBeIsolatedFromInput()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int size = algorithm.LegalTweakSizes[0].MinSize;
         byte[] original = Enumerable.Range(0, size / 8).Select(i => (byte)i).ToArray();
         byte[] input = (byte[])original.Clone();
@@ -49,7 +49,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void TweakSize_WhenChanged_ShouldResetTweak()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int size = algorithm.LegalTweakSizes[0].MinSize;
 
         algorithm.TweakSize = size;
@@ -66,7 +66,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void TweakSize_WhenSetToValidValue_ShouldUpdateInternalValue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int validSize = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = validSize;
         Assert.AreEqual(validSize, algorithm.TweakSize);

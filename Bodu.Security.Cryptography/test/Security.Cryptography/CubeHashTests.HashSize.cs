@@ -26,8 +26,8 @@ public partial class CubeHashTests
     [TestMethod]
     public void HashSize_WhenSetBeforeUse_ShouldBeRetained()
     {
-        var algorithm = new CubeHash { HashSize = 32 };
-        Assert.AreEqual(32, algorithm.HashSize);
+        var algorithm = new CubeHash { HashSize = 256 };
+        Assert.AreEqual(256, algorithm.HashSize);
     }
 
     /// <summary>
@@ -43,7 +43,7 @@ public partial class CubeHashTests
 
         // Change the hash size hashValue after the first computation, and perform the second algorithm computation with the new hash
         // size hashValue.
-        algorithm.HashSize = 32;
+        algorithm.HashSize = 224;
         algorithm.ComputeHash(input);
     }
 
@@ -55,8 +55,8 @@ public partial class CubeHashTests
     {
         byte[] input = new byte[] { 0x10, 0x20, 0x30 };
 
-        var algorithmA = new CubeHash { HashSize = 32 };
-        var algorithmB = new CubeHash { HashSize = 64 };
+        var algorithmA = new CubeHash { HashSize = 224 };
+        var algorithmB = new CubeHash { HashSize = 256 };
 
         byte[] resultA = algorithmA.ComputeHash(input);
         byte[] resultB = algorithmB.ComputeHash(input);
@@ -80,7 +80,7 @@ public partial class CubeHashTests
     [DataRow(int.MaxValue)]
     public void HashSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.HashSize = value);
     }
@@ -89,16 +89,13 @@ public partial class CubeHashTests
     /// Verifies that setting a valid hashValue for <see cref="CubeHash.HashSize" />.
     /// </summary>
     [TestMethod]
-    [DataRow(8)]
-    [DataRow(16)]
-    [DataRow(32)]
-    [DataRow(64)]
-    [DataRow(128)]
+    [DataRow(224)]
     [DataRow(256)]
+    [DataRow(384)]
     [DataRow(512)]
     public void HashSize_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         int original = algorithm.HashSize;
         algorithm.HashSize = size;
 
@@ -111,7 +108,7 @@ public partial class CubeHashTests
     [TestMethod]
     public void HashSize_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         int size = 256;
         int original = algorithm.HashSize;
         algorithm.HashSize = size;
@@ -135,13 +132,13 @@ public partial class CubeHashTests
             HashSize = 256
         };
 
-        algorithm.HashSize = 128;
+        algorithm.HashSize = 224;
 
         Assert.AreEqual(10, algorithm.InitializationRounds, $"{nameof(CubeHash.InitializationRounds)} should remain unchanged.");
         Assert.AreEqual(16, algorithm.Rounds, $"{nameof(CubeHash.Rounds)} should remain unchanged.");
         Assert.AreEqual(32, algorithm.FinalizationRounds, $"{nameof(CubeHash.FinalizationRounds)} should remain unchanged.");
         Assert.AreEqual(32, algorithm.TransformBlockSize, $"{nameof(CubeHash.TransformBlockSize)} should remain unchanged.");
-        Assert.AreEqual(128, algorithm.HashSize, $"{nameof(CubeHash.HashSize)} should update.");
+        Assert.AreEqual(224, algorithm.HashSize, $"{nameof(CubeHash.HashSize)} should update.");
     }
 
     /// <summary>
@@ -161,7 +158,7 @@ public partial class CubeHashTests
     [DataRow(511)]
     public void HashSize_WhenSetToNonMultipleOfEight_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -177,7 +174,7 @@ public partial class CubeHashTests
     [TestMethod]
     public void HashSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         byte[] input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 

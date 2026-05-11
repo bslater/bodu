@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.Tweak.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenAccessedAfterDispose_ShouldThrowObjectDisposedException()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.TweakSize = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.GenerateTweak();
 
@@ -34,7 +34,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenGenerated_ShouldMatchInternalTweakValue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int size = algorithm.LegalTweakSizes[0].MinSize;
 
         algorithm.TweakSize = size;
@@ -53,7 +53,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenNoAccessedMultipleTimes_ShouldReturnSameValue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] tweak1 = algorithm.Tweak;
         byte[] tweak2 = algorithm.Tweak;
@@ -67,7 +67,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenNotInitialized_ShouldReturnExpectedValue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] tweak = algorithm.Tweak;
         Assert.AreEqual(algorithm.TweakSize / 8, tweak.Length);
@@ -80,7 +80,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenNotReassigned_ShouldRemainUnchanged()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int size = algorithm.LegalTweakSizes[0].MinSize;
         byte[] expected = Enumerable.Repeat((byte)0xAA, size / 8).ToArray();
 
@@ -99,7 +99,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenSet_ShouldReturnExpectedValue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int size = algorithm.LegalTweakSizes[0].MinSize;
         byte[] expected = Enumerable.Range(0, size / 8).Select(i => (byte)(i + 1)).ToArray();
 
@@ -116,7 +116,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenSetToNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -134,9 +134,9 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenSetToInvalidSize_ShouldThrowWithCleanMessage()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             algorithm.Tweak = new byte[5];
 
@@ -159,7 +159,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenSetToInvalidSize_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         int? invalidBits = FindInvalidTweakSize(algorithm.LegalTweakSizes);
 

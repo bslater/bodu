@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TigerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -94,7 +94,7 @@ public partial class TigerTests
 
     private static HashAlgorithmKnownAnswers BuildKnownAnswers(TigerVariant variant)
     {
-        var (isTiger2, hashBits) = GetTigerHashBits(variant);
+        (bool isTiger2, int hashBits) = GetTigerHashBits(variant);
 
         (string Empty, string Abc, string Zeros16, string QuickBrownFox, string Sequential0To255, string Tiger) full = isTiger2
             ? (
@@ -134,7 +134,7 @@ public partial class TigerTests
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(TigerTests.TigerVariant variant)
     {
-        var (isTiger2, hashBits) = GetTigerHashBits(variant);
+        (bool isTiger2, int hashBits) = GetTigerHashBits(variant);
 
         var fullHashes = isTiger2
             ? new[]

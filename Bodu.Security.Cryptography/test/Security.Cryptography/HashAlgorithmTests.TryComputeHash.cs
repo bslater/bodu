@@ -19,10 +19,10 @@ namespace Bodu.Security.Cryptography
         {
             byte[] input = CryptoTestUtilities.ByteSequence256;
 
-            using var expectedAlgorithm = CreateAlgorithm();
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
             byte[] expected = expectedAlgorithm.ComputeHash(input);
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] destination = new byte[expected.Length - 1];
 
             bool result = algorithm.TryComputeHash(input, destination, out int bytesWritten);
@@ -40,10 +40,10 @@ namespace Bodu.Security.Cryptography
         {
             byte[] input = CryptoTestUtilities.ByteSequence256;
 
-            using var expectedAlgorithm = CreateAlgorithm();
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
             byte[] expected = expectedAlgorithm.ComputeHash(input);
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] destination = new byte[expected.Length];
 
             bool result = algorithm.TryComputeHash(input, destination, out int bytesWritten);
@@ -62,10 +62,10 @@ namespace Bodu.Security.Cryptography
         {
             byte[] input = CryptoTestUtilities.ByteSequence256;
 
-            using var expectedAlgorithm = CreateAlgorithm();
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
             byte[] expected = expectedAlgorithm.ComputeHash(input);
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             byte[] destination = new byte[expected.Length + 1];
             destination[^1] = 0xA5;
 
@@ -87,7 +87,7 @@ namespace Bodu.Security.Cryptography
         {
             byte[] input = CryptoTestUtilities.ByteSequence256;
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
             byte[] hash = algorithm.ComputeHash(input);
             Assert.IsNotNull(algorithm.Hash);
@@ -106,7 +106,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TryComputeHash_WhenDisposed_ShouldThrowObjectDisposedException()
         {
-            var algorithm = CreateAlgorithm();
+            TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
             byte[] input = new byte[1];
@@ -125,7 +125,7 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TryComputeHash_WhenSourceAndDestinationAreSameBuffer_ShouldSucceed()
         {
-            using var expectedAlgorithm = CreateAlgorithm();
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
             int hashLength = expectedAlgorithm.HashSize / 8;
 
             byte[] expectedInput = Enumerable.Range(0, hashLength)
@@ -136,7 +136,7 @@ namespace Bodu.Security.Cryptography
 
             byte[] buffer = expectedInput.ToArray();
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
             bool result = algorithm.TryComputeHash(
                 buffer.AsSpan(0, hashLength),
@@ -157,7 +157,7 @@ namespace Bodu.Security.Cryptography
         {
             const int destinationOffset = 4;
 
-            using var expectedAlgorithm = CreateAlgorithm();
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
             int hashLength = expectedAlgorithm.HashSize / 8;
             int inputLength = hashLength + 16;
 
@@ -170,7 +170,7 @@ namespace Bodu.Security.Cryptography
             byte[] buffer = new byte[inputLength + destinationOffset + hashLength];
             Buffer.BlockCopy(expectedInput, 0, buffer, 0, expectedInput.Length);
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
             bool result = algorithm.TryComputeHash(
                 buffer.AsSpan(0, inputLength),
@@ -191,7 +191,7 @@ namespace Bodu.Security.Cryptography
         {
             const int sourceOffset = 4;
 
-            using var expectedAlgorithm = CreateAlgorithm();
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
             int hashLength = expectedAlgorithm.HashSize / 8;
             int inputLength = hashLength + 16;
 
@@ -204,7 +204,7 @@ namespace Bodu.Security.Cryptography
             byte[] buffer = new byte[sourceOffset + inputLength];
             Buffer.BlockCopy(expectedInput, 0, buffer, sourceOffset, expectedInput.Length);
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
             bool result = algorithm.TryComputeHash(
                 buffer.AsSpan(sourceOffset, inputLength),

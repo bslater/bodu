@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,7 +31,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             return;
         }
 
-        using var cipher = CreateBlockCipher();
+        using TCipher cipher = CreateBlockCipher();
 
         object? currentValue;
         try
@@ -80,7 +80,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             return;
         }
 
-        using var cipher = CreateBlockCipher();
+        using TCipher cipher = CreateBlockCipher();
         var buffer = new byte[cipher.BlockSize];
         cipher.Encrypt(buffer, buffer);
         cipher.Dispose();
@@ -100,8 +100,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(BlockCipherVariants))]
     public void Dispose_WhenDecryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var cipher = CreateBlockCipher(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
+        using TCipher cipher = CreateBlockCipher(variant);
         cipher.Dispose();
 
         var buffer = new byte[specification.BlockSize];
@@ -118,8 +118,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(BlockCipherVariants))]
     public void Dispose_WhenEncryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var cipher = CreateBlockCipher(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
+        using TCipher cipher = CreateBlockCipher(variant);
         cipher.Dispose();
 
         var buffer = new byte[specification.BlockSize];
@@ -136,7 +136,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
-        var cipher = CreateBlockCipher();
+        TCipher cipher = CreateBlockCipher();
         cipher.Dispose();
 
         try

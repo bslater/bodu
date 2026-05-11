@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkeinTests.KnownAnswers.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     public static IEnumerable<object[]> KeyedKnownAnswerTestData()
     {
         var instance = new TTest();
-        foreach (var variant in instance.GetHashAlgorithmVariants())
+        foreach (TVariant variant in instance.GetHashAlgorithmVariants())
         {
             if (instance.GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
                 continue;

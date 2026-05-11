@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmFactoryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public sealed class HashAlgorithmFactoryTests
     [TestMethod]
     public void From_WhenBuilderIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = HashAlgorithmFactory.From<MD5>(null!);
         });
@@ -39,13 +39,13 @@ public sealed class HashAlgorithmFactoryTests
     [TestMethod]
     public void From_WhenBuilderProvided_ShouldReturnFactoryThatYieldsFreshInstancesOnCreate()
     {
-        var factory = HashAlgorithmFactory.From(() => MD5.Create());
+        DelegateHashAlgorithmFactory<MD5> factory = HashAlgorithmFactory.From(() => MD5.Create());
 
         Assert.IsNotNull(factory);
         Assert.IsInstanceOfType<DelegateHashAlgorithmFactory<MD5>>(factory);
 
-        using var first = factory.Create();
-        using var second = factory.Create();
+        using MD5 first = factory.Create();
+        using MD5 second = factory.Create();
 
         Assert.IsNotNull(first);
         Assert.IsNotNull(second);
@@ -61,15 +61,15 @@ public sealed class HashAlgorithmFactoryTests
     public void From_WhenBuilderProvided_ShouldInvokeBuilderOncePerCreate()
     {
         int callCount = 0;
-        var factory = HashAlgorithmFactory.From(() =>
+        DelegateHashAlgorithmFactory<MD5> factory = HashAlgorithmFactory.From(() =>
         {
             callCount++;
             return MD5.Create();
         });
 
-        using (var _ = factory.Create()) { }
-        using (var _ = factory.Create()) { }
-        using (var _ = factory.Create()) { }
+        using (MD5 _ = factory.Create()) { }
+        using (MD5 _ = factory.Create()) { }
+        using (MD5 _ = factory.Create()) { }
 
         Assert.AreEqual(3, callCount);
     }
@@ -81,7 +81,7 @@ public sealed class HashAlgorithmFactoryTests
     [TestMethod]
     public void Create_WhenBuilderThrows_ShouldPropagateException()
     {
-        var factory = HashAlgorithmFactory.From<MD5>(() => throw new InvalidOperationException("boom"));
+        DelegateHashAlgorithmFactory<MD5> factory = HashAlgorithmFactory.From<MD5>(() => throw new InvalidOperationException("boom"));
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {

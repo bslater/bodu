@@ -71,7 +71,7 @@ public partial class CubeHashTests
     [DataRow(int.MaxValue)]
     public void Rounds_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.Rounds = value);
     }
@@ -89,7 +89,7 @@ public partial class CubeHashTests
     [DataRow(4096)]
     public void Rounds_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         int original = algorithm.Rounds;
         algorithm.Rounds = size;
 
@@ -102,7 +102,7 @@ public partial class CubeHashTests
     [TestMethod]
     public void Rounds_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         int round = 100;
         int original = algorithm.Rounds;
         algorithm.Rounds = round;

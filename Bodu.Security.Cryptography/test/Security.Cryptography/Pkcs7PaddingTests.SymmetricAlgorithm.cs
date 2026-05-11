@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Pkcs7PaddingTests.SymmetricAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public sealed partial class Pkcs7PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void Encrypt_WhenInputIsEmpty_ShouldProduceOneBlockAndRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
         int blockBytes = algorithm.BlockSize / 8;
 
         byte[] cipherText = algorithm.Encrypt(System.ReadOnlySpan<byte>.Empty);
@@ -61,7 +61,7 @@ public sealed partial class Pkcs7PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void TransformFinalBlock_WhenInputCountIsZero_ShouldProduceOnePaddedBlock(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
         int blockBytes = algorithm.BlockSize / 8;
 
         using ICryptoTransform transform = algorithm.CreateEncryptor();
@@ -85,7 +85,7 @@ public sealed partial class Pkcs7PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void TransformBlock_WhenInputCountIsZero_ShouldReturnZero(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
         int blockBytes = algorithm.BlockSize / 8;
 
         using ICryptoTransform transform = algorithm.CreateEncryptor();
@@ -108,7 +108,7 @@ public sealed partial class Pkcs7PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenFlushedWithoutWritingAnyData_ShouldProduceOnePaddedBlock(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
         int blockBytes = algorithm.BlockSize / 8;
 
         using ICryptoTransform encryptor = algorithm.CreateEncryptor();
@@ -137,7 +137,7 @@ public sealed partial class Pkcs7PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
 
@@ -162,7 +162,7 @@ public sealed partial class Pkcs7PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenResidualPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
 
@@ -193,7 +193,7 @@ public sealed partial class Pkcs7PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.PKCS7);
         byte[] plaintext = Enumerable.Range(0, 41).Select(i => (byte)(i * 7 + 11)).ToArray();
         int[] chunkSizes = new[] { 1, 3, 5, 7, 11, 13 };
 

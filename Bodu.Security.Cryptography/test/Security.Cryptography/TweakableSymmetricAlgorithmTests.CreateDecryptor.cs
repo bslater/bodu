@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.CreateDecryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void CreateDecryptor_WhenIVIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             algorithm.CreateDecryptor(new byte[algorithm.KeySize / 8], null!, new byte[algorithm.TweakSize / 8]);
@@ -31,7 +31,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void CreateDecryptor_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             algorithm.CreateDecryptor(null!, new byte[algorithm.BlockSize / 8], new byte[algorithm.TweakSize / 8]);
@@ -45,7 +45,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void CreateDecryptor_WhenTweakIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             algorithm.CreateDecryptor(new byte[algorithm.KeySize / 8], new byte[algorithm.BlockSize / 8], null!);
@@ -58,11 +58,11 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void CreateDecryptor_WithKeyAndIV_ShouldUseConfiguredTweak()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.TweakSize = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.GenerateTweak();
 
-        using var decryptor = algorithm.CreateDecryptor(algorithm.Key, algorithm.IV);
+        using ICryptoTransform decryptor = algorithm.CreateDecryptor(algorithm.Key, algorithm.IV);
         Assert.IsNotNull(decryptor);
     }
 
@@ -72,11 +72,11 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void CreateDecryptor_WithoutParameters_ShouldUseConfiguredTweak()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.TweakSize = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.GenerateTweak();
 
-        using var decryptor = algorithm.CreateDecryptor();
+        using ICryptoTransform decryptor = algorithm.CreateDecryptor();
         Assert.IsNotNull(decryptor);
     }
 
@@ -89,16 +89,16 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void CreateEncryptor_WithInvalidTweakLength_ShouldReportTweakLengthInExceptionMessage()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.GenerateKey();
         algorithm.GenerateIV();
 
         byte[] badTweak = new byte[5];
         int expectedBitLength = badTweak.Length * 8;
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            using var _ = algorithm.CreateEncryptor(algorithm.Key, algorithm.IV, badTweak);
+            using ICryptoTransform _ = algorithm.CreateEncryptor(algorithm.Key, algorithm.IV, badTweak);
         });
 
         Assert.IsTrue(
@@ -115,7 +115,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void CreateDecryptor_WhenIvLengthIsInvalid_ShouldThrowCryptographicException_fix()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[] key = new byte[algorithm.KeySize / 8];
         byte[] tweak = new byte[algorithm.TweakSize / 8];
@@ -123,7 +123,7 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            using var _ = algorithm.CreateDecryptor(key, badIv, tweak);
+            using ICryptoTransform _ = algorithm.CreateDecryptor(key, badIv, tweak);
         });
     }
 }

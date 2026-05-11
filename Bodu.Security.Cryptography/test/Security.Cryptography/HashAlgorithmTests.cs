@@ -241,6 +241,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     public static IEnumerable<object[]> GetAlgorithmFields() =>
         TestHelpers.GetFieldInfoForType<TAlgorithm>(
+            excludeReadOnly: true,
             excludeFields: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
 
     /// <summary>
@@ -392,7 +393,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <returns>A task that completes when all incremental lengths have been verified.</returns>
     private async Task AssertIncrementalInputAsync(TVariant variant, IncrementalHashInvoker invoke)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
 
         if (expectedHashes.Length == 0)
@@ -411,7 +412,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             $"(InputBlockSize={specification.InputBlockSize}, coverage={coverage}), " +
             $"but got {expectedHashes.Length}.");
 
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         byte[] input = new byte[maxLength];
 
         try

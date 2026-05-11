@@ -90,7 +90,7 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordLeaf(index: 0, hash: new byte[] { 0x11 });
         diagnostics.RecordLeaf(index: 1, hash: new byte[] { 0x22 });
 
-        var nodes = diagnostics.GetAllNodes();
+        IReadOnlyList<MerkleTreeDiagnosticNode> nodes = diagnostics.GetAllNodes();
         var ordered = nodes.Select(n => (n.Level, n.Index)).ToList();
 
         var expected = new List<(int Level, int Index)>
@@ -115,9 +115,9 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordInternal(level: 1, index: 0, childHashes: [[0x01]], hash: new byte[] { 0xAA });
         diagnostics.RecordLeaf(index: 0, hash: new byte[] { 0x10 });
 
-        var level0 = diagnostics.GetLevel(0);
-        var level1 = diagnostics.GetLevel(1);
-        var level2 = diagnostics.GetLevel(2);
+        IReadOnlyList<MerkleTreeDiagnosticNode> level0 = diagnostics.GetLevel(0);
+        IReadOnlyList<MerkleTreeDiagnosticNode> level1 = diagnostics.GetLevel(1);
+        IReadOnlyList<MerkleTreeDiagnosticNode> level2 = diagnostics.GetLevel(2);
 
         Assert.AreEqual(2, level0.Count);
         Assert.AreEqual(0, level0[0].Index);
@@ -161,7 +161,7 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordLeaf(1, leaf1);
         diagnostics.RecordInternal(level: 1, index: 0, childHashes: [leaf0, leaf1], hash: expectedParent);
 
-        bool ok = diagnostics.Validate(SHA256.Create, out var errors);
+        bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsTrue(ok, $"Validate should pass — got errors: {string.Join(", ", errors)}");
         Assert.AreEqual(0, errors.Count);
@@ -184,7 +184,7 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordLeaf(1, leaf1);
         diagnostics.RecordInternal(level: 1, index: 0, childHashes: [leaf0, leaf1], hash: corruptedParent);
 
-        bool ok = diagnostics.Validate(SHA256.Create, out var errors);
+        bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsFalse(ok);
         Assert.AreEqual(1, errors.Count);
@@ -203,7 +203,7 @@ public sealed class MerkleTreeDiagnosticsTests
         diagnostics.RecordLeaf(0, new byte[] { 0x01 });
         diagnostics.RecordLeaf(1, new byte[] { 0x02 });
 
-        bool ok = diagnostics.Validate(SHA256.Create, out var errors);
+        bool ok = diagnostics.Validate(SHA256.Create, out IReadOnlyList<string>? errors);
 
         Assert.IsTrue(ok);
         Assert.AreEqual(0, errors.Count);

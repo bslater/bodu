@@ -17,8 +17,8 @@ public sealed partial class XtsModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = Enumerable.Repeat((byte)0x33, ExpectedBlockSize).ToArray();
-        var encrypt = CreateTransform(cipher, (byte[])iv.Clone());
-        var decrypt = CreateTransform(cipher, (byte[])iv.Clone());
+        XtsModeTransform encrypt = CreateTransform(cipher, (byte[])iv.Clone());
+        XtsModeTransform decrypt = CreateTransform(cipher, (byte[])iv.Clone());
         var plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
         var ciphertext = new byte[plaintext.Length];
         var recovered = new byte[plaintext.Length];
@@ -40,7 +40,7 @@ public sealed partial class XtsModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
         var iv = new byte[ExpectedBlockSize];
-        var transform = CreateTransform(cipher, iv);
+        XtsModeTransform transform = CreateTransform(cipher, iv);
         // Constructor has already called Encrypt once for T_0.
 
         var input = new byte[ExpectedBlockSize * 2];
@@ -65,7 +65,7 @@ public sealed partial class XtsModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
         var iv = new byte[ExpectedBlockSize];
-        var transform = CreateTransform(cipher, iv);
+        XtsModeTransform transform = CreateTransform(cipher, iv);
         // Constructor: EncryptBlockCount = 1.
 
         var input = new byte[ExpectedBlockSize * 2];
@@ -89,7 +89,7 @@ public sealed partial class XtsModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x55);
         var iv = Enumerable.Repeat((byte)0x7E, ExpectedBlockSize).ToArray();
         var ivCopy = (byte[])iv.Clone();
-        var transform = CreateTransform(cipher, iv);
+        XtsModeTransform transform = CreateTransform(cipher, iv);
 
         var plaintext = new byte[ExpectedBlockSize];
         var output = new byte[ExpectedBlockSize];
@@ -135,7 +135,7 @@ public sealed partial class XtsModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
         var iv = Enumerable.Repeat((byte)0x55, ExpectedBlockSize).ToArray();
-        var transform = CreateTransform(cipher, (byte[])iv.Clone());
+        XtsModeTransform transform = CreateTransform(cipher, (byte[])iv.Clone());
 
         var plaintext = Enumerable.Repeat((byte)0x22, ExpectedBlockSize).ToArray();
         var output = new byte[ExpectedBlockSize];

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmExtensionsTests.AppendData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,7 +36,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenSpanIsEmpty_ShouldNotContributeToHash()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
         algorithm.AppendData(ReadOnlySpan<byte>.Empty);
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
@@ -51,7 +51,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenSpanHasSingleByte_ShouldHashCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
         algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 0xFF }));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
@@ -67,7 +67,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenSpanContainsData_ShouldContributeToFinalHash()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         byte[] data = { 1, 2, 3, 4 };
 
         algorithm.AppendData(new ReadOnlySpan<byte>(data));
@@ -84,7 +84,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
         algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 10, 20 }));
         algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 30, 40 }));
@@ -106,10 +106,10 @@ public partial class HashAlgorithmExtensionsTests
         byte[] data = { 5, 10, 15, 20 };
 
         byte[] expected;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(data);
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(new ReadOnlySpan<byte>(data));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
@@ -124,7 +124,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void AppendData_WhenCalled_ShouldInvokeHashCoreOnce()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         int before = algorithm.HashCoreCallCount;
 
         algorithm.AppendData(new ReadOnlySpan<byte>(new byte[] { 1, 2, 3 }));

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.Key.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Key_WhenSetToInvalidSize_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         byte[]? invalidKey = CryptoTestUtilities.FindInvalidKey(algorithm.LegalKeySizes);
 
@@ -108,7 +108,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void Key_WhenReturnedArrayIsModified_ShouldNotChangeInternalValue()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         int size = algorithm.LegalKeySizes[0].MinSize;
         byte[] expected = Enumerable.Range(1, size / 8).Select(i => (byte)i).ToArray();
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmHelperTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ public sealed class HashAlgorithmHelperTests
     [TestMethod]
     public void HashData_Stream_WhenStreamIsNull_ShouldThrowExactly()
     {
-        var factory = HashAlgorithmFactory.From<MD5>(MD5.Create);
+        DelegateHashAlgorithmFactory<MD5> factory = HashAlgorithmFactory.From<MD5>(MD5.Create);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -82,7 +82,7 @@ public sealed class HashAlgorithmHelperTests
     [TestMethod]
     public async Task HashDataAsync_WhenStreamIsNull_ShouldThrowExactly()
     {
-        var factory = HashAlgorithmFactory.From<MD5>(MD5.Create);
+        DelegateHashAlgorithmFactory<MD5> factory = HashAlgorithmFactory.From<MD5>(MD5.Create);
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
         {
@@ -154,7 +154,7 @@ public sealed class HashAlgorithmHelperTests
     public void HashData_Span_ShouldDisposeAlgorithmAfterUse()
     {
         var probe = new DisposalProbe();
-        var factory = HashAlgorithmFactory.From(() => probe);
+        DelegateHashAlgorithmFactory<DisposalProbe> factory = HashAlgorithmFactory.From(() => probe);
 
         _ = HashAlgorithmHelper.HashData(factory, ReadOnlySpan<byte>.Empty);
 

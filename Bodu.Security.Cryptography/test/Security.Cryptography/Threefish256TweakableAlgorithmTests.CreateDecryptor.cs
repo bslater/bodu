@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Threefish256TweakableAlgorithmTests.CreateDecryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [TestMethod]
     public void CreateDecryptor_WhenTweakIsNull_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using Threefish256 algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -39,7 +39,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [DataRow(32)]
     public void CreateDecryptor_WhenTweakLengthIsInvalid_ShouldThrowExactly(int tweakLength)
     {
-        using var algorithm = CreateAlgorithm();
+        using Threefish256 algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -54,7 +54,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [TestMethod]
     public void CreateDecryptor_WithTweak_WhenCalledAfterDispose_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        Threefish256 algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

@@ -75,7 +75,7 @@ public partial class CubeHashTests
     [DataRow(int.MaxValue)]
     public void InitializationRounds_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.InitializationRounds = value);
     }
@@ -93,7 +93,7 @@ public partial class CubeHashTests
     [DataRow(4096)]
     public void InitializationRounds_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         int original = algorithm.InitializationRounds;
         algorithm.InitializationRounds = size;
 
@@ -106,7 +106,7 @@ public partial class CubeHashTests
     [TestMethod]
     public void InitializationRounds_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         int round = 100;
         int original = algorithm.InitializationRounds;
         algorithm.InitializationRounds = round;
@@ -147,7 +147,7 @@ public partial class CubeHashTests
     [TestMethod]
     public void InitializationRounds_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         byte[] input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 

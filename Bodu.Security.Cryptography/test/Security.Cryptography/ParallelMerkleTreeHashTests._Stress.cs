@@ -53,7 +53,7 @@ public partial class ParallelMerkleTreeHashTests
         using var startGate = new ManualResetEventSlim(false);
         var errors = new ConcurrentBag<string>();
 
-        var tasks = Enumerable.Range(0, parallelism).Select(_ => Task.Run(() =>
+        Task[] tasks = Enumerable.Range(0, parallelism).Select(_ => Task.Run(() =>
         {
             startGate.Wait();
             try
@@ -105,7 +105,7 @@ public partial class ParallelMerkleTreeHashTests
         var results = new ConcurrentDictionary<int, byte[]>();
         var errors = new ConcurrentBag<string>();
 
-        var tasks = Enumerable.Range(0, parallelism).Select(i => Task.Run(() =>
+        Task[] tasks = Enumerable.Range(0, parallelism).Select(i => Task.Run(() =>
         {
             startGate.Wait();
             try
@@ -164,7 +164,7 @@ public partial class ParallelMerkleTreeHashTests
         using var startGate = new ManualResetEventSlim(false);
         int faults = 0;
 
-        var tasks = Enumerable.Range(0, parallelism).Select(_ => Task.Run(() =>
+        Task[] tasks = Enumerable.Range(0, parallelism).Select(_ => Task.Run(() =>
         {
             startGate.Wait();
             try
@@ -219,7 +219,7 @@ public partial class ParallelMerkleTreeHashTests
 
         for (int wave = 0; wave < waves; wave++)
         {
-            var tasks = Enumerable.Range(0, perWave).Select(_ => Task.Run(() =>
+            Task<byte[]>[] tasks = Enumerable.Range(0, perWave).Select(_ => Task.Run(() =>
             {
                 using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
                 return hasher.ComputeHash((byte[])data.Clone());
@@ -257,7 +257,7 @@ public partial class ParallelMerkleTreeHashTests
         using var startGate = new ManualResetEventSlim(false);
         var errors = new ConcurrentBag<string>();
 
-        var tasks = Enumerable.Range(0, parallelism).Select(i => Task.Run(() =>
+        Task[] tasks = Enumerable.Range(0, parallelism).Select(i => Task.Run(() =>
         {
             startGate.Wait();
             try
@@ -308,7 +308,7 @@ public partial class ParallelMerkleTreeHashTests
         var diagnosticsList = new ConcurrentBag<MerkleTreeDiagnostics>();
         var errors = new ConcurrentBag<string>();
 
-        var tasks = Enumerable.Range(0, parallelism).Select(i => Task.Run(() =>
+        Task[] tasks = Enumerable.Range(0, parallelism).Select(i => Task.Run(() =>
         {
             startGate.Wait();
             try
@@ -334,9 +334,9 @@ public partial class ParallelMerkleTreeHashTests
         Assert.AreEqual(0, errors.Count, string.Join("\n", errors));
         Assert.AreEqual(parallelism, diagnosticsList.Count, "Not all diagnostics instances were recorded.");
 
-        foreach (var diag in diagnosticsList)
+        foreach (MerkleTreeDiagnostics diag in diagnosticsList)
         {
-            bool valid = diag.Validate(Factory, out var validationErrors);
+            bool valid = diag.Validate(Factory, out IReadOnlyList<string>? validationErrors);
             Assert.IsTrue(valid, string.Join("; ", validationErrors));
         }
     }

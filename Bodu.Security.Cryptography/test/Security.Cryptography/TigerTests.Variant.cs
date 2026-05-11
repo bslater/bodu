@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TigerTests.Variant.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class TigerTests
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void Variant_Set_WhenValid_ShouldProduceExpectedHash(TigerVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
+        using Tiger algorithm = CreateAlgorithm(variant);
 
         byte[] input = Encoding.ASCII.GetBytes("Test input");
 
@@ -37,9 +37,9 @@ public partial class TigerTests
     [TestMethod]
     public void Variant_Get_WhenDefault_ShouldReturnPearson()
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
 
-        var type = algorithm.Variant;
+        TigerHashingVariant type = algorithm.Variant;
 
         Assert.AreEqual(Bodu.Security.Cryptography.TigerHashingVariant.Tiger, type, "Default Variant should be Tiger.");
     }
@@ -50,7 +50,7 @@ public partial class TigerTests
     [TestMethod]
     public void Variant_Set_WhenHashingStarted_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
         algorithm.TransformBlock(new byte[] { 1, 2, 3 }, 0, 3, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
@@ -65,7 +65,7 @@ public partial class TigerTests
     [TestMethod]
     public void Variant_Set_WhenDisposed_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -80,12 +80,12 @@ public partial class TigerTests
     [TestMethod]
     public void Variant_Get_WhenDisposed_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            var _ = algorithm.Variant;
+            TigerHashingVariant _ = algorithm.Variant;
         });
     }
 
@@ -101,7 +101,7 @@ public partial class TigerTests
     [DataRow(int.MinValue)]
     public void Variant_WhenSetToUndefinedEnum_ShouldThrowExactly(int rawValue)
     {
-        using var algorithm = CreateAlgorithm();
+        using Tiger algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

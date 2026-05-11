@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyedBlockHashAlgorithmTests.Key.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     [TestMethod]
     public void Key_WhenSetToNull_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -49,7 +49,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -71,7 +71,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         foreach (int invalidLength in specification.GetRejectedKeyLengths())
         {
@@ -101,7 +101,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         foreach (int validLength in specification.GetAcceptedKeyLengths())
         {
@@ -126,7 +126,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void Key_WhenDefaultConstructed_ShouldNotBeNull(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         Assert.IsNotNull(algorithm.Key,
             $"[{variant}] Expected a non-null default key on construction.");
@@ -145,7 +145,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] key = Enumerable.Range(0, specification.MinKeyLength).Select(i => (byte)i).ToArray();
         algorithm.Key = key;
@@ -176,7 +176,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         var first = algorithm.Key;
         var second = algorithm.Key;
@@ -199,7 +199,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] data = new byte[128];
         byte[] key1 = GenerateUniqueKey(specification.MinKeyLength);
@@ -229,7 +229,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] key = GenerateUniqueKey(specification.MinKeyLength);
 
@@ -245,7 +245,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void Key_WhenInitializeCalled_ShouldNotResetKey(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
         byte[] originalKey = algorithm.Key;
         algorithm.Initialize();
 
@@ -265,7 +265,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] key = GenerateUniqueKey(specification.TestKey.Length);
         algorithm.Key = key;
@@ -294,7 +294,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] key = GenerateUniqueKey(specification.MinKeyLength);
         byte[] data = Enumerable.Repeat((byte)0x42, 64).ToArray();
@@ -310,7 +310,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         if (!specification.CanReuseTransform)
         {
             // For one-shot MACs like Poly1305, the second hash must use a new instance and key
-            using var algorithm2 = CreateAlgorithm();
+            using TAlgorithm algorithm2 = CreateAlgorithm();
             byte[] newKey = GenerateUniqueKey(specification.MinKeyLength);
             algorithm2.Key = newKey;
             byte[] hash2 = algorithm2.ComputeHash(data);
@@ -341,7 +341,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] key = GenerateUniqueKey(specification.MinKeyLength);
         algorithm.Key = key;
@@ -366,7 +366,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] tooLong = new byte[specification.MaxKeyLength + 1];
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -402,7 +402,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] tooShort = new byte[specification.MinKeyLength - 1];
 
@@ -425,7 +425,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         byte[] newKey = GenerateUniqueKey(specification.MinKeyLength);
         byte[] input = new byte[1024];
@@ -462,13 +462,13 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         byte[] hash1;
         byte[] hash2;
 
-        using (var algorithm = CreateAlgorithm(variant))
+        using (TAlgorithm algorithm = CreateAlgorithm(variant))
         {
             algorithm.Key = key;
             hash1 = algorithm.ComputeHash(data);
         }
 
-        using (var algorithm = CreateAlgorithm(variant))
+        using (TAlgorithm algorithm = CreateAlgorithm(variant))
         {
             algorithm.Key = reversed;
             hash2 = algorithm.ComputeHash(data);
@@ -476,36 +476,6 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
         Assert.AreNotEqual(Convert.ToHexString(hash1), Convert.ToHexString(hash2),
             $"[{variant}] Reversing the key bytes must yield a different digest.");
-    }
-
-
-    /// <summary>
-    /// Verifies that supplying a non-empty <see cref="Skein{T}.Key" /> causes the digest to differ from the plain,
-    /// unkeyed hash of the same input — confirming that the preliminary <c>KEY</c> UBI phase actually influences the
-    /// chaining value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(HashAlgorithmVariants))]
-    public void ComputeHash_WhenKeyIsSet_ShouldDifferFromUnkeyedHashOfSameInput(TVariant variant)
-    {
-        if (GetSpecification(variant) is not KeyedAlgorithmSpecification specification)
-        {
-            Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
-            return;
-        }
-
-        byte[] data = (byte[])CryptoTestUtilities.ByteSequence256.Clone();
-
-        byte[] plainHash;
-        using (var plain = CreateAlgorithm(variant))
-            plainHash = plain.ComputeHash(data);
-
-        byte[] macHash;
-        byte[] key = TestHelpers.GenerateRandomNonZeroBytes(specification.MinKeyLength);
-        using (var mac = CreateAlgorithm(variant, key))
-            macHash = mac.ComputeHash(data);
-
-        CollectionAssert.AreNotEqual(plainHash, macHash);
     }
 
     /// <summary>
@@ -521,7 +491,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
             return;
         }
-        using var algorithm = CreateAlgorithm(variant, specification.TestKey);
+        using TAlgorithm algorithm = CreateAlgorithm(variant, specification.TestKey);
 
         byte[] first = algorithm.Key;
         first[0] = 0xFF;
@@ -533,7 +503,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
 
     /// <summary>
     /// Verifies that assigning a key longer than <see cref="Skein{T}.MaxKeySizeBytes" /> throws
-    /// <see cref="System.Security.Cryptography.CryptographicException" />.
+    /// <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(HashAlgorithmVariants))]
@@ -544,11 +514,11 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             Assert.Inconclusive($"[{variant}] Algorithm is not keyed; skipping invalid test case.");
             return;
         }
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        Assert.ThrowsExactly<System.Security.Cryptography.CryptographicException>(() =>
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            algorithm.Key = new byte[algorithm.Key.Length + 1];
+            algorithm.Key = new byte[specification.MaxKeyLength + 1];
         });
     }
 

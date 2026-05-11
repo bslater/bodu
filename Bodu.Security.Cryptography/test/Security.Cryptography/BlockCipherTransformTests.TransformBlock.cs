@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTransformTests.TransformBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -375,7 +375,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void TransformBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldThrowCryptographicException()
     {
-        using var transform = CreateAlgorithm();
+        using TCryptoTransform transform = CreateAlgorithm();
 
         if (transform.InputBlockSize <= 1)
         {

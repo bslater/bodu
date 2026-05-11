@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishBlockCipherTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ internal sealed partial class TwofishBlockCipherTests
     /// <inheritdoc />
     protected override TwofishBlockCipher CreateBlockCipher(BlockCipherKeyVariant variant)
     {
-        var specification = GetSpecification(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
         return new TwofishBlockCipher(specification.TestKey);
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Threefish256TweakableAlgorithmTests.TweakSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [TestMethod]
     public void TweakSize_WhenSetToZero_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using Threefish256 algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -41,7 +41,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [DataRow(-1)]
     public void TweakSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using Threefish256 algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

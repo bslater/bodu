@@ -17,7 +17,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     [TestMethod]
     public void PadUnpad_RoundTrip_ShouldReturnOriginalForAllResidualLengths()
     {
-        var padding = CreatePadding();
+        TPadding padding = CreatePadding();
 
         for (int residual = 0; residual < BlockSize; residual++)
         {

@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso10126PaddingTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Security.Cryptography;
 
@@ -15,7 +16,7 @@ public sealed partial class Iso10126PaddingTests
     [TestMethod]
     public void Pad_WhenInputHasResidual_ShouldWritePadLengthInTrailingByte()
     {
-        var padding = CreatePadding();
+        Iso10126Padding padding = CreatePadding();
         byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
         byte[] padded = padding.Pad(plaintext, BlockSize);
@@ -34,7 +35,7 @@ public sealed partial class Iso10126PaddingTests
     {
         // Residual leaves 10 pad bytes (9 random interior + 1 length) — enough room that
         // a repeat collision across two draws is astronomically unlikely.
-        var padding = CreatePadding();
+        Iso10126Padding padding = CreatePadding();
         byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 10);
 
         byte[] first = padding.Pad(plaintext, BlockSize);

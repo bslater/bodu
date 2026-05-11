@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso7816_4PaddingTests.SymmetricAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed partial class Iso7816_4PaddingTests
 {
     /// <summary>
     /// Verifies that an empty plaintext encrypted through a <see cref="CryptoStream" /> under
-    /// <see cref="BlockPaddingMode.ISO7816_4" /> produces exactly one block of ciphertext (the
+    /// <see cref="BoduPaddingMode.ISO7816_4" /> produces exactly one block of ciphertext (the
     /// all-pad block containing <c>0x80</c> followed by zero bytes) and round-trips back to an
     /// empty plaintext on decrypt.
     /// </summary>
@@ -31,7 +31,7 @@ public sealed partial class Iso7816_4PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenEmptyPlaintext_ShouldEmitOnePaddedBlockAndRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, BlockPaddingMode.ISO7816_4);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, BlockPaddingMode.ISO7816_4);
         int blockBytes = algorithm.BlockSize / 8;
 
         byte[] cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
@@ -47,7 +47,7 @@ public sealed partial class Iso7816_4PaddingTests
 
     /// <summary>
     /// Verifies that a block-aligned plaintext round-trips through <see cref="CryptoStream" />
-    /// under <see cref="BlockPaddingMode.ISO7816_4" /> — ISO 7816-4 always appends a full block of
+    /// under <see cref="BoduPaddingMode.ISO7816_4" /> — ISO 7816-4 always appends a full block of
     /// padding when the input is already aligned, and the decrypt pipeline strips it back off.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
@@ -55,7 +55,7 @@ public sealed partial class Iso7816_4PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, BlockPaddingMode.ISO7816_4);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, BlockPaddingMode.ISO7816_4);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
 
@@ -72,7 +72,7 @@ public sealed partial class Iso7816_4PaddingTests
 
     /// <summary>
     /// Verifies that a sub-block plaintext round-trips through <see cref="CryptoStream" /> under
-    /// <see cref="BlockPaddingMode.ISO7816_4" /> — the trailing residual is padded out to the next
+    /// <see cref="BoduPaddingMode.ISO7816_4" /> — the trailing residual is padded out to the next
     /// block boundary, and the decrypt pipeline recovers the original prefix.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
@@ -80,7 +80,7 @@ public sealed partial class Iso7816_4PaddingTests
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenResidualPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, BlockPaddingMode.ISO7816_4);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, BlockPaddingMode.ISO7816_4);
         int blockBytes = algorithm.BlockSize / 8;
         byte[] plaintext = Enumerable.Range(0, blockBytes + 3).Select(i => (byte)(i + 1)).ToArray();
 
@@ -101,14 +101,14 @@ public sealed partial class Iso7816_4PaddingTests
     /// Verifies that a multi-write <see cref="CryptoStream" /> session — calling
     /// <see cref="System.IO.Stream.Write(byte[], int, int)" /> several times with chunks of varying
     /// sizes that do not align with the cipher's block boundary — still produces ciphertext that
-    /// decrypts to the concatenated plaintext under <see cref="BlockPaddingMode.ISO7816_4" />.
+    /// decrypts to the concatenated plaintext under <see cref="BoduPaddingMode.ISO7816_4" />.
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
     [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenWritingInUnalignedChunks_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, BlockPaddingMode.ISO7816_4);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, BlockPaddingMode.ISO7816_4);
         byte[] plaintext = Enumerable.Range(0, 41).Select(i => (byte)(i * 7 + 11)).ToArray();
         int[] chunkSizes = new[] { 1, 3, 5, 7, 11, 13 };
 

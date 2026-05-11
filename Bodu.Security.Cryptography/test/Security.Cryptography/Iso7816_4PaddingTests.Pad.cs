@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso7816_4PaddingTests.Pad.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public sealed partial class Iso7816_4PaddingTests
     [TestMethod]
     public void Pad_WhenInputHasResidual_ShouldWriteTerminatorFollowedByZeroBytes()
     {
-        var padding = CreatePadding();
+        Iso7816_4Padding padding = CreatePadding();
         byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
         byte[] padded = padding.Pad(plaintext, BlockSize);
@@ -37,7 +37,7 @@ public sealed partial class Iso7816_4PaddingTests
     [TestMethod]
     public void Pad_WhenInputIsBlockAligned_ShouldAppendFullBlockOfPadding()
     {
-        var padding = CreatePadding();
+        Iso7816_4Padding padding = CreatePadding();
         byte[] plaintext = CreatePlaintextWithResidual(0);
 
         byte[] padded = padding.Pad(plaintext, BlockSize);
