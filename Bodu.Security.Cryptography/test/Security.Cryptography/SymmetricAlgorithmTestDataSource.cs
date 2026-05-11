@@ -18,11 +18,14 @@ namespace Bodu.Security.Cryptography;
 /// These methods must live in a non-generic static class so that MSTest's reflection-based method
 /// lookup — which does not apply <see cref="System.Reflection.BindingFlags.FlattenHierarchy" /> —
 /// can locate them directly by type reference rather than traversing a generic base class.
+/// MSTest 4.x also requires <c>DynamicDataDisplayNameDeclaringType</c> to be set explicitly;
+/// the constructor-supplied type is used only for the data-source method, not the display-name method.
 /// </para>
 /// <para>
 /// Use with <c>[DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData),
 /// typeof(SymmetricAlgorithmTestDataSource),
-/// DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName))]</c>.
+/// DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName),
+/// DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]</c>.
 /// </para>
 /// </remarks>
 internal static class SymmetricAlgorithmTestDataSource
