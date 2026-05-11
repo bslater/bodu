@@ -79,15 +79,15 @@ public abstract class SipHash<T>
 
     private static readonly int s_blockSize = 8;
 
-    private static readonly ulong[] s_initialStates = new ulong[]
-    {
+    private static readonly ulong[] s_initialStates =
+    [
         0x736f6d6570736575UL,
         0x646f72616e646f6dUL,
         0x6c7967656e657261UL,
         0x7465646279746573UL,
-    };
+    ];
 
-    private static readonly int[] s_validHashSizes = { 64, 128 };
+    private static readonly int[] s_validHashSizes = [64, 128];
     private int _compressionRounds;
     private int _finalizationRounds;
     private ulong _v0, _v1, _v2, _v3;

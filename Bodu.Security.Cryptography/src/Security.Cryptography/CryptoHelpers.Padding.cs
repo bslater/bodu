@@ -85,7 +85,7 @@ public static partial class CryptoHelpers
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
 
         var unpadded = count - padCount;
-        source.Slice(0, unpadded).CopyTo(destination);
+        source[..unpadded].CopyTo(destination);
         return unpadded;
     }
 

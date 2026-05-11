@@ -196,7 +196,7 @@ public abstract class AsconXof<T>
             }
 
             var toCopy = Math.Min(this._squeezeBufAvailable, output.Length - outOff);
-            this._squeezeBuffer.AsSpan(this._squeezeBufOffset, toCopy).CopyTo(output.Slice(outOff));
+            this._squeezeBuffer.AsSpan(this._squeezeBufOffset, toCopy).CopyTo(output[outOff..]);
             this._squeezeBufOffset += toCopy;
             this._squeezeBufAvailable -= toCopy;
             outOff += toCopy;
@@ -288,47 +288,6 @@ public abstract class AsconXof<T>
 #endif
     }
 
-    /// <summary>
-    /// Accumulates <paramref name="data"/> into the residual buffer, flushing complete 8-byte blocks into the state.
-    /// </summary>
-    /// <param name="data">The bytes to absorb.</param>
-    private void ProcessInputBlocks(ReadOnlySpan<byte> data)
-    {
-        var pos = 0;
-
-        if (this._residualBytes > 0)
-        {
-            var needed = BlockSize - this._residualBytes;
-            if (data.Length >= needed)
-            {
-                data.Slice(0, needed).CopyTo(this._residualBuffer.AsSpan(this._residualBytes));
-                this._state.AbsorbRate64(this._residualBuffer);
-                this._state.Permute(this._absorptionRounds);
-                this._residualBytes = 0;
-                pos += needed;
-            }
-            else
-            {
-                data.CopyTo(this._residualBuffer.AsSpan(this._residualBytes));
-                this._residualBytes += data.Length;
-                return;
-            }
-        }
-
-        while (pos + BlockSize <= data.Length)
-        {
-            this._state.AbsorbRate64(data.Slice(pos, BlockSize));
-            this._state.Permute(this._absorptionRounds);
-            pos += BlockSize;
-        }
-
-        var remaining = data.Length - pos;
-        if (remaining > 0)
-        {
-            data.Slice(pos, remaining).CopyTo(this._residualBuffer.AsSpan(0, remaining));
-            this._residualBytes = remaining;
-        }
-    }
 
     /// <summary>
     /// Finalises a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte
@@ -358,6 +317,47 @@ public abstract class AsconXof<T>
     protected void XorS4(ulong value) =>
         this._state.S4 ^= value;
 
+    /// <summary>
+    /// Accumulates <paramref name="data"/> into the residual buffer, flushing complete 8-byte blocks into the state.
+    /// </summary>
+    /// <param name="data">The bytes to absorb.</param>
+    private void ProcessInputBlocks(ReadOnlySpan<byte> data)
+    {
+        var pos = 0;
+
+        if (this._residualBytes > 0)
+        {
+            var needed = BlockSize - this._residualBytes;
+            if (data.Length >= needed)
+            {
+                data[..needed].CopyTo(this._residualBuffer.AsSpan(this._residualBytes));
+                this._state.AbsorbRate64(this._residualBuffer);
+                this._state.Permute(this._absorptionRounds);
+                this._residualBytes = 0;
+                pos += needed;
+            }
+            else
+            {
+                data.CopyTo(this._residualBuffer.AsSpan(this._residualBytes));
+                this._residualBytes += data.Length;
+                return;
+            }
+        }
+
+        while (pos + BlockSize <= data.Length)
+        {
+            this._state.AbsorbRate64(data.Slice(pos, BlockSize));
+            this._state.Permute(this._absorptionRounds);
+            pos += BlockSize;
+        }
+
+        var remaining = data.Length - pos;
+        if (remaining > 0)
+        {
+            data.Slice(pos, remaining).CopyTo(this._residualBuffer.AsSpan(0, remaining));
+            this._residualBytes = remaining;
+        }
+    }
     /// <summary>
     /// Transitions from the absorption phase to the squeeze phase: pads the residual, applies Ascon-p12, and populates
     /// the first squeeze block.

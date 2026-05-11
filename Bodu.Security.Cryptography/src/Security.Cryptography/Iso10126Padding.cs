@@ -74,7 +74,7 @@ public sealed class Iso10126Padding : IPaddingStrategy
             RandomNumberGenerator.Fill(interior);
         }
 
-        result[result.Length - 1] = (byte)paddingLength;
+        result[^1] = (byte)paddingLength;
 
         return result;
     }
@@ -104,6 +104,6 @@ public sealed class Iso10126Padding : IPaddingStrategy
         if (padLen < 1 || padLen > blockSize)
             throw new CryptographicException("Invalid ISO 10126 padding.");
 
-        return input.Slice(0, length - padLen).ToArray();
+        return input[..(length - padLen)].ToArray();
     }
 }

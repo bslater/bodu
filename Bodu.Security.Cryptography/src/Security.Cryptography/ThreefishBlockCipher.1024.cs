@@ -58,8 +58,8 @@ public sealed class Threefish1024Cipher
 
     /// <inheritdoc />
 #pragma warning disable SA1137 // Elements should have the same indentation
-    protected override int[] RotationSchedule => new int[]
-    {
+    protected override int[] RotationSchedule =>
+    [
         24, 13,  8, 47,  8, 17, 22, 37,
         38, 19, 10, 55, 49, 18, 23, 52,
         33,  4, 51, 13, 34, 41, 59, 17,
@@ -68,7 +68,7 @@ public sealed class Threefish1024Cipher
         16, 34, 56, 51,  4, 53, 42, 41,
         31, 44, 47, 46, 19, 42, 44, 25,
          9, 48, 35, 52, 23, 31, 37, 20
-    };
+    ];
 #pragma warning restore SA1137 // Elements should have the same indentation
 
     /// <inheritdoc />

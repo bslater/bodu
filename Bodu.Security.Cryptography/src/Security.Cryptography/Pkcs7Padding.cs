@@ -124,6 +124,6 @@ public sealed class Pkcs7Padding : IPaddingStrategy
         if (valid == 0)
             throw new CryptographicException("Invalid PKCS#7 padding.");
 
-        return input.Slice(0, length - padLen).ToArray();
+        return input[..(length - padLen)].ToArray();
     }
 }

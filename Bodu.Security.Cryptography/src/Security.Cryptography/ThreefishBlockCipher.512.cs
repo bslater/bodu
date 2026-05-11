@@ -57,13 +57,13 @@ public sealed class Threefish512Cipher
     protected override int BlockWords => 8;
 
     /// <inheritdoc />
-    protected override int[] RotationSchedule => new int[]
-    {
+    protected override int[] RotationSchedule =>
+    [
         46, 36, 19, 37, 33, 27, 14, 42,
         17, 49, 36, 39, 44, 9, 54, 56,
         39, 30, 34, 24, 13, 50, 10, 17,
         25, 29, 39, 43, 8, 35, 56, 22
-    };
+    ];
 
     /// <inheritdoc />
     protected override int Rounds => 72;

@@ -84,7 +84,7 @@ public abstract partial class Skein<T>
             | (final ? 1UL << 63 : 0UL);
 
         BinaryPrimitives.WriteUInt64LittleEndian(destination, position);
-        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(sizeof(ulong)), t1);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[sizeof(ulong)..], t1);
     }
 
     /// <summary>
@@ -97,10 +97,10 @@ public abstract partial class Skein<T>
     {
         destination.Clear();
         BinaryPrimitives.WriteUInt32LittleEndian(destination, SchemaIdentifier);
-        BinaryPrimitives.WriteUInt16LittleEndian(destination.Slice(4), SchemaVersion);
+        BinaryPrimitives.WriteUInt16LittleEndian(destination[4..], SchemaVersion);
 
         // Bytes 6..7 are reserved and remain zero. Bytes 8..15 encode the output size in bits as a little-endian u64.
-        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(8), (ulong)this.HashSizeValue);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[8..], (ulong)this.HashSizeValue);
 
         // Tree-related fields at offsets 16..18 remain zero for sequential hashing.
     }
@@ -175,9 +175,9 @@ public abstract partial class Skein<T>
         if (this._pendingBytes > 0 && this._pendingBytes + source.Length > blockSize)
         {
             var toCopy = blockSize - this._pendingBytes;
-            source.Slice(0, toCopy).CopyTo(this._pendingBlock.AsSpan(this._pendingBytes));
+            source[..toCopy].CopyTo(this._pendingBlock.AsSpan(this._pendingBytes));
             this._pendingBytes = blockSize;
-            source = source.Slice(toCopy);
+            source = source[toCopy..];
 
             // Only flush the pending block once we know additional bytes exist to distinguish it from the Final block.
             this._messageBytesProcessed += (ulong)blockSize;
@@ -197,13 +197,13 @@ public abstract partial class Skein<T>
         {
             this._messageBytesProcessed += (ulong)blockSize;
             this.Ubi(
-                source.Slice(0, blockSize),
+                source[..blockSize],
                 SkeinTweakType.Msg,
                 first: !this._hasProcessedAnyMessageBlock,
                 final: false,
                 position: this._messageBytesProcessed);
             this._hasProcessedAnyMessageBlock = true;
-            source = source.Slice(blockSize);
+            source = source[blockSize..];
         }
 
         // Buffer the trailing bytes (which may form a full block or a partial one); they are flushed by HashFinal.
@@ -251,7 +251,7 @@ public abstract partial class Skein<T>
 
             var remaining = destination.Length - written;
             var toCopy = remaining < blockSize ? remaining : blockSize;
-            MemoryMarshal.AsBytes(this._state.AsSpan()).Slice(0, toCopy).CopyTo(destination.Slice(written));
+            MemoryMarshal.AsBytes(this._state.AsSpan())[..toCopy].CopyTo(destination[written..]);
             written += toCopy;
             counter++;
         }

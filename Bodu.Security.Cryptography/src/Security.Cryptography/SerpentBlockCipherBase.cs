@@ -70,8 +70,8 @@ public abstract partial class SerpentBlockCipherBase
     /// <summary>
     /// The eight Serpent inverse S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.
     /// </summary>
-    private static readonly byte[] s_invSBoxes = new byte[]
-    {
+    private static readonly byte[] s_invSBoxes =
+    [
         // InvS0
         13, 3, 11, 0, 10, 6, 5, 12, 1, 14, 4, 7, 15, 9, 8, 2,
         // InvS1
@@ -88,7 +88,7 @@ public abstract partial class SerpentBlockCipherBase
         15, 10, 1, 13, 5, 3, 6, 0, 4, 9, 14, 7, 2, 12, 8, 11,
         // InvS7
         3, 0, 6, 13, 9, 14, 15, 8, 5, 12, 11, 7, 10, 1, 4, 2,
-    };
+    ];
 
     /// <summary>
     /// Finalises the instance by releasing unmanaged resources before it is reclaimed by garbage collection.

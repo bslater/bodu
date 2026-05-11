@@ -177,7 +177,7 @@ public sealed class Poly1305
 
         // Convert padded input block into 130-bit number split into 5 26-bit limbs (as per RFC)
         var t0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
-        var t1 = BinaryPrimitives.ReadUInt64LittleEndian(padded.Slice(8));
+        var t1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
         h0 += (uint)(t0 & 0x3ffffff);
         h1 += (uint)((t0 >> 26) & 0x3ffffff);
         h2 += (uint)(((t0 >> 52) | (t1 << 12)) & 0x3ffffff);
@@ -192,11 +192,11 @@ public sealed class Poly1305
         ulong r0 = this._r[0], r1 = this._r[1], r2 = this._r[2], r3 = this._r[3], r4 = this._r[4];
 
         // Compute limb products with optimized carry structure
-        var t00 = h0 * r0 + h1 * this._s[3] + h2 * this._s[2] + h3 * this._s[1] + h4 * this._s[0];
-        var t01 = h0 * r1 + h1 * r0 + h2 * this._s[3] + h3 * this._s[2] + h4 * this._s[1];
-        var t02 = h0 * r2 + h1 * r1 + h2 * r0 + h3 * this._s[3] + h4 * this._s[2];
-        var t03 = h0 * r3 + h1 * r2 + h2 * r1 + h3 * r0 + h4 * this._s[3];
-        var t04 = h0 * r4 + h1 * r3 + h2 * r2 + h3 * r1 + h4 * r0;
+        var t00 = (h0 * r0) + (h1 * this._s[3]) + (h2 * this._s[2]) + (h3 * this._s[1]) + (h4 * this._s[0]);
+        var t01 = (h0 * r1) + (h1 * r0) + (h2 * this._s[3]) + (h3 * this._s[2]) + (h4 * this._s[1]);
+        var t02 = (h0 * r2) + (h1 * r1) + (h2 * r0) + (h3 * this._s[3]) + (h4 * this._s[2]);
+        var t03 = (h0 * r3) + (h1 * r2) + (h2 * r1) + (h3 * r0) + (h4 * this._s[3]);
+        var t04 = (h0 * r4) + (h1 * r3) + (h2 * r2) + (h3 * r1) + (h4 * r0);
 
         // Perform carry propagation and modular reduction mod 2^130 - 5
         t01 += t00 >> 26; h0 = (uint)(t00 & Mask26);
@@ -241,19 +241,19 @@ public sealed class Poly1305
         var c = ((int)(h4 >> 26) - 1) * 5L;
 
         c += (long)this._key[0] + (h0 | (h1 << 26));
-        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(0), (uint)c);
+        BinaryPrimitives.WriteUInt32LittleEndian(tag[..], (uint)c);
         c >>= 32;
 
         c += (long)this._key[1] + ((h1 >> 6) | (h2 << 20));
-        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(4), (uint)c);
+        BinaryPrimitives.WriteUInt32LittleEndian(tag[4..], (uint)c);
         c >>= 32;
 
         c += (long)this._key[2] + ((h2 >> 12) | (h3 << 14));
-        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(8), (uint)c);
+        BinaryPrimitives.WriteUInt32LittleEndian(tag[8..], (uint)c);
         c >>= 32;
 
         c += (long)this._key[3] + ((h3 >> 18) | (h4 << 8));
-        BinaryPrimitives.WriteUInt32LittleEndian(tag.Slice(12), (uint)c);
+        BinaryPrimitives.WriteUInt32LittleEndian(tag[12..], (uint)c);
 
 #if !NET6_0_OR_GREATER
         // Mark the instance as finalised so the base-class HashCore/HashFinal guards
@@ -296,10 +296,10 @@ public sealed class Poly1305
 
         // Load and clamp the first 128 bits of the key as the polynomial 'r' key Clamp 'r' by setting/clearing specific bits to avoid
         // vulnerabilities as per RFC 8439, Section 2.5.1
-        var t0 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(0));
-        var t1 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(4));
-        var t2 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(8));
-        var t3 = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(12));
+        var t0 = BinaryPrimitives.ReadUInt32LittleEndian(key[..]);
+        var t1 = BinaryPrimitives.ReadUInt32LittleEndian(key[4..]);
+        var t2 = BinaryPrimitives.ReadUInt32LittleEndian(key[8..]);
+        var t3 = BinaryPrimitives.ReadUInt32LittleEndian(key[12..]);
 
         // Split 128-bit r into 5 x 26-bit limbs with clamping (see RFC for bitmask values)
         this._r[0] = t0 & 0x03FFFFFFU;
@@ -315,9 +315,9 @@ public sealed class Poly1305
         this._s[3] = this._r[4] * 5;
 
         // Load the second half of the key (s), which will be added during final tag computation
-        this._key[0] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(16));
-        this._key[1] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(20));
-        this._key[2] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(24));
-        this._key[3] = BinaryPrimitives.ReadUInt32LittleEndian(key.Slice(28));
+        this._key[0] = BinaryPrimitives.ReadUInt32LittleEndian(key[16..]);
+        this._key[1] = BinaryPrimitives.ReadUInt32LittleEndian(key[20..]);
+        this._key[2] = BinaryPrimitives.ReadUInt32LittleEndian(key[24..]);
+        this._key[3] = BinaryPrimitives.ReadUInt32LittleEndian(key[28..]);
     }
 }

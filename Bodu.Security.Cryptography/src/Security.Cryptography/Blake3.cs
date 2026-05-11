@@ -100,10 +100,10 @@ public sealed class Blake3
     /// the first eight prime numbers, identical to the SHA-256 IV.
     /// </summary>
     private static readonly uint[] s_iv =
-    {
+    [
         0x6A09E667u, 0xBB67AE85u, 0x3C6EF372u, 0xA54FF53Au,
         0x510E527Fu, 0x9B05688Cu, 0x1F83D9ABu, 0x5BE0CD19u,
-    };
+    ];
 
     /// <summary>
     /// The per-round message word permutation table (§2.4 of the BLAKE3 specification).
@@ -458,7 +458,7 @@ public sealed class Blake3
         var words = new uint[16];
 
         for (var i = 0; i < 16; i++)
-            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded.Slice(i * 4));
+            words[i] = BinaryPrimitives.ReadUInt32LittleEndian(padded[(i * 4)..]);
 
         return words;
     }
@@ -491,7 +491,7 @@ public sealed class Blake3
         // Parent nodes always use the IV as their chaining value input, counter = 0.
         var outState = Compress(s_iv, blockWords, 0UL, BlockSize, flags);
 
-        return new uint[] { outState[0], outState[1], outState[2], outState[3], outState[4], outState[5], outState[6], outState[7] };
+        return [outState[0], outState[1], outState[2], outState[3], outState[4], outState[5], outState[6], outState[7]];
     }
 
     // ---- tree-merging stack helpers ----
@@ -517,7 +517,7 @@ public sealed class Blake3
         // Merge while the top-of-stack subtree and the incoming CV form a balanced pair.
         while (_cvStack.Count > 0 && IsSubtreeComplete(chunkIdx, _cvStack.Count))
         {
-            var left = _cvStack[_cvStack.Count - 1];
+            var left = _cvStack[^1];
             _cvStack.RemoveAt(_cvStack.Count - 1);
             cv = ParentCv(left, cv, isRoot: false);
         }

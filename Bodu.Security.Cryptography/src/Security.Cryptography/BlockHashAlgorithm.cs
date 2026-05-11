@@ -136,7 +136,7 @@ public abstract class BlockHashAlgorithm<T>
 
         if (this.ShouldPadFinalBlock())
         {
-            var finalBlock = this.PadBlock(this._residualBlock.Span.Slice(0, this._residualBytes), this._totalBytes);
+            var finalBlock = this.PadBlock(this._residualBlock.Span[..this._residualBytes], this._totalBytes);
 
             if (this.AllowUnalignedFinalBlock)
             {
@@ -150,7 +150,7 @@ public abstract class BlockHashAlgorithm<T>
         }
         else if (this._residualBytes > 0)
         {
-            this.ProcessBlock(this._residualBlock.Span.Slice(0, this._residualBytes));
+            this.ProcessBlock(this._residualBlock.Span[..this._residualBytes]);
         }
 
         return this.ProcessFinalBlock();

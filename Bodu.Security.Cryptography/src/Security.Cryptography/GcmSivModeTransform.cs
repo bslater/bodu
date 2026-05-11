@@ -182,8 +182,8 @@ public sealed class GcmSivModeTransform
 
             // Encrypt plaintext with CTR(K_enc) seeded from tag.
             var ctrIv = BuildCtrIv(tag);
-            CtrEncrypt(plaintext, output.Slice(0, plaintext.Length), ctrIv);
-            tag.CopyTo(output.Slice(plaintext.Length));
+            CtrEncrypt(plaintext, output[..plaintext.Length], ctrIv);
+            tag.CopyTo(output[plaintext.Length..]);
             return required;
         }
         finally
@@ -207,18 +207,18 @@ public sealed class GcmSivModeTransform
 
         try
         {
-            ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-            ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
+            ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
+            ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
             // Decrypt CTR.
             var ctrIv = BuildCtrIv(receivedTag.ToArray());
-            CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), ctrIv);
+            CtrEncrypt(ciphertext, output[..plaintextLength], ctrIv);
 
             // Recompute and verify tag.
-            var expectedTag = ComputeTag(this._aad.AsSpan(), output.Slice(0, plaintextLength));
+            var expectedTag = ComputeTag(this._aad.AsSpan(), output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
                 throw new CryptographicException("GCM-SIV authentication tag verification failed.");
             }
             return plaintextLength;
@@ -227,6 +227,20 @@ public sealed class GcmSivModeTransform
         {
             this._completed = true;
         }
+    }
+
+    /// <summary>
+    /// Releases the resources used by this instance and clears retained authentication key, nonce,
+    /// associated-data state, and the derived encryption cipher.
+    /// </summary>
+    /// <remarks>
+    /// The supplied master cipher is not disposed by this type. Ownership of the master cipher remains with the caller.
+    /// The derived encryption cipher created by the supplied factory is owned by this transform and is disposed here.
+    /// </remarks>
+    public void Dispose()
+    {
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
     }
 
     /// <summary>
@@ -246,20 +260,6 @@ public sealed class GcmSivModeTransform
         if (this._completed)
             throw new InvalidOperationException(
                 "This GCM-SIV transform has already completed and cannot be reused. Create a new instance per message.");
-    }
-
-    /// <summary>
-    /// Releases the resources used by this instance and clears retained authentication key, nonce,
-    /// associated-data state, and the derived encryption cipher.
-    /// </summary>
-    /// <remarks>
-    /// The supplied master cipher is not disposed by this type. Ownership of the master cipher remains with the caller.
-    /// The derived encryption cipher created by the supplied factory is owned by this transform and is disposed here.
-    /// </remarks>
-    public void Dispose()
-    {
-        this.Dispose(disposing: true);
-        GC.SuppressFinalize(this);
     }
 
     /// <summary>
@@ -295,7 +295,7 @@ public sealed class GcmSivModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed) { this._aad = Array.Empty<byte>(); this._aadProcessed = true; }
+        if (!this._aadProcessed) { this._aad = []; this._aadProcessed = true; }
     }
 
     /// <summary>
@@ -415,7 +415,7 @@ public sealed class GcmSivModeTransform
     /// <param name="data">The input bytes to fold into the POLYVAL state.</param>
     private void PolyvalUpdate(byte[] state, ReadOnlySpan<byte> data)
     {
-        var blockSize = 16;
+        const int blockSize = 16;
         for (var offset = 0; offset < data.Length; offset += blockSize)
         {
             var block = new byte[blockSize];

@@ -145,7 +145,7 @@ public sealed class EaxModeTransform
             hPrime = Omac(1, this._aad!);
 
             // CTR-encrypt plaintext into output[..plaintext.Length] using N' as the initial counter.
-            Span<byte> ciphertext = output.Slice(0, plaintext.Length);
+            Span<byte> ciphertext = output[..plaintext.Length];
             CtrEncrypt(plaintext, ciphertext, nPrime);
 
             cPrime = Omac(2, ciphertext);
@@ -185,8 +185,8 @@ public sealed class EaxModeTransform
 
         EnsureAadProcessed();
 
-        ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-        ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
+        ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
+        ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
         byte[]? nPrime = null;
         byte[]? hPrime = null;
@@ -208,11 +208,11 @@ public sealed class EaxModeTransform
             // aligned with AsconAead128.Decrypt.
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
                 throw new CryptographicException("EAX authentication tag verification failed.");
             }
 
-            CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), nPrime);
+            CtrEncrypt(ciphertext, output[..plaintextLength], nPrime);
 
             return plaintextLength;
         }
@@ -227,17 +227,6 @@ public sealed class EaxModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
-    /// decrypted a message. EAX transforms are single-use; create a fresh instance per message.
-    /// </summary>
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This EAX transform has already completed and cannot be reused. Create a new instance per message.");
-    }
-
-    /// <summary>
     /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
     /// </summary>
     /// <remarks>
@@ -248,6 +237,17 @@ public sealed class EaxModeTransform
         this.Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
+    /// decrypted a message. EAX transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted()
+    {
+        if (this._completed)
+            throw new InvalidOperationException(
+                "This EAX transform has already completed and cannot be reused. Create a new instance per message.");
+    }
+
 
     /// <summary>
     /// Releases the resources used by this instance.
@@ -280,7 +280,7 @@ public sealed class EaxModeTransform
     {
         if (!this._aadProcessed)
         {
-            this._aad = Array.Empty<byte>();
+            this._aad = [];
             this._aadProcessed = true;
         }
     }
@@ -433,10 +433,10 @@ public sealed class EaxModeTransform
         for (var i = 0; i < x.Length - 1; i++)
             x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
-        x[x.Length - 1] <<= 1;
+        x[^1] <<= 1;
 
         if (msb)
-            x[x.Length - 1] ^= 0x87;
+            x[^1] ^= 0x87;
     }
 
     /// <summary>

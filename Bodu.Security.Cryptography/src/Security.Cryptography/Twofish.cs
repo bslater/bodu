@@ -82,10 +82,10 @@ public sealed class Twofish
     internal const int MaxKeySizeBytes = 32;
 
     // Twofish has a single fixed 128-bit block size.
-    private static readonly KeySizes[] s_twofishBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_twofishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
     // Legal key sizes are 128, 192, and 256 bits.
-    private static readonly KeySizes[] s_twofishKeySizes = { new KeySizes(128, 256, 64) };
+    private static readonly KeySizes[] s_twofishKeySizes = [new KeySizes(128, 256, 64)];
 
     private bool _disposed;
     private CipherBlockMode _blockMode = CipherBlockMode.CBC;
@@ -124,7 +124,7 @@ public sealed class Twofish
         {
             this._blockMode = value;
 
-            if (Enum.TryParse<CipherMode>(value.ToString(), out var mode) &&
+            if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) &&
                 Enum.IsDefined(mode))
             {
                 this.ModeValue = mode;

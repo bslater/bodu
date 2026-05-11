@@ -138,7 +138,7 @@ public abstract partial class Skein<T>
 
         // Default to the plain-hash profile: empty key means no KEY UBI phase is run. Callers that want the
         // keyed Skein-MAC mode supply a non-empty key via the Key property before hashing.
-        this.KeyValue = Array.Empty<byte>();
+        this.KeyValue = [];
     }
 
     /// <summary>

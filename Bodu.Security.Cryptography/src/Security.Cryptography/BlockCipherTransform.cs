@@ -249,7 +249,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
         {
             var bytesWritten = this._mode.Transform(
                 combined.AsSpan(0, bytesToProcess),
-                output.Slice(0, bytesToProcess),
+                output[..bytesToProcess],
                 false);
 
             this._deferredInput = combined.AsSpan(bytesToProcess).ToArray();
@@ -346,6 +346,19 @@ public abstract class BlockCipherTransform : ICryptoTransform
     }
 
     /// <summary>
+    /// Throws if this transform has already completed its final block operation.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// This transform has already been finalised and cannot be reused.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected void ThrowIfFinalized()
+    {
+        if (this._finalized)
+            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
+    }
+
+    /// <summary>
     /// Concatenates an optional deferred byte array with an incoming input span into a single contiguous byte array.
     /// </summary>
     /// <param name="first">The previously cached partial or complete block, or <see langword="null"/> if none was deferred.</param>
@@ -363,19 +376,6 @@ public abstract class BlockCipherTransform : ICryptoTransform
         Buffer.BlockCopy(first, 0, result, 0, first.Length);
         second.CopyTo(result.AsSpan(first.Length));
         return result;
-    }
-
-    /// <summary>
-    /// Throws if this transform has already completed its final block operation.
-    /// </summary>
-    /// <exception cref="InvalidOperationException">
-    /// This transform has already been finalised and cannot be reused.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected void ThrowIfFinalized()
-    {
-        if (this._finalized)
-            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
     }
 
     /// <summary>

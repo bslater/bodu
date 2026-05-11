@@ -56,7 +56,7 @@ public abstract partial class Snefru<T>
     private const int TotalWords = 16;                              // number of 32-bit words in the working buffer.
     private const int Mask = TotalWords - 1;                        // bitmask to constrain index calculations to the buffer length; inlined as an immediate by the JIT.
     private static readonly int[] s_shifts = [16, 8, 16, 24];       // fixed bitwise rotation amounts applied after each S-box round.
-    private static readonly int[] s_validHashSizes = { 128, 256 };
+    private static readonly int[] s_validHashSizes = [128, 256];
 
     private readonly uint[] _buffer = new uint[TotalWords];         // internal working buffer used for permutation and round processing.
     private readonly uint[] _state;                                 // internal state used to accumulate the hash output across input blocks.
@@ -146,8 +146,8 @@ public abstract partial class Snefru<T>
         var paddedLength = 2 * BlockSizeBytes;
         Span<byte> padded = stackalloc byte[paddedLength];
         block.CopyTo(padded);
-        BinaryPrimitives.WriteUInt64BigEndian(padded.Slice(paddedLength - 8), messageLength << 3);
-        return padded.Slice(0, paddedLength).ToArray();
+        BinaryPrimitives.WriteUInt64BigEndian(padded[(paddedLength - 8)..], messageLength << 3);
+        return padded[..paddedLength].ToArray();
     }
 
     /// <summary>

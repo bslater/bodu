@@ -246,8 +246,8 @@ public sealed class MerkleTreeHash : IDisposable
         while (!data.IsEmpty)
         {
             var toWrite = Math.Min(this._blockSize - (int)this._buffer.Length, data.Length);
-            this._buffer.Write(data.Slice(0, toWrite));
-            data = data.Slice(toWrite);
+            this._buffer.Write(data[..toWrite]);
+            data = data[toWrite..];
 
             if (this._buffer.Length == this._blockSize)
             {
@@ -310,7 +310,7 @@ public sealed class MerkleTreeHash : IDisposable
     private byte[] ComputeLeafHash(MemoryStream stream)
     {
         stream.Position = 0;
-        using var hasher = this._algorithmFactory();
+        using HashAlgorithm hasher = this._algorithmFactory();
         return hasher.ComputeHash(stream);
     }
 
@@ -322,7 +322,7 @@ public sealed class MerkleTreeHash : IDisposable
     /// <returns>The leaf hash bytes.</returns>
     private byte[] ComputeLeafHash(ReadOnlySpan<byte> span)
     {
-        using var hasher = this._algorithmFactory();
+        using HashAlgorithm hasher = this._algorithmFactory();
         var result = new byte[hasher.HashSize >> 3];
         if (!hasher.TryComputeHash(span, result, out var bytesWritten))
             throw new CryptographicException("The hash algorithm's destination buffer was too small.");

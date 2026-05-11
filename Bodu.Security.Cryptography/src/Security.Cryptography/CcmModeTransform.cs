@@ -136,8 +136,8 @@ public sealed class CcmModeTransform
         var mac = ComputeCbcMac(this._aad.AsSpan(), plaintext);
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
-        EncryptCtr(plaintext, output.Slice(0, plaintext.Length), startIndex: 1);
-        encTag.AsSpan(0, TagSize).CopyTo(output.Slice(plaintext.Length));
+        EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
+        encTag.AsSpan(0, TagSize).CopyTo(output[plaintext.Length..]);
         this._completed = true;
         return required;
     }
@@ -157,17 +157,17 @@ public sealed class CcmModeTransform
 
         EnsureAadProcessed();
 
-        ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-        ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
+        ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
+        ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        EncryptCtr(ciphertext, output.Slice(0, plaintextLength), startIndex: 1);
+        EncryptCtr(ciphertext, output[..plaintextLength], startIndex: 1);
 
-        var mac = ComputeCbcMac(this._aad.AsSpan(), output.Slice(0, plaintextLength));
+        var mac = ComputeCbcMac(this._aad.AsSpan(), output[..plaintextLength]);
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
         {
-            CryptoHelpers.Clear(output.Slice(0, plaintextLength));
+            CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
             this._completed = true;
             throw new CryptographicException("CCM authentication tag verification failed.");
         }
@@ -176,6 +176,17 @@ public sealed class CcmModeTransform
         return plaintextLength;
     }
 
+    /// <summary>
+    /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
+    /// </summary>
+    /// <remarks>
+    /// The supplied <see cref="IBlockCipher"/> is not disposed by this type. Ownership remains with the caller.
+    /// </remarks>
+    public void Dispose()
+    {
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
     /// <summary>
     /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. CCM transforms are single-use; create a fresh instance per message.
@@ -195,17 +206,6 @@ public sealed class CcmModeTransform
                 "This CCM transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
-    /// <summary>
-    /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
-    /// </summary>
-    /// <remarks>
-    /// The supplied <see cref="IBlockCipher"/> is not disposed by this type. Ownership remains with the caller.
-    /// </remarks>
-    public void Dispose()
-    {
-        this.Dispose(disposing: true);
-        GC.SuppressFinalize(this);
-    }
 
     /// <summary>
     /// Releases the resources used by this instance.
@@ -239,7 +239,7 @@ public sealed class CcmModeTransform
     {
         if (!this._aadProcessed)
         {
-            this._aad = Array.Empty<byte>();
+            this._aad = [];
             this._aadProcessed = true;
         }
     }
@@ -350,7 +350,7 @@ public sealed class CcmModeTransform
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
         {
-            var idx = startIndex + offset / blockSize;
+            var idx = startIndex + (offset / blockSize);
             var ctr = new byte[blockSize];
 
             ctr[0] = CounterFlagByte;

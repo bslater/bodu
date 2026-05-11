@@ -66,7 +66,7 @@ public sealed class Ansix923Padding : IPaddingStrategy
 
         // Remaining pad bytes are already 0x00 from array allocation; only the trailing
         // length byte needs to be written.
-        result[result.Length - 1] = (byte)paddingLength;
+        result[^1] = (byte)paddingLength;
 
         return result;
     }
@@ -125,6 +125,6 @@ public sealed class Ansix923Padding : IPaddingStrategy
         if (valid == 0)
             throw new CryptographicException("Invalid ANSI X.923 padding.");
 
-        return input.Slice(0, length - padLen).ToArray();
+        return input[..(length - padLen)].ToArray();
     }
 }

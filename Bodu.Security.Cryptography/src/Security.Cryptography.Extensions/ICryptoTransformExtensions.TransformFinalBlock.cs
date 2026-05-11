@@ -30,7 +30,7 @@ public static partial class ICryptoTransformExtensions
     {
         ThrowHelper.ThrowIfNull(cryptoTransform);
 
-        return cryptoTransform.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
+        return cryptoTransform.TransformFinalBlock([], 0, 0);
     }
 
     /// <summary>
