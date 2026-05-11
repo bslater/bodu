@@ -167,7 +167,7 @@ public sealed class CcmModeTransform
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
         {
-            CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+            CryptoHelpers.Clear(output.Slice(0, plaintextLength));
             this._completed = true;
             throw new CryptographicException("CCM authentication tag verification failed.");
         }
@@ -220,13 +220,8 @@ public sealed class CcmModeTransform
 
         if (disposing)
         {
-            CryptographicOperations.ZeroMemory(this._nonce);
-
-            if (this._aad is not null)
-            {
-                CryptographicOperations.ZeroMemory(this._aad);
-                this._aad = null;
-            }
+            CryptoHelpers.Clear(this._nonce);
+            CryptoHelpers.ClearAndNullify(ref this._aad);
 
             this._aadProcessed = false;
         }

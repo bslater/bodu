@@ -134,8 +134,8 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
         if (this._disposed)
             return;
 
-        CryptographicOperations.ZeroMemory(this._counter);
-        CryptographicOperations.ZeroMemory(this._initialCounter);
+        CryptoHelpers.Clear(this._counter);
+        CryptoHelpers.Clear(this._initialCounter);
         this._disposed = true;
         GC.SuppressFinalize(this);
     }

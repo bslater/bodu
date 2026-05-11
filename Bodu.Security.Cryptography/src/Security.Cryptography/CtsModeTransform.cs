@@ -274,8 +274,8 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
         if (this._disposed)
             return;
 
-        CryptographicOperations.ZeroMemory(this._iv);
-        CryptographicOperations.ZeroMemory(this._currentIv);
+        CryptoHelpers.Clear(this._iv);
+        CryptoHelpers.Clear(this._currentIv);
         this._disposed = true;
         GC.SuppressFinalize(this);
     }

@@ -257,7 +257,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(combined);
+            CryptoHelpers.Clear(combined);
         }
     }
 
@@ -309,7 +309,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
                 }
                 finally
                 {
-                    CryptographicOperations.ZeroMemory(padded);
+                    CryptoHelpers.Clear(padded);
                 }
             }
             else
@@ -333,8 +333,8 @@ public abstract class BlockCipherTransform : ICryptoTransform
                 }
                 finally
                 {
-                    CryptographicOperations.ZeroMemory(combined);
-                    CryptographicOperations.ZeroMemory(decrypted);
+                    CryptoHelpers.Clear(combined);
+                    CryptoHelpers.Clear(decrypted);
                 }
             }
         }
@@ -381,12 +381,6 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <summary>
     /// Zeroes and clears any deferred ciphertext block retained for padded decryption.
     /// </summary>
-    private void ClearDeferredInput()
-    {
-        if (this._deferredInput is null)
-            return;
-
-        CryptographicOperations.ZeroMemory(this._deferredInput);
-        this._deferredInput = null;
-    }
+    private void ClearDeferredInput() =>
+        CryptoHelpers.ClearAndNullify(ref this._deferredInput);
 }

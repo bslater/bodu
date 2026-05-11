@@ -135,7 +135,7 @@ public sealed class CbcModeTransform
         if (this._disposed)
             return;
 
-        CryptographicOperations.ZeroMemory(this._currentIv);
+        CryptoHelpers.Clear(this._currentIv);
         this._disposed = true;
         GC.SuppressFinalize(this);
     }

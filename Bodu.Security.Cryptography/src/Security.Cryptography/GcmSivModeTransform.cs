@@ -141,12 +141,12 @@ public sealed class GcmSivModeTransform
         }
         catch
         {
-            CryptographicOperations.ZeroMemory(authKey);
+            CryptoHelpers.Clear(authKey);
             throw;
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(encKeyMaterial);
+            CryptoHelpers.Clear(encKeyMaterial);
         }
     }
 
@@ -219,7 +219,7 @@ public sealed class GcmSivModeTransform
             var expectedTag = ComputeTag(this._aad.AsSpan(), output.Slice(0, plaintextLength));
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
                 throw new CryptographicException("GCM-SIV authentication tag verification failed.");
             }
             return plaintextLength;
@@ -279,14 +279,9 @@ public sealed class GcmSivModeTransform
             if (this._encCipher is IDisposable disposableCipher)
                 disposableCipher.Dispose();
 
-            CryptographicOperations.ZeroMemory(this._authKey);
-            CryptographicOperations.ZeroMemory(this._nonce);
-
-            if (this._aad is not null)
-            {
-                CryptographicOperations.ZeroMemory(this._aad);
-                this._aad = null;
-            }
+            CryptoHelpers.Clear(this._authKey);
+            CryptoHelpers.Clear(this._nonce);
+            CryptoHelpers.ClearAndNullify(ref this._aad);
 
             this._aadProcessed = false;
         }
@@ -338,8 +333,8 @@ public sealed class GcmSivModeTransform
         }
         catch
         {
-            CryptographicOperations.ZeroMemory(authKey);
-            CryptographicOperations.ZeroMemory(encKey);
+            CryptoHelpers.Clear(authKey);
+            CryptoHelpers.Clear(encKey);
             throw;
         }
         finally
@@ -371,7 +366,7 @@ public sealed class GcmSivModeTransform
             }
             finally
             {
-                CryptographicOperations.ZeroMemory(block);
+                CryptoHelpers.Clear(block);
             }
         }
     }

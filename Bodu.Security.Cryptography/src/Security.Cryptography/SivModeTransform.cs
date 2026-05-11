@@ -182,8 +182,8 @@ public sealed class SivModeTransform
         }
         finally
         {
-            ClearIfNotNull(ctrSeed);
-            ClearIfNotNull(siv);
+            CryptoHelpers.Clear(ctrSeed);
+            CryptoHelpers.Clear(siv);
             this._completed = true;
         }
     }
@@ -222,7 +222,7 @@ public sealed class SivModeTransform
             expectedSiv = S2V(this._aad!, output.Slice(0, plaintextLength));
             if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
             {
-                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
                 throw new CryptographicException("SIV authentication verification failed.");
             }
 
@@ -230,8 +230,8 @@ public sealed class SivModeTransform
         }
         finally
         {
-            ClearIfNotNull(expectedSiv);
-            ClearIfNotNull(ctrSeed);
+            CryptoHelpers.Clear(expectedSiv);
+            CryptoHelpers.Clear(ctrSeed);
             this._completed = true;
         }
     }
@@ -272,12 +272,7 @@ public sealed class SivModeTransform
 
         if (disposing)
         {
-            if (this._aad is not null)
-            {
-                CryptographicOperations.ZeroMemory(this._aad);
-                this._aad = null;
-            }
-
+            CryptoHelpers.ClearAndNullify(ref this._aad);
             this._aadProcessed = false;
         }
 
@@ -361,11 +356,11 @@ public sealed class SivModeTransform
         }
         finally
         {
-            ClearIfNotNull(padded);
-            ClearIfNotNull(t);
-            ClearIfNotNull(mac);
-            ClearIfNotNull(d);
-            CryptographicOperations.ZeroMemory(zeroBlock);
+            CryptoHelpers.Clear(padded);
+            CryptoHelpers.Clear(t);
+            CryptoHelpers.Clear(mac);
+            CryptoHelpers.Clear(d);
+            CryptoHelpers.Clear(zeroBlock);
         }
     }
 
@@ -417,7 +412,7 @@ public sealed class SivModeTransform
                 }
                 finally
                 {
-                    CryptographicOperations.ZeroMemory(block);
+                    CryptoHelpers.Clear(block);
                 }
             }
 
@@ -446,16 +441,16 @@ public sealed class SivModeTransform
         }
         catch
         {
-            CryptographicOperations.ZeroMemory(mac);
+            CryptoHelpers.Clear(mac);
             throw;
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(lastBlock);
-            CryptographicOperations.ZeroMemory(k2);
-            CryptographicOperations.ZeroMemory(k1);
-            CryptographicOperations.ZeroMemory(l);
-            CryptographicOperations.ZeroMemory(zeroBlock);
+            CryptoHelpers.Clear(lastBlock);
+            CryptoHelpers.Clear(k2);
+            CryptoHelpers.Clear(k1);
+            CryptoHelpers.Clear(l);
+            CryptoHelpers.Clear(zeroBlock);
         }
     }
 
@@ -488,8 +483,8 @@ public sealed class SivModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(ks);
-            CryptographicOperations.ZeroMemory(ctr);
+            CryptoHelpers.Clear(ks);
+            CryptoHelpers.Clear(ctr);
         }
     }
 
@@ -521,16 +516,6 @@ public sealed class SivModeTransform
     {
         for (var i = 0; i < result.Length; i++)
             result[i] = (byte)(a[i] ^ b[i]);
-    }
-
-    /// <summary>
-    /// Clears <paramref name="value"/> when it is not <see langword="null"/>.
-    /// </summary>
-    /// <param name="value">The byte array to clear.</param>
-    private static void ClearIfNotNull(byte[]? value)
-    {
-        if (value is not null)
-            CryptographicOperations.ZeroMemory(value);
     }
 
     /// <summary>

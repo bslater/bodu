@@ -262,7 +262,7 @@ public sealed class GcmModeTransform
             }
             finally
             {
-                CryptographicOperations.ZeroMemory(tag);
+                CryptoHelpers.Clear(tag);
             }
         }
         finally
@@ -307,7 +307,7 @@ public sealed class GcmModeTransform
                 // the destination — defence-in-depth aligned with AsconAead128.Decrypt.
                 if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
                 {
-                    CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+                    CryptoHelpers.Clear(output.Slice(0, plaintextLength));
                     throw new CryptographicException(
                         CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
                 }
@@ -318,7 +318,7 @@ public sealed class GcmModeTransform
             }
             finally
             {
-                CryptographicOperations.ZeroMemory(expectedTag);
+                CryptoHelpers.Clear(expectedTag);
             }
         }
         finally
@@ -387,7 +387,7 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(keystream);
+            CryptoHelpers.Clear(keystream);
         }
     }
 
@@ -423,9 +423,9 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(encryptedJ0);
-            CryptographicOperations.ZeroMemory(lengthBlock);
-            CryptographicOperations.ZeroMemory(y);
+            CryptoHelpers.Clear(encryptedJ0);
+            CryptoHelpers.Clear(lengthBlock);
+            CryptoHelpers.Clear(y);
         }
     }
 
@@ -450,7 +450,7 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(block);
+            CryptoHelpers.Clear(block);
         }
     }
 
@@ -502,8 +502,8 @@ public sealed class GcmModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(v);
-            CryptographicOperations.ZeroMemory(z);
+            CryptoHelpers.Clear(v);
+            CryptoHelpers.Clear(z);
         }
     }
 

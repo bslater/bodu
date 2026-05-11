@@ -160,9 +160,9 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            ClearIfNotNull(nPrime);
-            ClearIfNotNull(hPrime);
-            ClearIfNotNull(cPrime);
+            CryptoHelpers.Clear(nPrime);
+            CryptoHelpers.Clear(hPrime);
+            CryptoHelpers.Clear(cPrime);
             this._completed = true;
         }
     }
@@ -209,7 +209,7 @@ public sealed class EaxModeTransform
             // aligned with AsconAead128.Decrypt.
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
                 throw new CryptographicException("EAX authentication tag verification failed.");
             }
 
@@ -219,10 +219,10 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            ClearIfNotNull(expectedTag);
-            ClearIfNotNull(cPrime);
-            ClearIfNotNull(hPrime);
-            ClearIfNotNull(nPrime);
+            CryptoHelpers.Clear(expectedTag);
+            CryptoHelpers.Clear(cPrime);
+            CryptoHelpers.Clear(hPrime);
+            CryptoHelpers.Clear(nPrime);
             this._completed = true;
         }
     }
@@ -263,13 +263,8 @@ public sealed class EaxModeTransform
 
         if (disposing)
         {
-            CryptographicOperations.ZeroMemory(this._nonce);
-
-            if (this._aad is not null)
-            {
-                CryptographicOperations.ZeroMemory(this._aad);
-                this._aad = null;
-            }
+            CryptoHelpers.Clear(this._nonce);
+            CryptoHelpers.ClearAndNullify(ref this._aad);
 
             this._aadProcessed = false;
         }
@@ -309,7 +304,7 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(prefixed);
+            CryptoHelpers.Clear(prefixed);
         }
     }
 
@@ -359,7 +354,7 @@ public sealed class EaxModeTransform
                 }
                 finally
                 {
-                    CryptographicOperations.ZeroMemory(block);
+                    CryptoHelpers.Clear(block);
                 }
             }
 
@@ -388,11 +383,11 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(lastBlock);
-            CryptographicOperations.ZeroMemory(k2);
-            CryptographicOperations.ZeroMemory(k1);
-            CryptographicOperations.ZeroMemory(l);
-            CryptographicOperations.ZeroMemory(zeroBlock);
+            CryptoHelpers.Clear(lastBlock);
+            CryptoHelpers.Clear(k2);
+            CryptoHelpers.Clear(k1);
+            CryptoHelpers.Clear(l);
+            CryptoHelpers.Clear(zeroBlock);
         }
     }
 
@@ -423,8 +418,8 @@ public sealed class EaxModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(ks);
-            CryptographicOperations.ZeroMemory(ctr);
+            CryptoHelpers.Clear(ks);
+            CryptoHelpers.Clear(ctr);
         }
     }
 
@@ -452,15 +447,6 @@ public sealed class EaxModeTransform
     {
         for (var i = 0; i < result.Length; i++)
             result[i] = (byte)(a[i] ^ b[i]);
-    }
-
-    /// <summary>
-    /// Clears <paramref name="value"/> when it is not <see langword="null"/>.
-    /// </summary>
-    private static void ClearIfNotNull(byte[]? value)
-    {
-        if (value is not null)
-            CryptographicOperations.ZeroMemory(value);
     }
 
     /// <summary>

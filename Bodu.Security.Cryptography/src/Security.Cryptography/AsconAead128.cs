@@ -375,7 +375,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
             if (!CryptographicOperations.FixedTimeEquals(inTag, expectedTag))
             {
-                CryptographicOperations.ZeroMemory(output.Slice(0, ptLen));
+                CryptoHelpers.Clear(output.Slice(0, ptLen));
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 

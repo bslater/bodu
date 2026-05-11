@@ -157,7 +157,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
         if (this._disposed)
             return;
 
-        CryptographicOperations.ZeroMemory(this._tweak);
+        CryptoHelpers.Clear(this._tweak);
         this._disposed = true;
         GC.SuppressFinalize(this);
     }

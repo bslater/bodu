@@ -261,7 +261,7 @@ public abstract class TweakableSymmetricAlgorithm
             {
                 if (this.TweakValue is not null && this.TweakValue.Length > 0)
                 {
-                    CryptographicOperations.ZeroMemory(this.TweakValue);
+                    CryptoHelpers.Clear(this.TweakValue);
                     this.TweakValue = Array.Empty<byte>();
                 }
 

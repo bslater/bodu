@@ -154,7 +154,7 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(zeroBlock);
+            CryptoHelpers.Clear(zeroBlock);
         }
 
         // L_$ = double(L_*).
@@ -264,8 +264,8 @@ public sealed class OcbModeTransform
                     }
                     finally
                     {
-                        CryptographicOperations.ZeroMemory(padBlock);
-                        CryptographicOperations.ZeroMemory(pad);
+                        CryptoHelpers.Clear(padBlock);
+                        CryptoHelpers.Clear(pad);
                     }
                 }
             }
@@ -285,11 +285,11 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            ClearIfNotNull(hashResult);
-            ClearIfNotNull(tagInput);
-            ClearIfNotNull(block);
-            ClearIfNotNull(checksum);
-            ClearIfNotNull(offset);
+            CryptoHelpers.Clear(hashResult);
+            CryptoHelpers.Clear(tagInput);
+            CryptoHelpers.Clear(block);
+            CryptoHelpers.Clear(checksum);
+            CryptoHelpers.Clear(offset);
             this._completed = true;
         }
     }
@@ -381,8 +381,8 @@ public sealed class OcbModeTransform
                     }
                     finally
                     {
-                        CryptographicOperations.ZeroMemory(padBlock);
-                        CryptographicOperations.ZeroMemory(pad);
+                        CryptoHelpers.Clear(padBlock);
+                        CryptoHelpers.Clear(pad);
                     }
                 }
             }
@@ -398,7 +398,7 @@ public sealed class OcbModeTransform
 
             if (!CryptographicOperations.FixedTimeEquals(tagInput.AsSpan(0, this._tagLen), receivedTag))
             {
-                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+                CryptoHelpers.Clear(output.Slice(0, plaintextLength));
                 throw new CryptographicException("OCB authentication tag verification failed.");
             }
 
@@ -406,11 +406,11 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            ClearIfNotNull(hashResult);
-            ClearIfNotNull(tagInput);
-            ClearIfNotNull(block);
-            ClearIfNotNull(checksum);
-            ClearIfNotNull(offset);
+            CryptoHelpers.Clear(hashResult);
+            CryptoHelpers.Clear(tagInput);
+            CryptoHelpers.Clear(block);
+            CryptoHelpers.Clear(checksum);
+            CryptoHelpers.Clear(offset);
             this._completed = true;
         }
     }
@@ -452,18 +452,14 @@ public sealed class OcbModeTransform
 
         if (disposing)
         {
-            CryptographicOperations.ZeroMemory(this._nonce);
-            CryptographicOperations.ZeroMemory(this._lStar);
-            CryptographicOperations.ZeroMemory(this._lDollar);
+            CryptoHelpers.Clear(this._nonce);
+            CryptoHelpers.Clear(this._lStar);
+            CryptoHelpers.Clear(this._lDollar);
 
             foreach (var value in this._lArray)
-                CryptographicOperations.ZeroMemory(value);
+                CryptoHelpers.Clear(value);
 
-            if (this._aad is not null)
-            {
-                CryptographicOperations.ZeroMemory(this._aad);
-                this._aad = null;
-            }
+            CryptoHelpers.ClearAndNullify(ref this._aad);
 
             this._aadProcessed = false;
         }
@@ -542,10 +538,10 @@ public sealed class OcbModeTransform
         }
         finally
         {
-            ClearIfNotNull(stretch);
-            ClearIfNotNull(ktop);
-            ClearIfNotNull(ktopInput);
-            CryptographicOperations.ZeroMemory(nonceWord);
+            CryptoHelpers.Clear(stretch);
+            CryptoHelpers.Clear(ktop);
+            CryptoHelpers.Clear(ktopInput);
+            CryptoHelpers.Clear(nonceWord);
         }
     }
 
@@ -603,7 +599,7 @@ public sealed class OcbModeTransform
                     }
                     finally
                     {
-                        CryptographicOperations.ZeroMemory(padBlock);
+                        CryptoHelpers.Clear(padBlock);
                     }
                 }
             }
@@ -612,13 +608,13 @@ public sealed class OcbModeTransform
         }
         catch
         {
-            CryptographicOperations.ZeroMemory(sum);
+            CryptoHelpers.Clear(sum);
             throw;
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(block);
-            CryptographicOperations.ZeroMemory(offsetHash);
+            CryptoHelpers.Clear(block);
+            CryptoHelpers.Clear(offsetHash);
         }
     }
 
@@ -675,16 +671,6 @@ public sealed class OcbModeTransform
         }
 
         return count;
-    }
-
-    /// <summary>
-    /// Clears <paramref name="value"/> when it is not <see langword="null"/>.
-    /// </summary>
-    /// <param name="value">The byte array to clear.</param>
-    private static void ClearIfNotNull(byte[]? value)
-    {
-        if (value is not null)
-            CryptographicOperations.ZeroMemory(value);
     }
 
     /// <summary>
