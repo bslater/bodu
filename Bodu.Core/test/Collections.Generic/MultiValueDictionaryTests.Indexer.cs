@@ -282,6 +282,8 @@ public partial class MultiValueDictionaryTests
 
     private static void AssertReadOnlyValueViewCannotBeMutated(IReadOnlyList<int> values)
     {
+        Assert.IsFalse(values is List<int>, "The returned value view must not be the mutable backing List<T>.");
+
         if (values is ICollection<int> collection)
         {
             Assert.IsTrue(
@@ -293,6 +295,126 @@ public partial class MultiValueDictionaryTests
                 collection.Add(999);
             });
         }
+    }
+
+    /// <summary>
+    /// Verifies that removing a value via <see cref="ICollection{T}.Remove" /> on a returned value view throws
+    /// <see cref="NotSupportedException" /> and does not affect dictionary state.
+    /// </summary>
+    [TestMethod]
+    public void ReturnedValueView_WhenItemRemovedViaICollection_ShouldThrowNotSupportedException()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        IReadOnlyList<int> view = mvd.GetValues("a");
+
+        if (view is ICollection<int> collection)
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() =>
+            {
+                collection.Remove(1);
+            });
+        }
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.GetValues("a")[0]);
+    }
+
+    /// <summary>
+    /// Verifies that clearing via <see cref="ICollection{T}.Clear" /> on a returned value view throws
+    /// <see cref="NotSupportedException" /> and does not affect dictionary state.
+    /// </summary>
+    [TestMethod]
+    public void ReturnedValueView_WhenClearedViaICollection_ShouldThrowNotSupportedException()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        IReadOnlyList<int> view = mvd.GetValues("a");
+
+        if (view is ICollection<int> collection)
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() =>
+            {
+                collection.Clear();
+            });
+        }
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.GetValues("a")[0]);
+    }
+
+    /// <summary>
+    /// Verifies that assigning via the <see cref="IList{T}" /> indexer setter on a returned value view throws
+    /// <see cref="NotSupportedException" /> and does not affect dictionary state.
+    /// </summary>
+    [TestMethod]
+    public void ReturnedValueView_WhenItemAssignedViaIList_ShouldThrowNotSupportedException()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        IReadOnlyList<int> view = mvd.GetValues("a");
+
+        if (view is IList<int> list)
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() =>
+            {
+                list[0] = 99;
+            });
+        }
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.GetValues("a")[0]);
+    }
+
+    /// <summary>
+    /// Verifies that inserting via <see cref="IList{T}.Insert" /> on a returned value view throws
+    /// <see cref="NotSupportedException" /> and does not affect dictionary state.
+    /// </summary>
+    [TestMethod]
+    public void ReturnedValueView_WhenItemInsertedViaIList_ShouldThrowNotSupportedException()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        IReadOnlyList<int> view = mvd.GetValues("a");
+
+        if (view is IList<int> list)
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() =>
+            {
+                list.Insert(0, 99);
+            });
+        }
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.GetValues("a")[0]);
+    }
+
+    /// <summary>
+    /// Verifies that removing at an index via <see cref="IList{T}.RemoveAt" /> on a returned value view throws
+    /// <see cref="NotSupportedException" /> and does not affect dictionary state.
+    /// </summary>
+    [TestMethod]
+    public void ReturnedValueView_WhenItemRemovedAtViaIList_ShouldThrowNotSupportedException()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        IReadOnlyList<int> view = mvd.GetValues("a");
+
+        if (view is IList<int> list)
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() =>
+            {
+                list.RemoveAt(0);
+            });
+        }
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.GetValues("a")[0]);
     }
 
     private static IEnumerable<int> EnumerateOneThenThrow()
