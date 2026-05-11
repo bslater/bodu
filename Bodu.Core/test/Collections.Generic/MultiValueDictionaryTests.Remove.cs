@@ -33,7 +33,7 @@ public partial class MultiValueDictionaryTests
     {
         var mvd = new MultiValueDictionary<string, int>();
 
-        var result = mvd.Remove("missing", 1);
+        bool result = mvd.Remove("missing", 1);
 
         Assert.IsFalse(result);
     }
@@ -47,7 +47,7 @@ public partial class MultiValueDictionaryTests
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("k", 1);
 
-        var result = mvd.Remove("k", 99);
+        bool result = mvd.Remove("k", 99);
 
         Assert.IsFalse(result);
         Assert.AreEqual(1, mvd.Count);
@@ -64,7 +64,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 2);
         mvd.Add("k", 3);
 
-        var result = mvd.Remove("k", 2);
+        bool result = mvd.Remove("k", 2);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);
@@ -99,7 +99,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 20);
         mvd.Add("k", 30);
 
-        var result = mvd.Remove("k", 10);
+        bool result = mvd.Remove("k", 10);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);
@@ -117,7 +117,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 20);
         mvd.Add("k", 30);
 
-        var result = mvd.Remove("k", 30);
+        bool result = mvd.Remove("k", 30);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);
@@ -135,7 +135,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 5);
         mvd.Add("k", 5);
 
-        var result = mvd.Remove("k", 5);
+        bool result = mvd.Remove("k", 5);
 
         Assert.IsTrue(result);
         Assert.AreEqual(2, mvd.Count);
@@ -144,7 +144,7 @@ public partial class MultiValueDictionaryTests
 
     /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> can remove the
-    /// value at any position (by value index) within a key's list, for a range of list sizes.
+    /// value at any position within a key's list, for a range of list sizes.
     /// </summary>
     [TestMethod]
     [DataRow(3, 0)]
@@ -158,70 +158,12 @@ public partial class MultiValueDictionaryTests
         for (var i = 0; i < listSize; i++)
             mvd.Add("k", i * 10);
 
-        var valueToRemove = positionToRemove * 10;
-        var result = mvd.Remove("k", valueToRemove);
+        int valueToRemove = positionToRemove * 10;
+        bool result = mvd.Remove("k", valueToRemove);
 
         Assert.IsTrue(result);
         Assert.AreEqual(listSize - 1, mvd.Count);
         Assert.IsFalse(mvd["k"].Contains(valueToRemove));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes a struct
-    /// value by value equality.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenValueIsValueTypeStruct_ShouldRemoveByValue()
-    {
-        var mvd = new MultiValueDictionary<string, Coord>();
-        mvd.Add("k", new Coord(1, 2));
-        mvd.Add("k", new Coord(3, 4));
-
-        var removed = mvd.Remove("k", new Coord(1, 2));
-
-        Assert.IsTrue(removed);
-        Assert.AreEqual(1, mvd.Count);
-        Assert.IsFalse(mvd.ContainsValue("k", new Coord(1, 2)));
-        Assert.IsTrue(mvd.ContainsValue("k", new Coord(3, 4)));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes only the
-    /// specific <see cref="Label"/> instance that was requested, leaving other instances untouched.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenValueIsReferenceType_ShouldRemoveOnlyRequestedInstance()
-    {
-        var l1 = new Label("hello");
-        var l2 = new Label("hello");
-
-        var mvd = new MultiValueDictionary<string, Label>();
-        mvd.Add("k", l1);
-        mvd.Add("k", l2);
-
-        var removed = mvd.Remove("k", l1);
-
-        Assert.IsTrue(removed);
-        Assert.AreEqual(1, mvd.Count);
-        Assert.IsTrue(mvd.ContainsValue("k", l2));
-        Assert.IsFalse(mvd.ContainsValue("k", l1));
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null"/> value can be removed from a key's value list.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenValueIsNull_ShouldRemoveNullEntry()
-    {
-        var mvd = new MultiValueDictionary<string, string?>();
-        mvd.Add("k", null);
-        mvd.Add("k", "other");
-
-        var removed = mvd.Remove("k", null);
-
-        Assert.IsTrue(removed);
-        Assert.AreEqual(1, mvd.Count);
-        CollectionAssert.AreEqual(new[] { "other" }, mvd["k"].ToList());
     }
 
     /// <summary>

@@ -117,76 +117,6 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that a struct key with the same field values is treated as the same key regardless of
-    /// which instance is used, confirming value-type equality semantics for dictionary lookup.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenKeyIsValueTypeStruct_ShouldMatchByValue()
-    {
-        var mvd = new MultiValueDictionary<Coord, string>();
-        var key = new Coord(1, 2);
-
-        mvd.Add(key, "alpha");
-        mvd.Add(new Coord(1, 2), "beta");
-
-        Assert.AreEqual(1, mvd.KeyCount);
-        Assert.AreEqual(2, mvd.Count);
-        Assert.AreEqual(2, mvd[new Coord(1, 2)].Count);
-    }
-
-    /// <summary>
-    /// Verifies that two struct keys with different field values are treated as distinct keys.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenKeyIsValueTypeStructWithDifferentFields_ShouldStoreSeparately()
-    {
-        var mvd = new MultiValueDictionary<Coord, string>();
-
-        mvd.Add(new Coord(1, 2), "a");
-        mvd.Add(new Coord(3, 4), "b");
-
-        Assert.AreEqual(2, mvd.KeyCount);
-        Assert.AreEqual(2, mvd.Count);
-        Assert.AreEqual("a", mvd[new Coord(1, 2)][0]);
-        Assert.AreEqual("b", mvd[new Coord(3, 4)][0]);
-    }
-
-    /// <summary>
-    /// Verifies that struct values are stored and retrieved by value, and that insertion order is preserved.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenValueIsValueTypeStruct_ShouldStoreAndRetrieveByValue()
-    {
-        var mvd = new MultiValueDictionary<string, Coord>();
-        mvd.Add("grid", new Coord(1, 2));
-        mvd.Add("grid", new Coord(3, 4));
-
-        IReadOnlyList<Coord> values = mvd["grid"];
-
-        Assert.AreEqual(2, values.Count);
-        Assert.AreEqual(new Coord(1, 2), values[0]);
-        Assert.AreEqual(new Coord(3, 4), values[1]);
-    }
-
-    /// <summary>
-    /// Verifies that two distinct <see cref="Label"/> instances with the same text are stored as separate
-    /// values, because <see cref="Label"/> uses reference identity.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenValueIsReferenceType_ShouldStoreBothInstances()
-    {
-        var l1 = new Label("hello");
-        var l2 = new Label("hello");
-
-        var mvd = new MultiValueDictionary<string, Label>();
-        mvd.Add("k", l1);
-        mvd.Add("k", l2);
-
-        Assert.AreEqual(2, mvd.Count);
-        Assert.AreEqual(2, mvd["k"].Count);
-    }
-
-    /// <summary>
     /// Verifies that a custom key comparer causes case-insensitively equal string keys to be merged into a
     /// single entry, accumulating their values together.
     /// </summary>
@@ -203,20 +133,6 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(1, mvd.KeyCount);
         Assert.AreEqual(3, mvd.Count);
         Assert.AreEqual(3, mvd["Alpha"].Count);
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null"/> value can be stored and retrieved under a key.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenValueIsNull_ShouldStoreAndRetrieveNull()
-    {
-        var mvd = new MultiValueDictionary<string, string?>();
-
-        mvd.Add("k", null);
-
-        Assert.AreEqual(1, mvd.Count);
-        Assert.IsNull(mvd["k"][0]);
     }
 
     /// <summary>

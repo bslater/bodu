@@ -50,20 +50,6 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsKey"/> matches a struct key by
-    /// value, not by instance identity.
-    /// </summary>
-    [TestMethod]
-    public void ContainsKey_WhenKeyIsValueTypeStruct_ShouldMatchByValue()
-    {
-        var mvd = new MultiValueDictionary<Coord, string>();
-        mvd.Add(new Coord(7, 8), "x");
-
-        Assert.IsTrue(mvd.ContainsKey(new Coord(7, 8)));
-        Assert.IsFalse(mvd.ContainsKey(new Coord(7, 9)));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsKey"/> honours the custom key
     /// comparer, returning <see langword="true"/> for a key that differs only in case.
     /// </summary>

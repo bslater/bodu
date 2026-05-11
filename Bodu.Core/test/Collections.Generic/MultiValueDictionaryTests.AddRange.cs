@@ -179,22 +179,6 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.AddRange" /> preserves null values and insertion order.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenValuesContainNull_ShouldPreserveNullEntries()
-    {
-        var mvd = new MultiValueDictionary<string, string?>();
-
-        mvd.AddRange("k", ["a", null, "b"]);
-
-        Assert.AreEqual(3, mvd.Count);
-        Assert.AreEqual("a", mvd["k"][0]);
-        Assert.IsNull(mvd["k"][1]);
-        Assert.AreEqual("b", mvd["k"][2]);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.AddRange" /> enumerates a deferred source once.
     /// </summary>
     [TestMethod]

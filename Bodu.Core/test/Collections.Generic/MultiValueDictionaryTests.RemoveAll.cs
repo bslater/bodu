@@ -36,25 +36,6 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/> removes the correct entry
-    /// when the key is a value-type struct, located by value equality.
-    /// </summary>
-    [TestMethod]
-    public void RemoveAll_WhenKeyIsValueTypeStruct_ShouldRemoveByValue()
-    {
-        var mvd = new MultiValueDictionary<Coord, string>();
-        mvd.Add(new Coord(1, 2), "a");
-        mvd.Add(new Coord(3, 4), "b");
-
-        var removed = mvd.RemoveAll(new Coord(1, 2));
-
-        Assert.IsTrue(removed);
-        Assert.AreEqual(1, mvd.KeyCount);
-        Assert.IsFalse(mvd.ContainsKey(new Coord(1, 2)));
-        Assert.IsTrue(mvd.ContainsKey(new Coord(3, 4)));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]

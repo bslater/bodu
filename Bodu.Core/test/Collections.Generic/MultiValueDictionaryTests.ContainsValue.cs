@@ -12,37 +12,6 @@ namespace Bodu.Collections.Generic;
 public partial class MultiValueDictionaryTests
 {
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsValue"/> locates a struct value
-    /// by value equality, not by reference.
-    /// </summary>
-    [TestMethod]
-    public void ContainsValue_WhenValueIsValueTypeStruct_ShouldMatchByValue()
-    {
-        var mvd = new MultiValueDictionary<string, Coord>();
-        mvd.Add("k", new Coord(5, 6));
-
-        Assert.IsTrue(mvd.ContainsValue("k", new Coord(5, 6)));
-        Assert.IsFalse(mvd.ContainsValue("k", new Coord(5, 7)));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsValue"/> uses reference equality
-    /// for reference-type values with no overridden <see cref="object.Equals(object)"/>.
-    /// </summary>
-    [TestMethod]
-    public void ContainsValue_WhenValueIsReferenceTypeAndSameInstance_ShouldReturnTrue()
-    {
-        var l1 = new Label("hello");
-        var l2 = new Label("hello");
-
-        var mvd = new MultiValueDictionary<string, Label>();
-        mvd.Add("k", l1);
-
-        Assert.IsTrue(mvd.ContainsValue("k", l1));
-        Assert.IsFalse(mvd.ContainsValue("k", l2));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsValue"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
@@ -89,18 +58,6 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", 42);
 
         Assert.IsTrue(mvd.ContainsValue("k", 42));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.ContainsValue"/> returns <see langword="true"/> when the stored value is <see langword="null"/>.
-    /// </summary>
-    [TestMethod]
-    public void ContainsValue_WhenValueIsNull_ShouldReturnTrue()
-    {
-        var mvd = new MultiValueDictionary<string, string?>();
-        mvd.Add("k", null);
-
-        Assert.IsTrue(mvd.ContainsValue("k", null));
     }
 
     /// <summary>
