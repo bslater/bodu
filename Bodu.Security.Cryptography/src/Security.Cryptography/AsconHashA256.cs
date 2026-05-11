@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconHashA256.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,11 +15,11 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// ASCON-HASHA256 uses an 8-round Ascon-p permutation (Ascon-p8) during message block absorption and the full 12-round permutation
 /// (Ascon-p12) during the initial squeeze phase. Subsequent squeeze blocks also use Ascon-p8. The reduced absorption round count
-/// improves throughput for long messages relative to <see cref="AsconHash256" /> at a reduced — though still substantial — security
+/// improves throughput for long messages relative to <see cref="AsconHash256"/> at a reduced — though still substantial — security
 /// margin.
 /// </para>
 /// <para>
-/// For the highest security margin, use <see cref="AsconHash256" />, which applies Ascon-p12 at every phase.
+/// For the highest security margin, use <see cref="AsconHash256"/>, which applies Ascon-p12 at every phase.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography;
 /// byte[] digest = hash.ComputeHash(message);
 /// </code>
 /// </example>
-/// <seealso cref="AsconHash256" />
+/// <seealso cref="AsconHash256"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 public sealed class AsconHashA256
     : AsconHash<AsconHashA256>
@@ -59,7 +59,7 @@ public sealed class AsconHashA256
     private const ulong Iv4 = 0xca8c9d516e8a2221UL;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconHashA256" /> class.
+    /// Initializes a new instance of the <see cref="AsconHashA256"/> class.
     /// </summary>
     public AsconHashA256()
         : base(Iv0, Iv1, Iv2, Iv3, Iv4, 8, "ASCON-HASHA256")

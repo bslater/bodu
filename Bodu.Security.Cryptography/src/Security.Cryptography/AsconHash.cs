@@ -46,7 +46,7 @@ public abstract partial class AsconHash<T>
     private AsconState _state;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconHash{T}" /> class with the specified algorithm parameters.
+    /// Initializes a new instance of the <see cref="AsconHash{T}"/> class with the specified algorithm parameters.
     /// </summary>
     /// <param name="iv0">Pre-computed initial state word 0 (result of applying Ascon-p12 to the raw IV).</param>
     /// <param name="iv1">Pre-computed initial state word 1.</param>
@@ -57,12 +57,13 @@ public abstract partial class AsconHash<T>
     /// The number of Ascon-p rounds applied after each absorbed block. Must be between 1 and 12 inclusive.
     /// </param>
     /// <param name="algorithmName">
-    /// The canonical algorithm identifier string as defined in NIST SP 800-232. Must not be <see langword="null" />.
+    /// The canonical algorithm identifier string as defined in NIST SP 800-232. Must not be <see langword="null"/>.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="algorithmName" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="algorithmName"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="absorptionRounds" /> is less than 1 or greater than 12.
+    /// <paramref name="absorptionRounds"/> is less than 1 or greater than 12.
     /// </exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The IV state words are assigned together to mirror the five-word Ascon state layout and keep the constructor initialisation visually aligned with the algorithm specification.")]
     protected AsconHash(ulong iv0, ulong iv1, ulong iv2, ulong iv3, ulong iv4, int absorptionRounds, string algorithmName)
         : base(8)
     {
@@ -114,7 +115,7 @@ public abstract partial class AsconHash<T>
     /// Releases the resources used by this instance and clears the internal sponge state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged
     /// resources.
     /// </param>
     protected override void Dispose(bool disposing)
@@ -165,7 +166,7 @@ public abstract partial class AsconHash<T>
         // The final padded block must use 12 rounds (Ascon-p12) because it corresponds to the
         // initial permutation of the squeeze phase in the reference algorithm. Regular absorption
         // blocks use _absorptionRounds (12 for HASH256, 8 for HASHA256).
-        int rounds = this._useP12ForFinalPad ? 12 : this._absorptionRounds;
+        var rounds = this._useP12ForFinalPad ? 12 : this._absorptionRounds;
         this._useP12ForFinalPad = false;
         this._state.Permute(rounds);
     }
@@ -177,7 +178,7 @@ public abstract partial class AsconHash<T>
     /// <returns>A 32-byte array containing the final hash digest.</returns>
     protected override byte[] ProcessFinalBlock()
     {
-        byte[] hash = new byte[32];
+        var hash = new byte[32];
 
         this._state.SqueezeRate64(hash.AsSpan(0, 8));
         this._state.Permute(this._absorptionRounds);

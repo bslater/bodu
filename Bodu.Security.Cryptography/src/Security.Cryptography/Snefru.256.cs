@@ -13,9 +13,9 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Snefru256" /> maintains an 8-word internal state and absorbs input in 32-byte blocks into a 512-bit working buffer,
+/// <see cref="Snefru256"/> maintains an 8-word internal state and absorbs input in 32-byte blocks into a 512-bit working buffer,
 /// applying 8 rounds of S-box substitution and word rotation per block. On finalisation the state is XOR-folded from the permuted
-/// buffer and serialised in big-endian byte order. See <see cref="Snefru{T}" /> for shared background.
+/// buffer and serialised in big-endian byte order. See <see cref="Snefru{T}"/> for shared background.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -45,7 +45,7 @@ public sealed class Snefru256
     : Snefru<Snefru256>
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Snefru256" /> class using a fixed 256-bit output size.
+    /// Initializes a new instance of the <see cref="Snefru256"/> class using a fixed 256-bit output size.
     /// </summary>
     public Snefru256()
         : base(256)

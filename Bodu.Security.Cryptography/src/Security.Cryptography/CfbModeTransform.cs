@@ -10,12 +10,12 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies the Cipher Feedback (CFB) mode transformation to an underlying <see cref="IBlockCipher" />, turning it into a
+/// Applies the Cipher Feedback (CFB) mode transformation to an underlying <see cref="IBlockCipher"/>, turning it into a
 /// self-synchronising stream cipher.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/classic-modes.svg" alt="CFB panel — the previous ciphertext is fed back as the cipher input; its encryption produces a keystream XORed with plaintext." />
+/// <img src="../images/diagrams/classic-modes.svg" alt="CFB panel — the previous ciphertext is fed back as the cipher input; its encryption produces a keystream XORed with plaintext."/>
 /// </para>
 /// <para>
 /// Both directions use the cipher's encryption primitive: encryption computes <c>Cᵢ = Pᵢ ⊕ E(IVᵢ)</c> and decryption
@@ -62,11 +62,11 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CfbModeTransform" /> class with the specified cipher and initialisation vector.
+    /// Initializes a new instance of the <see cref="CfbModeTransform"/> class with the specified cipher and initialisation vector.
     /// </summary>
     /// <param name="cipher">The block cipher over which CFB is applied.</param>
     /// <param name="iv">The initialisation vector used as the feedback register for the first block. A defensive copy is taken.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     public CfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
@@ -82,7 +82,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -90,7 +90,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
 
         Span<byte> feedback = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
@@ -101,7 +101,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
             if (encrypt)
             {
                 // XOR plaintext with encrypted feedback to produce ciphertext
-                for (int i = 0; i < blockSize; i++)
+                for (var i = 0; i < blockSize; i++)
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
 
                 // Update IV to current ciphertext block
@@ -110,7 +110,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
             else
             {
                 // XOR ciphertext with encrypted feedback to produce plaintext
-                for (int i = 0; i < blockSize; i++)
+                for (var i = 0; i < blockSize; i++)
                     outBlock[i] = (byte)(inBlock[i] ^ feedback[i]);
 
                 // Update IV to current ciphertext block
@@ -124,7 +124,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the running feedback register so
     /// that key-equivalent state does not linger in memory after disposal. The underlying
-    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// <see cref="IBlockCipher"/> is not disposed by this type — ownership remains with the caller.
     /// </summary>
     /// <remarks>Idempotent.</remarks>
     public void Dispose()

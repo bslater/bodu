@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WhirlpoolVersion.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,8 +7,8 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Specifies the published revision of the <see cref="Whirlpool" /> hash algorithm selected by
-/// <see cref="Whirlpool.Version" />.
+/// Specifies the published revision of the <see cref="Whirlpool"/> hash algorithm selected by
+/// <see cref="Whirlpool.Version"/>.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -20,25 +20,25 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item>
 /// <description>
-/// <see cref="WhirlpoolInfo1" /> — the <c>Whirlpool-0</c> function as originally submitted to
+/// <see cref="WhirlpoolInfo1"/> — the <c>Whirlpool-0</c> function as originally submitted to
 /// <c>NESSIE</c> in 2000. It uses the original pseudo-random S-box and the original diffusion matrix.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="WhirlpoolInfo2" /> — the <c>Whirlpool-T</c> revision published in 2001. It replaces the
+/// <see cref="WhirlpoolInfo2"/> — the <c>Whirlpool-T</c> revision published in 2001. It replaces the
 /// S-box with the structured mini-box construction while retaining the original diffusion matrix.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <see cref="WhirlpoolInfo3" /> — the final <c>Whirlpool</c> function adopted by <c>ISO/IEC 10118-3</c>
+/// <see cref="WhirlpoolInfo3"/> — the final <c>Whirlpool</c> function adopted by <c>ISO/IEC 10118-3</c>
 /// in 2003. It retains the mini-box S-box introduced in <c>Whirlpool-T</c> and uses the revised
 /// diffusion matrix with branch number nine.
 /// </description>
 /// </item>
 /// </list>
-/// <note type="important">Only <see cref="WhirlpoolInfo3" /> is the standardised variant. The earlier
+/// <note type="important">Only <see cref="WhirlpoolInfo3"/> is the standardised variant. The earlier
 /// revisions are provided for interoperability with legacy data and academic study.</note>
 /// </remarks>
 public enum WhirlpoolVersion

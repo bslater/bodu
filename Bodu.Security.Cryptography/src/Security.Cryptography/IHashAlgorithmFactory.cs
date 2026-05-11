@@ -9,13 +9,13 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Defines a factory that produces configured instances of a specific <see cref="HashAlgorithm" /> implementation.
+/// Defines a factory that produces configured instances of a specific <see cref="HashAlgorithm"/> implementation.
 /// </summary>
-/// <typeparam name="T">The concrete type of <see cref="HashAlgorithm" /> this factory creates. Must inherit from <see cref="HashAlgorithm" />.</typeparam>
+/// <typeparam name="T">The concrete type of <see cref="HashAlgorithm"/> this factory creates. Must inherit from <see cref="HashAlgorithm"/>.</typeparam>
 /// <remarks>
 /// <para>
 /// This interface decouples the creation and configuration of hash algorithm instances from the logic that consumes them,
-/// enabling reusable, testable, and extensible one-shot hash operations via the <see cref="HashAlgorithmHelper" /> utility class.
+/// enabling reusable, testable, and extensible one-shot hash operations via the <see cref="HashAlgorithmHelper"/> utility class.
 /// Implementations may return newly constructed or pooled algorithm instances depending on lifecycle management requirements.
 /// </para>
 /// <para>
@@ -42,6 +42,6 @@ public interface IHashAlgorithmFactory<out T>
     /// <summary>
     /// Creates and returns a new instance of the hash algorithm with any necessary configuration applied.
     /// </summary>
-    /// <returns>A fully initialised <typeparamref name="T" /> instance, ready for data input.</returns>
+    /// <returns>A fully initialised <typeparamref name="T"/> instance, ready for data input.</returns>
     T Create();
 }

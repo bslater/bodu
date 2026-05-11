@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerpentBlockCipher.1024.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,10 +21,10 @@ namespace Bodu.Security.Cryptography;
 /// <note type="important">
 /// This type is a **non-standard Serpent-derived construction** and is not interoperable with any reference Serpent
 /// implementation. Its cryptographic properties have not been externally analysed. For standard, externally vetted Serpent,
-/// use <see cref="Serpent128Cipher" />.
+/// use <see cref="Serpent128Cipher"/>.
 /// </note>
 /// </remarks>
-/// <seealso cref="Serpent1024" />
+/// <seealso cref="Serpent1024"/>
 public sealed class Serpent1024Cipher
     : SerpentBlockCipher
 {
@@ -34,7 +34,7 @@ public sealed class Serpent1024Cipher
     public const int KeySize = 128;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Serpent1024Cipher" /> class using the specified key and tweak.
+    /// Initializes a new instance of the <see cref="Serpent1024Cipher"/> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 1024-bit (128-byte) key used for encryption and decryption.</param>
     /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behaviour.</param>

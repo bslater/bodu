@@ -19,17 +19,17 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="T">The concrete Snefru variant derived from this class. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="Snefru{T}" /> is one of the earliest cryptographic hash functions developed and is now considered broken: collision
+/// <see cref="Snefru{T}"/> is one of the earliest cryptographic hash functions developed and is now considered broken: collision
 /// attacks against the two- and four-pass variants are known, and it should not be used for any new security-sensitive application.
 /// It remains implemented here for interoperability with legacy data and academic study.
 /// </para>
 /// <para>This base class is extended by:</para>
 /// <list type="bullet">
 /// <item>
-/// <description><see cref="Snefru128" /> produces a 128-bit (16-byte) hash with a 4-word internal state.</description>
+/// <description><see cref="Snefru128"/> produces a 128-bit (16-byte) hash with a 4-word internal state.</description>
 /// </item>
 /// <item>
-/// <description><see cref="Snefru256" /> produces a 256-bit (32-byte) hash with an 8-word internal state.</description>
+/// <description><see cref="Snefru256"/> produces a 256-bit (32-byte) hash with an 8-word internal state.</description>
 /// </item>
 /// </list>
 /// <para>
@@ -62,10 +62,10 @@ public abstract partial class Snefru<T>
     private readonly uint[] _state;                                  // internal state used to accumulate the hash output across input blocks.
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
+    /// Initializes a new instance of the <see cref="Snefru{T}"/> class with the specified output hash size.
     /// </summary>
     /// <param name="hashSize">The size of the output hash, in bits. Must be either 128 or 256.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize" /> is not one of the supported values.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize"/> is not one of the supported values.</exception>
     protected Snefru(int hashSize)
         : base(64 - (hashSize >> 3)) // BlockSizeBytes = 64 - outputBytes
     {
@@ -107,7 +107,7 @@ public abstract partial class Snefru<T>
     /// Releases resources used by the algorithm and clears the internal state and working buffer.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
     {
@@ -129,7 +129,7 @@ public abstract partial class Snefru<T>
     /// <param name="messageLength">The total number of bytes processed prior to this block (excluding the current partial block).</param>
     /// <returns>
     /// A padded byte array of exactly <c>2 × BlockSize</c> bytes, containing the input block followed by zeros and an 8-byte big-endian
-    /// length field. The result is aligned for final compression and ready for use by <see cref="ProcessBlock(ReadOnlySpan{byte})" />.
+    /// length field. The result is aligned for final compression and ready for use by <see cref="ProcessBlock(ReadOnlySpan{byte})"/>.
     /// </returns>
     /// <remarks>
     /// Snefru's final padding block is double the standard block size to support its dual-block internal buffer design. The method pads
@@ -139,7 +139,7 @@ public abstract partial class Snefru<T>
     {
         // paddedLength is always ≤ 96 for Snefru128 (2 × 48) and ≤ 64 for Snefru256 (2 × 32),
         // so stackalloc is always safe and appropriately sized here.
-        int paddedLength = 2 * BlockSizeBytes;
+        var paddedLength = 2 * BlockSizeBytes;
         Span<byte> padded = stackalloc byte[paddedLength];
         block.CopyTo(padded);
         BinaryPrimitives.WriteUInt64BigEndian(padded.Slice(paddedLength - 8), messageLength << 3);
@@ -158,16 +158,16 @@ public abstract partial class Snefru<T>
         this._state.AsSpan().CopyTo(this._buffer);
         LoadBlockToBuffer(block, this._buffer.AsSpan(this._state.Length));
 
-        for (int round = 0; round < 8; round++)
+        for (var round = 0; round < 8; round++)
         {
-            foreach (int shift in Shifts)
+            foreach (var shift in Shifts)
             {
                 ApplySBoxRounds(round);
                 RotateWords(shift);
             }
         }
 
-        for (int i = 0; i < this._state.Length; i++)
+        for (var i = 0; i < this._state.Length; i++)
             this._state[i] ^= this._buffer[Mask - i];
     }
 
@@ -177,7 +177,7 @@ public abstract partial class Snefru<T>
     /// <returns>The computed hash as a byte array.</returns>
     protected override byte[] ProcessFinalBlock()
     {
-        byte[] output = new byte[this._state.Length * sizeof(uint)];
+        var output = new byte[this._state.Length * sizeof(uint)];
         WriteStateBigEndian(this._state, output);
 
         return output;
@@ -192,7 +192,7 @@ public abstract partial class Snefru<T>
     private static void LoadBlockToBuffer(ReadOnlySpan<byte> block, Span<uint> destination)
     {
         ReadOnlySpan<uint> inputWords = MemoryMarshal.Cast<byte, uint>(block);
-        for (int i = 0; i < destination.Length; i++)
+        for (var i = 0; i < destination.Length; i++)
             destination[i] = inputWords[i].ReverseBytesUnchecked();
     }
 
@@ -206,7 +206,7 @@ public abstract partial class Snefru<T>
     {
         // Cast the destination to uint words to avoid per-element Slice calls and their associated bounds checks.
         Span<uint> dest = MemoryMarshal.Cast<byte, uint>(destination);
-        for (int i = 0; i < source.Length; i++)
+        for (var i = 0; i < source.Length; i++)
             dest[i] = source[i].ReverseBytesUnchecked();
     }
 
@@ -220,17 +220,17 @@ public abstract partial class Snefru<T>
         // Hoist the round-invariant portion of the S-box index out of the inner loop.
         // sBoxNumber alternates between baseBox and baseBox+1 every two iterations of kk,
         // so only the low bit of (kk >> 1) varies; baseBox accounts for the round offset.
-        int baseBox = round << 1;
+        var baseBox = round << 1;
 
-        for (int kk = 0; kk < TotalWords; kk++)
+        for (var kk = 0; kk < TotalWords; kk++)
         {
-            int next = (kk + 1) & Mask;
-            int last = (kk + Mask) & Mask;
+            var next = (kk + 1) & Mask;
+            var last = (kk + Mask) & Mask;
 
             // Flat array layout: each table occupies 256 consecutive entries.
             // Index = (tableIndex << 8) | byteValue, avoiding the double indirection of a jagged array.
-            int sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(this._buffer[kk] & 0xff);
-            uint sboxEntry = Constants[sBoxIndex];
+            var sBoxIndex = ((baseBox + ((kk >> 1) & 0x01)) << 8) | (int)(this._buffer[kk] & 0xff);
+            var sboxEntry = Constants[sBoxIndex];
 
             this._buffer[next] ^= sboxEntry;
             this._buffer[last] ^= sboxEntry;
@@ -244,7 +244,7 @@ public abstract partial class Snefru<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void RotateWords(int shiftAmount)
     {
-        for (int i = 0; i < TotalWords; i++)
+        for (var i = 0; i < TotalWords; i++)
             this._buffer[i] = this._buffer[i].RotateBitsRightUnchecked(shiftAmount);
     }
 }

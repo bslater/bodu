@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are grouped by fan-out F and reduced level-by-level until a single root hash remains; a partial tail block is zero-padded to the full block size before hashing." />
+/// <img src="../images/diagrams/merkle-tree.svg" alt="Merkle tree construction — the input is sliced into blocks, each block is hashed to a leaf, leaves are grouped by fan-out F and reduced level-by-level until a single root hash remains; a partial tail block is zero-padded to the full block size before hashing."/>
 /// </para>
 /// <para>
 /// Input bytes are divided into fixed-size blocks — the top row of the diagram above, with <c>blockSize</c>
@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// This class is not thread-safe. Concurrent calls from multiple threads produce undefined results.
 /// For a concurrent level-worker pipeline over the same tree structure, see
-/// <see cref="ParallelMerkleTreeHash" />.
+/// <see cref="ParallelMerkleTreeHash"/>.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -88,7 +88,7 @@ public sealed class MerkleTreeHash : IDisposable
     private List<byte[]> _currentLevel;
 
     /// <summary>
-    /// Initialises a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
+    /// Initializes a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
     /// factory, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -116,7 +116,7 @@ public sealed class MerkleTreeHash : IDisposable
     { }
 
     /// <summary>
-    /// Initialises a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
+    /// Initializes a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
     /// factory delegate, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -141,7 +141,7 @@ public sealed class MerkleTreeHash : IDisposable
     public MerkleTreeHash(Func<HashAlgorithm> algorithmFactory, int blockSize = 1024, int fanOut = 3)
     {
         this._algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
-        this._blockSize = blockSize > 0 ? blockSize :throw new ArgumentOutOfRangeException(
+        this._blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(
                                                         nameof(blockSize),
                                                         string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
         this._fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
@@ -164,7 +164,7 @@ public sealed class MerkleTreeHash : IDisposable
         ArgumentNullException.ThrowIfNull(input);
         this.Reset();
 
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 4);
+        var buffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 4);
         try
         {
             int bytesRead;
@@ -237,7 +237,7 @@ public sealed class MerkleTreeHash : IDisposable
     }
 
     /// <summary>
-    /// Appends <paramref name="data" /> to the current leaf accumulator, flushing full
+    /// Appends <paramref name="data"/> to the current leaf accumulator, flushing full
     /// leaf-sized blocks into the tree as they become available.
     /// </summary>
     /// <param name="data">The input bytes to feed into the hash.</param>
@@ -245,7 +245,7 @@ public sealed class MerkleTreeHash : IDisposable
     {
         while (!data.IsEmpty)
         {
-            int toWrite = Math.Min(this._blockSize - (int)this._buffer.Length, data.Length);
+            var toWrite = Math.Min(this._blockSize - (int)this._buffer.Length, data.Length);
             this._buffer.Write(data.Slice(0, toWrite));
             data = data.Slice(toWrite);
 
@@ -277,15 +277,15 @@ public sealed class MerkleTreeHash : IDisposable
         // Reduce level by level until a single root hash remains.
         while (this._currentLevel.Count > 1)
         {
-            int hashLength = this._currentLevel[0].Length;
+            var hashLength = this._currentLevel[0].Length;
             var nextLevel = new List<byte[]>(this._currentLevel.Count / this._fanOut + 1);
 
-            for (int i = 0; i < this._currentLevel.Count; i += this._fanOut)
+            for (var i = 0; i < this._currentLevel.Count; i += this._fanOut)
             {
-                int groupSize = Math.Min(this._fanOut, this._currentLevel.Count - i);
+                var groupSize = Math.Min(this._fanOut, this._currentLevel.Count - i);
 
                 using var bufferBuilder = new PooledBufferBuilder<byte>(hashLength * groupSize);
-                for (int j = 0; j < groupSize; j++)
+                for (var j = 0; j < groupSize; j++)
                     bufferBuilder.AppendRange(this._currentLevel[i + j]);
 
                 nextLevel.Add(this.ComputeLeafHash(bufferBuilder.WrittenSpan));
@@ -302,8 +302,8 @@ public sealed class MerkleTreeHash : IDisposable
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Computes the leaf hash over the full contents of <paramref name="stream" /> using the
-    /// configured factory-produced <see cref="HashAlgorithm" />.
+    /// Computes the leaf hash over the full contents of <paramref name="stream"/> using the
+    /// configured factory-produced <see cref="HashAlgorithm"/>.
     /// </summary>
     /// <param name="stream">The memory stream containing the leaf bytes.</param>
     /// <returns>The leaf hash bytes.</returns>
@@ -315,21 +315,21 @@ public sealed class MerkleTreeHash : IDisposable
     }
 
     /// <summary>
-    /// Computes the leaf hash over <paramref name="span" /> using the configured factory-produced
-    /// <see cref="HashAlgorithm" />.
+    /// Computes the leaf hash over <paramref name="span"/> using the configured factory-produced
+    /// <see cref="HashAlgorithm"/>.
     /// </summary>
     /// <param name="span">The leaf bytes.</param>
     /// <returns>The leaf hash bytes.</returns>
     private byte[] ComputeLeafHash(ReadOnlySpan<byte> span)
     {
         using var hasher = this._algorithmFactory();
-        byte[] result = new byte[hasher.HashSize >> 3];
-        if (!hasher.TryComputeHash(span, result, out int bytesWritten))
+        var result = new byte[hasher.HashSize >> 3];
+        if (!hasher.TryComputeHash(span, result, out var bytesWritten))
             throw new CryptographicException("The hash algorithm's destination buffer was too small.");
         if (bytesWritten == result.Length)
             return result;
 
-        byte[] trimmed = new byte[bytesWritten];
+        var trimmed = new byte[bytesWritten];
         Buffer.BlockCopy(result, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }

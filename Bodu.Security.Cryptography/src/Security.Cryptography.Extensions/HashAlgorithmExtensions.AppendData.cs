@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmExtensions.AppendData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,26 +13,26 @@ namespace Bodu.Security.Cryptography.Extensions;
 public static partial class HashAlgorithmExtensions
 {
     /// <summary>
-    /// Feeds a span of bytes into the ongoing hash computation of the specified <see cref="HashAlgorithm" /> without finalising it.
+    /// Feeds a span of bytes into the ongoing hash computation of the specified <see cref="HashAlgorithm"/> without finalising it.
     /// </summary>
-    /// <param name="algorithm">The <see cref="HashAlgorithm" /> instance receiving the data. Must not be <see langword="null" />.</param>
+    /// <param name="algorithm">The <see cref="HashAlgorithm"/> instance receiving the data. Must not be <see langword="null"/>.</param>
     /// <param name="data">The span of bytes to feed into the hash computation.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="algorithm" /> is <see langword="null" />.
+    /// Thrown if <paramref name="algorithm"/> is <see langword="null"/>.
     /// </exception>
     /// <remarks>
     /// <para>
     /// This method is intended for use in incremental hashing scenarios where data is supplied in multiple segments. The caller is
-    /// responsible for calling <see cref="HashAlgorithm.TransformFinalBlock" /> to complete the hash and obtain the result.
+    /// responsible for calling <see cref="HashAlgorithm.TransformFinalBlock"/> to complete the hash and obtain the result.
     /// </para>
     /// <para>
-    /// An <see cref="ArrayPool{T}" /> buffer is used internally to bridge the span into the array-based
-    /// <see cref="HashAlgorithm.TransformBlock" /> API. The buffer is cleared and returned to the pool in a <c>finally</c>
+    /// An <see cref="ArrayPool{T}"/> buffer is used internally to bridge the span into the array-based
+    /// <see cref="HashAlgorithm.TransformBlock"/> API. The buffer is cleared and returned to the pool in a <c>finally</c>
     /// block so the input data cannot be observed by a subsequent pool consumer even if
-    /// <see cref="HashAlgorithm.TransformBlock" /> throws.
+    /// <see cref="HashAlgorithm.TransformBlock"/> throws.
     /// </para>
     /// <para>
-    /// If <paramref name="data" /> is empty, this method returns without performing any work.
+    /// If <paramref name="data"/> is empty, this method returns without performing any work.
     /// </para>
     /// </remarks>
     public static void AppendData(this HashAlgorithm algorithm, ReadOnlySpan<byte> data)
@@ -43,7 +43,7 @@ public static partial class HashAlgorithmExtensions
         if (data.IsEmpty)
             return;
 
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(data.Length);
+        var buffer = ArrayPool<byte>.Shared.Rent(data.Length);
         try
         {
             data.CopyTo(buffer);

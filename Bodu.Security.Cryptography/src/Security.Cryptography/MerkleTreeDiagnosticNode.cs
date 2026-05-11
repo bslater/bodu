@@ -32,6 +32,10 @@ namespace Bodu.Security.Cryptography;
 ///   The child hash values whose concatenation was hashed to produce <paramref name="Hash"/>.
 ///   Empty for leaf nodes.
 /// </param>
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "StyleCop.CSharp.NamingRules",
+    "SA1313:Parameter names should begin with lower-case letter",
+    Justification = "The positional record parameters intentionally use PascalCase because they define the generated public property names; using lower-case parameter names would produce lower-case public properties and violate .NET member naming conventions.")]
 public sealed record MerkleTreeDiagnosticNode(
     int Level,
     int Index,

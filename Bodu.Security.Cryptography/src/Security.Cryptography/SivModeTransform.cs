@@ -10,12 +10,12 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Synthetic Initialisation Vector (SIV) mode to two underlying <see cref="IBlockCipher" />
+/// Applies Synthetic Initialisation Vector (SIV) mode to two underlying <see cref="IBlockCipher"/>
 /// instances, providing deterministic authenticated encryption per RFC 5297 (AES-SIV).
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — SIV inverts the usual order by running the MAC pipeline first (S2V) to derive a synthetic IV, which is then used as the CTR counter." />
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — SIV inverts the usual order by running the MAC pipeline first (S2V) to derive a synthetic IV, which is then used as the CTR counter."/>
 /// </para>
 /// <para>
 /// SIV <em>inverts</em> the order shown in the generic AEAD diagram: the bottom pipeline runs <b>first</b>
@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Ciphertext is output as <c>C || SIV</c> (ciphertext then tag), consistent with the
-/// <see cref="IAeadBlockCipherModeTransform" /> convention.
+/// <see cref="IAeadBlockCipherModeTransform"/> convention.
 /// </para>
 /// <para>
 /// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted —
@@ -73,8 +73,8 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#siv--misuse-resistant">SIV walk-through in the AEAD-modes guide</seealso>
-/// <seealso cref="AesBlockCipher" />
-/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
+/// <seealso cref="AesBlockCipher"/>
+/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class SivModeTransform
     : IAeadBlockCipherModeTransform
     , IDisposable
@@ -90,16 +90,16 @@ public sealed class SivModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SivModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="SivModeTransform"/> class.
     /// </summary>
     /// <param name="s2vCipher">The cipher keyed with K₁, used for CMAC and S2V computation.</param>
     /// <param name="ctrCipher">The cipher keyed with K₂, used for CTR encryption.</param>
     /// <param name="iv">Accepted for interface compatibility; not used by SIV because the synthetic IV is derived from the data.</param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="s2vCipher" />, <paramref name="ctrCipher" />, or <paramref name="iv" /> is <see langword="null" />.
+    /// <paramref name="s2vCipher"/>, <paramref name="ctrCipher"/>, or <paramref name="iv"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Either cipher does not have a 16-byte block size, or <paramref name="iv" /> length does not equal the S2V cipher block size.
+    /// Either cipher does not have a 16-byte block size, or <paramref name="iv"/> length does not equal the S2V cipher block size.
     /// </exception>
     public SivModeTransform(IBlockCipher s2vCipher, IBlockCipher ctrCipher, byte[] iv)
     {
@@ -154,7 +154,7 @@ public sealed class SivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        int required = plaintext.Length + TagSize;
+        var required = plaintext.Length + TagSize;
         if (output.Length < required)
             throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
 
@@ -197,7 +197,7 @@ public sealed class SivModeTransform
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
 
-        int plaintextLength = ciphertextWithTag.Length - TagSize;
+        var plaintextLength = ciphertextWithTag.Length - TagSize;
         if (output.Length < plaintextLength)
             throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
 
@@ -237,7 +237,7 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. SIV transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted()
@@ -251,7 +251,7 @@ public sealed class SivModeTransform
     /// Releases the resources used by this instance and clears retained associated-data state from memory.
     /// </summary>
     /// <remarks>
-    /// The supplied <see cref="IBlockCipher" /> instances are not disposed by this type. Ownership remains with the caller.
+    /// The supplied <see cref="IBlockCipher"/> instances are not disposed by this type. Ownership remains with the caller.
     /// </remarks>
     public void Dispose()
     {
@@ -263,7 +263,7 @@ public sealed class SivModeTransform
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -307,9 +307,9 @@ public sealed class SivModeTransform
     /// <returns>The S2V synthetic initialisation vector.</returns>
     private byte[] S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        int blockSize = this._s2vCipher.BlockSize;
+        var blockSize = this._s2vCipher.BlockSize;
 
-        byte[] zeroBlock = new byte[blockSize];
+        var zeroBlock = new byte[blockSize];
         byte[]? d = null;
         byte[]? mac = null;
         byte[]? t = null;
@@ -342,8 +342,8 @@ public sealed class SivModeTransform
             {
                 t = plaintext.ToArray();
 
-                int offset = t.Length - blockSize;
-                for (int i = 0; i < blockSize; i++)
+                var offset = t.Length - blockSize;
+                for (var i = 0; i < blockSize; i++)
                     t[offset + i] ^= d[i];
 
                 return ComputeCmac(t);
@@ -370,20 +370,20 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Computes AES-CMAC of <paramref name="message" /> using <c>s2vCipher</c> per RFC 4493.
+    /// Computes AES-CMAC of <paramref name="message"/> using <c>s2vCipher</c> per RFC 4493.
     /// </summary>
     /// <param name="message">The message to MAC.</param>
     /// <returns>The 16-byte CMAC tag.</returns>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        int blockSize = this._s2vCipher.BlockSize;
+        var blockSize = this._s2vCipher.BlockSize;
 
-        byte[] zeroBlock = new byte[blockSize];
-        byte[] l = new byte[blockSize];
-        byte[] k1 = new byte[blockSize];
-        byte[] k2 = new byte[blockSize];
-        byte[] mac = new byte[blockSize];
-        byte[] lastBlock = new byte[blockSize];
+        var zeroBlock = new byte[blockSize];
+        var l = new byte[blockSize];
+        var k1 = new byte[blockSize];
+        var k2 = new byte[blockSize];
+        var mac = new byte[blockSize];
+        var lastBlock = new byte[blockSize];
 
         try
         {
@@ -395,8 +395,8 @@ public sealed class SivModeTransform
             k1.CopyTo(k2, 0);
             Dbl(k2);
 
-            int totalBlocks = (message.Length + blockSize - 1) / blockSize;
-            bool lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
+            var totalBlocks = (message.Length + blockSize - 1) / blockSize;
+            var lastIsFull = message.Length > 0 && message.Length % blockSize == 0;
 
             if (message.Length == 0)
             {
@@ -404,9 +404,9 @@ public sealed class SivModeTransform
                 lastIsFull = false;
             }
 
-            for (int blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
+            for (var blockIdx = 0; blockIdx < totalBlocks - 1; blockIdx++)
             {
-                byte[] block = new byte[blockSize];
+                var block = new byte[blockSize];
 
                 try
                 {
@@ -423,8 +423,8 @@ public sealed class SivModeTransform
 
             if (message.Length > 0)
             {
-                int lastOffset = (totalBlocks - 1) * blockSize;
-                int lastLen = message.Length - lastOffset;
+                var lastOffset = (totalBlocks - 1) * blockSize;
+                var lastLen = message.Length - lastOffset;
 
                 message.Slice(lastOffset, lastLen).CopyTo(lastBlock);
 
@@ -436,7 +436,7 @@ public sealed class SivModeTransform
                 lastBlock[0] = 0x80;
             }
 
-            byte[] subkey = lastIsFull ? k1 : k2;
+            var subkey = lastIsFull ? k1 : k2;
 
             Xor(lastBlock, subkey, lastBlock);
             Xor(mac, lastBlock, mac);
@@ -460,29 +460,29 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Applies AES-CTR encryption using <paramref name="counter" /> as the initial counter
-    /// block, producing <c>input XOR keystream</c> in <paramref name="output" />.
+    /// Applies AES-CTR encryption using <paramref name="counter"/> as the initial counter
+    /// block, producing <c>input XOR keystream</c> in <paramref name="output"/>.
     /// </summary>
     /// <param name="input">The plaintext or ciphertext bytes.</param>
     /// <param name="output">The destination span.</param>
     /// <param name="counter">The starting counter block.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        int blockSize = this._ctrCipher.BlockSize;
-        byte[] ctr = (byte[])counter.Clone();
+        var blockSize = this._ctrCipher.BlockSize;
+        var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
         try
         {
-            for (int offset = 0; offset < input.Length; offset += blockSize)
+            for (var offset = 0; offset < input.Length; offset += blockSize)
             {
                 this._ctrCipher.Encrypt(ctr, ks);
 
-                for (int i = ctr.Length - 1; i >= 0; i--)
+                for (var i = ctr.Length - 1; i >= 0; i--)
                     if (++ctr[i] != 0) break;
 
-                int len = Math.Min(blockSize, input.Length - offset);
-                for (int i = 0; i < len; i++)
+                var len = Math.Min(blockSize, input.Length - offset);
+                for (var i = 0; i < len; i++)
                     output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
             }
         }
@@ -494,15 +494,15 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and
+    /// Doubles <paramref name="x"/> in-place in GF(2^128) with big-endian bit order and
     /// polynomial x^128 + x^7 + x^2 + x + 1.
     /// </summary>
     /// <param name="x">The 16-byte block to double in GF(2<sup>128</sup>); updated in place.</param>
     private static void Dbl(byte[] x)
     {
-        bool msb = (x[0] & 0x80) != 0;
+        var msb = (x[0] & 0x80) != 0;
 
-        for (int i = 0; i < x.Length - 1; i++)
+        for (var i = 0; i < x.Length - 1; i++)
             x[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
         x[x.Length - 1] <<= 1;
@@ -512,19 +512,19 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
+    /// Writes the byte-wise XOR of <paramref name="a"/> and <paramref name="b"/> into <paramref name="result"/>.
     /// </summary>
     /// <param name="a">The first operand span.</param>
     /// <param name="b">The second operand span.</param>
     /// <param name="result">The destination span.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (int i = 0; i < result.Length; i++)
+        for (var i = 0; i < result.Length; i++)
             result[i] = (byte)(a[i] ^ b[i]);
     }
 
     /// <summary>
-    /// Clears <paramref name="value" /> when it is not <see langword="null" />.
+    /// Clears <paramref name="value"/> when it is not <see langword="null"/>.
     /// </summary>
     /// <param name="value">The byte array to clear.</param>
     private static void ClearIfNotNull(byte[]? value)
@@ -534,7 +534,7 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
+    /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
     /// </summary>
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(this._disposed, this);

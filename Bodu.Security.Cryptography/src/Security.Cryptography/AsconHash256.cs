@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconHash256.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// For applications where throughput is a higher priority than maximum security margin, consider
-/// <see cref="AsconHashA256" />, which uses an 8-round permutation during absorption (Ascon-p8) and is otherwise identical.
+/// <see cref="AsconHashA256"/>, which uses an 8-round permutation during absorption (Ascon-p8) and is otherwise identical.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -42,7 +42,7 @@ namespace Bodu.Security.Cryptography;
 /// byte[] digest = hash.ComputeHash(message);
 /// </code>
 /// </example>
-/// <seealso cref="AsconHashA256" />
+/// <seealso cref="AsconHashA256"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 public sealed class AsconHash256
     : AsconHash<AsconHash256>
@@ -57,7 +57,7 @@ public sealed class AsconHash256
     private const ulong Iv4 = 0x1a5c464906c5976dUL;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconHash256" /> class.
+    /// Initializes a new instance of the <see cref="AsconHash256"/> class.
     /// </summary>
     public AsconHash256()
         : base(Iv0, Iv1, Iv2, Iv3, Iv4, 12, "ASCON-HASH256")

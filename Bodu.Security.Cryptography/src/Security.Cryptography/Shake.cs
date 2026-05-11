@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Shake" /> is built on the same <c>Keccak-f[1600]</c> permutation as <c>SHA-3</c>, operating over
+/// <see cref="Shake"/> is built on the same <c>Keccak-f[1600]</c> permutation as <c>SHA-3</c>, operating over
 /// a 1600-bit (200-byte) state. The two SHAKE variants differ only in their rate and, therefore, their security margin:
 /// </para>
 /// <list type="bullet">
@@ -31,8 +31,8 @@ namespace Bodu.Security.Cryptography;
 /// a <c>0x80</c> byte at the last position of the final rate block.
 /// </para>
 /// <para>
-/// When used via <see cref="HashAlgorithm" />, <c>HashSizeValue</c> holds the desired output length in bits and
-/// <c>securityLevel</c> selects the SHAKE variant. <see cref="HashAlgorithm.ComputeHash(byte[])" /> therefore produces
+/// When used via <see cref="HashAlgorithm"/>, <c>HashSizeValue</c> holds the desired output length in bits and
+/// <c>securityLevel</c> selects the SHAKE variant. <see cref="HashAlgorithm.ComputeHash(byte[])"/> therefore produces
 /// exactly <c>outputBits / 8</c> bytes regardless of which security level is chosen.
 /// </para>
 /// <para>
@@ -106,14 +106,14 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     private readonly int _securityLevel;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Shake" /> class with a 256-bit output using SHAKE128 internals.
+    /// Initializes a new instance of the <see cref="Shake"/> class with a 256-bit output using SHAKE128 internals.
     /// </summary>
     public Shake()
         : this(256, 128)
     { }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="Shake" /> class with the specified output size and security level.
+    /// Initializes a new instance of the <see cref="Shake"/> class with the specified output size and security level.
     /// </summary>
     /// <param name="outputBits">
     /// The desired output size in bits. Must be a positive value divisible by 8.
@@ -123,7 +123,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// rate = 136 bytes).
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="outputBits" /> is not a positive multiple of 8, or <paramref name="securityLevel" /> is not
+    /// <paramref name="outputBits"/> is not a positive multiple of 8, or <paramref name="securityLevel"/> is not
     /// 128 or 256.
     /// </exception>
     public Shake(int outputBits, int securityLevel)
@@ -141,7 +141,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// <param name="securityLevel">The candidate SHAKE security level.</param>
     /// <returns>The absorption rate in bytes (168 for SHAKE128, 136 for SHAKE256).</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="outputBits" /> is not a positive multiple of 8, or <paramref name="securityLevel" /> is not
+    /// <paramref name="outputBits"/> is not a positive multiple of 8, or <paramref name="securityLevel"/> is not
     /// 128 or 256.
     /// </exception>
     private static int ValidateAndComputeRateBytes(int outputBits, int securityLevel)
@@ -166,7 +166,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// <inheritdoc />
     /// <remarks>
     /// Returns either <c>"SHAKE128"</c> or <c>"SHAKE256"</c> matching the security level selected at construction.
-    /// The output length is independent of the algorithm name and is reflected by <see cref="HashSize" />.
+    /// The output length is independent of the algorithm name and is reflected by <see cref="HashSize"/>.
     /// </remarks>
     public override string AlgorithmName
     {
@@ -199,7 +199,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// <remarks>
     /// Because SHAKE is an XOF, the output length may be changed freely between computations. The security level
     /// (and therefore the rate) is fixed at construction time and cannot be altered. Changing this property after
-    /// input has already been absorbed throws <see cref="CryptographicUnexpectedOperationException" />.
+    /// input has already been absorbed throws <see cref="CryptographicUnexpectedOperationException"/>.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// The assigned value is not a positive multiple of 8.
@@ -241,7 +241,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// Releases the resources used by this instance and clears the internal sponge state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to
     /// release only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
@@ -266,12 +266,12 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     {
         this.ThrowIfDisposed();
         Span<byte> rateBuffer = this._residualBlock.Span;
-        int rateBytes = this.BlockSizeBytes;
+        var rateBytes = this.BlockSizeBytes;
 
         while (source.Length > 0)
         {
-            int available = rateBytes - this._residualBytes;
-            int take = Math.Min(available, source.Length);
+            var available = rateBytes - this._residualBytes;
+            var take = Math.Min(available, source.Length);
 
             source.Slice(0, take).CopyTo(rateBuffer.Slice(this._residualBytes));
             this._residualBytes += take;
@@ -292,13 +292,13 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// squeezing the requested number of output bytes from the sponge state.
     /// </summary>
     /// <returns>
-    /// A byte array of length <see cref="HashAlgorithm.HashSize" /> / 8 containing the squeezed output.
+    /// A byte array of length <see cref="HashAlgorithm.HashSize"/> / 8 containing the squeezed output.
     /// </returns>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();
         Span<byte> rateBuffer = this._residualBlock.Span;
-        int rateBytes = this.BlockSizeBytes;
+        var rateBytes = this.BlockSizeBytes;
 
         // Apply multi-rate padding: domain suffix byte at the current buffer position, then 0x80 at the last byte.
         rateBuffer[this._residualBytes] ^= DomainSuffix;
@@ -309,14 +309,14 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
         KeccakF(this._state);
 
         // Squeeze output bytes from the state (little-endian lane serialisation).
-        int outputBytes = this.HashSizeValue / 8;
-        byte[] output = new byte[outputBytes];
-        int written = 0;
-        int remaining = outputBytes;
+        var outputBytes = this.HashSizeValue / 8;
+        var output = new byte[outputBytes];
+        var written = 0;
+        var remaining = outputBytes;
 
         while (remaining > 0)
         {
-            int take = Math.Min(remaining, rateBytes);
+            var take = Math.Min(remaining, rateBytes);
             WriteLanesToBytes(this._state, output.AsSpan(written, take));
             written += take;
             remaining -= take;
@@ -336,19 +336,19 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void KeccakF(ulong[] state)
     {
-        ulong[] c = new ulong[5];
-        ulong[] b = new ulong[StateWords];
+        var c = new ulong[5];
+        var b = new ulong[StateWords];
 
-        for (int round = 0; round < 24; round++)
+        for (var round = 0; round < 24; round++)
         {
             // θ (theta): column parity and mixing.
-            for (int x = 0; x < 5; x++)
+            for (var x = 0; x < 5; x++)
                 c[x] = state[x] ^ state[x + 5] ^ state[x + 10] ^ state[x + 15] ^ state[x + 20];
 
-            for (int x = 0; x < 5; x++)
+            for (var x = 0; x < 5; x++)
             {
-                ulong d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
-                for (int y = 0; y < 5; y++)
+                var d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
+                for (var y = 0; y < 5; y++)
                     state[x + y * 5] ^= d;
             }
 
@@ -356,13 +356,13 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
             // s_rho[0] is 0; RotateBitsLeftUnchecked delegates to BitOperations.RotateLeft, which
             // handles a zero shift correctly without the undefined `value >> 64` shift the hand-rolled
             // form would produce.
-            for (int i = 0; i < StateWords; i++)
+            for (var i = 0; i < StateWords; i++)
                 b[s_pi[i]] = state[i].RotateBitsLeftUnchecked(s_rho[i]);
 
             // χ (chi): non-linear mixing within each row.
-            for (int y = 0; y < 5; y++)
+            for (var y = 0; y < 5; y++)
             {
-                for (int x = 0; x < 5; x++)
+                for (var x = 0; x < 5; x++)
                     state[x + y * 5] = b[x + y * 5] ^ ((~b[(x + 1) % 5 + y * 5]) & b[(x + 2) % 5 + y * 5]);
             }
 
@@ -374,23 +374,23 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// <summary>
     /// XORs a byte block into the Keccak state using little-endian 64-bit lane interpretation.
     /// </summary>
-    /// <param name="block">The byte block to XOR into the state. Must be at least <paramref name="rateBytes" /> bytes long.</param>
+    /// <param name="block">The byte block to XOR into the state. Must be at least <paramref name="rateBytes"/> bytes long.</param>
     /// <param name="state">The 25-element state array to update.</param>
-    /// <param name="rateBytes">The number of bytes from <paramref name="block" /> to absorb.</param>
+    /// <param name="rateBytes">The number of bytes from <paramref name="block"/> to absorb.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void XorBlockIntoState(ReadOnlySpan<byte> block, ulong[] state, int rateBytes)
     {
-        int lanes = rateBytes / 8;
-        for (int i = 0; i < lanes; i++)
+        var lanes = rateBytes / 8;
+        for (var i = 0; i < lanes; i++)
             state[i] ^= BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
 
         // Handle any trailing bytes that do not fill a complete 8-byte lane.
-        int remainder = rateBytes % 8;
+        var remainder = rateBytes % 8;
         if (remainder > 0)
         {
             ulong partial = 0;
-            int baseOffset = lanes * 8;
-            for (int b = 0; b < remainder; b++)
+            var baseOffset = lanes * 8;
+            for (var b = 0; b < remainder; b++)
                 partial |= (ulong)block[baseOffset + b] << (8 * b);
 
             state[lanes] ^= partial;
@@ -405,17 +405,17 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteLanesToBytes(ulong[] state, Span<byte> destination)
     {
-        int lanes = destination.Length / 8;
-        for (int i = 0; i < lanes; i++)
+        var lanes = destination.Length / 8;
+        for (var i = 0; i < lanes; i++)
             BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(i * 8, 8), state[i]);
 
         // Serialise any sub-lane tail bytes.
-        int remainder = destination.Length % 8;
+        var remainder = destination.Length % 8;
         if (remainder > 0)
         {
-            ulong lane = state[lanes];
-            int baseOffset = lanes * 8;
-            for (int b = 0; b < remainder; b++)
+            var lane = state[lanes];
+            var baseOffset = lanes * 8;
+            for (var b = 0; b < remainder; b++)
                 destination[baseOffset + b] = (byte)(lane >> (8 * b));
         }
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PaddingFactory.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ using System.Threading.Tasks;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Creates <see cref="IPaddingStrategy" /> instances for the framework
-/// <see cref="PaddingMode" /> values and for the extended <see cref="BoduPaddingMode" /> values.
+/// Creates <see cref="IPaddingStrategy"/> instances for the framework
+/// <see cref="PaddingMode"/> values and for the extended <see cref="BoduPaddingMode"/> values.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -35,14 +35,14 @@ namespace Bodu.Security.Cryptography;
 public static class PaddingFactory
 {
     /// <summary>
-    /// Creates a new <see cref="IPaddingStrategy" /> for the specified framework padding mode.
+    /// Creates a new <see cref="IPaddingStrategy"/> for the specified framework padding mode.
     /// </summary>
     /// <param name="mode">The padding scheme to apply. Supported values are
-    /// <see cref="PaddingMode.PKCS7" />, <see cref="PaddingMode.Zeros" />,
-    /// <see cref="PaddingMode.None" />, <see cref="PaddingMode.ANSIX923" /> and
-    /// <see cref="PaddingMode.ISO10126" />.</param>
-    /// <returns>An <see cref="IPaddingStrategy" /> that implements the requested <paramref name="mode" />.</returns>
-    /// <exception cref="CryptographicException">Thrown if <paramref name="mode" /> is not a supported padding scheme.</exception>
+    /// <see cref="PaddingMode.PKCS7"/>, <see cref="PaddingMode.Zeros"/>,
+    /// <see cref="PaddingMode.None"/>, <see cref="PaddingMode.ANSIX923"/> and
+    /// <see cref="PaddingMode.ISO10126"/>.</param>
+    /// <returns>An <see cref="IPaddingStrategy"/> that implements the requested <paramref name="mode"/>.</returns>
+    /// <exception cref="CryptographicException">Thrown if <paramref name="mode"/> is not a supported padding scheme.</exception>
     public static IPaddingStrategy Create(PaddingMode mode) => mode switch
     {
         PaddingMode.PKCS7 => new Pkcs7Padding(),
@@ -54,12 +54,12 @@ public static class PaddingFactory
     };
 
     /// <summary>
-    /// Creates a new <see cref="IPaddingStrategy" /> for the specified extended padding mode.
+    /// Creates a new <see cref="IPaddingStrategy"/> for the specified extended padding mode.
     /// </summary>
     /// <param name="mode">The padding scheme to apply. In addition to the five framework-enum values
-    /// this overload supports <see cref="BoduPaddingMode.ISO7816_4" />.</param>
-    /// <returns>An <see cref="IPaddingStrategy" /> that implements the requested <paramref name="mode" />.</returns>
-    /// <exception cref="CryptographicException">Thrown if <paramref name="mode" /> is not a supported padding scheme.</exception>
+    /// this overload supports <see cref="BoduPaddingMode.ISO7816_4"/>.</param>
+    /// <returns>An <see cref="IPaddingStrategy"/> that implements the requested <paramref name="mode"/>.</returns>
+    /// <exception cref="CryptographicException">Thrown if <paramref name="mode"/> is not a supported padding scheme.</exception>
     public static IPaddingStrategy Create(BoduPaddingMode mode) => mode switch
     {
         BoduPaddingMode.PKCS7 => new Pkcs7Padding(),

@@ -19,11 +19,11 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Threefish is the tweakable block cipher used as the core primitive of the Skein hash function. Each variant operates on a block
 /// whose size in bits matches its key size (256, 512, or 1024 bits) together with a 128-bit tweak. Derived classes must implement
-/// <see cref="CreateCipher(byte[], byte[])" /> to instantiate the appropriate concrete engine.
+/// <see cref="CreateCipher(byte[], byte[])"/> to instantiate the appropriate concrete engine.
 /// </para>
 /// <para>
-/// The <see cref="BlockMode" /> property replaces the standard <see cref="SymmetricAlgorithm.Mode" /> property, enabling the use of
-/// additional or non-standard block cipher modes such as <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />.
+/// The <see cref="BlockMode"/> property replaces the standard <see cref="SymmetricAlgorithm.Mode"/> property, enabling the use of
+/// additional or non-standard block cipher modes such as <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>.
 /// </para>
 /// <para>
 /// <strong>Concrete variants.</strong>
@@ -40,8 +40,8 @@ namespace Bodu.Security.Cryptography;
 /// key/IV/tweak combinations as a <see langword="false"/> return, see
 /// <see cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/>.
 /// </para>
-/// <note type="important">This class is not intended to be instantiated directly. Use <see cref="Threefish256" />,
-/// <see cref="Threefish512" />, or <see cref="Threefish1024" /> instead.</note>
+/// <note type="important">This class is not intended to be instantiated directly. Use <see cref="Threefish256"/>,
+/// <see cref="Threefish512"/>, or <see cref="Threefish1024"/> instead.</note>
 /// </remarks>
 /// <seealso cref="Threefish256"/>
 /// <seealso cref="Threefish512"/>
@@ -66,7 +66,7 @@ public abstract class Threefish
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Threefish" /> class with the specified block and tweak sizes.
+    /// Initializes a new instance of the <see cref="Threefish"/> class with the specified block and tweak sizes.
     /// </summary>
     /// <param name="blockSizeBits">The block size in bits. Must match the Threefish variant block size (256, 512, or 1024).</param>
     /// <param name="tweakSizeBits">The tweak size in bits. 128 bits for all Threefish variants.</param>
@@ -90,11 +90,11 @@ public abstract class Threefish
     /// <summary>
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
-    /// <value>One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.</value>
+    /// <value>One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.</value>
     /// <remarks>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property when used with
-    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including <see cref="CipherBlockMode.CTR" />
-    /// and <see cref="CipherBlockMode.OFB" />.
+    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property when used with
+    /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including <see cref="CipherBlockMode.CTR"/>
+    /// and <see cref="CipherBlockMode.OFB"/>.
     /// </remarks>
     public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
@@ -159,8 +159,8 @@ public abstract class Threefish
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> whose <see cref="ObjectDisposedException.ObjectName" /> matches the
-    /// concrete algorithm type's <see cref="Type.FullName" /> if the instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> whose <see cref="ObjectDisposedException.ObjectName"/> matches the
+    /// concrete algorithm type's <see cref="Type.FullName"/> if the instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -174,8 +174,8 @@ public abstract class Threefish
     /// </summary>
     /// <param name="key">The encryption key.</param>
     /// <param name="tweak">The tweak value.</param>
-    /// <returns>A configured <see cref="IBlockCipher" /> instance for encryption or decryption.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key" /> is <see langword="null" />.</exception>
+    /// <returns>A configured <see cref="IBlockCipher"/> instance for encryption or decryption.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     protected abstract IBlockCipher CreateCipher(byte[] key, byte[] tweak);
 
@@ -185,7 +185,7 @@ public abstract class Threefish
     /// <param name="key">The encryption key.</param>
     /// <param name="iv">The initialisation vector.</param>
     /// <param name="tweak">The tweak value.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key" />, <paramref name="iv" />, or <paramref name="tweak" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/>, <paramref name="iv"/>, or <paramref name="tweak"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when any input does not match the required length.</exception>
     protected void Validate(byte[] key, byte[] iv, byte[] tweak)
     {

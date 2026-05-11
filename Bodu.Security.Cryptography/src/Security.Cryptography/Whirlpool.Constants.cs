@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Whirlpool.Constants.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -61,7 +61,7 @@ public sealed partial class Whirlpool
 
     /// <summary>
     /// The diffusion matrix coefficients common to <c>Whirlpool-0</c> and <c>Whirlpool-T</c>, expressed in the
-    /// order <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable" />.
+    /// order <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable"/>.
     /// </summary>
     private static readonly byte[] MdsOriginal =
     {
@@ -70,7 +70,7 @@ public sealed partial class Whirlpool
 
     /// <summary>
     /// The diffusion matrix coefficients used by the final <c>Whirlpool</c> function, expressed in the order
-    /// <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable" />.
+    /// <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable"/>.
     /// </summary>
     private static readonly byte[] MdsFinal =
     {
@@ -89,12 +89,12 @@ public sealed partial class Whirlpool
     /// </remarks>
     private static byte[] BuildMiniBoxSBox()
     {
-        byte[] einv = new byte[16];
-        for (int i = 0; i < MiniBoxE.Length; i++)
+        var einv = new byte[16];
+        for (var i = 0; i < MiniBoxE.Length; i++)
             einv[MiniBoxE[i]] = (byte)i;
 
-        byte[] sbox = new byte[256];
-        for (int i = 0; i < 256; i++)
+        var sbox = new byte[256];
+        for (var i = 0; i < 256; i++)
         {
             int left = MiniBoxE[i >> 4];
             int right = einv[i & 0xF];
@@ -111,19 +111,19 @@ public sealed partial class Whirlpool
     /// </summary>
     /// <param name="x">The left multiplicand, treated as an unsigned 8-bit value.</param>
     /// <param name="y">The right multiplicand, treated as an unsigned 8-bit value.</param>
-    /// <returns>The product <c>x · y</c> reduced modulo <see cref="GaloisReductionPolynomial" />.</returns>
+    /// <returns>The product <c>x · y</c> reduced modulo <see cref="GaloisReductionPolynomial"/>.</returns>
     private static byte GaloisMultiply(byte x, byte y)
     {
         int a = x;
         int b = y;
-        int result = 0;
+        var result = 0;
 
         while (b != 0)
         {
             if ((b & 1) != 0)
                 result ^= a;
 
-            int highBit = a & 0x80;
+            var highBit = a & 0x80;
             a = (a << 1) & 0xFF;
             if (highBit != 0)
                 a ^= GaloisReductionPolynomial & 0xFF;
@@ -135,27 +135,27 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Builds the flat 8 × 256 multiplication table used by <see cref="ApplyRound" /> for the supplied
-    /// <paramref name="sbox" /> and diffusion coefficients <paramref name="mds" />.
+    /// Builds the flat 8 × 256 multiplication table used by <see cref="ApplyRound"/> for the supplied
+    /// <paramref name="sbox"/> and diffusion coefficients <paramref name="mds"/>.
     /// </summary>
     /// <param name="sbox">The 256-byte S-box selected for the configured variant.</param>
     /// <param name="mds">The eight-byte diffusion row for the configured variant.</param>
     /// <returns>
-    /// A flat <see cref="ulong" /> array of length <c>8 × 256</c>, indexed as <c>[column &lt;&lt; 8 | value]</c>,
+    /// A flat <see cref="ulong"/> array of length <c>8 × 256</c>, indexed as <c>[column &lt;&lt; 8 | value]</c>,
     /// where each entry is the diffusion-weighted S-box output rotated so it can be XORed directly into the
     /// corresponding state word.
     /// </returns>
     private static ulong[] BuildMultiplicationTable(byte[] sbox, byte[] mds)
     {
-        ulong[] table = new ulong[8 * 256];
+        var table = new ulong[8 * 256];
 
-        for (int i = 0; i < 256; i++)
+        for (var i = 0; i < 256; i++)
         {
             ulong vector = 0;
-            for (int j = 0; j < 8; j++)
+            for (var j = 0; j < 8; j++)
                 vector |= (ulong)GaloisMultiply(sbox[i], mds[j]) << ((7 - j) * 8);
 
-            for (int j = 0; j < 8; j++)
+            for (var j = 0; j < 8; j++)
                 table[(j << 8) | i] = System.Numerics.BitOperations.RotateRight(vector, j * 8);
         }
 
@@ -164,7 +164,7 @@ public sealed partial class Whirlpool
 
     /// <summary>
     /// Builds the ten 64-bit round constants for the <c>W</c> key schedule using the supplied
-    /// <paramref name="sbox" />.
+    /// <paramref name="sbox"/>.
     /// </summary>
     /// <param name="sbox">The 256-byte S-box selected for the configured variant.</param>
     /// <returns>An array of ten big-endian packed round constants.</returns>
@@ -174,11 +174,11 @@ public sealed partial class Whirlpool
     /// </remarks>
     private static ulong[] BuildRoundConstants(byte[] sbox)
     {
-        ulong[] rcon = new ulong[RoundCount];
-        for (int i = 0; i < RoundCount; i++)
+        var rcon = new ulong[RoundCount];
+        for (var i = 0; i < RoundCount; i++)
         {
             ulong value = 0;
-            for (int j = 0; j < 8; j++)
+            for (var j = 0; j < 8; j++)
                 value |= (ulong)sbox[(8 * i) + j] << ((7 - j) * 8);
 
             rcon[i] = value;

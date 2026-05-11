@@ -15,11 +15,11 @@ using Bodu.Security.Cryptography.Extensions;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides high-performance utility methods for one-shot hashing using factory-created <see cref="HashAlgorithm" /> instances.
+/// Provides high-performance utility methods for one-shot hashing using factory-created <see cref="HashAlgorithm"/> instances.
 /// </summary>
 /// <remarks>
 /// <para>
-/// These methods simplify hashing workflows by accepting an <see cref="IHashAlgorithmFactory{T}" /> implementation, allowing
+/// These methods simplify hashing workflows by accepting an <see cref="IHashAlgorithmFactory{T}"/> implementation, allowing
 /// consumers to construct and configure hash algorithms (including keyed or parameterized variants) without managing lifecycle manually.
 /// </para>
 /// <para>
@@ -57,11 +57,11 @@ public static class HashAlgorithmHelper
     /// <summary>
     /// Computes the hash for the given input using a factory-created algorithm.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="HashAlgorithm" />.</typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm"/>.</typeparam>
     /// <param name="factory">The factory used to create the hash algorithm.</param>
     /// <param name="input">The input data to hash.</param>
     /// <returns>The computed hash as a byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static byte[] HashData<T>(IHashAlgorithmFactory<T> factory, ReadOnlySpan<byte> input)
         where T : System.Security.Cryptography.HashAlgorithm
@@ -69,14 +69,14 @@ public static class HashAlgorithmHelper
         ThrowHelper.ThrowIfNull(factory);
 
         using var algorithm = factory.Create();
-        int hashSizeBytes = algorithm.HashSize >> 3;
-        byte[] result = new byte[hashSizeBytes];
-        if (!algorithm.TryComputeHash(input, result, out int bytesWritten))
+        var hashSizeBytes = algorithm.HashSize >> 3;
+        var result = new byte[hashSizeBytes];
+        if (!algorithm.TryComputeHash(input, result, out var bytesWritten))
             throw new CryptographicException("The hash algorithm's destination buffer was too small.");
         if (bytesWritten == result.Length)
             return result;
 
-        byte[] trimmed = new byte[bytesWritten];
+        var trimmed = new byte[bytesWritten];
         Buffer.BlockCopy(result, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }
@@ -84,11 +84,11 @@ public static class HashAlgorithmHelper
     /// <summary>
     /// Computes the hash of a stream using a factory-created algorithm.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="HashAlgorithm" />.</typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm"/>.</typeparam>
     /// <param name="factory">The factory used to create the hash algorithm.</param>
     /// <param name="stream">The stream to hash.</param>
     /// <returns>The computed hash as a byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory" /> or <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> or <paramref name="stream"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static byte[] HashData<T>(IHashAlgorithmFactory<T> factory, Stream stream)
         where T : System.Security.Cryptography.HashAlgorithm
@@ -97,7 +97,7 @@ public static class HashAlgorithmHelper
         ThrowHelper.ThrowIfNull(stream);
 
         using var algorithm = factory.Create();
-        AppendDataFromStreamInternal(algorithm, stream, isAsync: false, default).GetAwaiter().GetResult();
+        AppendDataFromStreamInternalAsync(algorithm, stream, isAsync: false, default).GetAwaiter().GetResult();
 
         return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
     }
@@ -105,12 +105,12 @@ public static class HashAlgorithmHelper
     /// <summary>
     /// Asynchronously computes the hash of a stream using a factory-created algorithm.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="HashAlgorithm" />.</typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm"/>.</typeparam>
     /// <param name="factory">The factory used to create the hash algorithm.</param>
     /// <param name="stream">The stream to hash.</param>
     /// <param name="cancellationToken">An optional cancellation token.</param>
     /// <returns>A task representing the asynchronous hash computation.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory" /> or <paramref name="stream" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> or <paramref name="stream"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static async ValueTask<byte[]> HashDataAsync<T>(
         IHashAlgorithmFactory<T> factory,
@@ -122,7 +122,7 @@ public static class HashAlgorithmHelper
         ThrowHelper.ThrowIfNull(stream);
 
         using var algorithm = factory.Create();
-        await AppendDataFromStreamInternal(algorithm, stream, isAsync: true, cancellationToken).ConfigureAwait(false);
+        await AppendDataFromStreamInternalAsync(algorithm, stream, isAsync: true, cancellationToken).ConfigureAwait(false);
 
         return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
     }
@@ -130,13 +130,13 @@ public static class HashAlgorithmHelper
     /// <summary>
     /// Attempts to compute the hash and write it to the specified destination buffer.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="HashAlgorithm" />.</typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm"/>.</typeparam>
     /// <param name="factory">The factory used to create the hash algorithm.</param>
     /// <param name="input">The input data to hash.</param>
     /// <param name="destination">The buffer to receive the hash value.</param>
-    /// <param name="bytesWritten">Receives the number of bytes written to <paramref name="destination" />.</param>
-    /// <returns><see langword="true" /> if the hash fits in the destination buffer; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory" /> is <see langword="null" />.</exception>
+    /// <param name="bytesWritten">Receives the number of bytes written to <paramref name="destination"/>.</param>
+    /// <returns><see langword="true"/> if the hash fits in the destination buffer; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
     public static bool TryHashData<T>(
         IHashAlgorithmFactory<T> factory,
         ReadOnlySpan<byte> input,
@@ -159,13 +159,13 @@ public static class HashAlgorithmHelper
     /// <param name="cancellationToken">The optional cancellation token for async operations.</param>
     /// <returns>A task representing the completion of the data append operation.</returns>
     /// <remarks>
-    /// This method is used by both <see cref="HashData{T}(IHashAlgorithmFactory{T}, Stream)" /> and
-    /// <see cref="HashDataAsync{T}(IHashAlgorithmFactory{T}, Stream, CancellationToken)" /> to centralise the stream-to-hash logic.
+    /// This method is used by both <see cref="HashData{T}(IHashAlgorithmFactory{T}, Stream)"/> and
+    /// <see cref="HashDataAsync{T}(IHashAlgorithmFactory{T}, Stream, CancellationToken)"/> to centralise the stream-to-hash logic.
     /// </remarks>
-    private static async ValueTask AppendDataFromStreamInternal(HashAlgorithm algorithm, Stream stream, bool isAsync, CancellationToken cancellationToken)
+    private static async ValueTask AppendDataFromStreamInternalAsync(HashAlgorithm algorithm, Stream stream, bool isAsync, CancellationToken cancellationToken)
     {
         // Rent a reusable buffer from the shared pool
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(8192);
+        var buffer = ArrayPool<byte>.Shared.Rent(8192);
         try
         {
             int bytesRead;
@@ -181,7 +181,7 @@ public static class HashAlgorithmHelper
             }
             else
             {
-                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) > 0)
+                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
                     algorithm.TransformBlock(buffer, 0, bytesRead, null, 0);
                 }

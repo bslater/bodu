@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,13 +34,13 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///   <item>
 ///     <term>Throwing verification</term>
 ///     <description><c>VerifyHash</c> / <c>VerifyHashAsync</c> — hash an input (byte array, span, memory, stream, or
-///     <see cref="System.String"/> with a chosen <see cref="System.Text.Encoding"/>) and compare the digest against an
+///     <see cref="string"/> with a chosen <see cref="System.Text.Encoding"/>) and compare the digest against an
 ///     expected value given as bytes or as a hexadecimal string. Throws on a malformed input or hex.</description>
 ///   </item>
 ///   <item>
 ///     <term>Try-pattern verification</term>
 ///     <description><c>TryVerifyHash</c> / <c>TryVerifyHashAsync</c> — non-throwing counterparts that return
-///     <see langword="false"/> for any <see langword="null" /> data parameter (<c>input</c>, <c>expectedHash</c>,
+///     <see langword="false"/> for any <see langword="null"/> data parameter (<c>input</c>, <c>expectedHash</c>,
 ///     <c>expectedHex</c>, <c>encoding</c>, <c>stream</c>), for malformed expected hashes, and for any internal failure;
 ///     <see langword="true"/> is returned only when the inputs round-trip and match. <see cref="ArgumentNullException"/>
 ///     is thrown only when <c>algorithm</c> itself is <see langword="null"/>. Suitable when the expected hash is

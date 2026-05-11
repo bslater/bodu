@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 public static partial class CryptoHelpers
 {
     /// <summary>
-    /// Securely zeroes the contents of a <see cref="Memory{T}" /> buffer using <see cref="CryptographicOperations.ZeroMemory" />.
+    /// Securely zeroes the contents of a <see cref="Memory{T}"/> buffer using <see cref="CryptographicOperations.ZeroMemory"/>.
     /// </summary>
     /// <typeparam name="T">The element type. Must be unmanaged.</typeparam>
     /// <param name="memory">The memory buffer to clear.</param>
@@ -26,7 +26,7 @@ public static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Securely zeroes the contents of a <see cref="Span{T}" /> using <see cref="CryptographicOperations.ZeroMemory" />.
+    /// Securely zeroes the contents of a <see cref="Span{T}"/> using <see cref="CryptographicOperations.ZeroMemory"/>.
     /// </summary>
     /// <typeparam name="T">The element type. Must be unmanaged.</typeparam>
     /// <param name="span">The span to clear.</param>
@@ -38,11 +38,11 @@ public static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Securely zeroes the contents of an unmanaged array using <see cref="CryptographicOperations.ZeroMemory" />.
+    /// Securely zeroes the contents of an unmanaged array using <see cref="CryptographicOperations.ZeroMemory"/>.
     /// </summary>
-    /// <param name="array">The array whose contents will be securely zeroed. If <see langword="null" />, the call is a no-op.</param>
+    /// <param name="array">The array whose contents will be securely zeroed. If <see langword="null"/>, the call is a no-op.</param>
     /// <remarks>
-    /// Unlike <see cref="ClearAndNullify{T}(ref T[])" />, this overload does not nullify the caller's reference. It is useful for
+    /// Unlike <see cref="ClearAndNullify{T}(ref T[])"/>, this overload does not nullify the caller's reference. It is useful for
     /// clearing the contents of readonly fields or shared buffers whose reference must remain valid.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -53,12 +53,12 @@ public static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Securely zeroes the contents of an unmanaged array using <see cref="CryptographicOperations.ZeroMemory" />.
+    /// Securely zeroes the contents of an unmanaged array using <see cref="CryptographicOperations.ZeroMemory"/>.
     /// </summary>
     /// <typeparam name="T">The element type of the array. Must be unmanaged.</typeparam>
-    /// <param name="array">The array whose contents will be securely zeroed. If <see langword="null" />, the call is a no-op.</param>
+    /// <param name="array">The array whose contents will be securely zeroed. If <see langword="null"/>, the call is a no-op.</param>
     /// <remarks>
-    /// Unlike <see cref="ClearAndNullify{T}(ref T[])" />, this overload does not nullify the caller's reference. It is useful for
+    /// Unlike <see cref="ClearAndNullify{T}(ref T[])"/>, this overload does not nullify the caller's reference. It is useful for
     /// clearing the contents of readonly fields or shared buffers whose reference must remain valid.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -70,13 +70,13 @@ public static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Securely zeroes the contents of an unmanaged array and sets the caller's reference to <see langword="null" />.
+    /// Securely zeroes the contents of an unmanaged array and sets the caller's reference to <see langword="null"/>.
     /// </summary>
     /// <typeparam name="T">The element type of the array. Must be an unmanaged value type.</typeparam>
-    /// <param name="array">A reference to the array to clear and nullify. If <see langword="null" />, the call is a no-op.</param>
+    /// <param name="array">A reference to the array to clear and nullify. If <see langword="null"/>, the call is a no-op.</param>
     /// <remarks>
-    /// The contents are cleared using <see cref="CryptographicOperations.ZeroMemory" /> before the reference is set to
-    /// <see langword="null" />. This helper is intended for releasing sensitive data such as key material or intermediate
+    /// The contents are cleared using <see cref="CryptographicOperations.ZeroMemory"/> before the reference is set to
+    /// <see langword="null"/>. This helper is intended for releasing sensitive data such as key material or intermediate
     /// hash state.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -99,7 +99,7 @@ public static partial class CryptoHelpers
     /// <remarks>
     /// <para>
     /// This method treats the supplied value as a contiguous sequence of bytes and overwrites those bytes using
-    /// <see cref="CryptographicOperations.ZeroMemory" />.
+    /// <see cref="CryptographicOperations.ZeroMemory"/>.
     /// </para>
     /// <para>
     /// This is useful for clearing stack-allocated values, struct fields, and other unmanaged state that may contain
@@ -107,7 +107,7 @@ public static partial class CryptoHelpers
     /// or expanded-key fragments.
     /// </para>
     /// <para>
-    /// Only the storage location referenced by <paramref name="value" /> is cleared. This method cannot clear previous
+    /// Only the storage location referenced by <paramref name="value"/> is cleared. This method cannot clear previous
     /// copies that may have existed in registers, temporary locals, copied structs, arrays, native buffers, crash dumps,
     /// or other runtime-managed locations.
     /// </para>
@@ -121,32 +121,32 @@ public static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Securely clears the contents of a <see cref="MemoryStream" /> by overwriting its underlying buffer with zeros,
+    /// Securely clears the contents of a <see cref="MemoryStream"/> by overwriting its underlying buffer with zeros,
     /// resetting its length, and disposing the stream.
     /// </summary>
     /// <param name="stream">
-    /// The <see cref="MemoryStream" /> whose buffer is to be cleared.
+    /// The <see cref="MemoryStream"/> whose buffer is to be cleared.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="stream" /> is <see langword="null" />.
+    /// <paramref name="stream"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The supplied <see cref="MemoryStream" /> does not expose its underlying buffer and therefore cannot be securely cleared
+    /// The supplied <see cref="MemoryStream"/> does not expose its underlying buffer and therefore cannot be securely cleared
     /// by this method.
     /// </exception>
     /// <remarks>
     /// <para>
     /// This method attempts to clear the entire underlying buffer, not just the active portion of the stream, because sensitive
-    /// data may remain in unused capacity beyond the current <see cref="MemoryStream.Length" />.
+    /// data may remain in unused capacity beyond the current <see cref="MemoryStream.Length"/>.
     /// </para>
     /// <para>
     /// This method does not guarantee that all historical copies of the data have been removed from memory. Additional copies may
-    /// exist if the stream was resized, if <see cref="MemoryStream.ToArray" /> was called, or if the data was converted into other
+    /// exist if the stream was resized, if <see cref="MemoryStream.ToArray"/> was called, or if the data was converted into other
     /// managed objects such as strings.
     /// </para>
     /// <para>
     /// For sensitive cryptographic material, prefer directly managed byte buffers where possible so they can be cleared with
-    /// <see cref="CryptographicOperations.ZeroMemory(System.Span{byte})" /> without relying on <see cref="MemoryStream" />.
+    /// <see cref="CryptographicOperations.ZeroMemory(System.Span{byte})"/> without relying on <see cref="MemoryStream"/>.
     /// </para>
     /// </remarks>
     public static void ClearAndNullify(MemoryStream stream)

@@ -10,12 +10,12 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Offset CodeBook mode version 3 (OCB3) to an underlying <see cref="IBlockCipher" />,
+/// Applies Offset CodeBook mode version 3 (OCB3) to an underlying <see cref="IBlockCipher"/>,
 /// providing single-pass authenticated encryption with associated data per RFC 7253.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — OCB3 realises both the keystream and the MAC pipelines as a single offset-driven pass over each block." />
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — OCB3 realises both the keystream and the MAC pipelines as a single offset-driven pass over each block."/>
 /// </para>
 /// <para>
 /// OCB3 collapses the two pipelines of the generic AEAD shape above into a <em>single pass</em>: the
@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// The nonce is derived from the first 12 bytes of the IV supplied to the constructor.
 /// The tag length defaults to 16 bytes (TAGLEN = 128) and may be set to any value from
-/// 1 to 16 bytes via the <paramref name="tagLen" /> constructor parameter.
+/// 1 to 16 bytes via the <paramref name="tagLen"/> constructor parameter.
 /// Supported RFC 7253 values are 8, 12, and 16 bytes (64, 96, and 128 bits).
 /// </para>
 /// <para>
@@ -67,8 +67,8 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#ocb3--single-pass-rfc-7253">OCB3 walk-through in the AEAD-modes guide</seealso>
-/// <seealso cref="AesBlockCipher" />
-/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
+/// <seealso cref="AesBlockCipher"/>
+/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class OcbModeTransform
     : IAeadBlockCipherModeTransform
     , IDisposable
@@ -89,7 +89,7 @@ public sealed class OcbModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OcbModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="OcbModeTransform"/> class.
     /// </summary>
     /// <param name="cipher">The block cipher. Must have a 16-byte block size.</param>
     /// <param name="iv">
@@ -102,11 +102,11 @@ public sealed class OcbModeTransform
     /// Defaults to 16 (TAGLEN = 128 bits).
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.
+    /// <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher" /> does not have a 16-byte block size, <paramref name="iv" /> length does not
-    /// equal the cipher block size, or <paramref name="tagLen" /> is outside the range [1, block size].
+    /// <paramref name="cipher"/> does not have a 16-byte block size, <paramref name="iv"/> length does not
+    /// equal the cipher block size, or <paramref name="tagLen"/> is outside the range [1, block size].
     /// </exception>
     public OcbModeTransform(IBlockCipher cipher, byte[] iv, int tagLen = 16)
     {
@@ -141,11 +141,11 @@ public sealed class OcbModeTransform
 
         this._tagLen = tagLen;
 
-        int blockSize = cipher.BlockSize;
+        var blockSize = cipher.BlockSize;
 
         // RFC 7253 §2.1 — Key-dependent constants derived once per key.
         // L_* = ENCIPHER(K, zeros(128)).
-        byte[] zeroBlock = new byte[blockSize];
+        var zeroBlock = new byte[blockSize];
         this._lStar = new byte[blockSize];
 
         try
@@ -164,7 +164,7 @@ public sealed class OcbModeTransform
         this._lArray = new byte[MaxLValues][];
         this._lArray[0] = GfDouble(this._lDollar);
 
-        for (int i = 1; i < MaxLValues; i++)
+        for (var i = 1; i < MaxLValues; i++)
             this._lArray[i] = GfDouble(this._lArray[i - 1]);
     }
 
@@ -189,13 +189,13 @@ public sealed class OcbModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        int required = plaintext.Length + TagSize;
+        var required = plaintext.Length + TagSize;
         if (output.Length < required)
             throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
 
         EnsureAadProcessed();
 
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
         byte[]? offset = null;
         byte[]? checksum = null;
@@ -209,11 +209,11 @@ public sealed class OcbModeTransform
             checksum = new byte[blockSize];
             block = new byte[blockSize];
 
-            int m = (plaintext.Length + blockSize - 1) / blockSize;
+            var m = (plaintext.Length + blockSize - 1) / blockSize;
 
-            for (int blockIdx = 1; blockIdx <= m - 1; blockIdx++)
+            for (var blockIdx = 1; blockIdx <= m - 1; blockIdx++)
             {
-                int src = (blockIdx - 1) * blockSize;
+                var src = (blockIdx - 1) * blockSize;
 
                 Xor(offset, this._lArray[Ntz(blockIdx)], offset);
 
@@ -228,8 +228,8 @@ public sealed class OcbModeTransform
 
             if (plaintext.Length > 0)
             {
-                int lastSrc = (m - 1) * blockSize;
-                int lastLen = plaintext.Length - lastSrc;
+                var lastSrc = (m - 1) * blockSize;
+                var lastLen = plaintext.Length - lastSrc;
 
                 if (lastLen == blockSize)
                 {
@@ -245,8 +245,8 @@ public sealed class OcbModeTransform
                 }
                 else
                 {
-                    byte[] pad = new byte[blockSize];
-                    byte[] padBlock = new byte[blockSize];
+                    var pad = new byte[blockSize];
+                    var padBlock = new byte[blockSize];
 
                     try
                     {
@@ -254,7 +254,7 @@ public sealed class OcbModeTransform
 
                         this._cipher.Encrypt(offset, pad);
 
-                        for (int i = 0; i < lastLen; i++)
+                        for (var i = 0; i < lastLen; i++)
                             output[lastSrc + i] = (byte)(plaintext[lastSrc + i] ^ pad[i]);
 
                         plaintext.Slice(lastSrc, lastLen).CopyTo(padBlock);
@@ -303,7 +303,7 @@ public sealed class OcbModeTransform
         if (ciphertextWithTag.Length < TagSize)
             throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
 
-        int plaintextLength = ciphertextWithTag.Length - TagSize;
+        var plaintextLength = ciphertextWithTag.Length - TagSize;
         if (output.Length < plaintextLength)
             throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
 
@@ -312,7 +312,7 @@ public sealed class OcbModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
 
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
         byte[]? offset = null;
         byte[]? checksum = null;
@@ -326,11 +326,11 @@ public sealed class OcbModeTransform
             checksum = new byte[blockSize];
             block = new byte[blockSize];
 
-            int m = (plaintextLength + blockSize - 1) / blockSize;
+            var m = (plaintextLength + blockSize - 1) / blockSize;
 
-            for (int blockIdx = 1; blockIdx <= m - 1; blockIdx++)
+            for (var blockIdx = 1; blockIdx <= m - 1; blockIdx++)
             {
-                int src = (blockIdx - 1) * blockSize;
+                var src = (blockIdx - 1) * blockSize;
 
                 Xor(offset, this._lArray[Ntz(blockIdx)], offset);
 
@@ -345,8 +345,8 @@ public sealed class OcbModeTransform
 
             if (plaintextLength > 0)
             {
-                int lastSrc = (m - 1) * blockSize;
-                int lastLen = plaintextLength - lastSrc;
+                var lastSrc = (m - 1) * blockSize;
+                var lastLen = plaintextLength - lastSrc;
 
                 if (lastLen == blockSize)
                 {
@@ -362,8 +362,8 @@ public sealed class OcbModeTransform
                 }
                 else
                 {
-                    byte[] pad = new byte[blockSize];
-                    byte[] padBlock = new byte[blockSize];
+                    var pad = new byte[blockSize];
+                    var padBlock = new byte[blockSize];
 
                     try
                     {
@@ -371,7 +371,7 @@ public sealed class OcbModeTransform
 
                         this._cipher.Encrypt(offset, pad);
 
-                        for (int i = 0; i < lastLen; i++)
+                        for (var i = 0; i < lastLen; i++)
                             output[lastSrc + i] = (byte)(ciphertext[lastSrc + i] ^ pad[i]);
 
                         output.Slice(lastSrc, lastLen).CopyTo(padBlock);
@@ -416,7 +416,7 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
+    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
     /// decrypted a message. OCB transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted()
@@ -431,7 +431,7 @@ public sealed class OcbModeTransform
     /// and associated-data state from memory.
     /// </summary>
     /// <remarks>
-    /// The supplied <see cref="IBlockCipher" /> is not disposed by this type. Ownership remains with the caller.
+    /// The supplied <see cref="IBlockCipher"/> is not disposed by this type. Ownership remains with the caller.
     /// </remarks>
     public void Dispose()
     {
@@ -443,7 +443,7 @@ public sealed class OcbModeTransform
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -456,7 +456,7 @@ public sealed class OcbModeTransform
             CryptographicOperations.ZeroMemory(this._lStar);
             CryptographicOperations.ZeroMemory(this._lDollar);
 
-            foreach (byte[] value in this._lArray)
+            foreach (var value in this._lArray)
                 CryptographicOperations.ZeroMemory(value);
 
             if (this._aad is not null)
@@ -492,9 +492,9 @@ public sealed class OcbModeTransform
     /// <returns>The initial <c>Offset_0</c> value derived from the nonce per RFC 7253.</returns>
     private byte[] ComputeInitialOffset()
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
-        byte[] nonceWord = new byte[blockSize];
+        var nonceWord = new byte[blockSize];
         byte[]? ktopInput = null;
         byte[]? ktop = null;
         byte[]? stretch = null;
@@ -505,7 +505,7 @@ public sealed class OcbModeTransform
             nonceWord[3] = 0x01;
             this._nonce.CopyTo(nonceWord, 4);
 
-            int bottom = nonceWord[blockSize - 1] & 0x3F;
+            var bottom = nonceWord[blockSize - 1] & 0x3F;
 
             ktopInput = (byte[])nonceWord.Clone();
             ktopInput[blockSize - 1] &= 0xC0;
@@ -516,13 +516,13 @@ public sealed class OcbModeTransform
             stretch = new byte[blockSize + blockSize / 2];
             ktop.CopyTo(stretch, 0);
 
-            for (int i = 0; i < blockSize / 2; i++)
+            for (var i = 0; i < blockSize / 2; i++)
                 stretch[blockSize + i] = (byte)(ktop[i] ^ ktop[i + 1]);
 
-            byte[] offset = new byte[blockSize];
+            var offset = new byte[blockSize];
 
-            int byteOffset = bottom / 8;
-            int bitOffset = bottom % 8;
+            var byteOffset = bottom / 8;
+            var bitOffset = bottom % 8;
 
             if (bitOffset == 0)
             {
@@ -530,7 +530,7 @@ public sealed class OcbModeTransform
             }
             else
             {
-                for (int i = 0; i < blockSize; i++)
+                for (var i = 0; i < blockSize; i++)
                 {
                     offset[i] = (byte)(
                         (stretch[byteOffset + i] << bitOffset) |
@@ -553,28 +553,28 @@ public sealed class OcbModeTransform
     /// Computes HASH(K, A), the OCB3 authentication of associated data per RFC 7253.
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
-    /// <returns>The HASH value of <paramref name="aad" /> per RFC 7253.</returns>
+    /// <returns>The HASH value of <paramref name="aad"/> per RFC 7253.</returns>
     private byte[] ComputeHash(ReadOnlySpan<byte> aad)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
-        byte[] sum = new byte[blockSize];
+        var sum = new byte[blockSize];
 
         if (aad.Length == 0)
             return sum;
 
-        byte[] offsetHash = new byte[blockSize];
-        byte[] block = new byte[blockSize];
+        var offsetHash = new byte[blockSize];
+        var block = new byte[blockSize];
 
         try
         {
-            int m = (aad.Length + blockSize - 1) / blockSize;
+            var m = (aad.Length + blockSize - 1) / blockSize;
 
-            for (int blockIdx = 1; blockIdx <= m; blockIdx++)
+            for (var blockIdx = 1; blockIdx <= m; blockIdx++)
             {
-                int src = (blockIdx - 1) * blockSize;
-                int blockLen = Math.Min(blockSize, aad.Length - src);
-                bool full = blockLen == blockSize;
+                var src = (blockIdx - 1) * blockSize;
+                var blockLen = Math.Min(blockSize, aad.Length - src);
+                var full = blockLen == blockSize;
 
                 if (full)
                 {
@@ -587,7 +587,7 @@ public sealed class OcbModeTransform
                 }
                 else
                 {
-                    byte[] padBlock = new byte[blockSize];
+                    var padBlock = new byte[blockSize];
 
                     try
                     {
@@ -623,17 +623,17 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Multiplies <paramref name="x" /> by α in GF(2^128) with big-endian bit order and
+    /// Multiplies <paramref name="x"/> by α in GF(2^128) with big-endian bit order and
     /// polynomial x^128 + x^7 + x^2 + x + 1.
     /// </summary>
     /// <param name="x">The 16-byte input block.</param>
-    /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x" />.</returns>
+    /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x"/>.</returns>
     private static byte[] GfDouble(byte[] x)
     {
-        byte[] result = new byte[x.Length];
-        bool msb = (x[0] & 0x80) != 0;
+        var result = new byte[x.Length];
+        var msb = (x[0] & 0x80) != 0;
 
-        for (int i = 0; i < x.Length - 1; i++)
+        for (var i = 0; i < x.Length - 1; i++)
             result[i] = (byte)((x[i] << 1) | (x[i + 1] >> 7));
 
         result[x.Length - 1] = (byte)(x[x.Length - 1] << 1);
@@ -645,28 +645,28 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
+    /// Writes the byte-wise XOR of <paramref name="a"/> and <paramref name="b"/> into <paramref name="result"/>.
     /// </summary>
     /// <param name="a">The first operand span.</param>
     /// <param name="b">The second operand span.</param>
     /// <param name="result">The destination span.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (int i = 0; i < result.Length; i++)
+        for (var i = 0; i < result.Length; i++)
             result[i] = (byte)(a[i] ^ b[i]);
     }
 
     /// <summary>
-    /// Returns the number of trailing zero bits of <paramref name="n" />.
+    /// Returns the number of trailing zero bits of <paramref name="n"/>.
     /// </summary>
     /// <param name="n">A positive block index.</param>
-    /// <returns>The number of trailing zero bits in <paramref name="n" />.</returns>
+    /// <returns>The number of trailing zero bits in <paramref name="n"/>.</returns>
     private static int Ntz(int n)
     {
         if (n == 0)
             return 32;
 
-        int count = 0;
+        var count = 0;
 
         while ((n & 1) == 0)
         {
@@ -678,7 +678,7 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Clears <paramref name="value" /> when it is not <see langword="null" />.
+    /// Clears <paramref name="value"/> when it is not <see langword="null"/>.
     /// </summary>
     /// <param name="value">The byte array to clear.</param>
     private static void ClearIfNotNull(byte[]? value)
@@ -688,7 +688,7 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
+    /// Throws <see cref="ObjectDisposedException"/> if this instance has been disposed.
     /// </summary>
     private void ThrowIfDisposed() =>
         ObjectDisposedException.ThrowIf(this._disposed, this);

@@ -23,30 +23,24 @@ namespace Bodu.Security.Cryptography;
 /// (<c>CryptoHelpers.ThrowHelper.cs</c>).
 /// </para>
 /// <para>
-/// Random byte generation methods use <see cref="RandomNumberGenerator" /> and operate on <see cref="Span{T}" /> where
+/// Random byte generation methods use <see cref="RandomNumberGenerator"/> and operate on <see cref="Span{T}"/> where
 /// possible to minimise allocations in performance-sensitive paths.
 /// </para>
 /// </remarks>
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "StyleCop.CSharp.ReadabilityRules",
+    "SA1117:Parameters should be on same line or separate lines",
+    Justification = "Parameter grouping is intentional: primary validation inputs are kept together, while caller-argument-expression parameters are placed on separate lines because they provide diagnostic metadata rather than caller-supplied values.")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Style",
+    "IDE0011:Add braces",
+    Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line control-flow bodies remain governed by the editorconfig brace policy.")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage(
+    "Roslynator",
+    "RCS1001:Add braces (when expression spans over multiple lines)",
+    Justification = "Multi-line throw expressions are used as single guard-clause bodies; omitting braces keeps validation paths compact without changing control-flow clarity.")]
 public static partial class CryptoHelpers
 {
-    /// <summary>
-    /// Returns a comma-separated string of valid key sizes (in bits) from the provided <see cref="KeySizes" /> array.
-    /// </summary>
-    /// <param name="keySizes">An array of <see cref="KeySizes" /> objects specifying allowed key sizes.</param>
-    /// <returns>A string containing all supported key sizes in ascending order, or an empty string if none.</returns>
-    internal static string FormatLegalSizes(KeySizes[]? keySizes) =>
-        keySizes is null || keySizes.Length == 0
-            ? string.Empty
-            : string.Join(", ",
-                keySizes
-                    .SelectMany(ks => ks.SkipSize == 0
-                        ? new[] { ks.MinSize }
-                        : Enumerable.Range(0, ((ks.MaxSize - ks.MinSize) / ks.SkipSize) + 1)
-                            .Select(i => ks.MinSize + i * ks.SkipSize))
-                    .Distinct()
-                    .OrderBy(size => size));
-
-
     /// <summary>
     /// Throws an <see cref="ArgumentException"/> if the span length is not a positive multiple of
     /// <paramref name="divisor"/>.
@@ -125,4 +119,22 @@ public static partial class CryptoHelpers
                     paramCountName,
                     paramArrayName));
     }
+
+    /// <summary>
+    /// Returns a comma-separated string of valid key sizes (in bits) from the provided <see cref="KeySizes"/> array.
+    /// </summary>
+    /// <param name="keySizes">An array of <see cref="KeySizes"/> objects specifying allowed key sizes.</param>
+    /// <returns>A string containing all supported key sizes in ascending order, or an empty string if none.</returns>
+    internal static string FormatLegalSizes(KeySizes[]? keySizes) =>
+        keySizes is null || keySizes.Length == 0
+            ? string.Empty
+            : string.Join(
+                ", ",
+                keySizes
+                    .SelectMany(ks => ks.SkipSize == 0
+                        ? [ks.MinSize]
+                        : Enumerable.Range(0, ((ks.MaxSize - ks.MinSize) / ks.SkipSize) + 1)
+                            .Select(i => ks.MinSize + (i * ks.SkipSize)))
+                    .Distinct()
+                    .Order());
 }
