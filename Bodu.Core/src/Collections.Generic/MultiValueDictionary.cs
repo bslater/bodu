@@ -149,6 +149,12 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// <value>The total number of values, summed across all keys.</value>
     public int Count => _count;
 
+    /// <inheritdoc />
+    /// <remarks>
+    /// Returns the number of distinct keys, matching the number of elements yielded by enumeration.
+    /// </remarks>
+    int IReadOnlyCollection<KeyValuePair<TKey, IReadOnlyList<TValue>>>.Count => _map.Count;
+
     /// <summary>
     /// Gets the number of distinct keys currently held in the dictionary.
     /// </summary>

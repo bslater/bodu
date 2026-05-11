@@ -110,7 +110,7 @@ public sealed class OcbModeTransform
     /// </exception>
     public OcbModeTransform(IBlockCipher cipher, byte[] iv, int tagLen = 16)
     {
-        ThrowHelper.ThrowIfNull(cipher);
+        if (cipher is null) throw new ArgumentNullException(nameof(cipher));
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
         if (cipher.BlockSize != BlockSizeBytes)

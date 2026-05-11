@@ -362,10 +362,16 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
             BinaryPrimitives.WriteUInt64LittleEndian(stateBytes, this._state.S0);
             BinaryPrimitives.WriteUInt64LittleEndian(stateBytes[8..], this._state.S1);
 
-            for (var i = 0; i < lastLen; i++)
-                output[pOff + i] = (byte)(ciphertext[cOff + i] ^ stateBytes[i]);
+            // Capture original ciphertext bytes before writing plaintext to output.
+            // output and ciphertextWithTag may alias the same buffer, so ciphertext[cOff..]
+            // would be overwritten by the XOR loop if we don't save it first.
+            Span<byte> lastCt = stackalloc byte[lastLen == 0 ? 1 : lastLen];
+            ciphertext.Slice(cOff, lastLen).CopyTo(lastCt);
 
-            ciphertext.Slice(cOff, lastLen).CopyTo(stateBytes);
+            for (var i = 0; i < lastLen; i++)
+                output[pOff + i] = (byte)(lastCt[i] ^ stateBytes[i]);
+
+            lastCt[..lastLen].CopyTo(stateBytes);
             stateBytes[lastLen] ^= 0x01;
 
             this._state.S0 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes);

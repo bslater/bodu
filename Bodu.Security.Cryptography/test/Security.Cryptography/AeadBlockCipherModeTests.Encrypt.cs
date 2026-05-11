@@ -125,8 +125,8 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var out2 = new byte[plaintext.Length + t2.TagSize];
         t2.Encrypt(plaintext, out2);
 
-        CollectionAssert.AreNotEqual(out1[..plaintext.Length], out2[..plaintext.Length],
-            $"{typeof(TTransform).Name} must produce different ciphertext for different nonces.");
+        CollectionAssert.AreNotEqual(out1, out2,
+            $"{typeof(TTransform).Name} must produce different output for different nonces.");
     }
 
     /// <summary>

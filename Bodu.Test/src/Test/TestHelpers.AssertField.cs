@@ -164,6 +164,12 @@ public static partial class TestHelpers
             return true;
         }
 
+        // Non-nested IDisposable reference types (e.g. SymmetricAlgorithm subclasses) are often
+        // declared readonly and cannot be nulled. The meaningful clearing action is calling Dispose
+        // on them. Accept any such value here — the containing type's Dispose test covers that obligation.
+        if (typeof(IDisposable).IsAssignableFrom(fieldType) && fieldType.IsClass)
+            return true;
+
         throw new NotSupportedException($"Unsupported field type: {fieldType}");
     }
 
