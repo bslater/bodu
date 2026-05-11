@@ -25,7 +25,12 @@ public static partial class SymmetricAlgorithmExtensions
     /// </exception>
     /// <remarks>Equivalent to calling <c>Decrypt(array, 0, array.Length)</c>.</remarks>
     public static byte[] Decrypt(this SymmetricAlgorithm algorithm, byte[] array)
-        => algorithm.Decrypt(array, 0, array?.Length ?? 0);
+    {
+        ThrowHelper.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(array);
+
+        return algorithm.Decrypt(array, 0, array.Length);
+    }
 
     /// <summary>
     /// Decrypts a portion of a byte array beginning at the specified offset and continuing to the end of the array.
@@ -43,7 +48,12 @@ public static partial class SymmetricAlgorithmExtensions
     /// <paramref name="offset"/> is negative or exceeds the length of <paramref name="array"/>.
     /// </exception>
     public static byte[] Decrypt(this SymmetricAlgorithm algorithm, byte[] array, int offset)
-        => algorithm.Decrypt(array, offset, (array?.Length - offset) ?? 0);
+    {
+        ThrowHelper.ThrowIfNull(algorithm);
+        ThrowHelper.ThrowIfNull(array);
+
+        return algorithm.Decrypt(array, offset, array.Length - offset);
+    }
 
     /// <summary>
     /// Decrypts a contiguous region of a byte array using the specified symmetric algorithm.
