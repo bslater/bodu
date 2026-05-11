@@ -60,6 +60,10 @@ public abstract class TweakableSymmetricAlgorithm
     /// This backing field defines the range of acceptable tweak sizes for a given algorithm. It is used internally by the
     /// <see cref="LegalTweakSizes"/> property.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "StyleCop.CSharp.NamingRules",
+        "SA1306:Field names should begin with lower-case letter",
+        Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     [MaybeNull] protected KeySizes[] LegalTweakSizesValue = null!;
 
     /// <summary>
@@ -68,6 +72,10 @@ public abstract class TweakableSymmetricAlgorithm
     /// <remarks>
     /// This backing field represents the effective size of the tweak currently configured via <see cref="TweakSize"/> or <see cref="Tweak"/>.
     /// </remarks>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+       "StyleCop.CSharp.NamingRules",
+       "SA1306:Field names should begin with lower-case letter",
+       Justification = "The field intentionally follows the protected field naming pattern used by HashAlgorithm, such as HashSizeValue, because it forms part of the inherited algorithm-state surface for derived cryptographic types.")]
     protected int TweakSizeValue = 0;
 
     /// <summary>

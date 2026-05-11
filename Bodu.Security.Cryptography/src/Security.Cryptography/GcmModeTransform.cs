@@ -136,7 +136,9 @@ public sealed class GcmModeTransform
     {
     }
 
-    /// <summary>Unified private constructor; either derives J0 from a 12-byte nonce or uses a precomputed J0 directly.</summary>
+    /// <summary>
+    /// Initializes a new instance of the <see cref="GcmModeTransform"/> class and derives J0 from a 12-byte nonce or uses a precomputed J0 directly.
+    /// </summary>
     /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
     /// <param name="nonceOrJ0">Either a 12-byte nonce or a 16-byte precomputed J0, depending on <paramref name="useInitialCounterBlock"/>.</param>
     /// <param name="parameterName">The name of the parameter from the calling overload, used in <see cref="ArgumentException"/> messages.</param>

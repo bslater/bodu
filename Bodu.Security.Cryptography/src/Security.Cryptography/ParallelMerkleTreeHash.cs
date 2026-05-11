@@ -157,7 +157,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     private CancellationToken _activeToken;
 
     /// <summary>
-    /// Initializes a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
+    /// Initializes a new instance of the <see cref="ParallelMerkleTreeHash"/> class with the specified hash
     /// algorithm factory, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -189,7 +189,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     { }
 
     /// <summary>
-    /// Initializes a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
+    /// Initializes a new instance of the <see cref="ParallelMerkleTreeHash"/> class with the specified hash
     /// algorithm factory delegate, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -490,30 +490,54 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Reads hash nodes from <paramref name="channel"/>, groups them by <see cref="_fanOut"/>, and
-    /// promotes each full group as a combined parent hash to the next level. Any remainder after
-    /// the channel closes is resolved according to the following rules:
+    /// Reads hash nodes from <paramref name="channel" />, groups them by <see cref="_fanOut" />, and promotes each
+    /// complete group as a combined parent hash to the next tree level.
     /// </summary>
+    /// <param name="level">
+    /// The tree level served by this worker.
+    /// </param>
+    /// <param name="channel">
+    /// The bounded channel that supplies input hashes for <paramref name="level" />.
+    /// </param>
+    /// <param name="token">
+    /// The cancellation token used to stop the worker.
+    /// </param>
+    /// <returns>
+    /// A task that completes when the worker has drained <paramref name="channel" /> and promoted or resolved any
+    /// remaining hashes.
+    /// </returns>
     /// <remarks>
     /// <para>
-    /// Zero remainder: every node was promoted in a full group. The final result will emerge
-    /// naturally from a higher level worker.
+    /// This method performs one level of the concurrent Merkle-tree reduction. Complete groups of
+    /// <see cref="_fanOut" /> hashes are combined immediately and written to the next level so that higher-level
+    /// workers can reduce the tree concurrently with continued input production.
     /// </para>
     /// <para>
-    /// One node with no higher level yet existing: no full group was ever promoted from this
-    /// level, making this the topmost level. The single surviving node is the Merkle root and is
-    /// assigned directly without re-hashing, consistent with the single-threaded implementation.
+    /// After <paramref name="channel" /> is closed, any remaining hashes are handled as follows:
     /// </para>
-    /// <para>
-    /// Anything else: a partial group (or a single node whose level already has a higher peer)
-    /// is combined and promoted upward. The next level's worker repeats this logic until a root
-    /// is identified.
-    /// </para>
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// If no hashes remain, every input node from this level was already promoted as part of a complete group.
+    /// No further action is required by this worker; the final root will be produced by a higher-level worker.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// If exactly one hash remains and no higher level has been created, this level is the topmost level. The
+    /// remaining hash is assigned directly as the Merkle root without re-hashing, matching the single-threaded
+    /// implementation.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// In all other cases, the remaining hashes represent either a partial group or a single hash that must still
+    /// be merged with hashes already promoted to a higher level. The remainder is combined and promoted so the next
+    /// level can continue the reduction.
+    /// </description>
+    /// </item>
+    /// </list>
     /// </remarks>
-    /// <param name="level">The tree level this worker serves.</param>
-    /// <param name="channel">The bounded channel producing input hashes for this level.</param>
-    /// <param name="token">The cancellation token that stops the worker.</param>
-    /// <returns>A task that completes when the worker has drained its channel.</returns>
     private async Task RunLevelWorkerAsync(int level, Channel<byte[]> channel, CancellationToken token)
     {
         var pending = new List<byte[]>(this._fanOut);

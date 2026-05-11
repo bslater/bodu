@@ -88,7 +88,7 @@ public sealed class MerkleTreeHash : IDisposable
     private List<byte[]> _currentLevel;
 
     /// <summary>
-    /// Initializes a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
+    /// Initializes a new instance of the <see cref="MerkleTreeHash"/> class with the specified hash algorithm
     /// factory, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -116,7 +116,7 @@ public sealed class MerkleTreeHash : IDisposable
     { }
 
     /// <summary>
-    /// Initializes a new <see cref="MerkleTreeHash"/> instance with the specified hash algorithm
+    /// Initializes a new instance of the <see cref="MerkleTreeHash"/> class with the specified hash algorithm
     /// factory delegate, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
