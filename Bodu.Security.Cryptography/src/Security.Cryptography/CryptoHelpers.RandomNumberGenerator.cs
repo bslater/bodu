@@ -10,7 +10,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public static partial class CryptoHelpers
+internal static partial class CryptoHelpers
 {
     /// <summary>
     /// Fills the specified byte array with cryptographically secure random bytes, ensuring that no byte is equal to <c>0x00</c>.

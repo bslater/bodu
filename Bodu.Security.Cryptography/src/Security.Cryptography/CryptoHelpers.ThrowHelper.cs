@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public static partial class CryptoHelpers
+internal static partial class CryptoHelpers
 {
     /// <summary>
     /// Throws an <see cref="InvalidOperationException"/> if associated data has already been processed.
@@ -267,5 +267,67 @@ public static partial class CryptoHelpers
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.ArgumentException_InvalidIvLength, iv.Length, expectedLength),
                 paramName);
+    }
+
+    /// <summary>
+    /// Throws a <see cref="CryptographicException" /> if the specified key does not match the required key size.
+    /// </summary>
+    /// <param name="key">The key material to validate.</param>
+    /// <param name="keySizeBytes">The required key size, in bytes.</param>
+    /// <param name="legalKeySizes">The legal key sizes for the algorithm.</param>
+    /// <param name="paramKeyName">The name of the key parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" /> or <paramref name="legalKeySizes" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown when the length of <paramref name="key" /> does not equal <paramref name="keySizeBytes" />.
+    /// </exception>
+    public static void ThrowIfInvalidKeySize(
+        byte[] key,
+        int keySizeBytes,
+        KeySizes[] legalKeySizes,
+        [CallerArgumentExpression(nameof(key))] string? paramKeyName = null)
+    {
+        ThrowHelper.ThrowIfNull(key);
+        ThrowHelper.ThrowIfNull(legalKeySizes);
+
+        if (key.Length != keySizeBytes)
+            throw new CryptographicException(
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidKeySize,
+                    key.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(legalKeySizes)),
+                paramKeyName);
+    }
+
+    /// <summary>
+    /// Throws a <see cref="CryptographicException" /> if the specified block-sized value does not match the required block size.
+    /// </summary>
+    /// <param name="value">The block-sized value to validate, such as an initialisation vector.</param>
+    /// <param name="blockSizeBytes">The required block size, in bytes.</param>
+    /// <param name="legalBlockSizes">The legal block sizes for the algorithm.</param>
+    /// <param name="paramValueName">The name of the value parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> or <paramref name="legalBlockSizes" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown when the length of <paramref name="value" /> does not equal <paramref name="blockSizeBytes" />.
+    /// </exception>
+    public static void ThrowIfInvalidBlockSize(
+        byte[] value,
+        int blockSizeBytes,
+        KeySizes[] legalBlockSizes,
+        [CallerArgumentExpression(nameof(value))] string? paramValueName = null)
+    {
+        ThrowHelper.ThrowIfNull(value);
+        ThrowHelper.ThrowIfNull(legalBlockSizes);
+
+        if (value.Length != blockSizeBytes)
+            throw new CryptographicException(
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidIVSize,
+                    value.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(legalBlockSizes)),
+                paramValueName);
     }
 }

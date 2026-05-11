@@ -89,7 +89,8 @@ public sealed class Threefish256Cipher
 
         for (var d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
         {
-            var dm5 = d % 5; var dm3 = d % 3;
+            var dm5 = d % 5;
+            var dm3 = d % 3;
 
             // Reverse post-round subkey injection
             block[0] -= key[dm5 + 1];
@@ -162,7 +163,8 @@ public sealed class Threefish256Cipher
 
         for (var d = 1; d < this.Rounds / 4; d += 2)
         {
-            var dm5 = d % 5; var dm3 = d % 3;
+            var dm5 = d % 5;
+            var dm3 = d % 3;
 
             // First 4 MIX rounds
             Mix(ref block[0], ref block[1], rot[0]);
