@@ -93,19 +93,12 @@ public sealed class CityHash128
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static (ulong First, ulong Second) CityHash128Core(ReadOnlySpan<byte> s)
     {
-        int len = s.Length;
-        if (len >= 16)
+        if (s.Length >= 16)
         {
-            ulong low = BinaryPrimitives.ReadUInt64LittleEndian(s) ^ K3;
-            ulong high = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8));
-            return CityHash128WithSeed(s.Slice(16), low, high);
-        }
+            ulong low = BinaryPrimitives.ReadUInt64LittleEndian(s);
+            ulong high = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8)) + K0;
 
-        if (len >= 8)
-        {
-            ulong low = BinaryPrimitives.ReadUInt64LittleEndian(s) ^ (ulong)len * K0;
-            ulong high = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8)) ^ K1;
-            return CityHash128WithSeed(ReadOnlySpan<byte>.Empty, low, high);
+            return CityHash128WithSeed(s.Slice(16), low, high);
         }
 
         return CityHash128WithSeed(s, K0, K1);

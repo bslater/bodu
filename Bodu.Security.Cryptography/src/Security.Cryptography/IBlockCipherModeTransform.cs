@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// Most callers should configure modes through <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode"/>
-/// (which accepts a <see cref="CipherBlockMode"/> and dispatches via <see cref="BlockCipherModeFactory"/>) rather
+/// (which accepts a <see cref="CipherModeKind"/> and dispatches via <see cref="BlockCipherModeFactory"/>) rather
 /// than constructing this interface directly. Direct use is appropriate when wiring a custom block cipher into the
 /// existing mode infrastructure or building a higher-level construction on top.
 /// </para>

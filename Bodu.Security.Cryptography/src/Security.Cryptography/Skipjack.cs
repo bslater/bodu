@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -21,7 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block cipher modes via the
-/// <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/> with
+/// <see cref="BlockMode"/> property. The default mode is <see cref="CipherModeKind.CBC"/> with
 /// <see cref="PaddingMode.PKCS7"/> padding.
 /// </para>
 /// <para>
@@ -31,7 +32,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Block size: 64 bits (8 bytes).</description></item>
 ///   <item><description>Key size: 80 bits (10 bytes), fixed.</description></item>
 ///   <item><description>32 rounds, unbalanced Feistel network.</description></item>
-///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Skipjack.</strong> Only when reading or producing data encrypted under a Skipjack-based
@@ -66,24 +67,24 @@ public sealed class Skipjack
     : SymmetricAlgorithm
 {
     /// <summary>
-    /// The Skipjack block size, in bits.
+    /// Length of the Skipjack block is 64 bits (8 bytes).
     /// </summary>
-    internal const int BlockSizeBits = 64;
+    internal const int SkipjackBlockSize = 64;
 
     /// <summary>
-    /// The Skipjack key size, in bits. Skipjack defines a single fixed key length.
+    /// Length of the Skipjack key is 80 bits (10 bytes). Skipjack defines a single fixed key length.
     /// </summary>
-    internal const int KeySizeBits = 80;
+    internal const int SkipjackKeySize = 80;
 
     // Skipjack has a single fixed 64-bit block size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] s_skipjackBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
+    private static readonly KeySizes[] s_skipjackBlockSizes = [new KeySizes(SkipjackBlockSize, SkipjackBlockSize, 0)];
 
     // Skipjack has a single fixed 80-bit key size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] s_skipjackKeySizes = [new KeySizes(KeySizeBits, KeySizeBits, 0)];
+    private static readonly KeySizes[] s_skipjackKeySizes = [new KeySizes(SkipjackKeySize, SkipjackKeySize, 0)];
 
     private bool _disposed = false;
 
-    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
+    private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Skipjack"/> class with the fixed 80-bit key size and 64-bit block size, CBC
@@ -102,8 +103,8 @@ public sealed class Skipjack
         this.LegalKeySizesValue = s_skipjackKeySizes;
         this.LegalBlockSizesValue = s_skipjackBlockSizes;
 
-        this.KeySizeValue = KeySizeBits;
-        this.BlockSizeValue = BlockSizeBits;
+        this.KeySizeValue = SkipjackKeySize;
+        this.BlockSizeValue = SkipjackBlockSize;
 
         this.Padding = PaddingMode.PKCS7;
         this.Mode = CipherMode.CBC;
@@ -113,31 +114,31 @@ public sealed class Skipjack
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
+    /// One of the <see cref="CipherModeKind"/> values. The default is <see cref="CipherModeKind.CBC"/>.
     /// </value>
     /// <remarks>
     /// <para>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property for use with
     /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including
-    /// <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>, which are not available via the standard
+    /// <see cref="CipherModeKind.CTR"/> and <see cref="CipherModeKind.OFB"/>, which are not available via the standard
     /// <see cref="CipherMode"/> enumeration.
     /// </para>
     /// </remarks>
-    public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
+    public CipherModeKind BlockMode { get; set; } = CipherModeKind.CBC;
 
     /// <summary>
     /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
+    /// One of the <see cref="PaddingModeKind"/> values. The default is <see cref="PaddingModeKind.PKCS7"/>.
     /// </value>
     /// <remarks>
     /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
     /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
+    /// <see cref="PaddingMode"/> equivalent (such as <see cref="PaddingModeKind.ISO7816_4"/>) leave the base
     /// property unchanged.
     /// </remarks>
-    public BlockPaddingMode BlockPadding
+    public PaddingModeKind BlockPadding
     {
         get => this._blockPadding;
         set
@@ -151,7 +152,7 @@ public sealed class Skipjack
     /// <inheritdoc />
     /// <remarks>
     /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
-    /// <see cref="BlockPaddingMode"/>.
+    /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding
     {
@@ -159,7 +160,7 @@ public sealed class Skipjack
         set
         {
             base.Padding = value;
-            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
+            if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
                 this._blockPadding = bpm;
         }
     }
@@ -184,7 +185,8 @@ public sealed class Skipjack
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new SkipjackTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
@@ -210,7 +212,8 @@ public sealed class Skipjack
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new SkipjackTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
@@ -236,7 +239,7 @@ public sealed class Skipjack
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -255,7 +258,7 @@ public sealed class Skipjack
     public override void GenerateKey()
     {
         this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
     }
 
     /// <summary>
@@ -287,45 +290,11 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Gets the configured block size expressed in bytes.
-    /// </summary>
-    private int BlockSizeBytes => this.BlockSizeValue / 8;
-
-    /// <summary>
-    /// Gets the configured key size expressed in bytes.
-    /// </summary>
-    private int KeySizeBytes => this.KeySizeValue / 8;
-
-    /// <summary>
     /// Creates a new <see cref="SkipjackBlockCipher"/> engine initialised with the supplied key.
     /// </summary>
     /// <param name="key">The 10-byte key material used to derive the round subkeys.</param>
     /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
     private static IBlockCipher CreateCipher(byte[] key) => new SkipjackBlockCipher(key);
-
-    /// <summary>
-    /// Validates that <paramref name="key"/> and <paramref name="iv"/> match the algorithm's configured key size and block size
-    /// respectively.
-    /// </summary>
-    /// <param name="key">The key to validate.</param>
-    /// <param name="iv">The initialisation vector to validate.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
-    /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
-    private void Validate(byte[] key, byte[]? iv)
-    {
-        ThrowHelper.ThrowIfNull(key);
-
-        // Key length must match the fixed 80-bit key size exactly — Skipjack does not support variable-length keys.
-        if (key.Length != this.KeySizeBytes)
-            throw new CryptographicException(
-                string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                    key.Length * 8,
-                    CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
-                nameof(key));
-
-        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
-    }
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.

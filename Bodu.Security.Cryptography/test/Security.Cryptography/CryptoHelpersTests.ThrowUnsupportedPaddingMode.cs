@@ -29,12 +29,12 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowUnsupportedPaddingMode{T}(T)"/> throws a
-    /// <see cref="CryptographicException"/> for an undefined <see cref="BlockPaddingMode"/> value.
+    /// <see cref="CryptographicException"/> for an undefined <see cref="PaddingModeKind"/> value.
     /// </summary>
     [TestMethod]
     public void ThrowUnsupportedPaddingMode_WhenBlockPaddingModeIsUndefined_ShouldThrowCryptographicException()
     {
-        var undefined = (BlockPaddingMode)999;
+        var undefined = (PaddingModeKind)999;
 
         var ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {

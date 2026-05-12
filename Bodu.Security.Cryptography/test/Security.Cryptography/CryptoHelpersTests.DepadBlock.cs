@@ -64,10 +64,10 @@ public partial class CryptoHelpersTests
         new object[] { PaddingMode.ISO10126, "ABCD05060709FF11", 8, typeof(CryptographicException) }, // Pad count = 11 (decimal 17) → exceeds block size (8)
 
         // Zeros: source block not aligned
-        new object[] { PaddingMode.Zeros, "4142000000", 8, typeof(ArgumentException) }, // InputHex length is 5 → not a multiple of 8 → not aligned
+        new object[] { PaddingMode.Zeros, "4142000000", 8, typeof(CryptographicException) }, // InputHex length is 5 → not a multiple of 8 → not aligned
 
         // None: source block not aligned
-        new object[] { PaddingMode.None, "1122334455", 8, typeof(ArgumentException) }, // InputHex length is 5 → not a multiple of 8 → not aligned
+        new object[] { PaddingMode.None, "1122334455", 8, typeof(CryptographicException) }, // InputHex length is 5 → not a multiple of 8 → not aligned
 
         // General: block size is 0 or negative
         new object[] { PaddingMode.PKCS7, "010203", 0, typeof(ArgumentOutOfRangeException) }, // Block Size <= 0
@@ -77,10 +77,10 @@ public partial class CryptoHelpersTests
         new object[] { (PaddingMode)999, "0102030405060708", 8, typeof(CryptographicException) }, // Padding mode not defined in PaddingMode enum
 
         // General: empty blocks
-        new object[] { PaddingMode.None, string.Empty, 8, typeof(ArgumentException) }, // Empty input
-        new object[] { PaddingMode.PKCS7, string.Empty, 8, typeof(ArgumentException) },
-        new object[] { PaddingMode.Zeros, string.Empty, 8, typeof(ArgumentException) },
-        new object[] { PaddingMode.ISO10126, string.Empty, 8, typeof(ArgumentException) },
+        new object[] { PaddingMode.None, string.Empty, 8, typeof(CryptographicException) }, // Empty input
+        new object[] { PaddingMode.PKCS7, string.Empty, 8, typeof(CryptographicException) },
+        new object[] { PaddingMode.Zeros, string.Empty, 8, typeof(CryptographicException) },
+        new object[] { PaddingMode.ISO10126, string.Empty, 8, typeof(CryptographicException) },
     };
 
     /// <summary>
@@ -94,7 +94,7 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString(inputHex);
         var expected = Convert.FromHexString(expectedHex);
 
-        var result = CryptoHelpers.DepadBlock(padding, input.Length, input, 0, input.Length);
+        var result = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, 0, input.Length);
 
         CollectionAssert.AreEqual(expected, result);
     }
@@ -114,7 +114,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[input.Length]
             : new byte[input.Length];
 
-        _ = CryptoHelpers.DepadBlock(padding, input.Length, input, destination);
+        _ = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, destination);
 
         Assert.IsTrue(destination.Slice(0, expected.Length).SequenceEqual(expected));
     }
@@ -134,7 +134,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[input.Length]
             : new byte[input.Length];
 
-        var result = CryptoHelpers.DepadBlock(padding, input.Length, input, destination);
+        var result = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, destination);
 
         Assert.AreEqual(expected.Length, result);
     }
@@ -155,7 +155,7 @@ public partial class CryptoHelpersTests
 
         try
         {
-            _ = CryptoHelpers.DepadBlock(padding, blockSize, input, 0, input.Length);
+            _ = CryptoHelpers.DepadBlock(padding, blockSize * 8, input, 0, input.Length);
             Assert.Fail($"Expected {exceptionType.Name} was not thrown.");
         }
         catch (Exception ex)

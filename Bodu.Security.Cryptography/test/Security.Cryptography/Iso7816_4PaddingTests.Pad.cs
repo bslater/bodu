@@ -20,7 +20,7 @@ public sealed partial class Iso7816_4PaddingTests
         Iso7816_4Padding padding = CreatePadding();
         var plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        var padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSizeBits);
 
         Assert.AreEqual(BlockSize, padded.Length);
         Assert.AreEqual((byte)0x80, padded[plaintext.Length], "First pad byte must be 0x80.");
@@ -40,7 +40,7 @@ public sealed partial class Iso7816_4PaddingTests
         Iso7816_4Padding padding = CreatePadding();
         var plaintext = CreatePlaintextWithResidual(0);
 
-        var padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSizeBits);
 
         Assert.AreEqual(plaintext.Length + BlockSize, padded.Length);
         Assert.AreEqual((byte)0x80, padded[plaintext.Length], "Terminator must sit at the start of the appended block.");

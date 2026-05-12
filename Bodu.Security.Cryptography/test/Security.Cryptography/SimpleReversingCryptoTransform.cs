@@ -54,9 +54,9 @@ public sealed class SimpleReversingCryptoTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     internal SimpleReversingCryptoTransform(
         SimpleReversingBlockCipher cipher,
-        CipherBlockMode cipherMode,
+        CipherModeKind cipherMode,
         PaddingMode paddingMode,
-        byte[]? iv,
+        byte[] iv,
         bool encrypt)
     {
         this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
@@ -83,11 +83,11 @@ public sealed class SimpleReversingCryptoTransform
 
     /// <inheritdoc />
     /// <value>The configured block size in bytes.</value>
-    public int InputBlockSize => cipher.BlockSize;
+    public int InputBlockSize => cipher.BlockSize / 8;
 
     /// <inheritdoc />
     /// <value>The configured block size in bytes.</value>
-    public int OutputBlockSize => cipher.BlockSize;
+    public int OutputBlockSize => cipher.BlockSize / 8;
 
     /// <summary>
     /// Transforms a block-aligned region of the input byte array and writes the result to the output buffer.
@@ -123,8 +123,9 @@ public sealed class SimpleReversingCryptoTransform
         else
         {
             var stripPadding = padding is Pkcs7Padding;
+            var blockBytes = cipher.BlockSize / 8;
 
-            if (stripPadding && input.Length <= cipher.BlockSize)
+            if (stripPadding && input.Length <= blockBytes)
             {
                 deferredInput = input.ToArray();
                 bytesWritten = 0;
@@ -134,7 +135,7 @@ public sealed class SimpleReversingCryptoTransform
                 var bytesToProcess = input.Length;
                 if (stripPadding)
                 {
-                    bytesToProcess -= cipher.BlockSize;
+                    bytesToProcess -= blockBytes;
                     deferredInput = input.Slice(bytesToProcess).ToArray();
                 }
 

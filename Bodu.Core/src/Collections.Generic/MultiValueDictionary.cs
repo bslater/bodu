@@ -149,12 +149,6 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// <value>The total number of values, summed across all keys.</value>
     public int Count => _count;
 
-    /// <inheritdoc />
-    /// <remarks>
-    /// Returns the number of distinct keys, matching the number of elements yielded by enumeration.
-    /// </remarks>
-    int IReadOnlyCollection<KeyValuePair<TKey, IReadOnlyList<TValue>>>.Count => _map.Count;
-
     /// <summary>
     /// Gets the number of distinct keys currently held in the dictionary.
     /// </summary>
@@ -256,9 +250,6 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     {
         if (_map.Count == 0)
             return;
-
-        foreach (ValueBucket bucket in _map.Values)
-            bucket.Values.Clear();
 
         _map.Clear();
         _count = 0;
@@ -396,7 +387,6 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             return false;
 
         _count -= bucket.Values.Count;
-        bucket.Values.Clear();
         _map.Remove(key);
         _version++;
 
@@ -417,7 +407,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// </remarks>
     public IEnumerable<KeyValuePair<TKey, TValue>> Flatten()
     {
-        int version = _version;
+        var version = _version;
 
         foreach (KeyValuePair<TKey, ValueBucket> entry in _map)
         {

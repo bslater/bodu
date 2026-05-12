@@ -143,4 +143,48 @@ public sealed class XmlNamespaceResolverTests
             _ = resolver.Elements(null!, "child").ToList();
         });
     }
+
+    /// <summary>
+    /// Verifies that the constructor captures <see cref="XNamespace.None" /> when the root element has no explicit namespace, and that
+    /// the resolver subsequently produces unqualified <see cref="XName" /> values that match the source document.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="XName.Namespace" /> is contractually never <see langword="null" /> in <c>System.Xml.Linq</c> — unqualified names
+    /// carry <see cref="XNamespace.None" /> rather than a missing namespace. This test exercises that boundary so that any future
+    /// change to the resolver's null-handling contract is detected.
+    /// </remarks>
+    [TestMethod]
+    public void Constructor_WhenRootHasNoNamespace_ShouldCaptureXNamespaceNoneAndResolveLocalNames()
+    {
+        var root = new XElement("root",
+            new XElement("child", "value"));
+
+        var resolver = new XmlNamespaceResolver(root);
+
+        XName qualified = resolver.Name("child");
+        Assert.AreEqual(XNamespace.None, qualified.Namespace);
+        Assert.AreEqual("child", qualified.LocalName);
+
+        XElement? child = resolver.Element(root, "child");
+        Assert.IsNotNull(child);
+        Assert.AreEqual("value", child!.Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="XmlNamespaceResolver.Elements" /> returns every matching unqualified child when the resolver was
+    /// constructed from a namespace-less root, confirming that the resolver does not silently filter to a non-default namespace.
+    /// </summary>
+    [TestMethod]
+    public void Elements_WhenRootHasNoNamespace_ShouldReturnAllMatchingUnqualifiedChildren()
+    {
+        var root = new XElement("root",
+            new XElement("item", "one"),
+            new XElement("item", "two"),
+            new XElement("item", "three"));
+        var resolver = new XmlNamespaceResolver(root);
+
+        var items = resolver.Elements(root, "item").Select(e => e.Value).ToArray();
+
+        CollectionAssert.AreEqual(new[] { "one", "two", "three" }, items);
+    }
 }

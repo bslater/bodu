@@ -133,7 +133,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
-        int index = LowerBound(startInclusive);
+        var index = LowerBound(startInclusive);
 
         if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0)
             throw new ArgumentException("The specified range overlaps an existing range.", nameof(startInclusive));
@@ -170,7 +170,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
-        int index = LowerBound(startInclusive);
+        var index = LowerBound(startInclusive);
 
         if (index >= _count)
             return false;
@@ -224,7 +224,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </exception>
     public bool TryGetValue(TKey key, out TValue value)
     {
-        int index = FindContainingIndex(key);
+        var index = FindContainingIndex(key);
 
         if (index >= 0)
         {
@@ -249,7 +249,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// </exception>
     public bool TryGetEntry(TKey key, out ValueRange<TKey, TValue> entry)
     {
-        int index = FindContainingIndex(key);
+        var index = FindContainingIndex(key);
 
         if (index >= 0)
         {
@@ -279,7 +279,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
-        int index = LowerBound(startInclusive);
+        var index = LowerBound(startInclusive);
 
         if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0)
             return true;
@@ -313,7 +313,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         ValueRange<TKey, TValue>[] result = new ValueRange<TKey, TValue>[_count];
 
-        for (int i = 0; i < _count; i++)
+        for (var i = 0; i < _count; i++)
             result[i] = new ValueRange<TKey, TValue>(_starts[i], _ends[i], _values[i], skipValidation: true);
 
         return result;
@@ -338,7 +338,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     {
         ThrowHelper.ThrowIfNull(key);
 
-        int index = UpperBound(key) - 1;
+        var index = UpperBound(key) - 1;
 
         if (index < 0)
             return -1;
@@ -377,7 +377,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <param name="index">The index of the entry to remove.</param>
     private void RemoveAt(int index)
     {
-        int moveCount = _count - index - 1;
+        var moveCount = _count - index - 1;
 
         if (moveCount > 0)
         {
@@ -400,12 +400,12 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <returns>The lower-bound index for <paramref name="value" />.</returns>
     private int LowerBound(TKey value)
     {
-        int low = 0;
-        int high = _count;
+        var low = 0;
+        var high = _count;
 
         while (low < high)
         {
-            int middle = low + ((high - low) >> 1);
+            var middle = low + ((high - low) >> 1);
 
             if (_comparer.Compare(_starts[middle], value) < 0)
                 low = middle + 1;
@@ -423,12 +423,12 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <returns>The upper-bound index for <paramref name="value" />.</returns>
     private int UpperBound(TKey value)
     {
-        int low = 0;
-        int high = _count;
+        var low = 0;
+        var high = _count;
 
         while (low < high)
         {
-            int middle = low + ((high - low) >> 1);
+            var middle = low + ((high - low) >> 1);
 
             if (_comparer.Compare(_starts[middle], value) <= 0)
                 low = middle + 1;
@@ -468,7 +468,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <returns>The chosen capacity.</returns>
     private int GrowCapacity(int minimum)
     {
-        int capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
+        var capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
 
         if ((uint)capacity > Array.MaxLength)
             capacity = Array.MaxLength;

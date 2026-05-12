@@ -46,12 +46,13 @@ public sealed class Threefish256Cipher
         : base(key, tweak) { }
 
     /// <summary>
-    /// Length of a Threefish-256 key (bytes).
+    /// Length of the Threefish-256 key is 256 bits (32 bytes).
     /// </summary>
-    public const int KeySize = 32;
+    public const int KeySize = 256;
 
     /// <inheritdoc />
-    public override int BlockSize => 32;
+    /// <value>Length of the Threefish-256 block is 256 bits (32 bytes).</value>
+    public override int BlockSize => 256;
 
     /// <inheritdoc />
     protected override int BlockWords => 4;
@@ -76,9 +77,9 @@ public sealed class Threefish256Cipher
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize || output.Length != this.BlockSize)
+        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize / 8));
 
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
@@ -144,9 +145,9 @@ public sealed class Threefish256Cipher
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize || output.Length != this.BlockSize)
+        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize / 8));
 
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);

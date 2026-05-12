@@ -64,7 +64,7 @@ public abstract partial class ThreefishBlockCipher
     /// Initializes a new instance of the <see cref="ThreefishBlockCipher"/> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">
-    /// The encryption key. Its length in bytes must equal the variant block size (32, 64, or 128 bytes).
+    /// The encryption key. Its byte length must equal <see cref="BlockSize"/> / 8 (32, 64, or 128 bytes).
     /// </param>
     /// <param name="tweak">The 16-byte (128-bit) tweak value.</param>
     /// <exception cref="ArgumentException">
@@ -72,7 +72,7 @@ public abstract partial class ThreefishBlockCipher
     /// </exception>
     private protected ThreefishBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);
 
         // Key schedule initialization: 4 words + parity + duplicated key
@@ -147,7 +147,7 @@ public abstract partial class ThreefishBlockCipher
     /// Replaces the key and tweak schedules in place, allowing the cipher instance to be reused across successive
     /// Threefish block calls without allocating a new instance or re-running the constructor.
     /// </summary>
-    /// <param name="key">The replacement key. Its length in bytes must equal <see cref="BlockSize"/>.</param>
+    /// <param name="key">The replacement key. Its byte length must equal <see cref="BlockSize"/> / 8.</param>
     /// <param name="tweak">The replacement 16-byte (128-bit) tweak value.</param>
     /// <exception cref="ArgumentException">
     /// <paramref name="key"/> or <paramref name="tweak"/> has an invalid length.
@@ -167,7 +167,7 @@ public abstract partial class ThreefishBlockCipher
     /// </remarks>
     internal void Rekey(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(key, this.BlockSize / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(tweak, 16);
         this.ThrowIfDisposed();
 

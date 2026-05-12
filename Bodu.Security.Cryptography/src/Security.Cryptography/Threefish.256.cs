@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Block size: 256 bits (32 bytes).</description></item>
 ///   <item><description>Key size: 256 bits (32 bytes).</description></item>
 ///   <item><description>Tweak size: 128 bits (16 bytes).</description></item>
-///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Threefish-256.</strong> Pick the 256-bit variant when you want a tweakable block cipher
@@ -81,6 +81,6 @@ public sealed class Threefish256
     }
 
     /// <inheritdoc />
-    protected override IBlockCipher CreateCipher(byte[] key, byte[] tweak) =>
+    protected override ThreefishBlockCipher CreateCipher(byte[] key, byte[] tweak) =>
         new Threefish256Cipher(key, tweak);
 }

@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Block size: 1024 bits (128 bytes).</description></item>
 ///   <item><description>Key size: 1024 bits (128 bytes).</description></item>
 ///   <item><description>Tweak size: 128 bits (16 bytes).</description></item>
-///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Threefish-1024.</strong> The widest Threefish variant — pick it when the surrounding
@@ -79,6 +79,6 @@ public sealed class Threefish1024
     }
 
     /// <inheritdoc />
-    protected override IBlockCipher CreateCipher(byte[] key, byte[] tweak) =>
+    protected override ThreefishBlockCipher CreateCipher(byte[] key, byte[] tweak) =>
         new Threefish1024Cipher(key, tweak);
 }

@@ -11,13 +11,13 @@ public partial class AsconAead128Tests
     // ── TagSize ───────────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that <see cref="AsconAead128.TagSize" /> returns 16 (128 bits), as required by
+    /// Verifies that <see cref="AsconAead128.TagSize" /> returns 128 (16 bytes), as required by
     /// NIST SP 800-232 for Ascon-AEAD128.
     /// </summary>
     [TestMethod]
-    public void TagSize_ShouldReturn16()
+    public void TagSize_ShouldReturn128()
     {
         using AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
-        Assert.AreEqual(16, sut.TagSize);
+        Assert.AreEqual(128, sut.TagSize);
     }
 }

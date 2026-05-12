@@ -80,7 +80,7 @@ public sealed partial class Tiger
     /// <param name="hashSize">The desired output size in bits. Must be one of 128, 160, or 192.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize"/> is not valid.</exception>
     public Tiger(int hashSize)
-        : base(64)
+        : base(512)
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
@@ -219,8 +219,9 @@ public sealed partial class Tiger
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         var inputLength = block.Length;
-        var needsSecondBlock = inputLength >= this.BlockSizeBytes - 8;
-        var totalLength = needsSecondBlock ? this.BlockSizeBytes * 2 : this.BlockSizeBytes;
+        var blockBytes = this.BlockSize / 8;
+        var needsSecondBlock = inputLength >= blockBytes - 8;
+        var totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
 
         // Use stackalloc if small enough; fallback to heap if larger
         Span<byte> padded = totalLength <= 128

@@ -23,7 +23,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The <see cref="BlockMode"/> property replaces the standard <see cref="SymmetricAlgorithm.Mode"/> property, enabling the use of
-/// additional or non-standard block cipher modes such as <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>.
+/// additional or non-standard block cipher modes such as <see cref="CipherModeKind.CTR"/> and <see cref="CipherModeKind.OFB"/>.
 /// </para>
 /// <para>
 /// <strong>Concrete variants.</strong>
@@ -51,34 +51,23 @@ namespace Bodu.Security.Cryptography;
 public abstract class Threefish
     : TweakableSymmetricAlgorithm
 {
-    /// <summary>
-    /// The block size in bytes.
-    /// </summary>
-    protected readonly int BlockSizeBytes;
-
-    /// <summary>
-    /// The key size in bytes.
-    /// </summary>
-    protected readonly int KeySizeBytes;
-
-    private readonly int _defaultTweakSizeBytes;
-
     private bool _disposed;
-
-    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Threefish"/> class with the specified block and tweak sizes.
     /// </summary>
     /// <param name="blockSizeBits">The block size in bits. Must match the Threefish variant block size (256, 512, or 1024).</param>
     /// <param name="tweakSizeBits">The tweak size in bits. 128 bits for all Threefish variants.</param>
+    /// <remarks>
+    /// Sizes are stored in bits via <see cref="SymmetricAlgorithm.BlockSizeValue"/>,
+    /// <see cref="SymmetricAlgorithm.KeySizeValue"/>, and <see cref="TweakableSymmetricAlgorithm.TweakSizeValue"/>,
+    /// matching the BCL convention. Conversion to bytes occurs only at the byte-array processing boundary
+    /// (e.g. <see cref="GenerateKey"/>, <see cref="GenerateIV"/>, <see cref="GenerateTweak"/>).
+    /// </remarks>
     protected Threefish(int blockSizeBits, int tweakSizeBits)
     {
         this.BlockSizeValue = this.KeySizeValue = blockSizeBits;
         this.FeedbackSizeValue = 8;
-
-        this.BlockSizeBytes = this.KeySizeBytes = blockSizeBits / 8;
-        this._defaultTweakSizeBytes = tweakSizeBits / 8;
 
         this.LegalBlockSizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
         this.LegalKeySizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
@@ -92,90 +81,57 @@ public abstract class Threefish
     /// <summary>
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
-    /// <value>One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.</value>
+    /// <value>One of the <see cref="CipherModeKind"/> values. The default is <see cref="CipherModeKind.CBC"/>.</value>
     /// <remarks>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property when used with
-    /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including <see cref="CipherBlockMode.CTR"/>
-    /// and <see cref="CipherBlockMode.OFB"/>.
+    /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including <see cref="CipherModeKind.CTR"/>
+    /// and <see cref="CipherModeKind.OFB"/>.
     /// </remarks>
-    public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
-
-    /// <summary>
-    /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
-    /// </summary>
-    /// <value>
-    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
-    /// </value>
-    /// <remarks>
-    /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
-    /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
-    /// property unchanged.
-    /// </remarks>
-    public BlockPaddingMode BlockPadding
-    {
-        get => this._blockPadding;
-        set
-        {
-            this._blockPadding = value;
-            if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
-                this.PaddingValue = mode;
-        }
-    }
+    public CipherModeKind BlockMode { get; set; } = CipherModeKind.CBC;
 
     /// <inheritdoc />
-    /// <remarks>
-    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
-    /// <see cref="BlockPaddingMode"/>.
-    /// </remarks>
-    public override PaddingMode Padding
-    {
-        get => base.Padding;
-        set
-        {
-            base.Padding = value;
-            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
-                this._blockPadding = bpm;
-        }
-    }
-
-    /// <inheritdoc />
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV, tweak);
-        IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
-        return new ThreefishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
+
+        ThreefishBlockCipher engine = this.CreateCipher(rgbKey, tweak);
+        return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
     }
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV, tweak);
-        IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
-        return new ThreefishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
+
+        ThreefishBlockCipher engine = this.CreateCipher(rgbKey, tweak);
+        return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 
     /// <inheritdoc />
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateTweak()
     {
         this.ThrowIfDisposed();
-        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this._defaultTweakSizeBytes);
+        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this.TweakSizeValue / 8);
     }
 
     /// <inheritdoc />
@@ -200,18 +156,17 @@ public abstract class Threefish
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> whose <see cref="ObjectDisposedException.ObjectName"/> matches the
+    /// concrete algorithm type's <see cref="Type.FullName"/> if the instance has been disposed.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">
-    /// Thrown when any public method or property is accessed after the instance has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (this._disposed)
+        if (disposed)
             throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
@@ -224,29 +179,5 @@ public abstract class Threefish
     /// <returns>A configured <see cref="IBlockCipher"/> instance for encryption or decryption.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
-    protected abstract IBlockCipher CreateCipher(byte[] key, byte[] tweak);
-
-    /// <summary>
-    /// Validates the provided key, IV, and tweak against expected lengths and legal sizes.
-    /// </summary>
-    /// <param name="key">The encryption key.</param>
-    /// <param name="iv">The initialisation vector.</param>
-    /// <param name="tweak">The tweak value.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/>, <paramref name="iv"/>, or <paramref name="tweak"/> is <see langword="null"/>.</exception>
-    /// <exception cref="CryptographicException">Thrown when any input does not match the required length.</exception>
-    protected void Validate(byte[] key, byte[]? iv, byte[] tweak)
-    {
-        ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(tweak);
-
-        if (key.Length != this.KeySizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)));
-
-        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizes);
-
-        if (tweak.Length != this._defaultTweakSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
-    }
+    protected abstract ThreefishBlockCipher CreateCipher(byte[] key, byte[] tweak);
 }

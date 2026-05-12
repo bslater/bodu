@@ -105,7 +105,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Encrypt_ShouldReturnArrayOfPlaintextLengthPlusTagSize()
     {
         using IAeadBlockCipherModeTransform transform = NewTransform();
-        var expectedLength = Plaintext.Length + transform.TagSize;
+        var expectedLength = Plaintext.Length + (transform.TagSize / 8);
 
         var result = transform.Encrypt(Plaintext, (ReadOnlySpan<byte>)AssociatedData);
 
@@ -140,7 +140,7 @@ public sealed class AeadBlockCipherModeTransformExtensionsTests
     public void Decrypt_WhenInputShorterThanTag_ShouldThrowArgumentException()
     {
         using IAeadBlockCipherModeTransform transform = NewTransform();
-        var tooShort = new byte[transform.TagSize - 1];
+        var tooShort = new byte[(transform.TagSize / 8) - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

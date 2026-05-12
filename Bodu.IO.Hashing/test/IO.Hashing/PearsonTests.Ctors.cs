@@ -83,4 +83,15 @@ public partial class PearsonTests
         Assert.ThrowsExactly<ArgumentException>(() =>
             _ = new Pearson(8, Pearson.PearsonTableType.UserDefined));
     }
+
+    /// <summary>
+    /// Verifies that constructing with an undefined <see cref="Pearson.PearsonTableType" /> enum value throws
+    /// <see cref="ArgumentOutOfRangeException" /> from the protected permutation-table selector.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenTableTypeIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            _ = new Pearson(8, (Pearson.PearsonTableType)42));
+    }
 }

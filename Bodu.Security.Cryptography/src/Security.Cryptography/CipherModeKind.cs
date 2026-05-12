@@ -1,44 +1,74 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CipherBlockMode.cs" company="PlaceholderCompany">
+// <copyright file="CipherModeKind.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Identifies the block cipher chaining modes used when encrypting or decrypting multi-block messages.
+/// Specifies a block-cipher mode for encrypting or decrypting multi-block messages. Mirrors the standard
+/// framework <see cref="CipherMode" /> values where this library exposes the same mode, and extends that
+/// surface with additional modes that are not part of the framework enum.
 /// </summary>
 /// <remarks>
+/// <para>
+/// The mirrored values <see cref="CBC" />, <see cref="ECB" />, <see cref="OFB" />, <see cref="CFB" />, and
+/// <see cref="CTS" /> are deliberately aligned with the numeric values of <see cref="CipherMode" /> so that
+/// those values can be converted between <see cref="CipherModeKind" /> and <see cref="CipherMode" /> by cast.
+/// </para>
+/// <para>
+/// Bodu-specific values start at <c>1 &lt;&lt; 10</c> to avoid colliding with framework-defined values. These
+/// include <see cref="CTR" />, <see cref="XTS" />, <see cref="OCB" />, <see cref="EAX" />, and <see cref="SIV" />.
+/// </para>
 /// <para>
 /// <img src="../images/diagrams/classic-modes.svg" alt="ECB, CBC, CFB, OFB, and CTR data-flow panels."/>
 /// </para>
 /// <para>
-/// Each value selects a different strategy for combining block cipher operations with feedback or sequencing
-/// logic. The five panels above show the classic, non-authenticated modes:
+/// Each value selects a different strategy for combining block cipher operations with feedback, sequencing,
+/// tweak, or authentication logic. The five panels above show the classic, non-authenticated modes:
 /// <list type="number">
 /// <item><description><b>ECB</b> — no feedback. Identical plaintext blocks produce identical ciphertext blocks.</description></item>
 /// <item><description><b>CBC</b> — previous ciphertext block XORed into the next plaintext before encryption; the first block uses the IV.</description></item>
-/// <item><description><b>CFB</b> — encrypted previous ciphertext (or IV) acts as keystream; self-synchronising.</description></item>
+/// <item><description><b>CFB</b> — encrypted previous ciphertext, or IV, acts as keystream; self-synchronising.</description></item>
 /// <item><description><b>OFB</b> — encrypted previous keystream block feeds forward; plaintext is independent of the keystream chain.</description></item>
 /// <item><description><b>CTR</b> — successive counter values are encrypted to produce an independent, random-access keystream.</description></item>
 /// </list>
 /// </para>
 /// <para>
-/// Modes differ in security properties, parallelism, and whether they require an initialisation vector
-/// or nonce. The remaining values (<see cref="XTS"/>, <see cref="OCB"/>, <see cref="EAX"/>,
-/// <see cref="SIV"/>) extend these building blocks with per-block tweaks or authenticated-encryption tags.
-/// Use <see cref="BlockCipherModeFactory.Create"/> to obtain an
-/// <see cref="IBlockCipherModeTransform"/> for a given value.
+/// Modes differ in security properties, parallelism, whether they require an initialisation vector or nonce,
+/// and whether they provide authentication. Use <see cref="BlockCipherModeFactory.Create" /> to obtain an
+/// <see cref="IBlockCipherModeTransform" /> for a given value.
 /// </para>
 /// </remarks>
+/// <seealso cref="CipherMode" />
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes (guide with per-mode worked examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
-public enum CipherBlockMode
+public enum CipherModeKind
 {
     /// <summary>
+    /// Cipher Block Chaining (CBC) mode. Each plaintext block is XORed with the previous ciphertext block
+    /// before encryption. Mirrors <see cref="CipherMode.CBC" />.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// CBC provides confidentiality by chaining ciphertext blocks, so identical plaintext blocks produce
+    /// different ciphertexts assuming different IVs. The first block uses an initialisation vector (IV)
+    /// instead of a previous ciphertext block.
+    /// </para>
+    /// <para>
+    /// This mode requires an IV equal in length to the cipher block size, which should be unpredictable for
+    /// each message.
+    /// </para>
+    /// </remarks>
+    CBC = CipherMode.CBC,
+
+    /// <summary>
     /// Electronic Codebook (ECB) mode. Each block is encrypted independently with no feedback.
+    /// Mirrors <see cref="CipherMode.ECB" />.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -48,42 +78,11 @@ public enum CipherBlockMode
     /// </para>
     /// <para>This mode does not require an initialisation vector.</para>
     /// </remarks>
-    ECB,
+    ECB = CipherMode.ECB,
 
     /// <summary>
-    /// Cipher Block Chaining (CBC) mode. Each plaintext block is XORed with the previous ciphertext block
-    /// before encryption.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// CBC provides confidentiality by chaining ciphertext blocks, so identical plaintext blocks produce
-    /// different ciphertexts (assuming different IVs). The first block uses an initialisation vector (IV)
-    /// instead of a previous ciphertext block.
-    /// </para>
-    /// <para>
-    /// This mode requires an IV equal in length to the cipher block size, which should be unpredictable for
-    /// each message.
-    /// </para>
-    /// </remarks>
-    CBC,
-
-    /// <summary>
-    /// Cipher Feedback (CFB) mode. Encrypts the previous ciphertext (or IV) to produce a keystream that is
-    /// XORed with the current plaintext or ciphertext.
-    /// </summary>
-    /// <remarks>
-    /// <para>
-    /// CFB turns a block cipher into a self-synchronising stream cipher. It can recover from bit errors after
-    /// a few blocks and uses the cipher's encryption primitive for both encryption and decryption. The IV is
-    /// used to seed the feedback register for the first block.
-    /// </para>
-    /// <para>This mode requires an IV equal in length to the cipher block size.</para>
-    /// </remarks>
-    CFB,
-
-    /// <summary>
-    /// Output Feedback (OFB) mode. Encrypts the previous output (or IV) to produce a keystream that is XORed
-    /// with the plaintext or ciphertext.
+    /// Output Feedback (OFB) mode. Encrypts the previous output, or IV, to produce a keystream that is XORed
+    /// with the plaintext or ciphertext. Mirrors <see cref="CipherMode.OFB" />.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -96,28 +95,59 @@ public enum CipherBlockMode
     /// the same key.
     /// </para>
     /// </remarks>
-    OFB,
+    OFB = CipherMode.OFB,
+
+    /// <summary>
+    /// Cipher Feedback (CFB) mode. Encrypts the previous ciphertext, or IV, to produce a keystream that is
+    /// XORed with the current plaintext or ciphertext. Mirrors <see cref="CipherMode.CFB" />.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// CFB turns a block cipher into a self-synchronising stream cipher. It can recover from bit errors after
+    /// a few blocks and uses the cipher's encryption primitive for both encryption and decryption. The IV is
+    /// used to seed the feedback register for the first block.
+    /// </para>
+    /// <para>This mode requires an IV equal in length to the cipher block size.</para>
+    /// </remarks>
+    CFB = CipherMode.CFB,
+
+    /// <summary>
+    /// Ciphertext Stealing (CTS) mode. Applies CBC-style chaining while allowing the final plaintext portion
+    /// to be shorter than a full block without expanding the ciphertext. Mirrors <see cref="CipherMode.CTS" />.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// CTS is used when ciphertext expansion is not acceptable and the final input block is partial. It
+    /// rearranges the final two ciphertext blocks so that the ciphertext length matches the plaintext length.
+    /// </para>
+    /// <para>
+    /// This mode requires an IV equal in length to the cipher block size. It is not an authenticated mode and
+    /// does not provide integrity protection.
+    /// </para>
+    /// </remarks>
+    CTS = CipherMode.CTS,
 
     /// <summary>
     /// Counter (CTR) mode. Encrypts successive counter values to produce a keystream that is XORed with
-    /// plaintext or ciphertext.
+    /// plaintext or ciphertext. This mode extends <see cref="CipherMode" /> and has no framework counterpart.
     /// </summary>
     /// <remarks>
     /// <para>
     /// CTR transforms a block cipher into a parallelisable stream cipher with random access. It requires a
-    /// nonce (or initial counter value) equal in length to the cipher block size.
+    /// nonce, or initial counter value, equal in length to the cipher block size.
     /// </para>
     /// <para>
-    /// Reusing a (key, nonce) pair across messages is catastrophic: the XOR of two ciphertexts encrypted
+    /// Reusing a key and nonce pair across messages is catastrophic: the XOR of two ciphertexts encrypted
     /// with the same keystream recovers the XOR of the plaintexts. Callers must ensure that every counter
     /// value is used at most once per key.
     /// </para>
     /// </remarks>
-    CTR,
+    CTR = 1 << 10,
 
     /// <summary>
     /// XEX-based Tweaked-Codebook mode with Ciphertext Stealing (XTS). Each block is independently
     /// encrypted with a per-block tweak derived from a sector number and updated via GF(2^n) multiplication.
+    /// This mode extends <see cref="CipherMode" /> and has no framework counterpart.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -129,16 +159,17 @@ public enum CipherBlockMode
     /// </list>
     /// </para>
     /// <para>
-    /// XTS requires two independent key streams (typically expressed as a doubled key) and an IV equal to
+    /// XTS requires two independent key streams, typically expressed as a doubled key, and an IV equal to
     /// the cipher block size representing the sector number. The decrypt direction uses the cipher's
-    /// <em>decryption</em> primitive, unlike CFB/OFB/CTR.
+    /// <em>decryption</em> primitive, unlike CFB, OFB, and CTR.
     /// </para>
     /// </remarks>
-    XTS,
+    XTS = 1 << 11,
 
     /// <summary>
     /// Offset Codebook mode 3 (OCB3 / RFC 7253). A single-pass authenticated encryption mode that processes
     /// each block with a ntz-derived offset, producing ciphertext and an integrity tag simultaneously.
+    /// This mode extends <see cref="CipherMode" /> and has no framework counterpart.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -150,16 +181,17 @@ public enum CipherBlockMode
     /// where Δ_i = Δ_{i−1} ⊕ L[ntz(i)] and ntz(i) is the number of trailing zeros of i.
     /// </para>
     /// <para>
-    /// The <see cref="OcbModeTransform"/> implementation provides the encryption/decryption transform
-    /// component. Full AEAD authentication (associated data processing and tag generation/verification)
-    /// requires the <c>IAeadBlockCipherModeTransform</c> interface extension.
+    /// The <see cref="OcbModeTransform" /> implementation provides the encryption/decryption transform
+    /// component. Full AEAD authentication, including associated data processing and tag
+    /// generation/verification, requires the <c>IAeadBlockCipherModeTransform</c> interface extension.
     /// </para>
     /// </remarks>
-    OCB,
+    OCB = 1 << 12,
 
     /// <summary>
     /// EAX mode (Bellare, Rogaway, Wagner). A two-pass authenticated encryption mode combining CTR
     /// encryption with OMAC-based authentication of the nonce, ciphertext, and optional associated data.
+    /// This mode extends <see cref="CipherMode" /> and has no framework counterpart.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -170,18 +202,18 @@ public enum CipherBlockMode
     /// </list>
     /// </para>
     /// <para>
-    /// The <see cref="EaxModeTransform"/> implementation provides the CTR encryption component using the
-    /// nonce directly as the initial counter. Full AEAD authentication (OMAC nonce processing, OMAC
-    /// ciphertext tag, and associated data) requires the <c>IAeadBlockCipherModeTransform</c> interface
+    /// The <see cref="EaxModeTransform" /> implementation provides the CTR encryption component using the
+    /// nonce directly as the initial counter. Full AEAD authentication, including OMAC nonce processing,
+    /// OMAC ciphertext tag, and associated data, requires the <c>IAeadBlockCipherModeTransform</c> interface
     /// extension.
     /// </para>
     /// </remarks>
-    EAX,
+    EAX = 1 << 13,
 
     /// <summary>
     /// Synthetic IV (SIV / RFC 5297). A misuse-resistant authenticated encryption mode that derives a
     /// deterministic IV from the plaintext and associated data via S2V, then applies CTR encryption seeded
-    /// by that IV.
+    /// by that IV. This mode extends <see cref="CipherMode" /> and has no framework counterpart.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -194,10 +226,10 @@ public enum CipherBlockMode
     /// Both encrypt and decrypt use only the cipher's encryption primitive (CTR property).
     /// </para>
     /// <para>
-    /// The <see cref="SivModeTransform"/> implementation accepts the pre-computed SIV directly as the IV.
-    /// Full AEAD authentication (S2V computation from plaintext and associated data) requires the
+    /// The <see cref="SivModeTransform" /> implementation accepts the pre-computed SIV directly as the IV.
+    /// Full AEAD authentication, including S2V computation from plaintext and associated data, requires the
     /// <c>IAeadBlockCipherModeTransform</c> interface extension.
     /// </para>
     /// </remarks>
-    SIV,
+    SIV = 1 << 14,
 }

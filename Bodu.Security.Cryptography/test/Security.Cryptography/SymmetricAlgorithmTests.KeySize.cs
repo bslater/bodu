@@ -43,7 +43,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// Verifies that setting <see cref="SymmetricAlgorithm.KeySize" /> returns the same value on subsequent get.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LegalKeySizeData))]
+    [DynamicData(nameof(LegalKeySizeBitsData))]
     public void KeySize_WhenSet_ShouldReturnSameValueOnGet(int keySize)
     {
         using TAlgorithm algorithm = CreateAlgorithm();

@@ -31,9 +31,10 @@ public sealed partial class CtsModeTransformTests
 
         using var cipher = new AesBlockCipherFixture(key);
 
-        // 3 full blocks + half a block to force the steal path.
-        var length = cipher.BlockSize * 3 + cipher.BlockSize / 2;
-        var iv = new byte[cipher.BlockSize];
+        // 3 full blocks + half a block to force the steal path. Convert from bits to bytes.
+        var blockBytes = cipher.BlockSize / 8;
+        var length = blockBytes * 3 + blockBytes / 2;
+        var iv = new byte[blockBytes];
         var plaintext = new byte[length];
         RandomNumberGenerator.Fill(iv);
         RandomNumberGenerator.Fill(plaintext);

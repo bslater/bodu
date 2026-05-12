@@ -20,6 +20,10 @@ namespace Bodu.Security.Cryptography;
 /// XOR. Shorter keys are padded to 256 bits by appending a <c>1</c> bit followed by zeros, per the Serpent specification.
 /// </para>
 /// <para>
+/// This class implements the standard Serpent-128 block primitive only. It is interoperable with canonical Serpent test
+/// vectors and does not use the tweak schedule or widened state used by the non-standard wide-block variants.
+/// </para>
+/// <para>
 /// Most callers should prefer the higher-level <see cref="Serpent128"/> class, which exposes the standard
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="Serpent128Cipher"/> directly only
 /// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> or <see cref="IPaddingStrategy"/>.
@@ -30,23 +34,34 @@ public sealed class Serpent128Cipher
     : SerpentBlockCipherBase
 {
     /// <summary>
-    /// The Serpent block size in bytes.
+    /// Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation;
+    /// callers should read <see cref="BlockSize"/> instead.
     /// </summary>
-    public const int BlockSizeBytes = 16;
+    private const int BlockSizeBits = 128;
 
     /// <summary>
     /// The number of cipher rounds executed by Serpent.
     /// </summary>
+    /// <remarks>
+    /// Canonical Serpent always uses 32 rounds regardless of whether the input key is 128, 192, or 256 bits.
+    /// </remarks>
     private const int RoundCount = 32;
 
     /// <summary>
     /// The number of 32-bit round-key words (<c>(RoundCount + 1) * 4 = 132</c>).
     /// </summary>
+    /// <remarks>
+    /// Serpent requires one 128-bit subkey for each of the 32 rounds plus one final post-S-box whitening subkey.
+    /// </remarks>
     private const int RoundKeyWordCount = (RoundCount + 1) * 4;
 
     /// <summary>
     /// The expanded round keys (<c>K_0..K_32</c>), each four 32-bit words, laid out contiguously as 132 words.
     /// </summary>
+    /// <remarks>
+    /// Round key <c>K_r</c> starts at offset <c>r * 4</c>. Encryption consumes <c>K_0..K_31</c> before each S-box layer and
+    /// <c>K_32</c> after the final S-box layer.
+    /// </remarks>
     private readonly uint[] _roundKeys;
 
     /// <summary>
@@ -66,21 +81,25 @@ public sealed class Serpent128Cipher
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, "128, 192, 256"),
                 nameof(key));
 
+        // Expand the supplied 128-, 192-, or 256-bit key into the 33 canonical Serpent round keys.
         this._roundKeys = new uint[RoundKeyWordCount];
         BuildRoundKeys(key, this._roundKeys);
     }
 
     /// <inheritdoc />
-    public override int BlockSize => BlockSizeBytes;
+    /// <value>Length of the Serpent block is 128 bits (16 bytes).</value>
+    public override int BlockSize => BlockSizeBits;
 
     /// <inheritdoc />
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != BlockSizeBytes || output.Length != BlockSizeBytes)
+        if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBits / 8));
 
+        // Load the 128-bit plaintext block as four little-endian 32-bit words. This is the canonical Serpent bitslice
+        // representation used by the shared S-box and linear-transform helpers.
         var x0 = BinaryReadUInt32LE(input, 0);
         var x1 = BinaryReadUInt32LE(input, 4);
         var x2 = BinaryReadUInt32LE(input, 8);
@@ -88,6 +107,8 @@ public sealed class Serpent128Cipher
 
         var rk = this._roundKeys;
 
+        // Rounds 0..30: XOR the round key, apply S_r where r cycles modulo 8, then apply the Serpent linear transform.
+        // The linear transform is omitted only from the final round.
         for (var r = 0; r < RoundCount - 1; r++)
         {
             var k = r * 4;
@@ -100,7 +121,8 @@ public sealed class Serpent128Cipher
             LinearTransform(ref x0, ref x1, ref x2, ref x3);
         }
 
-        // Final round: no linear transform, followed by a post-round key XOR.
+        // Final round: Serpent performs the final key XOR and S-box layer without the linear transform, then applies
+        // the extra post-round key K_32 as output whitening.
         var kFinal = (RoundCount - 1) * 4;
         x0 ^= rk[kFinal];
         x1 ^= rk[kFinal + 1];
@@ -115,6 +137,7 @@ public sealed class Serpent128Cipher
         x2 ^= rk[kPost + 2];
         x3 ^= rk[kPost + 3];
 
+        // Store the ciphertext using the same little-endian 32-bit word layout used for input.
         BinaryWriteUInt32LE(output, 0, x0);
         BinaryWriteUInt32LE(output, 4, x1);
         BinaryWriteUInt32LE(output, 8, x2);
@@ -125,10 +148,11 @@ public sealed class Serpent128Cipher
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != BlockSizeBytes || output.Length != BlockSizeBytes)
+        if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBits / 8));
 
+        // Load the 128-bit ciphertext block as four little-endian 32-bit words.
         var x0 = BinaryReadUInt32LE(input, 0);
         var x1 = BinaryReadUInt32LE(input, 4);
         var x2 = BinaryReadUInt32LE(input, 8);
@@ -136,7 +160,7 @@ public sealed class Serpent128Cipher
 
         var rk = this._roundKeys;
 
-        // Reverse of the final round.
+        // Reverse the final encryption round: remove post-round key K_32, apply inverse S_31, then remove K_31.
         var kPost = RoundCount * 4;
         x0 ^= rk[kPost];
         x1 ^= rk[kPost + 1];
@@ -151,7 +175,8 @@ public sealed class Serpent128Cipher
         x2 ^= rk[kFinal + 2];
         x3 ^= rk[kFinal + 3];
 
-        // Reverse of the remaining rounds.
+        // Reverse rounds 30..0. The inverse order is linear transform, inverse S-box, then round-key XOR because
+        // encryption applied key XOR, S-box, then linear transform.
         for (var r = RoundCount - 2; r >= 0; r--)
         {
             InverseLinearTransform(ref x0, ref x1, ref x2, ref x3);
@@ -164,6 +189,7 @@ public sealed class Serpent128Cipher
             x3 ^= rk[k + 3];
         }
 
+        // Store the recovered plaintext using the same little-endian 32-bit word layout.
         BinaryWriteUInt32LE(output, 0, x0);
         BinaryWriteUInt32LE(output, 4, x1);
         BinaryWriteUInt32LE(output, 8, x2);
@@ -176,7 +202,10 @@ public sealed class Serpent128Cipher
         if (this._disposed) return;
 
         if (disposing)
+        {
+            // The round-key schedule is derived from secret key material and must be cleared on deterministic disposal.
             CryptoHelpers.Clear(this._roundKeys);
+        }
 
         base.Dispose(disposing);
     }
@@ -184,9 +213,19 @@ public sealed class Serpent128Cipher
     /// <summary>
     /// Reads a little-endian <see cref="uint"/> from <paramref name="buffer"/> at the specified <paramref name="offset"/>.
     /// </summary>
-    /// <param name="buffer">The source byte span.</param>
-    /// <param name="offset">The byte offset at which to read.</param>
-    /// <returns>The little-endian <see cref="uint"/> value read from <paramref name="buffer"/>.</returns>
+    /// <param name="buffer">
+    /// The source byte span.
+    /// </param>
+    /// <param name="offset">
+    /// The byte offset at which to read.
+    /// </param>
+    /// <returns>
+    /// The little-endian <see cref="uint"/> value read from <paramref name="buffer"/>.
+    /// </returns>
+    /// <remarks>
+    /// Serpent blocks are represented internally as four little-endian 32-bit words. Keeping this helper local makes the
+    /// block layout explicit at each load site.
+    /// </remarks>
     private static uint BinaryReadUInt32LE(ReadOnlySpan<byte> buffer, int offset) =>
         System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(buffer.Slice(offset, 4));
 
@@ -194,9 +233,19 @@ public sealed class Serpent128Cipher
     /// Writes <paramref name="value"/> to <paramref name="buffer"/> at the specified <paramref name="offset"/> in
     /// little-endian byte order.
     /// </summary>
-    /// <param name="buffer">The destination byte span.</param>
-    /// <param name="offset">The byte offset at which to write.</param>
-    /// <param name="value">The value to write.</param>
+    /// <param name="buffer">
+    /// The destination byte span.
+    /// </param>
+    /// <param name="offset">
+    /// The byte offset at which to write.
+    /// </param>
+    /// <param name="value">
+    /// The value to write.
+    /// </param>
+    /// <remarks>
+    /// Serpent blocks are emitted as four little-endian 32-bit words, matching the load format and canonical test-vector
+    /// representation used by this implementation.
+    /// </remarks>
     private static void BinaryWriteUInt32LE(Span<byte> buffer, int offset, uint value) =>
         System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(buffer.Slice(offset, 4), value);
 
@@ -206,14 +255,25 @@ public sealed class Serpent128Cipher
     /// <param name="key">
     /// The Serpent key (16, 24, or 32 bytes). Keys shorter than 32 bytes are padded per the Serpent specification.
     /// </param>
-    /// <param name="roundKeys">The destination buffer, which must have exactly <see cref="RoundKeyWordCount"/> entries.</param>
+    /// <param name="roundKeys">
+    /// The destination buffer, which must have exactly <see cref="RoundKeyWordCount"/> entries.
+    /// </param>
     /// <remarks>
-    /// Pads the key to 256 bits by appending a <c>1</c> bit immediately after the key material and then zeros. Seeds the prekey
-    /// recurrence with the 8 padded words, applies the Serpent recurrence for 132 words, then applies the rotating S-box
-    /// schedule in groups of four words to produce <c>K_0..K_32</c>.
+    /// <para>
+    /// Serpent first pads any key shorter than 256 bits by appending a single <c>1</c> bit followed by zeros. Because valid key
+    /// sizes are byte-aligned here, this implementation writes <c>0x01</c> immediately after the supplied key bytes and clears
+    /// the rest of the 32-byte key buffer.
+    /// </para>
+    /// <para>
+    /// The eight padded words seed the Serpent prekey recurrence. The generated prekey tail is then transformed in groups of
+    /// four words using the key-schedule S-box order <c>K_0 → S3, K_1 → S2, K_2 → S1, K_3 → S0, K_4 → S7, ...</c> to produce
+    /// <c>K_0..K_32</c>.
+    /// </para>
     /// </remarks>
     private static void BuildRoundKeys(ReadOnlySpan<byte> key, uint[] roundKeys)
     {
+        // Build the 256-bit padded key buffer. A 256-bit key is used unchanged; 128- and 192-bit keys receive the Serpent
+        // 1-bit terminator followed by zeros.
         Span<byte> paddedKey = stackalloc byte[32];
         paddedKey.Clear();
         key.CopyTo(paddedKey);
@@ -221,11 +281,13 @@ public sealed class Serpent128Cipher
         if (key.Length < 32)
             paddedKey[key.Length] = 0x01;
 
+        // Interpret the padded key as eight little-endian 32-bit seed words w[-8]..w[-1].
         Span<uint> seed = stackalloc uint[8];
         for (var i = 0; i < 8; i++)
             seed[i] = BinaryReadUInt32LE(paddedKey, i * 4);
 
-        // Prekey layout: w[-8..-1] then w[0..131] laid out contiguously → 140 words.
+        // Prekey layout: w[-8..-1] followed by w[0..131], laid out contiguously as 140 words.
+        // ExpandPrekeys copies the seed and fills the generated tail using the Serpent recurrence.
         Span<uint> prekeys = stackalloc uint[8 + RoundKeyWordCount];
         ExpandPrekeys(seed, prekeys, 8);
 

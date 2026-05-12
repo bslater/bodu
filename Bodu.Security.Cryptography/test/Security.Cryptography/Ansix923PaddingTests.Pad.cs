@@ -19,7 +19,7 @@ public sealed partial class Ansix923PaddingTests
         Ansix923Padding padding = CreatePadding();
         var plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        var padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSizeBits);
 
         Assert.AreEqual(BlockSize, padded.Length);
         Assert.AreEqual((byte)5, padded[padded.Length - 1]);

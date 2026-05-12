@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>State / block size: 1024 bits (128 bytes).</description></item>
 ///   <item><description>Output sizes: 384, 512, or 1024 bits — default 1024.</description></item>
 ///   <item><description>Underlying cipher: <see cref="Threefish1024Cipher"/> tweakable block cipher under UBI mode.</description></item>
-///   <item><description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySizeBytes"/> bytes.</description></item>
+///   <item><description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySize"/> / 8 bytes.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Skein-1024.</strong> The widest-state Skein variant — pick it when you want the

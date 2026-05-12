@@ -14,19 +14,19 @@ internal static partial class CryptoHelpers
     /// Removes padding from a block and returns the depadded data as a newly allocated array.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingMode"/> that was applied to <paramref name="block"/>.</param>
-    /// <param name="blockSizeBytes">The block size, in bytes, used when the input was padded.</param>
+    /// <param name="blockSize">The block size, in bits, used when the input was padded. Must be a positive multiple of 8.</param>
     /// <param name="block">The input buffer containing the padded block or blocks.</param>
     /// <param name="offset">The zero-based offset in <paramref name="block"/> at which the padded data begins.</param>
     /// <param name="count">The number of bytes to read from <paramref name="block"/> starting at <paramref name="offset"/>.</param>
     /// <returns>A newly allocated <see cref="byte"/> array containing the input data with padding removed.</returns>
     /// <exception cref="CryptographicException">
-    /// The padding is invalid, the specified range is not a positive multiple of <paramref name="blockSizeBytes"/>,
+    /// The padding is invalid, the specified range is not a positive multiple of <paramref name="blockSize"/> / 8,
     /// or the padding mode is unsupported.
     /// </exception>
-    public static byte[] DepadBlock(PaddingMode padding, int blockSizeBytes, byte[] block, int offset, int count)
+    public static byte[] DepadBlock(PaddingMode padding, int blockSize, byte[] block, int offset, int count)
     {
         var temp = new byte[count];
-        var written = DepadBlock(padding, blockSizeBytes, new ReadOnlySpan<byte>(block, offset, count), temp);
+        var written = DepadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), temp);
         var result = new byte[written];
         Buffer.BlockCopy(temp, 0, result, 0, written);
         return result;
@@ -36,22 +36,24 @@ internal static partial class CryptoHelpers
     /// Removes padding from a block and writes the depadded data into the specified destination span.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingMode"/> applied to <paramref name="source"/>.</param>
-    /// <param name="blockSizeBytes">The block size, in bytes, used when the input was padded.</param>
-    /// <param name="source">The padded input data. Its length must be a positive multiple of <paramref name="blockSizeBytes"/>.</param>
+    /// <param name="blockSize">The block size, in bits, used when the input was padded. Must be a positive multiple of 8.</param>
+    /// <param name="source">The padded input data. Its byte length must be a positive multiple of <paramref name="blockSize"/> / 8.</param>
     /// <param name="destination">The destination span that receives the depadded data.</param>
     /// <returns>The number of bytes written to <paramref name="destination"/> after padding has been removed.</returns>
     /// <exception cref="CryptographicException">
-    /// The padding is invalid, <paramref name="source"/> is not a positive multiple of <paramref name="blockSizeBytes"/>,
+    /// The padding is invalid, <paramref name="source"/> byte length is not a positive multiple of <paramref name="blockSize"/> / 8,
     /// or the padding mode is unsupported.
     /// </exception>
     public static int DepadBlock(
         PaddingMode padding,
-        int blockSizeBytes,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination)
     {
-        ThrowHelper.ThrowIfLessThanOrEqual(blockSizeBytes, 0);
-        ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSizeBytes);
+        ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
+
+        var size = blockSize / 8;
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(source, size);
 
         var count = source.Length;
 
@@ -73,7 +75,7 @@ internal static partial class CryptoHelpers
         }
 
         int padCount = source[^1];
-        if (padCount <= 0 || padCount > blockSizeBytes)
+        if (padCount <= 0 || padCount > size)
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
 
         ReadOnlySpan<byte> padRegion = source[^padCount..];
@@ -93,7 +95,7 @@ internal static partial class CryptoHelpers
     /// Applies the specified padding mode to a block and returns the padded data as a newly allocated array.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingMode"/> to apply.</param>
-    /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
+    /// <param name="blockSize">The block size in bits used to align the output.</param>
     /// <param name="block">The input buffer containing the data to pad.</param>
     /// <param name="offset">The zero-based offset in <paramref name="block"/> at which to begin reading.</param>
     /// <param name="count">The number of bytes to read from <paramref name="block"/> starting at <paramref name="offset"/>.</param>
@@ -102,11 +104,12 @@ internal static partial class CryptoHelpers
     /// The padding mode is invalid, or <paramref name="padding"/> is <see cref="PaddingMode.None"/> and the input length is
     /// not block-aligned.
     /// </exception>
-    public static byte[] PadBlock(PaddingMode padding, int blockSizeBytes, byte[] block, int offset, int count)
+    public static byte[] PadBlock(PaddingMode padding, int blockSize, byte[] block, int offset, int count)
     {
-        ThrowHelper.ThrowIfLessThan(blockSizeBytes, 1);
-        var result = new byte[count + blockSizeBytes];
-        var written = PadBlock(padding, blockSizeBytes, new ReadOnlySpan<byte>(block, offset, count), result);
+        ThrowHelper.ThrowIfLessThan(blockSize, 1);
+        var size = blockSize / 8;
+        var result = new byte[count + size];
+        var written = PadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), result);
         Array.Resize(ref result, written);
         return result;
     }
@@ -115,18 +118,18 @@ internal static partial class CryptoHelpers
     /// Applies the specified padding mode to a block and writes the padded result into the destination span.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingMode"/> to apply.</param>
-    /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
+    /// <param name="blockSize">The block size in bits used to align the output.</param>
     /// <param name="source">The input data to pad.</param>
     /// <param name="destination">The destination span that receives the padded result.</param>
     /// <returns>The total number of bytes written to <paramref name="destination"/>.</returns>
     /// <exception cref="ArgumentException"><paramref name="destination"/> is too small to hold the padded result.</exception>
     /// <exception cref="CryptographicException">
     /// The padding mode is invalid, or <paramref name="padding"/> is <see cref="PaddingMode.None"/> and the input length is
-    /// not a multiple of <paramref name="blockSizeBytes"/>.
+    /// not a multiple of <paramref name="blockSize"/>.
     /// </exception>
     public static int PadBlock(
         PaddingMode padding,
-        int blockSizeBytes,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination)
     {
@@ -144,13 +147,14 @@ internal static partial class CryptoHelpers
                     string.Format(CryptoResourceStrings.CryptographicException_InvalidPropertyValue, nameof(SymmetricAlgorithm.Padding)));
         }
 
-        ThrowHelper.ThrowIfLessThan(blockSizeBytes, 1);
+        ThrowHelper.ThrowIfLessThan(blockSize, 1);
 
-        if (padding == PaddingMode.None && source.Length % blockSizeBytes != 0)
+        var size = blockSize / 8;
+        if (padding == PaddingMode.None && source.Length % size != 0)
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_PaddingModeNone_InputNotAligned);
 
-        var padCount = blockSizeBytes - (source.Length % blockSizeBytes);
-        if (padCount == blockSizeBytes && (padding == PaddingMode.None || padding == PaddingMode.Zeros))
+        var padCount = size - (source.Length % size);
+        if (padCount == size && (padding == PaddingMode.None || padding == PaddingMode.Zeros))
             padCount = 0;
 
         var totalLen = source.Length + padCount;
@@ -188,21 +192,21 @@ internal static partial class CryptoHelpers
     /// Attempts to remove padding from the specified input buffer using the given padding mode.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingMode"/> to validate and remove.</param>
-    /// <param name="blockSizeBytes">The block size in bytes used when the input was padded.</param>
+    /// <param name="blockSize">The block size in bits used when the input was padded.</param>
     /// <param name="source">The padded input buffer.</param>
     /// <param name="destination">The destination span that receives the depadded data.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written to <paramref name="destination"/>.</param>
     /// <returns><see langword="true"/> if depadding was successful; otherwise, <see langword="false"/>.</returns>
     public static bool TryDepadBlock(
         PaddingMode padding,
-        int blockSizeBytes,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination,
         out int bytesWritten)
     {
         try
         {
-            bytesWritten = DepadBlock(padding, blockSizeBytes, source, destination);
+            bytesWritten = DepadBlock(padding, blockSize, source, destination);
             return true;
         }
         catch
@@ -216,21 +220,21 @@ internal static partial class CryptoHelpers
     /// Attempts to apply padding to the specified input buffer using the given padding mode.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingMode"/> to apply.</param>
-    /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
+    /// <param name="blockSize">The block size in bits used to align the output.</param>
     /// <param name="source">The input buffer to pad.</param>
     /// <param name="destination">The destination span that receives the padded data.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written to <paramref name="destination"/>.</param>
     /// <returns><see langword="true"/> if padding was successfully applied; otherwise, <see langword="false"/>.</returns>
     public static bool TryPadBlock(
         PaddingMode padding,
-        int blockSizeBytes,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination,
         out int bytesWritten)
     {
         try
         {
-            bytesWritten = PadBlock(padding, blockSizeBytes, source, destination);
+            bytesWritten = PadBlock(padding, blockSize, source, destination);
             return true;
         }
         catch
@@ -241,146 +245,146 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Removes padding from a block using the extended <see cref="BoduPaddingMode"/>
+    /// Removes padding from a block using the extended <see cref="PaddingModeKind"/>
     /// selector and returns the depadded data as a newly allocated array.
     /// </summary>
-    /// <param name="padding">The <see cref="BoduPaddingMode"/> that was applied to <paramref name="block"/>.</param>
-    /// <param name="blockSizeBytes">The block size, in bytes, used when the input was padded.</param>
+    /// <param name="padding">The <see cref="PaddingModeKind"/> that was applied to <paramref name="block"/>.</param>
+    /// <param name="blockSize">The block size, in bits, used when the input was padded. Must be a positive multiple of 8.</param>
     /// <param name="block">The input buffer containing the padded block or blocks.</param>
     /// <param name="offset">The zero-based offset in <paramref name="block"/> at which the padded data begins.</param>
     /// <param name="count">The number of bytes to read from <paramref name="block"/> starting at <paramref name="offset"/>.</param>
     /// <returns>A newly allocated <see cref="byte"/> array containing the input data with padding removed.</returns>
     /// <exception cref="CryptographicException">
-    /// The padding is invalid, the specified range is not a positive multiple of <paramref name="blockSizeBytes"/>,
+    /// The padding is invalid, the specified range is not a positive multiple of <paramref name="blockSize"/>,
     /// or the padding mode is unsupported.
     /// </exception>
-    public static byte[] DepadBlock(BoduPaddingMode padding, int blockSizeBytes, byte[] block, int offset, int count)
+    public static byte[] DepadBlock(PaddingModeKind padding, int blockSize, byte[] block, int offset, int count)
     {
-        if (padding == BoduPaddingMode.ISO7816_4)
+        if (padding == PaddingModeKind.ISO7816_4)
         {
-            ThrowHelper.ThrowIfLessThanOrEqual(blockSizeBytes, 0);
+            ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
             var strategy = new Iso7816_4Padding();
-            return strategy.Unpad(new ReadOnlySpan<byte>(block, offset, count), blockSizeBytes);
+            return strategy.Unpad(new ReadOnlySpan<byte>(block, offset, count), blockSize);
         }
 
-        return DepadBlock((PaddingMode)padding, blockSizeBytes, block, offset, count);
+        return DepadBlock((PaddingMode)padding, blockSize, block, offset, count);
     }
 
     /// <summary>
-    /// Removes padding from a block using the extended <see cref="BoduPaddingMode"/>
+    /// Removes padding from a block using the extended <see cref="PaddingModeKind"/>
     /// selector and writes the depadded data into the specified destination span.
     /// </summary>
-    /// <param name="padding">The <see cref="BoduPaddingMode"/> applied to <paramref name="source"/>.</param>
-    /// <param name="blockSizeBytes">The block size, in bytes, used when the input was padded.</param>
-    /// <param name="source">The padded input data. Its length must be a positive multiple of <paramref name="blockSizeBytes"/>.</param>
+    /// <param name="padding">The <see cref="PaddingModeKind"/> applied to <paramref name="source"/>.</param>
+    /// <param name="blockSize">The block size, in bits, used when the input was padded. Must be a positive multiple of 8.</param>
+    /// <param name="source">The padded input data. Its byte length must be a positive multiple of <paramref name="blockSize"/> / 8.</param>
     /// <param name="destination">The destination span that receives the depadded data.</param>
     /// <returns>The number of bytes written to <paramref name="destination"/> after padding has been removed.</returns>
     /// <exception cref="CryptographicException">
-    /// The padding is invalid, <paramref name="source"/> is not a positive multiple of <paramref name="blockSizeBytes"/>,
+    /// The padding is invalid, <paramref name="source"/> byte length is not a positive multiple of <paramref name="blockSize"/> / 8,
     /// or the padding mode is unsupported.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when an argument does not satisfy the method preconditions.</exception>
     public static int DepadBlock(
-        BoduPaddingMode padding,
-        int blockSizeBytes,
+        PaddingModeKind padding,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination)
     {
-        if (padding == BoduPaddingMode.ISO7816_4)
+        if (padding == PaddingModeKind.ISO7816_4)
         {
-            ThrowHelper.ThrowIfLessThanOrEqual(blockSizeBytes, 0);
-            ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSizeBytes);
+            ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
+            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSize / 8);
 
             var strategy = new Iso7816_4Padding();
-            var unpadded = strategy.Unpad(source, blockSizeBytes);
+            var unpadded = strategy.Unpad(source, blockSize);
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, unpadded.Length);
             unpadded.AsSpan().CopyTo(destination);
             return unpadded.Length;
         }
 
-        return DepadBlock((PaddingMode)padding, blockSizeBytes, source, destination);
+        return DepadBlock((PaddingMode)padding, blockSize, source, destination);
     }
 
     /// <summary>
-    /// Applies the specified <see cref="BoduPaddingMode"/> to a block and returns the
+    /// Applies the specified <see cref="PaddingModeKind"/> to a block and returns the
     /// padded data as a newly allocated array.
     /// </summary>
-    /// <param name="padding">The <see cref="BoduPaddingMode"/> to apply.</param>
-    /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
+    /// <param name="padding">The <see cref="PaddingModeKind"/> to apply.</param>
+    /// <param name="blockSize">The block size in bits used to align the output.</param>
     /// <param name="block">The input buffer containing the data to pad.</param>
     /// <param name="offset">The zero-based offset in <paramref name="block"/> at which to begin reading.</param>
     /// <param name="count">The number of bytes to read from <paramref name="block"/> starting at <paramref name="offset"/>.</param>
     /// <returns>A newly allocated <see cref="byte"/> array containing the input data with padding applied.</returns>
     /// <exception cref="CryptographicException">
-    /// The padding mode is invalid, or <paramref name="padding"/> is <see cref="BoduPaddingMode.None"/> and the
+    /// The padding mode is invalid, or <paramref name="padding"/> is <see cref="PaddingModeKind.None"/> and the
     /// input length is not block-aligned.
     /// </exception>
-    public static byte[] PadBlock(BoduPaddingMode padding, int blockSizeBytes, byte[] block, int offset, int count)
+    public static byte[] PadBlock(PaddingModeKind padding, int blockSize, byte[] block, int offset, int count)
     {
-        if (padding == BoduPaddingMode.ISO7816_4)
+        if (padding == PaddingModeKind.ISO7816_4)
         {
-            ThrowHelper.ThrowIfLessThan(blockSizeBytes, 1);
+            ThrowHelper.ThrowIfLessThan(blockSize, 1);
             var strategy = new Iso7816_4Padding();
-            return strategy.Pad(new ReadOnlySpan<byte>(block, offset, count), blockSizeBytes);
+            return strategy.Pad(new ReadOnlySpan<byte>(block, offset, count), blockSize);
         }
 
-        return PadBlock((PaddingMode)padding, blockSizeBytes, block, offset, count);
+        return PadBlock((PaddingMode)padding, blockSize, block, offset, count);
     }
 
     /// <summary>
-    /// Applies the specified <see cref="BoduPaddingMode"/> to a block and writes the
+    /// Applies the specified <see cref="PaddingModeKind"/> to a block and writes the
     /// padded result into the destination span.
     /// </summary>
-    /// <param name="padding">The <see cref="BoduPaddingMode"/> to apply.</param>
-    /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
+    /// <param name="padding">The <see cref="PaddingModeKind"/> to apply.</param>
+    /// <param name="blockSize">The block size in bits used to align the output.</param>
     /// <param name="source">The input data to pad.</param>
     /// <param name="destination">The destination span that receives the padded result.</param>
     /// <returns>The total number of bytes written to <paramref name="destination"/>.</returns>
     /// <exception cref="ArgumentException"><paramref name="destination"/> is too small to hold the padded result.</exception>
     /// <exception cref="CryptographicException">
-    /// The padding mode is invalid, or <paramref name="padding"/> is <see cref="BoduPaddingMode.None"/> and the
-    /// input length is not a multiple of <paramref name="blockSizeBytes"/>.
+    /// The padding mode is invalid, or <paramref name="padding"/> is <see cref="PaddingModeKind.None"/> and the
+    /// input length is not a multiple of <paramref name="blockSize"/>.
     /// </exception>
     public static int PadBlock(
-        BoduPaddingMode padding,
-        int blockSizeBytes,
+        PaddingModeKind padding,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination)
     {
-        if (padding == BoduPaddingMode.ISO7816_4)
+        if (padding == PaddingModeKind.ISO7816_4)
         {
-            ThrowHelper.ThrowIfLessThan(blockSizeBytes, 1);
+            ThrowHelper.ThrowIfLessThan(blockSize, 1);
 
             var strategy = new Iso7816_4Padding();
-            var padded = strategy.Pad(source, blockSizeBytes);
+            var padded = strategy.Pad(source, blockSize);
             ThrowHelper.ThrowIfSpanLengthIsInsufficient(destination, 0, padded.Length);
             padded.AsSpan().CopyTo(destination);
             return padded.Length;
         }
 
-        return PadBlock((PaddingMode)padding, blockSizeBytes, source, destination);
+        return PadBlock((PaddingMode)padding, blockSize, source, destination);
     }
 
     /// <summary>
     /// Attempts to remove padding from the specified input buffer using the given
-    /// <see cref="BoduPaddingMode"/>.
+    /// <see cref="PaddingModeKind"/>.
     /// </summary>
-    /// <param name="padding">The <see cref="BoduPaddingMode"/> to validate and remove.</param>
-    /// <param name="blockSizeBytes">The block size in bytes used when the input was padded.</param>
+    /// <param name="padding">The <see cref="PaddingModeKind"/> to validate and remove.</param>
+    /// <param name="blockSize">The block size in bits used when the input was padded.</param>
     /// <param name="source">The padded input buffer.</param>
     /// <param name="destination">The destination span that receives the depadded data.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written to <paramref name="destination"/>.</param>
     /// <returns><see langword="true"/> if depadding was successful; otherwise, <see langword="false"/>.</returns>
     public static bool TryDepadBlock(
-        BoduPaddingMode padding,
-        int blockSizeBytes,
+        PaddingModeKind padding,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination,
         out int bytesWritten)
     {
         try
         {
-            bytesWritten = DepadBlock(padding, blockSizeBytes, source, destination);
+            bytesWritten = DepadBlock(padding, blockSize, source, destination);
             return true;
         }
         catch
@@ -392,24 +396,24 @@ internal static partial class CryptoHelpers
 
     /// <summary>
     /// Attempts to apply padding to the specified input buffer using the given
-    /// <see cref="BoduPaddingMode"/>.
+    /// <see cref="PaddingModeKind"/>.
     /// </summary>
-    /// <param name="padding">The <see cref="BoduPaddingMode"/> to apply.</param>
-    /// <param name="blockSizeBytes">The block size in bytes used to align the output.</param>
+    /// <param name="padding">The <see cref="PaddingModeKind"/> to apply.</param>
+    /// <param name="blockSize">The block size in bits used to align the output.</param>
     /// <param name="source">The input buffer to pad.</param>
     /// <param name="destination">The destination span that receives the padded data.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written to <paramref name="destination"/>.</param>
     /// <returns><see langword="true"/> if padding was successfully applied; otherwise, <see langword="false"/>.</returns>
     public static bool TryPadBlock(
-        BoduPaddingMode padding,
-        int blockSizeBytes,
+        PaddingModeKind padding,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination,
         out int bytesWritten)
     {
         try
         {
-            bytesWritten = PadBlock(padding, blockSizeBytes, source, destination);
+            bytesWritten = PadBlock(padding, blockSize, source, destination);
             return true;
         }
         catch

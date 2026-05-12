@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent256TweakableAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class Serpent256TweakableAlgorithmTests
     protected override Serpent256 CreateAlgorithm() => new Serpent256();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(Serpent256 algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(Serpent256 algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />

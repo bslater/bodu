@@ -20,10 +20,10 @@ public sealed partial class OcbModeTransformTests
     protected override OcbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
         => new OcbModeTransform(cipher, iv);
 
-    // ── tagLen constructor overload ────────────────────────────────────────────────────────────
+    // ── tagSize constructor overload ───────────────────────────────────────────────────────────
     // Supplements the base-class CreateTransform(cipher, iv) without replacing it so that
-    // all inherited tests continue to exercise the default 16-byte tag path unchanged.
-    private static OcbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv, int tagLen)
-        => new OcbModeTransform(cipher, iv, tagLen);
+    // all inherited tests continue to exercise the default 128-bit tag path unchanged.
+    private static OcbModeTransform CreateTransform(IBlockCipher cipher, byte[] iv, int tagSize)
+        => new OcbModeTransform(cipher, iv, tagSize);
 
 }

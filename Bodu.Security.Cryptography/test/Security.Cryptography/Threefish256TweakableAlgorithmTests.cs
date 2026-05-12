@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Threefish256TweakableAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     protected override Threefish256 CreateAlgorithm() => Threefish256.Create();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(Threefish256 algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(Threefish256 algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />

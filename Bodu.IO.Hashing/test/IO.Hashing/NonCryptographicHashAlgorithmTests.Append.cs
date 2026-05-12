@@ -89,6 +89,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         algorithm.Append(input);
 
         var actual = algorithm.GetCurrentHash();
+        Bodu.Test.TestHelpers.TraceWriteIfNotEqual(expected, actual, $"Hash mismatch for '{testName}' using variant '{variant}'.");
 
         CollectionAssert.AreEqual(expected, actual, $"Hash mismatch for '{testName}' using variant '{variant}'.");
     }

@@ -24,9 +24,15 @@ public abstract partial class PaddingStrategyTests<TPadding>
     protected virtual TPadding CreatePadding() => new TPadding();
 
     /// <summary>
-    /// Gets the block size in bytes to use when exercising the Pad/Unpad API.
+    /// Gets the block size in bytes used for setting up test buffers and slicing operations.
     /// </summary>
     protected abstract int BlockSize { get; }
+
+    /// <summary>
+    /// Gets the block size in bits to use when exercising the <see cref="IPaddingStrategy.Pad"/>
+    /// / <see cref="IPaddingStrategy.Unpad"/> API. Derived from <see cref="BlockSize"/>.
+    /// </summary>
+    protected int BlockSizeBits => BlockSize * 8;
 
     /// <summary>
     /// Gets a value indicating whether <c>Unpad</c> may reject corrupted padding with
@@ -96,7 +102,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm"/> type to instantiate.</param>
     /// <param name="padding">The extended padding mode to apply.</param>
     /// <returns>A ready-to-use <see cref="SymmetricAlgorithm"/> instance.</returns>
-    protected static SymmetricAlgorithm CreateConfiguredAlgorithm(Type algorithmType, BlockPaddingMode padding)
+    protected static SymmetricAlgorithm CreateConfiguredAlgorithm(Type algorithmType, PaddingModeKind padding)
     {
         var algorithm = (SymmetricAlgorithm)Activator.CreateInstance(algorithmType)!;
         algorithm.Mode = CipherMode.CBC;

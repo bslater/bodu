@@ -32,9 +32,9 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
 /// IPaddingStrategy padding = new Ansix923Padding();
-/// byte[] padded = padding.Pad(plaintext, blockSize: 16);
+/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
 /// // padded ends with N-1 zero bytes followed by a single byte holding N.
-/// byte[] recovered = padding.Unpad(padded, blockSize: 16);
+/// byte[] recovered = padding.Unpad(padded, blockSize: 128);
 /// </code>
 /// </example>
 public sealed class Ansix923Padding : IPaddingStrategy
@@ -47,7 +47,7 @@ public sealed class Ansix923Padding : IPaddingStrategy
     /// multiple of the block size.
     /// </summary>
     /// <param name="input">The data to pad.</param>
-    /// <param name="blockSize">The block size in bytes.</param>
+    /// <param name="blockSize">The block size in bits.</param>
     /// <returns>The padded data as a byte array.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
@@ -57,9 +57,10 @@ public sealed class Ansix923Padding : IPaddingStrategy
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
-        var paddingLength = blockSize - (input.Length % blockSize);
+        var size = blockSize / 8;
+        var paddingLength = size - (input.Length % size);
         if (paddingLength == 0)
-            paddingLength = blockSize;
+            paddingLength = size;
 
         var result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
@@ -75,7 +76,7 @@ public sealed class Ansix923Padding : IPaddingStrategy
     /// Validates and removes ANSI X.923 padding from the specified input data.
     /// </summary>
     /// <param name="input">The padded data.</param>
-    /// <param name="blockSize">The block size in bytes.</param>
+    /// <param name="blockSize">The block size in bits.</param>
     /// <returns>The unpadded data as a byte array.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is empty or not aligned to the block size.</exception>
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
@@ -87,22 +88,23 @@ public sealed class Ansix923Padding : IPaddingStrategy
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         // Constant-time verification to mitigate CBC padding-oracle attacks.
-        if (input.Length == 0 || input.Length % blockSize != 0)
+        var size = blockSize / 8;
+        if (input.Length == 0 || input.Length % size != 0)
             CryptoHelpers.ThrowInvalidPaddedSequence("ANSI X.923", nameof(input));
 
         var length = input.Length;
         int padLen = input[length - 1];
 
         var geOne = ((-padLen) >> 31) & 1;                  // 1 iff padLen >= 1
-        var leBlock = ((padLen - blockSize - 1) >> 31) & 1; // 1 iff padLen <= blockSize
+        var leBlock = ((padLen - size - 1) >> 31) & 1;      // 1 iff padLen <= blockSize
         var valid = geOne & leBlock;
 
-        // effective = valid == 1 ? padLen : blockSize (branchless)
-        var effective = (valid * padLen) + ((1 - valid) * blockSize);
+        // effective = valid == 1 ? padLen : size (branchless)
+        var effective = (valid * padLen) + ((1 - valid) * size);
 
         // Walk the last blockSize bytes unconditionally. Every byte in the padding
         // region, other than the final length byte, must be 0x00.
-        var start = length - blockSize;
+        var start = length - size;
         var lastIndex = length - 1;
         for (var i = start; i < length; i++)
         {

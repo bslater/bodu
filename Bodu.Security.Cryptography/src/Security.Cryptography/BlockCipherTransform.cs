@@ -43,8 +43,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Derived classes need only provide a constructor that calls
-/// <see cref="BlockCipherTransform(IBlockCipher, CipherBlockMode, PaddingMode, byte[], bool)"/> or
-/// <see cref="BlockCipherTransform(IBlockCipher, CipherBlockMode, BlockPaddingMode, byte[], bool)"/> with the
+/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingMode, byte[], bool)"/> or
+/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingModeKind, byte[], bool)"/> with the
 /// appropriate arguments. All transform logic is handled by this base class.
 /// </para>
 /// <para>
@@ -126,7 +126,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
+    protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         this._encrypt = encrypt;
@@ -144,14 +144,14 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <param name="cipherMode">The block cipher mode of operation.</param>
     /// <param name="paddingMode">
     /// The extended padding scheme to apply to the final block. Accepts values beyond the framework
-    /// <see cref="PaddingMode"/> enum, including <see cref="BlockPaddingMode.ISO7816_4"/>.
+    /// <see cref="PaddingMode"/> enum, including <see cref="PaddingModeKind.ISO7816_4"/>.
     /// </param>
     /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
     /// <param name="encrypt">
     /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BlockPaddingMode paddingMode, byte[]? iv, bool encrypt)
+    protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         this._encrypt = encrypt;
@@ -166,10 +166,18 @@ public abstract class BlockCipherTransform : ICryptoTransform
     public bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public int InputBlockSize => this._cipher.BlockSize;
+    /// <remarks>
+    /// The BCL <see cref="ICryptoTransform"/> contract requires this value in <em>bytes</em>; the
+    /// underlying <see cref="IBlockCipher.BlockSize"/> is in <em>bits</em>, so we divide by 8.
+    /// </remarks>
+    public int InputBlockSize => this._cipher.BlockSize / 8;
 
     /// <inheritdoc />
-    public int OutputBlockSize => this._cipher.BlockSize;
+    /// <remarks>
+    /// The BCL <see cref="ICryptoTransform"/> contract requires this value in <em>bytes</em>; the
+    /// underlying <see cref="IBlockCipher.BlockSize"/> is in <em>bits</em>, so we divide by 8.
+    /// </remarks>
+    public int OutputBlockSize => this._cipher.BlockSize / 8;
 
     /// <inheritdoc />
     public void Dispose()
@@ -221,10 +229,11 @@ public abstract class BlockCipherTransform : ICryptoTransform
 
         // Allow zero-length input: per the ICryptoTransform contract a zero-byte TransformBlock
         // call must return 0 rather than throw. CryptoStream and similar callers may invoke this
-        // path with no buffered data after a flush.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize, throwIfZero: false);
+        // path with no buffered data after a flush. Divide BlockSize (bits) by 8 to obtain the
+        // byte-length divisor expected by the span helper.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize / 8, throwIfZero: false);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize, throwIfZero: false);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize / 8, throwIfZero: false);
 
         if (this._encrypt)
             return this._mode.Transform(input, output, true);
@@ -237,13 +246,13 @@ public abstract class BlockCipherTransform : ICryptoTransform
         var combined = Combine(this._deferredInput, input);
         this.ClearDeferredInput();
 
-        if (combined.Length <= this._cipher.BlockSize)
+        if (combined.Length <= this._cipher.BlockSize / 8)
         {
             this._deferredInput = combined;
             return 0;
         }
 
-        var bytesToProcess = combined.Length - this._cipher.BlockSize;
+        var bytesToProcess = combined.Length - (this._cipher.BlockSize / 8);
 
         try
         {
@@ -320,7 +329,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
                 var combined = Combine(this._deferredInput, input);
                 CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(
                     combined,
-                    this._cipher.BlockSize,
+                    this._cipher.BlockSize / 8,
                     throwIfZero: false);
 
                 var decrypted = new byte[combined.Length];

@@ -60,7 +60,7 @@ public sealed partial class Multiset<T>
         {
             foreach (KeyValuePair<T, int> pair in _items)
             {
-                for (int i = 0; i < pair.Value; i++)
+                for (var i = 0; i < pair.Value; i++)
                     array.SetValue(pair.Key, index++);
             }
         }

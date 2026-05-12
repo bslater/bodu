@@ -112,7 +112,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     // ── Instance fields ───────────────────────────────────────────────────────────────────────
 
     private bool disposed;
-    private CipherBlockMode blockMode = CipherBlockMode.CBC;
+    private CipherModeKind blockMode = CipherModeKind.CBC;
 
     // ── Constructor ───────────────────────────────────────────────────────────────────────────
 
@@ -141,14 +141,14 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// <summary>
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
-    /// <value>One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.</value>
+    /// <value>One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.</value>
     /// <remarks>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property to support the
     /// extended set of modes provided by <see cref="BlockCipherModeFactory" />, including
-    /// <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />.
+    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />.
     /// </remarks>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    public CipherBlockMode BlockMode
+    public CipherModeKind BlockMode
     {
         get
         {
@@ -191,7 +191,10 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         ThrowIfDisposed();
-        Validate(rgbKey, rgbIV, tweak);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
+
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes, tweak),
             blockMode, PaddingValue, rgbIV, encrypt: true);
@@ -214,7 +217,10 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         ThrowIfDisposed();
-        Validate(rgbKey, rgbIV, tweak);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+        CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
+
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes, tweak),
             blockMode, PaddingValue, rgbIV, encrypt: false);
@@ -301,34 +307,6 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// <summary>Returns a new <see cref="SimpleReversingBlockCipher" /> for the given key, block size, and tweak.</summary>
     private static SimpleReversingBlockCipher CreateCipher(byte[] key, int blockSizeBytes, byte[] tweak)
         => new SimpleReversingBlockCipher(key, blockSizeBytes, tweak);
-
-    /// <summary>
-    /// Verifies that <paramref name="key" />, <paramref name="iv" />, and <paramref name="tweak" /> each
-    /// match the algorithm's configured key size, block size, and tweak size respectively.
-    /// </summary>
-    /// <exception cref="ArgumentNullException">Any parameter is <see langword="null" />.</exception>
-    /// <exception cref="CryptographicException">The key, IV, or tweak length is not valid for this algorithm.</exception>
-    private void Validate(byte[] key, byte[]? iv, byte[] tweak)
-    {
-        ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(tweak);
-
-        if (key.Length != KeySizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                              key.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(LegalKeySizesValue)),
-                nameof(key));
-
-        CryptoHelpers.ThrowIfInvalidIVForMode(iv, blockMode, BlockSizeBytes, LegalBlockSizesValue);
-
-        if (tweak.Length != TweakSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize,
-                              tweak.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(LegalTweakSizesValue)),
-                nameof(tweak));
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()

@@ -10,16 +10,16 @@ public sealed partial class SkipjackAlgorithmTests
 {
     /// <summary>
     /// Verifies that the algorithm-specific <see cref="Skipjack.BlockMode" /> property accepts
-    /// every <see cref="CipherBlockMode" /> value without throwing — it is a plain auto-property
+    /// every <see cref="CipherModeKind" /> value without throwing — it is a plain auto-property
     /// and must not gain accidental enum validation.
     /// </summary>
     [TestMethod]
-    [DataRow(CipherBlockMode.ECB)]
-    [DataRow(CipherBlockMode.CBC)]
-    [DataRow(CipherBlockMode.CFB)]
-    [DataRow(CipherBlockMode.OFB)]
-    [DataRow(CipherBlockMode.CTR)]
-    public void BlockMode_WhenSetToValidValue_ShouldNotThrow(CipherBlockMode mode)
+    [DataRow(CipherModeKind.ECB)]
+    [DataRow(CipherModeKind.CBC)]
+    [DataRow(CipherModeKind.CFB)]
+    [DataRow(CipherModeKind.OFB)]
+    [DataRow(CipherModeKind.CTR)]
+    public void BlockMode_WhenSetToValidValue_ShouldNotThrow(CipherModeKind mode)
     {
         using Skipjack algorithm = CreateAlgorithm();
 

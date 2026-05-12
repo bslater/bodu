@@ -27,7 +27,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         TPadding padding = CreatePadding();
 
         var plaintext = CreatePlaintextWithResidual(BlockSize - 4);
-        var padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSizeBits);
 
         // Tamper with a byte inside the padding region. PKCS#7 padding occupies the last
         // padLen bytes of the final block, where padLen is the trailing length byte. Flipping
@@ -37,7 +37,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
         var firstPaddingByteIndex = padded.Length - padLen;
         padded[firstPaddingByteIndex] ^= 0xFF;
 
-        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, BlockSize));
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(padded, BlockSizeBits));
         Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
         Assert.IsFalse(ex.Message.Contains(" t "), "Exception message must not contain stray ' t ' sequence.");
     }
@@ -61,7 +61,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
             input[i] = 0xAA;
         input[BlockSize - 1] = 0x00;
 
-        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
+        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSizeBits));
     }
 
     /// <summary>
@@ -83,6 +83,6 @@ public abstract partial class PaddingStrategyTests<TPadding>
             input[i] = 0xAA;
         input[BlockSize - 1] = 0xFF;
 
-        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
+        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSizeBits));
     }
 }

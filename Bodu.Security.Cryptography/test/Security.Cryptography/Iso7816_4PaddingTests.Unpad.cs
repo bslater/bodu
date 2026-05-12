@@ -25,8 +25,8 @@ public sealed partial class Iso7816_4PaddingTests
             plaintext[i] = (byte)(0x30 + i);
         plaintext[plaintext.Length - 1] = 0x80;
 
-        var padded = padding.Pad(plaintext, BlockSize);
-        var unpadded = padding.Unpad(padded, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSizeBits);
+        var unpadded = padding.Unpad(padded, BlockSizeBits);
 
         CollectionAssert.AreEqual(plaintext, unpadded);
     }
@@ -41,7 +41,7 @@ public sealed partial class Iso7816_4PaddingTests
         Iso7816_4Padding padding = CreatePadding();
         var input = new byte[BlockSize];
 
-        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
+        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSizeBits));
     }
 
     /// <summary>
@@ -58,6 +58,6 @@ public sealed partial class Iso7816_4PaddingTests
         input[BlockSize - 2] = 0x00;
         input[BlockSize - 1] = 0xFF;
 
-        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSize));
+        Assert.ThrowsExactly<CryptographicException>(() => padding.Unpad(input, BlockSizeBits));
     }
 }

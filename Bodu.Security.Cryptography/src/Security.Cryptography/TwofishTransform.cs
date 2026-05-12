@@ -1,8 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishTransform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -13,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Instances of this class are returned by <see cref="Twofish.CreateEncryptor(byte[], byte[])"/> and
 /// <see cref="Twofish.CreateDecryptor(byte[], byte[])"/>. Using this class directly is not recommended; prefer using
-/// <see cref="Twofish"/> with a <see cref="System.Security.Cryptography.CryptoStream"/>.
+/// <see cref="Twofish"/> with a <see cref="CryptoStream"/>.
 /// </para>
 /// </remarks>
 internal sealed class TwofishTransform
@@ -27,7 +29,7 @@ internal sealed class TwofishTransform
     /// <param name="paddingMode">The padding scheme to apply to the final block.</param>
     /// <param name="iv">The initialisation vector for the cipher mode.</param>
     /// <param name="encrypt"><see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.</param>
-    internal TwofishTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BlockPaddingMode paddingMode, byte[]? iv, bool encrypt)
+    internal TwofishTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[] iv, bool encrypt)
         : base(cipher, cipherMode, paddingMode, iv, encrypt)
     {
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Threefish1024TweakableAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class Threefish1024TweakableAlgorithmTests
     protected override Threefish1024 CreateAlgorithm() => Threefish1024.Create();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(Threefish1024 algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(Threefish1024 algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />

@@ -10,7 +10,7 @@ internal sealed partial class SkipjackBlockCipherTests
 {
     /// <summary>
     /// Verifies that constructing a <see cref="SkipjackBlockCipher" /> with a key whose length is not
-    /// exactly <see cref="SkipjackBlockCipher.KeySize" /> throws <see cref="ArgumentException" /> rather
+    /// exactly <see cref="SkipjackBlockCipher.KeySize" /> / 8 bytes throws <see cref="ArgumentException" /> rather
     /// than <see cref="IndexOutOfRangeException" /> from the key-schedule loop.
     /// </summary>
     [TestMethod]

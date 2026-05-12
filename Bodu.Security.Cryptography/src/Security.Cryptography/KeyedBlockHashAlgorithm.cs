@@ -59,7 +59,9 @@ public abstract class KeyedBlockHashAlgorithm<T>
     protected byte[]? KeyValue;
 
     /// <summary>
-    /// Holds the required key size, in bytes, that the derived algorithm accepts. Supplied via the constructor.
+    /// Holds the required key size, in bits, that the derived algorithm accepts. Supplied via the constructor; aligns
+    /// with the BCL convention used by <see cref="System.Security.Cryptography.SymmetricAlgorithm.KeySize"/>. Divide
+    /// by 8 to obtain the equivalent byte length used when validating <see cref="Key"/>.
     /// </summary>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "StyleCop.CSharp.NamingRules",
@@ -72,12 +74,12 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// required key size.
     /// </summary>
     /// <param name="blockSize">
-    /// The fixed size of input blocks, in bytes, that the algorithm processes. This must match the internal block size used by the
-    /// underlying hash structure.
+    /// The fixed size of input blocks, in bits, that the algorithm processes. Must be a positive multiple of 8. This must
+    /// match the internal block size used by the underlying hash structure.
     /// </param>
     /// <param name="keySize">
-    /// The exact required key size, in bytes, that the derived algorithm accepts. Used by the <see cref="Key"/> setter to validate
-    /// caller-supplied key material.
+    /// The exact required key size, in bits, that the derived algorithm accepts. Must be a positive multiple of 8. Used
+    /// by the <see cref="Key"/> setter (after dividing by 8) to validate caller-supplied key material.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize"/> or <paramref name="keySize"/> is less than or equal to zero.
@@ -129,11 +131,11 @@ public abstract class KeyedBlockHashAlgorithm<T>
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfNull(value);
 
-            if (value.Length != this.KeySizeValue)
+            if (value.Length != this.KeySizeValue / 8)
                 throw new CryptographicException(
                     string.Format(
                         CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                        value.Length,
+                        value.Length * 8,
                         this.KeySizeValue));
 
             // Defensive copy ensures external references cannot mutate the internal key.
@@ -162,7 +164,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
         // A keyed MAC is unusable without a key. We refuse to silently regenerate one:
         // callers must explicitly set Key (or invoke GenerateKey on subclasses that
         // support it) before re-initialisation.
-        if (this.KeyValue is null || this.KeyValue.Length != this.KeySizeValue)
+        if (this.KeyValue is null || this.KeyValue.Length != this.KeySizeValue / 8)
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
 
         this.OnKeyChanged();
@@ -174,9 +176,9 @@ public abstract class KeyedBlockHashAlgorithm<T>
     /// </summary>
     /// <remarks>
     /// <para>
-    /// By contract, when this method runs <see cref="KeyValue"/> is guaranteed to be non-<see langword="null"/> and of length
-    /// <see cref="KeySizeValue"/>. It is invoked from the <see cref="Key"/> setter, from <see cref="Initialize"/>, and should be
-    /// invoked by derived constructors after they have placed a default key into <see cref="KeyValue"/>.
+    /// By contract, when this method runs <see cref="KeyValue"/> is guaranteed to be non-<see langword="null"/> and of byte length
+    /// <see cref="KeySizeValue"/> / 8. It is invoked from the <see cref="Key"/> setter, from <see cref="Initialize"/>, and should
+    /// be invoked by derived constructors after they have placed a default key into <see cref="KeyValue"/>.
     /// </para>
     /// <para>
     /// The default implementation is a no-op so that derived classes with no key-dependent precomputation pay no overhead.

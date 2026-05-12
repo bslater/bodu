@@ -34,9 +34,9 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
 /// IPaddingStrategy padding = new Iso7816_4Padding();
-/// byte[] padded = padding.Pad(plaintext, blockSize: 16);
+/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
 /// // padded ends with 0x80 followed by zero or more 0x00 bytes.
-/// byte[] recovered = padding.Unpad(padded, blockSize: 16);
+/// byte[] recovered = padding.Unpad(padded, blockSize: 128);
 /// </code>
 /// </example>
 public sealed class Iso7816_4Padding : IPaddingStrategy
@@ -49,7 +49,7 @@ public sealed class Iso7816_4Padding : IPaddingStrategy
     /// multiple of the block size.
     /// </summary>
     /// <param name="input">The data to pad.</param>
-    /// <param name="blockSize">The block size in bytes.</param>
+    /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded data as a byte array.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
@@ -59,9 +59,10 @@ public sealed class Iso7816_4Padding : IPaddingStrategy
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
-        var paddingLength = blockSize - (input.Length % blockSize);
+        var size = blockSize / 8;
+        var paddingLength = size - (input.Length % size);
         if (paddingLength == 0)
-            paddingLength = blockSize;
+            paddingLength = size;
 
         var result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
@@ -76,7 +77,7 @@ public sealed class Iso7816_4Padding : IPaddingStrategy
     /// Validates and removes ISO/IEC 7816-4 padding from the specified input data.
     /// </summary>
     /// <param name="input">The padded data.</param>
-    /// <param name="blockSize">The block size in bytes.</param>
+    /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The unpadded data as a byte array.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is empty or not aligned to the block size.</exception>
     /// <exception cref="CryptographicException">Thrown if the padding terminator is missing or malformed.</exception>
@@ -87,11 +88,13 @@ public sealed class Iso7816_4Padding : IPaddingStrategy
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
-        if (input.Length == 0 || input.Length % blockSize != 0)
+        var size = blockSize / 8;
+
+        if (input.Length == 0 || input.Length % size != 0)
             CryptoHelpers.ThrowInvalidPaddedSequence("ISO/IEC 7816-4", nameof(input));
 
         var length = input.Length;
-        var start = length - blockSize;
+        var start = length - size;
 
         // Constant-time terminator scan over the final block. Walk every byte; for each
         // position compute two masks:

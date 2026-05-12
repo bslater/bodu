@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block
-/// cipher modes via the <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/>
+/// cipher modes via the <see cref="BlockMode"/> property. The default mode is <see cref="CipherModeKind.CBC"/>
 /// with <see cref="PaddingMode.PKCS7"/> padding.
 /// </para>
 /// <para>
@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Block size: 128 bits (16 bytes).</description></item>
 ///   <item><description>Key sizes: 128, 192, or 256 bits.</description></item>
 ///   <item><description>16-round Feistel structure with key-dependent S-boxes and an MDS-based linear layer.</description></item>
-///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Twofish.</strong> Pick Twofish when interoperability with existing Twofish-based code
@@ -67,19 +67,19 @@ public sealed class Twofish
     : SymmetricAlgorithm
 {
     /// <summary>
-    /// The Twofish block size, in bits.
+    /// Length of the Twofish block is 128 bits (16 bytes).
     /// </summary>
     internal const int BlockSizeBits = 128;
 
     /// <summary>
-    /// The minimum permitted key size, in bytes.
+    /// Length of the minimum permitted Twofish key is 128 bits (16 bytes).
     /// </summary>
-    internal const int MinKeySizeBytes = 16;
+    internal const int MinKeySize = 128;
 
     /// <summary>
-    /// The maximum permitted key size, in bytes.
+    /// Length of the maximum permitted Twofish key is 256 bits (32 bytes).
     /// </summary>
-    internal const int MaxKeySizeBytes = 32;
+    internal const int MaxKeySize = 256;
 
     // Twofish has a single fixed 128-bit block size.
     private static readonly KeySizes[] s_twofishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
@@ -88,8 +88,8 @@ public sealed class Twofish
     private static readonly KeySizes[] s_twofishKeySizes = [new KeySizes(128, 256, 64)];
 
     private bool _disposed;
-    private CipherBlockMode _blockMode = CipherBlockMode.CBC;
-    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
+    private CipherModeKind _blockMode = CipherModeKind.CBC;
+    private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Twofish"/> class with default parameters.
@@ -116,9 +116,9 @@ public sealed class Twofish
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
+    /// One of the <see cref="CipherModeKind"/> values. The default is <see cref="CipherModeKind.CBC"/>.
     /// </value>
-    public CipherBlockMode BlockMode
+    public CipherModeKind BlockMode
     {
         get => this._blockMode;
         set
@@ -137,15 +137,15 @@ public sealed class Twofish
     /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
+    /// One of the <see cref="PaddingModeKind"/> values. The default is <see cref="PaddingModeKind.PKCS7"/>.
     /// </value>
     /// <remarks>
     /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
     /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
+    /// <see cref="PaddingMode"/> equivalent (such as <see cref="PaddingModeKind.ISO7816_4"/>) leave the base
     /// property unchanged.
     /// </remarks>
-    public BlockPaddingMode BlockPadding
+    public PaddingModeKind BlockPadding
     {
         get => this._blockPadding;
         set
@@ -159,7 +159,7 @@ public sealed class Twofish
     /// <inheritdoc />
     /// <remarks>
     /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
-    /// <see cref="BlockPaddingMode"/>.
+    /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding
     {
@@ -167,7 +167,7 @@ public sealed class Twofish
         set
         {
             base.Padding = value;
-            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
+            if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
                 this._blockPadding = bpm;
         }
     }
@@ -176,13 +176,15 @@ public sealed class Twofish
     /// Creates a new <see cref="Twofish"/> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Twofish"/> instance.</returns>
-    public new static Twofish Create() => new Twofish();
+    public new static Twofish Create() =>
+        new Twofish();
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new TwofishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
@@ -192,7 +194,8 @@ public sealed class Twofish
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new TwofishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
@@ -202,14 +205,14 @@ public sealed class Twofish
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
     }
 
     /// <inheritdoc />
@@ -229,17 +232,8 @@ public sealed class Twofish
         base.Dispose(disposing);
     }
 
-    private int BlockSizeBytes => this.BlockSizeValue / 8;
-
-    private int KeySizeBytes => this.KeySizeValue / 8;
-
-    private static IBlockCipher CreateCipher(byte[] key) => new TwofishBlockCipher(key);
-
-    private void Validate(byte[] key, byte[]? iv)
-    {
-        CryptoHelpers.ThrowIfInvalidKeySize(key, this.KeySizeBytes, this.LegalKeySizesValue);
-        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
-    }
+    private static TwofishBlockCipher CreateCipher(byte[] key) =>
+        new TwofishBlockCipher(key);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.

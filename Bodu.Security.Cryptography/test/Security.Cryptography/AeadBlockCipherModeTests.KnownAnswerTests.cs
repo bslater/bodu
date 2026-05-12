@@ -35,7 +35,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
         encTransform.ProcessAssociatedData(aad);
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
@@ -67,7 +67,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         TTransform transform = CreateTransform(cipher, iv);
         if (aad.Length > 0) transform.ProcessAssociatedData(aad);
 
-        var output = new byte[plaintext.Length + transform.TagSize];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, output);
 
         CollectionAssert.AreEqual(expectedCiphertext, output[..plaintext.Length],

@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CBC instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize); // unique per message
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message
 /// IBlockCipherModeTransform cbc = new CbcModeTransform(cipher, iv);
 ///
 /// byte[] ciphertext = new byte[paddedPlaintext.Length];
@@ -80,7 +80,7 @@ public sealed class CbcModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);

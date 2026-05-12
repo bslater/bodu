@@ -68,8 +68,11 @@ namespace Bodu.Security.Cryptography;
 public sealed class CcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    private const int NonceLengthBytes = 12;
-    private const int TagLengthBytes = 16;
+    /// <summary>Length of the CCM nonce is 96 bits (12 bytes). Byte length is derived inline via <see cref="NonceSizeBits"/> / 8.</summary>
+    private const int NonceSizeBits = 96;
+
+    /// <summary>Length of the CCM authentication tag is 128 bits (16 bytes). Byte length is derived inline via <see cref="TagSizeBits"/> / 8.</summary>
+    private const int TagSizeBits = 128;
     private const byte CounterFlagByte = 0x02; // L' = q-1 = 2
     private const byte BaseB0NoAad = 0x3A;  // 0_111_010
     private const byte BaseB0WithAad = 0x7A;  // 1_111_010
@@ -85,6 +88,13 @@ public sealed class CcmModeTransform
     /// Initializes a new instance of the <see cref="CcmModeTransform"/> class. The first 12 bytes of <paramref name="iv"/>
     /// are used as the CCM nonce.
     /// </summary>
+    /// <param name="cipher">
+    /// The block cipher used to perform the underlying block encryption operations.
+    /// </param>
+    /// <param name="iv">
+    /// The initialization vector from which the CCM nonce is derived. The value must be exactly one cipher block in length;
+    /// only the first 12 bytes are copied and used as the nonce.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="iv"/> length does not equal the cipher block size.</exception>
     public CcmModeTransform(IBlockCipher cipher, byte[] iv)
@@ -93,12 +103,13 @@ public sealed class CcmModeTransform
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
         this._cipher = cipher;
 
-        this._nonce = new byte[NonceLengthBytes];
-        iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
+        this._nonce = new byte[NonceSizeBits / 8];
+        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(this._nonce);
     }
 
     /// <inheritdoc />
-    public int TagSize => TagLengthBytes;
+    /// <value>Length of the CCM authentication tag is 128 bits (16 bytes).</value>
+    public int TagSize => TagSizeBits;
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -117,7 +128,7 @@ public sealed class CcmModeTransform
         this.ThrowIfDisposed();
         ThrowIfCompleted();
 
-        var required = plaintext.Length + TagSize;
+        var required = plaintext.Length + (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
@@ -126,7 +137,7 @@ public sealed class CcmModeTransform
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
-        encTag.AsSpan(0, TagSize).CopyTo(output[plaintext.Length..]);
+        encTag.AsSpan(0, TagSizeBits / 8).CopyTo(output[plaintext.Length..]);
         this._completed = true;
         return required;
     }
@@ -137,9 +148,9 @@ public sealed class CcmModeTransform
         this.ThrowIfDisposed();
         ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
-        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -152,7 +163,7 @@ public sealed class CcmModeTransform
         var mac = ComputeCbcMac(this._aad.AsSpan(), output[..plaintextLength]);
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
-        if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
+        if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSizeBits / 8), receivedTag))
         {
             CryptographicOperations.ZeroMemory(output[..plaintextLength]);
             this._completed = true;
@@ -227,7 +238,7 @@ public sealed class CcmModeTransform
     /// <returns>The computed CBC-MAC tag, truncated to the configured tag length.</returns>
     private byte[] ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         var mac = new byte[blockSize];
 
         // Block B0.
@@ -291,7 +302,7 @@ public sealed class CcmModeTransform
     /// <returns>A fresh array holding <c>input XOR keystream</c>.</returns>
     private byte[] XorWithCtrBlock(ReadOnlySpan<byte> input, int counterIndex)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         var ctr = new byte[blockSize];
 
         ctr[0] = CounterFlagByte;
@@ -321,7 +332,7 @@ public sealed class CcmModeTransform
     /// <param name="startIndex">The starting counter-block index in the CTR sequence.</param>
     private void EncryptCtr(ReadOnlySpan<byte> input, Span<byte> output, int startIndex)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         Span<byte> ks = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)

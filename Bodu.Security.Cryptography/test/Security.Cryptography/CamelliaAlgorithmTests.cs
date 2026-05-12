@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CamelliaAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed partial class CamelliaAlgorithmTests
     protected override Camellia CreateAlgorithm() => new Camellia();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(Camellia algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(Camellia algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />

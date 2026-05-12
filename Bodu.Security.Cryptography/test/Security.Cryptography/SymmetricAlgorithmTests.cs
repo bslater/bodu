@@ -38,21 +38,21 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// </summary>
     /// <param name="algorithm">The algorithm instance to reconfigure.</param>
     /// <param name="mode">The cipher block mode to apply.</param>
-    protected abstract void SetBlockMode(TAlgorithm algorithm, CipherBlockMode mode);
+    protected abstract void SetBlockMode(TAlgorithm algorithm, CipherModeKind mode);
 
     /// <summary>
-    /// Convenience wrapper around <see cref="SetBlockMode(TAlgorithm, CipherBlockMode)" /> that applies
-    /// <see cref="CipherBlockMode.ECB" />.
+    /// Convenience wrapper around <see cref="SetBlockMode(TAlgorithm, CipherModeKind)" /> that applies
+    /// <see cref="CipherModeKind.ECB" />.
     /// </summary>
     /// <param name="algorithm">The algorithm instance to reconfigure.</param>
-    protected void SetEcbMode(TAlgorithm algorithm) => SetBlockMode(algorithm, CipherBlockMode.ECB);
+    protected void SetEcbMode(TAlgorithm algorithm) => SetBlockMode(algorithm, CipherModeKind.ECB);
 
     /// <summary>
     /// Returns one row per entry in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" /> for use as a
     /// <see cref="DynamicDataAttribute" /> source in parameterised tests.
     /// </summary>
     /// <returns>A sequence of single-element arrays, each containing a key size in bits.</returns>
-    public static IEnumerable<object[]> LegalKeySizeData() =>
+    public static IEnumerable<object[]> LegalKeySizeBitsData() =>
         new TTest().GetSpecification().LegalKeySizesBits
             .Select(keySize => new object[] { keySize });
 

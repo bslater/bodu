@@ -31,7 +31,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     {
         TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize];
-        var sealed_ = new byte[plaintext.Length + transform.TagSize];
+        var sealed_ = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, sealed_);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -54,7 +54,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         TTransform encTransform = CreateTransform(
             new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA),
             (byte[])iv.Clone());
-        var sealed_ = new byte[plaintext.Length + encTransform.TagSize];
+        var sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, sealed_);
 
         TTransform decTransform = CreateTransform(
@@ -89,7 +89,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
-        var sealed_ = new byte[plaintext.Length + encTransform.TagSize];
+        var sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, sealed_);
 
         // Flip a bit in the tag to force authentication failure on Decrypt.
@@ -120,7 +120,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
-        var sealed_ = new byte[plaintext.Length + encTransform.TagSize];
+        var sealed_ = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, sealed_);
 
         // Capture an untouched copy of the legitimate ciphertext+tag for the second call below.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkipjackBlockCipherTests.Decrypt.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,7 @@ internal sealed partial class SkipjackBlockCipherTests
 {
     /// <summary>
     /// Verifies that <see cref="SkipjackBlockCipher.Decrypt(ReadOnlySpan{byte}, Span{byte})" /> with
-    /// an input span whose length is not exactly <see cref="SkipjackBlockCipher.BlockBytes" /> throws
+    /// an input span whose length is not exactly <see cref="SkipjackBlockCipher.BlockSize" /> throws
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
@@ -31,7 +31,7 @@ internal sealed partial class SkipjackBlockCipherTests
 
     /// <summary>
     /// Verifies that <see cref="SkipjackBlockCipher.Decrypt(ReadOnlySpan{byte}, Span{byte})" /> with
-    /// an output span whose length is not exactly <see cref="SkipjackBlockCipher.BlockBytes" /> throws
+    /// an output span whose length is not exactly <see cref="SkipjackBlockCipher.BlockSize" /> throws
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]

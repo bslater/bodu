@@ -38,8 +38,8 @@ internal sealed class AesBlockCipherFixture : IBlockCipher, IDisposable
     }
 
     /// <inheritdoc />
-    /// <value>Always 16 (128 bits), the fixed AES block size.</value>
-    public int BlockSize => aes.BlockSize / 8;
+    /// <value>Length of the AES block is 128 bits (16 bytes).</value>
+    public int BlockSize => aes.BlockSize;
 
     /// <inheritdoc />
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)

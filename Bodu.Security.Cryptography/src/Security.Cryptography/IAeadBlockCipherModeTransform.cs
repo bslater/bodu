@@ -107,7 +107,12 @@ namespace Bodu.Security.Cryptography;
 public interface IAeadBlockCipherModeTransform
     : System.IDisposable
 {
-    /// <summary>Gets the size of the authentication tag produced by this mode, in bytes.</summary>
+    /// <summary>
+    /// Gets the authentication-tag size, in bits, of the cryptographic operation for the AEAD mode (for
+    /// example, 128 bits / 16 bytes for GCM and CCM).
+    /// </summary>
+    /// <value>The authentication-tag size, in bits.</value>
+    /// <returns>The tag size in bits. Divide by 8 to obtain the equivalent byte length emitted alongside the ciphertext.</returns>
     int TagSize { get; }
 
     /// <summary>
@@ -129,10 +134,10 @@ public interface IAeadBlockCipherModeTransform
     /// </summary>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <param name="output">
-    /// Receives the ciphertext followed immediately by the <see cref="TagSize"/>-byte tag.
-    /// Must be at least <c>plaintext.Length + TagSize</c> bytes long.
+    /// Receives the ciphertext followed immediately by the <see cref="TagSize"/> / 8 byte tag.
+    /// Must be at least <c>plaintext.Length + (TagSize / 8)</c> bytes long.
     /// </param>
-    /// <returns>Total bytes written: <c>plaintext.Length + TagSize</c>.</returns>
+    /// <returns>Total bytes written: <c>plaintext.Length + (TagSize / 8)</c>.</returns>
     /// <exception cref="ArgumentException"><paramref name="output"/> is too small.</exception>
     /// <exception cref="InvalidOperationException">
     /// The instance has already encrypted or decrypted a message. AEAD transforms are single-use
@@ -144,17 +149,17 @@ public interface IAeadBlockCipherModeTransform
     /// Decrypts <paramref name="ciphertextWithTag"/> and verifies the authentication tag.
     /// </summary>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="TagSize"/>-byte authentication tag.
-    /// Must be at least <see cref="TagSize"/> bytes long.
+    /// The ciphertext followed immediately by the <see cref="TagSize"/> / 8 byte authentication tag.
+    /// Must be at least <see cref="TagSize"/> / 8 bytes long.
     /// </param>
     /// <param name="output">
     /// Receives the decrypted plaintext. Must be at least
-    /// <c>ciphertextWithTag.Length - TagSize</c> bytes long.
+    /// <c>ciphertextWithTag.Length - (TagSize / 8)</c> bytes long.
     /// </param>
-    /// <returns>Bytes written: <c>ciphertextWithTag.Length - TagSize</c>.</returns>
+    /// <returns>Bytes written: <c>ciphertextWithTag.Length - (TagSize / 8)</c>.</returns>
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ciphertextWithTag"/> is shorter than <see cref="TagSize"/> bytes, or
+    /// <paramref name="ciphertextWithTag"/> is shorter than <see cref="TagSize"/> / 8 bytes, or
     /// <paramref name="output"/> is too small.
     /// </exception>
     /// <exception cref="InvalidOperationException">

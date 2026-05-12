@@ -4,14 +4,19 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
     /// <summary>
-    /// Verifies that under sustained concurrent enqueue, dequeue, and inspection pressure, the buffer maintains the accounting invariant <c>Count == enqueueSuccesses − dequeueSuccesses</c> without faults.
+    /// Verifies that under sustained concurrent enqueue, dequeue, and inspection pressure, the buffer maintains the accounting
+    /// invariant <c>Count == enqueueSuccesses − logicalRemovals</c> without faults.
     /// </summary>
     [TestMethod]
     [DataRow(10, true)]
@@ -24,174 +29,295 @@ public partial class ConcurrentCircularBufferTests
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var seq = 0;
-        var deqAttempted = 0;
-        var deqSucceeded = 0;
-        var enqAttempted = 0;
-        var enqSucceeded = 0;
+        var sequence = 0;
+        var dequeueAttempts = 0;
+        var dequeueSuccesses = 0;
+        var enqueueAttempts = 0;
+        var enqueueSuccesses = 0;
+        var inspectionAttempts = 0;
         var faults = 0;
 
-        // Scale to the machine; at minimum 2 threads per role so the test is never trivial.
-        var threadCount = Math.Max(2, Environment.ProcessorCount);
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        Exception? firstException = null;
 
-        IEnumerable<Task> readers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
+        // Keep the role count high enough to create contention, but run each worker as a dedicated
+        // long-running task so writer hot loops cannot starve readers or inspectors on the thread pool.
+        var workersPerRole = Math.Max(2, Environment.ProcessorCount);
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
+        Task StartWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        // In overwrite mode, evictions are logical removals. Counting them together with
+        // successful TryDequeue calls allows the final accounting invariant to reconcile.
+        Action<TestItem?> evictedHandler = _ => Interlocked.Increment(ref dequeueSuccesses);
+        buffer.ItemEvicted += evictedHandler;
+
+        try
+        {
+            IEnumerable<Task> readers = Enumerable.Range(0, workersPerRole).Select(workerIndex =>
+                StartWorker(() =>
                 {
-                    Interlocked.Increment(ref deqAttempted);
-                    if (buffer.TryDequeue(out TestItem? @out))
-                        Interlocked.Increment(ref deqSucceeded);
-                }
-            }));
+                    startGate.Wait();
 
-        IEnumerable<Task> writers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
-                {
-                    Interlocked.Increment(ref enqAttempted);
-
-                    var value = Interlocked.Increment(ref seq);
-                    TestItem item = (value % 2 == 0)
-                        ? new TestItem(value)
-                        : new TestItem(value * -1);
-
-                    if (buffer.TryEnqueue(item))
-                        Interlocked.Increment(ref enqSucceeded);
-                }
-            }));
-
-        IEnumerable<Task> inspectors = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
-                {
-                    try
+                    while (!cts.Token.IsCancellationRequested)
                     {
-                        _ = buffer.Count;
-                        _ = buffer.Capacity;
+                        try
+                        {
+                            Interlocked.Increment(ref dequeueAttempts);
 
-                        if (buffer.TryPeek(out TestItem? head))
-                            buffer.Contains(head);
+                            if (buffer.TryDequeue(out TestItem? _))
+                                Interlocked.Increment(ref dequeueSuccesses);
+                            else
+                                Thread.Yield();
+                        }
+                        catch (Exception ex)
+                        {
+                            Interlocked.CompareExchange(ref firstException, ex, null);
+                            Interlocked.Increment(ref faults);
+                            cts.Cancel();
+                        }
                     }
-                    catch
+                }));
+
+            IEnumerable<Task> writers = Enumerable.Range(0, workersPerRole).Select(workerIndex =>
+                StartWorker(() =>
+                {
+                    startGate.Wait();
+
+                    while (!cts.Token.IsCancellationRequested)
                     {
-                        Interlocked.Increment(ref faults);
+                        try
+                        {
+                            Interlocked.Increment(ref enqueueAttempts);
+
+                            var value = Interlocked.Increment(ref sequence);
+                            TestItem item = value % 2 == 0
+                                ? new TestItem(value)
+                                : new TestItem(-value);
+
+                            if (buffer.TryEnqueue(item))
+                                Interlocked.Increment(ref enqueueSuccesses);
+                            else
+                                Thread.Yield();
+                        }
+                        catch (Exception ex)
+                        {
+                            Interlocked.CompareExchange(ref firstException, ex, null);
+                            Interlocked.Increment(ref faults);
+                            cts.Cancel();
+                        }
                     }
-                }
-            }));
+                }));
 
-        // Track evictions as logical dequeues so the accounting invariant holds.
-        buffer.ItemEvicted += _ => Interlocked.Increment(ref deqSucceeded);
+            IEnumerable<Task> inspectors = Enumerable.Range(0, workersPerRole).Select(workerIndex =>
+                StartWorker(() =>
+                {
+                    startGate.Wait();
 
-        Task[] allTasks = writers.Concat(readers).Concat(inspectors).ToArray();
-        startGate.Set();
-        Thread.Sleep(durationMs);
-        cts.Cancel();
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            _ = buffer.Count;
+                            _ = buffer.Capacity;
 
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+                            if (buffer.TryPeek(out TestItem? head))
+                                buffer.Contains(head);
 
-        TestContext.WriteLine(
-            $"Count={buffer.Count}, Capacity={buffer.Capacity}, ThreadCount={threadCount}, " +
-            $"EnqAttempted={enqAttempted}, EnqSucceeded={enqSucceeded}, " +
-            $"DeqAttempted={deqAttempted}, DeqSucceeded={deqSucceeded}, Faults={faults}");
+                            Interlocked.Increment(ref inspectionAttempts);
+                        }
+                        catch (Exception ex)
+                        {
+                            Interlocked.CompareExchange(ref firstException, ex, null);
+                            Interlocked.Increment(ref faults);
+                            cts.Cancel();
+                        }
 
-        TestItem[]? snapshot = null;
-        try { snapshot = buffer.ToArray(); }
-        catch (Exception ex) { TestContext.WriteLine($"Snapshot failed: {ex}"); }
+                        Thread.Yield();
+                    }
+                }));
 
-        if (snapshot != null)
-            TestContext.WriteLine($"[Snapshot] Items: {string.Join(", ", snapshot.Select(x => x?.Value.ToString() ?? "null"))}");
+            Task[] allTasks = writers.Concat(readers).Concat(inspectors).ToArray();
 
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, faults, "Unexpected exception occurred during concurrent access.");
-        Assert.IsTrue(buffer.Count <= buffer.Capacity, "Buffer count exceeded capacity.");
-        Assert.AreEqual(enqSucceeded - deqSucceeded, buffer.Count,
-            "Buffer count mismatches successfully enqueued items minus dequeued items.");
+            // Release all worker roles together so enqueue, dequeue, inspection, and eviction
+            // accounting are exercised under real contention.
+            startGate.Set();
+
+            Thread.Sleep(durationMs);
+            cts.Cancel();
+
+            var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+            TestContext.WriteLine(
+                $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkersPerRole={workersPerRole}, " +
+                $"EnqueueAttempts={enqueueAttempts}, EnqueueSuccesses={enqueueSuccesses}, " +
+                $"DequeueAttempts={dequeueAttempts}, LogicalRemovals={dequeueSuccesses}, " +
+                $"InspectionAttempts={inspectionAttempts}, Faults={faults}, Completed={completed}, " +
+                $"FirstException={firstException}");
+
+            try
+            {
+                TestItem[] snapshot = buffer.ToArray();
+                TestContext.WriteLine(
+                    $"[Snapshot] Items: {string.Join(", ", snapshot.Select(x => x?.Value.ToString() ?? "null"))}");
+            }
+            catch (Exception ex)
+            {
+                TestContext.WriteLine($"Snapshot failed after quiescence: {ex}");
+                Interlocked.CompareExchange(ref firstException, ex, null);
+                Interlocked.Increment(ref faults);
+            }
+
+            Assert.IsTrue(
+                completed,
+                $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+            Assert.AreEqual(
+                0,
+                faults,
+                $"Unexpected exception occurred during concurrent access. First exception: {firstException}");
+
+            Assert.IsTrue(
+                enqueueAttempts > 0,
+                "Writers must have exercised TryEnqueue during the stress run.");
+
+            Assert.IsTrue(
+                dequeueAttempts > 0,
+                "Readers must have exercised TryDequeue during the stress run.");
+
+            Assert.IsTrue(
+                inspectionAttempts > 0,
+                "Inspectors must have exercised read-side members during the stress run.");
+
+            Assert.IsTrue(
+                buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+                "Buffer count must remain within [0, Capacity].");
+
+            Assert.AreEqual(
+                enqueueSuccesses - dequeueSuccesses,
+                buffer.Count,
+                "Buffer count mismatches successfully enqueued items minus logical removals.");
+        }
+        finally
+        {
+            buffer.ItemEvicted -= evictedHandler;
+        }
     }
 
     // -----------------------------------------------------------------------------------------
-    // New: Clear() as an active concurrent participant.
+    // Clear() as an active concurrent participant.
     //
-    // The existing test never calls Clear() during a live run. This is the most impactful
-    // missing scenario because Clear() must atomically reset head, tail, and count while
-    // readers and writers are actively modifying those same fields. The suite's individual
-    // Clear tests verify bounded count and no-throw guarantees in isolation, but a sustained
-    // concurrent run exposes long-duration interleavings that short tests cannot.
+    // Clear() removes items silently, without ItemEvicted and without a successful dequeue.
+    // Therefore enqueue-minus-dequeue accounting is intentionally not asserted here.
     //
-    // Note: the enqSucceeded - deqSucceeded accounting invariant is intentionally omitted here
-    // because Clear() removes items silently (no ItemEvicted, no deqSucceeded increment), so
-    // the accounting cannot be reconciled. Count-bounds checking and post-quiescence
-    // consistency are the appropriate invariants for this scenario.
+    // Each worker performs enqueue, dequeue, and periodic Clear operations. This avoids
+    // scheduler-dependent starvation where writer/reader-only workers can monopolise the run
+    // before clearer-only workers are scheduled.
+    //
+    // The relevant invariants are:
+    //   - Clear, enqueue, and dequeue do not throw under sustained contention;
+    //   - Count never escapes [0, Capacity];
+    //   - once all workers have quiesced, Count agrees with ToArray().Length;
+    //   - the buffer remains usable after the stress run.
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that concurrent <see cref="ConcurrentCircularBuffer{T}.Clear" /> calls interleaved with producers and consumers maintain count bounds, consistent post-quiescence state, and do not throw.
+    /// Verifies that concurrent <see cref="ConcurrentCircularBuffer{T}.Clear" /> calls interleaved with producers and consumers
+    /// maintain count bounds, consistent post-quiescence state, and do not throw.
     /// </summary>
     [TestMethod]
     [DataRow(8, true)]
     [DataRow(8, false)]
     public void StressTest_WhenClearInterleavesConcurrently_ShouldMaintainInvariantsUnderFullLoad(
-        int capacity, bool allowOverwrite)
+        int capacity,
+        bool allowOverwrite)
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite);
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
         var countViolations = 0;
-        var unexpectedFaults = 0;
-        var threadCount = Math.Max(2, Environment.ProcessorCount);
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        var faults = 0;
+        var writeAttempts = 0;
+        var readAttempts = 0;
+        var clearAttempts = 0;
 
-        IEnumerable<Task> writers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
+        Exception? firstException = null;
+
+        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
+        Task StartWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
+            StartWorker(() =>
             {
                 startGate.Wait();
-                var i = 0;
-                while (!cts.Token.IsCancellationRequested)
-                    buffer.TryEnqueue(new TestItem(Interlocked.Increment(ref i)));
-            }));
 
-        IEnumerable<Task> readers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
-                    buffer.TryDequeue(out TestItem? @out);
-            }));
+                var value = workerIndex * 1_000_000;
+                var iteration = 0;
 
-        // Clearers run concurrently with writers and readers, checking count invariants
-        // immediately after each call.
-        IEnumerable<Task> clearers = Enumerable.Range(0, 2).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
                 while (!cts.Token.IsCancellationRequested)
                 {
                     try
                     {
-                        buffer.Clear();
-                        var count = buffer.Count;
-                        if (count < 0 || count > buffer.Capacity)
+                        // Enqueue first so Clear has live state to remove, especially when many
+                        // workers race from an initially empty buffer.
+                        buffer.TryEnqueue(new TestItem(++value));
+                        Interlocked.Increment(ref writeAttempts);
+
+                        var countAfterWrite = buffer.Count;
+                        if (countAfterWrite < 0 || countAfterWrite > buffer.Capacity)
                             Interlocked.Increment(ref countViolations);
+
+                        // Dequeue also remains active so Clear races with both producers and consumers.
+                        buffer.TryDequeue(out TestItem? _);
+                        Interlocked.Increment(ref readAttempts);
+
+                        var countAfterRead = buffer.Count;
+                        if (countAfterRead < 0 || countAfterRead > buffer.Capacity)
+                            Interlocked.Increment(ref countViolations);
+
+                        // Clear periodically rather than on every operation. This keeps the buffer
+                        // churning through non-empty states while still making Clear an active
+                        // participant in the concurrent workload.
+                        if (++iteration % 8 == 0)
+                        {
+                            buffer.Clear();
+                            Interlocked.Increment(ref clearAttempts);
+
+                            var countAfterClear = buffer.Count;
+                            if (countAfterClear < 0 || countAfterClear > buffer.Capacity)
+                                Interlocked.Increment(ref countViolations);
+                        }
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        Interlocked.Increment(ref unexpectedFaults);
+                        Interlocked.CompareExchange(ref firstException, ex, null);
+                        Interlocked.Increment(ref faults);
+                        cts.Cancel();
                     }
-                    Thread.SpinWait(200);
+
+                    Thread.Yield();
                 }
             }));
 
-        Task[] allTasks = writers.Concat(readers).Concat(clearers).ToArray();
+        Task[] allTasks = workers.ToArray();
+
+        // Release all workers together so Clear races with active enqueue and dequeue operations.
         startGate.Set();
+
         Thread.Sleep(durationMs);
         cts.Cancel();
 
@@ -201,94 +327,141 @@ public partial class ConcurrentCircularBufferTests
         TestItem[] snapshot = buffer.ToArray();
 
         TestContext.WriteLine(
-            $"Count={finalCount}, Capacity={buffer.Capacity}, ThreadCount={threadCount}, " +
-            $"CountViolations={countViolations}, UnexpectedFaults={unexpectedFaults}");
+            $"Count={finalCount}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
+            $"WriteAttempts={writeAttempts}, ReadAttempts={readAttempts}, ClearAttempts={clearAttempts}, " +
+            $"CountViolations={countViolations}, Faults={faults}, Completed={completed}, FirstException={firstException}");
 
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, unexpectedFaults, "Clear must not throw under concurrent reader/writer pressure.");
-        Assert.AreEqual(0, countViolations, "Count must remain within [0, Capacity] at all times during Clear.");
-        Assert.IsTrue(finalCount >= 0 && finalCount <= buffer.Capacity, "Final Count must be within valid bounds.");
-        Assert.AreEqual(finalCount, snapshot.Length,
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+        Assert.AreEqual(
+            0,
+            faults,
+            $"Clear, TryEnqueue, and TryDequeue must not throw under concurrent pressure. First exception: {firstException}");
+
+        Assert.IsTrue(
+            writeAttempts > 0,
+            "Workers must have exercised TryEnqueue during the stress run.");
+
+        Assert.IsTrue(
+            readAttempts > 0,
+            "Workers must have exercised TryDequeue during the stress run.");
+
+        Assert.IsTrue(
+            clearAttempts > 0,
+            "Workers must have exercised Clear during the stress run.");
+
+        Assert.AreEqual(
+            0,
+            countViolations,
+            "Count must remain within [0, Capacity] during concurrent Clear.");
+
+        Assert.IsTrue(
+            finalCount >= 0 && finalCount <= buffer.Capacity,
+            "Final Count must be within valid bounds.");
+
+        Assert.AreEqual(
+            finalCount,
+            snapshot.Length,
             "Count and ToArray().Length must be consistent once all tasks have quiesced.");
 
-        // Confirm the buffer is fully operational after sustained stress.
+        // Confirm the buffer is fully operational after sustained Clear/mutation stress.
         buffer.Clear();
         buffer.Enqueue(new TestItem(int.MaxValue));
+
         Assert.AreEqual(1, buffer.Count, "Buffer must accept new items after stress.");
         Assert.AreEqual(int.MaxValue, buffer.Dequeue().Value, "Buffer must dequeue the correct item after stress.");
     }
 
     // -----------------------------------------------------------------------------------------
-    // New: AllowOverwrite toggled under sustained load.
+    // AllowOverwrite toggled under sustained load.
     //
-    // Individual tests flip the flag and make a single call. This scenario keeps many writers
-    // hammering the buffer with the throwing Enqueue() path while togglers flip AllowOverwrite
-    // at high frequency and readers drain concurrently. The key invariant is that only
-    // InvalidOperationException is ever raised — no state corruption that produces a different
-    // exception type, and no deadlock.
+    // Writers use the throwing Enqueue() path while other workers toggle AllowOverwrite and
+    // readers drain concurrently. InvalidOperationException is expected only when a writer sees
+    // AllowOverwrite == false while the buffer is full.
+    //
+    // Warmup verifies both deterministic API behaviours outside the race, but the concurrent
+    // assertions are based only on work performed during the stress phase.
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that high-frequency toggling of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> under writer/reader load surfaces only <see cref="InvalidOperationException" /> from throwing enqueues — never any state-corruption exception.
+    /// Verifies that high-frequency toggling of <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> under writer/reader
+    /// load surfaces only <see cref="InvalidOperationException" /> from throwing enqueues, never any state-corruption exception.
     /// </summary>
     [TestMethod]
     public void StressTest_WhenAllowOverwriteToggledConcurrently_ShouldNeverCorruptState()
     {
         const int capacity = 8;
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: false);
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
         var unexpectedFaults = 0;
-        var expectedEnqFaults = 0;
-        var enqSucceeded = 0;
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        var expectedEnqueueFaults = 0;
+        var enqueueSuccesses = 0;
+        var enqueueAttempts = 0;
+        var readAttempts = 0;
+        var toggleOperations = 0;
 
-        // Start from a full buffer to maximise the probability of immediate rejection
-        // when AllowOverwrite is false.
-        for (var i = 0; i < capacity; i++) buffer.Enqueue(new TestItem(i));
+        var warmupExpectedEnqueueFaults = 0;
+        var warmupEnqueueSuccesses = 0;
 
-        // Deterministic warmup: drive both counters to >= 1 before the race begins. On a
-        // loaded CI runner the togglers may fail to land a true-interval on a full buffer
-        // within a writer's attempt window (or vice versa), making `enqSucceeded > 0` and
-        // `expectedEnqFaults > 0` flake-prone — even though the state-corruption invariant
-        // this test exists to verify (unexpectedFaults == 0, Count within [0, Capacity]) is
-        // unaffected.
+        Exception? firstUnexpectedException = null;
+
+        // Start from a full buffer to maximise rejection pressure when AllowOverwrite is false.
+        for (var i = 0; i < capacity; i++)
+            buffer.Enqueue(new TestItem(i));
+
+        // Deterministic warmup proves both throwing Enqueue branches are reachable without
+        // allowing those observations to satisfy the concurrent-phase assertions.
         buffer.AllowOverwrite = false;
-        try { buffer.Enqueue(new TestItem(-1)); }
-        catch (InvalidOperationException) { Interlocked.Increment(ref expectedEnqFaults); }
+        try
+        {
+            buffer.Enqueue(new TestItem(-1));
+        }
+        catch (InvalidOperationException)
+        {
+            warmupExpectedEnqueueFaults++;
+        }
 
         buffer.AllowOverwrite = true;
         buffer.Enqueue(new TestItem(-2));
-        Interlocked.Increment(ref enqSucceeded);
+        warmupEnqueueSuccesses++;
 
         buffer.AllowOverwrite = false;
 
-        // Writers use the throwing Enqueue() rather than TryEnqueue so that the exception
-        // path is exercised under real contention.
+        // Writers use Enqueue rather than TryEnqueue so the throwing path is exercised while
+        // AllowOverwrite changes and readers concurrently alter fullness.
         IEnumerable<Task> writers = Enumerable.Range(0, 4).Select(_ =>
             Task.Run(() =>
             {
                 startGate.Wait();
-                var i = 0;
+
+                var value = 0;
+
                 while (!cts.Token.IsCancellationRequested)
                 {
                     try
                     {
-                        buffer.Enqueue(new TestItem(Interlocked.Increment(ref i)));
-                        Interlocked.Increment(ref enqSucceeded);
+                        Interlocked.Increment(ref enqueueAttempts);
+                        buffer.Enqueue(new TestItem(++value));
+                        Interlocked.Increment(ref enqueueSuccesses);
                     }
                     catch (InvalidOperationException)
                     {
-                        // Expected when AllowOverwrite is false and the buffer is full.
-                        Interlocked.Increment(ref expectedEnqFaults);
+                        Interlocked.Increment(ref expectedEnqueueFaults);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // Any other exception type indicates state corruption.
+                        Interlocked.CompareExchange(ref firstUnexpectedException, ex, null);
                         Interlocked.Increment(ref unexpectedFaults);
+                        cts.Cancel();
                     }
+
                     Thread.SpinWait(50);
                 }
             }));
@@ -297,60 +470,121 @@ public partial class ConcurrentCircularBufferTests
             Task.Run(() =>
             {
                 startGate.Wait();
+
                 while (!cts.Token.IsCancellationRequested)
                 {
-                    buffer.TryDequeue(out TestItem? @out);
+                    try
+                    {
+                        buffer.TryDequeue(out TestItem? _);
+                        Interlocked.Increment(ref readAttempts);
+                    }
+                    catch (Exception ex)
+                    {
+                        Interlocked.CompareExchange(ref firstUnexpectedException, ex, null);
+                        Interlocked.Increment(ref unexpectedFaults);
+                        cts.Cancel();
+                    }
+
                     Thread.SpinWait(100);
                 }
             }));
 
-        // Togglers alternate AllowOverwrite at high frequency, creating many transitions.
+        // Togglers alternate AllowOverwrite at high frequency, creating transitions that race
+        // with throwing Enqueue and reader-driven fullness changes.
         IEnumerable<Task> togglers = Enumerable.Range(0, 2).Select(_ =>
             Task.Run(() =>
             {
                 startGate.Wait();
-                var i = 0;
+
+                var value = 0;
+
                 while (!cts.Token.IsCancellationRequested)
                 {
-                    buffer.AllowOverwrite = (Interlocked.Increment(ref i) % 2 == 0);
+                    try
+                    {
+                        buffer.AllowOverwrite = ++value % 2 == 0;
+                        Interlocked.Increment(ref toggleOperations);
+                    }
+                    catch (Exception ex)
+                    {
+                        Interlocked.CompareExchange(ref firstUnexpectedException, ex, null);
+                        Interlocked.Increment(ref unexpectedFaults);
+                        cts.Cancel();
+                    }
+
                     Thread.SpinWait(200);
                 }
             }));
 
         Task[] allTasks = writers.Concat(readers).Concat(togglers).ToArray();
+
+        // Release writers, readers, and togglers together so the throwing Enqueue path races
+        // with AllowOverwrite transitions and capacity changes.
         startGate.Set();
+
         Thread.Sleep(durationMs);
         cts.Cancel();
 
         var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
-            $"Count={buffer.Count}, Capacity={buffer.Capacity}, " +
-            $"EnqSucceeded={enqSucceeded}, ExpectedEnqFaults={expectedEnqFaults}, " +
-            $"UnexpectedFaults={unexpectedFaults}");
+            $"Count={buffer.Count}, Capacity={buffer.Capacity}, EnqueueAttempts={enqueueAttempts}, " +
+            $"EnqueueSuccesses={enqueueSuccesses}, ExpectedEnqueueFaults={expectedEnqueueFaults}, " +
+            $"ReadAttempts={readAttempts}, ToggleOperations={toggleOperations}, " +
+            $"WarmupEnqueueSuccesses={warmupEnqueueSuccesses}, WarmupExpectedEnqueueFaults={warmupExpectedEnqueueFaults}, " +
+            $"UnexpectedFaults={unexpectedFaults}, Completed={completed}, FirstUnexpectedException={firstUnexpectedException}");
 
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, unexpectedFaults,
-            "Only InvalidOperationException is acceptable from Enqueue when AllowOverwrite is false.");
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+        Assert.AreEqual(
+            0,
+            unexpectedFaults,
+            $"Only InvalidOperationException is acceptable from Enqueue when AllowOverwrite is false. First unexpected exception: {firstUnexpectedException}");
+
+        Assert.IsTrue(
+            enqueueAttempts > 0,
+            "Writers must have exercised Enqueue during the stress run.");
+
+        Assert.IsTrue(
+            readAttempts > 0,
+            "Readers must have exercised TryDequeue during the stress run.");
+
+        Assert.IsTrue(
+            toggleOperations > 0,
+            "Togglers must have exercised AllowOverwrite transitions during the stress run.");
+
+        Assert.AreEqual(
+            1,
+            warmupExpectedEnqueueFaults,
+            "Warmup must verify that Enqueue rejects a full non-overwrite buffer.");
+
+        Assert.AreEqual(
+            1,
+            warmupEnqueueSuccesses,
+            "Warmup must verify that Enqueue succeeds in overwrite mode.");
+
+        Assert.IsTrue(
+            buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
             "Count must remain within [0, Capacity] throughout AllowOverwrite toggling.");
-        Assert.IsTrue(enqSucceeded > 0,
-            "Some enqueues must have succeeded during AllowOverwrite=true intervals.");
-        Assert.IsTrue(expectedEnqFaults > 0,
-            "Some enqueues must have been rejected during AllowOverwrite=false intervals.");
     }
 
     // -----------------------------------------------------------------------------------------
-    // New: Capacity = 1 under processor-count-scaled thread pressure.
+    // Minimum capacity under processor-count-scaled thread pressure.
     //
-    // When capacity is 1, head and tail always occupy the same slot. Every enqueue and
-    // dequeue touches the same memory location, creating the maximum possible contention
-    // for the internal synchronisation mechanism. Two threads are insufficient to expose
-    // issues in this regime; scaling to Environment.ProcessorCount * 2 is necessary.
+    // At the minimum supported capacity, every enqueue, overwrite, peek, and dequeue operation
+    // targets a very small slot set. This maximises pressure on the buffer's synchronisation
+    // around head, tail, count, and slot contents.
+    //
+    // Each worker performs both enqueue and dequeue operations. This avoids scheduler-dependent
+    // starvation where writer-only workers can monopolise the run before reader-only workers are
+    // scheduled.
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that at the minimum capacity under processor-scaled thread contention, every enqueue/dequeue call succeeds without faults and the count stays within bounds.
+    /// Verifies that at the minimum capacity under processor-scaled thread contention, enqueue/dequeue calls complete without
+    /// faults and the count stays within bounds.
     /// </summary>
     [TestMethod]
     public void StressTest_WhenCapacityIsMin_ShouldRemainStableUnderMaxContention()
@@ -361,83 +595,123 @@ public partial class ConcurrentCircularBufferTests
 
         var faults = 0;
         var countViolations = 0;
+        var writeAttempts = 0;
+        var readAttempts = 0;
 
-        // Maximise slot contention by scaling to processor count.
-        var threadCount = Math.Max(4, Environment.ProcessorCount * 2);
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        Exception? firstException = null;
 
-        IEnumerable<Task> writers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
+        // Use many workers, but have each worker exercise both mutating paths so the test cannot
+        // pass through writer-only scheduler dominance while never reaching TryDequeue.
+        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
+        Task StartWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
+            StartWorker(() =>
             {
                 startGate.Wait();
-                var i = 0;
+
+                var value = workerIndex * 1_000_000;
+
                 while (!cts.Token.IsCancellationRequested)
                 {
                     try
                     {
-                        buffer.TryEnqueue(new TestItem(Interlocked.Increment(ref i)));
+                        buffer.TryEnqueue(new TestItem(++value));
+                        Interlocked.Increment(ref writeAttempts);
+
+                        var countAfterWrite = buffer.Count;
+                        if (countAfterWrite < 0 || countAfterWrite > MinCapacity)
+                            Interlocked.Increment(ref countViolations);
+
+                        buffer.TryDequeue(out TestItem? _);
+                        Interlocked.Increment(ref readAttempts);
+
+                        var countAfterRead = buffer.Count;
+                        if (countAfterRead < 0 || countAfterRead > MinCapacity)
+                            Interlocked.Increment(ref countViolations);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Interlocked.CompareExchange(ref firstException, ex, null);
                         Interlocked.Increment(ref faults);
+                        cts.Cancel();
                     }
 
-                    var count = buffer.Count;
-                    if (count < 0 || count > MinCapacity)
-                        Interlocked.Increment(ref countViolations);
+                    // Keep the loop hot, but yield periodically so no single worker monopolises
+                    // execution on loaded CI runners.
+                    Thread.Yield();
                 }
             }));
 
-        IEnumerable<Task> readers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
-                {
-                    try
-                    {
-                        buffer.TryDequeue(out TestItem? @out);
-                    }
-                    catch
-                    {
-                        Interlocked.Increment(ref faults);
-                    }
+        Task[] allTasks = workers.ToArray();
 
-                    var count = buffer.Count;
-                    if (count < 0 || count > MinCapacity)
-                        Interlocked.Increment(ref countViolations);
-                }
-            }));
-
-        Task[] allTasks = writers.Concat(readers).ToArray();
+        // Release all workers together so every operation competes over the minimum-capacity buffer.
         startGate.Set();
+
         Thread.Sleep(durationMs);
         cts.Cancel();
 
         var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
-            $"Count={buffer.Count}, ThreadCount={threadCount}, " +
-            $"Faults={faults}, CountViolations={countViolations}");
+            $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
+            $"WriteAttempts={writeAttempts}, ReadAttempts={readAttempts}, Faults={faults}, " +
+            $"CountViolations={countViolations}, Completed={completed}, FirstException={firstException}");
 
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, faults, "No exceptions expected from TryEnqueue or TryDequeue under capacity-churn.");
-        Assert.AreEqual(0, countViolations, $"Count must remain within [0, {MinCapacity}] at all times.");
-        Assert.AreEqual(MinCapacity, buffer.Capacity, $"Capacity must remain {MinCapacity} throughout.");
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+        Assert.AreEqual(
+            0,
+            faults,
+            $"No exceptions expected from TryEnqueue or TryDequeue under minimum-capacity churn. First exception: {firstException}");
+
+        Assert.IsTrue(
+            writeAttempts > 0,
+            "Workers must have exercised TryEnqueue during the stress run.");
+
+        Assert.IsTrue(
+            readAttempts > 0,
+            "Workers must have exercised TryDequeue during the stress run.");
+
+        Assert.AreEqual(
+            0,
+            countViolations,
+            $"Count must remain within [0, {MinCapacity}] at all times.");
+
+        Assert.AreEqual(
+            MinCapacity,
+            buffer.Capacity,
+            $"Capacity must remain {MinCapacity} throughout.");
+
+        Assert.IsTrue(
+            buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+            "Final Count must remain within [0, Capacity].");
     }
 
     // -----------------------------------------------------------------------------------------
-    // New: ToArray() and CopyTo() exercised in the hot path alongside concurrent mutations.
+    // ToArray() and CopyTo() exercised in the hot path alongside concurrent mutations.
     //
-    // The existing test only calls ToArray() at quiescence, after all tasks have stopped.
-    // These snapshot operations must be safe while writers and readers are simultaneously
-    // active. A capacity-sized CopyTo() destination is always sufficient (Count <= Capacity),
-    // so CopyTo() must never throw when given a destination of that size.
+    // Snapshot operations must be safe while mutations are active. A capacity-sized CopyTo
+    // destination should always be sufficient because Count must never exceed Capacity.
+    //
+    // Each worker performs enqueue, dequeue, ToArray, and CopyTo operations. This avoids
+    // scheduler-dependent starvation where mutator-only workers can monopolise the run before
+    // snapshotter or copier workers are scheduled.
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> and <see cref="ConcurrentCircularBuffer{T}.CopyTo" /> interleaved with live mutations never throw and return arrays of length within capacity.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> and <see cref="ConcurrentCircularBuffer{T}.CopyTo" />
+    /// interleaved with live mutations never throw and return arrays of length within capacity.
     /// </summary>
     [TestMethod]
     [DataRow(true)]
@@ -446,437 +720,663 @@ public partial class ConcurrentCircularBufferTests
         bool allowOverwrite)
     {
         const int capacity = 16;
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite);
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var snapshotFaults = 0;
-        var copyFaults = 0;
+        var faults = 0;
         var snapshotLengthViolations = 0;
-        var threadCount = Math.Max(2, Environment.ProcessorCount);
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        var writeAttempts = 0;
+        var readAttempts = 0;
+        var snapshotAttempts = 0;
+        var copyAttempts = 0;
 
-        // Seed the buffer so snapshot takers immediately encounter a non-trivial state.
-        for (var i = 0; i < capacity / 2; i++) buffer.Enqueue(new TestItem(i));
+        Exception? firstException = null;
 
-        IEnumerable<Task> writers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
+        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+
+        Task StartWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        // Seed the buffer so snapshot and copy operations immediately encounter a non-trivial state.
+        for (var i = 0; i < capacity / 2; i++)
+            buffer.Enqueue(new TestItem(i));
+
+        IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
+            StartWorker(() =>
             {
                 startGate.Wait();
-                var i = 0;
-                while (!cts.Token.IsCancellationRequested)
-                    buffer.TryEnqueue(new TestItem(Interlocked.Increment(ref i)));
-            }));
 
-        IEnumerable<Task> readers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
-                    buffer.TryDequeue(out TestItem? @out);
-            }));
+                var value = workerIndex * 1_000_000;
 
-        // Snapshot takers: ToArray() must never throw and must return at most Capacity items.
-        IEnumerable<Task> snapshotters = Enumerable.Range(0, 2).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
                 while (!cts.Token.IsCancellationRequested)
                 {
                     try
                     {
-                        TestItem[] snap = buffer.ToArray();
-                        if (snap.Length > capacity)
+                        // Mutator path: keep the buffer changing while snapshot operations run.
+                        buffer.TryEnqueue(new TestItem(++value));
+                        Interlocked.Increment(ref writeAttempts);
+
+                        buffer.TryDequeue(out TestItem? _);
+                        Interlocked.Increment(ref readAttempts);
+
+                        // Snapshot path: ToArray must remain safe and bounded under live mutation.
+                        TestItem[] snapshot = buffer.ToArray();
+                        Interlocked.Increment(ref snapshotAttempts);
+
+                        if (snapshot.Length > capacity)
                             Interlocked.Increment(ref snapshotLengthViolations);
-                    }
-                    catch
-                    {
-                        Interlocked.Increment(ref snapshotFaults);
-                    }
-                    Thread.SpinWait(50);
-                }
-            }));
 
-        // CopyTo takers: a capacity-sized destination is always sufficient because
-        // Count <= Capacity is an invariant; CopyTo must therefore never throw.
-        IEnumerable<Task> copiers = Enumerable.Range(0, 2).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
-                {
-                    try
-                    {
+                        // Copy path: a capacity-sized destination must remain sufficient because
+                        // Count must never exceed Capacity.
                         var destination = new TestItem[capacity];
                         buffer.CopyTo(destination, 0);
+                        Interlocked.Increment(ref copyAttempts);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        Interlocked.Increment(ref copyFaults);
+                        Interlocked.CompareExchange(ref firstException, ex, null);
+                        Interlocked.Increment(ref faults);
+                        cts.Cancel();
                     }
-                    Thread.SpinWait(50);
+
+                    Thread.Yield();
                 }
             }));
 
-        Task[] allTasks = writers.Concat(readers).Concat(snapshotters).Concat(copiers).ToArray();
+        Task[] allTasks = workers.ToArray();
+
+        // Release all workers together so snapshot/copy operations execute in the hot mutation path.
         startGate.Set();
+
         Thread.Sleep(durationMs);
         cts.Cancel();
 
         var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
-            $"Count={buffer.Count}, Capacity={buffer.Capacity}, ThreadCount={threadCount}, " +
-            $"SnapshotFaults={snapshotFaults}, CopyFaults={copyFaults}, " +
-            $"LengthViolations={snapshotLengthViolations}");
+            $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
+            $"WriteAttempts={writeAttempts}, ReadAttempts={readAttempts}, SnapshotAttempts={snapshotAttempts}, " +
+            $"CopyAttempts={copyAttempts}, Faults={faults}, LengthViolations={snapshotLengthViolations}, " +
+            $"Completed={completed}, FirstException={firstException}");
 
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, snapshotFaults, "ToArray must not throw under concurrent mutation.");
-        Assert.AreEqual(0, copyFaults, "CopyTo must not throw when given a capacity-sized destination.");
-        Assert.AreEqual(0, snapshotLengthViolations, "ToArray must never return more items than Capacity.");
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+        Assert.AreEqual(
+            0,
+            faults,
+            $"TryEnqueue, TryDequeue, ToArray, and CopyTo must not throw during snapshot stress. First exception: {firstException}");
+
+        Assert.AreEqual(
+            0,
+            snapshotLengthViolations,
+            "ToArray must never return more items than Capacity.");
+
+        Assert.IsTrue(
+            writeAttempts > 0,
+            "Workers must have exercised TryEnqueue during the stress run.");
+
+        Assert.IsTrue(
+            readAttempts > 0,
+            "Workers must have exercised TryDequeue during the stress run.");
+
+        Assert.IsTrue(
+            snapshotAttempts > 0,
+            "Workers must have exercised ToArray during the stress run.");
+
+        Assert.IsTrue(
+            copyAttempts > 0,
+            "Workers must have exercised CopyTo during the stress run.");
+
+        Assert.IsTrue(
+            buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+            "Final Count must remain within [0, Capacity].");
     }
 
     // -----------------------------------------------------------------------------------------
-    // New: Throwing Enqueue() and Dequeue() paths under concurrent load.
+    // Throwing Enqueue() and Dequeue() paths under concurrent load.
     //
-    // The existing stress test uses only TryEnqueue/TryDequeue, which never throw. The
-    // throwing variants exercise different internal code paths: they must still produce only
-    // InvalidOperationException — never a state-corruption exception — regardless of how
-    // aggressively threads race. In allowOverwrite=true mode, Enqueue must never throw at all.
+    // TryEnqueue/TryDequeue never throw for ordinary full/empty states, so this test exercises
+    // the throwing API paths. InvalidOperationException is the only expected exception type for
+    // full-buffer Enqueue in non-overwrite mode or empty-buffer Dequeue.
+    //
+    // Each worker performs both Enqueue and Dequeue operations. This avoids scheduler-dependent
+    // starvation where writer-only workers can monopolise the run before reader-only workers are
+    // scheduled.
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the throwing <see cref="ConcurrentCircularBuffer{T}.Enqueue" />/<see cref="ConcurrentCircularBuffer{T}.Dequeue" /> paths only raise <see cref="InvalidOperationException" />; in overwrite mode, <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> never throws.
+    /// Verifies that the throwing <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> and
+    /// <see cref="ConcurrentCircularBuffer{T}.Dequeue" /> paths only raise <see cref="InvalidOperationException" />; in
+    /// overwrite mode, <see cref="ConcurrentCircularBuffer{T}.Enqueue" /> never throws.
     /// </summary>
     [TestMethod]
     [DataRow(10, true)]
     [DataRow(10, false)]
     public void StressTest_WhenThrowingApiPathsUsed_ShouldOnlyRaiseExpectedExceptions(
-        int capacity, bool allowOverwrite)
+        int capacity,
+        bool allowOverwrite)
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite);
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
-        var unexpectedEnqFaults = 0;
-        var unexpectedDeqFaults = 0;
-        var expectedEnqFaults = 0;
-        var expectedDeqFaults = 0;
-        var threadCount = Math.Max(2, Environment.ProcessorCount);
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        var unexpectedEnqueueFaults = 0;
+        var unexpectedDequeueFaults = 0;
+        var expectedEnqueueFaults = 0;
+        var expectedDequeueFaults = 0;
+        var enqueueAttempts = 0;
+        var dequeueAttempts = 0;
+        var enqueueSuccesses = 0;
+        var dequeueSuccesses = 0;
 
-        // Deterministic warmup (false-branch only): guarantee one rejected Enqueue before the
-        // race begins. The only race-dependent assertion (`expectedEnqFaults > 0` at the false
-        // branch below) is flake-prone on a loaded CI runner where the enqueue/dequeue cadence
-        // may rarely align with a transiently-full buffer during the 2-second race window.
+        var warmupExpectedEnqueueFaults = 0;
+
+        Exception? firstUnexpectedException = null;
+
+        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
+        Task StartWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        // Deterministic warmup for non-overwrite mode: prove the rejected Enqueue path is valid
+        // without letting that observation satisfy the concurrent-phase counters.
         if (!allowOverwrite)
         {
-            for (var f = 0; f < capacity; f++) buffer.Enqueue(new TestItem(-f - 1));
-            try { buffer.Enqueue(new TestItem(-100)); }
-            catch (InvalidOperationException) { Interlocked.Increment(ref expectedEnqFaults); }
-            while (buffer.TryDequeue(out _)) { /* drain back to empty so the race starts cleanly */ }
+            for (var i = 0; i < capacity; i++)
+                buffer.Enqueue(new TestItem(-i - 1));
+
+            try
+            {
+                buffer.Enqueue(new TestItem(-100));
+            }
+            catch (InvalidOperationException)
+            {
+                warmupExpectedEnqueueFaults++;
+            }
+
+            while (buffer.TryDequeue(out TestItem? _))
+            {
+                // Drain back to empty so the stress phase starts from a neutral state.
+            }
         }
 
-        IEnumerable<Task> writers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
+        IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
+            StartWorker(() =>
             {
                 startGate.Wait();
-                var i = 0;
+
+                var value = workerIndex * 1_000_000;
+
                 while (!cts.Token.IsCancellationRequested)
                 {
+                    // Exercise the throwing Enqueue path. In non-overwrite mode,
+                    // InvalidOperationException is expected when the buffer is full. In overwrite
+                    // mode, Enqueue should not fail due to fullness.
                     try
                     {
-                        buffer.Enqueue(new TestItem(Interlocked.Increment(ref i)));
+                        Interlocked.Increment(ref enqueueAttempts);
+                        buffer.Enqueue(new TestItem(++value));
+                        Interlocked.Increment(ref enqueueSuccesses);
                     }
                     catch (InvalidOperationException)
                     {
-                        Interlocked.Increment(ref expectedEnqFaults);
+                        Interlocked.Increment(ref expectedEnqueueFaults);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        // Any exception other than InvalidOperationException is a bug.
-                        Interlocked.Increment(ref unexpectedEnqFaults);
+                        Interlocked.CompareExchange(ref firstUnexpectedException, ex, null);
+                        Interlocked.Increment(ref unexpectedEnqueueFaults);
+                        cts.Cancel();
                     }
-                    Thread.SpinWait(20);
-                }
-            }));
 
-        IEnumerable<Task> readers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
-                {
+                    // Exercise the throwing Dequeue path independently of Enqueue. This must still
+                    // run even when Enqueue threw above, otherwise full-buffer races can starve the
+                    // Dequeue half of the test.
                     try
                     {
+                        Interlocked.Increment(ref dequeueAttempts);
                         buffer.Dequeue();
+                        Interlocked.Increment(ref dequeueSuccesses);
                     }
                     catch (InvalidOperationException)
                     {
-                        Interlocked.Increment(ref expectedDeqFaults);
+                        Interlocked.Increment(ref expectedDequeueFaults);
                     }
-                    catch
+                    catch (Exception ex)
                     {
-                        Interlocked.Increment(ref unexpectedDeqFaults);
+                        Interlocked.CompareExchange(ref firstUnexpectedException, ex, null);
+                        Interlocked.Increment(ref unexpectedDequeueFaults);
+                        cts.Cancel();
                     }
-                    Thread.SpinWait(20);
+
+                    Thread.Yield();
                 }
             }));
 
-        Task[] allTasks = writers.Concat(readers).ToArray();
+        Task[] allTasks = workers.ToArray();
+
+        // Release all workers together so throwing Enqueue and Dequeue paths are exercised under
+        // real contention.
         startGate.Set();
+
         Thread.Sleep(durationMs);
         cts.Cancel();
 
         var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
-            $"Count={buffer.Count}, Capacity={buffer.Capacity}, ThreadCount={threadCount}, " +
-            $"ExpectedEnqFaults={expectedEnqFaults}, UnexpectedEnqFaults={unexpectedEnqFaults}, " +
-            $"ExpectedDeqFaults={expectedDeqFaults}, UnexpectedDeqFaults={unexpectedDeqFaults}");
+            $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
+            $"EnqueueAttempts={enqueueAttempts}, EnqueueSuccesses={enqueueSuccesses}, " +
+            $"ExpectedEnqueueFaults={expectedEnqueueFaults}, UnexpectedEnqueueFaults={unexpectedEnqueueFaults}, " +
+            $"DequeueAttempts={dequeueAttempts}, DequeueSuccesses={dequeueSuccesses}, " +
+            $"ExpectedDequeueFaults={expectedDequeueFaults}, UnexpectedDequeueFaults={unexpectedDequeueFaults}, " +
+            $"WarmupExpectedEnqueueFaults={warmupExpectedEnqueueFaults}, Completed={completed}, " +
+            $"FirstUnexpectedException={firstUnexpectedException}");
 
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, unexpectedEnqFaults, "Enqueue must only throw InvalidOperationException.");
-        Assert.AreEqual(0, unexpectedDeqFaults, "Dequeue must only throw InvalidOperationException.");
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
 
-        // In allowOverwrite=true mode the buffer never fills permanently, so Enqueue must
-        // never throw regardless of how many concurrent writers are active.
+        Assert.AreEqual(
+            0,
+            unexpectedEnqueueFaults,
+            $"Enqueue must only throw InvalidOperationException. First unexpected exception: {firstUnexpectedException}");
+
+        Assert.AreEqual(
+            0,
+            unexpectedDequeueFaults,
+            $"Dequeue must only throw InvalidOperationException. First unexpected exception: {firstUnexpectedException}");
+
+        Assert.IsTrue(
+            enqueueAttempts > 0,
+            "Workers must have exercised Enqueue during the stress run.");
+
+        Assert.IsTrue(
+            dequeueAttempts > 0,
+            "Workers must have exercised Dequeue during the stress run.");
+
+        Assert.IsTrue(
+            buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+            "Count must remain within [0, Capacity].");
+
         if (allowOverwrite)
-            Assert.AreEqual(0, expectedEnqFaults, "Enqueue must never throw in overwrite mode.");
+        {
+            Assert.AreEqual(
+                0,
+                expectedEnqueueFaults,
+                "Enqueue must never throw InvalidOperationException in overwrite mode.");
+        }
         else
-            Assert.IsTrue(expectedEnqFaults > 0,
-                "Some Enqueue calls must have been rejected when AllowOverwrite is false and the buffer is full.");
+        {
+            Assert.AreEqual(
+                1,
+                warmupExpectedEnqueueFaults,
+                "Warmup must verify that Enqueue rejects a full non-overwrite buffer.");
+        }
 
-        // Note: expectedDeqFaults > 0 is intentionally not asserted here.
-        //
-        // The purpose of this test is to prove that Dequeue() only ever throws
-        // InvalidOperationException — never a different exception type arising from state
-        // corruption. Whether that path is exercised zero or many times during the run is not
-        // relevant to that proof and cannot be reliably guaranteed: with threadCount writers
-        // (each firing every ~100 ns) and capacity=10, the buffer stays populated throughout
-        // the 2-second window under typical load, so readers may never observe an empty buffer.
-        //
-        // The empty-buffer throw path is verified deterministically by:
-        //   Dequeue_WhenBufferIsEmpty_ShouldThrowInvalidOperation
+        // expectedDequeueFaults > 0 is intentionally not asserted. This stress test verifies
+        // exception type safety if the empty-buffer path is reached; deterministic empty-buffer
+        // behaviour belongs in the focused Dequeue_WhenBufferIsEmpty_ShouldThrowInvalidOperation test.
     }
 
     // -----------------------------------------------------------------------------------------
-    // New: ItemEvicted handler subscribed and unsubscribed under concurrent load.
+    // ItemEvicted handler lifecycle changes under concurrent eviction load.
     //
-    // No test verifies that handler lifecycle changes — subscribe and unsubscribe — are safe
-    // while evictions are actively firing. The multicast delegate manipulation must not
-    // corrupt the invocation list or cause a torn read of the event field.
+    // One stable handler remains subscribed for the whole stress run, giving deterministic proof
+    // that evictions are delivered while other handlers are repeatedly subscribed and unsubscribed.
+    //
+    // Transient handlers race add/remove operations against active evictions. The test detects
+    // unsafe event-field manipulation, corrupted invocation lists, unexpected event-delivery
+    // exceptions, and workers that fail to terminate after cancellation.
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that concurrent subscribe/unsubscribe of <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handlers does not throw and continues to deliver at least some eviction events to registered handlers.
+    /// Verifies that concurrent subscribe/unsubscribe of <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handlers does
+    /// not throw, corrupt event delivery, or prevent workers from terminating.
     /// </summary>
     [TestMethod]
     public void StressTest_WhenEventHandlersSubscribedAndUnsubscribedConcurrently_ShouldDeliverEventsConsistently()
     {
         const int capacity = 4;
-        var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: true);
-        using var cts = new CancellationTokenSource();
-        using var startGate = new ManualResetEventSlim(false);
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
 
-        var handlerFaults = 0;
-        var totalEvictions = 0;
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
-
-        // Fill the buffer so every subsequent enqueue triggers an eviction.
-        for (var i = 0; i < capacity; i++) buffer.Enqueue(new TestItem(i));
-
-        // Deterministic warmup: one guaranteed eviction delivered to a subscribed handler before
-        // the concurrent race begins. Without this seed the `totalEvictions > 0` assertion is
-        // flake-prone — on a loaded CI runner the tight subscribe / unsubscribe windows below can
-        // consistently miss every writer burst, even though the lifecycle-safety invariant
-        // (handlerFaults == 0) that this test actually exists to verify is unaffected.
-        Action<TestItem?> warmupHandler = _ => Interlocked.Increment(ref totalEvictions);
-        buffer.ItemEvicted += warmupHandler;
-        buffer.Enqueue(new TestItem(-1));
-        buffer.ItemEvicted -= warmupHandler;
-
-        // Writers keep the buffer full, causing continuous evictions.
-        IEnumerable<Task> writers = Enumerable.Range(0, 4).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                var i = 0;
-                while (!cts.Token.IsCancellationRequested)
-                {
-                    buffer.TryEnqueue(new TestItem(Interlocked.Increment(ref i)));
-                    Thread.SpinWait(50);
-                }
-            }));
-
-        // Subscribers repeatedly register and deregister handlers, racing with active evictions.
-        IEnumerable<Task> subscribers = Enumerable.Range(0, 2).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-
-                Action<TestItem?> handler = item => Interlocked.Increment(ref totalEvictions);
-
-                while (!cts.Token.IsCancellationRequested)
-                {
-                    try
-                    {
-                        buffer.ItemEvicted += handler;
-                        Thread.SpinWait(100);
-                        buffer.ItemEvicted -= handler;
-                        Thread.SpinWait(100);
-                    }
-                    catch
-                    {
-                        Interlocked.Increment(ref handlerFaults);
-                    }
-                }
-            }));
-
-        Task[] allTasks = writers.Concat(subscribers).ToArray();
-        startGate.Set();
-        Thread.Sleep(durationMs);
-        cts.Cancel();
-
-        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
-
-        TestContext.WriteLine(
-            $"Count={buffer.Count}, Capacity={buffer.Capacity}, " +
-            $"TotalEvictions={totalEvictions}, HandlerFaults={handlerFaults}");
-
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock or livelock.");
-        Assert.AreEqual(0, handlerFaults, "Subscribing or unsubscribing ItemEvicted must not throw under concurrency.");
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
-
-        // Some evictions must have been observed; a count of zero would mean the subscribe/
-        // unsubscribe race consistently prevented delivery, which would itself indicate a bug.
-        Assert.IsTrue(totalEvictions > 0, "At least some eviction events must have been received by registered handlers.");
-    }
-
-    // -----------------------------------------------------------------------------------------
-    // New: High thread count with deadlock-detection timeout.
-    //
-    // The existing test uses a fixed threadCount and does not detect deadlock — Task.WaitAll
-    // with no timeout would hang the test runner indefinitely if the implementation deadlocked.
-    // This test scales to Environment.ProcessorCount * 4 to saturate the scheduler and uses
-    // a bounded Task.WaitAll overload so a deadlock surfaces as an assertion failure rather
-    // than a runner hang.
-    // -----------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that under 4× processor-count thread pressure across writers, readers, and inspectors, every task completes within the deadlock timeout without faults.
-    /// </summary>
-    [TestMethod]
-    public void StressTest_WhenHighConcurrency_ShouldNotDeadlockOrLivelock()
-    {
-        const int capacity = 64;
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: true);
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
         var faults = 0;
+        var stableHandlerEvictions = 0;
+        var transientHandlerEvictions = 0;
+        var subscribeOperations = 0;
+        var unsubscribeOperations = 0;
+        var writeAttempts = 0;
 
-        // Four times the processor count saturates the thread pool's work-stealing queues and
-        // exercises all scheduler interleavings a typical machine can produce.
-        var threadCount = Math.Max(8, Environment.ProcessorCount * 4);
-        const int durationMs = 3000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        Exception? firstException = null;
 
-        IEnumerable<Task> writers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                var i = 0;
-                while (!cts.Token.IsCancellationRequested)
+        // Fill the buffer before the concurrent phase so every successful enqueue in overwrite
+        // mode has eviction pressure available immediately.
+        for (var i = 0; i < capacity; i++)
+            buffer.Enqueue(new TestItem(i));
+
+        // Keep one observer subscribed for the whole stress run. This avoids relying on narrow
+        // transient subscription windows to prove that event delivery continued during churn.
+        Action<TestItem?> stableHandler = _ => Interlocked.Increment(ref stableHandlerEvictions);
+        buffer.ItemEvicted += stableHandler;
+
+        try
+        {
+            // Writers keep the buffer over capacity, causing continuous evictions. Event delivery
+            // exceptions would surface through this enqueue path.
+            IEnumerable<Task> writers = Enumerable.Range(0, 4).Select(_ =>
+                Task.Run(() =>
                 {
-                    try { buffer.TryEnqueue(new TestItem(Interlocked.Increment(ref i))); }
-                    catch { Interlocked.Increment(ref faults); }
-                }
-            }));
+                    startGate.Wait();
 
-        IEnumerable<Task> readers = Enumerable.Range(0, threadCount).Select(_ =>
-            Task.Run(() =>
-            {
-                startGate.Wait();
-                while (!cts.Token.IsCancellationRequested)
+                    var value = 0;
+
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            buffer.TryEnqueue(new TestItem(++value));
+                            Interlocked.Increment(ref writeAttempts);
+                        }
+                        catch (Exception ex)
+                        {
+                            Interlocked.CompareExchange(ref firstException, ex, null);
+                            Interlocked.Increment(ref faults);
+                            cts.Cancel();
+                        }
+
+                        Thread.SpinWait(50);
+                    }
+                }));
+
+            // Transient subscribers repeatedly add and remove handlers while evictions are firing.
+            // The handler itself is deliberately simple so failures point at event lifecycle or
+            // invocation-list handling rather than test logic.
+            IEnumerable<Task> subscribers = Enumerable.Range(0, 4).Select(_ =>
+                Task.Run(() =>
                 {
-                    try { buffer.TryDequeue(out TestItem? @out); }
-                    catch { Interlocked.Increment(ref faults); }
-                }
-            }));
+                    startGate.Wait();
 
-        // Inspectors exercise all non-mutating paths concurrently with full writer/reader load.
-        IEnumerable<Task> inspectors = Enumerable.Range(0, threadCount / 2).Select(_ =>
-            Task.Run(() =>
+                    Action<TestItem?> transientHandler = _ => Interlocked.Increment(ref transientHandlerEvictions);
+
+                    while (!cts.Token.IsCancellationRequested)
+                    {
+                        var subscribed = false;
+
+                        try
+                        {
+                            buffer.ItemEvicted += transientHandler;
+                            subscribed = true;
+                            Interlocked.Increment(ref subscribeOperations);
+
+                            Thread.SpinWait(100);
+                        }
+                        catch (Exception ex)
+                        {
+                            Interlocked.CompareExchange(ref firstException, ex, null);
+                            Interlocked.Increment(ref faults);
+                            cts.Cancel();
+                        }
+                        finally
+                        {
+                            if (subscribed)
+                            {
+                                try
+                                {
+                                    buffer.ItemEvicted -= transientHandler;
+                                    Interlocked.Increment(ref unsubscribeOperations);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Interlocked.CompareExchange(ref firstException, ex, null);
+                                    Interlocked.Increment(ref faults);
+                                    cts.Cancel();
+                                }
+                            }
+                        }
+
+                        Thread.SpinWait(100);
+                    }
+                }));
+
+            Task[] allTasks = writers.Concat(subscribers).ToArray();
+
+            // Release writers and subscriber churn together so event invocation races with handler
+            // add/remove operations.
+            startGate.Set();
+
+            Thread.Sleep(durationMs);
+            cts.Cancel();
+
+            var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+            TestContext.WriteLine(
+                $"Count={buffer.Count}, Capacity={buffer.Capacity}, WriteAttempts={writeAttempts}, " +
+                $"StableHandlerEvictions={stableHandlerEvictions}, TransientHandlerEvictions={transientHandlerEvictions}, " +
+                $"SubscribeOperations={subscribeOperations}, UnsubscribeOperations={unsubscribeOperations}, " +
+                $"Faults={faults}, Completed={completed}, FirstException={firstException}");
+
+            Assert.IsTrue(
+                completed,
+                $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+            Assert.AreEqual(
+                0,
+                faults,
+                $"No exceptions expected while subscribing, unsubscribing, or delivering ItemEvicted. First exception: {firstException}");
+
+            Assert.IsTrue(
+                writeAttempts > 0,
+                "Writers must have exercised enqueue/eviction pressure during the stress run.");
+
+            Assert.IsTrue(
+                subscribeOperations > 0,
+                "Subscribers must have exercised ItemEvicted subscription during the stress run.");
+
+            Assert.IsTrue(
+                unsubscribeOperations > 0,
+                "Subscribers must have exercised ItemEvicted unsubscription during the stress run.");
+
+            Assert.IsTrue(
+                stableHandlerEvictions > 0,
+                "A registered ItemEvicted handler must receive at least some eviction events during concurrent handler churn.");
+
+            Assert.IsTrue(
+                buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+                "Count must remain within [0, Capacity] after event-handler stress.");
+        }
+        finally
+        {
+            buffer.ItemEvicted -= stableHandler;
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // High worker-count stress with deadlock-detection timeout.
+    //
+    // This test runs many concurrent workers against the same buffer to increase scheduling
+    // pressure and exercise common lock-ordering, retry-loop, and visibility failures under
+    // contention.
+    //
+    // Each worker performs writer, reader, and inspector operations. This avoids scheduler-
+    // dependent starvation where writer-only workers can monopolise the run before reader or
+    // inspector workers are scheduled.
+    //
+    // The test uses a bounded Task.WaitAll overload so a deadlock or non-terminating operation
+    // surfaces as an assertion failure rather than hanging the test runner indefinitely.
+    // -----------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that concurrent workers can enqueue, dequeue, and inspect under high concurrency,
+    /// and that all workers terminate within the deadlock timeout without unexpected faults.
+    /// </summary>
+    [TestMethod]
+    public void StressTest_WhenHighConcurrency_ShouldNotDeadlockOrLivelock()
+    {
+        const int capacity = 64;
+        const int durationMs = 3_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
+        var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: true);
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var writeAttempts = 0;
+        var readAttempts = 0;
+        var inspectionAttempts = 0;
+
+        Exception? firstException = null;
+
+        // Use a high number of workers. Each worker performs all operation categories so the test
+        // cannot pass through writer-only scheduler dominance while never reaching reader or
+        // inspector paths.
+        var workerCount = Math.Max(8, Environment.ProcessorCount * 4);
+
+        Task StartWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
+            StartWorker(() =>
             {
                 startGate.Wait();
+
+                var value = workerIndex * 1_000_000;
+
                 while (!cts.Token.IsCancellationRequested)
                 {
                     try
                     {
+                        // Writer path: publish a new reference-type payload into the buffer.
+                        buffer.TryEnqueue(new TestItem(++value));
+                        Interlocked.Increment(ref writeAttempts);
+
+                        // Reader path: attempt to remove an item. Success is not required; the
+                        // stress invariant is that the operation remains safe under contention.
+                        buffer.TryDequeue(out TestItem? _);
+                        Interlocked.Increment(ref readAttempts);
+
+                        // Inspector path: exercise non-mutating members while other workers are
+                        // concurrently mutating the same buffer.
                         _ = buffer.Count;
                         _ = buffer.Capacity;
-                        TestItem[] array = buffer.ToArray();
-                        buffer.TryPeek(out TestItem? @out);
+                        buffer.ToArray();
+                        buffer.TryPeek(out TestItem? _);
+
+                        Interlocked.Increment(ref inspectionAttempts);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Interlocked.CompareExchange(ref firstException, ex, null);
                         Interlocked.Increment(ref faults);
+                        cts.Cancel();
                     }
-                    Thread.SpinWait(100);
+
+                    // Keep the loop hot, but yield periodically so no single worker monopolises
+                    // execution on loaded CI runners.
+                    Thread.Yield();
                 }
             }));
 
-        Task[] allTasks = writers.Concat(readers).Concat(inspectors).ToArray();
+        Task[] allTasks = workers.ToArray();
+
+        // Release all workers together so the test creates actual contention rather than a staged
+        // producer/consumer/inspector sequence.
         startGate.Set();
+
         Thread.Sleep(durationMs);
         cts.Cancel();
 
-        // Task.WaitAll returns false if any task does not complete within the timeout. A false
-        // result means the implementation deadlocked or livelocked — the test fails explicitly
-        // rather than hanging the runner.
+        // A false result means at least one worker did not leave its loop after cancellation,
+        // consistent with a deadlock, blocked internal operation, or non-terminating retry path.
         var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
-            $"Count={buffer.Count}, Capacity={buffer.Capacity}, " +
-            $"ThreadCount={threadCount}, Faults={faults}, Completed={completed}");
+            $"Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
+            $"WriteAttempts={writeAttempts}, ReadAttempts={readAttempts}, InspectionAttempts={inspectionAttempts}, " +
+            $"Faults={faults}, Completed={completed}, FirstException={firstException}");
 
-        Assert.IsTrue(completed,
-            $"Not all tasks completed within {deadlockTimeoutMs} ms with {threadCount} threads — " +
-            $"possible deadlock or livelock.");
-        Assert.AreEqual(0, faults, "No exceptions expected during high-concurrency stress.");
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+        Assert.IsTrue(
+            completed,
+            $"Not all tasks completed within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+        Assert.AreEqual(
+            0,
+            faults,
+            $"No exceptions expected during high-concurrency stress. First exception: {firstException}");
+
+        Assert.IsTrue(
+            writeAttempts > 0,
+            "Workers must have exercised TryEnqueue during the stress run.");
+
+        Assert.IsTrue(
+            readAttempts > 0,
+            "Workers must have exercised TryDequeue during the stress run.");
+
+        Assert.IsTrue(
+            inspectionAttempts > 0,
+            "Workers must have exercised non-mutating members during the stress run.");
+
+        Assert.IsTrue(
+            buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
             "Count must remain within [0, Capacity] after high-concurrency stress.");
     }
 
     // -----------------------------------------------------------------------------------------
-    // New: ToArray must produce a coherent generation window under sustained eviction pressure.
+    // ToArray must never return a torn or impossible generation window.
     //
-    // Each producer enqueues items tagged with a globally monotonic generation. Every snapshot
-    // returned by ToArray must satisfy two invariants:
-    //   - generations are strictly increasing within the snapshot (no torn cross-generation mix);
-    //   - max - min generation < capacity (the entire snapshot must fit inside the buffer's
-    //     active window at some moment in time).
-    // A violation indicates the per-slot snapshot protocol returned a stale slot from a
-    // previous generation alongside a slot from a more recent generation.
+    // Each successful enqueue publishes an item tagged with a globally monotonic generation.
+    // Readers repeatedly call ToArray while producers and consumers concurrently mutate the buffer.
+    //
+    // For each non-empty snapshot, ignoring documented default/null fallback entries, the test
+    // verifies two invariants:
+    //   - observed generations remain strictly increasing in snapshot order;
+    //   - max - min generation remains less than the buffer capacity.
+    //
+    // A violation indicates that ToArray combined slots from incompatible logical windows, such as
+    // returning a stale slot from an older generation alongside slots from a newer generation.
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> never returns a snapshot whose tagged
-    /// generations span more than the buffer capacity or break strict monotonicity, even under sustained
-    /// concurrent eviction.
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ToArray" /> does not return a torn generation window while the buffer
+    /// is under concurrent enqueue, dequeue, and overwrite pressure.
     /// </summary>
     [TestMethod]
     [DataRow(true)]
     [DataRow(false)]
-    public void ToArray_WhenUnderConcurrentEvictionPressure_ShouldNeverReturnTornGenerationMix(
+    public void ToArray_WhenUnderConcurrentMutationPressure_ShouldNeverReturnTornGenerationMix(
         bool allowOverwrite)
     {
         const int capacity = 32;
+        const int minimumOccupancy = capacity / 2;
+        const int targetValidatedSnapshots = 10_000;
+        const int timeoutMs = 5_000;
+        const int deadlockTimeoutMs = timeoutMs + 2_000;
+
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite);
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
@@ -885,201 +1385,868 @@ public partial class ConcurrentCircularBufferTests
         var monotonicityViolations = 0;
         var windowViolations = 0;
         var snapshotFaults = 0;
+        var mutationFaults = 0;
         var snapshotsTaken = 0;
+        var snapshotsValidated = 0;
+        var writeAttempts = 0;
+        var readAttempts = 0;
 
-        // Serialises gen-allocation with the enqueue so the stamped gen matches insertion order; without
-        // this, two writers can allocate gen=N,N+1 and lose the tail-CAS race in the opposite order,
-        // leaving the buffer non-monotonic for reasons unrelated to ToArray's snapshot protocol.
+        Exception? unexpectedException = null;
+
+        // Serialise successful generation publication with enqueue. This ensures generation
+        // order matches insertion order and prevents failed TryEnqueue attempts from creating
+        // artificial generation gaps in the allowOverwrite:false case.
         var writerLock = new object();
 
-        var writerThreads = Math.Max(2, Environment.ProcessorCount);
-        var readerThreads = 2;
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        // Start from a full buffer so overwrite mode immediately exercises eviction and
+        // non-overwrite mode begins from the pressure point where writers must wait for consumers.
+        for (var i = 0; i < capacity; i++)
+        {
+            var gen = ++generation;
+            Assert.IsTrue(buffer.TryEnqueue(new TestItem(gen)));
+        }
 
+        var writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
+        var readerThreads = 2;
+        var consumerThreads = 1;
+
+        // Producers continuously attempt to publish the next generation. The generation is only
+        // committed after TryEnqueue succeeds, so snapshots never contain gaps caused solely by
+        // failed enqueue attempts.
         IEnumerable<Task> writers = Enumerable.Range(0, writerThreads).Select(_ =>
             Task.Run(() =>
             {
                 startGate.Wait();
+
                 while (!cts.Token.IsCancellationRequested)
                 {
-                    lock (writerLock)
+                    try
                     {
-                        var gen = ++generation;
-                        buffer.TryEnqueue(new TestItem(gen));
+                        var enqueued = false;
+
+                        lock (writerLock)
+                        {
+                            var next = generation + 1;
+
+                            if (buffer.TryEnqueue(new TestItem(next)))
+                            {
+                                generation = next;
+                                enqueued = true;
+                            }
+                        }
+
+                        Interlocked.Increment(ref writeAttempts);
+
+                        if (!enqueued)
+                            Thread.Yield();
+                    }
+                    catch (Exception ex)
+                    {
+                        Interlocked.CompareExchange(ref unexpectedException, ex, null);
+                        Interlocked.Increment(ref mutationFaults);
+                        cts.Cancel();
                     }
                 }
             }));
 
+        // Consumers create removal pressure. The low-water mark keeps the buffer populated enough
+        // for readers to validate meaningful snapshots while still allowing concurrent dequeue
+        // and refill churn, especially when allowOverwrite is false.
+        IEnumerable<Task> consumers = Enumerable.Range(0, consumerThreads).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        if (buffer.Count > minimumOccupancy)
+                        {
+                            buffer.TryDequeue(out TestItem? _);
+                            Interlocked.Increment(ref readAttempts);
+                        }
+                        else
+                        {
+                            Thread.Yield();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Interlocked.CompareExchange(ref unexpectedException, ex, null);
+                        Interlocked.Increment(ref mutationFaults);
+                        cts.Cancel();
+                    }
+                }
+            }));
+
+        // Readers repeatedly snapshot the buffer and validate that the returned generation window
+        // is coherent. Null/default entries are ignored because ToArray may use documented fallback
+        // values for slots that could not be stabilised within its retry budget.
         IEnumerable<Task> readers = Enumerable.Range(0, readerThreads).Select(_ =>
             Task.Run(() =>
             {
                 startGate.Wait();
+
                 while (!cts.Token.IsCancellationRequested)
                 {
                     TestItem[] snap;
+
                     try
                     {
                         snap = buffer.ToArray();
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        Interlocked.CompareExchange(ref unexpectedException, ex, null);
                         Interlocked.Increment(ref snapshotFaults);
+                        cts.Cancel();
                         continue;
                     }
 
                     Interlocked.Increment(ref snapshotsTaken);
-                    if (snap.Length == 0) continue;
 
-                    // ToArray's best-effort fallback path may write default(T) — null for TestItem —
-                    // for slots that could not be stabilised within the retry budget. Skip those
-                    // when checking monotonicity and the live-window bound; they are documented and
-                    // are not torn-generation reads.
+                    // Find the first non-null item. A snapshot containing only fallback/default
+                    // entries does not provide a useful generation window to validate.
                     var firstNonNull = 0;
-                    while (firstNonNull < snap.Length && snap[firstNonNull] is null) firstNonNull++;
-                    if (firstNonNull == snap.Length) continue;
+                    while (firstNonNull < snap.Length && snap[firstNonNull] is null)
+                        firstNonNull++;
 
-                    var min = snap[firstNonNull].Value;
-                    var max = snap[firstNonNull].Value;
+                    if (firstNonNull == snap.Length)
+                        continue;
+
+                    var first = snap[firstNonNull]!;
+                    var min = first.Value;
+                    var max = first.Value;
+                    var previous = first.Value;
+                    var nonNullCount = 1;
                     var monotonic = true;
-                    var prev = snap[firstNonNull].Value;
+
                     for (var i = firstNonNull + 1; i < snap.Length; i++)
                     {
-                        if (snap[i] is null) continue;
-                        var v = snap[i].Value;
-                        if (v <= prev) monotonic = false;
-                        if (v < min) min = v;
-                        if (v > max) max = v;
-                        prev = v;
+                        var item = snap[i];
+
+                        if (item is null)
+                            continue;
+
+                        var value = item.Value;
+
+                        if (value <= previous)
+                            monotonic = false;
+
+                        if (value < min)
+                            min = value;
+
+                        if (value > max)
+                            max = value;
+
+                        previous = value;
+                        nonNullCount++;
                     }
 
+                    // A single non-null value cannot prove ordering or window coherence, so only
+                    // count snapshots with at least two observed values as validated snapshots.
+                    if (nonNullCount < 2)
+                        continue;
+
                     if (!monotonic)
+                    {
                         Interlocked.Increment(ref monotonicityViolations);
+                        cts.Cancel();
+                    }
+
                     if (max - min >= capacity)
+                    {
                         Interlocked.Increment(ref windowViolations);
+                        cts.Cancel();
+                    }
+
+                    if (Interlocked.Increment(ref snapshotsValidated) >= targetValidatedSnapshots)
+                        cts.Cancel();
                 }
             }));
 
-        Task[] allTasks = writers.Concat(readers).ToArray();
+        Task[] allTasks = writers.Concat(consumers).Concat(readers).ToArray();
+
+        // Release all workers together so ToArray is tested under actual concurrent mutation.
         startGate.Set();
-        Thread.Sleep(durationMs);
+
+        var completedBeforeTimeout = SpinWait.SpinUntil(
+            () =>
+                Volatile.Read(ref snapshotsValidated) >= targetValidatedSnapshots ||
+                Volatile.Read(ref snapshotFaults) > 0 ||
+                Volatile.Read(ref mutationFaults) > 0 ||
+                Volatile.Read(ref monotonicityViolations) > 0 ||
+                Volatile.Read(ref windowViolations) > 0,
+            timeoutMs);
+
         cts.Cancel();
+
         var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
-            $"AllowOverwrite={allowOverwrite}, SnapshotsTaken={snapshotsTaken}, " +
+            $"AllowOverwrite={allowOverwrite}, SnapshotsTaken={snapshotsTaken}, SnapshotsValidated={snapshotsValidated}, " +
+            $"WriteAttempts={writeAttempts}, ReadAttempts={readAttempts}, MutationFaults={mutationFaults}, " +
             $"MonotonicityViolations={monotonicityViolations}, WindowViolations={windowViolations}, " +
-            $"SnapshotFaults={snapshotFaults}");
+            $"SnapshotFaults={snapshotFaults}, Completed={completed}, FirstException={unexpectedException}");
 
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms.");
-        Assert.AreEqual(0, snapshotFaults, "ToArray must not throw under concurrent eviction pressure.");
-        Assert.AreEqual(0, monotonicityViolations,
+        Assert.IsTrue(
+            completedBeforeTimeout,
+            $"ToArray did not validate {targetValidatedSnapshots} snapshots within {timeoutMs} ms.");
+
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms.");
+
+        Assert.AreEqual(
+            0,
+            mutationFaults,
+            $"Producer/consumer workers must not throw during ToArray stress. First exception: {unexpectedException}");
+
+        Assert.AreEqual(
+            0,
+            snapshotFaults,
+            $"ToArray must not throw under concurrent mutation pressure. First exception: {unexpectedException}");
+
+        Assert.AreEqual(
+            0,
+            monotonicityViolations,
             "ToArray returned a snapshot whose generations were not strictly increasing — torn read.");
-        Assert.AreEqual(0, windowViolations,
+
+        Assert.AreEqual(
+            0,
+            windowViolations,
             "ToArray returned a snapshot spanning more generations than the buffer capacity — torn read.");
+
+        Assert.IsTrue(
+            writeAttempts > 0,
+            "Writers must have attempted to publish generations during the stress run.");
+
+        Assert.IsTrue(
+            readAttempts > 0,
+            "Consumers must have exercised TryDequeue during the stress run.");
+
+        Assert.IsTrue(
+            snapshotsValidated >= targetValidatedSnapshots,
+            "ToArray must have produced enough meaningful snapshots to validate the concurrency invariant.");
     }
 
     // -----------------------------------------------------------------------------------------
-    // New: indexer must always return a value that was in the live window during the call.
+    // The indexer must never return a value from an impossible generation.
     //
-    // The reader loops `buffer[i]` over the observed Count and asserts each returned generation
-    // is no greater than the latest enqueued generation at the time of the call. A returned
-    // generation greater than `latestSeen` would mean the indexer surfaced a value from a
-    // future generation that did not exist in the buffer at any point during the read.
+    // The reader loops buffer[i] over an observed Count while producers and consumers concurrently
+    // mutate the buffer. Because Count and indexed access are separate operations, an
+    // ArgumentOutOfRangeException is allowed when the buffer shrinks between the two operations.
+    //
+    // For successful reads, the test samples the latest published generation after the indexer
+    // returns. A returned generation greater than that value would mean the indexer surfaced a
+    // future or torn value that could not have been published when the read completed.
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the indexer returns only values that were genuinely in the live window during the call,
-    /// never a future or torn-generation value, while concurrent producers and consumers churn the buffer.
+    /// Verifies that the indexer does not return a future or torn-generation value while concurrent producers and consumers churn
+    /// the buffer.
     /// </summary>
     [TestMethod]
-    [Ignore("Flaky under maximum drain pressure — tracked by issue #168 (PR #166 CI failure: " +
-        "every buffer[i] threw ArgumentOutOfRangeException because consumers drained faster than " +
-        "indexers could read, so reads stayed at 0).")]
     public void Indexer_WhenContendedWithEnqueueAndDequeue_ShouldReturnAValueThatExisted()
     {
         const int capacity = 32;
+        const int minimumOccupancy = capacity / 2;
+        const int targetSuccessfulReads = 10_000;
+        const int timeoutMs = 5_000;
+        const int deadlockTimeoutMs = timeoutMs + 2_000;
+
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: true);
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
 
         var generation = 0;
         var futureValueViolations = 0;
-        var indexerFaults = 0;
+        var unexpectedFaults = 0;
         var reads = 0;
+        var writeAttempts = 0;
+        var dequeueAttempts = 0;
 
-        var writerThreads = Math.Max(2, Environment.ProcessorCount);
+        Exception? unexpectedException = null;
+
+        // Seed the buffer before contention begins. This gives the indexer a populated starting
+        // window and avoids the test degenerating into an immediate empty-buffer race.
+        for (var i = 0; i < capacity; i++)
+        {
+            var gen = Interlocked.Increment(ref generation);
+            Assert.IsTrue(buffer.TryEnqueue(new TestItem(gen)));
+        }
+
+        var writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
         var readerThreads = 2;
-        const int durationMs = 2000;
-        const int deadlockTimeoutMs = durationMs + 5000;
+        var consumerThreads = 1;
 
+        // Producers continuously publish new generations. With overwrite enabled, this keeps the
+        // buffer changing even if consumers are unable to keep up.
         IEnumerable<Task> writers = Enumerable.Range(0, writerThreads).Select(_ =>
             Task.Run(() =>
             {
                 startGate.Wait();
+
                 while (!cts.Token.IsCancellationRequested)
                 {
-                    var gen = Interlocked.Increment(ref generation);
-                    buffer.TryEnqueue(new TestItem(gen));
+                    try
+                    {
+                        var gen = Interlocked.Increment(ref generation);
+                        buffer.TryEnqueue(new TestItem(gen));
+                        Interlocked.Increment(ref writeAttempts);
+                    }
+                    catch (Exception ex)
+                    {
+                        Interlocked.CompareExchange(ref unexpectedException, ex, null);
+                        Interlocked.Increment(ref unexpectedFaults);
+                        cts.Cancel();
+                    }
                 }
             }));
 
-        IEnumerable<Task> consumers = Enumerable.Range(0, 1).Select(_ =>
+        // Consumers create dequeue pressure, but deliberately stop draining below a low-water
+        // mark. This preserves contention while ensuring indexers can complete a deterministic
+        // number of successful reads.
+        IEnumerable<Task> consumers = Enumerable.Range(0, consumerThreads).Select(_ =>
             Task.Run(() =>
             {
                 startGate.Wait();
+
                 while (!cts.Token.IsCancellationRequested)
-                    buffer.TryDequeue(out TestItem? _);
+                {
+                    try
+                    {
+                        if (buffer.Count > minimumOccupancy)
+                        {
+                            buffer.TryDequeue(out TestItem? _);
+                            Interlocked.Increment(ref dequeueAttempts);
+                        }
+                        else
+                        {
+                            Thread.Yield();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Interlocked.CompareExchange(ref unexpectedException, ex, null);
+                        Interlocked.Increment(ref unexpectedFaults);
+                        cts.Cancel();
+                    }
+                }
             }));
 
+        // Readers observe Count and then index into the buffer. Count and indexer access are
+        // intentionally separate operations so this path exercises the real race surface.
         IEnumerable<Task> indexers = Enumerable.Range(0, readerThreads).Select(_ =>
             Task.Run(() =>
             {
                 startGate.Wait();
+
                 while (!cts.Token.IsCancellationRequested)
                 {
                     var count = buffer.Count;
+
                     for (var i = 0; i < count; i++)
                     {
                         try
                         {
                             TestItem item = buffer[i];
 
-                            // Sample `generation` AFTER the indexer returns so it is a true upper
-                            // bound on values that could have been published when the read landed.
-                            // Sampling before the call leaves a window where writers can advance
-                            // `generation` and enqueue a newer item, causing legitimate races to
-                            // be misclassified as future-value violations.
+                            // Sample generation after the indexer returns. Sampling before the
+                            // call would incorrectly classify legitimate concurrent writes as
+                            // future-value violations.
                             var latest = Volatile.Read(ref generation);
-                            Interlocked.Increment(ref reads);
+
                             if (item is not null && item.Value > latest)
+                            {
                                 Interlocked.Increment(ref futureValueViolations);
+                                cts.Cancel();
+                            }
+
+                            // Stop once the test has observed enough successful reads to prove
+                            // the indexer was exercised under contention, rather than relying
+                            // only on elapsed time.
+                            if (Interlocked.Increment(ref reads) >= targetSuccessfulReads)
+                                cts.Cancel();
                         }
                         catch (ArgumentOutOfRangeException)
                         {
-                            // Count shrank between observation and access — expected race.
+                            // Expected race: Count was observed before indexing, but the buffer
+                            // shrank before the indexed read completed.
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            Interlocked.Increment(ref indexerFaults);
+                            // Any other exception is unexpected and should fail the test. Capture
+                            // the first exception so the assertion message remains useful.
+                            Interlocked.CompareExchange(ref unexpectedException, ex, null);
+                            Interlocked.Increment(ref unexpectedFaults);
+                            cts.Cancel();
                         }
                     }
+
+                    Thread.Yield();
                 }
             }));
 
         Task[] allTasks = writers.Concat(consumers).Concat(indexers).ToArray();
+
+        // Release all workers together so the test exercises real contention rather than a staged
+        // producer/consumer/read sequence.
         startGate.Set();
-        Thread.Sleep(durationMs);
+
+        var completedBeforeTimeout = SpinWait.SpinUntil(
+            () =>
+                Volatile.Read(ref reads) >= targetSuccessfulReads ||
+                Volatile.Read(ref unexpectedFaults) > 0 ||
+                Volatile.Read(ref futureValueViolations) > 0,
+            timeoutMs);
+
         cts.Cancel();
+
         var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
 
         TestContext.WriteLine(
-            $"Reads={reads}, FutureValueViolations={futureValueViolations}, IndexerFaults={indexerFaults}");
+            $"Reads={reads}, WriteAttempts={writeAttempts}, DequeueAttempts={dequeueAttempts}, " +
+            $"FutureValueViolations={futureValueViolations}, UnexpectedFaults={unexpectedFaults}, " +
+            $"Completed={completed}, FirstException={unexpectedException}");
 
-        Assert.IsTrue(completed, $"Tasks did not complete within {deadlockTimeoutMs} ms.");
-        Assert.AreEqual(0, indexerFaults, "Indexer must not throw apart from documented races.");
-        Assert.AreEqual(0, futureValueViolations,
-            "Indexer surfaced a value from a future generation that did not exist when the call started.");
-        Assert.IsTrue(reads > 0, "Indexer must have completed at least some successful reads.");
+        Assert.IsTrue(
+            completedBeforeTimeout,
+            $"Indexer did not complete {targetSuccessfulReads} successful reads within {timeoutMs} ms.");
+
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms.");
+
+        Assert.AreEqual(
+            0,
+            unexpectedFaults,
+            $"No unexpected exceptions are allowed during indexer contention. First exception: {unexpectedException}");
+
+        Assert.AreEqual(
+            0,
+            futureValueViolations,
+            "Indexer surfaced a value from a future generation that could not have existed when the call completed.");
+
+        Assert.IsTrue(
+            writeAttempts > 0,
+            "Writers must have exercised TryEnqueue during the indexer stress run.");
+
+        Assert.IsTrue(
+            dequeueAttempts > 0,
+            "Consumers must have exercised TryDequeue during the indexer stress run.");
+
+        Assert.IsTrue(
+            reads >= targetSuccessfulReads,
+            "Indexer must have completed the required number of successful reads.");
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // Enumerator snapshots under concurrent mutation.
+    //
+    // The enumerator is a public snapshot surface, separate from direct ToArray calls. It should
+    // remain safe while other workers enqueue, dequeue, and overwrite concurrently.
+    //
+    // Each worker performs mutation and enumeration in the same loop. This avoids scheduler-
+    // dependent starvation where mutator-only workers can monopolise the run before enumerator
+    // workers are scheduled.
+    // -----------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that enumeration during concurrent mutation does not throw and never produces more
+    /// items than the buffer capacity.
+    /// </summary>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void StressTest_WhenEnumeratingDuringConcurrentMutation_ShouldProduceStableBoundedSnapshots(
+        bool allowOverwrite)
+    {
+        const int capacity = 32;
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
+        var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite);
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var faults = 0;
+        var writeAttempts = 0;
+        var readAttempts = 0;
+        var enumerationAttempts = 0;
+        var enumerationLengthViolations = 0;
+        var maxEnumeratedLength = 0;
+
+        Exception? firstException = null;
+
+        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+
+        Task StartWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        // Seed the buffer so early enumerations see a non-empty snapshot.
+        for (var i = 0; i < capacity / 2; i++)
+            buffer.Enqueue(new TestItem(i));
+
+        IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+
+                var value = workerIndex * 1_000_000;
+                var iteration = 0;
+
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        // Mutate before enumeration so each snapshot races with live buffer churn.
+                        buffer.TryEnqueue(new TestItem(++value));
+                        Interlocked.Increment(ref writeAttempts);
+
+                        // Dequeue periodically so non-overwrite mode does not settle into a permanently
+                        // full buffer with writers only observing failed TryEnqueue attempts.
+                        if (++iteration % 2 == 0)
+                        {
+                            buffer.TryDequeue(out TestItem? _);
+                            Interlocked.Increment(ref readAttempts);
+                        }
+
+                        // Enumerate through the public IEnumerable<T> surface. Null/default entries
+                        // are allowed for TestItem because the buffer is reference-type constrained and
+                        // snapshot fallback paths may use default(T); the invariant here is safety and
+                        // bounded snapshot size.
+                        var enumerated = 0;
+                        foreach (TestItem? item in buffer)
+                        {
+                            _ = item;
+                            enumerated++;
+
+                            if (enumerated > capacity)
+                            {
+                                Interlocked.Increment(ref enumerationLengthViolations);
+                                cts.Cancel();
+                                break;
+                            }
+                        }
+
+                        Interlocked.Increment(ref enumerationAttempts);
+
+                        var observedMax = Volatile.Read(ref maxEnumeratedLength);
+                        while (enumerated > observedMax &&
+                               Interlocked.CompareExchange(ref maxEnumeratedLength, enumerated, observedMax) != observedMax)
+                        {
+                            observedMax = Volatile.Read(ref maxEnumeratedLength);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Interlocked.CompareExchange(ref firstException, ex, null);
+                        Interlocked.Increment(ref faults);
+                        cts.Cancel();
+                    }
+
+                    Thread.Yield();
+                }
+            }));
+
+        Task[] allTasks = workers.ToArray();
+
+        // Release all workers together so enumeration occurs while other workers mutate the buffer.
+        startGate.Set();
+
+        Thread.Sleep(durationMs);
+        cts.Cancel();
+
+        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+        TestContext.WriteLine(
+            $"AllowOverwrite={allowOverwrite}, Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
+            $"WriteAttempts={writeAttempts}, ReadAttempts={readAttempts}, EnumerationAttempts={enumerationAttempts}, " +
+            $"MaxEnumeratedLength={maxEnumeratedLength}, EnumerationLengthViolations={enumerationLengthViolations}, " +
+            $"Faults={faults}, Completed={completed}, FirstException={firstException}");
+
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+        Assert.AreEqual(
+            0,
+            faults,
+            $"Enumeration, TryEnqueue, and TryDequeue must not throw under concurrent mutation. First exception: {firstException}");
+
+        Assert.AreEqual(
+            0,
+            enumerationLengthViolations,
+            "Enumeration must never produce more items than Capacity.");
+
+        Assert.IsTrue(
+            writeAttempts > 0,
+            "Workers must have exercised TryEnqueue during the enumeration stress run.");
+
+        Assert.IsTrue(
+            readAttempts > 0,
+            "Workers must have exercised TryDequeue during the enumeration stress run.");
+
+        Assert.IsTrue(
+            enumerationAttempts > 0,
+            "Workers must have exercised enumeration during the stress run.");
+
+        Assert.IsTrue(
+            maxEnumeratedLength <= capacity,
+            "The largest enumerated snapshot must not exceed Capacity.");
+
+        Assert.IsTrue(
+            buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+            "Final Count must remain within [0, Capacity].");
+    }
+
+    // -----------------------------------------------------------------------------------------
+    // Mixed public API surface under concurrent load.
+    //
+    // This test deliberately mixes throwing and non-throwing APIs with snapshot, copy, inspection,
+    // containment, and Clear operations. It is not intended to prove a precise accounting invariant,
+    // because Clear removes items silently and throwing APIs may legitimately fail depending on the
+    // instantaneous state.
+    //
+    // The invariant is exception safety: only documented InvalidOperationException failures from
+    // state-dependent throwing APIs are allowed. All other exception types indicate corruption,
+    // invalid bounds, or an unsafe interleaving.
+    // -----------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that mixed public API usage under concurrent load only raises expected
+    /// <see cref="InvalidOperationException" /> failures from state-dependent throwing APIs.
+    /// </summary>
+    [TestMethod]
+    [DataRow(true)]
+    [DataRow(false)]
+    public void StressTest_WhenMixedPublicApiSurfaceIsUsedConcurrently_ShouldOnlyRaiseExpectedExceptions(
+        bool allowOverwrite)
+    {
+        const int capacity = 16;
+        const int durationMs = 2_000;
+        const int deadlockTimeoutMs = durationMs + 5_000;
+
+        var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite);
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var unexpectedFaults = 0;
+        var expectedInvalidOperationFaults = 0;
+        var countViolations = 0;
+        var snapshotLengthViolations = 0;
+
+        var tryEnqueueAttempts = 0;
+        var enqueueAttempts = 0;
+        var tryDequeueAttempts = 0;
+        var dequeueAttempts = 0;
+        var tryPeekAttempts = 0;
+        var containsAttempts = 0;
+        var toArrayAttempts = 0;
+        var copyToAttempts = 0;
+        var clearAttempts = 0;
+        var inspectionAttempts = 0;
+
+        Exception? firstUnexpectedException = null;
+
+        var workerCount = Math.Max(4, Environment.ProcessorCount * 2);
+
+        Task StartWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
+        // Seed the buffer so the mixed workload starts from a meaningful state rather than an
+        // entirely empty buffer.
+        for (var i = 0; i < capacity / 2; i++)
+            buffer.Enqueue(new TestItem(i));
+
+        IEnumerable<Task> workers = Enumerable.Range(0, workerCount).Select(workerIndex =>
+            StartWorker(() =>
+            {
+                startGate.Wait();
+
+                var value = workerIndex * 1_000_000;
+                var operation = workerIndex;
+
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        switch (operation++ % 10)
+                        {
+                            case 0:
+                                // Non-throwing enqueue path.
+                                buffer.TryEnqueue(new TestItem(++value));
+                                Interlocked.Increment(ref tryEnqueueAttempts);
+                                break;
+
+                            case 1:
+                                // Throwing enqueue path. InvalidOperationException is expected only
+                                // when overwrite is disabled and the buffer is full.
+                                Interlocked.Increment(ref enqueueAttempts);
+                                try
+                                {
+                                    buffer.Enqueue(new TestItem(++value));
+                                }
+                                catch (InvalidOperationException) when (!allowOverwrite)
+                                {
+                                    Interlocked.Increment(ref expectedInvalidOperationFaults);
+                                }
+
+                                break;
+
+                            case 2:
+                                // Non-throwing dequeue path.
+                                buffer.TryDequeue(out TestItem? _);
+                                Interlocked.Increment(ref tryDequeueAttempts);
+                                break;
+
+                            case 3:
+                                // Throwing dequeue path. InvalidOperationException is expected when
+                                // the buffer is empty at the instant of the call.
+                                Interlocked.Increment(ref dequeueAttempts);
+                                try
+                                {
+                                    buffer.Dequeue();
+                                }
+                                catch (InvalidOperationException)
+                                {
+                                    Interlocked.Increment(ref expectedInvalidOperationFaults);
+                                }
+
+                                break;
+
+                            case 4:
+                                // Non-throwing peek path.
+                                buffer.TryPeek(out TestItem? _);
+                                Interlocked.Increment(ref tryPeekAttempts);
+                                break;
+
+                            case 5:
+                                // Contains is exercised with a valid reference-type payload. The item
+                                // need not be present; this is an exception-safety stress path.
+                                buffer.Contains(new TestItem(value));
+                                Interlocked.Increment(ref containsAttempts);
+                                break;
+
+                            case 6:
+                                // ToArray must remain safe and bounded while other workers mutate.
+                                TestItem[] snapshot = buffer.ToArray();
+                                Interlocked.Increment(ref toArrayAttempts);
+
+                                if (snapshot.Length > capacity)
+                                    Interlocked.Increment(ref snapshotLengthViolations);
+
+                                break;
+
+                            case 7:
+                                // CopyTo uses a capacity-sized destination, which should always be
+                                // sufficient because Count must never exceed Capacity.
+                                var destination = new TestItem[capacity];
+                                buffer.CopyTo(destination, 0);
+                                Interlocked.Increment(ref copyToAttempts);
+                                break;
+
+                            case 8:
+                                // Clear silently removes items and therefore prevents this mixed test
+                                // from using enqueue-minus-dequeue accounting.
+                                buffer.Clear();
+                                Interlocked.Increment(ref clearAttempts);
+                                break;
+
+                            default:
+                                // Basic read-side inspection paths.
+                                var count = buffer.Count;
+                                _ = buffer.Capacity;
+                                Interlocked.Increment(ref inspectionAttempts);
+
+                                if (count < 0 || count > buffer.Capacity)
+                                    Interlocked.Increment(ref countViolations);
+
+                                break;
+                        }
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        // Dequeue is handled inside its own case. Enqueue in overwrite mode should not
+                        // throw InvalidOperationException, and non-throwing APIs should not throw it
+                        // either, so any uncaught InvalidOperationException is unexpected.
+                        Interlocked.CompareExchange(ref firstUnexpectedException, ex, null);
+                        Interlocked.Increment(ref unexpectedFaults);
+                        cts.Cancel();
+                    }
+                    catch (Exception ex)
+                    {
+                        Interlocked.CompareExchange(ref firstUnexpectedException, ex, null);
+                        Interlocked.Increment(ref unexpectedFaults);
+                        cts.Cancel();
+                    }
+
+                    Thread.Yield();
+                }
+            }));
+
+        Task[] allTasks = workers.ToArray();
+
+        // Release all workers together so the mixed public API surface is exercised under contention.
+        startGate.Set();
+
+        Thread.Sleep(durationMs);
+        cts.Cancel();
+
+        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+        TestContext.WriteLine(
+            $"AllowOverwrite={allowOverwrite}, Count={buffer.Count}, Capacity={buffer.Capacity}, WorkerCount={workerCount}, " +
+            $"TryEnqueueAttempts={tryEnqueueAttempts}, EnqueueAttempts={enqueueAttempts}, " +
+            $"TryDequeueAttempts={tryDequeueAttempts}, DequeueAttempts={dequeueAttempts}, " +
+            $"TryPeekAttempts={tryPeekAttempts}, ContainsAttempts={containsAttempts}, ToArrayAttempts={toArrayAttempts}, " +
+            $"CopyToAttempts={copyToAttempts}, ClearAttempts={clearAttempts}, InspectionAttempts={inspectionAttempts}, " +
+            $"ExpectedInvalidOperationFaults={expectedInvalidOperationFaults}, UnexpectedFaults={unexpectedFaults}, " +
+            $"CountViolations={countViolations}, SnapshotLengthViolations={snapshotLengthViolations}, " +
+            $"Completed={completed}, FirstUnexpectedException={firstUnexpectedException}");
+
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms — possible deadlock, blocked operation, or livelock.");
+
+        Assert.AreEqual(
+            0,
+            unexpectedFaults,
+            $"Only documented InvalidOperationException failures are expected from state-dependent APIs. First unexpected exception: {firstUnexpectedException}");
+
+        Assert.AreEqual(
+            0,
+            countViolations,
+            "Count must remain within [0, Capacity] during mixed API stress.");
+
+        Assert.AreEqual(
+            0,
+            snapshotLengthViolations,
+            "ToArray must never return more items than Capacity during mixed API stress.");
+
+        Assert.IsTrue(tryEnqueueAttempts > 0, "Workers must have exercised TryEnqueue.");
+        Assert.IsTrue(enqueueAttempts > 0, "Workers must have exercised Enqueue.");
+        Assert.IsTrue(tryDequeueAttempts > 0, "Workers must have exercised TryDequeue.");
+        Assert.IsTrue(dequeueAttempts > 0, "Workers must have exercised Dequeue.");
+        Assert.IsTrue(tryPeekAttempts > 0, "Workers must have exercised TryPeek.");
+        Assert.IsTrue(containsAttempts > 0, "Workers must have exercised Contains.");
+        Assert.IsTrue(toArrayAttempts > 0, "Workers must have exercised ToArray.");
+        Assert.IsTrue(copyToAttempts > 0, "Workers must have exercised CopyTo.");
+        Assert.IsTrue(clearAttempts > 0, "Workers must have exercised Clear.");
+        Assert.IsTrue(inspectionAttempts > 0, "Workers must have exercised Count and Capacity.");
+
+        Assert.IsTrue(
+            buffer.Count >= 0 && buffer.Count <= buffer.Capacity,
+            "Final Count must remain within [0, Capacity].");
     }
 }

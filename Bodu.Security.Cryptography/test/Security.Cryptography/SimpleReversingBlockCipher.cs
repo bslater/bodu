@@ -57,7 +57,7 @@ internal sealed class SimpleReversingBlockCipher
         if (blockSizeBytes <= 0)
             throw new ArgumentOutOfRangeException(nameof(blockSizeBytes), "Block size must be positive.");
 
-        BlockSize = blockSizeBytes;
+        BlockSize = blockSizeBytes * 8;
         Key = (byte[])key.Clone();
         tweak = null;
         Diagnostics = new SimpleReversingDiagnostics();
@@ -81,7 +81,7 @@ internal sealed class SimpleReversingBlockCipher
         if (blockSizeBytes <= 0)
             throw new ArgumentOutOfRangeException(nameof(blockSizeBytes), "Block size must be positive.");
 
-        BlockSize = blockSizeBytes;
+        BlockSize = blockSizeBytes * 8;
         Key = (byte[])key.Clone();
         this.tweak = tweak is null ? null : (byte[])tweak.Clone();
         Diagnostics = new SimpleReversingDiagnostics();
@@ -114,8 +114,9 @@ internal sealed class SimpleReversingBlockCipher
         ThrowIfDisposed();
         ValidateSpans(input, output);
 
-        ReadOnlySpan<byte> block = input.Slice(0, BlockSize);
-        Span<byte> dest = output.Slice(0, BlockSize);
+        var blockBytes = BlockSize / 8;
+        ReadOnlySpan<byte> block = input.Slice(0, blockBytes);
+        Span<byte> dest = output.Slice(0, blockBytes);
 
         block.CopyTo(dest);
 
@@ -141,8 +142,9 @@ internal sealed class SimpleReversingBlockCipher
         ThrowIfDisposed();
         ValidateSpans(input, output);
 
-        ReadOnlySpan<byte> block = input.Slice(0, BlockSize);
-        Span<byte> dest = output.Slice(0, BlockSize);
+        var blockBytes = BlockSize / 8;
+        ReadOnlySpan<byte> block = input.Slice(0, blockBytes);
+        Span<byte> dest = output.Slice(0, blockBytes);
 
         block.CopyTo(dest);
         dest.Reverse();
@@ -199,11 +201,12 @@ internal sealed class SimpleReversingBlockCipher
 
     private void ValidateSpans(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        if (input.Length != BlockSize)
+        var blockBytes = BlockSize / 8;
+        if (input.Length != blockBytes)
             throw new ArgumentException(
-                $"Input span must be exactly {BlockSize} bytes but was {input.Length}.", nameof(input));
-        if (output.Length != BlockSize)
+                $"Input span must be exactly {blockBytes} bytes but was {input.Length}.", nameof(input));
+        if (output.Length != blockBytes)
             throw new ArgumentException(
-                $"Output span must be exactly {BlockSize} bytes but was {output.Length}.", nameof(output));
+                $"Output span must be exactly {blockBytes} bytes but was {output.Length}.", nameof(output));
     }
 }

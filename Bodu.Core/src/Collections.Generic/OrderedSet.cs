@@ -33,6 +33,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
+[DebuggerTypeProxy(typeof(OrderedSetStorageDebugView<>))]
 [Serializable]
 public sealed partial class OrderedSet<T>
     : ISet<T>, IReadOnlyList<T>
@@ -40,13 +41,15 @@ public sealed partial class OrderedSet<T>
 {
     private readonly OrderedSetStorage<T> _storage;
 
+    [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+    internal OrderedSetStorage<T> DebuggerStorage => _storage;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class using the default capacity and comparer.
     /// </summary>
     public OrderedSet()
         : this(0, null)
-    {
-    }
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class using the specified comparer.
@@ -54,8 +57,7 @@ public sealed partial class OrderedSet<T>
     /// <param name="comparer">The equality comparer, or <see langword="null" /> to use the default comparer.</param>
     public OrderedSet(IEqualityComparer<T>? comparer)
         : this(0, comparer)
-    {
-    }
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class with the specified initial capacity.
@@ -66,8 +68,7 @@ public sealed partial class OrderedSet<T>
     /// </exception>
     public OrderedSet(int capacity)
         : this(capacity, null)
-    {
-    }
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class with the specified initial capacity and comparer.
@@ -91,8 +92,7 @@ public sealed partial class OrderedSet<T>
     /// </exception>
     public OrderedSet(IEnumerable<T> collection)
         : this(collection, null)
-    {
-    }
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="OrderedSet{T}" /> class containing the unique elements from <paramref name="collection" />.

@@ -11,6 +11,9 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
+[System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0011:Add braces")]
+[System.Diagnostics.CodeAnalysis.SuppressMessage("Roslynator", "RCS1001:Add braces (when expression spans over multiple lines)")]
 internal static partial class CryptoHelpers
 {
     /// <summary>
@@ -251,31 +254,35 @@ internal static partial class CryptoHelpers
     /// </summary>
     /// <param name="iv">The initialisation vector to validate, or <see langword="null"/>.</param>
     /// <param name="mode">The configured cipher mode.</param>
-    /// <param name="blockSizeBytes">The required IV length in bytes when the mode requires one.</param>
-    /// <param name="legalBlockSizes">The legal block sizes for the algorithm, used for error formatting.</param>
+    /// <param name="blockSizeBits">The required IV size, in bits, when the mode requires one.</param>
+    /// <param name="legalBlockSizes">The legal block sizes (in bits) for the algorithm, used for error formatting.</param>
     /// <param name="paramName">The parameter name. Supplied automatically by the compiler.</param>
     /// <exception cref="CryptographicException">
     /// Thrown when <paramref name="iv"/> is <see langword="null"/> and <paramref name="mode"/> is not
-    /// <see cref="CipherBlockMode.ECB"/>, or when <paramref name="iv"/> is non-null but does not have
-    /// the required length.
+    /// <see cref="CipherModeKind.ECB"/>, or when <paramref name="iv"/> is non-null but
+    /// <c>iv.Length * 8 != blockSizeBits</c>.
     /// </exception>
+    /// <remarks>
+    /// The <paramref name="iv"/> array is processed in bytes; <paramref name="blockSizeBits"/> is expressed
+    /// in bits to align with the BCL convention used by <see cref="SymmetricAlgorithm.BlockSize"/>.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfInvalidIVForMode(
         byte[]? iv,
-        CipherBlockMode mode,
-        int blockSizeBytes,
+        CipherModeKind mode,
+        int blockSizeBits,
         KeySizes[] legalBlockSizes,
         [CallerArgumentExpression(nameof(iv))] string? paramName = null)
     {
         if (iv is null)
         {
-            if (mode == CipherBlockMode.ECB) return;
+            if (mode == CipherModeKind.ECB) return;
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_IVRequiredForMode);
         }
 
         ThrowHelper.ThrowIfNull(legalBlockSizes);
 
-        if (iv.Length != blockSizeBytes)
+        if (iv.Length != blockSizeBits / 8)
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.CryptographicException_InvalidIVSize,
@@ -284,85 +291,163 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException"/> if the length of <paramref name="iv"/> does not equal
-    /// <paramref name="expectedLength"/>.
+    /// Throws an <see cref="ArgumentException"/> if the byte length of <paramref name="iv"/> does not
+    /// equal <paramref name="blockSizeBits"/> / 8.
     /// </summary>
     /// <param name="iv">The initialisation vector to validate.</param>
-    /// <param name="expectedLength">The required length in bytes.</param>
+    /// <param name="blockSizeBits">The required IV size, in bits.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="iv"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <c>iv.Length != expectedLength</c>.
+    /// Thrown when <c>iv.Length * 8 != blockSizeBits</c>.
     /// </exception>
+    /// <remarks>
+    /// Engine-level helper called by mode transforms with <see cref="IBlockCipher.BlockSize"/> in bits.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfIvLengthInvalid(
-        byte[] iv, int expectedLength,
+        byte[] iv, int blockSizeBits,
         [CallerArgumentExpression(nameof(iv))] string? paramName = null)
     {
         ThrowHelper.ThrowIfNull(iv, paramName);
-        if (iv.Length != expectedLength)
+        if (iv.Length != blockSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.ArgumentException_InvalidIvLength, iv.Length, expectedLength),
+                string.Format(CryptoResourceStrings.ArgumentException_InvalidIvLength, iv.Length * 8, blockSizeBits),
                 paramName);
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> if the specified key does not match the required key size.
+    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="key"/>, expressed
+    /// in bits, is not one of the values permitted by <paramref name="legalKeySizes"/>.
     /// </summary>
     /// <param name="key">The key material to validate.</param>
-    /// <param name="keySizeBytes">The required key size, in bytes.</param>
-    /// <param name="legalKeySizes">The legal key sizes for the algorithm.</param>
+    /// <param name="keySizeBits">The algorithm's currently configured key size, in bits. Retained for backwards
+    /// compatibility with callers that pass <c>this.KeySize</c>; the actual decision is driven by
+    /// <paramref name="legalKeySizes"/>.</param>
+    /// <param name="legalKeySizes">The legal key sizes for the algorithm (in bits).</param>
     /// <param name="paramKeyName">The name of the key parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> or <paramref name="legalKeySizes" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown when the length of <paramref name="key" /> does not equal <paramref name="keySizeBytes" />.
+    /// Thrown when <c>key.Length * 8</c> is not one of the values produced by
+    /// <paramref name="legalKeySizes"/>.
     /// </exception>
+    /// <remarks>
+    /// The <paramref name="key"/> array is processed in bytes; <paramref name="keySizeBits"/> and
+    /// <paramref name="legalKeySizes"/> are expressed in bits to align with the BCL convention used by
+    /// <see cref="SymmetricAlgorithm.KeySize"/>.
+    /// </remarks>
     public static void ThrowIfInvalidKeySize(
         byte[] key,
-        int keySizeBytes,
+        int keySizeBits,
         KeySizes[] legalKeySizes,
         [CallerArgumentExpression(nameof(key))] string? paramKeyName = null)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(legalKeySizes);
 
-        if (key.Length != keySizeBytes)
+        var keyBits = key.Length * 8;
+        if (!IsValidSize(keyBits, legalKeySizes))
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                    key.Length * 8,
+                    keyBits,
                     CryptoHelpers.FormatLegalSizes(legalKeySizes)),
                 paramKeyName);
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> if the specified block-sized value does not match the required block size.
+    /// Returns <see langword="true"/> if <paramref name="sizeBits"/> falls inside any of the ranges
+    /// supplied by <paramref name="legalSizes"/>. A range with <see cref="KeySizes.SkipSize"/> equal to
+    /// zero permits only its <see cref="KeySizes.MinSize"/> value.
+    /// </summary>
+    private static bool IsValidSize(int sizeBits, KeySizes[] legalSizes)
+    {
+        foreach (KeySizes range in legalSizes)
+        {
+            if (range.SkipSize == 0)
+            {
+                if (sizeBits == range.MinSize)
+                    return true;
+            }
+            else if (sizeBits >= range.MinSize
+                  && sizeBits <= range.MaxSize
+                  && ((sizeBits - range.MinSize) % range.SkipSize) == 0)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="tweak"/>
+    /// does not equal <paramref name="tweakSizeBits"/> / 8.
+    /// </summary>
+    /// <param name="tweak">The tweak material to validate.</param>
+    /// <param name="tweakSizeBits">The required tweak size, in bits.</param>
+    /// <param name="legalTweakSizes">The legal tweak sizes for the algorithm (in bits).</param>
+    /// <param name="paramTweakName">The name of the tweak parameter. Supplied automatically by the compiler.</param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="tweak" /> or <paramref name="legalTweakSizes" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown when <c>tweak.Length * 8 != tweakSizeBits</c>.
+    /// </exception>
+    /// <remarks>
+    /// The <paramref name="tweak"/> array is processed in bytes; <paramref name="tweakSizeBits"/> is
+    /// expressed in bits to align with the BCL key/block-size convention.
+    /// </remarks>
+    public static void ThrowIfInvalidTweakSize(
+        byte[] tweak,
+        int tweakSizeBits,
+        KeySizes[] legalTweakSizes,
+        [CallerArgumentExpression(nameof(tweak))] string? paramTweakName = null)
+    {
+        ThrowHelper.ThrowIfNull(tweak);
+        ThrowHelper.ThrowIfNull(legalTweakSizes);
+
+        if (tweak.Length != tweakSizeBits / 8)
+            throw new CryptographicException(
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidTweakSize,
+                    tweak.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(legalTweakSizes)),
+                paramTweakName);
+    }
+
+    /// <summary>
+    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="value"/>
+    /// does not equal <paramref name="blockSizeBits"/> / 8.
     /// </summary>
     /// <param name="value">The block-sized value to validate, such as an initialisation vector.</param>
-    /// <param name="blockSizeBytes">The required block size, in bytes.</param>
-    /// <param name="legalBlockSizes">The legal block sizes for the algorithm.</param>
+    /// <param name="blockSizeBits">The required block size, in bits.</param>
+    /// <param name="legalBlockSizes">The legal block sizes for the algorithm (in bits).</param>
     /// <param name="paramValueName">The name of the value parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="legalBlockSizes" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown when the length of <paramref name="value" /> does not equal <paramref name="blockSizeBytes" />.
+    /// Thrown when <c>value.Length * 8 != blockSizeBits</c>.
     /// </exception>
+    /// <remarks>
+    /// The <paramref name="value"/> array is processed in bytes; <paramref name="blockSizeBits"/> is
+    /// expressed in bits to align with the BCL block-size convention.
+    /// </remarks>
     public static void ThrowIfInvalidBlockSize(
         byte[] value,
-        int blockSizeBytes,
+        int blockSizeBits,
         KeySizes[] legalBlockSizes,
         [CallerArgumentExpression(nameof(value))] string? paramValueName = null)
     {
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(legalBlockSizes);
 
-        if (value.Length != blockSizeBytes)
+        if (value.Length != blockSizeBits / 8)
             throw new CryptographicException(
                 string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidIVSize,
+                    CryptoResourceStrings.CryptographicException_InvalidBlockSize,
                     value.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalBlockSizes)),
                 paramValueName);
@@ -453,7 +538,7 @@ internal static partial class CryptoHelpers
     /// <summary>
     /// Throws a <see cref="CryptographicException" /> indicating that the specified padding mode is not supported.
     /// </summary>
-    /// <typeparam name="T">The enumeration type representing the padding mode (for example <see cref="PaddingMode" /> or <see cref="BlockPaddingMode" />).</typeparam>
+    /// <typeparam name="T">The enumeration type representing the padding mode (for example <see cref="PaddingMode" /> or <see cref="PaddingModeKind" />).</typeparam>
     /// <param name="mode">The unsupported padding mode value.</param>
     /// <exception cref="CryptographicException">
     /// Always thrown when invoked; the exception message identifies the rejected <paramref name="mode" />.

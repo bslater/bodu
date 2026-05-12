@@ -86,15 +86,30 @@ public sealed class CityHash32
     /// <returns>The 32-bit hash value.</returns>
     private static uint Hash32Len0to4(ReadOnlySpan<byte> s)
     {
-        uint b = 0, c = 9;
+        uint b = 0;
+        uint c = 9;
 
-        foreach (byte t in s)
+        unchecked
         {
-            b = unchecked((b * C1) + t);
-            c ^= b;
-        }
+            foreach (byte t in s)
+            {
+                // Google casts each char to signed char, then to uint32.
+                uint v = unchecked((uint)(sbyte)t);
 
-        return Mix(Mur(b, Mur((uint)s.Length, c)));
+                b = (b * C1) + v;
+                c ^= b;
+            }
+
+            return Mix(Mur(b, Mur((uint)s.Length, c)));
+        }
+    }
+
+    private static uint RotateMix32(uint value)
+    {
+        unchecked
+        {
+            return (value * C1).RotateBitsRightUnchecked(17) * C2;
+        }
     }
 
     /// <summary>
@@ -153,11 +168,11 @@ public sealed class CityHash32
         uint g = h * C1;
         uint f = g;
 
-        uint a0 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4, 4)).RotateBitsRightUnchecked(17) * C2;
-        uint a1 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 8, 4)).RotateBitsRightUnchecked(17) * C2;
-        uint a2 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 16, 4)).RotateBitsRightUnchecked(17) * C2;
-        uint a3 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 12, 4)).RotateBitsRightUnchecked(17) * C2;
-        uint a4 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 20, 4)).RotateBitsRightUnchecked(17) * C2;
+        uint a0 = RotateMix32(BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4, 4)));
+        uint a1 = RotateMix32(BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 8, 4)));
+        uint a2 = RotateMix32(BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 16, 4)));
+        uint a3 = RotateMix32(BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 12, 4)));
+        uint a4 = RotateMix32(BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 20, 4)));
 
         h ^= a0;
         h = (h.RotateBitsRightUnchecked(19) * 5) + HashMagic;
@@ -179,10 +194,10 @@ public sealed class CityHash32
         {
             int offset = i * 20;
 
-            uint b0 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 0, 4)).RotateBitsRightUnchecked(17) * C2;
+            uint b0 = RotateMix32(BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 0, 4)));
             uint b1 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 4, 4));
-            uint b2 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 8, 4)).RotateBitsRightUnchecked(17) * C2;
-            uint b3 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 12, 4)).RotateBitsRightUnchecked(17) * C2;
+            uint b2 = RotateMix32(BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 8, 4)));
+            uint b3 = RotateMix32(BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 12, 4)));
             uint b4 = BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(offset + 16, 4));
 
             h ^= b0;

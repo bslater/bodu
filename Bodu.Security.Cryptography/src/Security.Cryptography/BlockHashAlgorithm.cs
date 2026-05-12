@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// <typeparam name="T">The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
-/// Input data is accumulated into the inherited residual buffer until a complete block of <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes"/>
+/// Input data is accumulated into the inherited residual buffer until a complete block of <see cref="BufferedBlockHashAlgorithm{T}.BlockSize"/>
 /// is available, at which point it is passed to <see cref="ProcessBlock"/>. Any residual bytes left over at
 /// <see cref="HashAlgorithm.HashFinal"/> are padded via <see cref="PadBlock"/> before a final call to
 /// <see cref="ProcessFinalBlock"/> produces the digest.
@@ -54,8 +54,9 @@ public abstract class BlockHashAlgorithm<T>
     /// Initializes a new instance of the <see cref="BlockHashAlgorithm{T}"/> class using the specified input block size.
     /// </summary>
     /// <param name="blockSize">
-    /// The block size, in bytes, that the algorithm uses to process input data. This value determines how data is buffered and
-    /// segmented during hashing operations.
+    /// The block size, in bits, that the algorithm uses to process input data. Must be a positive multiple of 8. This
+    /// value determines how data is buffered and segmented during hashing operations; the equivalent byte length is
+    /// available via the inherited <see cref="BufferedBlockHashAlgorithm{T}.BlockSize"/> field.
     /// </param>
     /// <remarks>
     /// <para>
@@ -144,8 +145,9 @@ public abstract class BlockHashAlgorithm<T>
             }
             else
             {
-                for (var i = 0; i < finalBlock.Length; i += this.BlockSizeBytes)
-                    this.ProcessBlock(finalBlock.AsSpan(i, this.BlockSizeBytes));
+                var blockBytes = this.BlockSize / 8;
+                for (var i = 0; i < finalBlock.Length; i += blockBytes)
+                    this.ProcessBlock(finalBlock.AsSpan(i, blockBytes));
             }
         }
         else if (this._residualBytes > 0)
@@ -215,6 +217,7 @@ public abstract class BlockHashAlgorithm<T>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
         var pos = 0;
+        var blockBytes = this.BlockSize / 8;
         this._totalBytes += (ulong)buffer.Length;
 
         Span<byte> residualSpan = this._residualBlock.Span;
@@ -222,7 +225,7 @@ public abstract class BlockHashAlgorithm<T>
         // Attempt to fill a partial residual block if it exists
         if (this._residualBytes > 0)
         {
-            var remaining = this.BlockSizeBytes - this._residualBytes;
+            var remaining = blockBytes - this._residualBytes;
 
             if (buffer.Length >= remaining)
             {
@@ -242,10 +245,10 @@ public abstract class BlockHashAlgorithm<T>
         }
 
         // Process complete blocks from input span
-        while (pos + this.BlockSizeBytes <= buffer.Length)
+        while (pos + blockBytes <= buffer.Length)
         {
-            this.ProcessBlock(buffer.Slice(pos, this.BlockSizeBytes));
-            pos += this.BlockSizeBytes;
+            this.ProcessBlock(buffer.Slice(pos, blockBytes));
+            pos += blockBytes;
         }
 
         // Buffer any trailing bytes that form an incomplete block

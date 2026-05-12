@@ -67,7 +67,7 @@ public abstract partial class Snefru<T>
     /// <param name="hashSize">The size of the output hash, in bits. Must be either 128 or 256.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize"/> is not one of the supported values.</exception>
     protected Snefru(int hashSize)
-        : base(64 - (hashSize >> 3)) // BlockSizeBytes = 64 - outputBytes
+        : base((64 - (hashSize >> 3)) * 8) // BlockSizeBits = 8 * (64 - outputBytes)
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
@@ -137,7 +137,7 @@ public abstract partial class Snefru<T>
     {
         // paddedLength is always ≤ 96 for Snefru128 (2 × 48) and ≤ 64 for Snefru256 (2 × 32),
         // so stackalloc is always safe and appropriately sized here.
-        var paddedLength = 2 * BlockSizeBytes;
+        var paddedLength = 2 * (this.BlockSize / 8);
         Span<byte> padded = stackalloc byte[paddedLength];
         block.CopyTo(padded);
         BinaryPrimitives.WriteUInt64BigEndian(padded[(paddedLength - 8)..], messageLength << 3);

@@ -20,7 +20,7 @@ public sealed partial class BlowfishAlgorithmTests
     protected override Blowfish CreateAlgorithm() => Blowfish.Create();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(Blowfish algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(Blowfish algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />

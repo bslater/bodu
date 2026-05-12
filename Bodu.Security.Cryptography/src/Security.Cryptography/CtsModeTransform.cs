@@ -55,7 +55,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTS instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
 /// IBlockCipherModeTransform cts = new CtsModeTransform(cipher, iv);
 ///
 /// // CTS preserves length: plaintext.Length == ciphertext.Length, no padding required.
@@ -93,7 +93,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         if (input.Length < blockSize)
         {
@@ -126,7 +126,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int EncryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
@@ -150,7 +150,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int DecryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)

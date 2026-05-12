@@ -16,7 +16,7 @@ public partial class SimpleReversingSymmetricAlgorithmTests
     protected override SimpleReversingSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingSymmetricAlgorithm();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(SimpleReversingSymmetricAlgorithm algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(SimpleReversingSymmetricAlgorithm algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />
@@ -28,7 +28,7 @@ public partial class SimpleReversingSymmetricAlgorithmTests
     protected override SimpleReversingSymmetricAlgorithm CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
     {
         var algorithm = SimpleReversingSymmetricAlgorithm.Create();
-        algorithm.BlockMode = CipherBlockMode.ECB;
+        algorithm.BlockMode = CipherModeKind.ECB;
         algorithm.Padding = PaddingMode.None;
         algorithm.Key = answer.Key!;
         algorithm.IV = new byte[algorithm.BlockSize / 8];
