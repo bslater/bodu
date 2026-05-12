@@ -52,9 +52,14 @@ public sealed class SkipjackBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// Length of a Skipjack key (bytes).
+    /// Length of a Skipjack key (80 bits).
     /// </summary>
-    public const int KeySize = 10;  // 80 bits
+    public const int KeySizeBits = 80;
+
+    /// <summary>
+    /// Length of a Skipjack key (10 bytes); equal to <see cref="KeySizeBits"/> / 8.
+    /// </summary>
+    public const int KeySizeBytes = KeySizeBits / 8;
 
     // Static F-table (8 × 8 S-box)
     private static readonly byte[] s_ftable =
@@ -89,7 +94,7 @@ public sealed class SkipjackBlockCipher
     /// <exception cref="ArgumentException">Thrown if <paramref name="keyBytes"/> is not exactly 10 bytes long.</exception>
     public SkipjackBlockCipher(ReadOnlySpan<byte> keyBytes)
     {
-        if (keyBytes.Length != KeySize)
+        if (keyBytes.Length != KeySizeBytes)
             throw new ArgumentException(
                 CryptoResourceStrings.ArgumentException_Skipjack_InvalidKeyLength,
                 nameof(keyBytes));
