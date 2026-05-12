@@ -39,4 +39,36 @@ public partial class ThrowHelperTests
 
         ThrowHelper.ThrowIfDestinationTooSmall(source, destination);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationTooSmall{TSource, TDestination}(TSource[], TDestination[], string)" /> throws
+    /// <see cref="ArgumentNullException" /> when the source array is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfDestinationTooSmall_Array_WhenSourceIsNull_ShouldThrowExactly()
+    {
+        int[]? source = null;
+        var destination = new byte[5];
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfDestinationTooSmall(source!, destination);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationTooSmall{TSource, TDestination}(TSource[], TDestination[], string)" /> throws
+    /// <see cref="ArgumentNullException" /> when the destination array is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfDestinationTooSmall_Array_WhenDestinationIsNull_ShouldThrowExactly()
+    {
+        var source = new int[5];
+        byte[]? destination = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfDestinationTooSmall(source, destination!);
+        });
+    }
 }
