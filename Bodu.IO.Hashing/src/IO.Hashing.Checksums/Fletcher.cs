@@ -4,13 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+namespace Bodu.IO.Hashing.Checksums;
+
 using Bodu.Extensions;
 using Bodu.IO.Hashing;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
-
-namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Provides a base class for the Fletcher checksum family (Fletcher-16, Fletcher-32, Fletcher-64).
@@ -64,13 +64,13 @@ public abstract class Fletcher<TSelf>
     : BlockNonCryptographicHashAlgorithm<TSelf>
     where TSelf : Fletcher<TSelf>, new()
 {
-    private static readonly int[] s_validHashSizes = { 16, 32, 64 };
+    private static readonly int[] ValidHashSizes = { 16, 32, 64 };
 
-    private readonly int _hashSizeBits;
-    private readonly ulong _modulus;
+    private readonly int hashSizeBits;
+    private readonly ulong modulus;
 
-    private ulong _partA;
-    private ulong _partB;
+    private ulong partA;
+    private ulong partB;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Fletcher{TSelf}" /> class with the specified hash size.
@@ -79,18 +79,18 @@ public abstract class Fletcher<TSelf>
     /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not 16, 32, or 64.</exception>
     protected Fletcher(int hashSize)
         : base(
-            hashLengthInBytes: s_validHashSizes.Contains(hashSize)
+            hashLengthInBytes: ValidHashSizes.Contains(hashSize)
                 ? hashSize / 8
                 : throw new ArgumentException(
                     string.Format(
                         "Invalid hash size: {0}. Valid sizes are: {1}.",
                         hashSize,
-                        string.Join(", ", s_validHashSizes)),
+                        string.Join(", ", ValidHashSizes)),
                     nameof(hashSize)),
-            blockSize: hashSize / 16)
+            blockSize: 1)
     {
-        this._hashSizeBits = hashSize;
-        this._modulus = (1UL << (hashSize / 2)) - 1;
+        this.hashSizeBits = hashSize;
+        this.modulus = (1UL << (hashSize / 2)) - 1;
         this.AlgorithmName = $"Fletcher-{hashSize}";
     }
 
@@ -103,16 +103,16 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override void ResetState()
     {
-        this._partA = 0;
-        this._partB = 0;
+        this.partA = 0;
+        this.partB = 0;
     }
 
     /// <inheritdoc />
     protected override TSelf Clone()
     {
-        TSelf clone = new TSelf();
-        clone._partA = this._partA;
-        clone._partB = this._partB;
+        var clone = new TSelf();
+        clone.partA = this.partA;
+        clone.partB = this.partB;
         clone.CopyResidualStateFrom(this);
         return clone;
     }
@@ -120,7 +120,7 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
-        byte[] buffer = new byte[this.BlockSizeBytes];
+        var buffer = new byte[this.BlockSizeBytes];
         block.CopyTo(buffer);
         return buffer;
     }
@@ -129,21 +129,28 @@ public abstract class Fletcher<TSelf>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
-        ulong b = 0;
-        for (int i = 0; i < block.Length && i < this.BlockSizeBytes; i++)
-        {
-            b |= ((ulong)block[i]) << ((this.BlockSizeBytes - (i + 1)) << 3);
-        }
-
-        this._partA = (this._partA + b) % this._modulus;
-        this._partB = (this._partB + this._partA) % this._modulus;
+        this.partA = (this.partA + block[0]) % this.modulus;
+        this.partB = (this.partB + this.partA) % this.modulus;
     }
 
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        ulong finalHash = (this._partA << (this._hashSizeBits / 2)) | this._partB;
-        return finalHash.GetBytes().SliceInternal(0, this._hashSizeBits / 8);
+        var result = new byte[this.hashSizeBits / 8];
+        var halfLength = result.Length / 2;
+
+        WriteBigEndian(this.partB, result.AsSpan(0, halfLength));
+        WriteBigEndian(this.partA, result.AsSpan(halfLength, halfLength));
+
+        return result;
+    }
+
+    private static void WriteBigEndian(ulong value, Span<byte> destination)
+    {
+        for (var i = 0; i < destination.Length; i++)
+        {
+            destination[i] = (byte)(value >> ((destination.Length - i - 1) << 3));
+        }
     }
 
     /// <inheritdoc />

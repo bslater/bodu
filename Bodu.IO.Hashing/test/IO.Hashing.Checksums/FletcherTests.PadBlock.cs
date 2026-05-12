@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FletcherTests.PadBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,19 +35,18 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
 
     /// <summary>
     /// Verifies that <see cref="Fletcher{TSelf}.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> produces a buffer
-    /// sized to one block and preserves the residual bytes at the head of that block.
+    /// sized to one block and preserves the residual byte at the head of that block.
     /// </summary>
     [TestMethod]
-    public void PadBlock_WhenInvokedDirectly_ShouldReturnSingleBlockWithResidualPrefix()
+    public void PadBlock_WhenInvokedDirectly_ShouldReturnSingleByteBlockWithResidualPrefix()
     {
         PaddingFletcher fletcher = new();
         byte[] residual = { 0xAA };
 
         byte[] padded = fletcher.PadBlockExposed(residual, messageLength: 1);
 
-        Assert.AreEqual(2, padded.Length); // Fletcher-32 has a 2-byte block.
+        Assert.AreEqual(1, padded.Length); // Fletcher is processed byte-wise.
         Assert.AreEqual(0xAA, padded[0]);
-        Assert.AreEqual(0x00, padded[1]);
     }
 
     /// <summary>

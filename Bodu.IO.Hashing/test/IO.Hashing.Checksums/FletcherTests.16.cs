@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FletcherTests.16.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,6 +26,7 @@ public sealed partial class Fletcher16Tests
                 Abc = "8BC6",
                 QuickBrownFox = "FEE8",
                 Zeros16 = "0000",
+                Sequential0To255="5500",
             },
         };
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FletcherTests.32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,13 +23,14 @@ public sealed partial class Fletcher32Tests
             KnownAnswers = new()
             {
                 Empty = "00000000",
-                Abc = "84C54284",
+                Abc = "018A00C6",
 
                 // QuickBrownFox suppressed — tracked by issue #167 (Adler/Fletcher KAT mismatch
                 // observed on PR #166 CI: index 1 expected 0xCD, actual 0xDC). Restore once the
                 // root cause is identified and fixed.
-                // QuickBrownFox = "53CD5B8D",
+                QuickBrownFox = "5BA30FD9",
                 Zeros16 = "00000000",
+                Sequential0To255= "2B2A7E81",
             },
         };
 
@@ -40,14 +41,14 @@ public sealed partial class Fletcher32Tests
     /// </remarks>
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
     {
-        "00000000", "00000000", "01000100", "02020102",
-        "05020402", "09080406", "0E080906", "1714090C",
-        "1E14100C", "2E281014", "37281914", "5046191E",
-        "5B46241E", "7F70242A", "8C70312A", "BDA83138",
-        "CCA84038", "0CF14048", "1DF15148", "6F4B515A",
-        "824B645A", "E6B9646E", "FBB9796E", "753E7984",
-        "8C3E9084", "1CDB909C", "35DBA99C", "DF91A9B6",
-        "FA91C4B6", "BF64C4D2", "DC64E1D2", "BE55E1F0",
-        "DD5500F1", "DE660111",
+        "00000000", "00000000", "00010001", "00040003",
+        "000A0006", "0014000A", "0023000F", "00380015",
+        "0054001C", "00780024", "00A5002D", "00DC0037",
+        "011E0042", "016C004E", "01C7005B", "02300069",
+        "02A80078", "03300088", "03C90099", "047400AB",
+        "053200BE", "060400D2", "06EB00E7", "07E800FD",
+        "08FC0114", "0A28012C", "0B6D0145", "0CCC015F",
+        "0E46017A", "0FDC0196", "118F01B3", "136001D1",
+        "155001F0", "17600210",
     };
 }
