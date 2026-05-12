@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KnownAnswerTest.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,10 +19,10 @@ namespace Bodu.IO.Hashing;
 public sealed class KnownAnswerTest
 {
     /// <summary>Gets the expected digest for this known-answer test case.</summary>
-    public byte[] ExpectedOutput { get; init; } = Array.Empty<byte>();
+    public byte[] ExpectedOutput { get; init; } = [];
 
     /// <summary>Gets the input message to be hashed.</summary>
-    public byte[] Input { get; init; } = Array.Empty<byte>();
+    public byte[] Input { get; init; } = [];
 
     /// <summary>Gets the name of the test case (for example, <c>Empty</c>, <c>ABC</c>, <c>Zeros_16</c>).</summary>
     public string Name { get; init; } = string.Empty;

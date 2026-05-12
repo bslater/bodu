@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmTests.HashLengthInBytes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,11 +20,11 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     public void HashLengthInBytes_WhenQueried_ShouldMatchSpecification(TVariant variant)
     {
         NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
 
         Assert.AreEqual(specification.HashLengthInBytes, algorithm.HashLengthInBytes);
 
-        algorithm.Append(new byte[] { 1, 2, 3, 4 });
+        algorithm.Append([1, 2, 3, 4]);
         Assert.AreEqual(specification.HashLengthInBytes, algorithm.HashLengthInBytes);
     }
 
@@ -37,10 +37,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetCurrentHash_WhenReturningDigest_ShouldHaveLengthMatchingHashLengthInBytes(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
-        algorithm.Append(new byte[] { 0xAB, 0xCD, 0xEF });
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+        algorithm.Append([0xAB, 0xCD, 0xEF]);
 
-        byte[] digest = algorithm.GetCurrentHash();
+        var digest = algorithm.GetCurrentHash();
 
         Assert.AreEqual(algorithm.HashLengthInBytes, digest.Length);
     }

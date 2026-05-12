@@ -175,7 +175,7 @@ public partial class EvictingDictionaryTests
     public void EvictionEvents_WhenPolicyIsLFUAndNoCandidateFound_ShouldNotFireEvent()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
-        bool eventFired = false;
+        var eventFired = false;
         dictionary.ItemEvicted += (_, _) => eventFired = true;
 
         dictionary.Add("A", 1);
@@ -201,7 +201,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("B", 2);
 
         // Accumulate frequency on "A".
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             _ = dictionary["A"];
 
         // Replace "A"'s value. Under the old behaviour this reset its frequency, making it a cold candidate.

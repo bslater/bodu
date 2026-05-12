@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OcbModeTransformTests.Encrypt.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,10 +27,10 @@ public sealed partial class OcbModeTransformTests
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var plaintext = new byte[ExpectedBlockSize];
-        var transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagLen);
+        OcbModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagLen);
         var output = new byte[plaintext.Length + tagLen];
 
-        int written = transform.Encrypt(plaintext, output);
+        var written = transform.Encrypt(plaintext, output);
 
         Assert.AreEqual(plaintext.Length + tagLen, written,
             $"Encrypt must return |PT| + tagLen bytes (tagLen = {tagLen}).");
@@ -58,8 +58,8 @@ public sealed partial class OcbModeTransformTests
         var iv = new byte[ExpectedBlockSize];
         var plaintext = new byte[ExpectedBlockSize];
 
-        var enc16 = CreateTransform(cipher16, (byte[])iv.Clone(), 16);
-        var enc12 = CreateTransform(cipher12, (byte[])iv.Clone(), 12);
+        OcbModeTransform enc16 = CreateTransform(cipher16, (byte[])iv.Clone(), 16);
+        OcbModeTransform enc12 = CreateTransform(cipher12, (byte[])iv.Clone(), 12);
         var ct16 = new byte[plaintext.Length + 16];
         var ct12 = new byte[plaintext.Length + 12];
         enc16.Encrypt(plaintext, ct16);

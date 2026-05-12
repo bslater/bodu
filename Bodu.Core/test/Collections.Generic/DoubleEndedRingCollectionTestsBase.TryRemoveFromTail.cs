@@ -15,10 +15,10 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void TryRemoveFromTail_WhenItemsPresent_ShouldReturnTrueAndTail()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 10);
 
-        Assert.IsTrue(TryRemoveFromTail(collection, out int item));
+        Assert.IsTrue(TryRemoveFromTail(collection, out var item));
         Assert.AreEqual(10, item);
         Assert.IsTrue(GetIsEmpty(collection));
     }
@@ -30,8 +30,8 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void TryRemoveFromTail_WhenEmpty_ShouldReturnFalseAndDefault()
     {
-        var collection = CreateCollection(3);
-        Assert.IsFalse(TryRemoveFromTail(collection, out int item));
+        TCollection collection = CreateCollection(3);
+        Assert.IsFalse(TryRemoveFromTail(collection, out var item));
         Assert.AreEqual(default, item);
     }
 }

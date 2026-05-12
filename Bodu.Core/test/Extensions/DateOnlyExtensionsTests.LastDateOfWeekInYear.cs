@@ -20,7 +20,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeekInYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfWeekInYearTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfWeekInYearTestData), typeof(DateTimeExtensionsTests))]
     public void LastDateOfWeekInYear_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

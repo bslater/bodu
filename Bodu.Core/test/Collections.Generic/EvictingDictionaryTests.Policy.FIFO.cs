@@ -110,7 +110,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("b", 2);
         dictionary.Add("c", 3);
 
-        var expected = new[]
+        KeyValuePair<string, int>[] expected = new[]
         {
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("b", 2),

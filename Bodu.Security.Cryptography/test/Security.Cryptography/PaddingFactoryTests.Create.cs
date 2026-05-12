@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PaddingFactoryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class PaddingFactoryTests
     [TestMethod]
     public void Create_WhenPaddingModeIsInvalid_ShouldThrowWithCleanMessage()
     {
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
             PaddingFactory.Create((PaddingMode)999);
         });
@@ -31,9 +31,9 @@ public partial class PaddingFactoryTests
     [TestMethod]
     public void Create_WhenBoduPaddingModeIsInvalid_ShouldThrowWithCleanMessage()
     {
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            PaddingFactory.Create((BoduPaddingMode)999);
+            PaddingFactory.Create((BlockPaddingMode)999);
         });
         Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
     }
@@ -100,7 +100,7 @@ public partial class PaddingFactoryTests
     [TestMethod]
     public void Create_WhenBoduPaddingModeIsIso7816_4_ShouldReturnIso7816_4Padding()
     {
-        IPaddingStrategy strategy = PaddingFactory.Create(BoduPaddingMode.ISO7816_4);
+        IPaddingStrategy strategy = PaddingFactory.Create(BlockPaddingMode.ISO7816_4);
         Assert.IsInstanceOfType<Iso7816_4Padding>(strategy);
     }
 }

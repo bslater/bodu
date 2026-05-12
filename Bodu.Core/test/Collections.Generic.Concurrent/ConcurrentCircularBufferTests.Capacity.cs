@@ -57,7 +57,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Capacity_Get_WhenConstructedFromCollection_ShouldUseProvidedCapacity()
     {
-        var source = Enumerable.Range(0, 10).Select(i => new TestItem(i)).ToArray();
+        TestItem[] source = Enumerable.Range(0, 10).Select(i => new TestItem(i)).ToArray();
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 6, allowOverwrite: true);
 
         Assert.AreEqual(6, buffer.Capacity);
@@ -77,7 +77,7 @@ public partial class ConcurrentCircularBufferTests
         Parallel.Invoke(
             () =>
             {
-                for (int i = 0; i < 100; i++)
+                for (var i = 0; i < 100; i++)
                 {
                     buffer.TryEnqueue(new TestItem(i));
                     Thread.SpinWait(100);
@@ -85,7 +85,7 @@ public partial class ConcurrentCircularBufferTests
             },
             () =>
             {
-                for (int i = 0; i < 100; i++)
+                for (var i = 0; i < 100; i++)
                 {
                     buffer.TryDequeue(out _);
                     Thread.SpinWait(100);
@@ -103,7 +103,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
 
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             buffer.Enqueue(new TestItem(i));
 
         buffer.Clear();
@@ -138,10 +138,10 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(7, allowOverwrite: true);
 
         // Overfill intentionally
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
             buffer.Enqueue(new TestItem(i));
 
-        var snap = buffer.ToArray();
+        TestItem[] snap = buffer.ToArray();
         Assert.IsTrue(snap.Length <= buffer.Capacity, "Snapshot must never exceed Capacity.");
         Assert.AreEqual(7, buffer.Capacity);
     }

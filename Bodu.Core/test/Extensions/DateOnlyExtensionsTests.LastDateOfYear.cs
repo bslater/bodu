@@ -21,7 +21,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfYearTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfYearTestData),typeof(DateTimeExtensionsTests))]
     public void LastDateOfYear_WhenCalled_ShouldReturnDecember31(DateTime inputDateOnly, DateTime expectedDateOnly)
     {
         DateOnly input = DateOnly.FromDateTime(inputDateOnly);

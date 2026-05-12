@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTransformTests.CanReuseTransform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void CanReuseTransform_ShouldReturnFalse()
     {
-        using var transform = CreateAlgorithm();
+        using TCryptoTransform transform = CreateAlgorithm();
         Assert.IsFalse(transform.CanReuseTransform);
     }
 }

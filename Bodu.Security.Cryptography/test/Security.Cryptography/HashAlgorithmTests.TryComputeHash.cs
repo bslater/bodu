@@ -17,15 +17,15 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TryComputeHash_WhenDestinationTooSmall_ShouldReturnFalseAndWriteZeroBytes()
         {
-            byte[] input = CryptoTestUtilities.ByteSequence256;
+            var input = CryptoTestUtilities.ByteSequence256;
 
-            using var expectedAlgorithm = CreateAlgorithm();
-            byte[] expected = expectedAlgorithm.ComputeHash(input);
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+            var expected = expectedAlgorithm.ComputeHash(input);
 
-            using var algorithm = CreateAlgorithm();
-            byte[] destination = new byte[expected.Length - 1];
+            using TAlgorithm algorithm = CreateAlgorithm();
+            var destination = new byte[expected.Length - 1];
 
-            bool result = algorithm.TryComputeHash(input, destination, out int bytesWritten);
+            var result = algorithm.TryComputeHash(input, destination, out var bytesWritten);
 
             Assert.IsFalse(result);
             Assert.AreEqual(0, bytesWritten);
@@ -38,15 +38,15 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TryComputeHash_WhenDestinationIsExactSize_ShouldReturnTrueAndWriteHash()
         {
-            byte[] input = CryptoTestUtilities.ByteSequence256;
+            var input = CryptoTestUtilities.ByteSequence256;
 
-            using var expectedAlgorithm = CreateAlgorithm();
-            byte[] expected = expectedAlgorithm.ComputeHash(input);
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+            var expected = expectedAlgorithm.ComputeHash(input);
 
-            using var algorithm = CreateAlgorithm();
-            byte[] destination = new byte[expected.Length];
+            using TAlgorithm algorithm = CreateAlgorithm();
+            var destination = new byte[expected.Length];
 
-            bool result = algorithm.TryComputeHash(input, destination, out int bytesWritten);
+            var result = algorithm.TryComputeHash(input, destination, out var bytesWritten);
 
             Assert.IsTrue(result);
             Assert.AreEqual(expected.Length, bytesWritten);
@@ -60,16 +60,16 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TryComputeHash_WhenDestinationIsLargerThanHash_ShouldNotModifyTrailingBytes()
         {
-            byte[] input = CryptoTestUtilities.ByteSequence256;
+            var input = CryptoTestUtilities.ByteSequence256;
 
-            using var expectedAlgorithm = CreateAlgorithm();
-            byte[] expected = expectedAlgorithm.ComputeHash(input);
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+            var expected = expectedAlgorithm.ComputeHash(input);
 
-            using var algorithm = CreateAlgorithm();
-            byte[] destination = new byte[expected.Length + 1];
+            using TAlgorithm algorithm = CreateAlgorithm();
+            var destination = new byte[expected.Length + 1];
             destination[^1] = 0xA5;
 
-            bool result = algorithm.TryComputeHash(input, destination, out int bytesWritten);
+            var result = algorithm.TryComputeHash(input, destination, out var bytesWritten);
 
             Assert.IsTrue(result);
             Assert.AreEqual(expected.Length, bytesWritten);
@@ -85,14 +85,14 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TryComputeHash_WhenCalledAfterComputeHash_ShouldClearHashProperty()
         {
-            byte[] input = CryptoTestUtilities.ByteSequence256;
+            var input = CryptoTestUtilities.ByteSequence256;
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
-            byte[] hash = algorithm.ComputeHash(input);
+            var hash = algorithm.ComputeHash(input);
             Assert.IsNotNull(algorithm.Hash);
 
-            bool result = algorithm.TryComputeHash(input, hash, out int bytesWritten);
+            var result = algorithm.TryComputeHash(input, hash, out var bytesWritten);
 
             Assert.IsTrue(result);
             Assert.AreEqual(hash.Length, bytesWritten);
@@ -106,11 +106,11 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TryComputeHash_WhenDisposed_ShouldThrowObjectDisposedException()
         {
-            var algorithm = CreateAlgorithm();
+            TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Dispose();
 
-            byte[] input = new byte[1];
-            byte[] destination = new byte[Math.Max(1, algorithm.HashSize / 8)];
+            var input = new byte[1];
+            var destination = new byte[Math.Max(1, algorithm.HashSize / 8)];
 
             Assert.ThrowsExactly<ObjectDisposedException>(() =>
             {
@@ -125,23 +125,23 @@ namespace Bodu.Security.Cryptography
         [TestMethod]
         public void TryComputeHash_WhenSourceAndDestinationAreSameBuffer_ShouldSucceed()
         {
-            using var expectedAlgorithm = CreateAlgorithm();
-            int hashLength = expectedAlgorithm.HashSize / 8;
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+            var hashLength = expectedAlgorithm.HashSize / 8;
 
-            byte[] expectedInput = Enumerable.Range(0, hashLength)
+            var expectedInput = Enumerable.Range(0, hashLength)
                 .Select(i => (byte)i)
                 .ToArray();
 
-            byte[] expected = expectedAlgorithm.ComputeHash(expectedInput);
+            var expected = expectedAlgorithm.ComputeHash(expectedInput);
 
-            byte[] buffer = expectedInput.ToArray();
+            var buffer = expectedInput.ToArray();
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
-            bool result = algorithm.TryComputeHash(
+            var result = algorithm.TryComputeHash(
                 buffer.AsSpan(0, hashLength),
                 buffer.AsSpan(0, hashLength),
-                out int bytesWritten);
+                out var bytesWritten);
 
             Assert.IsTrue(result);
             Assert.AreEqual(hashLength, bytesWritten);
@@ -157,25 +157,25 @@ namespace Bodu.Security.Cryptography
         {
             const int destinationOffset = 4;
 
-            using var expectedAlgorithm = CreateAlgorithm();
-            int hashLength = expectedAlgorithm.HashSize / 8;
-            int inputLength = hashLength + 16;
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+            var hashLength = expectedAlgorithm.HashSize / 8;
+            var inputLength = hashLength + 16;
 
-            byte[] expectedInput = Enumerable.Range(0, inputLength)
+            var expectedInput = Enumerable.Range(0, inputLength)
                 .Select(i => (byte)i)
                 .ToArray();
 
-            byte[] expected = expectedAlgorithm.ComputeHash(expectedInput);
+            var expected = expectedAlgorithm.ComputeHash(expectedInput);
 
-            byte[] buffer = new byte[inputLength + destinationOffset + hashLength];
+            var buffer = new byte[inputLength + destinationOffset + hashLength];
             Buffer.BlockCopy(expectedInput, 0, buffer, 0, expectedInput.Length);
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
-            bool result = algorithm.TryComputeHash(
+            var result = algorithm.TryComputeHash(
                 buffer.AsSpan(0, inputLength),
                 buffer.AsSpan(destinationOffset, hashLength),
-                out int bytesWritten);
+                out var bytesWritten);
 
             Assert.IsTrue(result);
             Assert.AreEqual(hashLength, bytesWritten);
@@ -191,25 +191,25 @@ namespace Bodu.Security.Cryptography
         {
             const int sourceOffset = 4;
 
-            using var expectedAlgorithm = CreateAlgorithm();
-            int hashLength = expectedAlgorithm.HashSize / 8;
-            int inputLength = hashLength + 16;
+            using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+            var hashLength = expectedAlgorithm.HashSize / 8;
+            var inputLength = hashLength + 16;
 
-            byte[] expectedInput = Enumerable.Range(0, inputLength)
+            var expectedInput = Enumerable.Range(0, inputLength)
                 .Select(i => (byte)i)
                 .ToArray();
 
-            byte[] expected = expectedAlgorithm.ComputeHash(expectedInput);
+            var expected = expectedAlgorithm.ComputeHash(expectedInput);
 
-            byte[] buffer = new byte[sourceOffset + inputLength];
+            var buffer = new byte[sourceOffset + inputLength];
             Buffer.BlockCopy(expectedInput, 0, buffer, sourceOffset, expectedInput.Length);
 
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
-            bool result = algorithm.TryComputeHash(
+            var result = algorithm.TryComputeHash(
                 buffer.AsSpan(sourceOffset, inputLength),
                 buffer.AsSpan(0, hashLength),
-                out int bytesWritten);
+                out var bytesWritten);
 
             Assert.IsTrue(result);
             Assert.AreEqual(hashLength, bytesWritten);

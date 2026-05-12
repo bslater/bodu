@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcTests.ComputeHashFrom.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,17 +26,17 @@ public partial class CrcTests
     [DataRow(CrcStandards.CRC12_UMTS)]
     public void ComputeHashFrom_WhenResumed_ShouldMatchSingleShotCombinedHash(CrcStandards standardId)
     {
-        CrcStandard standard = CrcStandard.Get(standardId);
+        var standard = CrcStandard.Get(standardId);
 
-        byte[] first = new byte[] { 0x31, 0x32, 0x33, 0x34 };
-        byte[] rest = new byte[] { 0x35, 0x36, 0x37, 0x38, 0x39 };
+        byte[] first = [0x31, 0x32, 0x33, 0x34];
+        byte[] rest = [0x35, 0x36, 0x37, 0x38, 0x39];
 
-        byte[] firstHash = new Crc(standard).ComputeHash(first);
+        var firstHash = new Crc(standard).ComputeHash(first);
 
         Crc resumer = new(standard);
-        byte[] resumed = resumer.ComputeHashFrom(firstHash, rest);
+        var resumed = resumer.ComputeHashFrom(firstHash, rest);
 
-        byte[] combined = new Crc(standard).ComputeHash(RevEngCheckInput);
+        var combined = new Crc(standard).ComputeHash(s_revEngCheckInput);
         CollectionAssert.AreEqual(combined, resumed);
     }
 
@@ -48,17 +48,17 @@ public partial class CrcTests
     [TestMethod]
     public void ComputeHashFrom_WhenOffsetLengthSlicesNewData_ShouldMatchFullCombinedHash()
     {
-        byte[] first = new byte[] { 0x31, 0x32, 0x33, 0x34 };
-        byte[] newData = new byte[] { 0xDE, 0xAD, 0x35, 0x36, 0x37, 0x38, 0x39, 0xBE, 0xEF };
-        int offset = 2;
-        int length = 5;
+        byte[] first = [0x31, 0x32, 0x33, 0x34];
+        byte[] newData = [0xDE, 0xAD, 0x35, 0x36, 0x37, 0x38, 0x39, 0xBE, 0xEF];
+        var offset = 2;
+        var length = 5;
 
-        byte[] firstHash = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(first);
+        var firstHash = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(first);
 
         Crc resumer = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] resumed = resumer.ComputeHashFrom(firstHash, newData, offset, length);
+        var resumed = resumer.ComputeHashFrom(firstHash, newData, offset, length);
 
-        byte[] combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(RevEngCheckInput);
+        var combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(s_revEngCheckInput);
         CollectionAssert.AreEqual(combined, resumed);
     }
 
@@ -71,9 +71,9 @@ public partial class CrcTests
     public void ComputeHashFrom_WhenPreviousHashByteArrayIsNull_ShouldThrowArgumentNullException()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] newData = new byte[] { 0x01 };
+        byte[] newData = [0x01];
 
-        var ex = Assert.ThrowsExactly<System.ArgumentNullException>(
+        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(
             () => crc.ComputeHashFrom(null!, newData));
         Assert.AreEqual("previousHash", ex.ParamName);
     }
@@ -87,9 +87,9 @@ public partial class CrcTests
     public void ComputeHashFrom_WhenNewDataByteArrayIsNull_ShouldThrowArgumentNullException()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] previousHash = new byte[crc.HashLengthInBytes];
+        var previousHash = new byte[crc.HashLengthInBytes];
 
-        var ex = Assert.ThrowsExactly<System.ArgumentNullException>(
+        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(
             () => crc.ComputeHashFrom(previousHash, null!));
         Assert.AreEqual("newData", ex.ParamName);
     }
@@ -103,9 +103,9 @@ public partial class CrcTests
     public void ComputeHashFrom_WhenPreviousHashIsNull_ForOffsetOverload_ShouldThrowArgumentNullException()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] newData = new byte[] { 0x01, 0x02, 0x03 };
+        byte[] newData = [0x01, 0x02, 0x03];
 
-        var ex = Assert.ThrowsExactly<System.ArgumentNullException>(
+        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(
             () => crc.ComputeHashFrom(null!, newData, 0, newData.Length));
         Assert.AreEqual("previousHash", ex.ParamName);
     }
@@ -119,9 +119,9 @@ public partial class CrcTests
     public void ComputeHashFrom_WhenNewDataIsNull_ForOffsetOverload_ShouldThrowArgumentNullException()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] previousHash = new byte[crc.HashLengthInBytes];
+        var previousHash = new byte[crc.HashLengthInBytes];
 
-        var ex = Assert.ThrowsExactly<System.ArgumentNullException>(
+        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(
             () => crc.ComputeHashFrom(previousHash, null!, 0, 0));
         Assert.AreEqual("newData", ex.ParamName);
     }
@@ -138,11 +138,11 @@ public partial class CrcTests
     public void TryComputeHashFrom_WhenPreviousHashLengthMismatches_ShouldThrowArgumentException(int lengthDelta)
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] previousHash = new byte[crc.HashLengthInBytes + lengthDelta];
-        byte[] newData = new byte[] { 0x01 };
-        byte[] destination = new byte[crc.HashLengthInBytes];
+        var previousHash = new byte[crc.HashLengthInBytes + lengthDelta];
+        byte[] newData = [0x01];
+        var destination = new byte[crc.HashLengthInBytes];
 
-        var ex = Assert.ThrowsExactly<System.ArgumentException>(
+        ArgumentException ex = Assert.ThrowsExactly<System.ArgumentException>(
             () => crc.TryComputeHashFrom(previousHash, newData, destination, out _));
         Assert.AreEqual("previousHash", ex.ParamName);
     }
@@ -155,11 +155,11 @@ public partial class CrcTests
     public void TryComputeHashFrom_WhenDestinationIsTooSmall_ShouldReturnFalseAndWriteZeroBytes()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] previousHash = new byte[crc.HashLengthInBytes];
-        byte[] newData = new byte[] { 0x01, 0x02, 0x03 };
-        byte[] destination = new byte[crc.HashLengthInBytes - 1];
+        var previousHash = new byte[crc.HashLengthInBytes];
+        byte[] newData = [0x01, 0x02, 0x03];
+        var destination = new byte[crc.HashLengthInBytes - 1];
 
-        bool success = crc.TryComputeHashFrom(previousHash, newData, destination, out int written);
+        var success = crc.TryComputeHashFrom(previousHash, newData, destination, out var written);
 
         Assert.IsFalse(success);
         Assert.AreEqual(0, written);
@@ -174,17 +174,17 @@ public partial class CrcTests
     public void TryComputeHashFrom_WhenDestinationIsExactSize_ShouldReturnTrueAndWriteExpectedHash()
     {
         Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        byte[] first = new byte[] { 0x31, 0x32, 0x33, 0x34 };
-        byte[] rest = new byte[] { 0x35, 0x36, 0x37, 0x38, 0x39 };
-        byte[] firstHash = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(first);
-        byte[] destination = new byte[crc.HashLengthInBytes];
+        byte[] first = [0x31, 0x32, 0x33, 0x34];
+        byte[] rest = [0x35, 0x36, 0x37, 0x38, 0x39];
+        var firstHash = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(first);
+        var destination = new byte[crc.HashLengthInBytes];
 
-        bool success = crc.TryComputeHashFrom(firstHash, rest, destination, out int written);
+        var success = crc.TryComputeHashFrom(firstHash, rest, destination, out var written);
 
         Assert.IsTrue(success);
         Assert.AreEqual(crc.HashLengthInBytes, written);
 
-        byte[] combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(RevEngCheckInput);
+        var combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(s_revEngCheckInput);
         CollectionAssert.AreEqual(combined, destination);
     }
 

@@ -1,16 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fletcher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-namespace Bodu.IO.Hashing.Checksums;
 
 using Bodu.Extensions;
 using Bodu.IO.Hashing;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Provides a base class for the Fletcher checksum family (Fletcher-16, Fletcher-32, Fletcher-64).
@@ -64,13 +64,13 @@ public abstract class Fletcher<TSelf>
     : BlockNonCryptographicHashAlgorithm<TSelf>
     where TSelf : Fletcher<TSelf>, new()
 {
-    private static readonly int[] ValidHashSizes = { 16, 32, 64 };
+    private static readonly int[] s_validHashSizes = { 16, 32, 64 };
 
-    private readonly int hashSizeBits;
-    private readonly ulong modulus;
+    private readonly int _hashSizeBits;
+    private readonly ulong _modulus;
 
-    private ulong partA;
-    private ulong partB;
+    private ulong _partA;
+    private ulong _partB;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Fletcher{TSelf}" /> class with the specified hash size.
@@ -79,18 +79,18 @@ public abstract class Fletcher<TSelf>
     /// <exception cref="ArgumentException">Thrown if <paramref name="hashSize" /> is not 16, 32, or 64.</exception>
     protected Fletcher(int hashSize)
         : base(
-            hashLengthInBytes: ValidHashSizes.Contains(hashSize)
+            hashLengthInBytes: s_validHashSizes.Contains(hashSize)
                 ? hashSize / 8
                 : throw new ArgumentException(
                     string.Format(
                         "Invalid hash size: {0}. Valid sizes are: {1}.",
                         hashSize,
-                        string.Join(", ", ValidHashSizes)),
+                        string.Join(", ", s_validHashSizes)),
                     nameof(hashSize)),
             blockSize: hashSize / 16)
     {
-        this.hashSizeBits = hashSize;
-        this.modulus = (1UL << (hashSize / 2)) - 1;
+        this._hashSizeBits = hashSize;
+        this._modulus = (1UL << (hashSize / 2)) - 1;
         this.AlgorithmName = $"Fletcher-{hashSize}";
     }
 
@@ -103,16 +103,16 @@ public abstract class Fletcher<TSelf>
     /// <inheritdoc />
     protected override void ResetState()
     {
-        this.partA = 0;
-        this.partB = 0;
+        this._partA = 0;
+        this._partB = 0;
     }
 
     /// <inheritdoc />
     protected override TSelf Clone()
     {
         TSelf clone = new TSelf();
-        clone.partA = this.partA;
-        clone.partB = this.partB;
+        clone._partA = this._partA;
+        clone._partB = this._partB;
         clone.CopyResidualStateFrom(this);
         return clone;
     }
@@ -135,15 +135,15 @@ public abstract class Fletcher<TSelf>
             b |= ((ulong)block[i]) << ((this.BlockSizeBytes - (i + 1)) << 3);
         }
 
-        this.partA = (this.partA + b) % this.modulus;
-        this.partB = (this.partB + this.partA) % this.modulus;
+        this._partA = (this._partA + b) % this._modulus;
+        this._partB = (this._partB + this._partA) % this._modulus;
     }
 
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        ulong finalHash = (this.partA << (this.hashSizeBits / 2)) | this.partB;
-        return finalHash.GetBytes().SliceInternal(0, this.hashSizeBits / 8);
+        ulong finalHash = (this._partA << (this._hashSizeBits / 2)) | this._partB;
+        return finalHash.GetBytes().SliceInternal(0, this._hashSizeBits / 8);
     }
 
     /// <inheritdoc />

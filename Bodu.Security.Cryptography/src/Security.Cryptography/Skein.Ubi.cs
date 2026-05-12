@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein.Ubi.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public abstract partial class Skein<T>
     /// hash configurations must equal the words returned here when the algorithm is constructed with no key and the
     /// matching output size.
     /// </summary>
-    /// <returns>A defensive copy of the chaining-value words that <see cref="Initialize" /> would seed the state with.</returns>
+    /// <returns>A defensive copy of the chaining-value words that <see cref="Initialize"/> would seed the state with.</returns>
     /// <remarks>
     /// The first call computes and caches the IV; subsequent calls return clones of the cached value. Mutating the
     /// returned array does not affect the algorithm's internal state.
@@ -31,10 +31,10 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
-    /// Applies a single Skein <c>UBI</c> (Unique Block Iteration) compression step that folds <paramref name="block" />
+    /// Applies a single Skein <c>UBI</c> (Unique Block Iteration) compression step that folds <paramref name="block"/>
     /// into the chaining state using the supplied tweak fields.
     /// </summary>
-    /// <param name="block">The block to absorb. Must be exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes" /> bytes long.</param>
+    /// <param name="block">The block to absorb. Must be exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes"/> bytes long.</param>
     /// <param name="type">The UBI block type, which occupies bits 120..125 of the tweak.</param>
     /// <param name="first">Whether this is the first UBI call in the current stage. Sets bit 126 of the tweak.</param>
     /// <param name="final">Whether this is the final UBI call in the current stage. Sets bit 127 of the tweak.</param>
@@ -62,12 +62,12 @@ public abstract partial class Skein<T>
         ReadOnlySpan<ulong> cipherWords = MemoryMarshal.Cast<byte, ulong>(this._ubiCipherOutput);
         ReadOnlySpan<ulong> blockWords = MemoryMarshal.Cast<byte, ulong>(block);
 
-        for (int i = 0; i < stateWords.Length; i++)
+        for (var i = 0; i < stateWords.Length; i++)
             stateWords[i] = cipherWords[i] ^ blockWords[i];
     }
 
     /// <summary>
-    /// Packs the 128-bit Skein tweak into 16 bytes ready for <see cref="ThreefishBlockCipher.Rekey" />.
+    /// Packs the 128-bit Skein tweak into 16 bytes ready for <see cref="ThreefishBlockCipher.Rekey"/>.
     /// </summary>
     /// <param name="destination">A 16-byte buffer that will receive the packed tweak.</param>
     /// <param name="position">The position field (cumulative stage byte count through the current block).</param>
@@ -79,28 +79,28 @@ public abstract partial class Skein<T>
     {
         // T0 carries the low 64 bits of the position; the upper 32 bits of the 96-bit position field are always zero
         // for sequential hashing, so the derived T1 simply encodes the block type and the first/final flags.
-        ulong t1 = ((ulong)(byte)type << 56)
+        var t1 = ((ulong)(byte)type << 56)
             | (first ? 1UL << 62 : 0UL)
             | (final ? 1UL << 63 : 0UL);
 
         BinaryPrimitives.WriteUInt64LittleEndian(destination, position);
-        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(sizeof(ulong)), t1);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[sizeof(ulong)..], t1);
     }
 
     /// <summary>
     /// Builds the 32-byte configuration block defined by Skein 1.3 §3.5.1 and zero-pads it out to the current state
     /// size.
     /// </summary>
-    /// <param name="destination">A buffer of <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes" /> bytes that receives the packed configuration block.</param>
+    /// <param name="destination">A buffer of <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes"/> bytes that receives the packed configuration block.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void BuildConfigurationBlock(Span<byte> destination)
     {
         destination.Clear();
         BinaryPrimitives.WriteUInt32LittleEndian(destination, SchemaIdentifier);
-        BinaryPrimitives.WriteUInt16LittleEndian(destination.Slice(4), SchemaVersion);
+        BinaryPrimitives.WriteUInt16LittleEndian(destination[4..], SchemaVersion);
 
         // Bytes 6..7 are reserved and remain zero. Bytes 8..15 encode the output size in bits as a little-endian u64.
-        BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(8), (ulong)this.HashSizeValue);
+        BinaryPrimitives.WriteUInt64LittleEndian(destination[8..], (ulong)this.HashSizeValue);
 
         // Tree-related fields at offsets 16..18 remain zero for sequential hashing.
     }
@@ -131,17 +131,17 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
-    /// Runs the Skein-MAC <c>KEY</c> UBI phase, absorbing <paramref name="key" /> in state-sized blocks with zero
+    /// Runs the Skein-MAC <c>KEY</c> UBI phase, absorbing <paramref name="key"/> in state-sized blocks with zero
     /// padding on the final partial block when required.
     /// </summary>
     /// <param name="key">The key material to absorb.</param>
     private void AbsorbKeyPhase(ReadOnlySpan<byte> key)
     {
         Span<byte> block = stackalloc byte[this.BlockSizeBytes];
-        ulong absorbed = 0UL;
-        bool first = true;
-        int remaining = key.Length;
-        int offset = 0;
+        var absorbed = 0UL;
+        var first = true;
+        var remaining = key.Length;
+        var offset = 0;
 
         while (remaining > this.BlockSizeBytes)
         {
@@ -155,7 +155,7 @@ public abstract partial class Skein<T>
         }
 
         // Final key block: remaining is in [0..blockSize]; an empty key is not allowed to reach this method.
-        int finalLength = remaining;
+        var finalLength = remaining;
         block.Clear();
         key.Slice(offset, finalLength).CopyTo(block);
         absorbed += (ulong)finalLength;
@@ -164,20 +164,20 @@ public abstract partial class Skein<T>
 
     /// <summary>
     /// Absorbs message bytes into the chaining state using a one-block lag so that the last UBI call in the message
-    /// phase can be correctly flagged as <c>Final</c> at <see cref="HashFinal" /> time.
+    /// phase can be correctly flagged as <c>Final</c> at <see cref="HashFinal"/> time.
     /// </summary>
     /// <param name="source">The next chunk of input data.</param>
     private void AbsorbMessage(ReadOnlySpan<byte> source)
     {
-        int blockSize = this.BlockSizeBytes;
+        var blockSize = this.BlockSizeBytes;
 
         // Merge the tail of the previous call with the head of this one until we hold a full block of pending data.
         if (this._pendingBytes > 0 && this._pendingBytes + source.Length > blockSize)
         {
-            int toCopy = blockSize - this._pendingBytes;
-            source.Slice(0, toCopy).CopyTo(this._pendingBlock.AsSpan(this._pendingBytes));
+            var toCopy = blockSize - this._pendingBytes;
+            source[..toCopy].CopyTo(this._pendingBlock.AsSpan(this._pendingBytes));
             this._pendingBytes = blockSize;
-            source = source.Slice(toCopy);
+            source = source[toCopy..];
 
             // Only flush the pending block once we know additional bytes exist to distinguish it from the Final block.
             this._messageBytesProcessed += (ulong)blockSize;
@@ -197,13 +197,13 @@ public abstract partial class Skein<T>
         {
             this._messageBytesProcessed += (ulong)blockSize;
             this.Ubi(
-                source.Slice(0, blockSize),
+                source[..blockSize],
                 SkeinTweakType.Msg,
                 first: !this._hasProcessedAnyMessageBlock,
                 final: false,
                 position: this._messageBytesProcessed);
             this._hasProcessedAnyMessageBlock = true;
-            source = source.Slice(blockSize);
+            source = source[blockSize..];
         }
 
         // Buffer the trailing bytes (which may form a full block or a partial one); they are flushed by HashFinal.
@@ -216,9 +216,9 @@ public abstract partial class Skein<T>
 
     /// <summary>
     /// Runs the Skein output UBI chain against the finalized chaining value, emitting consecutive state-sized output
-    /// fragments until <paramref name="destination" /> is filled.
+    /// fragments until <paramref name="destination"/> is filled.
     /// </summary>
-    /// <param name="destination">The digest buffer, of length <see cref="System.Security.Cryptography.HashAlgorithm.HashSize" /> / 8.</param>
+    /// <param name="destination">The digest buffer, of length <see cref="System.Security.Cryptography.HashAlgorithm.HashSize"/> / 8.</param>
     /// <remarks>
     /// <para>
     /// Each output call saves the final chaining value and re-runs UBI over a zero-filled block whose first eight bytes
@@ -229,15 +229,15 @@ public abstract partial class Skein<T>
     /// </remarks>
     private void GenerateOutput(Span<byte> destination)
     {
-        int blockSize = this.BlockSizeBytes;
-        int stateWords = this._state.Length;
+        var blockSize = this.BlockSizeBytes;
+        var stateWords = this._state.Length;
 
         Span<ulong> savedChainingValue = stackalloc ulong[stateWords];
         this._state.AsSpan().CopyTo(savedChainingValue);
 
         Span<byte> outputBlock = stackalloc byte[blockSize];
-        int written = 0;
-        ulong counter = 0UL;
+        var written = 0;
+        var counter = 0UL;
 
         while (written < destination.Length)
         {
@@ -249,9 +249,9 @@ public abstract partial class Skein<T>
 
             this.Ubi(outputBlock, SkeinTweakType.Out, first: true, final: true, position: sizeof(ulong));
 
-            int remaining = destination.Length - written;
-            int toCopy = remaining < blockSize ? remaining : blockSize;
-            MemoryMarshal.AsBytes(this._state.AsSpan()).Slice(0, toCopy).CopyTo(destination.Slice(written));
+            var remaining = destination.Length - written;
+            var toCopy = remaining < blockSize ? remaining : blockSize;
+            MemoryMarshal.AsBytes(this._state.AsSpan())[..toCopy].CopyTo(destination[written..]);
             written += toCopy;
             counter++;
         }

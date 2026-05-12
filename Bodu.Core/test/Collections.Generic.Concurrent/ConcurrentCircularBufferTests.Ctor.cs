@@ -56,7 +56,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenAllowOverwriteTrueAndSourceFits_ShouldPreserveAllItems()
     {
-        var source = Enumerable.Range(10, 3).Select(i => new TestItem(i));
+        IEnumerable<TestItem> source = Enumerable.Range(10, 3).Select(i => new TestItem(i));
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 5, allowOverwrite: true);
 
         var values = buffer.ToArray().Select(x => x.Value).ToArray();
@@ -121,7 +121,7 @@ public partial class ConcurrentCircularBufferTests
     public void Ctor_WhenCapacityIsLessThanTwo_WithSourceEnumerable_ShouldThrowArgumentOutOfRange(
         int capacity, bool allowOverwrite)
     {
-        var empty = Array.Empty<TestItem>();
+        TestItem[] empty = Array.Empty<TestItem>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -155,7 +155,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenConstructedFromEnumerable_WithCapacitySmallerThanSource_ShouldTrimToMostRecent()
     {
-        var source = Enumerable.Range(1, 5).Select(i => new TestItem(i));
+        IEnumerable<TestItem> source = Enumerable.Range(1, 5).Select(i => new TestItem(i));
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, 3); // allowOverwrite defaults to true
 
         var values = buffer.ToArray().Select(x => x.Value).ToArray();
@@ -171,7 +171,7 @@ public partial class ConcurrentCircularBufferTests
         var source = new TestItem?[] { new TestItem(1), null, new TestItem(3) };
         var buffer = new ConcurrentCircularBuffer<TestItem?>(source, 4);
 
-        var arr = buffer.ToArray();
+        TestItem?[] arr = buffer.ToArray();
         Assert.AreEqual(3, arr.Length);
         Assert.IsNotNull(arr[0]);
         Assert.IsNull(arr[1]);
@@ -184,7 +184,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenConstructedFromEnumerableWithCapacityAndFlag_ShouldRespectAllValues()
     {
-        var source = Enumerable.Range(1, 3).Select(i => new TestItem(i));
+        IEnumerable<TestItem> source = Enumerable.Range(1, 3).Select(i => new TestItem(i));
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, 3, false);
 
         Assert.AreEqual(3, buffer.Capacity);
@@ -239,7 +239,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteFalse_ShouldThrowInvalidOperation()
     {
-        var source = Enumerable.Range(1, 5).Select(i => new TestItem(i));
+        IEnumerable<TestItem> source = Enumerable.Range(1, 5).Select(i => new TestItem(i));
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -253,7 +253,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteTrue_ShouldKeepMostRecentInFifoOrder()
     {
-        var source = Enumerable.Range(1, 8).Select(i => new TestItem(i));
+        IEnumerable<TestItem> source = Enumerable.Range(1, 8).Select(i => new TestItem(i));
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 5, allowOverwrite: true);
 
         var values = buffer.ToArray().Select(x => x.Value).ToArray();
@@ -268,7 +268,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenSourceExceedsCapacity_WithAllowOverwriteTrue_ShouldNotRaiseEvictionEvents()
     {
-        var source = Enumerable.Range(1, 10).Select(i => new TestItem(i));
+        IEnumerable<TestItem> source = Enumerable.Range(1, 10).Select(i => new TestItem(i));
         var evicted = 0;
 
         var buffer = new ConcurrentCircularBuffer<TestItem>(source, capacity: 5, allowOverwrite: true);
@@ -288,7 +288,7 @@ public partial class ConcurrentCircularBufferTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = new ConcurrentCircularBuffer<TestItem>(Array.Empty<TestItem>(), -1);
+            _ = new ConcurrentCircularBuffer<TestItem>([], -1);
         });
     }
 
@@ -299,7 +299,7 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void Ctor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
     {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(Array.Empty<TestItem>(), 5);
+        var buffer = new ConcurrentCircularBuffer<TestItem>([], 5);
 
         Assert.AreEqual(0, buffer.Count);
         Assert.AreEqual(5, buffer.Capacity);
@@ -321,7 +321,7 @@ public partial class ConcurrentCircularBufferTests
 
         buffer.Enqueue(new TestItem(5));
 
-        int[] values = buffer.ToArray().Select(x => x.Value).ToArray();
+        var values = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 2, 3, 4, 5 }, values);
     }
 

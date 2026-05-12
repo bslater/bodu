@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CtrModeTransformTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,13 +20,13 @@ public sealed partial class CtrModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var initialCounter = new byte[ExpectedBlockSize];
-        for (int i = 0; i < initialCounter.Length; i++) initialCounter[i] = (byte)(i + 1);
+        for (var i = 0; i < initialCounter.Length; i++) initialCounter[i] = (byte)(i + 1);
 
         var transform = new CtrModeTransform(cipher, initialCounter);
 
         // Run a block so the counter has been incremented past its initial state.
-        byte[] input = new byte[ExpectedBlockSize];
-        byte[] output = new byte[ExpectedBlockSize];
+        var input = new byte[ExpectedBlockSize];
+        var output = new byte[ExpectedBlockSize];
         transform.Transform(input, output, encrypt: true);
 
         transform.Dispose();
@@ -36,8 +36,8 @@ public sealed partial class CtrModeTransformTests
         FieldInfo initialField = typeof(CtrModeTransform).GetField(
             "_initialCounter", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
-        byte[] counter = (byte[])counterField.GetValue(transform)!;
-        byte[] initial = (byte[])initialField.GetValue(transform)!;
+        var counter = (byte[])counterField.GetValue(transform)!;
+        var initial = (byte[])initialField.GetValue(transform)!;
 
         CollectionAssert.AreEqual(new byte[ExpectedBlockSize], counter,
             "CtrModeTransform.Dispose must zero the running counter.");

@@ -4,7 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Test;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -83,35 +85,86 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public virtual IEnumerable<TVariant> GetBlockCipherVariants() =>
         Enum.GetValues(typeof(TVariant)).Cast<TVariant>();
 
+
     /// <summary>
-    /// Returns public writable properties of the algorithm under test for use in dynamic property validation.
+    /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
+    /// properties that are intentionally accessible after disposal.
     /// </summary>
-    /// <returns>
-    /// A collection of <see cref="PropertyInfo" /> arrays, each containing a single writable property. If no writable properties are
-    /// found, a single <see langword="null" /> entry is returned to indicate an inconclusive test case.
-    /// </returns>
-    /// <remarks>
-    /// This method supports validation of runtime immutability rules for cryptographic algorithms. It is commonly used to test whether
-    /// modifying certain properties after hashing has begun results in an exception.
-    /// </remarks>
-    protected static IEnumerable<object[]> GetWritableProperties()
-    {
-        var algorithmType = typeof(TCipher);
-        var properties = algorithmType
-            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(p => p.CanRead && p.CanWrite && p.GetIndexParameters().Length == 0)
-            .Where(p => p.SetMethod?.IsPublic == true)
-            .ToList();
+    protected virtual IReadOnlyCollection<string> ExcludedFieldNames => [];
 
-        if (properties.Count == 0)
-        {
-            yield return new object[] { null! };
-            yield break;
-        }
+    /// <summary>
+    /// The default set of property names excluded from disposal validation. Shared by the static
+    /// <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual instance members.
+    /// </summary>
+    private IReadOnlyCollection<string> GetExcludedFieldNames() =>
+        ExcludedFieldNames
+            .Concat([
+                // excluded field names that are exposed in Bodu and .Net types
+                "disposed",
+                "_disposed"
+            ])
+            .Distinct()
+            .ToArray();
 
-        foreach (var prop in properties)
-            yield return new object[] { prop };
-    }
+    /// <summary>
+    /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
+    /// </summary>
+    public static IEnumerable<object[]> GetAlgorithmFields() =>
+        TestHelpers.GetFieldInfoForType<TCipher>(
+            excludeFields: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
+
+
+    /// <summary>
+    /// The default set of property names excluded from disposal validation. Shared by the static
+    /// <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual instance members.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedReadablePropertyNames => [];
+
+    /// <summary>
+    /// The default set of property names excluded from disposal validation. Shared by the static
+    /// <see cref="DynamicDataAttribute" /> data sources, which cannot access virtual instance members.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedWriteablePropertyNames => [];
+
+    /// <summary>
+    /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
+    /// properties that are intentionally accessible after disposal.
+    /// </summary>
+    private IReadOnlyCollection<string> GetExcludedReadablePropertyNames() =>
+        ExcludedReadablePropertyNames
+            .Concat([
+                // excluded property names
+            ])
+            .Distinct()
+            .ToArray();
+
+    /// <summary>
+    /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
+    /// properties that are intentionally accessible after disposal.
+    /// </summary>
+    private IReadOnlyCollection<string> GetExcludedWriteablePropertyNames() =>
+        ExcludedWriteablePropertyNames
+            .Concat([
+                // excluded property names
+            ])
+            .Distinct()
+            .ToArray();
+
+    /// <summary>
+    /// Returns all publicly readable properties on <typeparamref name="TCipher" /> as test data for disposal validation.
+    /// </summary>
+    public static IEnumerable<object[]> GetAlgorithmReadableProperties() =>
+        TestHelpers.GetPropertyInfoForType<TCipher>(
+            TestHelpers.PropertyAccessMode.Read,
+            excludeProperties: new TTest().GetExcludedReadablePropertyNames()?.ToArray() ?? []);
+
+    /// <summary>
+    /// Returns all publicly writable properties on <typeparamref name="TCipher" /> as test data for disposal validation.
+    /// </summary>
+    public static IEnumerable<object[]> GetAlgorithmWritableProperties() =>
+        TestHelpers.GetPropertyInfoForType<TCipher>(
+            TestHelpers.PropertyAccessMode.Write,
+            excludeProperties: new TTest().GetExcludedWriteablePropertyNames()?.ToArray() ?? []);
 
     /// <summary>
     /// Creates a new instance of the block cipher engine under test using the default variant.

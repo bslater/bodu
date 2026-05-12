@@ -25,9 +25,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public async Task ComputeHashAsync_LongStream_WithVariousLengths_ShouldSucceed(int length)
     {
         using var stream = new FixedLengthIncrementingStream(length);
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
-        byte[] result = await algorithm.ComputeHashAsync(stream);
+        var result = await algorithm.ComputeHashAsync(stream);
 
         Assert.IsNotNull(result);
         Assert.AreEqual(algorithm.HashSize / 8, result.Length);
@@ -41,7 +41,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         using var cancellationSource = new CancellationTokenSource(1000); // cancel after 1 second
         using var stream = new ThrottledIncrementingByteStream(10000); // delayed stream that is 10 seconds
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         await Task.WhenAny(
             Assert.ThrowsExactlyAsync<OperationCanceledException>(() =>
@@ -57,7 +57,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public async Task ComputeHashAsync_WhenCancelledBeforeAwait_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         var stream = new FixedLengthIncrementingStream(int.MaxValue);
 
         // create a canellation token and cancel it before computation starts
@@ -67,7 +67,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 #else
         cancellationTokenSource.Cancel();
 #endif
-        var task = algorithm.ComputeHashAsync(stream, cancellationTokenSource.Token);
+        Task<byte[]> task = algorithm.ComputeHashAsync(stream, cancellationTokenSource.Token);
 
         await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => task);
 
@@ -82,7 +82,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public async Task ComputeHashAsync_WhenCancelledTokenIsPassed_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(new byte[4096]);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
@@ -102,11 +102,11 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         const int length = 1 * 1024 * 1024; // 1 MB
         using var streamA = new FixedLengthIncrementingStream(length);
         using var streamB = new FixedLengthIncrementingStream(length);
-        using var algorithmA = CreateAlgorithm();
-        using var algorithmB = CreateAlgorithm();
+        using TAlgorithm algorithmA = CreateAlgorithm();
+        using TAlgorithm algorithmB = CreateAlgorithm();
 
-        byte[] hashA = await algorithmA.ComputeHashAsync(streamA);
-        byte[] hashB = await algorithmB.ComputeHashAsync(streamB);
+        var hashA = await algorithmA.ComputeHashAsync(streamA);
+        var hashB = await algorithmB.ComputeHashAsync(streamB);
 
         CollectionAssert.AreEqual(hashA, hashB, "Hashes from identical input should match.");
     }
@@ -117,10 +117,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public async Task ComputeHashAsync_WhenStreamIsEmpty_ShouldReturnExpectedHash()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(Array.Empty<byte>());
 
-        byte[] actual = await algorithm.ComputeHashAsync(stream);
+        var actual = await algorithm.ComputeHashAsync(stream);
 
         CollectionAssert.AreEqual(ExpectedEmptyInputHash, actual);
     }
@@ -134,7 +134,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         const int length = 1 * 1024 * 1024; // 1 MB
         using var stream = new FixedLengthIncrementingStream(length);
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         await algorithm.ComputeHashAsync(stream);
 
@@ -147,7 +147,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public async Task ComputeHashAsync_WhenStreamIsNull_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
         {
             await algorithm.ComputeHashAsync(null!);
@@ -178,10 +178,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(ComputeHashNamedInputTestData))]
     public async Task ComputeHashAsync_WhenUsingNamedInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)
     {
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
         await using var stream = new MemoryStream(input);
 
-        byte[] actual = await algorithm.ComputeHashAsync(stream);
+        var actual = await algorithm.ComputeHashAsync(stream);
 
         TestHelpers.TraceWriteIfNotEqual(expected, actual);
 
@@ -203,7 +203,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         var monitoredStream = new MonitoringStream(baseStream);
 
         // Compute the hash asynchronously
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         await algorithm.ComputeHashAsync(monitoredStream);
 
         // Verify the total number of bytes read matches the expected input length
@@ -225,7 +225,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHashAsync_WhenAlgorithmDisposed_ShouldThrowSynchronouslyAndNotReadStream()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         using var stream = new ThrowOnReadStream();

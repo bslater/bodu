@@ -4,13 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Extensions;
-
 using Bodu;
 using System;
 using System.IO;
 using System.IO.Hashing;
 using System.Text;
+
+namespace Bodu.IO.Hashing.Extensions;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {

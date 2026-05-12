@@ -20,7 +20,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(10));
         buffer.Enqueue(new TestItem(20));
 
-        var p1 = buffer.Peek();
+        TestItem p1 = buffer.Peek();
         Assert.AreEqual(10, p1.Value);
 
         // Enqueue will fail; Peek should still show 10
@@ -28,7 +28,7 @@ public partial class ConcurrentCircularBufferTests
         {
             buffer.Enqueue(new TestItem(30));
         });
-        var p2 = buffer.Peek();
+        TestItem p2 = buffer.Peek();
         Assert.AreEqual(10, p2.Value, "Oldest should not change when enqueue fails.");
     }
 
@@ -44,11 +44,11 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(3));
 
         // Oldest = 1
-        var seen = buffer.Peek();
+        TestItem seen = buffer.Peek();
         Assert.AreEqual(1, seen.Value, "Peek should see current oldest when full.");
 
         buffer.Enqueue(new TestItem(4)); // overwrites 1
-        var after = buffer.Peek();
+        TestItem after = buffer.Peek();
         Assert.AreEqual(2, after.Value, "After overwrite, new oldest should be 2.");
     }
 
@@ -61,7 +61,7 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(100));
 
-        var peeked = buffer.Peek();
+        TestItem peeked = buffer.Peek();
         Assert.AreEqual(100, peeked.Value, "Peek should return oldest value.");
         Assert.AreEqual(1, buffer.Count, "Peek must not remove the item.");
     }
@@ -79,7 +79,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Dequeue(); // evict 1
         buffer.Enqueue(new TestItem(4)); // wrap
 
-        var peeked = buffer.Peek();
+        TestItem peeked = buffer.Peek();
         Assert.AreEqual(2, peeked.Value, "After wrap, oldest should be 2.");
     }
 
@@ -103,16 +103,16 @@ public partial class ConcurrentCircularBufferTests
     public void Peek_WhenCalledDuringDraining_ShouldSometimesSucceedBeforeEmpty()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var start = new ManualResetEventSlim(false);
-        int success = 0;
-        int attempts = 0;
+        var success = 0;
+        var attempts = 0;
 
         var peeker = Task.Run(() =>
         {
             start.Set(); // signal: peeker is alive
-            for (int i = 0; i < 1000 && Volatile.Read(ref success) == 0; i++)
+            for (var i = 0; i < 1000 && Volatile.Read(ref success) == 0; i++)
             {
                 try
                 {
@@ -155,7 +155,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(2));
         var before = buffer.Count;
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
             _ = buffer.Peek();
 
         Assert.AreEqual(before, buffer.Count, "Peek must be non-destructive.");
@@ -168,14 +168,14 @@ public partial class ConcurrentCircularBufferTests
     public void Peek_WhenInterleavedWithClear_ShouldNotThrowAndMayReturnNewHead()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(8, allowOverwrite: true);
-        for (int i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var observedValues = new ConcurrentBag<int?>();
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 50; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(20);
@@ -185,11 +185,11 @@ public partial class ConcurrentCircularBufferTests
 
         var peeker = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)
+            for (var i = 0; i < 200; i++)
             {
                 try
                 {
-                    var x = buffer.Peek();
+                    TestItem x = buffer.Peek();
                     observedValues.Add(x?.Value);
                 }
                 catch (InvalidOperationException)
@@ -215,7 +215,7 @@ public partial class ConcurrentCircularBufferTests
     public void Peek_WhenManyThreadsPeekConcurrently_ShouldNeverThrowUnlessEmpty()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(16, allowOverwrite: true);
-        for (int i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 8; i++) buffer.Enqueue(new TestItem(i));
 
         var errors = new ConcurrentBag<Exception>();
 
@@ -266,7 +266,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(null);
         buffer.Enqueue(new TestItem(2));
 
-        var peeked = buffer.Peek();
+        TestItem? peeked = buffer.Peek();
         Assert.IsNull(peeked, "Peek should return null if oldest is null.");
         Assert.AreEqual(2, buffer.Count, "Peek must not remove null.");
     }
@@ -287,14 +287,14 @@ public partial class ConcurrentCircularBufferTests
         const int writerCount = 100;
         var buffer = new ConcurrentCircularBuffer<TestItem>(prefilledCount + writerCount + 10);
 
-        for (int i = 0; i < prefilledCount; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < prefilledCount; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
         var peekedItems = new ConcurrentBag<TestItem?>();
 
         var reader = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 try
                 {
@@ -309,7 +309,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (int i = prefilledCount; i < prefilledCount + writerCount; i++)
+            for (var i = prefilledCount; i < prefilledCount + writerCount; i++)
                 buffer.Enqueue(new TestItem(i));
         });
 

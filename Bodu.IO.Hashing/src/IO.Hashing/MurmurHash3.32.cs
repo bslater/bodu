@@ -1,13 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MurmurHash3.32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit (4-byte) non-cryptographic hash using the <c>MurmurHash3_x86_32</c> variant by Austin Appleby.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Whirlpool.Tables.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,30 +16,30 @@ public sealed partial class Whirlpool
 
     /// <summary>
     /// Returns the precomputed multiplication table and round keys for the requested
-    /// <paramref name="version" />, constructing them on first use.
+    /// <paramref name="version"/>, constructing them on first use.
     /// </summary>
     /// <param name="version">The Whirlpool revision whose tables are required.</param>
-    /// <returns>The cached <see cref="VariantTables" /> instance for <paramref name="version" />.</returns>
+    /// <returns>The cached <see cref="VariantTables"/> instance for <paramref name="version"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="version" /> is not a defined <see cref="WhirlpoolVersion" /> member.
+    /// Thrown if <paramref name="version"/> is not a defined <see cref="WhirlpoolVersion"/> member.
     /// </exception>
     /// <remarks>
     /// Each variant owns an independent multiplication table and round-key schedule derived from its own
     /// S-box and diffusion matrix. The tables are immutable once built, so safe publication via a simple
-    /// <see cref="Interlocked.CompareExchange{T}(ref T, T, T)" /> is sufficient.
+    /// <see cref="Interlocked.CompareExchange{T}(ref T, T, T)"/> is sufficient.
     /// </remarks>
     private static VariantTables GetTables(WhirlpoolVersion version)
     {
         switch (version)
         {
             case WhirlpoolVersion.WhirlpoolInfo1:
-                return s_tablesInfo1 ?? BuildAndCacheTables(ref s_tablesInfo1, SBoxWhirlpool0, MdsOriginal);
+                return s_tablesInfo1 ?? BuildAndCacheTables(ref s_tablesInfo1, s_sBoxWhirlpool0, s_mdsOriginal);
 
             case WhirlpoolVersion.WhirlpoolInfo2:
-                return s_tablesInfo2 ?? BuildAndCacheTables(ref s_tablesInfo2, BuildMiniBoxSBox(), MdsOriginal);
+                return s_tablesInfo2 ?? BuildAndCacheTables(ref s_tablesInfo2, BuildMiniBoxSBox(), s_mdsOriginal);
 
             case WhirlpoolVersion.WhirlpoolInfo3:
-                return s_tablesInfo3 ?? BuildAndCacheTables(ref s_tablesInfo3, BuildMiniBoxSBox(), MdsFinal);
+                return s_tablesInfo3 ?? BuildAndCacheTables(ref s_tablesInfo3, BuildMiniBoxSBox(), s_mdsFinal);
 
             default:
                 throw new ArgumentOutOfRangeException(nameof(version), version, null);
@@ -53,16 +53,16 @@ public sealed partial class Whirlpool
     /// <param name="slot">The static cache slot that receives the constructed tables.</param>
     /// <param name="sbox">The S-box selected for the variant.</param>
     /// <param name="mds">The diffusion row selected for the variant.</param>
-    /// <returns>The freshly constructed or already-cached <see cref="VariantTables" /> instance.</returns>
+    /// <returns>The freshly constructed or already-cached <see cref="VariantTables"/> instance.</returns>
     private static VariantTables BuildAndCacheTables(ref VariantTables? slot, byte[] sbox, byte[] mds)
     {
-        ulong[] mul = BuildMultiplicationTable(sbox, mds);
-        ulong[] constants = BuildRoundConstants(sbox);
+        var mul = BuildMultiplicationTable(sbox, mds);
+        var constants = BuildRoundConstants(sbox);
 
-        ulong[][] roundKeys = new ulong[RoundCount][];
-        for (int i = 0; i < RoundCount; i++)
+        var roundKeys = new ulong[RoundCount][];
+        for (var i = 0; i < RoundCount; i++)
         {
-            ulong[] rk = new ulong[8];
+            var rk = new ulong[8];
             rk[0] = constants[i];
             roundKeys[i] = rk;
         }
@@ -77,7 +77,7 @@ public sealed partial class Whirlpool
     private sealed class VariantTables
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="VariantTables" /> class.
+        /// Initializes a new instance of the <see cref="VariantTables"/> class.
         /// </summary>
         /// <param name="multiplication">The flat 8 × 256 multiplication table.</param>
         /// <param name="roundKeys">The ten round keys, each holding the round constant in column 0.</param>

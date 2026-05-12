@@ -215,6 +215,7 @@ dotnet_diagnostic.SA1101.severity = none
 # ---------------------------------------------------------------------------------------------------------------
 
 dotnet_diagnostic.CA1062.severity = warning    # Validate arguments of public methods
+dotnet_code_quality.CA1062.null_check_validation_methods = ThrowIfNull|ThrowIfNullOrEmpty|ThrowIfNullOrWhiteSpace
 dotnet_diagnostic.CA2208.severity = warning    # Instantiate ArgumentExceptions correctly
 
 # CA1510–CA1512 suggest switching to BCL ThrowIf* shorthands.  This codebase uses the
@@ -270,6 +271,11 @@ dotnet_diagnostic.SA1001.severity = warning # Commas should be spaced correctly
 # violation. The rule predates collection expression syntax and cannot be fixed at the
 # call site — suppression is the only option.
 dotnet_diagnostic.SA1010.severity = none
+
+# SA1011 incorrectly flags C# 8 nullable array types (byte[]?) as a spacing violation.
+# The rule predates nullable reference types; writing byte[] ? is syntactically invalid,
+# so the violation cannot be fixed at the call site — suppression is the only option.
+dotnet_diagnostic.SA1011.severity = none
 
 # IDE0290: Use primary constructor — suppressed; conflicts with XML <param> documentation standard.
 dotnet_diagnostic.IDE0290.severity = none

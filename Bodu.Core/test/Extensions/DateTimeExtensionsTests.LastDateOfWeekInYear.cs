@@ -20,7 +20,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfWeekInYearTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfWeekInYearTestData))]
     public void LastDateOfWeekInYear_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
         DateTime actual = input.LastDateOfWeekInYear(dayOfWeek);

@@ -22,7 +22,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.PreviousDateOfWeek(DateOnly, DayOfWeek)" /> returns the prior occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.PreviousDateOfWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.PreviousDateOfWeekTestData), typeof(DateTimeExtensionsTests))]
     public void PreviousDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateOnly, DayOfWeek targetDay, DateTime expectedDateOnly)
     {
         var input = DateOnly.FromDateTime(inputDateOnly);

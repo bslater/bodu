@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerpentBlockCipherBase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,17 +18,17 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Derived classes supply the state width (in 32-bit words), the round count, and their own <see cref="Encrypt" /> and
-/// <see cref="Decrypt" /> implementations. The base class exposes the Serpent S-boxes <c>S0..S7</c> and their inverses, the
-/// bitsliced linear transform <see cref="LinearTransform" /> and its inverse <see cref="InverseLinearTransform" />, and the
-/// round-key expansion helper <see cref="ExpandPrekeys" /> driven by the golden-ratio constant
+/// Derived classes supply the state width (in 32-bit words), the round count, and their own <see cref="Encrypt"/> and
+/// <see cref="Decrypt"/> implementations. The base class exposes the Serpent S-boxes <c>S0..S7</c> and their inverses, the
+/// bitsliced linear transform <see cref="LinearTransform"/> and its inverse <see cref="InverseLinearTransform"/>, and the
+/// round-key expansion helper <see cref="ExpandPrekeys"/> driven by the golden-ratio constant
 /// <c>phi = 0x9E3779B9</c>.
 /// </para>
 /// <para>
 /// External callers cannot derive new variants: the constructor and protected members are scoped <c>private protected</c>.
-/// Use <see cref="Serpent128Cipher" /> or one of the wide-block <see cref="Serpent256Cipher" /> / <see cref="Serpent512Cipher" />
-/// / <see cref="Serpent1024Cipher" /> types directly, or compose with <see cref="IBlockCipherModeTransform" /> via
-/// <see cref="BlockCipherModeFactory" />.
+/// Use <see cref="Serpent128Cipher"/> or one of the wide-block <see cref="Serpent256Cipher"/> / <see cref="Serpent512Cipher"/>
+/// / <see cref="Serpent1024Cipher"/> types directly, or compose with <see cref="IBlockCipherModeTransform"/> via
+/// <see cref="BlockCipherModeFactory"/>.
 /// </para>
 /// </remarks>
 public abstract partial class SerpentBlockCipherBase
@@ -42,13 +42,13 @@ public abstract partial class SerpentBlockCipherBase
     /// <summary>
     /// Indicates whether the instance has been disposed.
     /// </summary>
-    private protected bool disposed;
+    private protected bool _disposed;
 
     /// <summary>
     /// The eight Serpent S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.
     /// </summary>
-    private static readonly byte[] s_sBoxes = new byte[]
-    {
+    private static readonly byte[] s_sBoxes =
+    [
         // S0
         3, 8, 15, 1, 10, 6, 5, 11, 14, 13, 4, 2, 7, 0, 9, 12,
         // S1
@@ -65,13 +65,13 @@ public abstract partial class SerpentBlockCipherBase
         7, 2, 12, 5, 8, 4, 6, 11, 14, 9, 1, 15, 13, 3, 10, 0,
         // S7
         1, 13, 15, 0, 14, 8, 2, 11, 7, 4, 12, 10, 9, 3, 5, 6,
-    };
+    ];
 
     /// <summary>
     /// The eight Serpent inverse S-boxes, indexed <c>[sboxIndex * 16 + nibble]</c>.
     /// </summary>
-    private static readonly byte[] s_invSBoxes = new byte[]
-    {
+    private static readonly byte[] s_invSBoxes =
+    [
         // InvS0
         13, 3, 11, 0, 10, 6, 5, 12, 1, 14, 4, 7, 15, 9, 8, 2,
         // InvS1
@@ -88,10 +88,10 @@ public abstract partial class SerpentBlockCipherBase
         15, 10, 1, 13, 5, 3, 6, 0, 4, 9, 14, 7, 2, 12, 8, 11,
         // InvS7
         3, 0, 6, 13, 9, 14, 15, 8, 5, 12, 11, 7, 10, 1, 4, 2,
-    };
+    ];
 
     /// <summary>
-    /// Finalises the instance by releasing unmanaged resources before it is reclaimed by garbage collection.
+    /// Finalizes an instance of the <see cref="SerpentBlockCipherBase"/> class.
     /// </summary>
     ~SerpentBlockCipherBase()
     {
@@ -118,26 +118,33 @@ public abstract partial class SerpentBlockCipherBase
     /// Releases all internal buffers and sensitive material.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> when invoked from <see cref="Dispose()" />; <see langword="false" /> when invoked from the
+    /// <see langword="true"/> when invoked from <see cref="Dispose()"/>; <see langword="false"/> when invoked from the
     /// finaliser.
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
-        this.disposed = true;
+        this._disposed = true;
     }
 
     /// <summary>
-    /// Throws an exception if the instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has already been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfDisposed()
     {
-        ObjectDisposedException.ThrowIf(this.disposed, this);
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
+#endif
     }
 
     /// <summary>
-    /// Applies the Serpent S-box identified by <paramref name="sBoxIndex" /> to the four 32-bit words in bitsliced form.
+    /// Applies the Serpent S-box identified by <paramref name="sBoxIndex"/> to the four 32-bit words in bitsliced form.
     /// </summary>
     /// <param name="sBoxIndex">The S-box index in the range <c>0..7</c>.</param>
     /// <param name="x0">The first state word, modified in place.</param>
@@ -145,8 +152,8 @@ public abstract partial class SerpentBlockCipherBase
     /// <param name="x2">The third state word, modified in place.</param>
     /// <param name="x3">The fourth state word, modified in place.</param>
     /// <remarks>
-    /// Each of the 32 bit columns across the four words is treated as a 4-bit nibble (bit 0 from <paramref name="x0" />, bit 1
-    /// from <paramref name="x1" />, bit 2 from <paramref name="x2" />, bit 3 from <paramref name="x3" />) and mapped through the
+    /// Each of the 32 bit columns across the four words is treated as a 4-bit nibble (bit 0 from <paramref name="x0"/>, bit 1
+    /// from <paramref name="x1"/>, bit 2 from <paramref name="x2"/>, bit 3 from <paramref name="x3"/>) and mapped through the
     /// selected S-box. This is the canonical bitsliced S-box application used by Serpent and is intentionally portable rather
     /// than gate-optimised; correctness is anchored against the standard Serpent test vectors.
     /// </remarks>
@@ -156,9 +163,9 @@ public abstract partial class SerpentBlockCipherBase
         ReadOnlySpan<byte> table = s_sBoxes.AsSpan(sBoxIndex * 16, 16);
         uint y0 = 0, y1 = 0, y2 = 0, y3 = 0;
 
-        for (int i = 0; i < 32; i++)
+        for (var i = 0; i < 32; i++)
         {
-            int nibble = (int)(((x0 >> i) & 1u)
+            var nibble = (int)(((x0 >> i) & 1u)
                              | (((x1 >> i) & 1u) << 1)
                              | (((x2 >> i) & 1u) << 2)
                              | (((x3 >> i) & 1u) << 3));
@@ -177,7 +184,7 @@ public abstract partial class SerpentBlockCipherBase
     }
 
     /// <summary>
-    /// Applies the inverse of the Serpent S-box identified by <paramref name="sBoxIndex" /> to the four 32-bit words in
+    /// Applies the inverse of the Serpent S-box identified by <paramref name="sBoxIndex"/> to the four 32-bit words in
     /// bitsliced form.
     /// </summary>
     /// <param name="sBoxIndex">The S-box index in the range <c>0..7</c>.</param>
@@ -191,9 +198,9 @@ public abstract partial class SerpentBlockCipherBase
         ReadOnlySpan<byte> table = s_invSBoxes.AsSpan(sBoxIndex * 16, 16);
         uint y0 = 0, y1 = 0, y2 = 0, y3 = 0;
 
-        for (int i = 0; i < 32; i++)
+        for (var i = 0; i < 32; i++)
         {
-            int nibble = (int)(((x0 >> i) & 1u)
+            var nibble = (int)(((x0 >> i) & 1u)
                              | (((x1 >> i) & 1u) << 1)
                              | (((x2 >> i) & 1u) << 2)
                              | (((x3 >> i) & 1u) << 3));
@@ -259,9 +266,9 @@ public abstract partial class SerpentBlockCipherBase
     /// Runs the Serpent prekey recurrence to populate the prekey buffer.
     /// </summary>
     /// <param name="seed">
-    /// The first <paramref name="window" /> entries of <paramref name="prekeys" />, already seeded with the key material.
+    /// The first <paramref name="window"/> entries of <paramref name="prekeys"/>, already seeded with the key material.
     /// </param>
-    /// <param name="prekeys">The buffer receiving the expanded prekey sequence. Must start with <paramref name="seed" />.</param>
+    /// <param name="prekeys">The buffer receiving the expanded prekey sequence. Must start with <paramref name="seed"/>.</param>
     /// <param name="window">
     /// The recurrence window in words. Must be at least 8 to satisfy the Serpent recurrence indices <c>i-8, i-5, i-3, i-1</c>.
     /// </param>
@@ -276,15 +283,15 @@ public abstract partial class SerpentBlockCipherBase
     {
         seed.CopyTo(prekeys);
 
-        for (int i = 0; i + window < prekeys.Length; i++)
+        for (var i = 0; i + window < prekeys.Length; i++)
         {
-            uint value = prekeys[i] ^ prekeys[i + window - 5] ^ prekeys[i + window - 3] ^ prekeys[i + window - 1] ^ Phi ^ (uint)i;
+            var value = prekeys[i] ^ prekeys[i + window - 5] ^ prekeys[i + window - 3] ^ prekeys[i + window - 1] ^ Phi ^ (uint)i;
             prekeys[i + window] = BitOperations.RotateLeft(value, 11);
         }
     }
 
     /// <summary>
-    /// Returns the Serpent S-box index used by round-key <paramref name="roundIndex" /> in the key schedule.
+    /// Returns the Serpent S-box index used by round-key <paramref name="roundIndex"/> in the key schedule.
     /// </summary>
     /// <param name="roundIndex">The round-key index, in the range <c>0..R</c>.</param>
     /// <returns>The S-box index, in the range <c>0..7</c>.</returns>
@@ -297,7 +304,7 @@ public abstract partial class SerpentBlockCipherBase
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private protected static int KeyScheduleSBoxIndex(int roundIndex)
     {
-        int value = (3 - roundIndex) & 7;
+        var value = (3 - roundIndex) & 7;
         return value;
     }
 }

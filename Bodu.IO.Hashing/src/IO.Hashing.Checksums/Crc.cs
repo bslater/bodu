@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu;
 using Bodu.Extensions;
 using Bodu.IO.Hashing;
@@ -13,6 +11,8 @@ using System;
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// General-purpose CRC (Cyclic Redundancy Check) engine driven by a <see cref="CrcStandard"/> parameter set —
@@ -111,7 +111,7 @@ public sealed class Crc
     : NonCryptographicHashAlgorithm,
       IResumableHashAlgorithm
 {
-    private static Lazy<CrcLookupTableCache> globalLookupTableCache =
+    private static Lazy<CrcLookupTableCache> s_globalLookupTableCache =
         new Lazy<CrcLookupTableCache>(() => new CrcLookupTableCache());
 
     private readonly CrcStandard _standard;
@@ -157,12 +157,12 @@ public sealed class Crc
     /// <exception cref="ArgumentNullException">The value being assigned is <see langword="null" />.</exception>
     public static CrcLookupTableCache GlobalCache
     {
-        get => globalLookupTableCache.Value;
+        get => s_globalLookupTableCache.Value;
 
         set
         {
             ThrowHelper.ThrowIfNull(value);
-            globalLookupTableCache = new Lazy<CrcLookupTableCache>(() => value);
+            s_globalLookupTableCache = new Lazy<CrcLookupTableCache>(() => value);
         }
     }
 
@@ -315,17 +315,6 @@ public sealed class Crc
         bytesWritten = this.HashLengthInBytes;
         return true;
     }
-
-    /// <inheritdoc />
-    public override bool Equals(object? obj)
-        => obj is Crc other && this._standard.Equals(other._standard);
-
-    /// <summary>
-    /// Returns a hash code for this <see cref="Crc" /> instance, consistent with its equality semantics.
-    /// </summary>
-    /// <returns>A hash code derived from the configured <see cref="CrcStandard" />.</returns>
-    public override int GetHashCode() =>
-        this._standard.GetHashCode();
 
     /// <summary>
     /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconAead128Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,8 +24,8 @@ public partial class AsconAead128Tests
 
     static AsconAead128Tests()
     {
-        for (int i = 0; i < ValidKey.Length; i++) ValidKey[i] = (byte)i;
-        for (int i = 0; i < ValidNonce.Length; i++) ValidNonce[i] = (byte)(i + 0x10);
+        for (var i = 0; i < ValidKey.Length; i++) ValidKey[i] = (byte)i;
+        for (var i = 0; i < ValidNonce.Length; i++) ValidNonce[i] = (byte)(i + 0x10);
     }
 
     private static readonly string[] DisposableFieldExclusions =
@@ -49,7 +49,7 @@ public partial class AsconAead128Tests
     public static IEnumerable<object[]> GetDisposableFields() =>
         TestHelpers.GetFieldInfoForType<AsconAead128>(
             excludeReadOnly: false,
-            excludeFileds: DisposableFieldExclusions);
+            excludeFields: DisposableFieldExclusions);
 
     /// <summary>
     /// Creates a fresh <see cref="AsconAead128" /> instance using the shared test key and nonce,

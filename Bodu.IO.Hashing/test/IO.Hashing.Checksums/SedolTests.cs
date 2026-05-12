@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SedolTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,10 +45,10 @@ public sealed class SedolTests : AlphanumericCheckDigitAlgorithmTests<SedolTests
     [DataRow('I')]
     [DataRow('O')]
     [DataRow('U')]
-    [DataTestMethod]
+    [TestMethod]
     public void Compute_WhenBodyContainsVowel_ShouldThrowArgumentOutOfRangeException(char vowel)
     {
-        string body = new string(new[] { '1', vowel, '2', '3', '4', '5' });
+        var body = new string(['1', vowel, '2', '3', '4', '5']);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = Sedol.Compute(body.AsSpan());

@@ -33,10 +33,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.IsoWeekOfYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetIsoWeekOfYearTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetIsoWeekOfYearTestData))]
     public void IsoWeekOfYear_WhenCalled_ShouldReturnExpectedWeekNumber(DateTime input, int expected)
     {
-        int actual = input.IsoWeekOfYear();
+        var actual = input.IsoWeekOfYear();
         Assert.AreEqual(expected, actual);
     }
 
@@ -46,8 +46,8 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsoWeekOfYear_WhenCalled_ShouldReturnValueInRange1To53()
     {
-        DateTime input = new DateTime(2024, 8, 15);
-        int actual = input.IsoWeekOfYear();
+        var input = new DateTime(2024, 8, 15);
+        var actual = input.IsoWeekOfYear();
         Assert.IsTrue(actual >= 1 && actual <= 53);
     }
 
@@ -57,8 +57,8 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsoWeekOfYear_WhenTimeOfDayIsNonZero_ShouldReturnSameResultAsMidnight()
     {
-        DateTime morning = new DateTime(2024, 1, 4, 0, 0, 0);
-        DateTime evening = new DateTime(2024, 1, 4, 23, 59, 59);
+        var morning = new DateTime(2024, 1, 4, 0, 0, 0);
+        var evening = new DateTime(2024, 1, 4, 23, 59, 59);
         Assert.AreEqual(morning.IsoWeekOfYear(), evening.IsoWeekOfYear());
     }
 
@@ -80,9 +80,9 @@ public partial class DateTimeExtensionsTests
     [DataRow(2024, 1, 1, DisplayName = "New Year's Day in week 1 of same year")]
     public void IsoWeekOfYear_WhenCalled_ShouldMatchIsoWeekCalculator(int year, int month, int day)
     {
-        DateTime input = new DateTime(year, month, day);
-        int expected = ISOWeek.GetWeekOfYear(input);
-        int actual = input.IsoWeekOfYear();
+        var input = new DateTime(year, month, day);
+        var expected = ISOWeek.GetWeekOfYear(input);
+        var actual = input.IsoWeekOfYear();
         Assert.AreEqual(expected, actual);
     }
 }

@@ -8,7 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
-    private readonly Dictionary<string, int> source = new()
+    private readonly Dictionary<string, int> _source = new()
     {
         ["a"] = 1,
         ["b"] = 2,
@@ -47,9 +47,9 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void Ctor_WhenGivenDictionary_ShouldAdoptContentsAndUseDefaultCapacity()
     {
-        var dictionary = new EvictingDictionary<string, int>(source);
-        CollectionAssert.AreEquivalent(source, dictionary.ToArray());
-        Assert.AreEqual(source.Count, dictionary.Count);
+        var dictionary = new EvictingDictionary<string, int>(_source);
+        CollectionAssert.AreEquivalent(_source, dictionary.ToArray());
+        Assert.AreEqual(_source.Count, dictionary.Count);
         Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, dictionary.Capacity);
     }
 
@@ -71,8 +71,8 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void Ctor_WhenSourceExceedsCapacity_ShouldEvictOldest()
     {
-        var dictionary = new EvictingDictionary<string, int>(3, source, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        var expected = source.Skip(2).ToDictionary(p => p.Key, p => p.Value);
+        var dictionary = new EvictingDictionary<string, int>(3, _source, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        var expected = _source.Skip(2).ToDictionary(p => p.Key, p => p.Value);
 
         Assert.AreEqual(3, dictionary.Capacity);
         Assert.AreEqual(3, dictionary.Count);
@@ -85,8 +85,8 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void Ctor_WhenGivenDictionaryCapacityAndPolicy_ShouldRespectAllParameters()
     {
-        var dictionary = new EvictingDictionary<string, int>(4, source, EvictingDictionaryPolicy.FirstInFirstOut);
-        var expected = source.Skip(1).ToDictionary(p => p.Key, p => p.Value);
+        var dictionary = new EvictingDictionary<string, int>(4, _source, EvictingDictionaryPolicy.FirstInFirstOut);
+        var expected = _source.Skip(1).ToDictionary(p => p.Key, p => p.Value);
 
         Assert.AreEqual(4, dictionary.Capacity);
         Assert.AreEqual(4, dictionary.Count);
@@ -111,8 +111,8 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void Ctor_WhenGivenDictionaryOnly_ShouldUseDefaults()
     {
-        var buffer = new EvictingDictionary<string, int>(source);
-        CollectionAssert.AreEqual(source, buffer.ToArray());
+        var buffer = new EvictingDictionary<string, int>(_source);
+        CollectionAssert.AreEqual(_source, buffer.ToArray());
         Assert.AreEqual(EvictingDictionaryPolicy.LeastRecentlyUsed, buffer.Policy);
         Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, buffer.Capacity);
     }
@@ -154,11 +154,11 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void Ctor_WhenSourceIsArray_ShouldUseDirectCopy()
     {
-        var array = new[]
-        {
+        KeyValuePair<int, int>[] array =
+        [
             new KeyValuePair<int, int>(1, 100),
             new KeyValuePair<int, int>(2, 200),
-        };
+        ];
         var dictionary = new EvictingDictionary<int, int>(5, array);
         CollectionAssert.AreEqual(array, dictionary.ToArray());
     }
@@ -169,7 +169,7 @@ public partial class EvictingDictionaryTests
     [TestMethod]
     public void Ctor_WhenGivenSourceAndPolicy_ShouldApplyDefaultsAndPolicy()
     {
-        var source = Enumerable.Range(1, 20).Select(i => new KeyValuePair<string, int>($"Key{i}", i));
+        IEnumerable<KeyValuePair<string, int>> source = Enumerable.Range(1, 20).Select(i => new KeyValuePair<string, int>($"Key{i}", i));
         var expected = source.Skip(source.Count() - EvictingDictionaryTests.DefaultCapacity).ToDictionary(p => p.Key, p => p.Value);
         var dictionary = new EvictingDictionary<string, int>(source, EvictingDictionaryPolicy.FirstInFirstOut);
 

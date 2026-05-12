@@ -26,19 +26,19 @@ namespace Bodu.Security.Cryptography;
 /// The <c>Threefish-1024</c> variant operates on sixteen 64-bit words over 80 rounds using modular addition, bitwise rotation, and XOR.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Threefish1024" /> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="Threefish1024Cipher" /> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example via
-/// <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
+/// Most callers should prefer the higher-level <see cref="Threefish1024"/> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="Threefish1024Cipher"/> directly only
+/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> (for example via
+/// <see cref="BlockCipherModeFactory"/>) or with an <see cref="IPaddingStrategy"/>.
 /// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
-/// <seealso cref="Threefish1024" />
+/// <seealso cref="Threefish1024"/>
 public sealed class Threefish1024Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Threefish1024Cipher" /> class using the specified key and tweak.
+    /// Initializes a new instance of the <see cref="Threefish1024Cipher"/> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 1024-bit (128-byte) key used for encryption and decryption.</param>
     /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behaviour.</param>
@@ -57,8 +57,9 @@ public sealed class Threefish1024Cipher
     protected override int BlockWords => 16;
 
     /// <inheritdoc />
-    protected override int[] RotationSchedule => new int[]
-    {
+#pragma warning disable SA1137 // Elements should have the same indentation
+    protected override int[] RotationSchedule =>
+    [
         24, 13,  8, 47,  8, 17, 22, 37,
         38, 19, 10, 55, 49, 18, 23, 52,
         33,  4, 51, 13, 34, 41, 59, 17,
@@ -67,7 +68,8 @@ public sealed class Threefish1024Cipher
         16, 34, 56, 51,  4, 53, 42, 41,
         31, 44, 47, 46, 19, 42, 44, 25,
          9, 48, 35, 52, 23, 31, 37, 20
-    };
+    ];
+#pragma warning restore SA1137 // Elements should have the same indentation
 
     /// <inheritdoc />
     protected override int Rounds => 80;
@@ -78,7 +80,7 @@ public sealed class Threefish1024Cipher
     /// <param name="input">The 128-byte ciphertext block to decrypt.</param>
     /// <param name="output">The 128-byte buffer to receive the decrypted plaintext block.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the cipher has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is not 128 bytes.</exception>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -89,11 +91,11 @@ public sealed class Threefish1024Cipher
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-        var key = this.KeySchedule;
-        var tweak = this.TweakSchedule;
+        var key = this._keySchedule;
+        var tweak = this._tweakSchedule;
         var rot = this.RotationSchedule;
 
-        for (int d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
+        for (var d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
         {
             int dm17 = d % 17, dm3 = d % 3;
 
@@ -230,7 +232,7 @@ public sealed class Threefish1024Cipher
     /// <param name="input">The 128-byte plaintext block to encrypt.</param>
     /// <param name="output">The 128-byte buffer to receive the encrypted ciphertext block.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the cipher has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is not 128 bytes.</exception>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -241,8 +243,8 @@ public sealed class Threefish1024Cipher
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-        var key = this.KeySchedule;
-        var tweak = this.TweakSchedule;
+        var key = this._keySchedule;
+        var tweak = this._tweakSchedule;
         var rot = this.RotationSchedule;
 
         block[0] += key[0];
@@ -262,7 +264,7 @@ public sealed class Threefish1024Cipher
         block[14] += key[14] + tweak[1];
         block[15] += key[15];
 
-        for (int d = 1; d < this.Rounds / 4; d += 2)
+        for (var d = 1; d < this.Rounds / 4; d += 2)
         {
             int dm17 = d % 17, dm3 = d % 3;
 

@@ -19,10 +19,10 @@ internal sealed class ByteBuffer
     private int _index;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ByteBuffer" /> class that is empty and has the specified capacity.
+    /// Initializes a new instance of the <see cref="ByteBuffer"/> class that is empty and has the specified capacity.
     /// </summary>
     /// <param name="capacity">The number of bytes that the new buffer can initially store.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity" /> is less than 0.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than 0.</exception>
     public ByteBuffer(int capacity)
     {
         ThrowHelper.ThrowIfLessThan(capacity, 0);
@@ -66,14 +66,14 @@ internal sealed class ByteBuffer
     /// Copies a range of bytes from a one-dimensional array into the buffer.
     /// </summary>
     /// <param name="array">The source array that contains the bytes to copy.</param>
-    /// <param name="index">The zero-based index in <paramref name="array" /> at which copying begins.</param>
+    /// <param name="index">The zero-based index in <paramref name="array"/> at which copying begins.</param>
     /// <param name="count">The number of bytes to copy.</param>
-    /// <returns><see langword="true" /> if the buffer is full after the operation; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> or <paramref name="count" /> is less than 0.</exception>
+    /// <returns><see langword="true"/> if the buffer is full after the operation; otherwise, <see langword="false"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> or <paramref name="count"/> is less than 0.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="index" /> and <paramref name="count" /> specify an invalid range in <paramref name="array" />. <br />
-    /// -or- <br /><paramref name="count" /> exceeds the remaining capacity of the buffer.
+    /// <paramref name="index"/> and <paramref name="count"/> specify an invalid range in <paramref name="array"/>. <br />
+    /// -or- <br /><paramref name="count"/> exceeds the remaining capacity of the buffer.
     /// </exception>
     public bool Add(byte[] array, int index, int count)
     {
@@ -87,11 +87,11 @@ internal sealed class ByteBuffer
     /// Adds bytes from a read-only span to the buffer without allocating or copying the input.
     /// </summary>
     /// <param name="span">The source span of bytes to copy.</param>
-    /// <returns><see langword="true" /> if the buffer is full after the operation; otherwise, <see langword="false" />.</returns>
+    /// <returns><see langword="true"/> if the buffer is full after the operation; otherwise, <see langword="false"/>.</returns>
     /// <exception cref="ArgumentException">The input span exceeds the remaining capacity of the buffer.</exception>
     public bool Add(ReadOnlySpan<byte> span)
     {
-        int currentCount = this.Count;
+        var currentCount = this.Count;
         ThrowHelper.ThrowIfGreaterThan(span.Length, this._internalBuffer.Length - currentCount, nameof(span));
         span.CopyTo(new Span<byte>(this._internalBuffer, currentCount, span.Length));
         this._index += span.Length;
@@ -118,7 +118,7 @@ internal sealed class ByteBuffer
     /// <returns>The internal byte array with the written bytes in place and all remaining trailing bytes set to zero. This is not a copy.</returns>
     public byte[] GetBytesZeroPadded()
     {
-        int count = this.Count;
+        var count = this.Count;
         Array.Clear(this._internalBuffer, count, this._internalBuffer.Length - count);
         this._index = EmptyIndex;
         return this._internalBuffer;
@@ -127,7 +127,7 @@ internal sealed class ByteBuffer
     /// <summary>
     /// Resets the buffer by optionally clearing its contents and marking it as empty.
     /// </summary>
-    /// <param name="clear">If <see langword="true" />, the buffer contents will be cleared. Otherwise, only the state is reset.</param>
+    /// <param name="clear">If <see langword="true"/>, the buffer contents will be cleared. Otherwise, only the state is reset.</param>
     public void Initialize(bool clear = true)
     {
         if (clear)
@@ -142,11 +142,11 @@ internal sealed class ByteBuffer
     /// <param name="array">The array to copy from.</param>
     /// <param name="index">The start index in the array.</param>
     /// <param name="count">The number of bytes to copy.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> or <paramref name="count" /> is less than 0.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> or <paramref name="count"/> is less than 0.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="index" /> and <paramref name="count" /> specify an invalid range in <paramref name="array" />. <br />
-    /// -or- <br /><paramref name="count" /> exceeds the remaining capacity of the buffer.
+    /// <paramref name="index"/> and <paramref name="count"/> specify an invalid range in <paramref name="array"/>. <br />
+    /// -or- <br /><paramref name="count"/> exceeds the remaining capacity of the buffer.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EnsureAddIsValid(byte[] array, int index, int count)

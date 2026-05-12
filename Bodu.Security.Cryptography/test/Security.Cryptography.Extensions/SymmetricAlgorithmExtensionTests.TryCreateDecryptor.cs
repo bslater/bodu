@@ -29,9 +29,9 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void TryCreateDecryptor_WhenKeyAndIvAreUnset_ShouldGenerateAndReturnTransform()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateDecryptor(out var transform);
+        var result = algorithm.TryCreateDecryptor(out ICryptoTransform? transform);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
@@ -44,12 +44,12 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void TryCreateDecryptor_WhenValid_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[algorithm.BlockSize / 8];
 
-        bool result = algorithm.TryCreateDecryptor(key, iv, out ICryptoTransform? transform);
+        var result = algorithm.TryCreateDecryptor(key, iv, out ICryptoTransform? transform);
 
         Assert.IsTrue(result);
         Assert.IsNotNull(transform);
@@ -63,9 +63,9 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void TryCreateDecryptor_WhenKeyIsNull_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateDecryptor(null!, new byte[algorithm.BlockSize / 8], out var transform);
+        var result = algorithm.TryCreateDecryptor(null!, new byte[algorithm.BlockSize / 8], out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -77,9 +77,9 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void TryCreateDecryptor_WhenIVIsNull_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        bool result = algorithm.TryCreateDecryptor(new byte[algorithm.KeySize / 8], null!, out var transform);
+        var result = algorithm.TryCreateDecryptor(new byte[algorithm.KeySize / 8], null!, out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -94,12 +94,12 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void TryCreateDecryptor_WhenIVSizeIsInvalid_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[(algorithm.BlockSize / 8) + 1]; // one byte too long
 
-        bool result = algorithm.TryCreateDecryptor(key, iv, out var transform);
+        var result = algorithm.TryCreateDecryptor(key, iv, out ICryptoTransform? transform);
 
         Assert.IsFalse(result);
         Assert.IsNull(transform);
@@ -116,9 +116,9 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void TryCreateDecryptor_WhenKeySizeIsInvalid_ShouldReturnFalseAndNullOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        byte[]? invalidKey = CryptoTestUtilities.FindInvalidKey(algorithm.LegalKeySizes);
+        var invalidKey = CryptoTestUtilities.FindInvalidKeySize(algorithm.LegalKeySizes);
 
         if (invalidKey is null)
         {
@@ -128,9 +128,9 @@ public partial class SymmetricAlgorithmExtensionTests
             return;
         }
 
-        byte[] iv = new byte[algorithm.BlockSize / 8];
+        var iv = new byte[algorithm.BlockSize / 8];
 
-        bool result = algorithm.TryCreateDecryptor(invalidKey, iv, out var transform);
+        var result = algorithm.TryCreateDecryptor(invalidKey, iv, out ICryptoTransform? transform);
 
         Assert.IsFalse(result,
             $"TryCreateDecryptor must return false for a {invalidKey.Length * 8}-bit key " +

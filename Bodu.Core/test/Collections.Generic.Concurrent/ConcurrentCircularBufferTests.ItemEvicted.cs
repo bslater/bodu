@@ -99,7 +99,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(null);
         buffer.Enqueue(new TestItem(1));
 
-        TestItem? received = new TestItem(-1); // sentinel to distinguish from default(null)
+        var received = new TestItem(-1); // sentinel to distinguish from default(null)
         var fired = false;
         buffer.ItemEvicted += x => { received = x; fired = true; };
 
@@ -163,7 +163,7 @@ public partial class ConcurrentCircularBufferTests
         };
 
         // Fill buffer
-        for (int i = 0; i < 5; i++)
+        for (var i = 0; i < 5; i++)
             buffer.Enqueue(new TestItem(i));
 
         // Concurrent overwrites

@@ -39,7 +39,7 @@ public partial class ConcurrentCircularBufferTests
         Type proxyType = Type.GetType(proxy!.ProxyTypeName!, throwOnError: true)!
             .MakeGenericType(typeof(TestItem));
 
-        object instance = Activator.CreateInstance(proxyType, buffer)!;
+        var instance = Activator.CreateInstance(proxyType, buffer)!;
         Assert.IsNotNull(instance);
     }
 

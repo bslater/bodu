@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlowfishAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,12 +20,18 @@ public sealed partial class BlowfishAlgorithmTests
     protected override Blowfish CreateAlgorithm() => Blowfish.Create();
 
     /// <inheritdoc />
+    protected override void SetBlockMode(Blowfish algorithm, CipherBlockMode mode) =>
+        algorithm.BlockMode = mode;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {
             BlockSizeBits = 64,
             DefaultKeySizeBits = 128,
-            LegalKeySizesBits = [32, 128, 256, 448],
+            LegalKeySizesBits = Enumerable.Range(4, 53)
+                .Select(i => i * 8)
+                .ToArray(),
         };
 
     /// <inheritdoc />

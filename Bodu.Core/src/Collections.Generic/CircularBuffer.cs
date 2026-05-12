@@ -65,7 +65,8 @@ namespace Bodu.Collections.Generic;
 [DebuggerDisplay("Count = {Count}")]
 [DebuggerTypeProxy(typeof(CircularBufferDebugView<>))]
 [Serializable]
-public sealed class CircularBuffer<T> : RingBackedCollection<T>
+public sealed class CircularBuffer<T> 
+    : RingBackedCollection<T>
 {
     private const int DefaultCapacity = 16;
 

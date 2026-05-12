@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherModeTests.EmptyInput.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public abstract partial class BlockCipherModeTests<TMode>
     /// <c>throwIfZero: false</c> as of #200.
     /// </summary>
     [TestMethod]
-    public void Transform_WhenInputIsEmpty_ShouldBeNoOp_fix()
+    public void Transform_WhenInputIsEmpty_ShouldBeNoOp()
     {
         if (!AcceptsEmptyInput)
         {
@@ -66,9 +66,9 @@ public abstract partial class BlockCipherModeTests<TMode>
         var iv = UsesInitializationVector
             ? CryptoHelpers.GetRandomNonZeroBytes(ExpectedBlockSize)
             : new byte[ExpectedBlockSize];
-        var transform = CreateTransform(cipher, iv);
+        TMode transform = CreateTransform(cipher, iv);
 
-        int written = 0;
+        var written = 0;
         try
         {
             written = transform.Transform(System.ReadOnlySpan<byte>.Empty, System.Span<byte>.Empty, encrypt: true);

@@ -41,10 +41,7 @@ public partial class ThrowHelperTests
     [DataRow('1')]
     [DataRow('5')]
     [DataRow('9')]
-    public void ThrowIfNotAsciiHexDigit_WhenCharIsDecimalDigit_ShouldNotThrow(char value)
-    {
-        ThrowHelper.ThrowIfNotAsciiHexDigit(value);
-    }
+    public void ThrowIfNotAsciiHexDigit_WhenCharIsDecimalDigit_ShouldNotThrow(char value) => ThrowHelper.ThrowIfNotAsciiHexDigit(value);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> does not throw for all valid
@@ -57,10 +54,7 @@ public partial class ThrowHelperTests
     [DataRow('D')]
     [DataRow('E')]
     [DataRow('F')]
-    public void ThrowIfNotAsciiHexDigit_WhenCharIsUppercaseHexLetter_ShouldNotThrow(char value)
-    {
-        ThrowHelper.ThrowIfNotAsciiHexDigit(value);
-    }
+    public void ThrowIfNotAsciiHexDigit_WhenCharIsUppercaseHexLetter_ShouldNotThrow(char value) => ThrowHelper.ThrowIfNotAsciiHexDigit(value);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> does not throw for all valid
@@ -73,8 +67,5 @@ public partial class ThrowHelperTests
     [DataRow('d')]
     [DataRow('e')]
     [DataRow('f')]
-    public void ThrowIfNotAsciiHexDigit_WhenCharIsLowercaseHexLetter_ShouldNotThrow(char value)
-    {
-        ThrowHelper.ThrowIfNotAsciiHexDigit(value);
-    }
+    public void ThrowIfNotAsciiHexDigit_WhenCharIsLowercaseHexLetter_ShouldNotThrow(char value) => ThrowHelper.ThrowIfNotAsciiHexDigit(value);
 }

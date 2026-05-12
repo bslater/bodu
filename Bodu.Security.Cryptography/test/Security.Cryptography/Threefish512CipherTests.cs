@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Threefish512CipherTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ internal sealed class Threefish512CipherTests
     /// <inheritdoc />
     protected override Threefish512Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
     {
-        var spec = GetSpecification(variant);
+        BlockCipherSpecification spec = GetSpecification(variant);
         return new Threefish512Cipher(spec.TestKey, spec.TestTweak);
     }
 

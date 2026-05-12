@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkipjackAlgorithmTests.CreateDecryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public sealed partial class SkipjackAlgorithmTests
     [DataRow(32)]
     public void CreateDecryptor_WhenKeyLengthIsInvalid_ShouldThrowExactly(int keyLength)
     {
-        using var algorithm = CreateAlgorithm();
+        using Skipjack algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -43,7 +43,7 @@ public sealed partial class SkipjackAlgorithmTests
     [DataRow(16)]
     public void CreateDecryptor_WhenIVLengthIsInvalid_ShouldThrowExactly(int ivLength)
     {
-        using var algorithm = CreateAlgorithm();
+        using Skipjack algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

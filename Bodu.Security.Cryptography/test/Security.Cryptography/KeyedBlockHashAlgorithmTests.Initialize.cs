@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="KeyedBlockHashAlgorithmTests.Initialize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
             return;
         }
 
-        var algo = CreateAlgorithm();
+        TAlgorithm algo = CreateAlgorithm();
 
         // Clear the constructor-seeded random key via the inherited protected KeyValue field.
         System.Reflection.FieldInfo? keyValueField = null;
@@ -40,7 +40,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
         Assert.IsNotNull(keyValueField, $"Unable to locate KeyValue field on {typeof(TAlgorithm).Name}.");
         keyValueField!.SetValue(algo, null);
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() => algo.Initialize());
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() => algo.Initialize());
         Assert.IsTrue(
             ex.Message.IndexOf("key", StringComparison.OrdinalIgnoreCase) >= 0,
             $"Expected exception message to mention 'key'. Actual: '{ex.Message}'");

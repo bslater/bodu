@@ -16,8 +16,8 @@ public sealed partial class Pkcs7PaddingTests
 
     protected override byte[] CreatePlaintextWithResidual(int residualBytes)
     {
-        byte[] buf = new byte[residualBytes];
-        for (int i = 0; i < buf.Length; i++)
+        var buf = new byte[residualBytes];
+        for (var i = 0; i < buf.Length; i++)
             buf[i] = (byte)(0x30 + i);
         return buf;
     }

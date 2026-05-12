@@ -59,7 +59,7 @@ public partial class SequenceGeneratorTests
         AssertExecutionIsDeferred(
             methodName: "Repeat",
             invokeExtensionMethod: _ => SequenceGenerator.Repeat("X"),
-            values: new[] { "X" });
+            values: ["X"]);
     }
 
     /// <summary>
@@ -71,6 +71,6 @@ public partial class SequenceGeneratorTests
         AssertExecutionIsDeferred(
             methodName: "Repeat",
             invokeExtensionMethod: _ => SequenceGenerator.Repeat("Z", 5),
-            values: new[] { "Z" });
+            values: ["Z"]);
     }
 }

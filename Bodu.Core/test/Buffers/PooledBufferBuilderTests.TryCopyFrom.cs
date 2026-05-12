@@ -19,7 +19,7 @@ public partial class PooledBufferBuilderTests
         var source = new System.Collections.Generic.List<int> { 1, 2, 3 };
         using var builder = new PooledBufferBuilder<int>();
 
-        bool success = builder.TryCopyFrom(source);
+        var success = builder.TryCopyFrom(source);
 
         Assert.IsTrue(success);
         CollectionAssert.AreEqual(source, builder.WrittenSpan.ToArray());
@@ -33,7 +33,7 @@ public partial class PooledBufferBuilderTests
     public void TryCopyFrom_WhenBuilderHasExistingItems_ShouldReplaceWithSourceContents()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 99, 88, 77 });
+        builder.AppendRange([99, 88, 77]);
 
         var replacement = new System.Collections.Generic.List<int> { 1, 2 };
         builder.TryCopyFrom(replacement);
@@ -51,10 +51,10 @@ public partial class PooledBufferBuilderTests
     public void TryCopyFrom_WhenSourceIsNotICollection_ShouldReturnFalseAndLeaveBuilderUnchanged()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 10, 20 });
+        builder.AppendRange([10, 20]);
 
         // Use a custom IReadOnlyCollection that is not ICollection<T>.
-        bool success = builder.TryCopyFrom(new NonCollectionReadOnlyCollection(new[] { 1, 2, 3 }));
+        var success = builder.TryCopyFrom(new NonCollectionReadOnlyCollection([1, 2, 3]));
 
         Assert.IsFalse(success);
         // Builder should be unchanged.
@@ -100,9 +100,9 @@ public partial class PooledBufferBuilderTests
     public void TryCopyFrom_WhenEmptyCollectionPassed_ShouldSucceedAndSetCountToZero()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
 
-        bool success = builder.TryCopyFrom(new System.Collections.Generic.List<int>());
+        var success = builder.TryCopyFrom(new System.Collections.Generic.List<int>());
 
         Assert.IsTrue(success);
         Assert.AreEqual(0, builder.WrittenCount);

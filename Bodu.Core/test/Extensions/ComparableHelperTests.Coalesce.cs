@@ -19,7 +19,7 @@ public partial class ComparableHelperTests
     /// Verifies that <see cref="ComparableHelper.Coalesce" /> returns the first non-null value, the second value if the first is null, or null if both are null.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetCoalesceTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetCoalesceTestData))]
     public void Coalesce_WhenEvaluatingValues_ShouldReturnExpectedResult(int? first, int? second, int? expected)
     {
         var actual = ComparableHelper.Coalesce(first, second);

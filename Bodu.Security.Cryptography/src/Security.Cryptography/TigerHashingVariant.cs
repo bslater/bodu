@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Specifies the padding variant used by the <see cref="Bodu.Security.Cryptography.Tiger" /> hashing algorithm.
+/// Specifies the padding variant used by the <see cref="Bodu.Security.Cryptography.Tiger"/> hashing algorithm.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The <see cref="TigerHashingVariant" /> enumeration differentiates between the original Tiger algorithm and the modified Tiger2
+/// The <see cref="TigerHashingVariant"/> enumeration differentiates between the original Tiger algorithm and the modified Tiger2
 /// variant. These variants are identical in their core compression function but differ in how the final padding byte is applied during
 /// hash finalization.
 /// </para>

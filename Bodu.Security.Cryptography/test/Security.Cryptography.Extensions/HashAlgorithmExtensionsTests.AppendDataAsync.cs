@@ -36,7 +36,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             await algorithm.AppendDataAsync(null!));
@@ -49,7 +49,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
@@ -64,7 +64,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
@@ -82,10 +82,10 @@ public partial class HashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenStreamIsEmpty_ShouldNotContributeToHash()
     {
         byte[] emptyHash;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             emptyHash = reference.ComputeHash(Array.Empty<byte>());
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(Array.Empty<byte>()));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
@@ -102,10 +102,10 @@ public partial class HashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenCalled_ShouldContributeToFinalHash()
     {
         byte[] expected;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(SampleData);
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(SampleData));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
@@ -121,18 +121,18 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
     {
-        byte[] part1 = CryptoTestUtilities.ByteSequence64;
-        byte[] part2 = CryptoTestUtilities.ByteSequence128;
+        var part1 = CryptoTestUtilities.ByteSequence64;
+        var part2 = CryptoTestUtilities.ByteSequence128;
 
-        byte[] combined = new byte[part1.Length + part2.Length];
+        var combined = new byte[part1.Length + part2.Length];
         part1.CopyTo(combined, 0);
         part2.CopyTo(combined, part1.Length);
 
         byte[] expected;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(combined);
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(part1));
         await algorithm.AppendDataAsync(new MemoryStream(part2));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
@@ -150,15 +150,15 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenMixedWithSyncAppendData_ShouldAccumulateAllBytes()
     {
-        byte[] part1 = new byte[] { 1, 2, 3, 4 };
-        byte[] part2 = new byte[] { 5, 6, 7, 8 };
-        byte[] combined = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        var part1 = new byte[] { 1, 2, 3, 4 };
+        var part2 = new byte[] { 5, 6, 7, 8 };
+        var combined = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
 
         byte[] expected;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(combined);
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
 
         // Synchronous append of first half, async append of second half.
         algorithm.AppendData(part1.AsSpan());
@@ -177,13 +177,13 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenBufferSizeSmallerThanInput_ShouldProduceCorrectHash()
     {
-        byte[] data = CryptoTestUtilities.ByteSequence128;
+        var data = CryptoTestUtilities.ByteSequence128;
 
         byte[] expected;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(data);
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(data), bufferSize: 7);
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
@@ -202,10 +202,10 @@ public partial class HashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenSourceIsFixedChunkStream_ShouldProduceCorrectHash()
     {
         byte[] expected;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(SampleData);
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new FixedChunkStream(SampleData, chunkSize: 1));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
@@ -222,10 +222,10 @@ public partial class HashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenSourceIsNonSeekable_ShouldProduceCorrectHash()
     {
         byte[] expected;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(SampleData);
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new NonSeekableStream(SampleData));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
@@ -244,10 +244,10 @@ public partial class HashAlgorithmExtensionsTests
         const int length = 64;
 
         byte[] expected;
-        using (var reference = CreateAlgorithm())
+        using (MonitoringHashAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(new IncrementingByteStream(length).ToArray());
 
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new ThrottledIncrementingByteStream(length, readDelay: 5));
         algorithm.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
 
@@ -263,7 +263,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenSourceFaultsMidRead_ShouldPropagateIOException()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new FaultingStream(
             CryptoTestUtilities.CreateDeterministicBytes(64), throwAfterBytes: 16);
 
@@ -282,7 +282,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenTokenAlreadyCancelled_ShouldThrow()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
@@ -301,7 +301,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenCancellationTriggeredMidStream_ShouldThrow()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var cts = new CancellationTokenSource();
         using var stream = new CancellationTriggerStream(
             new IncrementingByteStream(1024), cts, cancelAfterRead: 2);

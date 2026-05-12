@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTransformTests.InputBlockSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void InputBlockSize_ShouldBeGreaterThanZero()
     {
-        using var transform = CreateAlgorithm();
+        using TCryptoTransform transform = CreateAlgorithm();
         Assert.IsTrue(transform.InputBlockSize > 0);
     }
 
@@ -27,7 +27,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void InputBlockSize_ShouldEqualOutputBlockSize()
     {
-        using var transform = CreateAlgorithm();
+        using TCryptoTransform transform = CreateAlgorithm();
         Assert.AreEqual(transform.InputBlockSize, transform.OutputBlockSize);
     }
 }

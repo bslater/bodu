@@ -34,10 +34,7 @@ public partial class IComparableExtensionsTests
         int value,
         int? min,
         int? max,
-        int? expected)
-    {
-        Assert.AreEqual(expected, value.Clamp(min, max));
-    }
+        int? expected) => Assert.AreEqual(expected, value.Clamp(min, max));
 
     // =========================================================================
     // Clamp<T>(T?, T?, T?, IComparer<T>)
@@ -82,7 +79,7 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int>? comparer = null;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = 5.Clamp(1, 10, comparer!);
         });

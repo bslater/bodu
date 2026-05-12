@@ -41,18 +41,12 @@ public partial class ThrowHelperTests
     /// <see langword="false" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfDisposed_WhenDisposedIsFalse_ShouldNotThrow()
-    {
-        ThrowHelper.ThrowIfDisposed(false);
-    }
+    public void ThrowIfDisposed_WhenDisposedIsFalse_ShouldNotThrow() => ThrowHelper.ThrowIfDisposed(false);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfDisposed" /> does not throw when the disposed flag is
     /// <see langword="false" />, even when an object name is supplied.
     /// </summary>
     [TestMethod]
-    public void ThrowIfDisposed_WhenDisposedIsFalseWithObjectName_ShouldNotThrow()
-    {
-        ThrowHelper.ThrowIfDisposed(false, "MyObject");
-    }
+    public void ThrowIfDisposed_WhenDisposedIsFalseWithObjectName_ShouldNotThrow() => ThrowHelper.ThrowIfDisposed(false, "MyObject");
 }

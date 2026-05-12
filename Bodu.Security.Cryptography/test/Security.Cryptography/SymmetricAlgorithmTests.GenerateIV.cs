@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.GenerateIV.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     [TestMethod]
     public void GenerateIV_WhenCalled_ShouldInitializeKeyCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
-        int size = algorithm.BlockSize;
+        using TAlgorithm algorithm = CreateAlgorithm();
+        var size = algorithm.BlockSize;
         algorithm.GenerateIV();
 
         Assert.AreEqual(size / 8, algorithm.IV.Length);

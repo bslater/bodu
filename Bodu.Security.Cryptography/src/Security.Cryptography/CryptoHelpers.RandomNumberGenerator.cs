@@ -10,14 +10,14 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public static partial class CryptoHelpers
+internal static partial class CryptoHelpers
 {
     /// <summary>
     /// Fills the specified byte array with cryptographically secure random bytes, ensuring that no byte is equal to <c>0x00</c>.
     /// </summary>
     /// <param name="buffer">The byte array to fill.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="buffer" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="buffer" /> is empty.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="buffer"/> is empty.</exception>
     /// <remarks>Delegates to the span-based overload. Random generation is repeated until the buffer contains no zero bytes.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void FillWithRandomNonZeroBytes(byte[] buffer)
@@ -31,7 +31,7 @@ public static partial class CryptoHelpers
     /// Fills the provided span with cryptographically secure random bytes, ensuring that no byte in the span is equal to <c>0x00</c>.
     /// </summary>
     /// <param name="buffer">The span to fill.</param>
-    /// <remarks>Loops until all bytes are non-zero. Uses <see cref="RandomNumberGenerator.Fill(Span{byte})" />.</remarks>
+    /// <remarks>Loops until all bytes are non-zero. Uses <see cref="RandomNumberGenerator.Fill(Span{byte})"/>.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void FillWithRandomNonZeroBytes(Span<byte> buffer)
     {
@@ -44,7 +44,7 @@ public static partial class CryptoHelpers
     /// </summary>
     /// <param name="buffer">The span to fill.</param>
     /// <returns>
-    /// <see langword="true" /> if the buffer was filled successfully without any zero bytes; otherwise, <see langword="false" />
+    /// <see langword="true"/> if the buffer was filled successfully without any zero bytes; otherwise, <see langword="false"/>
     /// once the per-byte redraw limit has been reached for any position.
     /// </returns>
     /// <remarks>
@@ -97,9 +97,9 @@ public static partial class CryptoHelpers
 
         // Per-byte rejection: only redraw the positions that came up zero.
         Span<byte> single = stackalloc byte[1];
-        for (int i = 0; i < buffer.Length; i++)
+        for (var i = 0; i < buffer.Length; i++)
         {
-            int redraws = 0;
+            var redraws = 0;
             while (buffer[i] == 0)
             {
                 if (redraws == maxRedrawsPerByte)
@@ -119,23 +119,23 @@ public static partial class CryptoHelpers
     /// Returns a new byte array filled with cryptographically secure random bytes, none of which are zero.
     /// </summary>
     /// <param name="length">The number of random bytes to generate. Must be greater than zero.</param>
-    /// <returns>A <see cref="byte" /> array of the specified length containing only non-zero values.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is less than or equal to zero.</exception>
+    /// <returns>A <see cref="byte"/> array of the specified length containing only non-zero values.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than or equal to zero.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static byte[] GetRandomNonZeroBytes(int length)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(length, 0);
-        byte[] buffer = GC.AllocateUninitializedArray<byte>(length);
+        var buffer = GC.AllocateUninitializedArray<byte>(length);
         FillWithRandomNonZeroBytes(buffer.AsSpan());
         return buffer;
     }
 
     /// <summary>
-    /// Fills the specified span with random bytes, excluding the given <paramref name="forbidden" /> byte.
+    /// Fills the specified span with random bytes, excluding the given <paramref name="forbidden"/> byte.
     /// </summary>
     /// <param name="forbidden">The byte value to exclude from the result.</param>
     /// <param name="buffer">The span to fill with random bytes.</param>
-    /// <remarks>Repeatedly fills the buffer until <paramref name="forbidden" /> is no longer present.</remarks>
+    /// <remarks>Repeatedly fills the buffer until <paramref name="forbidden"/> is no longer present.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void FillWithRandomBytesExcluding(byte forbidden, Span<byte> buffer)
     {
@@ -173,7 +173,7 @@ public static partial class CryptoHelpers
         // Targeted per-byte replacement: only re-draw for the bytes that
         // matched the forbidden value, rather than re-filling the whole buffer.
         Span<byte> single = stackalloc byte[1];
-        for (int i = 0; i < buffer.Length; i++)
+        for (var i = 0; i < buffer.Length; i++)
         {
             while (buffer[i] == forbidden)
             {
@@ -185,18 +185,18 @@ public static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Returns a new array of cryptographically secure random bytes of the specified <paramref name="length" />, excluding any
-    /// occurrences of the <paramref name="forbidden" /> byte value.
+    /// Returns a new array of cryptographically secure random bytes of the specified <paramref name="length"/>, excluding any
+    /// occurrences of the <paramref name="forbidden"/> byte value.
     /// </summary>
     /// <param name="forbidden">The byte value to exclude from the output.</param>
     /// <param name="length">The number of bytes to generate. Must be greater than zero.</param>
-    /// <returns>A <see cref="byte" /> array filled with random bytes that do not include <paramref name="forbidden" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length" /> is less than or equal to zero.</exception>
+    /// <returns>A <see cref="byte"/> array filled with random bytes that do not include <paramref name="forbidden"/>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than or equal to zero.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static byte[] GetRandomBytesExcluding(byte forbidden, int length)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(length, 0);
-        byte[] buffer = GC.AllocateUninitializedArray<byte>(length);
+        var buffer = GC.AllocateUninitializedArray<byte>(length);
         FillWithRandomBytesExcluding(forbidden, buffer.AsSpan());
         return buffer;
     }

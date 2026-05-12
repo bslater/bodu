@@ -99,7 +99,7 @@ public partial class IndexedPriorityQueueTests
     {
         var queue = new IndexedPriorityQueue<int, int>(2);
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
             queue.Enqueue(i, i);
 
         Assert.AreEqual(100, queue.Count);
@@ -157,7 +157,7 @@ public partial class IndexedPriorityQueueTests
         var queue = new IndexedPriorityQueue<string, int>();
         queue.Enqueue("a", 1);
 
-        bool added = queue.TryEnqueue("a", 99);
+        var added = queue.TryEnqueue("a", 99);
 
         Assert.IsFalse(added);
         Assert.AreEqual(1, queue.GetPriority("a"));

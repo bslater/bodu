@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu.IO.Hashing.CheckDigits;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616
@@ -43,10 +43,10 @@ public sealed class Iban
     /// <summary>The length of the country-code prefix (<c>2</c> letters).</summary>
     public const int CountryCodeLength = 2;
 
-    private char cc0;
-    private char cc1;
-    private int consumed;
-    private int rBban;
+    private char _cc0;
+    private char _cc1;
+    private int _consumed;
+    private int _rBban;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Iban" /> class.
@@ -67,8 +67,8 @@ public sealed class Iban
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int consumed = this.consumed;
-        int r = rBban;
+        int consumed = this._consumed;
+        int r = _rBban;
 
         for (int i = 0; i < body.Length; i++)
         {
@@ -78,11 +78,11 @@ public sealed class Iban
 
             if (consumed == 0)
             {
-                cc0 = ch;
+                _cc0 = ch;
             }
             else if (consumed == 1)
             {
-                cc1 = ch;
+                _cc1 = ch;
             }
             else
             {
@@ -92,17 +92,17 @@ public sealed class Iban
             consumed++;
         }
 
-        this.consumed = consumed;
-        rBban = r;
+        this._consumed = consumed;
+        _rBban = r;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        cc0 = default;
-        cc1 = default;
-        consumed = 0;
-        rBban = 0;
+        _cc0 = default;
+        _cc1 = default;
+        _consumed = 0;
+        _rBban = 0;
     }
 
     /// <inheritdoc />
@@ -111,9 +111,9 @@ public sealed class Iban
         if (destination.Length < CheckLength)
             throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
 
-        int r = rBban;
-        if (consumed >= 1) r = FoldChar(r, cc0);
-        if (consumed >= 2) r = FoldChar(r, cc1);
+        int r = _rBban;
+        if (_consumed >= 1) r = FoldChar(r, _cc0);
+        if (_consumed >= 2) r = FoldChar(r, _cc1);
 
         // Fold in the two trailing placeholder zero digits.
         r = (r * 100) % 97;

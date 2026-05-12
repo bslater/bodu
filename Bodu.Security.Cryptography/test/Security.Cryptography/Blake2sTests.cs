@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake2sTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,6 +40,9 @@ public partial class Blake2sTests
         BoundaryLengths = [1, 63, 64, 65, 128],
         MinNonZeroBytesForLongInput = 28,
     };
+
+    /// <inheritdoc />
+    protected override IEnumerable<int> GetHashAlgorithmSizes() => [128, 160, 192, 224, 256];
 
     /// <inheritdoc />
     protected override Blake2sVariant DefaultVariant => Blake2sVariant.Blake2s_256;
@@ -216,26 +219,12 @@ public partial class Blake2sTests
     [TestMethod]
     public void Constructor_WhenHashSizeIsUnsupported_ShouldThrowArgumentOutOfRangeException()
     {
-        int hashSize = 300;
+        var hashSize = 300;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new Blake2s(hashSize);
         });
-    }
-
-    /// <summary>
-    /// Verifies that all supported hash sizes produce a non-empty digest of the expected length.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHash_ForAllSupportedSizes_ShouldReturnCorrectLength()
-    {
-        foreach (int size in Blake2s.ValidHashSizes)
-        {
-            using Blake2s sut = new(size);
-            byte[] hash = sut.ComputeHash(Array.Empty<byte>());
-            Assert.AreEqual(size / 8, hash.Length, $"Expected {size / 8} bytes for {size}-bit output.");
-        }
     }
 
     /// <summary>
@@ -255,7 +244,7 @@ public partial class Blake2sTests
         if (variant != Blake2sVariant.Blake2s_256)
             yield break;
 
-        byte[] key = Enumerable.Range(0, Blake2s.MaxKeySize).Select(i => (byte)i).ToArray();
+        var key = Enumerable.Range(0, Blake2s.MaxKeySize).Select(i => (byte)i).ToArray();
 
         // (name, input-length, expected-hex) — all use the same 32-byte sequential key.
         (string Name, int Length, string Hex)[] entries =
@@ -271,7 +260,7 @@ public partial class Blake2sTests
             ("KAT-65", 65, "21FE0CEB0052BE7FB0F004187CACD7DE67FA6EB0938D927677F2398C132317A8"),
         ];
 
-        foreach ((string name, int length, string hex) in entries)
+        foreach ((var name, var length, var hex) in entries)
         {
             yield return new KnownAnswerTest
             {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BKDRTests.Reset.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ public partial class BKDRTests
         algorithm.Append(new byte[] { 0x01, 0x02 });
         algorithm.Reset();
 
-        byte[] actual = algorithm.GetCurrentHash();
-        byte[] expected = new byte[4];
+        var actual = algorithm.GetCurrentHash();
+        var expected = new byte[4];
         System.Buffers.Binary.BinaryPrimitives.WriteUInt32BigEndian(expected, 13131U);
 
         CollectionAssert.AreEqual(expected, actual);

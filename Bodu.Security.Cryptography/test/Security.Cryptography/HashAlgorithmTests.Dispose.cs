@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// properties, and that the thrown <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetReadableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetDisposablePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    [DynamicData(nameof(GetAlgorithmReadableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenReadingProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -32,7 +32,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         try
@@ -61,7 +61,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Dispose_WhenInstanceUntouched_ShouldNotThrow()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         try
         {
@@ -85,7 +85,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <see cref="ObjectDisposedException" /> correctly identifies the disposed type.
     /// </remarks>
     [TestMethod]
-    [DynamicData(nameof(GetWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetDisposablePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    [DynamicData(nameof(GetAlgorithmWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -94,7 +94,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         object? currentValue;
         try
@@ -137,7 +137,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// </summary>
     /// <param name="field">The field to inspect for zeroed or null state.</param>
     [TestMethod]
-    [DynamicData(nameof(GetDisposableFields), DynamicDataDisplayName = nameof(TestHelpers.GetDisposableFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    [DynamicData(nameof(GetAlgorithmFields), DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
     {
         if (field is null)
@@ -150,8 +150,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         instance.ComputeHash(Array.Empty<byte>());
         instance.Dispose();
 
-        object? value = field.GetValue(instance);
-        string label = $"Field '{field.DeclaringType},{field.Name}'";
+        var value = field.GetValue(instance);
+        var label = $"Field '{field.DeclaringType},{field.Name}'";
 
         var result = TestHelpers.AssertFieldValueIsNullOrDefault(field, instance);
 
@@ -164,7 +164,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Dispose_WhenComputeHashWithBufferRangeCalledAfterDispose_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -179,7 +179,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Dispose_WhenComputeHashWithStreamCalledAfterDispose_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -198,7 +198,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
                 if (def == typeof(Memory<>))
                 {
                     var memory = (Memory<byte>)value!;
-                    foreach (byte b in memory.Span)
+                    foreach (var b in memory.Span)
                     {
                         Assert.AreEqual(0, b, $"{label} contains non-zero byte.");
                     }
@@ -207,7 +207,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
                 if (def == typeof(ReadOnlyMemory<>))
                 {
                     var memory = (ReadOnlyMemory<byte>)value!;
-                    foreach (byte b in memory.Span)
+                    foreach (var b in memory.Span)
                     {
                         Assert.AreEqual(0, b, $"{label} contains non-zero byte.");
                     }
@@ -232,7 +232,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
 
             case Array array when fieldType.IsArray && fieldType.GetElementType()?.IsPrimitive == true:
                 Assert.IsNotNull(array, $"{label} is null.");
-                object defaultValue = Activator.CreateInstance(fieldType.GetElementType()!)!;
+                var defaultValue = Activator.CreateInstance(fieldType.GetElementType()!)!;
                 foreach (var item in array)
                     Assert.AreEqual(defaultValue, item, $"{label} contains non-zero element '{item}'.");
                 return true;

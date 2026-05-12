@@ -24,11 +24,11 @@ namespace Bodu.Security.Cryptography;
 /// <c>0x80</c> padding byte, in the standard manner.
 /// </para>
 /// <para>
-/// The selected revision is controlled by <see cref="Version" />. The default is
-/// <see cref="WhirlpoolVersion.WhirlpoolInfo3" />, which matches the <c>ISO/IEC 10118-3</c> standard.
-/// <see cref="Version" /> may be changed before any input has been consumed; attempting to change it once
-/// hashing has started throws <see cref="CryptographicUnexpectedOperationException" />. Calling
-/// <see cref="Initialize" /> returns the instance to the reconfigurable state.
+/// The selected revision is controlled by <see cref="Version"/>. The default is
+/// <see cref="WhirlpoolVersion.WhirlpoolInfo3"/>, which matches the <c>ISO/IEC 10118-3</c> standard.
+/// <see cref="Version"/> may be changed before any input has been consumed; attempting to change it once
+/// hashing has started throws <see cref="CryptographicUnexpectedOperationException"/>. Calling
+/// <see cref="Initialize"/> returns the instance to the reconfigurable state.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -65,8 +65,8 @@ public sealed partial class Whirlpool
     private bool _inputConsumed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Whirlpool" /> class configured for
-    /// <see cref="WhirlpoolVersion.WhirlpoolInfo3" />, the standardised <c>ISO/IEC 10118-3</c> revision.
+    /// Initializes a new instance of the <see cref="Whirlpool"/> class configured for
+    /// <see cref="WhirlpoolVersion.WhirlpoolInfo3"/>, the standardised <c>ISO/IEC 10118-3</c> revision.
     /// </summary>
     public Whirlpool()
         : base(BlockSizeBytesValue)
@@ -83,7 +83,7 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     /// <remarks>
     /// Returns one of <c>"Whirlpool-0"</c>, <c>"Whirlpool-T"</c>, or <c>"Whirlpool"</c> matching the configured
-    /// <see cref="Version" /> — corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
+    /// <see cref="Version"/> — corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
     /// </remarks>
     public override string AlgorithmName
     {
@@ -100,19 +100,19 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Gets or sets the published <see cref="WhirlpoolVersion" /> used to compute the hash value.
+    /// Gets or sets the published <see cref="WhirlpoolVersion"/> used to compute the hash value.
     /// </summary>
     /// <value>The Whirlpool revision selected for subsequent hashing operations.</value>
     /// <returns>The currently configured Whirlpool revision.</returns>
     /// <remarks>
     /// <para>
     /// The revision must be assigned before any input has been consumed. Once
-    /// <see cref="HashAlgorithm.TransformBlock" /> or any <c>ComputeHash</c> overload has started a
-    /// computation, the value becomes immutable until <see cref="Initialize" /> is called.
+    /// <see cref="HashAlgorithm.TransformBlock"/> or any <c>ComputeHash</c> overload has started a
+    /// computation, the value becomes immutable until <see cref="Initialize"/> is called.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The assigned value is not a defined <see cref="WhirlpoolVersion" /> member.
+    /// The assigned value is not a defined <see cref="WhirlpoolVersion"/> member.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The hash algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
@@ -138,7 +138,7 @@ public sealed partial class Whirlpool
     }
 
     /// <inheritdoc />
-    /// <remarks>Clears the eight 64-bit chaining variables and unlatches the <see cref="Version" /> setter.</remarks>
+    /// <remarks>Clears the eight 64-bit chaining variables and unlatches the <see cref="Version"/> setter.</remarks>
     public override void Initialize()
     {
         base.Initialize();
@@ -164,7 +164,7 @@ public sealed partial class Whirlpool
     /// Releases resources used by the algorithm and clears the internal state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to
     /// release only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
@@ -182,21 +182,21 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
-        int inputLength = block.Length;
+        var inputLength = block.Length;
 
         // Whirlpool appends 0x80, a sequence of zero bytes, and a 256-bit big-endian length trailer.
         // A second padded block is required whenever the residual (including the 0x80 byte) does not
         // leave room for the 32-byte length field in the same block.
-        bool needsSecondBlock = inputLength + 1 + LengthFieldBytes > BlockSizeBytesValue;
-        int totalLength = needsSecondBlock ? BlockSizeBytesValue * 2 : BlockSizeBytesValue;
+        var needsSecondBlock = inputLength + 1 + LengthFieldBytes > BlockSizeBytesValue;
+        var totalLength = needsSecondBlock ? BlockSizeBytesValue * 2 : BlockSizeBytesValue;
 
-        byte[] padded = new byte[totalLength];
+        var padded = new byte[totalLength];
         block.CopyTo(padded);
         padded[inputLength] = 0x80;
 
         // Only the low 64 bits of the bit count are populated; the upper 192 bits remain zero. This
         // matches the behaviour of every widely deployed Whirlpool implementation.
-        ulong bitLength = messageLength * 8;
+        var bitLength = messageLength * 8;
         BinaryPrimitives.WriteUInt64BigEndian(padded.AsSpan(totalLength - 8), bitLength);
 
         return padded;
@@ -206,8 +206,8 @@ public sealed partial class Whirlpool
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
         VariantTables tables = GetTables(this._version);
-        ulong[] mul = tables.Multiplication;
-        ulong[][] rcon = tables.RoundKeys;
+        var mul = tables.Multiplication;
+        var rcon = tables.RoundKeys;
 
         Span<ulong> message = stackalloc ulong[8];
         Span<ulong> key = stackalloc ulong[8];
@@ -217,14 +217,14 @@ public sealed partial class Whirlpool
 
         // Read the message block (big-endian) and initialise the round key from the hash state.
         // The first sigma step XORs the message against the initial key to seed the cipher state.
-        for (int i = 0; i < 8; i++)
+        for (var i = 0; i < 8; i++)
         {
             message[i] = BinaryPrimitives.ReadUInt64BigEndian(block.Slice(i * 8, 8));
             key[i] = this._state[i];
             state[i] = message[i] ^ key[i];
         }
 
-        for (int r = 0; r < RoundCount; r++)
+        for (var r = 0; r < RoundCount; r++)
         {
             // Evolve the round key by one application of the non-linear round function with the
             // variant-specific constant in column 0 and zeros elsewhere.
@@ -237,24 +237,24 @@ public sealed partial class Whirlpool
         }
 
         // Miyaguchi–Preneel finalisation: H_{i+1} = W_{H_i}(M) ⊕ M ⊕ H_i.
-        for (int i = 0; i < 8; i++)
+        for (var i = 0; i < 8; i++)
             this._state[i] ^= state[i] ^ message[i];
     }
 
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        byte[] output = new byte[HashSizeBytesValue];
-        for (int i = 0; i < 8; i++)
+        var output = new byte[HashSizeBytesValue];
+        for (var i = 0; i < 8; i++)
             BinaryPrimitives.WriteUInt64BigEndian(output.AsSpan(i * 8, 8), this._state[i]);
 
         return output;
     }
 
     /// <summary>
-    /// Applies one round of the Whirlpool <c>W</c> cipher to <paramref name="state" />, combining the
+    /// Applies one round of the Whirlpool <c>W</c> cipher to <paramref name="state"/>, combining the
     /// non-linear substitution, shift-column, MixRows and AddRoundKey operations via the precomputed
-    /// multiplication table <paramref name="mul" />.
+    /// multiplication table <paramref name="mul"/>.
     /// </summary>
     /// <param name="state">The eight 64-bit input words.</param>
     /// <param name="roundKey">The eight 64-bit round-key words XORed into the round output.</param>

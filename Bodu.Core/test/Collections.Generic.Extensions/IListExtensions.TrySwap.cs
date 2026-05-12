@@ -17,20 +17,20 @@ public sealed partial class IListExtensionsTests_TrySwap
     /// Provides valid <c>TrySwap</c> scenarios covering adjacent, non-adjacent, endpoint, and
     /// same-index no-op swaps.
     /// </summary>
-    public static IEnumerable<object[]> GetTrySwapTestCases() => new[]
-    {
+    public static IEnumerable<object[]> GetTrySwapTestCases() =>
+    [
         new object[] { new[] { 1, 2, 3, 4 }, 0, 1, new[] { 2, 1, 3, 4 } },
-        new object[] { new[] { 1, 2, 3, 4 }, 1, 2, new[] { 1, 3, 2, 4 } },
-        new object[] { new[] { 1, 2, 3, 4 }, 0, 3, new[] { 4, 2, 3, 1 } },
-        new object[] { new[] { 1, 2, 3, 4 }, 2, 2, new[] { 1, 2, 3, 4 } },
-    };
+        [new[] { 1, 2, 3, 4 }, 1, 2, new[] { 1, 3, 2, 4 }],
+        [new[] { 1, 2, 3, 4 }, 0, 3, new[] { 4, 2, 3, 1 }],
+        [new[] { 1, 2, 3, 4 }, 2, 2, new[] { 1, 2, 3, 4 }],
+    ];
 
     /// <summary>
     /// Verifies that <c>TrySwap</c> swaps elements at the specified indices and returns <see langword="true" />
     /// across adjacent, non-adjacent, endpoint, and same-index cases.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetTrySwapTestCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetTrySwapTestCases))]
     public void TrySwap_WhenArgumentsAreValid_ForIndexScenarios_ShouldSwapElementsAndReturnTrue(
         int[] initial,
         int indexA,
@@ -39,7 +39,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     {
         var list = new List<int>(initial);
 
-        bool result = list.TrySwap(indexA, indexB);
+        var result = list.TrySwap(indexA, indexB);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(expected, list);
@@ -53,7 +53,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     {
         var list = new List<string> { "a", "b", "c" };
 
-        bool result = list.TrySwap(1, 1);
+        var result = list.TrySwap(1, 1);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, list);
@@ -72,7 +72,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     {
         var list = new List<int> { 1, 2, 3, 4 };
 
-        bool result = list.TrySwap(indexA, indexB);
+        var result = list.TrySwap(indexA, indexB);
 
         Assert.IsFalse(result);
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4 }, list);
@@ -101,7 +101,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     {
         IList<string> list = new Collection<string> { "a", "b", "c", "d" };
 
-        bool result = list.TrySwap(0, 3);
+        var result = list.TrySwap(0, 3);
 
         Assert.IsTrue(result);
         CollectionAssert.AreEqual(new[] { "d", "b", "c", "a" }, (Collection<string>)list);

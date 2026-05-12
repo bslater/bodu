@@ -19,7 +19,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 4)]
     public void ThrowIfSpanLengthIsNotEqualTo_Span_WhenLengthDiffers_ShouldThrowArgumentException(int spanLength, int expectedLength)
     {
-        int[] buffer = new int[spanLength];
+        var buffer = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(buffer.AsSpan(), expectedLength);
@@ -36,7 +36,7 @@ public partial class ThrowHelperTests
     [DataRow(16, 16)]
     public void ThrowIfSpanLengthIsNotEqualTo_Span_WhenLengthMatches_ShouldNotThrow(int spanLength, int expectedLength)
     {
-        int[] buffer = new int[spanLength];
+        var buffer = new int[spanLength];
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(buffer.AsSpan(), expectedLength);
     }
 
@@ -51,7 +51,7 @@ public partial class ThrowHelperTests
     [DataRow(5, 4)]
     public void ThrowIfSpanLengthIsNotEqualTo_ReadOnlySpan_WhenLengthDiffers_ShouldThrowArgumentException(int spanLength, int expectedLength)
     {
-        int[] buffer = new int[spanLength];
+        var buffer = new int[spanLength];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfSpanLengthIsNotEqualTo((ReadOnlySpan<int>)buffer, expectedLength);
@@ -68,7 +68,7 @@ public partial class ThrowHelperTests
     [DataRow(16, 16)]
     public void ThrowIfSpanLengthIsNotEqualTo_ReadOnlySpan_WhenLengthMatches_ShouldNotThrow(int spanLength, int expectedLength)
     {
-        int[] buffer = new int[spanLength];
+        var buffer = new int[spanLength];
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo((ReadOnlySpan<int>)buffer, expectedLength);
     }
 }

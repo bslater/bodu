@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmTests.GetHashCode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void GetHashCode_WhenCalled_ShouldThrowException(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         Assert.ThrowsExactly<NotSupportedException>(() =>
         {
             _ = algorithm.GetHashCode();

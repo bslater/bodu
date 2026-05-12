@@ -18,7 +18,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5, allowOverwrite: true);
 
-        for (int i = 0; i < 20; i++)
+        for (var i = 0; i < 20; i++)
             buffer.Enqueue(new TestItem(i)); // only last 5 survive: 15..19
 
         var values = buffer.ToArray().Select(x => x.Value).ToArray();
@@ -36,7 +36,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(null);
         buffer.Enqueue(new TestItem(3));
 
-        var snapshot = buffer.ToArray();
+        TestItem?[] snapshot = buffer.ToArray();
         Assert.AreEqual(3, snapshot.Length);
         Assert.AreEqual(1, snapshot[0]?.Value);
         Assert.IsNull(snapshot[1]);
@@ -64,7 +64,7 @@ public partial class ConcurrentCircularBufferTests
     public void ToArray_WhenBufferIsEmpty_ShouldReturnEmptyArray()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        var result = buffer.ToArray();
+        TestItem[] result = buffer.ToArray();
         Assert.AreEqual(0, result.Length);
     }
 
@@ -75,14 +75,14 @@ public partial class ConcurrentCircularBufferTests
     public void ToArray_WhenClearInterleaves_ShouldNotThrowAndMayReturnEmpty()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(8, allowOverwrite: true);
-        for (int i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
 
         var failures = new ConcurrentBag<Exception>();
         var nonEmptySnapshots = 0;
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(20);
@@ -92,11 +92,11 @@ public partial class ConcurrentCircularBufferTests
 
         var taker = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)
+            for (var i = 0; i < 200; i++)
             {
                 try
                 {
-                    var snap = buffer.ToArray();
+                    TestItem[] snap = buffer.ToArray();
                     if (snap.Length > 0) nonEmptySnapshots++;
                     Assert.IsTrue(snap.Length <= buffer.Capacity);
                 }
@@ -120,17 +120,17 @@ public partial class ConcurrentCircularBufferTests
     public void ToArray_WhenConcurrentDequeue_ShouldNotThrowAndLengthWithinCapacity()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var failures = new ConcurrentBag<Exception>();
 
         var reader = Task.Run(() =>
         {
-            for (int i = 0; i < 20; i++)
+            for (var i = 0; i < 20; i++)
             {
                 try
                 {
-                    var snapshot = buffer.ToArray();
+                    TestItem[] snapshot = buffer.ToArray();
                     Assert.IsTrue(snapshot.Length <= buffer.Capacity);
                 }
                 catch (Exception ex)
@@ -142,7 +142,7 @@ public partial class ConcurrentCircularBufferTests
 
         var dequeuer = Task.Run(() =>
         {
-            for (int i = 0; i < 5; i++)
+            for (var i = 0; i < 5; i++)
                 buffer.TryDequeue(out _);
         });
 
@@ -157,17 +157,17 @@ public partial class ConcurrentCircularBufferTests
     public void ToArray_WhenConcurrentEnqueue_ShouldNotThrowAndLengthWithinCapacity()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var failures = new ConcurrentBag<Exception>();
 
         var reader = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 try
                 {
-                    var snapshot = buffer.ToArray();
+                    TestItem[] snapshot = buffer.ToArray();
                     Assert.IsTrue(snapshot.Length <= buffer.Capacity);
                 }
                 catch (Exception ex)
@@ -179,7 +179,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (int i = 10; i < 110; i++)
+            for (var i = 10; i < 110; i++)
                 buffer.Enqueue(new TestItem(i));
         });
 
@@ -194,7 +194,7 @@ public partial class ConcurrentCircularBufferTests
     public void ToArray_WhenManyThreadsCallConcurrently_ShouldNotThrowAndReturnIndependentSnapshots()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(16, allowOverwrite: true);
-        for (int i = 0; i < 12; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 12; i++) buffer.Enqueue(new TestItem(i));
 
         var failures = new ConcurrentBag<Exception>();
         var lengths = new ConcurrentBag<int>();
@@ -203,7 +203,7 @@ public partial class ConcurrentCircularBufferTests
         {
             try
             {
-                var snap = buffer.ToArray();
+                TestItem[] snap = buffer.ToArray();
                 lengths.Add(snap.Length);
                 Assert.IsTrue(snap.Length <= buffer.Capacity);
             }
@@ -227,7 +227,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(1));
         buffer.Enqueue(new TestItem(2));
 
-        var snapshot = buffer.ToArray();
+        TestItem[] snapshot = buffer.ToArray();
         snapshot[0] = new TestItem(999); // mutate snapshot only
 
         // Buffer should be unchanged

@@ -35,10 +35,7 @@ public partial class ThrowHelperTests
     [DataRow(4, 2)]
     [DataRow(9, 3)]
     [DataRow(10, 5)]
-    public void ThrowIfNotPositiveMultipleOf_WhenValueIsPositiveAndMultiple_ShouldNotThrow(int value, int divisor)
-    {
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor);
-    }
+    public void ThrowIfNotPositiveMultipleOf_WhenValueIsPositiveAndMultiple_ShouldNotThrow(int value, int divisor) => ThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> throws

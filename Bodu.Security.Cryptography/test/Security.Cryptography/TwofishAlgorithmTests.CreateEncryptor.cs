@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishAlgorithmTests.CreateEncryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,17 +22,17 @@ public sealed partial class TwofishAlgorithmTests
     [DataRow(256)]
     public void CreateEncryptor_WhenIvIsTooShort_ShouldReportIvBitLength(int keySizeBits)
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         algorithm.KeySize = keySizeBits;
         algorithm.GenerateKey();
 
-        int blockSizeBytes = algorithm.BlockSize / 8;
-        byte[] badIv = new byte[blockSizeBytes - 1];
-        int expectedBitLength = badIv.Length * 8;
+        var blockSizeBytes = algorithm.BlockSize / 8;
+        var badIv = new byte[blockSizeBytes - 1];
+        var expectedBitLength = badIv.Length * 8;
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            using var _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
+            using ICryptoTransform _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
         });
 
         Assert.IsTrue(
@@ -52,17 +52,17 @@ public sealed partial class TwofishAlgorithmTests
     [DataRow(256)]
     public void CreateDecryptor_WhenIvIsTooShort_ShouldReportIvBitLength(int keySizeBits)
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         algorithm.KeySize = keySizeBits;
         algorithm.GenerateKey();
 
-        int blockSizeBytes = algorithm.BlockSize / 8;
-        byte[] badIv = new byte[blockSizeBytes - 1];
-        int expectedBitLength = badIv.Length * 8;
+        var blockSizeBytes = algorithm.BlockSize / 8;
+        var badIv = new byte[blockSizeBytes - 1];
+        var expectedBitLength = badIv.Length * 8;
 
-        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            using var _ = algorithm.CreateDecryptor(algorithm.Key, badIv);
+            using ICryptoTransform _ = algorithm.CreateDecryptor(algorithm.Key, badIv);
         });
 
         Assert.IsTrue(
@@ -81,15 +81,15 @@ public sealed partial class TwofishAlgorithmTests
     [DataRow(256)]
     public void CreateEncryptor_WhenKeyLengthMismatch_ShouldThrowCryptographicException(int keySizeBits)
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         algorithm.KeySize = keySizeBits;
 
-        byte[] wrongKey = new byte[keySizeBits / 8 + 1];
-        byte[] validIv = new byte[algorithm.BlockSize / 8];
+        var wrongKey = new byte[keySizeBits / 8 + 1];
+        var validIv = new byte[algorithm.BlockSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            using var _ = algorithm.CreateEncryptor(wrongKey, validIv);
+            using ICryptoTransform _ = algorithm.CreateEncryptor(wrongKey, validIv);
         });
     }
 
@@ -103,12 +103,12 @@ public sealed partial class TwofishAlgorithmTests
     [DataRow(256)]
     public void CreateEncryptor_WithEachValidKeySize_ShouldSucceed(int keySizeBits)
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         algorithm.KeySize = keySizeBits;
         algorithm.GenerateKey();
         algorithm.GenerateIV();
 
-        using var transform = algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
+        using ICryptoTransform transform = algorithm.CreateEncryptor(algorithm.Key, algorithm.IV);
         Assert.IsNotNull(transform);
     }
 
@@ -122,12 +122,12 @@ public sealed partial class TwofishAlgorithmTests
     [DataRow(256)]
     public void CreateDecryptor_WithEachValidKeySize_ShouldSucceed(int keySizeBits)
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         algorithm.KeySize = keySizeBits;
         algorithm.GenerateKey();
         algorithm.GenerateIV();
 
-        using var transform = algorithm.CreateDecryptor(algorithm.Key, algorithm.IV);
+        using ICryptoTransform transform = algorithm.CreateDecryptor(algorithm.Key, algorithm.IV);
         Assert.IsNotNull(transform);
     }
 }

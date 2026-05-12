@@ -1,12 +1,13 @@
 // ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayLengthIsZero.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Core.Test;
+namespace Bodu;
 
-public sealed partial class ThrowHelperTests
+public partial class ThrowHelperTests
 {
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsZero, throws <see cref="ArgumentException" />.

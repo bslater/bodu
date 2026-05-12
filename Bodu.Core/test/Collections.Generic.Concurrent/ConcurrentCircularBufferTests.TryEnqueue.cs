@@ -42,7 +42,7 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
 
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
             Assert.IsTrue(buffer.TryEnqueue(new TestItem(i)));
 
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= MinCapacity);
@@ -103,7 +103,7 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(buffer.Count <= buffer.Capacity, $"Expected Count <= {buffer.Capacity}, got {buffer.Count}.");
 
-        var snapshot = buffer.ToArray();
+        TestItem[] snapshot = buffer.ToArray();
         Assert.IsTrue(snapshot.Length <= buffer.Capacity, $"ToArray exceeded capacity: {snapshot.Length}");
         Assert.IsTrue(snapshot.All(x => x is not null), "All items in buffer should be non-null.");
     }
@@ -144,9 +144,9 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(25);
         var exceptions = new ConcurrentBag<Exception>();
 
-        var tasks = Enumerable.Range(0, 5).Select(t => Task.Run(() =>
+        Task[] tasks = Enumerable.Range(0, 5).Select(t => Task.Run(() =>
         {
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 try
                 {
@@ -187,7 +187,7 @@ public partial class ConcurrentCircularBufferTests
     public void TryEnqueue_WhenOverwriteDisabledAndFull_ShouldReturnFalseUnderContention()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(4, allowOverwrite: false);
-        for (int i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 4; i++) buffer.Enqueue(new TestItem(i));
 
         int successes = 0, failures = 0;
 

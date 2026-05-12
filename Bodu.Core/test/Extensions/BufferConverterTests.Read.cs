@@ -20,7 +20,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void Read_WhenCalled_ForByteArrayToInt32_ShouldReturnExpectedLittleEndianValue()
     {
-        byte[] source = AscendingBytes;
+        var source = AscendingBytes;
 
         Assert.AreEqual(0x03020100, source.Read<int>(0));
         Assert.AreEqual(0x07060504, source.Read<int>(4));
@@ -33,7 +33,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void Read_WhenCalled_ForByteArrayToInt64_ShouldReturnExpectedLittleEndianValue()
     {
-        byte[] source = AscendingBytes;
+        var source = AscendingBytes;
 
         Assert.AreEqual(0x0706050403020100L, source.Read<long>(0));
         Assert.AreEqual(0x0F0E0D0C0B0A0908L, source.Read<long>(8));
@@ -45,12 +45,12 @@ public partial class BufferConverterTests
     [TestMethod]
     public void Read_WhenFollowedByCopyTo_ForByteArray_ShouldRoundTripValues()
     {
-        byte[] source = AscendingBytes;
-        byte[] destination = new byte[source.Length];
+        var source = AscendingBytes;
+        var destination = new byte[source.Length];
 
-        for (int i = 0; i < source.Length; i += sizeof(int))
+        for (var i = 0; i < source.Length; i += sizeof(int))
         {
-            int value = source.Read<int>(i);
+            var value = source.Read<int>(i);
             value.CopyTo(destination, i);
         }
 
@@ -77,7 +77,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void Read_WhenIndexIsNegative_ForByteArray_ShouldThrowArgumentOutOfRangeException()
     {
-        byte[] source = AscendingBytes;
+        var source = AscendingBytes;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -94,7 +94,7 @@ public partial class BufferConverterTests
     [DataRow(16, DisplayName = "Index at array length")]
     public void Read_WhenIndexPlusElementSizeExceedsArrayLength_ForByteArray_ShouldThrowArgumentException(int index)
     {
-        byte[] source = AscendingBytes;
+        var source = AscendingBytes;
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -112,7 +112,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void Read_WhenCalled_ForReadOnlySpanToInt32_ShouldReturnExpectedLittleEndianValue()
     {
-        byte[] data = AscendingBytes;
+        var data = AscendingBytes;
 
         ReadOnlySpan<byte> source = data.AsSpan(4, 4);
 
@@ -125,7 +125,7 @@ public partial class BufferConverterTests
     [TestMethod]
     public void Read_WhenSpanLengthIsInsufficient_ForReadOnlySpan_ShouldThrowArgumentException()
     {
-        byte[] data = new byte[3];
+        var data = new byte[3];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -142,7 +142,7 @@ public partial class BufferConverterTests
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            ReadOnlySpan<byte> source = ReadOnlySpan<byte>.Empty;
+            ReadOnlySpan<byte> source = [];
             _ = source.Read<int>();
         });
     }

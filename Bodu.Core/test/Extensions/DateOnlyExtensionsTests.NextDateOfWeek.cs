@@ -21,7 +21,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> returns the next occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests. NextDateOfWeekTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests. NextDateOfWeekTestData),typeof(DateTimeExtensionsTests))]
     public void NextDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek targetDay, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

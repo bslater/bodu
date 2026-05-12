@@ -32,8 +32,5 @@ public partial class ThrowHelperTests
     [DataRow(0, 0)]
     [DataRow(-1, 0)]
     [DataRow(int.MinValue, int.MinValue)]
-    public void ThrowIfGreaterThan_WhenValueIsLessThanOrEqualToMax_ShouldNotThrow(int value, int max)
-    {
-        ThrowHelper.ThrowIfGreaterThan(value, max);
-    }
+    public void ThrowIfGreaterThan_WhenValueIsLessThanOrEqualToMax_ShouldNotThrow(int value, int max) => ThrowHelper.ThrowIfGreaterThan(value, max);
 }

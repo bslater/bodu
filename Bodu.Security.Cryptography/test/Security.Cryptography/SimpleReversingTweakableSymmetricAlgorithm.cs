@@ -162,7 +162,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
             blockMode = value;
 
             // Keep the inherited ModeValue in sync for callers that inspect it directly.
-            if (Enum.TryParse<CipherMode>(value.ToString(), out var mode) && Enum.IsDefined(mode))
+            if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) && Enum.IsDefined(mode))
                 ModeValue = mode;
         }
     }
@@ -188,7 +188,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// <exception cref="ArgumentNullException">Any parameter is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The key, IV, or tweak length does not match the configured sizes.</exception>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         ThrowIfDisposed();
         Validate(rgbKey, rgbIV, tweak);
@@ -211,7 +211,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// <exception cref="ArgumentNullException">Any parameter is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The key, IV, or tweak length does not match the configured sizes.</exception>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         ThrowIfDisposed();
         Validate(rgbKey, rgbIV, tweak);
@@ -308,10 +308,9 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
     /// </summary>
     /// <exception cref="ArgumentNullException">Any parameter is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The key, IV, or tweak length is not valid for this algorithm.</exception>
-    private void Validate(byte[] key, byte[] iv, byte[] tweak)
+    private void Validate(byte[] key, byte[]? iv, byte[] tweak)
     {
         ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
         ThrowHelper.ThrowIfNull(tweak);
 
         if (key.Length != KeySizeBytes)
@@ -321,12 +320,7 @@ public sealed class SimpleReversingTweakableSymmetricAlgorithm
                               CryptoHelpers.FormatLegalSizes(LegalKeySizesValue)),
                 nameof(key));
 
-        if (iv.Length != BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                              iv.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(LegalBlockSizesValue)),
-                nameof(iv));
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, blockMode, BlockSizeBytes, LegalBlockSizesValue);
 
         if (tweak.Length != TweakSizeBytes)
             throw new CryptographicException(

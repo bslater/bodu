@@ -30,12 +30,12 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.Add" />, when ValidInputsProvided, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.GetAddTestCases), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.GetAddTestCases), typeof(DateTimeExtensionsTests))]
     public void Add_WhenValidInputsProvided_ShouldReturnExpectedResult(DateTime inputDateTime, int years, int months, double days, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
         var expected = DateOnly.FromDateTime(expectedDateTime);
-        var actual = input.Add(years, months, (int)days);
+        DateOnly actual = input.Add(years, months, (int)days);
         Assert.AreEqual(expected, actual);
     }
 
@@ -53,7 +53,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.Add" />, when OutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetAddExceptionCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetAddExceptionCases))]
     public void Add_WhenOutOfRange_ShouldThrowExactly(string inputDate, int years, int months, int days)
     {
         var input = DateOnly.Parse(inputDate);
@@ -70,7 +70,7 @@ public partial class DateOnlyExtensionsTests
     public void Add_WhenAllParametersZero_ShouldReturnSameDate()
     {
         var input = new DateOnly(2024, 1, 1);
-        var actual = input.Add(0, 0, 0);
+        DateOnly actual = input.Add(0, 0, 0);
         Assert.AreEqual(input, actual);
     }
 
@@ -81,7 +81,7 @@ public partial class DateOnlyExtensionsTests
     public void Add_WhenAddingToFeb28InLeapYear_ShouldReturnFeb29()
     {
         var input = new DateOnly(2024, 2, 28);
-        var actual = input.Add(0, 0, 1);
+        DateOnly actual = input.Add(0, 0, 1);
         Assert.AreEqual(new DateOnly(2024, 2, 29), actual);
     }
 }

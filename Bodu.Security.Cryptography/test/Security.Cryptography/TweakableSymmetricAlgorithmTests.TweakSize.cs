@@ -1,8 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.TweakSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -14,12 +16,12 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenGetMultipleTimes_ShouldReturnDistinctCopies()
     {
-        using var algorithm = CreateAlgorithm();
-        int size = algorithm.LegalTweakSizes[0].MinSize;
+        using TAlgorithm algorithm = CreateAlgorithm();
+        var size = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
-        byte[] first = algorithm.Tweak;
-        byte[] second = algorithm.Tweak;
+        var first = algorithm.Tweak;
+        var second = algorithm.Tweak;
         Assert.AreNotSame(first, second);
         CollectionAssert.AreEqual(first, second);
         first[0]++;
@@ -32,10 +34,10 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void Tweak_WhenSet_ShouldBeIsolatedFromInput()
     {
-        using var algorithm = CreateAlgorithm();
-        int size = algorithm.LegalTweakSizes[0].MinSize;
-        byte[] original = Enumerable.Range(0, size / 8).Select(i => (byte)i).ToArray();
-        byte[] input = (byte[])original.Clone();
+        using TAlgorithm algorithm = CreateAlgorithm();
+        var size = algorithm.LegalTweakSizes[0].MinSize;
+        var original = Enumerable.Range(0, size / 8).Select(i => (byte)i).ToArray();
+        var input = (byte[])original.Clone();
         algorithm.TweakSize = size;
         algorithm.Tweak = input;
         input[0]++;
@@ -49,8 +51,8 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void TweakSize_WhenChanged_ShouldResetTweak()
     {
-        using var algorithm = CreateAlgorithm();
-        int size = algorithm.LegalTweakSizes[0].MinSize;
+        using TAlgorithm algorithm = CreateAlgorithm();
+        var size = algorithm.LegalTweakSizes[0].MinSize;
 
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
@@ -66,9 +68,41 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void TweakSize_WhenSetToValidValue_ShouldUpdateInternalValue()
     {
-        using var algorithm = CreateAlgorithm();
-        int validSize = algorithm.LegalTweakSizes[0].MinSize;
+        using TAlgorithm algorithm = CreateAlgorithm();
+        var validSize = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = validSize;
         Assert.AreEqual(validSize, algorithm.TweakSize);
+    }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="TweakableSymmetricAlgorithm.TweakSize" /> to <c>0</c> throws
+    /// <see cref="CryptographicException" /> rather than leaving the algorithm in an invalid configuration.
+    /// </summary>
+    [TestMethod]
+    public void TweakSize_WhenSetToZero_ShouldThrowCryptographicException()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            algorithm.TweakSize = 0;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning a wrongly-sized <see cref="TweakableSymmetricAlgorithm.TweakSize" /> throws
+    /// <see cref="CryptographicException" /> for the invalid bit-widths supplied by
+    /// <see cref="InvalidTweakSizeBitsData" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(InvalidTweakSizeBitsData))]
+    public void TweakSize_WhenSetToInvalidValue_ShouldThrowCryptographicException(int tweakSize)
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            algorithm.TweakSize = tweakSize;
+        });
     }
 }

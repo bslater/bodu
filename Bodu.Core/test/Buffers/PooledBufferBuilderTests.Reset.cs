@@ -16,7 +16,7 @@ public partial class PooledBufferBuilderTests
     public void Reset_WhenCalled_ShouldSetCountToZero()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
 
         builder.Reset();
 
@@ -32,7 +32,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(16);
         builder.AppendRange(Enumerable.Range(1, 10));
-        int capacityBeforeReset = builder.Capacity;
+        var capacityBeforeReset = builder.Capacity;
 
         builder.Reset();
 
@@ -46,7 +46,7 @@ public partial class PooledBufferBuilderTests
     public void Reset_WhenFollowedByAppend_ShouldAccumulateCorrectly()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 10, 20, 30 });
+        builder.AppendRange([10, 20, 30]);
         builder.Reset();
 
         builder.Append(99);
@@ -113,7 +113,7 @@ public partial class PooledBufferBuilderTests
     public void Reset_WhenCalledMultipleTimes_ShouldRemainEmpty()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
 
         builder.Reset();
         builder.Reset();
@@ -129,7 +129,7 @@ public partial class PooledBufferBuilderTests
     public void Reset_WhenFollowedByWrittenSpan_ShouldReturnEmptySpan()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 10, 20, 30 });
+        builder.AppendRange([10, 20, 30]);
 
         builder.Reset();
 

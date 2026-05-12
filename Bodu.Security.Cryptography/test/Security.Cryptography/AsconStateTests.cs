@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconStateTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public class AsconStateTests
     public void Permute_WhenCalledOnNonZeroState_ShouldModifyState()
     {
         AsconState state = new AsconState { S0 = 0xDEADBEEFCAFEBABEUL, S1 = 1, S2 = 2, S3 = 3, S4 = 4 };
-        ulong originalS0 = state.S0;
+        var originalS0 = state.S0;
 
         state.Permute(12);
 
@@ -61,7 +61,7 @@ public class AsconStateTests
         twice.Permute(8);
         twice.Permute(8);
 
-        bool allSame = once.S0 == twice.S0 && once.S1 == twice.S1 && once.S2 == twice.S2
+        var allSame = once.S0 == twice.S0 && once.S1 == twice.S1 && once.S2 == twice.S2
                     && once.S3 == twice.S3 && once.S4 == twice.S4;
         Assert.IsFalse(allSame, "Permute applied twice must differ from a single application.");
     }
@@ -79,7 +79,7 @@ public class AsconStateTests
         p8.Permute(8);
         p12.Permute(12);
 
-        bool allSame = p8.S0 == p12.S0 && p8.S1 == p12.S1 && p8.S2 == p12.S2
+        var allSame = p8.S0 == p12.S0 && p8.S1 == p12.S1 && p8.S2 == p12.S2
                     && p8.S3 == p12.S3 && p8.S4 == p12.S4;
         Assert.IsFalse(allSame, "Permute(8) and Permute(12) must yield different results.");
     }
@@ -111,7 +111,7 @@ public class AsconStateTests
     public void SqueezeRate64_WhenCalled_ShouldWriteS0AsLittleEndian()
     {
         AsconState state = new AsconState { S0 = 0x0807060504030201UL };
-        byte[] dest = new byte[8];
+        var dest = new byte[8];
 
         state.SqueezeRate64(dest);
 
@@ -130,7 +130,7 @@ public class AsconStateTests
     public void AbsorbRate128_WhenAbsorbingBytes_ShouldXorIntoS0AndS1LittleEndian()
     {
         AsconState state = new AsconState { S0 = 0, S1 = 0, S2 = 0xFFFFFFFFFFFFFFFFUL, S3 = 0, S4 = 0 };
-        byte[] block = new byte[16];
+        var block = new byte[16];
         block[0] = 0x01; // LE: S0 low byte
         block[8] = 0x02; // LE: S1 low byte
 
@@ -149,7 +149,7 @@ public class AsconStateTests
     public void SqueezeRate128_WhenCalled_ShouldWriteS0AndS1AsLittleEndian()
     {
         AsconState state = new AsconState { S0 = 0x0807060504030201UL, S1 = 0x100F0E0D0C0B0A09UL };
-        byte[] dest = new byte[16];
+        var dest = new byte[16];
 
         state.SqueezeRate128(dest);
 
@@ -178,9 +178,9 @@ public class AsconStateTests
     public void Permute_ViaAsconHash256EmptyInput_ShouldMatchNistKat()
     {
         using AsconHash256 hash = new AsconHash256();
-        byte[] digest = hash.ComputeHash(Array.Empty<byte>());
+        var digest = hash.ComputeHash(Array.Empty<byte>());
 
-        string hex = Convert.ToHexString(digest);
+        var hex = Convert.ToHexString(digest);
         Assert.AreEqual(
             "0B3BE5850F2F6B98CAF29F8FDEA89B64A1FA70AA249B8F839BD53BAA304D92B2",
             hex,

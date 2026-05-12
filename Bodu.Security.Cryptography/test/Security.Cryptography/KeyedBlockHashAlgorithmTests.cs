@@ -71,7 +71,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// <returns>A new instance of <typeparamref name="TAlgorithm" /> configured for the given variant.</returns>
     protected virtual TAlgorithm CreateAlgorithm(TVariant variant, byte[] key)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Key = key;
         return algorithm;
     }
@@ -86,7 +86,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// </remarks>
     protected virtual byte[] GenerateUniqueKey(int size)
     {
-        byte[] key = new byte[size];
+        var key = new byte[size];
         CryptoHelpers.FillWithRandomNonZeroBytes(key);
         return key;
     }

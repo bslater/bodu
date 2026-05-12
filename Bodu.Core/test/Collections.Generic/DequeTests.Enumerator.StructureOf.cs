@@ -17,7 +17,7 @@ public partial class DequeTests
     [TestCategory("Structural")]
     public void StructureOf_DequeEnumerator_ShouldBeStructType()
     {
-        var enumeratorType = typeof(Deque<int>.Enumerator);
+        Type enumeratorType = typeof(Deque<int>.Enumerator);
         Assert.IsTrue(enumeratorType.IsValueType, "Enumerator must be a value type (struct).");
     }
 
@@ -28,7 +28,7 @@ public partial class DequeTests
     [TestCategory("Structural")]
     public void StructureOf_DequeEnumerator_ShouldExposeOnlyImmutablePublicProperties()
     {
-        var enumeratorType = typeof(Deque<int>.Enumerator);
+        Type enumeratorType = typeof(Deque<int>.Enumerator);
 
         var mutableProperties = enumeratorType
             .GetProperties(BindingFlags.Instance | BindingFlags.Public)

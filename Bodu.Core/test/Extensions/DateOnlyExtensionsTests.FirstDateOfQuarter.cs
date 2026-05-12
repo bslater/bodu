@@ -22,7 +22,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfQuarter(DateOnly, CalendarQuarterDefinition)" /> returns the expected quarter-start <see cref="DateOnly" /> for each supported <see cref="CalendarQuarterDefinition" /> boundary.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterDateTimeTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterDateTimeTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime inputDateTime, CalendarQuarterDefinition definition, DateTime expectedDateTime)
     {
         DateOnly input = DateOnly.FromDateTime(inputDateTime);
@@ -37,7 +37,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the parameterless <see cref="DateOnlyExtensions.FirstDateOfQuarter(DateOnly)" /> overload returns the January-to-December quarter start for the given input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterDateTimeJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterDateTimeJanuaryDecemberTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime inputDateTime, DateTime expectedDateTime)
     {
         DateOnly input = DateOnly.FromDateTime(inputDateTime);
@@ -52,7 +52,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(CalendarQuarterDefinition, int, int)" /> returns the expected quarter-start <see cref="DateOnly" /> for each <c>(year, quarter, definition)</c> triple.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DateTime expectedDateTime)
     {
         DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
@@ -66,7 +66,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter start for each <c>(year, quarter)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterYearQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterYearQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expectedDateTime)
         {
         DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
@@ -109,7 +109,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfQuarter" /> returns the correct date using a valid quarter provider.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider))]
     public void FirstDateOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime inputDateTime, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

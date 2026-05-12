@@ -18,9 +18,9 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOccurrence_WhenBeforeIsBetweenOccurrences_ShouldReturnMostRecentOccurrence()
     {
-        DateTime start = new DateTime(2025, 7, 7, 9, 0, 0);
-        TimeSpan interval = TimeSpan.FromHours(1);
-        DateTime before = new DateTime(2025, 7, 7, 10, 45, 0);
+        var start = new DateTime(2025, 7, 7, 9, 0, 0);
+        var interval = TimeSpan.FromHours(1);
+        var before = new DateTime(2025, 7, 7, 10, 45, 0);
 
         DateTime actual = start.PreviousOccurrence(interval, before);
 
@@ -34,9 +34,9 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOccurrence_WhenBeforeIsOnOccurrenceBoundary_ShouldReturnPriorOccurrence()
     {
-        DateTime start = new DateTime(2025, 7, 7, 9, 0, 0);
-        TimeSpan interval = TimeSpan.FromHours(1);
-        DateTime before = new DateTime(2025, 7, 7, 11, 0, 0);
+        var start = new DateTime(2025, 7, 7, 9, 0, 0);
+        var interval = TimeSpan.FromHours(1);
+        var before = new DateTime(2025, 7, 7, 11, 0, 0);
 
         DateTime actual = start.PreviousOccurrence(interval, before);
 
@@ -50,8 +50,8 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOccurrence_WhenBeforeEqualsStart_ShouldReturnStartMinusInterval()
     {
-        DateTime start = new DateTime(2025, 7, 7, 9, 0, 0);
-        TimeSpan interval = TimeSpan.FromHours(1);
+        var start = new DateTime(2025, 7, 7, 9, 0, 0);
+        var interval = TimeSpan.FromHours(1);
 
         DateTime actual = start.PreviousOccurrence(interval, start);
 
@@ -65,9 +65,9 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOccurrence_WhenBeforeIsEarlierThanStart_ShouldReturnStartMinusInterval()
     {
-        DateTime start = new DateTime(2025, 7, 7, 9, 0, 0);
-        TimeSpan interval = TimeSpan.FromHours(1);
-        DateTime before = new DateTime(2025, 7, 7, 8, 30, 0);
+        var start = new DateTime(2025, 7, 7, 9, 0, 0);
+        var interval = TimeSpan.FromHours(1);
+        var before = new DateTime(2025, 7, 7, 8, 30, 0);
 
         DateTime actual = start.PreviousOccurrence(interval, before);
 
@@ -80,9 +80,9 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOccurrence_WhenCalled_ShouldPreserveStartKind()
     {
-        DateTime start = new DateTime(2025, 7, 7, 9, 0, 0, DateTimeKind.Utc);
-        TimeSpan interval = TimeSpan.FromHours(1);
-        DateTime before = new DateTime(2025, 7, 7, 10, 45, 0, DateTimeKind.Utc);
+        var start = new DateTime(2025, 7, 7, 9, 0, 0, DateTimeKind.Utc);
+        var interval = TimeSpan.FromHours(1);
+        var before = new DateTime(2025, 7, 7, 10, 45, 0, DateTimeKind.Utc);
 
         DateTime actual = start.PreviousOccurrence(interval, before);
 
@@ -95,7 +95,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOccurrence_WhenIntervalIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        DateTime start = new DateTime(2025, 7, 7, 9, 0, 0);
+        var start = new DateTime(2025, 7, 7, 9, 0, 0);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -109,7 +109,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOccurrence_WhenIntervalIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        DateTime start = new DateTime(2025, 7, 7, 9, 0, 0);
+        var start = new DateTime(2025, 7, 7, 9, 0, 0);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -124,8 +124,8 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousOccurrence_WhenBeforeIsManyIntervalsAhead_ShouldReturnCorrectOccurrence()
     {
-        DateTime start = new DateTime(2025, 1, 1, 0, 0, 0);
-        TimeSpan interval = TimeSpan.FromDays(7);
+        var start = new DateTime(2025, 1, 1, 0, 0, 0);
+        var interval = TimeSpan.FromDays(7);
         DateTime before = start.AddDays(100); // 100 / 7 = 14 remainder 2 → previous = start + 14*7 = 99 days
         // Actually: remainder 2 is non-zero → previousIntervalCount = quotient = 14 → start + 14*7 = 98 days.
         DateTime expected = start.AddDays(98);

@@ -36,7 +36,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
 
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = CreateTransform(cipher, null!);
         });
@@ -61,7 +61,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize);
         var iv = new byte[Math.Max(0, ExpectedInitializationVectorSize - 1)];
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = CreateTransform(cipher, iv);
         });
@@ -105,7 +105,7 @@ public abstract partial class CipherModeTestsBase<TTransform>
             ? new byte[ExpectedInitializationVectorSize]
             : Array.Empty<byte>();
 
-        var transform = CreateTransform(cipher, iv);
+        TTransform? transform = CreateTransform(cipher, iv);
 
         Assert.IsNotNull(transform);
     }

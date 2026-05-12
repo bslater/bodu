@@ -64,4 +64,44 @@ public static partial class TestHelpers
                          .Select(static i => (byte)i)
                          .ToArray();
     }
+
+    /// <summary>
+    /// Generates a deterministic sequence of incrementing byte values, wrapping after <see cref="byte.MaxValue" />.
+    /// </summary>
+    /// <param name="start">
+    /// The first byte value in the generated sequence.
+    /// </param>
+    /// <param name="count">
+    /// The number of bytes to generate.
+    /// </param>
+    /// <returns>
+    /// A byte array containing <paramref name="count" /> byte values beginning at <paramref name="start" /> and
+    /// incrementing by one for each subsequent element, wrapping after <see cref="byte.MaxValue" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="count" /> is less than zero.
+    /// </exception>
+    /// <remarks>
+    /// This method is intended for deterministic test data where the requested length may exceed the number of
+    /// distinct values representable by <see cref="byte" />. For non-wrapping sequences, use
+    /// <see cref="GenerateIncrementalByteSequence(byte, int)" />.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// byte[] bytes = GenerateRepeatingIncrementalByteSequence(0xFE, 4);
+    /// // Produces: { 0xFE, 0xFF, 0x00, 0x01 }
+    /// </code>
+    /// </example>
+    public static byte[] GenerateRepeatingIncrementalByteSequence(byte start, int count)
+    {
+        if (count < 0)
+            throw new ArgumentOutOfRangeException(nameof(count));
+
+        byte[] result = new byte[count];
+
+        for (var i = 0; i < result.Length; i++)
+            result[i] = unchecked((byte)(start + i));
+
+        return result;
+    }
 }

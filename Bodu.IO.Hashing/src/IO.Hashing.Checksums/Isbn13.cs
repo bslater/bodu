@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu.IO.Hashing.CheckDigits;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the check digit of a 13-digit International Standard Book Number using the ISBN-13 weighted
@@ -32,9 +32,9 @@ using Bodu.IO.Hashing.CheckDigits;
 public sealed class Isbn13
     : CheckDigitAlgorithm
 {
-    private int sumEvenHypothesis;
-    private int sumOddHypothesis;
-    private int count;
+    private int _sumEvenHypothesis;
+    private int _sumOddHypothesis;
+    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isbn13" /> class.
@@ -49,9 +49,9 @@ public sealed class Isbn13
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        int sumEven = sumEvenHypothesis;
-        int sumOdd = sumOddHypothesis;
-        int count = this.count;
+        int sumEven = _sumEvenHypothesis;
+        int sumOdd = _sumOddHypothesis;
+        int count = this._count;
 
         for (int i = 0; i < digits.Length; i++)
         {
@@ -79,23 +79,23 @@ public sealed class Isbn13
             count++;
         }
 
-        sumEvenHypothesis = sumEven;
-        sumOddHypothesis = sumOdd;
-        this.count = count;
+        _sumEvenHypothesis = sumEven;
+        _sumOddHypothesis = sumOdd;
+        this._count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        sumEvenHypothesis = 0;
-        sumOddHypothesis = 0;
-        count = 0;
+        _sumEvenHypothesis = 0;
+        _sumOddHypothesis = 0;
+        _count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int sum = (count & 1) == 0 ? sumEvenHypothesis : sumOddHypothesis;
+        int sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 

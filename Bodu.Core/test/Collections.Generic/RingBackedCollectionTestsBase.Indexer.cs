@@ -14,7 +14,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Indexer_WhenItemsAddedAtTail_ShouldReturnInOrder()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 10);
         AddToTail(collection, 20);
         AddToTail(collection, 30);
@@ -37,15 +37,15 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     public void Indexer_WhenStorageWrapped_ShouldReturnLogicalOrder(int capacity)
     {
         // Fill to capacity, drain one, refill — this places the head past zero and the tail wrapped to slot zero.
-        var collection = CreateCollection(capacity);
-        for (int i = 0; i < capacity; i++)
+        TCollection collection = CreateCollection(capacity);
+        for (var i = 0; i < capacity; i++)
             AddToTail(collection, i);
 
         _ = RemoveFromHead(collection);
         AddToTail(collection, capacity); // wraps into slot 0
 
         // Logical order is now [1, 2, ..., capacity]
-        for (int i = 0; i < capacity; i++)
+        for (var i = 0; i < capacity; i++)
             Assert.AreEqual(i + 1, GetAt(collection, i));
     }
 
@@ -55,7 +55,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Indexer_WhenIndexIsNegative_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -70,7 +70,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Indexer_WhenIndexAtOrAboveCount_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

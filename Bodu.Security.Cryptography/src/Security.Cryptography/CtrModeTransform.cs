@@ -10,16 +10,16 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Counter (CTR) mode to an underlying <see cref="IBlockCipher" />, turning it into a
+/// Applies Counter (CTR) mode to an underlying <see cref="IBlockCipher"/>, turning it into a
 /// synchronous stream cipher. The counter is incremented in big-endian order (rightmost byte first),
 /// matching NIST SP 800-38A Section 6.5.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/classic-modes.svg" alt="CTR panel — independent counter blocks are encrypted to form a keystream, then XORed with plaintext." />
+/// <img src="../images/diagrams/classic-modes.svg" alt="CTR panel — independent counter blocks are encrypted to form a keystream, then XORed with plaintext."/>
 /// </para>
 /// <para>
-/// CTR is self-inverse: the same <see cref="Transform" /> operation is applied for both
+/// CTR is self-inverse: the same <see cref="Transform"/> operation is applied for both
 /// encryption and decryption. The cipher's <em>encrypt</em> primitive is always used; the
 /// decrypt primitive is never called.
 /// See <b>panel 5</b> of the diagram above: each cell has its own counter block <c>CTRᵢ</c> and
@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// That independence is also where the sharpest pitfall lives. To protect against keystream reuse,
 /// the transform tracks counter wrap-around: if the counter increments back to its initial value,
-/// the next call to <see cref="Transform" /> throws <see cref="CryptographicException" />. Reusing
+/// the next call to <see cref="Transform"/> throws <see cref="CryptographicException"/>. Reusing
 /// a <c>(key, nonce)</c> pair across messages is catastrophic — the XOR of two ciphertexts
 /// recovers the XOR of the two plaintexts — so callers must ensure each counter value is used at
 /// most once per key.
@@ -73,27 +73,24 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CtrModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="CtrModeTransform"/> class.
     /// </summary>
     /// <param name="cipher">The block cipher whose encrypt primitive generates the keystream.</param>
     /// <param name="initialCounter">
     /// The starting counter block. Must equal the cipher block size. A defensive copy is taken.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="cipher" /> or <paramref name="initialCounter" /> is <see langword="null" />.
+    /// <paramref name="cipher"/> or <paramref name="initialCounter"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="initialCounter" /> length does not equal the cipher block size.
+    /// <paramref name="initialCounter"/> length does not equal the cipher block size.
     /// </exception>
     public CtrModeTransform(IBlockCipher cipher, byte[] initialCounter)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (initialCounter is null) throw new ArgumentNullException(nameof(initialCounter));
-        if (initialCounter.Length != cipher.BlockSize)
-            throw new ArgumentException(
-                $"initialCounter length ({initialCounter.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(initialCounter));
+        ThrowHelper.ThrowIfNull(cipher);
+        CryptoHelpers.ThrowIfIvLengthInvalid(initialCounter, cipher.BlockSize);
 
+        this._cipher = cipher;
         this._initialCounter = (byte[])initialCounter.Clone();
         this._counter = (byte[])initialCounter.Clone();
     }
@@ -103,20 +100,19 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     {
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
         Span<byte> keystream = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             if (this._counterWrapped)
-                throw new CryptographicException(
-                    "The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.");
+                throw new CryptographicException(CryptoResourceStrings.CryptographicException_CtrCounterWrapped);
 
             this._cipher.Encrypt(this._counter, keystream);
             this.IncrementCounter();
 
-            int len = Math.Min(blockSize, input.Length - offset);
-            for (int i = 0; i < len; i++)
+            var len = Math.Min(blockSize, input.Length - offset);
+            for (var i = 0; i < len; i++)
                 output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
         }
 
@@ -126,7 +122,7 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the retained counter state so that
     /// key-equivalent counter values do not linger in memory after disposal. The underlying
-    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// <see cref="IBlockCipher"/> is not disposed by this type — ownership remains with the caller.
     /// </summary>
     /// <remarks>Idempotent.</remarks>
     public void Dispose()
@@ -134,8 +130,8 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
         if (this._disposed)
             return;
 
-        CryptographicOperations.ZeroMemory(this._counter);
-        CryptographicOperations.ZeroMemory(this._initialCounter);
+        CryptoHelpers.Clear(this._counter);
+        CryptoHelpers.Clear(this._initialCounter);
         this._disposed = true;
         GC.SuppressFinalize(this);
     }
@@ -148,7 +144,7 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     /// </summary>
     private void IncrementCounter()
     {
-        for (int i = this._counter.Length - 1; i >= 0; i--)
+        for (var i = this._counter.Length - 1; i >= 0; i--)
             if (++this._counter[i] != 0) break;
 
         // Wrap detected: counter has returned to its initial value.

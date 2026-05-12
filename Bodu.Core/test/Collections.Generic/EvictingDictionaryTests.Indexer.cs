@@ -64,7 +64,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
 
-        int evictionCount = 0;
+        var evictionCount = 0;
         dictionary.ItemEvicting += (_, _) => evictionCount++;
 
         dictionary["A"] = 1; // No-op

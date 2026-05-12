@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UpcA.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.CheckDigits;
-
 using Bodu.IO.Hashing.Checksums;
+
+namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the check digit of a 12-digit Universal Product Code (UPC-A) barcode using the UPC-A weighted
@@ -34,9 +34,9 @@ public sealed class UpcA
     /// <summary>The required full-sequence length of <c>12</c> decimal digits.</summary>
     public const int SequenceLength = 12;
 
-    private int sumEvenHypothesis;
-    private int sumOddHypothesis;
-    private int count;
+    private int _sumEvenHypothesis;
+    private int _sumOddHypothesis;
+    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UpcA" /> class.
@@ -51,9 +51,9 @@ public sealed class UpcA
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        int sumEven = sumEvenHypothesis;
-        int sumOdd = sumOddHypothesis;
-        int count = this.count;
+        int sumEven = _sumEvenHypothesis;
+        int sumOdd = _sumOddHypothesis;
+        int count = this._count;
 
         for (int i = 0; i < digits.Length; i++)
         {
@@ -78,23 +78,23 @@ public sealed class UpcA
             count++;
         }
 
-        sumEvenHypothesis = sumEven;
-        sumOddHypothesis = sumOdd;
-        this.count = count;
+        _sumEvenHypothesis = sumEven;
+        _sumOddHypothesis = sumOdd;
+        this._count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        sumEvenHypothesis = 0;
-        sumOddHypothesis = 0;
-        count = 0;
+        _sumEvenHypothesis = 0;
+        _sumOddHypothesis = 0;
+        _count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int sum = (count & 1) == 0 ? sumEvenHypothesis : sumOddHypothesis;
+        int sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 

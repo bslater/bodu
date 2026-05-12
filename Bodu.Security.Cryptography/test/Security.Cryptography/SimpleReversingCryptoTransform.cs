@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SimpleReversingCryptoTransform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -56,7 +56,7 @@ public sealed class SimpleReversingCryptoTransform
         SimpleReversingBlockCipher cipher,
         CipherBlockMode cipherMode,
         PaddingMode paddingMode,
-        byte[] iv,
+        byte[]? iv,
         bool encrypt)
     {
         this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
@@ -122,7 +122,7 @@ public sealed class SimpleReversingCryptoTransform
         }
         else
         {
-            bool stripPadding = padding is Pkcs7Padding;
+            var stripPadding = padding is Pkcs7Padding;
 
             if (stripPadding && input.Length <= cipher.BlockSize)
             {
@@ -131,7 +131,7 @@ public sealed class SimpleReversingCryptoTransform
             }
             else
             {
-                int bytesToProcess = input.Length;
+                var bytesToProcess = input.Length;
                 if (stripPadding)
                 {
                     bytesToProcess -= cipher.BlockSize;
@@ -163,20 +163,20 @@ public sealed class SimpleReversingCryptoTransform
 
         if (encrypt)
         {
-            byte[] padded = padding.Pad(input, cipher.BlockSize);
+            var padded = padding.Pad(input, cipher.BlockSize);
 
             // CryptoStream calls TransformFinalBlock with zero bytes after consuming all complete
             // blocks via TransformBlock when input is block-aligned. Nothing left to encrypt.
             if (padded.Length == 0)
                 return Array.Empty<byte>();
 
-            byte[] output = new byte[padded.Length];
+            var output = new byte[padded.Length];
             mode.Transform(padded, output, true);
             result = output;
         }
         else
         {
-            byte[] combined = Combine(deferredInput, input);
+            var combined = Combine(deferredInput, input);
 
             if (combined.Length == 0)
             {
@@ -189,7 +189,7 @@ public sealed class SimpleReversingCryptoTransform
                 return Array.Empty<byte>();
             }
 
-            byte[] decrypted = new byte[combined.Length];
+            var decrypted = new byte[combined.Length];
             mode.Transform(combined, decrypted, false);
             result = padding.Unpad(decrypted, cipher.BlockSize);
         }
@@ -232,7 +232,7 @@ public sealed class SimpleReversingCryptoTransform
         if (first == null || first.Length == 0)
             return second.ToArray();
 
-        byte[] result = new byte[first.Length + second.Length];
+        var result = new byte[first.Length + second.Length];
         Buffer.BlockCopy(first, 0, result, 0, first.Length);
         second.CopyTo(result.AsSpan(first.Length));
         return result;

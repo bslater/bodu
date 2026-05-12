@@ -28,7 +28,7 @@ public sealed partial class OcbModeTransformTests
     public void Ctor_WithValidTagLength_ShouldSetTagSizeCorrectly(int tagLen)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
-        var transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagLen);
+        OcbModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagLen);
 
         Assert.AreEqual(tagLen, transform.TagSize,
             $"TagSize must equal the tagLen passed to the constructor (tagLen={tagLen}).");

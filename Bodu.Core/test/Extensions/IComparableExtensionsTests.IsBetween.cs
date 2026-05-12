@@ -56,10 +56,7 @@ public partial class IComparableExtensionsTests
         string value,
         string lower,
         string upper,
-        bool expected)
-    {
-        Assert.AreEqual(expected, value.IsBetween(lower, upper));
-    }
+        bool expected) => Assert.AreEqual(expected, value.IsBetween(lower, upper));
 
     // =========================================================================
     // IsBetween<T>(T?, T?, T?, IComparer<T>)
@@ -91,7 +88,7 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int>? comparer = null;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = 5.IsBetween(1, 10, comparer!);
         });

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AesBlockCipherTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed partial class AesBlockCipherTests
     /// <inheritdoc />
     protected override BlockCipherSpecification GetSpecification(BlockCipherKeyVariant variant)
     {
-        int keySize = variant switch
+        var keySize = variant switch
         {
             BlockCipherKeyVariant.Key128 => 16,
             BlockCipherKeyVariant.Key192 => 24,
@@ -79,7 +79,7 @@ public sealed partial class AesBlockCipherTests
     [DataRow(33)]
     public void Ctor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException(int keyLength)
     {
-        byte[] key = new byte[keyLength];
+        var key = new byte[keyLength];
         Assert.ThrowsExactly<CryptographicException>(() => new AesBlockCipher(key));
     }
 
@@ -91,14 +91,14 @@ public sealed partial class AesBlockCipherTests
     [TestMethod]
     public void Encrypt_ForSingleBlock_ShouldMatchBclEncryptEcb()
     {
-        byte[] key = RandomNumberGenerator.GetBytes(16);
-        byte[] plaintext = RandomNumberGenerator.GetBytes(16);
+        var key = RandomNumberGenerator.GetBytes(16);
+        var plaintext = RandomNumberGenerator.GetBytes(16);
 
-        byte[] ourCiphertext = new byte[16];
+        var ourCiphertext = new byte[16];
         using (var cipher = new AesBlockCipher(key))
             cipher.Encrypt(plaintext, ourCiphertext);
 
-        byte[] bclCiphertext = new byte[16];
+        var bclCiphertext = new byte[16];
         using (Aes aes = Aes.Create())
         {
             aes.Key = key;

@@ -5,17 +5,18 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Counter with CBC-MAC (CCM) mode to an underlying <see cref="IBlockCipher" />,
+/// Applies Counter with CBC-MAC (CCM) mode to an underlying <see cref="IBlockCipher"/>,
 /// providing authenticated encryption with associated data (AEAD) per NIST SP 800-38C.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — a CTR-style keystream produces ciphertext and a MAC over nonce, associated data, and ciphertext produces the tag. In CCM the MAC is CBC-MAC." />
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — a CTR-style keystream produces ciphertext and a MAC over nonce, associated data, and ciphertext produces the tag. In CCM the MAC is CBC-MAC."/>
 /// </para>
 /// <para>
 /// CCM is the <b>CTR + CBC-MAC</b> instantiation of the generic AEAD shape above: the top pipeline is the
@@ -62,11 +63,10 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#ccm--a-two-pass-alternative">CCM walk-through in the AEAD-modes guide</seealso>
-/// <seealso cref="AesBlockCipher" />
-/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
+/// <seealso cref="AesBlockCipher"/>
+/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class CcmModeTransform
-    : IAeadBlockCipherModeTransform
-    , IDisposable
+    : IAeadBlockCipherModeTransform, IDisposable
 {
     private const int NonceLengthBytes = 12;
     private const int TagLengthBytes = 16;
@@ -82,17 +82,16 @@ public sealed class CcmModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance. The first 12 bytes of <paramref name="iv" /> are used as the CCM nonce.
+    /// Initializes a new instance of the <see cref="CcmModeTransform"/> class. The first 12 bytes of <paramref name="iv"/>
+    /// are used as the CCM nonce.
     /// </summary>
-    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="iv"/> length does not equal the cipher block size.</exception>
     public CcmModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != cipher.BlockSize)
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).", nameof(iv));
+        ThrowHelper.ThrowIfNull(cipher);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+        this._cipher = cipher;
 
         this._nonce = new byte[NonceLengthBytes];
         iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
@@ -102,36 +101,32 @@ public sealed class CcmModeTransform
     public int TagSize => TagLengthBytes;
 
     /// <inheritdoc />
-    /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
         this.ThrowIfDisposed();
 
-        if (this._aadProcessed)
-            throw new InvalidOperationException("AssociatedData has already been processed.");
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
     }
 
     /// <inheritdoc />
-    /// <inheritdoc />
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
         ThrowIfCompleted();
 
-        int required = plaintext.Length + TagSize;
-        if (output.Length < required)
-            throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
+        var required = plaintext.Length + TagSize;
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
 
-        byte[] mac = ComputeCbcMac(this._aad.AsSpan(), plaintext);
-        byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
+        var mac = ComputeCbcMac(this._aad.AsSpan(), plaintext);
+        var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
-        EncryptCtr(plaintext, output.Slice(0, plaintext.Length), startIndex: 1);
-        encTag.AsSpan(0, TagSize).CopyTo(output.Slice(plaintext.Length));
+        EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
+        encTag.AsSpan(0, TagSize).CopyTo(output[plaintext.Length..]);
         this._completed = true;
         return required;
     }
@@ -142,28 +137,26 @@ public sealed class CcmModeTransform
         this.ThrowIfDisposed();
         ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < TagSize)
-            throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
 
-        int plaintextLength = ciphertextWithTag.Length - TagSize;
-        if (output.Length < plaintextLength)
-            throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
+        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
 
-        ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-        ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
+        ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
+        ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        EncryptCtr(ciphertext, output.Slice(0, plaintextLength), startIndex: 1);
+        EncryptCtr(ciphertext, output[..plaintextLength], startIndex: 1);
 
-        byte[] mac = ComputeCbcMac(this._aad.AsSpan(), output.Slice(0, plaintextLength));
-        byte[] encTag = XorWithCtrBlock(mac, counterIndex: 0);
+        var mac = ComputeCbcMac(this._aad.AsSpan(), output[..plaintextLength]);
+        var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
         {
-            CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
+            CryptographicOperations.ZeroMemory(output[..plaintextLength]);
             this._completed = true;
-            throw new CryptographicException("CCM authentication tag verification failed.");
+            throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
         }
 
         this._completed = true;
@@ -171,33 +164,29 @@ public sealed class CcmModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
-    /// decrypted a message. CCM transforms are single-use; create a fresh instance per message.
-    /// </summary>
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This CCM transform has already completed and cannot be reused. Create a new instance per message.");
-    }
-
-    /// <summary>
     /// Releases the resources used by this instance and clears retained nonce and associated-data state from memory.
     /// </summary>
     /// <remarks>
-    /// The supplied <see cref="IBlockCipher" /> is not disposed by this type. Ownership remains with the caller.
+    /// The supplied <see cref="IBlockCipher"/> is not disposed by this type. Ownership remains with the caller.
     /// </remarks>
     public void Dispose()
     {
         this.Dispose(disposing: true);
         GC.SuppressFinalize(this);
     }
+    /// <summary>
+    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
+    /// decrypted a message. CCM transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+
 
     /// <summary>
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -206,13 +195,8 @@ public sealed class CcmModeTransform
 
         if (disposing)
         {
-            CryptographicOperations.ZeroMemory(this._nonce);
-
-            if (this._aad is not null)
-            {
-                CryptographicOperations.ZeroMemory(this._aad);
-                this._aad = null;
-            }
+            CryptoHelpers.Clear(this._nonce);
+            CryptoHelpers.ClearAndNullify(ref this._aad);
 
             this._aadProcessed = false;
         }
@@ -228,7 +212,11 @@ public sealed class CcmModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed) { this._aad = Array.Empty<byte>(); this._aadProcessed = true; }
+        if (!this._aadProcessed)
+        {
+            this._aad = [];
+            this._aadProcessed = true;
+        }
     }
 
     /// <summary>
@@ -239,16 +227,17 @@ public sealed class CcmModeTransform
     /// <returns>The computed CBC-MAC tag, truncated to the configured tag length.</returns>
     private byte[] ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        int blockSize = this._cipher.BlockSize;
-        byte[] mac = new byte[blockSize];
+        var blockSize = this._cipher.BlockSize;
+        var mac = new byte[blockSize];
 
         // Block B0.
-        bool hasAad = aad.Length > 0;
-        byte[] b0 = new byte[blockSize];
+        var hasAad = aad.Length > 0;
+        var b0 = new byte[blockSize];
         b0[0] = hasAad ? BaseB0WithAad : BaseB0NoAad;
         this._nonce.CopyTo(b0, 1);
+
         // Message length in last 3 bytes (big-endian, q=3).
-        uint len = (uint)plaintext.Length;
+        var len = (uint)plaintext.Length;
         b0[15] = (byte)len;
         b0[14] = (byte)(len >> 8);
         b0[13] = (byte)(len >> 16);
@@ -259,21 +248,22 @@ public sealed class CcmModeTransform
         {
             if (aad.Length >= 0xFF00)
                 throw new NotSupportedException("AAD must be shorter than 65280 bytes for 2-byte length encoding.");
+
             // Encode: 2-byte length + aad + zero-padding to block multiple.
-            int encodedLen = 2 + aad.Length;
-            int padded = ((encodedLen + blockSize - 1) / blockSize) * blockSize;
-            byte[] aadEncoded = new byte[padded];
+            var encodedLen = 2 + aad.Length;
+            var padded = ((encodedLen + blockSize - 1) / blockSize) * blockSize;
+            var aadEncoded = new byte[padded];
             aadEncoded[0] = (byte)(aad.Length >> 8);
             aadEncoded[1] = (byte)aad.Length;
             aad.CopyTo(aadEncoded.AsSpan(2));
-            for (int i = 0; i < aadEncoded.Length; i += blockSize)
+            for (var i = 0; i < aadEncoded.Length; i += blockSize)
                 CbcMacUpdate(mac, aadEncoded.AsSpan(i, blockSize));
         }
 
         // Plaintext blocks (zero-padded last block).
-        for (int i = 0; i < plaintext.Length; i += blockSize)
+        for (var i = 0; i < plaintext.Length; i += blockSize)
         {
-            byte[] block = new byte[blockSize];
+            var block = new byte[blockSize];
             plaintext.Slice(i, Math.Min(blockSize, plaintext.Length - i)).CopyTo(block);
             CbcMacUpdate(mac, block);
         }
@@ -282,7 +272,7 @@ public sealed class CcmModeTransform
     }
 
     /// <summary>
-    /// XORs <paramref name="block" /> into <paramref name="mac" /> and runs a single AES block
+    /// XORs <paramref name="block"/> into <paramref name="mac"/> and runs a single AES block
     /// through the underlying cipher to advance the CBC-MAC state.
     /// </summary>
     /// <param name="mac">The CBC-MAC accumulator (16 bytes); updated in place.</param>
@@ -290,7 +280,7 @@ public sealed class CcmModeTransform
     private void CbcMacUpdate(byte[] mac, ReadOnlySpan<byte> block)
     {
         Span<byte> xored = stackalloc byte[mac.Length];
-        for (int i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
+        for (var i = 0; i < mac.Length; i++) xored[i] = (byte)(mac[i] ^ block[i]);
         this._cipher.Encrypt(xored, mac);
     }
 
@@ -300,52 +290,75 @@ public sealed class CcmModeTransform
     /// <returns>A fresh array holding <c>input XOR keystream</c>.</returns>
     private byte[] XorWithCtrBlock(ReadOnlySpan<byte> input, int counterIndex)
     {
-        int blockSize = this._cipher.BlockSize;
-        byte[] ctr = new byte[blockSize];
+        var blockSize = this._cipher.BlockSize;
+        var ctr = new byte[blockSize];
+
         ctr[0] = CounterFlagByte;
+
         this._nonce.CopyTo(ctr, 1);
+
         ctr[15] = (byte)counterIndex;
         ctr[14] = (byte)(counterIndex >> 8);
         ctr[13] = (byte)(counterIndex >> 16);
 
-        byte[] ks = new byte[blockSize];
+        var ks = new byte[blockSize];
         this._cipher.Encrypt(ctr, ks);
-        for (int i = 0; i < Math.Min(input.Length, blockSize); i++)
+
+        for (var i = 0; i < Math.Min(input.Length, blockSize); i++)
             ks[i] ^= input[i];
+
         return ks;
     }
 
     /// <summary>
     /// Applies CTR-mode encryption starting from counter-block index
-    /// <paramref name="startIndex" />, writing <c>input XOR keystream</c> into
-    /// <paramref name="output" />.
+    /// <paramref name="startIndex"/>, writing <c>input XOR keystream</c> into
+    /// <paramref name="output"/>.
     /// </summary>
     /// <param name="input">The plaintext (or ciphertext) bytes to XOR with the keystream.</param>
-    /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
+    /// <param name="output">The destination span; must be at least <paramref name="input"/>.Length bytes.</param>
     /// <param name="startIndex">The starting counter-block index in the CTR sequence.</param>
     private void EncryptCtr(ReadOnlySpan<byte> input, Span<byte> output, int startIndex)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
         Span<byte> ks = stackalloc byte[blockSize];
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+
+        for (var offset = 0; offset < input.Length; offset += blockSize)
         {
-            int idx = startIndex + offset / blockSize;
-            byte[] ctr = new byte[blockSize];
+            var idx = startIndex + (offset / blockSize);
+            var ctr = new byte[blockSize];
+
             ctr[0] = CounterFlagByte;
+
             this._nonce.CopyTo(ctr, 1);
+
             ctr[15] = (byte)idx;
             ctr[14] = (byte)(idx >> 8);
             ctr[13] = (byte)(idx >> 16);
+
             this._cipher.Encrypt(ctr, ks);
-            int rem = Math.Min(blockSize, input.Length - offset);
-            for (int i = 0; i < rem; i++)
+
+            var rem = Math.Min(blockSize, input.Length - offset);
+
+            for (var i = 0; i < rem; i++)
                 output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
         }
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    private void ThrowIfDisposed() =>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
+#endif
+    }
 }

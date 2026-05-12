@@ -34,7 +34,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the parameterless <see cref="DateTimeExtensions.LastDateOfQuarter(DateTime)" /> overload returns the January-to-December quarter end for the given input.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfQuarterDateTimeJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfQuarterDateTimeJanuaryDecemberTestData))]
     public void LastDateOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DateTime expected)
     {
         var actual = input.LastDateOfQuarter();
@@ -46,7 +46,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfQuarter(int, int, CalendarQuarterDefinition)" /> computes the expected quarter-end for each <c>(year, quarter, definition)</c> triple.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfQuarterTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfQuarterTestData))]
     public void LastDateOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year,int quarter, CalendarQuarterDefinition definition, DateTime expected)
     {
         var actual = DateTimeExtensions.GetLastDateOfQuarter(year, quarter, definition);
@@ -73,7 +73,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfQuarter(DateTime, CalendarQuarterDefinition)" /> preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(CalendarQuarterDefinitionDateTimeKindTestData))]
     public void LastDateOfQuarter_WhenQuarterAndDefinitionAndKindIsSet_ShouldPreserveKind(CalendarQuarterDefinition definition, DateTimeKind kind)
     {
         DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
@@ -86,7 +86,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter-end for each <c>(year, quarter)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfQuarterJanuaryDecemberTestData))]
     public void LastDateOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expected)
     {
         var actual = DateTimeExtensions.GetLastDateOfQuarter(year, quarter);
@@ -127,7 +127,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfQuarter{T}" /> returns the correct quarter-end using a valid quarter provider.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider))]
     public void LastDateOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DateTime expected)
     {
         var provider = new DateTimeExtensionsTests.ValidQuarterProvider();

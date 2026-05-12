@@ -20,7 +20,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekInMonthTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek dayOfWeek, DateTime expectedDateTime)
     {
         DateOnly input = DateOnly.FromDateTime(inputDateTime);

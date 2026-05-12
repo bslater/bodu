@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHashTests.128.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,10 +14,10 @@ public partial class CityHash128Tests
     [TestMethod]
     public void Append_WhenShortInput_ShouldProduceNonZeroDigest()
     {
-        byte[] input = Enumerable.Range(1, 24).Select(i => (byte)(i * 7)).ToArray();
+        var input = Enumerable.Range(1, 24).Select(i => (byte)(i * 7)).ToArray();
         CityHash128 algorithm = CreateAlgorithm();
         algorithm.Append(input);
-        byte[] digest = algorithm.GetCurrentHash();
+        var digest = algorithm.GetCurrentHash();
 
         Assert.AreEqual(16, digest.Length);
         Assert.IsTrue(digest.Any(b => b != 0), "Short varied input should not produce an all-zero digest.");
@@ -30,13 +30,13 @@ public partial class CityHash128Tests
     [TestMethod]
     public void Append_WhenLongInput_ShouldProduceNonZeroDigest()
     {
-        byte[] input = new byte[512];
-        for (int i = 0; i < input.Length; i++)
+        var input = new byte[512];
+        for (var i = 0; i < input.Length; i++)
             input[i] = (byte)((i * 31) ^ 0xA5);
 
         CityHash128 algorithm = CreateAlgorithm();
         algorithm.Append(input);
-        byte[] digest = algorithm.GetCurrentHash();
+        var digest = algorithm.GetCurrentHash();
 
         Assert.AreEqual(16, digest.Length);
         Assert.IsTrue(digest.Any(b => b != 0));
@@ -60,8 +60,8 @@ public partial class CityHash128Tests
     [DataRow(256)]
     public void Append_WhenSameInput_ShouldProduceSameDigest(int length)
     {
-        byte[] input = new byte[length];
-        for (int i = 0; i < length; i++)
+        var input = new byte[length];
+        for (var i = 0; i < length; i++)
             input[i] = (byte)(i * 13);
 
         CityHash128 a = CreateAlgorithm();
@@ -84,11 +84,11 @@ public partial class CityHash128Tests
     [DataRow(200)]
     public void Append_WhenInputDiffersByOneBit_ShouldProduceDifferentDigest(int length)
     {
-        byte[] a = new byte[length];
-        for (int i = 0; i < length; i++)
+        var a = new byte[length];
+        for (var i = 0; i < length; i++)
             a[i] = (byte)(i * 17);
 
-        byte[] b = (byte[])a.Clone();
+        var b = (byte[])a.Clone();
         b[length - 1] ^= 0x01;
 
         CityHash128 ha = CreateAlgorithm();

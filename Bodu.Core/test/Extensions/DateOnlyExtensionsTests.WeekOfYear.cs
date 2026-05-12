@@ -22,7 +22,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.WeekOfYear" />, with Culture, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCalendarWeekTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCalendarWeekTestData), typeof(DateTimeExtensionsTests))]
     public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime inputDateTime, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -36,7 +36,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.WeekOfYear" />, with CalendarWeek, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCultureTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.WeekOfYearCultureTestData), typeof(DateTimeExtensionsTests))]
     public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime inputDateTime, CultureInfo culture, int expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

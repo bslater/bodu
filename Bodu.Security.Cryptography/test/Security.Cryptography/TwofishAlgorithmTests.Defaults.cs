@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishAlgorithmTests.Defaults.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class TwofishAlgorithmTests
     [TestMethod]
     public void KeySize_WhenDefault_ShouldBe256()
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         Assert.AreEqual(256, algorithm.KeySize);
     }
 
@@ -26,7 +26,7 @@ public sealed partial class TwofishAlgorithmTests
     [TestMethod]
     public void BlockSize_WhenDefault_ShouldBe128()
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         Assert.AreEqual(128, algorithm.BlockSize);
     }
 
@@ -37,7 +37,7 @@ public sealed partial class TwofishAlgorithmTests
     [TestMethod]
     public void Padding_WhenDefault_ShouldBePkcs7()
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         Assert.AreEqual(PaddingMode.PKCS7, algorithm.Padding);
     }
 
@@ -48,7 +48,7 @@ public sealed partial class TwofishAlgorithmTests
     [TestMethod]
     public void Mode_WhenDefault_ShouldBeCbc()
     {
-        using var algorithm = CreateAlgorithm();
+        using Twofish algorithm = CreateAlgorithm();
         Assert.AreEqual(CipherMode.CBC, algorithm.Mode);
     }
 }

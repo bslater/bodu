@@ -19,11 +19,17 @@ public partial class Serpent512TweakableAlgorithmTests
     protected override Serpent512 CreateAlgorithm() => new Serpent512();
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+    protected override void SetBlockMode(Serpent512 algorithm, CipherBlockMode mode) =>
+        algorithm.BlockMode = mode;
+
+    /// <inheritdoc />
+    protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
+        new TweakableSymmetricAlgorithmSpecification
         {
             BlockSizeBits = 512,
             DefaultKeySizeBits = 512,
             LegalKeySizesBits = [512],
+            DefaultTweakSizeBits = 128,
+            LegalTweakSizesBits = [128],
         };
 }

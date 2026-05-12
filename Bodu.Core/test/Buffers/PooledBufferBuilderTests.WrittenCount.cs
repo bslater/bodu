@@ -27,7 +27,7 @@ public partial class PooledBufferBuilderTests
     public void WrittenCount_WhenItemsAdded_ShouldReturnAccurateValue()
     {
         using var builder = new PooledBufferBuilder<string>();
-        builder.AppendRange(new[] { "a", "b", "c" });
+        builder.AppendRange(["a", "b", "c"]);
 
         Assert.AreEqual(3, builder.WrittenCount);
     }

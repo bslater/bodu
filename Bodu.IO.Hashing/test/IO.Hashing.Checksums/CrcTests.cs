@@ -1,13 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using System.Text;
 
+namespace Bodu.IO.Hashing.Checksums;
 /// <summary>
 /// Contains unit tests for the <see cref="Crc" /> non-cryptographic hash algorithm. Extended by partial files
 /// covering the catalogue parity vectors and resume-from-hash semantics.
@@ -16,7 +15,7 @@ using System.Text;
 public partial class CrcTests
     : NonCryptographicHashAlgorithmTests<CrcTests, Crc, CrcTestVariant>
 {
-    private static readonly byte[] RevEngCheckInput = Encoding.ASCII.GetBytes("123456789");
+    private static readonly byte[] s_revEngCheckInput = Encoding.ASCII.GetBytes("123456789");
 
     /// <inheritdoc />
     protected override CrcTestVariant DefaultVariant => CrcTestVariant.Crc32_IsoHdlc;
@@ -45,7 +44,7 @@ public partial class CrcTests
                     new()
                     {
                         Name = "RevEng/123456789",
-                        Input = RevEngCheckInput,
+                        Input = s_revEngCheckInput,
                         ExpectedHex = "F4",
                     },
                 ],
@@ -63,7 +62,7 @@ public partial class CrcTests
                     new()
                     {
                         Name = "RevEng/123456789",
-                        Input = RevEngCheckInput,
+                        Input = s_revEngCheckInput,
                         ExpectedHex = "3DBB",
                     },
                 ],
@@ -81,7 +80,7 @@ public partial class CrcTests
                     new()
                     {
                         Name = "RevEng/123456789",
-                        Input = RevEngCheckInput,
+                        Input = s_revEngCheckInput,
                         ExpectedHex = "2639F4CB",
                     },
                 ],
@@ -99,7 +98,7 @@ public partial class CrcTests
                     new()
                     {
                         Name = "RevEng/123456789",
-                        Input = RevEngCheckInput,
+                        Input = s_revEngCheckInput,
                         ExpectedHex = "4773490B5FDF406C",
                     },
                 ],
@@ -123,16 +122,16 @@ public partial class CrcTests
             "44", "FF", "D0", "14",
             "41", "B0",
         },
-        CrcTestVariant.Crc16_ARC => new[]
-        {
+        CrcTestVariant.Crc16_ARC =>
+        [
             "0000", "0000", "C1C0", "8051",
             "10A1", "A10F", "0EBB", "BAC6",
             "0671", "F0C4", "0442", "C3C4",
             "C596", "5656", "17FB", "3ACA",
             "0A17", "96CB",
-        },
-        CrcTestVariant.Crc32_IsoHdlc => new[]
-        {
+        ],
+        CrcTestVariant.Crc32_IsoHdlc =>
+        [
             "00000000", "8DEF02D2", "6922DE36", "7F895408",
             "1386B98B", "CCD35A51", "4ACFEB30", "F90958AD",
             "9F68AA88", "0243E1BC", "46D76C45", "E18E2DAD",
@@ -142,9 +141,9 @@ public partial class CrcTests
             "96A69582", "0CD480D8", "B28B07BF", "DCC3B00A",
             "5D0808D7", "83960ED3", "585F66C5", "776D784D",
             "8A7E2691", "058390E4",
-        },
-        CrcTestVariant.Crc64_Ecma182 => new[]
-        {
+        ],
+        CrcTestVariant.Crc64_Ecma182 =>
+        [
             "0000000000000000", "0000000000000000", "9336EAA9EBE1F042", "2FB25A00BCE9E42A",
             "F3CB1ECE9E6005F8", "B21D702AD45A8D58", "3215BDB1E4E5C7A8", "5415F7A09699D1A3",
             "CCC7A6A5DAE42AA2", "8B0767B5C7C1E307", "47D31426ADAE75BD", "960ABF2C9F8531A7",
@@ -162,7 +161,7 @@ public partial class CrcTests
             "E59A6F5F8867428B", "4944B459A3C6CBD9", "3C17D90273B5432B", "7C8F1CE016EA7867",
             "A1EDC574C5C6871F", "6BF1101EB716AD8C", "6FA70B75353A5BB3", "3F18B8CD919B6534",
             "0BBDA35E7B7FEC30", "1EA4F3F84BF03D9C",
-        },
+        ],
         _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, null),
     };
 

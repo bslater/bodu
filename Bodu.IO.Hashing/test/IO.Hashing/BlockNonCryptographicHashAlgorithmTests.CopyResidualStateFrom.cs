@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockNonCryptographicHashAlgorithmTests.CopyResidualStateFrom.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     {
         RecordingBlockHasher hasher = new();
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() => hasher.CopyFromExposed(null));
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => hasher.CopyFromExposed(null));
         Assert.AreEqual("source", ex.ParamName);
     }
 }

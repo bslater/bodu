@@ -20,7 +20,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInYear" /> returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInYearTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfWeekInYearTestData))]
     public void FirstDateOfWeekInYear_ShouldReturnExpectedDay(DateTime input, DayOfWeek targetDay, DateTime expected)
     {
         DateTime actual = input.FirstDateOfWeekInYear(targetDay);

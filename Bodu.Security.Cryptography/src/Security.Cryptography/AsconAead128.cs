@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Buffers.Binary;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -53,7 +54,7 @@ namespace Bodu.Security.Cryptography;
 /// completely breaks confidentiality and authenticity.
 /// </para>
 /// <para>
-/// Call <see cref="ProcessAssociatedData" /> before <see cref="Encrypt" /> or <see cref="Decrypt" />. Pass an empty span
+/// Call <see cref="ProcessAssociatedData"/> before <see cref="Encrypt"/> or <see cref="Decrypt"/>. Pass an empty span
 /// if there is no associated data.
 /// </para>
 /// <para>
@@ -121,20 +122,20 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     private bool _disposed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="AsconAead128" /> class with the specified key and nonce.
+    /// Initializes a new instance of the <see cref="AsconAead128"/> class with the specified key and nonce.
     /// </summary>
     /// <param name="key">
     /// The 128-bit (16-byte) secret key. The key is read during construction and retained internally as key words until
-    /// the instance is disposed. Must not be <see langword="null" />.
+    /// the instance is disposed. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="nonce">
     /// The 128-bit (16-byte) nonce. Must be unique for every message encrypted under the same key. Must not be
-    /// <see langword="null" />.
+    /// <see langword="null"/>.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="nonce" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="nonce"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key" /> is not exactly <see cref="KeyBytes" /> bytes, or <paramref name="nonce" /> is not exactly
-    /// <see cref="NonceBytes" /> bytes.
+    /// <paramref name="key"/> is not exactly <see cref="KeyBytes"/> bytes, or <paramref name="nonce"/> is not exactly
+    /// <see cref="NonceBytes"/> bytes.
     /// </exception>
     public AsconAead128(byte[] key, byte[] nonce)
         : this(
@@ -144,13 +145,13 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     }
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="AsconAead128" /> class with the specified key and nonce spans.
+    /// Initializes a new instance of the <see cref="AsconAead128"/> class with the specified key and nonce spans.
     /// </summary>
     /// <param name="key">The 128-bit (16-byte) secret key.</param>
     /// <param name="nonce">The 128-bit (16-byte) nonce. Must be unique for every message encrypted under the same key.</param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key" /> is not exactly <see cref="KeyBytes" /> bytes, or <paramref name="nonce" /> is not exactly
-    /// <see cref="NonceBytes" /> bytes.
+    /// <paramref name="key"/> is not exactly <see cref="KeyBytes"/> bytes, or <paramref name="nonce"/> is not exactly
+    /// <see cref="NonceBytes"/> bytes.
     /// </exception>
     public AsconAead128(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce)
     {
@@ -159,8 +160,8 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
         this._key = new KeyMaterial128(key);
 
-        ulong k0 = this._key.K0;
-        ulong k1 = this._key.K1;
+        var k0 = this._key.K0;
+        var k1 = this._key.K1;
 
         // Initialisation: [IV || K0 || K1 || N0 || N1] → p12 → S3 ^= K0, S4 ^= K1.
         this._state = new AsconState
@@ -169,7 +170,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
             S1 = k0,
             S2 = k1,
             S3 = BinaryPrimitives.ReadUInt64LittleEndian(nonce),
-            S4 = BinaryPrimitives.ReadUInt64LittleEndian(nonce.Slice(8)),
+            S4 = BinaryPrimitives.ReadUInt64LittleEndian(nonce[8..]),
         };
 
         this._state.Permute(Pa);
@@ -185,7 +186,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     /// </summary>
     /// <param name="associatedData">
     /// The bytes to authenticate. May be empty to indicate no associated data. Must be called exactly once before
-    /// <see cref="Encrypt" /> or <see cref="Decrypt" />.
+    /// <see cref="Encrypt"/> or <see cref="Decrypt"/>.
     /// </param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">This method has already been called on this instance.</exception>
@@ -199,7 +200,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
         if (!associatedData.IsEmpty)
         {
-            int offset = 0;
+            var offset = 0;
 
             while (offset + Rate <= associatedData.Length)
             {
@@ -210,7 +211,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
             // Final partial block: Ascon padding — 0x01 at the first unused byte position.
             Span<byte> pad = stackalloc byte[Rate];
-            int rem = associatedData.Length - offset;
+            var rem = associatedData.Length - offset;
             associatedData.Slice(offset, rem).CopyTo(pad);
             pad[rem] ^= 0x01;
             this._state.AbsorbRate128(pad);
@@ -223,24 +224,24 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     }
 
     /// <summary>
-    /// Encrypts <paramref name="plaintext" /> and appends the 16-byte authentication tag to <paramref name="output" />.
+    /// Encrypts <paramref name="plaintext"/> and appends the 16-byte authentication tag to <paramref name="output"/>.
     /// </summary>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <param name="output">
     /// Receives the ciphertext followed immediately by the 16-byte tag. Must be at least
-    /// <c>plaintext.Length + <see cref="TagBytes" /></c> bytes long.
+    /// <c>plaintext.Length + <see cref="TagBytes"/></c> bytes long.
     /// </param>
-    /// <returns>Total bytes written: <c>plaintext.Length + <see cref="TagBytes" /></c>.</returns>
+    /// <returns>Total bytes written: <c>plaintext.Length + <see cref="TagBytes"/></c>.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException"><see cref="ProcessAssociatedData" /> has not been called.</exception>
-    /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="ProcessAssociatedData"/> has not been called.</exception>
+    /// <exception cref="ArgumentException"><paramref name="output"/> is too small.</exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
         this.ThrowIfAadNotProcessed();
 
-        int required = plaintext.Length + TagBytes;
+        var required = plaintext.Length + TagBytes;
         if (output.Length < required)
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
@@ -248,16 +249,16 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
         try
         {
-            int inOff = 0;
-            int outOff = 0;
+            var inOff = 0;
+            var outOff = 0;
 
             while (inOff + Rate <= plaintext.Length)
             {
-                ulong p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext.Slice(inOff));
-                ulong p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext.Slice(inOff + 8));
+                var p0 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[inOff..]);
+                var p1 = BinaryPrimitives.ReadUInt64LittleEndian(plaintext[(inOff + 8)..]);
 
-                BinaryPrimitives.WriteUInt64LittleEndian(output.Slice(outOff), this._state.S0 ^ p0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output.Slice(outOff + 8), this._state.S1 ^ p1);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[outOff..], this._state.S0 ^ p0);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(outOff + 8)..], this._state.S1 ^ p1);
 
                 this._state.S0 ^= p0;
                 this._state.S1 ^= p1;
@@ -267,20 +268,20 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
                 outOff += Rate;
             }
 
-            int lastLen = plaintext.Length - inOff;
+            var lastLen = plaintext.Length - inOff;
 
             Span<byte> padded = stackalloc byte[Rate];
             plaintext.Slice(inOff, lastLen).CopyTo(padded);
             padded[lastLen] ^= 0x01;
 
-            ulong fp0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
-            ulong fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded.Slice(8));
+            var fp0 = BinaryPrimitives.ReadUInt64LittleEndian(padded);
+            var fp1 = BinaryPrimitives.ReadUInt64LittleEndian(padded[8..]);
 
             Span<byte> cOut = stackalloc byte[Rate];
             BinaryPrimitives.WriteUInt64LittleEndian(cOut, this._state.S0 ^ fp0);
-            BinaryPrimitives.WriteUInt64LittleEndian(cOut.Slice(8), this._state.S1 ^ fp1);
+            BinaryPrimitives.WriteUInt64LittleEndian(cOut[8..], this._state.S1 ^ fp1);
 
-            cOut.Slice(0, lastLen).CopyTo(output.Slice(outOff));
+            cOut[..lastLen].CopyTo(output[outOff..]);
 
             this._state.S0 ^= fp0;
             this._state.S1 ^= fp1;
@@ -296,22 +297,22 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     }
 
     /// <summary>
-    /// Decrypts <paramref name="ciphertextWithTag" /> and verifies the 16-byte authentication tag.
+    /// Decrypts <paramref name="ciphertextWithTag"/> and verifies the 16-byte authentication tag.
     /// </summary>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the 16-byte authentication tag. Must be at least <see cref="TagBytes" />
+    /// The ciphertext followed immediately by the 16-byte authentication tag. Must be at least <see cref="TagBytes"/>
     /// bytes long.
     /// </param>
     /// <param name="output">
-    /// Receives the decrypted plaintext. Must be at least <c>ciphertextWithTag.Length - <see cref="TagBytes" /></c>
+    /// Receives the decrypted plaintext. Must be at least <c>ciphertextWithTag.Length - <see cref="TagBytes"/></c>
     /// bytes long.
     /// </param>
-    /// <returns>Bytes written: <c>ciphertextWithTag.Length - <see cref="TagBytes" /></c>.</returns>
+    /// <returns>Bytes written: <c>ciphertextWithTag.Length - <see cref="TagBytes"/></c>.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException"><see cref="ProcessAssociatedData" /> has not been called.</exception>
+    /// <exception cref="InvalidOperationException"><see cref="ProcessAssociatedData"/> has not been called.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ciphertextWithTag" /> is shorter than <see cref="TagBytes" /> bytes, or
-    /// <paramref name="output" /> is too small.
+    /// <paramref name="ciphertextWithTag"/> is shorter than <see cref="TagBytes"/> bytes, or
+    /// <paramref name="output"/> is too small.
     /// </exception>
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
@@ -325,7 +326,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
                 string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
 
-        int ptLen = ciphertextWithTag.Length - TagBytes;
+        var ptLen = ciphertextWithTag.Length - TagBytes;
         if (output.Length < ptLen)
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, ptLen),
@@ -333,19 +334,19 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 
         try
         {
-            ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, ptLen);
-            ReadOnlySpan<byte> inTag = ciphertextWithTag.Slice(ptLen);
+            ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..ptLen];
+            ReadOnlySpan<byte> inTag = ciphertextWithTag[ptLen..];
 
-            int cOff = 0;
-            int pOff = 0;
+            var cOff = 0;
+            var pOff = 0;
 
             while (cOff + Rate <= ciphertext.Length)
             {
-                ulong c0 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext.Slice(cOff));
-                ulong c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext.Slice(cOff + 8));
+                var c0 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[cOff..]);
+                var c1 = BinaryPrimitives.ReadUInt64LittleEndian(ciphertext[(cOff + 8)..]);
 
-                BinaryPrimitives.WriteUInt64LittleEndian(output.Slice(pOff), this._state.S0 ^ c0);
-                BinaryPrimitives.WriteUInt64LittleEndian(output.Slice(pOff + 8), this._state.S1 ^ c1);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[pOff..], this._state.S0 ^ c0);
+                BinaryPrimitives.WriteUInt64LittleEndian(output[(pOff + 8)..], this._state.S1 ^ c1);
 
                 this._state.S0 = c0;
                 this._state.S1 = c1;
@@ -355,27 +356,33 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
                 pOff += Rate;
             }
 
-            int lastLen = ciphertext.Length - cOff;
+            var lastLen = ciphertext.Length - cOff;
 
             Span<byte> stateBytes = stackalloc byte[Rate];
             BinaryPrimitives.WriteUInt64LittleEndian(stateBytes, this._state.S0);
-            BinaryPrimitives.WriteUInt64LittleEndian(stateBytes.Slice(8), this._state.S1);
+            BinaryPrimitives.WriteUInt64LittleEndian(stateBytes[8..], this._state.S1);
 
-            for (int i = 0; i < lastLen; i++)
-                output[pOff + i] = (byte)(ciphertext[cOff + i] ^ stateBytes[i]);
+            // Capture original ciphertext bytes before writing plaintext to output.
+            // output and ciphertextWithTag may alias the same buffer, so ciphertext[cOff..]
+            // would be overwritten by the XOR loop if we don't save it first.
+            Span<byte> lastCt = stackalloc byte[lastLen == 0 ? 1 : lastLen];
+            ciphertext.Slice(cOff, lastLen).CopyTo(lastCt);
 
-            ciphertext.Slice(cOff, lastLen).CopyTo(stateBytes);
+            for (var i = 0; i < lastLen; i++)
+                output[pOff + i] = (byte)(lastCt[i] ^ stateBytes[i]);
+
+            lastCt[..lastLen].CopyTo(stateBytes);
             stateBytes[lastLen] ^= 0x01;
 
             this._state.S0 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes);
-            this._state.S1 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes.Slice(8));
+            this._state.S1 = BinaryPrimitives.ReadUInt64LittleEndian(stateBytes[8..]);
 
             Span<byte> expectedTag = stackalloc byte[TagBytes];
             this.Finalize(expectedTag);
 
             if (!CryptographicOperations.FixedTimeEquals(inTag, expectedTag))
             {
-                CryptographicOperations.ZeroMemory(output.Slice(0, ptLen));
+                CryptographicOperations.ZeroMemory(output[..ptLen]);
                 throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
 
@@ -400,7 +407,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -425,30 +432,52 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     /// <param name="tag">Destination span for the 16-byte authentication tag.</param>
     private void Finalize(Span<byte> tag)
     {
-        ulong k0 = this._key.K0;
-        ulong k1 = this._key.K1;
+        var k0 = this._key.K0;
+        var k1 = this._key.K1;
 
         this._state.S1 ^= k0;
         this._state.S2 ^= k1;
         this._state.Permute(Pa);
 
         BinaryPrimitives.WriteUInt64LittleEndian(tag, this._state.S3 ^ k0);
-        BinaryPrimitives.WriteUInt64LittleEndian(tag.Slice(8), this._state.S4 ^ k1);
+        BinaryPrimitives.WriteUInt64LittleEndian(tag[8..], this._state.S4 ^ k1);
     }
 
-    /// <summary>Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.</summary>
+    /// <summary>
+    /// Validates that <paramref name="value"/> is not <see langword="null"/> and returns it as a
+    /// <see cref="ReadOnlySpan{T}"/>, enabling null-safe constructor chaining from the <c>byte[]</c> overload.
+    /// </summary>
+    /// <param name="value">The byte array to validate.</param>
+    /// <param name="paramName">The caller-visible parameter name reported in any exception.</param>
+    /// <returns>A <see cref="ReadOnlySpan{Byte}"/> over <paramref name="value"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    private static ReadOnlySpan<byte> ValidateNotNull(byte[] value, string paramName)
+    {
+        if (value is null)
+            throw new ArgumentNullException(paramName);
+
+        return value.AsSpan();
+    }
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(AsconAead128));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if this instance has already completed encryption or decryption.
+    /// Throws <see cref="InvalidOperationException"/> if this instance has already completed encryption or decryption.
     /// </summary>
     private void ThrowIfCompleted()
     {
@@ -457,7 +486,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if <see cref="ProcessAssociatedData" /> has not yet been called.
+    /// Throws <see cref="InvalidOperationException"/> if <see cref="ProcessAssociatedData"/> has not yet been called.
     /// </summary>
     private void ThrowIfAadNotProcessed()
     {
@@ -466,7 +495,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     }
 
     /// <summary>
-    /// Stores the retained 128-bit key material for an <see cref="AsconAead128" /> instance.
+    /// Stores the retained 128-bit key material for an <see cref="AsconAead128"/> instance.
     /// </summary>
     /// <remarks>
     /// The holder reference is retained by the parent instance, while the contained key words remain clearable during
@@ -478,13 +507,13 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         private ulong _k1;
 
         /// <summary>
-        /// Initialises a new instance of the <see cref="KeyMaterial128" /> class from the supplied key bytes.
+        /// Initializes a new instance of the <see cref="KeyMaterial128"/> class from the supplied key bytes.
         /// </summary>
         /// <param name="key">The 128-bit key bytes.</param>
         public KeyMaterial128(ReadOnlySpan<byte> key)
         {
             this._k0 = BinaryPrimitives.ReadUInt64LittleEndian(key);
-            this._k1 = BinaryPrimitives.ReadUInt64LittleEndian(key.Slice(8));
+            this._k1 = BinaryPrimitives.ReadUInt64LittleEndian(key[8..]);
         }
 
         /// <summary>Gets the first 64-bit key word.</summary>

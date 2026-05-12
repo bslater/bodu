@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmTests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,10 +19,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Append_WhenInputIsEmpty_ShouldLeaveHashUnchanged(TVariant variant)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
 
-        algorithm.Append(ReadOnlySpan<byte>.Empty);
+        algorithm.Append([]);
 
         CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
     }
@@ -37,13 +37,13 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Append_WhenCalledInChunks_ShouldMatchSingleAppend(TVariant variant)
     {
-        byte[] data = NonCryptographicHashSharedInputs.Sequential0To255;
+        var data = NonCryptographicHashSharedInputs.Sequential0To255;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
 
         NonCryptographicHashAlgorithm chunked = CreateAlgorithm(variant);
-        int third = data.Length / 3;
+        var third = data.Length / 3;
         chunked.Append(data.AsSpan(0, third));
         chunked.Append(data.AsSpan(third, third));
         chunked.Append(data.AsSpan(third * 2, data.Length - (third * 2)));
@@ -60,14 +60,14 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
     public void Append_WhenCalledOneByteAtATime_ShouldMatchSingleAppend(TVariant variant)
     {
-        byte[] data = NonCryptographicHashSharedInputs.QuickBrownFox;
+        var data = NonCryptographicHashSharedInputs.QuickBrownFox;
 
         NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
         whole.Append(data);
 
         NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
-        foreach (byte b in data)
-            perByte.Append(new[] { b });
+        foreach (var b in data)
+            perByte.Append([b]);
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
     }
@@ -86,10 +86,10 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     [DynamicData(nameof(KnownAnswerTestData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenUsingNamedInput_ShouldProduceExpectedHash(TVariant variant, string testName, byte[] input, byte[] expected)
     {
-        var algorithm = CreateAlgorithm(variant);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
         algorithm.Append(input);
 
-        byte[] actual = algorithm.GetCurrentHash();
+        var actual = algorithm.GetCurrentHash();
 
         CollectionAssert.AreEqual(expected, actual, $"Hash mismatch for '{testName}' using variant '{variant}'.");
     }

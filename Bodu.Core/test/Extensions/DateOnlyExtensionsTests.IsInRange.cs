@@ -16,13 +16,13 @@ public partial class DateOnlyExtensionsTests
     /// <param name="endDateTime">The end of the range.</param>
     /// <param name="expected">The expected actual.</param>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.GetIsInRangeTestCases), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.GetIsInRangeTestCases), typeof(DateTimeExtensionsTests))]
     public void IsInRange_ForDateTime_ShouldReturnExpectedResult(DateTime inputDateTime, DateTime startDateTime, DateTime endDateTime, bool expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
         var start = DateOnly.FromDateTime(startDateTime);
         var end = DateOnly.FromDateTime(endDateTime);
-        bool actual = input.IsInRange(start, end);
+        var actual = input.IsInRange(start, end);
 
         Assert.AreEqual(expected, actual, $"Failed for inputDateTime={inputDateTime:yyyy-MM-dd}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }
@@ -35,13 +35,13 @@ public partial class DateOnlyExtensionsTests
     /// <param name="endDateTime">The end of the range.</param>
     /// <param name="expected">The expected actual.</param>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.GetIsInRangeNullableTestCases), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.GetIsInRangeNullableTestCases), typeof(DateTimeExtensionsTests))]
     public void IsInRange_ForNullableDateTime_ShouldReturnExpectedResult(DateTime? inputDateTime, DateTime startDateTime, DateTime endDateTime, bool expected)
     {
         DateOnly? input = inputDateTime.HasValue ? DateOnly.FromDateTime(inputDateTime.Value) : null;
         var start = DateOnly.FromDateTime(startDateTime);
         var end = DateOnly.FromDateTime(endDateTime);
-        bool actual = input.IsInRange(start, end);
+        var actual = input.IsInRange(start, end);
 
         Assert.AreEqual(expected, actual, $"Failed for inputDateTime={(inputDateTime.HasValue ? inputDateTime.Value.ToString("yyyy-MM-dd") : "null")}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }

@@ -25,6 +25,48 @@ public partial class CubeHashTests
     /// <inheritdoc />
     protected override CubeHash CreateAlgorithm() => new CubeHash();
 
+    /// <summary>
+    /// Verifies that constructing a <see cref="CubeHash"/> with an unsupported hash size throws
+    /// <see cref="ArgumentOutOfRangeException"/> with the correct parameter name.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenHashSizeIsUnsupported_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new CubeHash(300);
+        });
+        Assert.AreEqual("hashSize", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="CubeHash"/> with an out-of-range rounds value throws
+    /// <see cref="ArgumentOutOfRangeException"/> with the correct parameter name.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenRoundsIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new CubeHash(16, 0, 32, 32, 512);
+        });
+        Assert.AreEqual("rounds", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="CubeHash"/> with an out-of-range transform block size throws
+    /// <see cref="ArgumentOutOfRangeException"/> with the correct parameter name.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenTransformBlockSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new CubeHash(16, 16, 0, 32, 512);
+        });
+        Assert.AreEqual("transformBlockSize", ex.ParamName);
+    }
+
     /// <inheritdoc />
     protected override HashAlgorithmSpecification GetSpecification(CubeHashVariants variant) => variant switch
     {
@@ -129,55 +171,13 @@ public partial class CubeHashTests
     protected override CubeHash CreateAlgorithm(CubeHashVariants variant) =>
         variant switch
         {
-            CubeHashVariants.CubeHash16_16_32_32_512 => CreateAlgorithm(),
-            CubeHashVariants.CubeHash160_16_32_160_512 => new CubeHash
-            {
-                InitializationRounds = 160,
-                Rounds = 16,
-                TransformBlockSize = 32,
-                FinalizationRounds = 160,
-                HashSize = 512
-            },
-            CubeHashVariants.CubeHash80_8_1_80_512 => new CubeHash
-            {
-                InitializationRounds = 80,
-                Rounds = 8,
-                TransformBlockSize = 1,
-                FinalizationRounds = 80,
-                HashSize = 512
-            },
-            CubeHashVariants.CubeHash10_1_1_10_512 => new CubeHash
-            {
-                InitializationRounds = 10,
-                Rounds = 1,
-                TransformBlockSize = 1,
-                FinalizationRounds = 10,
-                HashSize = 512
-            },
-            CubeHashVariants.CubeHash160_16_32_160_256 => new CubeHash
-            {
-                InitializationRounds = 160,
-                Rounds = 16,
-                TransformBlockSize = 32,
-                FinalizationRounds = 160,
-                HashSize = 256
-            },
-            CubeHashVariants.CubeHash80_8_1_80_256 => new CubeHash
-            {
-                InitializationRounds = 80,
-                Rounds = 8,
-                TransformBlockSize = 1,
-                FinalizationRounds = 80,
-                HashSize = 256
-            },
-            CubeHashVariants.CubeHash10_1_1_10_256 => new CubeHash
-            {
-                InitializationRounds = 10,
-                Rounds = 1,
-                TransformBlockSize = 1,
-                FinalizationRounds = 10,
-                HashSize = 256
-            },
+            CubeHashVariants.CubeHash16_16_32_32_512 => new CubeHash(16, 16, 32, 32, 512),
+            CubeHashVariants.CubeHash160_16_32_160_512 => new CubeHash(160, 16, 32, 160, 512),
+            CubeHashVariants.CubeHash80_8_1_80_512 => new CubeHash(80, 8, 1, 80, 512),
+            CubeHashVariants.CubeHash10_1_1_10_512 => new CubeHash(10, 1, 1, 10, 512),
+            CubeHashVariants.CubeHash160_16_32_160_256 => new CubeHash(160, 16, 32, 160, 256),
+            CubeHashVariants.CubeHash80_8_1_80_256 => new CubeHash(80, 8, 1, 80, 256),
+            CubeHashVariants.CubeHash10_1_1_10_256 => new CubeHash(10, 1, 1, 10, 256),
             _ => throw new ArgumentOutOfRangeException(nameof(variant))
         };
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso7816_4PaddingTests.Pad.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,15 +17,15 @@ public sealed partial class Iso7816_4PaddingTests
     [TestMethod]
     public void Pad_WhenInputHasResidual_ShouldWriteTerminatorFollowedByZeroBytes()
     {
-        var padding = CreatePadding();
-        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
+        Iso7816_4Padding padding = CreatePadding();
+        var plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        byte[] padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSize);
 
         Assert.AreEqual(BlockSize, padded.Length);
         Assert.AreEqual((byte)0x80, padded[plaintext.Length], "First pad byte must be 0x80.");
 
-        for (int i = plaintext.Length + 1; i < padded.Length; i++)
+        for (var i = plaintext.Length + 1; i < padded.Length; i++)
             Assert.AreEqual((byte)0x00, padded[i], $"Pad byte after the terminator at index {i} must be 0x00.");
     }
 
@@ -37,15 +37,15 @@ public sealed partial class Iso7816_4PaddingTests
     [TestMethod]
     public void Pad_WhenInputIsBlockAligned_ShouldAppendFullBlockOfPadding()
     {
-        var padding = CreatePadding();
-        byte[] plaintext = CreatePlaintextWithResidual(0);
+        Iso7816_4Padding padding = CreatePadding();
+        var plaintext = CreatePlaintextWithResidual(0);
 
-        byte[] padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSize);
 
         Assert.AreEqual(plaintext.Length + BlockSize, padded.Length);
         Assert.AreEqual((byte)0x80, padded[plaintext.Length], "Terminator must sit at the start of the appended block.");
 
-        for (int i = plaintext.Length + 1; i < padded.Length; i++)
+        for (var i = plaintext.Length + 1; i < padded.Length; i++)
             Assert.AreEqual((byte)0x00, padded[i]);
     }
 }

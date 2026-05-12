@@ -37,7 +37,7 @@ public partial class CubeHashTests
     public void TransformBlockSize_WhenSetAfterHashing_ShouldNotThrow()
     {
         var algorithm = new CubeHash();
-        byte[] input = new byte[] { 1, 2, 3 };
+        var input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
 
@@ -54,13 +54,13 @@ public partial class CubeHashTests
     [TestMethod]
     public void TransformBlockSize_WhenDifferentValuesUsed_ShouldProduceDifferentHashes()
     {
-        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
+        var input = new byte[] { 0x10, 0x20, 0x30 };
 
         var algorithmA = new CubeHash { TransformBlockSize = 32 };
         var algorithmB = new CubeHash { TransformBlockSize = 64 };
 
-        byte[] resultA = algorithmA.ComputeHash(input);
-        byte[] resultB = algorithmB.ComputeHash(input);
+        var resultA = algorithmA.ComputeHash(input);
+        var resultB = algorithmB.ComputeHash(input);
 
         CollectionAssert.AreNotEqual(resultA, resultB);
     }
@@ -76,7 +76,7 @@ public partial class CubeHashTests
     [DataRow(int.MaxValue)]
     public void TransformBlockSize_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.TransformBlockSize = value);
     }
@@ -93,7 +93,7 @@ public partial class CubeHashTests
     [DataRow(128)]
     public void TransformBlockSize_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
         algorithm.TransformBlockSize = size;
 
         Assert.AreEqual(size, algorithm.TransformBlockSize);
@@ -105,9 +105,9 @@ public partial class CubeHashTests
     [TestMethod]
     public void TransformBlockSize_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
-        int size = 64;
-        int original = algorithm.TransformBlockSize;
+        using CubeHash algorithm = CreateAlgorithm();
+        var size = 64;
+        var original = algorithm.TransformBlockSize;
         algorithm.TransformBlockSize = size;
 
         Assert.AreEqual(size, algorithm.TransformBlockSize);
@@ -146,8 +146,8 @@ public partial class CubeHashTests
     [TestMethod]
     public void TransformBlockSize_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
+        using CubeHash algorithm = CreateAlgorithm();
+        var input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>

@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu.IO.Hashing.CheckDigits;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the check digit of a 9-character Committee on Uniform Securities Identification Procedures (CUSIP)
@@ -41,8 +41,8 @@ public sealed class Cusip
     /// <summary>The required full-sequence length of <c>9</c> characters.</summary>
     public const int SequenceLength = 9;
 
-    private int sum;
-    private int count;
+    private int _sum;
+    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Cusip" /> class.
@@ -63,8 +63,8 @@ public sealed class Cusip
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int sum = this.sum;
-        int count = this.count;
+        int sum = this._sum;
+        int count = this._count;
 
         for (int i = 0; i < body.Length; i++)
         {
@@ -75,20 +75,20 @@ public sealed class Cusip
             count++;
         }
 
-        this.sum = sum;
-        this.count = count;
+        this._sum = sum;
+        this._count = count;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        sum = 0;
-        count = 0;
+        _sum = 0;
+        _count = 0;
     }
 
     /// <inheritdoc />
     public override char GetCurrentCheckDigit() =>
-        (char)('0' + ((10 - (sum % 10)) % 10));
+        (char)('0' + ((10 - (_sum % 10)) % 10));
 
     /// <summary>
     /// Computes the CUSIP check digit for the supplied body without allocating a streaming instance.

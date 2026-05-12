@@ -4,9 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
+#pragma warning disable SYSLIB0050 // CrcStandard intentionally implements ISerializable for cross-process serialisation of CRC parameters.
 
 using System.Runtime.Serialization;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Immutable parameter bundle that fully describes a CRC variant — width, polynomial, initial value, input/output bit

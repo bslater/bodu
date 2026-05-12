@@ -18,15 +18,15 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Tiger" /> processes input in 512-bit (64-byte) blocks using three 64-bit internal state variables. Each block is
+/// <see cref="Tiger"/> processes input in 512-bit (64-byte) blocks using three 64-bit internal state variables. Each block is
 /// mixed into the state by three passes, and each pass performs eight S-box driven mixing rounds separated by a key schedule
 /// applied to the block words.
 /// </para>
 /// <para>
 /// The full 192-bit digest is always computed internally; shorter outputs (<c>Tiger/128</c> and <c>Tiger/160</c>) are produced by
-/// truncation after finalisation. The padding byte is selected via <see cref="Variant" />:
-/// <see cref="TigerHashingVariant.Tiger" /> uses <c>0x01</c> (the original specification) and
-/// <see cref="TigerHashingVariant.Tiger2" /> uses <c>0x80</c>.
+/// truncation after finalisation. The padding byte is selected via <see cref="Variant"/>:
+/// <see cref="TigerHashingVariant.Tiger"/> uses <c>0x01</c> (the original specification) and
+/// <see cref="TigerHashingVariant.Tiger2"/> uses <c>0x80</c>.
 /// </para>
 /// <para>
 /// Although no longer recommended for new security-sensitive applications, Tiger has not been broken in the classical collision
@@ -60,7 +60,7 @@ public sealed partial class Tiger
 {
     private const int MaxOutputBits = 192;
 
-    private static readonly int[] ValidHashSizes = { 128, 160, 192 };
+    private static readonly int[] s_permittedHashSizes = [128, 160, 192];
 
     private ulong _state0 = 0x0123456789ABCDEF;
     private ulong _state1 = 0xFEDCBA9876543210;
@@ -68,23 +68,21 @@ public sealed partial class Tiger
     private TigerHashingVariant _variant = TigerHashingVariant.Tiger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Tiger" /> class with a 192-bit output hash size.
+    /// Initializes a new instance of the <see cref="Tiger"/> class with a 192-bit output hash size.
     /// </summary>
-    public Tiger() :
-        this(192)
+    public Tiger()
+        : this(192)
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Tiger" /> class with the specified output size.
+    /// Initializes a new instance of the <see cref="Tiger"/> class with the specified output size.
     /// </summary>
     /// <param name="hashSize">The desired output size in bits. Must be one of 128, 160, or 192.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize" /> is not valid.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize"/> is not valid.</exception>
     public Tiger(int hashSize)
         : base(64)
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
-            throw new ArgumentOutOfRangeException(nameof(hashSize),
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, hashSize, string.Join(", ", ValidHashSizes)));
+        CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
         this.HashSizeValue = hashSize;
     }
@@ -100,7 +98,7 @@ public sealed partial class Tiger
     /// </para>
     /// <para>
     /// The full 192-bit internal state is always computed. If a shorter output length is selected, the result is truncated after
-    /// finalization to match the configured <see cref="HashSize" />.
+    /// finalization to match the configured <see cref="HashSize"/>.
     /// </para>
     /// </remarks>
     public override string AlgorithmName
@@ -140,10 +138,7 @@ public sealed partial class Tiger
         {
             this.ThrowIfDisposed();
             this.ThrowIfInvalidState();
-
-            if (Array.IndexOf(ValidHashSizes, value) == -1)
-                throw new ArgumentOutOfRangeException(nameof(value),
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidHashSize, value, string.Join(", ", ValidHashSizes)));
+            CryptoHelpers.ThrowIfInvalidHashSize(value, s_permittedHashSizes);
 
             this.HashSizeValue = value;
         }
@@ -153,14 +148,14 @@ public sealed partial class Tiger
     /// Gets or sets the Tiger variant to use when computing the hash value.
     /// </summary>
     /// <remarks>
-    /// <para>The <see cref="TigerHashingVariant" /> determines the padding byte used in the final message block:</para>
+    /// <para>The <see cref="TigerHashingVariant"/> determines the padding byte used in the final message block:</para>
     /// <list type="bullet">
     /// <item>
-    /// <description><see cref="TigerHashingVariant.Tiger" /> uses a padding byte of <c>0x01</c> as per the original Tiger specification.</description>
+    /// <description><see cref="TigerHashingVariant.Tiger"/> uses a padding byte of <c>0x01</c> as per the original Tiger specification.</description>
     /// </item>
     /// <item>
     /// <description>
-    /// <see cref="TigerHashingVariant.Tiger2" /> uses a padding byte of <c>0x80</c> as introduced in the Tiger2 variant to match
+    /// <see cref="TigerHashingVariant.Tiger2"/> uses a padding byte of <c>0x80</c> as introduced in the Tiger2 variant to match
     /// typical Merkle�Damg�rd padding semantics.
     /// </description>
     /// </item>
@@ -168,7 +163,7 @@ public sealed partial class Tiger
     /// <para>The variant must be specified before hash computation begins. Changing it after processing has started will throw an exception.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if the assigned value is not a valid <see cref="TigerHashingVariant" /> enumeration value.
+    /// Thrown if the assigned value is not a valid <see cref="TigerHashingVariant"/> enumeration value.
     /// </exception>
     /// <exception cref="ObjectDisposedException">Thrown if the hash algorithm instance has already been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
@@ -206,7 +201,7 @@ public sealed partial class Tiger
     /// Releases resources used by the algorithm and clears the internal state variables.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release only unmanaged resources.
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
     {
@@ -223,9 +218,9 @@ public sealed partial class Tiger
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
-        int inputLength = block.Length;
-        bool needsSecondBlock = inputLength >= this.BlockSizeBytes - 8;
-        int totalLength = needsSecondBlock ? this.BlockSizeBytes * 2 : this.BlockSizeBytes;
+        var inputLength = block.Length;
+        var needsSecondBlock = inputLength >= this.BlockSizeBytes - 8;
+        var totalLength = needsSecondBlock ? this.BlockSizeBytes * 2 : this.BlockSizeBytes;
 
         // Use stackalloc if small enough; fallback to heap if larger
         Span<byte> padded = totalLength <= 128
@@ -242,10 +237,10 @@ public sealed partial class Tiger
         padded.Slice(inputLength + 1, totalLength - inputLength - 1 - 8).Clear();
 
         // Append message length in bits in little-endian at end
-        ulong bitLength = messageLength * 8;
-        BinaryPrimitives.WriteUInt64LittleEndian(padded.Slice(totalLength - 8), bitLength);
+        var bitLength = messageLength * 8;
+        BinaryPrimitives.WriteUInt64LittleEndian(padded[(totalLength - 8)..], bitLength);
 
-        return padded.Slice(0, totalLength).ToArray();
+        return padded[..totalLength].ToArray();
     }
 
     /// <inheritdoc />
@@ -257,7 +252,7 @@ public sealed partial class Tiger
     }
 
     /// <summary>
-    /// Finalises the hash computation and returns the digest, truncated to <see cref="HashSize" /> / 8 bytes where applicable.
+    /// Finalises the hash computation and returns the digest, truncated to <see cref="HashSize"/> / 8 bytes where applicable.
     /// </summary>
     /// <returns>A byte array of 16, 20, or 24 bytes corresponding to the configured hash size (128, 160, or 192 bits).</returns>
     protected override byte[] ProcessFinalBlock()
@@ -267,7 +262,7 @@ public sealed partial class Tiger
         BinaryPrimitives.WriteUInt64LittleEndian(output[8..16], this._state1);
         BinaryPrimitives.WriteUInt64LittleEndian(output[16..24], this._state2);
 
-        return output.Slice(0, this.HashSizeValue / 8).ToArray();
+        return output[..(this.HashSizeValue / 8)].ToArray();
     }
 
     /// <summary>
@@ -328,16 +323,16 @@ public sealed partial class Tiger
         var tmp = c ^= x;
 
         a -=
-            SBox0[(byte)(tmp >> 0)] ^
-            SBox1[(byte)(tmp >> 16)] ^
-            SBox2[(byte)(tmp >> 32)] ^
-            SBox3[(byte)(tmp >> 48)];
+            s_sBox0[(byte)(tmp >> 0)] ^
+            s_sBox1[(byte)(tmp >> 16)] ^
+            s_sBox2[(byte)(tmp >> 32)] ^
+            s_sBox3[(byte)(tmp >> 48)];
 
         tmp = b +=
-            SBox3[(byte)(tmp >> 8)] ^
-            SBox2[(byte)(tmp >> 24)] ^
-            SBox1[(byte)(tmp >> 40)] ^
-            SBox0[(byte)(tmp >> 56)];
+            s_sBox3[(byte)(tmp >> 8)] ^
+            s_sBox2[(byte)(tmp >> 24)] ^
+            s_sBox1[(byte)(tmp >> 40)] ^
+            s_sBox0[(byte)(tmp >> 56)];
 
         b = tmp * (ulong)mul;
     }

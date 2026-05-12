@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent256CipherTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -52,7 +52,7 @@ internal sealed class Serpent256CipherTests
     /// <inheritdoc />
     protected override Serpent256Cipher CreateBlockCipher(TweakableBlockCipherVariant variant)
     {
-        var specification = GetSpecification(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
         return new Serpent256Cipher(specification.TestKey, specification.TestTweak);
     }
 
@@ -68,9 +68,9 @@ internal sealed class Serpent256CipherTests
         if (variant == TweakableBlockCipherVariant.DefaultKeyAndTweak)
             yield break;
 
-        var spec = GetSpecification(variant);
-        byte[] input = new byte[spec.BlockSize];
-        byte[] expected = new byte[spec.BlockSize];
+        BlockCipherSpecification spec = GetSpecification(variant);
+        var input = new byte[spec.BlockSize];
+        var expected = new byte[spec.BlockSize];
 
         using (var cipher = new Serpent256Cipher(spec.TestKey, spec.TestTweak))
             cipher.Encrypt(input, expected);

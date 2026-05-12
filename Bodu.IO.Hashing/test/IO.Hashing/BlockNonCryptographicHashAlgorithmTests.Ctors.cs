@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockNonCryptographicHashAlgorithmTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     [TestMethod]
     public void Ctor_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new InvalidBlockSizeHasher());
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new InvalidBlockSizeHasher());
         Assert.AreEqual("blockSize", ex.ParamName);
     }
 
@@ -28,7 +28,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     [TestMethod]
     public void Ctor_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new NegativeBlockSizeHasher());
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new NegativeBlockSizeHasher());
         Assert.AreEqual("blockSize", ex.ParamName);
     }
 }

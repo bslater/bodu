@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonitoringNonCryptographicHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,7 +45,7 @@ public sealed class MonitoringNonCryptographicHashAlgorithm : NonCryptographicHa
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        foreach (byte b in source)
+        foreach (var b in source)
             _sum += b;
 
         BytesAppended += source.Length;

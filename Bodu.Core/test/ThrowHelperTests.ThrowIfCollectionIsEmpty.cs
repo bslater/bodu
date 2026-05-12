@@ -70,7 +70,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     public void ThrowIfCollectionIsEmpty_WhenCollectionHasMultipleElements_ShouldNotThrow()
     {
-        ICollection<int> collection = new[] { 1, 2, 3 };
+        ICollection<int> collection = [1, 2, 3];
 
         ThrowHelper.ThrowIfCollectionIsEmpty(collection);
     }

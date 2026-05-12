@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Pearson.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using System.IO.Hashing;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes the hash for the input data using the <c>Pearson</c> hash algorithm. This variant applies a
@@ -227,10 +227,10 @@ public sealed partial class Pearson
 
     private static byte[] GetPermutationTable(PearsonTableType type) => type switch
     {
-        PearsonTableType.Pearson => (byte[])PearsonTable.Value.Clone(),
-        PearsonTableType.AESSBox => (byte[])AESSBoxTable.Value.Clone(),
-        PearsonTableType.CRC32HighByte => (byte[])CRC32HighByteTable.Value.Clone(),
-        PearsonTableType.SHA256Constants => (byte[])SHA256ConstantsTable.Value.Clone(),
+        PearsonTableType.Pearson => (byte[])s_pearsonTable.Value.Clone(),
+        PearsonTableType.AESSBox => (byte[])s_aESSBoxTable.Value.Clone(),
+        PearsonTableType.CRC32HighByte => (byte[])s_cRC32HighByteTable.Value.Clone(),
+        PearsonTableType.SHA256Constants => (byte[])s_sHA256ConstantsTable.Value.Clone(),
         _ => throw new ArgumentOutOfRangeException(
                 nameof(type),
                 string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, type, typeof(PearsonTableType).Name))

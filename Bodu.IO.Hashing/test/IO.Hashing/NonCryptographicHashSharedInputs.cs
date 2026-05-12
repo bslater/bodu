@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashSharedInputs.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ namespace Bodu.IO.Hashing;
 internal static class NonCryptographicHashSharedInputs
 {
     /// <summary>The empty input (zero bytes).</summary>
-    public static readonly byte[] Empty = Array.Empty<byte>();
+    public static readonly byte[] Empty = [];
 
     /// <summary>The three ASCII bytes of the string <c>"ABC"</c>.</summary>
     public static readonly byte[] Abc = Encoding.ASCII.GetBytes("ABC");

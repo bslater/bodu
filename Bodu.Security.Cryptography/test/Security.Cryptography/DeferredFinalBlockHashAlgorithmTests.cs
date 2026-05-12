@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DeferredFinalBlockHashAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -121,17 +121,17 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
     public void ComputeHash_WhenInputIsSubBlock_ShouldZeroPadFinalBlockAndReportActualByteCounter()
     {
         using var sut = new MonitoringDeferredFinalBlockHashAlgorithm(BlockSize);
-        byte[] input = new byte[] { 0xAA, 0xBB, 0xCC };
+        var input = new byte[] { 0xAA, 0xBB, 0xCC };
 
         _ = sut.ComputeHash(input);
 
         Assert.AreEqual(1, sut.ProcessBlockInvocations.Count);
 
-        var (block, counter, isFinal) = sut.ProcessBlockInvocations[0];
+        (var block, var counter, var isFinal) = sut.ProcessBlockInvocations[0];
         Assert.IsTrue(isFinal);
         Assert.AreEqual(3UL, counter);
 
-        byte[] expected = new byte[BlockSize];
+        var expected = new byte[BlockSize];
         input.CopyTo(expected, 0);
         CollectionAssert.AreEqual(expected, block);
     }
@@ -145,19 +145,19 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
     public void ComputeHash_WhenInvokedTwiceWithIdenticalInput_ShouldProduceIdenticalInvocationSequence()
     {
         using var sut = new MonitoringDeferredFinalBlockHashAlgorithm(BlockSize);
-        byte[] input = SequentialBytes((2 * BlockSize) + 3);
+        var input = SequentialBytes((2 * BlockSize) + 3);
 
         _ = sut.ComputeHash(input);
-        var firstRun = sut.ProcessBlockInvocations
+        (byte[] Block, ulong Counter, bool IsFinal)[] firstRun = sut.ProcessBlockInvocations
             .Select(invocation => (Block: (byte[])invocation.Block.Clone(), invocation.Counter, invocation.IsFinal))
             .ToArray();
 
         sut.ResetCapture();
         _ = sut.ComputeHash(input);
-        var secondRun = sut.ProcessBlockInvocations.ToArray();
+        (byte[] Block, ulong Counter, bool IsFinal)[] secondRun = sut.ProcessBlockInvocations.ToArray();
 
         Assert.AreEqual(firstRun.Length, secondRun.Length);
-        for (int i = 0; i < firstRun.Length; i++)
+        for (var i = 0; i < firstRun.Length; i++)
         {
             Assert.AreEqual(firstRun[i].Counter, secondRun[i].Counter, $"Counter mismatch at invocation {i}.");
             Assert.AreEqual(firstRun[i].IsFinal, secondRun[i].IsFinal, $"IsFinal mismatch at invocation {i}.");
@@ -173,7 +173,7 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
     public void Initialize_WhenCalled_ShouldRunDerivedOverride()
     {
         using var sut = new MonitoringDeferredFinalBlockHashAlgorithm(BlockSize);
-        int baseline = sut.InitializeCallCount;
+        var baseline = sut.InitializeCallCount;
 
         sut.Initialize();
 
@@ -182,8 +182,8 @@ public sealed class DeferredFinalBlockHashAlgorithmTests
 
     private static byte[] SequentialBytes(int length)
     {
-        byte[] result = new byte[length];
-        for (int i = 0; i < length; i++)
+        var result = new byte[length];
+        for (var i = 0; i < length; i++)
             result[i] = unchecked((byte)i);
         return result;
     }

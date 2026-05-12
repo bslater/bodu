@@ -36,21 +36,12 @@ public partial class ComparableHelperTests
         }
 
         /// <inheritdoc />
-        public override bool Equals(object? obj)
-        {
-            return obj is SimpleTestObject other && Value == other.Value;
-        }
+        public override bool Equals(object? obj) => obj is SimpleTestObject other && Value == other.Value;
 
         /// <inheritdoc />
-        public override int GetHashCode()
-        {
-            return Value.GetHashCode();
-        }
+        public override int GetHashCode() => Value.GetHashCode();
 
         /// <inheritdoc />
-        public override string ToString()
-        {
-            return $"SimpleTestObject({Value})";
-        }
+        public override string ToString() => $"SimpleTestObject({Value})";
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.GenerateTweak.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,11 +14,27 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     [TestMethod]
     public void GenerateTweak_WhenCalled_ShouldInitializeTweakCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
-        int size = algorithm.LegalTweakSizes[0].MinSize;
+        using TAlgorithm algorithm = CreateAlgorithm();
+        var size = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = size;
         algorithm.GenerateTweak();
 
         Assert.AreEqual(size / 8, algorithm.Tweak.Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.GenerateTweak" /> on a disposed instance throws
+    /// <see cref="ObjectDisposedException" />.
+    /// </summary>
+    [TestMethod]
+    public void GenerateTweak_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
+    {
+        TAlgorithm algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            algorithm.GenerateTweak();
+        });
     }
 }

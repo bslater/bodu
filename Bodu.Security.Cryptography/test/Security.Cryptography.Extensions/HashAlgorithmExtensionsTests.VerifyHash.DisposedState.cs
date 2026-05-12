@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmExtensionsTests.VerifyHash.DisposedState.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_ByteArray_WhenAlgorithmIsDisposed_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -43,7 +43,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_ByteArrayHex_WhenAlgorithmIsDisposed_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -59,7 +59,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_Span_WhenAlgorithmIsDisposed_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -75,7 +75,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_ReadOnlyMemory_WhenAlgorithmIsDisposed_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -91,7 +91,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_Stream_WhenAlgorithmIsDisposed_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         using var stream = new MemoryStream(SampleData);
@@ -109,7 +109,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_StreamHex_WhenAlgorithmIsDisposed_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         using var stream = new MemoryStream(SampleData);
@@ -127,7 +127,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_StringEncoded_WhenAlgorithmIsDisposed_ShouldThrowExactly()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -146,10 +146,10 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_ByteArrayHex_WhenAlgorithmIsDisposedAndHexIsMalformed_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        bool result = algorithm.VerifyHash(SampleData, expectedHex: "not-hex");
+        var result = algorithm.VerifyHash(SampleData, expectedHex: "not-hex");
 
         Assert.IsFalse(result,
             "A malformed expectedHex argument should short-circuit the verification before the disposed-state check; the documented contract returns false rather than throwing.");
@@ -162,12 +162,12 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_StreamHex_WhenAlgorithmIsDisposedAndHexIsMalformed_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         using var stream = new MemoryStream(SampleData);
 
-        bool result = algorithm.VerifyHash(stream, expectedHex: "zz");
+        var result = algorithm.VerifyHash(stream, expectedHex: "zz");
 
         Assert.IsFalse(result,
             "A malformed expectedHex must short-circuit before any work is delegated to the disposed algorithm.");

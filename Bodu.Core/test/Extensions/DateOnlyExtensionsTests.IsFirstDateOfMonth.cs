@@ -13,7 +13,7 @@ public partial class DateOnlyExtensionsTests
     /// first day of the month.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDateOfMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.IsFirstDateOfMonthTestData), typeof(DateTimeExtensionsTests))]
     public void IsFirstDateOfMonth_WhenDateIsFirstDay_ShouldReturnTrue(DateTime inputDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -25,7 +25,7 @@ public partial class DateOnlyExtensionsTests
     /// represent the first day of the month.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.IsNotFirstDateOfMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.IsNotFirstDateOfMonthTestData), typeof(DateTimeExtensionsTests))]
     public void IsFirstDateOfMonth_WhenDateIsNotFirstDay_ShouldReturnFalse(DateTime inputDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

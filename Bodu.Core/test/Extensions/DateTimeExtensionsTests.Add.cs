@@ -14,51 +14,51 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.Add" />, when ValidInputsProvided, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetAddTestCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetAddTestCases))]
     public void Add_WhenValidInputsProvided_ShouldReturnExpectedResult(DateTime input, int years, int months, double days, DateTime expected)
     {
         DateTime actual = input.Add(years, months, days);
         Assert.AreEqual(expected, actual);
     }
 
-    public static IEnumerable<object[]> GetAddTestCases() => new[]
-    {
+    public static IEnumerable<object[]> GetAddTestCases() =>
+    [
         // Basic date increments
         new object[] { new DateTime(2024, 01, 01), 1, 0, 0, new DateTime(2025, 01, 01) },
-        new object[] { new DateTime(2024, 01, 01), 0, 1, 0, new DateTime(2024, 02, 01) },
-        new object[] { new DateTime(2024, 01, 01), 0, 0, 1, new DateTime(2024, 01, 02) },
+        [new DateTime(2024, 01, 01), 0, 1, 0, new DateTime(2024, 02, 01)],
+        [new DateTime(2024, 01, 01), 0, 0, 1, new DateTime(2024, 01, 02)],
 
         // Basic date decrements
-        new object[] { new DateTime(2024, 01, 01), -1, 0, 0, new DateTime(2023, 01, 01) },
-        new object[] { new DateTime(2024, 01, 01), 0, -1, 0, new DateTime(2023, 12, 01) },
-        new object[] { new DateTime(2024, 01, 01), 0, 0, -1, new DateTime(2023, 12, 31) },
+        [new DateTime(2024, 01, 01), -1, 0, 0, new DateTime(2023, 01, 01)],
+        [new DateTime(2024, 01, 01), 0, -1, 0, new DateTime(2023, 12, 01)],
+        [new DateTime(2024, 01, 01), 0, 0, -1, new DateTime(2023, 12, 31)],
 
         // End-of-month alignment with leap year handling
-        new object[] { new DateTime(2024, 01, 31), 0, 1, 0, new DateTime(2024, 02, 29) },
-        new object[] { new DateTime(2023, 01, 31), 0, 1, 0, new DateTime(2023, 02, 28) },
-        new object[] { new DateTime(2024, 02, 29), 1, 0, 0, new DateTime(2025, 02, 28) },
+        [new DateTime(2024, 01, 31), 0, 1, 0, new DateTime(2024, 02, 29)],
+        [new DateTime(2023, 01, 31), 0, 1, 0, new DateTime(2023, 02, 28)],
+        [new DateTime(2024, 02, 29), 1, 0, 0, new DateTime(2025, 02, 28)],
 
         // Composite negative offsets
-        new object[] { new DateTime(2025, 05, 01), -1, -2, -1, new DateTime(2024, 02, 29) },
+        [new DateTime(2025, 05, 01), -1, -2, -1, new DateTime(2024, 02, 29)],
 
         // Fractional day offsets
-        new object[] { new DateTime(2024, 01, 01), 0, 0, 1.5, new DateTime(2024, 01, 02, 12, 0, 0) },
-        new object[] { new DateTime(2024, 01, 01), 0, 0, 0.25, new DateTime(2024, 01, 01, 6, 0, 0) },
+        [new DateTime(2024, 01, 01), 0, 0, 1.5, new DateTime(2024, 01, 02, 12, 0, 0)],
+        [new DateTime(2024, 01, 01), 0, 0, 0.25, new DateTime(2024, 01, 01, 6, 0, 0)],
 
         // Boundary conditions
-        new object[] { DateTime.MinValue, 0, 0, 0, DateTime.MinValue },
-        new object[] { DateTime.MaxValue, 0, 0, 0, DateTime.MaxValue },
+        [DateTime.MinValue, 0, 0, 0, DateTime.MinValue],
+        [DateTime.MaxValue, 0, 0, 0, DateTime.MaxValue],
 
         // Smallest valid time addition: 1 millisecond
-        new object[] { new DateTime(2024, 01, 01, 0, 0, 0), 0, 0, 1.0 / 86400000.0, new DateTime(2024, 01, 01, 0, 0, 0, 1) },
-        new object[] { new DateTime(2024, 01, 01, 0, 0, 0), 0, 0, 1.0 / 86400000, new DateTime(2024, 01, 01, 0, 0, 0, 1) },
-    };
+        [new DateTime(2024, 01, 01, 0, 0, 0), 0, 0, 1.0 / 86400000.0, new DateTime(2024, 01, 01, 0, 0, 0, 1)],
+        [new DateTime(2024, 01, 01, 0, 0, 0), 0, 0, 1.0 / 86400000, new DateTime(2024, 01, 01, 0, 0, 0, 1)],
+    ];
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.Add" />, when OutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetAddExceptionCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetAddExceptionCases))]
     public void Add_WhenOutOfRange_ShouldThrowArgumentOutOfRangeException(DateTime input, int years, int months, double days)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -127,13 +127,13 @@ public partial class DateTimeExtensionsTests
     public void Add_WhenInDstTransitionZone_ShouldRespectTimezone(string inputDate, int years, int months, double days, string expectedDate, string timeZoneId)
     {
         var tz = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
-        DateTime input = DateTime.Parse(inputDate, null, DateTimeStyles.AssumeLocal);
+        var input = DateTime.Parse(inputDate, null, DateTimeStyles.AssumeLocal);
         var unspecified = DateTime.SpecifyKind(input, DateTimeKind.Unspecified);
         var expected = DateTime.Parse(expectedDate);
 
-        var utc = TimeZoneInfo.ConvertTimeToUtc(unspecified, tz);
-        var resultUtc = utc.AddYears(years).AddMonths(months).AddDays(days);
-        var resultLocal = TimeZoneInfo.ConvertTimeFromUtc(resultUtc, tz);
+        DateTime utc = TimeZoneInfo.ConvertTimeToUtc(unspecified, tz);
+        DateTime resultUtc = utc.AddYears(years).AddMonths(months).AddDays(days);
+        DateTime resultLocal = TimeZoneInfo.ConvertTimeFromUtc(resultUtc, tz);
 
         Assert.AreEqual(expected, resultLocal);
     }

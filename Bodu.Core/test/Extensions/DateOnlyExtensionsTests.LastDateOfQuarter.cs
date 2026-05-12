@@ -52,7 +52,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfQuarter(CalendarQuarterDefinition, int, int)" /> returns the expected quarter-end <see cref="DateOnly" /> for each <c>(year, quarter, definition)</c> triple.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfQuarterTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfQuarterTestData), typeof(DateTimeExtensionsTests))]
     public void LastDateOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DateTime expectedDateTime)
     {
         var expected = DateOnly.FromDateTime(expectedDateTime);
@@ -66,7 +66,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter end for each <c>(year, quarter)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests))]
     public void LastDateOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expectedDateTime)
     {
         var expected = DateOnly.FromDateTime(expectedDateTime);
@@ -109,7 +109,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfQuarter" /> returns the correct date using a valid quarter provider.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.LastDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider))]
     public void LastDateOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime inputDateTime, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

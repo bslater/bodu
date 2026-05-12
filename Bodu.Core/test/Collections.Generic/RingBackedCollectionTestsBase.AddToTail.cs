@@ -18,7 +18,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void AddToTail_WhenEmpty_ShouldPlaceItemAtHead()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 42);
 
         Assert.AreEqual(1, GetCount(collection));
@@ -32,7 +32,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void AddToTail_WhenSpaceAvailable_ShouldAppendInInsertionOrder()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -52,8 +52,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [DataRow(64)]
     public void AddToTail_WhenItemsAdded_ShouldIncrementCount(int itemCount)
     {
-        var collection = CreateCollection(Math.Max(itemCount, 1));
-        for (int i = 0; i < itemCount; i++)
+        TCollection collection = CreateCollection(Math.Max(itemCount, 1));
+        for (var i = 0; i < itemCount; i++)
         {
             AddToTail(collection, i);
             Assert.AreEqual(i + 1, GetCount(collection));
@@ -66,7 +66,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void AddToTail_WhenDuplicatesProvided_ShouldStoreAll()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 7);
         AddToTail(collection, 7);
         AddToTail(collection, 7);

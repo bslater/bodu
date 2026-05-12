@@ -17,12 +17,12 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void TryAdd_WhenSpaceAvailable_ShouldReturnTrue()
     {
-        IProducerConsumerCollection<TestItem> sut =
+        IProducerConsumerCollection<TestItem> mvd =
             new ConcurrentCircularBuffer<TestItem>(capacity: 4, allowOverwrite: false);
 
-        Assert.IsTrue(sut.TryAdd(new TestItem(1)));
-        Assert.IsTrue(sut.TryAdd(new TestItem(2)));
-        Assert.AreEqual(2, sut.Count);
+        Assert.IsTrue(mvd.TryAdd(new TestItem(1)));
+        Assert.IsTrue(mvd.TryAdd(new TestItem(2)));
+        Assert.AreEqual(2, mvd.Count);
     }
 
     /// <summary>
@@ -32,13 +32,13 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void TryAdd_WhenFullAndAllowOverwriteFalse_ShouldReturnFalse()
     {
-        IProducerConsumerCollection<TestItem> sut =
+        IProducerConsumerCollection<TestItem> mvd =
             new ConcurrentCircularBuffer<TestItem>(capacity: 2, allowOverwrite: false);
 
-        Assert.IsTrue(sut.TryAdd(new TestItem(1)));
-        Assert.IsTrue(sut.TryAdd(new TestItem(2)));
-        Assert.IsFalse(sut.TryAdd(new TestItem(3)));
-        Assert.AreEqual(2, sut.Count);
+        Assert.IsTrue(mvd.TryAdd(new TestItem(1)));
+        Assert.IsTrue(mvd.TryAdd(new TestItem(2)));
+        Assert.IsFalse(mvd.TryAdd(new TestItem(3)));
+        Assert.AreEqual(2, mvd.Count);
     }
 
     /// <summary>
@@ -49,11 +49,11 @@ public partial class ConcurrentCircularBufferTests
     public void TryAdd_WhenFullAndAllowOverwriteTrue_ShouldReturnTrueAndEvict()
     {
         var concrete = new ConcurrentCircularBuffer<TestItem>(capacity: 2, allowOverwrite: true);
-        IProducerConsumerCollection<TestItem> sut = concrete;
+        IProducerConsumerCollection<TestItem> mvd = concrete;
 
-        Assert.IsTrue(sut.TryAdd(new TestItem(1)));
-        Assert.IsTrue(sut.TryAdd(new TestItem(2)));
-        Assert.IsTrue(sut.TryAdd(new TestItem(3)));
+        Assert.IsTrue(mvd.TryAdd(new TestItem(1)));
+        Assert.IsTrue(mvd.TryAdd(new TestItem(2)));
+        Assert.IsTrue(mvd.TryAdd(new TestItem(3)));
 
         TestItem[] snapshot = concrete.ToArray();
         Assert.AreEqual(2, snapshot.Length);
@@ -68,10 +68,10 @@ public partial class ConcurrentCircularBufferTests
     [TestMethod]
     public void TryTake_WhenEmpty_ShouldReturnFalseAndNullOut()
     {
-        IProducerConsumerCollection<TestItem> sut =
+        IProducerConsumerCollection<TestItem> mvd =
             new ConcurrentCircularBuffer<TestItem>(capacity: 4);
 
-        bool taken = sut.TryTake(out TestItem? item);
+        var taken = mvd.TryTake(out TestItem? item);
 
         Assert.IsFalse(taken);
         Assert.IsNull(item);
@@ -87,17 +87,17 @@ public partial class ConcurrentCircularBufferTests
         var concrete = new ConcurrentCircularBuffer<TestItem>(capacity: 4);
         concrete.Enqueue(new TestItem(11));
         concrete.Enqueue(new TestItem(22));
-        IProducerConsumerCollection<TestItem> sut = concrete;
+        IProducerConsumerCollection<TestItem> mvd = concrete;
 
-        Assert.IsTrue(sut.TryTake(out TestItem? first));
+        Assert.IsTrue(mvd.TryTake(out TestItem? first));
         Assert.IsNotNull(first);
         Assert.AreEqual(11, first!.Value);
 
-        Assert.IsTrue(sut.TryTake(out TestItem? second));
+        Assert.IsTrue(mvd.TryTake(out TestItem? second));
         Assert.IsNotNull(second);
         Assert.AreEqual(22, second!.Value);
 
-        Assert.IsFalse(sut.TryTake(out _));
+        Assert.IsFalse(mvd.TryTake(out _));
     }
 
     /// <summary>
@@ -112,17 +112,17 @@ public partial class ConcurrentCircularBufferTests
         concrete.Enqueue(new TestItem(1));
         concrete.Enqueue(new TestItem(2));
         concrete.Enqueue(new TestItem(3));
-        IProducerConsumerCollection<TestItem> sut = concrete;
+        IProducerConsumerCollection<TestItem> mvd = concrete;
 
-        TestItem[] viaInterface = sut.ToArray();
+        TestItem[] viaInterface = mvd.ToArray();
         TestItem[] viaConcrete = concrete.ToArray();
 
         Assert.AreEqual(viaConcrete.Length, viaInterface.Length);
-        for (int i = 0; i < viaConcrete.Length; i++)
+        for (var i = 0; i < viaConcrete.Length; i++)
             Assert.AreEqual(viaConcrete[i].Value, viaInterface[i].Value);
 
-        TestItem[] copyTarget = new TestItem[5];
-        sut.CopyTo(copyTarget, index: 1);
+        var copyTarget = new TestItem[5];
+        mvd.CopyTo(copyTarget, index: 1);
         Assert.IsNull(copyTarget[0]);
         Assert.AreEqual(1, copyTarget[1].Value);
         Assert.AreEqual(2, copyTarget[2].Value);

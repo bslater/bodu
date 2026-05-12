@@ -31,8 +31,5 @@ public partial class ThrowHelperTests
     [DataRow(-1)]
     [DataRow(-100)]
     [DataRow(int.MinValue)]
-    public void ThrowIfZeroOrPositive_WhenValueIsNegative_ShouldNotThrow(int value)
-    {
-        ThrowHelper.ThrowIfZeroOrPositive(value);
-    }
+    public void ThrowIfZeroOrPositive_WhenValueIsNegative_ShouldNotThrow(int value) => ThrowHelper.ThrowIfZeroOrPositive(value);
 }

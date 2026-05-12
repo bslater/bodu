@@ -49,7 +49,7 @@ internal sealed partial class SimpleReversingBlockCipherTests
     /// <inheritdoc />
     protected override SimpleReversingBlockCipher CreateBlockCipher(SimpleReversingBlockSizeVariant variant)
     {
-        int blockSizeBytes = (int)variant / 8;
+        var blockSizeBytes = (int)variant / 8;
         return new SimpleReversingBlockCipher(DefaultKey, blockSizeBytes);
     }
 

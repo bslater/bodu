@@ -44,10 +44,7 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow("abcde", 5)]  // exactly at max
     [DataRow("", 0)]        // empty string at max 0
-    public void ThrowIfStringTooLong_WhenLengthEqualsMaximum_ShouldNotThrow(string value, int maxLength)
-    {
-        ThrowHelper.ThrowIfStringTooLong(value, maxLength);
-    }
+    public void ThrowIfStringTooLong_WhenLengthEqualsMaximum_ShouldNotThrow(string value, int maxLength) => ThrowHelper.ThrowIfStringTooLong(value, maxLength);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> does not throw when the string length
@@ -57,8 +54,5 @@ public partial class ThrowHelperTests
     [DataRow("abc", 10)]
     [DataRow("", 1)]
     [DataRow("hello world", 100)]
-    public void ThrowIfStringTooLong_WhenLengthIsBelowMaximum_ShouldNotThrow(string value, int maxLength)
-    {
-        ThrowHelper.ThrowIfStringTooLong(value, maxLength);
-    }
+    public void ThrowIfStringTooLong_WhenLengthIsBelowMaximum_ShouldNotThrow(string value, int maxLength) => ThrowHelper.ThrowIfStringTooLong(value, maxLength);
 }

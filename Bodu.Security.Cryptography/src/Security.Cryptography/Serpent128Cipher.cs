@@ -20,12 +20,12 @@ namespace Bodu.Security.Cryptography;
 /// XOR. Shorter keys are padded to 256 bits by appending a <c>1</c> bit followed by zeros, per the Serpent specification.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Serpent128" /> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="Serpent128Cipher" /> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> or <see cref="IPaddingStrategy" />.
+/// Most callers should prefer the higher-level <see cref="Serpent128"/> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="Serpent128Cipher"/> directly only
+/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> or <see cref="IPaddingStrategy"/>.
 /// </para>
 /// </remarks>
-/// <seealso cref="Serpent128" />
+/// <seealso cref="Serpent128"/>
 public sealed class Serpent128Cipher
     : SerpentBlockCipherBase
 {
@@ -50,14 +50,14 @@ public sealed class Serpent128Cipher
     private readonly uint[] _roundKeys;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Serpent128Cipher" /> class using the specified key.
+    /// Initializes a new instance of the <see cref="Serpent128Cipher"/> class using the specified key.
     /// </summary>
     /// <param name="key">
     /// The Serpent key. Length must be 16, 24, or 32 bytes (128, 192, or 256 bits). Shorter keys are padded to 256 bits per
     /// the Serpent specification.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key" /> does not have a length of 16, 24, or 32 bytes.
+    /// <paramref name="key"/> does not have a length of 16, 24, or 32 bytes.
     /// </exception>
     public Serpent128Cipher(ReadOnlySpan<byte> key)
     {
@@ -81,16 +81,16 @@ public sealed class Serpent128Cipher
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
 
-        uint x0 = BinaryReadUInt32LE(input, 0);
-        uint x1 = BinaryReadUInt32LE(input, 4);
-        uint x2 = BinaryReadUInt32LE(input, 8);
-        uint x3 = BinaryReadUInt32LE(input, 12);
+        var x0 = BinaryReadUInt32LE(input, 0);
+        var x1 = BinaryReadUInt32LE(input, 4);
+        var x2 = BinaryReadUInt32LE(input, 8);
+        var x3 = BinaryReadUInt32LE(input, 12);
 
-        uint[] rk = this._roundKeys;
+        var rk = this._roundKeys;
 
-        for (int r = 0; r < RoundCount - 1; r++)
+        for (var r = 0; r < RoundCount - 1; r++)
         {
-            int k = r * 4;
+            var k = r * 4;
             x0 ^= rk[k];
             x1 ^= rk[k + 1];
             x2 ^= rk[k + 2];
@@ -101,7 +101,7 @@ public sealed class Serpent128Cipher
         }
 
         // Final round: no linear transform, followed by a post-round key XOR.
-        int kFinal = (RoundCount - 1) * 4;
+        var kFinal = (RoundCount - 1) * 4;
         x0 ^= rk[kFinal];
         x1 ^= rk[kFinal + 1];
         x2 ^= rk[kFinal + 2];
@@ -109,7 +109,7 @@ public sealed class Serpent128Cipher
 
         ApplySBox((RoundCount - 1) & 7, ref x0, ref x1, ref x2, ref x3);
 
-        int kPost = RoundCount * 4;
+        var kPost = RoundCount * 4;
         x0 ^= rk[kPost];
         x1 ^= rk[kPost + 1];
         x2 ^= rk[kPost + 2];
@@ -129,15 +129,15 @@ public sealed class Serpent128Cipher
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
 
-        uint x0 = BinaryReadUInt32LE(input, 0);
-        uint x1 = BinaryReadUInt32LE(input, 4);
-        uint x2 = BinaryReadUInt32LE(input, 8);
-        uint x3 = BinaryReadUInt32LE(input, 12);
+        var x0 = BinaryReadUInt32LE(input, 0);
+        var x1 = BinaryReadUInt32LE(input, 4);
+        var x2 = BinaryReadUInt32LE(input, 8);
+        var x3 = BinaryReadUInt32LE(input, 12);
 
-        uint[] rk = this._roundKeys;
+        var rk = this._roundKeys;
 
         // Reverse of the final round.
-        int kPost = RoundCount * 4;
+        var kPost = RoundCount * 4;
         x0 ^= rk[kPost];
         x1 ^= rk[kPost + 1];
         x2 ^= rk[kPost + 2];
@@ -145,19 +145,19 @@ public sealed class Serpent128Cipher
 
         ApplyInverseSBox((RoundCount - 1) & 7, ref x0, ref x1, ref x2, ref x3);
 
-        int kFinal = (RoundCount - 1) * 4;
+        var kFinal = (RoundCount - 1) * 4;
         x0 ^= rk[kFinal];
         x1 ^= rk[kFinal + 1];
         x2 ^= rk[kFinal + 2];
         x3 ^= rk[kFinal + 3];
 
         // Reverse of the remaining rounds.
-        for (int r = RoundCount - 2; r >= 0; r--)
+        for (var r = RoundCount - 2; r >= 0; r--)
         {
             InverseLinearTransform(ref x0, ref x1, ref x2, ref x3);
             ApplyInverseSBox(r & 7, ref x0, ref x1, ref x2, ref x3);
 
-            int k = r * 4;
+            var k = r * 4;
             x0 ^= rk[k];
             x1 ^= rk[k + 1];
             x2 ^= rk[k + 2];
@@ -173,7 +173,7 @@ public sealed class Serpent128Cipher
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (this.disposed) return;
+        if (this._disposed) return;
 
         if (disposing)
             CryptoHelpers.Clear(this._roundKeys);
@@ -182,16 +182,16 @@ public sealed class Serpent128Cipher
     }
 
     /// <summary>
-    /// Reads a little-endian <see cref="uint" /> from <paramref name="buffer" /> at the specified <paramref name="offset" />.
+    /// Reads a little-endian <see cref="uint"/> from <paramref name="buffer"/> at the specified <paramref name="offset"/>.
     /// </summary>
     /// <param name="buffer">The source byte span.</param>
     /// <param name="offset">The byte offset at which to read.</param>
-    /// <returns>The little-endian <see cref="uint" /> value read from <paramref name="buffer" />.</returns>
+    /// <returns>The little-endian <see cref="uint"/> value read from <paramref name="buffer"/>.</returns>
     private static uint BinaryReadUInt32LE(ReadOnlySpan<byte> buffer, int offset) =>
         System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(buffer.Slice(offset, 4));
 
     /// <summary>
-    /// Writes <paramref name="value" /> to <paramref name="buffer" /> at the specified <paramref name="offset" /> in
+    /// Writes <paramref name="value"/> to <paramref name="buffer"/> at the specified <paramref name="offset"/> in
     /// little-endian byte order.
     /// </summary>
     /// <param name="buffer">The destination byte span.</param>
@@ -201,12 +201,12 @@ public sealed class Serpent128Cipher
         System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(buffer.Slice(offset, 4), value);
 
     /// <summary>
-    /// Expands <paramref name="key" /> into the 132-word round-key schedule.
+    /// Expands <paramref name="key"/> into the 132-word round-key schedule.
     /// </summary>
     /// <param name="key">
     /// The Serpent key (16, 24, or 32 bytes). Keys shorter than 32 bytes are padded per the Serpent specification.
     /// </param>
-    /// <param name="roundKeys">The destination buffer, which must have exactly <see cref="RoundKeyWordCount" /> entries.</param>
+    /// <param name="roundKeys">The destination buffer, which must have exactly <see cref="RoundKeyWordCount"/> entries.</param>
     /// <remarks>
     /// Pads the key to 256 bits by appending a <c>1</c> bit immediately after the key material and then zeros. Seeds the prekey
     /// recurrence with the 8 padded words, applies the Serpent recurrence for 132 words, then applies the rotating S-box
@@ -222,7 +222,7 @@ public sealed class Serpent128Cipher
             paddedKey[key.Length] = 0x01;
 
         Span<uint> seed = stackalloc uint[8];
-        for (int i = 0; i < 8; i++)
+        for (var i = 0; i < 8; i++)
             seed[i] = BinaryReadUInt32LE(paddedKey, i * 4);
 
         // Prekey layout: w[-8..-1] then w[0..131] laid out contiguously → 140 words.
@@ -230,17 +230,17 @@ public sealed class Serpent128Cipher
         ExpandPrekeys(seed, prekeys, 8);
 
         // Apply the rotating S-box schedule to successive 4-word groups of the generated prekey tail, producing K_0..K_32.
-        for (int r = 0; r <= RoundCount; r++)
+        for (var r = 0; r <= RoundCount; r++)
         {
-            int src = 8 + r * 4;
-            uint x0 = prekeys[src];
-            uint x1 = prekeys[src + 1];
-            uint x2 = prekeys[src + 2];
-            uint x3 = prekeys[src + 3];
+            var src = 8 + r * 4;
+            var x0 = prekeys[src];
+            var x1 = prekeys[src + 1];
+            var x2 = prekeys[src + 2];
+            var x3 = prekeys[src + 3];
 
             ApplySBox(KeyScheduleSBoxIndex(r), ref x0, ref x1, ref x2, ref x3);
 
-            int dst = r * 4;
+            var dst = r * 4;
             roundKeys[dst] = x0;
             roundKeys[dst + 1] = x1;
             roundKeys[dst + 2] = x2;

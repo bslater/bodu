@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpersTests.GetRandomNonZeroBytes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void GetRandomNonZeroBytes_WhenValidLength_ShouldReturnArrayWithOnlyNonZeroBytes()
     {
-        byte[] result = CryptoHelpers.GetRandomNonZeroBytes(32);
+        var result = CryptoHelpers.GetRandomNonZeroBytes(32);
         Assert.AreEqual(32, result.Length);
         CollectionAssert.DoesNotContain(result, (byte)0);
     }

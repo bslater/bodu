@@ -1,15 +1,15 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bernstein.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit non-cryptographic hash using Daniel J. Bernstein's djb2 algorithm, optionally using the
@@ -70,10 +70,10 @@ public sealed class Bernstein
     private const string ReconfigurationNotAllowed =
         "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
-    private uint initialValue;
-    private bool useModified;
-    private uint workingHash;
-    private bool started;
+    private uint _initialValue;
+    private bool _useModified;
+    private uint _workingHash;
+    private bool _started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Bernstein" /> class with the canonical djb2 seed
@@ -96,9 +96,9 @@ public sealed class Bernstein
     public Bernstein(uint initialValue, bool useModifiedAlgorithm)
         : base(HashLength)
     {
-        this.initialValue = initialValue;
-        this.useModified = useModifiedAlgorithm;
-        this.workingHash = initialValue;
+        this._initialValue = initialValue;
+        this._useModified = useModifiedAlgorithm;
+        this._workingHash = initialValue;
     }
 
     /// <summary>
@@ -111,13 +111,13 @@ public sealed class Bernstein
     /// </exception>
     public uint InitialValue
     {
-        get => this.initialValue;
+        get => this._initialValue;
 
         set
         {
             this.ThrowIfInvalidState();
-            this.initialValue = value;
-            this.workingHash = value;
+            this._initialValue = value;
+            this._workingHash = value;
         }
     }
 
@@ -134,12 +134,12 @@ public sealed class Bernstein
     /// </exception>
     public bool UseModifiedAlgorithm
     {
-        get => this.useModified;
+        get => this._useModified;
 
         set
         {
             this.ThrowIfInvalidState();
-            this.useModified = value;
+            this._useModified = value;
         }
     }
 
@@ -149,53 +149,53 @@ public sealed class Bernstein
         if (source.Length == 0)
             return;
 
-        if (this.useModified)
+        if (this._useModified)
             this.AppendModified(source);
         else
             this.AppendOriginal(source);
 
-        this.started = true;
+        this._started = true;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this.workingHash = this.initialValue;
-        this.started = false;
+        this._workingHash = this._initialValue;
+        this._started = false;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32BigEndian(destination, this.workingHash);
+        BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendOriginal(ReadOnlySpan<byte> source)
     {
-        uint v = this.workingHash;
+        uint v = this._workingHash;
         foreach (byte b in source)
         {
             v = ((v << 5) + v) + b;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendModified(ReadOnlySpan<byte> source)
     {
-        uint v = this.workingHash;
+        uint v = this._workingHash;
         foreach (byte b in source)
         {
             v = ((v << 5) + v) ^ b;
         }
 
-        this.workingHash = v;
+        this._workingHash = v;
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
-        if (this.started)
+        if (this._started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
 }

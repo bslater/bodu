@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcLookupTableCacheTests.GetLookupTable.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public partial class CrcLookupTableCacheTests
     public void GetLookupTable_WhenParametersAreValid_ShouldReturnTableOfExpectedLength(
         int size, ulong polynomial, bool reflectIn, int expectedLength)
     {
-        ulong[] table = cache.GetLookupTable(size, polynomial, reflectIn);
+        var table = _cache.GetLookupTable(size, polynomial, reflectIn);
 
         Assert.IsNotNull(table);
         Assert.AreEqual(expectedLength, table.Length);
@@ -43,8 +43,8 @@ public partial class CrcLookupTableCacheTests
     [TestMethod]
     public void GetLookupTable_WhenCalledWithSameParameters_ShouldReturnCachedInstance()
     {
-        ulong[] first = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
-        ulong[] second = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        var first = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        var second = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
 
         Assert.AreSame(first, second);
     }
@@ -56,11 +56,11 @@ public partial class CrcLookupTableCacheTests
     [TestMethod]
     public void GetLookupTable_WhenAnyParameterChanges_ShouldReturnDistinctTable()
     {
-        ulong[] baseline = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        var baseline = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
 
-        Assert.AreNotSame(baseline, cache.GetLookupTable(16, 0x04C11DB7UL, reflectIn: true));
-        Assert.AreNotSame(baseline, cache.GetLookupTable(32, 0x1EDC6F41UL, reflectIn: true));
-        Assert.AreNotSame(baseline, cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: false));
+        Assert.AreNotSame(baseline, _cache.GetLookupTable(16, 0x04C11DB7UL, reflectIn: true));
+        Assert.AreNotSame(baseline, _cache.GetLookupTable(32, 0x1EDC6F41UL, reflectIn: true));
+        Assert.AreNotSame(baseline, _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: false));
     }
 
     /// <summary>
@@ -78,8 +78,8 @@ public partial class CrcLookupTableCacheTests
     [DataRow(int.MaxValue)]
     public void GetLookupTable_WhenSizeIsInvalid_ShouldReportSizeParamName(int size)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
-            () => cache.GetLookupTable(size, 0x04C11DB7UL, reflectIn: false));
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            () => _cache.GetLookupTable(size, 0x04C11DB7UL, reflectIn: false));
         Assert.AreEqual("size", ex.ParamName);
     }
 
@@ -90,10 +90,10 @@ public partial class CrcLookupTableCacheTests
     [TestMethod]
     public void GetLookupTable_WhenModified_ShouldNotModifyCachedArrays()
     {
-        ulong[] copy = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
+        var copy = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true).ToArray();
         copy[0] = 123456;
 
-        ulong[] cached = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        var cached = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
         Assert.AreNotEqual(123456UL, cached[0]);
     }
 
@@ -107,12 +107,12 @@ public partial class CrcLookupTableCacheTests
         var threads = new Task[100];
         var successFlag = new bool[100];
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
-            int threadIndex = i;
+            var threadIndex = i;
             threads[i] = Task.Run(() =>
             {
-                var result = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+                var result = _cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
                 successFlag[threadIndex] = result != null;
             });
         }

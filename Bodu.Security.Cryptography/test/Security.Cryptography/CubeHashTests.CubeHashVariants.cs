@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CubeHashTests.CubeHashVariants.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,10 +7,15 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Identifies the CubeHash parameter tuples exercised by <see cref="CubeHashTests" />.
-/// Each value encodes the <c>I_r_b_f_h</c> form: initialisation rounds, transform rounds,
-/// block bytes, finalisation rounds, and hash bits.
+/// Identifies the CubeHash variants exercised by <see cref="CubeHashTests" />.
 /// </summary>
+/// <remarks>
+/// The first four values represent the standard output sizes with the NIST SHA-3 reference parameters
+/// (i=16, r=16, b=32, f=32) and are exercised via the <see cref="CubeHash(int)"/> constructor.
+/// The remaining values cover parameter-sweep combinations and use the property-setter API.
+/// Each parameter-sweep name encodes the <c>I_r_b_f_h</c> form: initialisation rounds,
+/// transform rounds, block bytes, finalisation rounds, and hash bits.
+/// </remarks>
 public enum CubeHashVariants
 {
     CubeHash16_16_32_32_512,

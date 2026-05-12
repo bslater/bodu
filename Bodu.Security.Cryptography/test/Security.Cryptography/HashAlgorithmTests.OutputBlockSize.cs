@@ -17,8 +17,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void OutputBlockSize_ShouldBeExpectedOutputBlockSize(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
         Assert.AreEqual(specification.OutputBlockSize, algorithm.OutputBlockSize, $"{typeof(TAlgorithm).Name} OutputBlockSize should be {specification.OutputBlockSize}.");
     }
 }

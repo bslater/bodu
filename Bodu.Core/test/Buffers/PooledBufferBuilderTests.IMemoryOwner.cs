@@ -30,7 +30,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void IMemoryOwner_Memory_WhenItemsBuffered_ShouldContainAllWrittenElements()
     {
-        int[] expected = { 1, 2, 3, 4, 5 };
+        int[] expected = [1, 2, 3, 4, 5];
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(expected);
         IMemoryOwner<int> owner = builder;
@@ -46,7 +46,7 @@ public partial class PooledBufferBuilderTests
     public void IMemoryOwner_Memory_WhenItemsBuffered_ShouldHaveLengthEqualToWrittenCount()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 10, 20, 30 });
+        builder.AppendRange([10, 20, 30]);
         IMemoryOwner<int> owner = builder;
 
         Assert.AreEqual(builder.WrittenCount, owner.Memory.Length);
@@ -74,7 +74,7 @@ public partial class PooledBufferBuilderTests
     public void IMemoryOwner_Memory_WhenResetCalled_ShouldReturnEmptyMemory()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
         builder.Reset();
         IMemoryOwner<int> owner = builder;
 

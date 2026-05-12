@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CcmModeTransformTests.Lifecycle.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Security.Cryptography;
 
@@ -22,7 +23,7 @@ public sealed partial class CcmModeTransformTests
     [TestMethod]
     public void TagSize_ShouldBeSixteenBytes()
     {
-        using var transform = MakeTransform();
+        using CcmModeTransform transform = MakeTransform();
 
         Assert.AreEqual(16, transform.TagSize);
     }
@@ -36,20 +37,20 @@ public sealed partial class CcmModeTransformTests
     [TestMethod]
     public void Encrypt_SamePlaintextSameNonceSameAad_ShouldBeDeterministic()
     {
-        byte[] iv = new byte[16];
-        for (int i = 0; i < iv.Length; i++) iv[i] = (byte)i;
+        var iv = new byte[16];
+        for (var i = 0; i < iv.Length; i++) iv[i] = (byte)i;
 
         byte[] aad = [0xA1, 0xA2, 0xA3];
         byte[] plaintext = [0x10, 0x20, 0x30, 0x40, 0x50, 0x60, 0x70, 0x80];
 
-        using var transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
+        using CcmModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData(aad);
-        byte[] outA = new byte[plaintext.Length + transformA.TagSize];
+        var outA = new byte[plaintext.Length + transformA.TagSize];
         transformA.Encrypt(plaintext, outA);
 
-        using var transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
+        using CcmModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData(aad);
-        byte[] outB = new byte[plaintext.Length + transformB.TagSize];
+        var outB = new byte[plaintext.Length + transformB.TagSize];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreEqual(outA, outB,
@@ -64,17 +65,17 @@ public sealed partial class CcmModeTransformTests
     [TestMethod]
     public void Encrypt_SamePlaintextSameNonceDifferentAad_ShouldProduceDistinctTags()
     {
-        byte[] iv = new byte[16];
+        var iv = new byte[16];
         byte[] plaintext = [0xDE, 0xAD, 0xBE, 0xEF];
 
-        using var transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
+        using CcmModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData([0x01]);
-        byte[] outA = new byte[plaintext.Length + transformA.TagSize];
+        var outA = new byte[plaintext.Length + transformA.TagSize];
         transformA.Encrypt(plaintext, outA);
 
-        using var transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
+        using CcmModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData([0x02]);
-        byte[] outB = new byte[plaintext.Length + transformB.TagSize];
+        var outB = new byte[plaintext.Length + transformB.TagSize];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,

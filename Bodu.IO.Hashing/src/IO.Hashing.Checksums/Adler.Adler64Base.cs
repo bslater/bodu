@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using System.Buffers.Binary;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Provides a reusable base class for <c>Adler-64</c> style checksum algorithms using <see cref="ulong" />

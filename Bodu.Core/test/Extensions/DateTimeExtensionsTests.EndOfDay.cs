@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(EndOfDayTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(EndOfDayTestData))]
     public void EndOfDay_WhenCalled_ShouldReturnExpected(DateTime input, DateTime expected)
     {
         var actual = input.EndOfDay();

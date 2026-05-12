@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmTests.TransformFinalBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,32 +19,32 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformBlockAndFinalBlock_WhenUsedWithSimpleInput_ShouldMatchComputeHash()
     {
-        byte[] input = CryptoTestUtilities.SimpleTextAsciiBytes;
+        var input = CryptoTestUtilities.SimpleTextAsciiBytes;
 
         byte[] computeHashResult;
-        using (var computeAlg = CreateAlgorithm())
+        using (TAlgorithm computeAlg = CreateAlgorithm())
         {
             computeHashResult = computeAlg.ComputeHash(input);
         }
 
         if (CreateAlgorithm().CanReuseTransform)
         {
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
             algorithm.TransformBlock(input, 0, input.Length - 1, null, 0);
             algorithm.TransformFinalBlock(input, input.Length - 1, 1);
 
-            byte[] transformResult = algorithm.Hash!;
+            var transformResult = algorithm.Hash!;
             CollectionAssert.AreEqual(computeHashResult, transformResult, "Hash results should be identical between block-based and full ComputeHash execution.");
         }
         else
         {
-            using var transformAlg = CreateAlgorithm();
+            using TAlgorithm transformAlg = CreateAlgorithm();
 
             transformAlg.TransformBlock(input, 0, input.Length - 1, null, 0);
             transformAlg.TransformFinalBlock(input, input.Length - 1, 1);
 
-            byte[] transformResult = transformAlg.Hash!;
+            var transformResult = transformAlg.Hash!;
             CollectionAssert.AreEqual(computeHashResult, transformResult, "Hash results should be identical between block-based and full ComputeHash execution.");
         }
     }
@@ -56,11 +56,11 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformBlockAndFinalBlock_WhenInputIsEmpty_ShouldProduceExpectedHash()
     {
-        byte[] expected = ExpectedEmptyInputHash;
+        var expected = ExpectedEmptyInputHash;
 
         if (CreateAlgorithm().CanReuseTransform)
         {
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
 
             // Case 1: TransformBlock followed by TransformFinalBlock
             algorithm.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
@@ -75,12 +75,12 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         else
         {
             // One-shot case: use separate instances
-            using var algorithm1 = CreateAlgorithm();
+            using TAlgorithm algorithm1 = CreateAlgorithm();
             algorithm1.TransformBlock(Array.Empty<byte>(), 0, 0, null, 0);
             algorithm1.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
             CollectionAssert.AreEqual(expected, algorithm1.Hash, "TransformBlock followed by TransformFinalBlock on empty input should match expected hash.");
 
-            using var algorithm2 = CreateAlgorithm();
+            using TAlgorithm algorithm2 = CreateAlgorithm();
             algorithm2.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
             CollectionAssert.AreEqual(expected, algorithm2.Hash, "TransformFinalBlock alone on empty input should match expected hash.");
         }
@@ -97,7 +97,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         byte[] input;
 
         // Use a fresh instance to generate expected hash and determine block size
-        using (var initial = CreateAlgorithm())
+        using (TAlgorithm initial = CreateAlgorithm())
         {
             blockSize = initial.InputBlockSize;
             input = new byte[Math.Max(blockSize * 2, 8)];
@@ -107,19 +107,19 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         byte[] expected;
 
         // Compute the expected result via single-call ComputeHash
-        using (var reference = CreateAlgorithm())
+        using (TAlgorithm reference = CreateAlgorithm())
             expected = reference.ComputeHash(input);
 
         // Split and hash using TransformBlock/TransformFinalBlock
         if (CreateAlgorithm().CanReuseTransform)
         {
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Initialize();
 
             if (HandlePartialBlocks)
             {
-                byte[] first = input.Take(blockSize).ToArray();
-                byte[] second = input.Skip(blockSize).ToArray();
+                var first = input.Take(blockSize).ToArray();
+                var second = input.Skip(blockSize).ToArray();
 
                 algorithm.TransformBlock(first, 0, first.Length, null, 0);
                 algorithm.TransformFinalBlock(second, 0, second.Length);
@@ -137,12 +137,12 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         else
         {
             // One-shot MAC: Use a fresh instance for split input
-            using var splitAlg = CreateAlgorithm();
+            using TAlgorithm splitAlg = CreateAlgorithm();
 
             if (HandlePartialBlocks)
             {
-                byte[] first = input.Take(blockSize).ToArray();
-                byte[] second = input.Skip(blockSize).ToArray();
+                var first = input.Take(blockSize).ToArray();
+                var second = input.Skip(blockSize).ToArray();
 
                 splitAlg.TransformBlock(first, 0, first.Length, null, 0);
                 splitAlg.TransformFinalBlock(second, 0, second.Length);
@@ -173,7 +173,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         var input = CryptoTestUtilities.ByteSequence256;
         byte[] expected;
 
-        using (var reference = CreateAlgorithm())
+        using (TAlgorithm reference = CreateAlgorithm())
         {
             expected = reference.ComputeHash(input);
         }
@@ -181,7 +181,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         // One-shot vs. reusable path
         if (CreateAlgorithm().CanReuseTransform)
         {
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             algorithm.Initialize();
 
             FeedWithPartialBlocks(algorithm, input);
@@ -190,7 +190,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
         }
         else
         {
-            using var algorithm = CreateAlgorithm();
+            using TAlgorithm algorithm = CreateAlgorithm();
             FeedWithPartialBlocks(algorithm, input);
 
             CollectionAssert.AreEqual(expected, algorithm.Hash, "Streamed hash with partial blocks should match expected result.");
@@ -204,7 +204,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformFinalBlock_WhenCalledTwice_ShouldResetAndProduceValidHashes()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         var buffer = CryptoTestUtilities.SimpleTextAsciiBytes;
 
         // First pass
@@ -230,11 +230,11 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformFinalBlock_WhenCalled_ShouldReturnInputSegmentCopy()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
-        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+        var input = CryptoTestUtilities.ByteSequence256[..32];
 
-        byte[] actual = algorithm.TransformFinalBlock(input, 0, input.Length);
+        var actual = algorithm.TransformFinalBlock(input, 0, input.Length);
 
         CollectionAssert.AreEqual(input, actual);
         Assert.AreNotSame(input, actual);
@@ -247,14 +247,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformFinalBlock_WhenInputOffsetIsNonZero_ShouldReturnOnlySelectedInputRange()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
-        byte[] expected = CryptoTestUtilities.ByteSequence256[16..48];
-        byte[] input = new byte[expected.Length + 32];
+        var expected = CryptoTestUtilities.ByteSequence256[16..48];
+        var input = new byte[expected.Length + 32];
 
         Buffer.BlockCopy(expected, 0, input, 16, expected.Length);
 
-        byte[] actual = algorithm.TransformFinalBlock(input, 16, expected.Length);
+        var actual = algorithm.TransformFinalBlock(input, 16, expected.Length);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -266,7 +266,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void TransformFinalBlock_WhenCalledAgainAfterFinalization_ShouldStartNewHashCycle()
     {
-        var specification = GetSpecification(DefaultVariant);
+        HashAlgorithmSpecification specification = GetSpecification(DefaultVariant);
 
         if (!specification.CanReuseTransform)
         {
@@ -275,9 +275,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
-        byte[] input = CryptoTestUtilities.ByteSequence256[..32];
+        var input = CryptoTestUtilities.ByteSequence256[..32];
 
         _ = algorithm.TransformFinalBlock(input, 0, input.Length);
         _ = algorithm.Hash;
@@ -291,15 +291,15 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     {
         if (HandlePartialBlocks)
         {
-            int pos = 0;
-            int size = Math.Max(algorithm.InputBlockSize - 1, 1);
-            int len = input.Length - size;
+            var pos = 0;
+            var size = Math.Max(algorithm.InputBlockSize - 1, 1);
+            var len = input.Length - size;
 
             Random rnd = new Random();
 
             while (pos < len)
             {
-                int bytes = rnd.Next(1, size);
+                var bytes = rnd.Next(1, size);
                 algorithm.TransformBlock(input, pos, bytes, null, 0);
                 pos += bytes;
             }

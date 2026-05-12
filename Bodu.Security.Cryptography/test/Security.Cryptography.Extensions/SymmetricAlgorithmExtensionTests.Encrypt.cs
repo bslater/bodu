@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmExtensionTests.Encrypt.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArray_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
             algorithm.Encrypt(null!));
@@ -50,10 +50,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArray_WhenInputIsValid_ShouldReturnNonEmptyResult()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("encrypt-me");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("encrypt-me");
 
-        byte[] cipherText = algorithm.Encrypt(plainText);
+        var cipherText = algorithm.Encrypt(plainText);
 
         Assert.IsNotNull(cipherText);
         Assert.IsTrue(cipherText.Length > 0);
@@ -66,11 +66,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArray_WhenRoundTripped_ShouldProduceOriginalPlaintext()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("encrypt");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("encrypt");
 
-        byte[] cipherText = algorithm.Encrypt(plainText);
-        byte[] decrypted = algorithm.Decrypt(cipherText);
+        var cipherText = algorithm.Encrypt(plainText);
+        var decrypted = algorithm.Decrypt(cipherText);
 
         CollectionAssert.AreEqual(plainText, decrypted);
     }
@@ -84,7 +84,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayOffset_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
             algorithm.Encrypt(null!, 0));
@@ -97,8 +97,8 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayOffset_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] data = Encoding.UTF8.GetBytes("data");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var data = Encoding.UTF8.GetBytes("data");
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             algorithm.Encrypt(data, -1));
@@ -111,8 +111,8 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayOffset_WhenOffsetExceedsBounds_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] data = Encoding.UTF8.GetBytes("data");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var data = Encoding.UTF8.GetBytes("data");
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             algorithm.Encrypt(data, data.Length + 1));
@@ -125,11 +125,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayOffset_WhenOffsetIsZero_ShouldRoundTripCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("abc");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("abc");
 
-        byte[] cipherText = algorithm.Encrypt(plainText, 0);
-        byte[] decrypted = algorithm.Decrypt(cipherText);
+        var cipherText = algorithm.Encrypt(plainText, 0);
+        var decrypted = algorithm.Decrypt(cipherText);
 
         CollectionAssert.AreEqual(plainText, decrypted);
     }
@@ -143,7 +143,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
             algorithm.Encrypt(null!, 0, 4));
@@ -156,8 +156,8 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayRange_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] data = Encoding.UTF8.GetBytes("data");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var data = Encoding.UTF8.GetBytes("data");
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             algorithm.Encrypt(data, -1, 2));
@@ -170,8 +170,8 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayRange_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] data = Encoding.UTF8.GetBytes("data");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var data = Encoding.UTF8.GetBytes("data");
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             algorithm.Encrypt(data, 0, -1));
@@ -184,8 +184,8 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayRange_WhenOffsetPlusCountExceedsLength_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] data = Encoding.UTF8.GetBytes("data");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var data = Encoding.UTF8.GetBytes("data");
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             algorithm.Encrypt(data, 2, 5));
@@ -198,11 +198,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_ByteArrayRange_WhenValid_ShouldRoundTripCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("hello");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("hello");
 
-        byte[] cipherText = algorithm.Encrypt(plainText, 0, plainText.Length);
-        byte[] decrypted = algorithm.Decrypt(cipherText);
+        var cipherText = algorithm.Encrypt(plainText, 0, plainText.Length);
+        var decrypted = algorithm.Decrypt(cipherText);
 
         CollectionAssert.AreEqual(plainText, decrypted);
     }
@@ -228,10 +228,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Span_WhenInputIsValid_ShouldReturnNonEmptyResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         ReadOnlySpan<byte> input = Encoding.UTF8.GetBytes("span-encrypt");
 
-        byte[] cipherText = algorithm.Encrypt(input);
+        var cipherText = algorithm.Encrypt(input);
 
         Assert.IsNotNull(cipherText);
         Assert.IsTrue(cipherText.Length > 0);
@@ -244,11 +244,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Span_WhenRoundTripped_ShouldProduceOriginalPlaintext()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("span-round-trip");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("span-round-trip");
 
-        byte[] cipherText = algorithm.Encrypt((ReadOnlySpan<byte>)plainText);
-        byte[] decrypted = algorithm.Decrypt(cipherText);
+        var cipherText = algorithm.Encrypt((ReadOnlySpan<byte>)plainText);
+        var decrypted = algorithm.Decrypt(cipherText);
 
         CollectionAssert.AreEqual(plainText, decrypted);
     }
@@ -260,11 +260,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Span_WhenComparedToByteArrayOverload_ShouldProduceIdenticalOutput()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("identical-output");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("identical-output");
 
-        byte[] fromArray = algorithm.Encrypt(plainText);
-        byte[] fromSpan = algorithm.Encrypt((ReadOnlySpan<byte>)plainText);
+        var fromArray = algorithm.Encrypt(plainText);
+        var fromSpan = algorithm.Encrypt((ReadOnlySpan<byte>)plainText);
 
         CollectionAssert.AreEqual(fromArray, fromSpan);
     }
@@ -291,11 +291,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Memory_WhenRoundTripped_ShouldProduceOriginalPlaintext()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("memory-encrypt");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("memory-encrypt");
 
-        byte[] cipherText = algorithm.Encrypt(new ReadOnlyMemory<byte>(plainText));
-        byte[] decrypted = algorithm.Decrypt(cipherText);
+        var cipherText = algorithm.Encrypt(new ReadOnlyMemory<byte>(plainText));
+        var decrypted = algorithm.Decrypt(cipherText);
 
         CollectionAssert.AreEqual(plainText, decrypted);
     }
@@ -307,11 +307,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Memory_WhenComparedToSpanOverload_ShouldProduceIdenticalOutput()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("identical-memory");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("identical-memory");
 
-        byte[] fromSpan = algorithm.Encrypt((ReadOnlySpan<byte>)plainText);
-        byte[] fromMemory = algorithm.Encrypt(new ReadOnlyMemory<byte>(plainText));
+        var fromSpan = algorithm.Encrypt((ReadOnlySpan<byte>)plainText);
+        var fromMemory = algorithm.Encrypt(new ReadOnlyMemory<byte>(plainText));
 
         CollectionAssert.AreEqual(fromSpan, fromMemory);
     }
@@ -340,7 +340,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var target = new MemoryStream();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -354,7 +354,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var source = new MemoryStream();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -368,10 +368,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenRoundTripped_ShouldProduceOriginalPlaintext()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("stream-encrypt-default-buffer");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("stream-encrypt-default-buffer");
 
-        byte[] cipherText = algorithm.Encrypt(plainText);
+        var cipherText = algorithm.Encrypt(plainText);
 
         using var cipherStream = new MemoryStream(cipherText);
         using var decryptedStream = new MemoryStream();
@@ -389,7 +389,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_StreamWithBufferSize_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var source = new MemoryStream();
         using var target = new MemoryStream();
 
@@ -404,7 +404,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_StreamWithBufferSize_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var source = new MemoryStream();
         using var target = new MemoryStream();
 
@@ -419,7 +419,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_StreamWithBufferSize_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var source = new MemoryStream();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -433,8 +433,8 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_StreamWithBufferSize_WhenRoundTripped_ShouldProduceOriginalPlaintext()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] plainText = Encoding.UTF8.GetBytes("stream-encrypt-explicit-buffer");
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
+        var plainText = Encoding.UTF8.GetBytes("stream-encrypt-explicit-buffer");
 
         using var sourceStream = new MemoryStream(plainText);
         using var encryptedStream = new MemoryStream();
@@ -461,10 +461,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenSourceIsFixedChunkStream_OneBytePerRead_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence64;
+        var plainText = CryptoTestUtilities.ByteSequence64;
 
         using var input = new FixedChunkStream(plainText, chunkSize: 1);
         using var output = new MemoryStream();
@@ -482,10 +482,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenSourceIsFixedChunkStream_NonBlockAlignedChunk_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence128;
+        var plainText = CryptoTestUtilities.ByteSequence128;
 
         // chunkSize=5 is not a multiple of the 16-byte block — exercises accumulation across chunk boundaries.
         using var input = new FixedChunkStream(plainText, chunkSize: 5);
@@ -505,11 +505,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenSourceIsIncrementingByteStream_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         // IncrementingByteStream(64) produces the same bytes as ByteSequence64.
-        byte[] plainText = CryptoTestUtilities.ByteSequence64;
+        var plainText = CryptoTestUtilities.ByteSequence64;
 
         using var input = new IncrementingByteStream(64);
         using var output = new MemoryStream();
@@ -527,11 +527,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenSourceIsFixedLengthIncrementingStream_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         // FixedLengthIncrementingStream(64) produces the same bytes as ByteSequence64.
-        byte[] plainText = CryptoTestUtilities.ByteSequence64;
+        var plainText = CryptoTestUtilities.ByteSequence64;
 
         using var input = new FixedLengthIncrementingStream(64);
         using var output = new MemoryStream();
@@ -549,10 +549,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenSourceIsNonSeekable_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence128;
+        var plainText = CryptoTestUtilities.ByteSequence128;
 
         using var input = new NonSeekableStream(plainText);
         using var output = new MemoryStream();
@@ -572,7 +572,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public void Encrypt_Stream_WhenSourceFaultsMidRead_ShouldPropagateIOException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         // Fault after 32 bytes — mid-way through a 128-byte input.

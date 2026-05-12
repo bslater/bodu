@@ -17,7 +17,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void IEnumerable_WhenUsedInForeachLoop_ShouldEnumerateInHeadToTailOrder()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -36,7 +36,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void IEnumerable_WhenUsingNonGenericEnumerator_ShouldReturnItemsAsObjects()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -54,9 +54,9 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void IEnumerable_WhenCollectionIsEmpty_ShouldYieldNoElements()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
 
-        int count = 0;
+        var count = 0;
         foreach (var _ in collection)
             count++;
 
@@ -70,7 +70,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void IEnumerable_WhenContiguous_ShouldMatchResultsFromCopyTo()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 10);
         AddToTail(collection, 20);
         AddToTail(collection, 30);
@@ -89,7 +89,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void IEnumerable_WhenStorageWrapped_ShouldMatchResultsFromCopyTo()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);

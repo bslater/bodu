@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CfbModeTransformTests.Transform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Security.Cryptography;
 
@@ -18,7 +19,7 @@ public sealed partial class CfbModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
         var iv = Enumerable.Repeat((byte)0x10, ExpectedBlockSize).ToArray();
-        var transform = CreateTransform(cipher, (byte[])iv.Clone());
+        CfbModeTransform transform = CreateTransform(cipher, (byte[])iv.Clone());
 
         var plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
         var output = new byte[plaintext.Length];
@@ -43,8 +44,8 @@ public sealed partial class CfbModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
         var iv = Enumerable.Repeat((byte)0x10, ExpectedBlockSize).ToArray();
 
-        var encrypt = CreateTransform(cipher, (byte[])iv.Clone());
-        var decrypt = CreateTransform(cipher, (byte[])iv.Clone());
+        CfbModeTransform encrypt = CreateTransform(cipher, (byte[])iv.Clone());
+        CfbModeTransform decrypt = CreateTransform(cipher, (byte[])iv.Clone());
 
         var plaintext = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
         var ciphertext = new byte[plaintext.Length];
@@ -65,7 +66,7 @@ public sealed partial class CfbModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = Enumerable.Repeat((byte)0x7E, ExpectedBlockSize).ToArray();
         var ivCopy = (byte[])iv.Clone();
-        var transform = CreateTransform(cipher, iv);
+        CfbModeTransform transform = CreateTransform(cipher, iv);
 
         var plaintext = new byte[ExpectedBlockSize];
         var output = new byte[ExpectedBlockSize];
@@ -84,7 +85,7 @@ public sealed partial class CfbModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = Enumerable.Repeat((byte)0x01, ExpectedBlockSize).ToArray();
-        var transform = CreateTransform(cipher, iv);
+        CfbModeTransform transform = CreateTransform(cipher, iv);
 
         var input = new byte[ExpectedBlockSize * 2];
         var output = new byte[input.Length];
@@ -103,7 +104,7 @@ public sealed partial class CfbModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
         var iv = Enumerable.Repeat((byte)0x55, ExpectedBlockSize).ToArray();
-        var transform = CreateTransform(cipher, (byte[])iv.Clone());
+        CfbModeTransform transform = CreateTransform(cipher, (byte[])iv.Clone());
 
         var plaintext = Enumerable.Repeat((byte)0x22, ExpectedBlockSize).ToArray();
         var output = new byte[ExpectedBlockSize];

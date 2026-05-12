@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockNonCryptographicHashAlgorithmTests.InvalidBlockSizeHasher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,11 +20,11 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         {
         }
 
-        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) => Array.Empty<byte>();
+        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) => [];
 
         protected override void ProcessBlock(ReadOnlySpan<byte> block) { }
 
-        protected override byte[] ProcessFinalBlock() => Array.Empty<byte>();
+        protected override byte[] ProcessFinalBlock() => [];
 
         protected override InvalidBlockSizeHasher Clone() => this;
     }

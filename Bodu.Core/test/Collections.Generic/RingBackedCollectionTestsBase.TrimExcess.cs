@@ -15,7 +15,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void TrimExcess_WhenCollectionHasItems_ShouldShrinkCapacityToCount()
     {
-        var collection = CreateCollection(50);
+        TCollection collection = CreateCollection(50);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
@@ -31,7 +31,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void TrimExcess_WhenCollectionIsEmpty_ShouldShrinkToOne()
     {
-        var collection = CreateCollection(50);
+        TCollection collection = CreateCollection(50);
         TrimExcess(collection);
 
         Assert.AreEqual(1, GetCapacity(collection));
@@ -44,7 +44,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void TrimExcess_WhenStorageWrapped_ShouldPreserveOrder()
     {
-        var collection = CreateCollection(4);
+        TCollection collection = CreateCollection(4);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);

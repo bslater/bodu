@@ -73,7 +73,7 @@ public partial class EvictingDictionaryTests
     public void CopyTo_WhenArrayHasNonZeroLowerBound_ShouldThrowExactly()
     {
         var dictionary = new EvictingDictionary<string, int>(1);
-        var array = Array.CreateInstance(typeof(KeyValuePair<string, int>), new[] { 1 }, new[] { 1 });
+        var array = Array.CreateInstance(typeof(KeyValuePair<string, int>), [1], [1]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

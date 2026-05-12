@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelegateHashAlgorithmFactoryTests.Create.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,8 +19,8 @@ public partial class DelegateHashAlgorithmFactoryTests
     {
         var factory = new DelegateHashAlgorithmFactory<MD5>(MD5.Create);
 
-        using var first = factory.Create();
-        using var second = factory.Create();
+        using MD5 first = factory.Create();
+        using MD5 second = factory.Create();
 
         Assert.IsNotNull(first);
         Assert.IsNotNull(second);

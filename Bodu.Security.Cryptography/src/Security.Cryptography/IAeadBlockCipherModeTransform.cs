@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Unlike <see cref="IBlockCipherModeTransform" />, which only encrypts or decrypts, AEAD transforms
+/// Unlike <see cref="IBlockCipherModeTransform"/>, which only encrypts or decrypts, AEAD transforms
 /// combine confidentiality with data integrity. The caller supplies optional associated data (AAD) that is
 /// authenticated but not encrypted, plus plaintext or ciphertext to be transformed. The output includes an
 /// authentication tag that binds the ciphertext and AAD together.
@@ -34,8 +34,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// All implementations are stateful, not thread-safe, and <strong>single-use per message</strong>.
-/// A second call to <see cref="Encrypt" /> or <see cref="Decrypt" /> on the same instance — including
-/// after a tag-mismatch failure — throws <see cref="System.InvalidOperationException" />. Construct
+/// A second call to <see cref="Encrypt"/> or <see cref="Decrypt"/> on the same instance — including
+/// after a tag-mismatch failure — throws <see cref="System.InvalidOperationException"/>. Construct
 /// a fresh transform for every message and dispose it when finished.
 /// </para>
 /// <para>
@@ -102,8 +102,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with GCM, CCM, OCB3, SIV, and GCM-SIV examples)</seealso>
-/// <seealso cref="AesBlockCipher" />
-/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
+/// <seealso cref="AesBlockCipher"/>
+/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public interface IAeadBlockCipherModeTransform
     : System.IDisposable
 {
@@ -112,28 +112,28 @@ public interface IAeadBlockCipherModeTransform
 
     /// <summary>
     /// Processes associated data (AAD) that will be authenticated but not encrypted.
-    /// Must be called before <see cref="Encrypt" /> or <see cref="Decrypt" />.
+    /// Must be called before <see cref="Encrypt"/> or <see cref="Decrypt"/>.
     /// </summary>
     /// <param name="associatedData">
     /// The bytes to authenticate. May be empty to indicate no associated data.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// Associated data has already been processed on this instance, or the instance has already
-    /// completed an <see cref="Encrypt" /> or <see cref="Decrypt" /> operation.
+    /// completed an <see cref="Encrypt"/> or <see cref="Decrypt"/> operation.
     /// </exception>
     void ProcessAssociatedData(ReadOnlySpan<byte> associatedData);
 
     /// <summary>
-    /// Encrypts <paramref name="plaintext" /> and appends the authentication tag to
-    /// <paramref name="output" />.
+    /// Encrypts <paramref name="plaintext"/> and appends the authentication tag to
+    /// <paramref name="output"/>.
     /// </summary>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <param name="output">
-    /// Receives the ciphertext followed immediately by the <see cref="TagSize" />-byte tag.
+    /// Receives the ciphertext followed immediately by the <see cref="TagSize"/>-byte tag.
     /// Must be at least <c>plaintext.Length + TagSize</c> bytes long.
     /// </param>
     /// <returns>Total bytes written: <c>plaintext.Length + TagSize</c>.</returns>
-    /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
+    /// <exception cref="ArgumentException"><paramref name="output"/> is too small.</exception>
     /// <exception cref="InvalidOperationException">
     /// The instance has already encrypted or decrypted a message. AEAD transforms are single-use
     /// per message — construct a fresh instance.
@@ -141,11 +141,11 @@ public interface IAeadBlockCipherModeTransform
     int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output);
 
     /// <summary>
-    /// Decrypts <paramref name="ciphertextWithTag" /> and verifies the authentication tag.
+    /// Decrypts <paramref name="ciphertextWithTag"/> and verifies the authentication tag.
     /// </summary>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="TagSize" />-byte authentication tag.
-    /// Must be at least <see cref="TagSize" /> bytes long.
+    /// The ciphertext followed immediately by the <see cref="TagSize"/>-byte authentication tag.
+    /// Must be at least <see cref="TagSize"/> bytes long.
     /// </param>
     /// <param name="output">
     /// Receives the decrypted plaintext. Must be at least
@@ -154,8 +154,8 @@ public interface IAeadBlockCipherModeTransform
     /// <returns>Bytes written: <c>ciphertextWithTag.Length - TagSize</c>.</returns>
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ciphertextWithTag" /> is shorter than <see cref="TagSize" /> bytes, or
-    /// <paramref name="output" /> is too small.
+    /// <paramref name="ciphertextWithTag"/> is shorter than <see cref="TagSize"/> bytes, or
+    /// <paramref name="output"/> is too small.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The instance has already encrypted or decrypted a message, including after a previous

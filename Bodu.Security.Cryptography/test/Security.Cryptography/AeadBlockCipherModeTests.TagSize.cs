@@ -15,7 +15,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void TagSize_ShouldBePositive()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         Assert.IsTrue(transform.TagSize > 0, "TagSize must be greater than zero.");
     }
 }

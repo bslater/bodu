@@ -12,21 +12,17 @@ namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
-    // --------------------------------------------------------
-    // Add(TKey, TValue)
-    // --------------------------------------------------------
-
     /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Add(TKey,TValue)"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
     public void Add_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        var mvd = new MultiValueDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            sut.Add(null!, 1);
+            mvd.Add(null!, 1);
         });
     }
 
@@ -36,13 +32,13 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Add_WhenKeyIsNew_ShouldCreateEntryAndIncrementKeyCount()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        var mvd = new MultiValueDictionary<string, int>();
 
-        sut.Add("a", 1);
+        mvd.Add("a", 1);
 
-        Assert.AreEqual(1, sut.KeyCount);
-        Assert.AreEqual(1, sut.Count);
-        Assert.IsTrue(sut.ContainsKey("a"));
+        Assert.AreEqual(1, mvd.KeyCount);
+        Assert.AreEqual(1, mvd.Count);
+        Assert.IsTrue(mvd.ContainsKey("a"));
     }
 
     /// <summary>
@@ -51,15 +47,15 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Add_WhenKeyExists_ShouldAppendValueWithoutDuplicatingKey()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        var mvd = new MultiValueDictionary<string, int>();
 
-        sut.Add("a", 1);
-        sut.Add("a", 2);
-        sut.Add("a", 3);
+        mvd.Add("a", 1);
+        mvd.Add("a", 2);
+        mvd.Add("a", 3);
 
-        Assert.AreEqual(1, sut.KeyCount);
-        Assert.AreEqual(3, sut.Count);
-        Assert.AreEqual(3, sut["a"].Count);
+        Assert.AreEqual(1, mvd.KeyCount);
+        Assert.AreEqual(3, mvd.Count);
+        Assert.AreEqual(3, mvd["a"].Count);
     }
 
     /// <summary>
@@ -68,110 +64,17 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Add_WhenValuesAddedForSameKey_ShouldPreserveInsertionOrder()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        var mvd = new MultiValueDictionary<string, int>();
 
-        sut.Add("k", 30);
-        sut.Add("k", 10);
-        sut.Add("k", 20);
+        mvd.Add("k", 30);
+        mvd.Add("k", 10);
+        mvd.Add("k", 20);
 
-        IReadOnlyList<int> values = sut["k"];
+        IReadOnlyList<int> values = mvd["k"];
 
         Assert.AreEqual(30, values[0]);
         Assert.AreEqual(10, values[1]);
         Assert.AreEqual(20, values[2]);
-    }
-
-    // --------------------------------------------------------
-    // AddRange(TKey, IEnumerable<TValue>)
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> throws <see cref="ArgumentNullException"/> for a null key.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenKeyIsNull_ShouldThrowArgumentNullException()
-    {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.AddRange(null!, new[] { 1, 2 });
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> throws <see cref="ArgumentNullException"/> for a null values sequence.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenValuesIsNull_ShouldThrowArgumentNullException()
-    {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.AddRange("a", null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> appends all values to an existing key.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenCalled_ShouldAppendAllValuesInOrder()
-    {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("k", 1);
-
-        sut.AddRange("k", new[] { 2, 3, 4 });
-
-        Assert.AreEqual(4, sut.Count);
-        Assert.AreEqual(1, sut.KeyCount);
-        CollectionAssert.AreEqual(new[] { 1, 2, 3, 4 }, sut["k"].ToList());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> correctly counts items from a new key.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenKeyIsNew_ShouldCreateKeyAndSetCount()
-    {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-
-        sut.AddRange("new", new[] { 10, 20, 30 });
-
-        Assert.AreEqual(3, sut.Count);
-        Assert.AreEqual(1, sut.KeyCount);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> does not create a key entry when the values sequence is empty and the key is new.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenEmptySequenceForNewKey_ShouldNotCreateKey()
-    {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-
-        sut.AddRange("k", Array.Empty<int>());
-
-        Assert.AreEqual(0, sut.KeyCount);
-        Assert.AreEqual(0, sut.Count);
-        Assert.IsFalse(sut.ContainsKey("k"));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.AddRange"/> does not modify the count when the values sequence is empty and the key already exists.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenEmptySequenceForExistingKey_ShouldNotModifyCount()
-    {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
-        sut.Add("k", 1);
-        int countBefore = sut.Count;
-
-        sut.AddRange("k", Array.Empty<int>());
-
-        Assert.AreEqual(countBefore, sut.Count);
-        Assert.AreEqual(1, sut.KeyCount);
     }
 
     /// <summary>
@@ -180,14 +83,84 @@ public partial class MultiValueDictionaryTests
     [TestMethod]
     public void Add_WhenMultipleKeysUsed_ShouldMaintainTotalCount()
     {
-        MultiValueDictionary<string, int> sut = new MultiValueDictionary<string, int>();
+        var mvd = new MultiValueDictionary<string, int>();
 
-        sut.Add("a", 1);
-        sut.Add("b", 2);
-        sut.Add("c", 3);
-        sut.Add("a", 4);
+        mvd.Add("a", 1);
+        mvd.Add("b", 2);
+        mvd.Add("c", 3);
+        mvd.Add("a", 4);
 
-        Assert.AreEqual(4, sut.Count);
-        Assert.AreEqual(3, sut.KeyCount);
+        Assert.AreEqual(4, mvd.Count);
+        Assert.AreEqual(3, mvd.KeyCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Add"/> correctly accumulates any number
+    /// of values under a single key, across a range of value counts.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(5)]
+    [DataRow(10)]
+    [DataRow(100)]
+    public void Add_WhenValuesAccumulatedForOneKey_ShouldTrackCountExactly(int valueCount)
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+
+        for (var i = 0; i < valueCount; i++)
+            mvd.Add("k", i);
+
+        Assert.AreEqual(valueCount, mvd.Count);
+        Assert.AreEqual(1, mvd.KeyCount);
+        Assert.AreEqual(valueCount, mvd["k"].Count);
+    }
+
+    /// <summary>
+    /// Verifies that a custom key comparer causes case-insensitively equal string keys to be merged into a
+    /// single entry, accumulating their values together.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenCustomComparerUsed_ShouldMergeEquivalentKeys()
+    {
+        var mvd =
+            new MultiValueDictionary<string, int>(System.StringComparer.OrdinalIgnoreCase);
+
+        mvd.Add("Alpha", 1);
+        mvd.Add("ALPHA", 2);
+        mvd.Add("alpha", 3);
+
+        Assert.AreEqual(1, mvd.KeyCount);
+        Assert.AreEqual(3, mvd.Count);
+        Assert.AreEqual(3, mvd["Alpha"].Count);
+    }
+
+    /// <summary>
+    /// Verifies that a large number of keys and values are stored and retrieved correctly.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
+    {
+        var mvd = new MultiValueDictionary<int, int>();
+        int keyCount = 200;
+        int valuesPerKey = 10;
+
+        for (int k = 0; k < keyCount; k++)
+        {
+            for (int v = 0; v < valuesPerKey; v++)
+                mvd.Add(k, v);
+        }
+
+        Assert.AreEqual(keyCount * valuesPerKey, mvd.Count);
+        Assert.AreEqual(keyCount, mvd.KeyCount);
+
+        for (int k = 0; k < keyCount; k++)
+        {
+            IReadOnlyList<int> values = mvd[k];
+            Assert.AreEqual(valuesPerKey, values.Count);
+            for (int v = 0; v < valuesPerKey; v++)
+                Assert.AreEqual(v, values[v]);
+        }
     }
 }

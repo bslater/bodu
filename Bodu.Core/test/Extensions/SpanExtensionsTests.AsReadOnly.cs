@@ -17,7 +17,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void AsReadOnly_WhenCalled_ShouldReturnReadOnlySpanWithSameLength()
     {
-        int[] buffer = { 1, 2, 3, 4, 5 };
+        int[] buffer = [1, 2, 3, 4, 5];
         Span<int> source = buffer;
 
         ReadOnlySpan<int> result = source.AsReadOnly();
@@ -31,7 +31,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void AsReadOnly_WhenCalled_ShouldReturnReadOnlySpanWithSameElements()
     {
-        int[] buffer = { 10, 20, 30, 40 };
+        int[] buffer = [10, 20, 30, 40];
         Span<int> source = buffer;
 
         ReadOnlySpan<int> result = source.AsReadOnly();
@@ -46,7 +46,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void AsReadOnly_WhenSourceIsMutated_ShouldReflectChangesInReadOnlyView()
     {
-        int[] buffer = { 1, 2, 3 };
+        int[] buffer = [1, 2, 3];
         Span<int> source = buffer;
 
         ReadOnlySpan<int> view = source.AsReadOnly();
@@ -61,7 +61,7 @@ public partial class SpanExtensionsTests
     [TestMethod]
     public void AsReadOnly_WhenSourceIsEmpty_ShouldReturnEmptyReadOnlySpan()
     {
-        Span<int> source = Span<int>.Empty;
+        Span<int> source = [];
 
         ReadOnlySpan<int> result = source.AsReadOnly();
 
@@ -76,7 +76,7 @@ public partial class SpanExtensionsTests
     {
         var a = new object();
         var b = new object();
-        object[] buffer = { a, b };
+        object[] buffer = [a, b];
 
         Span<object> source = buffer;
         ReadOnlySpan<object> result = source.AsReadOnly();

@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using Bodu.IO.Hashing.CheckDigits;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Identifies the alphabet from which a check-digit or check-character algorithm accepts its body input.

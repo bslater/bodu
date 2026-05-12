@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Infrastructure;
+using System.Collections.ObjectModel;
 
 namespace Bodu.Collections.Generic.Extensions;
 
@@ -15,19 +16,13 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> defers execution until the returned sequence is enumerated.
     /// </summary>
     [TestMethod]
-    public void Cache_ShouldDeferExecution()
-    {
-        AssertExecutionIsDeferred("Cache", s => s.Cache(), YieldingSequence());
-    }
+    public void Cache_ShouldDeferExecution() => AssertExecutionIsDeferred("Cache", s => s.Cache(), YieldingSequence());
 
     /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> begins enumerating its source only when the consumer requests an item.
     /// </summary>
     [TestMethod]
-    public void Cache_ShouldEnumerateOnDemand()
-    {
-        AssertExecutionOccursOnEnumeration("Cache", s => s.Cache(), YieldingSequence());
-    }
+    public void Cache_ShouldEnumerateOnDemand() => AssertExecutionOccursOnEnumeration("Cache", s => s.Cache(), YieldingSequence());
 
     /// <summary>
     /// Verifies that a cached sequence enumerated concurrently from multiple threads yields the same complete result to every reader.
@@ -36,7 +31,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     public void Cache_WhenEnumeratedFromMultipleThreads_ShouldReturnConsistentResults()
     {
         var tracker = new TrackingEnumerable<int>(YieldingSequence());
-        var actual = tracker.Cache();
+        IEnumerable<int> actual = tracker.Cache();
 
         Parallel.For(0, 5, _ =>
         {
@@ -52,7 +47,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     public void Cache_WhenEnumeratedTwice_ShouldEnumerateSourceOnlyOnce()
     {
         var tracker = new TrackingEnumerable<int>(YieldingSequence());
-        var actual = tracker.Cache();
+        IEnumerable<int> actual = tracker.Cache();
         var first = actual.ToList();
         var second = actual.ToList();
 
@@ -66,11 +61,11 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     [TestMethod]
     public void Cache_WhenEnumerationIsInterrupted_ShouldCachePartialResults()
     {
-        var source = YieldingSequence();
+        IEnumerable<int> source = YieldingSequence();
         var tracker = new TrackingEnumerable<int>(source);
-        var actual = tracker.Cache();
+        IEnumerable<int> actual = tracker.Cache();
 
-        using var enumerator = actual.GetEnumerator();
+        using IEnumerator<int> enumerator = actual.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext()); // 1
         Assert.IsTrue(enumerator.MoveNext()); // 2
 
@@ -86,8 +81,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     [TestMethod]
     public void Cache_WhenSourceIsAlreadyCached_ShouldReturnSameInstance()
     {
-        var source = Enumerable.Range(1, 3).Cache();
-        var result = source.Cache();
+        IEnumerable<int> source = Enumerable.Range(1, 3).Cache();
+        IEnumerable<int> result = source.Cache();
 
         Assert.AreSame(source, result);
     }
@@ -99,7 +94,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     public void Cache_WhenSourceIsCollection_ShouldReturnSameInstance()
     {
         var source = new List<int> { 1, 2, 3 };
-        var actual = source.Cache();
+        IEnumerable<int> actual = source.Cache();
 
         Assert.AreSame(source, actual);
     }
@@ -122,8 +117,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     [TestMethod]
     public void Cache_WhenSourceIsReadOnlyCollection_ShouldReturnSameInstance()
     {
-        var source = Array.AsReadOnly(new[] { 1, 2, 3 });
-        var actual = source.Cache();
+        ReadOnlyCollection<int> source = Array.AsReadOnly([1, 2, 3]);
+        IEnumerable<int> actual = source.Cache();
 
         Assert.AreSame(source, actual);
     }
@@ -135,7 +130,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     public void Cache_WhenSourceThrowsDuringEnumeration_ShouldRethrowOnSecondEnumeration()
     {
         var source = new TrackingEnumerable<int>(ThrowingSequence());
-        var cached = source.Cache();
+        IEnumerable<int> cached = source.Cache();
 
         try
         {
@@ -169,8 +164,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     {
         // Arrange
         var source = new TrackingEnumerable<int>(ThrowingSequence());
-        var cached = source.Cache();
-        var enumerator = cached.GetEnumerator();
+        IEnumerable<int> cached = source.Cache();
+        IEnumerator<int> enumerator = cached.GetEnumerator();
 
         // Act: First item succeeds
         Assert.IsTrue(enumerator.MoveNext());
@@ -194,7 +189,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     {
         // Arrange
         var source = new TrackingEnumerable<int>(YieldingSequence());
-        var cached = source.Cache();
+        IEnumerable<int> cached = source.Cache();
 
         // Act: Enumerate to force caching
         _ = cached.ToList();
@@ -211,7 +206,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
 
         // Re-enumeration should trigger a new enumeration
         var reenumerated = new TrackingEnumerable<int>(YieldingSequence());
-        var recached = reenumerated.Cache();
+        IEnumerable<int> recached = reenumerated.Cache();
 
         // Assert: Ensure second enumeration is treated as a fresh sequence
         AssertExecutionOccursOnEnumeration("Cache", s => s.Cache(), YieldingSequence());
@@ -223,8 +218,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     [TestMethod]
     public void Enumerator_Current_WhenAfterEnd_ShouldThrowException()
     {
-        var actual = YieldingSequence().Cache();
-        var enumerator = actual.GetEnumerator();
+        IEnumerable<int> actual = YieldingSequence().Cache();
+        IEnumerator<int> enumerator = actual.GetEnumerator();
         while (enumerator.MoveNext()) { }
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -242,8 +237,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     [TestMethod]
     public void Enumerator_Current_WhenBeforeMoveNext_ShouldThrowException()
     {
-        var actual = YieldingSequence().Cache();
-        var enumerator = actual.GetEnumerator();
+        IEnumerable<int> actual = YieldingSequence().Cache();
+        IEnumerator<int> enumerator = actual.GetEnumerator();
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
@@ -260,8 +255,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
     [TestMethod]
     public void Enumerator_Reset_ShouldThrowException()
     {
-        var actual = YieldingSequence().Cache();
-        var enumerator = actual.GetEnumerator();
+        IEnumerable<int> actual = YieldingSequence().Cache();
+        IEnumerator<int> enumerator = actual.GetEnumerator();
 
         Assert.ThrowsExactly<NotSupportedException>(() =>
         {

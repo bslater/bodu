@@ -27,7 +27,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void WrittenSpan_WhenItemsBuffered_ShouldReturnSpanMatchingCountAndContents()
     {
-        int[] expected = { 10, 20, 30 };
+        int[] expected = [10, 20, 30];
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(expected);
 

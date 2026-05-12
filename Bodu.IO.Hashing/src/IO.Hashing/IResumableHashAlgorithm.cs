@@ -1,13 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IResumableHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using System;
 using System.IO.Hashing;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Marks a non-cryptographic hash algorithm whose internal state can be reconstructed from a previously emitted digest,
