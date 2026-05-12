@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="IndexedSet.Enumerator.cs" company="PlaceholderCompany">
+// <copyright file="OrderedSet.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic;
 
-public sealed partial class IndexedSet<T>
+public sealed partial class OrderedSet<T>
 {
     /// <inheritdoc />
     IEnumerator<T> IEnumerable<T>.GetEnumerator() =>
@@ -21,7 +21,7 @@ public sealed partial class IndexedSet<T>
         GetEnumerator();
 
     /// <summary>
-    /// Enumerates the elements of an <see cref="IndexedSet{T}" /> in insertion order without allocating.
+    /// Enumerates the elements of an <see cref="OrderedSet{T}" /> in insertion order without allocating.
     /// </summary>
     /// <remarks>
     /// The enumerator captures the underlying storage version on construction. Any structural mutation
@@ -55,7 +55,7 @@ public sealed partial class IndexedSet<T>
         /// Initializes a new instance of the <see cref="Enumerator" /> struct over the specified set.
         /// </summary>
         /// <param name="owner">The set to enumerate.</param>
-        internal Enumerator(IndexedSet<T> owner)
+        internal Enumerator(OrderedSet<T> owner)
         {
             _storage = owner._storage;
             _version = _storage._version;
