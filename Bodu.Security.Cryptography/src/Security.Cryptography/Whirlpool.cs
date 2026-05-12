@@ -55,10 +55,14 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class Whirlpool
     : BlockHashAlgorithm<Whirlpool>
 {
-    private const int BlockSizeBytesValue = 64;
-    private const int HashSizeBytesValue = 64;
-    private const int HashSizeBitsValue = HashSizeBytesValue * 8;
-    private const int LengthFieldBytes = 32;
+    /// <summary>Length of the Whirlpool compression block is 512 bits (64 bytes).</summary>
+    private const int BlockSizeBits = 512;
+
+    /// <summary>Length of the Whirlpool digest is 512 bits (64 bytes).</summary>
+    private const int HashSizeBits = 512;
+
+    /// <summary>Length of the Whirlpool message-length trailer appended during padding is 256 bits (32 bytes).</summary>
+    private const int LengthFieldBits = 256;
 
     private readonly ulong[] _state = new ulong[8];
     private WhirlpoolVersion _version = WhirlpoolVersion.WhirlpoolInfo3;
@@ -69,9 +73,9 @@ public sealed partial class Whirlpool
     /// <see cref="WhirlpoolVersion.WhirlpoolInfo3"/>, the standardised <c>ISO/IEC 10118-3</c> revision.
     /// </summary>
     public Whirlpool()
-        : base(BlockSizeBytesValue * 8)
+        : base(BlockSizeBits)
     {
-        this.HashSizeValue = HashSizeBitsValue;
+        this.HashSizeValue = HashSizeBits;
     }
 
     /// <inheritdoc />
@@ -183,12 +187,14 @@ public sealed partial class Whirlpool
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         var inputLength = block.Length;
+        var blockBytes = BlockSizeBits / 8;
+        var lengthFieldBytes = LengthFieldBits / 8;
 
         // Whirlpool appends 0x80, a sequence of zero bytes, and a 256-bit big-endian length trailer.
         // A second padded block is required whenever the residual (including the 0x80 byte) does not
         // leave room for the 32-byte length field in the same block.
-        var needsSecondBlock = inputLength + 1 + LengthFieldBytes > BlockSizeBytesValue;
-        var totalLength = needsSecondBlock ? BlockSizeBytesValue * 2 : BlockSizeBytesValue;
+        var needsSecondBlock = inputLength + 1 + lengthFieldBytes > blockBytes;
+        var totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
 
         var padded = new byte[totalLength];
         block.CopyTo(padded);
@@ -244,7 +250,7 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     protected override byte[] ProcessFinalBlock()
     {
-        var output = new byte[HashSizeBytesValue];
+        var output = new byte[HashSizeBits / 8];
         for (var i = 0; i < 8; i++)
             BinaryPrimitives.WriteUInt64BigEndian(output.AsSpan(i * 8, 8), this._state[i]);
 
