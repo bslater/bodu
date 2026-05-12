@@ -49,4 +49,48 @@ public sealed class Iso7064Mod11_2Tests : AlphanumericCheckDigitAlgorithmTests<I
         Assert.IsTrue(Iso7064Mod11_2.IsValid("1X".AsSpan()));
         Assert.IsFalse(Iso7064Mod11_2.IsValid("X1".AsSpan()));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod11_2.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for
+    /// an empty span — the documented short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Iso7064Mod11_2.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod11_2.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body
+    /// contains a non-digit character.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsLetter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Iso7064Mod11_2.IsValid("07A40".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod11_2.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose check
+    /// character is neither a decimal digit nor the <c>'X'</c> sentinel.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenCheckCharacterIsInvalid_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Iso7064Mod11_2.IsValid("0794Y".AsSpan()));
+        Assert.IsFalse(Iso7064Mod11_2.IsValid("0794-".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod11_2.Compute(ReadOnlySpan{char})" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when invoked with a non-digit input.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Iso7064Mod11_2.Compute("07X4".AsSpan());
+        });
+    }
 }
