@@ -53,4 +53,32 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
             Assert.IsTrue(blockSize.SkipSize >= 0, "SkipSize must be greater than or equal to zero.");
         }
     }
+
+    /// <summary>
+    /// Verifies that reading <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> on a disposed instance does
+    /// not throw <see cref="NullReferenceException" /> from a cleared backing field. Either the disposal contract
+    /// returns the array as before or it throws <see cref="ObjectDisposedException" /> — both are acceptable.
+    /// </summary>
+    [TestMethod]
+    public void LegalTweakSizes_WhenAccessedAfterDispose_ShouldNotThrowUnexpected()
+    {
+        TAlgorithm algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        try
+        {
+            KeySizes[] sizes = algorithm.LegalTweakSizes;
+            Assert.IsNotNull(sizes);
+        }
+        catch (ObjectDisposedException)
+        {
+            // Acceptable — disposal contract may forbid further reads.
+        }
+        catch (Exception ex) when (ex is not ObjectDisposedException)
+        {
+            Assert.Fail(
+                $"Reading LegalTweakSizes after Dispose threw an unexpected exception: " +
+                $"{ex.GetType().Name}: {ex.Message}");
+        }
+    }
 }

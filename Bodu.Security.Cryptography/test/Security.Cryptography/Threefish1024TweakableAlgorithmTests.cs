@@ -9,28 +9,30 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Exercises the <see cref="ThreefishAlgorithmTests{TTest, TAlgorithm}" /> base test suite against
+/// Exercises the <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" /> base test suite against
 /// <see cref="Threefish1024" /> — validating tweak property behaviour, defensive copies, invalid-size handling,
 /// disposal semantics, and the curated <see cref="Threefish1024KnownAnswers" /> data set at the algorithm tier.
 /// </summary>
 [TestClass]
 public sealed partial class Threefish1024TweakableAlgorithmTests
-    : ThreefishAlgorithmTests<Threefish1024TweakableAlgorithmTests, Threefish1024>
+    : TweakableSymmetricAlgorithmTests<Threefish1024TweakableAlgorithmTests, Threefish1024>
 {
     /// <inheritdoc />
     protected override Threefish1024 CreateAlgorithm() => Threefish1024.Create();
 
     /// <inheritdoc />
-    protected override void SetEcbMode(Threefish1024 algorithm) =>
-        algorithm.BlockMode = CipherBlockMode.ECB;
+    protected override void SetBlockMode(Threefish1024 algorithm, CipherBlockMode mode) =>
+        algorithm.BlockMode = mode;
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+    protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
+        new TweakableSymmetricAlgorithmSpecification
         {
             BlockSizeBits = 1024,
             DefaultKeySizeBits = 1024,
             LegalKeySizesBits = [1024],
+            DefaultTweakSizeBits = 128,
+            LegalTweakSizesBits = [128],
         };
 
     /// <inheritdoc />

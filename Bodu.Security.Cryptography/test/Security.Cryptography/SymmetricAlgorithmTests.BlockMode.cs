@@ -1,17 +1,17 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThreefishAlgorithmTests.BlockMode.cs" company="PlaceholderCompany">
+// <copyright file="SymmetricAlgorithmTests.BlockMode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-public abstract partial class ThreefishAlgorithmTests<TTest, TAlgorithm>
+public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
-    /// Verifies that the algorithm-specific <see cref="Threefish.BlockMode" /> property accepts
-    /// every <see cref="CipherBlockMode" /> value without throwing — it is a plain auto-property
-    /// and must not gain accidental enum validation.
+    /// Verifies that every <see cref="CipherBlockMode" /> value can be applied via the <see cref="SetBlockMode" />
+    /// hook without throwing — the underlying property is a plain auto-property and must not gain accidental enum
+    /// validation.
     /// </summary>
     [TestMethod]
     [DataRow(CipherBlockMode.ECB)]
@@ -25,7 +25,7 @@ public abstract partial class ThreefishAlgorithmTests<TTest, TAlgorithm>
 
         try
         {
-            algorithm.BlockMode = mode;
+            SetBlockMode(algorithm, mode);
         }
         catch (Exception ex)
         {

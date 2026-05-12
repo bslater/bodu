@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Security.Cryptography;
+
 namespace Bodu.Security.Cryptography;
 
 public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm>
@@ -70,5 +72,37 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
         var validSize = algorithm.LegalTweakSizes[0].MinSize;
         algorithm.TweakSize = validSize;
         Assert.AreEqual(validSize, algorithm.TweakSize);
+    }
+
+    /// <summary>
+    /// Verifies that assigning <see cref="TweakableSymmetricAlgorithm.TweakSize" /> to <c>0</c> throws
+    /// <see cref="CryptographicException" /> rather than leaving the algorithm in an invalid configuration.
+    /// </summary>
+    [TestMethod]
+    public void TweakSize_WhenSetToZero_ShouldThrowCryptographicException()
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            algorithm.TweakSize = 0;
+        });
+    }
+
+    /// <summary>
+    /// Verifies that assigning a wrongly-sized <see cref="TweakableSymmetricAlgorithm.TweakSize" /> throws
+    /// <see cref="CryptographicException" /> for the invalid bit-widths supplied by
+    /// <see cref="InvalidTweakSizeBitsData" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(InvalidTweakSizeBitsData))]
+    public void TweakSize_WhenSetToInvalidValue_ShouldThrowCryptographicException(int sizeBits)
+    {
+        using TAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            algorithm.TweakSize = sizeBits;
+        });
     }
 }

@@ -19,15 +19,17 @@ public partial class Serpent256TweakableAlgorithmTests
     protected override Serpent256 CreateAlgorithm() => new Serpent256();
 
     /// <inheritdoc />
-    protected override void SetEcbMode(Serpent256 algorithm) =>
-        algorithm.BlockMode = CipherBlockMode.ECB;
+    protected override void SetBlockMode(Serpent256 algorithm, CipherBlockMode mode) =>
+        algorithm.BlockMode = mode;
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+    protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
+        new TweakableSymmetricAlgorithmSpecification
         {
             BlockSizeBits = 256,
             DefaultKeySizeBits = 256,
             LegalKeySizesBits = [256],
+            DefaultTweakSizeBits = 128,
+            LegalTweakSizesBits = [128],
         };
 }

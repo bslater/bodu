@@ -14,15 +14,17 @@ public partial class SimpleReversingTweakableSymmetricAlgorithmTests
     protected override SimpleReversingTweakableSymmetricAlgorithm CreateAlgorithm() => new SimpleReversingTweakableSymmetricAlgorithm();
 
     /// <inheritdoc />
-    protected override void SetEcbMode(SimpleReversingTweakableSymmetricAlgorithm algorithm) =>
-        algorithm.BlockMode = CipherBlockMode.ECB;
+    protected override void SetBlockMode(SimpleReversingTweakableSymmetricAlgorithm algorithm, CipherBlockMode mode) =>
+        algorithm.BlockMode = mode;
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+    protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
+        new TweakableSymmetricAlgorithmSpecification
         {
             BlockSizeBits = 128,
             DefaultKeySizeBits = 128,
             LegalKeySizesBits = [8, 128, 256, 2048],
+            DefaultTweakSizeBits = 128,
+            LegalTweakSizesBits = [128, 192, 256, 448, 576, 1024, 1536, 2048],
         };
 }

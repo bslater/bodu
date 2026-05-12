@@ -30,11 +30,20 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     protected abstract SymmetricAlgorithmSpecification GetSpecification();
 
     /// <summary>
-    /// Configures <paramref name="algorithm"/> to use ECB mode. Used by base-class tests that exercise the
-    /// ECB-specific null-IV contract.
+    /// Configures <paramref name="algorithm"/> to use the supplied <paramref name="mode"/>. Used by base-class
+    /// tests that need to switch the algorithm's cipher block mode without depending on a property surface that
+    /// only exists on concrete cipher types.
     /// </summary>
     /// <param name="algorithm">The algorithm instance to reconfigure.</param>
-    protected abstract void SetEcbMode(TAlgorithm algorithm);
+    /// <param name="mode">The cipher block mode to apply.</param>
+    protected abstract void SetBlockMode(TAlgorithm algorithm, CipherBlockMode mode);
+
+    /// <summary>
+    /// Convenience wrapper around <see cref="SetBlockMode(TAlgorithm, CipherBlockMode)" /> that applies
+    /// <see cref="CipherBlockMode.ECB" />.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance to reconfigure.</param>
+    protected void SetEcbMode(TAlgorithm algorithm) => SetBlockMode(algorithm, CipherBlockMode.ECB);
 
     /// <summary>
     /// Returns one row per entry in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" /> for use as a

@@ -21,4 +21,20 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
         Assert.AreEqual(size / 8, algorithm.Tweak.Length);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="TweakableSymmetricAlgorithm.GenerateTweak" /> on a disposed instance throws
+    /// <see cref="ObjectDisposedException" />.
+    /// </summary>
+    [TestMethod]
+    public void GenerateTweak_WhenCalledAfterDispose_ShouldThrowObjectDisposedException()
+    {
+        TAlgorithm algorithm = CreateAlgorithm();
+        algorithm.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            algorithm.GenerateTweak();
+        });
+    }
 }

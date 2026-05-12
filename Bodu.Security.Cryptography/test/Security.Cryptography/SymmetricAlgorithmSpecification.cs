@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// Describes the expected observable properties of a single <typeparamref name="TAlgorithm" /> implementation for use in
 /// constructor and behavioural tests.
 /// </summary>
-public sealed record SymmetricAlgorithmSpecification
+public record SymmetricAlgorithmSpecification
 {
     /// <summary>Gets the expected <see cref="SymmetricAlgorithm.BlockSize" /> in bits.</summary>
     public required int BlockSizeBits { get; init; }

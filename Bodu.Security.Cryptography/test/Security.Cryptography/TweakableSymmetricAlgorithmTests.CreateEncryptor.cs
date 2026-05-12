@@ -160,16 +160,18 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
 
     /// <summary>
     /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateEncryptor(byte[], byte[], byte[])" /> throws
-    /// <see cref="CryptographicException" /> when the Tweak length does not match the configured tweak size.
+    /// <see cref="CryptographicException" /> for every invalid tweak byte-length supplied by
+    /// <see cref="InvalidTweakLengthBytesData" />.
     /// </summary>
     [TestMethod]
-    public void CreateEncryptor_WhenTweakLengthIsInvalid_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidTweakLengthBytesData))]
+    public void CreateEncryptor_WhenTweakLengthIsInvalid_ShouldThrowCryptographicException(int tweakLengthBytes)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[algorithm.BlockSize / 8];
-        var badTweak = new byte[(algorithm.TweakSize / 8) + 1];
+        var badTweak = new byte[tweakLengthBytes];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
