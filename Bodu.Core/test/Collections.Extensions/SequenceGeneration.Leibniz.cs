@@ -60,17 +60,21 @@ public class LeibnizTests
     }
 
     /// <summary>
-    /// Verifies that the magnitudes of the emitted terms always sit within the [min, max) window.
+    /// Verifies that the magnitudes of the emitted terms always sit within the [min, max) window when both bounds straddle the
+    /// emitted term sequence — the lower bound filters terms with smaller magnitude, the upper bound is large enough that the
+    /// generator does not terminate before yielding the requested number of items.
     /// </summary>
     [TestMethod]
-    public void Leibniz_WhenWindowExcludesLargeTerms_ShouldSkipThemAndYieldOnlySmallerMagnitudes()
+    public void Leibniz_WhenWindowExcludesSmallTerms_ShouldSkipThemAndYieldOnlyLargerMagnitudes()
     {
-        const double min = 0.0;
-        const double max = 0.3;
+        // Lower bound 0.05 filters terms with |F(n)| < 0.05.
+        // Upper bound 2.0 is above the maximum possible magnitude (|1|), so iteration never breaks early.
+        const double min = 0.05;
+        const double max = 2.0;
 
         var actual = SequenceGenerator.Leibniz(min, max).Take(5).ToArray();
 
-        Assert.IsTrue(actual.Length > 0, "Expected at least one term within the window.");
+        Assert.AreEqual(5, actual.Length);
         foreach (double term in actual)
         {
             double magnitude = Math.Abs(term);

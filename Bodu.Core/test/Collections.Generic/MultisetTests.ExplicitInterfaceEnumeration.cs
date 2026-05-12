@@ -52,7 +52,8 @@ public partial class MultisetTests
 
     /// <summary>
     /// Verifies that the non-generic <see cref="IEnumerator.Current" /> on the <see cref="Multiset{T}.Enumerator" /> returns the same
-    /// value as the strongly typed <c>Current</c> after a successful <c>MoveNext</c>.
+    /// value as the strongly typed <c>Current</c> after a successful <c>MoveNext</c>. Because <c>Enumerator</c> is a value type, the
+    /// boxed reference must be used for both <c>MoveNext</c> and <c>Current</c> so the same state is observed.
     /// </summary>
     [TestMethod]
     public void EnumeratorNonGenericCurrent_AfterMoveNext_ShouldReturnSameAsTypedCurrent()
@@ -60,11 +61,9 @@ public partial class MultisetTests
         var multiset = new Multiset<int>();
         multiset.Add(99);
 
-        var typed = multiset.GetEnumerator();
-        IEnumerator legacy = typed;
+        IEnumerator legacy = ((IEnumerable<int>)multiset).GetEnumerator();
 
-        Assert.IsTrue(typed.MoveNext());
+        Assert.IsTrue(legacy.MoveNext());
         Assert.AreEqual(99, legacy.Current);
-        typed.Dispose();
     }
 }

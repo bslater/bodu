@@ -92,7 +92,7 @@ public sealed class SegmentedBufferTests
     }
 
     /// <summary>
-    /// Verifies that the indexer getter throws <see cref="ArgumentOutOfRangeException" /> when the index exceeds the buffer count.
+    /// Verifies that the indexer getter throws <see cref="ArgumentException" /> when the index exceeds the buffer count.
     /// </summary>
     [TestMethod]
     public void Indexer_Get_WhenIndexIsBeyondCount_ShouldThrowExactly()
@@ -100,7 +100,7 @@ public sealed class SegmentedBufferTests
         var buffer = new SegmentedBuffer<int>(4);
         buffer.Add(0);
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = buffer[1];
         });

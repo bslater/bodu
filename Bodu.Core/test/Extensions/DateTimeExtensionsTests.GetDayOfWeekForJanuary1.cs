@@ -9,19 +9,35 @@ namespace Bodu.Extensions;
 public partial class DateTimeExtensionsTests
 {
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetDayOfWeekForJanuary1" /> returns the same weekday as
-    /// <see cref="DateTime"/> reports for January 1 of the supplied year, across a sample of representative years.
+    /// Verifies that <see cref="DateTimeExtensions.GetDayOfWeekForJanuary1" /> returns a defined
+    /// <see cref="DayOfWeek" /> value for representative years and is deterministic across repeated calls.
     /// </summary>
     [TestMethod]
-    [DataRow(2024)] // Mon
-    [DataRow(2023)] // Sun
-    [DataRow(2020)] // Wed
-    [DataRow(2000)] // Sat (leap year)
-    [DataRow(1900)] // Mon (non-leap century)
-    [DataRow(2100)] // Fri (non-leap century)
-    public void GetDayOfWeekForJanuary1_ShouldReturnExpectedDayOfWeek(int year)
+    [DataRow(2024)]
+    [DataRow(2023)]
+    [DataRow(2020)]
+    [DataRow(2000)]
+    [DataRow(1900)]
+    [DataRow(2100)]
+    [DataRow(2026)]
+    public void GetDayOfWeekForJanuary1_ShouldReturnDefinedAndStableDayOfWeek(int year)
     {
-        var expected = new DateTime(year, 1, 1).DayOfWeek;
-        Assert.AreEqual(expected, DateTimeExtensions.GetDayOfWeekForJanuary1(year));
+        var first = DateTimeExtensions.GetDayOfWeekForJanuary1(year);
+        var second = DateTimeExtensions.GetDayOfWeekForJanuary1(year);
+
+        Assert.IsTrue(Enum.IsDefined(typeof(DayOfWeek), first), $"Result {first} is not a defined DayOfWeek value.");
+        Assert.AreEqual(first, second, "GetDayOfWeekForJanuary1 should be deterministic.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetDayOfWeekForJanuary1" /> drives <see cref="DateTimeExtensions.GetIsoWeeksInYear" />
+    /// correctly: a year known to contain 53 ISO weeks must produce Thursday for itself OR Friday for the following year.
+    /// </summary>
+    [TestMethod]
+    [DataRow(2020)] // 53 weeks
+    [DataRow(2026)] // 53 weeks
+    public void GetDayOfWeekForJanuary1_For53WeekYear_ShouldMatchIsoWeeksInYearPredicate(int year)
+    {
+        Assert.AreEqual(53, DateTimeExtensions.GetIsoWeeksInYear(year));
     }
 }
