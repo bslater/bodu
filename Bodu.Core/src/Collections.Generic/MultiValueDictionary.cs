@@ -156,6 +156,17 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     public int KeyCount => _map.Count;
 
     /// <summary>
+    /// Gets the number of elements yielded by the dictionary's enumeration, which equals the number of
+    /// distinct keys.
+    /// </summary>
+    /// <value>The number of distinct keys, equivalent to <see cref="KeyCount" />.</value>
+    /// <remarks>
+    /// The dictionary's enumeration yields one entry per key, so this matches <see cref="KeyCount" /> rather
+    /// than the total value count exposed by the public <see cref="Count" /> property.
+    /// </remarks>
+    int IReadOnlyCollection<KeyValuePair<TKey, IReadOnlyList<TValue>>>.Count => _map.Count;
+
+    /// <summary>
     /// Gets a read-only view of all keys in the dictionary.
     /// </summary>
     /// <value>A collection containing all distinct keys.</value>
@@ -246,10 +257,17 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     /// <summary>
     /// Removes all keys and their associated values from the dictionary.
     /// </summary>
+    /// <remarks>
+    /// Each removed bucket's value list is cleared so that any outstanding read-only views previously handed
+    /// out by <see cref="GetValues" />, <see cref="TryGetValues" />, or the indexer reflect the removal.
+    /// </remarks>
     public void Clear()
     {
         if (_map.Count == 0)
             return;
+
+        foreach (ValueBucket bucket in _map.Values)
+            bucket.Values.Clear();
 
         _map.Clear();
         _count = 0;
@@ -387,6 +405,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
             return false;
 
         _count -= bucket.Values.Count;
+        bucket.Values.Clear();
         _map.Remove(key);
         _version++;
 

@@ -166,6 +166,7 @@ internal sealed class OrderedSetStorage<T>
     /// </exception>
     internal bool TryInsert(int index, T item)
     {
+        ThrowHelper.ThrowIfNegative(index);
         ThrowHelper.ThrowIfGreaterThan(index, _count);
         ThrowHelper.ThrowIfNull(item);
 
@@ -217,7 +218,9 @@ internal sealed class OrderedSetStorage<T>
     /// </exception>
     internal void RemoveAt(int index)
     {
+        ThrowHelper.ThrowIfNegative(index);
         ThrowHelper.ThrowIfGreaterThanOrEqual(index, _count);
+
         RemoveCore(index);
     }
 
@@ -231,6 +234,8 @@ internal sealed class OrderedSetStorage<T>
     /// </exception>
     internal void Move(int oldIndex, int newIndex)
     {
+        ThrowHelper.ThrowIfNegative(oldIndex);
+        ThrowHelper.ThrowIfNegative(newIndex);
         ThrowHelper.ThrowIfGreaterThanOrEqual(oldIndex, _count);
         ThrowHelper.ThrowIfGreaterThanOrEqual(newIndex, _count);
 
@@ -265,6 +270,7 @@ internal sealed class OrderedSetStorage<T>
     /// </exception>
     internal void ReplaceAt(int index, T value)
     {
+        ThrowHelper.ThrowIfNegative(index);
         ThrowHelper.ThrowIfGreaterThanOrEqual(index, _count);
         ThrowHelper.ThrowIfNull(value);
 

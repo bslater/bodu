@@ -652,19 +652,32 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
             if (diff == 0)
             {
-                // slot is published and still at head — safe to read
-                item = Volatile.Read(ref slot.Value);
-                return true;
+                // The slot looked published for the observed head. Read the value, then validate
+                // that neither the logical head nor the slot sequence changed while the value was
+                // being read. If either changed, a concurrent dequeue/overwrite may have cleared or
+                // republished the slot, so retry rather than returning a torn observation.
+                var value = Volatile.Read(ref slot.Value);
+
+                if (Volatile.Read(ref _head) == head &&
+                    Volatile.Read(ref slot.Sequence) == seq)
+                {
+                    item = value;
+                    return true;
+                }
+
+                spinner.SpinOnce();
+                continue;
             }
 
             if (diff < 0)
             {
-                // empty
+                // The observed head slot has not yet been published, so the buffer is empty relative
+                // to this head observation.
                 item = default;
                 return false;
             }
 
-            // diff > 0: stale head read — another thread dequeued this slot; retry
+            // diff > 0: stale head read — another thread dequeued or advanced past this slot; retry.
             spinner.SpinOnce();
         }
     }
