@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHashTests.32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,11 +19,12 @@ public sealed partial class CityHash32Tests
         HashLengthInBytes = 4,
         KnownAnswers = new()
         {
-            Empty = "02400040",
-            Abc = "CB5A67A8",
-            QuickBrownFox = "38D83018",
-            Zeros16 = "00400040",
-            Sequential0To255 = "3CB48141",
+            Empty = "7AD156DC",
+            Abc = "1325B816",
+            QuickBrownFox = "10C839A3",
+            Zeros16 = "85BE0CC5",
+            Sequential0To255 = "9F906E96",
+            Additional = CityHashTests.CityHashGoogleReferenceKnownAnswers.CityHash32,
         },
     };
 
@@ -34,14 +35,14 @@ public sealed partial class CityHash32Tests
     /// </remarks>
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
     {
-        "02400040", "E5B0A856", "0280CFE1", "1BCEE319",
-        "B91E6445", "EA55F979", "84122C7E", "67F85183",
-        "107293FA", "D5996B59", "CD20F5EB", "B59EBF6C",
-        "973A5B10", "5220AAAB", "5CA20E63", "AE1B9001",
-        "D7B8AE17", "07958098", "A460E823", "47740687",
-        "68D70638", "ABF9D8B7", "0A68527B", "B92EB499",
-        "29A61AE9", "F8EFB3C7", "A41C3912", "54C8DC58",
-        "DFCCA00D", "50AB0BAD", "C5C2F9F6", "2F7D54FF",
-        "449BB5CE", "63836625",
+        "7AD156DC", "5427A9C0", "B678162A", "E292C9D7",
+        "32116E61", "D4376EFE", "7E894551", "5D84EACF",
+        "D6D20FEB", "E0D6D37C", "5022E514", "28A11D93",
+        "1CEF42DE", "0474DD8A", "D06B9769", "4205CDCA",
+        "87BFAE17", "DACB9B1E", "4B0C68BA", "DABFCFF7",
+        "962A1AC4", "872B3F4A", "B7D77D4B", "F5E4E01D",
+        "A46ACF60", "78DF6D2E", "60DFA517", "A4390110",
+        "318167EF", "7D7058C1", "571DD9D3", "285334E4",
+        "15339468", "9E6D4EE1",
     };
 }
