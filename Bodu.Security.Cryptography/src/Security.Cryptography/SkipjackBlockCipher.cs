@@ -186,8 +186,8 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Encrypts a single 64-bit block.
     /// </summary>
-    /// <param name="input">The plaintext block to encrypt. Must be at least <see cref="BlockSize"/> bytes long.</param>
-    /// <param name="output">Buffer that receives the 8-byte ciphertext. Must be at least <see cref="BlockSize"/> bytes long.</param>
+    /// <param name="input">The plaintext block to encrypt. Must be exactly <see cref="BlockSize"/> / 8 bytes long (8 bytes for Skipjack).</param>
+    /// <param name="output">Buffer that receives the 8-byte ciphertext. Must be exactly <see cref="BlockSize"/> / 8 bytes long.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is too small.</exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>

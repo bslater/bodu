@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// // Caller is responsible for tracking the original plaintext length —
 /// // Unpad here returns the padded buffer unchanged.
 /// IPaddingStrategy padding = new ZeroPadding();
-/// byte[] padded = padding.Pad(plaintext, blockSize: 16);
+/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
 /// </code>
 /// </example>
 public sealed class ZeroPadding : IPaddingStrategy
@@ -44,7 +44,7 @@ public sealed class ZeroPadding : IPaddingStrategy
     /// Pads the input with zero bytes to align its length to a multiple of the block size.
     /// </summary>
     /// <param name="input">The input data to pad.</param>
-    /// <param name="blockSize">The block size in bytes.</param>
+    /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded input.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
@@ -54,8 +54,9 @@ public sealed class ZeroPadding : IPaddingStrategy
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
-        var paddingLength = blockSize - (input.Length % blockSize);
-        if (paddingLength == blockSize)
+        var size = blockSize / 8;
+        var paddingLength = size - (input.Length % size);
+        if (paddingLength == size)
             paddingLength = 0; // No padding if already aligned
 
         var result = new byte[input.Length + paddingLength];
@@ -67,7 +68,7 @@ public sealed class ZeroPadding : IPaddingStrategy
     /// Returns the input as-is. Zero padding cannot be safely removed unless the original length is known.
     /// </summary>
     /// <param name="input">The padded input.</param>
-    /// <param name="blockSize">The block size in bytes.</param>
+    /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The original input with zero padding preserved.</returns>
     /// <remarks>The method does not remove trailing zeros because it cannot distinguish between padding and legitimate data.</remarks>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize) => input.ToArray();

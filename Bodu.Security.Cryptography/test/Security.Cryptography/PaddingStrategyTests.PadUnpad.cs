@@ -28,11 +28,11 @@ public abstract partial class PaddingStrategyTests<TPadding>
                 continue;
 
             var plaintext = CreatePlaintextWithResidual(residual);
-            var padded = padding.Pad(plaintext, BlockSize);
+            var padded = padding.Pad(plaintext, BlockSizeBits);
             Assert.AreEqual(0, padded.Length % BlockSize,
                 $"Padded output must be a multiple of the block size (residual {residual}).");
 
-            var unpadded = padding.Unpad(padded, BlockSize);
+            var unpadded = padding.Unpad(padded, BlockSizeBits);
             CollectionAssert.AreEqual(plaintext, unpadded,
                 $"Round-trip should return the original plaintext (residual {residual}).");
         }

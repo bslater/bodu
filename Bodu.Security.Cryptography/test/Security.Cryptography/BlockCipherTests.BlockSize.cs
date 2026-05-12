@@ -9,8 +9,8 @@ namespace Bodu.Security.Cryptography;
 public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 {
     /// <summary>
-    /// Verifies that <see cref="IBlockCipher.BlockSize" /> returns the value declared in the
-    /// <see cref="BlockCipherSpecification" /> for the given variant.
+    /// Verifies that <see cref="IBlockCipher.BlockSize" /> (in bits) returns the value declared in the
+    /// <see cref="BlockCipherSpecification" /> (in bytes) for the given variant.
     /// </summary>
     /// <param name="variant">The cipher variant that determines the expected block size.</param>
     [TestMethod]
@@ -21,8 +21,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher engine = CreateBlockCipher(variant);
 
         Assert.AreEqual(
-            specification.BlockSize,
+            specification.BlockSize * 8,
             engine.BlockSize,
-            $"[{variant}] Expected BlockSize of {specification.BlockSize} bytes but got {engine.BlockSize}.");
+            $"[{variant}] Expected BlockSize of {specification.BlockSize * 8} bits but got {engine.BlockSize}.");
     }
 }

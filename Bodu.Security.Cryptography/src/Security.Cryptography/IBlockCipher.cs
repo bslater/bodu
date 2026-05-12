@@ -49,16 +49,21 @@ public interface IBlockCipher
     : System.IDisposable
 {
     /// <summary>
-    /// Gets the fixed block size (in bytes) that the cipher operates on.
+    /// Gets the fixed block size (in bits) that the cipher operates on.
     /// </summary>
-    /// <value>The block size in bytes, such as 16 for 128-bit block ciphers.</value>
+    /// <value>The block size in bits, such as 128 for AES.</value>
+    /// <remarks>
+    /// The block size is expressed in bits to align with the BCL convention used by
+    /// <see cref="System.Security.Cryptography.SymmetricAlgorithm.BlockSize"/>. Byte-array operations
+    /// (encrypt, decrypt, slice) convert to bytes at the call site as <c>BlockSize / 8</c>.
+    /// </remarks>
     int BlockSize { get; }
 
     /// <summary>
     /// Decrypts a single block of ciphertext into the specified output span.
     /// </summary>
-    /// <param name="input">A read-only span containing the ciphertext block. Its length must equal <see cref="BlockSize"/>.</param>
-    /// <param name="output">A writable span that receives the plaintext block. Its length must equal <see cref="BlockSize"/>.</param>
+    /// <param name="input">A read-only span containing the ciphertext block. Its byte length must equal <see cref="BlockSize"/> / 8.</param>
+    /// <param name="output">A writable span that receives the plaintext block. Its byte length must equal <see cref="BlockSize"/> / 8.</param>
     /// <exception cref="ArgumentException">
     /// Thrown if the length of <paramref name="input"/> or <paramref name="output"/> does not match <see cref="BlockSize"/>.
     /// </exception>
@@ -71,8 +76,8 @@ public interface IBlockCipher
     /// <summary>
     /// Encrypts a single block of plaintext into the specified output span.
     /// </summary>
-    /// <param name="input">A read-only span containing the plaintext block. Its length must equal <see cref="BlockSize"/>.</param>
-    /// <param name="output">A writable span that receives the ciphertext block. Its length must equal <see cref="BlockSize"/>.</param>
+    /// <param name="input">A read-only span containing the plaintext block. Its byte length must equal <see cref="BlockSize"/> / 8.</param>
+    /// <param name="output">A writable span that receives the ciphertext block. Its byte length must equal <see cref="BlockSize"/> / 8.</param>
     /// <exception cref="ArgumentException">
     /// Thrown if the length of <paramref name="input"/> or <paramref name="output"/> does not match <see cref="BlockSize"/>.
     /// </exception>

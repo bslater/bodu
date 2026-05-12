@@ -73,7 +73,7 @@ namespace Bodu.Security.Cryptography;
 public sealed class OcbModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    private const int BlockSizeBytes = 16;
+    private const int BlockSizeBits = 128;
     private const int NonceLengthBytes = 12;
     private const int MaxLValues = 32; // enough for 2^32 blocks
 
@@ -113,17 +113,17 @@ public sealed class OcbModeTransform
         if (cipher is null) throw new ArgumentNullException(nameof(cipher));
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
 
-        if (cipher.BlockSize != BlockSizeBytes)
+        if (cipher.BlockSize != BlockSizeBits)
         {
             throw new ArgumentException(
-                $"OCB requires a block cipher with a {BlockSizeBytes}-byte block size.",
+                $"OCB requires a block cipher with a {BlockSizeBits / 8}-byte block size.",
                 nameof(cipher));
         }
 
-        if (tagLen < 1 || tagLen > cipher.BlockSize)
+        if (tagLen < 1 || tagLen > cipher.BlockSize / 8)
         {
             throw new ArgumentException(
-                $"Tag length ({tagLen}) must be between 1 and the cipher block size ({cipher.BlockSize}).",
+                $"Tag length ({tagLen}) must be between 1 and the cipher block size ({cipher.BlockSize / 8}) in bytes.",
                 nameof(tagLen));
         }
 
@@ -134,7 +134,7 @@ public sealed class OcbModeTransform
 
         this._tagLen = tagLen;
 
-        var blockSize = cipher.BlockSize;
+        var blockSize = cipher.BlockSize / 8;
 
         // RFC 7253 §2.1 — Key-dependent constants derived once per key.
         // L_* = ENCIPHER(K, zeros(128)).
@@ -186,7 +186,7 @@ public sealed class OcbModeTransform
 
         EnsureAadProcessed();
 
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         byte[]? offset = null;
         byte[]? checksum = null;
@@ -301,7 +301,7 @@ public sealed class OcbModeTransform
         ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
         ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         byte[]? offset = null;
         byte[]? checksum = null;
@@ -473,7 +473,7 @@ public sealed class OcbModeTransform
     /// <returns>The initial <c>Offset_0</c> value derived from the nonce per RFC 7253.</returns>
     private byte[] ComputeInitialOffset()
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         var nonceWord = new byte[blockSize];
         byte[]? ktopInput = null;
@@ -537,7 +537,7 @@ public sealed class OcbModeTransform
     /// <returns>The HASH value of <paramref name="aad"/> per RFC 7253.</returns>
     private byte[] ComputeHash(ReadOnlySpan<byte> aad)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         var sum = new byte[blockSize];
 

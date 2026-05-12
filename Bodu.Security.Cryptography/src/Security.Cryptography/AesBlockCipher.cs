@@ -48,9 +48,9 @@ public sealed class AesBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// The fixed AES block size in bytes (128 bits).
+    /// The fixed AES block size in bits.
     /// </summary>
-    public const int BlockSizeBytes = 16;
+    public const int BlockSizeBits = 128;
 
     private readonly Aes _aes;
     private bool _disposed;
@@ -83,18 +83,18 @@ public sealed class AesBlockCipher
     }
 
     /// <inheritdoc />
-    /// <value>Always 16 (128 bits), the fixed AES block size.</value>
-    public int BlockSize => BlockSizeBytes;
+    /// <value>Always 128 (bits), the fixed AES block size.</value>
+    public int BlockSize => BlockSizeBits;
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input"/> or <paramref name="output"/> is not exactly <see cref="BlockSize"/> bytes.
+    /// <paramref name="input"/> or <paramref name="output"/> is not exactly <see cref="BlockSize"/> / 8 bytes.
     /// </exception>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBytes);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
         this.ThrowIfDisposed();
 
         this._aes.EncryptEcb(input, output, PaddingMode.None);
@@ -117,12 +117,12 @@ public sealed class AesBlockCipher
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input"/> or <paramref name="output"/> is not exactly <see cref="BlockSize"/> bytes.
+    /// <paramref name="input"/> or <paramref name="output"/> is not exactly <see cref="BlockSize"/> / 8 bytes.
     /// </exception>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBytes);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
         this.ThrowIfDisposed();
 
         this._aes.DecryptEcb(input, output, PaddingMode.None);

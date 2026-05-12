@@ -19,7 +19,7 @@ public sealed partial class Iso10126PaddingTests
         Iso10126Padding padding = CreatePadding();
         var plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        var padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSizeBits);
 
         Assert.AreEqual(BlockSize, padded.Length);
         Assert.AreEqual((byte)5, padded[padded.Length - 1]);
@@ -38,8 +38,8 @@ public sealed partial class Iso10126PaddingTests
         Iso10126Padding padding = CreatePadding();
         var plaintext = CreatePlaintextWithResidual(BlockSize - 10);
 
-        var first = padding.Pad(plaintext, BlockSize);
-        var second = padding.Pad(plaintext, BlockSize);
+        var first = padding.Pad(plaintext, BlockSizeBits);
+        var second = padding.Pad(plaintext, BlockSizeBits);
 
         var interiorDiffers = false;
         for (var i = plaintext.Length; i < first.Length - 1; i++)

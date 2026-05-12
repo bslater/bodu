@@ -30,9 +30,9 @@ public sealed class Serpent128Cipher
     : SerpentBlockCipherBase
 {
     /// <summary>
-    /// The Serpent block size in bytes.
+    /// The Serpent block size in bits.
     /// </summary>
-    public const int BlockSizeBytes = 16;
+    public const int BlockSizeBits = 128;
 
     /// <summary>
     /// The number of cipher rounds executed by Serpent.
@@ -71,15 +71,15 @@ public sealed class Serpent128Cipher
     }
 
     /// <inheritdoc />
-    public override int BlockSize => BlockSizeBytes;
+    public override int BlockSize => BlockSizeBits;
 
     /// <inheritdoc />
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != BlockSizeBytes || output.Length != BlockSizeBytes)
+        if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBits / 8));
 
         var x0 = BinaryReadUInt32LE(input, 0);
         var x1 = BinaryReadUInt32LE(input, 4);
@@ -125,9 +125,9 @@ public sealed class Serpent128Cipher
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != BlockSizeBytes || output.Length != BlockSizeBytes)
+        if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBytes));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBits / 8));
 
         var x0 = BinaryReadUInt32LE(input, 0);
         var x1 = BinaryReadUInt32LE(input, 4);

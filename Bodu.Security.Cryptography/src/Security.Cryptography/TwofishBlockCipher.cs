@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography;
 public sealed class TwofishBlockCipher
     : IBlockCipher
 {
-    private const int BlockSizeInBytes = 16;
+    private const int BlockSizeInBits = 128;
     private const int Rounds = 16;
     private const int ExpandedKeyWords = 40;
     private const int SBoxLength = 256;
@@ -88,7 +88,7 @@ public sealed class TwofishBlockCipher
     }
 
     /// <inheritdoc />
-    public int BlockSize => BlockSizeInBytes;
+    public int BlockSize => BlockSizeInBits;
 
     /// <inheritdoc />
     public void Dispose()
@@ -109,8 +109,8 @@ public sealed class TwofishBlockCipher
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBytes);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBits / 8);
 
         var r0 = BinaryPrimitives.ReadUInt32LittleEndian(input);
         var r1 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);
@@ -158,8 +158,8 @@ public sealed class TwofishBlockCipher
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBytes);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBits / 8);
 
         var r2 = BinaryPrimitives.ReadUInt32LittleEndian(input);
         var r3 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);

@@ -79,7 +79,7 @@ namespace Bodu.Security.Cryptography;
 public sealed class SivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    private const int BlockSizeBytes = 16;
+    private const int BlockSizeBits = 128;
     private const int TagLengthBytes = 16;
 
     private readonly IBlockCipher _s2vCipher;
@@ -107,17 +107,17 @@ public sealed class SivModeTransform
         ThrowHelper.ThrowIfNull(ctrCipher);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, s2vCipher.BlockSize);
 
-        if (s2vCipher.BlockSize != BlockSizeBytes)
+        if (s2vCipher.BlockSize != BlockSizeBits)
         {
             throw new ArgumentException(
-                $"SIV requires an S2V cipher with a {BlockSizeBytes}-byte block size.",
+                $"SIV requires an S2V cipher with a {BlockSizeBits / 8}-byte block size.",
                 nameof(s2vCipher));
         }
 
-        if (ctrCipher.BlockSize != BlockSizeBytes)
+        if (ctrCipher.BlockSize != BlockSizeBits)
         {
             throw new ArgumentException(
-                $"SIV requires a CTR cipher with a {BlockSizeBytes}-byte block size.",
+                $"SIV requires a CTR cipher with a {BlockSizeBits / 8}-byte block size.",
                 nameof(ctrCipher));
         }
 
@@ -288,7 +288,7 @@ public sealed class SivModeTransform
     /// <returns>The S2V synthetic initialisation vector.</returns>
     private byte[] S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = this._s2vCipher.BlockSize;
+        var blockSize = this._s2vCipher.BlockSize / 8;
 
         var zeroBlock = new byte[blockSize];
         byte[]? d = null;
@@ -357,7 +357,7 @@ public sealed class SivModeTransform
     /// <returns>The 16-byte CMAC tag.</returns>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        var blockSize = this._s2vCipher.BlockSize;
+        var blockSize = this._s2vCipher.BlockSize / 8;
 
         var zeroBlock = new byte[blockSize];
         var l = new byte[blockSize];
@@ -449,7 +449,7 @@ public sealed class SivModeTransform
     /// <param name="counter">The starting counter block.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = this._ctrCipher.BlockSize;
+        var blockSize = this._ctrCipher.BlockSize / 8;
         var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 

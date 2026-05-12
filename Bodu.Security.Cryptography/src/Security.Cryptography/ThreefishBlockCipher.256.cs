@@ -51,7 +51,7 @@ public sealed class Threefish256Cipher
     public const int KeySize = 32;
 
     /// <inheritdoc />
-    public override int BlockSize => 32;
+    public override int BlockSize => 256;
 
     /// <inheritdoc />
     protected override int BlockWords => 4;
@@ -76,9 +76,9 @@ public sealed class Threefish256Cipher
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize || output.Length != this.BlockSize)
+        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize / 8));
 
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
@@ -144,9 +144,9 @@ public sealed class Threefish256Cipher
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize || output.Length != this.BlockSize)
+        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize / 8));
 
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);

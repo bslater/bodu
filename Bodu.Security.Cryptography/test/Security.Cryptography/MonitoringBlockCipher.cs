@@ -47,7 +47,7 @@ public sealed class MonitoringBlockCipher
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(nameof(blockSize));
 
-        BlockSize = blockSize;
+        BlockSize = blockSize * 8;
         this.xorMask = xorMask;
     }
 
@@ -62,7 +62,7 @@ public sealed class MonitoringBlockCipher
     public event EventHandler? EncryptCalled;
 
     /// <summary>
-    /// Gets the fixed block size in bytes. Defaults to 4 for test simplicity.
+    /// Gets the fixed block size in bits. Defaults to 32 (4 bytes) for test simplicity.
     /// </summary>
     public int BlockSize { get; }
 
@@ -114,7 +114,7 @@ public sealed class MonitoringBlockCipher
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         DecryptCallCount++;
-        DecryptBlockCount += input.Length / BlockSize;
+        DecryptBlockCount += input.Length / (BlockSize / 8);
         BytesProcessed += input.Length;
         decryptInputs.Add(input.ToArray());
 
@@ -153,7 +153,7 @@ public sealed class MonitoringBlockCipher
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         EncryptCallCount++;
-        EncryptBlockCount += input.Length / BlockSize;
+        EncryptBlockCount += input.Length / (BlockSize / 8);
         BytesProcessed += input.Length;
         encryptInputs.Add(input.ToArray());
 

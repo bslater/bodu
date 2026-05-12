@@ -234,7 +234,7 @@ public sealed class CcmModeTransform
     /// <returns>The computed CBC-MAC tag, truncated to the configured tag length.</returns>
     private byte[] ComputeCbcMac(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         var mac = new byte[blockSize];
 
         // Block B0.
@@ -298,7 +298,7 @@ public sealed class CcmModeTransform
     /// <returns>A fresh array holding <c>input XOR keystream</c>.</returns>
     private byte[] XorWithCtrBlock(ReadOnlySpan<byte> input, int counterIndex)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         var ctr = new byte[blockSize];
 
         ctr[0] = CounterFlagByte;
@@ -328,7 +328,7 @@ public sealed class CcmModeTransform
     /// <param name="startIndex">The starting counter-block index in the CTR sequence.</param>
     private void EncryptCtr(ReadOnlySpan<byte> input, Span<byte> output, int startIndex)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         Span<byte> ks = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)

@@ -31,9 +31,9 @@ public abstract partial class SerpentBlockCipher
     : SerpentBlockCipherBase
 {
     /// <summary>
-    /// The 128-bit tweak length in bytes.
+    /// The tweak size in bits.
     /// </summary>
-    private protected const int TweakSizeBytes = 16;
+    private protected const int TweakSizeBits = 128;
 
     /// <summary>
     /// The expanded tweak schedule — five cycling 32-bit entries
@@ -50,7 +50,7 @@ public abstract partial class SerpentBlockCipher
     /// Initializes a new instance of the <see cref="SerpentBlockCipher"/> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">
-    /// The encryption key. Its length in bytes must equal the variant block size (<see cref="IBlockCipher.BlockSize"/>).
+    /// The encryption key. Its byte length must equal <see cref="IBlockCipher.BlockSize"/> / 8.
     /// </param>
     /// <param name="tweak">The 16-byte (128-bit) tweak value.</param>
     /// <exception cref="ArgumentException">
@@ -58,14 +58,14 @@ public abstract partial class SerpentBlockCipher
     /// </exception>
     private protected SerpentBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
     {
-        if (key.Length != this.BlockSize)
+        if (key.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, this.BlockSize * 8),
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, this.BlockSize),
                 nameof(key));
 
-        if (tweak.Length != TweakSizeBytes)
+        if (tweak.Length != TweakSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, TweakSizeBytes * 8),
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, TweakSizeBits),
                 nameof(tweak));
 
         this._tweakSchedule = new uint[5];
@@ -89,9 +89,9 @@ public abstract partial class SerpentBlockCipher
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize || output.Length != this.BlockSize)
+        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize / 8));
 
         var w = this.BlockWords;
         var rounds = this.Rounds;
@@ -134,9 +134,9 @@ public abstract partial class SerpentBlockCipher
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        if (input.Length != this.BlockSize || output.Length != this.BlockSize)
+        if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize));
+                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize / 8));
 
         var w = this.BlockWords;
         var rounds = this.Rounds;

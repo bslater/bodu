@@ -82,13 +82,13 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>The fixed GCM block size in bytes (16 bytes).</summary>
+    /// <summary>The fixed GCM block size in bits (128 bits = 16 bytes).</summary>
     private const int BlockSize = 128;
 
-    /// <summary>The required GCM nonce size in bytes (12 bytes).</summary>
+    /// <summary>The required GCM nonce size in bits (96 bits = 12 bytes).</summary>
     private const int NonceSize = 96;
 
-    /// <summary>The GCM authentication tag size in bytes (16 bytes).</summary>
+    /// <summary>The GCM authentication tag size in bits (128 bits = 16 bytes).</summary>
     private const int DefaultTagSize = 128;
 
     private readonly IBlockCipher _cipher;
@@ -151,7 +151,7 @@ public sealed class GcmModeTransform
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
 
-        if (cipher.BlockSize != BlockSize / 8)
+        if (cipher.BlockSize != BlockSize)
             throw new ArgumentException(
                 $"GCM requires a block cipher with a {BlockSize / 8}-byte block size.",
                 nameof(cipher));

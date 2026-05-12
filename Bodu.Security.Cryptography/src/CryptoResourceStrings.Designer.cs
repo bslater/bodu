@@ -88,7 +88,7 @@ namespace Bodu {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Invalid IV size {0}. Size of IV must be {1}..
+        ///   Looks up a localized string similar to Specified initialization vector (IV) is not a valid size for this algorithm. Actual: {0} bits. Expected: {1} bits..
         /// </summary>
         internal static string ArgumentException_InvalidIvLength {
             get {
@@ -313,20 +313,38 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid IV size: {0}. Valid sizes are: {1}..
+        ///   Looks up a localized string similar to Specified value does not match the block size for this algorithm. Actual: {0} bits. Valid sizes (bits): {1}..
+        /// </summary>
+        internal static string CryptographicException_InvalidBlockSize {
+            get {
+                return ResourceManager.GetString("CryptographicException_InvalidBlockSize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Specified initialization vector (IV) does not match the block size for this algorithm. Actual: {0} bits. Valid sizes (bits): {1}..
         /// </summary>
         internal static string CryptographicException_InvalidIVSize {
             get {
                 return ResourceManager.GetString("CryptographicException_InvalidIVSize", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Invalid key size: {0}. Valid sizes are: {1}..
+        ///   Looks up a localized string similar to Specified key is not a valid size for this algorithm. Actual: {0} bits. Valid sizes (bits): {1}..
         /// </summary>
         internal static string CryptographicException_InvalidKeySize {
             get {
                 return ResourceManager.GetString("CryptographicException_InvalidKeySize", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Specified key is not a valid length for this algorithm. Actual: {0} bytes. Expected: {1} bytes..
+        /// </summary>
+        internal static string CryptographicException_InvalidKeyByteLength {
+            get {
+                return ResourceManager.GetString("CryptographicException_InvalidKeyByteLength", resourceCulture);
             }
         }
         
@@ -358,7 +376,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid tweak size: {0}. Valid sizes are: {1}..
+        ///   Looks up a localized string similar to Specified tweak is not a valid size for this algorithm. Actual: {0} bits. Valid sizes (bits): {1}..
         /// </summary>
         internal static string CryptographicException_InvalidTweakSize {
             get {

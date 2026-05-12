@@ -276,7 +276,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private byte[] Omac(byte t, ReadOnlySpan<byte> m)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         var prefixed = new byte[blockSize + m.Length];
 
         try
@@ -297,7 +297,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         var zeroBlock = new byte[blockSize];
         var l = new byte[blockSize];
@@ -382,7 +382,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 

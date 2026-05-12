@@ -166,10 +166,18 @@ public abstract class BlockCipherTransform : ICryptoTransform
     public bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    public int InputBlockSize => this._cipher.BlockSize;
+    /// <remarks>
+    /// The BCL <see cref="ICryptoTransform"/> contract requires this value in <em>bytes</em>; the
+    /// underlying <see cref="IBlockCipher.BlockSize"/> is in <em>bits</em>, so we divide by 8.
+    /// </remarks>
+    public int InputBlockSize => this._cipher.BlockSize / 8;
 
     /// <inheritdoc />
-    public int OutputBlockSize => this._cipher.BlockSize;
+    /// <remarks>
+    /// The BCL <see cref="ICryptoTransform"/> contract requires this value in <em>bytes</em>; the
+    /// underlying <see cref="IBlockCipher.BlockSize"/> is in <em>bits</em>, so we divide by 8.
+    /// </remarks>
+    public int OutputBlockSize => this._cipher.BlockSize / 8;
 
     /// <inheritdoc />
     public void Dispose()
@@ -221,10 +229,11 @@ public abstract class BlockCipherTransform : ICryptoTransform
 
         // Allow zero-length input: per the ICryptoTransform contract a zero-byte TransformBlock
         // call must return 0 rather than throw. CryptoStream and similar callers may invoke this
-        // path with no buffered data after a flush.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize, throwIfZero: false);
+        // path with no buffered data after a flush. Divide BlockSize (bits) by 8 to obtain the
+        // byte-length divisor expected by the span helper.
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize / 8, throwIfZero: false);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize, throwIfZero: false);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize / 8, throwIfZero: false);
 
         if (this._encrypt)
             return this._mode.Transform(input, output, true);
@@ -237,13 +246,13 @@ public abstract class BlockCipherTransform : ICryptoTransform
         var combined = Combine(this._deferredInput, input);
         this.ClearDeferredInput();
 
-        if (combined.Length <= this._cipher.BlockSize)
+        if (combined.Length <= this._cipher.BlockSize / 8)
         {
             this._deferredInput = combined;
             return 0;
         }
 
-        var bytesToProcess = combined.Length - this._cipher.BlockSize;
+        var bytesToProcess = combined.Length - (this._cipher.BlockSize / 8);
 
         try
         {

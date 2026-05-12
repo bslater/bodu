@@ -20,7 +20,7 @@ public partial class CryptoHelpersTests
     {
         var input = Convert.FromHexString("102030");
 
-        var result = CryptoHelpers.PadBlock(PaddingModeKind.ISO7816_4, 8, input, 0, input.Length);
+        var result = CryptoHelpers.PadBlock(PaddingModeKind.ISO7816_4, 64, input, 0, input.Length);
 
         Assert.AreEqual(8, result.Length);
         Assert.AreEqual(0x10, result[0]);
@@ -108,8 +108,8 @@ public partial class CryptoHelpersTests
     {
         byte[] input = GetValidMirroredPaddingInput(boduMode);
 
-        byte[] bodu = CryptoHelpers.PadBlock(boduMode, 8, input, 0, input.Length);
-        byte[] framework = CryptoHelpers.PadBlock(frameworkMode, 8, input, 0, input.Length);
+        byte[] bodu = CryptoHelpers.PadBlock(boduMode, 64, input, 0, input.Length);
+        byte[] framework = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
 
         CollectionAssert.AreEqual(framework, bodu);
     }
@@ -124,7 +124,7 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString("102030");
         Span<byte> destination = stackalloc byte[8];
 
-        var written = CryptoHelpers.PadBlock(PaddingModeKind.ISO7816_4, 8, input, destination);
+        var written = CryptoHelpers.PadBlock(PaddingModeKind.ISO7816_4, 64, input, destination);
 
         Assert.AreEqual(8, written);
         Assert.AreEqual(0x80, destination[3]);
@@ -145,7 +145,7 @@ public partial class CryptoHelpersTests
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Span<byte> destination = stackalloc byte[4];
-            _ = CryptoHelpers.PadBlock(PaddingModeKind.ISO7816_4, 8, input, destination);
+            _ = CryptoHelpers.PadBlock(PaddingModeKind.ISO7816_4, 64, input, destination);
         });
     }
 
@@ -163,8 +163,8 @@ public partial class CryptoHelpersTests
         Span<byte> bodu = stackalloc byte[16];
         Span<byte> framework = stackalloc byte[16];
 
-        int boduWritten = CryptoHelpers.PadBlock(boduMode, 8, input, bodu);
-        int frameworkWritten = CryptoHelpers.PadBlock(frameworkMode, 8, input, framework);
+        int boduWritten = CryptoHelpers.PadBlock(boduMode, 64, input, bodu);
+        int frameworkWritten = CryptoHelpers.PadBlock(frameworkMode, 64, input, framework);
 
         Assert.AreEqual(frameworkWritten, boduWritten);
         Assert.IsTrue(framework.Slice(0, frameworkWritten).SequenceEqual(bodu.Slice(0, boduWritten)));
@@ -179,7 +179,7 @@ public partial class CryptoHelpersTests
     {
         var padded = Convert.FromHexString("1020308000000000");
 
-        var result = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 8, padded, 0, padded.Length);
+        var result = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 64, padded, 0, padded.Length);
 
         CollectionAssert.AreEqual(Convert.FromHexString("102030"), result);
     }
@@ -211,10 +211,10 @@ public partial class CryptoHelpersTests
         PaddingMode frameworkMode)
     {
         byte[] input = GetValidMirroredPaddingInput(boduMode);
-        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 8, input, 0, input.Length);
+        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
 
-        byte[] bodu = CryptoHelpers.DepadBlock(boduMode, 8, padded, 0, padded.Length);
-        byte[] framework = CryptoHelpers.DepadBlock(frameworkMode, 8, padded, 0, padded.Length);
+        byte[] bodu = CryptoHelpers.DepadBlock(boduMode, 64, padded, 0, padded.Length);
+        byte[] framework = CryptoHelpers.DepadBlock(frameworkMode, 64, padded, 0, padded.Length);
 
         CollectionAssert.AreEqual(framework, bodu);
     }
@@ -229,7 +229,7 @@ public partial class CryptoHelpersTests
         var padded = Convert.FromHexString("1020308000000000");
         Span<byte> destination = stackalloc byte[8];
 
-        var written = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 8, padded, destination);
+        var written = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 64, padded, destination);
 
         Assert.AreEqual(3, written);
         Assert.IsTrue(destination.Slice(0, written).SequenceEqual(Convert.FromHexString("102030")));
@@ -263,7 +263,7 @@ public partial class CryptoHelpersTests
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
             Span<byte> destination = stackalloc byte[8];
-            _ = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 8, padded, destination);
+            _ = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 64, padded, destination);
         });
     }
 
@@ -279,7 +279,7 @@ public partial class CryptoHelpersTests
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             Span<byte> destination = stackalloc byte[2];
-            _ = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 8, padded, destination);
+            _ = CryptoHelpers.DepadBlock(PaddingModeKind.ISO7816_4, 64, padded, destination);
         });
     }
 
@@ -294,13 +294,13 @@ public partial class CryptoHelpersTests
         PaddingMode frameworkMode)
     {
         byte[] input = GetValidMirroredPaddingInput(boduMode);
-        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 8, input, 0, input.Length);
+        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
 
         Span<byte> bodu = stackalloc byte[16];
         Span<byte> framework = stackalloc byte[16];
 
-        int boduWritten = CryptoHelpers.DepadBlock(boduMode, 8, padded, bodu);
-        int frameworkWritten = CryptoHelpers.DepadBlock(frameworkMode, 8, padded, framework);
+        int boduWritten = CryptoHelpers.DepadBlock(boduMode, 64, padded, bodu);
+        int frameworkWritten = CryptoHelpers.DepadBlock(frameworkMode, 64, padded, framework);
 
         Assert.AreEqual(frameworkWritten, boduWritten);
         Assert.IsTrue(framework.Slice(0, frameworkWritten).SequenceEqual(bodu.Slice(0, boduWritten)));
@@ -317,7 +317,7 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString("102030");
         Span<byte> destination = stackalloc byte[8];
 
-        var result = CryptoHelpers.TryPadBlock(PaddingModeKind.ISO7816_4, 8, input, destination, out var written);
+        var result = CryptoHelpers.TryPadBlock(PaddingModeKind.ISO7816_4, 64, input, destination, out var written);
 
         Assert.IsTrue(result);
         Assert.AreEqual(8, written);
@@ -334,7 +334,7 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString("102030");
         Span<byte> destination = stackalloc byte[4];
 
-        var result = CryptoHelpers.TryPadBlock(PaddingModeKind.ISO7816_4, 8, input, destination, out var written);
+        var result = CryptoHelpers.TryPadBlock(PaddingModeKind.ISO7816_4, 64, input, destination, out var written);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, written);
@@ -354,8 +354,8 @@ public partial class CryptoHelpersTests
         Span<byte> bodu = stackalloc byte[16];
         Span<byte> framework = stackalloc byte[16];
 
-        bool boduResult = CryptoHelpers.TryPadBlock(boduMode, 8, input, bodu, out int boduWritten);
-        bool frameworkResult = CryptoHelpers.TryPadBlock(frameworkMode, 8, input, framework, out int frameworkWritten);
+        bool boduResult = CryptoHelpers.TryPadBlock(boduMode, 64, input, bodu, out int boduWritten);
+        bool frameworkResult = CryptoHelpers.TryPadBlock(frameworkMode, 64, input, framework, out int frameworkWritten);
 
         Assert.AreEqual(frameworkResult, boduResult);
         Assert.AreEqual(frameworkWritten, boduWritten);
@@ -372,7 +372,7 @@ public partial class CryptoHelpersTests
         var padded = Convert.FromHexString("1020308000000000");
         Span<byte> destination = stackalloc byte[8];
 
-        var result = CryptoHelpers.TryDepadBlock(PaddingModeKind.ISO7816_4, 8, padded, destination, out var written);
+        var result = CryptoHelpers.TryDepadBlock(PaddingModeKind.ISO7816_4, 64, padded, destination, out var written);
 
         Assert.IsTrue(result);
         Assert.AreEqual(3, written);
@@ -388,7 +388,7 @@ public partial class CryptoHelpersTests
         var padded = Convert.FromHexString("10203080");
         Span<byte> destination = stackalloc byte[8];
 
-        var result = CryptoHelpers.TryDepadBlock(PaddingModeKind.ISO7816_4, 8, padded, destination, out var written);
+        var result = CryptoHelpers.TryDepadBlock(PaddingModeKind.ISO7816_4, 64, padded, destination, out var written);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, written);
@@ -405,13 +405,13 @@ public partial class CryptoHelpersTests
         PaddingMode frameworkMode)
     {
         byte[] input = GetValidMirroredPaddingInput(boduMode);
-        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 8, input, 0, input.Length);
+        byte[] padded = CryptoHelpers.PadBlock(frameworkMode, 64, input, 0, input.Length);
 
         Span<byte> bodu = stackalloc byte[16];
         Span<byte> framework = stackalloc byte[16];
 
-        bool boduResult = CryptoHelpers.TryDepadBlock(boduMode, 8, padded, bodu, out int boduWritten);
-        bool frameworkResult = CryptoHelpers.TryDepadBlock(frameworkMode, 8, padded, framework, out int frameworkWritten);
+        bool boduResult = CryptoHelpers.TryDepadBlock(boduMode, 64, padded, bodu, out int boduWritten);
+        bool frameworkResult = CryptoHelpers.TryDepadBlock(frameworkMode, 64, padded, framework, out int frameworkWritten);
 
         Assert.AreEqual(frameworkResult, boduResult);
         Assert.AreEqual(frameworkWritten, boduWritten);

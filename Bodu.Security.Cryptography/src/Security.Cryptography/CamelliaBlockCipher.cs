@@ -47,9 +47,9 @@ public sealed class CamelliaBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// The Camellia block size, in bytes.
+    /// The Camellia block size, in bits.
     /// </summary>
-    public const int BlockBytes = 16;
+    public const int BlockBits = 128;
 
     /// <summary>
     /// The number of bytes in a valid 128-bit Camellia key.
@@ -135,8 +135,8 @@ public sealed class CamelliaBlockCipher
     }
 
     /// <inheritdoc />
-    /// <remarks>The block size is fixed at 16 bytes (128 bits) regardless of key size.</remarks>
-    public int BlockSize => BlockBytes;
+    /// <remarks>The block size is fixed at 128 bits (16 bytes) regardless of key size.</remarks>
+    public int BlockSize => BlockBits;
 
     /// <summary>
     /// Decrypts a single 128-bit ciphertext block.
@@ -150,8 +150,8 @@ public sealed class CamelliaBlockCipher
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBits / 8);
 
         // Encryption produced (right ^ kw3) || (left ^ kw4) — restore the post-rounds halves first.
         var right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
@@ -268,8 +268,8 @@ public sealed class CamelliaBlockCipher
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBits / 8);
 
         var left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
         var right = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[1];

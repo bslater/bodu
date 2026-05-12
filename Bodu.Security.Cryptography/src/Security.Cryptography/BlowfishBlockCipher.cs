@@ -381,13 +381,13 @@ public sealed class BlowfishBlockCipher
     /// Decrypts a single 64-bit block using the Blowfish cipher and writes the plaintext to <paramref name="output"/>.
     /// </summary>
     /// <param name="input">
-    /// A read-only span containing the ciphertext block to decrypt. Must be at least <see cref="BlockSize"/> bytes in length.
+    /// A read-only span containing the ciphertext block to decrypt. Must be at least <see cref="BlockSize"/> / 8 bytes in length.
     /// </param>
     /// <param name="output">
-    /// A writable span to receive the decrypted plaintext block. Must be at least <see cref="BlockSize"/> bytes in length.
+    /// A writable span to receive the decrypted plaintext block. Must be at least <see cref="BlockSize"/> / 8 bytes in length.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input"/> or <paramref name="output"/> is shorter than <see cref="BlockSize"/> bytes.
+    /// <paramref name="input"/> or <paramref name="output"/> is shorter than <see cref="BlockSize"/> / 8 bytes.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// The instance has been disposed.
@@ -411,13 +411,13 @@ public sealed class BlowfishBlockCipher
     /// Encrypts a single 64-bit block using the Blowfish cipher and writes the ciphertext to <paramref name="output"/>.
     /// </summary>
     /// <param name="input">
-    /// A read-only span containing the plaintext block to encrypt. Must be at least <see cref="BlockSize"/> bytes in length.
+    /// A read-only span containing the plaintext block to encrypt. Must be at least <see cref="BlockSize"/> / 8 bytes in length.
     /// </param>
     /// <param name="output">
-    /// A writable span to receive the encrypted ciphertext block. Must be at least <see cref="BlockSize"/> bytes in length.
+    /// A writable span to receive the encrypted ciphertext block. Must be at least <see cref="BlockSize"/> / 8 bytes in length.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input"/> or <paramref name="output"/> is shorter than <see cref="BlockSize"/> bytes.
+    /// <paramref name="input"/> or <paramref name="output"/> is shorter than <see cref="BlockSize"/> / 8 bytes.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// The instance has been disposed.

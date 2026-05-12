@@ -283,7 +283,7 @@ public sealed class GcmSivModeTransform
     /// </summary>
     private static (byte[] authKey, byte[] encKey) DeriveKeys(IBlockCipher cipher, byte[] nonce)
     {
-        var blockSize = cipher.BlockSize;
+        var blockSize = cipher.BlockSize / 8;
         var authKey = new byte[blockSize];
         var encKey = new byte[blockSize];
 
@@ -357,7 +357,7 @@ public sealed class GcmSivModeTransform
     /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
     private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = this._encCipher.BlockSize;
+        var blockSize = this._encCipher.BlockSize / 8;
 
         // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
         var polyvalResult = new byte[blockSize];
@@ -497,7 +497,7 @@ public sealed class GcmSivModeTransform
     /// block per RFC 8452.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = this._encCipher.BlockSize;
+        var blockSize = this._encCipher.BlockSize / 8;
         var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 

@@ -81,7 +81,7 @@ public partial class CryptoHelpersTests
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
         var input = Convert.FromHexString(inputHex);
-        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
+        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
 
         // If expectedHex is fully specified (not ISO10126 with '?'), match entire byte array Else validate last byte is pad count
         if (!expectedHex.Contains('?'))
@@ -112,7 +112,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[expectedLength]
             : new byte[expectedLength];
 
-        _ = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, destination);
+        _ = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, destination);
 
         // If expectedHex is fully specified (not ISO10126 with '?'), match entire byte array Else validate last byte is pad count
         if (!expectedHex.Contains('?'))
@@ -137,7 +137,7 @@ public partial class CryptoHelpersTests
     {
         var input = Convert.FromHexString(inputHex);
         var expectedLength = expectedHex.Length / 2;
-        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
+        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
 
         Assert.AreEqual(expectedLength, result.Length);
     }
@@ -157,7 +157,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[expectedLength]
             : new byte[expectedLength];
 
-        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, destination);
+        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, destination);
 
         Assert.AreEqual(expectedLength, result);
     }
@@ -171,7 +171,7 @@ public partial class CryptoHelpersTests
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
         var input = Convert.FromHexString(inputHex);
-        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
+        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
 
         CollectionAssert.AreEqual(input, result.Take(input.Length).ToArray());
     }
@@ -191,7 +191,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[expectedLength]
             : new byte[expectedLength];
 
-        _ = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, destination);
+        _ = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, destination);
 
         Assert.IsTrue(destination.Slice(0, input.Length).SequenceEqual(input));
     }
@@ -211,7 +211,7 @@ public partial class CryptoHelpersTests
 
         try
         {
-            _ = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
+            _ = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, 0, input.Length);
             Assert.Fail($"Expected {exceptionType.Name} was not thrown.");
         }
         catch (Exception ex)
@@ -238,7 +238,7 @@ public partial class CryptoHelpersTests
 
         try
         {
-            _ = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, destination);
+            _ = CryptoHelpers.PadBlock(padding, blockSizeBytes * 8, input, destination);
             Assert.Fail($"Expected {exceptionType.Name} was not thrown.");
         }
         catch (Exception ex)

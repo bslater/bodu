@@ -42,7 +42,7 @@ public sealed class Serpent256Cipher
         : base(key, tweak) { }
 
     /// <inheritdoc />
-    public override int BlockSize => 32;
+    public override int BlockSize => 256;
 
     /// <inheritdoc />
     private protected override int BlockWords => 8;

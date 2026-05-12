@@ -23,7 +23,7 @@ public partial class CryptoHelpersTests
         var expectedLength = expectedHex.Length / 2;
         Span<byte> destination = new byte[expectedLength];
 
-        var result = CryptoHelpers.TryPadBlock(padding, blockSizeBytes, input, destination, out var written);
+        var result = CryptoHelpers.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
 
         Assert.IsTrue(result);
     }
@@ -41,7 +41,7 @@ public partial class CryptoHelpersTests
         var expectedLength = expectedHex.Length / 2;
         Span<byte> destination = new byte[expectedLength];
 
-        var result = CryptoHelpers.TryPadBlock(padding, blockSizeBytes, input, destination, out var written);
+        var result = CryptoHelpers.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
 
         Assert.AreEqual(expectedLength, written);
     }
@@ -59,7 +59,7 @@ public partial class CryptoHelpersTests
         var expectedLength = expectedHex.Length / 2;
         Span<byte> destination = new byte[expectedLength];
 
-        CryptoHelpers.TryPadBlock(padding, blockSizeBytes, input, destination, out var written);
+        CryptoHelpers.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
 
         Assert.IsTrue(destination.Slice(0, input.Length).SequenceEqual(input));
     }
@@ -80,7 +80,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[destinationLength.Value]
             : new byte[destinationLength.Value];
 
-        var result = CryptoHelpers.TryPadBlock(padding, blockSizeBytes, input, destination, out var written);
+        var result = CryptoHelpers.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
 
         Assert.IsFalse(result);
     }
@@ -101,7 +101,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[destinationLength.Value]
             : new byte[destinationLength.Value];
 
-        _ = CryptoHelpers.TryPadBlock(padding, blockSizeBytes, input, destination, out var written);
+        _ = CryptoHelpers.TryPadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
 
         Assert.AreEqual(0, written);
     }
