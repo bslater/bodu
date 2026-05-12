@@ -57,4 +57,39 @@ public sealed class IsinTests : AlphanumericCheckDigitAlgorithmTests<IsinTests, 
     {
         Assert.IsFalse(Isin.IsValid("US037833100A".AsSpan()));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an empty
+    /// span — the documented short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Isin.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> rejects a full ISIN whose body contains a
+    /// non-alphanumeric character.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Isin.IsValid("US0378331-05".AsSpan()));
+        Assert.IsFalse(Isin.IsValid("US 378331005".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Isin.Compute(ReadOnlySpan{char})" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the body contains a character outside the alphanumeric
+    /// uppercase alphabet.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Isin.Compute("US037833-00".AsSpan());
+        });
+    }
 }

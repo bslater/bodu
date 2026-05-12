@@ -58,4 +58,66 @@ public sealed class CusipTests : AlphanumericCheckDigitAlgorithmTests<CusipTests
         _ = Cusip.Compute("1234567@".AsSpan());
         _ = Cusip.Compute("1234567#".AsSpan());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> when invoked
+    /// with an empty span — the documented short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Cusip.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> accepts the historical CUSIP punctuation
+    /// sentinels (<c>'*'</c>, <c>'@'</c>, <c>'#'</c>) within the body when the resulting sequence is consistent.
+    /// </summary>
+    /// <param name="sentinel">The CUSIP sentinel under test.</param>
+    [DataRow('*')]
+    [DataRow('@')]
+    [DataRow('#')]
+    [TestMethod]
+    public void IsValid_WhenBodyContainsCusipSentinel_ShouldAcceptValidSequence(char sentinel)
+    {
+        string body = "1234567" + sentinel;
+        char check = Cusip.Compute(body.AsSpan());
+        Assert.IsTrue(Cusip.IsValid((body + check).AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains a
+    /// character outside <c>'0'</c>–<c>'9'</c>, <c>'A'</c>–<c>'Z'</c>, and the punctuation sentinels.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Cusip.IsValid("0378331-0".AsSpan()));
+        Assert.IsFalse(Cusip.IsValid("037833 10".AsSpan()));
+        Assert.IsFalse(Cusip.IsValid("037833a10".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose check character is
+    /// not a decimal digit.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenCheckCharacterIsNotDigit_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Cusip.IsValid("03783310A".AsSpan()));
+        Assert.IsFalse(Cusip.IsValid("03783310*".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.Compute(ReadOnlySpan{char})" /> rejects a body character that is not part of
+    /// the CUSIP alphabet by throwing <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Cusip.Compute("0378331-".AsSpan());
+        });
+    }
 }

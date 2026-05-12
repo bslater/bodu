@@ -57,4 +57,37 @@ public sealed class Isbn10Tests : AlphanumericCheckDigitAlgorithmTests<Isbn10Tes
     {
         Assert.IsFalse(Isbn10.IsValid("X306406152".AsSpan()));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Isbn10.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an
+    /// empty span — the documented short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Isbn10.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Isbn10.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains a
+    /// character outside the decimal-digit alphabet.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsLetter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Isbn10.IsValid("0306A06152".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Isbn10.Compute(ReadOnlySpan{char})" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the body contains a non-digit character.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Isbn10.Compute("0306A0615".AsSpan());
+        });
+    }
 }

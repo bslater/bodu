@@ -37,4 +37,50 @@ public sealed class Iso7064Mod97_10Tests : MultiCharCheckDigitAlgorithmTests<Iso
     /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> value) =>
         Iso7064Mod97_10.IsValid(value);
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod97_10.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" />
+    /// for an empty span — the documented short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Iso7064Mod97_10.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod97_10.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body
+    /// contains a non-alphanumeric character.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Iso7064Mod97_10.IsValid("WEST 12345698765432GB82".AsSpan()));
+        Assert.IsFalse(Iso7064Mod97_10.IsValid("WEST-12345698765432GB82".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod97_10.IsValid(ReadOnlySpan{char})" /> accepts a sequence whose body is
+    /// purely numeric.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceUsesNumericBody_ShouldReturnTrue()
+    {
+        // 79444 — published worked example for MOD 97-10.
+        Assert.IsTrue(Iso7064Mod97_10.IsValid("79444".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod97_10.Compute(ReadOnlySpan{char})" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when invoked with a body that contains a non-alphanumeric
+    /// character.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Iso7064Mod97_10.Compute("79-44".AsSpan());
+        });
+    }
 }

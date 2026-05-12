@@ -161,7 +161,19 @@ public abstract class CityHash<T>
     /// <param name="h">The 32-bit value to mix.</param>
     /// <returns>The mixed 32-bit result.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected static uint Mix(uint h) => h ^ (h >> 16);
+    protected static uint Mix(uint h)
+    {
+        unchecked
+        {
+            h ^= h >> 16;
+            h *= 0x85EBCA6BU;
+            h ^= h >> 13;
+            h *= 0xC2B2AE35U;
+            h ^= h >> 16;
+
+            return h;
+        }
+    }
 
     /// <summary>
     /// Applies a single Murmur-style multiply-rotate-XOR step, combining two 32-bit values.
@@ -170,8 +182,18 @@ public abstract class CityHash<T>
     /// <param name="h">The accumulator value to combine with the result.</param>
     /// <returns>The result of the Murmur mixing step.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected static uint Mur(uint a, uint h) =>
-        unchecked((a * C1) ^ h.RotateBitsRightUnchecked(17));
+    protected static uint Mur(uint a, uint h)
+    {
+        unchecked
+        {
+            a *= C1;
+            a = a.RotateBitsRightUnchecked(17);
+            a *= C2;
+            h ^= a;
+            h = h.RotateBitsRightUnchecked(19);
+            return (h * 5) + HashMagic;
+        }
+    }
 
     /// <summary>
     /// Performs a cyclic three-way permutation of the given values, assigning <c>a ← c</c>, <c>c ← b</c>,

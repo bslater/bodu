@@ -121,9 +121,9 @@ public sealed class CityHash64
 
         ulong u = (a + g).RotateBitsRightUnchecked(43) + ((b.RotateBitsRightUnchecked(30) + c) * 9);
         ulong v = ((a + g) ^ d) + f + 1;
-        ulong w = (u + v).ReverseBytesUnchecked() * mul;
+        ulong w = ((u + v) * mul).ReverseBytesUnchecked() + h;
         ulong x = (e + f).RotateBitsRightUnchecked(42) + c;
-        ulong y = ((v + w).ReverseBytesUnchecked() + h) * mul;
+        ulong y = (((v + w) * mul).ReverseBytesUnchecked() + g) * mul;
         ulong z = e + f + c;
 
         a = (((x + z) * mul) + y).ReverseBytesUnchecked() + b;

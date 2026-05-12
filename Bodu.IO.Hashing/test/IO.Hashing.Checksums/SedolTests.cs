@@ -65,4 +65,67 @@ public sealed class SedolTests : AlphanumericCheckDigitAlgorithmTests<SedolTests
         Assert.IsFalse(Sedol.IsValid("B0WNLY7X".AsSpan()));
         Assert.IsFalse(Sedol.IsValid("B0WNLY".AsSpan()));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an empty
+    /// span — the documented short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Sedol.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains a
+    /// vowel — vowels are not part of the SEDOL alphabet.
+    /// </summary>
+    /// <param name="vowel">The vowel character placed in the body.</param>
+    [DataRow('A')]
+    [DataRow('E')]
+    [DataRow('I')]
+    [DataRow('O')]
+    [DataRow('U')]
+    [TestMethod]
+    public void IsValid_WhenBodyContainsVowel_ShouldReturnFalse(char vowel)
+    {
+        // Position 1 of an otherwise plausible SEDOL is replaced by a vowel.
+        var sequence = new string(['B', vowel, 'W', 'N', 'L', 'Y', '7']);
+        Assert.IsFalse(Sedol.IsValid(sequence.AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains a
+    /// non-alphanumeric character.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Sedol.IsValid("B0WNL-7".AsSpan()));
+        Assert.IsFalse(Sedol.IsValid("B0WNL 7".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose check character is
+    /// not a decimal digit.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenCheckCharacterIsNotDigit_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Sedol.IsValid("B0WNLYZ".AsSpan()));
+        Assert.IsFalse(Sedol.IsValid("B0WNLY-".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Sedol.Compute(ReadOnlySpan{char})" /> rejects a body character that is not part of
+    /// the SEDOL alphabet by throwing <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Sedol.Compute("B0WNL-".AsSpan());
+        });
+    }
 }

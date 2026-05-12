@@ -52,4 +52,48 @@ public sealed class IbanTests : MultiCharCheckDigitAlgorithmTests<IbanTests, Iba
     /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> value) =>
         Iban.IsValid(value);
+
+    /// <summary>
+    /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an empty
+    /// span — the documented short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Iban.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects sequences shorter than four
+    /// characters — the minimum CC+DD prefix length.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsShorterThanMinimum_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Iban.IsValid("GB".AsSpan()));
+        Assert.IsFalse(Iban.IsValid("GB8".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose BBAN contains a
+    /// non-alphanumeric character.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBbanContainsInvalidCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Iban.IsValid("GB82WEST123456-8765432".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Iban.Compute(ReadOnlySpan{char})" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the body contains a non-alphanumeric character.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Iban.Compute("GBWEST123-5698765432".AsSpan());
+        });
+    }
 }
