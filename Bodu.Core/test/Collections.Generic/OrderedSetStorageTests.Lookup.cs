@@ -1,0 +1,212 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="OrderedSetStorageTests.Lookup.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Bodu.Collections.Generic;
+
+public partial class OrderedSetStorageTests
+{
+    // --------------------------------------------------------
+    // GetAt
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.GetAt(int)" /> rejects an out-of-range index.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(3)]
+    [DataRow(int.MinValue)]
+    [DataRow(int.MaxValue)]
+    public void GetAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
+    {
+        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = sut.GetAt(index);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.GetAt(int)" /> on an empty storage with index zero
+    /// throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    {
+        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = sut.GetAt(0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.GetAt(int)" /> returns the element at the requested
+    /// insertion-order index.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 10)]
+    [DataRow(1, 20)]
+    [DataRow(2, 30)]
+    public void GetAt_WhenIndexIsValid_ShouldReturnElementAtIndex(int index, int expected)
+    {
+        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20, 30 });
+
+        Assert.AreEqual(expected, sut.GetAt(index));
+    }
+
+    // --------------------------------------------------------
+    // Contains — argument validation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> rejects a <see langword="null" /> item.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenItemIsNull_ShouldThrowArgumentNullException()
+    {
+        OrderedSetStorage<string> sut = CreateStorage(new[] { "a" });
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.Contains(null!);
+        });
+    }
+
+    // --------------------------------------------------------
+    // Contains — basic behaviour
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="false" /> on an
+    /// empty storage.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenStorageIsEmpty_ShouldReturnFalse()
+    {
+        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+
+        Assert.IsFalse(sut.Contains(99));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="true" /> for a
+    /// present element.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenItemIsPresent_ShouldReturnTrue()
+    {
+        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+
+        Assert.IsTrue(sut.Contains(2));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="false" /> for an
+    /// absent element.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenItemIsAbsent_ShouldReturnFalse()
+    {
+        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+
+        Assert.IsFalse(sut.Contains(99));
+    }
+
+    /// <summary>
+    /// Verifies that hash collisions still resolve to the correct membership answer.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenItemsHashCollide_ShouldResolveCorrectly()
+    {
+        OrderedSetStorage<HashCollider> sut = new OrderedSetStorage<HashCollider>(0, null);
+        HashCollider a = new HashCollider("a");
+        HashCollider b = new HashCollider("b");
+        HashCollider c = new HashCollider("c");
+
+        sut.Add(a);
+        sut.Add(b);
+
+        Assert.IsTrue(sut.Contains(a));
+        Assert.IsTrue(sut.Contains(b));
+        Assert.IsFalse(sut.Contains(c));
+    }
+
+    // --------------------------------------------------------
+    // IndexOf — argument validation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.IndexOf(T)" /> rejects a <see langword="null" /> item.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenItemIsNull_ShouldThrowArgumentNullException()
+    {
+        OrderedSetStorage<string> sut = CreateStorage(new[] { "a" });
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.IndexOf(null!);
+        });
+    }
+
+    // --------------------------------------------------------
+    // IndexOf — basic behaviour
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.IndexOf(T)" /> returns <c>-1</c> on an empty storage.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenStorageIsEmpty_ShouldReturnMinusOne()
+    {
+        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+
+        Assert.AreEqual(-1, sut.IndexOf(99));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.IndexOf(T)" /> returns the insertion-order index of a
+    /// present element.
+    /// </summary>
+    [TestMethod]
+    [DataRow(10, 0)]
+    [DataRow(20, 1)]
+    [DataRow(30, 2)]
+    [DataRow(99, -1)]
+    public void IndexOf_WhenStoragePopulated_ShouldReturnExpectedIndex(int item, int expected)
+    {
+        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20, 30 });
+
+        Assert.AreEqual(expected, sut.IndexOf(item));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.IndexOf(T)" /> correctly resolves indices for
+    /// hash-colliding items.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenItemsHashCollide_ShouldReturnCorrectIndex()
+    {
+        OrderedSetStorage<HashCollider> sut = new OrderedSetStorage<HashCollider>(0, null);
+        HashCollider a = new HashCollider("a");
+        HashCollider b = new HashCollider("b");
+        HashCollider c = new HashCollider("c");
+
+        sut.Add(a);
+        sut.Add(b);
+        sut.Add(c);
+
+        Assert.AreEqual(0, sut.IndexOf(a));
+        Assert.AreEqual(1, sut.IndexOf(b));
+        Assert.AreEqual(2, sut.IndexOf(c));
+    }
+}
