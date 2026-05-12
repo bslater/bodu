@@ -79,9 +79,11 @@ namespace Bodu.Security.Cryptography;
 public sealed class SivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
+    /// <summary>Length of the SIV cipher block is 128 bits (16 bytes). Byte length derived inline via <see cref="BlockSizeBits"/> / 8.</summary>
     private const int BlockSizeBits = 128;
+
+    /// <summary>Length of the SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits"/> / 8.</summary>
     private const int TagSizeBits = 128;
-    private const int TagLengthBytes = TagSizeBits / 8;
 
     private readonly IBlockCipher _s2vCipher;
     private readonly IBlockCipher _ctrCipher;
@@ -149,7 +151,7 @@ public sealed class SivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = plaintext.Length + TagLengthBytes;
+        var required = plaintext.Length + (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
@@ -188,9 +190,9 @@ public sealed class SivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagLengthBytes);
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, (TagSizeBits / 8));
 
-        var plaintextLength = ciphertextWithTag.Length - TagLengthBytes;
+        var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();

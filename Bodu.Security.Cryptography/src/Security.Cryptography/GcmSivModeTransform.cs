@@ -78,9 +78,11 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmSivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
+    /// <summary>Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits"/> / 8.</summary>
     private const int TagSizeBits = 128;
-    private const int TagLengthBytes = TagSizeBits / 8;
-    private const int NonceLengthBytes = 12;
+
+    /// <summary>Length of the AES-GCM-SIV nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits"/> / 8.</summary>
+    private const int NonceSizeBits = 96;
 
     private readonly IBlockCipher _encCipher;  // cipher keyed with derived K_enc
     private readonly byte[] _authKey;          // derived K_auth (POLYVAL key)
@@ -116,8 +118,8 @@ public sealed class GcmSivModeTransform
         ThrowHelper.ThrowIfNull(cipherFactory);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
 
-        this._nonce = new byte[NonceLengthBytes];
-        iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
+        this._nonce = new byte[(NonceSizeBits / 8)];
+        iv.AsSpan(0, (NonceSizeBits / 8)).CopyTo(this._nonce);
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
@@ -161,7 +163,7 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = plaintext.Length + TagLengthBytes;
+        var required = plaintext.Length + (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
         EnsureAadProcessed();
 
@@ -188,8 +190,8 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagLengthBytes);
-        var plaintextLength = ciphertextWithTag.Length - TagLengthBytes;
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, (TagSizeBits / 8));
+        var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
         EnsureAadProcessed();
 
@@ -376,7 +378,7 @@ public sealed class GcmSivModeTransform
         PolyvalUpdate(polyvalResult, lenBlock);
 
         // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
-        for (var i = 0; i < NonceLengthBytes; i++)
+        for (var i = 0; i < (NonceSizeBits / 8); i++)
             polyvalResult[i] ^= this._nonce[i];
         polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
 

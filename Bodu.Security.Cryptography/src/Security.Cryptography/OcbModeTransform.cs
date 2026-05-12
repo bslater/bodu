@@ -74,8 +74,12 @@ namespace Bodu.Security.Cryptography;
 public sealed class OcbModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
+    /// <summary>Length of the OCB cipher block is 128 bits (16 bytes). Byte length derived inline via <see cref="BlockSizeBits"/> / 8.</summary>
     private const int BlockSizeBits = 128;
-    private const int NonceLengthBytes = 12;
+
+    /// <summary>Length of the OCB nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits"/> / 8.</summary>
+    private const int NonceSizeBits = 96;
+
     private const int MaxLValues = 32; // enough for 2^32 blocks
 
     private readonly IBlockCipher _cipher;
@@ -131,8 +135,8 @@ public sealed class OcbModeTransform
 
         this._cipher = cipher;
 
-        this._nonce = new byte[NonceLengthBytes];
-        iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
+        this._nonce = new byte[(NonceSizeBits / 8)];
+        iv.AsSpan(0, (NonceSizeBits / 8)).CopyTo(this._nonce);
 
         this._tagLen = tagSize / 8;
 

@@ -76,15 +76,10 @@ public sealed class Poly1305
     private const uint Mask26 = 0x3ffffff;
 
     /// <summary>
-    /// Length of the Poly1305 input block is 128 bits (16 bytes).
+    /// Length of the Poly1305 input block is 128 bits (16 bytes). Byte length is derived inline via
+    /// <see cref="BlockSize"/> / 8 where needed.
     /// </summary>
     private const int BlockSize = 128;
-
-    /// <summary>
-    /// Convenience constant for the byte length of <see cref="BlockSize"/>, used when slicing or
-    /// allocating <see cref="byte"/> buffers from the bit-valued public constant.
-    /// </summary>
-    private const int BlockSizeBytes = BlockSize / 8;
 
     private readonly uint[] _acc = new uint[5];
     private readonly uint[] _key = new uint[4];
@@ -180,10 +175,12 @@ public sealed class Poly1305
         Justification = "Grouped limb and accumulator assignments intentionally mirror the Poly1305 5-limb arithmetic steps, keeping related state transitions on one line so the implementation remains aligned with the algorithm structure.")]
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {
+        const int blockBytes = BlockSize / 8;
+
         // Copy input to 16-byte buffer and append a single '1' byte if block is short (RFC: padding = 1 byte then zeros)
-        Span<byte> padded = stackalloc byte[BlockSizeBytes];
+        Span<byte> padded = stackalloc byte[blockBytes];
         block.CopyTo(padded);
-        if (block.Length < BlockSizeBytes)
+        if (block.Length < blockBytes)
             padded[block.Length] = 1;
 
         // Load accumulator state
@@ -199,7 +196,7 @@ public sealed class Poly1305
         h4 += (uint)((t1 >> 40) & 0x3ffffff);
 
         // If full 16 bytes were present, set highest bit (equivalent to adding 2^128 per RFC)
-        if (block.Length == BlockSizeBytes)
+        if (block.Length == blockBytes)
             h4 += (1 << 24);
 
         // Load r and perform 130-bit polynomial multiplication: accumulator * r

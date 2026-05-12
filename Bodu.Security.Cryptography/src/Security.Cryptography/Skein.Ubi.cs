@@ -50,7 +50,7 @@ public abstract partial class Skein<T>
     /// </remarks>
     private void Ubi(ReadOnlySpan<byte> block, SkeinTweakType type, bool first, bool final, ulong position)
     {
-        Span<byte> tweakBytes = stackalloc byte[TweakSizeBytes];
+        Span<byte> tweakBytes = stackalloc byte[TweakSize / 8];
         PackTweak(tweakBytes, position, type, first, final);
 
         Span<byte> stateBytes = MemoryMarshal.AsBytes(this._state.AsSpan());

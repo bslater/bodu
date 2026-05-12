@@ -81,9 +81,10 @@ public abstract partial class Skein<T>
     private const ushort SchemaVersion = 1;
 
     /// <summary>
-    /// The fixed size, in bytes, of a Skein tweak value.
+    /// Length of the Skein tweak value is 128 bits (16 bytes). Byte length is derived inline via
+    /// <see cref="TweakSize"/> / 8 where needed.
     /// </summary>
-    private const int TweakSizeBytes = 16;
+    private const int TweakSize = 128;
 
     private readonly ThreefishBlockCipher _cipher;
     private readonly ulong[] _state;

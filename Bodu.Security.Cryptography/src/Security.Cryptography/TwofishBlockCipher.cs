@@ -31,7 +31,7 @@ public sealed class TwofishBlockCipher
     /// Length of the Twofish block is 128 bits (16 bytes). Internal constant kept for span-length validation;
     /// callers should read <see cref="BlockSize"/> instead.
     /// </summary>
-    private const int BlockSizeInBits = 128;
+    private const int BlockSizeBits = 128;
 
     private const int Rounds = 16;
     private const int ExpandedKeyWords = 40;
@@ -94,7 +94,7 @@ public sealed class TwofishBlockCipher
 
     /// <inheritdoc />
     /// <value>Length of the Twofish block is 128 bits (16 bytes).</value>
-    public int BlockSize => BlockSizeInBits;
+    public int BlockSize => BlockSizeBits;
 
     /// <inheritdoc />
     public void Dispose()
@@ -115,8 +115,8 @@ public sealed class TwofishBlockCipher
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBits / 8);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
 
         var r0 = BinaryPrimitives.ReadUInt32LittleEndian(input);
         var r1 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);
@@ -164,8 +164,8 @@ public sealed class TwofishBlockCipher
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBits / 8);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
 
         var r2 = BinaryPrimitives.ReadUInt32LittleEndian(input);
         var r3 = BinaryPrimitives.ReadUInt32LittleEndian(input[4..]);

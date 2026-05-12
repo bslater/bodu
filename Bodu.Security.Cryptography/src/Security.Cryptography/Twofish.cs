@@ -204,14 +204,14 @@ public sealed class Twofish
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
     }
 
     /// <inheritdoc />
@@ -230,10 +230,6 @@ public sealed class Twofish
 
         base.Dispose(disposing);
     }
-
-    private int BlockSizeBytes => this.BlockSizeValue / 8;
-
-    private int KeySizeBytes => this.KeySizeValue / 8;
 
     private static IBlockCipher CreateCipher(byte[] key) => new TwofishBlockCipher(key);
 

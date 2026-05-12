@@ -250,7 +250,7 @@ public sealed class Camellia
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -299,11 +299,6 @@ public sealed class Camellia
         base.Dispose(disposing);
     }
 
-    /// <summary>
-    /// Gets the configured block size expressed in bytes.
-    /// </summary>
-    /// <returns>The block size in bytes.</returns>
-    private int BlockSizeBytes => this.BlockSizeValue / 8;
 
     /// <summary>
     /// Gets the configured key size expressed in bytes.
