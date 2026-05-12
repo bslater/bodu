@@ -67,6 +67,6 @@ public static partial class IComparableExtensions
                 ? throw new ArgumentNullException(nameof(comparer))
                 : value1 is null || value2 is null ? false
                 : comparer.Compare(value1.Value, value2.Value) > 0
-                    ? comparer.Compare(value, value2.Value) < 0 && comparer.Compare(value, value1.Value) > 0
-                    : comparer.Compare(value, value1.Value) < 0 && comparer.Compare(value, value2.Value) > 0;
+                    ? comparer.Compare(value, value2.Value) < 0 || comparer.Compare(value, value1.Value) > 0
+                    : comparer.Compare(value, value1.Value) < 0 || comparer.Compare(value, value2.Value) > 0;
 }
