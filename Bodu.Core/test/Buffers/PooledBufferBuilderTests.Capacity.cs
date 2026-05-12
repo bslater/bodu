@@ -22,7 +22,8 @@ public partial class PooledBufferBuilderTests
 
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.Capacity"/> grows when elements are appended beyond the
-    /// initial capacity.
+    /// initial capacity. The append count is derived from the actual rented length so the test does not rely on a
+    /// specific <see cref="ArrayPool{T}"/> bucket size.
     /// </summary>
     [TestMethod]
     public void Capacity_WhenCapacityExceeded_ShouldIncreaseAfterGrowth()
@@ -30,7 +31,9 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>(2);
         int initialCapacity = builder.Capacity;
 
-        for (int i = 0; i < 10; i++)
+        // ArrayPool may round up the rented buffer beyond the requested capacity, so append one element more
+        // than the actual capacity to guarantee a growth event.
+        for (int i = 0; i <= initialCapacity; i++)
             builder.Append(i);
 
         Assert.IsTrue(builder.Capacity > initialCapacity);
