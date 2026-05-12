@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipelineScenarioTests.WeakSpots.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -583,9 +583,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
 		NotableDateService service = BuildService(rule);
 
-		DateTimeKind kind = (DateTimeKind)kindAsInt;
-		DateTime start = DateTime.SpecifyKind(new DateTime(2026, 7, 1), kind);
-		DateTime end = DateTime.SpecifyKind(new DateTime(2026, 7, 31), kind);
+		var kind = (DateTimeKind)kindAsInt;
+		var start = DateTime.SpecifyKind(new DateTime(2026, 7, 1), kind);
+		var end = DateTime.SpecifyKind(new DateTime(2026, 7, 31), kind);
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(start, end);
 

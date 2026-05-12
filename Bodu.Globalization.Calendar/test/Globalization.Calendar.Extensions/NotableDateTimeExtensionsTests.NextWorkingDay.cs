@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensionsTests.NextWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -69,7 +69,7 @@ public partial class NotableDateTimeExtensionsTests
     public void NextWorkingDay_WhenCountIsZero_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService();
-        DateTime input = new DateTime(2026, 1, 3, 14, 30, 0, DateTimeKind.Utc);
+        var input = new DateTime(2026, 1, 3, 14, 30, 0, DateTimeKind.Utc);
 
         DateTime result = input.NextWorkingDay(service, count: 0);
 
@@ -84,7 +84,7 @@ public partial class NotableDateTimeExtensionsTests
     public void NextWorkingDay_WhenCalled_ShouldPreserveKindAndTimeOfDay()
     {
         NotableDateService service = BuildService();
-        DateTime input = new DateTime(2026, 1, 6, 9, 15, 30, DateTimeKind.Utc);
+        var input = new DateTime(2026, 1, 6, 9, 15, 30, DateTimeKind.Utc);
 
         DateTime result = input.NextWorkingDay(service);
 

@@ -24,7 +24,7 @@ public sealed class SmokeTests
     [TestMethod]
     public void Threefish256_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
     {
-        using Bodu.Security.Cryptography.Threefish256 algorithm = Bodu.Security.Cryptography.Threefish256.Create();
+        using var algorithm = Bodu.Security.Cryptography.Threefish256.Create();
         algorithm.Mode = CipherMode.CBC;
         algorithm.Padding = PaddingMode.PKCS7;
         algorithm.GenerateKey();

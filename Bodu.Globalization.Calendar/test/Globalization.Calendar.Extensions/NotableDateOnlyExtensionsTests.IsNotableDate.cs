@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.IsNotableDate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -57,7 +57,7 @@ public partial class NotableDateOnlyExtensionsTests
     public void IsNotableDate_WhenFilterMatches_ShouldReturnTrue()
     {
         NotableDateService service = BuildService(Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
         bool result = new DateOnly(2026, 12, 25).IsNotableDate(service, filter);
 
@@ -71,7 +71,7 @@ public partial class NotableDateOnlyExtensionsTests
     public void IsNotableDate_WhenFilterExcludes_ShouldReturnFalse()
     {
         NotableDateService service = BuildService(Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
 
         bool result = new DateOnly(2026, 12, 25).IsNotableDate(service, filter);
 

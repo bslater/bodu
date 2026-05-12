@@ -48,12 +48,12 @@ public partial class AsconAead128Tests
         for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(0xFF - i);
 
         var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
-        using AsconAead128 enc = new AsconAead128(ValidKey, ValidNonce);
+        using var enc = new AsconAead128(ValidKey, ValidNonce);
         enc.ProcessAssociatedData(aad);
         enc.Encrypt(plaintext, ciphertext);
 
         var recovered = new byte[plaintext.Length];
-        using AsconAead128 dec = new AsconAead128(ValidKey, ValidNonce);
+        using var dec = new AsconAead128(ValidKey, ValidNonce);
         dec.ProcessAssociatedData(aad);
         dec.Decrypt(ciphertext, recovered);
 

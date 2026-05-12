@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilder.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -145,7 +145,7 @@ public sealed class NotableDateDocumentBuilder
             OmitXmlDeclaration = false,
         };
 
-        using XmlWriter writer = XmlWriter.Create(sb, settings);
+        using var writer = XmlWriter.Create(sb, settings);
         document.WriteTo(writer);
         writer.Flush();
         return sb.ToString();

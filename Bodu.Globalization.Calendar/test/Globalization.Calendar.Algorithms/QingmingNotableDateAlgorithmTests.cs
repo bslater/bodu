@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="QingmingNotableDateAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -47,7 +47,7 @@ public sealed class QingmingNotableDateAlgorithmTests
 	public void GetDate_WhenGivenKnownYears_ShouldFallWithinOneDayOfExpectedDate(int year, int expectedMonth, int expectedDay)
 	{
 		DateTime? result = _algorithm.GetDate(year);
-		DateTime expected = new DateTime(year, expectedMonth, expectedDay);
+		var expected = new DateTime(year, expectedMonth, expectedDay);
 
 		Assert.IsNotNull(result);
 		int dayDiff = Math.Abs((result!.Value - expected).Days);

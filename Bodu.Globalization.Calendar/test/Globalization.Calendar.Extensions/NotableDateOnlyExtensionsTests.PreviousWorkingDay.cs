@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.PreviousWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -56,7 +56,7 @@ public partial class NotableDateOnlyExtensionsTests
     public void PreviousWorkingDay_WhenCountIsZero_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService();
-        DateOnly input = new DateOnly(2026, 1, 3);
+        var input = new DateOnly(2026, 1, 3);
 
         DateOnly result = input.PreviousWorkingDay(service, count: 0);
 

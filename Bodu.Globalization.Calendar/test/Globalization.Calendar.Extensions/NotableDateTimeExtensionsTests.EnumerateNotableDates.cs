@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensionsTests.EnumerateNotableDates.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class NotableDateTimeExtensionsTests
         NotableDateService service = BuildService(
             Fixed("Festival", 4, 1, NotableDateCategory.Cultural),
             Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
         NotableDate[] result = new DateTime(2026, 1, 1).EnumerateNotableDates(new DateTime(2026, 12, 31), service, filter).ToArray();
 

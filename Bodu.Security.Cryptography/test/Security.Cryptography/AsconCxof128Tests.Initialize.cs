@@ -15,7 +15,7 @@ public partial class AsconCxof128Tests
     [TestMethod]
     public void Initialize_AfterCustomize_ShouldAllowFreshCustomization()
     {
-        using AsconCxof128 sut = new AsconCxof128();
+        using var sut = new AsconCxof128();
         sut.Customize([0x01]);
         sut.Absorb([0x02]);
 

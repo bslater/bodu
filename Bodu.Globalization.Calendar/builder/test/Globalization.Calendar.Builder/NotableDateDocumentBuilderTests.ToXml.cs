@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.ToXml.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -132,8 +132,8 @@ public partial class NotableDateDocumentBuilderTests
             .AddDate("Boxing Day", date => date
                 .AddRule(rule => rule.Category(NotableDateCategory.Holiday).Fixed(12, 26)));
 
-        XDocument doc = builder.ToXDocument();
-        List<XElement> notableDates = doc.Descendants(CalendarNs + "NotableDate").ToList();
+        var doc = builder.ToXDocument();
+        var notableDates = doc.Descendants(CalendarNs + "NotableDate").ToList();
 
         Assert.AreEqual(2, notableDates.Count);
         Assert.AreEqual("Christmas Day", notableDates[0].Attribute("name")?.Value);
@@ -245,7 +245,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void ToXDocument_WhenValid_ShouldReturnDocumentWithCalendarNamespace()
     {
-        XDocument doc = NotableDateDocumentBuilder.Create()
+        var doc = NotableDateDocumentBuilder.Create()
             .AddDate("Test", date => date
                 .AddRule(rule => rule.Category(NotableDateCategory.Holiday).Fixed(1, 1)))
             .ToXDocument();

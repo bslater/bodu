@@ -15,7 +15,7 @@ public partial class AsconCxof128Tests
     [TestMethod]
     public void Customize_WhenCalledTwice_ShouldThrowInvalidOperationException()
     {
-        using AsconCxof128 sut = new AsconCxof128();
+        using var sut = new AsconCxof128();
         sut.Customize([0x01]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -31,7 +31,7 @@ public partial class AsconCxof128Tests
     [TestMethod]
     public void Customize_AfterAbsorb_ShouldThrowInvalidOperationException()
     {
-        using AsconCxof128 sut = new AsconCxof128();
+        using var sut = new AsconCxof128();
         sut.Absorb([0x01]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -47,7 +47,7 @@ public partial class AsconCxof128Tests
     [TestMethod]
     public void Customize_WhenDisposed_ShouldThrowObjectDisposedException()
     {
-        AsconCxof128 sut = new AsconCxof128();
+        var sut = new AsconCxof128();
         sut.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

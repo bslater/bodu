@@ -31,7 +31,7 @@ public partial class AsconAead128Tests
             return;
         }
 
-        AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
+        var sut = new AsconAead128(ValidKey, ValidNonce);
 
         sut.ProcessAssociatedData([0x01, 0x02, 0x03, 0x04]);
 
@@ -55,7 +55,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
-        AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
+        var sut = new AsconAead128(ValidKey, ValidNonce);
 
         sut.Dispose();
 

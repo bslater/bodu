@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CoverageGapFillTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -650,8 +650,8 @@ public sealed class CoverageGapFillTests
 		var groupB = new NotableDateRuleUseGroup("res2", UseAll: false, ImmutableArray<NotableDateRuleUseDirective>.Empty);
 		var rule = FixedRule("X", 1, 1);
 
-		ImmutableArray<NotableDateRuleUseGroup> sharedGroups = ImmutableArray.Create(groupA);
-		ImmutableArray<NotableDateRule> sharedRules = ImmutableArray.Create(rule);
+		var sharedGroups = ImmutableArray.Create(groupA);
+		var sharedRules = ImmutableArray.Create(rule);
 
 		var docA = new ParsedNotableDateDocument(sharedGroups, sharedRules);
 		var docACopy = new ParsedNotableDateDocument(sharedGroups, sharedRules);

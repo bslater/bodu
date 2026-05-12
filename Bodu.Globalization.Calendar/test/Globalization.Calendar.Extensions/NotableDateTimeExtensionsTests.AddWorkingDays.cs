@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensionsTests.AddWorkingDays.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public partial class NotableDateTimeExtensionsTests
     public void AddWorkingDays_WhenZeroDays_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService();
-        DateTime weekend = new DateTime(2026, 1, 3, 9, 0, 0, DateTimeKind.Utc);
+        var weekend = new DateTime(2026, 1, 3, 9, 0, 0, DateTimeKind.Utc);
 
         DateTime result = weekend.AddWorkingDays(service, days: 0);
 
@@ -58,7 +58,7 @@ public partial class NotableDateTimeExtensionsTests
     public void AddWorkingDays_WhenZeroDaysOnNonWorkingRuleDay_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService(Fixed("Holiday", 1, 1, nonWorking: true));
-        DateTime input = new DateTime(2026, 1, 1);
+        var input = new DateTime(2026, 1, 1);
 
         DateTime result = input.AddWorkingDays(service, days: 0);
 
@@ -137,7 +137,7 @@ public partial class NotableDateTimeExtensionsTests
     public void AddWorkingDays_WhenCalled_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
     {
         NotableDateService service = BuildService();
-        DateTime input = new DateTime(2026, 1, 6, 11, 22, 33, kind);
+        var input = new DateTime(2026, 1, 6, 11, 22, 33, kind);
 
         DateTime forward = input.AddWorkingDays(service, days: 2);
         DateTime backward = input.AddWorkingDays(service, days: -2);

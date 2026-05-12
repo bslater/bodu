@@ -34,7 +34,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 
     public static string GetEncryptTestDisplayName(MethodInfo methodInfo, object[] data)
     {
-        TVariant variant = (TVariant)data[0];
+        var variant = (TVariant)data[0];
         var testName = (string)data[1];
         return $"{testName} (Variant: {variant})";
     }
@@ -54,7 +54,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 
     public static string GetValidSingleBlockTestDisplayName(MethodInfo methodInfo, object[] data)
     {
-        TVariant variant = (TVariant)data[0];
+        var variant = (TVariant)data[0];
         var testName = (string)data[1];
         return $"{testName} (Variant: {variant})";
     }
@@ -79,7 +79,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 
     public static string GetInvalidBlockSizeTestDisplayName(MethodInfo methodInfo, object[] data)
     {
-        TVariant variant = (TVariant)data[0];
+        var variant = (TVariant)data[0];
         var blockSize= (byte[])data[1];
         return $"Block Size:{blockSize.Length} (Variant: {variant})";
     }
@@ -91,9 +91,9 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public void Encrypt_WhenCalled_ShouldNotModifyInputBuffer()
     {
         using TCipher cipher = CreateBlockCipher();
-        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize / 8);
+        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
         var input = original.ToArray();
-        var output = new byte[cipher.BlockSize / 8];
+        var output = new byte[cipher.BlockSize];
 
         cipher.Encrypt(input, output);
 
@@ -112,7 +112,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher1 = CreateBlockCipher(variant);
         using TCipher cipher2 = CreateBlockCipher(variant);
 
-        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize / 8);
+        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize);
 
         var output1 = new byte[specification.BlockSize];
         var output2 = new byte[specification.BlockSize];
@@ -134,7 +134,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         BlockCipherSpecification specification = GetSpecification(variant);
         using TCipher cipher = CreateBlockCipher(variant);
 
-        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize / 8);
+        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
 
         var output1 = new byte[specification.BlockSize];
         var output2 = new byte[specification.BlockSize];
@@ -171,7 +171,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher = CreateBlockCipher(variant);
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            cipher.Encrypt(input, new byte[cipher.BlockSize / 8]);
+            cipher.Encrypt(input, new byte[cipher.BlockSize]);
         });
     }
 
@@ -185,7 +185,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher = CreateBlockCipher(variant);
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            cipher.Encrypt(new byte[cipher.BlockSize / 8], output);
+            cipher.Encrypt(new byte[cipher.BlockSize], output);
         });
     }
 
@@ -198,7 +198,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     {
         using TCipher cipher = CreateBlockCipher();
 
-        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize / 8);
+        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
         var buffer = (byte[])original.Clone();
 
         cipher.Encrypt(buffer, buffer);
@@ -216,9 +216,9 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     {
         using TCipher cipher = CreateBlockCipher(variant);
 
-        var encrypted = new byte[cipher.BlockSize / 8];
+        var encrypted = new byte[cipher.BlockSize];
         cipher.Encrypt(input, encrypted);
-        var actual = new byte[cipher.BlockSize / 8];
+        var actual = new byte[cipher.BlockSize];
         cipher.Decrypt(encrypted, actual);
 
         CollectionAssert.AreEqual(input, actual, $"Cipher mismatch for {testName} using variant '{variant}'.");

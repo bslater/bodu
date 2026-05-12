@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensionsTests.SnapToNearestWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class NotableDateTimeExtensionsTests
     public void SnapToNearestWorkingDay_WhenInputIsWorkingDay_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService();
-        DateTime input = new DateTime(2026, 1, 6);
+        var input = new DateTime(2026, 1, 6);
 
         DateTime result = input.SnapToNearestWorkingDay(service);
 
@@ -106,7 +106,7 @@ public partial class NotableDateTimeExtensionsTests
     public void SnapToNearestWorkingDay_WhenSnapped_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
     {
         NotableDateService service = BuildService();
-        DateTime input = new DateTime(2026, 1, 3, 11, 22, 33, kind); // Saturday → snaps backward
+        var input = new DateTime(2026, 1, 3, 11, 22, 33, kind); // Saturday → snaps backward
 
         DateTime result = input.SnapToNearestWorkingDay(service);
 

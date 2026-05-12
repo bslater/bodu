@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateFilterTests.Validation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,7 +27,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void ForCategory_WhenRuleCategoryMatchesEveryEnumValue_IsRuleEligibleReturnsTrue(NotableDateCategory category)
 	{
-		NotableDateFilter filter = NotableDateFilter.ForCategory(category);
+		var filter = NotableDateFilter.ForCategory(category);
 		NotableDateRule rule = MakeRule(category: category);
 
 		Assert.IsTrue(filter.IsRuleEligible(rule));
@@ -46,7 +46,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void ForCategory_WhenRuleCategoryDiffersFromFilterValue_IsRuleEligibleReturnsFalse(NotableDateCategory filterCategory, NotableDateCategory ruleCategory)
 	{
-		NotableDateFilter filter = NotableDateFilter.ForCategory(filterCategory);
+		var filter = NotableDateFilter.ForCategory(filterCategory);
 		NotableDateRule rule = MakeRule(category: ruleCategory);
 
 		Assert.IsFalse(filter.IsRuleEligible(rule));
@@ -65,7 +65,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void ForCategory_WhenDateCategoryMatchesEveryEnumValue_IsMatchReturnsTrue(NotableDateCategory category)
 	{
-		NotableDateFilter filter = NotableDateFilter.ForCategory(category);
+		var filter = NotableDateFilter.ForCategory(category);
 		NotableDate date = MakeDate(category: category);
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -89,7 +89,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithMinDuration_RuleGate_WhenDurationVariesRelativeToMinimum_ShouldMatchExpected(int minimumDays, int durationDays, bool expectedMatch)
 	{
-		NotableDateFilter filter = NotableDateFilter.WithMinDuration(minimumDays);
+		var filter = NotableDateFilter.WithMinDuration(minimumDays);
 		NotableDateRule rule = MakeRule(durationDays: durationDays);
 
 		Assert.AreEqual(expectedMatch, filter.IsRuleEligible(rule));
@@ -109,7 +109,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithMinDuration_DateGate_WhenDurationVariesRelativeToMinimum_ShouldMatchExpected(int minimumDays, int durationDays, bool expectedMatch)
 	{
-		NotableDateFilter filter = NotableDateFilter.WithMinDuration(minimumDays);
+		var filter = NotableDateFilter.WithMinDuration(minimumDays);
 		NotableDate date = MakeDate(durationDays: durationDays);
 
 		Assert.AreEqual(expectedMatch, filter.IsMatch(date));
@@ -283,7 +283,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithAnyTag_WhenDateHasAtLeastOneMatchingTag_IsMatchReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAnyTag("Public", "Federal");
+		var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
 		NotableDate date = MakeDate(tags: ImmutableHashSet.Create("Regional", "FEDERAL"));
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -296,7 +296,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithAnyTag_WhenDateHasNoMatchingTag_IsMatchReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAnyTag("Public", "Federal");
+		var filter = NotableDateFilter.WithAnyTag("Public", "Federal");
 		NotableDate date = MakeDate(tags: ImmutableHashSet.Create("Christian"));
 
 		Assert.IsFalse(filter.IsMatch(date));
@@ -309,7 +309,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithAllTags_WhenDateHasAllRequiredTags_IsMatchReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAllTags("Public", "Christian");
+		var filter = NotableDateFilter.WithAllTags("Public", "Christian");
 		NotableDate date = MakeDate(tags: ImmutableHashSet.Create("Christian", "Public", "Federal"));
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -322,7 +322,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithAllTags_WhenDateIsMissingARequiredTag_IsMatchReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAllTags("Public", "Federal");
+		var filter = NotableDateFilter.WithAllTags("Public", "Federal");
 		NotableDate date = MakeDate(tags: ImmutableHashSet.Create("Public"));
 
 		Assert.IsFalse(filter.IsMatch(date));
@@ -335,7 +335,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithName_WhenDateNameMatchesCaseInsensitively_IsMatchReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithName("christmas day");
+		var filter = NotableDateFilter.WithName("christmas day");
 		NotableDate date = MakeDate(name: "Christmas Day");
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -348,7 +348,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithName_WhenDateNameDoesNotMatch_IsMatchReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithName("Christmas Day");
+		var filter = NotableDateFilter.WithName("Christmas Day");
 		NotableDate date = MakeDate(name: "Easter Sunday");
 
 		Assert.IsFalse(filter.IsMatch(date));
@@ -361,7 +361,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithAnyName_WhenDateNameIsOneOfAccepted_IsMatchReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAnyName("Christmas Day", "Easter Sunday");
+		var filter = NotableDateFilter.WithAnyName("Christmas Day", "Easter Sunday");
 		NotableDate date = MakeDate(name: "Easter Sunday");
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -374,7 +374,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WithAnyName_WhenDateNameIsNotAccepted_IsMatchReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAnyName("Christmas Day", "Easter Sunday");
+		var filter = NotableDateFilter.WithAnyName("Christmas Day", "Easter Sunday");
 		NotableDate date = MakeDate(name: "Anzac Day");
 
 		Assert.IsFalse(filter.IsMatch(date));
@@ -392,7 +392,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void IsNonWorkingDay_WhenRuleHasAdjustmentWithNonWorkingFlag_IsRuleEligibleReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+		var filter = NotableDateFilter.IsNonWorkingDay();
 		NotableDateRule rule = MakeRule(isNonWorkingDay: null) with
 		{
 			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
@@ -415,7 +415,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void IsNonWorkingDay_WhenRuleHasAdjustmentWithCustomAction_IsRuleEligibleReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+		var filter = NotableDateFilter.IsNonWorkingDay();
 		NotableDateRule rule = MakeRule(isNonWorkingDay: null) with
 		{
 			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
@@ -437,7 +437,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void IsNonWorkingDay_WhenRuleHasAdjustmentWithCustomTrigger_IsRuleEligibleReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+		var filter = NotableDateFilter.IsNonWorkingDay();
 		NotableDateRule rule = MakeRule(isNonWorkingDay: null) with
 		{
 			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
@@ -459,7 +459,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void IsNonWorkingDay_WhenRuleIsNonWorkingNullAndHasNoAdjustments_IsRuleEligibleReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+		var filter = NotableDateFilter.IsNonWorkingDay();
 		NotableDateRule rule = MakeRule(isNonWorkingDay: null);
 
 		Assert.IsFalse(filter.IsRuleEligible(rule));
@@ -473,7 +473,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void IsNonWorkingDay_WhenRuleHasAdjustmentWithNonWorkingFalse_IsRuleEligibleReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+		var filter = NotableDateFilter.IsNonWorkingDay();
 		NotableDateRule rule = MakeRule(isNonWorkingDay: null) with
 		{
 			Adjustments = ImmutableArray.Create(new ObservanceAdjustment
@@ -499,9 +499,9 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void InDateRange_WhenDateIsExactlyOnStartBoundary_IsMatchReturnsTrue()
 	{
-		DateTime start = new DateTime(2024, 6, 1);
-		DateTime end = new DateTime(2024, 6, 30);
-		NotableDateFilter filter = NotableDateFilter.InDateRange(start, end);
+		var start = new DateTime(2024, 6, 1);
+		var end = new DateTime(2024, 6, 30);
+		var filter = NotableDateFilter.InDateRange(start, end);
 		NotableDate date = MakeDate(date: start);
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -514,9 +514,9 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void InDateRange_WhenDateIsExactlyOnEndBoundary_IsMatchReturnsTrue()
 	{
-		DateTime start = new DateTime(2024, 6, 1);
-		DateTime end = new DateTime(2024, 6, 30);
-		NotableDateFilter filter = NotableDateFilter.InDateRange(start, end);
+		var start = new DateTime(2024, 6, 1);
+		var end = new DateTime(2024, 6, 30);
+		var filter = NotableDateFilter.InDateRange(start, end);
 		NotableDate date = MakeDate(date: end);
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -529,8 +529,8 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void InDateRange_WhenStartEqualsEndAndDateMatchesThatDay_IsMatchReturnsTrue()
 	{
-		DateTime day = new DateTime(2024, 6, 15);
-		NotableDateFilter filter = NotableDateFilter.InDateRange(day, day);
+		var day = new DateTime(2024, 6, 15);
+		var filter = NotableDateFilter.InDateRange(day, day);
 		NotableDate date = MakeDate(date: day);
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -543,8 +543,8 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void InDateRange_WhenStartEqualsEndAndDateIsOutside_IsMatchReturnsFalse()
 	{
-		DateTime day = new DateTime(2024, 6, 15);
-		NotableDateFilter filter = NotableDateFilter.InDateRange(day, day);
+		var day = new DateTime(2024, 6, 15);
+		var filter = NotableDateFilter.InDateRange(day, day);
 		NotableDate date = MakeDate(date: new DateTime(2024, 6, 16));
 
 		Assert.IsFalse(filter.IsMatch(date));
@@ -559,7 +559,7 @@ public sealed partial class NotableDateFilterTests
 	public void InDateRange_WhenBoundsHaveTimeComponents_ShouldCompareDateOnly()
 	{
 		// Supplying bounds with time parts; after stripping these become 2024-06-01 and 2024-06-30.
-		NotableDateFilter filter = NotableDateFilter.InDateRange(
+		var filter = NotableDateFilter.InDateRange(
 			new DateTime(2024, 6, 1, 23, 59, 59),
 			new DateTime(2024, 6, 30, 0, 0, 1));
 		NotableDate date = MakeDate(date: new DateTime(2024, 6, 1));
@@ -575,7 +575,7 @@ public sealed partial class NotableDateFilterTests
 	public void InDateRange_WhenMultiDaySpanEndsJustBeforeRangeStart_IsMatchReturnsFalse()
 	{
 		// Four-day span 28–31 May; range begins 1 June — no day in common.
-		NotableDateFilter filter = NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
+		var filter = NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
 		NotableDate date = MakeDate(date: new DateTime(2024, 5, 28), durationDays: 4);
 
 		Assert.IsFalse(filter.IsMatch(date));
@@ -589,7 +589,7 @@ public sealed partial class NotableDateFilterTests
 	public void InDateRange_WhenMultiDaySpanStartsJustAfterRangeEnd_IsMatchReturnsFalse()
 	{
 		// Range ends 30 June; three-day span starts 1 July — no day in common.
-		NotableDateFilter filter = NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
+		var filter = NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
 		NotableDate date = MakeDate(date: new DateTime(2024, 7, 1), durationDays: 3);
 
 		Assert.IsFalse(filter.IsMatch(date));
@@ -606,7 +606,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void AllOf_WhenAllPrimaryGatesPass_IsRuleEligibleReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.AllOf(
+		var filter = NotableDateFilter.AllOf(
 			NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
 			NotableDateFilter.WithTag("Public"),
 			NotableDateFilter.IsNonWorkingDay());
@@ -625,7 +625,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void AllOf_WhenOnePrimaryGateFails_IsRuleEligibleReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.AllOf(
+		var filter = NotableDateFilter.AllOf(
 			NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
 			NotableDateFilter.WithTag("Public"));
 		NotableDateRule rule = MakeRule(category: NotableDateCategory.Observance, tags: ImmutableHashSet.Create("Public"));
@@ -640,7 +640,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void AnyOf_WhenOnePrimaryGatePasses_IsRuleEligibleReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.AnyOf(
+		var filter = NotableDateFilter.AnyOf(
 			NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
 			NotableDateFilter.ForCategory(NotableDateCategory.Observance));
 		NotableDateRule rule = MakeRule(category: NotableDateCategory.Observance);
@@ -655,7 +655,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void AnyOf_WhenAllPrimaryGatesFail_IsRuleEligibleReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.AnyOf(
+		var filter = NotableDateFilter.AnyOf(
 			NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
 			NotableDateFilter.ForCategory(NotableDateCategory.Observance));
 		NotableDateRule rule = MakeRule(category: NotableDateCategory.Cultural);
@@ -670,7 +670,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void AnyOf_WhenAllFiltersMatch_IsMatchReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.AnyOf(
+		var filter = NotableDateFilter.AnyOf(
 			NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
 			NotableDateFilter.IsNonWorkingDay());
 		NotableDate date = MakeDate(category: NotableDateCategory.Holiday, isNonWorkingDay: true);
@@ -689,7 +689,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void ForAnyCategory_WhenDateCategoryIsOneOfAccepted_IsMatchReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday, NotableDateCategory.Observance);
+		var filter = NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday, NotableDateCategory.Observance);
 		NotableDate date = MakeDate(category: NotableDateCategory.Observance);
 
 		Assert.IsTrue(filter.IsMatch(date));
@@ -702,7 +702,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void ForAnyCategory_WhenDateCategoryIsNotAccepted_IsMatchReturnsFalse()
 	{
-		NotableDateFilter filter = NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday, NotableDateCategory.Observance);
+		var filter = NotableDateFilter.ForAnyCategory(NotableDateCategory.Holiday, NotableDateCategory.Observance);
 		NotableDate date = MakeDate(category: NotableDateCategory.Cultural);
 
 		Assert.IsFalse(filter.IsMatch(date));
@@ -719,7 +719,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WasAdjusted_ForRuleWithNonWorkingFlag_IsRuleEligibleAlwaysReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.WasAdjusted();
+		var filter = NotableDateFilter.WasAdjusted();
 		NotableDateRule rule = MakeRule(isNonWorkingDay: true);
 
 		Assert.IsTrue(filter.IsRuleEligible(rule));
@@ -732,7 +732,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void WasAdjusted_ForRuleWithNoAdjustments_IsRuleEligibleAlwaysReturnsTrue()
 	{
-		NotableDateFilter filter = NotableDateFilter.WasAdjusted();
+		var filter = NotableDateFilter.WasAdjusted();
 		NotableDateRule rule = MakeRule(isNonWorkingDay: false);
 
 		Assert.IsTrue(filter.IsRuleEligible(rule));

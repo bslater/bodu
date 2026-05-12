@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the 2-character check code of an alphanumeric string using the ISO 7064 <c>MOD 97-10</c> pure
@@ -40,7 +40,7 @@ public sealed class Iso7064Mod97_10
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
-    private int _r;
+    private int r;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Iso7064Mod97_10" /> class.
@@ -61,10 +61,10 @@ public sealed class Iso7064Mod97_10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int r = this._r;
-        for (int i = 0; i < body.Length; i++)
+        var r = this.r;
+        for (var i = 0; i < body.Length; i++)
         {
-            char ch = body[i];
+            var ch = body[i];
             if ((uint)(ch - '0') <= 9u)
             {
                 r = ((r * 10) + (ch - '0')) % 97;
@@ -79,12 +79,12 @@ public sealed class Iso7064Mod97_10
             }
         }
 
-        this._r = r;
+        this.r = r;
     }
 
     /// <inheritdoc />
     public override void Reset() =>
-        _r = 0;
+        r = 0;
 
     /// <inheritdoc />
     public override int GetCurrentCheckDigits(Span<char> destination)
@@ -92,8 +92,8 @@ public sealed class Iso7064Mod97_10
         if (destination.Length < CheckLength)
             throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
 
-        int full = (_r * 100) % 97;
-        int check = (98 - full) % 97;
+        var full = (r * 100) % 97;
+        var check = (98 - full) % 97;
         destination[0] = (char)('0' + (check / 10));
         destination[1] = (char)('0' + (check % 10));
         return CheckLength;
@@ -109,7 +109,7 @@ public sealed class Iso7064Mod97_10
     /// </exception>
     public static string Compute(ReadOnlySpan<char> body)
     {
-        Iso7064Mod97_10 engine = new Iso7064Mod97_10();
+        var engine = new Iso7064Mod97_10();
         engine.Append(body);
         return engine.GetCurrentCheckDigits();
     }
@@ -129,10 +129,10 @@ public sealed class Iso7064Mod97_10
     {
         if (valueIncludingCheck.IsEmpty) return true;
 
-        int r = 0;
-        for (int i = 0; i < valueIncludingCheck.Length; i++)
+        var r = 0;
+        for (var i = 0; i < valueIncludingCheck.Length; i++)
         {
-            char ch = valueIncludingCheck[i];
+            var ch = valueIncludingCheck[i];
             if ((uint)(ch - '0') <= 9u)
             {
                 r = ((r * 10) + (ch - '0')) % 97;

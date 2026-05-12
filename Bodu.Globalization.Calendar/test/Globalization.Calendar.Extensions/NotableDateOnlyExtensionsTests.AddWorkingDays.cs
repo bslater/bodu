@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.AddWorkingDays.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public partial class NotableDateOnlyExtensionsTests
     public void AddWorkingDays_WhenZeroDays_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService();
-        DateOnly weekend = new DateOnly(2026, 1, 3);
+        var weekend = new DateOnly(2026, 1, 3);
 
         DateOnly result = weekend.AddWorkingDays(service, days: 0);
 
@@ -57,7 +57,7 @@ public partial class NotableDateOnlyExtensionsTests
     public void AddWorkingDays_WhenZeroDaysOnNonWorkingRuleDay_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService(Fixed("Holiday", 1, 1, nonWorking: true));
-        DateOnly input = new DateOnly(2026, 1, 1);
+        var input = new DateOnly(2026, 1, 1);
 
         DateOnly result = input.AddWorkingDays(service, days: 0);
 

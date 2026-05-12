@@ -295,7 +295,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             var size = Math.Max(algorithm.InputBlockSize - 1, 1);
             var len = input.Length - size;
 
-            Random rnd = new Random();
+            var rnd = new Random();
 
             while (pos < len)
             {

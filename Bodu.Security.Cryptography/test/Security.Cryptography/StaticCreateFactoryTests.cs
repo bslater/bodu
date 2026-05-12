@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StaticCreateFactoryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed class StaticCreateFactoryTests
     [TestMethod]
     public void Camellia_Create_ShouldReturnNonNullInstance()
     {
-        using Camellia algorithm = Camellia.Create();
+        using var algorithm = Camellia.Create();
 
         Assert.IsNotNull(algorithm);
     }
@@ -31,7 +31,7 @@ public sealed class StaticCreateFactoryTests
     [TestMethod]
     public void Serpent128_Create_ShouldReturnNonNullInstance()
     {
-        using Serpent128 algorithm = Serpent128.Create();
+        using var algorithm = Serpent128.Create();
 
         Assert.IsNotNull(algorithm);
     }
@@ -42,7 +42,7 @@ public sealed class StaticCreateFactoryTests
     [TestMethod]
     public void Serpent256_Create_ShouldReturnNonNullInstance()
     {
-        using Serpent256 algorithm = Serpent256.Create();
+        using var algorithm = Serpent256.Create();
 
         Assert.IsNotNull(algorithm);
     }
@@ -53,7 +53,7 @@ public sealed class StaticCreateFactoryTests
     [TestMethod]
     public void Serpent512_Create_ShouldReturnNonNullInstance()
     {
-        using Serpent512 algorithm = Serpent512.Create();
+        using var algorithm = Serpent512.Create();
 
         Assert.IsNotNull(algorithm);
     }
@@ -64,7 +64,7 @@ public sealed class StaticCreateFactoryTests
     [TestMethod]
     public void Serpent1024_Create_ShouldReturnNonNullInstance()
     {
-        using Serpent1024 algorithm = Serpent1024.Create();
+        using var algorithm = Serpent1024.Create();
 
         Assert.IsNotNull(algorithm);
     }

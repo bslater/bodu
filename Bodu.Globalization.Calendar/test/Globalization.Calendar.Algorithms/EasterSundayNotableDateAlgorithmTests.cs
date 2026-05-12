@@ -471,7 +471,7 @@ public sealed class EasterSundayNotableDateAlgorithmTests
 
     public static string GetKnownEasterSundayTestDataDisplayName(MethodInfo methodInfo, object[] data)
     {
-        EasterSundayKnownAnswer knownAnswer = (EasterSundayKnownAnswer)data[0];
+        var knownAnswer = (EasterSundayKnownAnswer)data[0];
         return $"Year: {knownAnswer.Year}, Calendar: {knownAnswer.CalendarType}, Expected: {knownAnswer.ExpectedDate:yyyy-MM-dd}";
     }
 

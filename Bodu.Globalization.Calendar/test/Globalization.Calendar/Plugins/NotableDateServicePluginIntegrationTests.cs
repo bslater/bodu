@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServicePluginIntegrationTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -128,14 +128,14 @@ public sealed class NotableDateServicePluginIntegrationTests
 		var hostRegistry = new NotableDateAlgorithmRegistry()
 			.Register("host.only", new HostOverrideAlgorithm(new DateTime(2050, 1, 1)));
 
-		NotableDateRule hostOnlyRule = new NotableDateRule
+		var hostOnlyRule = new NotableDateRule
 		{
 			Name = "Host Only",
 			Strategy = DateResolutionStrategy.Algorithm,
 			Category = NotableDateCategory.Observance,
 			AlgorithmKey = "host.only",
 		};
-		NotableDateRule pluginOnlyRule = new NotableDateRule
+		var pluginOnlyRule = new NotableDateRule
 		{
 			Name = "Plugin Only",
 			Strategy = DateResolutionStrategy.Algorithm,

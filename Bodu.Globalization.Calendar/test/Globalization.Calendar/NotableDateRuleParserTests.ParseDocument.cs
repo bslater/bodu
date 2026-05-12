@@ -86,7 +86,7 @@ public partial class NotableDateRuleParserTests
     [TestMethod]
     public void ParseDocument_WhenCalledWithXDocument_ShouldReturnSameDocument()
     {
-        XDocument document = XDocument.Parse(FixedRuleXml);
+        var document = XDocument.Parse(FixedRuleXml);
 
         var parsed = NotableDateRuleParser.ParseDocument(document);
 

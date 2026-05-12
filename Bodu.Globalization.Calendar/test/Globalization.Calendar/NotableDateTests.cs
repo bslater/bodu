@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -125,7 +125,7 @@ public sealed class NotableDateTests
 	[TestMethod]
 	public void DurationDays_WhenUnset_ShouldDefaultToOne()
 	{
-		NotableDate notable = new NotableDate
+		var notable = new NotableDate
 		{
 			Date = Anchor,
 			Name = "X",
@@ -142,7 +142,7 @@ public sealed class NotableDateTests
 	[TestMethod]
 	public void Tags_WhenUnset_ShouldDefaultToEmpty()
 	{
-		NotableDate notable = new NotableDate
+		var notable = new NotableDate
 		{
 			Date = Anchor,
 			Name = "X",
@@ -264,7 +264,7 @@ public sealed class NotableDateTests
 	[TestMethod]
 	public void AdjustmentApplyResult_NotActivated_ShouldCarryFalseActivatedAndOriginalDate()
 	{
-		AdjustmentApplyResult result = AdjustmentApplyResult.NotActivated(new DateTime(2025, 3, 4));
+		var result = AdjustmentApplyResult.NotActivated(new DateTime(2025, 3, 4));
 
 		Assert.IsFalse(result.Activated);
 		Assert.AreEqual(new DateTime(2025, 3, 4), result.AdjustedDate);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LosarNotableDateAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,7 +50,7 @@ public sealed class LosarNotableDateAlgorithmTests
 	public void GetDate_WhenGivenKnownYears_ShouldFallWithinOneDayOfOfficialDate(int year, int knownMonth, int knownDay)
 	{
 		DateTime? result = _algorithm.GetDate(year);
-		DateTime expected = new DateTime(year, knownMonth, knownDay);
+		var expected = new DateTime(year, knownMonth, knownDay);
 
 		Assert.IsNotNull(result);
 		int dayDiff = Math.Abs((result!.Value - expected).Days);

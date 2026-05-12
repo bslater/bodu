@@ -15,7 +15,7 @@ public partial class AsconCxof128Tests
     [TestMethod]
     public void AlgorithmName_ShouldReturnAsconCxof128()
     {
-        using AsconCxof128 sut = new AsconCxof128();
+        using var sut = new AsconCxof128();
         Assert.AreEqual("ASCON-CXOF128", sut.AlgorithmName);
     }
 

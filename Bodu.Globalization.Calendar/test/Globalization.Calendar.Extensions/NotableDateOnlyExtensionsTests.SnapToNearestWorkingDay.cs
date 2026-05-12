@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.SnapToNearestWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class NotableDateOnlyExtensionsTests
     public void SnapToNearestWorkingDay_WhenInputIsWorkingDay_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService();
-        DateOnly input = new DateOnly(2026, 1, 6);
+        var input = new DateOnly(2026, 1, 6);
 
         DateOnly result = input.SnapToNearestWorkingDay(service);
 

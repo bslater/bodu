@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TerritoryCodeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -72,7 +72,7 @@ public sealed class TerritoryCodeTests
 	[TestMethod]
 	public void Parse_WhenInputIsValid_ShouldReturnCanonicalForm()
 	{
-		TerritoryCode parsed = TerritoryCode.Parse("au-nsw");
+		var parsed = TerritoryCode.Parse("au-nsw");
 
 		Assert.AreEqual("AU", parsed.Country);
 		Assert.AreEqual("NSW", parsed.Subdivision);
@@ -110,8 +110,8 @@ public sealed class TerritoryCodeTests
 	[TestMethod]
 	public void Contains_TruthTable(string left, string right, bool expected)
 	{
-		TerritoryCode leftTerritory = TerritoryCode.Parse(left);
-		TerritoryCode rightTerritory = TerritoryCode.Parse(right);
+		var leftTerritory = TerritoryCode.Parse(left);
+		var rightTerritory = TerritoryCode.Parse(right);
 
 		Assert.AreEqual(expected, leftTerritory.Contains(rightTerritory));
 	}
@@ -158,7 +158,7 @@ public sealed class TerritoryCodeTests
 	[TestMethod]
 	public void ToString_ShouldReturnCanonicalForm(string input, string expected)
 	{
-		TerritoryCode parsed = TerritoryCode.Parse(input);
+		var parsed = TerritoryCode.Parse(input);
 
 		Assert.AreEqual(expected, parsed.ToString());
 	}

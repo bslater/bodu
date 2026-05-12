@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensionsTests.SnapToWorkingDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class NotableDateTimeExtensionsTests
     public void SnapToWorkingDay_WhenInputIsWorkingDay_ShouldReturnInputUnchanged()
     {
         NotableDateService service = BuildService();
-        DateTime input = new DateTime(2026, 1, 6, 14, 30, 0, DateTimeKind.Utc);
+        var input = new DateTime(2026, 1, 6, 14, 30, 0, DateTimeKind.Utc);
 
         DateTime result = input.SnapToWorkingDay(service);
 
@@ -93,7 +93,7 @@ public partial class NotableDateTimeExtensionsTests
     public void SnapToWorkingDay_WhenSnapForward_ShouldPreserveKindAndTimeOfDay(DateTimeKind kind)
     {
         NotableDateService service = BuildService();
-        DateTime input = new DateTime(2026, 1, 3, 11, 22, 33, kind); // Saturday
+        var input = new DateTime(2026, 1, 3, 11, 22, 33, kind); // Saturday
 
         DateTime result = input.SnapToWorkingDay(service);
 

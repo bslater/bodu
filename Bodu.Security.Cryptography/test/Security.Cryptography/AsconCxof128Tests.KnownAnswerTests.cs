@@ -47,7 +47,7 @@ public partial class AsconCxof128Tests
         var message = new byte[messageLength];
         for (var i = 0; i < messageLength; i++) message[i] = (byte)i;
 
-        using AsconCxof128 cxof = new AsconCxof128();
+        using var cxof = new AsconCxof128();
         cxof.Customize(customization);
         cxof.Absorb(message);
         var actual = cxof.GetHash(outputLength);
@@ -78,12 +78,12 @@ public partial class AsconCxof128Tests
         var message = new byte[messageLength];
         for (var i = 0; i < messageLength; i++) message[i] = (byte)i;
 
-        using AsconCxof128 first = new AsconCxof128();
+        using var first = new AsconCxof128();
         first.Customize(customization);
         first.Absorb(message);
         var output1 = first.GetHash(32);
 
-        using AsconCxof128 second = new AsconCxof128();
+        using var second = new AsconCxof128();
         second.Customize(customization);
         second.Absorb(message);
         var output2 = second.GetHash(32);
@@ -111,12 +111,12 @@ public partial class AsconCxof128Tests
         var msg1 = new byte[msgLen1]; for (var i = 0; i < msgLen1; i++) msg1[i] = (byte)i;
         var msg2 = new byte[msgLen2]; for (var i = 0; i < msgLen2; i++) msg2[i] = (byte)i;
 
-        using AsconCxof128 c1 = new AsconCxof128();
+        using var c1 = new AsconCxof128();
         c1.Customize(customization);
         c1.Absorb(msg1);
         var output1 = c1.GetHash(32);
 
-        using AsconCxof128 c2 = new AsconCxof128();
+        using var c2 = new AsconCxof128();
         c2.Customize(customization);
         c2.Absorb(msg2);
         var output2 = c2.GetHash(32);
@@ -154,7 +154,7 @@ public partial class AsconCxof128Tests
         var message = new byte[messageLength];
         for (var i = 0; i < messageLength; i++) message[i] = (byte)i;
 
-        using AsconCxof128 cxof = new AsconCxof128();
+        using var cxof = new AsconCxof128();
         cxof.Customize(customization);
         cxof.Absorb(message);
         var actual = cxof.GetHash(outputLength);

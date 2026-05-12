@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconAead128Tests.TagSize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void TagSize_ShouldReturn128()
     {
-        using AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
+        using var sut = new AsconAead128(ValidKey, ValidNonce);
         Assert.AreEqual(128, sut.TagSize);
     }
 }

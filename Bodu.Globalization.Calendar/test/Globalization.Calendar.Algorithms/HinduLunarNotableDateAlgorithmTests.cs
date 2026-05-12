@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HinduLunarNotableDateAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -101,7 +101,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
 
 		DateTime? result = sut.GetDate(year);
-		DateTime expected = new DateTime(year, knownMonth, knownDay);
+		var expected = new DateTime(year, knownMonth, knownDay);
 
 		Assert.IsNotNull(result);
 		int dayDiff = Math.Abs((result!.Value - expected).Days);
@@ -122,7 +122,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Phalguna, HinduPaksha.Shukla, 15);
 
 		DateTime? result = sut.GetDate(year);
-		DateTime expected = new DateTime(year, knownMonth, knownDay);
+		var expected = new DateTime(year, knownMonth, knownDay);
 
 		Assert.IsNotNull(result);
 		int dayDiff = Math.Abs((result!.Value - expected).Days);
@@ -142,7 +142,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Ashvin, HinduPaksha.Shukla, 1);
 
 		DateTime? result = sut.GetDate(year);
-		DateTime expected = new DateTime(year, knownMonth, knownDay);
+		var expected = new DateTime(year, knownMonth, knownDay);
 
 		Assert.IsNotNull(result);
 		int dayDiff = Math.Abs((result!.Value - expected).Days);

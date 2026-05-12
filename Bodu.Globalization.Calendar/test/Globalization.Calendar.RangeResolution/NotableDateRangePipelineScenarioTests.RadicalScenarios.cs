@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipelineScenarioTests.RadicalScenarios.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -275,7 +275,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		};
 
 		// Filter that matches only 28 Dec 2026 — the adjusted date — and explicitly NOT 25 Dec.
-		NotableDateFilter filter = NotableDateFilter.InDateRange(
+		var filter = NotableDateFilter.InDateRange(
 			new DateTime(2026, 12, 28),
 			new DateTime(2026, 12, 28));
 
@@ -372,7 +372,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		NotableDateService service = BuildService(MakeFixedRule("Christmas Day", 12, 25), MakeFixedRule("Boxing Day", 12, 26));
 
 		const int taskCount = 64;
-		Task<IReadOnlyList<NotableDate>>[] tasks = new Task<IReadOnlyList<NotableDate>>[taskCount];
+		var tasks = new Task<IReadOnlyList<NotableDate>>[taskCount];
 
 		for (int i = 0; i < taskCount; i++)
 		{
@@ -438,7 +438,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		const int resolveCount = 32;
 		ConcurrentBag<Exception> exceptions = new();
 
-		Task[] resolveTasks = new Task[resolveCount];
+		var resolveTasks = new Task[resolveCount];
 		for (int i = 0; i < resolveCount; i++)
 		{
 			resolveTasks[i] = Task.Run(() =>
@@ -456,7 +456,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 			});
 		}
 
-		Task invalidateTask = Task.Run(() =>
+		var invalidateTask = Task.Run(() =>
 		{
 			for (int i = 0; i < 10; i++)
 			{
@@ -628,7 +628,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	private static NotableDateRule[] BuildLargeRuleSet(int count)
 	{
 		count = Math.Clamp(count, 1, 365);
-		NotableDateRule[] rules = new NotableDateRule[count];
+		var rules = new NotableDateRule[count];
 		DateTime cursor = new(2026, 1, 1);
 		for (int i = 0; i < count; i++)
 		{

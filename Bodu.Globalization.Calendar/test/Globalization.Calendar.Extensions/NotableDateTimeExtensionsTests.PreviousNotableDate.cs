@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateTimeExtensionsTests.PreviousNotableDate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -65,7 +65,7 @@ public partial class NotableDateTimeExtensionsTests
         NotableDateService service = BuildService(
             Fixed("Festival", 4, 1, NotableDateCategory.Cultural),
             Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
         NotableDate? result = new DateTime(2026, 6, 15).PreviousNotableDate(service, filter);
 
@@ -157,7 +157,7 @@ public partial class NotableDateTimeExtensionsTests
     public void PreviousNotableDate_WhenFilterExcludesEveryRule_ShouldReturnNull()
     {
         NotableDateService service = BuildService(Fixed("Festival", 4, 1, NotableDateCategory.Cultural));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
         NotableDate? result = new DateTime(1, 6, 15).PreviousNotableDate(service, filter);
 

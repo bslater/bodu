@@ -60,7 +60,7 @@ public partial class AsconAead128Tests
     /// <returns>An <see cref="AsconAead128" /> instance ready for encryption or decryption.</returns>
     private static AsconAead128 MakeInstance(ReadOnlySpan<byte> aad = default)
     {
-        AsconAead128 instance = new AsconAead128(ValidKey, ValidNonce);
+        var instance = new AsconAead128(ValidKey, ValidNonce);
         instance.ProcessAssociatedData(aad);
         return instance;
     }

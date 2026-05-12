@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.GetNotableDates.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -84,7 +84,7 @@ public partial class NotableDateOnlyExtensionsTests
     public void GetNotableDates_WhenFilterApplied_ShouldReturnOnlyMatching()
     {
         NotableDateService service = BuildService(Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
 
         IReadOnlyList<NotableDate> result = new DateOnly(2026, 12, 25).GetNotableDates(service, filter);
 

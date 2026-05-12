@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.MalformedProviders.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -335,7 +335,7 @@ public sealed partial class NotableDateServiceTests
 			AlgorithmKey = "wrong-year",
 		};
 
-		NotableDateAlgorithmRegistry registry = new NotableDateAlgorithmRegistry(
+		var registry = new NotableDateAlgorithmRegistry(
 			new[] { new KeyValuePair<string, INotableDateAlgorithm>("wrong-year", new WrongYearAlgorithm()) });
 
 		var service = new NotableDateService(

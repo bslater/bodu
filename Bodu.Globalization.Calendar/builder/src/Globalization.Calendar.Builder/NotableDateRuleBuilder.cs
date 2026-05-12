@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleBuilder.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -429,11 +429,11 @@ public sealed class NotableDateRuleBuilder
         if (_strategy is null)
             throw new InvalidOperationException($"A resolution strategy must be selected (Fixed, DayOfWeekInMonth, OffsetFromAnchor, or Algorithm) before building the rule for '{notableDateName}'.");
 
-        ImmutableArray<ObservanceAdjustment> adjustments = _adjustments
+        var adjustments = _adjustments
             .Select(a => a.Builder.Build(a.Key))
             .ToImmutableArray();
 
-        ImmutableHashSet<string> tags = _tags.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
+        var tags = _tags.ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
 
         NotableDateRule rule = new()
         {

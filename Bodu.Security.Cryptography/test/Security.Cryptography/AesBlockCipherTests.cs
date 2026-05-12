@@ -99,7 +99,7 @@ public sealed partial class AesBlockCipherTests
             cipher.Encrypt(plaintext, ourCiphertext);
 
         var bclCiphertext = new byte[16];
-        using (Aes aes = Aes.Create())
+        using (var aes = Aes.Create())
         {
             aes.Key = key;
             aes.EncryptEcb(plaintext, bclCiphertext, PaddingMode.None);

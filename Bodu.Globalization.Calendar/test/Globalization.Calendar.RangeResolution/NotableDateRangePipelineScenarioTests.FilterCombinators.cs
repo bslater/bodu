@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipelineScenarioTests.FilterCombinators.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -41,8 +41,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[DataRow("Seasonal", "")]
 	public void Filter_ForCategory_ShouldOnlyEmitRulesOfMatchingCategory(string categoryName, string expectedNamesCsv)
 	{
-		NotableDateCategory category = (NotableDateCategory)Enum.Parse(typeof(NotableDateCategory), categoryName);
-		NotableDateFilter filter = NotableDateFilter.ForCategory(category);
+		var category = (NotableDateCategory)Enum.Parse(typeof(NotableDateCategory), categoryName);
+		var filter = NotableDateFilter.ForCategory(category);
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(filter);
 
@@ -57,7 +57,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Filter_ForAnyCategory_ShouldEmitRulesInAnyListedCategory()
 	{
-		NotableDateFilter filter = NotableDateFilter.ForAnyCategory(
+		var filter = NotableDateFilter.ForAnyCategory(
 			NotableDateCategory.Religious,
 			NotableDateCategory.Cultural);
 
@@ -81,7 +81,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[DataRow("Nonexistent", "")]
 	public void Filter_WithTag_ShouldEmitRulesContainingTagCaseInsensitive(string tag, string expectedNamesCsv)
 	{
-		NotableDateFilter filter = NotableDateFilter.WithTag(tag);
+		var filter = NotableDateFilter.WithTag(tag);
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(filter);
 
@@ -94,7 +94,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Filter_WithAnyTag_ShouldEmitRulesContainingAnyOfTheTags()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAnyTag("Christian", "Jewish");
+		var filter = NotableDateFilter.WithAnyTag("Christian", "Jewish");
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(filter);
 
@@ -107,7 +107,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Filter_WithAllTags_ShouldOnlyEmitRulesContainingEveryTag()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAllTags("Christian", "Public");
+		var filter = NotableDateFilter.WithAllTags("Christian", "Public");
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(filter);
 
@@ -125,7 +125,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[DataRow("Does Not Exist", "")]
 	public void Filter_WithName_ShouldEmitRulesByNameCaseInsensitive(string name, string expectedNamesCsv)
 	{
-		NotableDateFilter filter = NotableDateFilter.WithName(name);
+		var filter = NotableDateFilter.WithName(name);
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(filter);
 
@@ -138,7 +138,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Filter_WithAnyName_ShouldEmitRulesInListedNameSet()
 	{
-		NotableDateFilter filter = NotableDateFilter.WithAnyName("Hanukkah", "Labour Day", "Bank Holiday");
+		var filter = NotableDateFilter.WithAnyName("Hanukkah", "Labour Day", "Bank Holiday");
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(filter);
 
@@ -152,7 +152,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Filter_IsNonWorkingDay_ShouldEmitOnlyNonWorkingRules()
 	{
-		NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+		var filter = NotableDateFilter.IsNonWorkingDay();
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(filter);
 
@@ -172,7 +172,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[DataRow(9, "")]
 	public void Filter_WithMinDuration_ShouldEmitOnlyRulesAtOrAboveDuration(int minimumDays, string expectedNamesCsv)
 	{
-		NotableDateFilter filter = NotableDateFilter.WithMinDuration(minimumDays);
+		var filter = NotableDateFilter.WithMinDuration(minimumDays);
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(filter);
 
@@ -191,7 +191,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	public void Filter_InDateRange_ShouldRestrictByDateRangeSecondaryGate()
 	{
 		// Restrict to Christmas week 2026 — Christmas Day (25 Dec) and Boxing Day (26 Dec) intersect, others do not.
-		NotableDateFilter filter = NotableDateFilter.InDateRange(
+		var filter = NotableDateFilter.InDateRange(
 			new DateTime(2026, 12, 24),
 			new DateTime(2026, 12, 27));
 
@@ -209,7 +209,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	{
 		// 31 Dec 2022 = Saturday. The Year-End Holiday rule's IfWeekend / MoveToNextNonWorkingDay adjustment fires and lands on
 		// Mon 2 Jan 2023 (no blocker on Mon since Hanukkah 2022 is in early Dec, not at Jan boundary).
-		NotableDateFilter filter = NotableDateFilter.WasAdjusted();
+		var filter = NotableDateFilter.WasAdjusted();
 
 		IReadOnlyList<NotableDate> resolved = ResolveFilterFixture(
 			filter,
@@ -265,7 +265,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Combinator_AllOf_ShouldRequireEveryFilterToPass()
 	{
-		NotableDateFilter filter = NotableDateFilter.AllOf(
+		var filter = NotableDateFilter.AllOf(
 			NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
 			NotableDateFilter.IsNonWorkingDay(),
 			NotableDateFilter.WithTag("Public"));
@@ -282,7 +282,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Combinator_AnyOf_ShouldEmitUnionAcrossEveryFilter()
 	{
-		NotableDateFilter filter = NotableDateFilter.AnyOf(
+		var filter = NotableDateFilter.AnyOf(
 			NotableDateFilter.WithTag("Workers"),
 			NotableDateFilter.WithTag("Jewish"),
 			NotableDateFilter.WithTag("Asian"));
@@ -352,8 +352,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Combinator_AnyOf_WithSingleFilter_ShouldDelegateToThatFilter()
 	{
-		NotableDateFilter standalone = NotableDateFilter.ForCategory(NotableDateCategory.Bank);
-		NotableDateFilter wrapped = NotableDateFilter.AnyOf(NotableDateFilter.ForCategory(NotableDateCategory.Bank));
+		var standalone = NotableDateFilter.ForCategory(NotableDateCategory.Bank);
+		var wrapped = NotableDateFilter.AnyOf(NotableDateFilter.ForCategory(NotableDateCategory.Bank));
 
 		IReadOnlyList<NotableDate> standaloneResult = ResolveFilterFixture(standalone);
 		IReadOnlyList<NotableDate> wrappedResult = ResolveFilterFixture(wrapped);
@@ -397,9 +397,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that <see cref="NotableDateFilter.InDateRange" /> rejects an inverted range (end before start).
 	/// </summary>
 	[TestMethod]
-	public void Filter_InDateRange_WhenEndIsBeforeStart_ShouldThrowArgumentOutOfRangeException()
+	public void Filter_InDateRange_WhenEndIsBeforeStart_ShouldThrowArgumentException()
 	{
-		ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
 		{
 			_ = NotableDateFilter.InDateRange(new DateTime(2026, 12, 31), new DateTime(2026, 1, 1));
 		});

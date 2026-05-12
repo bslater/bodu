@@ -17,7 +17,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void ProcessAssociatedData_WhenCalledTwice_ShouldThrowInvalidOperationException()
     {
-        using AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
+        using var sut = new AsconAead128(ValidKey, ValidNonce);
         sut.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -33,7 +33,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void ProcessAssociatedData_WhenDisposed_ShouldThrowObjectDisposedException()
     {
-        AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
+        var sut = new AsconAead128(ValidKey, ValidNonce);
         sut.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

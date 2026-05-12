@@ -19,7 +19,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenAadNotProcessed_ShouldThrowInvalidOperationException()
     {
-        using AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
+        using var sut = new AsconAead128(ValidKey, ValidNonce);
         var fakeCtWithTag = new byte[AsconAead128.TagBytes];
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -70,7 +70,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenDisposed_ShouldThrowObjectDisposedException()
     {
-        AsconAead128 sut = new AsconAead128(ValidKey, ValidNonce);
+        var sut = new AsconAead128(ValidKey, ValidNonce);
         sut.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -138,11 +138,11 @@ public partial class AsconAead128Tests
         byte[] plaintext = [0x10, 0x20, 0x30, 0x40];
         var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
 
-        using AsconAead128 enc = new AsconAead128(ValidKey, ValidNonce);
+        using var enc = new AsconAead128(ValidKey, ValidNonce);
         enc.ProcessAssociatedData(aad1);
         enc.Encrypt(plaintext, ciphertext);
 
-        using AsconAead128 dec = new AsconAead128(ValidKey, ValidNonce);
+        using var dec = new AsconAead128(ValidKey, ValidNonce);
         dec.ProcessAssociatedData(aad2);
 
         Assert.ThrowsExactly<CryptographicException>(() =>

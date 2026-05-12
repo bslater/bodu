@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.Build.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -247,7 +247,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void AddDate_WhenNameIsNull_ShouldThrowArgumentNullException()
     {
-        NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create();
+        var builder = NotableDateDocumentBuilder.Create();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -262,7 +262,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void AddDate_WhenConfigureIsNull_ShouldThrowArgumentNullException()
     {
-        NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create();
+        var builder = NotableDateDocumentBuilder.Create();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -286,7 +286,7 @@ public partial class NotableDateDocumentBuilderTests
 
         IReadOnlyList<NotableDateRule> builtRules = builder.Build();
         INotableDateRuleProvider provider = builder.ToProvider();
-        List<NotableDateRule> providerRules = provider.LoadRules().ToList();
+        var providerRules = provider.LoadRules().ToList();
 
         Assert.AreEqual(builtRules.Count, providerRules.Count);
         Assert.AreEqual(builtRules[0].Name, providerRules[0].Name);

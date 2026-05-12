@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.NextNotableDate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -51,7 +51,7 @@ public partial class NotableDateOnlyExtensionsTests
         NotableDateService service = BuildService(
             Fixed("Festival", 4, 1, NotableDateCategory.Cultural),
             Fixed("Christmas Day", 12, 25, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
         NotableDate? result = new DateOnly(2026, 1, 15).NextNotableDate(service, filter);
 

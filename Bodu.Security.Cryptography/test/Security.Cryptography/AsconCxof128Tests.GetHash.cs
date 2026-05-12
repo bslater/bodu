@@ -18,7 +18,7 @@ public partial class AsconCxof128Tests
     {
         byte[] message = [0x01, 0x02, 0x03, 0x04];
 
-        using AsconCxof128 cxof = new AsconCxof128();
+        using var cxof = new AsconCxof128();
         cxof.Customize(ReadOnlySpan<byte>.Empty);
         cxof.Absorb(message);
         var cxofOutput = cxof.GetHash(32);
@@ -37,12 +37,12 @@ public partial class AsconCxof128Tests
     {
         byte[] message = [0xDE, 0xAD];
 
-        using AsconCxof128 cxof1 = new AsconCxof128();
+        using var cxof1 = new AsconCxof128();
         cxof1.Customize([0x01]);
         cxof1.Absorb(message);
         var output1 = cxof1.GetHash(32);
 
-        using AsconCxof128 cxof2 = new AsconCxof128();
+        using var cxof2 = new AsconCxof128();
         cxof2.Customize([0x02]);
         cxof2.Absorb(message);
         var output2 = cxof2.GetHash(32);
@@ -61,12 +61,12 @@ public partial class AsconCxof128Tests
         byte[] customization = [0x41, 0x42, 0x43]; // "ABC"
         byte[] message = [0x10, 0x20, 0x30];
 
-        using AsconCxof128 first = new AsconCxof128();
+        using var first = new AsconCxof128();
         first.Customize(customization);
         first.Absorb(message);
         var output1 = first.GetHash(32);
 
-        using AsconCxof128 second = new AsconCxof128();
+        using var second = new AsconCxof128();
         second.Customize(customization);
         second.Absorb(message);
         var output2 = second.GetHash(32);
@@ -84,12 +84,12 @@ public partial class AsconCxof128Tests
     {
         byte[] bytes = [0x11, 0x22, 0x33];
 
-        using AsconCxof128 normal = new AsconCxof128();
+        using var normal = new AsconCxof128();
         normal.Customize(bytes);
         normal.Absorb([0x44]);
         var outputNormal = normal.GetHash(32);
 
-        using AsconCxof128 swapped = new AsconCxof128();
+        using var swapped = new AsconCxof128();
         swapped.Customize([0x44]);
         swapped.Absorb(bytes);
         var outputSwapped = swapped.GetHash(32);
@@ -110,11 +110,11 @@ public partial class AsconCxof128Tests
     {
         byte[] message = [0x01, 0x02, 0x03];
 
-        using AsconCxof128 uncustomized = new AsconCxof128();
+        using var uncustomized = new AsconCxof128();
         uncustomized.Absorb(message);
         var outputUncustomized = uncustomized.GetHash(32);
 
-        using AsconCxof128 customized = new AsconCxof128();
+        using var customized = new AsconCxof128();
         customized.Customize([0x01]);
         customized.Absorb(message);
         var outputCustomized = customized.GetHash(32);

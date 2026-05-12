@@ -23,7 +23,7 @@ public sealed class Serpent128Tests
     [TestMethod]
     public void Create_WhenInvoked_ShouldReturnNonNullInstance()
     {
-        using Serpent128 algorithm = Serpent128.Create();
+        using var algorithm = Serpent128.Create();
 
         Assert.IsNotNull(algorithm);
         Assert.AreEqual(128, algorithm.BlockSize);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdlerTests.Adler32Tests.32C.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,11 +21,7 @@ public sealed partial class Adler32CTests
         {
             Empty = "00000001",
             Abc = "018D00C7",
-
-            // QuickBrownFox suppressed — tracked by issue #167 (Adler/Fletcher KAT mismatch
-            // observed on PR #166 CI: index 1 expected 0xCD, actual 0xDC). Restore once the
-            // root cause is identified and fixed.
-            // QuickBrownFox = "5BCD0FDA",
+            QuickBrownFox = "5BCD0FDA",
             Zeros16 = "00100001",
 
             // Long-input regression vectors for issue #127 — Adler-32C uses modulus 65536, so

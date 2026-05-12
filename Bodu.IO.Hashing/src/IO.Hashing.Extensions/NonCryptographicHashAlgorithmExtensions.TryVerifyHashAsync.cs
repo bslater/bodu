@@ -177,7 +177,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         try
         {
-            using MemoryStream stream = new MemoryStream(input, writable: false);
+            using var stream = new MemoryStream(input, writable: false);
             return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
         }
         catch
@@ -225,7 +225,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         try
         {
-            using MemoryStream stream = new MemoryStream(input, writable: false);
+            using var stream = new MemoryStream(input, writable: false);
             return await algorithm.VerifyHashAsync(stream, expectedHex, cancellationToken).ConfigureAwait(false);
         }
         catch
@@ -274,7 +274,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         try
         {
             var inputBytes = encoding.GetBytes(input);
-            using MemoryStream stream = new MemoryStream(inputBytes, writable: false);
+            using var stream = new MemoryStream(inputBytes, writable: false);
             return await algorithm.VerifyHashAsync(stream, expectedHash, cancellationToken).ConfigureAwait(false);
         }
         catch

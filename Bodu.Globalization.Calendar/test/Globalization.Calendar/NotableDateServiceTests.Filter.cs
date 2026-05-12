@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.Filter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Observance B", 3, 15, NotableDateCategory.Observance),
 			Fixed("Holiday C", 12, 25, NotableDateCategory.Holiday));
 
-		NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+		var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(2, results.Count);
@@ -62,7 +62,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Holiday A", 1, 1, NotableDateCategory.Holiday),
 			Fixed("Holiday B", 12, 25, NotableDateCategory.Holiday));
 
-		NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
+		var filter = NotableDateFilter.ForCategory(NotableDateCategory.Cultural);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(0, results.Count);
@@ -122,7 +122,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Holiday A", 1, 1, NotableDateCategory.Holiday),
 			Fixed("Holiday B", 7, 4, NotableDateCategory.Holiday));
 
-		NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+		var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(3, results.Count);
@@ -181,7 +181,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Observance Mar", 3, 15, NotableDateCategory.Observance),
 			Fixed("Holiday Dec", 12, 25, NotableDateCategory.Holiday));
 
-		NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+		var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(
 			new DateTime(2024, 1, 1), new DateTime(2024, 6, 30), filter);
 
@@ -219,7 +219,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Holiday A", 1, 1, NotableDateCategory.Holiday),
 			Fixed("Observance B", 1, 1, NotableDateCategory.Observance));
 
-		NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+		var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(new DateTime(2024, 1, 1), filter);
 
 		Assert.AreEqual(1, results.Count);
@@ -236,7 +236,7 @@ public sealed partial class NotableDateServiceTests
 		NotableDateService service = BuildService(
 			Fixed("Observance B", 1, 1, NotableDateCategory.Observance));
 
-		NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+		var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(new DateTime(2024, 1, 1), filter);
 
 		Assert.AreEqual(0, results.Count);
@@ -272,7 +272,7 @@ public sealed partial class NotableDateServiceTests
 			FixedWithTags("Public Holiday", 1, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
 			FixedWithTags("Regional Holiday", 6, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Regional")));
 
-		NotableDateFilter filter = NotableDateFilter.WithTag("Public");
+		var filter = NotableDateFilter.WithTag("Public");
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(1, results.Count);
@@ -294,7 +294,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Easter Sunday", 4, 1),
 			Fixed("Christmas Day", 12, 25));
 
-		NotableDateFilter filter = NotableDateFilter.WithAnyName("New Year's Day", "Christmas Day");
+		var filter = NotableDateFilter.WithAnyName("New Year's Day", "Christmas Day");
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(2, results.Count);
@@ -317,7 +317,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Festival", 6, 1, NotableDateCategory.Cultural) with { DurationDays = 7 },
 			Fixed("Long Event", 9, 1, NotableDateCategory.Observance) with { DurationDays = 14 });
 
-		NotableDateFilter filter = NotableDateFilter.WithMinDuration(7);
+		var filter = NotableDateFilter.WithMinDuration(7);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(2, results.Count);
@@ -335,7 +335,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Day A", 1, 1, NotableDateCategory.Holiday),
 			Fixed("Day B", 6, 1, NotableDateCategory.Observance) with { DurationDays = 3 });
 
-		NotableDateFilter filter = NotableDateFilter.WithMinDuration(1);
+		var filter = NotableDateFilter.WithMinDuration(1);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(2, results.Count);
@@ -364,7 +364,7 @@ public sealed partial class NotableDateServiceTests
 		};
 
 		NotableDateService service = BuildService(rule);
-		NotableDateFilter filter = NotableDateFilter.WasAdjusted();
+		var filter = NotableDateFilter.WasAdjusted();
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2022, filter);
 
 		Assert.AreEqual(1, results.Count);
@@ -391,7 +391,7 @@ public sealed partial class NotableDateServiceTests
 		};
 
 		NotableDateService service = BuildService(rule);
-		NotableDateFilter filter = NotableDateFilter.WasAdjusted();
+		var filter = NotableDateFilter.WasAdjusted();
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(0, results.Count);
@@ -413,7 +413,7 @@ public sealed partial class NotableDateServiceTests
 			FixedWithTags("Private Holiday", 3, 15, NotableDateCategory.Holiday, nonWorking: false, ImmutableHashSet.Create("Regional")),
 			FixedWithTags("Observance", 6, 1, NotableDateCategory.Observance, nonWorking: true, ImmutableHashSet.Create("Public")));
 
-		NotableDateFilter filter = NotableDateFilter.AllOf(
+		var filter = NotableDateFilter.AllOf(
 			NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
 			NotableDateFilter.IsNonWorkingDay(),
 			NotableDateFilter.WithTag("Public"));
@@ -437,7 +437,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Cultural", 6, 1, NotableDateCategory.Cultural),
 			Fixed("Seasonal", 9, 22, NotableDateCategory.Seasonal));
 
-		NotableDateFilter filter = NotableDateFilter.AnyOf(
+		var filter = NotableDateFilter.AnyOf(
 			NotableDateFilter.ForCategory(NotableDateCategory.Holiday),
 			NotableDateFilter.ForCategory(NotableDateCategory.Seasonal));
 
@@ -463,7 +463,7 @@ public sealed partial class NotableDateServiceTests
 			FixedWithTags("One Tag Only", 6, 1, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Public")),
 			FixedWithTags("No Tags", 12, 25, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet<string>.Empty));
 
-		NotableDateFilter filter = NotableDateFilter.WithAllTags("Public", "Federal");
+		var filter = NotableDateFilter.WithAllTags("Public", "Federal");
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(1, results.Count);
@@ -482,7 +482,7 @@ public sealed partial class NotableDateServiceTests
 			FixedWithTags("Regional Tag", 3, 15, NotableDateCategory.Holiday, nonWorking: true, ImmutableHashSet.Create("Regional")),
 			FixedWithTags("Unrelated Tag", 6, 1, NotableDateCategory.Observance, nonWorking: false, ImmutableHashSet.Create("Christian")));
 
-		NotableDateFilter filter = NotableDateFilter.WithAnyTag("Federal", "Regional");
+		var filter = NotableDateFilter.WithAnyTag("Federal", "Regional");
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(2, results.Count);
@@ -514,7 +514,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Cultural", 6, 1, NotableDateCategory.Cultural),
 			Fixed("Seasonal", 9, 22, NotableDateCategory.Seasonal));
 
-		NotableDateFilter filter = NotableDateFilter.ForAnyCategory(categoryA, categoryB);
+		var filter = NotableDateFilter.ForAnyCategory(categoryA, categoryB);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(expectedCount, results.Count);
@@ -536,7 +536,7 @@ public sealed partial class NotableDateServiceTests
 			Fixed("Jun Holiday", 6, 15, NotableDateCategory.Holiday),
 			Fixed("Dec Holiday", 12, 25, NotableDateCategory.Holiday));
 
-		NotableDateFilter filter = NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
+		var filter = NotableDateFilter.InDateRange(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.AreEqual(1, results.Count);
@@ -585,7 +585,7 @@ public sealed partial class NotableDateServiceTests
 		// FixedRuleXml defines one Holiday rule (Fixed Jan 1, tags=[Public,Civic], territory=AU-NSW).
 		// occurrenceYears=4 with firstYear=2000 means 2024 is an applicable year.
 		NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.FixedRuleXml);
-		NotableDateFilter filter = NotableDateFilter.WithTag(tag);
+		var filter = NotableDateFilter.WithTag(tag);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter, territoryCode: "AU-NSW");
 
 		Assert.AreEqual(expectsDate ? 1 : 0, results.Count);
@@ -599,7 +599,7 @@ public sealed partial class NotableDateServiceTests
 	public void GetNotableDates_UsingParsedFixedRuleXml_WithNameFilter_ShouldReturnMatchingDate()
 	{
 		NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.FixedRuleXml);
-		NotableDateFilter filter = NotableDateFilter.WithName("Fixed Rule Test");
+		var filter = NotableDateFilter.WithName("Fixed Rule Test");
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter, territoryCode: "AU-NSW");
 
 		Assert.AreEqual(1, results.Count);
@@ -619,7 +619,7 @@ public sealed partial class NotableDateServiceTests
 		// Good Friday (OffsetFromAnchor, Holiday — requires Easter), Anzac Day (Fixed, Remembrance, territory=AU,NZ).
 		// Without an algorithm registry, Easter Sunday and Good Friday resolve to nothing and are dropped.
 		NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.MultiRuleXml);
-		NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+		var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.IsTrue(results.Any(d => d.Name == "New Year's Day"), "New Year's Day must appear as the only resolvable Holiday in the multi-rule XML set.");
@@ -634,7 +634,7 @@ public sealed partial class NotableDateServiceTests
 	public void GetNotableDates_UsingParsedMultiRuleXml_WithNonWorkingFilter_ShouldReturnOnlyNonWorkingDates()
 	{
 		NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.MultiRuleXml);
-		NotableDateFilter filter = NotableDateFilter.IsNonWorkingDay();
+		var filter = NotableDateFilter.IsNonWorkingDay();
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter);
 
 		Assert.IsTrue(results.Count > 0, "Expected at least one non-working date from MultiRuleXml.");
@@ -650,7 +650,7 @@ public sealed partial class NotableDateServiceTests
 	{
 		// FixedRuleXml tags are [Public, Civic]; requiring both must still return the date.
 		NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.FixedRuleXml);
-		NotableDateFilter filter = NotableDateFilter.WithAllTags("Public", "Civic");
+		var filter = NotableDateFilter.WithAllTags("Public", "Civic");
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter, territoryCode: "AU-NSW");
 
 		Assert.AreEqual(1, results.Count);
@@ -664,7 +664,7 @@ public sealed partial class NotableDateServiceTests
 	public void GetNotableDates_UsingParsedFixedRuleXml_WithAllTagsFilter_WhenOneTagAbsent_ShouldReturnEmpty()
 	{
 		NotableDateService service = BuildServiceFromXml(NotableDateRuleParserTests.FixedRuleXml);
-		NotableDateFilter filter = NotableDateFilter.WithAllTags("Public", "Religious");
+		var filter = NotableDateFilter.WithAllTags("Public", "Religious");
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2024, filter, territoryCode: "AU-NSW");
 
 		Assert.AreEqual(0, results.Count);

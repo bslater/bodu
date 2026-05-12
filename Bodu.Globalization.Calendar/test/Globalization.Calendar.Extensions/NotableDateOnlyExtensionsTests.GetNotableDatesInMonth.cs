@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.GetNotableDatesInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -89,7 +89,7 @@ public partial class NotableDateOnlyExtensionsTests
         NotableDateService service = BuildService(
             Fixed("Festival", 4, 1, NotableDateCategory.Cultural),
             Fixed("Anzac Day", 4, 25, NotableDateCategory.Holiday));
-        NotableDateFilter filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
+        var filter = NotableDateFilter.ForCategory(NotableDateCategory.Holiday);
 
         IReadOnlyList<NotableDate> result = new DateOnly(2026, 4, 15).GetNotableDatesInMonth(service, filter);
 

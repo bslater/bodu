@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcStandardTests.Catalog.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -74,7 +74,7 @@ public partial class CrcStandardTests
     [TestMethod]
     public void FromName_WhenNameIsCanonical_ShouldReturnCachedInstance(string name, CrcStandards expected)
     {
-        CrcStandard resolved = CrcStandard.FromName(name);
+        var resolved = CrcStandard.FromName(name);
 
         Assert.AreSame(CrcStandard.Get(expected), resolved);
         Assert.AreEqual(name, resolved.Name);
@@ -196,8 +196,8 @@ public partial class CrcStandardTests
     [TestMethod]
     public void Get_WhenInvokedRepeatedly_ShouldReturnSameInstance()
     {
-        CrcStandard first = CrcStandard.Get(CrcStandards.CRC32_ISOHDLC);
-        CrcStandard second = CrcStandard.Get(CrcStandards.CRC32_ISOHDLC);
+        var first = CrcStandard.Get(CrcStandards.CRC32_ISOHDLC);
+        var second = CrcStandard.Get(CrcStandards.CRC32_ISOHDLC);
 
         Assert.AreSame(first, second);
     }

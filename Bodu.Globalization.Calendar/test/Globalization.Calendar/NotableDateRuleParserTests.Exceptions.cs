@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleParserTests.Exceptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -147,7 +147,7 @@ public partial class NotableDateRuleParserTests
 				</NotableDate>
 			</NotableDates>";
 
-		XDocument document = XDocument.Parse(invalidXml);
+		var document = XDocument.Parse(invalidXml);
 
 		Assert.ThrowsExactly<XmlSchemaValidationException>(() =>
 		{

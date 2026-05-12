@@ -22,7 +22,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void AlgorithmName_ShouldReturnAsconXof128()
     {
-        using AsconXof128 sut = new AsconXof128();
+        using var sut = new AsconXof128();
         Assert.AreEqual("ASCON-XOF128", sut.AlgorithmName);
     }
 
@@ -35,7 +35,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void GetHash_ShouldReturnArrayOfRequestedLength()
     {
-        using AsconXof128 sut = new AsconXof128();
+        using var sut = new AsconXof128();
         sut.Absorb([0x01, 0x02, 0x03]);
 
         var output = sut.GetHash(64);
@@ -50,7 +50,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void GetHash_WhenLengthIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        using AsconXof128 sut = new AsconXof128();
+        using var sut = new AsconXof128();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -65,7 +65,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void GetHash_WhenLengthIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using AsconXof128 sut = new AsconXof128();
+        using var sut = new AsconXof128();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -82,7 +82,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void Absorb_AfterSqueeze_ShouldThrowInvalidOperationException()
     {
-        using AsconXof128 sut = new AsconXof128();
+        using var sut = new AsconXof128();
         sut.Squeeze(new byte[8]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
@@ -98,7 +98,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void Initialize_AfterSqueeze_ShouldAllowFreshAbsorption()
     {
-        using AsconXof128 sut = new AsconXof128();
+        using var sut = new AsconXof128();
         sut.Absorb([0xFF]);
         sut.Squeeze(new byte[8]);
 
@@ -119,7 +119,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void Absorb_WhenDisposed_ShouldThrowObjectDisposedException()
     {
-        AsconXof128 sut = new AsconXof128();
+        var sut = new AsconXof128();
         sut.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -135,7 +135,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void Squeeze_WhenDisposed_ShouldThrowObjectDisposedException()
     {
-        AsconXof128 sut = new AsconXof128();
+        var sut = new AsconXof128();
         sut.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
@@ -156,13 +156,13 @@ public partial class AsconXof128Tests
         byte[] message = [0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08];
 
         // One shot: squeeze all 24 bytes at once.
-        using AsconXof128 oneShot = new AsconXof128();
+        using var oneShot = new AsconXof128();
         oneShot.Absorb(message);
         var single = new byte[24];
         oneShot.Squeeze(single);
 
         // Incremental: squeeze 7 + 9 + 8 bytes separately.
-        using AsconXof128 incr = new AsconXof128();
+        using var incr = new AsconXof128();
         incr.Absorb(message);
         var part1 = new byte[7];
         var part2 = new byte[9];
@@ -186,11 +186,11 @@ public partial class AsconXof128Tests
         var message = new byte[25];
         for (var i = 0; i < message.Length; i++) message[i] = (byte)i;
 
-        using AsconXof128 single = new AsconXof128();
+        using var single = new AsconXof128();
         single.Absorb(message);
         var outputSingle = single.GetHash(32);
 
-        using AsconXof128 incr = new AsconXof128();
+        using var incr = new AsconXof128();
         incr.Absorb(message.AsSpan(0, 10));
         incr.Absorb(message.AsSpan(10, 8));
         incr.Absorb(message.AsSpan(18));
@@ -209,7 +209,7 @@ public partial class AsconXof128Tests
     {
         byte[] input = [0xCA, 0xFE, 0xBA, 0xBE];
 
-        using AsconXof128 inst = new AsconXof128();
+        using var inst = new AsconXof128();
         inst.Absorb(input);
         var instanceOutput = inst.GetHash(32);
 

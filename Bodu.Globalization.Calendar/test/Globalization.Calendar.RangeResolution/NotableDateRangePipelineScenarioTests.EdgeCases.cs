@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipelineScenarioTests.EdgeCases.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -379,7 +379,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <returns>The seven consecutive holiday rules in chronological order.</returns>
 	private static NotableDateRule[] SevenConsecutiveDecemberHolidays()
 	{
-		NotableDateRule[] rules = new NotableDateRule[7];
+		var rules = new NotableDateRule[7];
 		for (int i = 0; i < 7; i++)
 		{
 			rules[i] = new NotableDateRule

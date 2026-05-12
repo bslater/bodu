@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.CheckDigits;
-
 namespace Bodu.IO.Hashing.Checksums;
+
+using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
 /// Computes the two-digit check sequence of an International Bank Account Number (IBAN) using the ISO 13616
@@ -43,10 +43,10 @@ public sealed class Iban
     /// <summary>The length of the country-code prefix (<c>2</c> letters).</summary>
     public const int CountryCodeLength = 2;
 
-    private char _cc0;
-    private char _cc1;
-    private int _consumed;
-    private int _rBban;
+    private char cc0;
+    private char cc1;
+    private int consumed;
+    private int rBban;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Iban" /> class.
@@ -67,22 +67,22 @@ public sealed class Iban
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int consumed = this._consumed;
-        int r = _rBban;
+        var consumed = this.consumed;
+        var r = rBban;
 
-        for (int i = 0; i < body.Length; i++)
+        for (var i = 0; i < body.Length; i++)
         {
-            char ch = body[i];
+            var ch = body[i];
             if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u)
                 ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
 
             if (consumed == 0)
             {
-                _cc0 = ch;
+                cc0 = ch;
             }
             else if (consumed == 1)
             {
-                _cc1 = ch;
+                cc1 = ch;
             }
             else
             {
@@ -92,17 +92,17 @@ public sealed class Iban
             consumed++;
         }
 
-        this._consumed = consumed;
-        _rBban = r;
+        this.consumed = consumed;
+        rBban = r;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        _cc0 = default;
-        _cc1 = default;
-        _consumed = 0;
-        _rBban = 0;
+        cc0 = default;
+        cc1 = default;
+        consumed = 0;
+        rBban = 0;
     }
 
     /// <inheritdoc />
@@ -111,13 +111,13 @@ public sealed class Iban
         if (destination.Length < CheckLength)
             throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
 
-        int r = _rBban;
-        if (_consumed >= 1) r = FoldChar(r, _cc0);
-        if (_consumed >= 2) r = FoldChar(r, _cc1);
+        var r = rBban;
+        if (consumed >= 1) r = FoldChar(r, cc0);
+        if (consumed >= 2) r = FoldChar(r, cc1);
 
         // Fold in the two trailing placeholder zero digits.
         r = (r * 100) % 97;
-        int check = (98 - r) % 97;
+        var check = (98 - r) % 97;
         destination[0] = (char)('0' + (check / 10));
         destination[1] = (char)('0' + (check % 10));
         return CheckLength;
@@ -134,7 +134,7 @@ public sealed class Iban
     /// </exception>
     public static string Compute(ReadOnlySpan<char> body)
     {
-        Iban iban = new Iban();
+        var iban = new Iban();
         iban.Append(body);
         return iban.GetCurrentCheckDigits();
     }
@@ -160,13 +160,13 @@ public sealed class Iban
         if ((uint)(iban[2] - '0') > 9u || (uint)(iban[3] - '0') > 9u) return false;
 
         // Rearrangement: BBAN + CC + DD — stream through MOD 97-10.
-        int r = 0;
-        for (int i = 4; i < iban.Length; i++)
+        var r = 0;
+        for (var i = 4; i < iban.Length; i++)
         {
             if (!TryFold(ref r, iban[i])) return false;
         }
 
-        for (int i = 0; i < 4; i++)
+        for (var i = 0; i < 4; i++)
         {
             if (!TryFold(ref r, iban[i])) return false;
         }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.EdgeCases.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -132,7 +132,7 @@ public sealed partial class NotableDateServiceTests
 
 		var service = BuildService(rule);
 
-		List<NotableDate> layered = service.GetNotableDates(2022)
+		var layered = service.GetNotableDates(2022)
 			.Where(d => d.Name == "Layered Holiday")
 			.OrderBy(d => d.Date)
 			.ToList();
@@ -170,7 +170,7 @@ public sealed partial class NotableDateServiceTests
 
 		var service = BuildService(rule);
 
-		List<NotableDate> results = service.GetNotableDates(2025)
+		var results = service.GetNotableDates(2025)
 			.Where(r => r.Name == "Walk Trigger")
 			.OrderBy(r => r.Date)
 			.ToList();
@@ -207,7 +207,7 @@ public sealed partial class NotableDateServiceTests
 			CalendarWeekendDefinition.Custom,
 			weekendProvider: new AlwaysWeekendProvider());
 
-		List<NotableDate> results = service.GetNotableDates(2025)
+		var results = service.GetNotableDates(2025)
 			.Where(r => r.Name == "Unreachable Shift")
 			.ToList();
 
@@ -261,7 +261,7 @@ public sealed partial class NotableDateServiceTests
 			CalendarWeekendDefinition.SaturdaySunday,
 			algorithmRegistry: registry);
 
-		List<NotableDate> walkResults = service.GetNotableDates(2025)
+		var walkResults = service.GetNotableDates(2025)
 			.Where(r => r.Name == "Walk Trigger")
 			.OrderBy(r => r.Date)
 			.ToList();

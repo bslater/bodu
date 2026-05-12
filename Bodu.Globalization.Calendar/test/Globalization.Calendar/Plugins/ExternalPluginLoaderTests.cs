@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ExternalPluginLoaderTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -230,17 +230,17 @@ public sealed class ExternalPluginLoaderTests
 		var defaultContext = System.Runtime.Loader.AssemblyLoadContext.Default;
 
 		var unnamed = new System.Reflection.AssemblyName { Name = string.Empty };
-		System.Reflection.Assembly? unnamedResult =
+		var unnamedResult =
 			(System.Reflection.Assembly?)resolve!.Invoke(null, new object?[] { defaultContext, unnamed });
 		Assert.IsNull(unnamedResult);
 
 		var calendarAssemblyName = typeof(NotableDateService).Assembly.GetName();
-		System.Reflection.Assembly? hostResult =
+		var hostResult =
 			(System.Reflection.Assembly?)resolve.Invoke(null, new object?[] { defaultContext, calendarAssemblyName });
 		Assert.AreSame(typeof(NotableDateService).Assembly, hostResult);
 
 		var unknownName = new System.Reflection.AssemblyName("Definitely.Not.Loaded.Assembly.Name");
-		System.Reflection.Assembly? unknownResult =
+		var unknownResult =
 			(System.Reflection.Assembly?)resolve.Invoke(null, new object?[] { defaultContext, unknownName });
 		Assert.IsNull(unknownResult);
 	}

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipelineScenarioTests.Boundaries.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -340,8 +340,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		NotableDateService service = BuildService(anchor, offset);
 
 		DateTime expected = new(expectedYear, expectedMonth, expectedDay);
-		DateTime windowStart = new DateTime(Math.Min(anchorYear, expectedYear), 1, 1);
-		DateTime windowEnd = new DateTime(Math.Max(anchorYear, expectedYear), 12, 31);
+		var windowStart = new DateTime(Math.Min(anchorYear, expectedYear), 1, 1);
+		var windowEnd = new DateTime(Math.Max(anchorYear, expectedYear), 12, 31);
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(windowStart, windowEnd);
 
