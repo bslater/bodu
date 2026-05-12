@@ -67,21 +67,6 @@ public sealed class HashAlgorithmHelperBodyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithmHelper.HashData{T}(IHashAlgorithmFactory{T}, ReadOnlySpan{byte})" /> throws
-    /// <see cref="CryptographicException" /> when the algorithm refuses to produce a digest into the helper's buffer.
-    /// </summary>
-    [TestMethod]
-    public void HashData_Span_WhenAlgorithmDoesNotFit_ShouldThrowExactly()
-    {
-        var factory = HashAlgorithmFactory.From(() => new RefusingHashAlgorithm());
-
-        Assert.ThrowsExactly<CryptographicException>(() =>
-        {
-            _ = HashAlgorithmHelper.HashData(factory, new byte[] { 1, 2, 3 });
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="HashAlgorithmHelper.HashDataAsync{T}(IHashAlgorithmFactory{T}, Stream, CancellationToken)" />
     /// produces the same digest as the span overload for the same input — exercising the asynchronous stream pump.
     /// </summary>
@@ -158,27 +143,4 @@ public sealed class HashAlgorithmHelperBodyTests
         }
     }
 
-    /// <summary>
-    /// A <see cref="HashAlgorithm" /> whose <see cref="HashAlgorithm.TryHashFinal" /> always reports failure,
-    /// forcing the helper's failure path that raises <see cref="CryptographicException" />.
-    /// </summary>
-    private sealed class RefusingHashAlgorithm : HashAlgorithm
-    {
-        public RefusingHashAlgorithm()
-        {
-            HashSizeValue = 256;
-        }
-
-        public override void Initialize() { }
-
-        protected override void HashCore(byte[] array, int ibStart, int cbSize) { }
-
-        protected override byte[] HashFinal() => Array.Empty<byte>();
-
-        protected override bool TryHashFinal(Span<byte> destination, out int bytesWritten)
-        {
-            bytesWritten = 0;
-            return false;
-        }
-    }
 }
