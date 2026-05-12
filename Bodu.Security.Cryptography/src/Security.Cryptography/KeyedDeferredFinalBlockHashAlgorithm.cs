@@ -210,7 +210,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// </summary>
     private void InjectKeyBlock()
     {
-        Span<byte> keyBlock = stackalloc byte[this.BlockSizeBytes];
+        Span<byte> keyBlock = stackalloc byte[this.BlockSize / 8];
         this.KeyValue!.AsSpan().CopyTo(keyBlock);
         this.HashCore(keyBlock);
     }

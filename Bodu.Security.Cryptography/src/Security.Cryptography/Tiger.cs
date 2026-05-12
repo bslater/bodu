@@ -219,8 +219,9 @@ public sealed partial class Tiger
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         var inputLength = block.Length;
-        var needsSecondBlock = inputLength >= this.BlockSizeBytes - 8;
-        var totalLength = needsSecondBlock ? this.BlockSizeBytes * 2 : this.BlockSizeBytes;
+        var blockBytes = this.BlockSize / 8;
+        var needsSecondBlock = inputLength >= blockBytes - 8;
+        var totalLength = needsSecondBlock ? blockBytes * 2 : blockBytes;
 
         // Use stackalloc if small enough; fallback to heap if larger
         Span<byte> padded = totalLength <= 128

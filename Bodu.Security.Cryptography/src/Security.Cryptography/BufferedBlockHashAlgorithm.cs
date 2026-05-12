@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// The grandparent intentionally does <em>not</em> implement <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})"/> or
 /// <see cref="HashAlgorithm.HashFinal"/>, because the buffering loops and finalisation shapes of the two derived patterns
 /// genuinely differ. Each derived base owns its own <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})"/> override and
-/// reads <see cref="BlockSizeBytes"/>, <see cref="_residualBlock"/>, <see cref="_residualBytes"/> and
+/// reads <see cref="BlockSize"/>, <see cref="_residualBlock"/>, <see cref="_residualBytes"/> and
 /// <see cref="_totalBytes"/> directly.
 /// </para>
 /// <para>Derived classes must implement the following:</para>
@@ -89,20 +89,21 @@ public abstract class BufferedBlockHashAlgorithm<T>
     public abstract string AlgorithmName { get; }
 
     /// <summary>
-    /// The fixed size, in bytes, of each block consumed by the algorithm.
+    /// The fixed size, in bits, of each block consumed by the algorithm. Multiply or divide by 8 at the use site
+    /// to convert to bytes for buffer allocation, span sizing, or block-aligned iteration.
     /// </summary>
-    protected readonly int BlockSizeBytes;
+    protected readonly int BlockSize;
 
     /// <summary>
     /// Backing buffer that accumulates input bytes which do not yet form a complete block. Sized at
-    /// <see cref="BlockSizeBytes"/> at construction. Cleared by <see cref="Initialize"/> and overwritten with zeros
-    /// during disposal.
+    /// <see cref="BlockSize"/> / 8 bytes at construction. Cleared by <see cref="Initialize"/> and overwritten with
+    /// zeros during disposal.
     /// </summary>
     protected readonly Memory<byte> _residualBlock;
 
     /// <summary>
-    /// Number of bytes currently held in <see cref="_residualBlock"/>. Always in the range <c>[0, BlockSizeBytes]</c>.
-    /// Reset to <c>0</c> by <see cref="Initialize"/>.
+    /// Number of bytes currently held in <see cref="_residualBlock"/>. Always in the range
+    /// <c>[0, <see cref="BlockSize"/> / 8]</c>. Reset to <c>0</c> by <see cref="Initialize"/>.
     /// </summary>
     protected int _residualBytes;
 
@@ -140,15 +141,16 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// Thrown when <paramref name="blockSize"/> is less than or equal to zero.
     /// </exception>
     /// <remarks>
-    /// Allocates the residual buffer at <paramref name="blockSize"/> / 8 bytes. The internal
-    /// <see cref="BlockSizeBytes"/> field exposes the byte-length form for byte-oriented buffering loops. Derived
-    /// classes are expected to override <see cref="Initialize"/>, call <c>base.Initialize()</c> first to clear the
-    /// inherited buffer and counters, then reset their own algorithm-specific state so the two halves stay in sync.
+    /// Stores <paramref name="blockSize"/> directly in the protected <see cref="BlockSize"/> field and allocates the
+    /// residual buffer at <paramref name="blockSize"/> / 8 bytes. Derived classes compute the byte length inline as
+    /// <c>BlockSize / 8</c> for span sizing and byte-aligned iteration. Derived classes are expected to override
+    /// <see cref="Initialize"/>, call <c>base.Initialize()</c> first to clear the inherited buffer and counters, then
+    /// reset their own algorithm-specific state so the two halves stay in sync.
     /// </remarks>
     protected BufferedBlockHashAlgorithm(int blockSize)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
-        this.BlockSizeBytes = blockSize / 8;
+        this.BlockSize = blockSize;
         this._residualBlock = new byte[blockSize / 8];
     }
 

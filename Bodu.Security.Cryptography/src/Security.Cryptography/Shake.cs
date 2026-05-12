@@ -260,7 +260,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     {
         this.ThrowIfDisposed();
         Span<byte> rateBuffer = this._residualBlock.Span;
-        var rateBytes = this.BlockSizeBytes;
+        var rateBytes = this.BlockSize / 8;
 
         while (source.Length > 0)
         {
@@ -292,7 +292,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     {
         this.ThrowIfDisposed();
         Span<byte> rateBuffer = this._residualBlock.Span;
-        var rateBytes = this.BlockSizeBytes;
+        var rateBytes = this.BlockSize / 8;
 
         // Apply multi-rate padding: domain suffix byte at the current buffer position, then 0x80 at the last byte.
         rateBuffer[this._residualBytes] ^= DomainSuffix;

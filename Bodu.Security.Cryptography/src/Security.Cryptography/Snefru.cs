@@ -137,7 +137,7 @@ public abstract partial class Snefru<T>
     {
         // paddedLength is always ≤ 96 for Snefru128 (2 × 48) and ≤ 64 for Snefru256 (2 × 32),
         // so stackalloc is always safe and appropriately sized here.
-        var paddedLength = 2 * BlockSizeBytes;
+        var paddedLength = 2 * (this.BlockSize / 8);
         Span<byte> padded = stackalloc byte[paddedLength];
         block.CopyTo(padded);
         BinaryPrimitives.WriteUInt64BigEndian(padded[(paddedLength - 8)..], messageLength << 3);

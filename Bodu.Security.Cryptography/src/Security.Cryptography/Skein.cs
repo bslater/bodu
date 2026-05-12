@@ -194,7 +194,7 @@ public abstract partial class Skein<T>
         get
         {
             this.ThrowIfDisposed();
-            return $"Skein-{this.BlockSizeBytes * 8}-{this.HashSizeValue}";
+            return $"Skein-{this.BlockSize}-{this.HashSizeValue}";
         }
     }
 
@@ -280,9 +280,10 @@ public abstract partial class Skein<T>
         // Process the final message block. The tweak's position field carries the total number of real message bytes
         // absorbed (excluding any zero padding applied to bring the block up to the Skein state size).
         var residual = this._pendingBytes;
-        if (residual < this.BlockSizeBytes)
+        var blockBytes = this.BlockSize / 8;
+        if (residual < blockBytes)
         {
-            Array.Clear(this._pendingBlock, residual, this.BlockSizeBytes - residual);
+            Array.Clear(this._pendingBlock, residual, blockBytes - residual);
         }
 
         this._messageBytesProcessed += (ulong)residual;

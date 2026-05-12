@@ -96,20 +96,21 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
         var pos = 0;
         var remaining = source.Length;
+        var blockBytes = this.BlockSize / 8;
         Span<byte> residualSpan = this._residualBlock.Span;
 
         while (remaining > 0)
         {
             // The block that fills the residual buffer must not be compressed at fill time, because it may turn out
             // to be the final block and thus require isFinal: true. Compress it only when we know more data follows.
-            if (this._residualBytes == this.BlockSizeBytes)
+            if (this._residualBytes == blockBytes)
             {
-                this.ProcessBlock(residualSpan, this._totalBytes + (ulong)this.BlockSizeBytes, isFinal: false);
-                this._totalBytes += (ulong)this.BlockSizeBytes;
+                this.ProcessBlock(residualSpan, this._totalBytes + (ulong)blockBytes, isFinal: false);
+                this._totalBytes += (ulong)blockBytes;
                 this._residualBytes = 0;
             }
 
-            var canCopy = Math.Min(this.BlockSizeBytes - this._residualBytes, remaining);
+            var canCopy = Math.Min(blockBytes - this._residualBytes, remaining);
             source.Slice(pos, canCopy).CopyTo(residualSpan[this._residualBytes..]);
             this._residualBytes += canCopy;
             pos += canCopy;
@@ -139,7 +140,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
         Span<byte> residualSpan = this._residualBlock.Span;
 
-        if (this._residualBytes < this.BlockSizeBytes)
+        if (this._residualBytes < this.BlockSize / 8)
             residualSpan[this._residualBytes..].Clear();
 
         var counter = this._totalBytes + (ulong)this._residualBytes;
@@ -152,14 +153,14 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// Compresses a single full block of input using the algorithm's internal compression function.
     /// </summary>
     /// <param name="block">
-    /// The input block to compress. Always exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes"/> bytes
+    /// The input block to compress. Always exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSize"/> bytes
     /// long, possibly zero-padded by <see cref="HashFinal"/> when <paramref name="isFinal"/> is <see langword="true"/>.
     /// </param>
     /// <param name="totalBytesIncludingThisBlock">
     /// The cumulative byte count <em>including</em> the bytes in <paramref name="block"/> being compressed. For
     /// mid-stream blocks this equals the previous total plus
-    /// <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes"/>; for the final compression it equals the previous
-    /// total plus the residual byte count (which may be in the range <c>[0, BlockSizeBytes]</c>).
+    /// <see cref="BufferedBlockHashAlgorithm{T}.BlockSize"/>; for the final compression it equals the previous
+    /// total plus the residual byte count (which may be in the range <c>[0, BlockSize / 8]</c>).
     /// </param>
     /// <param name="isFinal">
     /// <see langword="true"/> for the last compression call (raised by <see cref="HashFinal"/>); otherwise

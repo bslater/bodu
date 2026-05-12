@@ -53,13 +53,13 @@ public sealed class CamelliaBlockCipher
     private const int BlockSizeBits = 128;
 
     /// <summary>Length of the Camellia 128-bit key is 128 bits (16 bytes). Internal use only.</summary>
-    private const int Key128SizeInBytes = 16;
+    private const int Key128SizeBits = 128;
 
     /// <summary>Length of the Camellia 192-bit key is 192 bits (24 bytes). Internal use only.</summary>
-    private const int Key192SizeInBytes = 24;
+    private const int Key192SizeBits = 192;
 
     /// <summary>Length of the Camellia 256-bit key is 256 bits (32 bytes). Internal use only.</summary>
-    private const int Key256SizeInBytes = 32;
+    private const int Key256SizeBits = 256;
 
     // SBOX1 from RFC 3713 Appendix A. SBOX2, SBOX3, and SBOX4 are derived from this table by the F function.
     private static readonly byte[] s_sbox1 = new byte[256]
@@ -116,12 +116,13 @@ public sealed class CamelliaBlockCipher
     /// </exception>
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
-        if (key.Length is not (Key128SizeInBytes or Key192SizeInBytes or Key256SizeInBytes))
+        var keyBits = key.Length * 8;
+        if (keyBits is not (Key128SizeBits or Key192SizeBits or Key256SizeBits))
             throw new ArgumentException(
                 CryptoResourceStrings.ArgumentException_Camellia_InvalidKeyLength,
                 nameof(key));
 
-        _usesExtendedKeySchedule = key.Length > Key128SizeInBytes;
+        _usesExtendedKeySchedule = keyBits > Key128SizeBits;
         _kw = new ulong[4];
         _k = new ulong[_usesExtendedKeySchedule ? 24 : 18];
         _ke = new ulong[_usesExtendedKeySchedule ? 6 : 4];
@@ -367,12 +368,12 @@ public sealed class CamelliaBlockCipher
         ulong krHi;
         ulong krLo;
 
-        if (key.Length == Key128SizeInBytes)
+        if (key.Length == Key128SizeBits / 8)
         {
             krHi = 0;
             krLo = 0;
         }
-        else if (key.Length == Key192SizeInBytes)
+        else if (key.Length == Key192SizeBits / 8)
         {
             krHi = BinaryPrimitives.ReadUInt64BigEndian(key[16..]);
 

@@ -78,7 +78,7 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// Gets the block size that was supplied to the base constructor.
     /// </summary>
     /// <returns>The configured block size, in bytes.</returns>
-    public int ConfiguredBlockSize => this.BlockSizeBytes;
+    public int ConfiguredBlockSize => this.BlockSize / 8;
 
     /// <summary>
     /// Gets a defensive copy of the residual buffer for test assertion purposes.
