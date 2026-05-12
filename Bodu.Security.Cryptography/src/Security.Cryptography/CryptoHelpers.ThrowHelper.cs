@@ -317,22 +317,26 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="key"/> does
-    /// not equal <paramref name="keySizeBits"/> / 8.
+    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="key"/>, expressed
+    /// in bits, is not one of the values permitted by <paramref name="legalKeySizes"/>.
     /// </summary>
     /// <param name="key">The key material to validate.</param>
-    /// <param name="keySizeBits">The required key size, in bits.</param>
+    /// <param name="keySizeBits">The algorithm's currently configured key size, in bits. Retained for backwards
+    /// compatibility with callers that pass <c>this.KeySize</c>; the actual decision is driven by
+    /// <paramref name="legalKeySizes"/>.</param>
     /// <param name="legalKeySizes">The legal key sizes for the algorithm (in bits).</param>
     /// <param name="paramKeyName">The name of the key parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> or <paramref name="legalKeySizes" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown when <c>key.Length * 8 != keySizeBits</c>.
+    /// Thrown when <c>key.Length * 8</c> is not one of the values produced by
+    /// <paramref name="legalKeySizes"/>.
     /// </exception>
     /// <remarks>
-    /// The <paramref name="key"/> array is processed in bytes; <paramref name="keySizeBits"/> is expressed
-    /// in bits to align with the BCL convention used by <see cref="SymmetricAlgorithm.KeySize"/>.
+    /// The <paramref name="key"/> array is processed in bytes; <paramref name="keySizeBits"/> and
+    /// <paramref name="legalKeySizes"/> are expressed in bits to align with the BCL convention used by
+    /// <see cref="SymmetricAlgorithm.KeySize"/>.
     /// </remarks>
     public static void ThrowIfInvalidKeySize(
         byte[] key,
@@ -343,13 +347,38 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(legalKeySizes);
 
-        if (key.Length != keySizeBits / 8)
+        var keyBits = key.Length * 8;
+        if (!IsValidSize(keyBits, legalKeySizes))
             throw new CryptographicException(
                 string.Format(
                     CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                    key.Length * 8,
+                    keyBits,
                     CryptoHelpers.FormatLegalSizes(legalKeySizes)),
                 paramKeyName);
+    }
+
+    /// <summary>
+    /// Returns <see langword="true"/> if <paramref name="sizeBits"/> falls inside any of the ranges
+    /// supplied by <paramref name="legalSizes"/>. A range with <see cref="KeySizes.SkipSize"/> equal to
+    /// zero permits only its <see cref="KeySizes.MinSize"/> value.
+    /// </summary>
+    private static bool IsValidSize(int sizeBits, KeySizes[] legalSizes)
+    {
+        foreach (var range in legalSizes)
+        {
+            if (range.SkipSize == 0)
+            {
+                if (sizeBits == range.MinSize)
+                    return true;
+            }
+            else if (sizeBits >= range.MinSize
+                  && sizeBits <= range.MaxSize
+                  && ((sizeBits - range.MinSize) % range.SkipSize) == 0)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
     /// <summary>

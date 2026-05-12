@@ -204,8 +204,6 @@ internal static partial class CryptoHelpers
         Span<byte> destination,
         out int bytesWritten)
     {
-        ThrowHelper.ThrowIfLessThan(blockSize, 1);
-
         try
         {
             bytesWritten = DepadBlock(padding, blockSize, source, destination);
@@ -234,8 +232,6 @@ internal static partial class CryptoHelpers
         Span<byte> destination,
         out int bytesWritten)
     {
-        ThrowHelper.ThrowIfLessThan(blockSize, 1);
-
         try
         {
             bytesWritten = PadBlock(padding, blockSize, source, destination);
