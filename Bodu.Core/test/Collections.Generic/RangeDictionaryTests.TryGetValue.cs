@@ -1,0 +1,146 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="RangeDictionaryTests.TryGetValue.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Bodu.Collections.Generic;
+
+public partial class RangeDictionaryTests
+{
+    // --------------------------------------------------------
+    // TryGetValue
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.TryGetValue(TKey, out TValue)" /> rejects a
+    /// <see langword="null" /> key.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValue_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    {
+        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.TryGetValue(null!, out _);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.TryGetValue(TKey, out TValue)" /> on an empty
+    /// dictionary returns <see langword="false" /> and yields the default value.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValue_WhenDictionaryIsEmpty_ShouldReturnFalseAndDefaultValue()
+    {
+        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+
+        bool found = sut.TryGetValue(5, out string value);
+
+        Assert.IsFalse(found);
+        Assert.IsNull(value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.TryGetValue(TKey, out TValue)" /> returns
+    /// <see langword="true" /> with the associated value when the key is inside a range.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValue_WhenKeyIsInRange_ShouldReturnTrueWithValue()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "tier-A"), (20, 30, "tier-B"));
+
+        Assert.IsTrue(sut.TryGetValue(5, out string a));
+        Assert.AreEqual("tier-A", a);
+
+        Assert.IsTrue(sut.TryGetValue(25, out string b));
+        Assert.AreEqual("tier-B", b);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.TryGetValue(TKey, out TValue)" /> returns
+    /// <see langword="false" /> and the default value when no range contains the key.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValue_WhenKeyIsNotInAnyRange_ShouldReturnFalseAndDefaultValue()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
+
+        bool found = sut.TryGetValue(99, out string value);
+
+        Assert.IsFalse(found);
+        Assert.IsNull(value);
+    }
+
+    // --------------------------------------------------------
+    // TryGetEntry
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.TryGetEntry(TKey, out ValueRange{TKey, TValue})" />
+    /// rejects a <see langword="null" /> key.
+    /// </summary>
+    [TestMethod]
+    public void TryGetEntry_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    {
+        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.TryGetEntry(null!, out _);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.TryGetEntry(TKey, out ValueRange{TKey, TValue})" />
+    /// on an empty dictionary returns <see langword="false" /> and a default entry.
+    /// </summary>
+    [TestMethod]
+    public void TryGetEntry_WhenDictionaryIsEmpty_ShouldReturnFalseAndDefault()
+    {
+        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+
+        bool found = sut.TryGetEntry(5, out ValueRange<int, string> entry);
+
+        Assert.IsFalse(found);
+        Assert.AreEqual(default(ValueRange<int, string>).StartInclusive, entry.StartInclusive);
+        Assert.AreEqual(default(ValueRange<int, string>).EndExclusive, entry.EndExclusive);
+        Assert.IsNull(entry.Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.TryGetEntry(TKey, out ValueRange{TKey, TValue})" />
+    /// returns the full entry when the key is in range.
+    /// </summary>
+    [TestMethod]
+    public void TryGetEntry_WhenKeyIsInRange_ShouldReturnFullEntry()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "tier-A"), (20, 30, "tier-B"));
+
+        bool found = sut.TryGetEntry(25, out ValueRange<int, string> entry);
+
+        Assert.IsTrue(found);
+        Assert.AreEqual(20, entry.StartInclusive);
+        Assert.AreEqual(30, entry.EndExclusive);
+        Assert.AreEqual("tier-B", entry.Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.TryGetEntry(TKey, out ValueRange{TKey, TValue})" />
+    /// returns <see langword="false" /> and a default entry when the key is not in any range.
+    /// </summary>
+    [TestMethod]
+    public void TryGetEntry_WhenKeyIsNotInAnyRange_ShouldReturnFalse()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
+
+        bool found = sut.TryGetEntry(99, out ValueRange<int, string> entry);
+
+        Assert.IsFalse(found);
+        Assert.IsNull(entry.Value);
+    }
+}
