@@ -32,7 +32,7 @@ internal sealed class ThreefishTransform
     /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
     /// <param name="encrypt"><see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    public ThreefishTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
+    public ThreefishTransform(ThreefishBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
         : base(cipher, cipherMode, paddingMode, iv, encrypt)
     {
     }

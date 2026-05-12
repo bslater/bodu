@@ -118,8 +118,8 @@ public sealed class GcmSivModeTransform
         ThrowHelper.ThrowIfNull(cipherFactory);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
 
-        this._nonce = new byte[(NonceSizeBits / 8)];
-        iv.AsSpan(0, (NonceSizeBits / 8)).CopyTo(this._nonce);
+        this._nonce = new byte[NonceSizeBits / 8];
+        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(this._nonce);
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
@@ -190,7 +190,7 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, (TagSizeBits / 8));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
         var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
         EnsureAadProcessed();

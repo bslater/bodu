@@ -29,6 +29,11 @@ namespace Bodu.Security.Cryptography;
 /// (<c>ke1..ke4</c> or <c>ke1..ke6</c>).
 /// </para>
 /// <para>
+/// The block operation follows the RFC Feistel structure directly: input whitening, repeated applications of the
+/// 64-bit <c>F</c> function, periodic <c>FL</c>/<c>FLINV</c> layers, final half swap, and output whitening. Decryption
+/// reverses the same schedule using the same subkeys in reverse order and swaps <c>FL</c> with <c>FLINV</c>.
+/// </para>
+/// <para>
 /// This type exposes the raw Camellia block primitive. Most callers should prefer the higher-level
 /// <see cref="Camellia"/> class, which exposes the standard
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use
@@ -61,9 +66,10 @@ public sealed class CamelliaBlockCipher
     /// <summary>Length of the Camellia 256-bit key is 256 bits (32 bytes). Internal use only.</summary>
     private const int Key256SizeBits = 256;
 
-    // SBOX1 from RFC 3713 Appendix A. SBOX2, SBOX3, and SBOX4 are derived from this table by the F function.
-    private static readonly byte[] s_sbox1 = new byte[256]
-    {
+    // SBOX1 from RFC 3713 Appendix A. Camellia defines only this table explicitly;
+    // SBOX2, SBOX3, and SBOX4 are derived by byte rotations or by rotating the lookup index.
+    private static readonly byte[] s_sbox1 =
+    [
         0x70, 0x82, 0x2C, 0xEC, 0xB3, 0x27, 0xC0, 0xE5, 0xE4, 0x85, 0x57, 0x35, 0xEA, 0x0C, 0xAE, 0x41,
         0x23, 0xEF, 0x6B, 0x93, 0x45, 0x19, 0xA5, 0x21, 0xED, 0x0E, 0x4F, 0x4E, 0x1D, 0x65, 0x92, 0xBD,
         0x86, 0xB8, 0xAF, 0x8F, 0x7C, 0xEB, 0x1F, 0xCE, 0x3E, 0x30, 0xDC, 0x5F, 0x5E, 0xC5, 0x0B, 0x1A,
@@ -80,28 +86,31 @@ public sealed class CamelliaBlockCipher
         0x78, 0x98, 0x06, 0x6A, 0xE7, 0x46, 0x71, 0xBA, 0xD4, 0x25, 0xAB, 0x42, 0x88, 0xA2, 0x8D, 0xFA,
         0x72, 0x07, 0xB9, 0x55, 0xF8, 0xEE, 0xAC, 0x0A, 0x36, 0x49, 0x2A, 0x68, 0x3C, 0x38, 0xF1, 0xA4,
         0x40, 0x28, 0xD3, 0x7B, 0xBB, 0xC9, 0x43, 0xC1, 0x15, 0xE3, 0xAD, 0xF4, 0x77, 0xC7, 0x80, 0x9E,
-    };
+    ];
 
     // SIGMA1..SIGMA6 from RFC 3713 §2.4, represented as 64-bit constants.
-    private static readonly ulong[] s_sigma = new ulong[]
-    {
+    // These fixed constants key the Feistel derivation of KA and KB during key expansion; they are not data-round keys.
+    private static readonly ulong[] s_sigma =
+    [
         0xA09E667F3BCC908BUL,
         0xB67AE8584CAA73B2UL,
         0xC6EF372FE94F82BEUL,
         0x54FF53A5F1D36F1CUL,
         0x10E527FADE682D1DUL,
         0xB05688C2B3E6C1FDUL,
-    };
+    ];
 
-    // Whitening keys kw1..kw4 in RFC order.
+    // Whitening keys kw1..kw4 in RFC order. kw1/kw2 are applied before the Feistel rounds; kw3/kw4 are applied
+    // after the final Feistel swap.
     private readonly ulong[] _kw;
 
-    // Round keys k1..k18 (128-bit key) or k1..k24 (192/256-bit key) in RFC order.
+    // Round keys k1..k18 (128-bit key) or k1..k24 (192/256-bit key) in RFC order. Array index 0 corresponds to k1.
     private readonly ulong[] _k;
 
-    // FL/FLINV keys ke1..ke4 (128-bit key) or ke1..ke6 (192/256-bit key) in RFC order.
+    // FL/FLINV keys ke1..ke4 (128-bit key) or ke1..ke6 (192/256-bit key) in RFC order. Array index 0 corresponds to ke1.
     private readonly ulong[] _ke;
 
+    // True for 192- and 256-bit keys, which derive KB and use the 24-round key schedule from RFC 3713 §2.4.2.
     private readonly bool _usesExtendedKeySchedule;
     private bool _disposed;
 
@@ -122,6 +131,7 @@ public sealed class CamelliaBlockCipher
                 CryptoResourceStrings.ArgumentException_Camellia_InvalidKeyLength,
                 nameof(key));
 
+        // The 128-bit schedule uses KA and 18 rounds. The 192/256-bit schedule additionally derives KB and uses 24 rounds.
         _usesExtendedKeySchedule = keyBits > Key128SizeBits;
         _kw = new ulong[4];
         _k = new ulong[_usesExtendedKeySchedule ? 24 : 18];
@@ -144,13 +154,19 @@ public sealed class CamelliaBlockCipher
     /// <paramref name="input"/> or <paramref name="output"/> is not exactly 16 bytes in length.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
+    /// <remarks>
+    /// Decryption reverses the Feistel schedule used by <see cref="Encrypt"/>. Because the FL layer and its inverse are
+    /// paired asymmetrically during encryption, decryption applies <c>FLINV</c> to the left half and <c>FL</c> to the right
+    /// half at each reversed FL/FLINV layer boundary.
+    /// </remarks>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
 
-        // Encryption produced (right ^ kw3) || (left ^ kw4) — restore the post-rounds halves first.
+        // Encryption emitted (right ^ kw3) || (left ^ kw4) after the final Feistel swap.
+        // Remove output whitening and restore the post-round halves into their logical left/right variables.
         var right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
         var left = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[3];
 
@@ -164,6 +180,7 @@ public sealed class CamelliaBlockCipher
             left ^= F(right, _k[13]);
             right ^= F(left, _k[12]);
 
+            // Reverse the second FL/FLINV layer from encryption.
             left = FlInv(left, _ke[2]);
             right = Fl(right, _ke[3]);
 
@@ -175,6 +192,7 @@ public sealed class CamelliaBlockCipher
             left ^= F(right, _k[7]);
             right ^= F(left, _k[6]);
 
+            // Reverse the first FL/FLINV layer from encryption.
             left = FlInv(left, _ke[0]);
             right = Fl(right, _ke[1]);
 
@@ -196,6 +214,7 @@ public sealed class CamelliaBlockCipher
             left ^= F(right, _k[19]);
             right ^= F(left, _k[18]);
 
+            // Reverse the third FL/FLINV layer from encryption.
             left = FlInv(left, _ke[4]);
             right = Fl(right, _ke[5]);
 
@@ -207,6 +226,7 @@ public sealed class CamelliaBlockCipher
             left ^= F(right, _k[13]);
             right ^= F(left, _k[12]);
 
+            // Reverse the second FL/FLINV layer from encryption.
             left = FlInv(left, _ke[2]);
             right = Fl(right, _ke[3]);
 
@@ -218,6 +238,7 @@ public sealed class CamelliaBlockCipher
             left ^= F(right, _k[7]);
             right ^= F(left, _k[6]);
 
+            // Reverse the first FL/FLINV layer from encryption.
             left = FlInv(left, _ke[0]);
             right = Fl(right, _ke[1]);
 
@@ -262,12 +283,17 @@ public sealed class CamelliaBlockCipher
     /// <paramref name="input"/> or <paramref name="output"/> is not exactly 16 bytes in length.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
+    /// <remarks>
+    /// Encryption follows RFC 3713 directly: input whitening, groups of six Feistel rounds separated by FL/FLINV layers,
+    /// then a final half swap and output whitening.
+    /// </remarks>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
 
+        // Load the 128-bit block as two big-endian 64-bit halves and apply input whitening kw1/kw2.
         var left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
         var right = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[1];
 
@@ -281,6 +307,7 @@ public sealed class CamelliaBlockCipher
             right ^= F(left, _k[4]);
             left ^= F(right, _k[5]);
 
+            // First FL/FLINV layer: FL on the left half, FLINV on the right half.
             left = Fl(left, _ke[0]);
             right = FlInv(right, _ke[1]);
 
@@ -292,6 +319,7 @@ public sealed class CamelliaBlockCipher
             right ^= F(left, _k[10]);
             left ^= F(right, _k[11]);
 
+            // Second FL/FLINV layer.
             left = Fl(left, _ke[2]);
             right = FlInv(right, _ke[3]);
 
@@ -313,6 +341,7 @@ public sealed class CamelliaBlockCipher
             right ^= F(left, _k[4]);
             left ^= F(right, _k[5]);
 
+            // First FL/FLINV layer.
             left = Fl(left, _ke[0]);
             right = FlInv(right, _ke[1]);
 
@@ -324,6 +353,7 @@ public sealed class CamelliaBlockCipher
             right ^= F(left, _k[10]);
             left ^= F(right, _k[11]);
 
+            // Second FL/FLINV layer.
             left = Fl(left, _ke[2]);
             right = FlInv(right, _ke[3]);
 
@@ -335,6 +365,7 @@ public sealed class CamelliaBlockCipher
             right ^= F(left, _k[16]);
             left ^= F(right, _k[17]);
 
+            // Third FL/FLINV layer exists only for the 192/256-bit schedule.
             left = Fl(left, _ke[4]);
             right = FlInv(right, _ke[5]);
 
@@ -360,8 +391,14 @@ public sealed class CamelliaBlockCipher
     /// layer keys (<c>_ke</c>) according to RFC 3713 §2.4.
     /// </summary>
     /// <param name="key">The raw key material (16, 24, or 32 bytes).</param>
+    /// <remarks>
+    /// The input key is split into <c>KL</c> and <c>KR</c>. For 128-bit keys, <c>KR</c> is zero. For 192-bit keys,
+    /// the second half of <c>KR</c> is the bitwise complement of the supplied 64-bit extension. The auxiliary keys
+    /// <c>KA</c> and, for longer keys, <c>KB</c> are derived by Feistel transformations keyed with <c>SIGMA1..SIGMA6</c>.
+    /// </remarks>
     private void ExpandKey(ReadOnlySpan<byte> key)
     {
+        // KL is always the first 128 bits of the user key.
         var klHi = BinaryPrimitives.ReadUInt64BigEndian(key);
         var klLo = BinaryPrimitives.ReadUInt64BigEndian(key[8..]);
 
@@ -370,23 +407,30 @@ public sealed class CamelliaBlockCipher
 
         if (key.Length == Key128SizeBits / 8)
         {
+            // 128-bit keys use KR = 0^128.
             krHi = 0;
             krLo = 0;
         }
         else if (key.Length == Key192SizeBits / 8)
         {
+            // 192-bit keys encode KR as the supplied 64-bit word followed by its bitwise complement.
             krHi = BinaryPrimitives.ReadUInt64BigEndian(key[16..]);
-
-            // The 64-bit pad for a 192-bit key is the bitwise complement of the first KR word (RFC 3713 §2.4).
             krLo = ~krHi;
         }
         else
         {
+            // 256-bit keys provide the full KR value directly.
             krHi = BinaryPrimitives.ReadUInt64BigEndian(key[16..]);
             krLo = BinaryPrimitives.ReadUInt64BigEndian(key[24..]);
         }
 
-        // KA derivation: four Feistel rounds keyed by SIGMA1..SIGMA4.
+        // KA derivation from RFC 3713 §2.4:
+        //   D1 || D2 = (KL ^ KR)
+        //   D2 ^= F(D1, SIGMA1)
+        //   D1 ^= F(D2, SIGMA2)
+        //   D1 || D2 ^= KL
+        //   D2 ^= F(D1, SIGMA3)
+        //   D1 ^= F(D2, SIGMA4)
         var d1 = klHi ^ krHi;
         var d2 = klLo ^ krLo;
 
@@ -408,7 +452,10 @@ public sealed class CamelliaBlockCipher
             return;
         }
 
-        // KB derivation: two further Feistel rounds keyed by SIGMA5..SIGMA6.
+        // KB derivation for 192/256-bit keys from RFC 3713 §2.4:
+        //   D1 || D2 = KA ^ KR
+        //   D2 ^= F(D1, SIGMA5)
+        //   D1 ^= F(D2, SIGMA6)
         d1 = kaHi ^ krHi;
         d2 = kaLo ^ krLo;
 
@@ -425,6 +472,11 @@ public sealed class CamelliaBlockCipher
     /// <param name="klLo">The lower 64 bits of <c>KL</c>.</param>
     /// <param name="kaHi">The upper 64 bits of <c>KA</c>.</param>
     /// <param name="kaLo">The lower 64 bits of <c>KA</c>.</param>
+    /// <remarks>
+    /// The 128-bit key schedule derives all whitening, round, and FL-layer keys from rotations of <c>KL</c> and <c>KA</c>.
+    /// The comments below preserve the RFC naming and rotation offsets so test failures can be traced directly back to the
+    /// published schedule.
+    /// </remarks>
     private void Expand128BitKey(ulong klHi, ulong klLo, ulong kaHi, ulong kaLo)
     {
         // kw1, kw2 = KL <<< 0
@@ -485,6 +537,10 @@ public sealed class CamelliaBlockCipher
     /// <param name="kaLo">The lower 64 bits of <c>KA</c>.</param>
     /// <param name="kbHi">The upper 64 bits of <c>KB</c>.</param>
     /// <param name="kbLo">The lower 64 bits of <c>KB</c>.</param>
+    /// <remarks>
+    /// The extended schedule uses rotations of <c>KL</c>, <c>KR</c>, <c>KA</c>, and <c>KB</c>. It produces 24 data-round keys,
+    /// six FL-layer keys, and four whitening keys.
+    /// </remarks>
     private void Expand192Or256BitKey(
         ulong klHi,
         ulong klLo,
@@ -556,6 +612,10 @@ public sealed class CamelliaBlockCipher
     /// <param name="x">The 64-bit data word.</param>
     /// <param name="key">The 64-bit round subkey.</param>
     /// <returns>The transformed 64-bit output word.</returns>
+    /// <remarks>
+    /// Camellia's Feistel rounds all use this function. The S-box stage follows the RFC byte order and the P-function
+    /// combines the eight substituted bytes by XOR to provide byte-wise diffusion.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong F(ulong x, ulong key)
     {
@@ -575,7 +635,7 @@ public sealed class CamelliaBlockCipher
         var t7 = SBox4((int)((x >> 8) & 0xFF));
         int t8 = s_sbox1[(int)(x & 0xFF)];
 
-        // P-function: byte-wise MDS-style diffusion (RFC 3713 §2.1).
+        // P-function: byte-wise linear diffusion (RFC 3713 §2.1). Each output byte is the XOR of selected S-box outputs.
         var y1 = t1 ^ t3 ^ t4 ^ t6 ^ t7 ^ t8;
         var y2 = t1 ^ t2 ^ t4 ^ t5 ^ t7 ^ t8;
         var y3 = t1 ^ t2 ^ t3 ^ t5 ^ t6 ^ t8;
@@ -601,6 +661,10 @@ public sealed class CamelliaBlockCipher
     /// <param name="x">The 64-bit input.</param>
     /// <param name="key">The 64-bit subkey.</param>
     /// <returns>The transformed 64-bit output.</returns>
+    /// <remarks>
+    /// The FL layer is a key-dependent Boolean mixing layer inserted between 6-round Feistel groups. It splits both
+    /// the data and subkey into 32-bit halves and uses AND, OR, XOR, and a one-bit rotation.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong Fl(ulong x, ulong key)
     {
@@ -609,6 +673,7 @@ public sealed class CamelliaBlockCipher
         var k1 = (uint)(key >> 32);
         var k2 = (uint)key;
 
+        // RFC FL: x2 = x2 ^ ((x1 & k1) <<< 1); x1 = x1 ^ (x2 | k2).
         x2 ^= (x1 & k1).RotateBitsLeftUnchecked(1);
         x1 ^= x2 | k2;
 
@@ -621,6 +686,9 @@ public sealed class CamelliaBlockCipher
     /// <param name="x">The 64-bit input.</param>
     /// <param name="key">The 64-bit subkey.</param>
     /// <returns>The inverse-transformed 64-bit output.</returns>
+    /// <remarks>
+    /// This reverses <see cref="Fl"/> by applying the two Boolean/XOR updates in the opposite order.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong FlInv(ulong x, ulong key)
     {
@@ -629,6 +697,7 @@ public sealed class CamelliaBlockCipher
         var k1 = (uint)(key >> 32);
         var k2 = (uint)key;
 
+        // RFC FLINV: y1 = y1 ^ (y2 | k2); y2 = y2 ^ ((y1 & k1) <<< 1).
         y1 ^= y2 | k2;
         y2 ^= (y1 & k1).RotateBitsLeftUnchecked(1);
 
@@ -643,6 +712,10 @@ public sealed class CamelliaBlockCipher
     /// <param name="lo">The lower 64 bits of the 128-bit value.</param>
     /// <param name="bits">The rotation count, masked to the range 0..127.</param>
     /// <returns>The rotated (hi, lo) pair.</returns>
+    /// <remarks>
+    /// Camellia's key schedule is specified almost entirely as left rotations of the 128-bit values <c>KL</c>, <c>KR</c>,
+    /// <c>KA</c>, and <c>KB</c>. This helper keeps those rotations expressed in the same high/low half model used by RFC 3713.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static (ulong hi, ulong lo) RotL128(ulong hi, ulong lo, int bits)
     {

@@ -619,7 +619,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
 
         // Complete → await → advance: each iteration closes one level and waits for its
         // worker to finish all promotions before the next level's channel is closed.
-        for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
+        for (var level = 0; this._levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
         {
             channel.Writer.Complete();
 
@@ -631,8 +631,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
 #pragma warning restore VSTHRD003
         }
 
-        return this._rootHash ?? throw new InvalidOperationException(
-            CryptoResourceStrings.InvalidOperationException_NoInputData);
+        return this._rootHash ?? throw new InvalidOperationException("No input data was provided.");
     }
 
     /// <summary>
@@ -651,7 +650,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <returns>A task that completes when every level worker has drained and exited.</returns>
     private async Task DrainWorkersAsync()
     {
-        for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
+        for (var level = 0; this._levelChannels.TryGetValue(level, out Channel<byte[]>? channel); level++)
         {
             channel.Writer.TryComplete();
 #pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
@@ -676,10 +675,10 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm"/>.</returns>
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
-        using var hasher = this._algorithmFactory();
+        using HashAlgorithm hasher = this._algorithmFactory();
         var result = new byte[hasher.HashSize / 8];
-        CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
-            hasher.TryComputeHash(data, result, out _));
+        if (!hasher.TryComputeHash(data, result, out _))
+            throw new CryptographicException("TryComputeHash returned false; the output buffer may be too small.");
         return result;
     }
 
@@ -706,7 +705,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <returns>The combined parent hash.</returns>
     private byte[] CombineAndHash(List<byte[]> hashes, int sourceLevel, int parentIndex)
     {
-        using var hasher = this._algorithmFactory();
+        using HashAlgorithm hasher = this._algorithmFactory();
 
         // Feed all but the last child via TransformBlock — purely state accumulation, no output.
         for (var i = 0; i < hashes.Count - 1; i++)

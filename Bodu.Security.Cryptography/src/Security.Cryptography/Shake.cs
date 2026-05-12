@@ -343,7 +343,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
             {
                 var d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
                 for (var y = 0; y < 5; y++)
-                    state[x + y * 5] ^= d;
+                    state[x + (y * 5)] ^= d;
             }
 
             // ρ and π combined: rotate each lane and scatter to the π-permuted position.
@@ -357,7 +357,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
             for (var y = 0; y < 5; y++)
             {
                 for (var x = 0; x < 5; x++)
-                    state[x + y * 5] = b[x + y * 5] ^ ((~b[(x + 1) % 5 + y * 5]) & b[(x + 2) % 5 + y * 5]);
+                    state[x + (y * 5)] = b[x + (y * 5)] ^ ((~b[((x + 1) % 5) + (y * 5)]) & b[((x + 2) % 5) + (y * 5)]);
             }
 
             // ι (iota): XOR a round constant into lane (0,0).

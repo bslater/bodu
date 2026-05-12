@@ -364,7 +364,7 @@ internal static partial class CryptoHelpers
     /// </summary>
     private static bool IsValidSize(int sizeBits, KeySizes[] legalSizes)
     {
-        foreach (var range in legalSizes)
+        foreach (KeySizes range in legalSizes)
         {
             if (range.SkipSize == 0)
             {

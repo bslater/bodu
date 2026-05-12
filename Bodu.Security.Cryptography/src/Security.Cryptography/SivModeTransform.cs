@@ -190,7 +190,7 @@ public sealed class SivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, (TagSizeBits / 8));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
         var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);

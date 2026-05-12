@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
@@ -56,7 +55,9 @@ public sealed class SkipjackBlockCipher
     /// </summary>
     public const int KeySize = 80;
 
-    // Static F-table (8 × 8 S-box)
+    // Fixed Skipjack F-table. This 256-entry byte substitution table is the only nonlinear component used by the
+    // 16-bit G permutation. Every round calls G once, and G performs four F-table substitutions keyed by four
+    // consecutive bytes from the 80-bit key schedule.
     private static readonly byte[] s_ftable =
     [
         0xa3, 0xd7, 0x09, 0x83, 0xf8, 0x48, 0xf6, 0xf4, 0xb3, 0x21, 0x15, 0x78, 0x99, 0xb1, 0xaf, 0xf9,
@@ -78,15 +79,22 @@ public sealed class SkipjackBlockCipher
     ];
 
 #pragma warning disable SA1132 // Do not combine fields
+    // Expanded round-key byte streams. Round k uses _key0[k].._key3[k], equivalent to
+    // key[(4k + 0) mod 10] through key[(4k + 3) mod 10]. Keeping four arrays avoids modulo arithmetic in G/H.
     private readonly int[] _key0, _key1, _key2, _key3;
 #pragma warning restore SA1132 // Do not combine fields
+
     private bool _disposed = false;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SkipjackBlockCipher"/> class using the supplied 80-bit key.
     /// </summary>
-    /// <param name="keyBytes">Exactly 10 bytes of key material.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="keyBytes"/> is not exactly 10 bytes long.</exception>
+    /// <param name="keyBytes">
+    /// Exactly 10 bytes of key material.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="keyBytes"/> is not exactly 10 bytes long.
+    /// </exception>
     public SkipjackBlockCipher(ReadOnlySpan<byte> keyBytes)
     {
         if (keyBytes.Length != KeySize / 8)
@@ -99,13 +107,15 @@ public sealed class SkipjackBlockCipher
         this._key2 = new int[32];
         this._key3 = new int[32];
 
-        // expand the key to 128 bytes in 4 parts (saving us a modulo, multiply and an addition).
+        // Expand the 80-bit Skipjack key into the 32 round-key byte groups consumed by G/H.
+        // The specification advances the key byte pointer by four bytes inside G for each round and wraps mod 10.
+        // Precomputing these positions gives round k direct access to cv0..cv3 without changing the algorithm.
         for (var i = 0; i < 32; i++)
         {
-            _key0[i] = keyBytes[(i * 4 + 0) % 10];
-            _key1[i] = keyBytes[(i * 4 + 1) % 10];
-            _key2[i] = keyBytes[(i * 4 + 2) % 10];
-            _key3[i] = keyBytes[(i * 4 + 3) % 10];
+            this._key0[i] = keyBytes[(i * 4 + 0) % 10];
+            this._key1[i] = keyBytes[(i * 4 + 1) % 10];
+            this._key2[i] = keyBytes[(i * 4 + 2) % 10];
+            this._key3[i] = keyBytes[(i * 4 + 3) % 10];
         }
     }
 
@@ -117,55 +127,75 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Decrypts a single 64-bit ciphertext block.
     /// </summary>
-    /// <param name="input">Ciphertext of at least 8 bytes.</param>
-    /// <param name="output">Buffer that receives the decrypted plaintext.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is too small.</exception>
-    /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
-    /// <remarks>Mirrors the BC/OpenSSL decrypt sequence, including the word-order swap in the input/output stages.</remarks>
+    /// <param name="input">
+    /// Ciphertext of exactly 8 bytes.
+    /// </param>
+    /// <param name="output">
+    /// Buffer that receives the decrypted plaintext. Must be exactly 8 bytes.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="input"/> or <paramref name="output"/> is not exactly 8 bytes.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">
+    /// The cipher instance has been disposed.
+    /// </exception>
+    /// <remarks>
+    /// Mirrors the Bouncy Castle/OpenSSL decrypt sequence, including the word-order swap in the input/output stages.
+    /// Decryption applies the inverse round rules in reverse round-key order, using H as the inverse of G.
+    /// </remarks>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSize/8);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSize/8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSize / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSize / 8);
         this.ThrowIfDisposed();
 
+        // Ciphertext is emitted by encryption as w1,w2,w3,w4. The inverse formulation loads it as
+        // w2,w1,w4,w3 so that the following reverse Rule B/Rule A operations mirror the reference implementation.
         var w2 = (input[0] << 8) + (input[1] & 0xff);
         var w1 = (input[2] << 8) + (input[3] & 0xff);
         var w4 = (input[4] << 8) + (input[5] & 0xff);
         var w3 = (input[6] << 8) + (input[7] & 0xff);
 
+        // Start from round 32. The round counter k is zero-based internally, while the Skipjack counter value
+        // inserted into Rule A/Rule B is k + 1.
         var k = 31;
 
+        // Undo the same 32 rounds in reverse: two cycles of eight inverse Rule B rounds followed by eight inverse
+        // Rule A rounds. This is the reverse of encryption's A^8, B^8, A^8, B^8 schedule.
         for (var t = 0; t < 2; t++)
         {
+            // Inverse Rule B for eight rounds. H(k, w1) reverses the G permutation used during encryption.
             for (var i = 0; i < 8; i++)
             {
                 var tmp = w4;
                 w4 = w3;
                 w3 = w2;
-                w2 = H(k, w1);
+                w2 = this.H(k, w1);
                 w1 = w2 ^ tmp ^ (k + 1);
                 k--;
             }
 
+            // Inverse Rule A for eight rounds.
             for (var i = 0; i < 8; i++)
             {
                 var tmp = w4;
                 w4 = w3;
                 w3 = w1 ^ w2 ^ (k + 1);
-                w2 = H(k, w1);
+                w2 = this.H(k, w1);
                 w1 = tmp;
                 k--;
             }
         }
 
-        output[0] = (byte)((w2 >> 8));
-        output[1] = (byte)(w2);
-        output[2] = (byte)((w1 >> 8));
-        output[3] = (byte)(w1);
-        output[4] = (byte)((w4 >> 8));
-        output[5] = (byte)(w4);
-        output[6] = (byte)((w3 >> 8));
-        output[7] = (byte)(w3);
+        // Store the recovered plaintext in the Skipjack 4-word big-endian block order.
+        output[0] = (byte)(w2 >> 8);
+        output[1] = (byte)w2;
+        output[2] = (byte)(w1 >> 8);
+        output[3] = (byte)w1;
+        output[4] = (byte)(w4 >> 8);
+        output[5] = (byte)w4;
+        output[6] = (byte)(w3 >> 8);
+        output[7] = (byte)w3;
     }
 
     /// <summary>
@@ -187,76 +217,115 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Encrypts a single 64-bit block.
     /// </summary>
-    /// <param name="input">The plaintext block to encrypt. Must be exactly 8 bytes (the Skipjack 64-bit block).</param>
-    /// <param name="output">Buffer that receives the 8-byte ciphertext.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is too small.</exception>
-    /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
+    /// <param name="input">
+    /// The plaintext block to encrypt. Must be exactly 8 bytes.
+    /// </param>
+    /// <param name="output">
+    /// Buffer that receives the 8-byte ciphertext. Must be exactly 8 bytes.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="input"/> or <paramref name="output"/> is not exactly 8 bytes.
+    /// </exception>
+    /// <exception cref="ObjectDisposedException">
+    /// The cipher instance has been disposed.
+    /// </exception>
     /// <remarks>
-    /// The routine implements the BC/OpenSSL key-schedule: the key pointer advances by one byte per round and the round constant is (
-    /// <c>k + 1</c>). See the class-level remarks for details.
+    /// The routine implements the Bouncy Castle/OpenSSL-compatible Skipjack schedule: the key pointer advances by
+    /// four key bytes inside G for each round, and the rule counter injected into each round is <c>k + 1</c>.
     /// </remarks>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSize/8);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSize/8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSize / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSize / 8);
         this.ThrowIfDisposed();
 
+        // Split the 64-bit plaintext block into four big-endian 16-bit words W1..W4, matching the Skipjack
+        // reference algorithm's word-oriented round descriptions.
         var w1 = (input[0] << 8) + (input[1] & 0xff);
         var w2 = (input[2] << 8) + (input[3] & 0xff);
         var w3 = (input[4] << 8) + (input[5] & 0xff);
         var w4 = (input[6] << 8) + (input[7] & 0xff);
 
+        // k is the zero-based round-key index. The Skipjack rule counter value used by the round equations is k + 1.
         var k = 0;
 
+        // Skipjack encryption applies 32 rounds in four groups:
+        //   rounds  1.. 8: Rule A
+        //   rounds  9..16: Rule B
+        //   rounds 17..24: Rule A
+        //   rounds 25..32: Rule B
         for (var t = 0; t < 2; t++)
         {
+            // Rule A: shift the four 16-bit words and combine G(k, W1), the outgoing W4, and the round counter.
             for (var i = 0; i < 8; i++)
             {
                 var tmp = w4;
                 w4 = w3;
                 w3 = w2;
-                w2 = G(k, w1);
+                w2 = this.G(k, w1);
                 w1 = w2 ^ tmp ^ (k + 1);
                 k++;
             }
 
+            // Rule B: use the same G(k, W1) primitive, but feed the nonlinear/counter mix into W3 and rotate W4 into W1.
             for (var i = 0; i < 8; i++)
             {
                 var tmp = w4;
                 w4 = w3;
                 w3 = w1 ^ w2 ^ (k + 1);
-                w2 = G(k, w1);
+                w2 = this.G(k, w1);
                 w1 = tmp;
                 k++;
             }
         }
 
-        output[0] = (byte)((w1 >> 8));
-        output[1] = (byte)(w1);
-        output[2] = (byte)((w2 >> 8));
-        output[3] = (byte)(w2);
-        output[4] = (byte)((w3 >> 8));
-        output[5] = (byte)(w3);
-        output[6] = (byte)((w4 >> 8));
-        output[7] = (byte)(w4);
+        // Store the ciphertext as four big-endian 16-bit words in W1..W4 order.
+        output[0] = (byte)(w1 >> 8);
+        output[1] = (byte)w1;
+        output[2] = (byte)(w2 >> 8);
+        output[3] = (byte)w2;
+        output[4] = (byte)(w3 >> 8);
+        output[5] = (byte)w3;
+        output[6] = (byte)(w4 >> 8);
+        output[7] = (byte)w4;
     }
 
     /// <summary>
-    /// Reads a big-endian 16-bit unsigned integer from <paramref name="s"/>.
+    /// Reads a big-endian 16-bit unsigned integer from the specified byte span.
     /// </summary>
-    /// <param name="s">The source byte span.</param>
-    /// <param name="o">The byte offset at which to read.</param>
-    /// <returns>The 16-bit value read in big-endian order.</returns>
+    /// <param name="s">
+    /// The source byte span.
+    /// </param>
+    /// <param name="o">
+    /// The byte offset at which to read.
+    /// </param>
+    /// <returns>
+    /// The 16-bit value read in big-endian order.
+    /// </returns>
+    /// <remarks>
+    /// Skipjack represents each 64-bit block as four big-endian 16-bit words. This helper keeps that convention
+    /// explicit if the block load/store code is later refactored to use helper calls.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ushort ReadBE16(ReadOnlySpan<byte> s, int o) =>
         (ushort)((s[o] << 8) | s[o + 1]);
 
     /// <summary>
-    /// Writes <paramref name="v"/> as big-endian 16-bit value into <paramref name="d"/>.
+    /// Writes a 16-bit unsigned integer to the specified byte span in big-endian order.
     /// </summary>
-    /// <param name="d">The destination byte span.</param>
-    /// <param name="o">The byte offset at which to write.</param>
-    /// <param name="v">The 16-bit value to write.</param>
+    /// <param name="d">
+    /// The destination byte span.
+    /// </param>
+    /// <param name="o">
+    /// The byte offset at which to write.
+    /// </param>
+    /// <param name="v">
+    /// The 16-bit value to write.
+    /// </param>
+    /// <remarks>
+    /// Skipjack represents each 64-bit block as four big-endian 16-bit words. This helper keeps that convention
+    /// explicit if the block load/store code is later refactored to use helper calls.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void WriteBE16(Span<byte> d, int o, ushort v)
     {
@@ -265,46 +334,78 @@ public sealed class SkipjackBlockCipher
     }
 
     /// <summary>
-    /// Skipjack <c>G</c> permutation (forward) – uses 4 key bytes starting at index <paramref name="k"/>.
+    /// Applies the forward Skipjack <c>G</c> permutation to a 16-bit word for the specified round.
     /// </summary>
-    /// <param name="k">Round-key index (0–31).</param>
-    /// <param name="w">16-bit input word.</param>
-    /// <returns>Permuted 16-bit word.</returns>
+    /// <param name="k">
+    /// The zero-based round-key index, in the range 0..31.
+    /// </param>
+    /// <param name="w">
+    /// The 16-bit input word.
+    /// </param>
+    /// <returns>
+    /// The 16-bit output of the forward <c>G</c> permutation.
+    /// </returns>
     /// <remarks>
-    /// The four key bytes are selected as <c>key[(k*4 + i) mod 10]</c> for <c>i = 0…3</c>, exactly matching Bouncy Castle / OpenSSL.
+    /// <para>
+    /// The Skipjack <c>G</c> permutation splits <paramref name="w"/> into two bytes and applies four keyed F-table
+    /// substitutions. For round <paramref name="k"/>, the key bytes are equivalent to
+    /// <c>key[(4k + 0) mod 10]</c> through <c>key[(4k + 3) mod 10]</c>.
+    /// </para>
+    /// <para>
+    /// The returned word is formed from the final two internal bytes as <c>g5 || g6</c>.
+    /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int G(int k, int w)
     {
         int g1, g2, g3, g4, g5, g6;
 
+        // Split the 16-bit input into the two starting bytes g1 || g2.
         g1 = (w >> 8) & 0xff;
         g2 = w & 0xff;
 
-        g3 = s_ftable[g2 ^ _key0[k]] ^ g1;
-        g4 = s_ftable[g3 ^ _key1[k]] ^ g2;
-        g5 = s_ftable[g4 ^ _key2[k]] ^ g3;
-        g6 = s_ftable[g5 ^ _key3[k]] ^ g4;
+        // Four alternating F-table substitutions and XOR feedback steps implement the Skipjack G permutation.
+        g3 = s_ftable[g2 ^ this._key0[k]] ^ g1;
+        g4 = s_ftable[g3 ^ this._key1[k]] ^ g2;
+        g5 = s_ftable[g4 ^ this._key2[k]] ^ g3;
+        g6 = s_ftable[g5 ^ this._key3[k]] ^ g4;
 
-        return ((g5 << 8) + g6);
+        return (g5 << 8) + g6;
     }
 
     /// <summary>
-    /// Inverse Skipjack permutation <c>H = G⁻¹</c>.
+    /// Applies the inverse Skipjack <c>H</c> permutation, where <c>H = G⁻¹</c>, to a 16-bit word for the specified round.
     /// </summary>
-    /// <param name="k">Round-key index (0–31).</param>
-    /// <param name="w">16-bit input word.</param>
-    /// <returns>The inverse-permuted 16-bit word.</returns>
+    /// <param name="k">
+    /// The zero-based round-key index, in the range 0..31.
+    /// </param>
+    /// <param name="w">
+    /// The 16-bit input word to inverse-permute.
+    /// </param>
+    /// <returns>
+    /// The 16-bit output of the inverse <c>H</c> permutation.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// Decryption uses <c>H</c> to reverse the <c>G</c> permutation applied during encryption. It consumes the same
+    /// round-key bytes as <c>G</c>, but applies them in reverse substitution order.
+    /// </para>
+    /// <para>
+    /// The input word is interpreted as <c>h2 || h1</c> so the final return can reconstruct the original
+    /// <c>g1 || g2</c> value as <c>h6 || h5</c>.
+    /// </para>
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int H(int k, int w)
     {
+        // Split the 16-bit input into the terminal bytes of G, then unwind the four F-table/XOR steps.
         var h1 = w & 0xff;
         var h2 = (w >> 8) & 0xff;
 
-        var h3 = s_ftable[h2 ^ _key3[k]] ^ h1;
-        var h4 = s_ftable[h3 ^ _key2[k]] ^ h2;
-        var h5 = s_ftable[h4 ^ _key1[k]] ^ h3;
-        var h6 = s_ftable[h5 ^ _key0[k]] ^ h4;
+        var h3 = s_ftable[h2 ^ this._key3[k]] ^ h1;
+        var h4 = s_ftable[h3 ^ this._key2[k]] ^ h2;
+        var h5 = s_ftable[h4 ^ this._key1[k]] ^ h3;
+        var h6 = s_ftable[h5 ^ this._key0[k]] ^ h4;
 
         return (h6 << 8) + h5;
     }

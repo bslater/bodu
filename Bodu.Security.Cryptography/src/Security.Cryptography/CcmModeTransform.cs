@@ -103,8 +103,8 @@ public sealed class CcmModeTransform
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
         this._cipher = cipher;
 
-        this._nonce = new byte[(NonceSizeBits / 8)];
-        iv.AsSpan(0, (NonceSizeBits / 8)).CopyTo(this._nonce);
+        this._nonce = new byte[NonceSizeBits / 8];
+        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(this._nonce);
     }
 
     /// <inheritdoc />
@@ -137,7 +137,7 @@ public sealed class CcmModeTransform
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
-        encTag.AsSpan(0, (TagSizeBits / 8)).CopyTo(output[plaintext.Length..]);
+        encTag.AsSpan(0, TagSizeBits / 8).CopyTo(output[plaintext.Length..]);
         this._completed = true;
         return required;
     }
@@ -148,7 +148,7 @@ public sealed class CcmModeTransform
         this.ThrowIfDisposed();
         ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, (TagSizeBits / 8));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
 
         var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
@@ -163,7 +163,7 @@ public sealed class CcmModeTransform
         var mac = ComputeCbcMac(this._aad.AsSpan(), output[..plaintextLength]);
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
-        if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, (TagSizeBits / 8)), receivedTag))
+        if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSizeBits / 8), receivedTag))
         {
             CryptographicOperations.ZeroMemory(output[..plaintextLength]);
             this._completed = true;

@@ -187,8 +187,8 @@ public sealed partial class Whirlpool
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         var inputLength = block.Length;
-        var blockBytes = BlockSizeBits / 8;
-        var lengthFieldBytes = LengthFieldBits / 8;
+        const int blockBytes = BlockSizeBits / 8;
+        const int lengthFieldBytes = LengthFieldBits / 8;
 
         // Whirlpool appends 0x80, a sequence of zero bytes, and a 256-bit big-endian length trailer.
         // A second padded block is required whenever the residual (including the 0x80 byte) does not

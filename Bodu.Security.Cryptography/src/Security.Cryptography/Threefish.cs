@@ -69,9 +69,9 @@ public abstract class Threefish
         this.BlockSizeValue = this.KeySizeValue = blockSizeBits;
         this.FeedbackSizeValue = 8;
 
-        this.LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-        this.LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-        this.LegalTweakSizesValue = new[] { new KeySizes(tweakSizeBits, tweakSizeBits, 0) };
+        this.LegalBlockSizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        this.LegalKeySizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        this.LegalTweakSizesValue = [new KeySizes(tweakSizeBits, tweakSizeBits, 0)];
         this.TweakSizeValue = tweakSizeBits;
 
         this.ModeValue = CipherMode.CBC;
@@ -97,7 +97,7 @@ public abstract class Threefish
         CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
         CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
-        var engine = this.CreateCipher(rgbKey, tweak);
+        ThreefishBlockCipher engine = this.CreateCipher(rgbKey, tweak);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
     }
 
@@ -109,7 +109,7 @@ public abstract class Threefish
         CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
         CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
-        var engine = this.CreateCipher(rgbKey, tweak);
+        ThreefishBlockCipher engine = this.CreateCipher(rgbKey, tweak);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 
@@ -179,5 +179,5 @@ public abstract class Threefish
     /// <returns>A configured <see cref="IBlockCipher"/> instance for encryption or decryption.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
-    protected abstract IBlockCipher CreateCipher(byte[] key, byte[] tweak);
+    protected abstract ThreefishBlockCipher CreateCipher(byte[] key, byte[] tweak);
 }

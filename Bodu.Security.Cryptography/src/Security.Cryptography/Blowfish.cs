@@ -335,7 +335,7 @@ public sealed class Blowfish
     /// </summary>
     /// <param name="key">The key material used to derive the P-array and S-boxes.</param>
     /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
-    private static IBlockCipher CreateCipher(byte[] key) => new BlowfishBlockCipher(key);
+    private static BlowfishBlockCipher CreateCipher(byte[] key) => new BlowfishBlockCipher(key);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.

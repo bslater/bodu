@@ -288,7 +288,7 @@ public sealed class Blake2b
         Span<byte> tmp = stackalloc byte[8];
         for (var i = 0; i < wordCount; i++)
         {
-            Span<byte> wordSpan = output.AsSpan(i * 8, Math.Min(8, outputBytes - i * 8));
+            Span<byte> wordSpan = output.AsSpan(i * 8, Math.Min(8, outputBytes - (i * 8)));
             if (wordSpan.Length == 8)
             {
                 BinaryPrimitives.WriteUInt64LittleEndian(wordSpan, this._h[i]);

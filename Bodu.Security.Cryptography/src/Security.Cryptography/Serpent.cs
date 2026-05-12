@@ -33,6 +33,18 @@ namespace Bodu.Security.Cryptography;
 public abstract class Serpent
     : TweakableSymmetricAlgorithm
 {
+    /// <summary>
+    /// The block size in bytes.
+    /// </summary>
+    protected readonly int BlockSizeBytes;
+
+    /// <summary>
+    /// The key size in bytes.
+    /// </summary>
+    protected readonly int KeySizeBytes;
+
+    private readonly int _defaultTweakSizeBytes;
+
     private bool _disposed;
 
     /// <summary>
@@ -40,20 +52,17 @@ public abstract class Serpent
     /// </summary>
     /// <param name="blockSizeBits">The block size in bits. Must match the wide-block Serpent variant block size (256, 512, or 1024).</param>
     /// <param name="tweakSizeBits">The tweak size in bits (128 for all wide-block Serpent variants).</param>
-    /// <remarks>
-    /// Sizes are stored in bits via <see cref="SymmetricAlgorithm.BlockSizeValue"/>,
-    /// <see cref="SymmetricAlgorithm.KeySizeValue"/>, and <see cref="TweakableSymmetricAlgorithm.TweakSizeValue"/>,
-    /// matching the BCL convention. Conversion to bytes occurs only at the byte-array processing boundary
-    /// (e.g. <see cref="GenerateKey"/>, <see cref="GenerateIV"/>, <see cref="GenerateTweak"/>).
-    /// </remarks>
     protected Serpent(int blockSizeBits, int tweakSizeBits)
     {
         this.BlockSizeValue = this.KeySizeValue = blockSizeBits;
         this.FeedbackSizeValue = 8;
 
-        this.LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-        this.LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-        this.LegalTweakSizesValue = new[] { new KeySizes(tweakSizeBits, tweakSizeBits, 0) };
+        this.BlockSizeBytes = this.KeySizeBytes = blockSizeBits / 8;
+        this._defaultTweakSizeBytes = tweakSizeBits / 8;
+
+        this.LegalBlockSizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        this.LegalKeySizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        this.LegalTweakSizesValue = [new KeySizes(tweakSizeBits, tweakSizeBits, 0)];
         this.TweakSizeValue = tweakSizeBits;
 
         this.ModeValue = CipherMode.CBC;
@@ -79,7 +88,7 @@ public abstract class Serpent
         CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
         CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
-        var engine = this.CreateCipher(rgbKey, tweak);
+        IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
         return new SerpentTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
     }
 
@@ -91,7 +100,7 @@ public abstract class Serpent
         CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
         CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
-        var engine = this.CreateCipher(rgbKey, tweak);
+        IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
         return new SerpentTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 
@@ -99,21 +108,21 @@ public abstract class Serpent
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
+        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
     }
 
     /// <inheritdoc />
     public override void GenerateTweak()
     {
         this.ThrowIfDisposed();
-        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this.TweakSizeValue / 8);
+        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this._defaultTweakSizeBytes);
     }
 
     /// <inheritdoc />

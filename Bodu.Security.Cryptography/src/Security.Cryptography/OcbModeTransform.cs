@@ -135,8 +135,8 @@ public sealed class OcbModeTransform
 
         this._cipher = cipher;
 
-        this._nonce = new byte[(NonceSizeBits / 8)];
-        iv.AsSpan(0, (NonceSizeBits / 8)).CopyTo(this._nonce);
+        this._nonce = new byte[NonceSizeBits / 8];
+        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(this._nonce);
 
         this._tagLen = tagSize / 8;
 
@@ -501,7 +501,7 @@ public sealed class OcbModeTransform
             ktop = new byte[blockSize];
             this._cipher.Encrypt(ktopInput, ktop);
 
-            stretch = new byte[blockSize + blockSize / 2];
+            stretch = new byte[blockSize + (blockSize / 2)];
             ktop.CopyTo(stretch, 0);
 
             for (var i = 0; i < blockSize / 2; i++)

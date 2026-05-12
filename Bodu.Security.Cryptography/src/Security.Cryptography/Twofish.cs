@@ -176,7 +176,8 @@ public sealed class Twofish
     /// Creates a new <see cref="Twofish"/> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Twofish"/> instance.</returns>
-    public new static Twofish Create() => new Twofish();
+    public new static Twofish Create() =>
+        new Twofish();
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
@@ -231,7 +232,8 @@ public sealed class Twofish
         base.Dispose(disposing);
     }
 
-    private static IBlockCipher CreateCipher(byte[] key) => new TwofishBlockCipher(key);
+    private static TwofishBlockCipher CreateCipher(byte[] key) =>
+        new TwofishBlockCipher(key);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
