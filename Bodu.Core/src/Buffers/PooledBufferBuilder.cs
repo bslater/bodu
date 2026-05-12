@@ -499,13 +499,37 @@ public sealed class PooledBufferBuilder<T> :
         GrowIfNeeded(minimum);
     }
 
+    /// <summary>
+    /// Matches the default maximum bucket size of <see cref="ArrayPool{T}.Shared"/>. Below this length each rental
+    /// is served from a pool bucket; above it every rental is a fresh heap allocation.
+    /// </summary>
+    /// <remarks>
+    /// Used as the geometric-to-linear inflection point in <see cref="GrowIfNeeded"/>: when the current buffer
+    /// is smaller than this threshold a doubling growth lands on the next power-of-two bucket — effectively
+    /// free under the pool's round-up behaviour — but once the buffer crosses the threshold doubling allocates a
+    /// fresh heap array of double the size, so growth switches to a linear step of one ceiling to avoid up to
+    /// 50% wasted memory.
+    /// </remarks>
+    private const int PoolBucketCeiling = 1024 * 1024;
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void GrowIfNeeded(int minimum)
     {
         if (minimum <= _internalBuffer.Length)
             return;
 
-        int newCapacity = Math.Max(_internalBuffer.Length * 2, minimum);
+        int current = _internalBuffer.Length;
+
+        // Geometric growth below the pool ceiling (free under the pool's power-of-two bucket round-up), linear
+        // growth above it (where every rental is a heap allocation and doubling would waste up to 50% of memory).
+        int step = current >= PoolBucketCeiling ? PoolBucketCeiling : current;
+
+        // Saturating add — protects against int overflow when `current + step` would exceed Array.MaxLength.
+        long target = (long)current + step;
+        int newCapacity = target > Array.MaxLength ? Array.MaxLength : (int)target;
+        if (newCapacity < minimum)
+            newCapacity = minimum;
+
         T[] newBuffer = ArrayPool<T>.Shared.Rent(newCapacity);
         Array.Copy(_internalBuffer, 0, newBuffer, 0, _count);
         ReturnBufferIfNeeded();
