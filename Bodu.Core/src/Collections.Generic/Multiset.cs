@@ -201,7 +201,7 @@ public sealed partial class Multiset<T>
     /// The number of times <paramref name="item"/> appears in the multiset, or <c>0</c> if the element is absent.
     /// </returns>
     public int CountOf(T item) =>
-        _items.TryGetValue(item, out int count) ? count : 0;
+        _items.TryGetValue(item, out var count) ? count : 0;
 
     /// <summary>
     /// Copies all elements of the <see cref="Multiset{T}"/> to a one-dimensional array, starting at the
@@ -223,7 +223,7 @@ public sealed partial class Multiset<T>
 
         foreach (KeyValuePair<T, int> pair in _items)
         {
-            for (int i = 0; i < pair.Value; i++)
+            for (var i = 0; i < pair.Value; i++)
                 array[arrayIndex++] = pair.Key;
         }
     }
@@ -238,7 +238,7 @@ public sealed partial class Multiset<T>
     /// </returns>
     public bool Remove(T item)
     {
-        if (!_items.TryGetValue(item, out int count))
+        if (!_items.TryGetValue(item, out var count))
             return false;
 
         if (count == 1)
@@ -261,7 +261,7 @@ public sealed partial class Multiset<T>
     /// </returns>
     public bool RemoveAll(T item)
     {
-        if (!_items.TryGetValue(item, out int count))
+        if (!_items.TryGetValue(item, out var count))
             return false;
 
         _items.Remove(item);
@@ -287,7 +287,7 @@ public sealed partial class Multiset<T>
     /// <exception cref="InvalidOperationException">The multiset was modified after enumeration began.</exception>
     public IEnumerable<T> Distinct()
     {
-        int version = _version;
+        var version = _version;
         foreach (T key in _items.Keys)
         {
             if (version != _version)
@@ -311,7 +311,7 @@ public sealed partial class Multiset<T>
     /// <exception cref="InvalidOperationException">The multiset was modified after enumeration began.</exception>
     public IEnumerable<KeyValuePair<T, int>> Frequencies()
     {
-        int version = _version;
+        var version = _version;
         foreach (KeyValuePair<T, int> pair in _items)
         {
             if (version != _version)
@@ -341,7 +341,7 @@ public sealed partial class Multiset<T>
 
         foreach (KeyValuePair<T, int> pair in other._items)
         {
-            result._items.TryGetValue(pair.Key, out int existing);
+            result._items.TryGetValue(pair.Key, out var existing);
             if (pair.Value > existing)
             {
                 result._items[pair.Key] = pair.Value;
@@ -370,7 +370,7 @@ public sealed partial class Multiset<T>
         Multiset<T> result = new Multiset<T>(_comparer);
         foreach (KeyValuePair<T, int> pair in _items)
         {
-            int count = Math.Min(pair.Value, other.CountOf(pair.Key));
+            var count = Math.Min(pair.Value, other.CountOf(pair.Key));
             if (count > 0)
                 result.InsertCore(pair.Key, count);
         }
@@ -396,7 +396,7 @@ public sealed partial class Multiset<T>
         Multiset<T> result = new Multiset<T>(_comparer);
         foreach (KeyValuePair<T, int> pair in _items)
         {
-            int count = Math.Max(0, pair.Value - other.CountOf(pair.Key));
+            var count = Math.Max(0, pair.Value - other.CountOf(pair.Key));
             if (count > 0)
                 result.InsertCore(pair.Key, count);
         }
@@ -437,7 +437,7 @@ public sealed partial class Multiset<T>
     /// <param name="count">The number of occurrences to add.</param>
     private void InsertCore(T item, int count)
     {
-        _items[item] = _items.TryGetValue(item, out int existing) ? existing + count : count;
+        _items[item] = _items.TryGetValue(item, out var existing) ? existing + count : count;
         _count += count;
     }
 }

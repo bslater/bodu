@@ -23,19 +23,6 @@ namespace Bodu.Buffers;
 /// cleared before the underlying array is returned to the pool, preventing unintended object retention.
 /// </para>
 /// <para>
-/// <see cref="ArrayPool{T}.Shared"/> serves rentals out of fixed-size buckets — a power-of-two progression
-/// with a 16-element minimum on the supported runtimes. As a result, the rented buffer is always at least as
-/// large as the requested capacity, but a request smaller than 16 still produces a 16-element array and larger
-/// requests are rounded up to the next bucket size. Callers should therefore treat the constructor's
-/// <c>initialCapacity</c> as a lower bound and read <see cref="Capacity"/> for the actual rented length.
-/// </para>
-/// <para>
-/// Growth uses geometric doubling. Because every Rent is already rounded up to the next bucket, asking for
-/// double the current length lands on the same bucket the pool would otherwise pick; a smaller multiplier would
-/// not reduce the rented size, only the number of grow events. The doubling step is performed in
-/// <see cref="long"/> arithmetic and clamped to <see cref="Array.MaxLength"/> so very large buffers do not wrap.
-/// </para>
-/// <para>
 /// Call <see cref="Reset"/> to clear accumulated data and reuse the current rented buffer without a pool
 /// round-trip. Call <see cref="Dispose"/> when the builder is no longer needed.
 /// </para>
@@ -59,14 +46,6 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="initialCapacity"/> is less than 1.
     /// </exception>
-    /// <remarks>
-    /// <para>
-    /// The value is a lower bound, not an exact size: <see cref="ArrayPool{T}.Shared"/> serves rentals out of
-    /// power-of-two buckets with a 16-element minimum on the supported runtimes, so a request smaller than 16
-    /// will still produce a 16-element array and larger requests are rounded up to the next bucket size. Inspect
-    /// <see cref="Capacity"/> immediately after construction to observe the actual rented length.
-    /// </para>
-    /// </remarks>
     public PooledBufferBuilder(int initialCapacity = 256)
     {
         ThrowHelper.ThrowIfLessThan(initialCapacity, 1);
@@ -107,10 +86,8 @@ public sealed class PooledBufferBuilder<T> :
     /// </summary>
     /// <returns>
     /// The length of the underlying rented array. This value is always greater than or equal to
-    /// <see cref="WrittenCount"/> and is typically larger than the capacity requested at construction:
-    /// <see cref="ArrayPool{T}.Shared"/> rounds rentals up to the next bucket size (powers of two with a
-    /// 16-element minimum on the supported runtimes), so requests smaller than 16 still produce a 16-element
-    /// array. Callers should not assume parity with the constructor argument.
+    /// <see cref="WrittenCount"/> and may be larger than the capacity requested at construction due to
+    /// <see cref="ArrayPool{T}"/> rounding behaviour.
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public int Capacity
@@ -510,17 +487,7 @@ public sealed class PooledBufferBuilder<T> :
         if (minimum <= _internalBuffer.Length)
             return;
 
-        // Doubling is amortized-O(1) and aligns with the pool's power-of-two bucket round-up: at any size within
-        // the pool's bucket range (up to roughly 1 GB on the supported runtimes), asking for double the current
-        // length is effectively free because the pool would round even a smaller request up to the same bucket.
-        // A smaller multiplier would not reduce the rented size — it would just trigger more grow events.
-        long doubled = (long)_internalBuffer.Length * 2;
-        long required = Math.Max(doubled, (long)minimum);
-
-        // Saturating clamp — protects against int overflow when doubling a >1 GB buffer; ArrayPool itself will
-        // throw OOM for any value that genuinely cannot be allocated.
-        int newCapacity = required > Array.MaxLength ? Array.MaxLength : (int)required;
-
+        var newCapacity = Math.Max(_internalBuffer.Length * 2, minimum);
         T[] newBuffer = ArrayPool<T>.Shared.Rent(newCapacity);
         Array.Copy(_internalBuffer, 0, newBuffer, 0, _count);
         ReturnBufferIfNeeded();

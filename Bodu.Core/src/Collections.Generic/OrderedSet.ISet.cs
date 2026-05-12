@@ -103,7 +103,7 @@ public sealed partial class OrderedSet<T>
 
         OrderedSetStorage<T> projection = BuildProjection(other);
 
-        for (int i = 0; i < projection.Count; i++)
+        for (var i = 0; i < projection.Count; i++)
         {
             T item = projection._items[i];
             if (!_storage.Add(item))
@@ -133,7 +133,7 @@ public sealed partial class OrderedSet<T>
         if (_storage.Count > projection.Count)
             return false;
 
-        for (int i = 0; i < _storage._count; i++)
+        for (var i = 0; i < _storage._count; i++)
         {
             if (!projection.Contains(_storage._items[i]))
                 return false;
@@ -184,7 +184,7 @@ public sealed partial class OrderedSet<T>
         if (_storage.Count >= projection.Count)
             return false;
 
-        for (int i = 0; i < _storage._count; i++)
+        for (var i = 0; i < _storage._count; i++)
         {
             if (!projection.Contains(_storage._items[i]))
                 return false;
@@ -212,7 +212,7 @@ public sealed partial class OrderedSet<T>
         if (_storage.Count <= projection.Count)
             return false;
 
-        for (int i = 0; i < projection._count; i++)
+        for (var i = 0; i < projection._count; i++)
         {
             if (!_storage.Contains(projection._items[i]))
                 return false;
@@ -266,7 +266,7 @@ public sealed partial class OrderedSet<T>
         if (_storage.Count != projection.Count)
             return false;
 
-        for (int i = 0; i < _storage._count; i++)
+        for (var i = 0; i < _storage._count; i++)
         {
             if (!projection.Contains(_storage._items[i]))
                 return false;
@@ -283,7 +283,7 @@ public sealed partial class OrderedSet<T>
     /// <returns>A new storage instance containing each distinct element of <paramref name="other" />.</returns>
     private OrderedSetStorage<T> BuildProjection(IEnumerable<T> other)
     {
-        int hint = other is ICollection<T> col ? col.Count
+        var hint = other is ICollection<T> col ? col.Count
                  : other is IReadOnlyCollection<T> rc ? rc.Count
                  : 0;
 
