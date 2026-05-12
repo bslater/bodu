@@ -1,0 +1,25 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="IEnumerableExtensions.Randomize.LazyShuffle.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+namespace Bodu.Collections.Generic.Extensions;
+
+public sealed partial class IEnumerableExtensionsTests_Randomize
+{
+    /// <summary>
+    /// Verifies that <see cref="IEnumerableExtensions.Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator?, int?)" /> with
+    /// <see cref="RandomizationMode.LazyShuffle" /> and a non-positive count yields an empty sequence (covers the early
+    /// <c>yield break</c> branch in <c>LazyShuffle</c>).
+    /// </summary>
+    [TestMethod]
+    public void Randomize_LazyShuffle_WhenCountIsZero_ShouldYieldEmptySequence()
+    {
+        int[] source = Enumerable.Range(1, 10).ToArray();
+
+        int[] result = source.Randomize(RandomizationMode.LazyShuffle, CreateSeededRng(), count: 0).ToArray();
+
+        Assert.AreEqual(0, result.Length);
+    }
+}
