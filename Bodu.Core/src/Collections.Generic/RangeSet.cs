@@ -1,11 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSet.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -17,17 +16,21 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="T">The comparable endpoint type.</typeparam>
 /// <remarks>
 /// <para>
-/// Ranges are stored in two compact parallel arrays: one for starts and one for ends. The arrays are kept
-/// sorted by start value and adjacent or overlapping ranges are merged on insertion.
+/// Ranges are stored in two compact parallel arrays — one for the inclusive start of each range and one for
+/// the exclusive end. The arrays are kept sorted by start endpoint, and adjacent or overlapping ranges are
+/// merged on insertion.
 /// </para>
 /// <para>
 /// Ranges use half-open semantics: <c>[startInclusive, endExclusive)</c>.
 /// </para>
+/// <para>
+/// This type is not thread-safe.
+/// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
 [Serializable]
-public sealed class RangeSet<T> 
-    : IReadOnlyCollection<RangeDictionary<T>>
+public sealed partial class RangeSet<T>
+    : IReadOnlyCollection<Range<T>>
     where T : IComparable<T>
 {
     private const int DefaultCapacity = 4;
@@ -39,7 +42,7 @@ public sealed class RangeSet<T>
     private int _version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RangeSet{T}" /> class.
+    /// Initializes a new instance of the <see cref="RangeSet{T}" /> class using the default comparer.
     /// </summary>
     public RangeSet()
         : this(null)
@@ -49,7 +52,7 @@ public sealed class RangeSet<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="RangeSet{T}" /> class using the specified comparer.
     /// </summary>
-    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use the default comparer.</param>
+    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.</param>
     public RangeSet(IComparer<T>? comparer)
     {
         _comparer = comparer ?? Comparer<T>.Default;
@@ -60,31 +63,36 @@ public sealed class RangeSet<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="RangeSet{T}" /> class containing the specified ranges.
     /// </summary>
-    /// <param name="ranges">The ranges to add.</param>
-    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use the default comparer.</param>
-    public RangeSet(IEnumerable<RangeDictionary<T>> ranges, IComparer<T>? comparer = null)
+    /// <param name="ranges">The ranges to add. Must not be <see langword="null" />.</param>
+    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{T}.Default" />.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="ranges" /> is <see langword="null" />.
+    /// </exception>
+    public RangeSet(IEnumerable<Range<T>> ranges, IComparer<T>? comparer = null)
         : this(comparer)
     {
-        if (ranges is null)
-            throw new ArgumentNullException(nameof(ranges));
+        ThrowHelper.ThrowIfNull(ranges);
 
-        foreach (RangeDictionary<T> range in ranges)
+        foreach (Range<T> range in ranges)
             Add(range.StartInclusive, range.EndExclusive);
     }
 
     /// <summary>
     /// Gets the comparer used to order range endpoints.
     /// </summary>
+    /// <returns>The active endpoint comparer.</returns>
     public IComparer<T> Comparer => _comparer;
 
     /// <summary>
     /// Gets the number of stored ranges.
     /// </summary>
+    /// <returns>The number of ranges currently stored in the set.</returns>
     public int Count => _count;
 
     /// <summary>
     /// Gets the allocated range capacity.
     /// </summary>
+    /// <returns>The current allocated capacity of the underlying storage.</returns>
     public int Capacity => _starts.Length;
 
     /// <summary>
@@ -92,12 +100,15 @@ public sealed class RangeSet<T>
     /// </summary>
     /// <param name="index">The zero-based range index.</param>
     /// <returns>The range at <paramref name="index" />.</returns>
-    public RangeDictionary<T> this[int index]
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
+    /// </exception>
+    public Range<T> this[int index]
     {
         get
         {
             ValidateIndex(index);
-            return new RangeDictionary<T>(_starts[index], _ends[index]);
+            return new Range<T>(_starts[index], _ends[index]);
         }
     }
 
@@ -106,9 +117,15 @@ public sealed class RangeSet<T>
     /// </summary>
     /// <param name="startInclusive">The inclusive start.</param>
     /// <param name="endExclusive">The exclusive end.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />.
+    /// </exception>
     public void Add(T startInclusive, T endExclusive)
     {
-        RangeDictionary<T>.ValidateRange(startInclusive, endExclusive, _comparer);
+        Range<T>.ValidateRange(startInclusive, endExclusive, _comparer);
 
         if (_count == 0)
         {
@@ -152,23 +169,29 @@ public sealed class RangeSet<T>
     }
 
     /// <summary>
-    /// Adds the specified range.
+    /// Adds the specified range to the set, merging any overlapping or adjacent ranges.
     /// </summary>
     /// <param name="range">The range to add.</param>
-    public void Add(RangeDictionary<T> range) =>
+    public void Add(Range<T> range) =>
         Add(range.StartInclusive, range.EndExclusive);
 
     /// <summary>
-    /// Removes the specified half-open range from the set.
+    /// Removes the specified half-open range from the set, trimming or splitting overlapping ranges as needed.
     /// </summary>
     /// <param name="startInclusive">The inclusive start.</param>
     /// <param name="endExclusive">The exclusive end.</param>
     /// <returns>
     /// <see langword="true" /> if the set was changed; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />.
+    /// </exception>
     public bool Remove(T startInclusive, T endExclusive)
     {
-        RangeDictionary<T>.ValidateRange(startInclusive, endExclusive, _comparer);
+        Range<T>.ValidateRange(startInclusive, endExclusive, _comparer);
 
         if (_count == 0)
             return false;
@@ -217,7 +240,8 @@ public sealed class RangeSet<T>
                 continue;
             }
 
-            // Split one range into two ranges.
+            // Split one range into two ranges: the prefix [rangeStart, startInclusive) is retained in
+            // place, and the suffix [endExclusive, rangeEnd) is inserted immediately after.
             _ends[index] = startInclusive;
             InsertAt(index + 1, endExclusive, rangeEnd);
             changed = true;
@@ -234,7 +258,7 @@ public sealed class RangeSet<T>
     /// <returns>
     /// <see langword="true" /> if the set was changed; otherwise, <see langword="false" />.
     /// </returns>
-    public bool Remove(RangeDictionary<T> range) =>
+    public bool Remove(Range<T> range) =>
         Remove(range.StartInclusive, range.EndExclusive);
 
     /// <summary>
@@ -254,10 +278,13 @@ public sealed class RangeSet<T>
     /// <summary>
     /// Determines whether the specified value falls inside any stored range.
     /// </summary>
-    /// <param name="value">The value to test.</param>
+    /// <param name="value">The value to test. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if the value is contained; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
     public bool Contains(T value) =>
         FindContainingIndex(value) >= 0;
 
@@ -269,9 +296,15 @@ public sealed class RangeSet<T>
     /// <returns>
     /// <see langword="true" /> if the range is fully contained; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />.
+    /// </exception>
     public bool Contains(T startInclusive, T endExclusive)
     {
-        RangeDictionary<T>.ValidateRange(startInclusive, endExclusive, _comparer);
+        Range<T>.ValidateRange(startInclusive, endExclusive, _comparer);
 
         int index = FindContainingIndex(startInclusive);
         return index >= 0 && _comparer.Compare(endExclusive, _ends[index]) <= 0;
@@ -285,9 +318,15 @@ public sealed class RangeSet<T>
     /// <returns>
     /// <see langword="true" /> if the range overlaps a stored range; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />.
+    /// </exception>
     public bool Overlaps(T startInclusive, T endExclusive)
     {
-        RangeDictionary<T>.ValidateRange(startInclusive, endExclusive, _comparer);
+        Range<T>.ValidateRange(startInclusive, endExclusive, _comparer);
 
         int index = Math.Max(0, UpperBound(startInclusive) - 1);
 
@@ -305,14 +344,16 @@ public sealed class RangeSet<T>
     /// <summary>
     /// Returns a new set containing the union of this set and another set.
     /// </summary>
-    /// <param name="other">The other set.</param>
-    /// <returns>The union set.</returns>
+    /// <param name="other">The other set. Must not be <see langword="null" />.</param>
+    /// <returns>A new <see cref="RangeSet{T}" /> containing the union.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="other" /> is <see langword="null" />.
+    /// </exception>
     public RangeSet<T> Union(RangeSet<T> other)
     {
-        if (other is null)
-            throw new ArgumentNullException(nameof(other));
+        ThrowHelper.ThrowIfNull(other);
 
-        var result = new RangeSet<T>(_comparer);
+        RangeSet<T> result = new(_comparer);
         result.EnsureCapacity(_count + other._count);
 
         for (int i = 0; i < _count; i++)
@@ -327,14 +368,16 @@ public sealed class RangeSet<T>
     /// <summary>
     /// Returns a new set containing the intersection of this set and another set.
     /// </summary>
-    /// <param name="other">The other set.</param>
-    /// <returns>The intersection set.</returns>
+    /// <param name="other">The other set. Must not be <see langword="null" />.</param>
+    /// <returns>A new <see cref="RangeSet{T}" /> containing the intersection.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="other" /> is <see langword="null" />.
+    /// </exception>
     public RangeSet<T> Intersect(RangeSet<T> other)
     {
-        if (other is null)
-            throw new ArgumentNullException(nameof(other));
+        ThrowHelper.ThrowIfNull(other);
 
-        var result = new RangeSet<T>(_comparer);
+        RangeSet<T> result = new(_comparer);
 
         int left = 0;
         int right = 0;
@@ -359,14 +402,16 @@ public sealed class RangeSet<T>
     /// <summary>
     /// Returns a new set containing the ranges in this set except those covered by another set.
     /// </summary>
-    /// <param name="other">The other set.</param>
-    /// <returns>The difference set.</returns>
+    /// <param name="other">The other set. Must not be <see langword="null" />.</param>
+    /// <returns>A new <see cref="RangeSet{T}" /> containing the difference.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="other" /> is <see langword="null" />.
+    /// </exception>
     public RangeSet<T> Except(RangeSet<T> other)
     {
-        if (other is null)
-            throw new ArgumentNullException(nameof(other));
+        ThrowHelper.ThrowIfNull(other);
 
-        var result = new RangeSet<T>(_comparer);
+        RangeSet<T> result = new(_comparer);
         result.EnsureCapacity(_count);
 
         for (int i = 0; i < _count; i++)
@@ -383,10 +428,12 @@ public sealed class RangeSet<T>
     /// </summary>
     /// <param name="capacity">The desired capacity.</param>
     /// <returns>The current capacity.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is negative.
+    /// </exception>
     public int EnsureCapacity(int capacity)
     {
-        if (capacity < 0)
-            throw new ArgumentOutOfRangeException(nameof(capacity));
+        ThrowHelper.ThrowIfNegative(capacity);
 
         if (_starts.Length < capacity)
             ResizeStorage(GrowCapacity(capacity));
@@ -395,15 +442,15 @@ public sealed class RangeSet<T>
     }
 
     /// <summary>
-    /// Copies the stored ranges to a new array.
+    /// Copies the stored ranges to a new array in ascending sorted order.
     /// </summary>
     /// <returns>A new array containing the stored ranges.</returns>
-    public RangeDictionary<T>[] ToArray()
+    public Range<T>[] ToArray()
     {
-        var result = new RangeDictionary<T>[_count];
+        Range<T>[] result = new Range<T>[_count];
 
         for (int i = 0; i < _count; i++)
-            result[i] = new RangeDictionary<T>(_starts[i], _ends[i]);
+            result[i] = new Range<T>(_starts[i], _ends[i]);
 
         return result;
     }
@@ -411,22 +458,21 @@ public sealed class RangeSet<T>
     /// <summary>
     /// Returns an enumerator that iterates through the stored ranges in ascending order.
     /// </summary>
-    /// <returns>The enumerator.</returns>
+    /// <returns>An <see cref="Enumerator" /> over the stored ranges.</returns>
     public Enumerator GetEnumerator() =>
         new(this);
 
-    /// <inheritdoc />
-    IEnumerator<RangeDictionary<T>> IEnumerable<RangeDictionary<T>>.GetEnumerator() =>
-        GetEnumerator();
-
-    /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() =>
-        GetEnumerator();
-
+    /// <summary>
+    /// Locates the index of the range that contains <paramref name="value" />, if any.
+    /// </summary>
+    /// <param name="value">The value to locate. Must not be <see langword="null" />.</param>
+    /// <returns>The index of the containing range, or <c>-1</c> if no range contains the value.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
     private int FindContainingIndex(T value)
     {
-        if (value is null)
-            throw new ArgumentNullException(nameof(value));
+        ThrowHelper.ThrowIfNull(value);
 
         int index = UpperBound(value) - 1;
 
@@ -436,6 +482,12 @@ public sealed class RangeSet<T>
         return _comparer.Compare(value, _ends[index]) < 0 ? index : -1;
     }
 
+    /// <summary>
+    /// Inserts a range at the specified position, growing storage as needed and shifting trailing entries.
+    /// </summary>
+    /// <param name="index">The insertion index.</param>
+    /// <param name="startInclusive">The inclusive start.</param>
+    /// <param name="endExclusive">The exclusive end.</param>
     private void InsertAt(int index, T startInclusive, T endExclusive)
     {
         EnsureCapacity(_count + 1);
@@ -452,6 +504,10 @@ public sealed class RangeSet<T>
         _version++;
     }
 
+    /// <summary>
+    /// Removes the range at the specified index and shifts trailing ranges left to keep storage contiguous.
+    /// </summary>
+    /// <param name="index">The index of the range to remove.</param>
     private void RemoveAt(int index)
     {
         int moveCount = _count - index - 1;
@@ -468,6 +524,12 @@ public sealed class RangeSet<T>
         _version++;
     }
 
+    /// <summary>
+    /// Removes <paramref name="count" /> consecutive ranges starting at <paramref name="index" /> and shifts
+    /// any trailing ranges left to keep storage contiguous.
+    /// </summary>
+    /// <param name="index">The index of the first range to remove.</param>
+    /// <param name="count">The number of ranges to remove.</param>
     private void RemoveRange(int index, int count)
     {
         if (count <= 0)
@@ -488,6 +550,11 @@ public sealed class RangeSet<T>
         _version++;
     }
 
+    /// <summary>
+    /// Returns the lowest index whose start endpoint is not less than <paramref name="value" />.
+    /// </summary>
+    /// <param name="value">The endpoint to locate.</param>
+    /// <returns>The lower-bound index for <paramref name="value" />.</returns>
     private int LowerBound(T value)
     {
         int low = 0;
@@ -506,6 +573,11 @@ public sealed class RangeSet<T>
         return low;
     }
 
+    /// <summary>
+    /// Returns the lowest index whose start endpoint is greater than <paramref name="value" />.
+    /// </summary>
+    /// <param name="value">The endpoint to locate.</param>
+    /// <returns>The upper-bound index for <paramref name="value" />.</returns>
     private int UpperBound(T value)
     {
         int low = 0;
@@ -524,24 +596,50 @@ public sealed class RangeSet<T>
         return low;
     }
 
+    /// <summary>
+    /// Returns the lesser of two values per the configured comparer.
+    /// </summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The lesser of the two operands.</returns>
     private T Min(T left, T right) =>
         _comparer.Compare(left, right) <= 0 ? left : right;
 
+    /// <summary>
+    /// Returns the greater of two values per the configured comparer.
+    /// </summary>
+    /// <param name="left">The left operand.</param>
+    /// <param name="right">The right operand.</param>
+    /// <returns>The greater of the two operands.</returns>
     private T Max(T left, T right) =>
         _comparer.Compare(left, right) >= 0 ? left : right;
 
+    /// <summary>
+    /// Throws <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is not within
+    /// <c>[0, <see cref="Count" />)</c>.
+    /// </summary>
+    /// <param name="index">The index to validate.</param>
     private void ValidateIndex(int index)
     {
-        if ((uint)index >= (uint)_count)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        if ((uint)index >= (uint)_count) throw new ArgumentOutOfRangeException(nameof(index));
     }
 
+    /// <summary>
+    /// Reallocates the parallel storage arrays to the specified capacity.
+    /// </summary>
+    /// <param name="capacity">The new capacity.</param>
     private void ResizeStorage(int capacity)
     {
         Array.Resize(ref _starts, capacity);
         Array.Resize(ref _ends, capacity);
     }
 
+    /// <summary>
+    /// Computes the next capacity by doubling the current size, with a clamp at <see cref="Array.MaxLength" />
+    /// and a floor at <paramref name="minimum" />.
+    /// </summary>
+    /// <param name="minimum">The minimum acceptable capacity.</param>
+    /// <returns>The chosen capacity.</returns>
     private int GrowCapacity(int minimum)
     {
         int capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
@@ -554,59 +652,4 @@ public sealed class RangeSet<T>
 
         return capacity;
     }
-
-    /// <summary>
-    /// Enumerates a <see cref="RangeSet{T}" /> without allocating.
-    /// </summary>
-    public struct Enumerator : IEnumerator<RangeDictionary<T>>
-    {
-        private readonly RangeSet<T> _owner;
-        private readonly int _version;
-        private int _index;
-        private RangeDictionary<T> _current;
-
-        internal Enumerator(RangeSet<T> owner)
-        {
-            _owner = owner;
-            _version = owner._version;
-            _index = 0;
-            _current = default;
-        }
-
-        /// <inheritdoc />
-        public RangeDictionary<T> Current => _current;
-
-        /// <inheritdoc />
-        object IEnumerator.Current => Current;
-
-        /// <inheritdoc />
-        public bool MoveNext()
-        {
-            if (_version != _owner._version)
-                throw new InvalidOperationException("The collection was modified during enumeration.");
-
-            if (_index >= _owner._count)
-                return false;
-
-            _current = new RangeDictionary<T>(_owner._starts[_index], _owner._ends[_index]);
-            _index++;
-            return true;
-        }
-
-        /// <inheritdoc />
-        public void Reset()
-        {
-            if (_version != _owner._version)
-                throw new InvalidOperationException("The collection was modified during enumeration.");
-
-            _index = 0;
-            _current = default;
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-        }
-    }
 }
-
