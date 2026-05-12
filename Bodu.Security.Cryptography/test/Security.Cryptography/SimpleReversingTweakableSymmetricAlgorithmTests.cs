@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SimpleReversingTweakableSymmetricAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,9 @@ public partial class SimpleReversingTweakableSymmetricAlgorithmTests
         {
             BlockSizeBits = 128,
             DefaultKeySizeBits = 128,
-            LegalKeySizesBits = [8, 128, 256, 2048],
+            LegalKeySizesBits = Enumerable.Range(1, 256)
+                .Select(i => i * 8)
+                .ToArray(),
             DefaultTweakSizeBits = 128,
             LegalTweakSizesBits = [128, 192, 256, 448, 576, 1024, 1536, 2048],
         };
