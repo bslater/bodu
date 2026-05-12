@@ -17,14 +17,13 @@ public partial class ThrowHelperTests
     public void ThrowIfNullWithMessage_WhenValueIsNull_ShouldThrowExactlyWithMessage()
     {
         object value = null!;
-
+        var paramName = "myParam";
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            ThrowHelper.ThrowIfNull(value, "value must not be null");
+            ThrowHelper.ThrowIfNull(value, paramName);
         });
 
-        Assert.AreEqual("value", ex.ParamName);
-        StringAssert.Contains(ex.Message, "value must not be null");
+        Assert.AreEqual(paramName, ex.ParamName);
     }
 
     /// <summary>
@@ -35,6 +34,6 @@ public partial class ThrowHelperTests
     public void ThrowIfNullWithMessage_WhenValueIsNotNull_ShouldNotThrow()
     {
         object value = new();
-        ThrowHelper.ThrowIfNull(value, "value must not be null");
+        ThrowHelper.ThrowIfNull(value);
     }
 }

@@ -29,7 +29,7 @@ public partial class PooledBufferBuilderTests
     public void Capacity_WhenCapacityExceeded_ShouldIncreaseAfterGrowth()
     {
         using var builder = new PooledBufferBuilder<int>(2);
-        int initialCapacity = builder.Capacity;
+        var initialCapacity = builder.Capacity;
 
         // ArrayPool may round up the rented buffer beyond the requested capacity, so append one element more
         // than the actual capacity to guarantee a growth event.
