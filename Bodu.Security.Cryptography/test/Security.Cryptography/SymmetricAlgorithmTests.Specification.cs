@@ -63,7 +63,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// transform for each key size listed in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LegalKeySizesBitsData))]
+    [DynamicData(nameof(LegalKeySizeData))]
     public void CreateEncryptor_ForEachLegalKeySize_ShouldSucceed(int keySizeBits)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
@@ -80,7 +80,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// transform for each key size listed in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LegalKeySizesBitsData))]
+    [DynamicData(nameof(LegalKeySizeData))]
     public void CreateDecryptor_ForEachLegalKeySize_ShouldSucceed(int keySizeBits)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
@@ -98,7 +98,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// key size listed in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LegalKeySizesBitsData))]
+    [DynamicData(nameof(LegalKeySizeData))]
     public void CreateEncryptor_WhenIvIsTooShort_ForEachLegalKeySize_ShouldThrowCryptographicException(int keySizeBits)
     {
         using TAlgorithm algorithm = CreateAlgorithm();

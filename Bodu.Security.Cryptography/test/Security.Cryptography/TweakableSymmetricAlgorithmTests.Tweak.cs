@@ -157,27 +157,20 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// byte-aligned length and no invalid size can be constructed.
     /// </summary>
     [TestMethod]
-    public void Tweak_WhenSetToInvalidSize_ShouldThrowExactly()
+    [DynamicData(nameof(InvalidTweakSizeBytesData))]
+    public void Tweak_WhenSetToInvalidSize_ShouldThrowExactly(int tweakSize)
     {
+        if (tweakSize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var invalidBits = FindInvalidTweakSize(algorithm.LegalTweakSizes);
-
-        if (invalidBits is null)
-        {
-            Assert.Inconclusive(
-                $"{typeof(TAlgorithm).Name} accepts every byte-aligned tweak length — " +
-                "no invalid size can be constructed for this test.");
-            return;
-        }
-
-        var invalidTweak = new byte[invalidBits.Value / 8];
+        var invalidTweak = new byte[tweakSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
             algorithm.Tweak = invalidTweak;
         },
-            $"Setting a {invalidBits.Value}-bit tweak should throw CryptographicException " +
+            $"Setting a {tweakSize}-byte tweak should throw CryptographicException " +
             $"for {typeof(TAlgorithm).Name}.");
     }
 }

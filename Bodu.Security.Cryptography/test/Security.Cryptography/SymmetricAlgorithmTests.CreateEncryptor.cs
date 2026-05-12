@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.CreateEncryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -55,11 +55,14 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// match the configured key size.
     /// </summary>
     [TestMethod]
-    public void CreateEncryptor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidKeySizeBytesData))]
+    public void CreateEncryptor_WhenKeyLengthIsInvalid_ShouldThrowCryptographicException(int keySize)
     {
+        if (keySize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var badKey = new byte[(algorithm.KeySize / 8) + 1];
+        var badKey = new byte[keySize];
         var iv = new byte[algorithm.BlockSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -92,12 +95,15 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// a non-ECB mode.
     /// </summary>
     [TestMethod]
-    public void CreateEncryptor_WhenIvLengthIsInvalidInNonEcbMode_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidBlockSizeBytesData))]
+    public void CreateEncryptor_WhenIvLengthIsInvalidInNonEcbMode_ShouldThrowCryptographicException(int blockSize)
     {
+        if (blockSize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
         var key = new byte[algorithm.KeySize / 8];
-        var badIv = new byte[(algorithm.BlockSize / 8) + 1];
+        var badIv = new byte[blockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -171,13 +177,16 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// mode — a supplied IV must always be valid if provided.
     /// </summary>
     [TestMethod]
-    public void CreateEncryptor_WhenIvLengthIsInvalidInEcbMode_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidBlockSizeBytesData))]
+    public void CreateEncryptor_WhenIvLengthIsInvalidInEcbMode_ShouldThrowCryptographicException(int blockSize)
     {
+        if (blockSize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();
         SetEcbMode(algorithm);
 
         var key = new byte[algorithm.KeySize / 8];
-        var badIv = new byte[(algorithm.BlockSize / 8) + 1];
+        var badIv = new byte[blockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.CreateDecryptor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -74,12 +74,15 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// a non-ECB mode.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenIvLengthIsInvalidInNonEcbModeWithTweak_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidBlockSizeBytesData))]
+    public void CreateDecryptor_WhenIvLengthIsInvalidInNonEcbModeWithTweak_ShouldThrowCryptographicException(int blockSize)
     {
+        if (blockSize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();    // default mode is CBC
 
         var key = new byte[algorithm.KeySize / 8];
-        var badIv = new byte[(algorithm.BlockSize / 8) + 1];
+        var badIv = new byte[blockSize];
         var tweak = new byte[algorithm.TweakSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -94,13 +97,16 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// supplied IV must always be valid if provided.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenIvLengthIsInvalidInEcbModeWithTweak_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidBlockSizeBytesData))]
+    public void CreateDecryptor_WhenIvLengthIsInvalidInEcbModeWithTweak_ShouldThrowCryptographicException(int blockSize)
     {
+        if (blockSize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();
         SetEcbMode(algorithm);
 
         var key = new byte[algorithm.KeySize / 8];
-        var badIv = new byte[(algorithm.BlockSize / 8) + 1];
+        var badIv = new byte[blockSize];
         var tweak = new byte[algorithm.TweakSize / 8];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
@@ -114,11 +120,14 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <see cref="CryptographicException" /> when the Key length does not match the configured key size.
     /// </summary>
     [TestMethod]
-    public void CreateDecryptor_WhenKeyLengthIsInvalidWithTweak_ShouldThrowCryptographicException()
+    [DynamicData(nameof(InvalidKeySizeBytesData))]
+    public void CreateDecryptor_WhenKeyLengthIsInvalidWithTweak_ShouldThrowCryptographicException(int keySize)
     {
+        if (keySize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var badKey = new byte[(algorithm.KeySize / 8) + 1];
+        var badKey = new byte[keySize];
         var iv = new byte[algorithm.BlockSize / 8];
         var tweak = new byte[algorithm.TweakSize / 8];
 
@@ -161,17 +170,19 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// <summary>
     /// Verifies that <see cref="TweakableSymmetricAlgorithm.CreateDecryptor(byte[], byte[], byte[])" /> throws
     /// <see cref="CryptographicException" /> for every invalid tweak byte-length supplied by
-    /// <see cref="InvalidTweakLengthBytesData" />.
+    /// <see cref="InvalidTweakSizeBitsData" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(InvalidTweakLengthBytesData))]
-    public void CreateDecryptor_WhenTweakLengthIsInvalid_ShouldThrowCryptographicException(int tweakLengthBytes)
+    [DynamicData(nameof(InvalidTweakSizeBytesData))]
+    public void CreateDecryptor_WhenTweakLengthIsInvalid_ShouldThrowCryptographicException(int tweakSize)
     {
+        if (tweakSize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();
 
         var key = new byte[algorithm.KeySize / 8];
         var iv = new byte[algorithm.BlockSize / 8];
-        var badTweak = new byte[tweakLengthBytes];
+        var badTweak = new byte[tweakSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {

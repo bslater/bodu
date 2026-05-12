@@ -62,7 +62,7 @@ internal static partial class CryptoTestUtilities
     /// Returns a key whose bit length falls outside all ranges in <paramref name="legalSizes" />,
     /// or <see langword="null" /> when every byte-aligned length from 1 to 512 bytes is legal.
     /// </summary>
-    public static byte[]? FindInvalidKey(KeySizes[] legalSizes)
+    public static byte[]? FindInvalidKeySize(KeySizes[] legalSizes)
     {
         // Try byte-aligned lengths from 1 up to a generous ceiling.
         // The first length (in bits) that is not covered by any legal range becomes the invalid key.

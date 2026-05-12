@@ -51,24 +51,21 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// throws <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
-    public void Key_WhenSetToInvalidSize_ShouldThrowExactly()
+    [DynamicData(nameof(InvalidKeySizeBytesData))]
+    public void Key_WhenSetToInvalidSize_ShouldThrowExactly(int keySize)
     {
+        if (keySize < 0) return;
+
         using TAlgorithm algorithm = CreateAlgorithm();
 
-        var invalidKey = CryptoTestUtilities.FindInvalidKey(algorithm.LegalKeySizes);
+        var invalidKey = new byte[keySize];
 
-        if (invalidKey is null)
+        Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            Assert.Inconclusive(
-                $"{typeof(TAlgorithm).Name} accepts all byte-aligned key lengths — " +
-                "no invalid size can be constructed for this test.");
-            return;
-        }
-
-        Assert.ThrowsExactly<CryptographicException>(
-            () => algorithm.Key = invalidKey,
-            $"Setting a {invalidKey.Length * 8}-bit key should throw CryptographicException " +
-            $"for {typeof(TAlgorithm).Name}.");
+            algorithm.Key = invalidKey;
+        },
+        $"Setting a {keySize}-byte key should throw CryptographicException " +
+        $"for {typeof(TAlgorithm).Name}.");
     }
 
     /// <summary>

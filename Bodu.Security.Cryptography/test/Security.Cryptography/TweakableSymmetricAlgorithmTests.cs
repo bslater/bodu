@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,17 +24,28 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     protected abstract override TweakableSymmetricAlgorithmSpecification GetSpecification();
 
     /// <summary>
-    /// Returns one row per tweak-size value (in bits) that <see cref="TweakableSymmetricAlgorithm.TweakSize" /> must
-    /// reject. Values are derived from <see cref="TweakableSymmetricAlgorithmSpecification.DefaultTweakSizeBits" />
-    /// and filtered to exclude any size that happens to be legal for the algorithm under test.
+    /// Returns one row per key-size value, in bits, that <see cref="TweakableSymmetricAlgorithm.TweakSize" />
+    /// must reject. Values are derived from each legal tweak size and filtered to exclude any size
+    /// that happens to be legal for the algorithm under test.
     /// </summary>
-    /// <returns>A sequence of single-element arrays, each containing an invalid tweak size in bits.</returns>
+    /// <returns>
+    /// A sequence of single-element arrays, each containing an invalid tweak size in bits.
+    /// </returns>
     public static IEnumerable<object[]> InvalidTweakSizeBitsData()
     {
         TweakableSymmetricAlgorithmSpecification spec = new TTest().GetSpecification();
-        HashSet<int> legal = new(spec.LegalTweakSizesBits);
-        int d = spec.DefaultTweakSizeBits;
-        foreach (int candidate in new[] { 0, -1, d - 1, d + 1, d * 2, d / 2 })
+        HashSet<int> legal = [.. spec.LegalTweakSizesBits];
+        IEnumerable<int> candidates =
+            new[] { -1, 0 }.Concat(
+                legal.SelectMany(size => new[]
+                {
+                    size - 1,
+                    size + 1,
+                    size * 2,
+                    size / 2
+                }));
+
+        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
         {
             if (!legal.Contains(candidate))
                 yield return new object[] { candidate };
@@ -42,21 +53,32 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     }
 
     /// <summary>
-    /// Returns one row per tweak byte-array length that <see cref="TweakableSymmetricAlgorithm.CreateEncryptor(byte[], byte[], byte[])" />
-    /// and the matching decryptor must reject. Values are derived from
-    /// <see cref="TweakableSymmetricAlgorithmSpecification.DefaultTweakSizeBits" /> and filtered to exclude any
-    /// byte length that maps to a legal tweak size for the algorithm under test.
+    /// Returns one row per key-size value, in bytes, that <see cref="TweakableSymmetricAlgorithm.TweakSize" />
+    /// must reject. Values are derived from each legal tweak size and filtered to exclude any size
+    /// that happens to be legal for the algorithm under test.
     /// </summary>
-    /// <returns>A sequence of single-element arrays, each containing an invalid tweak length in bytes.</returns>
-    public static IEnumerable<object[]> InvalidTweakLengthBytesData()
+    /// <returns>
+    /// A sequence of single-element arrays, each containing an invalid tweak size in bytes.
+    /// </returns>
+    public static IEnumerable<object[]> InvalidTweakSizeBytesData()
     {
         TweakableSymmetricAlgorithmSpecification spec = new TTest().GetSpecification();
-        HashSet<int> legalBytes = new(spec.LegalTweakSizesBits.Select(b => b / 8));
-        int d = spec.DefaultTweakSizeBits / 8;
-        foreach (int candidate in new[] { 0, 1, d - 1, d + 1, d * 2 })
+        HashSet<int> legal = [.. spec.LegalTweakSizesBits.Select(size => size / 8)];
+        IEnumerable<int> candidates =
+            new[] { -1, 0 }.Concat(
+                legal.SelectMany(size => new[]
+                {
+                    size - 1,
+                    size + 1,
+                    size * 2,
+                    size / 2
+                }));
+
+        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
         {
-            if (!legalBytes.Contains(candidate))
+            if (!legal.Contains(candidate))
                 yield return new object[] { candidate };
         }
     }
+
 }

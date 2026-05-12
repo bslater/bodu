@@ -96,13 +96,13 @@ public abstract partial class TweakableSymmetricAlgorithmTests<TTest, TAlgorithm
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(InvalidTweakSizeBitsData))]
-    public void TweakSize_WhenSetToInvalidValue_ShouldThrowCryptographicException(int sizeBits)
+    public void TweakSize_WhenSetToInvalidValue_ShouldThrowCryptographicException(int tweakSize)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            algorithm.TweakSize = sizeBits;
+            algorithm.TweakSize = tweakSize;
         });
     }
 }

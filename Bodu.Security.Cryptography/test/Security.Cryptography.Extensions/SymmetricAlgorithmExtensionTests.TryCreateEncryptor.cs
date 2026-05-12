@@ -133,7 +133,7 @@ public partial class SymmetricAlgorithmExtensionTests
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        var invalidKey = CryptoTestUtilities.FindInvalidKey(algorithm.LegalKeySizes);
+        var invalidKey = CryptoTestUtilities.FindInvalidKeySize(algorithm.LegalKeySizes);
 
         if (invalidKey is null)
         {

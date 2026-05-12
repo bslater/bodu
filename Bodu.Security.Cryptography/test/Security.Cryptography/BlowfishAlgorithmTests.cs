@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlowfishAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,7 +29,9 @@ public sealed partial class BlowfishAlgorithmTests
         {
             BlockSizeBits = 64,
             DefaultKeySizeBits = 128,
-            LegalKeySizesBits = [32, 128, 256, 448],
+            LegalKeySizesBits = Enumerable.Range(4, 53)
+                .Select(i => i * 8)
+                .ToArray(),
         };
 
     /// <inheritdoc />
