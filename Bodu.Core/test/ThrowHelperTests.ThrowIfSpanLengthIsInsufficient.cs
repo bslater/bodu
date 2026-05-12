@@ -63,4 +63,66 @@ public partial class ThrowHelperTests
         Span<int> span = new int[spanLength];
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(span, offset, count);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(Span{T}, int, string)" /> does not throw when the span
+    /// contains at least the minimum number of elements.
+    /// </summary>
+    [TestMethod]
+    [DataRow(3, 3)]
+    [DataRow(5, 3)]
+    [DataRow(10, 0)]
+    public void ThrowIfSpanLengthIsInsufficient_Span_TwoArg_WhenLengthIsSufficient_ShouldNotThrow(int spanLength, int minimum)
+    {
+        Span<int> span = new int[spanLength];
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(span, minimum);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(Span{T}, int, string)" /> throws
+    /// <see cref="ArgumentException" /> when the span is shorter than the minimum length.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 1)]
+    [DataRow(2, 3)]
+    [DataRow(4, 100)]
+    public void ThrowIfSpanLengthIsInsufficient_Span_TwoArg_WhenLengthIsInsufficient_ShouldThrowExactly(int spanLength, int minimum)
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            Span<int> span = new int[spanLength];
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(span, minimum);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(ReadOnlySpan{T}, int, string)" /> does not throw when the
+    /// span contains at least the minimum number of elements.
+    /// </summary>
+    [TestMethod]
+    [DataRow(3, 3)]
+    [DataRow(5, 3)]
+    [DataRow(10, 0)]
+    public void ThrowIfSpanLengthIsInsufficient_ReadOnlySpan_TwoArg_WhenLengthIsSufficient_ShouldNotThrow(int spanLength, int minimum)
+    {
+        ReadOnlySpan<int> span = new int[spanLength];
+        ThrowHelper.ThrowIfSpanLengthIsInsufficient(span, minimum);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(ReadOnlySpan{T}, int, string)" /> throws
+    /// <see cref="ArgumentException" /> when the span is shorter than the minimum length.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 1)]
+    [DataRow(2, 3)]
+    [DataRow(4, 100)]
+    public void ThrowIfSpanLengthIsInsufficient_ReadOnlySpan_TwoArg_WhenLengthIsInsufficient_ShouldThrowExactly(int spanLength, int minimum)
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            ReadOnlySpan<int> span = new int[spanLength];
+            ThrowHelper.ThrowIfSpanLengthIsInsufficient(span, minimum);
+        });
+    }
 }
