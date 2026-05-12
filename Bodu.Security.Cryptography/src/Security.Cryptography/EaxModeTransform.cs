@@ -72,7 +72,8 @@ namespace Bodu.Security.Cryptography;
 public sealed class EaxModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    private const int DefaultTagSize = 16;
+    private const int DefaultTagSizeBits = 128;
+    private const int DefaultTagSize = DefaultTagSizeBits / 8;
 
     private readonly IBlockCipher _cipher;
     private readonly byte[] _nonce;     // raw user nonce, defensive clone
@@ -106,7 +107,8 @@ public sealed class EaxModeTransform
     }
 
     /// <inheritdoc />
-    public int TagSize => DefaultTagSize;
+    /// <value>Length of the EAX authentication tag is 128 bits (16 bytes).</value>
+    public int TagSize => DefaultTagSizeBits;
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -125,7 +127,7 @@ public sealed class EaxModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = plaintext.Length + TagSize;
+        var required = plaintext.Length + DefaultTagSize;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
@@ -146,8 +148,8 @@ public sealed class EaxModeTransform
             cPrime = Omac(2, ciphertext);
 
             // Tag = N' XOR H' XOR C'.
-            Span<byte> tag = output.Slice(plaintext.Length, TagSize);
-            for (var i = 0; i < TagSize; i++)
+            Span<byte> tag = output.Slice(plaintext.Length, DefaultTagSize);
+            for (var i = 0; i < DefaultTagSize; i++)
                 tag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             return required;
@@ -167,9 +169,9 @@ public sealed class EaxModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, DefaultTagSize);
 
-        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        var plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -188,8 +190,8 @@ public sealed class EaxModeTransform
             hPrime = Omac(1, this._aad!);
             cPrime = Omac(2, ciphertext);
 
-            expectedTag = new byte[TagSize];
-            for (var i = 0; i < TagSize; i++)
+            expectedTag = new byte[DefaultTagSize];
+            for (var i = 0; i < DefaultTagSize; i++)
                 expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             // Constant-time tag comparison; throw before emitting any plaintext. On failure, also

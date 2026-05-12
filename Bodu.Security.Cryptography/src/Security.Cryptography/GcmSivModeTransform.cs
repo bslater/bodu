@@ -78,7 +78,8 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmSivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    private const int TagLengthBytes = 16;
+    private const int TagSizeBits = 128;
+    private const int TagLengthBytes = TagSizeBits / 8;
     private const int NonceLengthBytes = 12;
 
     private readonly IBlockCipher _encCipher;  // cipher keyed with derived K_enc
@@ -141,7 +142,8 @@ public sealed class GcmSivModeTransform
     }
 
     /// <inheritdoc />
-    public int TagSize => TagLengthBytes;
+    /// <value>Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes).</value>
+    public int TagSize => TagSizeBits;
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -159,7 +161,7 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = plaintext.Length + TagSize;
+        var required = plaintext.Length + TagLengthBytes;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
         EnsureAadProcessed();
 
@@ -186,8 +188,8 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
-        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagLengthBytes);
+        var plaintextLength = ciphertextWithTag.Length - TagLengthBytes;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
         EnsureAadProcessed();
 

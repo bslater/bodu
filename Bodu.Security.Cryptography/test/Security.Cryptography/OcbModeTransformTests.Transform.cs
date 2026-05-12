@@ -82,7 +82,7 @@ public sealed partial class OcbModeTransformTests
         var plaintext = TestHelpers.GenerateRandomNonZeroBytes(plaintextLength);
 
         OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + enc.TagSize];
+        var ct = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone());
@@ -120,7 +120,7 @@ public sealed partial class OcbModeTransformTests
         var plaintext = Enumerable.Range(0, ptLen).Select(i => (byte)(i & 0xFF)).ToArray();
 
         var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[ptLen + enc.TagSize];
+        var ct = new byte[ptLen + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
@@ -161,7 +161,7 @@ public sealed partial class OcbModeTransformTests
 
         var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
         enc.ProcessAssociatedData(aad);
-        var ct = new byte[plaintext.Length + enc.TagSize];
+        var ct = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
@@ -197,11 +197,11 @@ public sealed partial class OcbModeTransformTests
         var plaintext = new byte[ExpectedBlockSize];
 
         var enc1 = new OcbModeTransform(cipher1, iv1);
-        var ct1 = new byte[plaintext.Length + enc1.TagSize];
+        var ct1 = new byte[plaintext.Length + (enc1.TagSize / 8)];
         enc1.Encrypt(plaintext, ct1);
 
         var enc2 = new OcbModeTransform(cipher2, iv2);
-        var ct2 = new byte[plaintext.Length + enc2.TagSize];
+        var ct2 = new byte[plaintext.Length + (enc2.TagSize / 8)];
         enc2.Encrypt(plaintext, ct2);
 
         CollectionAssert.AreEqual(ct1, ct2,

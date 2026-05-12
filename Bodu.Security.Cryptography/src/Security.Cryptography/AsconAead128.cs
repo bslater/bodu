@@ -96,14 +96,20 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>The required key size in bytes (128 bits).</summary>
-    public const int KeyBytes = 16;
+    /// <summary>Length of the Ascon-AEAD128 key is 128 bits (16 bytes).</summary>
+    public const int KeySize = 128;
 
-    /// <summary>The required nonce size in bytes (128 bits).</summary>
-    public const int NonceBytes = 16;
+    /// <summary>Length of the Ascon-AEAD128 nonce is 128 bits (16 bytes).</summary>
+    public const int NonceSize = 128;
 
-    /// <summary>The authentication tag size in bytes (128 bits).</summary>
-    public const int TagBytes = 16;
+    /// <summary>Length of the Ascon-AEAD128 key, in bytes (16 bytes). Internal byte-valued helper.</summary>
+    internal const int KeyBytes = KeySize / 8;
+
+    /// <summary>Length of the Ascon-AEAD128 nonce, in bytes (16 bytes). Internal byte-valued helper.</summary>
+    internal const int NonceBytes = NonceSize / 8;
+
+    /// <summary>Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes). Internal byte-valued helper for span sizing.</summary>
+    internal const int TagBytes = 16;
 
     // IV word for Ascon-AEAD128 (NIST SP 800-232).
     // Encodes algorithm parameters: key=128 bits, rate=128 bits, pa=12, pb=8.
@@ -179,7 +185,8 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     }
 
     /// <inheritdoc />
-    public int TagSize => TagBytes;
+    /// <value>Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).</value>
+    public int TagSize => TagBytes * 8;
 
     /// <summary>
     /// Absorbs associated data that will be authenticated but not encrypted.

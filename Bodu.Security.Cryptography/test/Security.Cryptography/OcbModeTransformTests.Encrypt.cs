@@ -97,11 +97,11 @@ public sealed partial class OcbModeTransformTests
         var plaintext = new byte[ExpectedBlockSize];
 
         var enc1 = new OcbModeTransform(cipher1, iv);
-        var ct1 = new byte[plaintext.Length + enc1.TagSize];
+        var ct1 = new byte[plaintext.Length + (enc1.TagSize / 8)];
         enc1.Encrypt(plaintext, ct1);
 
         var enc2 = new OcbModeTransform(cipher2, iv);
-        var ct2 = new byte[plaintext.Length + enc2.TagSize];
+        var ct2 = new byte[plaintext.Length + (enc2.TagSize / 8)];
         enc2.Encrypt(plaintext, ct2);
 
         CollectionAssert.AreNotEqual(ct1, ct2,

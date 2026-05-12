@@ -27,9 +27,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The nonce is derived from the first 12 bytes of the IV supplied to the constructor.
-/// The tag length defaults to 16 bytes (TAGLEN = 128) and may be set to any value from
-/// 1 to 16 bytes via the <c>tagLen</c> constructor parameter.
-/// Supported RFC 7253 values are 8, 12, and 16 bytes (64, 96, and 128 bits).
+/// The tag size defaults to 128 bits (16 bytes / TAGLEN = 128) and may be set to any
+/// positive multiple of 8 bits between 8 and the cipher block size via the <c>tagSize</c>
+/// constructor parameter. Supported RFC 7253 values are 64, 96, and 128 bits
+/// (8, 12, and 16 bytes).
 /// </para>
 /// <para>
 /// Offset initialisation uses the RFC 7253 §2.4 K_top stretch:
@@ -62,7 +63,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// using IBlockCipher cipher = new AesBlockCipher(key);
 /// byte[] iv = BuildOcbIv(nonce); // first 12 bytes of the IV are the nonce
-/// using IAeadBlockCipherModeTransform ocb = new OcbModeTransform(cipher, iv, tagLen: 16);
+/// using IAeadBlockCipherModeTransform ocb = new OcbModeTransform(cipher, iv, tagSize: 128);
 ///
 /// byte[] sealed_ = ocb.Encrypt(plaintext, associatedData: header);
 /// </code>
@@ -91,24 +92,25 @@ public sealed class OcbModeTransform
     /// <summary>
     /// Initializes a new instance of the <see cref="OcbModeTransform"/> class.
     /// </summary>
-    /// <param name="cipher">The block cipher. Must have a 16-byte block size.</param>
+    /// <param name="cipher">The block cipher. Must have a 128-bit (16-byte) block size.</param>
     /// <param name="iv">
     /// The initialisation vector. The first 12 bytes are used as the OCB3 nonce.
     /// Must equal the cipher block size. A defensive copy is taken.
     /// </param>
-    /// <param name="tagLen">
-    /// Tag length in bytes. Must be between 1 and the cipher block size.
-    /// RFC 7253 defines recommended values of 8, 12, and 16 bytes.
-    /// Defaults to 16 (TAGLEN = 128 bits).
+    /// <param name="tagSize">
+    /// The authentication-tag size, in bits, of the OCB3 tag. Must be a positive multiple of 8 between 8 bits
+    /// (1 byte) and the cipher block size. RFC 7253 defines recommended values of 64, 96, and 128 bits
+    /// (8, 12, and 16 bytes). Defaults to 128 bits (16 bytes).
     /// </param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher"/> does not have a 16-byte block size, <paramref name="iv"/> length does not
-    /// equal the cipher block size, or <paramref name="tagLen"/> is outside the range [1, block size].
+    /// <paramref name="cipher"/> does not have a 128-bit (16-byte) block size, <paramref name="iv"/> length
+    /// does not equal the cipher block size, or <paramref name="tagSize"/> is outside the range
+    /// [8 bits, cipher block size] or is not a positive multiple of 8.
     /// </exception>
-    public OcbModeTransform(IBlockCipher cipher, byte[] iv, int tagLen = 16)
+    public OcbModeTransform(IBlockCipher cipher, byte[] iv, int tagSize = 128)
     {
         if (cipher is null) throw new ArgumentNullException(nameof(cipher));
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
@@ -120,11 +122,11 @@ public sealed class OcbModeTransform
                 nameof(cipher));
         }
 
-        if (tagLen < 1 || tagLen > cipher.BlockSize / 8)
+        if (tagSize < 8 || tagSize > cipher.BlockSize || tagSize % 8 != 0)
         {
             throw new ArgumentException(
-                $"Tag length ({tagLen}) must be between 1 and the cipher block size ({cipher.BlockSize / 8}) in bytes.",
-                nameof(tagLen));
+                $"Tag size ({tagSize} bits) must be a positive multiple of 8 between 8 and the cipher block size ({cipher.BlockSize} bits).",
+                nameof(tagSize));
         }
 
         this._cipher = cipher;
@@ -132,7 +134,7 @@ public sealed class OcbModeTransform
         this._nonce = new byte[NonceLengthBytes];
         iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
 
-        this._tagLen = tagLen;
+        this._tagLen = tagSize / 8;
 
         var blockSize = cipher.BlockSize / 8;
 
@@ -162,7 +164,8 @@ public sealed class OcbModeTransform
     }
 
     /// <inheritdoc />
-    public int TagSize => this._tagLen;
+    /// <value>The configured OCB authentication-tag size, in bits. Defaults to 128 bits (16 bytes).</value>
+    public int TagSize => this._tagLen * 8;
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -181,7 +184,7 @@ public sealed class OcbModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = plaintext.Length + TagSize;
+        var required = plaintext.Length + this._tagLen;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
@@ -291,9 +294,9 @@ public sealed class OcbModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, this._tagLen);
 
-        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        var plaintextLength = ciphertextWithTag.Length - this._tagLen;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();

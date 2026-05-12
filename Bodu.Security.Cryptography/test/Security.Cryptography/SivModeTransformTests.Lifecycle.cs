@@ -35,12 +35,12 @@ public sealed partial class SivModeTransformTests
 
         using SivModeTransform transformAlpha = CreateTransform(cipher: null!, ivAlpha);
         transformAlpha.ProcessAssociatedData(aad);
-        var alphaOut = new byte[plaintext.Length + transformAlpha.TagSize];
+        var alphaOut = new byte[plaintext.Length + (transformAlpha.TagSize / 8)];
         transformAlpha.Encrypt(plaintext, alphaOut);
 
         using SivModeTransform transformBeta = CreateTransform(cipher: null!, ivBeta);
         transformBeta.ProcessAssociatedData(aad);
-        var betaOut = new byte[plaintext.Length + transformBeta.TagSize];
+        var betaOut = new byte[plaintext.Length + (transformBeta.TagSize / 8)];
         transformBeta.Encrypt(plaintext, betaOut);
 
         CollectionAssert.AreEqual(alphaOut, betaOut,
@@ -63,12 +63,12 @@ public sealed partial class SivModeTransformTests
 
         using SivModeTransform transformA = CreateTransform(cipher: null!, iv);
         transformA.ProcessAssociatedData(aad);
-        var outA = new byte[plaintextA.Length + transformA.TagSize];
+        var outA = new byte[plaintextA.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintextA, outA);
 
         using SivModeTransform transformB = CreateTransform(cipher: null!, iv);
         transformB.ProcessAssociatedData(aad);
-        var outB = new byte[plaintextB.Length + transformB.TagSize];
+        var outB = new byte[plaintextB.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintextB, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,
@@ -87,12 +87,12 @@ public sealed partial class SivModeTransformTests
 
         using SivModeTransform transformA = CreateTransform(cipher: null!, iv);
         transformA.ProcessAssociatedData([0x01]);
-        var outA = new byte[plaintext.Length + transformA.TagSize];
+        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using SivModeTransform transformB = CreateTransform(cipher: null!, iv);
         transformB.ProcessAssociatedData([0x02]);
-        var outB = new byte[plaintext.Length + transformB.TagSize];
+        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,

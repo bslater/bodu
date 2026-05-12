@@ -197,6 +197,7 @@ public sealed class GcmModeTransform
     }
 
     /// <inheritdoc />
+    /// <value>Length of the GCM authentication tag is 128 bits (16 bytes).</value>
     public int TagSize => DefaultTagSize;
 
     /// <summary>
@@ -241,7 +242,7 @@ public sealed class GcmModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = checked(plaintext.Length + DefaultTagSize);
+        var required = checked(plaintext.Length + (DefaultTagSize / 8));
         if (output.Length < required)
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
@@ -299,7 +300,7 @@ public sealed class GcmModeTransform
             ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
             ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength, DefaultTagSize / 8);
 
-            Span<byte> expectedTag = stackalloc byte[DefaultTagSize];
+            Span<byte> expectedTag = stackalloc byte[DefaultTagSize / 8];
             try
             {
                 this.ComputeTag(this._aad.AsSpan(), ciphertext, expectedTag);

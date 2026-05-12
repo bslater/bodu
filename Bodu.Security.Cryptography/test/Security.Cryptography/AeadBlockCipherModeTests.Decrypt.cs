@@ -42,7 +42,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        var ciphertextWithTag = new byte[plaintext.Length + encTransform.TagSize];
+        var ciphertextWithTag = new byte[plaintext.Length + (encTransform.TagSize / 8)];
 
         _ = encTransform.Encrypt(plaintext, ciphertextWithTag);
 
@@ -67,7 +67,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
@@ -93,7 +93,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         buf[0] ^= 0x01; // flip one bit in the ciphertext body
@@ -117,7 +117,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         buf[plaintext.Length] ^= 0x01; // flip one bit in the tag
@@ -150,7 +150,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize];
 
         TTransform encTransform = CreateTransform(cipher, ivEnc);
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, ivDec);
@@ -173,7 +173,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         TTransform encTransform = CreateTransform(cipher, iv);
         encTransform.ProcessAssociatedData(new byte[] { 0x01, 0x02 });
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
@@ -200,7 +200,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
 
         TTransform encTransform = CreateTransform(cipher, iv);
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
@@ -227,7 +227,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         TTransform encTransform = CreateTransform(cipher, iv);
         encTransform.ProcessAssociatedData(aad);
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
@@ -249,7 +249,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var iv = CreateInitializationVector();
         TTransform encTransform = CreateTransform(cipher, iv);
-        var buf = new byte[encTransform.TagSize];
+        var buf = new byte[encTransform.TagSize / 8];
         encTransform.Encrypt(ReadOnlySpan<byte>.Empty, buf);
 
         TTransform decTransform = CreateTransform(cipher, iv);
@@ -280,7 +280,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
         encTransform.ProcessAssociatedData(aad);
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
 
         TTransform decTransform = CreateTransform(cipher, (byte[])iv.Clone());
@@ -314,7 +314,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)(i + 1);
 
         TTransform encTransform = CreateTransform(cipher, (byte[])iv.Clone());
-        var buf = new byte[plaintext.Length + encTransform.TagSize];
+        var buf = new byte[plaintext.Length + (encTransform.TagSize / 8)];
         encTransform.Encrypt(plaintext, buf);
         buf[0] ^= 0xFF; // tamper the ciphertext
 

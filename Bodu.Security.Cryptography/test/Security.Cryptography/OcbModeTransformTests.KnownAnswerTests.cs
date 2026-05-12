@@ -224,9 +224,9 @@ public sealed partial class OcbModeTransformTests
         var plaintext = Convert.FromHexString(ptHex);
         var expectedOutput = Convert.FromHexString(expectedOutputHex);
 
-        var transform = new OcbModeTransform(cipher, iv, tagLength);
+        var transform = new OcbModeTransform(cipher, iv, tagLength * 8);
         transform.ProcessAssociatedData(aad);
-        var output = new byte[plaintext.Length + transform.TagSize];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, output);
 
         CollectionAssert.AreEqual(expectedOutput, output,
@@ -243,7 +243,7 @@ public sealed partial class OcbModeTransformTests
     /// If tag verification fails, a <see cref="CryptographicException" /> is thrown before
     /// the plaintext comparison is reached, confirming both correct decryption and correct
     /// tag recomputation. The output buffer size is derived from
-    /// <c>ciphertextWithTag.Length - transform.TagSize</c> rather than from the plaintext
+    /// <c>ciphertextWithTag.Length - (transform.TagSize / 8)</c> rather than from the plaintext
     /// hex string, guarding against any accidental size mismatch in the test data.
     /// </remarks>
     [TestMethod]
@@ -259,9 +259,9 @@ public sealed partial class OcbModeTransformTests
         var expectedPlaintext = Convert.FromHexString(ptHex);
         var ciphertextWithTag = Convert.FromHexString(expectedOutputHex);
 
-        var transform = new OcbModeTransform(cipher, iv, tagLength);
+        var transform = new OcbModeTransform(cipher, iv, tagLength * 8);
         transform.ProcessAssociatedData(aad);
-        var plaintextLength = ciphertextWithTag.Length - transform.TagSize;
+        var plaintextLength = ciphertextWithTag.Length - (transform.TagSize / 8);
         var output = new byte[plaintextLength];
         var written = transform.Decrypt(ciphertextWithTag, output);
 

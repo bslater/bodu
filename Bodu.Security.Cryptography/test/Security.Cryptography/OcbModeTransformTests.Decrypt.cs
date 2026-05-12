@@ -95,7 +95,7 @@ public sealed partial class OcbModeTransformTests
         var plaintext = new byte[ptLen];
 
         var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[ptLen + enc.TagSize];
+        var ct = new byte[ptLen + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());

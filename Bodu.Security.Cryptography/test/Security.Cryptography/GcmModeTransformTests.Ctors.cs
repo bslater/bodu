@@ -50,7 +50,7 @@ public sealed partial class GcmModeTransformTests
 
         using var transform = new GcmModeTransform(cipher, new byte[NonceSizeBytes].AsSpan());
 
-        Assert.AreEqual(16, transform.TagSize);
+        Assert.AreEqual(128, transform.TagSize);
     }
 
     /// <summary>

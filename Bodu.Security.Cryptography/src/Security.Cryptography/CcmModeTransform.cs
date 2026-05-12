@@ -69,7 +69,8 @@ public sealed class CcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
     private const int NonceLengthBytes = 12;
-    private const int TagLengthBytes = 16;
+    private const int TagSizeBits = 128;
+    private const int TagLengthBytes = TagSizeBits / 8;
     private const byte CounterFlagByte = 0x02; // L' = q-1 = 2
     private const byte BaseB0NoAad = 0x3A;  // 0_111_010
     private const byte BaseB0WithAad = 0x7A;  // 1_111_010
@@ -105,7 +106,8 @@ public sealed class CcmModeTransform
     }
 
     /// <inheritdoc />
-    public int TagSize => TagLengthBytes;
+    /// <value>Length of the CCM authentication tag is 128 bits (16 bytes).</value>
+    public int TagSize => TagSizeBits;
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -124,7 +126,7 @@ public sealed class CcmModeTransform
         this.ThrowIfDisposed();
         ThrowIfCompleted();
 
-        var required = plaintext.Length + TagSize;
+        var required = plaintext.Length + TagLengthBytes;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
@@ -133,7 +135,7 @@ public sealed class CcmModeTransform
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
         EncryptCtr(plaintext, output[..plaintext.Length], startIndex: 1);
-        encTag.AsSpan(0, TagSize).CopyTo(output[plaintext.Length..]);
+        encTag.AsSpan(0, TagLengthBytes).CopyTo(output[plaintext.Length..]);
         this._completed = true;
         return required;
     }
@@ -144,9 +146,9 @@ public sealed class CcmModeTransform
         this.ThrowIfDisposed();
         ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagLengthBytes);
 
-        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        var plaintextLength = ciphertextWithTag.Length - TagLengthBytes;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -159,7 +161,7 @@ public sealed class CcmModeTransform
         var mac = ComputeCbcMac(this._aad.AsSpan(), output[..plaintextLength]);
         var encTag = XorWithCtrBlock(mac, counterIndex: 0);
 
-        if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagSize), receivedTag))
+        if (!CryptographicOperations.FixedTimeEquals(encTag.AsSpan(0, TagLengthBytes), receivedTag))
         {
             CryptographicOperations.ZeroMemory(output[..plaintextLength]);
             this._completed = true;

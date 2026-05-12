@@ -130,7 +130,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         transform.ProcessAssociatedData(new byte[] { 0x01, 0x02, 0x03, 0x04 });
 
         var plaintext = new byte[ExpectedBlockSize];
-        var output = new byte[plaintext.Length + transform.TagSize];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
         _ = transform.Encrypt(plaintext, output);
 
         transform.Dispose();

@@ -37,7 +37,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     {
         TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize];
-        transform.Encrypt(plaintext, new byte[plaintext.Length + transform.TagSize]);
+        transform.Encrypt(plaintext, new byte[plaintext.Length + (transform.TagSize / 8)]);
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
             transform.ProcessAssociatedData(new byte[] { 0x01, 0x02, 0x03 }),
@@ -57,7 +57,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var plaintext = new byte[ExpectedBlockSize];
 
         TTransform enc = CreateTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + enc.TagSize];
+        var ct = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         TTransform dec = CreateTransform(cipher, (byte[])iv.Clone());
