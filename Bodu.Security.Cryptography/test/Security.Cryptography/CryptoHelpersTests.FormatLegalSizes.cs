@@ -1,0 +1,82 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CryptoHelpersTests.FormatLegalSizes.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
+
+namespace Bodu.Security.Cryptography;
+
+public partial class CryptoHelpersTests
+{
+    /// <summary>
+    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> returns an empty string when
+    /// the supplied array is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void FormatLegalSizes_WhenArrayIsNull_ShouldReturnEmptyString()
+    {
+        var result = CryptoHelpers.FormatLegalSizes(null);
+
+        Assert.AreEqual(string.Empty, result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> returns an empty string when
+    /// the supplied array is empty.
+    /// </summary>
+    [TestMethod]
+    public void FormatLegalSizes_WhenArrayIsEmpty_ShouldReturnEmptyString()
+    {
+        var result = CryptoHelpers.FormatLegalSizes(Array.Empty<KeySizes>());
+
+        Assert.AreEqual(string.Empty, result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> returns a single size value when
+    /// the <see cref="KeySizes.SkipSize"/> is zero.
+    /// </summary>
+    [TestMethod]
+    public void FormatLegalSizes_WhenSkipSizeIsZero_ShouldReturnSingleSize()
+    {
+        var sizes = new[] { new KeySizes(128, 128, 0) };
+
+        var result = CryptoHelpers.FormatLegalSizes(sizes);
+
+        Assert.AreEqual("128", result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> enumerates each value in the range
+    /// using the supplied skip step.
+    /// </summary>
+    [TestMethod]
+    public void FormatLegalSizes_WhenRangeWithSkip_ShouldReturnAllSteps()
+    {
+        var sizes = new[] { new KeySizes(128, 256, 64) };
+
+        var result = CryptoHelpers.FormatLegalSizes(sizes);
+
+        Assert.AreEqual("128, 192, 256", result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CryptoHelpers.FormatLegalSizes(KeySizes[])"/> merges values from multiple ranges,
+    /// removes duplicates, and orders them in ascending order.
+    /// </summary>
+    [TestMethod]
+    public void FormatLegalSizes_WhenMultipleRanges_ShouldDeduplicateAndOrderAscending()
+    {
+        var sizes = new[]
+        {
+            new KeySizes(256, 256, 0),
+            new KeySizes(128, 192, 64)
+        };
+
+        var result = CryptoHelpers.FormatLegalSizes(sizes);
+
+        Assert.AreEqual("128, 192, 256", result);
+    }
+}

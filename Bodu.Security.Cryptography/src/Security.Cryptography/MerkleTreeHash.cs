@@ -324,8 +324,8 @@ public sealed class MerkleTreeHash : IDisposable
     {
         using HashAlgorithm hasher = this._algorithmFactory();
         var result = new byte[hasher.HashSize >> 3];
-        if (!hasher.TryComputeHash(span, result, out var bytesWritten))
-            throw new CryptographicException("The hash algorithm's destination buffer was too small.");
+        CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
+            hasher.TryComputeHash(span, result, out var bytesWritten));
         if (bytesWritten == result.Length)
             return result;
 

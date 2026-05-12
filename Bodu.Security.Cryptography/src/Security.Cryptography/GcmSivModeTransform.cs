@@ -126,7 +126,8 @@ public sealed class GcmSivModeTransform
         {
             this._authKey = authKey;
             this._encCipher = cipherFactory(encKeyMaterial)
-                ?? throw new InvalidOperationException("The cipher factory returned null.");
+                ?? throw new InvalidOperationException(
+                    CryptoResourceStrings.InvalidOperationException_CipherFactoryReturnedNull);
         }
         catch
         {

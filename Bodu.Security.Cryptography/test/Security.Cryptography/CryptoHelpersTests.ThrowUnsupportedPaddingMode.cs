@@ -1,0 +1,46 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CryptoHelpersTests.ThrowUnsupportedPaddingMode.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
+
+namespace Bodu.Security.Cryptography;
+
+public partial class CryptoHelpersTests
+{
+    /// <summary>
+    /// Verifies that <see cref="CryptoHelpers.ThrowUnsupportedPaddingMode{T}(T)"/> throws a
+    /// <see cref="CryptographicException"/> for an undefined <see cref="PaddingMode"/> value.
+    /// </summary>
+    [TestMethod]
+    public void ThrowUnsupportedPaddingMode_WhenPaddingModeIsUndefined_ShouldThrowCryptographicException()
+    {
+        var undefined = (PaddingMode)999;
+
+        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            CryptoHelpers.ThrowUnsupportedPaddingMode(undefined);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("999", StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CryptoHelpers.ThrowUnsupportedPaddingMode{T}(T)"/> throws a
+    /// <see cref="CryptographicException"/> for an undefined <see cref="BlockPaddingMode"/> value.
+    /// </summary>
+    [TestMethod]
+    public void ThrowUnsupportedPaddingMode_WhenBlockPaddingModeIsUndefined_ShouldThrowCryptographicException()
+    {
+        var undefined = (BlockPaddingMode)999;
+
+        var ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        {
+            CryptoHelpers.ThrowUnsupportedPaddingMode(undefined);
+        });
+
+        Assert.IsTrue(ex.Message.Contains("999", StringComparison.Ordinal));
+    }
+}

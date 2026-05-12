@@ -71,8 +71,8 @@ public static class HashAlgorithmHelper
         using T algorithm = factory.Create();
         var hashSizeBytes = algorithm.HashSize >> 3;
         var result = new byte[hashSizeBytes];
-        if (!algorithm.TryComputeHash(input, result, out var bytesWritten))
-            throw new CryptographicException("The hash algorithm's destination buffer was too small.");
+        CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
+            algorithm.TryComputeHash(input, result, out var bytesWritten));
         if (bytesWritten == result.Length)
             return result;
 
@@ -99,7 +99,7 @@ public static class HashAlgorithmHelper
         using T algorithm = factory.Create();
         AppendDataFromStreamInternal(algorithm, stream);
 
-        return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
+        return CryptoHelpers.ThrowIfHashAlgorithmProducedNoValue(algorithm.Hash);
     }
 
     /// <summary>
@@ -124,7 +124,7 @@ public static class HashAlgorithmHelper
         using T algorithm = factory.Create();
         await AppendDataFromStreamInternalAsync(algorithm, stream, cancellationToken).ConfigureAwait(false);
 
-        return algorithm.Hash ?? throw new CryptographicException("Hash algorithm did not produce a value.");
+        return CryptoHelpers.ThrowIfHashAlgorithmProducedNoValue(algorithm.Hash);
     }
 
     /// <summary>

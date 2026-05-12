@@ -122,7 +122,9 @@ public sealed class CamelliaBlockCipher
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
         if (key.Length is not (Key128SizeInBytes or Key192SizeInBytes or Key256SizeInBytes))
-            throw new ArgumentException("The Camellia key must be 16, 24, or 32 bytes in length.", nameof(key));
+            throw new ArgumentException(
+                CryptoResourceStrings.ArgumentException_Camellia_InvalidKeyLength,
+                nameof(key));
 
         _usesExtendedKeySchedule = key.Length > Key128SizeInBytes;
         _kw = new ulong[4];

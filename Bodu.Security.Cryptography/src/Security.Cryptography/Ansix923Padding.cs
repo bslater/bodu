@@ -88,7 +88,7 @@ public sealed class Ansix923Padding : IPaddingStrategy
 
         // Constant-time verification to mitigate CBC padding-oracle attacks.
         if (input.Length == 0 || input.Length % blockSize != 0)
-            throw new ArgumentException("Input is not a valid ANSI X.923 padded block sequence.", nameof(input));
+            CryptoHelpers.ThrowInvalidPaddedSequence("ANSI X.923", nameof(input));
 
         var length = input.Length;
         int padLen = input[length - 1];
@@ -123,7 +123,7 @@ public sealed class Ansix923Padding : IPaddingStrategy
         }
 
         if (valid == 0)
-            throw new CryptographicException("Invalid ANSI X.923 padding.");
+            CryptoHelpers.ThrowInvalidPadding("ANSI X.923");
 
         return input[..(length - padLen)].ToArray();
     }

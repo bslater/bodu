@@ -80,7 +80,9 @@ public sealed class TwofishBlockCipher
     public TwofishBlockCipher(ReadOnlySpan<byte> key)
     {
         if (key.Length is not (16 or 24 or 32))
-            throw new ArgumentException("The Twofish key must be 16, 24, or 32 bytes in length.", nameof(key));
+            throw new ArgumentException(
+                CryptoResourceStrings.ArgumentException_Twofish_InvalidKeyLength,
+                nameof(key));
 
         this.InitialiseKeySchedule(key);
     }
