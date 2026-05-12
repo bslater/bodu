@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThreefishTransformTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -56,7 +56,7 @@ internal sealed class ThreefishTransformTests
         };
 
         algorithm.Mode = CipherMode.ECB;
-        algorithm.BlockMode = CipherBlockMode.ECB;
+        algorithm.BlockMode = CipherModeKind.ECB;
         algorithm.Padding = PaddingMode.None;
         algorithm.Key = answer.Key!;
         algorithm.IV = new byte[algorithm.BlockSize / 8];

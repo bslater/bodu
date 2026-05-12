@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Block size: 512 bits (64 bytes).</description></item>
 ///   <item><description>Key size: 512 bits (64 bytes).</description></item>
 ///   <item><description>Tweak size: 128 bits (16 bytes).</description></item>
-///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Threefish-512.</strong> The most common Threefish width — the wider 512-bit block lifts

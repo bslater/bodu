@@ -92,7 +92,7 @@ public sealed class SimpleReversingSymmetricAlgorithm
     // ── Instance fields ───────────────────────────────────────────────────────────────────────
 
     private bool disposed;
-    private CipherBlockMode blockMode = CipherBlockMode.CBC;
+    private CipherModeKind blockMode = CipherModeKind.CBC;
 
     // ── Constructor ───────────────────────────────────────────────────────────────────────────
 
@@ -118,14 +118,14 @@ public sealed class SimpleReversingSymmetricAlgorithm
     /// <summary>
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
-    /// <value>One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.</value>
+    /// <value>One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.</value>
     /// <remarks>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property to support the
     /// extended set of modes provided by <see cref="BlockCipherModeFactory" />, including
-    /// <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />.
+    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />.
     /// </remarks>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
-    public CipherBlockMode BlockMode
+    public CipherModeKind BlockMode
     {
         get
         {
@@ -166,7 +166,9 @@ public sealed class SimpleReversingSymmetricAlgorithm
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes),
             blockMode, PaddingValue, rgbIV, encrypt: true);
@@ -187,7 +189,9 @@ public sealed class SimpleReversingSymmetricAlgorithm
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         ThrowIfDisposed();
-        Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
+
         return new SimpleReversingCryptoTransform(
             CreateCipher(rgbKey, BlockSizeBytes),
             blockMode, PaddingValue, rgbIV, encrypt: false);
@@ -247,26 +251,6 @@ public sealed class SimpleReversingSymmetricAlgorithm
     /// <summary>Returns a new <see cref="SimpleReversingBlockCipher" /> for the given key and block size.</summary>
     private static SimpleReversingBlockCipher CreateCipher(byte[] key, int blockSizeBytes)
         => new SimpleReversingBlockCipher(key, blockSizeBytes);
-
-    /// <summary>
-    /// Verifies that <paramref name="key" /> and <paramref name="iv" /> match the algorithm's configured
-    /// key size and block size respectively.
-    /// </summary>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
-    /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
-    private void Validate(byte[] key, byte[]? iv)
-    {
-        ThrowHelper.ThrowIfNull(key);
-
-        if (key.Length != KeySizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                              key.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(LegalKeySizesValue)),
-                nameof(key));
-
-        CryptoHelpers.ThrowIfInvalidIVForMode(iv, blockMode, BlockSizeBytes, LegalBlockSizesValue);
-    }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()

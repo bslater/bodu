@@ -90,7 +90,9 @@ public abstract class SipHash<T>
     private static readonly int[] s_permittedHashSizes = [64, 128];
     private int _compressionRounds;
     private int _finalizationRounds;
+#pragma warning disable SA1132 // Do not combine fields
     private ulong _v0, _v1, _v2, _v3;
+#pragma warning restore SA1132 // Do not combine fields
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SipHash{T}"/> class with a specified hash size.

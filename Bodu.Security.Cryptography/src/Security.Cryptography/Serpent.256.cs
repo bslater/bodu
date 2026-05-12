@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This variant runs the Serpent round function over an eight-word state for 48 rounds, injecting a tweak subkey every four
-/// rounds in the style of Threefish. It supports the extended block cipher modes exposed by <see cref="CipherBlockMode"/> via
+/// rounds in the style of Threefish. It supports the extended block cipher modes exposed by <see cref="CipherModeKind"/> via
 /// the <see cref="Serpent.BlockMode"/> property.
 /// </para>
 /// <para>
@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Key size: 256 bits (32 bytes).</description></item>
 ///   <item><description>Tweak size: 128 bits (16 bytes).</description></item>
 ///   <item><description>48 rounds; tweak subkey injected every 4 rounds.</description></item>
-///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Serpent-256.</strong> Pick the wide-block Serpent variants only for experimental work

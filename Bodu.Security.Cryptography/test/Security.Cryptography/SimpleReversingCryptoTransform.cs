@@ -54,9 +54,9 @@ public sealed class SimpleReversingCryptoTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     internal SimpleReversingCryptoTransform(
         SimpleReversingBlockCipher cipher,
-        CipherBlockMode cipherMode,
+        CipherModeKind cipherMode,
         PaddingMode paddingMode,
-        byte[]? iv,
+        byte[] iv,
         bool encrypt)
     {
         this.cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));

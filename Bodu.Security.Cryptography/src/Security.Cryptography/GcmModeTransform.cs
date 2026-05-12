@@ -82,14 +82,14 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>The fixed GCM block size in bytes (128 bits).</summary>
-    private const int BlockSizeBytes = 16;
+    /// <summary>The fixed GCM block size in bytes (16 bytes).</summary>
+    private const int BlockSize = 128;
 
-    /// <summary>The required GCM nonce size in bytes (96 bits).</summary>
-    private const int NonceSizeBytes = 12;
+    /// <summary>The required GCM nonce size in bytes (12 bytes).</summary>
+    private const int NonceSize = 96;
 
-    /// <summary>The GCM authentication tag size in bytes (128 bits).</summary>
-    private const int DefaultTagSize = 16;
+    /// <summary>The GCM authentication tag size in bytes (16 bytes).</summary>
+    private const int DefaultTagSize = 128;
 
     private readonly IBlockCipher _cipher;
     private byte[]? _h;          // GHASH subkey H = E_K(0¹²⁸)
@@ -110,7 +110,7 @@ public sealed class GcmModeTransform
     /// </exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="cipher"/> does not have a 16-byte block size, or <paramref name="nonce"/> is not
-    /// exactly <see cref="NonceSizeBytes"/> bytes.
+    /// exactly <see cref="NonceSize"/> bytes.
     /// </exception>
     public GcmModeTransform(IBlockCipher cipher, byte[] nonce)
         : this(
@@ -129,7 +129,7 @@ public sealed class GcmModeTransform
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="cipher"/> does not have a 16-byte block size, or <paramref name="nonce"/> is not
-    /// exactly <see cref="NonceSizeBytes"/> bytes.
+    /// exactly <see cref="NonceSize"/> bytes.
     /// </exception>
     public GcmModeTransform(IBlockCipher cipher, ReadOnlySpan<byte> nonce)
         : this(cipher, nonce, nameof(nonce), useInitialCounterBlock: false)
@@ -151,32 +151,32 @@ public sealed class GcmModeTransform
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
 
-        if (cipher.BlockSize != BlockSizeBytes)
+        if (cipher.BlockSize != BlockSize / 8)
             throw new ArgumentException(
-                $"GCM requires a block cipher with a {BlockSizeBytes}-byte block size.",
+                $"GCM requires a block cipher with a {BlockSize / 8}-byte block size.",
                 nameof(cipher));
 
         if (useInitialCounterBlock)
         {
-            if (nonceOrJ0.Length != BlockSizeBytes)
+            if (nonceOrJ0.Length != BlockSize / 8)
                 throw new ArgumentException(
-                    $"The initial counter block must be exactly {BlockSizeBytes} bytes.",
+                    $"The initial counter block must be exactly {BlockSize / 8} bytes.",
                     parameterName);
         }
         else
         {
-            if (nonceOrJ0.Length != NonceSizeBytes)
+            if (nonceOrJ0.Length != NonceSize / 8)
                 throw new ArgumentException(
-                    $"The GCM nonce must be exactly {NonceSizeBytes} bytes.",
+                    $"The GCM nonce must be exactly {NonceSize / 8} bytes.",
                     parameterName);
         }
 
-        this._h = new byte[BlockSizeBytes];
-        this._j0 = new byte[BlockSizeBytes];
-        this._counter = new byte[BlockSizeBytes];
+        this._h = new byte[BlockSize / 8];
+        this._j0 = new byte[BlockSize / 8];
+        this._counter = new byte[BlockSize / 8];
 
         // H = E_K(0¹²⁸).
-        Span<byte> zeroBlock = stackalloc byte[BlockSizeBytes];
+        Span<byte> zeroBlock = stackalloc byte[BlockSize / 8];
         this._cipher.Encrypt(zeroBlock, this._h);
 
         // Build J0.
@@ -254,11 +254,11 @@ public sealed class GcmModeTransform
             Span<byte> ciphertext = output[..plaintext.Length];
             this.ApplyCtr(plaintext, ciphertext);
 
-            Span<byte> tag = stackalloc byte[DefaultTagSize];
+            Span<byte> tag = stackalloc byte[DefaultTagSize / 8];
             try
             {
                 this.ComputeTag(this._aad.AsSpan(), ciphertext, tag);
-                tag.CopyTo(output.Slice(plaintext.Length, DefaultTagSize));
+                tag.CopyTo(output.Slice(plaintext.Length, DefaultTagSize / 8));
 
                 return required;
             }
@@ -281,12 +281,12 @@ public sealed class GcmModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < DefaultTagSize)
+        if (ciphertextWithTag.Length < DefaultTagSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, DefaultTagSize),
+                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, DefaultTagSize / 8),
                 nameof(ciphertextWithTag));
 
-        var plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
+        var plaintextLength = ciphertextWithTag.Length - DefaultTagSize / 8;
         if (output.Length < plaintextLength)
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, plaintextLength),
@@ -297,7 +297,7 @@ public sealed class GcmModeTransform
             this.EnsureAssociatedDataProcessed();
 
             ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
-            ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength, DefaultTagSize);
+            ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength, DefaultTagSize / 8);
 
             Span<byte> expectedTag = stackalloc byte[DefaultTagSize];
             try
@@ -372,17 +372,17 @@ public sealed class GcmModeTransform
     /// <param name="output">The destination span; must be at least <paramref name="input"/>.Length bytes.</param>
     private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        Span<byte> keystream = stackalloc byte[BlockSizeBytes];
+        Span<byte> keystream = stackalloc byte[BlockSize / 8];
         try
         {
             var counter = this._counter!;
 
-            for (var offset = 0; offset < input.Length; offset += BlockSizeBytes)
+            for (var offset = 0; offset < input.Length; offset += BlockSize / 8)
             {
                 this._cipher.Encrypt(counter, keystream);
                 IncrementCounter32(counter);
 
-                var remaining = Math.Min(BlockSizeBytes, input.Length - offset);
+                var remaining = Math.Min(BlockSize / 8, input.Length - offset);
                 for (var i = 0; i < remaining; i++)
                     output[offset + i] = (byte)(input[offset + i] ^ keystream[i]);
             }
@@ -402,9 +402,9 @@ public sealed class GcmModeTransform
     /// <param name="destination">The destination span (16 bytes).</param>
     private void ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> ciphertext, Span<byte> destination)
     {
-        Span<byte> y = stackalloc byte[BlockSizeBytes];
-        Span<byte> lengthBlock = stackalloc byte[BlockSizeBytes];
-        Span<byte> encryptedJ0 = stackalloc byte[BlockSizeBytes];
+        Span<byte> y = stackalloc byte[BlockSize / 8];
+        Span<byte> lengthBlock = stackalloc byte[BlockSize / 8];
+        Span<byte> encryptedJ0 = stackalloc byte[BlockSize / 8];
 
         try
         {
@@ -420,7 +420,7 @@ public sealed class GcmModeTransform
 
             // T = y ⊕ E_K(J0).
             this._cipher.Encrypt(this._j0!, encryptedJ0);
-            for (var i = 0; i < BlockSizeBytes; i++)
+            for (var i = 0; i < BlockSize / 8; i++)
                 destination[i] = (byte)(y[i] ^ encryptedJ0[i]);
         }
         finally
@@ -437,14 +437,14 @@ public sealed class GcmModeTransform
     /// <param name="data">The input bytes to fold into the GHASH state.</param>
     private static void GhashUpdate(Span<byte> y, ReadOnlySpan<byte> h, ReadOnlySpan<byte> data)
     {
-        Span<byte> block = stackalloc byte[BlockSizeBytes];
+        Span<byte> block = stackalloc byte[BlockSize / 8];
         try
         {
-            for (var offset = 0; offset < data.Length; offset += BlockSizeBytes)
+            for (var offset = 0; offset < data.Length; offset += BlockSize / 8)
             {
                 block.Clear();
 
-                var remaining = Math.Min(BlockSizeBytes, data.Length - offset);
+                var remaining = Math.Min(BlockSize / 8, data.Length - offset);
                 data.Slice(offset, remaining).CopyTo(block);
 
                 GhashBlock(y, h, block);
@@ -462,7 +462,7 @@ public sealed class GcmModeTransform
     /// <param name="block">A single 16-byte block to fold into <paramref name="y"/>.</param>
     private static void GhashBlock(Span<byte> y, ReadOnlySpan<byte> h, ReadOnlySpan<byte> block)
     {
-        for (var i = 0; i < BlockSizeBytes; i++)
+        for (var i = 0; i < BlockSize / 8; i++)
             y[i] ^= block[i];
 
         GhashMultiply(y, h, y);
@@ -478,8 +478,8 @@ public sealed class GcmModeTransform
     /// <param name="result">The destination span (16 bytes); receives <c>x · H</c>.</param>
     private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
     {
-        Span<byte> z = stackalloc byte[BlockSizeBytes];
-        Span<byte> v = stackalloc byte[BlockSizeBytes];
+        Span<byte> z = stackalloc byte[BlockSize / 8];
+        Span<byte> v = stackalloc byte[BlockSize / 8];
 
         try
         {
@@ -488,7 +488,7 @@ public sealed class GcmModeTransform
             for (var i = 0; i < 128; i++)
             {
                 if ((x[i >> 3] & (0x80 >> (i & 7))) != 0)
-                    for (var j = 0; j < BlockSizeBytes; j++) z[j] ^= v[j];
+                    for (var j = 0; j < BlockSize / 8; j++) z[j] ^= v[j];
 
                 var lsb = (v[15] & 0x01) != 0;
 

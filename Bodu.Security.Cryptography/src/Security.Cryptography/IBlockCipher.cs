@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 ///   <item><description>An <see cref="IBlockCipherModeTransform"/> wraps a cipher with a chaining strategy
-///   (CBC, CTR, …) — built via <see cref="BlockCipherModeFactory.Create(CipherBlockMode, IBlockCipher, byte[])"/>.</description></item>
+///   (CBC, CTR, …) — built via <see cref="BlockCipherModeFactory.Create(CipherModeKind, IBlockCipher, byte[])"/>.</description></item>
 ///   <item><description>An <see cref="IPaddingStrategy"/> aligns input to the cipher block size — built via
 ///   <see cref="PaddingFactory.Create(System.Security.Cryptography.PaddingMode)"/>.</description></item>
 ///   <item><description><see cref="BlockCipherTransform"/> bundles a cipher, mode, and padding into a single

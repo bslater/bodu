@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent512TweakableAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class Serpent512TweakableAlgorithmTests
     protected override Serpent512 CreateAlgorithm() => new Serpent512();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(Serpent512 algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(Serpent512 algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />

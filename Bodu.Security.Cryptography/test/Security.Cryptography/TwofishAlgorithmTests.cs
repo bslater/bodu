@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed partial class TwofishAlgorithmTests
     protected override Twofish CreateAlgorithm() => Twofish.Create();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(Twofish algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(Twofish algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />

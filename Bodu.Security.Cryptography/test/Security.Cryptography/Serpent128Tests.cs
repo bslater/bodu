@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent128Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,9 +39,9 @@ public sealed class Serpent128Tests
         using var algorithm = new Serpent128();
 
         var initialFrameworkMode = algorithm.Mode;
-        algorithm.BlockMode = CipherBlockMode.CTR;
+        algorithm.BlockMode = CipherModeKind.CTR;
 
-        Assert.AreEqual(CipherBlockMode.CTR, algorithm.BlockMode);
+        Assert.AreEqual(CipherModeKind.CTR, algorithm.BlockMode);
         Assert.AreEqual(initialFrameworkMode, algorithm.Mode);
     }
 
@@ -54,9 +54,9 @@ public sealed class Serpent128Tests
     {
         using var algorithm = new Serpent128();
 
-        algorithm.BlockMode = CipherBlockMode.ECB;
+        algorithm.BlockMode = CipherModeKind.ECB;
 
-        Assert.AreEqual(CipherBlockMode.ECB, algorithm.BlockMode);
+        Assert.AreEqual(CipherModeKind.ECB, algorithm.BlockMode);
         Assert.AreEqual(CipherMode.ECB, algorithm.Mode);
     }
 
@@ -71,9 +71,9 @@ public sealed class Serpent128Tests
         using var algorithm = new Serpent128();
 
         var initialFrameworkPadding = algorithm.Padding;
-        algorithm.BlockPadding = BlockPaddingMode.ISO7816_4;
+        algorithm.BlockPadding = PaddingModeKind.ISO7816_4;
 
-        Assert.AreEqual(BlockPaddingMode.ISO7816_4, algorithm.BlockPadding);
+        Assert.AreEqual(PaddingModeKind.ISO7816_4, algorithm.BlockPadding);
         Assert.AreEqual(initialFrameworkPadding, algorithm.Padding);
     }
 
@@ -86,9 +86,9 @@ public sealed class Serpent128Tests
     {
         using var algorithm = new Serpent128();
 
-        algorithm.BlockPadding = BlockPaddingMode.Zeros;
+        algorithm.BlockPadding = PaddingModeKind.Zeros;
 
-        Assert.AreEqual(BlockPaddingMode.Zeros, algorithm.BlockPadding);
+        Assert.AreEqual(PaddingModeKind.Zeros, algorithm.BlockPadding);
         Assert.AreEqual(PaddingMode.Zeros, algorithm.Padding);
     }
 
@@ -104,7 +104,7 @@ public sealed class Serpent128Tests
         algorithm.Padding = PaddingMode.ANSIX923;
 
         Assert.AreEqual(PaddingMode.ANSIX923, algorithm.Padding);
-        Assert.AreEqual(BlockPaddingMode.ANSIX923, algorithm.BlockPadding);
+        Assert.AreEqual(PaddingModeKind.ANSIX923, algorithm.BlockPadding);
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ public sealed class Serpent128Tests
         algorithm.Padding = PaddingMode.None;
 
         Assert.AreEqual(PaddingMode.None, algorithm.Padding);
-        Assert.AreEqual(BlockPaddingMode.None, algorithm.BlockPadding);
+        Assert.AreEqual(PaddingModeKind.None, algorithm.BlockPadding);
     }
 
     /// <summary>

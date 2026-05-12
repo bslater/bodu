@@ -23,7 +23,7 @@ public sealed class BlockCipherModeFactoryTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = BlockCipherModeFactory.Create(CipherBlockMode.ECB, null!);
+            _ = BlockCipherModeFactory.Create(CipherModeKind.ECB, null!);
         });
 
         Assert.AreEqual("cipher", ex.ParamName);
@@ -31,7 +31,7 @@ public sealed class BlockCipherModeFactoryTests
 
     /// <summary>
     /// Verifies that <see cref="BlockCipherModeFactory.Create" /> with an undefined
-    /// <see cref="CipherBlockMode" /> value throws <see cref="NotSupportedException" /> rather than
+    /// <see cref="CipherModeKind" /> value throws <see cref="NotSupportedException" /> rather than
     /// dispatching to a default mode.
     /// </summary>
     [TestMethod]
@@ -41,12 +41,12 @@ public sealed class BlockCipherModeFactoryTests
 
         Assert.ThrowsExactly<NotSupportedException>(() =>
         {
-            _ = BlockCipherModeFactory.Create((CipherBlockMode)999, cipher, new byte[8]);
+            _ = BlockCipherModeFactory.Create((CipherModeKind)999, cipher, new byte[8]);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="BlockCipherModeFactory.Create" /> with <see cref="CipherBlockMode.ECB" />
+    /// Verifies that <see cref="BlockCipherModeFactory.Create" /> with <see cref="CipherModeKind.ECB" />
     /// does not require an IV and returns a non-null <see cref="IBlockCipherModeTransform" />.
     /// </summary>
     [TestMethod]
@@ -54,7 +54,7 @@ public sealed class BlockCipherModeFactoryTests
     {
         var cipher = new SkipjackBlockCipher(new byte[10]);
 
-        IBlockCipherModeTransform transform = BlockCipherModeFactory.Create(CipherBlockMode.ECB, cipher, iv: null);
+        IBlockCipherModeTransform transform = BlockCipherModeFactory.Create(CipherModeKind.ECB, cipher, iv: null);
 
         Assert.IsNotNull(transform);
         Assert.IsInstanceOfType<EcbModeTransform>(transform);
@@ -66,11 +66,11 @@ public sealed class BlockCipherModeFactoryTests
     /// parameter name.
     /// </summary>
     [TestMethod]
-    [DataRow(CipherBlockMode.CBC)]
-    [DataRow(CipherBlockMode.CFB)]
-    [DataRow(CipherBlockMode.OFB)]
-    [DataRow(CipherBlockMode.CTR)]
-    public void Create_WhenIvRequiredAndIsNull_ShouldThrowExactly(CipherBlockMode mode)
+    [DataRow(CipherModeKind.CBC)]
+    [DataRow(CipherModeKind.CFB)]
+    [DataRow(CipherModeKind.OFB)]
+    [DataRow(CipherModeKind.CTR)]
+    public void Create_WhenIvRequiredAndIsNull_ShouldThrowExactly(CipherModeKind mode)
     {
         var cipher = new SkipjackBlockCipher(new byte[10]);
 
@@ -88,15 +88,15 @@ public sealed class BlockCipherModeFactoryTests
     /// that would later fail with <see cref="IndexOutOfRangeException" /> on the first block.
     /// </summary>
     [TestMethod]
-    [DataRow(CipherBlockMode.CBC, 0)]
-    [DataRow(CipherBlockMode.CBC, 1)]
-    [DataRow(CipherBlockMode.CBC, 7)]
-    [DataRow(CipherBlockMode.CBC, 9)]
-    [DataRow(CipherBlockMode.CBC, 16)]
-    [DataRow(CipherBlockMode.CFB, 4)]
-    [DataRow(CipherBlockMode.OFB, 4)]
-    [DataRow(CipherBlockMode.CTR, 4)]
-    public void Create_WhenIvLengthMismatchesBlockSize_ShouldThrowExactly(CipherBlockMode mode, int ivLength)
+    [DataRow(CipherModeKind.CBC, 0)]
+    [DataRow(CipherModeKind.CBC, 1)]
+    [DataRow(CipherModeKind.CBC, 7)]
+    [DataRow(CipherModeKind.CBC, 9)]
+    [DataRow(CipherModeKind.CBC, 16)]
+    [DataRow(CipherModeKind.CFB, 4)]
+    [DataRow(CipherModeKind.OFB, 4)]
+    [DataRow(CipherModeKind.CTR, 4)]
+    public void Create_WhenIvLengthMismatchesBlockSize_ShouldThrowExactly(CipherModeKind mode, int ivLength)
     {
         var cipher = new SkipjackBlockCipher(new byte[10]);
 
@@ -118,11 +118,11 @@ public sealed class BlockCipherModeFactoryTests
         var cipher = new SkipjackBlockCipher(new byte[10]);
         var iv = new byte[8];
 
-        Assert.IsInstanceOfType<EcbModeTransform>(BlockCipherModeFactory.Create(CipherBlockMode.ECB, cipher, iv));
-        Assert.IsInstanceOfType<CbcModeTransform>(BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv));
-        Assert.IsInstanceOfType<CfbModeTransform>(BlockCipherModeFactory.Create(CipherBlockMode.CFB, cipher, iv));
-        Assert.IsInstanceOfType<OfbModeTransform>(BlockCipherModeFactory.Create(CipherBlockMode.OFB, cipher, iv));
-        Assert.IsInstanceOfType<CtrModeTransform>(BlockCipherModeFactory.Create(CipherBlockMode.CTR, cipher, iv));
+        Assert.IsInstanceOfType<EcbModeTransform>(BlockCipherModeFactory.Create(CipherModeKind.ECB, cipher, iv));
+        Assert.IsInstanceOfType<CbcModeTransform>(BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv));
+        Assert.IsInstanceOfType<CfbModeTransform>(BlockCipherModeFactory.Create(CipherModeKind.CFB, cipher, iv));
+        Assert.IsInstanceOfType<OfbModeTransform>(BlockCipherModeFactory.Create(CipherModeKind.OFB, cipher, iv));
+        Assert.IsInstanceOfType<CtrModeTransform>(BlockCipherModeFactory.Create(CipherModeKind.CTR, cipher, iv));
     }
 
     /// <summary>
@@ -133,11 +133,11 @@ public sealed class BlockCipherModeFactoryTests
     /// constructed directly.
     /// </summary>
     [TestMethod]
-    [DataRow(CipherBlockMode.XTS)]
-    [DataRow(CipherBlockMode.OCB)]
-    [DataRow(CipherBlockMode.EAX)]
-    [DataRow(CipherBlockMode.SIV)]
-    public void Create_WhenModeIsOutOfScope_ShouldThrowExactly(CipherBlockMode mode)
+    [DataRow(CipherModeKind.XTS)]
+    [DataRow(CipherModeKind.OCB)]
+    [DataRow(CipherModeKind.EAX)]
+    [DataRow(CipherModeKind.SIV)]
+    public void Create_WhenModeIsOutOfScope_ShouldThrowExactly(CipherModeKind mode)
     {
         var cipher = new SkipjackBlockCipher(new byte[10]);
 

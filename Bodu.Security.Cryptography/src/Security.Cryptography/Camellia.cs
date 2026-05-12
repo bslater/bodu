@@ -23,7 +23,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block
-/// cipher modes via the <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/>
+/// cipher modes via the <see cref="BlockMode"/> property. The default mode is <see cref="CipherModeKind.CBC"/>
 /// with <see cref="PaddingMode.PKCS7"/> padding and a default key size of 256 bits.
 /// </para>
 /// <para>
@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Block size: 128 bits (16 bytes).</description></item>
 ///   <item><description>Key sizes: 128 (18 rounds), 192 or 256 bits (24 rounds).</description></item>
 ///   <item><description>Specification: RFC 3713; approved by ISO/IEC, CRYPTREC, and NESSIE.</description></item>
-///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Camellia.</strong> Pick Camellia when standards-body approval matters — Japanese
@@ -84,7 +84,7 @@ public sealed class Camellia
 
     private bool _disposed;
 
-    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
+    private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Camellia"/> class with a 256-bit default key size, CBC cipher
@@ -119,31 +119,31 @@ public sealed class Camellia
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
+    /// One of the <see cref="CipherModeKind"/> values. The default is <see cref="CipherModeKind.CBC"/>.
     /// </value>
     /// <remarks>
     /// <para>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property for use with
     /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including
-    /// <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>, which are not available via the
+    /// <see cref="CipherModeKind.CTR"/> and <see cref="CipherModeKind.OFB"/>, which are not available via the
     /// standard <see cref="CipherMode"/> enumeration.
     /// </para>
     /// </remarks>
-    public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
+    public CipherModeKind BlockMode { get; set; } = CipherModeKind.CBC;
 
     /// <summary>
     /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
+    /// One of the <see cref="PaddingModeKind"/> values. The default is <see cref="PaddingModeKind.PKCS7"/>.
     /// </value>
     /// <remarks>
     /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
     /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
+    /// <see cref="PaddingMode"/> equivalent (such as <see cref="PaddingModeKind.ISO7816_4"/>) leave the base
     /// property unchanged.
     /// </remarks>
-    public BlockPaddingMode BlockPadding
+    public PaddingModeKind BlockPadding
     {
         get => this._blockPadding;
         set
@@ -157,7 +157,7 @@ public sealed class Camellia
     /// <inheritdoc />
     /// <remarks>
     /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
-    /// <see cref="BlockPaddingMode"/>.
+    /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding
     {
@@ -165,7 +165,7 @@ public sealed class Camellia
         set
         {
             base.Padding = value;
-            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
+            if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
                 this._blockPadding = bpm;
         }
     }
@@ -197,7 +197,8 @@ public sealed class Camellia
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new CamelliaTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
@@ -224,7 +225,8 @@ public sealed class Camellia
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new CamelliaTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
@@ -315,38 +317,6 @@ public sealed class Camellia
     /// <param name="key">The key material used to derive the round subkeys.</param>
     /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
     private static IBlockCipher CreateCipher(byte[] key) => new CamelliaBlockCipher(key);
-
-    /// <summary>
-    /// Validates that <paramref name="key"/> and <paramref name="iv"/> match the algorithm's configured key size
-    /// and block size respectively.
-    /// </summary>
-    /// <param name="key">The key to validate.</param>
-    /// <param name="iv">The initialisation vector to validate.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
-    /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm, or the configured
-    /// mode requires an IV and <paramref name="iv"/> is <see langword="null"/>.</exception>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-      "Style",
-      "IDE0011:Add braces",
-      Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line throw expressions remain clear because each condition has only one control-flow outcome.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-      "Roslynator",
-      "RCS1001:Add braces (when expression spans over multiple lines)",
-      Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
-    private void Validate(byte[] key, byte[]? iv)
-    {
-        ThrowHelper.ThrowIfNull(key);
-
-        if (key.Length != this.KeySizeBytes)
-            throw new CryptographicException(
-                string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                    key.Length * 8,
-                    CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
-                nameof(key));
-
-        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
-    }
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.

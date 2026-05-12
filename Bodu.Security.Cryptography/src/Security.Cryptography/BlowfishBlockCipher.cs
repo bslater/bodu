@@ -353,13 +353,13 @@ public sealed class BlowfishBlockCipher
     /// </remarks>
     public BlowfishBlockCipher(ReadOnlySpan<byte> key)
     {
-        ThrowHelper.ThrowIfSpanLengthOutOfRange(key, Blowfish.MinKeySizeBytes, Blowfish.MaxKeySizeBytes);
+        ThrowHelper.ThrowIfSpanLengthOutOfRange(key, Blowfish.MinKeySize/8, Blowfish.MaxKeySize/8);
 
         this.InitialiseKeySchedule(key);
     }
 
     /// <inheritdoc />
-    public int BlockSize => BlockSizeInBytes;
+    public int BlockSize => Blowfish.BlowFishBlockSize;
 
     /// <inheritdoc />
     public void Dispose()

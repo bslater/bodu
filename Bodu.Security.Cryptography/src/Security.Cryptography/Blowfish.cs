@@ -21,7 +21,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block cipher modes via the
-/// <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/> with
+/// <see cref="BlockMode"/> property. The default mode is <see cref="CipherModeKind.CBC"/> with
 /// <see cref="PaddingMode.PKCS7"/> padding.
 /// </para>
 /// <para>
@@ -35,7 +35,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Block size: 64 bits (8 bytes).</description></item>
 ///   <item><description>Key size: variable, 32–448 bits (4–56 bytes).</description></item>
 ///   <item><description>16-round Feistel network with key-dependent S-boxes initialised from the digits of π.</description></item>
-///   <item><description>Default mode: <see cref="CipherBlockMode.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Blowfish.</strong> Pick Blowfish only for interoperability with legacy systems that
@@ -72,29 +72,29 @@ public sealed class Blowfish
     /// <summary>
     /// The Blowfish block size, in bits.
     /// </summary>
-    internal const int BlockSizeBits = 64;
+    internal const int BlowFishBlockSize = 64;
 
     /// <summary>
-    /// The minimum permitted key size, in bytes (32 bits).
+    /// The minimum permitted key size, in bits.
     /// </summary>
-    internal const int MinKeySizeBytes = 4;
+    internal const int MinKeySize = 32;
 
     /// <summary>
-    /// The maximum permitted key size, in bytes (448 bits).
+    /// The maximum permitted key size, in bits.
     /// </summary>
-    internal const int MaxKeySizeBytes = 56;
+    internal const int MaxKeySize = 448;
 
     // Blowfish has a single fixed 64-bit block size; expressed as a single-entry range with skip size 0.
-    private static readonly KeySizes[] s_blowfishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
+    private static readonly KeySizes[] s_blowfishBlockSizes = [new KeySizes(BlowFishBlockSize, BlowFishBlockSize, 0)];
 
     // Legal key sizes span 32..448 bits in 8-bit (single-byte) increments.
-    private static readonly KeySizes[] s_blowfishKeySizes = [new KeySizes(MinKeySizeBytes * 8, MaxKeySizeBytes * 8, 8)];
+    private static readonly KeySizes[] s_blowfishKeySizes = [new KeySizes(MinKeySize, MaxKeySize , 8)];
 
     private bool _disposed = false;
 
-    private CipherBlockMode _blockMode = CipherBlockMode.CBC;
+    private CipherModeKind _blockMode = CipherModeKind.CBC;
 
-    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
+    private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Blowfish"/> class with default parameters.
@@ -110,7 +110,7 @@ public sealed class Blowfish
     public Blowfish()
     {
         // Fixed 64-bit block — Blowfish does not support any other block size.
-        this.BlockSizeValue = BlockSizeBits;
+        this.BlockSizeValue = BlowFishBlockSize;
         this.LegalBlockSizesValue = s_blowfishBlockSizes;
 
         // Default to a 128-bit key, which sits in the middle of the permitted 32..448-bit range and matches common
@@ -118,7 +118,7 @@ public sealed class Blowfish
         this.KeySizeValue = 128;
         this.LegalKeySizesValue = s_blowfishKeySizes;
 
-        this.FeedbackSizeValue = BlockSizeBits;
+        this.FeedbackSizeValue = BlockSize;
         this.ModeValue = CipherMode.CBC;
         this.PaddingValue = PaddingMode.PKCS7;
     }
@@ -127,13 +127,13 @@ public sealed class Blowfish
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
+    /// One of the <see cref="CipherModeKind"/> values. The default is <see cref="CipherModeKind.CBC"/>.
     /// </value>
     /// <remarks>
     /// <para>
     /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property for use with
     /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including
-    /// <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>, which are not available via the standard
+    /// <see cref="CipherModeKind.CTR"/> and <see cref="CipherModeKind.OFB"/>, which are not available via the standard
     /// <see cref="CipherMode"/> enumeration.
     /// </para>
     /// <para>
@@ -142,7 +142,7 @@ public sealed class Blowfish
     /// mode. Extended modes with no <see cref="CipherMode"/> equivalent leave the base property unchanged.
     /// </para>
     /// </remarks>
-    public CipherBlockMode BlockMode
+    public CipherModeKind BlockMode
     {
         get => this._blockMode;
         set
@@ -163,15 +163,15 @@ public sealed class Blowfish
     /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
+    /// One of the <see cref="PaddingModeKind"/> values. The default is <see cref="PaddingModeKind.PKCS7"/>.
     /// </value>
     /// <remarks>
     /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
     /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
+    /// <see cref="PaddingMode"/> equivalent (such as <see cref="PaddingModeKind.ISO7816_4"/>) leave the base
     /// property unchanged.
     /// </remarks>
-    public BlockPaddingMode BlockPadding
+    public PaddingModeKind BlockPadding
     {
         get => this._blockPadding;
         set
@@ -185,7 +185,7 @@ public sealed class Blowfish
     /// <inheritdoc />
     /// <remarks>
     /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
-    /// <see cref="BlockPaddingMode"/>.
+    /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding
     {
@@ -193,7 +193,7 @@ public sealed class Blowfish
         set
         {
             base.Padding = value;
-            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
+            if (Enum.TryParse<PaddingModeKind>(value.ToString(), out PaddingModeKind bpm) && Enum.IsDefined(bpm))
                 this._blockPadding = bpm;
         }
     }
@@ -208,8 +208,8 @@ public sealed class Blowfish
     /// Creates a symmetric <see cref="Blowfish"/> decryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
-    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySizeBytes"/> and
-    /// <see cref="MaxKeySizeBytes"/> bytes in length. Must not be <see langword="null"/>.
+    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySize"/> and
+    /// <see cref="MaxKeySize"/> bytes in length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
     /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
@@ -225,7 +225,8 @@ public sealed class Blowfish
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySizeValue, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSizeValue, this.LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new BlowfishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
@@ -235,8 +236,8 @@ public sealed class Blowfish
     /// Creates a symmetric <see cref="Blowfish"/> encryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
-    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySizeBytes"/> and
-    /// <see cref="MaxKeySizeBytes"/> bytes in length. Must not be <see langword="null"/>.
+    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySize"/> and
+    /// <see cref="MaxKeySize"/> bytes in length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
     /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
@@ -252,7 +253,8 @@ public sealed class Blowfish
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
         this.ThrowIfDisposed();
-        this.Validate(rgbKey, rgbIV);
+        CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySizeValue, this.LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSizeValue, this.LegalBlockSizes);
 
         IBlockCipher engine = CreateCipher(rgbKey);
         return new BlowfishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
@@ -278,7 +280,7 @@ public sealed class Blowfish
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -297,7 +299,7 @@ public sealed class Blowfish
     public override void GenerateKey()
     {
         this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
     }
 
     /// <summary>
@@ -329,54 +331,11 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Gets the configured block size expressed in bytes.
-    /// </summary>
-    private int BlockSizeBytes => this.BlockSizeValue / 8;
-
-    /// <summary>
-    /// Gets the configured key size expressed in bytes.
-    /// </summary>
-    private int KeySizeBytes => this.KeySizeValue / 8;
-
-    /// <summary>
     /// Creates a new <see cref="BlowfishBlockCipher"/> engine initialised with the supplied key.
     /// </summary>
     /// <param name="key">The key material used to derive the P-array and S-boxes.</param>
     /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
     private static IBlockCipher CreateCipher(byte[] key) => new BlowfishBlockCipher(key);
-
-    /// <summary>
-    /// Validates that <paramref name="key"/> and <paramref name="iv"/> match the algorithm's configured key size and block size
-    /// respectively.
-    /// </summary>
-    /// <param name="key">The key to validate.</param>
-    /// <param name="iv">The initialisation vector to validate.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
-    /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Style",
-        "IDE0011:Add braces",
-        Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line throw expressions remain clear because each condition has only one control-flow outcome.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Roslynator",
-        "RCS1001:Add braces (when expression spans over multiple lines)",
-        Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
-    private void Validate(byte[] key, byte[]? iv)
-    {
-        ThrowHelper.ThrowIfNull(key);
-
-        // Key length must match the currently configured KeySize exactly — not merely fall within the legal range — because the key
-        // schedule is driven from the caller-supplied material without padding or truncation.
-        if (key.Length != this.KeySizeBytes)
-            throw new CryptographicException(
-                string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                    key.Length * 8,
-                    CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
-                nameof(key));
-
-        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
-    }
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.

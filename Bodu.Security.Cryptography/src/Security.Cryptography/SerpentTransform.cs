@@ -1,8 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SerpentTransform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -14,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Instances of this class are returned by <see cref="Serpent.CreateEncryptor(byte[], byte[], byte[])"/> and
 /// <see cref="Serpent.CreateDecryptor(byte[], byte[], byte[])"/>. Using this class directly is not recommended; prefer using
-/// a concrete <see cref="Serpent"/> algorithm with a <see cref="System.Security.Cryptography.CryptoStream"/>.
+/// a concrete <see cref="Serpent"/> algorithm with a <see cref="CryptoStream"/>.
 /// </para>
 /// </remarks>
 internal sealed class SerpentTransform
@@ -30,7 +32,7 @@ internal sealed class SerpentTransform
     /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
     /// <param name="encrypt"><see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.</param>
     /// <exception cref="System.ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    public SerpentTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BlockPaddingMode paddingMode, byte[]? iv, bool encrypt)
+    public SerpentTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[] iv, bool encrypt)
         : base(cipher, cipherMode, paddingMode, iv, encrypt)
     {
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TwofishAlgorithmTests.BlockMode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,26 +11,26 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class TwofishAlgorithmTests
 {
     /// <summary>
-    /// Verifies that <see cref="Twofish.BlockMode" /> defaults to <see cref="CipherBlockMode.CBC" /> when the
+    /// Verifies that <see cref="Twofish.BlockMode" /> defaults to <see cref="CipherModeKind.CBC" /> when the
     /// algorithm is first created.
     /// </summary>
     [TestMethod]
     public void BlockMode_WhenDefault_ShouldBeCbc()
     {
         using Twofish algorithm = CreateAlgorithm();
-        Assert.AreEqual(CipherBlockMode.CBC, algorithm.BlockMode);
+        Assert.AreEqual(CipherModeKind.CBC, algorithm.BlockMode);
     }
 
     /// <summary>
     /// Verifies that setting <see cref="Twofish.BlockMode" /> persists and is returned by the next get.
     /// </summary>
     [TestMethod]
-    [DataRow(CipherBlockMode.ECB)]
-    [DataRow(CipherBlockMode.CBC)]
-    [DataRow(CipherBlockMode.CFB)]
-    [DataRow(CipherBlockMode.OFB)]
-    [DataRow(CipherBlockMode.CTR)]
-    public void BlockMode_WhenSet_ShouldReturnSameValueOnGet(CipherBlockMode mode)
+    [DataRow(CipherModeKind.ECB)]
+    [DataRow(CipherModeKind.CBC)]
+    [DataRow(CipherModeKind.CFB)]
+    [DataRow(CipherModeKind.OFB)]
+    [DataRow(CipherModeKind.CTR)]
+    public void BlockMode_WhenSet_ShouldReturnSameValueOnGet(CipherModeKind mode)
     {
         using Twofish algorithm = CreateAlgorithm();
         algorithm.BlockMode = mode;
@@ -42,11 +42,11 @@ public sealed partial class TwofishAlgorithmTests
     /// <see cref="CipherMode" /> (ECB, CBC, CFB, OFB) also updates <see cref="SymmetricAlgorithm.Mode" />.
     /// </summary>
     [TestMethod]
-    [DataRow(CipherBlockMode.ECB, CipherMode.ECB)]
-    [DataRow(CipherBlockMode.CBC, CipherMode.CBC)]
-    [DataRow(CipherBlockMode.CFB, CipherMode.CFB)]
-    [DataRow(CipherBlockMode.OFB, CipherMode.OFB)]
-    public void BlockMode_WhenSetToMappableValue_ShouldSynchronizeModeProperty(CipherBlockMode blockMode, CipherMode expectedMode)
+    [DataRow(CipherModeKind.ECB, CipherMode.ECB)]
+    [DataRow(CipherModeKind.CBC, CipherMode.CBC)]
+    [DataRow(CipherModeKind.CFB, CipherMode.CFB)]
+    [DataRow(CipherModeKind.OFB, CipherMode.OFB)]
+    public void BlockMode_WhenSetToMappableValue_ShouldSynchronizeModeProperty(CipherModeKind blockMode, CipherMode expectedMode)
     {
         using Twofish algorithm = CreateAlgorithm();
         algorithm.BlockMode = blockMode;
@@ -58,12 +58,12 @@ public sealed partial class TwofishAlgorithmTests
     /// equivalent (CTR, XTS, OCB, EAX, SIV) does not update <see cref="SymmetricAlgorithm.Mode" />.
     /// </summary>
     [TestMethod]
-    [DataRow(CipherBlockMode.CTR)]
-    [DataRow(CipherBlockMode.XTS)]
-    [DataRow(CipherBlockMode.OCB)]
-    [DataRow(CipherBlockMode.EAX)]
-    [DataRow(CipherBlockMode.SIV)]
-    public void BlockMode_WhenSetToUnmappableValue_ShouldNotChangeModeProperty(CipherBlockMode mode)
+    [DataRow(CipherModeKind.CTR)]
+    [DataRow(CipherModeKind.XTS)]
+    [DataRow(CipherModeKind.OCB)]
+    [DataRow(CipherModeKind.EAX)]
+    [DataRow(CipherModeKind.SIV)]
+    public void BlockMode_WhenSetToUnmappableValue_ShouldNotChangeModeProperty(CipherModeKind mode)
     {
         using Twofish algorithm = CreateAlgorithm();
         CipherMode modeBefore = algorithm.Mode;

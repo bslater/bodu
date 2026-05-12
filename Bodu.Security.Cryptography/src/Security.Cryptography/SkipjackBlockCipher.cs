@@ -52,11 +52,6 @@ public sealed class SkipjackBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// Internal block size (bytes).
-    /// </summary>
-    public const int BlockBytes = 8;
-
-    /// <summary>
     /// Length of a Skipjack key (bytes).
     /// </summary>
     public const int KeySize = 10;  // 80 bits
@@ -82,7 +77,9 @@ public sealed class SkipjackBlockCipher
         0x5e, 0x6c, 0xa9, 0x13, 0x57, 0x25, 0xb5, 0xe3, 0xbd, 0xa8, 0x3a, 0x01, 0x05, 0x59, 0x2a, 0x46
     ];
 
+#pragma warning disable SA1132 // Do not combine fields
     private readonly int[] _key0, _key1, _key2, _key3;
+#pragma warning restore SA1132 // Do not combine fields
     private bool _disposed = false;
 
     /// <summary>
@@ -102,7 +99,6 @@ public sealed class SkipjackBlockCipher
         this._key2 = new int[32];
         this._key3 = new int[32];
 
-        //
         // expand the key to 128 bytes in 4 parts (saving us a modulo, multiply and an addition).
         for (var i = 0; i < 32; i++)
         {
@@ -115,7 +111,7 @@ public sealed class SkipjackBlockCipher
 
     /// <inheritdoc />
     /// <remarks>The block size is fixed at 8 bytes (64 bits) and cannot be changed.</remarks>
-    public int BlockSize => BlockBytes;
+    public int BlockSize => Skipjack.SkipjackBlockSize;
 
     /// <summary>
     /// Decrypts a single 64-bit ciphertext block.
@@ -127,8 +123,8 @@ public sealed class SkipjackBlockCipher
     /// <remarks>Mirrors the BC/OpenSSL decrypt sequence, including the word-order swap in the input/output stages.</remarks>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSize/8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSize/8);
         this.ThrowIfDisposed();
 
         var w2 = (input[0] << 8) + (input[1] & 0xff);
@@ -190,8 +186,8 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Encrypts a single 64-bit block.
     /// </summary>
-    /// <param name="input">The plaintext block to encrypt. Must be at least <see cref="BlockBytes"/> bytes long.</param>
-    /// <param name="output">Buffer that receives the 8-byte ciphertext. Must be at least <see cref="BlockBytes"/> bytes long.</param>
+    /// <param name="input">The plaintext block to encrypt. Must be at least <see cref="BlockSize"/> bytes long.</param>
+    /// <param name="output">Buffer that receives the 8-byte ciphertext. Must be at least <see cref="BlockSize"/> bytes long.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is too small.</exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>
@@ -200,8 +196,8 @@ public sealed class SkipjackBlockCipher
     /// </remarks>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBytes);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSize/8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSize/8);
         this.ThrowIfDisposed();
 
         var w1 = (input[0] << 8) + (input[1] & 0xff);

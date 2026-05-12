@@ -85,6 +85,13 @@ public sealed class CcmModeTransform
     /// Initializes a new instance of the <see cref="CcmModeTransform"/> class. The first 12 bytes of <paramref name="iv"/>
     /// are used as the CCM nonce.
     /// </summary>
+    /// <param name="cipher">
+    /// The block cipher used to perform the underlying block encryption operations.
+    /// </param>
+    /// <param name="iv">
+    /// The initialization vector from which the CCM nonce is derived. The value must be exactly one cipher block in length;
+    /// only the first 12 bytes are copied and used as the nonce.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException"><paramref name="iv"/> length does not equal the cipher block size.</exception>
     public CcmModeTransform(IBlockCipher cipher, byte[] iv)

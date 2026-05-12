@@ -49,5 +49,5 @@ public enum TigerHashingVariant
     /// compatibility with padding conventions in other cryptographic hash functions like MD5 and SHA. Aside from the padding
     /// difference, Tiger2 is identical in structure and performance to the original Tiger variant.
     /// </remarks>
-    Tiger2
+    Tiger2,
 }

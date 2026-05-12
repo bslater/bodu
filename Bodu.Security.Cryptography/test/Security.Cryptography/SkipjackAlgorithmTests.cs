@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkipjackAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class SkipjackAlgorithmTests
     protected override Skipjack CreateAlgorithm() => new Skipjack();
 
     /// <inheritdoc />
-    protected override void SetBlockMode(Skipjack algorithm, CipherBlockMode mode) =>
+    protected override void SetBlockMode(Skipjack algorithm, CipherModeKind mode) =>
         algorithm.BlockMode = mode;
 
     /// <inheritdoc />

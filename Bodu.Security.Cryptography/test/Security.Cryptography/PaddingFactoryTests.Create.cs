@@ -25,16 +25,16 @@ public partial class PaddingFactoryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PaddingFactory.Create(BoduPaddingMode)" /> rejects an
-    /// undefined <see cref="BoduPaddingMode" /> value with a clean exception message.
+    /// Verifies that <see cref="PaddingFactory.Create(PaddingModeKind)" /> rejects an
+    /// undefined <see cref="PaddingModeKind" /> value with a clean exception message.
     /// </summary>
     [TestMethod]
     public void Create_WhenBoduPaddingModeIsInvalid_ShouldThrowWithCleanMessage()
     {
-        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>(() =>
+        CryptographicException ex = Assert.ThrowsExactly<CryptographicException>((Action)(() =>
         {
-            PaddingFactory.Create((BlockPaddingMode)999);
-        });
+            PaddingFactory.Create((Cryptography.PaddingModeKind)(Cryptography.PaddingModeKind)999);
+        }));
         Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
     }
 
@@ -94,13 +94,13 @@ public partial class PaddingFactoryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PaddingFactory.Create(BoduPaddingMode)" /> returns an
-    /// <see cref="Iso7816_4Padding" /> for <see cref="BoduPaddingMode.ISO7816_4" />.
+    /// Verifies that <see cref="PaddingFactory.Create(PaddingModeKind)" /> returns an
+    /// <see cref="Iso7816_4Padding" /> for <see cref="PaddingModeKind.ISO7816_4" />.
     /// </summary>
     [TestMethod]
     public void Create_WhenBoduPaddingModeIsIso7816_4_ShouldReturnIso7816_4Padding()
     {
-        IPaddingStrategy strategy = PaddingFactory.Create(BlockPaddingMode.ISO7816_4);
+        IPaddingStrategy strategy = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
         Assert.IsInstanceOfType<Iso7816_4Padding>(strategy);
     }
 }

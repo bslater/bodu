@@ -570,6 +570,6 @@ public partial class ICryptoTransformExtensionsTests
             : new SimpleReversingBlockCipher(key, blockSizeBits / 8, tweak);
 
         // Use ECB so each block is transformed independently — expected outputs are simple per-block reversals.
-        return new SimpleReversingCryptoTransform(cipher, CipherBlockMode.ECB, paddingMode, iv, encrypt);
+        return new SimpleReversingCryptoTransform(cipher, CipherModeKind.ECB, paddingMode, iv, encrypt);
     }
 }

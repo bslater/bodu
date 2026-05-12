@@ -96,7 +96,7 @@ public abstract partial class PaddingStrategyTests<TPadding>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm"/> type to instantiate.</param>
     /// <param name="padding">The extended padding mode to apply.</param>
     /// <returns>A ready-to-use <see cref="SymmetricAlgorithm"/> instance.</returns>
-    protected static SymmetricAlgorithm CreateConfiguredAlgorithm(Type algorithmType, BlockPaddingMode padding)
+    protected static SymmetricAlgorithm CreateConfiguredAlgorithm(Type algorithmType, PaddingModeKind padding)
     {
         var algorithm = (SymmetricAlgorithm)Activator.CreateInstance(algorithmType)!;
         algorithm.Mode = CipherMode.CBC;

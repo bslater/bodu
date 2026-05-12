@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTransformTests.PaddingMode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// Tests that exercise the protected <see cref="BlockCipherTransform" /> constructor overload that accepts a
 /// framework <see cref="PaddingMode" /> value. The existing concrete subclasses
 /// (<see cref="CamelliaTransform" />, <see cref="SerpentTransform" />, etc.) only call the
-/// <see cref="BlockPaddingMode" /> overload, so this gap requires a test-only derivation.
+/// <see cref="PaddingModeKind" /> overload, so this gap requires a test-only derivation.
 /// </summary>
 [TestClass]
 public sealed class BlockCipherTransformPaddingModeTests
@@ -26,7 +26,7 @@ public sealed class BlockCipherTransformPaddingModeTests
     {
         var cipher = new MonitoringBlockCipher(blockSize: 8);
 
-        using var transform = new FrameworkPaddingTransform(cipher, CipherBlockMode.ECB, PaddingMode.Zeros, iv: null, encrypt: true);
+        using var transform = new FrameworkPaddingTransform(cipher, CipherModeKind.ECB, PaddingMode.Zeros, iv: null, encrypt: true);
 
         Assert.AreEqual(8, transform.InputBlockSize);
     }
@@ -41,7 +41,7 @@ public sealed class BlockCipherTransformPaddingModeTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new FrameworkPaddingTransform(null!, CipherBlockMode.ECB, PaddingMode.None, iv: null, encrypt: true);
+            _ = new FrameworkPaddingTransform(null!, CipherModeKind.ECB, PaddingMode.None, iv: null, encrypt: true);
         });
     }
 
@@ -51,7 +51,7 @@ public sealed class BlockCipherTransformPaddingModeTests
     /// </summary>
     private sealed class FrameworkPaddingTransform : BlockCipherTransform
     {
-        public FrameworkPaddingTransform(IBlockCipher cipher, CipherBlockMode mode, PaddingMode padding, byte[]? iv, bool encrypt)
+        public FrameworkPaddingTransform(IBlockCipher cipher, CipherModeKind mode, PaddingMode padding, byte[]? iv, bool encrypt)
             : base(cipher, mode, padding, iv, encrypt)
         {
         }

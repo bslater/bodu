@@ -43,8 +43,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Derived classes need only provide a constructor that calls
-/// <see cref="BlockCipherTransform(IBlockCipher, CipherBlockMode, PaddingMode, byte[], bool)"/> or
-/// <see cref="BlockCipherTransform(IBlockCipher, CipherBlockMode, BlockPaddingMode, byte[], bool)"/> with the
+/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingMode, byte[], bool)"/> or
+/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingModeKind, byte[], bool)"/> with the
 /// appropriate arguments. All transform logic is handled by this base class.
 /// </para>
 /// <para>
@@ -126,7 +126,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
+    protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         this._encrypt = encrypt;
@@ -144,14 +144,14 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <param name="cipherMode">The block cipher mode of operation.</param>
     /// <param name="paddingMode">
     /// The extended padding scheme to apply to the final block. Accepts values beyond the framework
-    /// <see cref="PaddingMode"/> enum, including <see cref="BlockPaddingMode.ISO7816_4"/>.
+    /// <see cref="PaddingMode"/> enum, including <see cref="PaddingModeKind.ISO7816_4"/>.
     /// </param>
     /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
     /// <param name="encrypt">
     /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
-    protected BlockCipherTransform(IBlockCipher cipher, CipherBlockMode cipherMode, BlockPaddingMode paddingMode, byte[]? iv, bool encrypt)
+    protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
         this._encrypt = encrypt;
@@ -320,7 +320,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
                 var combined = Combine(this._deferredInput, input);
                 CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(
                     combined,
-                    this._cipher.BlockSize,
+                    this._cipher.BlockSize / 8,
                     throwIfZero: false);
 
                 var decrypted = new byte[combined.Length];

@@ -328,23 +328,39 @@ public abstract partial class Skein<T>
             CryptoResourceStrings.InvalidOperationException_SkeinBypassesProcessBlock);
 
     /// <summary>
-    /// Pipeline contract marker — see the section comment above. Skein's UBI tweak field carries the
-    /// equivalent of the Merkle–Damgård length encoding, so <c>PadBlock</c> is unreachable.
+    /// Satisfies the <see cref="BlockHashAlgorithm{T}.PadBlock(ReadOnlySpan{byte}, ulong)" /> contract, but is
+    /// not used by the Skein implementation.
     /// </summary>
-    /// <param name="block">Ignored.</param>
-    /// <param name="messageLength">Ignored.</param>
-    /// <returns>Never returns — always throws.</returns>
-    /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
+    /// <param name="block">
+    /// The final partial block supplied by the base pipeline. Skein does not consume this value here because
+    /// final block processing is performed by the UBI chaining path.
+    /// </param>
+    /// <param name="messageLength">
+    /// The total message length supplied by the base pipeline. Skein does not consume this value here because
+    /// UBI encodes position and final-block state in the tweak field.
+    /// </param>
+    /// <returns>
+    /// This method never returns because Skein bypasses the base padding pipeline.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Always thrown because Skein performs finalisation through UBI rather than
+    /// <see cref="BlockHashAlgorithm{T}.PadBlock(ReadOnlySpan{byte}, ulong)" />.
+    /// </exception>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
         throw new InvalidOperationException(
             CryptoResourceStrings.InvalidOperationException_SkeinBypassesPadBlock);
 
     /// <summary>
-    /// Pipeline contract marker — see the section comment above. Skein finalises via the OUTPUT UBI phase
-    /// driven from <see cref="HashFinal"/>.
+    /// Satisfies the base final-block processing contract, but is unreachable for Skein because hash
+    /// finalisation is performed by the OUTPUT UBI phase.
     /// </summary>
-    /// <returns>Never returns — always throws.</returns>
-    /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
+    /// <returns>
+    /// This method never returns because Skein bypasses the base final-block pipeline.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Always thrown because Skein drives finalisation from <see cref="HashFinal" /> rather than
+    /// <see cref="BlockHashAlgorithm{T}.ProcessFinalBlock" />.
+    /// </exception>
     protected override byte[] ProcessFinalBlock() =>
         throw new InvalidOperationException(
             CryptoResourceStrings.InvalidOperationException_SkeinBypassesProcessFinalBlock);
