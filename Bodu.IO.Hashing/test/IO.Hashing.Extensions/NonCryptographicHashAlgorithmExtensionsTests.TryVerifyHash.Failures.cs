@@ -162,6 +162,89 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         Assert.IsFalse(algorithm.TryVerifyHash(stream, s_sampleHex));
     }
 
+    // ─── Algorithm-thrown exceptions reach the outer catch and resolve to false ─────────────────
+
+    /// <summary>
+    /// Verifies that the byte-array overload returns <see langword="false" /> when the algorithm itself raises an
+    /// exception during <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />, exercising the
+    /// <c>catch { return false; }</c> branch.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenAlgorithmThrows_ForByteArrayOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+
+        Assert.IsFalse(algorithm.TryVerifyHash(s_sampleData, s_sampleHash));
+    }
+
+    /// <summary>
+    /// Verifies that the byte-array + hex overload returns <see langword="false" /> when the algorithm itself
+    /// raises an exception during <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />,
+    /// exercising the <c>catch { return false; }</c> branch.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenAlgorithmThrows_ForByteArrayHexOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+
+        Assert.IsFalse(algorithm.TryVerifyHash(s_sampleData, s_sampleHex));
+    }
+
+    /// <summary>
+    /// Verifies that the string + encoding overload returns <see langword="false" /> when the algorithm raises an
+    /// exception, exercising the <c>catch { return false; }</c> branch after encoding succeeds.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenAlgorithmThrows_ForStringEncodedOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+
+        Assert.IsFalse(algorithm.TryVerifyHash(s_sampleString, s_sampleEncoding, s_sampleStringHash));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="ReadOnlySpan{T}" /> overload returns <see langword="false" /> when the
+    /// algorithm raises an exception, exercising the <c>catch { return false; }</c> branch.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenAlgorithmThrows_ForSpanOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+        ReadOnlySpan<byte> input = s_sampleData;
+        ReadOnlySpan<byte> expected = s_sampleHash;
+
+        Assert.IsFalse(algorithm.TryVerifyHash(input, expected));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="ReadOnlyMemory{T}" /> overload returns <see langword="false" /> when the
+    /// algorithm raises an exception, exercising the <c>catch { return false; }</c> branch.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenAlgorithmThrows_ForMemoryOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+        ReadOnlyMemory<byte> input = s_sampleData;
+
+        Assert.IsFalse(algorithm.TryVerifyHash(input, s_sampleHash));
+    }
+
+    /// <summary>
+    /// Verifies that the out-bool overload returns <see langword="false" /> and sets <paramref name="result" /> to
+    /// <see langword="false" /> when the algorithm raises an exception, exercising the
+    /// <c>catch { return false; }</c> branch.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenAlgorithmThrowsWithOutBool_ShouldReturnFalseAndLeaveResultFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+
+        var succeeded = algorithm.TryVerifyHash(s_sampleData, s_sampleHash, out var result);
+
+        Assert.IsFalse(succeeded);
+        Assert.IsFalse(result);
+    }
+
     /// <summary>
     /// A readable <see cref="Stream" /> whose every read raises <see cref="IOException" />, used to drive the
     /// exception-safe false-return branch of stream-based <c>TryVerifyHash</c> overloads.

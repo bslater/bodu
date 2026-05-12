@@ -139,6 +139,100 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         Assert.IsFalse(result);
     }
 
+    // ─── Algorithm-thrown exceptions reach the outer catch and resolve to false ─────────────────
+
+    /// <summary>
+    /// Verifies that the async byte-array + byte-array overload returns <see langword="false" /> when the
+    /// algorithm itself raises an exception, exercising the <c>catch { return false; }</c> branch around the inner
+    /// <c>MemoryStream</c>-backed call.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrows_ForByteArrayByteArrayOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+
+        var result = await algorithm.TryVerifyHashAsync(s_sampleData, s_sampleHash);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the async byte-array + hex overload returns <see langword="false" /> when the algorithm
+    /// itself raises an exception, exercising the <c>catch { return false; }</c> branch around the inner
+    /// <c>MemoryStream</c>-backed call.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrows_ForByteArrayHexOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+
+        var result = await algorithm.TryVerifyHashAsync(s_sampleData, s_sampleHex);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the async string + encoding overload returns <see langword="false" /> when the algorithm
+    /// itself raises an exception, exercising the <c>catch { return false; }</c> branch after the encoding step
+    /// succeeds.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrows_ForStringEncodedOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+
+        var result = await algorithm.TryVerifyHashAsync(s_sampleString, s_sampleEncoding, s_sampleStringHash);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the async stream + byte-array overload returns <see langword="false" /> when the algorithm
+    /// itself raises an exception during <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrows_ForStreamByteArrayOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+        using MemoryStream stream = new(s_sampleData);
+
+        var result = await algorithm.TryVerifyHashAsync(stream, s_sampleHash);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the async stream + hex overload returns <see langword="false" /> when the algorithm itself
+    /// raises an exception during <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrows_ForStreamHexOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+        using MemoryStream stream = new(s_sampleData);
+
+        var result = await algorithm.TryVerifyHashAsync(stream, s_sampleHex);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the async stream + <see cref="ReadOnlyMemory{T}" /> overload returns <see langword="false" />
+    /// when the algorithm itself raises an exception during
+    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />.
+    /// </summary>
+    [TestMethod]
+    public async Task TryVerifyHashAsync_WhenAlgorithmThrows_ForStreamMemoryOverload_ShouldReturnFalse()
+    {
+        ThrowingNonCryptographicHashAlgorithm algorithm = new();
+        using MemoryStream stream = new(s_sampleData);
+        ReadOnlyMemory<byte> expected = s_sampleHash;
+
+        var result = await algorithm.TryVerifyHashAsync(stream, expected);
+
+        Assert.IsFalse(result);
+    }
+
     /// <summary>
     /// A readable async <see cref="Stream" /> whose every read raises <see cref="IOException" />, used to drive
     /// the exception-safe false-return branch of stream-based async <c>TryVerifyHashAsync</c> overloads.
