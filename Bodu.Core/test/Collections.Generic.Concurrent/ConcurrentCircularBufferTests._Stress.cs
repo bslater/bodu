@@ -987,7 +987,7 @@ public partial class ConcurrentCircularBufferTests
     // generation greater than `latestSeen` would mean the indexer surfaced a value from a
     // future generation that did not exist in the buffer at any point during the read.
     // -----------------------------------------------------------------------------------------
-
+    /*
     /// <summary>
     /// Verifies that the indexer returns only values that were genuinely in the live window during the call,
     /// never a future or torn-generation value, while concurrent producers and consumers churn the buffer.
@@ -1081,5 +1081,146 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, futureValueViolations,
             "Indexer surfaced a value from a future generation that did not exist when the call started.");
         Assert.IsTrue(reads > 0, "Indexer must have completed at least some successful reads.");
+    }
+    */
+    /// <summary>
+    /// Verifies that the indexer returns only values that were genuinely in the live window during the call,
+    /// never a future or torn-generation value, while concurrent producers and consumers churn the buffer.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenContendedWithEnqueueAndDequeue_ShouldReturnAValueThatExisted()
+    {
+        const int capacity = 32;
+        const int minimumOccupancy = capacity / 2;
+        const int targetSuccessfulReads = 10_000;
+        const int timeoutMs = 5_000;
+        const int deadlockTimeoutMs = timeoutMs + 2_000;
+
+        var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: true);
+        using var cts = new CancellationTokenSource();
+        using var startGate = new ManualResetEventSlim(false);
+
+        var generation = 0;
+        var futureValueViolations = 0;
+        var indexerFaults = 0;
+        var reads = 0;
+
+        Exception? unexpectedException = null;
+
+        // Seed the buffer so the indexer has a populated starting window.
+        for (var i = 0; i < capacity; i++)
+        {
+            var gen = Interlocked.Increment(ref generation);
+            Assert.IsTrue(buffer.TryEnqueue(new TestItem(gen)));
+        }
+
+        var writerThreads = Math.Max(2, Environment.ProcessorCount / 2);
+        var readerThreads = 2;
+        var consumerThreads = 1;
+
+        IEnumerable<Task> writers = Enumerable.Range(0, writerThreads).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    var gen = Interlocked.Increment(ref generation);
+                    buffer.TryEnqueue(new TestItem(gen));
+                }
+            }));
+
+        IEnumerable<Task> consumers = Enumerable.Range(0, consumerThreads).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    // Keep dequeue churn active, but avoid degenerating into a permanently empty buffer.
+                    if (buffer.Count > minimumOccupancy)
+                        buffer.TryDequeue(out TestItem? _);
+                    else
+                        Thread.Yield();
+                }
+            }));
+
+        IEnumerable<Task> indexers = Enumerable.Range(0, readerThreads).Select(_ =>
+            Task.Run(() =>
+            {
+                startGate.Wait();
+
+                while (!cts.Token.IsCancellationRequested)
+                {
+                    var count = buffer.Count;
+
+                    for (var i = 0; i < count; i++)
+                    {
+                        try
+                        {
+                            TestItem item = buffer[i];
+
+                            // Sample generation AFTER the indexer returns. This gives a true upper bound
+                            // for values that could have been published when the read landed.
+                            var latest = Volatile.Read(ref generation);
+
+                            if (item is not null && item.Value > latest)
+                                Interlocked.Increment(ref futureValueViolations);
+
+                            if (Interlocked.Increment(ref reads) >= targetSuccessfulReads)
+                                cts.Cancel();
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            // Count shrank between observation and access — expected race.
+                        }
+                        catch (Exception ex)
+                        {
+                            Interlocked.CompareExchange(ref unexpectedException, ex, null);
+                            Interlocked.Increment(ref indexerFaults);
+                            cts.Cancel();
+                        }
+                    }
+
+                    Thread.Yield();
+                }
+            }));
+
+        Task[] allTasks = writers.Concat(consumers).Concat(indexers).ToArray();
+
+        startGate.Set();
+
+        var completedBeforeTimeout = SpinWait.SpinUntil(
+            () => Volatile.Read(ref reads) >= targetSuccessfulReads || Volatile.Read(ref indexerFaults) > 0,
+            timeoutMs);
+
+        cts.Cancel();
+
+        var completed = Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+        TestContext.WriteLine(
+            $"Reads={reads}, FutureValueViolations={futureValueViolations}, IndexerFaults={indexerFaults}");
+
+        Assert.IsTrue(
+            completedBeforeTimeout,
+            $"Indexer did not complete {targetSuccessfulReads} successful reads within {timeoutMs} ms.");
+
+        Assert.IsTrue(
+            completed,
+            $"Tasks did not complete within {deadlockTimeoutMs} ms.");
+
+        Assert.AreEqual(
+            0,
+            indexerFaults,
+            $"Indexer must not throw apart from documented races. First exception: {unexpectedException}");
+
+        Assert.AreEqual(
+            0,
+            futureValueViolations,
+            "Indexer surfaced a value from a future generation that did not exist when the call started.");
+
+        Assert.IsTrue(
+            reads >= targetSuccessfulReads,
+            "Indexer must have completed the required number of successful reads.");
     }
 }

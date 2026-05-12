@@ -179,9 +179,28 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue("seed");
 
         using ConcurrentCircularBuffer<string>.Enumerator typed = buffer.GetEnumerator();
-        IEnumerator legacy = typed;
 
         Assert.IsTrue(typed.MoveNext());
+
+        IEnumerator legacy = typed;
+
+        Assert.AreEqual(typed.Current, legacy.Current);
+        Assert.AreEqual("seed", legacy.Current);
+    }
+
+    /// <summary>
+    /// Verifies that the non-generic enumerator's <see cref="IEnumerator.Current" /> property returns the current element after a
+    /// successful <see cref="IEnumerator.MoveNext" /> call.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_NonGenericCurrent_AfterMoveNextThroughInterface_ShouldReturnLatestElement()
+    {
+        var buffer = new ConcurrentCircularBuffer<string>(2);
+        buffer.Enqueue("seed");
+
+        IEnumerator legacy = buffer.GetEnumerator();
+
+        Assert.IsTrue(legacy.MoveNext());
         Assert.AreEqual("seed", legacy.Current);
     }
 
