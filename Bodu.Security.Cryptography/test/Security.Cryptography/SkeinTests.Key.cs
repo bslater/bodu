@@ -10,7 +10,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 {
     /// <summary>
     /// Verifies that assigning a <see cref="Skein{T}.Key" /> of exactly
-    /// <see cref="Skein{T}.MaxKeySizeBytes" /> bytes succeeds (boundary value test).
+    /// <see cref="Skein{T}.MaxKeySize" /> / 8 bytes succeeds (boundary value test).
     /// </summary>
     [TestMethod]
     public void Key_WhenAssignedExactlyMaxKeySize_ShouldNotThrow()
@@ -19,12 +19,12 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
 
         try
         {
-            skein.Key = new byte[Skein<TAlgorithm>.MaxKeySizeBytes];
+            skein.Key = new byte[Skein<TAlgorithm>.MaxKeySize / 8];
         }
         catch (Exception ex)
         {
             Assert.Fail(
-                $"Assigning a {Skein<TAlgorithm>.MaxKeySizeBytes}-byte key should be the inclusive upper bound, " +
+                $"Assigning a {Skein<TAlgorithm>.MaxKeySize / 8}-byte key should be the inclusive upper bound, " +
                 $"but threw {ex.GetType().Name}: {ex.Message}");
         }
     }

@@ -80,7 +80,7 @@ public sealed partial class Tiger
     /// <param name="hashSize">The desired output size in bits. Must be one of 128, 160, or 192.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize"/> is not valid.</exception>
     public Tiger(int hashSize)
-        : base(64)
+        : base(512)
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 

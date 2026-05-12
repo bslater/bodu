@@ -67,7 +67,7 @@ public abstract partial class Snefru<T>
     /// <param name="hashSize">The size of the output hash, in bits. Must be either 128 or 256.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize"/> is not one of the supported values.</exception>
     protected Snefru(int hashSize)
-        : base(64 - (hashSize >> 3)) // BlockSizeBytes = 64 - outputBytes
+        : base((64 - (hashSize >> 3)) * 8) // BlockSizeBits = 8 * (64 - outputBytes)
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 

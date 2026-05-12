@@ -63,9 +63,9 @@ public abstract class SipHash<T>
     where T : SipHash<T>, new()
 {
     /// <summary>
-    /// The fixed key size in bytes (128 bits).
+    /// Length of the SipHash key is 128 bits (16 bytes).
     /// </summary>
-    public const int KeySize = 16;
+    public const int KeySize = 128;
 
     /// <summary>
     /// The minimum number of compression rounds required by SipHash.
@@ -77,7 +77,7 @@ public abstract class SipHash<T>
     /// </summary>
     public const int MinFinalizationRounds = 4;
 
-    private static readonly int s_blockSize = 8;
+    private static readonly int s_blockSize = 64;
 
     private static readonly ulong[] s_initialStates =
     [
@@ -104,7 +104,7 @@ public abstract class SipHash<T>
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 
-        this.KeyValue = new byte[KeySize];
+        this.KeyValue = new byte[KeySize / 8];
         CryptoHelpers.FillWithRandomNonZeroBytes(this.KeyValue);
         this._compressionRounds = MinCompressionRounds;
         this._finalizationRounds = MinFinalizationRounds;

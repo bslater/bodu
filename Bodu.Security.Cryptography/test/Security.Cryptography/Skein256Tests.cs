@@ -36,8 +36,8 @@ public partial class Skein256Tests
             LongInputLength = 200,
             BoundaryLengths = [1, 8, 16, 32, 64, 128],
             MinKeyLength = 16,
-            MaxKeyLength = Skein<Skein256>.MaxKeySizeBytes,
-            ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein256>.MaxKeySizeBytes],
+            MaxKeyLength = Skein<Skein256>.MaxKeySize / 8,
+            ValidKeyLengths = [0, 16, 32, 64, 128, 256, Skein<Skein256>.MaxKeySize / 8],
             TestKey = SkeinTestKey,
             KnownAnswers = new HashAlgorithmKnownAnswers
             {

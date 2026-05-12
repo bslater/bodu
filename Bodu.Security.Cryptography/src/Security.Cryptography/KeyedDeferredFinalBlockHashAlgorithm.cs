@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The key is optional: assigning an empty array (or never assigning a key) places the instance in the standard
-/// unkeyed digest mode. Assigning a non-empty array of at most <see cref="MaximumKeySize"/> bytes switches the
+/// unkeyed digest mode. Assigning a non-empty array of at most <see cref="MaximumKeySize"/> / 8 bytes switches the
 /// instance to the keyed MAC mode defined in RFC 7693 Section 2.8 — the key is zero-padded to the block size and
 /// prepended as the first message block.
 /// </para>
@@ -61,8 +61,8 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     protected byte[]? KeyValue;
 
     /// <summary>
-    /// The maximum accepted key length, in bytes. Supplied by the derived class via the constructor and used by the
-    /// <see cref="Key"/> setter to validate caller-supplied key material.
+    /// The maximum accepted key size, in bits. Supplied by the derived class via the constructor and used by the
+    /// <see cref="Key"/> setter (after dividing by 8) to validate caller-supplied key material.
     /// </summary>
     private readonly int _maximumKeySize;
 
@@ -71,10 +71,10 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// specified input block size and maximum key size.
     /// </summary>
     /// <param name="blockSize">
-    /// The fixed size, in bytes, of each block consumed by the algorithm. Must be greater than zero.
+    /// The fixed size, in bits, of each block consumed by the algorithm. Must be a positive multiple of 8.
     /// </param>
     /// <param name="maximumKeySize">
-    /// The maximum accepted key length, in bytes. Must be greater than zero.
+    /// The maximum accepted key size, in bits. Must be a positive multiple of 8.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="blockSize"/> or <paramref name="maximumKeySize"/> is less than or equal to zero.
@@ -87,9 +87,10 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Gets the maximum accepted key length, in bytes, for this algorithm instance.
+    /// Gets the maximum accepted key size, in bits, for this algorithm instance. Divide by 8 to obtain the
+    /// equivalent byte length used when allocating or validating <see cref="Key"/>.
     /// </summary>
-    /// <returns>The maximum number of bytes accepted as a secret key.</returns>
+    /// <returns>The maximum number of bits accepted as a secret key.</returns>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     public int MaximumKeySize
     {
@@ -104,7 +105,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// Gets or sets the optional secret key used to compute a keyed MAC digest.
     /// </summary>
     /// <value>
-    /// A byte array of 1 to <see cref="MaximumKeySize"/> bytes that enables keyed MAC mode, or an empty array
+    /// A byte array of 1 to <see cref="MaximumKeySize"/> / 8 bytes that enables keyed MAC mode, or an empty array
     /// when operating in the unkeyed digest profile. Both the getter and the setter operate on defensive copies.
     /// </value>
     /// <returns>
@@ -130,7 +131,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     /// </remarks>
     /// <exception cref="ArgumentNullException">The assigned value is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// The assigned key is longer than <see cref="MaximumKeySize"/> bytes.
+    /// The assigned key is longer than <see cref="MaximumKeySize"/> / 8 bytes.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
@@ -150,9 +151,9 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfNull(value);
 
-            if (value.Length > this._maximumKeySize)
+            if (value.Length > this._maximumKeySize / 8)
                 throw new CryptographicException(
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, value.Length, $"0..{this._maximumKeySize}"));
+                    string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, value.Length * 8, $"0..{this._maximumKeySize}"));
 
             this.KeyValue = value.Length > 0 ? value.Copy() : null;
             this.Initialize();

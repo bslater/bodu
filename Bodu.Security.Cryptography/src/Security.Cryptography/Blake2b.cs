@@ -71,14 +71,20 @@ public sealed class Blake2b
     private static readonly int[] s_permittedHashSizes = [128, 160, 192, 224, 256, 384, 512];
 
     /// <summary>
-    /// The maximum accepted key length, in bytes, for the keyed <c>BLAKE2b-MAC</c> mode.
+    /// Maximum accepted key length for the keyed <c>BLAKE2b-MAC</c> mode is 512 bits (64 bytes).
     /// </summary>
-    public const int MaxKeySize = 64;
+    public const int MaxKeySize = 512;
 
     /// <summary>
-    /// The block size, in bytes, processed by each compression call.
+    /// The block size, in bits, processed by each compression call (128 bytes).
     /// </summary>
-    private const int BlockSizeBytesValue = 128;
+    private const int BlockSizeValue = 1024;
+
+    /// <summary>
+    /// Convenience constant for the byte length of <see cref="BlockSizeValue"/>, used when slicing
+    /// or allocating <see cref="byte"/> buffers from the bit-valued constant.
+    /// </summary>
+    private const int BlockSizeBytesValue = BlockSizeValue / 8;
 
     /// <summary>
     /// The SHA-512 initialisation constants used as the BLAKE2b IV.
@@ -113,7 +119,7 @@ public sealed class Blake2b
     /// <paramref name="hashSize"/> is not one of the supported output sizes.
     /// </exception>
     public Blake2b(int hashSize)
-        : base(BlockSizeBytesValue, MaxKeySize)
+        : base(BlockSizeValue, MaxKeySize)
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 

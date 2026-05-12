@@ -54,8 +54,9 @@ public abstract class BlockHashAlgorithm<T>
     /// Initializes a new instance of the <see cref="BlockHashAlgorithm{T}"/> class using the specified input block size.
     /// </summary>
     /// <param name="blockSize">
-    /// The block size, in bytes, that the algorithm uses to process input data. This value determines how data is buffered and
-    /// segmented during hashing operations.
+    /// The block size, in bits, that the algorithm uses to process input data. Must be a positive multiple of 8. This
+    /// value determines how data is buffered and segmented during hashing operations; the equivalent byte length is
+    /// available via the inherited <see cref="BufferedBlockHashAlgorithm{T}.BlockSizeBytes"/> field.
     /// </param>
     /// <remarks>
     /// <para>

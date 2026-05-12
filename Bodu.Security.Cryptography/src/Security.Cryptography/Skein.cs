@@ -63,10 +63,11 @@ public abstract partial class Skein<T>
     where T : Skein<T>, new()
 {
     /// <summary>
-    /// The maximum accepted length, in bytes, for <see cref="Key"/> across every Skein variant. Keys longer than this
-    /// bound are rejected to prevent unbounded memory usage; this value is far above any practical MAC key.
+    /// Maximum accepted length for <see cref="Key"/> across every Skein variant is 8192 bits (1024 bytes). Keys
+    /// longer than this bound are rejected to prevent unbounded memory usage; this value is far above any practical
+    /// MAC key.
     /// </summary>
-    public const int MaxKeySizeBytes = 1024;
+    public const int MaxKeySize = 8192;
 
     /// <summary>
     /// The schema identifier placed in the first four bytes of the configuration block.
@@ -114,7 +115,7 @@ public abstract partial class Skein<T>
     /// <paramref name="hashSizeBits"/> is not one of the values in <paramref name="validHashSizesBits"/>.
     /// </exception>
     private protected Skein(ThreefishBlockCipher cipher, int hashSizeBits, int[] validHashSizesBits)
-        : base(blockSize: cipher.BlockSize / 8, keySize: cipher.BlockSize / 8)
+        : base(blockSize: cipher.BlockSize, keySize: cipher.BlockSize)
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSizeBits, validHashSizesBits);
 
@@ -145,14 +146,14 @@ public abstract partial class Skein<T>
     /// <remarks>
     /// <para>
     /// Unlike <see cref="SipHash{T}"/>, Skein does not require a fixed key length: any byte sequence from zero up to
-    /// <see cref="MaxKeySizeBytes"/> bytes is valid. Setting the key clears any cached initial chaining value so the
+    /// <see cref="MaxKeySize"/> / 8 bytes is valid. Setting the key clears any cached initial chaining value so the
     /// next call to <see cref="Initialize"/> rebuilds the state from the UBI pipeline <c>KEY → CFG</c>.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentNullException">The assigned value is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// The assigned key is longer than <see cref="MaxKeySizeBytes"/> bytes.
+    /// The assigned key is longer than <see cref="MaxKeySize"/> / 8 bytes.
     /// </exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// A hash computation has already started and the key may not be reassigned while the algorithm is in use.
@@ -171,12 +172,12 @@ public abstract partial class Skein<T>
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfNull(value);
 
-            if (value.Length > MaxKeySizeBytes)
+            if (value.Length > MaxKeySize / 8)
                 throw new CryptographicException(
                     string.Format(
                         CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                        value.Length,
-                        $"0..{MaxKeySizeBytes}"));
+                        value.Length * 8,
+                        $"0..{MaxKeySize}"));
 
             this.KeyValue = value.Copy();
             this._isChainingValueCached = false;

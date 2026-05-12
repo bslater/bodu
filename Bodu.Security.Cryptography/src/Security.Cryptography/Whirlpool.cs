@@ -69,7 +69,7 @@ public sealed partial class Whirlpool
     /// <see cref="WhirlpoolVersion.WhirlpoolInfo3"/>, the standardised <c>ISO/IEC 10118-3</c> revision.
     /// </summary>
     public Whirlpool()
-        : base(BlockSizeBytesValue)
+        : base(BlockSizeBytesValue * 8)
     {
         this.HashSizeValue = HashSizeBitsValue;
     }

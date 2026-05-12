@@ -129,29 +129,29 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// 128 or 256.
     /// </exception>
     public Shake(int outputBits, int securityLevel)
-        : base(ValidateAndComputeRateBytes(outputBits, securityLevel))
+        : base(ValidateAndComputeRateBits(outputBits, securityLevel))
     {
         this.HashSizeValue = outputBits;
         this._securityLevel = securityLevel;
     }
 
     /// <summary>
-    /// Validates the constructor arguments and returns the absorption rate, in bytes, used to size the inherited
+    /// Validates the constructor arguments and returns the absorption rate, in bits, used to size the inherited
     /// residual buffer.
     /// </summary>
     /// <param name="outputBits">The candidate output size in bits.</param>
     /// <param name="securityLevel">The candidate SHAKE security level.</param>
-    /// <returns>The absorption rate in bytes (168 for SHAKE128, 136 for SHAKE256).</returns>
+    /// <returns>The absorption rate in bits (1344 for SHAKE128, 1088 for SHAKE256).</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="outputBits"/> is not a positive multiple of 8, or <paramref name="securityLevel"/> is not
     /// 128 or 256.
     /// </exception>
-    private static int ValidateAndComputeRateBytes(int outputBits, int securityLevel)
+    private static int ValidateAndComputeRateBits(int outputBits, int securityLevel)
     {
         ThrowHelper.ThrowIfNotPositiveMultipleOf(outputBits, 8);
         CryptoHelpers.ThrowIfInvalidHashSize(securityLevel, s_validSecurityLevels);
 
-        return (1600 - (2 * securityLevel)) / 8;
+        return 1600 - (2 * securityLevel);
     }
 
     /// <inheritdoc />

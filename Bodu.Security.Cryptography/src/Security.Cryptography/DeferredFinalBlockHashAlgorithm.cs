@@ -63,7 +63,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// input block size.
     /// </summary>
     /// <param name="blockSize">
-    /// The fixed size, in bytes, of each block consumed by the algorithm. Must be greater than zero.
+    /// The fixed size, in bits, of each block consumed by the algorithm. Must be a positive multiple of 8.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="blockSize"/> is less than or equal to zero.

@@ -133,21 +133,23 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// block size.
     /// </summary>
     /// <param name="blockSize">
-    /// The fixed size, in bytes, of each block consumed by the algorithm. Must be greater than zero.
+    /// The fixed size, in bits, of each block consumed by the algorithm. Must be greater than zero and a positive
+    /// multiple of 8.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="blockSize"/> is less than or equal to zero.
     /// </exception>
     /// <remarks>
-    /// Allocates the residual buffer at <paramref name="blockSize"/> bytes. Derived classes are expected to override
-    /// <see cref="Initialize"/>, call <c>base.Initialize()</c> first to clear the inherited buffer and counters, then
-    /// reset their own algorithm-specific state so the two halves stay in sync.
+    /// Allocates the residual buffer at <paramref name="blockSize"/> / 8 bytes. The internal
+    /// <see cref="BlockSizeBytes"/> field exposes the byte-length form for byte-oriented buffering loops. Derived
+    /// classes are expected to override <see cref="Initialize"/>, call <c>base.Initialize()</c> first to clear the
+    /// inherited buffer and counters, then reset their own algorithm-specific state so the two halves stay in sync.
     /// </remarks>
     protected BufferedBlockHashAlgorithm(int blockSize)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
-        this.BlockSizeBytes = blockSize;
-        this._residualBlock = new byte[blockSize];
+        this.BlockSizeBytes = blockSize / 8;
+        this._residualBlock = new byte[blockSize / 8];
     }
 
     /// <summary>
