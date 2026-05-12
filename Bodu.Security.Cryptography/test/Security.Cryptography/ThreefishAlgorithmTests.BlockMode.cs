@@ -1,12 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Threefish256TweakableAlgorithmTests.BlockMode.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ThreefishAlgorithmTests.BlockMode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class Threefish256TweakableAlgorithmTests
+public abstract partial class ThreefishAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
     /// Verifies that the algorithm-specific <see cref="Threefish.BlockMode" /> property accepts
@@ -21,7 +21,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [DataRow(CipherBlockMode.CTR)]
     public void BlockMode_WhenSetToValidValue_ShouldNotThrow(CipherBlockMode mode)
     {
-        using Threefish256 algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         try
         {
@@ -29,7 +29,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
         }
         catch (Exception ex)
         {
-            Assert.Fail($"Setting Threefish256.BlockMode = {mode} threw {ex.GetType().Name}: {ex.Message}");
+            Assert.Fail($"Setting {typeof(TAlgorithm).Name}.BlockMode = {mode} threw {ex.GetType().Name}: {ex.Message}");
         }
     }
 }

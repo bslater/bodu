@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Threefish256TweakableAlgorithmTests.LegalTweakSizes.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ThreefishAlgorithmTests.LegalTweakSizes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -8,7 +8,7 @@ using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class Threefish256TweakableAlgorithmTests
+public abstract partial class ThreefishAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
     /// Verifies that reading <see cref="TweakableSymmetricAlgorithm.LegalTweakSizes" /> on a
@@ -18,7 +18,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [TestMethod]
     public void LegalTweakSizes_WhenAccessedAfterDispose_ShouldNotThrowUnexpected()
     {
-        Threefish256 algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         try

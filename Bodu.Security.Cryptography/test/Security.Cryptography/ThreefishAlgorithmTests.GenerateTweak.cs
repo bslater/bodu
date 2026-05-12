@@ -1,13 +1,12 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="Threefish256TweakableAlgorithmTests.GenerateTweak.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="ThreefishAlgorithmTests.GenerateTweak.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-
 namespace Bodu.Security.Cryptography;
 
-public sealed partial class Threefish256TweakableAlgorithmTests
+public abstract partial class ThreefishAlgorithmTests<TTest, TAlgorithm>
 {
     /// <summary>
     /// Verifies that <see cref="Threefish.GenerateTweak" /> on a disposed instance throws
@@ -16,7 +15,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     [TestMethod]
     public void GenerateTweak_WhenCalledAfterDispose_ShouldThrowExactly()
     {
-        Threefish256 algorithm = CreateAlgorithm();
+        TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>

@@ -9,13 +9,13 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Exercises the <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" /> base test suite against
+/// Exercises the <see cref="ThreefishAlgorithmTests{TTest, TAlgorithm}" /> base test suite against
 /// <see cref="Threefish1024" /> — validating tweak property behaviour, defensive copies, invalid-size handling,
 /// disposal semantics, and the curated <see cref="Threefish1024KnownAnswers" /> data set at the algorithm tier.
 /// </summary>
 [TestClass]
 public sealed partial class Threefish1024TweakableAlgorithmTests
-    : TweakableSymmetricAlgorithmTests<Threefish1024TweakableAlgorithmTests, Threefish1024>
+    : ThreefishAlgorithmTests<Threefish1024TweakableAlgorithmTests, Threefish1024>
 {
     /// <inheritdoc />
     protected override Threefish1024 CreateAlgorithm() => Threefish1024.Create();
