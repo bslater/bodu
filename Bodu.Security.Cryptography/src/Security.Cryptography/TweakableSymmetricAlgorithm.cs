@@ -57,7 +57,8 @@ public abstract class TweakableSymmetricAlgorithm
     /// Specifies the tweak sizes, in bits, that are supported by the algorithm.
     /// </summary>
     /// <remarks>
-    /// This backing field defines the range of acceptable tweak sizes for a given algorithm. It is used internally by the
+    /// Each <see cref="KeySizes"/> entry expresses its minimum, maximum, and skip values in bits. This backing
+    /// field defines the range of acceptable tweak sizes for a given algorithm and is used internally by the
     /// <see cref="LegalTweakSizes"/> property.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -99,8 +100,10 @@ public abstract class TweakableSymmetricAlgorithm
     /// Gets the tweak sizes, in bits, that are supported by the symmetric algorithm.
     /// </summary>
     /// <value>
-    /// An array of <see cref="KeySizes"/> instances indicating the valid minimum, maximum, and step sizes supported for tweak values.
+    /// An array of <see cref="KeySizes"/> instances indicating the valid minimum, maximum, and step sizes
+    /// supported for tweak values, all expressed in bits. Divide by 8 to obtain the equivalent byte lengths.
     /// </value>
+    /// <returns>The legal tweak sizes, in bits.</returns>
     /// <remarks>
     /// This property returns a cloned copy of the internal tweak size definitions to prevent external modification. Override this
     /// property in derived types to define custom tweak size support for a specific algorithm.
@@ -147,13 +150,12 @@ public abstract class TweakableSymmetricAlgorithm
     }
 
     /// <summary>
-    /// Gets or sets the size, in bits, of the tweak value for the algorithm. For example, the Threefish family
-    /// uses a 128-bit (16-byte) tweak.
+    /// Gets or sets the tweak size, in bits, of the cryptographic operation for the tweakable cipher (for
+    /// example, 128 bits / 16 bytes for the Threefish family).
     /// </summary>
     /// <value>
-    /// An integer representing the bit length of the tweak. Must match one of the values defined in
-    /// <see cref="LegalTweakSizes"/>. Divide by 8 to obtain the equivalent byte length used when
-    /// allocating the <see cref="Tweak"/> buffer.
+    /// The tweak size, in bits. Must match one of the values defined in <see cref="LegalTweakSizes"/>.
+    /// Divide by 8 to obtain the equivalent byte length used when allocating the <see cref="Tweak"/> buffer.
     /// </value>
     /// <returns>The tweak size in bits.</returns>
     /// <exception cref="CryptographicException">Thrown when the value does not match a valid tweak size defined in <see cref="LegalTweakSizes"/>.</exception>

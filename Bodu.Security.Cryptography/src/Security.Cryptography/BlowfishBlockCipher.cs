@@ -359,6 +359,7 @@ public sealed class BlowfishBlockCipher
     }
 
     /// <inheritdoc />
+    /// <value>Length of the Blowfish block is 64 bits (8 bytes).</value>
     public int BlockSize => Blowfish.BlowFishBlockSize;
 
     /// <inheritdoc />

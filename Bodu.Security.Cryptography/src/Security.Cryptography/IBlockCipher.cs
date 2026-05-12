@@ -49,9 +49,10 @@ public interface IBlockCipher
     : System.IDisposable
 {
     /// <summary>
-    /// Gets the fixed block size (in bits) that the cipher operates on.
+    /// Gets the block size, in bits, of the cipher (for example, 128 bits / 16 bytes for AES).
     /// </summary>
-    /// <value>The block size in bits, such as 128 for AES.</value>
+    /// <value>The block size, in bits.</value>
+    /// <returns>The block size in bits.</returns>
     /// <remarks>
     /// The block size is expressed in bits to align with the BCL convention used by
     /// <see cref="System.Security.Cryptography.SymmetricAlgorithm.BlockSize"/>. Byte-array operations

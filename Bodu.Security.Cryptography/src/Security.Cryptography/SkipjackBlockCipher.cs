@@ -52,7 +52,7 @@ public sealed class SkipjackBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// Length of a Skipjack key, in bits (80 bits / 10 bytes).
+    /// Length of the Skipjack key is 80 bits (10 bytes).
     /// </summary>
     public const int KeySize = 80;
 
@@ -110,7 +110,8 @@ public sealed class SkipjackBlockCipher
     }
 
     /// <inheritdoc />
-    /// <remarks>The block size is fixed at 8 bytes (64 bits) and cannot be changed.</remarks>
+    /// <value>Length of the Skipjack block is 64 bits (8 bytes).</value>
+    /// <remarks>The block size is fixed at 64 bits (8 bytes) and cannot be changed.</remarks>
     public int BlockSize => Skipjack.SkipjackBlockSize;
 
     /// <summary>

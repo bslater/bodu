@@ -48,7 +48,7 @@ public sealed class AesBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// The fixed AES block size, in bits (128 bits / 16 bytes). Internal constant kept for span-length validation;
+    /// Length of the AES block is 128 bits (16 bytes). Internal constant kept for span-length validation;
     /// callers should read <see cref="BlockSize"/> instead.
     /// </summary>
     private const int BlockSizeBits = 128;
@@ -84,7 +84,7 @@ public sealed class AesBlockCipher
     }
 
     /// <inheritdoc />
-    /// <value>Always 128 (bits), the fixed AES block size.</value>
+    /// <value>Length of the AES block is 128 bits (16 bytes).</value>
     public int BlockSize => BlockSizeBits;
 
     /// <inheritdoc />

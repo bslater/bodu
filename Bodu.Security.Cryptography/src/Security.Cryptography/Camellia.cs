@@ -65,17 +65,17 @@ public sealed class Camellia
     : SymmetricAlgorithm
 {
     /// <summary>
-    /// The Camellia block size, in bits.
+    /// Length of the Camellia block is 128 bits (16 bytes).
     /// </summary>
     internal const int BlockSizeBits = 128;
 
     /// <summary>
-    /// The minimum permitted key size, in bits (128 bits / 16 bytes).
+    /// Length of the minimum permitted Camellia key is 128 bits (16 bytes).
     /// </summary>
     internal const int MinKeySize = 128;
 
     /// <summary>
-    /// The maximum permitted key size, in bits (256 bits / 32 bytes).
+    /// Length of the maximum permitted Camellia key is 256 bits (32 bytes).
     /// </summary>
     internal const int MaxKeySize = 256;
 

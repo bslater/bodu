@@ -47,18 +47,18 @@ public sealed class CamelliaBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// The fixed Camellia block size, in bits (128 bits / 16 bytes). Internal constant kept for span-length
-    /// validation; callers should read <see cref="BlockSize"/> instead.
+    /// Length of the Camellia block is 128 bits (16 bytes). Internal constant kept for span-length validation;
+    /// callers should read <see cref="BlockSize"/> instead.
     /// </summary>
     private const int BlockBits = 128;
 
-    /// <summary>Byte length of a 128-bit Camellia key (16 bytes). Internal use only.</summary>
+    /// <summary>Length of the Camellia 128-bit key is 128 bits (16 bytes). Internal use only.</summary>
     private const int Key128SizeInBytes = 16;
 
-    /// <summary>Byte length of a 192-bit Camellia key (24 bytes). Internal use only.</summary>
+    /// <summary>Length of the Camellia 192-bit key is 192 bits (24 bytes). Internal use only.</summary>
     private const int Key192SizeInBytes = 24;
 
-    /// <summary>Byte length of a 256-bit Camellia key (32 bytes). Internal use only.</summary>
+    /// <summary>Length of the Camellia 256-bit key is 256 bits (32 bytes). Internal use only.</summary>
     private const int Key256SizeInBytes = 32;
 
     // SBOX1 from RFC 3713 Appendix A. SBOX2, SBOX3, and SBOX4 are derived from this table by the F function.
@@ -130,6 +130,7 @@ public sealed class CamelliaBlockCipher
     }
 
     /// <inheritdoc />
+    /// <value>Length of the Camellia block is 128 bits (16 bytes).</value>
     /// <remarks>The block size is fixed at 128 bits (16 bytes) regardless of key size.</remarks>
     public int BlockSize => BlockBits;
 

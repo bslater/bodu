@@ -27,7 +27,12 @@ namespace Bodu.Security.Cryptography;
 public sealed class TwofishBlockCipher
     : IBlockCipher
 {
+    /// <summary>
+    /// Length of the Twofish block is 128 bits (16 bytes). Internal constant kept for span-length validation;
+    /// callers should read <see cref="BlockSize"/> instead.
+    /// </summary>
     private const int BlockSizeInBits = 128;
+
     private const int Rounds = 16;
     private const int ExpandedKeyWords = 40;
     private const int SBoxLength = 256;
@@ -88,6 +93,7 @@ public sealed class TwofishBlockCipher
     }
 
     /// <inheritdoc />
+    /// <value>Length of the Twofish block is 128 bits (16 bytes).</value>
     public int BlockSize => BlockSizeInBits;
 
     /// <inheritdoc />

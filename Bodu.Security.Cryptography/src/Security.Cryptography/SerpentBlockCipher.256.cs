@@ -29,7 +29,7 @@ public sealed class Serpent256Cipher
     : SerpentBlockCipher
 {
     /// <summary>
-    /// The Serpent-256 key size, in bits (256 bits / 32 bytes).
+    /// Length of the Serpent-256 key is 256 bits (32 bytes).
     /// </summary>
     public const int KeySize = 256;
 
@@ -42,6 +42,7 @@ public sealed class Serpent256Cipher
         : base(key, tweak) { }
 
     /// <inheritdoc />
+    /// <value>Length of the Serpent-256 block is 256 bits (32 bytes).</value>
     public override int BlockSize => 256;
 
     /// <inheritdoc />

@@ -70,17 +70,17 @@ public sealed class Blowfish
     : SymmetricAlgorithm
 {
     /// <summary>
-    /// The Blowfish block size, in bits.
+    /// Length of the Blowfish block is 64 bits (8 bytes).
     /// </summary>
     internal const int BlowFishBlockSize = 64;
 
     /// <summary>
-    /// The minimum permitted key size, in bits.
+    /// Length of the minimum permitted Blowfish key is 32 bits (4 bytes).
     /// </summary>
     internal const int MinKeySize = 32;
 
     /// <summary>
-    /// The maximum permitted key size, in bits.
+    /// Length of the maximum permitted Blowfish key is 448 bits (56 bytes).
     /// </summary>
     internal const int MaxKeySize = 448;
 

@@ -69,7 +69,7 @@ public sealed class Serpent128
     : SymmetricAlgorithm
 {
     /// <summary>
-    /// The Serpent block size, in bits.
+    /// Length of the Serpent block is 128 bits (16 bytes).
     /// </summary>
     internal const int BlockSizeBits = 128;
 

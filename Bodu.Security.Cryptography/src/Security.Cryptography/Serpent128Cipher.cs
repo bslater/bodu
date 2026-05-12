@@ -30,8 +30,8 @@ public sealed class Serpent128Cipher
     : SerpentBlockCipherBase
 {
     /// <summary>
-    /// The fixed Serpent block size, in bits (128 bits / 16 bytes). Internal constant kept for span-length
-    /// validation; callers should read <see cref="BlockSize"/> instead.
+    /// Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation;
+    /// callers should read <see cref="BlockSize"/> instead.
     /// </summary>
     private const int BlockSizeBits = 128;
 
@@ -72,6 +72,7 @@ public sealed class Serpent128Cipher
     }
 
     /// <inheritdoc />
+    /// <value>Length of the Serpent block is 128 bits (16 bytes).</value>
     public override int BlockSize => BlockSizeBits;
 
     /// <inheritdoc />
