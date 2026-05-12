@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -303,5 +304,59 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.TryPeek(out TestItem? item));
         Assert.IsNotNull(item);
         Assert.AreEqual(2, item!.Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> retries — rather than returning a stale value — when the
+    /// slot's coordination sequence is observed to be greater than the publication mark, which models the
+    /// "another thread dequeued this slot" race window in the consumer protocol. Once the sequence is corrected back into the
+    /// published state, the peek succeeds and returns the live head element.
+    /// </summary>
+    [TestMethod]
+    public void TryPeek_WhenSlotSequenceIsAheadOfHead_ShouldRetryUntilSequenceRealignsAndSucceed()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+
+        FieldInfo bufferField = typeof(ConcurrentCircularBuffer<TestItem>).GetField(
+            "_buffer", BindingFlags.Instance | BindingFlags.NonPublic)!;
+        Array slotArray = (Array)bufferField.GetValue(buffer)!;
+
+        // Read the current head-slot Sequence and pre-bump it so the first iteration of TryPeek
+        // observes diff > 0 (the "stale head read — another thread dequeued this slot" branch).
+        object slot0 = slotArray.GetValue(0)!;
+        FieldInfo sequenceField = slot0.GetType().GetField("Sequence", BindingFlags.Instance | BindingFlags.Public)!;
+        var originalSequence = (int)sequenceField.GetValue(slot0)!;
+
+        sequenceField.SetValue(slot0, originalSequence + 1);
+        slotArray.SetValue(slot0, 0);
+
+        // Run the realign worker on a separate thread that restores the published sequence
+        // shortly after the peek begins. TryPeek has no retry budget on the diff > 0 branch, so
+        // a missed realign would hang the test runner — Task.WaitAll's timeout below converts
+        // that into a test failure instead.
+        Task realignTask = Task.Run(() =>
+        {
+            for (var i = 0; i < 16; i++) Thread.SpinWait(100);
+            object slot = slotArray.GetValue(0)!;
+            sequenceField.SetValue(slot, originalSequence);
+            slotArray.SetValue(slot, 0);
+        });
+
+        TestItem? captured = null;
+        var peekResult = false;
+        Task peekTask = Task.Run(() =>
+        {
+            peekResult = buffer.TryPeek(out captured);
+        });
+
+        var completed = Task.WaitAll(new[] { realignTask, peekTask }, TimeSpan.FromSeconds(10));
+
+        Assert.IsTrue(completed,
+            "TryPeek did not return after the slot sequence was restored — possible scheduling issue or missed realign.");
+        Assert.IsTrue(peekResult, "TryPeek must eventually succeed once the slot sequence realigns with the head.");
+        Assert.IsNotNull(captured);
+        Assert.AreEqual(1, captured!.Value);
     }
 }
