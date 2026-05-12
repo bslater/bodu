@@ -8,14 +8,13 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
-    private const int PoolBucketCeiling = 1024 * 1024;
-
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.EnsureCapacity" /> grows geometrically (current * 2) for buffers below the
-    /// pool-bucket ceiling, where doubling aligns with the pool's power-of-two bucket round-up and is effectively free.
+    /// Verifies that <see cref="PooledBufferBuilder{T}.EnsureCapacity" /> grows geometrically (at least
+    /// <c>current * 2</c>), aligning with the pool's power-of-two bucket round-up so each grow lands on the next
+    /// bucket and the count of grow events stays amortized O(1).
     /// </summary>
     [TestMethod]
-    public void EnsureCapacity_BelowBucketCeiling_ShouldGrowGeometrically()
+    public void EnsureCapacity_WhenExceeded_ShouldGrowAtLeastGeometrically()
     {
         using var builder = new PooledBufferBuilder<byte>(64);
         int initial = builder.Capacity;
@@ -27,29 +26,20 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.EnsureCapacity" /> grows linearly by one pool-bucket-ceiling step once the buffer
-    /// crosses the ceiling — switching from geometric to linear growth so that above the pool's bucket boundary (where every rental is
-    /// a fresh heap allocation) the builder does not waste up to 50% of memory on each grow.
+    /// Verifies that <see cref="PooledBufferBuilder{T}.EnsureCapacity" /> jumps directly to the requested minimum
+    /// when it exceeds twice the current capacity, so a single large request does not trigger a sequence of
+    /// doublings.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
-    public void EnsureCapacity_AboveBucketCeiling_ShouldGrowLinearlyNotGeometrically()
+    public void EnsureCapacity_WhenMinimumExceedsDoubling_ShouldJumpToMinimum()
     {
         using var builder = new PooledBufferBuilder<byte>(64);
+        int initial = builder.Capacity;
+        int requested = initial * 10;
 
-        // Bring the buffer above the bucket ceiling in a single jump so any pool rounding has settled.
-        int target = (PoolBucketCeiling * 2) + 1;
-        builder.EnsureCapacity(target);
-        int aboveCeiling = builder.Capacity;
-        Assert.IsTrue(aboveCeiling >= PoolBucketCeiling, "Setup failed: buffer should be above the bucket ceiling.");
+        builder.EnsureCapacity(requested);
 
-        // Force another growth and assert the step is the linear ceiling, not a geometric doubling.
-        builder.EnsureCapacity(aboveCeiling + 1);
-
-        int delta = builder.Capacity - aboveCeiling;
-        Assert.IsTrue(delta >= PoolBucketCeiling,
-            $"Expected linear step of at least {PoolBucketCeiling} bytes, got {delta}.");
-        Assert.IsTrue(builder.Capacity < aboveCeiling * 2,
-            $"Expected linear growth above the bucket ceiling, got geometric doubling: {builder.Capacity} >= {aboveCeiling * 2}.");
+        Assert.IsTrue(builder.Capacity >= requested,
+            $"Expected at least {requested}, got {builder.Capacity}.");
     }
 }
