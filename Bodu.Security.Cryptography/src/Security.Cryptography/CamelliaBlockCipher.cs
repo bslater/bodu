@@ -50,7 +50,7 @@ public sealed class CamelliaBlockCipher
     /// Length of the Camellia block is 128 bits (16 bytes). Internal constant kept for span-length validation;
     /// callers should read <see cref="BlockSize"/> instead.
     /// </summary>
-    private const int BlockBits = 128;
+    private const int BlockSizeBits = 128;
 
     /// <summary>Length of the Camellia 128-bit key is 128 bits (16 bytes). Internal use only.</summary>
     private const int Key128SizeInBytes = 16;
@@ -132,7 +132,7 @@ public sealed class CamelliaBlockCipher
     /// <inheritdoc />
     /// <value>Length of the Camellia block is 128 bits (16 bytes).</value>
     /// <remarks>The block size is fixed at 128 bits (16 bytes) regardless of key size.</remarks>
-    public int BlockSize => BlockBits;
+    public int BlockSize => BlockSizeBits;
 
     /// <summary>
     /// Decrypts a single 128-bit ciphertext block.
@@ -146,8 +146,8 @@ public sealed class CamelliaBlockCipher
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBits / 8);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
 
         // Encryption produced (right ^ kw3) || (left ^ kw4) — restore the post-rounds halves first.
         var right = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[2];
@@ -264,8 +264,8 @@ public sealed class CamelliaBlockCipher
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         ThrowIfDisposed();
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockBits / 8);
-        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeBits / 8);
+        ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeBits / 8);
 
         var left = BinaryPrimitives.ReadUInt64BigEndian(input) ^ _kw[0];
         var right = BinaryPrimitives.ReadUInt64BigEndian(input[8..]) ^ _kw[1];

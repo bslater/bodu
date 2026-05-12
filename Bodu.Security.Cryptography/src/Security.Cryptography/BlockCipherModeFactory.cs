@@ -90,25 +90,25 @@ public static class BlockCipherModeFactory
 
     /// <summary>
     /// Validates that <paramref name="iv"/> is non-null and exactly
-    /// <paramref name="requiredLengthBits"/> / 8 bytes long; otherwise throws
+    /// <paramref name="requiredSize"/> / 8 bytes long; otherwise throws
     /// <see cref="ArgumentException"/> against the supplied parameter name.
     /// </summary>
     /// <param name="name">The caller-visible parameter name reported in any exception.</param>
     /// <param name="iv">The initialisation vector to validate.</param>
-    /// <param name="requiredLengthBits">The required length of <paramref name="iv"/>, in bits.</param>
+    /// <param name="requiredSize">The required length of <paramref name="iv"/>, in bits.</param>
     /// <exception cref="ArgumentException"><paramref name="iv"/> is <see langword="null"/> or
     /// does not have the required length.</exception>
-    private static void ValidateIv(string name, byte[]? iv, int requiredLengthBits)
+    private static void ValidateIv(string name, byte[]? iv, int requiredSize)
     {
         if (iv is null)
         {
             throw new ArgumentException("An initialisation vector is required for this mode.", name);
         }
 
-        if (iv.Length != requiredLengthBits / 8)
+        if (iv.Length != requiredSize / 8)
         {
             throw new ArgumentException(
-                $"The initialisation vector must be {requiredLengthBits} bits ({requiredLengthBits / 8} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
+                $"The initialisation vector must be {requiredSize} bits ({requiredSize / 8} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
                 name);
         }
     }
