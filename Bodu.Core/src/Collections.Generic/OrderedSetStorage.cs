@@ -439,7 +439,7 @@ internal sealed class OrderedSetStorage<T>
     /// <returns>A new array containing the elements.</returns>
     internal T[] ToArray()
     {
-        T[] result = new T[_count];
+        var result = new T[_count];
         Array.Copy(_items, 0, result, 0, _count);
         return result;
     }

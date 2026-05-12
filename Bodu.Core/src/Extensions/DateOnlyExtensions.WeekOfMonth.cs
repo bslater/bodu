@@ -61,7 +61,7 @@ public static partial class DateOnlyExtensions
     {
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekRule);
         ThrowHelper.ThrowIfEnumValueIsUndefined(weekStart);
-        DateOnly firstOfMonth = new DateOnly(date.Year, date.Month, 1);
+        var firstOfMonth = new DateOnly(date.Year, date.Month, 1);
         var offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
         return (date.Day + offsetDays - 1) / 7 + 1;
     }

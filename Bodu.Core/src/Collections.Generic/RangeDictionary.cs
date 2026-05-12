@@ -311,7 +311,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
     /// <returns>A new array containing the stored entries.</returns>
     public ValueRange<TKey, TValue>[] ToArray()
     {
-        ValueRange<TKey, TValue>[] result = new ValueRange<TKey, TValue>[_count];
+        var result = new ValueRange<TKey, TValue>[_count];
 
         for (var i = 0; i < _count; i++)
             result[i] = new ValueRange<TKey, TValue>(_starts[i], _ends[i], _values[i], skipValidation: true);

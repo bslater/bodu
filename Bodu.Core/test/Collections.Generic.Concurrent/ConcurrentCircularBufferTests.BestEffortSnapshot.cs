@@ -153,7 +153,7 @@ public partial class ConcurrentCircularBufferTests
             BindingFlags.Instance | BindingFlags.NonPublic)
             ?? throw new InvalidOperationException("_buffer field not found.");
 
-        Array slotArray = (Array)bufferField.GetValue(buffer)!;
+        var slotArray = (Array)bufferField.GetValue(buffer)!;
         object slot = slotArray.GetValue(slotIndex)!;
         FieldInfo sequenceField = slot.GetType().GetField("Sequence", BindingFlags.Instance | BindingFlags.Public)
             ?? throw new InvalidOperationException("Slot.Sequence field not found.");

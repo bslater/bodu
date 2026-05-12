@@ -243,7 +243,7 @@ public abstract partial class RingBackedCollection<T>
     /// <returns>A freshly allocated array of length <see cref="Count"/>.</returns>
     public T[] ToArray()
     {
-        T[] result = new T[_count];
+        var result = new T[_count];
         if (_count > 0)
             CopyToInternal(result, 0);
 
@@ -383,7 +383,7 @@ public abstract partial class RingBackedCollection<T>
     {
         Debug.Assert(newCapacity >= _count && newCapacity >= 1, "Resize: newCapacity must be >= max(Count, 1).");
 
-        T[] newArray = new T[newCapacity];
+        var newArray = new T[newCapacity];
         if (_count > 0)
             CopyToInternal(newArray, 0);
 

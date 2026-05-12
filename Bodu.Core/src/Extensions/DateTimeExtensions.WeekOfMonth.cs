@@ -75,7 +75,7 @@ public static partial class DateTimeExtensions
     /// <remarks>This helper performs no validation and is intended for internal use where all arguments are known to be valid.</remarks>
     private static int GetWeekOfMonth(DateTime dateTime, CalendarWeekRule weekRule, DayOfWeek weekStart)
     {
-        DateTime firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
+        var firstOfMonth = new DateTime(dateTime.Year, dateTime.Month, 1);
         var offsetDays = ((int)firstOfMonth.DayOfWeek - (int)weekStart + 7) % 7;
         return (dateTime.Day + offsetDays - 1) / 7 + 1;
     }

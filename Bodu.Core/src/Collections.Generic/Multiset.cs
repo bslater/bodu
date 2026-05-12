@@ -335,7 +335,7 @@ public sealed partial class Multiset<T>
     {
         ThrowHelper.ThrowIfNull(other);
 
-        Multiset<T> result = new Multiset<T>(_comparer);
+        var result = new Multiset<T>(_comparer);
         foreach (KeyValuePair<T, int> pair in _items)
             result.InsertCore(pair.Key, pair.Value);
 
@@ -367,7 +367,7 @@ public sealed partial class Multiset<T>
     {
         ThrowHelper.ThrowIfNull(other);
 
-        Multiset<T> result = new Multiset<T>(_comparer);
+        var result = new Multiset<T>(_comparer);
         foreach (KeyValuePair<T, int> pair in _items)
         {
             var count = Math.Min(pair.Value, other.CountOf(pair.Key));
@@ -393,7 +393,7 @@ public sealed partial class Multiset<T>
     {
         ThrowHelper.ThrowIfNull(other);
 
-        Multiset<T> result = new Multiset<T>(_comparer);
+        var result = new Multiset<T>(_comparer);
         foreach (KeyValuePair<T, int> pair in _items)
         {
             var count = Math.Max(0, pair.Value - other.CountOf(pair.Key));
@@ -418,7 +418,7 @@ public sealed partial class Multiset<T>
     {
         ThrowHelper.ThrowIfNull(other);
 
-        Multiset<T> result = new Multiset<T>(_comparer);
+        var result = new Multiset<T>(_comparer);
         foreach (KeyValuePair<T, int> pair in _items)
             result.InsertCore(pair.Key, pair.Value);
 

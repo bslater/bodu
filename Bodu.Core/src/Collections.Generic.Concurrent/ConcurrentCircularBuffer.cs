@@ -501,7 +501,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
             if (count <= 0) return Array.Empty<T>();
             if (count > _capacity) count = _capacity;
 
-            T[] result = new T[count];
+            var result = new T[count];
             var slotFailure = false;
 
             for (var i = 0; i < count; i++)
@@ -541,7 +541,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         var count = Math.Clamp(tail - head, 0, _capacity);
         if (count == 0) return Array.Empty<T>();
 
-        T[] result = new T[count];
+        var result = new T[count];
         for (var i = 0; i < count; i++)
         {
             var position = head + i;

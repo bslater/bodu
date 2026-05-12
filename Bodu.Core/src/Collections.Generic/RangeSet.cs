@@ -447,7 +447,7 @@ public sealed partial class RangeSet<T>
     /// <returns>A new array containing the stored ranges.</returns>
     public Range<T>[] ToArray()
     {
-        Range<T>[] result = new Range<T>[_count];
+        var result = new Range<T>[_count];
 
         for (var i = 0; i < _count; i++)
             result[i] = new Range<T>(_starts[i], _ends[i]);
