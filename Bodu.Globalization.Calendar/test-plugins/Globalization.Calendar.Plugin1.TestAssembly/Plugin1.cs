@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Plugin1.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,8 +8,7 @@ using System.Collections.Immutable;
 using Bodu.Globalization.Calendar;
 using Bodu.Globalization.Calendar.Plugins;
 
-[assembly: NotableDatePlugin(typeof(Bodu.Globalization.Calendar.Plugin1.TestAssembly.HarnessPlugin))]
-
+[assembly: NotableDatePlugin(typeof(Bodu.Globalization.Calendar.Plugin1.TestAssembly.HarnessPlugin))
 namespace Bodu.Globalization.Calendar.Plugin1.TestAssembly;
 
 /// <summary>

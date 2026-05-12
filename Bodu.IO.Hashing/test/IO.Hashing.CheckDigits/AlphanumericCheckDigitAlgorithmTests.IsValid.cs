@@ -17,7 +17,6 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="body">The body characters.</param>
     /// <param name="expectedCheck">The expected check character.</param>
     [TestMethod]
-    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
     {
@@ -34,7 +33,6 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="body">The body characters.</param>
     /// <param name="expectedCheck">The correct check character.</param>
     [TestMethod]
-    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void IsValid_WhenCheckDigitIsTampered_ShouldReturnFalse(string name, string body, char expectedCheck)
     {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AlphanumericCheckDigitAlgorithmTests.ComputeStatic.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,6 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="body">The body characters.</param>
     /// <param name="expectedCheck">The expected check character.</param>
     [TestMethod]
-    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void ComputeStatic_WhenKnownAnswer_ShouldReturnExpectedCheckDigit(string name, string body, char expectedCheck)
     {

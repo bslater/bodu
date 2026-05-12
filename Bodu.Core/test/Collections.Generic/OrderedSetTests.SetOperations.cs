@@ -22,7 +22,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void UnionWith_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -81,7 +81,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IntersectWith_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -122,7 +122,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IntersectWith_WhenSetIsEmpty_ShouldRemainEmpty()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         sut.IntersectWith(new[] { 1, 2, 3 });
 
@@ -152,7 +152,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ExceptWith_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -206,7 +206,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ExceptWith_WhenSetIsEmpty_ShouldRemainEmpty()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         sut.ExceptWith(new[] { 1, 2, 3 });
 
@@ -223,7 +223,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

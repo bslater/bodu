@@ -41,7 +41,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Ctor_WhenCapacityIsZero_ShouldHaveZeroCapacity()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(0, sut.Capacity);
@@ -57,7 +57,7 @@ public partial class OrderedSetStorageTests
     [DataRow(1024)]
     public void Ctor_WhenCapacityIsPositive_ShouldAllocateRequestedCapacity(int capacity)
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(capacity, null);
+        var sut = new OrderedSetStorage<int>(capacity, null);
 
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(capacity, sut.Capacity);
@@ -73,7 +73,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
     {
-        OrderedSetStorage<string> sut = new OrderedSetStorage<string>(0, null);
+        var sut = new OrderedSetStorage<string>(0, null);
 
         Assert.AreSame(EqualityComparer<string>.Default, sut.Comparer);
     }
@@ -86,7 +86,7 @@ public partial class OrderedSetStorageTests
     {
         IEqualityComparer<string> comparer = StringComparer.OrdinalIgnoreCase;
 
-        OrderedSetStorage<string> sut = new OrderedSetStorage<string>(0, comparer);
+        var sut = new OrderedSetStorage<string>(0, comparer);
 
         Assert.AreSame(comparer, sut.Comparer);
     }
@@ -97,7 +97,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Ctor_WhenComparerIsProvided_ShouldGovernEquality()
     {
-        OrderedSetStorage<string> sut = new OrderedSetStorage<string>(0, StringComparer.OrdinalIgnoreCase);
+        var sut = new OrderedSetStorage<string>(0, StringComparer.OrdinalIgnoreCase);
 
         Assert.IsTrue(sut.Add("HELLO"));
         Assert.IsFalse(sut.Add("hello"));

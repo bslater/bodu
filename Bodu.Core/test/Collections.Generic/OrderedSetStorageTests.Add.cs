@@ -22,7 +22,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<string> sut = new OrderedSetStorage<string>(0, null);
+        var sut = new OrderedSetStorage<string>(0, null);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -41,7 +41,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenItemIsUnique_ShouldAppendAndReturnTrue()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         bool added = sut.Add(7);
 
@@ -76,7 +76,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenItemsAreSequential_ShouldPreserveInsertionOrder()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         for (int i = 10; i < 20; i++)
             Assert.IsTrue(sut.Add(i));
@@ -92,7 +92,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenStorageGrowsFromZeroCapacity_ShouldGrowToHoldAllItems()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         for (int i = 0; i < 100; i++)
             Assert.IsTrue(sut.Add(i));
@@ -112,7 +112,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenValueTypeEqualityIsSatisfied_ShouldDeduplicate()
     {
-        OrderedSetStorage<string> sut = new OrderedSetStorage<string>(0, null);
+        var sut = new OrderedSetStorage<string>(0, null);
 
         Assert.IsTrue(sut.Add("alpha"));
         Assert.IsFalse(sut.Add(new string("alpha".ToCharArray())));
@@ -125,10 +125,10 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenItemsHashCollide_ShouldKeepUniqueByReferenceIdentity()
     {
-        OrderedSetStorage<HashCollider> sut = new OrderedSetStorage<HashCollider>(0, null);
-        HashCollider a = new HashCollider("a");
-        HashCollider b = new HashCollider("b");
-        HashCollider c = new HashCollider("c");
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var a = new HashCollider("a");
+        var b = new HashCollider("b");
+        var c = new HashCollider("c");
 
         Assert.IsTrue(sut.Add(a));
         Assert.IsTrue(sut.Add(b));
@@ -151,7 +151,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void AddRange_WhenCollectionIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -166,7 +166,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void AddRange_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<string> sut = new OrderedSetStorage<string>(0, null);
+        var sut = new OrderedSetStorage<string>(0, null);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

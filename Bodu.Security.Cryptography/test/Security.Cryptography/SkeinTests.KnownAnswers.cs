@@ -59,7 +59,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     /// <param name="input">The message bytes to hash.</param>
     /// <param name="expected">The expected digest bytes.</param>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(KeyedKnownAnswerTestData))]
     public void ComputeHash_WhenUsingKeyedKnownAnswer_ShouldMatchExpected(
         TVariant variant,

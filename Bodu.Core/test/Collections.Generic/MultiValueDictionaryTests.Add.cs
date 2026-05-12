@@ -139,7 +139,6 @@ public partial class MultiValueDictionaryTests
     /// Verifies that a large number of keys and values are stored and retrieved correctly.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
     {
         var mvd = new MultiValueDictionary<int, int>();

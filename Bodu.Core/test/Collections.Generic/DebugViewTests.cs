@@ -48,7 +48,7 @@ public sealed class DebugViewTests
     /// pairs.
     /// </summary>
     [TestMethod]
-    public void MultiValueDictionaryDebugView_Entries_ShouldReturnDictionaryEntries()
+    public void MultiValueDictionaryDebugView_Items_ShouldReturnDictionaryItems()
     {
         var dictionary = new MultiValueDictionary<string, int>();
         dictionary.Add("A", 1);
@@ -56,11 +56,11 @@ public sealed class DebugViewTests
         dictionary.Add("B", 3);
 
         var view = new MultiValueDictionaryDebugView<string, int>(dictionary);
-        var entries = view.Entries;
+        var items = view.Items;
 
-        Assert.AreEqual(2, entries.Length);
+        Assert.AreEqual(2, items.Length);
 
-        var byKey = entries.ToDictionary(e => e.Key, e => e.Value);
+        var byKey = items.ToDictionary(e => e.Key, e => e.Value);
         CollectionAssert.AreEquivalent(new[] { 1, 2 }, byKey["A"].ToArray());
         CollectionAssert.AreEqual(new[] { 3 }, byKey["B"].ToArray());
     }

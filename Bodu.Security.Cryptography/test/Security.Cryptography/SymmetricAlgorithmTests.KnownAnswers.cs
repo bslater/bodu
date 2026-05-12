@@ -88,7 +88,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// <param name="answer">The vector under test, or <see langword="null" /> when the subclass declares no
     /// Algorithm-layer KATs (in which case the test asserts <see cref="Assert.Inconclusive(string)" />).</param>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(AlgorithmKnownAnswerData), DynamicDataDisplayName = nameof(GetAlgorithmKnownAnswerDisplayName))]
     public void CreateEncryptor_WhenUsingKnownAnswer_ShouldProduceExpectedCiphertext(BlockCipherKnownAnswer? answer)
     {
@@ -118,7 +118,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// <param name="answer">The vector under test, or <see langword="null" /> when the subclass declares no
     /// Algorithm-layer KATs (in which case the test asserts <see cref="Assert.Inconclusive(string)" />).</param>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(AlgorithmKnownAnswerData), DynamicDataDisplayName = nameof(GetAlgorithmKnownAnswerDisplayName))]
     public void CreateDecryptor_WhenUsingKnownAnswer_ShouldRecoverExpectedPlaintext(BlockCipherKnownAnswer? answer)
     {

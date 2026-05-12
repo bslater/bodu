@@ -24,7 +24,7 @@ public partial class IndexedSetTests
     public void GetEnumerator_WhenSetPopulated_ShouldYieldAllItemsInOrder()
     {
         IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
-        List<int> seen = new List<int>();
+        var seen = new List<int>();
 
         foreach (int item in sut)
             seen.Add(item);
@@ -38,7 +38,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void GetEnumerator_WhenSetIsEmpty_ShouldYieldNoElements()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
@@ -166,7 +166,7 @@ public partial class IndexedSetTests
     {
         IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
         IEnumerable<int> typed = sut;
-        List<int> seen = new List<int>();
+        var seen = new List<int>();
 
         foreach (int item in typed)
             seen.Add(item);
@@ -183,7 +183,7 @@ public partial class IndexedSetTests
     {
         IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
         IEnumerable untyped = sut;
-        List<int> seen = new List<int>();
+        var seen = new List<int>();
 
         foreach (object item in untyped)
             seen.Add((int)item);

@@ -20,7 +20,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that Count never exceeds Capacity when many items are added under FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void Add_WhenPolicyIsFIFOAndManyItemsAdded_ShouldNeverExceedCapacity()
     {
         const int capacity = 50;
@@ -39,7 +38,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> equals the number of items added beyond capacity under LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void EvictionCount_WhenPolicyIsLRUAndManyItemsAdded_ShouldMatchExpectedEvictionTotal()
     {
         const int capacity = 10;
@@ -58,7 +56,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> equals the number of items added beyond capacity under LeastFrequentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void EvictionCount_WhenPolicyIsLFUAndManyItemsAdded_ShouldMatchExpectedEvictionTotal()
     {
         const int capacity = 10;
@@ -77,7 +74,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that Count never exceeds Capacity when many items are added under MostRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void Add_WhenPolicyIsMRUAndManyItemsAdded_ShouldNeverExceedCapacity()
     {
         const int capacity = 25;
@@ -96,7 +92,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that Count never exceeds Capacity when many items are added under SecondChance policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void Add_WhenPolicyIsSecondChanceAndManyItemsAdded_ShouldNeverExceedCapacity()
     {
         const int capacity = 20;
@@ -128,7 +123,6 @@ public partial class EvictingDictionaryTests
     /// LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void Touch_WhenPolicyIsLRUAndItemIsTouchedRepeatedly_ShouldNeverBeEvicted()
     {
         const int capacity = 5;
@@ -156,7 +150,6 @@ public partial class EvictingDictionaryTests
     /// under LeastFrequentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void Touch_WhenPolicyIsLFUAndItemTouchedManyTimes_ShouldNeverBeEvicted()
     {
         const int capacity = 5;
@@ -186,7 +179,6 @@ public partial class EvictingDictionaryTests
     /// under LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void Clear_WhenPolicyIsLRUAndCalledRepeatedly_ShouldNotCorruptState()
     {
         const int capacity = 10;
@@ -215,7 +207,6 @@ public partial class EvictingDictionaryTests
     /// under LeastFrequentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void Clear_WhenPolicyIsLFUAndCalledRepeatedly_ShouldNotCorruptState()
     {
         const int capacity = 8;
@@ -250,7 +241,6 @@ public partial class EvictingDictionaryTests
     /// calls that succeeded over many operations.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void TotalTouches_WhenManyAccessesOccur_ShouldAccumulateAccurately()
     {
         const int capacity = 10;
@@ -284,7 +274,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that Count never exceeds Capacity under RandomReplacement policy when many items are added.
     /// </summary>
     [TestMethod]
-    [TestCategory("Stress")]
     public void Add_WhenPolicyIsRandomReplacementAndManyItemsAdded_ShouldNeverExceedCapacity()
     {
         const int capacity = 30;

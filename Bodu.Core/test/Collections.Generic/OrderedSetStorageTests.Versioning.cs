@@ -20,7 +20,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenItemIsNew_ShouldBumpVersion()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
         int before = sut._version;
 
         sut.Add(1);

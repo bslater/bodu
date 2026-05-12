@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EaxModeTransformTests.KnownAnswerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -137,7 +137,7 @@ public sealed partial class EaxModeTransformTests
     }
 
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(EaxKatVectors), DynamicDataSourceType.Method)]
     public void Encrypt_WithEaxPaperVector_ShouldProduceExpectedCiphertextAndTag(
         string description, byte[] key, byte[] iv, byte[] aad,
@@ -145,7 +145,7 @@ public sealed partial class EaxModeTransformTests
         => AssertKatEncrypt(description, key, iv, aad, plaintext, expectedCiphertext, expectedTag);
 
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(EaxKatVectors), DynamicDataSourceType.Method)]
     public void Decrypt_WithEaxPaperVector_ShouldRecoverOriginalPlaintext(
         string description, byte[] key, byte[] iv, byte[] aad,

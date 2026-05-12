@@ -23,7 +23,7 @@ public partial class OrderedSetTests
     [DataRow(int.MinValue)]
     public void EnsureCapacity_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -38,7 +38,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void EnsureCapacity_WhenLargerCapacityRequested_ShouldGrow()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         int reported = sut.EnsureCapacity(128);
 
@@ -53,7 +53,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void EnsureCapacity_WhenSmallerCapacityRequested_ShouldNotShrink()
     {
-        OrderedSet<int> sut = new OrderedSet<int>(64);
+        var sut = new OrderedSet<int>(64);
         int capacityBefore = sut.Capacity;
 
         int reported = sut.EnsureCapacity(4);
@@ -85,7 +85,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void TrimExcess_WhenSetIsEmpty_ShouldResetCapacityToZero()
     {
-        OrderedSet<int> sut = new OrderedSet<int>(16);
+        var sut = new OrderedSet<int>(16);
 
         sut.TrimExcess();
 
@@ -99,7 +99,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void TrimExcess_WhenCapacityExceedsCount_ShouldShrinkAndPreserveContents()
     {
-        OrderedSet<int> sut = new OrderedSet<int>(128);
+        var sut = new OrderedSet<int>(128);
         sut.Add(1);
         sut.Add(2);
         sut.Add(3);
@@ -116,7 +116,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void TrimExcess_WhenCalled_ShouldKeepItemsLocatable()
     {
-        OrderedSet<int> sut = new OrderedSet<int>(128);
+        var sut = new OrderedSet<int>(128);
         sut.Add(10);
         sut.Add(20);
         sut.Add(30);

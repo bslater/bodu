@@ -81,7 +81,7 @@ public partial class MultiValueDictionaryTests
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
 
-        ICollection<string> keys = (ICollection<string>)mvd.Keys;
+        var keys = (ICollection<string>)mvd.Keys;
 
         Assert.IsTrue(keys.IsReadOnly);
 

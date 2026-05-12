@@ -18,7 +18,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Indexer_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

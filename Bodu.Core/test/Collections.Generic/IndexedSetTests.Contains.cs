@@ -17,7 +17,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Contains_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<string> sut = new IndexedSet<string>();
+        var sut = new IndexedSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -31,7 +31,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Contains_WhenSetIsEmpty_ShouldReturnFalse()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         Assert.IsFalse(sut.Contains(99));
     }

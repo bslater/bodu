@@ -82,7 +82,6 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// <param name="input">The input bytes being hashed.</param>
     /// <param name="expected">The expected hash digest.</param>
     [TestMethod]
-    [TestCategory("Regression")]
     [DynamicData(nameof(KnownAnswerTestData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenUsingNamedInput_ShouldProduceExpectedHash(TVariant variant, string testName, byte[] input, byte[] expected)
     {

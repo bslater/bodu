@@ -19,10 +19,9 @@ public partial class RangeTests
     /// a contained value through <see cref="Range{T}.Contains(T)" />.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Range_WhenConstructed_ShouldExposeEndpointsAndContainValuesInside()
     {
-        Range<int> sut = new Range<int>(0, 10);
+        var sut = new Range<int>(0, 10);
 
         Assert.AreEqual(0, sut.StartInclusive);
         Assert.AreEqual(10, sut.EndExclusive);

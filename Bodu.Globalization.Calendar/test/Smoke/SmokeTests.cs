@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,6 @@ public sealed class SmokeTests
     /// resolves a known-correct Gregorian Easter Sunday date.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void EasterSundayAlgorithm_GetDate_ForKnownYear_ShouldReturnExpectedDate()
     {
         EasterSundayNotableDateAlgorithm algorithm = new();
@@ -38,7 +37,6 @@ public sealed class SmokeTests
     /// <see cref="NotableDateService.IsWeekend" /> returns true for a Sunday under the default rule set.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void NotableDateService_IsWeekend_ForSunday_ShouldReturnTrue()
     {
         NotableDateService service = new();

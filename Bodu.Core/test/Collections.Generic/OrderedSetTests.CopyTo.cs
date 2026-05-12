@@ -114,7 +114,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void CopyTo_WhenSetIsEmpty_ShouldNotModifyArray()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
         int[] target = new int[] { 99, 88 };
 
         sut.CopyTo(target, 0);
@@ -132,7 +132,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ToArray_WhenSetIsEmpty_ShouldReturnEmptyArray()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         int[] array = sut.ToArray();
 

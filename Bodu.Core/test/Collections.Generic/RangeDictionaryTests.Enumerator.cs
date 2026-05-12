@@ -24,12 +24,12 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void GetEnumerator_WhenDictionaryPopulated_ShouldYieldEntriesInOrder()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
         sut.Add(20, 25, "C");
         sut.Add(0, 5, "A");
         sut.Add(10, 15, "B");
 
-        List<string> seen = new List<string>();
+        var seen = new List<string>();
 
         foreach (ValueRange<int, string> entry in sut)
             seen.Add(entry.Value);
@@ -43,7 +43,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void GetEnumerator_WhenDictionaryIsEmpty_ShouldYieldNoElements()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         RangeDictionary<int, string>.Enumerator enumerator = sut.GetEnumerator();
 
@@ -156,7 +156,7 @@ public partial class RangeDictionaryTests
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"), (10, 15, "B"));
         IEnumerable<ValueRange<int, string>> typed = sut;
-        List<string> seen = new List<string>();
+        var seen = new List<string>();
 
         foreach (ValueRange<int, string> entry in typed)
             seen.Add(entry.Value);
@@ -173,7 +173,7 @@ public partial class RangeDictionaryTests
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"), (10, 15, "B"));
         IEnumerable untyped = sut;
-        List<string> seen = new List<string>();
+        var seen = new List<string>();
 
         foreach (object item in untyped)
             seen.Add(((ValueRange<int, string>)item).Value);

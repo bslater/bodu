@@ -21,7 +21,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Contains_WhenValueIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<string> sut = new RangeSet<string>();
+        var sut = new RangeSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -35,7 +35,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Contains_WhenSetIsEmpty_ShouldReturnFalse()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.IsFalse(sut.Contains(5));
     }
@@ -70,7 +70,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void ContainsRange_WhenEndpointIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<string> sut = new RangeSet<string>();
+        var sut = new RangeSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -89,7 +89,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void ContainsRange_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -120,7 +120,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void ContainsRange_WhenSetIsEmpty_ShouldReturnFalse()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.IsFalse(sut.Contains(0, 10));
     }

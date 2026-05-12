@@ -24,7 +24,7 @@ public partial class RangeSetTests
     public void GetEnumerator_WhenSetPopulated_ShouldYieldRangesInOrder()
     {
         RangeSet<int> sut = CreateSet((20, 25), (0, 5), (10, 15));
-        List<Range<int>> seen = new List<Range<int>>();
+        var seen = new List<Range<int>>();
 
         foreach (Range<int> range in sut)
             seen.Add(range);
@@ -40,7 +40,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void GetEnumerator_WhenSetIsEmpty_ShouldYieldNoElements()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         RangeSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
@@ -152,7 +152,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((0, 5), (10, 15));
         IEnumerable<Range<int>> typed = sut;
-        List<Range<int>> seen = new List<Range<int>>();
+        var seen = new List<Range<int>>();
 
         foreach (Range<int> range in typed)
             seen.Add(range);
@@ -171,7 +171,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((0, 5), (10, 15));
         IEnumerable untyped = sut;
-        List<Range<int>> seen = new List<Range<int>>();
+        var seen = new List<Range<int>>();
 
         foreach (object item in untyped)
             seen.Add((Range<int>)item);

@@ -20,8 +20,8 @@ public partial class RangeTests
     [TestMethod]
     public void Equals_WhenEndpointsMatch_ShouldReturnTrue()
     {
-        Range<int> left = new Range<int>(0, 10);
-        Range<int> right = new Range<int>(0, 10);
+        var left = new Range<int>(0, 10);
+        var right = new Range<int>(0, 10);
 
         Assert.IsTrue(left.Equals(right));
         Assert.IsTrue(right.Equals(left));
@@ -33,8 +33,8 @@ public partial class RangeTests
     [TestMethod]
     public void Equals_WhenStartDiffers_ShouldReturnFalse()
     {
-        Range<int> left = new Range<int>(0, 10);
-        Range<int> right = new Range<int>(1, 10);
+        var left = new Range<int>(0, 10);
+        var right = new Range<int>(1, 10);
 
         Assert.IsFalse(left.Equals(right));
     }
@@ -45,8 +45,8 @@ public partial class RangeTests
     [TestMethod]
     public void Equals_WhenEndDiffers_ShouldReturnFalse()
     {
-        Range<int> left = new Range<int>(0, 10);
-        Range<int> right = new Range<int>(0, 11);
+        var left = new Range<int>(0, 10);
+        var right = new Range<int>(0, 11);
 
         Assert.IsFalse(left.Equals(right));
     }
@@ -62,7 +62,7 @@ public partial class RangeTests
     [TestMethod]
     public void EqualsObject_WhenBoxedEquivalentRange_ShouldReturnTrue()
     {
-        Range<int> left = new Range<int>(0, 10);
+        var left = new Range<int>(0, 10);
         object right = new Range<int>(0, 10);
 
         Assert.IsTrue(left.Equals(right));
@@ -75,7 +75,7 @@ public partial class RangeTests
     [TestMethod]
     public void EqualsObject_WhenOtherIsNull_ShouldReturnFalse()
     {
-        Range<int> sut = new Range<int>(0, 10);
+        var sut = new Range<int>(0, 10);
 
         Assert.IsFalse(sut.Equals((object?)null));
     }
@@ -87,7 +87,7 @@ public partial class RangeTests
     [TestMethod]
     public void EqualsObject_WhenOtherIsUnrelatedType_ShouldReturnFalse()
     {
-        Range<int> sut = new Range<int>(0, 10);
+        var sut = new Range<int>(0, 10);
 
         Assert.IsFalse(sut.Equals("not-a-range"));
     }
@@ -99,7 +99,7 @@ public partial class RangeTests
     [TestMethod]
     public void EqualsObject_WhenGenericArgumentDiffers_ShouldReturnFalse()
     {
-        Range<int> sut = new Range<int>(0, 10);
+        var sut = new Range<int>(0, 10);
         object stringRange = new Range<string>("a", "z");
 
         Assert.IsFalse(sut.Equals(stringRange));
@@ -115,8 +115,8 @@ public partial class RangeTests
     [TestMethod]
     public void GetHashCode_WhenEndpointsMatch_ShouldReturnSameValue()
     {
-        Range<int> left = new Range<int>(0, 10);
-        Range<int> right = new Range<int>(0, 10);
+        var left = new Range<int>(0, 10);
+        var right = new Range<int>(0, 10);
 
         Assert.AreEqual(left.GetHashCode(), right.GetHashCode());
     }
@@ -131,8 +131,8 @@ public partial class RangeTests
     [TestMethod]
     public void OperatorEquals_WhenEndpointsMatch_ShouldReturnTrue()
     {
-        Range<int> left = new Range<int>(0, 10);
-        Range<int> right = new Range<int>(0, 10);
+        var left = new Range<int>(0, 10);
+        var right = new Range<int>(0, 10);
 
         Assert.IsTrue(left == right);
         Assert.IsFalse(left != right);
@@ -144,8 +144,8 @@ public partial class RangeTests
     [TestMethod]
     public void OperatorNotEquals_WhenEndpointsDiffer_ShouldReturnTrue()
     {
-        Range<int> left = new Range<int>(0, 10);
-        Range<int> right = new Range<int>(0, 11);
+        var left = new Range<int>(0, 10);
+        var right = new Range<int>(0, 11);
 
         Assert.IsFalse(left == right);
         Assert.IsTrue(left != right);

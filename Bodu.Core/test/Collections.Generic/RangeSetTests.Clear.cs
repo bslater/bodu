@@ -31,7 +31,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         sut.Clear();
 

@@ -18,7 +18,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ICollectionAdd_WhenItemIsNew_ShouldAppendItem()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
         ICollection<int> typed = sut;
 
         typed.Add(42);
@@ -50,7 +50,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ICollectionAdd_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<string> sut = new OrderedSet<string>();
+        var sut = new OrderedSet<string>();
         ICollection<string> typed = sut;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>

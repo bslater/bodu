@@ -20,10 +20,9 @@ public partial class IndexedSetTests
     /// Verifies the happy-path smoke check: items added in sequence are accessible at their insertion indices.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Add_WhenItemsAreUnique_ShouldBeIndexAddressable()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         Assert.IsTrue(sut.Add(10));
         Assert.IsTrue(sut.Add(20));
@@ -44,7 +43,7 @@ public partial class IndexedSetTests
     private static IndexedSet<T> CreateSet<T>(IEnumerable<T> items, IEqualityComparer<T>? comparer = null)
         where T : notnull
     {
-        IndexedSet<T> set = new IndexedSet<T>(comparer);
+        var set = new IndexedSet<T>(comparer);
         foreach (T item in items)
             set.Add(item);
 
@@ -59,7 +58,7 @@ public partial class IndexedSetTests
     private static T[] SnapshotByIndexer<T>(IndexedSet<T> set)
         where T : notnull
     {
-        T[] result = new T[set.Count];
+        var result = new T[set.Count];
         for (int i = 0; i < set.Count; i++)
             result[i] = set[i];
 

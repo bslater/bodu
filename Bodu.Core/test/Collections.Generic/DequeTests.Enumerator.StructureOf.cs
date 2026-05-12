@@ -14,7 +14,6 @@ public partial class DequeTests
     /// Verifies that the <see cref="Deque{T}.Enumerator"/> is defined as a value type (struct).
     /// </summary>
     [TestMethod]
-    [TestCategory("Structural")]
     public void StructureOf_DequeEnumerator_ShouldBeStructType()
     {
         Type enumeratorType = typeof(Deque<int>.Enumerator);
@@ -25,7 +24,6 @@ public partial class DequeTests
     /// Verifies that all public properties of the <see cref="Deque{T}.Enumerator"/> are immutable (no public setters).
     /// </summary>
     [TestMethod]
-    [TestCategory("Structural")]
     public void StructureOf_DequeEnumerator_ShouldExposeOnlyImmutablePublicProperties()
     {
         Type enumeratorType = typeof(Deque<int>.Enumerator);

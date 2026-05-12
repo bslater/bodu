@@ -12,7 +12,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the most recently used item when capacity is exceeded using MostRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("MRU")]
     public void Add_WhenPolicyIsMRUAndCapacityExceeded_ShouldEvictMostRecentlyUsed()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.MostRecentlyUsed);
@@ -92,7 +91,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is raised with the correct key and value when an item is evicted using MostRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("MRU")]
     public void ItemEvicted_WhenPolicyIsMRUAndItemEvicted_ShouldBeCalledWithCorrectKeyValue()
     {
         var evicted = new List<string>();
@@ -131,7 +129,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that iteration respects insertion and access order under MostRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("MRU")]
     public void IEnumerable_GetEnumerator_WhenPolicyIsMRU_ShouldRespectRecencyOrder()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
@@ -155,7 +152,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> are returned in recency order under MostRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("MRU")]
     public void Keys_WhenPolicyIsMRU_ShouldReturnKeysInRecencyOrder()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);

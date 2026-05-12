@@ -22,7 +22,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Add_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<string> sut = new IndexedSet<string>();
+        var sut = new IndexedSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -40,7 +40,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Add_WhenItemIsUnique_ShouldAppendAndReturnTrue()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         bool added = sut.Add(99);
 
@@ -69,7 +69,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Add_WhenManyItemsAdded_ShouldGrowAndPreserveOrder()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         for (int i = 0; i < 1000; i++)
             Assert.IsTrue(sut.Add(i));
@@ -85,7 +85,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Add_WhenCustomComparerProvided_ShouldDeduplicateAccordingly()
     {
-        IndexedSet<string> sut = new IndexedSet<string>(StringComparer.OrdinalIgnoreCase);
+        var sut = new IndexedSet<string>(StringComparer.OrdinalIgnoreCase);
 
         Assert.IsTrue(sut.Add("Hello"));
         Assert.IsFalse(sut.Add("HELLO"));
@@ -104,7 +104,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void AddRange_WhenCollectionIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -119,7 +119,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void AddRange_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<string> sut = new IndexedSet<string>();
+        var sut = new IndexedSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -170,7 +170,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void ICollectionAdd_WhenItemIsNew_ShouldAppendItem()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
         ICollection<int> typed = sut;
 
         typed.Add(42);

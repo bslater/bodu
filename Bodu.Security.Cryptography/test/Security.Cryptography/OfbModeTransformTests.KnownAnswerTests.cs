@@ -47,7 +47,7 @@ public sealed partial class OfbModeTransformTests
     /// Verifies that <see cref="OfbModeTransform.Transform" />, with NistVector, EncryptCorrectly.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(OfbKatVectors))]
     public void Transform_WithNistVector_ShouldEncryptCorrectly(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
@@ -57,7 +57,7 @@ public sealed partial class OfbModeTransformTests
     /// Verifies that <see cref="OfbModeTransform.Transform" />, with NistVector, DecryptToOriginalPlaintext.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(OfbKatVectors))]
     public void Transform_WithNistVector_ShouldDecryptToOriginalPlaintext(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)

@@ -125,7 +125,6 @@ public partial class MultisetTests
     /// Verifies that adding a large number of items maintains accurate count tracking.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     public void Add_WhenManyDistinctItemsAdded_ShouldTrackAllCountsAccurately()
     {
         var mvd = new Multiset<int>();

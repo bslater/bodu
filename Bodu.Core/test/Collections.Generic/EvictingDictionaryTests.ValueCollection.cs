@@ -65,7 +65,7 @@ public partial class EvictingDictionaryTests
     public void ValueCollection_IsSynchronized_ShouldReturnFalse()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        ICollection values = (ICollection)dictionary.Values;
+        var values = (ICollection)dictionary.Values;
         Assert.IsFalse(values.IsSynchronized);
     }
 

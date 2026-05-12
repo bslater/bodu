@@ -248,7 +248,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_NonGeneric_WhenArrayIsNotZeroBased_ShouldThrowExactly()
     {
-        Array array = Array.CreateInstance(typeof(int), new[] { 3 }, new[] { 5 });
+        var array = Array.CreateInstance(typeof(int), new[] { 3 }, new[] { 5 });
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             array.Clear();

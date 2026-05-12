@@ -21,7 +21,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Remove_WhenStartIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -35,7 +35,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Remove_WhenEndIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -51,7 +51,7 @@ public partial class RangeDictionaryTests
     [DataRow(10, 5)]
     public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -69,7 +69,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Remove_WhenDictionaryIsEmpty_ShouldReturnFalse()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         bool removed = sut.Remove(0, 10);
 
@@ -157,7 +157,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         sut.Clear();
 

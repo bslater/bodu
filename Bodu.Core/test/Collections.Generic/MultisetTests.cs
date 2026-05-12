@@ -24,7 +24,6 @@ public partial class MultisetTests
     /// Verifies that the default constructor produces an empty multiset with zero count.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Ctor_WhenDefault_ShouldBeEmpty()
     {
         var mvd = new Multiset<string>();

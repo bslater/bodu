@@ -21,7 +21,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Remove_WhenStartIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<string> sut = new RangeSet<string>();
+        var sut = new RangeSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -35,7 +35,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Remove_WhenEndIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<string> sut = new RangeSet<string>();
+        var sut = new RangeSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -51,7 +51,7 @@ public partial class RangeSetTests
     [DataRow(10, 5)]
     public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -69,7 +69,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Remove_WhenSetIsEmpty_ShouldReturnFalse()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         bool changed = sut.Remove(0, 10);
 

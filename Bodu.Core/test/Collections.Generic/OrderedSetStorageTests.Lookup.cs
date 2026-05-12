@@ -40,7 +40,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void GetAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -92,7 +92,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Contains_WhenStorageIsEmpty_ShouldReturnFalse()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.IsFalse(sut.Contains(99));
     }
@@ -127,10 +127,10 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Contains_WhenItemsHashCollide_ShouldResolveCorrectly()
     {
-        OrderedSetStorage<HashCollider> sut = new OrderedSetStorage<HashCollider>(0, null);
-        HashCollider a = new HashCollider("a");
-        HashCollider b = new HashCollider("b");
-        HashCollider c = new HashCollider("c");
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var a = new HashCollider("a");
+        var b = new HashCollider("b");
+        var c = new HashCollider("c");
 
         sut.Add(a);
         sut.Add(b);
@@ -168,7 +168,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void IndexOf_WhenStorageIsEmpty_ShouldReturnMinusOne()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.AreEqual(-1, sut.IndexOf(99));
     }
@@ -196,10 +196,10 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void IndexOf_WhenItemsHashCollide_ShouldReturnCorrectIndex()
     {
-        OrderedSetStorage<HashCollider> sut = new OrderedSetStorage<HashCollider>(0, null);
-        HashCollider a = new HashCollider("a");
-        HashCollider b = new HashCollider("b");
-        HashCollider c = new HashCollider("c");
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var a = new HashCollider("a");
+        var b = new HashCollider("b");
+        var c = new HashCollider("c");
 
         sut.Add(a);
         sut.Add(b);

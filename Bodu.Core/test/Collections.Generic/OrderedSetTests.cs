@@ -21,10 +21,9 @@ public partial class OrderedSetTests
     /// them through the read-only list view.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Add_WhenItemsAreUnique_ShouldPreserveInsertionOrder()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.IsTrue(sut.Add(1));
         Assert.IsTrue(sut.Add(2));
@@ -45,7 +44,7 @@ public partial class OrderedSetTests
     private static OrderedSet<T> CreateSet<T>(IEnumerable<T> items, IEqualityComparer<T>? comparer = null)
         where T : notnull
     {
-        OrderedSet<T> set = new OrderedSet<T>(comparer);
+        var set = new OrderedSet<T>(comparer);
         foreach (T item in items)
             set.Add(item);
 
@@ -60,7 +59,7 @@ public partial class OrderedSetTests
     private static T[] SnapshotByIndexer<T>(OrderedSet<T> set)
         where T : notnull
     {
-        T[] result = new T[set.Count];
+        var result = new T[set.Count];
         for (int i = 0; i < set.Count; i++)
             result[i] = set[i];
 
@@ -75,7 +74,7 @@ public partial class OrderedSetTests
     private static List<T> SnapshotByEnumerator<T>(OrderedSet<T> set)
         where T : notnull
     {
-        List<T> result = new List<T>(set.Count);
+        var result = new List<T>(set.Count);
         foreach (T item in set)
             result.Add(item);
 

@@ -21,7 +21,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Add_WhenStartIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<string> sut = new RangeSet<string>();
+        var sut = new RangeSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -35,7 +35,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Add_WhenEndIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<string> sut = new RangeSet<string>();
+        var sut = new RangeSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -51,7 +51,7 @@ public partial class RangeSetTests
     [DataRow(10, 5)]
     public void Add_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -69,7 +69,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Add_WhenSetIsEmpty_ShouldInsertOnly()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         sut.Add(5, 10);
 
@@ -87,7 +87,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Add_WhenRangesAreNonOverlapping_ShouldKeepSortedOrder()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         sut.Add(20, 25);
         sut.Add(0, 5);
@@ -244,7 +244,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Add_WhenRangeStructProvided_ShouldDelegateToEndpointOverload()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         sut.Add(new Range<int>(0, 10));
 

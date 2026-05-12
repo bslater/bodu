@@ -13,7 +13,6 @@ public partial class EvictingDictionaryTests
     /// RandomReplacement policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Random")]
     public void Add_WhenPolicyIsRandomAndCapacityExceeded_ShouldEvictRandomItem()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.RandomReplacement);
@@ -29,7 +28,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> removes all items in a RandomReplacement dictionary.
     /// </summary>
     [TestMethod]
-    [TestCategory("Random")]
     public void Clear_WhenPolicyIsRandom_ShouldRemoveAllItems()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
@@ -44,7 +42,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is triggered when eviction occurs using RandomReplacement policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Random")]
     public void ItemEvicted_WhenPolicyIsRandom_ShouldBeTriggeredOnEviction()
     {
         var evicted = new List<string>();
@@ -63,7 +60,6 @@ public partial class EvictingDictionaryTests
     /// RandomReplacement policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Random")]
     public void EvictionEvents_WhenPolicyIsRandomAndCandidateRemovedBeforeEviction_ShouldNotThrow()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.RandomReplacement);
@@ -80,7 +76,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns a valid key when using RandomReplacement.
     /// </summary>
     [TestMethod]
-    [TestCategory("Random")]
     public void PeekEvictionCandidate_WhenPolicyIsRandom_ShouldReturnSomeKey()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
@@ -95,7 +90,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that ItemEvicting is triggered before ItemEvicted when eviction occurs using RandomReplacement.
     /// </summary>
     [TestMethod]
-    [TestCategory("Random")]
     public void ItemEvicted_WhenPolicyIsRandom_ShouldFireAfterItemEvicting()
     {
         var sequence = new List<string>();
@@ -117,7 +111,6 @@ public partial class EvictingDictionaryTests
     /// RandomReplacement policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Random")]
     public void Keys_WhenPolicyIsRandom_ShouldReflectEvictions()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.RandomReplacement);
@@ -134,7 +127,6 @@ public partial class EvictingDictionaryTests
     /// rather than deterministically evicting the same key each time.
     /// </summary>
     [TestMethod]
-    [TestCategory("Random")]
     public void Add_WhenPolicyIsRandomAndCapacityExceededAcrossManyRuns_ShouldEvictDifferentKeysOverTime()
     {
         const int trials = 200;

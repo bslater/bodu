@@ -17,7 +17,7 @@ public partial class RangeTests
     [TestMethod]
     public void ToString_WhenEndpointsAreIntegers_ShouldFormatHalfOpen()
     {
-        Range<int> sut = new Range<int>(0, 10);
+        var sut = new Range<int>(0, 10);
 
         Assert.AreEqual("[0, 10)", sut.ToString());
     }
@@ -28,7 +28,7 @@ public partial class RangeTests
     [TestMethod]
     public void ToString_WhenEndpointsAreStrings_ShouldFormatHalfOpen()
     {
-        Range<string> sut = new Range<string>("alpha", "omega");
+        var sut = new Range<string>("alpha", "omega");
 
         Assert.AreEqual("[alpha, omega)", sut.ToString());
     }

@@ -19,7 +19,7 @@ public partial class RangeSetTests
     [DataRow(int.MinValue)]
     public void EnsureCapacity_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -33,7 +33,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void EnsureCapacity_WhenLargerCapacityRequested_ShouldGrow()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         int reported = sut.EnsureCapacity(128);
 
@@ -48,7 +48,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void EnsureCapacity_WhenSmallerCapacityRequested_ShouldNotShrink()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
         sut.EnsureCapacity(64);
         int capacityBefore = sut.Capacity;
 
@@ -75,10 +75,9 @@ public partial class RangeSetTests
     /// Verifies that adding many non-overlapping ranges grows storage automatically while preserving order.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     public void Add_WhenManyNonOverlappingRangesAdded_ShouldGrowAndPreserveOrder()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         for (int i = 0; i < 500; i++)
             sut.Add(i * 10, (i * 10) + 5);

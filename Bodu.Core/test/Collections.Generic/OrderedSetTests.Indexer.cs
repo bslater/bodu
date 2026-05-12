@@ -35,7 +35,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Indexer_WhenSetIsEmpty_ShouldThrowArgumentOutOfRangeException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

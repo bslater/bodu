@@ -22,7 +22,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(0, sut.Capacity);
@@ -39,7 +39,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
     {
-        RangeSet<int> sut = new RangeSet<int>((IComparer<int>?)null);
+        var sut = new RangeSet<int>((IComparer<int>?)null);
 
         Assert.AreSame(Comparer<int>.Default, sut.Comparer);
     }
@@ -50,9 +50,9 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
     {
-        ReverseIntComparer comparer = new ReverseIntComparer();
+        var comparer = new ReverseIntComparer();
 
-        RangeSet<int> sut = new RangeSet<int>(comparer);
+        var sut = new RangeSet<int>(comparer);
 
         Assert.AreSame(comparer, sut.Comparer);
     }
@@ -79,7 +79,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
     {
-        RangeSet<int> sut = new RangeSet<int>(Array.Empty<Range<int>>());
+        var sut = new RangeSet<int>(Array.Empty<Range<int>>());
 
         Assert.AreEqual(0, sut.Count);
     }
@@ -93,7 +93,7 @@ public partial class RangeSetTests
     {
         Range<int>[] source = { new Range<int>(0, 5), new Range<int>(10, 15), new Range<int>(20, 25) };
 
-        RangeSet<int> sut = new RangeSet<int>(source);
+        var sut = new RangeSet<int>(source);
 
         Assert.AreEqual(3, sut.Count);
         AssertContents(sut, (0, 5), (10, 15), (20, 25));
@@ -107,7 +107,7 @@ public partial class RangeSetTests
     {
         Range<int>[] source = { new Range<int>(0, 5), new Range<int>(3, 10), new Range<int>(8, 12) };
 
-        RangeSet<int> sut = new RangeSet<int>(source);
+        var sut = new RangeSet<int>(source);
 
         Assert.AreEqual(1, sut.Count);
         AssertContents(sut, (0, 12));
@@ -121,7 +121,7 @@ public partial class RangeSetTests
     {
         Range<int>[] source = { new Range<int>(0, 5) };
 
-        RangeSet<int> sut = new RangeSet<int>(source, Comparer<int>.Default);
+        var sut = new RangeSet<int>(source, Comparer<int>.Default);
 
         Assert.AreSame(Comparer<int>.Default, sut.Comparer);
         Assert.AreEqual(1, sut.Count);

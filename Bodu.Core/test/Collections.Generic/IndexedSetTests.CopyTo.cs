@@ -113,7 +113,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void CopyTo_WhenSetIsEmpty_ShouldNotModifyArray()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
         int[] target = new int[] { 99, 88 };
 
         sut.CopyTo(target, 0);
@@ -131,7 +131,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void ToArray_WhenSetIsEmpty_ShouldReturnEmptyArray()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         int[] array = sut.ToArray();
 

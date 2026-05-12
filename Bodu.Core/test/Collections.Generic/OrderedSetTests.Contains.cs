@@ -17,7 +17,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Contains_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<string> sut = new OrderedSet<string>();
+        var sut = new OrderedSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -31,7 +31,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Contains_WhenSetIsEmpty_ShouldReturnFalse()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.IsFalse(sut.Contains(99));
     }

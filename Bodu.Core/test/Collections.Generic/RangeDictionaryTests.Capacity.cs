@@ -20,7 +20,7 @@ public partial class RangeDictionaryTests
     [DataRow(int.MinValue)]
     public void EnsureCapacity_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -35,7 +35,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void EnsureCapacity_WhenLargerCapacityRequested_ShouldGrow()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         int reported = sut.EnsureCapacity(128);
 
@@ -50,7 +50,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void EnsureCapacity_WhenSmallerCapacityRequested_ShouldNotShrink()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
         sut.EnsureCapacity(64);
         int capacityBefore = sut.Capacity;
 
@@ -78,10 +78,9 @@ public partial class RangeDictionaryTests
     /// Verifies that adding many non-overlapping ranges grows storage automatically while preserving order.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     public void Add_WhenManyNonOverlappingRangesAdded_ShouldGrowAndPreserveOrder()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         for (int i = 0; i < 500; i++)
             sut.Add(i * 10, (i * 10) + 5, "v" + i);

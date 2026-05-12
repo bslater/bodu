@@ -48,7 +48,7 @@ public sealed partial class EcbModeTransformTests
     /// Verifies that <see cref="EcbModeTransform.Transform" />, with NistVector, EncryptCorrectly.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(EcbKatVectors))]
     public void Transform_WithNistVector_ShouldEncryptCorrectly(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)
@@ -58,7 +58,7 @@ public sealed partial class EcbModeTransformTests
     /// Verifies that <see cref="EcbModeTransform.Transform" />, with NistVector, DecryptToOriginalPlaintext.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(EcbKatVectors))]
     public void Transform_WithNistVector_ShouldDecryptToOriginalPlaintext(
         string description, byte[] key, byte[] iv, byte[] plaintext, byte[] expectedCiphertext)

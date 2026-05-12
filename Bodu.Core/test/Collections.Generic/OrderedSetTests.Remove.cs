@@ -119,7 +119,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         sut.Clear();
 

@@ -22,7 +22,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Add_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<string> sut = new OrderedSet<string>();
+        var sut = new OrderedSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -40,7 +40,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Add_WhenItemIsUnique_ShouldAppendAndReturnTrue()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         bool added = sut.Add(99);
 
@@ -70,7 +70,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Add_WhenManyItemsAdded_ShouldGrowAndPreserveOrder()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         for (int i = 0; i < 1000; i++)
             Assert.IsTrue(sut.Add(i));
@@ -90,7 +90,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Add_WhenCustomComparerProvided_ShouldDeduplicateAccordingly()
     {
-        OrderedSet<string> sut = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
+        var sut = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
 
         Assert.IsTrue(sut.Add("Hello"));
         Assert.IsFalse(sut.Add("HELLO"));
@@ -110,7 +110,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void AddRange_WhenCollectionIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -125,7 +125,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void AddRange_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<string> sut = new OrderedSet<string>();
+        var sut = new OrderedSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

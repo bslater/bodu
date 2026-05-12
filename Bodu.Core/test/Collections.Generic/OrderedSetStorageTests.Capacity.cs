@@ -21,7 +21,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Count_WhenStorageIsNewlyConstructed_ShouldBeZero()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.AreEqual(0, sut.Count);
     }
@@ -33,7 +33,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Count_WhenItemsAddedAndRemoved_ShouldReflectCurrentSize()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         sut.Add(1);
         sut.Add(2);
@@ -55,7 +55,7 @@ public partial class OrderedSetStorageTests
     [DataRow(int.MinValue)]
     public void EnsureCapacity_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -74,7 +74,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void EnsureCapacity_WhenRequestedCapacityExceedsCurrent_ShouldGrow()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         int newCapacity = sut.EnsureCapacity(128);
 
@@ -89,7 +89,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void EnsureCapacity_WhenRequestedCapacityDoesNotExceedCurrent_ShouldNotShrink()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(16, null);
+        var sut = new OrderedSetStorage<int>(16, null);
 
         int newCapacity = sut.EnsureCapacity(4);
 
@@ -122,7 +122,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TrimExcess_WhenStorageIsEmpty_ShouldResetCapacityToZero()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(16, null);
+        var sut = new OrderedSetStorage<int>(16, null);
 
         sut.TrimExcess();
 
@@ -137,7 +137,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TrimExcess_WhenCapacityEqualsCount_ShouldBeNoOp()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
         sut.Add(1);
         sut.Add(2);
         sut.TrimExcess();
@@ -156,7 +156,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TrimExcess_WhenCapacityExceedsCount_ShouldShrinkAndPreserveContents()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(128, null);
+        var sut = new OrderedSetStorage<int>(128, null);
         sut.Add(1);
         sut.Add(2);
         sut.Add(3);
@@ -173,7 +173,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TrimExcess_WhenCalled_ShouldKeepItemsFindable()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(128, null);
+        var sut = new OrderedSetStorage<int>(128, null);
         sut.Add(10);
         sut.Add(20);
         sut.Add(30);

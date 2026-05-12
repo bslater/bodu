@@ -23,7 +23,6 @@ public sealed class SmokeTests
     /// single value.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void CircularBuffer_EnqueueDequeue_ShouldRoundTripValue()
     {
         CircularBuffer<int> buffer = new(capacity: 4);
@@ -39,7 +38,6 @@ public sealed class SmokeTests
     /// inserted value.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Deque_AddLastRemoveFirst_ShouldRecoverValue()
     {
         Deque<string> deque = new(capacity: 4);
@@ -55,7 +53,6 @@ public sealed class SmokeTests
     /// the default LRU policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void EvictingDictionary_AddIndexer_ShouldRoundTripValue()
     {
         EvictingDictionary<string, int> dictionary = new(capacity: 4);
@@ -71,7 +68,6 @@ public sealed class SmokeTests
     /// capacity is exceeded.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void EvictingDictionary_AddBeyondCapacity_ShouldEvictOldestEntry()
     {
         EvictingDictionary<string, int> dictionary = new(capacity: 2);

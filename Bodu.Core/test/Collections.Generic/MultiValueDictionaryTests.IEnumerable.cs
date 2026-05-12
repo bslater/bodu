@@ -26,7 +26,7 @@ public partial class MultiValueDictionaryTests
 
         IEnumerable<KeyValuePair<string, IReadOnlyList<int>>> enumerable = mvd;
 
-        List<KeyValuePair<string, IReadOnlyList<int>>> entries = enumerable.ToList();
+        var entries = enumerable.ToList();
 
         Assert.AreEqual(2, entries.Count);
         Assert.IsTrue(entries.Any(entry => entry.Key == "a" && entry.Value.SequenceEqual([1, 2])));

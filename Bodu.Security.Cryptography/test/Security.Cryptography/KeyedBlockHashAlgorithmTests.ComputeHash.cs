@@ -181,7 +181,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     /// Verifies that representative valid key lengths produce distinct digests for the same input.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void ComputeHash_WhenRepresentativeVariableKeyLengthsUsed_ShouldProduceDistinctDigests(TVariant variant)
     {

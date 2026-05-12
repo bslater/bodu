@@ -22,7 +22,6 @@ public sealed class SmokeTests
     /// encrypt / decrypt round-trip in CBC mode under a freshly generated key and IV.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Threefish256_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
     {
         using Bodu.Security.Cryptography.Threefish256 algorithm = Bodu.Security.Cryptography.Threefish256.Create();
@@ -50,7 +49,6 @@ public sealed class SmokeTests
     /// encrypt / decrypt round-trip in ECB mode with PKCS7 padding under a freshly generated key.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Skipjack_EncryptDecryptRoundTrip_ShouldRecoverPlaintext()
     {
         using Bodu.Security.Cryptography.Skipjack algorithm = new();
@@ -77,7 +75,6 @@ public sealed class SmokeTests
     /// a non-empty input.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Tiger_ComputeHash_ShouldProduce192BitDigest()
     {
         using Bodu.Security.Cryptography.Tiger tiger = new();
@@ -91,7 +88,6 @@ public sealed class SmokeTests
     /// non-empty input under a freshly generated key.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void SipHash64_ComputeHash_ShouldProduceEightByteDigest()
     {
         var key = new byte[16];

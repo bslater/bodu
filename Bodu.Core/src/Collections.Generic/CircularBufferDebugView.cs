@@ -34,5 +34,6 @@ internal sealed class CircularBufferDebugView<T>
     /// </summary>
     /// <remarks>This property is hidden from the debugger display root to directly expand the items for quick inspection.</remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-    public T[] Items => _circularBuffer.ToArray();
+    public T[] Items =>
+        _circularBuffer.ToArray();
 }

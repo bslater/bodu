@@ -13,7 +13,6 @@ public partial class EvictingDictionaryTests
     /// LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void Add_WhenPolicyIsLRUAndCapacityExceeded_ShouldEvictLeastRecentlyUsed()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
@@ -106,7 +105,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that the least recently used item is evicted when using LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void ItemEvicted_WhenPolicyIsLRUAndEvictionOccurs_ShouldEvictLeastRecentlyUsed()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
@@ -124,7 +122,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that eviction is skipped when candidate was manually removed before eviction.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void ItemEvicted_WhenPolicyIsLRUAndCandidateRemovedBeforeEviction_ShouldSkipEviction()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
@@ -177,7 +174,6 @@ public partial class EvictingDictionaryTests
     /// evicted using LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void ItemEvicted_WhenPolicyIsLRUAndItemEvicted_ShouldBeCalledWithCorrectKeyValue()
     {
         var evicted = new List<string>();
@@ -196,7 +192,6 @@ public partial class EvictingDictionaryTests
     /// LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void ItemEvicted_WhenPolicyIsLRUAndMultipleEvictions_ShouldTriggerMultipleEvents()
     {
         var evicted = new List<string>();
@@ -216,7 +211,6 @@ public partial class EvictingDictionaryTests
     /// LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void ItemEvicted_WhenPolicyIsLRUAndEvictionOccurs_ShouldFireAfterItemEvicting()
     {
         var sequence = new List<string>();
@@ -237,7 +231,6 @@ public partial class EvictingDictionaryTests
     /// using LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void ItemEvicting_WhenPolicyIsLRU_ShouldBeCalledWithCorrectKeyValue()
     {
         var evicted = new List<string>();
@@ -255,7 +248,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicting" /> is triggered before ItemEvicted when using LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void ItemEvicting_WhenPolicyIsLRU_ShouldFireBeforeItemEvicted()
     {
         var sequence = new List<string>();
@@ -275,7 +267,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that iteration respects insertion and access order under LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void IEnumerable_GetEnumerator_WhenPolicyIsLRU_ShouldRespectRecencyOrder()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
@@ -299,7 +290,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> are returned in recency order under LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("LRU")]
     public void Keys_WhenPolicyIsLRU_ShouldReturnKeysInRecencyOrder()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);

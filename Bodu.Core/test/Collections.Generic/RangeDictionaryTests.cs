@@ -21,10 +21,9 @@ public partial class RangeDictionaryTests
     /// associated value.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Add_WhenSingleRangeAdded_ShouldReturnValueViaIndexer()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         sut.Add(0, 10, "tier-A");
 
@@ -40,7 +39,7 @@ public partial class RangeDictionaryTests
     /// <returns>The populated dictionary.</returns>
     private static RangeDictionary<int, string> CreateDictionary(params (int Start, int End, string Value)[] entries)
     {
-        RangeDictionary<int, string> dict = new RangeDictionary<int, string>();
+        var dict = new RangeDictionary<int, string>();
         foreach ((int Start, int End, string Value) entry in entries)
             dict.Add(entry.Start, entry.End, entry.Value);
 

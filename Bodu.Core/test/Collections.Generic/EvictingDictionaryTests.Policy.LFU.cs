@@ -32,7 +32,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that LeastFrequentlyUsed evicts the least frequently used item.
     /// </summary>
     [TestMethod]
-    [TestCategory("LFU")]
     public void ItemEvicted_WhenPolicyIsLFUAndEvictionOccurs_ShouldEvictLeastFrequentlyUsed()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
@@ -117,7 +116,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the least frequently used item when capacity is exceeded.
     /// </summary>
     [TestMethod]
-    [TestCategory("LFU")]
     public void Add_WhenPolicyIsLFUAndCapacityExceeded_ShouldEvictLeastFrequentlyUsed()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
@@ -193,7 +191,6 @@ public partial class EvictingDictionaryTests
     /// so a well-used key is not knocked back to a cold state by a subsequent value update.
     /// </summary>
     [TestMethod]
-    [TestCategory("LFU")]
     public void Add_WhenReplacingExistingKeyUnderLFU_ShouldPreserveFrequency()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);

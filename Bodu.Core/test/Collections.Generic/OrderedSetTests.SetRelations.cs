@@ -21,7 +21,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsSubsetOf_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -35,7 +35,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsSubsetOf_WhenSetIsEmpty_ShouldReturnTrue()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.IsTrue(sut.IsSubsetOf(Array.Empty<int>()));
         Assert.IsTrue(sut.IsSubsetOf(new[] { 1, 2, 3 }));
@@ -66,7 +66,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsSupersetOf_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -80,7 +80,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsSupersetOf_WhenOtherIsEmpty_ShouldReturnTrue()
     {
-        OrderedSet<int> empty = new OrderedSet<int>();
+        var empty = new OrderedSet<int>();
         OrderedSet<int> populated = CreateSet(new[] { 1, 2 });
 
         Assert.IsTrue(empty.IsSupersetOf(Array.Empty<int>()));
@@ -111,7 +111,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsProperSubsetOf_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -138,7 +138,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsProperSubsetOf_WhenBothEmpty_ShouldReturnFalse()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.IsFalse(sut.IsProperSubsetOf(Array.Empty<int>()));
     }
@@ -153,7 +153,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsProperSupersetOf_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -195,7 +195,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Overlaps_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -209,7 +209,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Overlaps_WhenSetIsEmpty_ShouldReturnFalse()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.IsFalse(sut.Overlaps(new[] { 1, 2 }));
         Assert.IsFalse(sut.Overlaps(Array.Empty<int>()));
@@ -239,7 +239,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SetEquals_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -279,7 +279,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SetEquals_WhenBothEmpty_ShouldReturnTrue()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.IsTrue(sut.SetEquals(Array.Empty<int>()));
     }

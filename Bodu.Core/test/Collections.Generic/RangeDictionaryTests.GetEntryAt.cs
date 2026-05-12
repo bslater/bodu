@@ -36,7 +36,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void GetEntryAt_WhenDictionaryIsEmpty_ShouldThrowArgumentOutOfRangeException()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -51,7 +51,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void GetEntryAt_WhenDictionaryPopulated_ShouldReturnEntryInAscendingOrder()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
         sut.Add(20, 30, "B");
         sut.Add(0, 10, "A");
 

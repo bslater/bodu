@@ -17,7 +17,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void ContainsKey_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -32,7 +32,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void ContainsKey_WhenDictionaryIsEmpty_ShouldReturnFalse()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         Assert.IsFalse(sut.ContainsKey(5));
     }

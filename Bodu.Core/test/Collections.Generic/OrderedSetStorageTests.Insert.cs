@@ -131,7 +131,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenStorageIsEmpty_ShouldAddFirstElement()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.IsTrue(sut.TryInsert(0, 42));
 

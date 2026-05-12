@@ -17,7 +17,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IndexOf_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<string> sut = new OrderedSet<string>();
+        var sut = new OrderedSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -31,7 +31,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IndexOf_WhenSetIsEmpty_ShouldReturnMinusOne()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.AreEqual(-1, sut.IndexOf(99));
     }

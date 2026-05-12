@@ -114,7 +114,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void CopyTo_WhenStorageIsEmpty_ShouldNotModifyArray()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
         int[] target = new int[] { 99, 88 };
 
         sut.CopyTo(target, 0);
@@ -132,7 +132,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ToArray_WhenStorageIsEmpty_ShouldReturnEmptyArray()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         int[] array = sut.ToArray();
 

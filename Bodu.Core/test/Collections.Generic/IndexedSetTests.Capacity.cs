@@ -23,7 +23,7 @@ public partial class IndexedSetTests
     [DataRow(int.MinValue)]
     public void EnsureCapacity_WhenCapacityIsNegative_ShouldThrowArgumentOutOfRangeException(int capacity)
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -37,7 +37,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void EnsureCapacity_WhenLargerCapacityRequested_ShouldGrow()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         int reported = sut.EnsureCapacity(128);
 
@@ -52,7 +52,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void EnsureCapacity_WhenSmallerCapacityRequested_ShouldNotShrink()
     {
-        IndexedSet<int> sut = new IndexedSet<int>(64);
+        var sut = new IndexedSet<int>(64);
         int capacityBefore = sut.Capacity;
 
         int reported = sut.EnsureCapacity(4);
@@ -84,7 +84,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void TrimExcess_WhenSetIsEmpty_ShouldResetCapacityToZero()
     {
-        IndexedSet<int> sut = new IndexedSet<int>(16);
+        var sut = new IndexedSet<int>(16);
 
         sut.TrimExcess();
 
@@ -98,7 +98,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void TrimExcess_WhenCapacityExceedsCount_ShouldShrinkAndPreserveContents()
     {
-        IndexedSet<int> sut = new IndexedSet<int>(128);
+        var sut = new IndexedSet<int>(128);
         sut.Add(1);
         sut.Add(2);
         sut.Add(3);
@@ -115,7 +115,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void TrimExcess_WhenCalled_ShouldKeepItemsLocatable()
     {
-        IndexedSet<int> sut = new IndexedSet<int>(128);
+        var sut = new IndexedSet<int>(128);
         sut.Add(10);
         sut.Add(20);
         sut.Add(30);

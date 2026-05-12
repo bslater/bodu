@@ -17,7 +17,7 @@ public partial class RangeTests
     [TestMethod]
     public void Contains_WhenValueIsNull_ShouldThrowArgumentNullException()
     {
-        Range<string> sut = new Range<string>("a", "z");
+        var sut = new Range<string>("a", "z");
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -31,7 +31,7 @@ public partial class RangeTests
     [TestMethod]
     public void Contains_WhenValueEqualsStartInclusive_ShouldReturnTrue()
     {
-        Range<int> sut = new Range<int>(0, 10);
+        var sut = new Range<int>(0, 10);
 
         Assert.IsTrue(sut.Contains(0));
     }
@@ -42,7 +42,7 @@ public partial class RangeTests
     [TestMethod]
     public void Contains_WhenValueEqualsEndExclusive_ShouldReturnFalse()
     {
-        Range<int> sut = new Range<int>(0, 10);
+        var sut = new Range<int>(0, 10);
 
         Assert.IsFalse(sut.Contains(10));
     }
@@ -63,7 +63,7 @@ public partial class RangeTests
     [DataRow(int.MaxValue, false)]
     public void Contains_WhenValuesVary_ShouldReturnExpected(int value, bool expected)
     {
-        Range<int> sut = new Range<int>(0, 10);
+        var sut = new Range<int>(0, 10);
 
         Assert.AreEqual(expected, sut.Contains(value));
     }
@@ -79,7 +79,7 @@ public partial class RangeTests
     [DataRow("zzz", false)]
     public void Contains_WhenStringValuesVary_ShouldReturnExpected(string value, bool expected)
     {
-        Range<string> sut = new Range<string>("a", "z");
+        var sut = new Range<string>("a", "z");
 
         Assert.AreEqual(expected, sut.Contains(value));
     }
@@ -90,7 +90,7 @@ public partial class RangeTests
     [TestMethod]
     public void Contains_WhenRangeIsSingleStep_ShouldContainStartOnly()
     {
-        Range<int> sut = new Range<int>(5, 6);
+        var sut = new Range<int>(5, 6);
 
         Assert.IsTrue(sut.Contains(5));
         Assert.IsFalse(sut.Contains(6));

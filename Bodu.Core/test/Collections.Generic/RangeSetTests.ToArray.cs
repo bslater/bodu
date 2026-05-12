@@ -16,7 +16,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void ToArray_WhenSetIsEmpty_ShouldReturnEmptyArray()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Range<int>[] array = sut.ToArray();
 

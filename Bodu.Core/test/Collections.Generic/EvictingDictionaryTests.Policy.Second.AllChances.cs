@@ -13,7 +13,6 @@ public partial class EvictingDictionaryTests
     /// second chance (each item's reference bit is cleared during the pass and the rotated head is returned).
     /// </summary>
     [TestMethod]
-    [TestCategory("SecondChance")]
     public void Add_WhenAllItemsHaveSecondChance_ShouldEvictFirstAfterClockSweep()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.SecondChance);
@@ -39,7 +38,6 @@ public partial class EvictingDictionaryTests
     /// algorithm would select next, without mutating the dictionary.
     /// </summary>
     [TestMethod]
-    [TestCategory("SecondChance")]
     public void PeekEvictionCandidate_ForSecondChancePolicy_ShouldReturnCandidateWithoutMutating()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.SecondChance);
@@ -65,7 +63,6 @@ public partial class EvictingDictionaryTests
     /// the oldest entry when every entry has been granted a second chance.
     /// </summary>
     [TestMethod]
-    [TestCategory("SecondChance")]
     public void PeekEvictionCandidate_ForSecondChancePolicy_WhenAllEntriesTouched_ShouldReturnOldestEntry()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.SecondChance);

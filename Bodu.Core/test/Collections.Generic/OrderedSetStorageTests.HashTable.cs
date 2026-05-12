@@ -21,14 +21,13 @@ public partial class OrderedSetStorageTests
     /// every element's index.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     [DataRow(8)]
     [DataRow(64)]
     [DataRow(512)]
     [DataRow(4096)]
     public void HashTable_WhenLoadFactorExceeded_ShouldRehashAndPreserveOrder(int size)
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         for (int i = 0; i < size; i++)
             Assert.IsTrue(sut.Add(i));
@@ -47,10 +46,9 @@ public partial class OrderedSetStorageTests
     /// surviving element is locatable at its current insertion index.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     public void HashTable_WhenAddingAndRemovingInterleaved_ShouldRemainConsistent()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         for (int i = 0; i < 1000; i++)
             sut.Add(i);
@@ -77,8 +75,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void HashTable_WhenManyItemsCollide_ShouldResolveEachThroughChain()
     {
-        OrderedSetStorage<HashCollider> sut = new OrderedSetStorage<HashCollider>(0, null);
-        HashCollider[] items = new HashCollider[32];
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var items = new HashCollider[32];
 
         for (int i = 0; i < items.Length; i++)
         {
@@ -99,11 +97,11 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void HashTable_WhenColliderItemsRemoved_ShouldStillResolveRemaining()
     {
-        OrderedSetStorage<HashCollider> sut = new OrderedSetStorage<HashCollider>(0, null);
-        HashCollider a = new HashCollider("a");
-        HashCollider b = new HashCollider("b");
-        HashCollider c = new HashCollider("c");
-        HashCollider d = new HashCollider("d");
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var a = new HashCollider("a");
+        var b = new HashCollider("b");
+        var c = new HashCollider("c");
+        var d = new HashCollider("d");
 
         sut.Add(a);
         sut.Add(b);
@@ -131,7 +129,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void HashTable_WhenCustomComparerProvided_ShouldGovernAllLookups()
     {
-        OrderedSetStorage<string> sut = new OrderedSetStorage<string>(0, StringComparer.OrdinalIgnoreCase);
+        var sut = new OrderedSetStorage<string>(0, StringComparer.OrdinalIgnoreCase);
 
         Assert.IsTrue(sut.Add("Alpha"));
         Assert.IsFalse(sut.Add("ALPHA"));
@@ -151,7 +149,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void HashTable_WhenComparerForcesIdenticalHashes_ShouldStillDistinguishByEquals()
     {
-        OrderedSetStorage<string> sut = new OrderedSetStorage<string>(0, new FixedHashStringComparer());
+        var sut = new OrderedSetStorage<string>(0, new FixedHashStringComparer());
 
         Assert.IsTrue(sut.Add("alpha"));
         Assert.IsTrue(sut.Add("beta"));

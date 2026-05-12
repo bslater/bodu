@@ -22,7 +22,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void TryGetValue_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -37,7 +37,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void TryGetValue_WhenDictionaryIsEmpty_ShouldReturnFalseAndDefaultValue()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         bool found = sut.TryGetValue(5, out string value);
 
@@ -87,7 +87,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void TryGetEntry_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -102,7 +102,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void TryGetEntry_WhenDictionaryIsEmpty_ShouldReturnFalseAndDefault()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         bool found = sut.TryGetEntry(5, out ValueRange<int, string> entry);
 

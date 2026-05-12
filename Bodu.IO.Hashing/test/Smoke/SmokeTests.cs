@@ -22,7 +22,6 @@ public sealed class SmokeTests
     /// CRC-32/ISO-HDLC check value for the reference input <c>"123456789"</c>.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Crc_ComputeHash_ForCrc32IsoHdlcReferenceInput_ShouldMatchPublishedCheck()
     {
         Crc crc = new(CrcStandard.Get(CrcStandards.CRC32_ISOHDLC));
@@ -37,7 +36,6 @@ public sealed class SmokeTests
     /// Verifies that <see cref="Fletcher16" /> produces a 2-byte digest from a non-empty input.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Fletcher16_Append_ShouldProduceTwoByteDigest()
     {
         Fletcher16 fletcher = new();
@@ -52,7 +50,6 @@ public sealed class SmokeTests
     /// Verifies that <see cref="Fletcher32" /> produces a 4-byte digest from a non-empty input.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Fletcher32_Append_ShouldProduceFourByteDigest()
     {
         Fletcher32 fletcher = new();
@@ -66,7 +63,6 @@ public sealed class SmokeTests
     /// Verifies that <see cref="Adler32" /> produces a 4-byte digest from a non-empty input.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Adler32_Append_ShouldProduceFourByteDigest()
     {
         Adler32 adler = new();

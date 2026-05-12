@@ -18,7 +18,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Overlaps_WhenEndpointIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -38,7 +38,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -53,7 +53,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Overlaps_WhenDictionaryIsEmpty_ShouldReturnFalse()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         Assert.IsFalse(sut.Overlaps(0, 10));
     }

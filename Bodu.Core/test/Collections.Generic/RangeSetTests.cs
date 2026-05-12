@@ -21,10 +21,9 @@ public partial class RangeSetTests
     /// the enumerator.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Add_WhenSingleRangeAdded_ShouldExposeRange()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         sut.Add(0, 10);
 
@@ -39,7 +38,7 @@ public partial class RangeSetTests
     /// <returns>The populated range set.</returns>
     private static RangeSet<int> CreateSet(params (int Start, int End)[] ranges)
     {
-        RangeSet<int> set = new RangeSet<int>();
+        var set = new RangeSet<int>();
         foreach ((int Start, int End) range in ranges)
             set.Add(range.Start, range.End);
 

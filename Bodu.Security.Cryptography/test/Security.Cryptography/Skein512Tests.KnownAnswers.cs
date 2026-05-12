@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Skein512Tests.KnownAnswers.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ public partial class Skein512Tests
     /// Verifies that <see cref="Skein512.AlgorithmName" /> formats the state size and the configured output size.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     public void AlgorithmName_WhenConfiguredWithOutputSize_ShouldReturnFormattedName()
     {
         using var skein = new Skein512(384);

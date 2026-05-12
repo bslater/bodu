@@ -14,7 +14,6 @@ public partial class ConcurrentCircularBufferTests
     /// Verifies that the ConcurrentCircularBuffer enumerator is defined as a value type (struct).
     /// </summary>
     [TestMethod]
-    [TestCategory("Structural")]
     public void StructureOf_ConcurrentCircularBufferEnumerator_ShouldBeStructType()
     {
         Type enumeratorType = typeof(ConcurrentCircularBuffer<TestItem>.Enumerator);
@@ -26,7 +25,6 @@ public partial class ConcurrentCircularBufferTests
     /// immutable, meaning none expose a public setter.
     /// </summary>
     [TestMethod]
-    [TestCategory("Structural")]
     public void StructureOf_ConcurrentCircularBufferEnumerator_ShouldExposeOnlyImmutablePublicProperties()
     {
         Type enumeratorType = typeof(ConcurrentCircularBuffer<TestItem>.Enumerator);

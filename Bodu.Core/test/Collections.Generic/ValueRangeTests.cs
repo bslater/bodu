@@ -19,10 +19,9 @@ public partial class ValueRangeTests
     /// associated value.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void ValueRange_WhenConstructed_ShouldExposeEndpointsAndValue()
     {
-        ValueRange<int, string> sut = new ValueRange<int, string>(0, 10, "hello");
+        var sut = new ValueRange<int, string>(0, 10, "hello");
 
         Assert.AreEqual(0, sut.StartInclusive);
         Assert.AreEqual(10, sut.EndExclusive);

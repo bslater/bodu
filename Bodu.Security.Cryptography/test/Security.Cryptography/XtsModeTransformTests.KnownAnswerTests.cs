@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XtsModeTransformTests.KnownAnswerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -61,7 +61,7 @@ public sealed partial class XtsModeTransformTests
     /// Verifies that <see cref="XtsModeTransform.Transform" />, with Ieee1619Vector, returns the expected value.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(XtsKatVectors))]
     public void Transform_WithIeee1619Vector_ShouldEncryptCorrectly(
         string key1Hex, string key2Hex, string tweakHex, string ptHex, string expectedCtHex)
@@ -84,7 +84,7 @@ public sealed partial class XtsModeTransformTests
     /// Verifies that <see cref="XtsModeTransform.Transform" />, with Ieee1619Vector, returns the expected value.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(XtsKatVectors))]
     public void Transform_WithIeee1619Vector_ShouldDecryptToOriginalPlaintext(
         string key1Hex, string key2Hex, string tweakHex, string ptHex, string expectedCtHex)

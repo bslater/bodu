@@ -479,7 +479,6 @@ public sealed class EasterSundayNotableDateAlgorithmTests
     /// Verifies that Easter Sunday is correctly calculated across a known set of years and calendars.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     [DynamicData(nameof(GetInvalidYearTestData), DynamicDataDisplayName = nameof(GetKnownEasterSundayTestDataDisplayName))]
     public void GetDate_WhenGivenKnownYears_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
     {
@@ -697,7 +696,6 @@ public sealed class EasterSundayNotableDateAlgorithmTests
     /// <see href="https://github.com/bslater/bodu/issues/53" />.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     [DynamicData(nameof(GetBrokenOrthodoxTestData), DynamicDataDisplayName = nameof(GetKnownEasterSundayTestDataDisplayName))]
     public void GetDate_WhenGivenOrthodoxKnownYears_ShouldReturnExpectedDate(EasterSundayKnownAnswer knownAnswer)
     {

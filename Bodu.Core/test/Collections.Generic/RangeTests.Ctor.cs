@@ -80,7 +80,7 @@ public partial class RangeTests
     [DataRow(5, 6)]
     public void Ctor_WhenEndpointsAreValid_ShouldStoreEndpoints(int start, int end)
     {
-        Range<int> sut = new Range<int>(start, end);
+        var sut = new Range<int>(start, end);
 
         Assert.AreEqual(start, sut.StartInclusive);
         Assert.AreEqual(end, sut.EndExclusive);
@@ -92,7 +92,7 @@ public partial class RangeTests
     [TestMethod]
     public void Ctor_WhenEndpointsAreStrings_ShouldStoreEndpoints()
     {
-        Range<string> sut = new Range<string>("alpha", "omega");
+        var sut = new Range<string>("alpha", "omega");
 
         Assert.AreEqual("alpha", sut.StartInclusive);
         Assert.AreEqual("omega", sut.EndExclusive);

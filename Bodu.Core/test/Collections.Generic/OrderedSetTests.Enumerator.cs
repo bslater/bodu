@@ -24,7 +24,7 @@ public partial class OrderedSetTests
     public void GetEnumerator_WhenSetPopulated_ShouldYieldAllItemsInOrder()
     {
         OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
-        List<int> seen = new List<int>();
+        var seen = new List<int>();
 
         foreach (int item in sut)
             seen.Add(item);
@@ -38,7 +38,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void GetEnumerator_WhenSetIsEmpty_ShouldYieldNoElements()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         OrderedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
@@ -132,7 +132,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
         IEnumerable<int> typed = sut;
-        List<int> seen = new List<int>();
+        var seen = new List<int>();
 
         foreach (int item in typed)
             seen.Add(item);
@@ -149,7 +149,7 @@ public partial class OrderedSetTests
     {
         OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
         IEnumerable untyped = sut;
-        List<int> seen = new List<int>();
+        var seen = new List<int>();
 
         foreach (object item in untyped)
             seen.Add((int)item);

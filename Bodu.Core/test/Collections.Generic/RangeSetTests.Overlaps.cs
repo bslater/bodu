@@ -17,7 +17,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Overlaps_WhenEndpointIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<string> sut = new RangeSet<string>();
+        var sut = new RangeSet<string>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -36,7 +36,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -50,7 +50,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Overlaps_WhenSetIsEmpty_ShouldReturnFalse()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.IsFalse(sut.Overlaps(0, 10));
     }

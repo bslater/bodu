@@ -17,7 +17,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void ToArray_WhenDictionaryIsEmpty_ShouldReturnEmptyArray()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         ValueRange<int, string>[] array = sut.ToArray();
 
@@ -31,7 +31,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void ToArray_WhenDictionaryPopulated_ShouldReturnEntriesInAscendingOrder()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
         sut.Add(20, 25, "C");
         sut.Add(0, 5, "A");
         sut.Add(10, 15, "B");

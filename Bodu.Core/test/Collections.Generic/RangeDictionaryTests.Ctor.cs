@@ -21,7 +21,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(0, sut.Capacity);
@@ -38,7 +38,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>(null);
+        var sut = new RangeDictionary<int, string>(null);
 
         Assert.AreSame(Comparer<int>.Default, sut.Comparer);
     }
@@ -51,7 +51,7 @@ public partial class RangeDictionaryTests
     {
         IComparer<int> comparer = Comparer<int>.Default;
 
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>(comparer);
+        var sut = new RangeDictionary<int, string>(comparer);
 
         Assert.AreSame(comparer, sut.Comparer);
     }

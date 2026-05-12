@@ -17,7 +17,7 @@ public partial class ValueRangeTests
     [TestMethod]
     public void ToString_WhenAllPresent_ShouldFormatHalfOpenWithValue()
     {
-        ValueRange<int, string> sut = new ValueRange<int, string>(0, 10, "tier-A");
+        var sut = new ValueRange<int, string>(0, 10, "tier-A");
 
         Assert.AreEqual("[0, 10) = tier-A", sut.ToString());
     }
@@ -29,7 +29,7 @@ public partial class ValueRangeTests
     [TestMethod]
     public void ToString_WhenValueIsValueType_ShouldFormatHalfOpenWithValue()
     {
-        ValueRange<int, int> sut = new ValueRange<int, int>(0, 10, 42);
+        var sut = new ValueRange<int, int>(0, 10, 42);
 
         Assert.AreEqual("[0, 10) = 42", sut.ToString());
     }

@@ -185,7 +185,6 @@ public partial class MultisetTests
     /// Verifies that set-operation results do not share state with either operand.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     public void SetOperations_WhenResultMutated_ShouldNotAffectOperands()
     {
         var a = new Multiset<int>([1, 2]);

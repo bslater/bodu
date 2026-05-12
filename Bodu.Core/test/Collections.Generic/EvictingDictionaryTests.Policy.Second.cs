@@ -12,7 +12,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the first item without a second-chance flag when capacity is exceeded.
     /// </summary>
     [TestMethod]
-    [TestCategory("SecondChance")]
     public void Add_WhenPolicyIsSCAndCapacityExceeded_ShouldEvictItemWithoutSecondChance()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.SecondChance);
@@ -31,7 +30,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> grants a second chance to an item under SecondChance policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("SecondChance")]
     public void Touch_WhenPolicyIsSC_ShouldGrantSecondChance()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.SecondChance);

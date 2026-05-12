@@ -12,7 +12,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the oldest item when capacity is exceeded using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void Add_WhenPolicyIsFIFOAndCapacityExceeded_ShouldEvictOldest()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
@@ -29,7 +28,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is raised with the correct key and value when an item is evicted using FirstInFirstOut.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void ItemEvicted_WhenPolicyIsFIFOAndItemEvicted_ShouldBeCalledWithCorrectKeyValue()
     {
         var evictedItems = new List<string>();
@@ -47,7 +45,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that multiple ItemEvicted events are raised when multiple evictions occur.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void ItemEvicted_WhenPolicyIsFIFOAndMultipleEvictions_ShouldTriggerMultipleEvents()
     {
         var evicted = new List<string>();
@@ -66,7 +63,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicting" /> is raised before ItemEvicted when eviction occurs using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void ItemEvicting_WhenPolicyIsFIFOAndEvictionOccurs_ShouldFireBeforeItemEvicted()
     {
         var sequence = new List<string>();
@@ -156,7 +152,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that the oldest item is evicted when using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void ItemEvicted_WhenPolicyIsFIFO_ShouldEvictOldestItem()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
@@ -174,7 +169,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that the FirstInFirstOut insertion order is reset when Clear is called.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void Clear_WhenPolicyIsFIFOAndCalled_ShouldResetInsertionOrder()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
@@ -194,7 +188,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that the oldest inserted key is returned when using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void PeekEvictionCandidate_WhenPolicyIsFIFO_ShouldReturnOldestKey()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);
@@ -209,7 +202,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that no exception is thrown when the FirstInFirstOut eviction candidate has already been removed.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void EvictionEvents_WhenPolicyIsFIFOAndCandidateMissing_ShouldNotThrow()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
@@ -227,7 +219,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> does not affect eviction order when using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void Touch_WhenPolicyIsFIFOAndKeyTouched_ShouldHaveNoEffectOnEvictionOrder()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);
@@ -249,7 +240,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> increments TotalTouches when using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void Touch_WhenPolicyIsFIFO_ShouldIncrementTotalTouches()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);
@@ -265,7 +255,6 @@ public partial class EvictingDictionaryTests
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> does not alter eviction order when using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    [TestCategory("FIFO")]
     public void TouchOrThrow_WhenPolicyIsFIFOAndKeyExists_ShouldHaveNoEffect()
     {
         var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);

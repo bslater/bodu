@@ -22,7 +22,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(0, sut.Capacity);
@@ -40,7 +40,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
     {
-        OrderedSet<string> sut = new OrderedSet<string>((IEqualityComparer<string>?)null);
+        var sut = new OrderedSet<string>((IEqualityComparer<string>?)null);
 
         Assert.AreSame(EqualityComparer<string>.Default, sut.Comparer);
     }
@@ -51,7 +51,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
     {
-        OrderedSet<string> sut = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
+        var sut = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
 
         Assert.AreSame(StringComparer.OrdinalIgnoreCase, sut.Comparer);
 
@@ -89,7 +89,7 @@ public partial class OrderedSetTests
     [DataRow(1024)]
     public void Ctor_WhenCapacityIsValid_ShouldAllocateRequestedCapacity(int capacity)
     {
-        OrderedSet<int> sut = new OrderedSet<int>(capacity);
+        var sut = new OrderedSet<int>(capacity);
 
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(capacity, sut.Capacity);
@@ -105,7 +105,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenCapacityAndComparerProvided_ShouldUseBoth()
     {
-        OrderedSet<string> sut = new OrderedSet<string>(8, StringComparer.OrdinalIgnoreCase);
+        var sut = new OrderedSet<string>(8, StringComparer.OrdinalIgnoreCase);
 
         Assert.AreEqual(8, sut.Capacity);
         Assert.AreSame(StringComparer.OrdinalIgnoreCase, sut.Comparer);
@@ -145,7 +145,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionContainsDuplicates_ShouldPreserveFirstOccurrenceOrder()
     {
-        OrderedSet<int> sut = new OrderedSet<int>(new[] { 1, 2, 2, 3, 1, 4 });
+        var sut = new OrderedSet<int>(new[] { 1, 2, 2, 3, 1, 4 });
 
         Assert.AreEqual(4, sut.Count);
         Assert.AreEqual(1, sut[0]);
@@ -160,7 +160,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
     {
-        OrderedSet<int> sut = new OrderedSet<int>(Array.Empty<int>());
+        var sut = new OrderedSet<int>(Array.Empty<int>());
 
         Assert.AreEqual(0, sut.Count);
     }
@@ -171,7 +171,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
     {
-        OrderedSet<string> sut = new OrderedSet<string>(
+        var sut = new OrderedSet<string>(
             new[] { "A", "a", "B", "b" },
             StringComparer.OrdinalIgnoreCase);
 
@@ -187,9 +187,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionHasCountHint_ShouldPreallocateCapacity()
     {
-        List<int> source = new List<int> { 1, 2, 3, 4, 5 };
+        var source = new List<int> { 1, 2, 3, 4, 5 };
 
-        OrderedSet<int> sut = new OrderedSet<int>(source);
+        var sut = new OrderedSet<int>(source);
 
         Assert.AreEqual(5, sut.Count);
         Assert.IsTrue(sut.Capacity >= 5);
@@ -205,7 +205,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsReadOnly_WhenInspected_ShouldReturnFalse()
     {
-        OrderedSet<int> sut = new OrderedSet<int>();
+        var sut = new OrderedSet<int>();
 
         Assert.IsFalse(sut.IsReadOnly);
     }

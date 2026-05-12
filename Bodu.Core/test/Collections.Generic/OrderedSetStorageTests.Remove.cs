@@ -145,7 +145,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -297,7 +297,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Clear_WhenStorageIsEmpty_ShouldBeNoOp()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
         int versionBefore = sut._version;
 
         sut.Clear();

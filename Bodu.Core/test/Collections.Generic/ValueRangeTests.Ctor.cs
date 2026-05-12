@@ -79,7 +79,7 @@ public partial class ValueRangeTests
     [DataRow(int.MinValue, int.MaxValue, "wide")]
     public void Ctor_WhenEndpointsAndValueAreValid_ShouldStoreAll(int start, int end, string value)
     {
-        ValueRange<int, string> sut = new ValueRange<int, string>(start, end, value);
+        var sut = new ValueRange<int, string>(start, end, value);
 
         Assert.AreEqual(start, sut.StartInclusive);
         Assert.AreEqual(end, sut.EndExclusive);
@@ -93,7 +93,7 @@ public partial class ValueRangeTests
     [TestMethod]
     public void Ctor_WhenValueIsNull_ShouldStoreNull()
     {
-        ValueRange<int, string?> sut = new ValueRange<int, string?>(0, 10, null);
+        var sut = new ValueRange<int, string?>(0, 10, null);
 
         Assert.IsNull(sut.Value);
     }
@@ -104,7 +104,7 @@ public partial class ValueRangeTests
     [TestMethod]
     public void Ctor_WhenValueIsValueType_ShouldStoreValue()
     {
-        ValueRange<int, int> sut = new ValueRange<int, int>(0, 10, 42);
+        var sut = new ValueRange<int, int>(0, 10, 42);
 
         Assert.AreEqual(42, sut.Value);
     }

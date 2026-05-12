@@ -19,7 +19,6 @@ public abstract partial class BlockCipherModeTests<TMode>
     /// primitive to confirm end-to-end correctness.
     /// </summary>
     [TestMethod]
-    [TestCategory("Regression")]
     public void Transform_WithRealAesCipher_RandomKey_ShouldRoundTrip()
     {
         var key = new byte[16];

@@ -16,7 +16,6 @@ public partial class MultiValueDictionaryTests
     /// Verifies that the default constructor produces an empty dictionary with zero counts.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Ctor_WhenDefault_ShouldBeEmpty()
     {
         var mvd = new MultiValueDictionary<string, int>();

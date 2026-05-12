@@ -21,7 +21,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Union_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -64,7 +64,7 @@ public partial class RangeSetTests
     public void Union_WhenOneSideIsEmpty_ShouldReturnContentsOfNonEmpty()
     {
         RangeSet<int> populated = CreateSet((0, 5), (10, 15));
-        RangeSet<int> empty = new RangeSet<int>();
+        var empty = new RangeSet<int>();
 
         RangeSet<int> result = populated.Union(empty);
 
@@ -96,7 +96,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Intersect_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -153,7 +153,7 @@ public partial class RangeSetTests
     public void Intersect_WhenOneSideIsEmpty_ShouldReturnEmpty()
     {
         RangeSet<int> populated = CreateSet((0, 10));
-        RangeSet<int> empty = new RangeSet<int>();
+        var empty = new RangeSet<int>();
 
         RangeSet<int> result = populated.Intersect(empty);
 
@@ -185,7 +185,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Except_WhenOtherIsNull_ShouldThrowArgumentNullException()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

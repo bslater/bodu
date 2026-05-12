@@ -17,7 +17,7 @@ public partial class ValueRangeTests
     [TestMethod]
     public void Contains_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        ValueRange<string, int> sut = new ValueRange<string, int>("a", "z", 42);
+        var sut = new ValueRange<string, int>("a", "z", 42);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -31,7 +31,7 @@ public partial class ValueRangeTests
     [TestMethod]
     public void Contains_WhenKeyEqualsStartInclusive_ShouldReturnTrue()
     {
-        ValueRange<int, string> sut = new ValueRange<int, string>(0, 10, "x");
+        var sut = new ValueRange<int, string>(0, 10, "x");
 
         Assert.IsTrue(sut.Contains(0));
     }
@@ -42,7 +42,7 @@ public partial class ValueRangeTests
     [TestMethod]
     public void Contains_WhenKeyEqualsEndExclusive_ShouldReturnFalse()
     {
-        ValueRange<int, string> sut = new ValueRange<int, string>(0, 10, "x");
+        var sut = new ValueRange<int, string>(0, 10, "x");
 
         Assert.IsFalse(sut.Contains(10));
     }
@@ -59,7 +59,7 @@ public partial class ValueRangeTests
     [DataRow(int.MaxValue, false)]
     public void Contains_WhenKeysVary_ShouldReturnExpected(int key, bool expected)
     {
-        ValueRange<int, string> sut = new ValueRange<int, string>(0, 10, "x");
+        var sut = new ValueRange<int, string>(0, 10, "x");
 
         Assert.AreEqual(expected, sut.Contains(key));
     }

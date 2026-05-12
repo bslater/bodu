@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitAlgorithmTests.Reset.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <param name="body">The body characters to append in the second run.</param>
     /// <param name="expectedCheck">The check code the algorithm is expected to emit for the second run.</param>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Reset_BetweenAppends_ShouldDiscardPriorState(string name, string body, string expectedCheck)
     {

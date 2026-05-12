@@ -16,7 +16,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits.</param>
     /// <param name="expectedCheck">The expected check digit.</param>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(KnownAnswerData))]
     public void Compute_WhenKnownAnswer_ShouldReturnExpectedCheckDigit(string name, string body, char expectedCheck)
     {
@@ -32,7 +32,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     /// <param name="body">The body digits.</param>
     /// <param name="expectedCheck">The expected check digit (unused; cross-comparison is between Compute and Append).</param>
     [TestMethod]
-    [TestCategory("Regression")]
+
     [DynamicData(nameof(KnownAnswerData))]
     public void Compute_WhenInvokedForKnownAnswer_ShouldAgreeWithStreamingAppend(string name, string body, char expectedCheck)
     {

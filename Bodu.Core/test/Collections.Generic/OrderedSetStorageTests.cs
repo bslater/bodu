@@ -22,10 +22,9 @@ public partial class OrderedSetStorageTests
     /// the canonical smoke check for the engine.
     /// </summary>
     [TestMethod]
-    [TestCategory("Smoke")]
     public void Add_WhenItemIsNew_ShouldAppendAndReturnTrue()
     {
-        OrderedSetStorage<int> sut = new OrderedSetStorage<int>(0, null);
+        var sut = new OrderedSetStorage<int>(0, null);
 
         bool added = sut.Add(42);
 
@@ -43,7 +42,7 @@ public partial class OrderedSetStorageTests
     private static OrderedSetStorage<T> CreateStorage<T>(IEnumerable<T> items, IEqualityComparer<T>? comparer = null)
         where T : notnull
     {
-        OrderedSetStorage<T> storage = new OrderedSetStorage<T>(0, comparer);
+        var storage = new OrderedSetStorage<T>(0, comparer);
         foreach (T item in items)
             storage.Add(item);
 
@@ -58,7 +57,7 @@ public partial class OrderedSetStorageTests
     private static T[] Snapshot<T>(OrderedSetStorage<T> storage)
         where T : notnull
     {
-        T[] result = new T[storage.Count];
+        var result = new T[storage.Count];
         for (int i = 0; i < storage.Count; i++)
             result[i] = storage.GetAt(i);
 

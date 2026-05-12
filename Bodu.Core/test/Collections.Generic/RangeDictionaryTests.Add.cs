@@ -21,7 +21,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Add_WhenStartIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -35,7 +35,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Add_WhenEndIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<string, int> sut = new RangeDictionary<string, int>();
+        var sut = new RangeDictionary<string, int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -51,7 +51,7 @@ public partial class RangeDictionaryTests
     [DataRow(10, 5)]
     public void Add_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -69,7 +69,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Add_WhenDictionaryIsEmpty_ShouldInsertOnly()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         sut.Add(0, 10, "tier-A");
 
@@ -82,7 +82,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Add_WhenRangesAreNonOverlappingOutOfOrder_ShouldKeepSortedOrder()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         sut.Add(20, 30, "C");
         sut.Add(0, 5, "A");
@@ -97,7 +97,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Add_WhenRangesAreAdjacent_ShouldKeepAsSeparateEntries()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         sut.Add(0, 10, "A");
         sut.Add(10, 20, "B");
@@ -111,7 +111,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Add_WhenValueIsNull_ShouldStoreNullValue()
     {
-        RangeDictionary<int, string?> sut = new RangeDictionary<int, string?>();
+        var sut = new RangeDictionary<int, string?>();
 
         sut.Add(0, 10, null);
 
@@ -223,7 +223,7 @@ public partial class RangeDictionaryTests
     [TestMethod]
     public void Add_WhenValueRangeProvided_ShouldDelegateToEndpointOverload()
     {
-        RangeDictionary<int, string> sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<int, string>();
 
         sut.Add(new ValueRange<int, string>(0, 10, "x"));
 

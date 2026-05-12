@@ -93,7 +93,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void RemoveAt_WhenSetIsEmpty_ShouldThrowArgumentOutOfRangeException()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -162,7 +162,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
     {
-        IndexedSet<int> sut = new IndexedSet<int>();
+        var sut = new IndexedSet<int>();
 
         sut.Clear();
 

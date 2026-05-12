@@ -35,7 +35,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Indexer_WhenSetIsEmpty_ShouldThrowArgumentOutOfRangeException()
     {
-        RangeSet<int> sut = new RangeSet<int>();
+        var sut = new RangeSet<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

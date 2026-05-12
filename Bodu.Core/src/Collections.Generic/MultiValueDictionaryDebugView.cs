@@ -24,14 +24,14 @@ internal sealed class MultiValueDictionaryDebugView<TKey, TValue>
     /// Initializes a new instance of the <see cref="MultiValueDictionaryDebugView{TKey, TValue}" /> class.
     /// </summary>
     /// <param name="dictionary">The dictionary displayed by the debugger.</param>
-    public MultiValueDictionaryDebugView(MultiValueDictionary<TKey, TValue> dictionary)
-    {
-        _dictionary = dictionary;
-    }
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="dictionary"/> is <see langword="null"/>.</exception>
+    public MultiValueDictionaryDebugView(MultiValueDictionary<TKey, TValue> dictionary) =>
+        _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
 
     /// <summary>
     /// Gets the key-value-list pairs displayed in the debugger.
     /// </summary>
+    /// <remarks>This property is hidden from the debugger display root to directly expand the items for quick inspection.</remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
     public KeyValuePair<TKey, IReadOnlyList<TValue>>[] Items =>
         _dictionary.ToArray();
