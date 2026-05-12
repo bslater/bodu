@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonitoringHashAlgorithmTests.Seed.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class MonitoringHashAlgorithmTests
     [TestMethod]
     public void Seed_WhenDefaultConstructed_ShouldBeZero()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.AreEqual<ulong>(0, algorithm.Seed);
     }
 
@@ -36,8 +36,8 @@ public partial class MonitoringHashAlgorithmTests
     [TestMethod]
     public void Seed_WhenSetAfterHashingStarted_ShouldThrow()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] input = new byte[] { 1, 2, 3 };
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
+        var input = new byte[] { 1, 2, 3 };
         algorithm.TransformBlock(input, 0, input.Length, input, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() => algorithm.Seed = 1234);
@@ -49,8 +49,8 @@ public partial class MonitoringHashAlgorithmTests
     [TestMethod]
     public void Seed_WhenSetAfterHashing_ShouldNotThrow()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] input = new byte[] { 1, 2, 3 };
+        MonitoringHashAlgorithm algorithm = CreateAlgorithm();
+        var input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
 
@@ -65,13 +65,13 @@ public partial class MonitoringHashAlgorithmTests
     [TestMethod]
     public void ComputeHash_WithDifferentSeeds_ShouldReturnDifferentResults()
     {
-        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
+        var input = new byte[] { 0x10, 0x20, 0x30 };
 
         var algorithmA = new MonitoringHashAlgorithm { Seed = 10 };
         var algorithmB = new MonitoringHashAlgorithm { Seed = 20 };
 
-        byte[] resultA = algorithmA.ComputeHash(input);
-        byte[] resultB = algorithmB.ComputeHash(input);
+        var resultA = algorithmA.ComputeHash(input);
+        var resultB = algorithmB.ComputeHash(input);
 
         CollectionAssert.AreNotEqual(resultA, resultB);
     }
@@ -87,7 +87,7 @@ public partial class MonitoringHashAlgorithmTests
         _ = algorithm.ComputeHash(new byte[] { 0x01, 0x02 });
         algorithm.Initialize();
 
-        byte[] fresh = algorithm.ComputeHash(Array.Empty<byte>());
+        var fresh = algorithm.ComputeHash(Array.Empty<byte>());
 
         // Should match seed state as algorithm result
         var expected = BitConverter.GetBytes((uint)10);

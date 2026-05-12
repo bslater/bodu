@@ -12,19 +12,19 @@ namespace Bodu;
 [TestClass]
 public sealed class EnumeratorImmutabilityReflectionTests
 {
-    private static readonly string[] RequiredReadOnlyProperties = new[]
-    {
+    private static readonly string[] s_requiredReadOnlyProperties =
+    [
         nameof(IEnumerator.Current)
-    };
+    ];
 
     /// <summary>
     /// Provides all value types in the current assembly that implement IEnumerator or IEnumerator&lt;T&gt;.
     /// </summary>
     public static IEnumerable<object[]> GetEnumeratorStructTypes()
     {
-        var assembly = typeof(Bodu.ThrowHelper).Assembly;
+        Assembly assembly = typeof(Bodu.ThrowHelper).Assembly;
 
-        foreach (var type in assembly.GetTypes())
+        foreach (Type type in assembly.GetTypes())
         {
             if (!type.IsValueType || type.IsEnum)
                 continue;
@@ -41,13 +41,13 @@ public sealed class EnumeratorImmutabilityReflectionTests
     /// Verifies that all required properties from IEnumerator or IEnumerator&lt;T&gt; are read-only (getter only).
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetEnumeratorStructTypes), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetEnumeratorStructTypes))]
     public void EnumeratorInterfaceProperties_ShouldBeReadOnly(Type enumeratorType)
     {
-        var props = enumeratorType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        PropertyInfo[] props = enumeratorType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
         var violatingProps = props
-            .Where(p => RequiredReadOnlyProperties.Contains(p.Name) && p.CanWrite)
+            .Where(p => s_requiredReadOnlyProperties.Contains(p.Name) && p.CanWrite)
             .Select(p => p.Name)
             .ToList();
 

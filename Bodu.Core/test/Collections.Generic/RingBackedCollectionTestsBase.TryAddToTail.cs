@@ -15,7 +15,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void TryAddToTail_WhenSpaceAvailable_ShouldReturnTrueAndStore()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.IsTrue(TryAddToTail(collection, 1));
         Assert.AreEqual(1, PeekHead(collection));
         Assert.AreEqual(1, GetCount(collection));
@@ -28,8 +28,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void TryAddToTail_WhenBelowInitialCapacity_ShouldReturnTrue()
     {
-        var collection = CreateCollection(5);
-        for (int i = 0; i < 5; i++)
+        TCollection collection = CreateCollection(5);
+        for (var i = 0; i < 5; i++)
             Assert.IsTrue(TryAddToTail(collection, i));
     }
 }

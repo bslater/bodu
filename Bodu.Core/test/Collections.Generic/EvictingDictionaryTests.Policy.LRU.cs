@@ -284,8 +284,8 @@ public partial class EvictingDictionaryTests
         dictionary.Add("c", 3);
         dictionary.Touch("a");
 
-        var actual = dictionary.ToArray(); // Iteration order reflects recency
-        var expected = new[]
+        KeyValuePair<string, int>[] actual = dictionary.ToArray(); // Iteration order reflects recency
+        KeyValuePair<string, int>[] expected = new[]
         {
             new KeyValuePair<string, int>("b", 2),
             new KeyValuePair<string, int>("c", 3),

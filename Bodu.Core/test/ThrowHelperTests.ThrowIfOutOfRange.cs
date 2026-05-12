@@ -77,20 +77,18 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}" /> uses inclusive bounds by default when the 'inclusive' parameter is omitted.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInRangeTestData_UsingDefaultInclusive), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetInRangeTestData_UsingDefaultInclusive))]
     public void ThrowIfOutOfRange_WhenCalledWithoutInclusiveParameter_ShouldBehaveAsInclusive<T>(T value, T min, T max)
-        where T : IComparable<T>
-    {
+        where T : IComparable<T> =>
         // Should not throw
         ThrowHelper.ThrowIfOutOfRange(value, min, max);
-    }
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}" /> throws an <see cref="ArgumentOutOfRangeException" /> when the
     /// value is outside the inclusive bounds and the 'inclusive' parameter is omitted.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetOutOfRangeTestData_UsingDefaultInclusive), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetOutOfRangeTestData_UsingDefaultInclusive))]
     public void ThrowIfOutOfRange_WhenCalledWithoutInclusiveParameter_ShouldThrowForValuesOutsideInclusiveRange<T>(T value, T min, T max)
         where T : IComparable<T>
     {
@@ -104,7 +102,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}" /> throws for values outside the specified range.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetOutOfRangeTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetOutOfRangeTestData))]
     public void ThrowIfOutOfRange_WhenValueOutsideRange_ShouldThrow<T>(T value, T min, T max, bool inclusive)
         where T : IComparable<T>
     {
@@ -118,10 +116,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}" /> does not throw for values within the specified range.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetInRangeTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetInRangeTestData))]
     public void ThrowIfOutOfRange_WhenValueWithinRange_ShouldNotThrow<T>(T value, T min, T max, bool inclusive)
-        where T : IComparable<T>
-    {
-        ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive);
-    }
+        where T : IComparable<T> => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive);
 }

@@ -33,7 +33,7 @@ public class IndexedPriorityQueueDebugViewTests
         queue.Enqueue("c", 20);
 
         var view = new IndexedPriorityQueueDebugView<string, int>(queue);
-        var items = view.Items;
+        KeyValuePair<string, int>[] items = view.Items;
 
         Assert.AreEqual(3, items.Length);
         Assert.AreEqual("b", items[0].Key);

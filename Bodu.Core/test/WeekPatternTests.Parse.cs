@@ -13,10 +13,7 @@ public partial class WeekPatternTests
     /// when the input is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputIsNull_ShouldThrowException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.Parse(null!); });
-    }
+    public void Parse_WhenInputIsNull_ShouldThrowException() => Assert.ThrowsExactly<ArgumentNullException>(() => { _ = WeekPattern.Parse(null!); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> throws <see cref="FormatException" /> for
@@ -24,10 +21,7 @@ public partial class WeekPatternTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekPatternTests.GetInvalidParseInputNoFormatTestData), typeof(WeekPatternTests))]
-    public void Parse_WhenInvalidInput_ShouldThrowFormatException(string input)
-    {
-        Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse(input); });
-    }
+    public void Parse_WhenInvalidInput_ShouldThrowFormatException(string input) => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse(input); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> correctly parses binary-formatted strings
@@ -35,10 +29,7 @@ public partial class WeekPatternTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekPatternTests.GetAllBitmaskPermutationTestData), typeof(WeekPatternTests))]
-    public void Parse_WhenValidBinaryInput_ShouldReturnExpected(byte expected, string _, string input)
-    {
-        Assert.AreEqual(expected, WeekPattern.Parse(input));
-    }
+    public void Parse_WhenValidBinaryInput_ShouldReturnExpected(byte expected, string _, string input) => Assert.AreEqual(expected, WeekPattern.Parse(input));
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> correctly parses Monday-first symbol
@@ -62,40 +53,28 @@ public partial class WeekPatternTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekPatternTests.GetAllBitmaskPermutationTestData), typeof(WeekPatternTests))]
-    public void Parse_WhenValidSundaySymbolInput_ShouldReturnExpected(byte expected, string input, string _)
-    {
-        Assert.AreEqual(expected, WeekPattern.Parse(input));
-    }
+    public void Parse_WhenValidSundaySymbolInput_ShouldReturnExpected(byte expected, string input, string _) => Assert.AreEqual(expected, WeekPattern.Parse(input));
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> throws <see cref="FormatException" />
     /// when the input is not exactly seven characters long.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputLengthIsNot7_ShouldThrowException()
-    {
-        Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTF"); });
-    }
+    public void Parse_WhenInputLengthIsNot7_ShouldThrowException() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTF"); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> throws <see cref="FormatException" />
     /// when the input contains an unrecognised character.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputContainsInvalidCharacter_ShouldThrowException()
-    {
-        Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTFX"); });
-    }
+    public void Parse_WhenInputContainsInvalidCharacter_ShouldThrowException() => Assert.ThrowsExactly<FormatException>(() => { _ = WeekPattern.Parse("SMTWTFX"); });
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> correctly identifies a Sunday-first
     /// string where all seven days are selected.
     /// </summary>
     [TestMethod]
-    public void Parse_WhenInputIsSundayFirstAllSelected_ShouldSelectAllDays()
-    {
-        Assert.AreEqual(7, WeekPattern.Parse("SMTWTFS").Count);
-    }
+    public void Parse_WhenInputIsSundayFirstAllSelected_ShouldSelectAllDays() => Assert.AreEqual(7, WeekPattern.Parse("SMTWTFS").Count);
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Parse(string)" /> correctly parses a Sunday-first string

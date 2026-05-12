@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,19 +12,6 @@ namespace Bodu.Security.Cryptography;
 
 public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
 {
-    private static string[] IgnoreFieldNames => new[]
-    {
-        "HashSizeValue",
-        "State",
-        "disposed",
-        "_disposed",
-    };
-
-    /// <summary>
-    /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
-    /// </summary>
-    public static IEnumerable<object[]> GetDisposableFields() => TestHelpers.GetFieldInfoForType<TCipher>(excludeFileds: IgnoreFieldNames);
-
     /// <summary>
     /// Verifies that writable public properties on a hash algorithm throw an <see cref="ObjectDisposedException" /> when set after the
     /// algorithm instance has been disposed.
@@ -34,8 +21,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// This test uses reflection to reassign the property's current hashValue after calling <see cref="HashAlgorithm.Dispose" />. This
     /// ensures concrete <see cref="HashAlgorithm" /> implementations enforce correct disposal behaviour.
     /// </remarks>
-    [TestMethod]
-    [DynamicData(nameof(GetWritableProperties))]
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
+    [DynamicData(nameof(GetAlgorithmWritableProperties), DynamicDataDisplayName = nameof(TestHelpers.GetTypePropertyDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
     public void Dispose_WhenAssigningProperty_ShouldThrowExactly(PropertyInfo property)
     {
         if (property is null)
@@ -44,7 +31,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             return;
         }
 
-        using var cipher = CreateBlockCipher();
+        using TCipher cipher = CreateBlockCipher();
 
         object? currentValue;
         try
@@ -66,7 +53,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         }
         catch (TargetInvocationException tie) when (tie.InnerException is ObjectDisposedException)
         {
-            // ✅ Expected: disposed object should not allow configuration
+            // Expected: disposed object should not allow configuration
         }
         catch (Exception ex)
         {
@@ -83,9 +70,9 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     /// Verifies that a disposable algorithm properly zeroes or nullifies its internal fields after disposal.
     /// </summary>
     /// <param name="field">The field to inspect for zeroed or null state.</param>
-    [TestMethod]
-    [DynamicData(nameof(GetDisposableFields), DynamicDataDisplayName = nameof(TestHelpers.GetDisposableFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
-    public void Dispose_WhenCalled_ShouldZeroPrivateField(FieldInfo field)
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
+    [DynamicData(nameof(GetAlgorithmFields), DynamicDataDisplayName = nameof(TestHelpers.GetTypeFieldDisplayName), DynamicDataDisplayNameDeclaringType = typeof(TestHelpers))]
+    public void Dispose_WhenCalled_ShouldZeroDeclaredField(FieldInfo field)
     {
         if (field is null)
         {
@@ -93,13 +80,13 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
             return;
         }
 
-        using var cipher = CreateBlockCipher();
+        using TCipher cipher = CreateBlockCipher();
         var buffer = new byte[cipher.BlockSize];
         cipher.Encrypt(buffer, buffer);
         cipher.Dispose();
 
-        object? value = field.GetValue(cipher);
-        string label = $"Field '{field.DeclaringType},{field.Name}'";
+        var value = field.GetValue(cipher);
+        var label = $"Field '{field.DeclaringType},{field.Name}'";
 
         var result = TestHelpers.AssertFieldValueIsNullOrDefault(field, cipher);
 
@@ -113,8 +100,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(BlockCipherVariants))]
     public void Dispose_WhenDecryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var cipher = CreateBlockCipher(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
+        using TCipher cipher = CreateBlockCipher(variant);
         cipher.Dispose();
 
         var buffer = new byte[specification.BlockSize];
@@ -131,8 +118,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(BlockCipherVariants))]
     public void Dispose_WhenEncryptCalledAfterDispose_ShouldThrowExactly(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var cipher = CreateBlockCipher(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
+        using TCipher cipher = CreateBlockCipher(variant);
         cipher.Dispose();
 
         var buffer = new byte[specification.BlockSize];
@@ -149,7 +136,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
-        var cipher = CreateBlockCipher();
+        TCipher cipher = CreateBlockCipher();
         cipher.Dispose();
 
         try

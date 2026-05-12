@@ -12,7 +12,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionTooSmall" />, when CollectionTooSmall, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetTooSmallCollectionTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetTooSmallCollectionTestData))]
     public void ThrowIfCollectionTooSmall_WhenCollectionTooSmall_ShouldThrowArgumentException(ICollection<int> collection, int minimumCount)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -25,11 +25,8 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfCollectionTooSmall" />, when CollectionIsSufficient, NotThrow.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetSufficientCollectionTestData), DynamicDataSourceType.Method)]
-    public void ThrowIfCollectionTooSmall_WhenCollectionIsSufficient_ShouldNotThrow(ICollection<int> collection, int minimumCount)
-    {
-        ThrowHelper.ThrowIfCollectionTooSmall<int>(collection, minimumCount);
-    }
+    [DynamicData(nameof(GetSufficientCollectionTestData))]
+    public void ThrowIfCollectionTooSmall_WhenCollectionIsSufficient_ShouldNotThrow(ICollection<int> collection, int minimumCount) => ThrowHelper.ThrowIfCollectionTooSmall<int>(collection, minimumCount);
 
     private static IEnumerable<object[]> GetTooSmallCollectionTestData()
     {

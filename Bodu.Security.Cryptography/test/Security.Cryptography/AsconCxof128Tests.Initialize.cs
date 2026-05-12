@@ -24,7 +24,7 @@ public partial class AsconCxof128Tests
         // After reset, customisation must succeed without throwing.
         sut.Customize([0x03]);
         sut.Absorb([0x04]);
-        byte[] output = sut.GetHash(32);
+        var output = sut.GetHash(32);
         Assert.AreEqual(32, output.Length);
     }
 

@@ -69,7 +69,7 @@ public partial class ParallelMerkleTreeHashTests
     public async Task ComputeHashAsync_WhenValidStreamProvided_ShouldReturnHashOfExpectedLength()
     {
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
-        byte[] result = await hasher.ComputeHashAsync(new MemoryStream(MakeData(8)));
+        var result = await hasher.ComputeHashAsync(new MemoryStream(MakeData(8)));
         Assert.IsNotNull(result);
         Assert.AreEqual(4, result.Length); // MonitoringHashAlgorithm: sizeof(uint)
     }
@@ -85,13 +85,13 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_WhenSameInputAsSync_ShouldReturnIdenticalHash()
     {
-        byte[] data = MakeData(21);
+        var data = MakeData(21);
 
         using var async = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         using var sync = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
-        byte[] asyncResult = await async.ComputeHashAsync(new MemoryStream(data));
-        byte[] syncResult = sync.ComputeHash(data);
+        var asyncResult = await async.ComputeHashAsync(new MemoryStream(data));
+        var syncResult = sync.ComputeHash(data);
 
         CollectionAssert.AreEqual(syncResult, asyncResult);
     }
@@ -110,8 +110,8 @@ public partial class ParallelMerkleTreeHashTests
 
         // IncrementingByteStream delivers at most half its remaining bytes per Read call.
         using var stream = new IncrementingByteStream(length);
-        byte[] asyncResult = await asyncHasher.ComputeHashAsync(stream);
-        byte[] syncResult = syncHasher.ComputeHash(new IncrementingByteStream(length).ToArray());
+        var asyncResult = await asyncHasher.ComputeHashAsync(stream);
+        var syncResult = syncHasher.ComputeHash(new IncrementingByteStream(length).ToArray());
 
         CollectionAssert.AreEqual(syncResult, asyncResult);
     }
@@ -177,11 +177,11 @@ public partial class ParallelMerkleTreeHashTests
     public async Task ComputeHashAsync_WhenVariousConfigurationsUsed_ShouldMatchHandComputedRoot(
         int blockSize, int fanOut, int dataLength)
     {
-        byte[] data = MakeData(dataLength);
-        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        var data = MakeData(dataLength);
+        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, blockSize, fanOut);
-        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        var actual = await hasher.ComputeHashAsync(new MemoryStream(data));
 
         CollectionAssert.AreEqual(expected, actual,
             $"Mismatch: blockSize={blockSize}, fanOut={fanOut}, length={dataLength}");
@@ -198,13 +198,13 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_WhenStreamDeliversOneByteAtATime_ShouldMatchSyncResult()
     {
-        byte[] data = MakeData(13);
+        var data = MakeData(13);
 
         using var syncHasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         using var asyncHasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
-        byte[] expected = syncHasher.ComputeHash(data);
-        byte[] actual = await asyncHasher.ComputeHashAsync(new FixedChunkStream(data, chunkSize: 1));
+        var expected = syncHasher.ComputeHash(data);
+        var actual = await asyncHasher.ComputeHashAsync(new FixedChunkStream(data, chunkSize: 1));
 
         CollectionAssert.AreEqual(expected, actual,
             "FixedChunkStream(chunkSize=1) produced a different root than the sync overload.");
@@ -220,13 +220,13 @@ public partial class ParallelMerkleTreeHashTests
     [DataRow(3)]
     public async Task ComputeHashAsync_WhenChunkSmallerThanBlockSize_ShouldMatchSyncResult(int chunkSize)
     {
-        byte[] data = MakeData(17);
+        var data = MakeData(17);
 
         using var syncHasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         using var asyncHasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
-        byte[] expected = syncHasher.ComputeHash(data);
-        byte[] actual = await asyncHasher.ComputeHashAsync(new FixedChunkStream(data, chunkSize));
+        var expected = syncHasher.ComputeHash(data);
+        var actual = await asyncHasher.ComputeHashAsync(new FixedChunkStream(data, chunkSize));
 
         CollectionAssert.AreEqual(expected, actual,
             $"FixedChunkStream(chunkSize={chunkSize}) produced a different root than the sync overload.");
@@ -242,13 +242,13 @@ public partial class ParallelMerkleTreeHashTests
     [DataRow(13)]
     public async Task ComputeHashAsync_WhenChunkLargerThanBlockSize_ShouldMatchSyncResult(int chunkSize)
     {
-        byte[] data = MakeData(25);
+        var data = MakeData(25);
 
         using var syncHasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
         using var asyncHasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
-        byte[] expected = syncHasher.ComputeHash(data);
-        byte[] actual = await asyncHasher.ComputeHashAsync(new FixedChunkStream(data, chunkSize));
+        var expected = syncHasher.ComputeHash(data);
+        var actual = await asyncHasher.ComputeHashAsync(new FixedChunkStream(data, chunkSize));
 
         CollectionAssert.AreEqual(expected, actual,
             $"FixedChunkStream(chunkSize={chunkSize}) produced a different root than the sync overload.");
@@ -261,11 +261,11 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_WhenStreamIntermittentlyReturnsZeroBytes_ShouldProduceCorrectRoot()
     {
-        byte[] data = MakeData(17);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(17);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
-        byte[] actual = await hasher.ComputeHashAsync(
+        var actual = await hasher.ComputeHashAsync(
             new IntermittentZeroReadStream(data, stallEveryN: 2));
 
         CollectionAssert.AreEqual(expected, actual,
@@ -279,11 +279,11 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_WhenStreamIsNonSeekable_ShouldSucceedAndProduceCorrectRoot()
     {
-        byte[] data = MakeData(13);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(13);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
-        byte[] actual = await hasher.ComputeHashAsync(new NonSeekableStream(data));
+        var actual = await hasher.ComputeHashAsync(new NonSeekableStream(data));
 
         CollectionAssert.AreEqual(expected, actual,
             "NonSeekableStream produced a different root than expected.");
@@ -317,8 +317,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_AfterStreamFault_ShouldSucceedOnNextCall()
     {
-        byte[] data = MakeData(8);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(8);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
@@ -328,7 +328,7 @@ public partial class ParallelMerkleTreeHashTests
         }
         catch (IOException) { /* expected */ }
 
-        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        var actual = await hasher.ComputeHashAsync(new MemoryStream(data));
         CollectionAssert.AreEqual(expected, actual,
             "Instance did not recover correctly after a faulting stream.");
     }
@@ -341,8 +341,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_AfterStreamFault_WhenFaultBeforeAnyData_ShouldSucceedOnNextCall()
     {
-        byte[] data = MakeData(8);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(8);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
@@ -352,7 +352,7 @@ public partial class ParallelMerkleTreeHashTests
         }
         catch (IOException) { /* expected */ }
 
-        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        var actual = await hasher.ComputeHashAsync(new MemoryStream(data));
         CollectionAssert.AreEqual(expected, actual,
             "Instance did not recover correctly after a fault before any data was delivered.");
     }
@@ -365,8 +365,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_AfterStreamFault_WhenFaultAfterWholeBlock_ShouldSucceedOnNextCall()
     {
-        byte[] data = MakeData(8);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(8);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
@@ -376,7 +376,7 @@ public partial class ParallelMerkleTreeHashTests
         }
         catch (IOException) { /* expected */ }
 
-        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        var actual = await hasher.ComputeHashAsync(new MemoryStream(data));
         CollectionAssert.AreEqual(expected, actual,
             "Instance did not recover correctly after a fault at an exact block boundary.");
     }
@@ -388,8 +388,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_AfterConsecutiveStreamFaults_ShouldSucceedOnNextCall()
     {
-        byte[] data = MakeData(8);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(8);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
@@ -405,7 +405,7 @@ public partial class ParallelMerkleTreeHashTests
         }
         catch (IOException) { /* expected */ }
 
-        byte[] actual = await hasher.ComputeHashAsync(new MemoryStream(data));
+        var actual = await hasher.ComputeHashAsync(new MemoryStream(data));
         CollectionAssert.AreEqual(expected, actual,
             "Instance did not recover correctly after two consecutive faulting streams.");
     }
@@ -417,8 +417,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_WhenFaultAndSuccessInterleaved_ShouldAlwaysProduceCorrectResult()
     {
-        byte[] data = MakeData(8);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(8);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
@@ -428,7 +428,7 @@ public partial class ParallelMerkleTreeHashTests
         }
         catch (IOException) { /* expected */ }
 
-        byte[] first = await hasher.ComputeHashAsync(new MemoryStream(data));
+        var first = await hasher.ComputeHashAsync(new MemoryStream(data));
         CollectionAssert.AreEqual(expected, first,
             "First recovery call produced the wrong root.");
 
@@ -438,7 +438,7 @@ public partial class ParallelMerkleTreeHashTests
         }
         catch (IOException) { /* expected */ }
 
-        byte[] second = await hasher.ComputeHashAsync(new MemoryStream(data));
+        var second = await hasher.ComputeHashAsync(new MemoryStream(data));
         CollectionAssert.AreEqual(expected, second,
             "Second recovery call (after fault following a successful call) produced the wrong root.");
     }
@@ -500,8 +500,8 @@ public partial class ParallelMerkleTreeHashTests
     [TestMethod]
     public async Task ComputeHashAsync_WhenCancelledThenRetried_ShouldCompleteSuccessfully()
     {
-        byte[] data = MakeData(8);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(8);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
         using var hasher = new ParallelMerkleTreeHash(Factory, DefaultBlockSize, DefaultFanOut);
 
@@ -515,7 +515,7 @@ public partial class ParallelMerkleTreeHashTests
         }
         catch (TaskCanceledException) { /* expected */ }
 
-        byte[] actual = await hasher
+        var actual = await hasher
             .ComputeHashAsync(new MemoryStream(data))
             .WaitAsync(TimeSpan.FromSeconds(10)); // deadlock guard
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SimpleReversingBlockCipher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -161,6 +161,7 @@ internal sealed class SimpleReversingBlockCipher
     {
         if (disposed) return;
 
+        CryptoHelpers.Clear(this.Key);
         CryptographicOperations.ZeroMemory(Key);
         Key = Array.Empty<byte>();
 
@@ -181,8 +182,8 @@ internal sealed class SimpleReversingBlockCipher
     /// </summary>
     private static void ApplyTweak(Span<byte> block, byte[] tweakBytes)
     {
-        int tweakLen = tweakBytes.Length;
-        for (int i = 0; i < block.Length; i++)
+        var tweakLen = tweakBytes.Length;
+        for (var i = 0; i < block.Length; i++)
             block[i] ^= tweakBytes[i % tweakLen];
     }
 

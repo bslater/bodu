@@ -14,7 +14,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
     [TestMethod]
     public void Dispose_WhenCalledMultipleTimes_ShouldNotThrow()
     {
-        using var transform = CreateAlgorithm();
+        using TCryptoTransform transform = CreateAlgorithm();
 
         transform.Dispose();
         transform.Dispose();

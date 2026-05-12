@@ -17,9 +17,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Copy_WhenCalled_ForValueTypeArray_ShouldReturnArrayWithSameElements()
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
-        int[] result = source.Copy()!;
+        var result = source.Copy()!;
 
         CollectionAssert.AreEqual(source, result);
     }
@@ -30,9 +30,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Copy_WhenCalled_ForValueTypeArray_ShouldReturnNewAllocation()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
-        int[] result = source.Copy()!;
+        var result = source.Copy()!;
 
         Assert.IsFalse(ReferenceEquals(source, result));
     }
@@ -43,9 +43,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Copy_WhenMutated_ForValueTypeArray_ShouldNotAffectSource()
     {
-        int[] source = { 10, 20, 30 };
+        int[] source = [10, 20, 30];
 
-        int[] result = source.Copy()!;
+        var result = source.Copy()!;
         result[0] = 99;
 
         Assert.AreEqual(10, source[0]);
@@ -57,9 +57,9 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Copy_WhenSourceIsEmpty_ForValueTypeArray_ShouldReturnEmptyArray()
     {
-        int[] source = Array.Empty<int>();
+        int[] source = [];
 
-        int[] result = source.Copy()!;
+        var result = source.Copy()!;
 
         Assert.AreEqual(0, result.Length);
         Assert.IsFalse(ReferenceEquals(source, result));
@@ -73,7 +73,7 @@ public partial class ArrayExtensionsTests
     {
         int[]? source = null;
 
-        int[]? result = source!.Copy();
+        var result = source!.Copy();
 
         Assert.IsNull(result);
     }
@@ -84,7 +84,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Copy_WhenCalled_ForCustomStructArray_ShouldReturnIndependentEqualArray()
     {
-        var source = new[]
+        DateOnly[] source = new[]
         {
             new DateOnly(2024, 1, 1),
             new DateOnly(2024, 6, 15),

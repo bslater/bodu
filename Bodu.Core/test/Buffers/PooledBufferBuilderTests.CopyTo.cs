@@ -15,11 +15,11 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void CopyTo_WhenDestinationIsLargeEnough_ShouldCopyAllWrittenElements()
     {
-        int[] expected = { 10, 20, 30, 40 };
+        int[] expected = [10, 20, 30, 40];
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(expected);
 
-        int[] destination = new int[expected.Length];
+        var destination = new int[expected.Length];
         builder.CopyTo(destination);
 
         CollectionAssert.AreEqual(expected, destination);
@@ -31,7 +31,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void CopyTo_WhenCalled_ShouldNotChangeWrittenCountOrContents()
     {
-        int[] items = { 1, 2, 3 };
+        int[] items = [1, 2, 3];
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(items);
 
@@ -49,7 +49,7 @@ public partial class PooledBufferBuilderTests
     public void CopyTo_WhenDestinationIsTooSmall_ShouldThrowArgumentException()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -82,7 +82,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>();
 
-        builder.CopyTo(System.Span<int>.Empty); // should not throw
+        builder.CopyTo([]); // should not throw
     }
 
     /// <summary>
@@ -93,11 +93,11 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void CopyTo_WhenDestinationIsLargerThanWrittenCount_ShouldCopyOnlyWrittenElements()
     {
-        int[] expected = { 1, 2, 3 };
+        int[] expected = [1, 2, 3];
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(expected);
 
-        int[] destination = new int[10]; // larger than WrittenCount
+        var destination = new int[10]; // larger than WrittenCount
         builder.CopyTo(destination);
 
         CollectionAssert.AreEqual(expected, destination.Take(builder.WrittenCount).ToArray());

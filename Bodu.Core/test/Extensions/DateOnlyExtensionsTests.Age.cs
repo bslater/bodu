@@ -13,7 +13,7 @@ public partial class DateOnlyExtensionTests
     /// years for various date combinations.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.AgeTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.AgeTestData), typeof(DateTimeExtensionsTests))]
     public void Age_WhenCalculatedAgainstDate_ShouldReturnExpected(DateTime inputDateTime, DateTime atDateTime, int expected)
     {
         var birth = DateOnly.FromDateTime(inputDateTime);
@@ -71,7 +71,7 @@ public partial class DateOnlyExtensionTests
     {
         var age = DateOnly.MinValue.Age(DateOnly.MaxValue);
 
-        Assert.IsTrue(age > 0);
+        Assert.IsGreaterThan(0, age);
     }
 
     /// <summary>

@@ -17,13 +17,13 @@ public static class StructuralAssertions
     /// <param name="fieldNames">The names of the fields to verify.</param>
     public static void AssertFieldsAreReadOnly(Type targetType, params string[] fieldNames)
     {
-        var allFields = targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+        FieldInfo[] allFields = targetType.GetFields(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
         var missingFields = new List<string>();
         var mutableFields = new List<string>();
 
         foreach (var name in fieldNames)
         {
-            var field = allFields.FirstOrDefault(f => f.Name == name);
+            FieldInfo? field = allFields.FirstOrDefault(f => f.Name == name);
             if (field == null)
             {
                 missingFields.Add(name);

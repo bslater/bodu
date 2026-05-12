@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///   </item>
 /// </list>
 /// <para>
-/// All four overloads validate <paramref name="algorithm"/> eagerly and throw <see cref="System.ArgumentNullException"/>
+/// All four overloads validate <c>algorithm</c> eagerly and throw <see cref="System.ArgumentNullException"/>
 /// when it is <see langword="null"/>; <em>only</em> cryptographic failures from the underlying transform are converted
 /// to a <see langword="false"/> return. The returned <see cref="System.Security.Cryptography.ICryptoTransform"/> is
 /// owned by the caller and must be disposed.

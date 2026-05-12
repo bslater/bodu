@@ -34,11 +34,11 @@ public sealed partial class OcbModeTransformTests
         var iv = Enumerable.Repeat((byte)0x5A, ExpectedBlockSize).ToArray();
         var plaintext = TestHelpers.GenerateRandomNonZeroBytes(ExpectedBlockSize * 3);
 
-        var enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
+        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
         var ct = new byte[plaintext.Length + tagLen];
         enc.Encrypt(plaintext, ct);
 
-        var dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
+        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
         var recovered = new byte[plaintext.Length];
         dec.Decrypt(ct, recovered);
 
@@ -81,11 +81,11 @@ public sealed partial class OcbModeTransformTests
         var iv = new byte[ExpectedBlockSize];
         var plaintext = TestHelpers.GenerateRandomNonZeroBytes(plaintextLength);
 
-        var enc = CreateTransform(cipher, (byte[])iv.Clone());
+        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone());
         var ct = new byte[plaintext.Length + enc.TagSize];
         enc.Encrypt(plaintext, ct);
 
-        var dec = CreateTransform(cipher, (byte[])iv.Clone());
+        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone());
         var recovered = new byte[plaintext.Length];
         dec.Decrypt(ct, recovered);
 

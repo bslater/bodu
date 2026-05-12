@@ -12,7 +12,7 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayContainsNonNumeric" />, when ArrayContainsNonNumeric, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetNonNumericArrayTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetNonNumericArrayTestData))]
     public void ThrowIfArrayContainsNonNumeric_WhenArrayContainsNonNumeric_ShouldThrowExactly(Array array)
     {
         Assert.ThrowsExactly<ArgumentException>(() =>
@@ -25,11 +25,8 @@ public partial class ThrowHelperTests
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayContainsNonNumeric" />, when ArrayIsNumeric, NotThrow.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetNumericArrayTestData), DynamicDataSourceType.Method)]
-    public void ThrowIfArrayContainsNonNumeric_WhenArrayIsNumeric_ShouldNotThrow(Array array)
-    {
-        ThrowHelper.ThrowIfArrayContainsNonNumeric(array);
-    }
+    [DynamicData(nameof(GetNumericArrayTestData))]
+    public void ThrowIfArrayContainsNonNumeric_WhenArrayIsNumeric_ShouldNotThrow(Array array) => ThrowHelper.ThrowIfArrayContainsNonNumeric(array);
 
     private static IEnumerable<object[]> GetNonNumericArrayTestData()
     {

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CtrModeTransformTests.Transform.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class CtrModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0x00);
         var initialCounter = new byte[ExpectedBlockSize]; // all zeros
-        var transform = CreateTransform(cipher, (byte[])initialCounter.Clone());
+        CtrModeTransform transform = CreateTransform(cipher, (byte[])initialCounter.Clone());
 
         var plaintext = Enumerable.Repeat((byte)0xFF, ExpectedBlockSize * 2).ToArray();
         var output = new byte[plaintext.Length];
@@ -53,8 +53,8 @@ public sealed partial class CtrModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var counter = Enumerable.Range(0, ExpectedBlockSize).Select(i => (byte)(i * 3)).ToArray();
 
-        var encrypt = CreateTransform(cipher, (byte[])counter.Clone());
-        var decrypt = CreateTransform(cipher, (byte[])counter.Clone());
+        CtrModeTransform encrypt = CreateTransform(cipher, (byte[])counter.Clone());
+        CtrModeTransform decrypt = CreateTransform(cipher, (byte[])counter.Clone());
         var plaintext = Enumerable.Range(0, ExpectedBlockSize * 3).Select(i => (byte)i).ToArray();
         var ct = new byte[plaintext.Length];
         var recovered = new byte[plaintext.Length];
@@ -74,7 +74,7 @@ public sealed partial class CtrModeTransformTests
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var initialCounter = Enumerable.Repeat((byte)0x99, ExpectedBlockSize).ToArray();
         var counterCopy = (byte[])initialCounter.Clone();
-        var transform = CreateTransform(cipher, initialCounter);
+        CtrModeTransform transform = CreateTransform(cipher, initialCounter);
 
         transform.Transform(new byte[ExpectedBlockSize * 2], new byte[ExpectedBlockSize * 2], encrypt: true);
 
@@ -89,7 +89,7 @@ public sealed partial class CtrModeTransformTests
     public void Transform_WhenDecrypting_ShouldUseCipherEncryptPrimitive()
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
-        var transform = CreateTransform(cipher, new byte[ExpectedBlockSize]);
+        CtrModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize]);
         transform.Transform(new byte[ExpectedBlockSize * 3], new byte[ExpectedBlockSize * 3], encrypt: false);
         Assert.AreEqual(3, cipher.EncryptBlockCount, "CTR must use encrypt primitive for decryption.");
         Assert.AreEqual(0, cipher.DecryptBlockCount, "CTR must never call decrypt primitive.");
@@ -103,8 +103,8 @@ public sealed partial class CtrModeTransformTests
     {
         var cipher = new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA);
         var ic = new byte[ExpectedBlockSize];
-        var single = CreateTransform(cipher, (byte[])ic.Clone());
-        var streamed = CreateTransform(cipher, (byte[])ic.Clone());
+        CtrModeTransform single = CreateTransform(cipher, (byte[])ic.Clone());
+        CtrModeTransform streamed = CreateTransform(cipher, (byte[])ic.Clone());
         var pt = Enumerable.Range(0, ExpectedBlockSize * 2).Select(i => (byte)i).ToArray();
         var sOut = new byte[pt.Length];
         var dOut = new byte[pt.Length];
@@ -127,8 +127,8 @@ public sealed partial class CtrModeTransformTests
         var counterB = new byte[ExpectedBlockSize];
         counterB[ExpectedBlockSize - 1] = 0x80;
 
-        var a = CreateTransform(cipher, counterA);
-        var b = CreateTransform(cipher, counterB);
+        CtrModeTransform a = CreateTransform(cipher, counterA);
+        CtrModeTransform b = CreateTransform(cipher, counterB);
         var pt = new byte[ExpectedBlockSize];
         var oA = new byte[ExpectedBlockSize];
         var oB = new byte[ExpectedBlockSize];

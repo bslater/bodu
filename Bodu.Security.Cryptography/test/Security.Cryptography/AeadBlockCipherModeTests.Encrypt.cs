@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AeadBlockCipherModeTests.Encrypt.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_WhenOutputIsTooSmall_ShouldThrowArgumentException()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize];
         var tooSmall = new byte[1]; // needs at least plaintext.Length + TagSize
 
@@ -35,11 +35,11 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_OutputLengthShouldEqualPlaintextLengthPlusTagSize()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize * 2];
         var buf = new byte[plaintext.Length + transform.TagSize];
 
-        int written = transform.Encrypt(plaintext, buf);
+        var written = transform.Encrypt(plaintext, buf);
 
         Assert.AreEqual(plaintext.Length + transform.TagSize, written,
             "Encrypt must return plaintext.Length + TagSize bytes written.");
@@ -54,10 +54,10 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_WithEmptyPlaintext_ShouldProduceTagOnly()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         var output = new byte[transform.TagSize];
 
-        int written = transform.Encrypt(ReadOnlySpan<byte>.Empty, output);
+        var written = transform.Encrypt(ReadOnlySpan<byte>.Empty, output);
 
         Assert.AreEqual(transform.TagSize, written,
             "Encrypting empty plaintext must write exactly TagSize bytes.");
@@ -72,15 +72,15 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
     [TestMethod]
     public void Encrypt_ShouldProduceNonZeroTag()
     {
-        var transform = MakeTransform();
+        TTransform transform = MakeTransform();
         var plaintext = new byte[ExpectedBlockSize];
         plaintext[0] = 0x42;
         var output = new byte[plaintext.Length + transform.TagSize];
 
         transform.Encrypt(plaintext, output);
 
-        bool tagIsAllZero = true;
-        for (int i = plaintext.Length; i < output.Length; i++)
+        var tagIsAllZero = true;
+        for (var i = plaintext.Length; i < output.Length; i++)
         {
             if (output[i] != 0)
             {
@@ -117,16 +117,16 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var iv2 = CreateInitializationVector();
         iv2[0] = 0x02;
 
-        var t1 = MakeTransform(iv1);
+        TTransform t1 = MakeTransform(iv1);
         var out1 = new byte[plaintext.Length + t1.TagSize];
         t1.Encrypt(plaintext, out1);
 
-        var t2 = MakeTransform(iv2);
+        TTransform t2 = MakeTransform(iv2);
         var out2 = new byte[plaintext.Length + t2.TagSize];
         t2.Encrypt(plaintext, out2);
 
-        CollectionAssert.AreNotEqual(out1[..plaintext.Length], out2[..plaintext.Length],
-            $"{typeof(TTransform).Name} must produce different ciphertext for different nonces.");
+        CollectionAssert.AreNotEqual(out1, out2,
+            $"{typeof(TTransform).Name} must produce different output for different nonces.");
     }
 
     /// <summary>
@@ -140,12 +140,12 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize];
 
-        var t1 = MakeTransform((byte[])iv.Clone());
+        TTransform t1 = MakeTransform((byte[])iv.Clone());
         t1.ProcessAssociatedData(new byte[] { 0x01 });
         var out1 = new byte[plaintext.Length + t1.TagSize];
         t1.Encrypt(plaintext, out1);
 
-        var t2 = MakeTransform((byte[])iv.Clone());
+        TTransform t2 = MakeTransform((byte[])iv.Clone());
         t2.ProcessAssociatedData(new byte[] { 0xFF });
         var out2 = new byte[plaintext.Length + t2.TagSize];
         t2.Encrypt(plaintext, out2);
@@ -166,13 +166,13 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
 
         var pt1 = new byte[ExpectedBlockSize];
         pt1[0] = 0xAA;
-        var t1 = MakeTransform((byte[])iv.Clone());
+        TTransform t1 = MakeTransform((byte[])iv.Clone());
         var out1 = new byte[pt1.Length + t1.TagSize];
         t1.Encrypt(pt1, out1);
 
         var pt2 = new byte[ExpectedBlockSize];
         pt2[0] = 0xBB;
-        var t2 = MakeTransform((byte[])iv.Clone());
+        TTransform t2 = MakeTransform((byte[])iv.Clone());
         var out2 = new byte[pt2.Length + t2.TagSize];
         t2.Encrypt(pt2, out2);
 
@@ -198,14 +198,14 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var iv = CreateInitializationVector();
         var aad = new byte[] { 0x01, 0x02, 0x03 };
         var plaintext = new byte[ExpectedBlockSize * 2];
-        for (int i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
+        for (var i = 0; i < plaintext.Length; i++) plaintext[i] = (byte)i;
 
-        var t1 = MakeTransform((byte[])iv.Clone());
+        TTransform t1 = MakeTransform((byte[])iv.Clone());
         t1.ProcessAssociatedData(aad);
         var out1 = new byte[plaintext.Length + t1.TagSize];
         t1.Encrypt(plaintext, out1);
 
-        var t2 = MakeTransform((byte[])iv.Clone());
+        TTransform t2 = MakeTransform((byte[])iv.Clone());
         t2.ProcessAssociatedData(aad);
         var out2 = new byte[plaintext.Length + t2.TagSize];
         t2.Encrypt(plaintext, out2);
@@ -233,12 +233,12 @@ public abstract partial class AeadBlockCipherModeTests<TTest, TTransform>
         var iv = CreateInitializationVector();
         var plaintext = new byte[ExpectedBlockSize * 2];
 
-        var withEmpty = MakeTransform((byte[])iv.Clone());
+        TTransform withEmpty = MakeTransform((byte[])iv.Clone());
         withEmpty.ProcessAssociatedData(ReadOnlySpan<byte>.Empty);
         var ct1 = new byte[plaintext.Length + withEmpty.TagSize];
         withEmpty.Encrypt(plaintext, ct1);
 
-        var withNone = MakeTransform((byte[])iv.Clone());
+        TTransform withNone = MakeTransform((byte[])iv.Clone());
         var ct2 = new byte[plaintext.Length + withNone.TagSize];
         withNone.Encrypt(plaintext, ct2);
 

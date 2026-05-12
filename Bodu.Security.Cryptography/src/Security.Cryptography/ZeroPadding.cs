@@ -46,7 +46,7 @@ public sealed class ZeroPadding : IPaddingStrategy
     /// <param name="input">The input data to pad.</param>
     /// <param name="blockSize">The block size in bytes.</param>
     /// <returns>The padded input.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize" /> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
@@ -54,11 +54,11 @@ public sealed class ZeroPadding : IPaddingStrategy
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
-        int paddingLength = blockSize - (input.Length % blockSize);
+        var paddingLength = blockSize - (input.Length % blockSize);
         if (paddingLength == blockSize)
             paddingLength = 0; // No padding if already aligned
 
-        byte[] result = new byte[input.Length + paddingLength];
+        var result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
         return result;
     }

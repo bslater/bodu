@@ -19,7 +19,7 @@ public partial class ShuffleHelpersTests
     /// <param name="message">The assertion message to display on failure.</param>
     private static void AssertOrderChanged<T>(T[] buffer, T[] original, string message)
     {
-        bool changed = !buffer.SequenceEqual(original);
+        var changed = !buffer.SequenceEqual(original);
         Assert.IsTrue(changed, message);
     }
 
@@ -81,7 +81,7 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenSpanIsEmpty_ShouldNotThrow()
     {
-        Span<int> span = Span<int>.Empty;
+        Span<int> span = [];
         ShuffleHelpers.Shuffle(span, new SystemRandomAdapter());
     }
 
@@ -91,8 +91,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenSpanHasOneItem_ShouldReturnSameItem()
     {
-        int[] buffer = { 42 };
-        int[] original = buffer.ToArray();
+        int[] buffer = [42];
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer.AsSpan(), new SystemRandomAdapter());
         CollectionAssert.AreEqual(original, buffer);
@@ -104,8 +104,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenCalled_ShouldMutateOriginalOrder_UsingSpan()
     {
-        int[] buffer = Enumerable.Range(1, 20).ToArray();
-        int[] original = buffer.ToArray();
+        var buffer = Enumerable.Range(1, 20).ToArray();
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer.AsSpan(), new SystemRandomAdapter());
         AssertOrderChanged(buffer, original, "Span shuffle did not alter order.");
@@ -117,8 +117,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenCalled_ShouldContainSameElements_UsingSpan()
     {
-        int[] buffer = Enumerable.Range(1, 100).ToArray();
-        int[] original = buffer.ToArray();
+        var buffer = Enumerable.Range(1, 100).ToArray();
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer.AsSpan(), new SystemRandomAdapter());
         CollectionAssert.AreEquivalent(original, buffer);
@@ -130,8 +130,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenCalled_ShouldContainSameElements_UsingMemory()
     {
-        int[] buffer = Enumerable.Range(1, 50).ToArray();
-        int[] original = buffer.ToArray();
+        var buffer = Enumerable.Range(1, 50).ToArray();
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer.AsMemory(), new SystemRandomAdapter());
         CollectionAssert.AreEquivalent(original, buffer);
@@ -143,8 +143,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenCalled_ShouldMutateOriginalOrder_UsingMemory()
     {
-        int[] buffer = Enumerable.Range(1, 50).ToArray();
-        int[] original = buffer.ToArray();
+        var buffer = Enumerable.Range(1, 50).ToArray();
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer.AsMemory(), new SystemRandomAdapter());
         AssertOrderChanged(buffer, original, "Memory shuffle did not alter order.");
@@ -156,8 +156,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenMemoryHasOneItem_ShouldReturnSameItem()
     {
-        int[] buffer = { 42 };
-        int[] original = buffer.ToArray();
+        int[] buffer = [42];
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer.AsMemory(), new SystemRandomAdapter());
         CollectionAssert.AreEqual(original, buffer);
@@ -170,8 +170,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenArrayHasOneItem_ShouldReturnSameItem()
     {
-        int[] buffer = { 42 };
-        int[] original = buffer.ToArray();
+        int[] buffer = [42];
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
         CollectionAssert.AreEqual(original, buffer);
@@ -183,8 +183,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenCalled_ShouldMutateOriginalOrder_UsingArray()
     {
-        int[] buffer = Enumerable.Range(1, 20).ToArray();
-        int[] original = buffer.ToArray();
+        var buffer = Enumerable.Range(1, 20).ToArray();
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
         AssertOrderChanged(buffer, original, "Array shuffle did not alter order.");
@@ -196,8 +196,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WhenCalled_ShouldContainSameElements_UsingArray()
     {
-        int[] buffer = Enumerable.Range(1, 50).ToArray();
-        int[] original = buffer.ToArray();
+        var buffer = Enumerable.Range(1, 50).ToArray();
+        var original = buffer.ToArray();
 
         ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
         CollectionAssert.AreEquivalent(original, buffer);
@@ -217,12 +217,12 @@ public partial class ShuffleHelpersTests
         var original = Enumerable.Range(0, size).ToArray();
         var rng = new XorShiftRandom(12345);
 
-        for (int r = 0; r < runs; r++)
+        for (var r = 0; r < runs; r++)
         {
             var buffer = original.ToArray();
             ShuffleHelpers.Shuffle(buffer, rng);
 
-            for (int i = 0; i < size; i++)
+            for (var i = 0; i < size; i++)
                 tracker[i, buffer[i]]++;
         }
 
@@ -236,8 +236,8 @@ public partial class ShuffleHelpersTests
     [TestMethod]
     public void Shuffle_WithFixedSeed_ShouldProduceDeterministicOutput()
     {
-        int[] buffer1 = Enumerable.Range(1, 10).ToArray();
-        int[] buffer2 = Enumerable.Range(1, 10).ToArray();
+        var buffer1 = Enumerable.Range(1, 10).ToArray();
+        var buffer2 = Enumerable.Range(1, 10).ToArray();
 
         ShuffleHelpers.Shuffle(buffer1, new XorShiftRandom(42));
         ShuffleHelpers.Shuffle(buffer2, new XorShiftRandom(42));

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpersTests.FillWithRandomBytesExcluding.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class CryptoHelpersTests
     {
         Span<byte> span = stackalloc byte[64];
         CryptoHelpers.FillWithRandomBytesExcluding(0xFF, span);
-        foreach (byte b in span)
+        foreach (var b in span)
         {
             Assert.AreNotEqual(0xFF, b);
         }

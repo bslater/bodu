@@ -37,7 +37,7 @@ public partial class CubeHashTests
     public void FinalizationRounds_WhenSetAfterHashing_ShouldNotThrow()
     {
         var algorithm = new CubeHash();
-        byte[] input = new byte[] { 1, 2, 3 };
+        var input = new byte[] { 1, 2, 3 };
 
         algorithm.ComputeHash(input);
 
@@ -54,13 +54,13 @@ public partial class CubeHashTests
     [TestMethod]
     public void FinalizationRounds_WhenDifferentValuesUsed_ShouldProduceDifferentHashes()
     {
-        byte[] input = new byte[] { 0x10, 0x20, 0x30 };
+        var input = new byte[] { 0x10, 0x20, 0x30 };
 
         var algorithmA = new CubeHash { FinalizationRounds = 32 };
         var algorithmB = new CubeHash { FinalizationRounds = 64 };
 
-        byte[] resultA = algorithmA.ComputeHash(input);
-        byte[] resultB = algorithmB.ComputeHash(input);
+        var resultA = algorithmA.ComputeHash(input);
+        var resultB = algorithmB.ComputeHash(input);
 
         CollectionAssert.AreNotEqual(resultA, resultB);
     }
@@ -75,7 +75,7 @@ public partial class CubeHashTests
     [DataRow(int.MaxValue)]
     public void FinalizationRounds_WhenSetToInvalidValue_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using CubeHash algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => algorithm.FinalizationRounds = value);
     }
@@ -93,8 +93,8 @@ public partial class CubeHashTests
     [DataRow(4096)]
     public void FinalizationRounds_WhenSetToValidValue_ShouldBeAssigned(int size)
     {
-        using var algorithm = CreateAlgorithm();
-        int original = algorithm.FinalizationRounds;
+        using CubeHash algorithm = CreateAlgorithm();
+        var original = algorithm.FinalizationRounds;
         algorithm.FinalizationRounds = size;
 
         Assert.AreEqual(size, algorithm.FinalizationRounds);
@@ -106,9 +106,9 @@ public partial class CubeHashTests
     [TestMethod]
     public void FinalizationRounds_WhenSetToValidValue_ShouldUpdateCorrectly()
     {
-        using var algorithm = CreateAlgorithm();
-        int round = 100;
-        int original = algorithm.FinalizationRounds;
+        using CubeHash algorithm = CreateAlgorithm();
+        var round = 100;
+        var original = algorithm.FinalizationRounds;
         algorithm.FinalizationRounds = round;
 
         Assert.AreEqual(round, algorithm.FinalizationRounds);
@@ -148,8 +148,8 @@ public partial class CubeHashTests
     [TestMethod]
     public void FinalizationRounds_WhenSetAfterTransformBlock_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] input = new byte[] { 0x01, 0x02, 0x03 };
+        using CubeHash algorithm = CreateAlgorithm();
+        var input = new byte[] { 0x01, 0x02, 0x03 };
         algorithm.TransformBlock(input, 0, input.Length, null, 0);
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>

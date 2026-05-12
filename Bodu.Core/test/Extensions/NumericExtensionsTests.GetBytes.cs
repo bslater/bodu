@@ -45,7 +45,7 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)1)]
     public void GetBytes_WhenValueIsTwoByteType_ShouldReturnTwoBytes(object value)
     {
-        int length = value switch
+        var length = value switch
         {
             short s => s.GetBytes().Length,
             ushort u => u.GetBytes().Length,
@@ -64,7 +64,7 @@ public partial class NumericExtensionsTests
     [DataRow(1.0f)]
     public void GetBytes_WhenValueIsFourByteType_ShouldReturnFourBytes(object value)
     {
-        int length = value switch
+        var length = value switch
         {
             int i => i.GetBytes().Length,
             uint u => u.GetBytes().Length,
@@ -84,7 +84,7 @@ public partial class NumericExtensionsTests
     [DataRow(1.0)]
     public void GetBytes_WhenValueIsEightByteType_ShouldReturnEightBytes(object value)
     {
-        int length = value switch
+        var length = value switch
         {
             long l => l.GetBytes().Length,
             ulong u => u.GetBytes().Length,
@@ -340,12 +340,12 @@ public partial class NumericExtensionsTests
     [DataRow(float.NaN)]
     public void GetBytes_WhenValueIsFloat_AndBigEndianRequested_ShouldReturnReversedBytes(float value)
     {
-        byte[] leBytes = BitConverter.GetBytes(value);
+        var leBytes = BitConverter.GetBytes(value);
 
         if (!BitConverter.IsLittleEndian)
             return; // Skip: on a big-endian system GetBytes(LE) and GetBytes(BE) differ differently.
 
-        byte[] expected = (byte[])leBytes.Clone();
+        var expected = (byte[])leBytes.Clone();
         Array.Reverse(expected);
 
         CollectionAssert.AreEqual(expected, value.GetBytes(asBigEndian: true));
@@ -384,7 +384,7 @@ public partial class NumericExtensionsTests
         if (!BitConverter.IsLittleEndian)
             return; // Skip: on a big-endian system GetBytes(LE) and GetBytes(BE) differ differently.
 
-        byte[] expected = BitConverter.GetBytes(value);
+        var expected = BitConverter.GetBytes(value);
         Array.Reverse(expected);
 
         CollectionAssert.AreEqual(expected, value.GetBytes(asBigEndian: true));
@@ -405,8 +405,8 @@ public partial class NumericExtensionsTests
     [DataRow(int.MinValue)]
     public void GetBytes_WhenBigEndianRequested_ForInt_ShouldProduceExactReversalOfLittleEndian(int value)
     {
-        byte[] le = value.GetBytes(asBigEndian: false);
-        byte[] be = value.GetBytes(asBigEndian: true);
+        var le = value.GetBytes(asBigEndian: false);
+        var be = value.GetBytes(asBigEndian: true);
         Array.Reverse(le);
         CollectionAssert.AreEqual(le, be);
     }

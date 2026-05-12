@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FirstDateOfMonthDataTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(FirstDateOfMonthDataTestData))]
     public void FirstDateOfMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DateTime expected)
     {
         DateTime actual = input.FirstDateOfMonth();

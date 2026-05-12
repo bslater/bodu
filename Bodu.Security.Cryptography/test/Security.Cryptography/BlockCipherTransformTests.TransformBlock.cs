@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTransformTests.TransformBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,9 +28,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         }
 
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
-        byte[] outputBuffer = new byte[answer.Ciphertext.Length];
+        var outputBuffer = new byte[answer.Ciphertext.Length];
 
-        int written = transform.TransformBlock(
+        var written = transform.TransformBlock(
             answer.Plaintext,
             0,
             answer.Plaintext.Length,
@@ -59,7 +59,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         }
 
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
-        byte[] outputBuffer = new byte[answer.Ciphertext.Length];
+        var outputBuffer = new byte[answer.Ciphertext.Length];
 
         _ = transform.TransformBlock(
             answer.Plaintext,
@@ -92,9 +92,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         }
 
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: false);
-        byte[] outputBuffer = new byte[answer.Plaintext.Length];
+        var outputBuffer = new byte[answer.Plaintext.Length];
 
-        int written = transform.TransformBlock(
+        var written = transform.TransformBlock(
             answer.Ciphertext,
             0,
             answer.Ciphertext.Length,
@@ -123,7 +123,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         }
 
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: false);
-        byte[] outputBuffer = new byte[answer.Plaintext.Length];
+        var outputBuffer = new byte[answer.Plaintext.Length];
 
         _ = transform.TransformBlock(
             answer.Ciphertext,
@@ -157,9 +157,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
 
         const int outputOffset = 3;
-        byte[] outputBuffer = new byte[outputOffset + answer.Ciphertext.Length + 3];
+        var outputBuffer = new byte[outputOffset + answer.Ciphertext.Length + 3];
 
-        int written = transform.TransformBlock(
+        var written = transform.TransformBlock(
             answer.Plaintext,
             0,
             answer.Plaintext.Length,
@@ -188,7 +188,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
 
         const int outputOffset = 3;
-        byte[] outputBuffer = new byte[outputOffset + answer.Ciphertext.Length + 3];
+        var outputBuffer = new byte[outputOffset + answer.Ciphertext.Length + 3];
 
         _ = transform.TransformBlock(
             answer.Plaintext,
@@ -197,7 +197,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             outputBuffer,
             outputOffset);
 
-        byte[] actual = Slice(outputBuffer, outputOffset, answer.Ciphertext.Length);
+        var actual = Slice(outputBuffer, outputOffset, answer.Ciphertext.Length);
 
         CollectionAssert.AreEqual(
             answer.Ciphertext,
@@ -226,7 +226,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         const int outputOffset = 3;
         const byte sentinel = 0xA5;
 
-        byte[] outputBuffer = new byte[outputOffset + answer.Ciphertext.Length + 3];
+        var outputBuffer = new byte[outputOffset + answer.Ciphertext.Length + 3];
         Array.Fill(outputBuffer, sentinel);
 
         _ = transform.TransformBlock(
@@ -236,8 +236,8 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             outputBuffer,
             outputOffset);
 
-        byte[] expected = Filled(outputOffset, sentinel);
-        byte[] actual = Slice(outputBuffer, 0, outputOffset);
+        var expected = Filled(outputOffset, sentinel);
+        var actual = Slice(outputBuffer, 0, outputOffset);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -264,7 +264,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         const int suffixLength = 3;
         const byte sentinel = 0xA5;
 
-        byte[] outputBuffer = new byte[outputOffset + answer.Ciphertext.Length + suffixLength];
+        var outputBuffer = new byte[outputOffset + answer.Ciphertext.Length + suffixLength];
         Array.Fill(outputBuffer, sentinel);
 
         _ = transform.TransformBlock(
@@ -274,8 +274,8 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             outputBuffer,
             outputOffset);
 
-        byte[] expected = Filled(suffixLength, sentinel);
-        byte[] actual = Slice(outputBuffer, outputOffset + answer.Ciphertext.Length, suffixLength);
+        var expected = Filled(suffixLength, sentinel);
+        var actual = Slice(outputBuffer, outputOffset + answer.Ciphertext.Length, suffixLength);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -299,11 +299,11 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
 
-        byte[] inputBuffer = RepeatBlock(answer.Plaintext, 2);
-        byte[] expected = RepeatBlock(answer.Ciphertext, 2);
-        byte[] outputBuffer = new byte[expected.Length];
+        var inputBuffer = RepeatBlock(answer.Plaintext, 2);
+        var expected = RepeatBlock(answer.Ciphertext, 2);
+        var outputBuffer = new byte[expected.Length];
 
-        int written = transform.TransformBlock(
+        var written = transform.TransformBlock(
             inputBuffer,
             0,
             inputBuffer.Length,
@@ -331,9 +331,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        byte[] inputBuffer = RepeatBlock(answer.Plaintext, 2);
-        byte[] batchedOutput = new byte[answer.Ciphertext.Length * 2];
-        byte[] sequentialOutput = new byte[answer.Ciphertext.Length * 2];
+        var inputBuffer = RepeatBlock(answer.Plaintext, 2);
+        var batchedOutput = new byte[answer.Ciphertext.Length * 2];
+        var sequentialOutput = new byte[answer.Ciphertext.Length * 2];
 
         using (TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true))
         {
@@ -375,7 +375,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     [TestMethod]
     public void TransformBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldThrowCryptographicException()
     {
-        using var transform = CreateAlgorithm();
+        using TCryptoTransform transform = CreateAlgorithm();
 
         if (transform.InputBlockSize <= 1)
         {
@@ -383,8 +383,8 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        byte[] inputBuffer = new byte[transform.InputBlockSize - 1];
-        byte[] outputBuffer = new byte[transform.OutputBlockSize];
+        var inputBuffer = new byte[transform.InputBlockSize - 1];
+        var outputBuffer = new byte[transform.OutputBlockSize];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
@@ -411,10 +411,10 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
 
         const int inputOffset = 5;
-        byte[] inputBuffer = new byte[inputOffset + answer.Plaintext.Length + 5];
+        var inputBuffer = new byte[inputOffset + answer.Plaintext.Length + 5];
         Buffer.BlockCopy(answer.Plaintext, 0, inputBuffer, inputOffset, answer.Plaintext.Length);
 
-        byte[] outputBuffer = new byte[answer.Ciphertext.Length];
+        var outputBuffer = new byte[answer.Ciphertext.Length];
 
         _ = transform.TransformBlock(
             inputBuffer,
@@ -448,9 +448,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
 
         const int outputOffset = 3;
-        byte[] outputBuffer = new byte[outputOffset + answer.Ciphertext.Length];
+        var outputBuffer = new byte[outputOffset + answer.Ciphertext.Length];
 
-        int written = transform.TransformBlock(
+        var written = transform.TransformBlock(
             answer.Plaintext,
             0,
             answer.Plaintext.Length,
@@ -485,7 +485,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        byte[] outputBuffer = new byte[answer.Ciphertext.Length];
+        var outputBuffer = new byte[answer.Ciphertext.Length];
 
         _ = transform.TransformFinalBlock(answer.Plaintext, 0, answer.Plaintext.Length);
 
@@ -497,9 +497,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
     private static byte[] RepeatBlock(byte[] block, int count)
     {
-        byte[] result = new byte[block.Length * count];
+        var result = new byte[block.Length * count];
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             Buffer.BlockCopy(block, 0, result, i * block.Length, block.Length);
         }
@@ -509,14 +509,14 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
     private static byte[] Slice(byte[] buffer, int offset, int count)
     {
-        byte[] result = new byte[count];
+        var result = new byte[count];
         Buffer.BlockCopy(buffer, offset, result, 0, count);
         return result;
     }
 
     private static byte[] Filled(int count, byte value)
     {
-        byte[] result = new byte[count];
+        var result = new byte[count];
         Array.Fill(result, value);
         return result;
     }

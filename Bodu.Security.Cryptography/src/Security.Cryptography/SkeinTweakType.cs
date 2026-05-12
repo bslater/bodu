@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkeinTweakType.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,9 +18,9 @@ namespace Bodu.Security.Cryptography;
 /// and output extraction — preventing cross-protocol confusion between otherwise identical compressions.
 /// </para>
 /// <para>
-/// Only the values used by the sequential Skein hash (<see cref="Key" />, <see cref="Cfg" />, <see cref="Msg" />, and
-/// <see cref="Out" />) are exercised by this library. The remaining values (<see cref="Prs" />, <see cref="Pk" />,
-/// <see cref="Kdf" />, and <see cref="Non" />) are defined for completeness with the Skein specification and reserved
+/// Only the values used by the sequential Skein hash (<see cref="Key"/>, <see cref="Cfg"/>, <see cref="Msg"/>, and
+/// <see cref="Out"/>) are exercised by this library. The remaining values (<see cref="Prs"/>, <see cref="Pk"/>,
+/// <see cref="Kdf"/>, and <see cref="Non"/>) are defined for completeness with the Skein specification and reserved
 /// for potential personalization, key-identifier, key-derivation, and nonce-driven extensions.
 /// </para>
 /// </remarks>

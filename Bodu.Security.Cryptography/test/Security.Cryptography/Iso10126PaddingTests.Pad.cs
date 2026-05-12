@@ -1,8 +1,9 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso10126PaddingTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
 
 namespace Bodu.Security.Cryptography;
 
@@ -15,10 +16,10 @@ public sealed partial class Iso10126PaddingTests
     [TestMethod]
     public void Pad_WhenInputHasResidual_ShouldWritePadLengthInTrailingByte()
     {
-        var padding = CreatePadding();
-        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 5);
+        Iso10126Padding padding = CreatePadding();
+        var plaintext = CreatePlaintextWithResidual(BlockSize - 5);
 
-        byte[] padded = padding.Pad(plaintext, BlockSize);
+        var padded = padding.Pad(plaintext, BlockSize);
 
         Assert.AreEqual(BlockSize, padded.Length);
         Assert.AreEqual((byte)5, padded[padded.Length - 1]);
@@ -34,14 +35,14 @@ public sealed partial class Iso10126PaddingTests
     {
         // Residual leaves 10 pad bytes (9 random interior + 1 length) — enough room that
         // a repeat collision across two draws is astronomically unlikely.
-        var padding = CreatePadding();
-        byte[] plaintext = CreatePlaintextWithResidual(BlockSize - 10);
+        Iso10126Padding padding = CreatePadding();
+        var plaintext = CreatePlaintextWithResidual(BlockSize - 10);
 
-        byte[] first = padding.Pad(plaintext, BlockSize);
-        byte[] second = padding.Pad(plaintext, BlockSize);
+        var first = padding.Pad(plaintext, BlockSize);
+        var second = padding.Pad(plaintext, BlockSize);
 
-        bool interiorDiffers = false;
-        for (int i = plaintext.Length; i < first.Length - 1; i++)
+        var interiorDiffers = false;
+        for (var i = plaintext.Length; i < first.Length - 1; i++)
         {
             if (first[i] != second[i])
             {

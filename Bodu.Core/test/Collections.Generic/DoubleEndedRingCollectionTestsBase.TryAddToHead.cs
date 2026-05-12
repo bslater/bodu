@@ -15,7 +15,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void TryAddToHead_WhenSpaceAvailable_ShouldReturnTrueAndStore()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.IsTrue(TryAddToHead(collection, 1));
         Assert.AreEqual(1, PeekHead(collection));
         Assert.AreEqual(1, GetCount(collection));

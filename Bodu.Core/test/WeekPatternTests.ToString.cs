@@ -77,22 +77,16 @@ public partial class WeekPatternTests
     /// symbol string for every valid bitmask permutation.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetAllBitmaskPermutationTestData), DynamicDataSourceType.Method)]
-    public void ToString_WhenCalled_ShouldReturnExpectedSymbolString(byte value, string expected, string _)
-    {
-        Assert.AreEqual(expected, WeekPattern.FromByte(value).ToString());
-    }
+    [DynamicData(nameof(GetAllBitmaskPermutationTestData))]
+    public void ToString_WhenCalled_ShouldReturnExpectedSymbolString(byte value, string expected, string _) => Assert.AreEqual(expected, WeekPattern.FromByte(value).ToString());
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the binary format <c>'b'</c>
     /// returns the expected binary string for every valid bitmask permutation.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetAllBitmaskPermutationTestData), DynamicDataSourceType.Method)]
-    public void ToString_WhenBinaryFormat_ShouldReturnExpectedBinaryString(byte value, string _, string expected)
-    {
-        Assert.AreEqual(expected, WeekPattern.FromByte(value).ToString("b"));
-    }
+    [DynamicData(nameof(GetAllBitmaskPermutationTestData))]
+    public void ToString_WhenBinaryFormat_ShouldReturnExpectedBinaryString(byte value, string _, string expected) => Assert.AreEqual(expected, WeekPattern.FromByte(value).ToString("b"));
 
     /// <summary>
     /// Verifies that the default <see cref="WeekPattern.ToString()" /> overload returns a Sunday-first
@@ -192,10 +186,10 @@ public partial class WeekPatternTests
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        string s0 = pattern.ToString("0");
-        string s1 = pattern.ToString("1");
-        string sB = pattern.ToString("B");
-        string s01 = pattern.ToString("01");
+        var s0 = pattern.ToString("0");
+        var s1 = pattern.ToString("1");
+        var sB = pattern.ToString("B");
+        var s01 = pattern.ToString("01");
 
         Assert.AreEqual(s0, s1, "Formats '0' and '1' should produce identical output.");
         Assert.AreEqual(s0, sB, "Formats '0' and 'B' should produce identical output.");
@@ -207,10 +201,7 @@ public partial class WeekPatternTests
     /// <see cref="WeekPattern.Weekdays" /> instance returns the correct binary string.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenFormatIs0AndAllWeekdaysSelected_ShouldReturnCorrectBinaryString()
-    {
-        Assert.AreEqual("0111110", WeekPattern.Weekdays.ToString("0"));
-    }
+    public void ToString_WhenFormatIs0AndAllWeekdaysSelected_ShouldReturnCorrectBinaryString() => Assert.AreEqual("0111110", WeekPattern.Weekdays.ToString("0"));
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ToString(string)" /> throws <see cref="ArgumentException" />
@@ -236,7 +227,7 @@ public partial class WeekPatternTests
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        string result = string.Format("{0:M}", pattern);
+        var result = string.Format("{0:M}", pattern);
 
         Assert.AreEqual("M_W_F__", result,
             "string.Format should apply the format specifier via IFormattable.");

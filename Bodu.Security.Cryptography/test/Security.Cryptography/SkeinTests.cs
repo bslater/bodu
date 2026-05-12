@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkeinTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -81,11 +81,11 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenKeyExceedsBlockSize_ShouldProduceStableMac()
     {
-        byte[] input = Enumerable.Range(0, 50).Select(i => (byte)i).ToArray();
+        var input = Enumerable.Range(0, 50).Select(i => (byte)i).ToArray();
 
         using var reference = new TAlgorithm();
-        int blockSize = reference.InputBlockSize;
-        byte[] longKey = Enumerable.Range(0, (blockSize * 2) + 11)
+        var blockSize = reference.InputBlockSize;
+        var longKey = Enumerable.Range(0, (blockSize * 2) + 11)
             .Select(i => (byte)(i ^ 0xA5))
             .ToArray();
 

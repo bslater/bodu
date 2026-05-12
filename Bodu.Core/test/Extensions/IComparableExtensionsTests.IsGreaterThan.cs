@@ -23,10 +23,7 @@ public partial class IComparableExtensionsTests
     [DataRow(10, 5, true, DisplayName = "Value above reference returns true")]
     [DataRow(5, 5, false, DisplayName = "Value equal to reference returns false")]
     [DataRow(0, 5, false, DisplayName = "Value below reference returns false")]
-    public void IsGreaterThan_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, bool expected)
-    {
-        Assert.AreEqual(expected, value.IsGreaterThan(other));
-    }
+    public void IsGreaterThan_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, bool expected) => Assert.AreEqual(expected, value.IsGreaterThan(other));
 
     /// <summary>
     /// Verifies that <c>IsGreaterThan</c> works correctly with a reference type (string) using natural ordering.
@@ -35,10 +32,7 @@ public partial class IComparableExtensionsTests
     [DataRow("banana", "apple", true, DisplayName = "String after reference returns true")]
     [DataRow("apple", "apple", false, DisplayName = "String equal to reference returns false")]
     [DataRow("aardvark", "apple", false, DisplayName = "String before reference returns false")]
-    public void IsGreaterThan_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, bool expected)
-    {
-        Assert.AreEqual(expected, value.IsGreaterThan(other));
-    }
+    public void IsGreaterThan_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, bool expected) => Assert.AreEqual(expected, value.IsGreaterThan(other));
 
     /// <summary>
     /// Verifies that <c>IsGreaterThan</c> returns <see langword="false"/> when the reference value is <see langword="null"/>.
@@ -88,7 +82,7 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int>? comparer = null;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = 5.IsGreaterThan(1, comparer!);
         });

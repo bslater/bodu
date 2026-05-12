@@ -14,7 +14,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Count_WhenNewlyConstructed_ShouldBeZero()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.AreEqual(0, GetCount(collection));
     }
 
@@ -24,7 +24,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Count_WhenItemsAdded_ShouldReflectTotal()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -38,7 +38,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Count_WhenItemsRemoved_ShouldReflectTotal()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -53,7 +53,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Count_AfterClear_ShouldBeZero()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         Clear(collection);
@@ -68,7 +68,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Count_OnICollectionInterface_ShouldMatchTypedCount()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 

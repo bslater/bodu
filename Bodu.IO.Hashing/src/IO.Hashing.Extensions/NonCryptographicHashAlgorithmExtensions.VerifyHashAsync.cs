@@ -60,7 +60,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         await algorithm.AppendDataAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        byte[] actualHash = algorithm.GetHashAndReset();
+        var actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedHash);
     }
@@ -124,7 +124,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         await algorithm.AppendDataAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        byte[] actualHash = algorithm.GetHashAndReset();
+        var actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedBytes);
     }
@@ -172,7 +172,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         algorithm.Reset();
         await algorithm.AppendDataAsync(stream, cancellationToken: cancellationToken).ConfigureAwait(false);
-        byte[] actualHash = algorithm.GetHashAndReset();
+        var actualHash = algorithm.GetHashAndReset();
 
         return actualHash.AsSpan().SequenceEqual(expectedHash.Span);
     }

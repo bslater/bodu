@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NoPaddingTests.SymmetricAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,17 +25,17 @@ public sealed partial class NoPaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenEmptyPlaintext_ShouldEmitEmptyCiphertext(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.None);
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.None);
 
-        byte[] cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
+        var cipherText = EncryptThroughCryptoStream(algorithm, System.Array.Empty<byte>());
 
         Assert.AreEqual(0, cipherText.Length,
             $"Empty plaintext under None on {algorithmType.Name} should produce an empty ciphertext (no padding added).");
 
-        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+        var recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
         Assert.AreEqual(0, recovered.Length,
             $"Decrypting empty ciphertext under None on {algorithmType.Name} should recover an empty array.");
@@ -48,19 +48,19 @@ public sealed partial class NoPaddingTests
     /// </summary>
     /// <param name="algorithmType">The concrete <see cref="SymmetricAlgorithm" /> type under test.</param>
     [TestMethod]
-    [DynamicData(nameof(SymmetricAlgorithmTestData), DynamicDataDisplayName = nameof(GetSymmetricAlgorithmDisplayName))]
+    [DynamicData(nameof(SymmetricAlgorithmTestDataSource.SymmetricAlgorithmTestData), typeof(SymmetricAlgorithmTestDataSource), DynamicDataDisplayName = nameof(SymmetricAlgorithmTestDataSource.GetSymmetricAlgorithmDisplayName), DynamicDataDisplayNameDeclaringType = typeof(SymmetricAlgorithmTestDataSource))]
     public void CryptoStream_WhenBlockAlignedPlaintext_ShouldRoundTrip(System.Type algorithmType)
     {
-        using var algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.None);
-        int blockBytes = algorithm.BlockSize / 8;
-        byte[] plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
+        using SymmetricAlgorithm algorithm = CreateConfiguredAlgorithm(algorithmType, PaddingMode.None);
+        var blockBytes = algorithm.BlockSize / 8;
+        var plaintext = Enumerable.Range(0, blockBytes * 2).Select(i => (byte)(i + 1)).ToArray();
 
-        byte[] cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
+        var cipherText = EncryptThroughCryptoStream(algorithm, plaintext);
 
         Assert.AreEqual(plaintext.Length, cipherText.Length,
             $"Block-aligned plaintext under None on {algorithmType.Name} should produce ciphertext of the same length.");
 
-        byte[] recovered = DecryptThroughCryptoStream(algorithm, cipherText);
+        var recovered = DecryptThroughCryptoStream(algorithm, cipherText);
 
         CollectionAssert.AreEqual(plaintext, recovered,
             $"Block-aligned plaintext under None on {algorithmType.Name} did not round-trip through CryptoStream.");

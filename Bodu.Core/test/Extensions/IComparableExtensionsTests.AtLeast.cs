@@ -22,10 +22,7 @@ public partial class IComparableExtensionsTests
     [DataRow(10, 5, 10, DisplayName = "Value above floor returns value")]
     [DataRow(5, 5, 5, DisplayName = "Value on floor returns value")]
     [DataRow(0, 5, 5, DisplayName = "Value below floor returns floor")]
-    public void AtLeast_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int min, int expected)
-    {
-        Assert.AreEqual(expected, value.AtLeast(min));
-    }
+    public void AtLeast_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int min, int expected) => Assert.AreEqual(expected, value.AtLeast(min));
 
     /// <summary>
     /// Verifies that <c>AtLeast</c> works correctly with a reference type (string) using natural ordering.
@@ -33,10 +30,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     [DataRow("banana", "apple", "banana", DisplayName = "String above floor returns value")]
     [DataRow("aardvark", "apple", "apple", DisplayName = "String below floor returns floor")]
-    public void AtLeast_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string min, string expected)
-    {
-        Assert.AreEqual(expected, value.AtLeast(min));
-    }
+    public void AtLeast_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string min, string expected) => Assert.AreEqual(expected, value.AtLeast(min));
 
     // =========================================================================
     // AtLeast<T>(T, T, IComparer<T>)
@@ -66,7 +60,7 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int>? comparer = null;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = 5.AtLeast(1, comparer!);
         });

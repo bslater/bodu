@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,33 +11,28 @@ using System.Linq;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Provides a debugger-friendly view of the <see cref="MultiValueDictionary{TKey, TValue}"/> contents,
-/// showing each key alongside its associated value list.
+/// Provides the debugger view for <see cref="MultiValueDictionary{TKey, TValue}" />.
 /// </summary>
-/// <typeparam name="TKey">The type of keys in the dictionary.</typeparam>
-/// <typeparam name="TValue">The type of values in the dictionary.</typeparam>
+/// <typeparam name="TKey">The type of keys.</typeparam>
+/// <typeparam name="TValue">The type of values.</typeparam>
 internal sealed class MultiValueDictionaryDebugView<TKey, TValue>
     where TKey : notnull
 {
-    /// <summary>
-    /// The <see cref="MultiValueDictionary{TKey, TValue}"/> instance being debugged.
-    /// </summary>
     private readonly MultiValueDictionary<TKey, TValue> _dictionary;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MultiValueDictionaryDebugView{TKey, TValue}"/> class.
+    /// Initializes a new instance of the <see cref="MultiValueDictionaryDebugView{TKey, TValue}" /> class.
     /// </summary>
-    /// <param name="dictionary">The dictionary instance to inspect. Must not be <see langword="null"/>.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="dictionary"/> is <see langword="null"/>.</exception>
-    public MultiValueDictionaryDebugView(MultiValueDictionary<TKey, TValue> dictionary) =>
-        _dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
+    /// <param name="dictionary">The dictionary displayed by the debugger.</param>
+    public MultiValueDictionaryDebugView(MultiValueDictionary<TKey, TValue> dictionary)
+    {
+        _dictionary = dictionary;
+    }
 
     /// <summary>
-    /// Gets the key–value-list pairs currently held in the <see cref="MultiValueDictionary{TKey, TValue}"/>,
-    /// displayed in the debugger as root-level entries.
+    /// Gets the key-value-list pairs displayed in the debugger.
     /// </summary>
-    /// <remarks>Shown in the debugger as root-level entries for quick inspection.</remarks>
     [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-    public KeyValuePair<TKey, IReadOnlyList<TValue>>[] Entries =>
+    public KeyValuePair<TKey, IReadOnlyList<TValue>>[] Items =>
         _dictionary.ToArray();
 }

@@ -10,12 +10,12 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies the Output Feedback (OFB) mode transformation to an underlying <see cref="IBlockCipher" />, turning it into a synchronous
+/// Applies the Output Feedback (OFB) mode transformation to an underlying <see cref="IBlockCipher"/>, turning it into a synchronous
 /// stream cipher in which encryption and decryption are identical operations.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/classic-modes.svg" alt="OFB panel — the cipher's output keystream feeds forward into the next cipher input, independent of plaintext." />
+/// <img src="../images/diagrams/classic-modes.svg" alt="OFB panel — the cipher's output keystream feeds forward into the next cipher input, independent of plaintext."/>
 /// </para>
 /// <para>
 /// The keystream is produced by repeatedly encrypting the feedback register: <c>Oᵢ = E(Oᵢ₋₁)</c> with <c>O₀ = IV</c>, and the output
@@ -63,27 +63,24 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OfbModeTransform" /> class with the specified cipher and initialisation vector.
+    /// Initializes a new instance of the <see cref="OfbModeTransform"/> class with the specified cipher and initialisation vector.
     /// </summary>
     /// <param name="cipher">The block cipher used to generate the keystream.</param>
     /// <param name="iv">The initialisation vector used to seed the feedback register. A defensive copy is taken.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     public OfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
-        this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
-        if (iv is null)
-            throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != cipher.BlockSize)
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({cipher.BlockSize}).",
-                nameof(iv));
+        ThrowHelper.ThrowIfNull(cipher);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, cipher.BlockSize);
+
+        this._cipher = cipher;
         this._currentIv = (byte[])iv.Clone();
     }
 
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        int blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);
@@ -91,7 +88,7 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
 
         Span<byte> keystream = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             ReadOnlySpan<byte> inBlock = input.Slice(offset, blockSize);
             Span<byte> outBlock = output.Slice(offset, blockSize);
@@ -100,7 +97,7 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
             this._cipher.Encrypt(this._currentIv, keystream);
 
             // XOR keystream with plaintext or ciphertext
-            for (int i = 0; i < blockSize; i++)
+            for (var i = 0; i < blockSize; i++)
                 outBlock[i] = (byte)(inBlock[i] ^ keystream[i]);
 
             // Update feedback register with generated keystream
@@ -113,7 +110,7 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
     /// <summary>
     /// Releases the resources used by this instance and zeroes the running feedback register so
     /// that key-equivalent keystream state does not linger in memory after disposal. The underlying
-    /// <see cref="IBlockCipher" /> is not disposed by this type — ownership remains with the caller.
+    /// <see cref="IBlockCipher"/> is not disposed by this type — ownership remains with the caller.
     /// </summary>
     /// <remarks>Idempotent.</remarks>
     public void Dispose()
@@ -121,7 +118,7 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
         if (this._disposed)
             return;
 
-        CryptographicOperations.ZeroMemory(this._currentIv);
+        CryptoHelpers.Clear(this._currentIv);
         this._disposed = true;
         GC.SuppressFinalize(this);
     }

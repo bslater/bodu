@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,8 +18,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void HashSize_WhenDefaultConstructed_ShouldBeExpectedBitLength(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
-        var specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         Assert.AreEqual(specification.HashSize, algorithm.HashSize);
     }
 
@@ -31,8 +31,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void InputBlockSize_WhenDefaultConstructed_ShouldBePositive(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
-        var specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         Assert.AreEqual(specification.InputBlockSize, algorithm.InputBlockSize);
     }
 
@@ -44,8 +44,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void OutputBlockSize_WhenDefaultConstructed_ShouldBePositive(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
-        var specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         Assert.AreEqual(specification.OutputBlockSize, algorithm.OutputBlockSize);
     }
 
@@ -57,8 +57,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void CanReuseTransform_WhenDefaultConstructed_ShouldBeTrue(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
-        var specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         Assert.AreEqual(specification.CanReuseTransform, algorithm.CanReuseTransform);
     }
 
@@ -70,8 +70,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void CanTransformMultipleBlocks_WhenDefaultConstructed_ShouldBeTrue(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
-        var specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         Assert.AreEqual(specification.CanTransformMultipleBlocks, algorithm.CanTransformMultipleBlocks);
     }
 
@@ -83,7 +83,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void Hash_WhenDefaultConstructed_ShouldBeNull(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
         Assert.IsNull(algorithm.Hash);
     }
 }

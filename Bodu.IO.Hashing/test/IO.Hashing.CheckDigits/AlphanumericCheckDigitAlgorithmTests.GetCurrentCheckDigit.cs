@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AlphanumericCheckDigitAlgorithmTests.GetCurrentCheckDigit.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,11 +40,11 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         _ = expectedCheck;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        for (int i = 0; i < body.Length; i++)
+        for (var i = 0; i < body.Length; i++)
         {
             algorithm.Append(body[i]);
-            char streaming = algorithm.GetCurrentCheckDigit();
-            char fromCompute = ComputeStatic(body.AsSpan(0, i + 1));
+            var streaming = algorithm.GetCurrentCheckDigit();
+            var fromCompute = ComputeStatic(body.AsSpan(0, i + 1));
             Assert.AreEqual(fromCompute, streaming, $"Prefix length {i + 1} (\"{body[..(i + 1)]}\").");
         }
     }
@@ -59,9 +59,9 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append("123".AsSpan());
 
-        char first = algorithm.GetCurrentCheckDigit();
-        char second = algorithm.GetCurrentCheckDigit();
-        char third = algorithm.GetCurrentCheckDigit();
+        var first = algorithm.GetCurrentCheckDigit();
+        var second = algorithm.GetCurrentCheckDigit();
+        var third = algorithm.GetCurrentCheckDigit();
 
         Assert.AreEqual(first, second);
         Assert.AreEqual(second, third);

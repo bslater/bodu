@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AlphanumericCheckDigitAlgorithmTests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         _ = name;
         TAlgorithm algorithm = CreateAlgorithm();
 
-        foreach (char ch in body)
+        foreach (var ch in body)
             algorithm.Append(ch);
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigit());
@@ -66,7 +66,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         if (body.Length < 2) return;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        int split = body.Length / 2;
+        var split = body.Length / 2;
 
         algorithm.Append(body.AsSpan(0, split));
         algorithm.Append(body.AsSpan(split));
@@ -82,9 +82,9 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     {
         TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append("123".AsSpan());
-        char initial = algorithm.GetCurrentCheckDigit();
+        var initial = algorithm.GetCurrentCheckDigit();
 
-        algorithm.Append(ReadOnlySpan<char>.Empty);
+        algorithm.Append([]);
 
         Assert.AreEqual(initial, algorithm.GetCurrentCheckDigit());
     }
@@ -96,7 +96,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
     {
         AlphanumericCheckDigitAlgorithmSpecification spec = GetSpecification();
-        char invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
+        var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
 
         TAlgorithm algorithm = CreateAlgorithm();
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpersTests.GetRandomBytesExcluding.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void GetRandomBytesExcluding_WhenValidInput_ShouldReturnArrayWithoutForbiddenByte()
     {
-        byte[] result = CryptoHelpers.GetRandomBytesExcluding(0xAA, 64);
+        var result = CryptoHelpers.GetRandomBytesExcluding(0xAA, 64);
         Assert.AreEqual(64, result.Length);
         CollectionAssert.DoesNotContain(result, (byte)0xAA);
     }

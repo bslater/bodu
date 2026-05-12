@@ -17,10 +17,10 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Threefish is the tweakable block cipher underlying the Skein hash function. This variant supports a variety of cipher block modes
-/// (CBC, CFB, OFB, CTR) via the <see cref="Threefish.BlockMode" /> property, and is suitable for scenarios such as disk encryption
+/// (CBC, CFB, OFB, CTR) via the <see cref="Threefish.BlockMode"/> property, and is suitable for scenarios such as disk encryption
 /// or format-preserving encryption where a tweak is useful.
 /// </para>
-/// <para>For other block sizes, see <see cref="Threefish512" /> and <see cref="Threefish1024" />.</para>
+/// <para>For other block sizes, see <see cref="Threefish512"/> and <see cref="Threefish1024"/>.</para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
@@ -62,18 +62,18 @@ public sealed class Threefish256
     : Threefish
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Threefish256" /> class using a 256-bit block size, 256-bit key, and 128-bit tweak.
+    /// Initializes a new instance of the <see cref="Threefish256"/> class using a 256-bit block size, 256-bit key, and 128-bit tweak.
     /// </summary>
     public Threefish256()
         : base(256, 128) { }
 
     /// <summary>
-    /// Creates a new <see cref="Threefish256" /> instance with default parameters.
+    /// Creates a new <see cref="Threefish256"/> instance with default parameters.
     /// </summary>
-    /// <returns>A new <see cref="Threefish256" /> instance.</returns>
+    /// <returns>A new <see cref="Threefish256"/> instance.</returns>
     /// <remarks>
     /// The key, initialisation vector, and tweak are generated on demand the first time they are accessed unless assigned explicitly
-    /// via <see cref="SymmetricAlgorithm.Key" />, <see cref="SymmetricAlgorithm.IV" />, or <see cref="TweakableSymmetricAlgorithm.Tweak" />.
+    /// via <see cref="SymmetricAlgorithm.Key"/>, <see cref="SymmetricAlgorithm.IV"/>, or <see cref="TweakableSymmetricAlgorithm.Tweak"/>.
     /// </remarks>
     public new static Threefish256 Create()
     {

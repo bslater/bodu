@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PearsonTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public partial class PearsonTests
     [TestMethod]
     public void Ctor_WhenPermutationTableIsValid_ShouldUseUserDefinedTableType()
     {
-        byte[] validTable = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray();
+        var validTable = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray();
 
         Pearson algorithm = new(8, validTable);
 
@@ -46,7 +46,7 @@ public partial class PearsonTests
     [TestMethod]
     public void Ctor_WhenPermutationTableIsTooShort_ShouldThrow()
     {
-        byte[] invalidTable = Enumerable.Range(0, 100).Select(i => (byte)i).ToArray();
+        var invalidTable = Enumerable.Range(0, 100).Select(i => (byte)i).ToArray();
 
         Assert.ThrowsExactly<ArgumentException>(() => _ = new Pearson(8, invalidTable));
     }
@@ -58,7 +58,7 @@ public partial class PearsonTests
     [TestMethod]
     public void Ctor_WhenPermutationTableContainsDuplicates_ShouldThrow()
     {
-        byte[] duplicateTable = Enumerable.Repeat((byte)42, 256).ToArray();
+        var duplicateTable = Enumerable.Repeat((byte)42, 256).ToArray();
 
         Assert.ThrowsExactly<ArgumentException>(() => _ = new Pearson(8, duplicateTable));
     }

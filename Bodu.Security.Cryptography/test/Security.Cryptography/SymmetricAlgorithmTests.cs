@@ -1,8 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
+
+using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
@@ -30,10 +32,104 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     protected abstract SymmetricAlgorithmSpecification GetSpecification();
 
     /// <summary>
+    /// Configures <paramref name="algorithm"/> to use the supplied <paramref name="mode"/>. Used by base-class
+    /// tests that need to switch the algorithm's cipher block mode without depending on a property surface that
+    /// only exists on concrete cipher types.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance to reconfigure.</param>
+    /// <param name="mode">The cipher block mode to apply.</param>
+    protected abstract void SetBlockMode(TAlgorithm algorithm, CipherBlockMode mode);
+
+    /// <summary>
+    /// Convenience wrapper around <see cref="SetBlockMode(TAlgorithm, CipherBlockMode)" /> that applies
+    /// <see cref="CipherBlockMode.ECB" />.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance to reconfigure.</param>
+    protected void SetEcbMode(TAlgorithm algorithm) => SetBlockMode(algorithm, CipherBlockMode.ECB);
+
+    /// <summary>
     /// Returns one row per entry in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" /> for use as a
     /// <see cref="DynamicDataAttribute" /> source in parameterised tests.
     /// </summary>
     /// <returns>A sequence of single-element arrays, each containing a key size in bits.</returns>
-    public static IEnumerable<object[]> LegalKeySizesBitsData() =>
-        new TTest().GetSpecification().LegalKeySizesBits.Select(k => new object[] { k });
+    public static IEnumerable<object[]> LegalKeySizeData() =>
+        new TTest().GetSpecification().LegalKeySizesBits
+            .Select(keySize => new object[] { keySize });
+
+    /// <summary>
+    /// Returns one row per key-size value, in bits, that <see cref="SymmetricAlgorithm.KeySize" />
+    /// must reject. Values are derived from each legal key size and filtered to exclude any size
+    /// that happens to be legal for the algorithm under test.
+    /// </summary>
+    /// <returns>
+    /// A sequence of single-element arrays, each containing an invalid key size in bits.
+    /// </returns>
+    public static IEnumerable<object[]> InvalidKeySizeBitsData()
+    {
+        SymmetricAlgorithmSpecification spec = new TTest().GetSpecification();
+        HashSet<int> legal = [.. spec.LegalKeySizesBits];
+        IEnumerable<int> candidates =
+            new[] { -1, 0 }.Concat(
+                legal.SelectMany(size => new[]
+                {
+                    size - 1,
+                    size + 1,
+                    size * 2,
+                    size / 2
+                }));
+
+        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
+        {
+            if (!legal.Contains(candidate))
+                yield return new object[] { candidate };
+        }
+    }
+
+    /// <summary>
+    /// Returns one row per key-size value, in bytes, that <see cref="SymmetricAlgorithm.KeySize" />
+    /// must reject. Values are derived from each legal key size and filtered to exclude any size
+    /// that happens to be legal for the algorithm under test.
+    /// </summary>
+    /// <returns>
+    /// A sequence of single-element arrays, each containing an invalid key size in bytes.
+    /// </returns>
+    public static IEnumerable<object[]> InvalidKeySizeBytesData()
+    {
+        SymmetricAlgorithmSpecification spec = new TTest().GetSpecification();
+        HashSet<int> legal = [.. spec.LegalKeySizesBits.Select(size => size / 8)];
+        IEnumerable<int> candidates =
+            new[] { -1, 0 }.Concat(
+                legal.SelectMany(size => new[]
+                {
+                    size - 1,
+                    size + 1,
+                    size * 2,
+                    size / 2
+                }));
+
+        foreach (int candidate in candidates.Distinct().OrderBy(size => size))
+        {
+            if (!legal.Contains(candidate))
+                yield return new object[] { candidate };
+        }
+    }
+
+    /// <summary>
+    /// Returns one row per bloclk-size value, in bytes, that <see cref="SymmetricAlgorithm.BlockSize" />
+    /// must reject. Values are derived from each legal key size and filtered to exclude any size
+    /// that happens to be legal for the algorithm under test.
+    /// </summary>
+    /// <returns>
+    /// A sequence of single-element arrays, each containing an invalid block size in bytes.
+    /// </returns>
+    public static IEnumerable<object[]> InvalidBlockSizeBytesData()
+    {
+        SymmetricAlgorithmSpecification spec = new TTest().GetSpecification();
+        var blockSize = spec.BlockSizeBits / 8;
+        foreach (int candidate in new[] { 0, -1, blockSize - 1, blockSize + 1, blockSize * 2, blockSize / 2 })
+        {
+            if (candidate != blockSize)
+                yield return new object[] { candidate };
+        }
+    }
 }

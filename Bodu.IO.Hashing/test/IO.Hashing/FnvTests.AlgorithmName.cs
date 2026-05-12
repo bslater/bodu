@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FnvTests.AlgorithmName.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,11 +18,11 @@ public abstract partial class FnvTests<TTest, TAlgorithm>
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(SingleTestVariant variant)
     {
         TAlgorithm algorithm = CreateAlgorithm(variant);
-        string typeName = algorithm.GetType().Name;
+        var typeName = algorithm.GetType().Name;
 
-        string expectedVariant = typeName.Contains("1a", StringComparison.OrdinalIgnoreCase) ? "1a" : "1";
-        int bits = algorithm.HashLengthInBytes * 8;
-        string expected = $"FNV-{expectedVariant}-{bits}";
+        var expectedVariant = typeName.Contains("1a", StringComparison.OrdinalIgnoreCase) ? "1a" : "1";
+        var bits = algorithm.HashLengthInBytes * 8;
+        var expected = $"FNV-{expectedVariant}-{bits}";
 
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }

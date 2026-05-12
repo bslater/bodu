@@ -22,7 +22,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.PreviousDateOfWeek(DateTime, DayOfWeek)" /> returns the prior occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(PreviousDateOfWeekTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(PreviousDateOfWeekTestData))]
     public void PreviousDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
     {
         DateTime actual = input.PreviousDateOfWeek(targetDay);

@@ -1,16 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-namespace Bodu.IO.Hashing;
 
 using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See
@@ -107,9 +107,9 @@ public abstract class CityHash<T>
     /// </summary>
     protected const ulong KMul = 0x9DDFEA08EB382D69UL;
 
-    private static readonly int[] ValidHashSizes = { 32, 64, 128 };
+    private static readonly int[] s_validHashSizes = { 32, 64, 128 };
 
-    private readonly MemoryStream inputBuffer = new MemoryStream();
+    private readonly MemoryStream _inputBuffer = new MemoryStream();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output
@@ -128,14 +128,14 @@ public abstract class CityHash<T>
     public override void Append(ReadOnlySpan<byte> source)
     {
         if (source.Length > 0)
-            this.inputBuffer.Write(source);
+            this._inputBuffer.Write(source);
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this.inputBuffer.SetLength(0);
-        this.inputBuffer.Position = 0;
+        this._inputBuffer.SetLength(0);
+        this._inputBuffer.Position = 0;
     }
 
     /// <inheritdoc />
@@ -143,7 +143,7 @@ public abstract class CityHash<T>
     {
         // CityHash is a one-shot algorithm; finalisation re-runs over the accumulated buffer so that
         // GetCurrentHash remains non-destructive and may be invoked multiple times.
-        byte[] data = this.inputBuffer.ToArray();
+        byte[] data = this._inputBuffer.ToArray();
         byte[] digest = this.ComputeHashCore(data);
         digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
@@ -321,12 +321,12 @@ public abstract class CityHash<T>
 
     private static int ValidateHashSize(int hashSize)
     {
-        if (Array.IndexOf(ValidHashSizes, hashSize) == -1)
+        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
         {
             throw new ArgumentOutOfRangeException(
                 nameof(hashSize),
                 hashSize,
-                $"Invalid hash size: {hashSize}. Valid sizes are: {string.Join(", ", ValidHashSizes)}.");
+                $"Invalid hash size: {hashSize}. Valid sizes are: {string.Join(", ", s_validHashSizes)}.");
         }
 
         return hashSize;

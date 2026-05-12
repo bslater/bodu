@@ -37,7 +37,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.NearestDateOfWeek(DateOnly, DayOfWeek)" /> returns the closest occurrence of the requested <see cref="DayOfWeek" /> in either direction.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(NearestDateOfWeekTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(NearestDateOfWeekTestData))]
     public void NearestDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateOnly date, DayOfWeek dayOfWeek, DateOnly expected)
     {
         DateOnly actual = date.NearestDateOfWeek(dayOfWeek);
@@ -51,7 +51,7 @@ public partial class DateOnlyExtensionsTests
     public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
     {
         // Wednesday 17 April 2024, target Sunday: Sun 14 (3 days back) vs Sun 21 (4 days fwd) — back wins.
-        DateOnly date = new DateOnly(2024, 4, 17);
+        var date = new DateOnly(2024, 4, 17);
         DateOnly actual = date.NearestDateOfWeek(DayOfWeek.Sunday);
         Assert.AreEqual(new DateOnly(2024, 4, 14), actual);
     }
@@ -62,7 +62,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void NearestDateOfWeek_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly date = new DateOnly(2024, 4, 17);
+        var date = new DateOnly(2024, 4, 17);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

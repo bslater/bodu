@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitAlgorithmTests.Compute.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     public void Compute_WhenBodyIsEmpty_ShouldReturnEmptyCheckDigit()
     {
         CheckDigitAlgorithmSpecification spec = GetSpecification();
-        Assert.AreEqual(spec.EmptyCheckDigit, ComputeStatic(ReadOnlySpan<char>.Empty));
+        Assert.AreEqual(spec.EmptyCheckDigit, ComputeStatic([]));
     }
 
     /// <summary>

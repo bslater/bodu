@@ -23,7 +23,7 @@ internal sealed partial class BlowfishBlockCipherTests
     /// <inerhitdocs/>
     protected override BlowfishBlockCipher CreateBlockCipher(SingleTestVariant variant)
     {
-        var specification = GetSpecification(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
         return new BlowfishBlockCipher(specification.TestKey);
     }
 

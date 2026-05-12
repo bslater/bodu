@@ -16,7 +16,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ICollection_CopyTo_WhenCollectionHasElements_ShouldCopyInOrder()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -33,7 +33,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ICollection_IsSynchronized_ShouldBeFalse()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.IsFalse(((ICollection)collection).IsSynchronized);
     }
 
@@ -43,9 +43,9 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ICollection_SyncRoot_ShouldBeStable()
     {
-        var collection = CreateCollection(3);
-        object first = ((ICollection)collection).SyncRoot;
-        object second = ((ICollection)collection).SyncRoot;
+        TCollection collection = CreateCollection(3);
+        var first = ((ICollection)collection).SyncRoot;
+        var second = ((ICollection)collection).SyncRoot;
 
         Assert.IsNotNull(first);
         Assert.AreSame(first, second);
@@ -57,7 +57,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ICollection_CopyTo_WhenArrayIsMultidimensional_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         var multiDim = new int[2, 2];
@@ -73,7 +73,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ICollection_CopyTo_WhenWrongElementType_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         var wrongType = new string[2];
@@ -89,7 +89,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ICollection_CopyTo_WhenArrayTooSmall_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -108,7 +108,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ICollection_CopyTo_WhenArrayIsNull_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>

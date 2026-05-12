@@ -16,31 +16,28 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     /// Provides scenarios for <c>ContainsAll</c> covering full-membership, partial-membership,
     /// empty-items, empty-source, and duplicate-handling cases.
     /// </summary>
-    public static IEnumerable<object[]> GetContainsAllTestCases() => new[]
-    {
+    public static IEnumerable<object[]> GetContainsAllTestCases() =>
+    [
         new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 2, 4 }, true },
-        new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 1, 2, 3, 4, 5 }, true },
-        new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 6 }, false },
-        new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 5, 6 }, false },
-        new object[] { new[] { 1, 2, 3, 4, 5 }, Array.Empty<int>(), true },
-        new object[] { Array.Empty<int>(), new[] { 1 }, false },
-        new object[] { Array.Empty<int>(), Array.Empty<int>(), true },
-        new object[] { new[] { 1, 2, 3 }, new[] { 2, 2, 2 }, true },
-    };
+        [new[] { 1, 2, 3, 4, 5 }, new[] { 1, 2, 3, 4, 5 }, true],
+        [new[] { 1, 2, 3, 4, 5 }, new[] { 6 }, false],
+        [new[] { 1, 2, 3, 4, 5 }, new[] { 5, 6 }, false],
+        [new[] { 1, 2, 3, 4, 5 }, Array.Empty<int>(), true],
+        [Array.Empty<int>(), new[] { 1 }, false],
+        [Array.Empty<int>(), Array.Empty<int>(), true],
+        [new[] { 1, 2, 3 }, new[] { 2, 2, 2 }, true],
+    ];
 
     /// <summary>
     /// Verifies that <c>ContainsAll</c> correctly determines whether every item in the query
     /// sequence is present in the source sequence across full, partial, empty, and duplicate cases.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetContainsAllTestCases), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetContainsAllTestCases))]
     public void ContainsAll_WhenEvaluatingIntegerSequences_ShouldReturnExpectedResult(
         int[] source,
         int[] items,
-        bool expected)
-    {
-        Assert.AreEqual(expected, source.ContainsAll(items));
-    }
+        bool expected) => Assert.AreEqual(expected, source.ContainsAll(items));
 
     /// <summary>
     /// Verifies that a custom equality comparer (case-insensitive) is used to compare string elements.
@@ -48,8 +45,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     [TestMethod]
     public void ContainsAll_WhenUsingCaseInsensitiveComparer_ShouldReturnTrue()
     {
-        string[] source = { "Apple", "Banana", "Cherry" };
-        string[] items = { "APPLE", "banana" };
+        string[] source = ["Apple", "Banana", "Cherry"];
+        string[] items = ["APPLE", "banana"];
 
         Assert.IsTrue(source.ContainsAll(items, StringComparer.OrdinalIgnoreCase));
     }
@@ -60,8 +57,8 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     [TestMethod]
     public void ContainsAll_WhenUsingDefaultStringComparer_ShouldDistinguishCase()
     {
-        string[] source = { "Apple", "Banana", "Cherry" };
-        string[] items = { "apple" };
+        string[] source = ["Apple", "Banana", "Cherry"];
+        string[] items = ["apple"];
 
         Assert.IsFalse(source.ContainsAll(items));
     }
@@ -76,7 +73,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = source!.ContainsAll(new[] { 1 });
+            _ = source!.ContainsAll([1]);
         });
     }
 
@@ -86,7 +83,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     [TestMethod]
     public void ContainsAll_WhenItemsIsNull_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         IEnumerable<int>? items = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>

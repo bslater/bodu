@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensionsTests.VerifyHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,9 +29,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenByteArrayMatches_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] input = { 1, 2, 3, 4 };
-        byte[] expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        byte[] input = [1, 2, 3, 4];
+        var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
 
         Assert.IsTrue(algorithm.VerifyHash(input, expected));
     }
@@ -43,9 +43,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenByteArrayMatchesHex_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] input = { 10, 10 };
-        string expectedHex = Convert.ToHexString(BitConverter.GetBytes((uint)20));
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        byte[] input = [10, 10];
+        var expectedHex = Convert.ToHexString(BitConverter.GetBytes((uint)20));
 
         Assert.IsTrue(algorithm.VerifyHash(input, expectedHex));
     }
@@ -56,10 +56,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenByteArrayDoesNotMatch_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] wrong = BitConverter.GetBytes((uint)999);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var wrong = BitConverter.GetBytes((uint)999);
 
-        Assert.IsFalse(algorithm.VerifyHash(SampleData, wrong));
+        Assert.IsFalse(algorithm.VerifyHash(s_sampleData, wrong));
     }
 
     /// <summary>
@@ -69,20 +69,20 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenHexStringIsMalformed_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        Assert.IsFalse(algorithm.VerifyHash(SampleData, "ZZZZZZZZ"));
+        Assert.IsFalse(algorithm.VerifyHash(s_sampleData, "ZZZZZZZZ"));
     }
 
     /// <summary>
-    /// Verifies that an empty input produces a hash of zero, which does not match <see cref="SampleHash" />.
+    /// Verifies that an empty input produces a hash of zero, which does not match <see cref="s_sampleHash" />.
     /// </summary>
     [TestMethod]
     public void VerifyHash_WhenInputIsEmpty_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        Assert.IsFalse(algorithm.VerifyHash(Array.Empty<byte>(), SampleHash));
+        Assert.IsFalse(algorithm.VerifyHash(Array.Empty<byte>(), s_sampleHash));
     }
 
     /// <summary>
@@ -92,10 +92,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenCalledSuccessively_ShouldResetStateBeforeEachComputation()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        Assert.IsTrue(algorithm.VerifyHash(SampleData, SampleHash));
-        Assert.IsTrue(algorithm.VerifyHash(SampleData, SampleHash));
+        Assert.IsTrue(algorithm.VerifyHash(s_sampleData, s_sampleHash));
+        Assert.IsTrue(algorithm.VerifyHash(s_sampleData, s_sampleHash));
     }
 
     // ─── Span and memory overloads ────────────────────────────────────────────────────────────
@@ -107,10 +107,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenSpanAndMemoryMatch_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] input = { 6, 6 };
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        byte[] input = [6, 6];
         ReadOnlyMemory<byte> memory = input;
-        byte[] expected = BitConverter.GetBytes((uint)12);
+        var expected = BitConverter.GetBytes((uint)12);
 
         Assert.IsTrue(algorithm.VerifyHash(new ReadOnlySpan<byte>(input), new ReadOnlySpan<byte>(expected)));
         Assert.IsTrue(algorithm.VerifyHash(memory, expected));
@@ -122,10 +122,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenSpanDoesNotMatch_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         ReadOnlySpan<byte> wrong = BitConverter.GetBytes((uint)999);
 
-        Assert.IsFalse(algorithm.VerifyHash(new ReadOnlySpan<byte>(SampleData), wrong));
+        Assert.IsFalse(algorithm.VerifyHash(new ReadOnlySpan<byte>(s_sampleData), wrong));
     }
 
     // ─── String-with-encoding overload ────────────────────────────────────────────────────────
@@ -137,9 +137,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenEncodedStringMatches_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        string input = "ABC"; // ASCII: 65 + 66 + 67 = 198
-        byte[] expected = BitConverter.GetBytes((uint)198);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var input = "ABC"; // ASCII: 65 + 66 + 67 = 198
+        var expected = BitConverter.GetBytes((uint)198);
 
         Assert.IsTrue(algorithm.VerifyHash(input, Encoding.ASCII, expected));
     }
@@ -150,10 +150,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenEncodedStringDoesNotMatch_ShouldReturnFalse()
     {
-        var algorithm = CreateAlgorithm();
-        byte[] wrong = BitConverter.GetBytes((uint)999);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var wrong = BitConverter.GetBytes((uint)999);
 
-        Assert.IsFalse(algorithm.VerifyHash(SampleString, SampleEncoding, wrong));
+        Assert.IsFalse(algorithm.VerifyHash(s_sampleString, s_sampleEncoding, wrong));
     }
 
     // ─── Stream overload ──────────────────────────────────────────────────────────────────────
@@ -165,9 +165,9 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenStreamMatchesHash_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(new byte[] { 5, 5, 5 });
-        byte[] expected = BitConverter.GetBytes((uint)15);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new([5, 5, 5]);
+        var expected = BitConverter.GetBytes((uint)15);
 
         Assert.IsTrue(algorithm.VerifyHash(stream, expected));
     }
@@ -179,10 +179,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenStreamMatchesHex_ShouldReturnTrue()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
-        Assert.IsTrue(algorithm.VerifyHash(stream, SampleHex));
+        Assert.IsTrue(algorithm.VerifyHash(stream, s_sampleHex));
     }
 
     /// <summary>
@@ -191,12 +191,12 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenStreamCalledAfterAppend_ShouldIgnorePriorState()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.Append(new byte[] { 100, 200 }); // prior state — must be discarded
 
-        using MemoryStream stream = new(SampleData);
+        using MemoryStream stream = new(s_sampleData);
 
-        Assert.IsTrue(algorithm.VerifyHash(stream, SampleHash));
+        Assert.IsTrue(algorithm.VerifyHash(stream, s_sampleHash));
     }
 
     // ─── Argument validation ──────────────────────────────────────────────────────────────────
@@ -210,7 +210,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             NonCryptographicHashAlgorithm? algorithm = null;
-            algorithm!.VerifyHash(SampleData, SampleHash);
+            algorithm!.VerifyHash(s_sampleData, s_sampleHash);
         });
     }
 
@@ -220,11 +220,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenInputIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            algorithm.VerifyHash((byte[])null!, SampleHash);
+            algorithm.VerifyHash((byte[])null!, s_sampleHash);
         });
     }
 
@@ -234,11 +234,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            algorithm.VerifyHash(SampleData, (byte[])null!);
+            algorithm.VerifyHash(s_sampleData, (byte[])null!);
         });
     }
 
@@ -248,11 +248,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            algorithm.VerifyHash(SampleData, (string)null!);
+            algorithm.VerifyHash(s_sampleData, (string)null!);
         });
     }
 
@@ -262,11 +262,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            algorithm.VerifyHash((Stream)null!, SampleHash);
+            algorithm.VerifyHash((Stream)null!, s_sampleHash);
         });
     }
 
@@ -276,8 +276,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenStreamExpectedHashIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -291,8 +291,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenStreamExpectedHexIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -306,11 +306,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenStringInputIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            algorithm.VerifyHash(null!, Encoding.ASCII, SampleHash);
+            algorithm.VerifyHash(null!, Encoding.ASCII, s_sampleHash);
         });
     }
 
@@ -320,11 +320,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenEncodingIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            algorithm.VerifyHash("hello", null!, SampleHash);
+            algorithm.VerifyHash("hello", null!, s_sampleHash);
         });
     }
 
@@ -334,7 +334,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -351,7 +351,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             NonCryptographicHashAlgorithm? algorithm = null;
-            algorithm!.VerifyHash(new ReadOnlySpan<byte>(SampleData), new ReadOnlySpan<byte>(SampleHash));
+            algorithm!.VerifyHash(new ReadOnlySpan<byte>(s_sampleData), new ReadOnlySpan<byte>(s_sampleHash));
         });
     }
 
@@ -364,7 +364,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             NonCryptographicHashAlgorithm? algorithm = null;
-            algorithm!.VerifyHash(new ReadOnlyMemory<byte>(SampleData), SampleHash);
+            algorithm!.VerifyHash(new ReadOnlyMemory<byte>(s_sampleData), s_sampleHash);
         });
     }
 
@@ -374,11 +374,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public void VerifyHash_WhenExpectedHashIsNull_ForMemoryOverload_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            algorithm.VerifyHash(new ReadOnlyMemory<byte>(SampleData), null!);
+            algorithm.VerifyHash(new ReadOnlyMemory<byte>(s_sampleData), null!);
         });
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonitoringHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -131,7 +131,7 @@ public class MonitoringHashAlgorithm : HashAlgorithm
     {
         ThrowIfDisposed();
 
-        for (int i = ibStart; i < ibStart + cbSize; i++)
+        for (var i = ibStart; i < ibStart + cbSize; i++)
             hashValue += array[i];
 
         bytesProcessed += cbSize;
@@ -146,7 +146,7 @@ public class MonitoringHashAlgorithm : HashAlgorithm
         HashCoreSpanCallCount++;
         HashCoreSpanCalled?.Invoke(this, EventArgs.Empty);
 
-        foreach (byte b in source)
+        foreach (var b in source)
             hashValue += b;
 
         bytesProcessed += source.Length;

@@ -14,12 +14,12 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.WeekOfMonth(DateOnly, CalendarWeekRule, DayOfWeek)" /> returns the expected week index for each <c>(date, rule, firstDay)</c> triple.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.WeekOfMonthCalendarWeekRuleTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.WeekOfMonthCalendarWeekRuleTestData), typeof(DateTimeExtensionsTests))]
     public void WeekOfMonth_WithCalendarWeekAndRule_ShouldReturnExpected(DateTime inputDateTime, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
 
-        int actual = input.WeekOfMonth(rule, firstDay);
+        var actual = input.WeekOfMonth(rule, firstDay);
 
         Assert.AreEqual(expected, actual);
     }
@@ -28,12 +28,12 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.WeekOfMonth(DateOnly, CultureInfo)" /> returns the expected week index for each <c>(date, culture)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.WeekOfMonthCultureTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.WeekOfMonthCultureTestData), typeof(DateTimeExtensionsTests))]
     public void WeekOfMonth_WithCulture_ShouldReturnExpected(DateTime inputDateTime, CultureInfo culture, int expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
 
-        int actual = input.WeekOfMonth(culture);
+        var actual = input.WeekOfMonth(culture);
 
         Assert.AreEqual(expected, actual);
     }
@@ -89,12 +89,12 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void WeekOfMonth_WhenCultureIsNull_ShouldUseCurrentCulture()
     {
-        var original = CultureInfo.CurrentCulture;
+        CultureInfo original = CultureInfo.CurrentCulture;
         try
         {
             CultureInfo.CurrentCulture = new CultureInfo("fr-FR"); // Starts week on Monday
             DateOnly input = new(2024, 01, 08); // 2nd Monday of Jan 2024
-            int week = input.WeekOfMonth(); // Should use fr-FR's firstDayOfWeek (Monday)
+            var week = input.WeekOfMonth(); // Should use fr-FR's firstDayOfWeek (Monday)
 
             Assert.AreEqual(2, week); // Jan 8 falls in 2nd full week
         }

@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test;
+using System.Reflection;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -74,6 +75,64 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     }
 
     /// <summary>
+    /// Gets additional hash sizes, in bits, that should be included in hash-size-driven tests.
+    /// </summary>
+    /// <returns>
+    /// A sequence of additional hash sizes, in bits.
+    /// </returns>
+    /// <remarks>
+    /// Override this method when the algorithm supports valid hash sizes that are not represented by the
+    /// default algorithm variants returned from <see cref="GetHashAlgorithmVariants" />.
+    /// </remarks>
+    protected virtual IEnumerable<int> GetHashAlgorithmSizes() =>
+        [];
+
+    /// <summary>
+    /// Returns dynamic test data containing all distinct hash sizes supported by the algorithm under test.
+    /// </summary>
+    /// <returns>
+    /// An enumerable of object arrays, each containing a single hash size in bits, or <see langword="null" />
+    /// when hash-size construction is not supported by the algorithm under test.
+    /// </returns>
+    public static IEnumerable<object[]> HashAlgorithmSizes()
+    {
+        if (TryGetHashSizeConstructor() is null)
+        {
+            yield return new object[] { null! };
+            yield break;
+        }
+
+        var test = new TTest();
+
+        foreach (var hashSize in test.GetHashAlgorithmVariants()
+            .Select(variant => test.GetSpecification(variant).HashSize)
+            .Concat(test.GetHashAlgorithmSizes())
+            .Distinct()
+            .OrderBy(size => size))
+        {
+            yield return new object[] { hashSize };
+        }
+    }
+
+    /// <summary>
+    /// Returns the display name used for hash-size-driven dynamic test data rows.
+    /// </summary>
+    /// <param name="methodInfo">
+    /// The test method for which the display name is being generated.
+    /// </param>
+    /// <param name="data">
+    /// The dynamic data row. The first value is expected to contain the hash size, in bits.
+    /// </param>
+    /// <returns>
+    /// The hash size formatted as a display name when present; otherwise, a fallback name indicating that hash-size
+    /// construction is not supported.
+    /// </returns>
+    public static string GetHashAlgorithmSizeDisplayName(MethodInfo methodInfo, object[] data) =>
+        data.Length > 0 && data[0] is int hashSize
+            ? $"{hashSize}-bit"
+            : methodInfo.Name;
+
+    /// <summary>
     /// Returns test case parameters for each defined algorithm variant.
     /// </summary>
     /// <returns>An enumerable of <see cref="TVariant" /> values wrapped in object arrays.</returns>
@@ -115,14 +174,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        string? emptyA = GetSpecification(variant).KnownAnswers.Empty;
+        var emptyA = GetSpecification(variant).KnownAnswers.Empty;
         if (emptyA is null)
         {
             Assert.Inconclusive($"No empty-input known answer defined for variant '{variant}'; skipping consistency check.");
             return;
         }
 
-        string emptyB = incrementalHashes[0];
+        var emptyB = incrementalHashes[0];
         Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
     }
 
@@ -180,9 +239,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Enumerates all instance fields in the algorithm and its base types to validate disposal state.
     /// </summary>
-    public static IEnumerable<object[]> GetDisposableFields() =>
+    public static IEnumerable<object[]> GetAlgorithmFields() =>
         TestHelpers.GetFieldInfoForType<TAlgorithm>(
-            excludeFileds: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
+            excludeReadOnly: true,
+            excludeFields: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
 
     /// <summary>
     /// Gets the property names excluded from disposal validation tests. Override in a derived class to suppress
@@ -234,7 +294,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Returns all publicly readable properties on <typeparamref name="TAlgorithm" /> as test data for disposal validation.
     /// </summary>
-    public static IEnumerable<object[]> GetReadableProperties() =>
+    public static IEnumerable<object[]> GetAlgorithmReadableProperties() =>
         TestHelpers.GetPropertyInfoForType<TAlgorithm>(
             TestHelpers.PropertyAccessMode.Read,
             excludeProperties: new TTest().GetExcludedReadablePropertyNames()?.ToArray() ?? []);
@@ -242,7 +302,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <summary>
     /// Returns all publicly writable properties on <typeparamref name="TAlgorithm" /> as test data for disposal validation.
     /// </summary>
-    public static IEnumerable<object[]> GetWritableProperties() =>
+    public static IEnumerable<object[]> GetAlgorithmWritableProperties() =>
         TestHelpers.GetPropertyInfoForType<TAlgorithm>(
             TestHelpers.PropertyAccessMode.Write,
             excludeProperties: new TTest().GetExcludedWriteablePropertyNames()?.ToArray() ?? []);
@@ -311,6 +371,19 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     protected delegate Task<byte[]> IncrementalHashInvoker(HashAlgorithm algorithm, byte[] input, int byteCount);
 
     /// <summary>
+    /// Attempts to get the constructor on <typeparamref name="TAlgorithm" /> that accepts a single hash-size argument.
+    /// </summary>
+    /// <returns>
+    /// The matching constructor if one exists; otherwise, <see langword="null" />.
+    /// </returns>
+    protected static ConstructorInfo? TryGetHashSizeConstructor() =>
+        typeof(TAlgorithm).GetConstructor(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: [typeof(int)],
+            modifiers: null);
+
+    /// <summary>
     /// Drives the dense incremental-input verification for a single variant, asserting that the
     /// supplied invoker reproduces every expected hash for input lengths
     /// <c>0</c> through <c>coverage + 1</c>.
@@ -320,7 +393,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     /// <returns>A task that completes when all incremental lengths have been verified.</returns>
     private async Task AssertIncrementalInputAsync(TVariant variant, IncrementalHashInvoker invoke)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
 
         if (expectedHashes.Length == 0)
@@ -329,9 +402,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             return;
         }
 
-        int coverage = specification.HashBlockSize > 1 ? specification.HashBlockSize : 16;
-        int maxLength = coverage + 1;
-        int expectedEntryCount = maxLength + 1;
+        var coverage = specification.HashBlockSize > 1 ? specification.HashBlockSize : 16;
+        var maxLength = coverage + 1;
+        var expectedEntryCount = maxLength + 1;
 
         Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
             $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
@@ -339,18 +412,18 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             $"(InputBlockSize={specification.InputBlockSize}, coverage={coverage}), " +
             $"but got {expectedHashes.Length}.");
 
-        var algorithm = CreateAlgorithm(variant);
-        byte[] input = new byte[maxLength];
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+        var input = new byte[maxLength];
 
         try
         {
-            for (int byteCount = 0; byteCount <= maxLength; byteCount++)
+            for (var byteCount = 0; byteCount <= maxLength; byteCount++)
             {
                 if (byteCount > 0)
                     input[byteCount - 1] = unchecked((byte)(byteCount - 1));
 
-                byte[] expected = Convert.FromHexString(expectedHashes[byteCount]);
-                byte[] actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
+                var expected = Convert.FromHexString(expectedHashes[byteCount]);
+                var actual = await invoke(algorithm, input, byteCount).ConfigureAwait(false);
 
                 TestHelpers.TraceWriteIfNotEqual(expected, actual);
 

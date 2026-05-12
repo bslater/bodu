@@ -47,7 +47,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek(DateOnly, CultureInfo)" /> returns the expected week start for the supplied culture's first-day-of-week.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfWeek_WhenCulture_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
     {
         DateOnly input = DateOnly.FromDateTime(inputDateTime);
@@ -125,7 +125,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> returns the expected actual based on the specified weekend definition.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekDefinitionTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekDefinitionTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedStart(DateTime inputDateTime, CalendarWeekendDefinition weekend, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

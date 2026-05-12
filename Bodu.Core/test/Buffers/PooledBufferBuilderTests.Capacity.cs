@@ -31,13 +31,16 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>(2);
         var initialCapacity = builder.Capacity;
 
-        // ArrayPool may round up the rented buffer beyond the requested capacity, so append one element more
-        // than the actual capacity to guarantee a growth event.
-        for (int i = 0; i <= initialCapacity; i++)
+        for (var i = 0; i <= initialCapacity; i++)
             builder.Append(i);
 
-        Assert.IsTrue(builder.Capacity > initialCapacity);
-        Assert.IsTrue(builder.Capacity >= builder.WrittenCount);
+        Assert.IsTrue(
+            builder.Capacity > initialCapacity,
+            $"Expected capacity to grow beyond {initialCapacity}, but actual capacity was {builder.Capacity}.");
+
+        Assert.IsTrue(
+            builder.Capacity >= builder.WrittenCount,
+            $"Expected capacity {builder.Capacity} to be at least written count {builder.WrittenCount}.");
     }
 
     /// <summary>
@@ -48,7 +51,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(16);
         builder.AppendRange(Enumerable.Range(1, 10));
-        int capacityBeforeReset = builder.Capacity;
+        var capacityBeforeReset = builder.Capacity;
 
         builder.Reset();
 

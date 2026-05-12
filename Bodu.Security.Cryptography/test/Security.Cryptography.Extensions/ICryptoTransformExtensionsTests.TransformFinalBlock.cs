@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ICryptoTransformExtensionsTests.TransformFinalBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,9 +34,9 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public void TransformFinalBlock_NoInput_WhenTransformIsValid_ShouldReturnByteArray()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        byte[] result = transform.TransformFinalBlock();
+        var result = transform.TransformFinalBlock();
 
         Assert.IsNotNull(result);
     }
@@ -66,7 +66,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public void TransformFinalBlock_ByteArray_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
             transform.TransformFinalBlock(null!));
@@ -80,9 +80,9 @@ public partial class ICryptoTransformExtensionsTests
     [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_ByteArray_WhenArrayIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
     {
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] result = transform.TransformFinalBlock(kat.Input);
+        var result = transform.TransformFinalBlock(kat.Input);
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, result,
             $"[{kat.Name}] TransformFinalBlock did not produce the expected output.");
@@ -95,9 +95,9 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public void TransformFinalBlock_ByteArray_WhenArrayIsEmpty_ShouldReturnNonNullResult()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        byte[] result = transform.TransformFinalBlock(Array.Empty<byte>());
+        var result = transform.TransformFinalBlock(Array.Empty<byte>());
 
         Assert.IsNotNull(result);
     }
@@ -127,7 +127,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public void TransformFinalBlock_ByteArrayOffset_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
             transform.TransformFinalBlock(null!, 0));
@@ -140,7 +140,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public void TransformFinalBlock_ByteArrayOffset_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             transform.TransformFinalBlock(new byte[] { 1, 2, 3, 4 }, -1));
@@ -153,7 +153,7 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public void TransformFinalBlock_ByteArrayOffset_WhenOffsetExceedsBounds_ShouldThrowArgumentOutOfRangeException()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             transform.TransformFinalBlock(new byte[] { 1, 2, 3, 4 }, 5));
@@ -168,11 +168,11 @@ public partial class ICryptoTransformExtensionsTests
     public void TransformFinalBlock_ByteArrayOffset_WhenOffsetIsZero_ShouldTransformEntireArray(KnownAnswerTest kat)
     {
         byte[] fromOffset;
-        using (var transformA = CreateTransform(kat))
+        using (SimpleReversingCryptoTransform transformA = CreateTransform(kat))
             fromOffset = transformA.TransformFinalBlock(kat.Input, 0);
 
         byte[] fromArray;
-        using (var transformB = CreateTransform(kat))
+        using (SimpleReversingCryptoTransform transformB = CreateTransform(kat))
             fromArray = transformB.TransformFinalBlock(kat.Input);
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, fromOffset,
@@ -207,9 +207,9 @@ public partial class ICryptoTransformExtensionsTests
     [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_Span_WhenSpanIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
     {
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] result = transform.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
+        var result = transform.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, result,
             $"[{kat.Name}] Span overload did not produce the expected output.");
@@ -222,9 +222,9 @@ public partial class ICryptoTransformExtensionsTests
     [TestMethod]
     public void TransformFinalBlock_Span_WhenSpanIsEmpty_ShouldReturnNonNullResult()
     {
-        using var transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
+        using SimpleReversingCryptoTransform transform = CreateTransform(GetValidTransformTestData().First()[0] as KnownAnswerTest);
 
-        byte[] result = transform.TransformFinalBlock(ReadOnlySpan<byte>.Empty);
+        var result = transform.TransformFinalBlock(ReadOnlySpan<byte>.Empty);
 
         Assert.IsNotNull(result);
     }
@@ -238,11 +238,11 @@ public partial class ICryptoTransformExtensionsTests
         KnownAnswerTest kat)
     {
         byte[] fromArray;
-        using (var transformA = CreateTransform(kat))
+        using (SimpleReversingCryptoTransform transformA = CreateTransform(kat))
             fromArray = transformA.TransformFinalBlock(kat.Input);
 
         byte[] fromSpan;
-        using (var transformB = CreateTransform(kat))
+        using (SimpleReversingCryptoTransform transformB = CreateTransform(kat))
             fromSpan = transformB.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
 
         CollectionAssert.AreEqual(fromArray, fromSpan,
@@ -275,9 +275,9 @@ public partial class ICryptoTransformExtensionsTests
     [DynamicData(nameof(GetValidTransformTestData))]
     public void TransformFinalBlock_Memory_WhenMemoryIsValid_ShouldReturnTransformedOutput(KnownAnswerTest kat)
     {
-        using var transform = CreateTransform(kat);
+        using SimpleReversingCryptoTransform transform = CreateTransform(kat);
 
-        byte[] result = transform.TransformFinalBlock(new ReadOnlyMemory<byte>(kat.Input));
+        var result = transform.TransformFinalBlock(new ReadOnlyMemory<byte>(kat.Input));
 
         CollectionAssert.AreEqual(kat.ExpectedOutput, result,
             $"[{kat.Name}] Memory overload did not produce the expected output.");
@@ -292,11 +292,11 @@ public partial class ICryptoTransformExtensionsTests
         KnownAnswerTest kat)
     {
         byte[] fromMemory;
-        using (var transformA = CreateTransform(kat))
+        using (SimpleReversingCryptoTransform transformA = CreateTransform(kat))
             fromMemory = transformA.TransformFinalBlock(new ReadOnlyMemory<byte>(kat.Input));
 
         byte[] fromSpan;
-        using (var transformB = CreateTransform(kat))
+        using (SimpleReversingCryptoTransform transformB = CreateTransform(kat))
             fromSpan = transformB.TransformFinalBlock((ReadOnlySpan<byte>)kat.Input);
 
         CollectionAssert.AreEqual(fromMemory, fromSpan,

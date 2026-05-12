@@ -21,7 +21,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the instance overload returns the expected nth-occurrence date for each <c>(input, dayOfWeek, ordinal)</c> tuple.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.NthDateOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.NthDateOfWeekInMonthTestData), typeof(DateTimeExtensionsTests))]
     public void NthDateOfWeekInMonth_WhenCalled_ShouldReturnExpected(DateTime inputDateTime, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -36,7 +36,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that the static <see cref="DateOnlyExtensions.GetNthDateOfWeekInMonth(int, int, DayOfWeek, WeekOfMonthOrdinal)" /> overload returns the same nth-occurrence date as the instance overload.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.NthDateOfWeekInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.NthDateOfWeekInMonthTestData), typeof(DateTimeExtensionsTests))]
     public void NthDateOfWeekInMonth_WhenUsingYearMonth_ShouldReturnExpected(DateTime inputDateTime, DayOfWeek dayOfWeek, WeekOfMonthOrdinal ordinal, DateTime expectedDateTime)
     {
         int year = inputDateTime.Year, month = inputDateTime.Month;

@@ -24,14 +24,14 @@ namespace Bodu.Security.Cryptography;
 /// material and expanded S-box state are zeroed securely on disposal.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Blowfish" /> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="BlowfishBlockCipher" /> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example via
-/// <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
+/// Most callers should prefer the higher-level <see cref="Blowfish"/> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="BlowfishBlockCipher"/> directly only
+/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> (for example via
+/// <see cref="BlockCipherModeFactory"/>) or with an <see cref="IPaddingStrategy"/>.
 /// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
-/// <seealso cref="Blowfish" />
+/// <seealso cref="Blowfish"/>
 public sealed class BlowfishBlockCipher
     : IBlockCipher
 {
@@ -44,17 +44,17 @@ public sealed class BlowfishBlockCipher
     // Static initialisers — hexadecimal digits of pi (π), per the Blowfish specification.
     // ----------------------------------------------------------------------------------------
 
-    private static readonly uint[] InitP =
-    {
+    private static readonly uint[] s_initP =
+    [
         0x243F6A88, 0x85A308D3, 0x13198A2E, 0x03707344,
         0xA4093822, 0x299F31D0, 0x082EFA98, 0xEC4E6C89,
         0x452821E6, 0x38D01377, 0xBE5466CF, 0x34E90C6C,
         0xC0AC29B7, 0xC97C50DD, 0x3F84D5B5, 0xB5470917,
         0x9216D5D9, 0x8979FB1B,
-    };
+    ];
 
-    private static readonly uint[] InitS0 =
-    {
+    private static readonly uint[] s_initS0 =
+    [
         0xD1310BA6, 0x98DFB5AC, 0x2FFD72DB, 0xD01ADFB7,
         0xB8E1AFED, 0x6A267E96, 0xBA7C9045, 0xF12C7F99,
         0x24A19947, 0xB3916CF7, 0x0801F2E2, 0x858EFC16,
@@ -119,10 +119,10 @@ public sealed class BlowfishBlockCipher
         0x08BA6FB5, 0x571BE91F, 0xF296EC6B, 0x2A0DD915,
         0xB6636521, 0xE7B9F9B6, 0xFF34052E, 0xC5855664,
         0x53B02D5D, 0xA99F8FA1, 0x08BA4799, 0x6E85076A,
-    };
+    ];
 
-    private static readonly uint[] InitS1 =
-    {
+    private static readonly uint[] s_initS1 =
+    [
         0x4B7A70E9, 0xB5B32944, 0xDB75092E, 0xC4192623,
         0xAD6EA6B0, 0x49A7DF7D, 0x9CEE60B8, 0x8FEDB266,
         0xECAA8C71, 0x699A17FF, 0x5664526C, 0xC2B19EE1,
@@ -187,10 +187,10 @@ public sealed class BlowfishBlockCipher
         0xDB73DBD3, 0x105588CD, 0x675FDA79, 0xE3674340,
         0xC5C43465, 0x713E38D8, 0x3D28F89E, 0xF16DFF20,
         0x153E21E7, 0x8FB03D4A, 0xE6E39F2B, 0xDB83ADF7,
-    };
+    ];
 
-    private static readonly uint[] InitS2 =
-    {
+    private static readonly uint[] s_initS2 =
+    [
         0xE93D5A68, 0x948140F7, 0xF64C261C, 0x94692934,
         0x411520F7, 0x7602D4F7, 0xBCF46B2E, 0xD4A20068,
         0xD4082471, 0x3320F46A, 0x43B7D4B7, 0x500061AF,
@@ -255,10 +255,10 @@ public sealed class BlowfishBlockCipher
         0x1E50EF5E, 0xB161E6F8, 0xA28514D9, 0x6C51133C,
         0x6FD5C7E7, 0x56E14EC4, 0x362ABFCE, 0xDDC6C837,
         0xD79A3234, 0x92638212, 0x670EFA8E, 0x406000E0,
-    };
+    ];
 
-    private static readonly uint[] InitS3 =
-    {
+    private static readonly uint[] s_initS3 =
+    [
         0x3A39CE37, 0xD3FAF5CF, 0xABC27737, 0x5AC52D1B,
         0x5CB0679E, 0x4FA33742, 0xD3822740, 0x99BC9BBE,
         0xD5118E9D, 0xBF0F7315, 0xD62D1C7E, 0xC700C47B,
@@ -323,7 +323,7 @@ public sealed class BlowfishBlockCipher
         0x1948C25C, 0x02FB8A8C, 0x01C36AE4, 0xD6EBE1F9,
         0x90D4F869, 0xA65CDEA0, 0x3F09252D, 0xC208E69F,
         0xB74E6132, 0xCE77E25B, 0x578FDFE3, 0x3AC372E6,
-    };
+    ];
 
     private readonly uint[] _p = new uint[PArrayLength];
     private readonly uint[] _s0 = new uint[SBoxLength];
@@ -334,16 +334,16 @@ public sealed class BlowfishBlockCipher
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlowfishBlockCipher" /> class using the specified key.
+    /// Initializes a new instance of the <see cref="BlowfishBlockCipher"/> class using the specified key.
     /// </summary>
     /// <param name="key">
-    /// The encryption key. Must be between 4 and 56 bytes (32 to 448 bits) in length. Must not be <see langword="null" />.
+    /// The encryption key. Must be between 4 and 56 bytes (32 to 448 bits) in length. Must not be <see langword="null"/>.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="key" /> is <see langword="null" />.
+    /// <paramref name="key"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key" /> is fewer than 4 bytes or more than 56 bytes in length.
+    /// <paramref name="key"/> is fewer than 4 bytes or more than 56 bytes in length.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -367,27 +367,27 @@ public sealed class BlowfishBlockCipher
         if (!this._disposed)
         {
             // Securely zero all sensitive key material.
-            Array.Clear(this._p, 0, this._p.Length);
-            Array.Clear(this._s0, 0, this._s0.Length);
-            Array.Clear(this._s1, 0, this._s1.Length);
-            Array.Clear(this._s2, 0, this._s2.Length);
-            Array.Clear(this._s3, 0, this._s3.Length);
+            CryptoHelpers.Clear(this._p);
+            CryptoHelpers.Clear(this._s0);
+            CryptoHelpers.Clear(this._s1);
+            CryptoHelpers.Clear(this._s2);
+            CryptoHelpers.Clear(this._s3);
 
             this._disposed = true;
         }
     }
 
     /// <summary>
-    /// Decrypts a single 64-bit block using the Blowfish cipher and writes the plaintext to <paramref name="output" />.
+    /// Decrypts a single 64-bit block using the Blowfish cipher and writes the plaintext to <paramref name="output"/>.
     /// </summary>
     /// <param name="input">
-    /// A read-only span containing the ciphertext block to decrypt. Must be at least <see cref="BlockSize" /> bytes in length.
+    /// A read-only span containing the ciphertext block to decrypt. Must be at least <see cref="BlockSize"/> bytes in length.
     /// </param>
     /// <param name="output">
-    /// A writable span to receive the decrypted plaintext block. Must be at least <see cref="BlockSize" /> bytes in length.
+    /// A writable span to receive the decrypted plaintext block. Must be at least <see cref="BlockSize"/> bytes in length.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input" /> or <paramref name="output" /> is shorter than <see cref="BlockSize" /> bytes.
+    /// <paramref name="input"/> or <paramref name="output"/> is shorter than <see cref="BlockSize"/> bytes.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// The instance has been disposed.
@@ -398,26 +398,26 @@ public sealed class BlowfishBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
 
-        uint xl = BinaryPrimitives.ReadUInt32BigEndian(input);
-        uint xr = BinaryPrimitives.ReadUInt32BigEndian(input.Slice(4));
+        var xl = BinaryPrimitives.ReadUInt32BigEndian(input);
+        var xr = BinaryPrimitives.ReadUInt32BigEndian(input[4..]);
 
         this.DecipherBlock(ref xl, ref xr);
 
         BinaryPrimitives.WriteUInt32BigEndian(output, xl);
-        BinaryPrimitives.WriteUInt32BigEndian(output.Slice(4), xr);
+        BinaryPrimitives.WriteUInt32BigEndian(output[4..], xr);
     }
 
     /// <summary>
-    /// Encrypts a single 64-bit block using the Blowfish cipher and writes the ciphertext to <paramref name="output" />.
+    /// Encrypts a single 64-bit block using the Blowfish cipher and writes the ciphertext to <paramref name="output"/>.
     /// </summary>
     /// <param name="input">
-    /// A read-only span containing the plaintext block to encrypt. Must be at least <see cref="BlockSize" /> bytes in length.
+    /// A read-only span containing the plaintext block to encrypt. Must be at least <see cref="BlockSize"/> bytes in length.
     /// </param>
     /// <param name="output">
-    /// A writable span to receive the encrypted ciphertext block. Must be at least <see cref="BlockSize" /> bytes in length.
+    /// A writable span to receive the encrypted ciphertext block. Must be at least <see cref="BlockSize"/> bytes in length.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input" /> or <paramref name="output" /> is shorter than <see cref="BlockSize" /> bytes.
+    /// <paramref name="input"/> or <paramref name="output"/> is shorter than <see cref="BlockSize"/> bytes.
     /// </exception>
     /// <exception cref="ObjectDisposedException">
     /// The instance has been disposed.
@@ -428,20 +428,20 @@ public sealed class BlowfishBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(input, BlockSizeInBytes);
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockSizeInBytes);
 
-        uint xl = BinaryPrimitives.ReadUInt32BigEndian(input);
-        uint xr = BinaryPrimitives.ReadUInt32BigEndian(input.Slice(4));
+        var xl = BinaryPrimitives.ReadUInt32BigEndian(input);
+        var xr = BinaryPrimitives.ReadUInt32BigEndian(input[4..]);
 
         this.EncipherBlock(ref xl, ref xr);
 
         BinaryPrimitives.WriteUInt32BigEndian(output, xl);
-        BinaryPrimitives.WriteUInt32BigEndian(output.Slice(4), xr);
+        BinaryPrimitives.WriteUInt32BigEndian(output[4..], xr);
     }
 
     /// <summary>
     /// Applies the Blowfish F function to a 32-bit word.
     /// </summary>
     /// <remarks>
-    /// Splits <paramref name="x" /> into four bytes, looks up each in its respective S-box, then combines using addition and XOR:
+    /// Splits <paramref name="x"/> into four bytes, looks up each in its respective S-box, then combines using addition and XOR:
     /// <c>((S0[b0] + S1[b1]) ^ S2[b2]) + S3[b3]</c>.
     /// </remarks>
     /// <param name="x">The 32-bit input word.</param>
@@ -458,7 +458,7 @@ public sealed class BlowfishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EncipherBlock(ref uint xl, ref uint xr)
     {
-        for (int i = 0; i < FeistelRounds; i++)
+        for (var i = 0; i < FeistelRounds; i++)
         {
             xl ^= this._p[i];
             xr ^= this.F(xl);
@@ -479,7 +479,7 @@ public sealed class BlowfishBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void DecipherBlock(ref uint xl, ref uint xr)
     {
-        for (int i = 17; i >= 2; i--)
+        for (var i = 17; i >= 2; i--)
         {
             xl ^= this._p[i];
             xr ^= this.F(xl);
@@ -497,7 +497,7 @@ public sealed class BlowfishBlockCipher
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Initialises the P-array and all four S-boxes from the pi-derived constants, XORs the P-array with the key bytes
+    /// Initializes the P-array and all four S-boxes from the pi-derived constants, XORs the P-array with the key bytes
     /// (cycling through the key as required), then repeatedly encrypts the all-zeros block to expand both the P-array and S-boxes.
     /// After this method returns, the cipher is ready to encrypt and decrypt.
     /// </para>
@@ -506,20 +506,20 @@ public sealed class BlowfishBlockCipher
     private void InitialiseKeySchedule(ReadOnlySpan<byte> key)
     {
         // Copy the pi-derived initialisers into the mutable working arrays.
-        InitP.CopyTo(this._p, 0);
-        InitS0.CopyTo(this._s0, 0);
-        InitS1.CopyTo(this._s1, 0);
-        InitS2.CopyTo(this._s2, 0);
-        InitS3.CopyTo(this._s3, 0);
+        s_initP.CopyTo(this._p, 0);
+        s_initS0.CopyTo(this._s0, 0);
+        s_initS1.CopyTo(this._s1, 0);
+        s_initS2.CopyTo(this._s2, 0);
+        s_initS3.CopyTo(this._s3, 0);
 
         // XOR the P-array entries with successive 32-bit words derived from the key, cycling as needed.
-        int keyLen = key.Length;
-        int keyIndex = 0;
+        var keyLen = key.Length;
+        var keyIndex = 0;
 
-        for (int i = 0; i < PArrayLength; i++)
+        for (var i = 0; i < PArrayLength; i++)
         {
             uint word = 0;
-            for (int b = 0; b < 4; b++)
+            for (var b = 0; b < 4; b++)
             {
                 word = (word << 8) | key[keyIndex];
                 keyIndex = (keyIndex + 1) % keyLen;
@@ -532,7 +532,7 @@ public sealed class BlowfishBlockCipher
         uint xl = 0;
         uint xr = 0;
 
-        for (int i = 0; i < PArrayLength; i += 2)
+        for (var i = 0; i < PArrayLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
             this._p[i] = xl;
@@ -540,28 +540,28 @@ public sealed class BlowfishBlockCipher
         }
 
         // Expand all four S-boxes in the same way.
-        for (int i = 0; i < SBoxLength; i += 2)
+        for (var i = 0; i < SBoxLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
             this._s0[i] = xl;
             this._s0[i + 1] = xr;
         }
 
-        for (int i = 0; i < SBoxLength; i += 2)
+        for (var i = 0; i < SBoxLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
             this._s1[i] = xl;
             this._s1[i + 1] = xr;
         }
 
-        for (int i = 0; i < SBoxLength; i += 2)
+        for (var i = 0; i < SBoxLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
             this._s2[i] = xl;
             this._s2[i + 1] = xr;
         }
 
-        for (int i = 0; i < SBoxLength; i += 2)
+        for (var i = 0; i < SBoxLength; i += 2)
         {
             this.EncipherBlock(ref xl, ref xr);
             this._s3[i] = xl;
@@ -570,16 +570,19 @@ public sealed class BlowfishBlockCipher
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this instance has already been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-			if (_disposed)
-				throw new ObjectDisposedException(nameof(BlowfishBlockCipher));
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

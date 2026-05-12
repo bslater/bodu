@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitAlgorithmTests.Append.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         _ = name;
         TAlgorithm algorithm = CreateAlgorithm();
 
-        foreach (char ch in body)
+        foreach (var ch in body)
             algorithm.Append(ch);
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigit());
@@ -64,7 +64,7 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         if (body.Length < 2) return;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        int split = body.Length / 2;
+        var split = body.Length / 2;
 
         algorithm.Append(body.AsSpan(0, split));
         algorithm.Append(body.AsSpan(split));
@@ -79,9 +79,9 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     public void Append_WhenSpanIsEmpty_ShouldLeaveCheckDigitUnchanged()
     {
         TAlgorithm algorithm = CreateAlgorithm();
-        char initial = algorithm.GetCurrentCheckDigit();
+        var initial = algorithm.GetCurrentCheckDigit();
 
-        algorithm.Append(ReadOnlySpan<char>.Empty);
+        algorithm.Append([]);
 
         Assert.AreEqual(initial, algorithm.GetCurrentCheckDigit());
     }
@@ -103,11 +103,11 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         _ = expectedCheck;
 
         TAlgorithm algorithm = CreateAlgorithm();
-        for (int i = 0; i < body.Length; i++)
+        for (var i = 0; i < body.Length; i++)
         {
             algorithm.Append(body[i]);
-            char streaming = algorithm.GetCurrentCheckDigit();
-            char fromCompute = ComputeStatic(body.AsSpan(0, i + 1));
+            var streaming = algorithm.GetCurrentCheckDigit();
+            var fromCompute = ComputeStatic(body.AsSpan(0, i + 1));
             Assert.AreEqual(fromCompute, streaming, $"Prefix length {i + 1} (\"{body[..(i + 1)]}\").");
         }
     }

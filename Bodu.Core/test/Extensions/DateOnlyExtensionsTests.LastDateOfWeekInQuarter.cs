@@ -36,7 +36,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that when the quarter end falls on the requested <see cref="DayOfWeek" />, the instance overload returns the quarter-end date itself.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfWeekInQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfWeekInQuarterJanuaryDecemberTestData))]
     public void LastDateOfWeekInQuarter_WhenTargetMatchesQuarterEndDayOfWeek_ShouldReturnQuarterEndDate(DateOnly input, DayOfWeek dayOfWeek, DateOnly expected)
     {
         DateOnly actual = input.LastDateOfWeekInQuarter(dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
@@ -49,7 +49,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly input = new DateOnly(2024, 4, 20);
+        var input = new DateOnly(2024, 4, 20);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -63,7 +63,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenDefinitionIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateOnly input = new DateOnly(2024, 4, 20);
+        var input = new DateOnly(2024, 4, 20);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

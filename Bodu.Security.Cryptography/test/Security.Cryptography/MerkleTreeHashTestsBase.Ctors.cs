@@ -59,7 +59,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void Ctor_WhenValidFactoryProvided_ShouldSucceed()
     {
-        using var hasher = Construct(Factory);
+        using THasher hasher = Construct(Factory);
         Assert.IsNotNull(hasher);
     }
 
@@ -73,7 +73,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [DataRow(1024, 4)]
     public void Ctor_WhenValidParametersProvided_ShouldSucceed(int blockSize, int fanOut)
     {
-        using var hasher = Construct(Factory, blockSize, fanOut);
+        using THasher hasher = Construct(Factory, blockSize, fanOut);
         Assert.IsNotNull(hasher);
     }
 
@@ -96,7 +96,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         };
 
         // Two full blocks with fanOut=2 forces at least two leaf-algorithm constructions.
-        using var hasher = Construct(trackingFactory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(trackingFactory, blockSize: 4, fanOut: 2);
         ComputeHash(hasher, MakeData(8));
 
         Assert.IsNotNull(first);

@@ -61,7 +61,7 @@ internal static class MerkleTestData
     internal static byte[] MakeData(int length, int seed)
     {
         var data = new byte[length];
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
             data[i] = (byte)((seed + i) % 251);
         return data;
     }
@@ -97,9 +97,9 @@ internal static class MerkleTestData
 
         // Level 0: one leaf hash per block. Partial tail blocks are zero-padded to blockSize.
         var level = new List<byte[]>();
-        for (int offset = 0; offset < data.Length; offset += blockSize)
+        for (var offset = 0; offset < data.Length; offset += blockSize)
         {
-            int len = Math.Min(blockSize, data.Length - offset);
+            var len = Math.Min(blockSize, data.Length - offset);
             var block = new byte[blockSize];              // zero-initialised; tail bytes remain 0
             Array.Copy(data, offset, block, 0, len);
             level.Add(AdditiveHash(block));
@@ -110,9 +110,9 @@ internal static class MerkleTestData
         while (level.Count > 1)
         {
             var next = new List<byte[]>();
-            for (int i = 0; i < level.Count; i += fanOut)
+            for (var i = 0; i < level.Count; i += fanOut)
             {
-                int groupSize = Math.Min(fanOut, level.Count - i);
+                var groupSize = Math.Min(fanOut, level.Count - i);
                 next.Add(AdditiveHashConcat(level.GetRange(i, groupSize)));
             }
             level = next;
@@ -129,7 +129,7 @@ internal static class MerkleTestData
     internal static byte[] AdditiveHash(byte[] block)
     {
         uint sum = 0;
-        foreach (byte b in block)
+        foreach (var b in block)
             sum += b;
         return BitConverter.GetBytes(sum);
     }
@@ -148,7 +148,7 @@ internal static class MerkleTestData
     {
         uint sum = 0;
         foreach (var h in hashes)
-            foreach (byte b in h)
+            foreach (var b in h)
                 sum += b;
         return BitConverter.GetBytes(sum);
     }

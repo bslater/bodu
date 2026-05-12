@@ -21,7 +21,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void Dispose_WhenCalledTwice_ShouldNotThrow()
     {
-        var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         hasher.Dispose();
         hasher.Dispose();
     }
@@ -34,7 +34,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void Dispose_WhenUsedWithUsingStatement_ShouldDisposeCleanly()
     {
         byte[] result;
-        using (var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut))
+        using (THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut))
             result = ComputeHash(hasher, MakeData(4));
 
         Assert.IsNotNull(result);

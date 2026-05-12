@@ -19,9 +19,9 @@ namespace Bodu.Security.Cryptography;
 /// 128-bit blocks and supports 128-bit, 192-bit, and 256-bit keys.
 /// </para>
 /// <para>
-/// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block
-/// cipher modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" />
-/// with <see cref="PaddingMode.PKCS7" /> padding.
+/// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block
+/// cipher modes via the <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/>
+/// with <see cref="PaddingMode.PKCS7"/> padding.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 /// conservatism of that AES finalist.
 /// </para>
 /// <note type="important">
-/// For new general-purpose application encryption, prefer <see cref="Aes" /> unless Twofish compatibility is
+/// For new general-purpose application encryption, prefer <see cref="Aes"/> unless Twofish compatibility is
 /// specifically required.
 /// </note>
 /// </remarks>
@@ -82,16 +82,17 @@ public sealed class Twofish
     internal const int MaxKeySizeBytes = 32;
 
     // Twofish has a single fixed 128-bit block size.
-    private static readonly KeySizes[] TwofishBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
+    private static readonly KeySizes[] s_twofishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
 
     // Legal key sizes are 128, 192, and 256 bits.
-    private static readonly KeySizes[] TwofishKeySizes = { new KeySizes(128, 256, 64) };
+    private static readonly KeySizes[] s_twofishKeySizes = [new KeySizes(128, 256, 64)];
 
     private bool _disposed;
     private CipherBlockMode _blockMode = CipherBlockMode.CBC;
+    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Twofish" /> class with default parameters.
+    /// Initializes a new instance of the <see cref="Twofish"/> class with default parameters.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -101,10 +102,10 @@ public sealed class Twofish
     public Twofish()
     {
         this.BlockSizeValue = BlockSizeBits;
-        this.LegalBlockSizesValue = TwofishBlockSizes;
+        this.LegalBlockSizesValue = s_twofishBlockSizes;
 
         this.KeySizeValue = 256;
-        this.LegalKeySizesValue = TwofishKeySizes;
+        this.LegalKeySizesValue = s_twofishKeySizes;
 
         this.FeedbackSizeValue = BlockSizeBits;
         this.ModeValue = CipherMode.CBC;
@@ -115,7 +116,7 @@ public sealed class Twofish
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.
+    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
     /// </value>
     public CipherBlockMode BlockMode
     {
@@ -124,7 +125,7 @@ public sealed class Twofish
         {
             this._blockMode = value;
 
-            if (Enum.TryParse<CipherMode>(value.ToString(), out var mode) &&
+            if (Enum.TryParse<CipherMode>(value.ToString(), out CipherMode mode) &&
                 Enum.IsDefined(mode))
             {
                 this.ModeValue = mode;
@@ -133,9 +134,48 @@ public sealed class Twofish
     }
 
     /// <summary>
-    /// Creates a new <see cref="Twofish" /> instance with default parameters.
+    /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
-    /// <returns>A new <see cref="Twofish" /> instance.</returns>
+    /// <value>
+    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
+    /// </value>
+    /// <remarks>
+    /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
+    /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
+    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
+    /// property unchanged.
+    /// </remarks>
+    public BlockPaddingMode BlockPadding
+    {
+        get => this._blockPadding;
+        set
+        {
+            this._blockPadding = value;
+            if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
+                this.PaddingValue = mode;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// <see cref="BlockPaddingMode"/>.
+    /// </remarks>
+    public override PaddingMode Padding
+    {
+        get => base.Padding;
+        set
+        {
+            base.Padding = value;
+            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
+                this._blockPadding = bpm;
+        }
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Twofish"/> instance with default parameters.
+    /// </summary>
+    /// <returns>A new <see cref="Twofish"/> instance.</returns>
     public new static Twofish Create() => new Twofish();
 
     /// <inheritdoc />
@@ -145,7 +185,7 @@ public sealed class Twofish
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new TwofishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
+        return new TwofishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
     }
 
     /// <inheritdoc />
@@ -155,7 +195,7 @@ public sealed class Twofish
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new TwofishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
+        return new TwofishTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
     }
 
     /// <inheritdoc />
@@ -195,26 +235,18 @@ public sealed class Twofish
 
     private static IBlockCipher CreateCipher(byte[] key) => new TwofishBlockCipher(key);
 
-    private void Validate(byte[] key, byte[] iv)
+    private void Validate(byte[] key, byte[]? iv)
     {
-        ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
-
-        if (key.Length != this.KeySizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                              key.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
-                nameof(key));
-
-        if (iv.Length != this.BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                              iv.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
-                nameof(iv));
+        CryptoHelpers.ThrowIfInvalidKeySize(key, this.KeySizeBytes, this.LegalKeySizesValue);
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
     }
 
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
@@ -222,7 +254,7 @@ public sealed class Twofish
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
         if (this._disposed)
-            throw new ObjectDisposedException(nameof(Twofish));
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

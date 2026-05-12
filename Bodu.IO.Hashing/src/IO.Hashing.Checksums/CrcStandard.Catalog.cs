@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcStandard.Catalog.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,12 +8,12 @@
 //     Source: Bodu.IO.Hashing/src/crc-specs.json (derived from https://reveng.sourceforge.io/crc-catalogue/all.htm).
 // </auto-generated>
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 public sealed partial class CrcStandard
 {

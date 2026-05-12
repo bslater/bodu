@@ -51,7 +51,7 @@ public partial class ConcurrentCircularBufferTests
         {
             togglerPrimed.Wait();
 
-            for (int i = 0; i < 200; i++)
+            for (var i = 0; i < 200; i++)
             {
                 try { buffer.Enqueue(new TestItem(100 + i)); }
                 catch (Exception ex) { exceptions.Add(ex); }
@@ -66,7 +66,7 @@ public partial class ConcurrentCircularBufferTests
 
             // Continue flipping starting from i = 1 so the next write remains false,
             // preserving the original "true on i % 3 == 0" cadence after the primed state.
-            for (int i = 1; i < 200; i++)
+            for (var i = 1; i < 200; i++)
             {
                 buffer.AllowOverwrite = (i % 3 == 0);
                 Thread.SpinWait(50);
@@ -139,7 +139,7 @@ public partial class ConcurrentCircularBufferTests
 
         CollectionAssert.AreEqual(new[] { 1, 2 }, evicted.ToArray(), "ItemEvicted should report items in eviction order.");
 
-        var snapshot = buffer.ToArray();
+        TestItem[] snapshot = buffer.ToArray();
         CollectionAssert.AreEqual(new[] { 3, 4 }, snapshot.Select(x => x.Value).ToArray());
     }
 
@@ -183,15 +183,15 @@ public partial class ConcurrentCircularBufferTests
     public void Enqueue_WhenConcurrentDequeueFreesSlots_ShouldReuseSlotsSafely()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var enqueueSuccess = new ConcurrentBag<bool>();
 
         var writer = Task.Run(() =>
         {
-            for (int i = 100; i < 200; i++)
+            for (var i = 100; i < 200; i++)
             {
-                bool success = buffer.TryEnqueue(new TestItem(i));
+                var success = buffer.TryEnqueue(new TestItem(i));
                 enqueueSuccess.Add(success);
                 Thread.SpinWait(5);
             }
@@ -199,7 +199,7 @@ public partial class ConcurrentCircularBufferTests
 
         var reader = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 buffer.TryDequeue(out _);
                 Thread.SpinWait(10);
@@ -237,7 +237,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(2));
 
         // Track calls to ensure the handler ran.
-        int evictedCalls = 0;
+        var evictedCalls = 0;
         buffer.ItemEvicted += _ =>
         {
             Interlocked.Increment(ref evictedCalls);

@@ -26,13 +26,13 @@ public partial class MultisetTests
     [DataRow(1000)]
     public void Add_WhenCountProvided_ShouldSetCountOfExactly(int count)
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
-        sut.Add(99, count);
+        mvd.Add(99, count);
 
-        Assert.AreEqual(count, sut.CountOf(99));
-        Assert.AreEqual(count, sut.Count);
-        Assert.AreEqual(1, sut.DistinctCount);
+        Assert.AreEqual(count, mvd.CountOf(99));
+        Assert.AreEqual(count, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
     }
 
     // --------------------------------------------------------
@@ -50,13 +50,13 @@ public partial class MultisetTests
     [DataRow(10, 9)]
     public void Remove_WhenElementHasMultipleOccurrences_ShouldDecrementCountOf(int initialCount, int expectedAfter)
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(42, initialCount);
+        var mvd = new Multiset<int>();
+        mvd.Add(42, initialCount);
 
-        sut.Remove(42);
+        mvd.Remove(42);
 
-        Assert.AreEqual(expectedAfter, sut.CountOf(42));
-        Assert.AreEqual(expectedAfter, sut.Count);
+        Assert.AreEqual(expectedAfter, mvd.CountOf(42));
+        Assert.AreEqual(expectedAfter, mvd.Count);
     }
 
     // --------------------------------------------------------
@@ -76,8 +76,8 @@ public partial class MultisetTests
     [DataRow(4, 4, 4)]
     public void Union_WhenCountsVary_ShouldReturnMaxCount(int leftCount, int rightCount, int expectedCount)
     {
-        Multiset<int> a = new Multiset<int>();
-        Multiset<int> b = new Multiset<int>();
+        var a = new Multiset<int>();
+        var b = new Multiset<int>();
         if (leftCount > 0) a.Add(1, leftCount);
         if (rightCount > 0) b.Add(1, rightCount);
 
@@ -102,8 +102,8 @@ public partial class MultisetTests
     [DataRow(5, 0, 0)]
     public void Intersect_WhenCountsVary_ShouldReturnMinCount(int leftCount, int rightCount, int expectedCount)
     {
-        Multiset<int> a = new Multiset<int>();
-        Multiset<int> b = new Multiset<int>();
+        var a = new Multiset<int>();
+        var b = new Multiset<int>();
         if (leftCount > 0) a.Add(1, leftCount);
         if (rightCount > 0) b.Add(1, rightCount);
 
@@ -129,8 +129,8 @@ public partial class MultisetTests
     [DataRow(3, 3, 0)]
     public void Except_WhenCountsVary_ShouldReturnClampedDifference(int leftCount, int rightCount, int expectedCount)
     {
-        Multiset<int> a = new Multiset<int>();
-        Multiset<int> b = new Multiset<int>();
+        var a = new Multiset<int>();
+        var b = new Multiset<int>();
         if (leftCount > 0) a.Add(1, leftCount);
         if (rightCount > 0) b.Add(1, rightCount);
 
@@ -156,8 +156,8 @@ public partial class MultisetTests
     [DataRow(4, 4, 8)]
     public void Sum_WhenCountsVary_ShouldReturnSumOfCounts(int leftCount, int rightCount, int expectedCount)
     {
-        Multiset<int> a = new Multiset<int>();
-        Multiset<int> b = new Multiset<int>();
+        var a = new Multiset<int>();
+        var b = new Multiset<int>();
         if (leftCount > 0) a.Add(1, leftCount);
         if (rightCount > 0) b.Add(1, rightCount);
 
@@ -181,13 +181,13 @@ public partial class MultisetTests
     [DataRow(5)]
     public void CopyTo_WhenOffsetVaries_ShouldFillFromOffsetOnly(int offset)
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(7, 2);
-        int[] dest = new int[offset + 2];
+        var mvd = new Multiset<int>();
+        mvd.Add(7, 2);
+        var dest = new int[offset + 2];
 
-        sut.CopyTo(dest, offset);
+        mvd.CopyTo(dest, offset);
 
-        for (int i = 0; i < offset; i++)
+        for (var i = 0; i < offset; i++)
             Assert.AreEqual(0, dest[i], $"Slot {i} before offset should be untouched.");
 
         Assert.AreEqual(7, dest[offset]);

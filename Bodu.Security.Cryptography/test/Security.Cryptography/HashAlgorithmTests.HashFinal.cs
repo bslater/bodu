@@ -21,7 +21,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void HashFinal_UnsupportedHashSizeMessage_ShouldNotContainRefactorArtefacts()
     {
-        string? fragment = UnsupportedHashSizeMessageFragment;
+        var fragment = UnsupportedHashSizeMessageFragment;
         if (fragment is null)
         {
             Assert.Inconclusive(

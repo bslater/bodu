@@ -16,7 +16,7 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenRequestedCapacityAlreadySatisfied_ShouldNotGrow()
     {
         using var builder = new PooledBufferBuilder<int>(32);
-        int capacityBefore = builder.Capacity;
+        var capacityBefore = builder.Capacity;
 
         builder.EnsureCapacity(8);
 
@@ -45,7 +45,7 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenCalled_ShouldPreserveWrittenCount()
     {
         using var builder = new PooledBufferBuilder<int>(4);
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
 
         builder.EnsureCapacity(128);
 
@@ -91,7 +91,7 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenMinimumIsZero_ShouldSucceedWithoutChangingCapacity()
     {
         using var builder = new PooledBufferBuilder<int>(16);
-        int capacityBefore = builder.Capacity;
+        var capacityBefore = builder.Capacity;
 
         builder.EnsureCapacity(0);
 
@@ -106,7 +106,7 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenMinimumEqualsCurrentCapacity_ShouldNotGrow()
     {
         using var builder = new PooledBufferBuilder<int>(16);
-        int currentCapacity = builder.Capacity;
+        var currentCapacity = builder.Capacity;
 
         builder.EnsureCapacity(currentCapacity);
 
@@ -120,7 +120,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void EnsureCapacity_WhenGrowthOccurs_ShouldPreserveExistingContents()
     {
-        int[] expected = { 10, 20, 30 };
+        int[] expected = [10, 20, 30];
         using var builder = new PooledBufferBuilder<int>(4);
         builder.AppendRange(expected);
 

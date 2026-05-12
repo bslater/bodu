@@ -9,17 +9,17 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Computes a variable-length output using the <c>Ascon-CXOF128</c> customisable extendable output function (CXOF) as
 /// defined in NIST SP 800-232. Supports an optional customisation string that domain-separates outputs from
-/// <see cref="AsconXof128" />. This class cannot be inherited.
+/// <see cref="AsconXof128"/>. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Ascon-CXOF128 extends <see cref="AsconXof128" /> with a customisation phase. The customisation string <c>Z</c> is
+/// Ascon-CXOF128 extends <see cref="AsconXof128"/> with a customisation phase. The customisation string <c>Z</c> is
 /// absorbed before any message data, using a dedicated domain-separation constant to ensure that different customisation
 /// strings produce independent output functions. An empty customisation string does <b>not</b> produce the same output as
-/// <see cref="AsconXof128" />.
+/// <see cref="AsconXof128"/>.
 /// </para>
 /// <para>
-/// If no customisation string is required, prefer <see cref="AsconXof128" /> directly. Use Ascon-CXOF128 when you need
+/// If no customisation string is required, prefer <see cref="AsconXof128"/> directly. Use Ascon-CXOF128 when you need
 /// distinct output functions for different application contexts (for example, key derivation vs. masking) from a single
 /// primitive.
 /// </para>
@@ -27,10 +27,10 @@ namespace Bodu.Security.Cryptography;
 /// The lifecycle is:
 /// </para>
 /// <list type="number">
-/// <item><description>Optionally call <see cref="Customize" /> (before any <see cref="AsconXof{T}.Absorb" /> call).</description></item>
-/// <item><description>Call <see cref="AsconXof{T}.Absorb" /> zero or more times.</description></item>
-/// <item><description>Call <see cref="AsconXof{T}.Squeeze" /> to produce output.</description></item>
-/// <item><description>Call <see cref="AsconXof{T}.Initialize" /> to reset for reuse.</description></item>
+/// <item><description>Optionally call <see cref="Customize"/> (before any <see cref="AsconXof{T}.Absorb"/> call).</description></item>
+/// <item><description>Call <see cref="AsconXof{T}.Absorb"/> zero or more times.</description></item>
+/// <item><description>Call <see cref="AsconXof{T}.Squeeze"/> to produce output.</description></item>
+/// <item><description>Call <see cref="AsconXof{T}.Initialize"/> to reset for reuse.</description></item>
 /// </list>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -59,7 +59,7 @@ namespace Bodu.Security.Cryptography;
 /// byte[] output = cxof.GetHash(32);
 /// </code>
 /// </example>
-/// <seealso cref="AsconXof128" />
+/// <seealso cref="AsconXof128"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 public sealed class AsconCxof128 : AsconXof<AsconCxof128>
 {
@@ -76,7 +76,7 @@ public sealed class AsconCxof128 : AsconXof<AsconCxof128>
     private bool _absorbed;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="AsconCxof128" /> class.
+    /// Initializes a new instance of the <see cref="AsconCxof128"/> class.
     /// </summary>
     public AsconCxof128()
         : base(Iv0, Iv1, Iv2, Iv3, Iv4, 8, "ASCON-CXOF128")
@@ -84,7 +84,7 @@ public sealed class AsconCxof128 : AsconXof<AsconCxof128>
 
     /// <summary>
     /// Absorbs a customisation string that domain-separates this instance from other uses of the same primitive. Must be
-    /// called before any call to <see cref="AsconXof{T}.Absorb" />.
+    /// called before any call to <see cref="AsconXof{T}.Absorb"/>.
     /// </summary>
     /// <param name="customization">
     /// The customisation string. May be empty to indicate the default (un-customised) domain. Calling this method with an
@@ -99,7 +99,7 @@ public sealed class AsconCxof128 : AsconXof<AsconCxof128>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
-    /// <see cref="Customize" /> has already been called on this instance. Call <see cref="AsconXof{T}.Initialize" /> to reset.
+    /// <see cref="Customize"/> has already been called on this instance. Call <see cref="AsconXof{T}.Initialize"/> to reset.
     /// </exception>
     public void Customize(ReadOnlySpan<byte> customization)
     {
@@ -131,6 +131,6 @@ public sealed class AsconCxof128 : AsconXof<AsconCxof128>
     {
         base.Initialize();
         this._customized = false;
-        this._absorbed   = false;
+        this._absorbed = false;
     }
 }

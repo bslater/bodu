@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmTests.ComputeHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,6 +7,8 @@
 using Bodu.Extensions;
 using Bodu.Test;
 using Bodu.Test.IO;
+using Newtonsoft.Json.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using static Bodu.Security.Cryptography.AsconHashA256Tests;
 
@@ -25,10 +27,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public static IEnumerable<object[]> ComputeHashNamedInputTestData()
     {
         var instance = new TTest();
-        foreach (var variant in instance.GetHashAlgorithmVariants())
+        foreach (TVariant variant in instance.GetHashAlgorithmVariants())
         {
-            var testVectors = instance.GetTestVectors(variant);
-            foreach (var vector in testVectors)
+            IEnumerable<KnownAnswerTest> testVectors = instance.GetTestVectors(variant);
+            foreach (KnownAnswerTest vector in testVectors)
             {
                 yield return new object[] { variant, vector.Name, vector.Input, vector.ExpectedOutput };
             }
@@ -42,21 +44,21 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenCalledAfterTransformBlock_ShouldIncludePriorStreamingInput()
     {
-        byte[] block1 = CryptoTestUtilities.ByteSequence256[..128];
-        byte[] block2 = CryptoTestUtilities.ByteSequence256[128..256];
+        var block1 = CryptoTestUtilities.ByteSequence256[..128];
+        var block2 = CryptoTestUtilities.ByteSequence256[128..256];
 
-        byte[] combined = new byte[block1.Length + block2.Length];
+        var combined = new byte[block1.Length + block2.Length];
         Buffer.BlockCopy(block1, 0, combined, 0, block1.Length);
         Buffer.BlockCopy(block2, 0, combined, block1.Length, block2.Length);
 
-        using var expectedAlgorithm = CreateAlgorithm();
-        byte[] expected = expectedAlgorithm.ComputeHash(combined);
+        using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+        var expected = expectedAlgorithm.ComputeHash(combined);
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         _ = algorithm.TransformBlock(block1, 0, block1.Length, null, 0);
 
-        byte[] actual = algorithm.ComputeHash(block2, 0, block2.Length);
+        var actual = algorithm.ComputeHash(block2, 0, block2.Length);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -68,7 +70,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Hash_Get_WhenComputeHashCalledAfterTransformBlock_ShouldThrowCryptographicUnexpectedOperationException()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         _ = algorithm.TransformBlock(CryptoTestUtilities.ByteSequence256, 0, 128, null, 0);
 
@@ -87,13 +89,42 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void ComputeHash_ShouldBeDeterministic(TVariant variant)
     {
-        byte[] input = Enumerable.Range(0, 128).Select(i => (byte)(i % 256)).ToArray();
-        using var algorithm1 = CreateAlgorithm(variant);
-        using var algorithm2 = CreateAlgorithm(variant);
-        byte[] hash1 = algorithm1.ComputeHash(input);
-        byte[] hash2 = algorithm2.ComputeHash(input);
+        var input = Enumerable.Range(0, 128).Select(i => (byte)(i % 256)).ToArray();
+        using TAlgorithm algorithm1 = CreateAlgorithm(variant);
+        using TAlgorithm algorithm2 = CreateAlgorithm(variant);
+        var hash1 = algorithm1.ComputeHash(input);
+        var hash2 = algorithm2.ComputeHash(input);
 
         CollectionAssert.AreEqual(hash1, hash2);
+    }
+
+    /// <summary>
+    /// Verifies that all supported hash sizes produce a non-empty digest of the expected length.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(HashAlgorithmSizes), DynamicDataDisplayName = nameof(GetHashAlgorithmSizeDisplayName))]
+    public void ComputeHash_ForAllSupportedSizes_ShouldReturnCorrectLength(int? hashSize)
+    {
+        ConstructorInfo? constructor = TryGetHashSizeConstructor();
+
+        if (hashSize is null || constructor is null)
+        {
+            Assert.Inconclusive(
+                $"{typeof(TAlgorithm).Name} does not expose an instance constructor accepting a single Int32 hash-size parameter; hash-size-specific construction cannot be validated by this test.");
+
+            return;
+        }
+
+        using var algorithm = (TAlgorithm)constructor.Invoke([hashSize.Value]);
+
+        var hash = algorithm.ComputeHash(Array.Empty<byte>());
+
+        Assert.AreNotEqual(0, hash.Length, "The computed digest should not be empty.");
+
+        Assert.AreEqual(
+            hashSize.Value / 8,
+            hash.Length,
+            $"Expected {hashSize.Value / 8} bytes for {hashSize.Value}-bit output.");
     }
 
     /// <summary>
@@ -104,16 +135,20 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DataRow(128, 0, 0)]
     public void ComputeHash_ShouldReturnEmptyHash_WhenOffsetAndCountAreZero(int size, int offset, int count)
     {
-        byte[] buffer = new byte[size];
-        byte[] expected = ExpectedEmptyInputHash;
-        using var algorithm1 = CreateAlgorithm();
-        using var algorithm2 = CreateAlgorithm();
+        var buffer = new byte[size];
+        var expected = ExpectedEmptyInputHash;
+        using TAlgorithm algorithm1 = CreateAlgorithm();
 
-        byte[] actual = algorithm1.ComputeHash(buffer, offset, count); CollectionAssert.AreEqual(expected, actual);
+        var actual = algorithm1.ComputeHash(buffer, offset, count);
+
+        CollectionAssert.AreEqual(expected, actual);
 
         buffer[0] = 0xFF;
         buffer[^1] = 0xFF;
+
+        using TAlgorithm algorithm2 = CreateAlgorithm();
         actual = algorithm2.ComputeHash(buffer, offset, count);
+
         CollectionAssert.AreEqual(expected, actual);
     }
 
@@ -129,8 +164,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DataRow(3, 3, 1)]
     public void ComputeHash_WhenOffsetAndCountCombinationIsInvalid_ShouldThrowExactly(int size, int offset, int count)
     {
-        byte[] buffer = new byte[size];
-        using var algorithm = CreateAlgorithm();
+        var buffer = new byte[size];
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -145,15 +180,15 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenOffsetAndCountReferToSameData_ShouldProduceIdenticalHash()
     {
-        byte[] bufferA = new byte[256];
-        byte[] bufferB = new byte[257];
+        var bufferA = new byte[256];
+        var bufferB = new byte[257];
         CryptoHelpers.FillWithRandomNonZeroBytes(bufferA);
         Array.Copy(bufferA, 0, bufferB, 1, bufferA.Length);
 
-        using var algorithm1 = CreateAlgorithm();
-        using var algorithm2 = CreateAlgorithm();
-        byte[] expected = algorithm1.ComputeHash(bufferA);
-        byte[] actual = algorithm2.ComputeHash(bufferB, 1, bufferA.Length);
+        using TAlgorithm algorithm1 = CreateAlgorithm();
+        using TAlgorithm algorithm2 = CreateAlgorithm();
+        var expected = algorithm1.ComputeHash(bufferA);
+        var actual = algorithm2.ComputeHash(bufferB, 1, bufferA.Length);
         CollectionAssert.AreEqual(expected, actual);
     }
 
@@ -164,8 +199,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenOffsetIsNegative_ShouldThrowExactly()
     {
-        byte[] buffer = Array.Empty<byte>();
-        using var algorithm = CreateAlgorithm();
+        var buffer = Array.Empty<byte>();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -185,14 +220,14 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DataRow(1024)]
     public void ComputeHash_WhenReusedWithSameInput_ShouldProduceIdenticalHashResults(int size)
     {
-        using var algorithm1 = CreateAlgorithm();
-        using var algorithm2 = CreateAlgorithm();
-        byte[] input = new byte[size];
+        using TAlgorithm algorithm1 = CreateAlgorithm();
+        using TAlgorithm algorithm2 = CreateAlgorithm();
+        var input = new byte[size];
         if (size > 0)
             CryptoHelpers.FillWithRandomNonZeroBytes(input);
 
-        byte[] hashA = algorithm1.ComputeHash(input);
-        byte[] hashB = algorithm2.ComputeHash(input);
+        var hashA = algorithm1.ComputeHash(input);
+        var hashB = algorithm2.ComputeHash(input);
 
         CollectionAssert.AreEqual(hashA, hashB);
     }
@@ -217,8 +252,8 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(ComputeHashNamedInputTestData))]
     public void ComputeHash_WhenUsingNamedInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected)
     {
-        var algorithm = CreateAlgorithm(variant);
-        byte[] actual = algorithm.ComputeHash(input);
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+        var actual = algorithm.ComputeHash(input);
 
         TestHelpers.TraceWriteIfNotEqual(expected, actual);
 
@@ -231,10 +266,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WithLargeInput_ShouldNotThrow()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         // Create data that will certainly exceed uint.MaxValue during computation
-        byte[] data = Enumerable.Repeat((byte)255, 20_480_000).ToArray();
+        var data = Enumerable.Repeat((byte)255, 20_480_000).ToArray();
 
         // This will throw naturally if there's an overflow or other error
         var result = algorithm.ComputeHash(data);
@@ -249,7 +284,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void ComputeHash_WithNullBuffer_ShouldThrowExactly()
     {
         byte[] buffer = null!;
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -265,7 +300,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     public void ComputeHash_WithNullBufferAndRange_ShouldThrowExactly()
     {
         byte[] buffer = null!;
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -279,7 +314,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WithNullStream_ShouldThrowExactly()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         // Expected behavior differs based on .NET version
 #if NETFRAMEWORK || NETCOREAPP3_1
@@ -307,10 +342,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenDisposed_ShouldThrowObjectDisposedExceptionWithAlgorithmName()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Dispose();
 
-        var ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        ObjectDisposedException ex = Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
             algorithm.ComputeHash(new byte[] { 1, 2, 3 });
         });
@@ -327,12 +362,12 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void ComputeHash_WhenCalled_ShouldAlwaysReturnCorrectHashSize(TVariant variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
-        int expectedBytes = algorithm.HashSize / 8;
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
+        var expectedBytes = algorithm.HashSize / 8;
 
-        foreach (int len in new[] { 0, 1, 4, 5, 12, 13, 24, 25, 100 })
+        foreach (var len in new[] { 0, 1, 4, 5, 12, 13, 24, 25, 100 })
         {
-            byte[] hash = algorithm.ComputeHash(new byte[len]);
+            var hash = algorithm.ComputeHash(new byte[len]);
             Assert.AreEqual(
                 expectedBytes,
                 hash.Length,
@@ -348,15 +383,15 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void ComputeHash_AtBoundaryLengths_ShouldProduceDistinctNonZeroHashes(TVariant variant)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
 
         var hashes = new List<byte[]>(specification.BoundaryLengths.Count);
 
-        foreach (int len in specification.BoundaryLengths)
+        foreach (var len in specification.BoundaryLengths)
         {
-            using var algorithm = CreateAlgorithm(variant);
-            byte[] input = Enumerable.Range(1, len).Select(i => (byte)(i * 7)).ToArray();
-            byte[] hash = algorithm.ComputeHash(input);
+            using TAlgorithm algorithm = CreateAlgorithm(variant);
+            var input = Enumerable.Range(1, len).Select(i => (byte)(i * 7)).ToArray();
+            var hash = algorithm.ComputeHash(input);
 
             Assert.IsTrue(
                 hash.Any(b => b != 0),
@@ -365,9 +400,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
             hashes.Add(hash);
         }
 
-        for (int i = 0; i < hashes.Count; i++)
+        for (var i = 0; i < hashes.Count; i++)
         {
-            for (int j = i + 1; j < hashes.Count; j++)
+            for (var j = i + 1; j < hashes.Count; j++)
             {
                 CollectionAssert.AreNotEqual(
                     hashes[i],
@@ -385,24 +420,24 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void ComputeHash_WhenInputIsLong_ShouldDistributeEntropyAcrossAllBytes(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
-        int outputBytes = specification.HashSize / 8;
-        int threshold = specification.MinNonZeroBytesForLongInput ?? Math.Max(1, outputBytes / 2);
+        var outputBytes = specification.HashSize / 8;
+        var threshold = specification.MinNonZeroBytesForLongInput ?? Math.Max(1, outputBytes / 2);
 
-        byte[] input = Enumerable.Range(0, specification.LongInputLength)
+        var input = Enumerable.Range(0, specification.LongInputLength)
             .Select(i => (byte)(i * 31 + 7))
             .ToArray();
 
-        byte[] hash = algorithm.ComputeHash(input);
+        var hash = algorithm.ComputeHash(input);
 
         Assert.AreEqual(
             outputBytes,
             hash.Length,
             $"[{variant}] Expected {outputBytes}-byte output for long input.");
 
-        int nonZeroCount = hash.Count(b => b != 0);
+        var nonZeroCount = hash.Count(b => b != 0);
         Assert.IsTrue(
             nonZeroCount >= threshold,
             $"[{variant}] Expected at least {threshold} of {outputBytes} output bytes to be non-zero; got {nonZeroCount}.");
@@ -415,16 +450,16 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void ComputeHash_ForMultiChunkInputs_ShouldProduceDistinctHashes(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var algorithm = CreateAlgorithm(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
+        using TAlgorithm algorithm = CreateAlgorithm(variant);
 
         var bufferSize = specification.HashBlockSize * 2;
-        byte[] inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
-        byte[] inputB = inputA.Copy()!;
+        var inputA = TestHelpers.GenerateRandomNonZeroBytes(bufferSize);
+        var inputB = inputA.Copy()!;
         inputB[bufferSize - 2] = 0x00;
 
-        byte[] hashA = algorithm.ComputeHash(inputA);
-        byte[] hashB = algorithm.ComputeHash(inputB);
+        var hashA = algorithm.ComputeHash(inputA);
+        var hashB = algorithm.ComputeHash(inputB);
 
         CollectionAssert.AreNotEqual(hashA, hashB,
             "Distinct multi-chunk inputs must produce different hashes.");
@@ -438,18 +473,18 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenCalledWithEmptyInputAfterMultipleTransformBlocks_ShouldIncludePriorStreamingInput()
     {
-        byte[] block1 = CryptoTestUtilities.ByteSequence256[..128];
-        byte[] block2 = CryptoTestUtilities.ByteSequence256[128..256];
+        var block1 = CryptoTestUtilities.ByteSequence256[..128];
+        var block2 = CryptoTestUtilities.ByteSequence256[128..256];
 
-        using var expectedAlgorithm = CreateAlgorithm();
-        byte[] expected = expectedAlgorithm.ComputeHash(CryptoTestUtilities.ByteSequence256);
+        using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+        var expected = expectedAlgorithm.ComputeHash(CryptoTestUtilities.ByteSequence256);
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         _ = algorithm.TransformBlock(block1, 0, block1.Length, null, 0);
         _ = algorithm.TransformBlock(block2, 0, block2.Length, null, 0);
 
-        byte[] actual = algorithm.ComputeHash(Array.Empty<byte>());
+        var actual = algorithm.ComputeHash(Array.Empty<byte>());
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -461,9 +496,9 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenCalled_ShouldPopulateHashProperty()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
-        byte[] actual = algorithm.ComputeHash(CryptoTestUtilities.ByteSequence256);
+        var actual = algorithm.ComputeHash(CryptoTestUtilities.ByteSequence256);
 
         Assert.IsNotNull(algorithm.Hash);
         CollectionAssert.AreEqual(actual, algorithm.Hash);
@@ -476,10 +511,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenStreamIsEmpty_ShouldReturnExpectedEmptyHash()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(Array.Empty<byte>());
 
-        byte[] actual = algorithm.ComputeHash(stream);
+        var actual = algorithm.ComputeHash(stream);
 
         CollectionAssert.AreEqual(ExpectedEmptyInputHash, actual);
     }
@@ -491,22 +526,22 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenStreamPositionIsNonZero_ShouldHashFromCurrentPosition()
     {
-        byte[] prefix = CryptoTestUtilities.ByteSequence256[..32];
-        byte[] payload = CryptoTestUtilities.ByteSequence256[32..128];
+        var prefix = CryptoTestUtilities.ByteSequence256[..32];
+        var payload = CryptoTestUtilities.ByteSequence256[32..128];
 
-        byte[] buffer = new byte[prefix.Length + payload.Length];
+        var buffer = new byte[prefix.Length + payload.Length];
         Buffer.BlockCopy(prefix, 0, buffer, 0, prefix.Length);
         Buffer.BlockCopy(payload, 0, buffer, prefix.Length, payload.Length);
 
-        using var expectedAlgorithm = CreateAlgorithm();
-        byte[] expected = expectedAlgorithm.ComputeHash(payload);
+        using TAlgorithm expectedAlgorithm = CreateAlgorithm();
+        var expected = expectedAlgorithm.ComputeHash(payload);
 
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(buffer);
 
         stream.Position = prefix.Length;
 
-        byte[] actual = algorithm.ComputeHash(stream);
+        var actual = algorithm.ComputeHash(stream);
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -518,7 +553,7 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenStreamThrowsDuringRead_ShouldPropagateException()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         using var stream = new FaultingStream(new byte[0], 0);
 
         Assert.ThrowsExactly<IOException>(() =>
@@ -536,17 +571,17 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void ComputeHash_WhenInvokedRepeatedly_ShouldYieldIdenticalDigest()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         if (!algorithm.CanReuseTransform)
         {
             Assert.Inconclusive($"{typeof(TAlgorithm).Name} reports CanReuseTransform=false; same-instance reuse is not supported.");
             return;
         }
 
-        byte[] input = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray();
+        var input = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray();
 
-        byte[] first = algorithm.ComputeHash(input);
-        byte[] second = algorithm.ComputeHash(input);
+        var first = algorithm.ComputeHash(input);
+        var second = algorithm.ComputeHash(input);
 
         CollectionAssert.AreEqual(first, second);
     }

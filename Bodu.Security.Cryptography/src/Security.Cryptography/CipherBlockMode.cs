@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/classic-modes.svg" alt="ECB, CBC, CFB, OFB, and CTR data-flow panels." />
+/// <img src="../images/diagrams/classic-modes.svg" alt="ECB, CBC, CFB, OFB, and CTR data-flow panels."/>
 /// </para>
 /// <para>
 /// Each value selects a different strategy for combining block cipher operations with feedback or sequencing
@@ -26,10 +26,10 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Modes differ in security properties, parallelism, and whether they require an initialisation vector
-/// or nonce. The remaining values (<see cref="XTS" />, <see cref="OCB" />, <see cref="EAX" />,
-/// <see cref="SIV" />) extend these building blocks with per-block tweaks or authenticated-encryption tags.
-/// Use <see cref="BlockCipherModeFactory.Create" /> to obtain an
-/// <see cref="IBlockCipherModeTransform" /> for a given value.
+/// or nonce. The remaining values (<see cref="XTS"/>, <see cref="OCB"/>, <see cref="EAX"/>,
+/// <see cref="SIV"/>) extend these building blocks with per-block tweaks or authenticated-encryption tags.
+/// Use <see cref="BlockCipherModeFactory.Create"/> to obtain an
+/// <see cref="IBlockCipherModeTransform"/> for a given value.
 /// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes (guide with per-mode worked examples)</seealso>
@@ -150,7 +150,7 @@ public enum CipherBlockMode
     /// where Δ_i = Δ_{i−1} ⊕ L[ntz(i)] and ntz(i) is the number of trailing zeros of i.
     /// </para>
     /// <para>
-    /// The <see cref="OcbModeTransform" /> implementation provides the encryption/decryption transform
+    /// The <see cref="OcbModeTransform"/> implementation provides the encryption/decryption transform
     /// component. Full AEAD authentication (associated data processing and tag generation/verification)
     /// requires the <c>IAeadBlockCipherModeTransform</c> interface extension.
     /// </para>
@@ -170,7 +170,7 @@ public enum CipherBlockMode
     /// </list>
     /// </para>
     /// <para>
-    /// The <see cref="EaxModeTransform" /> implementation provides the CTR encryption component using the
+    /// The <see cref="EaxModeTransform"/> implementation provides the CTR encryption component using the
     /// nonce directly as the initial counter. Full AEAD authentication (OMAC nonce processing, OMAC
     /// ciphertext tag, and associated data) requires the <c>IAeadBlockCipherModeTransform</c> interface
     /// extension.
@@ -194,7 +194,7 @@ public enum CipherBlockMode
     /// Both encrypt and decrypt use only the cipher's encryption primitive (CTR property).
     /// </para>
     /// <para>
-    /// The <see cref="SivModeTransform" /> implementation accepts the pre-computed SIV directly as the IV.
+    /// The <see cref="SivModeTransform"/> implementation accepts the pre-computed SIV directly as the IV.
     /// Full AEAD authentication (S2V computation from plaintext and associated data) requires the
     /// <c>IAeadBlockCipherModeTransform</c> interface extension.
     /// </para>

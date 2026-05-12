@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Blake3Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -309,7 +309,7 @@ public partial class Blake3Tests
     public void ComputeHash_ForAnyInput_ShouldReturnThirtyTwoBytes()
     {
         using Blake3 sut = new();
-        byte[] hash = sut.ComputeHash(System.Text.Encoding.ASCII.GetBytes("hello BLAKE3"));
+        var hash = sut.ComputeHash(System.Text.Encoding.ASCII.GetBytes("hello BLAKE3"));
 
         Assert.AreEqual(32, hash.Length, "BLAKE3 must always produce a 32-byte (256-bit) digest.");
     }
@@ -320,13 +320,13 @@ public partial class Blake3Tests
     [TestMethod]
     public void ComputeHash_ForMultiChunkInputs_ShouldProduceDistinctHashes()
     {
-        byte[] inputA = new byte[2048];
-        byte[] inputB = new byte[2048];
+        var inputA = new byte[2048];
+        var inputB = new byte[2048];
         inputB[1000] = 0xFF;
 
         using Blake3 sut = new();
-        byte[] hashA = sut.ComputeHash(inputA);
-        byte[] hashB = sut.ComputeHash(inputB);
+        var hashA = sut.ComputeHash(inputA);
+        var hashB = sut.ComputeHash(inputB);
 
         CollectionAssert.AreNotEqual(hashA, hashB,
             "Distinct multi-chunk inputs must produce different hashes.");
@@ -338,19 +338,19 @@ public partial class Blake3Tests
     [TestMethod]
     public void ComputeHash_WhenInputIsStreamedByteByByte_ShouldMatchSinglePassHash()
     {
-        byte[] input = new byte[1500];
-        for (int i = 0; i < input.Length; i++)
+        var input = new byte[1500];
+        for (var i = 0; i < input.Length; i++)
             input[i] = (byte)(i & 0xFF);
 
         using Blake3 single = new();
-        byte[] expected = single.ComputeHash(input);
+        var expected = single.ComputeHash(input);
 
         using Blake3 streaming = new();
         streaming.Initialize();
-        foreach (byte b in input)
+        foreach (var b in input)
             streaming.TransformBlock(new[] { b }, 0, 1, null, 0);
         streaming.TransformFinalBlock(Array.Empty<byte>(), 0, 0);
-        byte[] actual = streaming.Hash!;
+        var actual = streaming.Hash!;
 
         CollectionAssert.AreEqual(expected, actual,
             "Streaming (byte-by-byte) and single-pass hashing must produce identical results.");

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTransformTests.TransformFinalBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,9 +50,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
     /// alignment check off the encrypt path entirely; this test pins the corrected behaviour.
     /// </remarks>
     [TestMethod]
-    public void TransformFinalBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldPadAndEncrypt_fix()
+    public void TransformFinalBlock_WhenInputCountIsNotMultipleOfInputBlockSize_ShouldPadAndEncrypt()
     {
-        using var transform = CreateAlgorithm();
+        using TCryptoTransform transform = CreateAlgorithm();
 
         if (transform.InputBlockSize <= 1)
         {
@@ -60,9 +60,9 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
             return;
         }
 
-        byte[] inputBuffer = new byte[transform.InputBlockSize - 1];
+        var inputBuffer = new byte[transform.InputBlockSize - 1];
 
-        byte[] cipherText = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
+        var cipherText = transform.TransformFinalBlock(inputBuffer, 0, inputBuffer.Length);
 
         Assert.AreEqual(transform.InputBlockSize, cipherText.Length,
             "PKCS7-padded partial-block input must produce exactly one block of ciphertext.");
@@ -87,10 +87,10 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
 
         const int inputOffset = 5;
-        byte[] inputBuffer = new byte[inputOffset + answer.Plaintext.Length + 5];
+        var inputBuffer = new byte[inputOffset + answer.Plaintext.Length + 5];
         Buffer.BlockCopy(answer.Plaintext, 0, inputBuffer, inputOffset, answer.Plaintext.Length);
 
-        byte[] actual = transform.TransformFinalBlock(
+        var actual = transform.TransformFinalBlock(
             inputBuffer,
             inputOffset,
             answer.Plaintext.Length);

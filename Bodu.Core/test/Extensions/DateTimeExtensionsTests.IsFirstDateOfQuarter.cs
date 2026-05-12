@@ -12,10 +12,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when DateIsQuarterStartAndDefaultDefinition, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(IsFirstDateOfQuarterJanuaryDecemberTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(IsFirstDateOfQuarterJanuaryDecemberTestData))]
     public void IsFirstDateOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime input)
     {
-        bool actual = input.IsFirstDateOfQuarter();
+        var actual = input.IsFirstDateOfQuarter();
 
         Assert.IsTrue(actual);
     }
@@ -24,10 +24,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when DateMatchesStartOfQuarterDefinition, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(IsFirstDateOfQuarterTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(IsFirstDateOfQuarterTestData))]
     public void IsFirstDateOfQuarter_WhenDateMatchesStartOfQuarterDefinition_ShouldReturnTrue(DateTime inputDate, CalendarQuarterDefinition definition)
     {
-        bool actual = inputDate.IsFirstDateOfQuarter(definition);
+        var actual = inputDate.IsFirstDateOfQuarter(definition);
 
         Assert.IsTrue(actual);
     }
@@ -36,10 +36,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when DateIsNotStartOfQuarterDefinition, returns <see langword="false" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(IsNotFirstDateOfQuarterTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(IsNotFirstDateOfQuarterTestData))]
     public void IsFirstDateOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime inputDate, CalendarQuarterDefinition definition)
     {
-        bool actual = inputDate.IsFirstDateOfQuarter(definition);
+        var actual = inputDate.IsFirstDateOfQuarter(definition);
         Assert.IsFalse(actual);
     }
 
@@ -76,7 +76,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when UsingValidQuarterProvider, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsFirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.IsFirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider))]
     public void IsFirstDateOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, bool expected)
     {
         var provider = new ValidQuarterProvider();

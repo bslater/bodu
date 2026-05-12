@@ -14,8 +14,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void MultipleInstances_ShouldMaintainIndependentState()
     {
-        var c1 = CreateCollection(3);
-        var c2 = CreateCollection(3);
+        TCollection c1 = CreateCollection(3);
+        TCollection c2 = CreateCollection(3);
 
         AddToTail(c1, 1);
         AddToTail(c1, 2);
@@ -32,13 +32,13 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void MultipleInstances_ShouldHaveIsolatedVersionTokens()
     {
-        var c1 = CreateCollection(3);
-        var c2 = CreateCollection(3);
+        TCollection c1 = CreateCollection(3);
+        TCollection c2 = CreateCollection(3);
 
         AddToTail(c1, 1);
         AddToTail(c2, 10);
 
-        var enumerator2 = c2.GetEnumerator();
+        IEnumerator<int> enumerator2 = c2.GetEnumerator();
         AddToTail(c1, 2);
 
         Assert.IsTrue(enumerator2.MoveNext());

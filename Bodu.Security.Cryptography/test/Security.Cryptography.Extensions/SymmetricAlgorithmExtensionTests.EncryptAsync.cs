@@ -28,7 +28,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var input = new MemoryStream();
         using var output = new MemoryStream();
 
@@ -46,7 +46,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenTargetStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var input = new MemoryStream(new byte[] { 1, 2, 3 });
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(() =>
@@ -62,7 +62,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenInputIsEmptyStream_ShouldProduceEmptyOutput()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None; // no padding → empty in, empty out
 
         using var input = new MemoryStream(Array.Empty<byte>());
@@ -81,18 +81,18 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenSourceIsIncrementingByteStream_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
         // IncrementingByteStream(64) produces the same byte sequence as ByteSequence64
         // but delivers it in partial reads, exercising the read loop.
-        byte[] plainText = CryptoTestUtilities.ByteSequence64;
+        var plainText = CryptoTestUtilities.ByteSequence64;
 
         using var input = new IncrementingByteStream(64);
         using var output = new MemoryStream();
 
         await algorithm.EncryptAsync(input, output, bufferSize: 16);
 
-        byte[] decrypted = algorithm.Decrypt(output.ToArray());
+        var decrypted = algorithm.Decrypt(output.ToArray());
         CollectionAssert.AreEqual(plainText, decrypted,
             "EncryptAsync with a partial-read input stream must produce correctly decryptable ciphertext.");
     }
@@ -104,17 +104,17 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenOutputIsThrottled_ShouldStillProduceResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] inputBytes = CryptoTestUtilities.ByteSequence128;
+        var inputBytes = CryptoTestUtilities.ByteSequence128;
 
         using var input = new MemoryStream(inputBytes);
         using var throttledOutput = new ThrottledOutputMemoryStream(delayMilliseconds: 50);
 
         await algorithm.EncryptAsync(input, throttledOutput, bufferSize: 32);
 
-        byte[] decrypted = algorithm.Decrypt(throttledOutput.ToArray());
+        var decrypted = algorithm.Decrypt(throttledOutput.ToArray());
         CollectionAssert.AreEqual(inputBytes, decrypted,
             "EncryptAsync to a throttled output stream must produce correctly decryptable ciphertext.");
     }
@@ -126,13 +126,13 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenUsingThrottledStreams_ShouldSucceed()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         // Capture the expected plaintext via ToArray() before reading the stream,
         // since reading triggers the per-byte delay.
         using var input = new ThrottledIncrementingByteStream(256, readDelay: 10);
-        byte[] expected = input.ToArray();
+        var expected = input.ToArray();
 
         using var encrypted = new ThrottledOutputMemoryStream(delayMilliseconds: 10);
         await algorithm.EncryptAsync(input, encrypted, bufferSize: 64, CancellationToken.None);
@@ -158,10 +158,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenSourceIsFixedChunkStream_OneBytePerRead_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence64;
+        var plainText = CryptoTestUtilities.ByteSequence64;
 
         using var input = new FixedChunkStream(plainText, chunkSize: 1);
         using var output = new MemoryStream();
@@ -179,10 +179,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenSourceIsFixedChunkStream_NonBlockAlignedChunk_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence128;
+        var plainText = CryptoTestUtilities.ByteSequence128;
 
         // chunkSize=5 is not a multiple of the 16-byte block — exercises accumulation across chunk boundaries.
         using var input = new FixedChunkStream(plainText, chunkSize: 5);
@@ -201,11 +201,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenSourceIsFixedLengthIncrementingStream_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         // FixedLengthIncrementingStream(64) produces the same bytes as ByteSequence64.
-        byte[] plainText = CryptoTestUtilities.ByteSequence64;
+        var plainText = CryptoTestUtilities.ByteSequence64;
 
         using var input = new FixedLengthIncrementingStream(64);
         using var output = new MemoryStream();
@@ -223,10 +223,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenSourceIsNonSeekable_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence128;
+        var plainText = CryptoTestUtilities.ByteSequence128;
 
         using var input = new NonSeekableStream(plainText);
         using var output = new MemoryStream();
@@ -246,7 +246,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenSourceFaultsMidRead_ShouldPropagateIOException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         // Fault after 32 bytes — mid-way through the third block of a 128-byte input.
@@ -265,7 +265,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenCancelled_ShouldThrowTaskCanceledException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
         // ThrottledIncrementingByteStream delays each read, ensuring the cancellation
         // deadline fires before all data has been consumed.
@@ -285,7 +285,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task EncryptAsync_WhenCancellationTriggeredMidStream_ShouldThrowOperationCanceledException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         using var cts = new CancellationTokenSource();

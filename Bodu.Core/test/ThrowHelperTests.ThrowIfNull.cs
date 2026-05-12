@@ -28,10 +28,7 @@ public partial class ThrowHelperTests
     [DataRow("test")]
     [DataRow(123)]
     [DataRow(typeof(string))]
-    public void ThrowIfNull_WhenValueIsNotNull_ShouldNotThrow(object value)
-    {
-        ThrowHelper.ThrowIfNull(value);
-    }
+    public void ThrowIfNull_WhenValueIsNotNull_ShouldNotThrow(object value) => ThrowHelper.ThrowIfNull(value);
 
     /// <summary>
     /// Verifies that the message-taking overload throws <see cref="ArgumentNullException" /> whose message contains the supplied custom text when the value is <see langword="null" />.
@@ -40,7 +37,7 @@ public partial class ThrowHelperTests
     [DataRow(null, "Custom message")]
     public void ThrowIfNull_WithMessage_WhenValueIsNull_ShouldThrowWithMessage(object? value, string message)
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             ThrowHelper.ThrowIfNull(value, message);
         });
@@ -54,8 +51,5 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow("hello", "Custom message")]
     [DataRow(99, "Another message")]
-    public void ThrowIfNull_WithMessage_WhenValueIsNotNull_ShouldNotThrow(object value, string message)
-    {
-        ThrowHelper.ThrowIfNull(value, message);
-    }
+    public void ThrowIfNull_WithMessage_WhenValueIsNotNull_ShouldNotThrow(object value, string message) => ThrowHelper.ThrowIfNull(value, message);
 }

@@ -15,7 +15,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void Weekend_WhenAccessed_ShouldContainWeekendDays()
     {
-        var pattern = WeekPattern.Weekend;
+        WeekPattern pattern = WeekPattern.Weekend;
 
         Assert.AreEqual(2, pattern.Count);
         Assert.IsTrue(pattern.Contains(DayOfWeek.Saturday));
@@ -32,8 +32,5 @@ public partial class WeekPatternTests
     /// accesses.
     /// </summary>
     [TestMethod]
-    public void Weekend_WhenAccessedMultipleTimes_ShouldReturnConsistentValue()
-    {
-        Assert.AreEqual(WeekPattern.Weekend, WeekPattern.Weekend);
-    }
+    public void Weekend_WhenAccessedMultipleTimes_ShouldReturnConsistentValue() => Assert.AreEqual(WeekPattern.Weekend, WeekPattern.Weekend);
 }

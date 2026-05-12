@@ -15,8 +15,8 @@ public partial class CubeHashTests
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void AlgorithmName_WhenUsingVariant_ShouldReturnCorrectlyFormattedString(CubeHashVariants variant)
     {
-        using var algorithm = CreateAlgorithm(variant);
-        string expected = GetAlgorithmName(algorithm);
+        using CubeHash algorithm = CreateAlgorithm(variant);
+        var expected = GetAlgorithmName(algorithm);
 
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }
@@ -32,7 +32,7 @@ public partial class CubeHashTests
             InitializationRounds = 3,
             Rounds = 5
         };
-        string expected = GetAlgorithmName(algorithm);
+        var expected = GetAlgorithmName(algorithm);
 
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }

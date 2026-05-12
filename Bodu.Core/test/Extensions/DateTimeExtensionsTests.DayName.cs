@@ -23,7 +23,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.DayName" />, with Culture, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DayNameTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DayNameTestData))]
     public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime input, CultureInfo culture, string expected)
     {
         string actual = input.DayName(culture);
@@ -35,7 +35,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.DayName" />, when CultureIsNull, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DayNameFrenchTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DayNameFrenchTestData))]
     public void DayName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(DateTime input, string expected)
     {
         var original = CultureInfo.CurrentCulture;

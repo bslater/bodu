@@ -18,7 +18,7 @@ public partial class XorShiftRandomTests
     public void NextBytes_ShouldFillBufferFully_WithVariousLengths(int length)
     {
         var rng = new XorShiftRandom();
-        byte[] buffer = new byte[length];
+        var buffer = new byte[length];
         rng.NextBytes(buffer);
 
         Assert.IsTrue(buffer.All(b => b >= 0), "All bytes should be populated.");
@@ -31,7 +31,7 @@ public partial class XorShiftRandomTests
     public void NextBytes_WhenCalled_ShouldFillBuffer()
     {
         var rng = new XorShiftRandom();
-        byte[] buffer = new byte[16];
+        var buffer = new byte[16];
         rng.NextBytes(buffer);
 
         Assert.IsTrue(buffer.Any(b => b != 0), "Expected non-zero bytes in actual.");

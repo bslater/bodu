@@ -16,10 +16,10 @@ public abstract partial class HashAlgorithmTests<TTest, TAlgorithm, TVariant>
     [TestMethod]
     public void Clear_WhenCalled_ShouldDisposeAndThrowOnFurtherUse()
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.Clear();
 
-        byte[] buffer = new byte[1];
+        var buffer = new byte[1];
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
             algorithm.ComputeHash(buffer);

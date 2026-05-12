@@ -16,7 +16,7 @@ public sealed partial class GcmModeTransformTests
     {
         using IBlockCipher cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new GcmModeTransform(cipher, new byte[NonceSizeBytes + 1]);
         });
@@ -32,7 +32,7 @@ public sealed partial class GcmModeTransformTests
     {
         using IBlockCipher cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new GcmModeTransform(cipher, new byte[ExpectedBlockSize]);
         });
@@ -61,7 +61,7 @@ public sealed partial class GcmModeTransformTests
     {
         using IBlockCipher cipher = new MonitoringBlockCipher(ExpectedBlockSize);
 
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             _ = new GcmModeTransform(cipher, new byte[ExpectedBlockSize].AsSpan());
         });

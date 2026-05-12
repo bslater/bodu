@@ -41,7 +41,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the instance calendar-default overload locks in the currently observed forward-from-start behaviour (returning the first, not last, occurrence of the target day).
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfWeekInQuarterCalendarObservedTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfWeekInQuarterCalendarObservedTestData))]
     public void LastDateOfWeekInQuarter_WhenUsingCalendarDefault_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
         DateTime actual = input.LastDateOfWeekInQuarter(dayOfWeek);
@@ -54,7 +54,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenInstanceCalendarOverload_PreservesInputKind()
     {
-        DateTime input = new DateTime(2024, 2, 15, 0, 0, 0, DateTimeKind.Utc);
+        var input = new DateTime(2024, 2, 15, 0, 0, 0, DateTimeKind.Utc);
         DateTime actual = input.LastDateOfWeekInQuarter(DayOfWeek.Monday);
         Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
     }
@@ -65,7 +65,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenInstanceCalendarOverload_DayOfWeekInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateTime input = new DateTime(2024, 2, 15);
+        var input = new DateTime(2024, 2, 15);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = input.LastDateOfWeekInQuarter((DayOfWeek)999);
@@ -82,7 +82,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenUsingJanuaryToDecemberDefinition_ShouldReturnSameResultAsCalendarOverload()
     {
-        DateTime input = new DateTime(2024, 2, 15);
+        var input = new DateTime(2024, 2, 15);
         DateTime fromDefaultOverload = input.LastDateOfWeekInQuarter(DayOfWeek.Monday);
         DateTime fromExplicitDefinition = input.LastDateOfWeekInQuarter(DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
         Assert.AreEqual(fromDefaultOverload, fromExplicitDefinition);
@@ -94,7 +94,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenCustomDefinitionWithoutProvider_ShouldThrowInvalidOperationException()
     {
-        DateTime input = new DateTime(2024, 5, 10);
+        var input = new DateTime(2024, 5, 10);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = input.LastDateOfWeekInQuarter(DayOfWeek.Monday, CalendarQuarterDefinition.Custom);
@@ -107,7 +107,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenInstanceDefinitionOverload_DefinitionInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateTime input = new DateTime(2024, 5, 10);
+        var input = new DateTime(2024, 5, 10);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = input.LastDateOfWeekInQuarter(DayOfWeek.Monday, (CalendarQuarterDefinition)999);
@@ -126,7 +126,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenProviderIsNull_ShouldThrowArgumentNullException()
     {
-        DateTime input = new DateTime(2024, 5, 10);
+        var input = new DateTime(2024, 5, 10);
         IQuarterDefinitionProvider? provider = null;
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -141,7 +141,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenUsingValidQuarterProvider_ShouldReturnTargetDayOfWeek()
     {
-        DateTime input = new DateTime(2024, 5, 10);
+        var input = new DateTime(2024, 5, 10);
         IQuarterDefinitionProvider provider = new ValidQuarterProvider();
         DateTime actual = input.LastDateOfWeekInQuarter(DayOfWeek.Monday, provider);
         Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
@@ -153,7 +153,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void LastDateOfWeekInQuarter_WhenProviderOverload_DayOfWeekInvalid_ShouldThrowArgumentOutOfRangeException()
     {
-        DateTime input = new DateTime(2024, 5, 10);
+        var input = new DateTime(2024, 5, 10);
         IQuarterDefinitionProvider provider = new ValidQuarterProvider();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>

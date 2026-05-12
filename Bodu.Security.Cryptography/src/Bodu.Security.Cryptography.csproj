@@ -33,13 +33,6 @@
   <PropertyGroup Condition="'$(AllowUnsafeBlocks)' == 'true'">
     <DefineConstants>$(DefineConstants);ALLOW_UNSAFE</DefineConstants>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.Decrypt.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.DecryptAsync.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.EncryptAsync.cs" />
-    <Compile Remove="Security.Cryptography.Extensions\SymmetricAlgorithm.TransformHelpers.cs" />
-  </ItemGroup>
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
@@ -48,17 +41,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj"/>
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="CryptoResourceStrings.resx">
       <LastGenOutput>CryptoResourceStrings.Designer.cs</LastGenOutput>
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\Bodu.Core\src\Bodu.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="CryptoCryptoResourceStrings.Designer.cs">
       <DependentUpon>CryptoCryptoResourceStrings.resx</DependentUpon>
       <DesignTime>True</DesignTime>

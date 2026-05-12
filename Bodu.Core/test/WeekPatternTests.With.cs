@@ -22,7 +22,7 @@ public partial class WeekPatternTests
     [DataRow(DayOfWeek.Saturday)]
     public void With_WhenNewDayProvided_ShouldReturnInstanceWithDayAdded(DayOfWeek day)
     {
-        var result = WeekPattern.Empty.With(day);
+        WeekPattern result = WeekPattern.Empty.With(day);
 
         Assert.IsTrue(result.Contains(day));
         Assert.AreEqual(1, result.Count);
@@ -36,7 +36,7 @@ public partial class WeekPatternTests
     public void With_WhenCalled_ShouldPreserveExistingDays()
     {
         var original = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
-        var result = original.With(DayOfWeek.Friday);
+        WeekPattern result = original.With(DayOfWeek.Friday);
 
         Assert.IsTrue(result.Contains(DayOfWeek.Monday));
         Assert.IsTrue(result.Contains(DayOfWeek.Wednesday));
@@ -52,7 +52,7 @@ public partial class WeekPatternTests
     public void With_WhenDayAlreadySelected_ShouldReturnEquivalentInstance()
     {
         var original = new WeekPattern(DayOfWeek.Monday);
-        var result = original.With(DayOfWeek.Monday);
+        WeekPattern result = original.With(DayOfWeek.Monday);
 
         Assert.AreEqual(original, result);
         Assert.AreEqual(1, result.Count);
@@ -80,7 +80,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void With_WhenChained_ShouldAccumulateDays()
     {
-        var result = WeekPattern.Empty
+        WeekPattern result = WeekPattern.Empty
             .With(DayOfWeek.Monday)
             .With(DayOfWeek.Wednesday)
             .With(DayOfWeek.Friday);
@@ -98,7 +98,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void With_WhenAllDaysAdded_ShouldProduceFullWeekPattern()
     {
-        var result = WeekPattern.Empty
+        WeekPattern result = WeekPattern.Empty
             .With(DayOfWeek.Sunday)
             .With(DayOfWeek.Monday)
             .With(DayOfWeek.Tuesday)

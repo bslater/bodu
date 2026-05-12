@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AsconXof128Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class AsconXof128Tests
         using AsconXof128 sut = new AsconXof128();
         sut.Absorb([0x01, 0x02, 0x03]);
 
-        byte[] output = sut.GetHash(64);
+        var output = sut.GetHash(64);
 
         Assert.AreEqual(64, output.Length);
     }
@@ -106,7 +106,7 @@ public partial class AsconXof128Tests
 
         // After reset, absorption must succeed without throwing.
         sut.Absorb([0x01]);
-        byte[] output = sut.GetHash(32);
+        var output = sut.GetHash(32);
         Assert.AreEqual(32, output.Length);
     }
 
@@ -158,15 +158,15 @@ public partial class AsconXof128Tests
         // One shot: squeeze all 24 bytes at once.
         using AsconXof128 oneShot = new AsconXof128();
         oneShot.Absorb(message);
-        byte[] single = new byte[24];
+        var single = new byte[24];
         oneShot.Squeeze(single);
 
         // Incremental: squeeze 7 + 9 + 8 bytes separately.
         using AsconXof128 incr = new AsconXof128();
         incr.Absorb(message);
-        byte[] part1 = new byte[7];
-        byte[] part2 = new byte[9];
-        byte[] part3 = new byte[8];
+        var part1 = new byte[7];
+        var part2 = new byte[9];
+        var part3 = new byte[8];
         incr.Squeeze(part1);
         incr.Squeeze(part2);
         incr.Squeeze(part3);
@@ -183,18 +183,18 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void Absorb_IncrementalVsSingleCall_ShouldProduceIdenticalOutput()
     {
-        byte[] message = new byte[25];
-        for (int i = 0; i < message.Length; i++) message[i] = (byte)i;
+        var message = new byte[25];
+        for (var i = 0; i < message.Length; i++) message[i] = (byte)i;
 
         using AsconXof128 single = new AsconXof128();
         single.Absorb(message);
-        byte[] outputSingle = single.GetHash(32);
+        var outputSingle = single.GetHash(32);
 
         using AsconXof128 incr = new AsconXof128();
         incr.Absorb(message.AsSpan(0, 10));
         incr.Absorb(message.AsSpan(10, 8));
         incr.Absorb(message.AsSpan(18));
-        byte[] outputIncr = incr.GetHash(32);
+        var outputIncr = incr.GetHash(32);
 
         CollectionAssert.AreEqual(outputSingle, outputIncr,
             "Incremental absorption must produce the same output as a single Absorb call.");
@@ -211,9 +211,9 @@ public partial class AsconXof128Tests
 
         using AsconXof128 inst = new AsconXof128();
         inst.Absorb(input);
-        byte[] instanceOutput = inst.GetHash(32);
+        var instanceOutput = inst.GetHash(32);
 
-        byte[] staticOutput = AsconXof128.HashData(input, 32);
+        var staticOutput = AsconXof128.HashData(input, 32);
 
         CollectionAssert.AreEqual(instanceOutput, staticOutput,
             "HashData static method must produce the same output as the instance API for the same input.");
@@ -225,8 +225,8 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void GetHash_ForDifferentInputs_ShouldProduceDifferentOutputs()
     {
-        byte[] output1 = AsconXof128.HashData([0x01], 32);
-        byte[] output2 = AsconXof128.HashData([0x02], 32);
+        var output1 = AsconXof128.HashData([0x01], 32);
+        var output2 = AsconXof128.HashData([0x02], 32);
 
         CollectionAssert.AreNotEqual(output1, output2,
             "Two different inputs must not produce the same 256-bit XOF output.");
@@ -238,8 +238,8 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void GetHash_EmptyInputDiffersFromNonEmpty()
     {
-        byte[] empty    = AsconXof128.HashData([], 32);
-        byte[] nonEmpty = AsconXof128.HashData([0x00], 32);
+        var empty    = AsconXof128.HashData([], 32);
+        var nonEmpty = AsconXof128.HashData([0x00], 32);
 
         CollectionAssert.AreNotEqual(empty, nonEmpty,
             "Empty-message output must differ from a single zero-byte message.");

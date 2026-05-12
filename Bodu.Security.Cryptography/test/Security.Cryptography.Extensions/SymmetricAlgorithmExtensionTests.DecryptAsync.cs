@@ -29,7 +29,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var input = new MemoryStream();
         using var output = new MemoryStream();
 
@@ -43,7 +43,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenSourceStreamIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var output = new MemoryStream();
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
@@ -60,7 +60,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenOutputIsNull_ShouldThrowArgumentNullException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         using var input = new MemoryStream(new byte[algorithm.BlockSize / 8]);
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(() =>
@@ -85,7 +85,7 @@ public partial class SymmetricAlgorithmExtensionTests
     public async Task DecryptAsync_EmptyInput_WithVariousPaddingModes_ShouldBehaveCorrectly(
         PaddingMode padding, bool expectSuccess)
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = padding;
 
         using var input = new MemoryStream(Array.Empty<byte>());
@@ -114,7 +114,7 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenCalled_WithNoPadding_ShouldNotDisposeTargetStream()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
         using var input = new MemoryStream();
@@ -135,11 +135,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenUsingSmallBufferSize_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence64;
-        byte[] encrypted = algorithm.Encrypt(plainText);
+        var plainText = CryptoTestUtilities.ByteSequence64;
+        var encrypted = algorithm.Encrypt(plainText);
 
         using var input = new MemoryStream(encrypted);
         using var output = new MemoryStream();
@@ -157,11 +157,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenOutputIsThrottled_ShouldStillProduceResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] original = CryptoTestUtilities.ByteSequence128;
-        byte[] encrypted = algorithm.Encrypt(original);
+        var original = CryptoTestUtilities.ByteSequence128;
+        var encrypted = algorithm.Encrypt(original);
 
         using var input = new MemoryStream(encrypted);
         using var throttledOutput = new ThrottledOutputMemoryStream(delayMilliseconds: 50);
@@ -184,11 +184,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenSourceIsFixedChunkStream_OneBytePerRead_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence64;
-        byte[] cipherText = algorithm.Encrypt(plainText);
+        var plainText = CryptoTestUtilities.ByteSequence64;
+        var cipherText = algorithm.Encrypt(plainText);
 
         using var input = new FixedChunkStream(cipherText, chunkSize: 1);
         using var output = new MemoryStream();
@@ -206,11 +206,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenSourceIsFixedChunkStream_NonBlockAlignedChunk_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence128;
-        byte[] cipherText = algorithm.Encrypt(plainText);
+        var plainText = CryptoTestUtilities.ByteSequence128;
+        var cipherText = algorithm.Encrypt(plainText);
 
         using var input = new FixedChunkStream(cipherText, chunkSize: 5);
         using var output = new MemoryStream();
@@ -228,11 +228,11 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenSourceIsNonSeekable_ShouldProduceCorrectResult()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] plainText = CryptoTestUtilities.ByteSequence128;
-        byte[] cipherText = algorithm.Encrypt(plainText);
+        var plainText = CryptoTestUtilities.ByteSequence128;
+        var cipherText = algorithm.Encrypt(plainText);
 
         using var input = new NonSeekableStream(cipherText);
         using var output = new MemoryStream();
@@ -252,10 +252,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenSourceFaultsMidRead_ShouldPropagateIOException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
+        var cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
 
         // Fault after 32 bytes — mid-way through the ciphertext stream.
         using var input = new FaultingStream(cipherText, throwAfterBytes: 32);
@@ -273,12 +273,12 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenCancelled_ShouldThrowTaskCanceledException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
 
         // Use a block-aligned deterministic input large enough that the throttled
         // output write does not complete before the cancellation deadline fires.
-        byte[] plainText = CryptoTestUtilities.ByteSequence256;
-        byte[] encrypted = algorithm.Encrypt(plainText);
+        var plainText = CryptoTestUtilities.ByteSequence256;
+        var encrypted = algorithm.Encrypt(plainText);
 
         using var input = new MemoryStream(encrypted);
         using var output = new ThrottledOutputMemoryStream(delayMilliseconds: 1000);
@@ -296,10 +296,10 @@ public partial class SymmetricAlgorithmExtensionTests
     [TestMethod]
     public async Task DecryptAsync_WhenCancellationTriggeredMidStream_ShouldThrowOperationCanceledException()
     {
-        using var algorithm = CreateAlgorithm();
+        using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
 
-        byte[] cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
+        var cipherText = algorithm.Encrypt(CryptoTestUtilities.ByteSequence128);
 
         using var cts = new CancellationTokenSource();
         using var inner = new MemoryStream(cipherText);

@@ -5,17 +5,18 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies GCM-SIV mode to an underlying <see cref="IBlockCipher" />, providing nonce-misuse
+/// Applies GCM-SIV mode to an underlying <see cref="IBlockCipher"/>, providing nonce-misuse
 /// resistant authenticated encryption per RFC 8452.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — GCM-SIV runs a POLYVAL-based MAC over nonce, associated data, and plaintext to derive a synthetic tag, then uses that tag as the CTR initial counter." />
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — GCM-SIV runs a POLYVAL-based MAC over nonce, associated data, and plaintext to derive a synthetic tag, then uses that tag as the CTR initial counter."/>
 /// </para>
 /// <para>
 /// GCM-SIV shares SIV's misuse-resistant ordering — the MAC pipeline runs before the keystream
@@ -37,12 +38,12 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Because GCM-SIV must create a fresh cipher instance keyed with the derived <c>K_enc</c>,
-/// a <see cref="Func{T,TResult}" /> cipher factory is required in the constructor alongside
+/// a <see cref="Func{T,TResult}"/> cipher factory is required in the constructor alongside
 /// the master cipher. The factory is called once per transform instance.
 /// </para>
 /// <para>
 /// Ciphertext is output as <c>C || Tag</c> (16-byte tag appended), consistent with the
-/// <see cref="IAeadBlockCipherModeTransform" /> convention.
+/// <see cref="IAeadBlockCipherModeTransform"/> convention.
 /// </para>
 /// <para>
 /// <strong>When to use GCM-SIV.</strong> The right modern AEAD pick when nonce uniqueness cannot be
@@ -72,11 +73,10 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/aead-modes.html#gcm-siv--the-modern-replacement-for-gcm">GCM-SIV walk-through in the AEAD-modes guide</seealso>
-/// <seealso cref="AesBlockCipher" />
-/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions" />
+/// <seealso cref="AesBlockCipher"/>
+/// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class GcmSivModeTransform
-    : IAeadBlockCipherModeTransform
-    , IDisposable
+    : IAeadBlockCipherModeTransform, IDisposable
 {
     private const int TagLengthBytes = 16;
     private const int NonceLengthBytes = 12;
@@ -90,40 +90,37 @@ public sealed class GcmSivModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GcmSivModeTransform" /> class.
+    /// Initializes a new instance of the <see cref="GcmSivModeTransform"/> class.
     /// </summary>
     /// <param name="masterCipher">
     /// The block cipher keyed with the master key. Used for per-message key derivation
     /// (four encrypt calls). Must have a 16-byte block size.
     /// </param>
     /// <param name="cipherFactory">
-    /// A factory that creates a fresh <see cref="IBlockCipher" /> instance keyed with the
+    /// A factory that creates a fresh <see cref="IBlockCipher"/> instance keyed with the
     /// supplied byte array. Called once to produce the per-message encryption cipher.
     /// </param>
     /// <param name="iv">
     /// The initialisation vector. The first 12 bytes are used as the GCM-SIV nonce.
     /// Must equal the master cipher block size. A defensive copy is taken.
     /// </param>
-    /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException"><paramref name="iv" /> length does not equal the cipher block size.</exception>
+    /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="iv"/> length does not equal the cipher block size.</exception>
     /// <exception cref="InvalidOperationException">
-    /// <paramref name="cipherFactory" /> returned <see langword="null" />.
+    /// <paramref name="cipherFactory"/> returned <see langword="null"/>.
     /// </exception>
     public GcmSivModeTransform(IBlockCipher masterCipher, Func<byte[], IBlockCipher> cipherFactory, byte[] iv)
     {
-        if (masterCipher is null) throw new ArgumentNullException(nameof(masterCipher));
-        if (cipherFactory is null) throw new ArgumentNullException(nameof(cipherFactory));
-        if (iv is null) throw new ArgumentNullException(nameof(iv));
-        if (iv.Length != masterCipher.BlockSize)
-            throw new ArgumentException(
-                $"IV length ({iv.Length}) must equal the cipher block size ({masterCipher.BlockSize}).", nameof(iv));
+        ThrowHelper.ThrowIfNull(masterCipher);
+        ThrowHelper.ThrowIfNull(cipherFactory);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
 
         this._nonce = new byte[NonceLengthBytes];
         iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
-        (byte[] authKey, byte[] encKeyMaterial) = DeriveKeys(masterCipher, this._nonce);
+        (var authKey, var encKeyMaterial) = DeriveKeys(masterCipher, this._nonce);
 
         try
         {
@@ -133,12 +130,12 @@ public sealed class GcmSivModeTransform
         }
         catch
         {
-            CryptographicOperations.ZeroMemory(authKey);
+            CryptoHelpers.Clear(authKey);
             throw;
         }
         finally
         {
-            CryptographicOperations.ZeroMemory(encKeyMaterial);
+            CryptoHelpers.Clear(encKeyMaterial);
         }
     }
 
@@ -146,13 +143,10 @@ public sealed class GcmSivModeTransform
     public int TagSize => TagLengthBytes;
 
     /// <inheritdoc />
-    /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
     {
         this.ThrowIfDisposed();
-
-        if (this._aadProcessed)
-            throw new InvalidOperationException("AssociatedData has already been processed.");
+        CryptoHelpers.ThrowIfAssociatedDataAlreadyProcessed(this._aadProcessed);
 
         this._aad = associatedData.ToArray();
         this._aadProcessed = true;
@@ -164,20 +158,19 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        int required = plaintext.Length + TagSize;
-        if (output.Length < required)
-            throw new ArgumentException($"Output must be at least {required} bytes.", nameof(output));
+        var required = plaintext.Length + TagSize;
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
         EnsureAadProcessed();
 
         try
         {
             // Tag = E(K_enc, POLYVAL(K_auth, AAD, PT) XOR nonce) with bits [31] and [63] cleared.
-            byte[] tag = ComputeTag(this._aad.AsSpan(), plaintext);
+            var tag = ComputeTag(this._aad.AsSpan(), plaintext);
 
             // Encrypt plaintext with CTR(K_enc) seeded from tag.
-            byte[] ctrIv = BuildCtrIv(tag);
-            CtrEncrypt(plaintext, output.Slice(0, plaintext.Length), ctrIv);
-            tag.CopyTo(output.Slice(plaintext.Length));
+            var ctrIv = BuildCtrIv(tag);
+            CtrEncrypt(plaintext, output[..plaintext.Length], ctrIv);
+            tag.CopyTo(output[plaintext.Length..]);
             return required;
         }
         finally
@@ -192,28 +185,27 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        if (ciphertextWithTag.Length < TagSize)
-            throw new ArgumentException($"Input must be at least {TagSize} bytes.", nameof(ciphertextWithTag));
-        int plaintextLength = ciphertextWithTag.Length - TagSize;
-        if (output.Length < plaintextLength)
-            throw new ArgumentException($"Output must be at least {plaintextLength} bytes.", nameof(output));
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
+        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
         EnsureAadProcessed();
 
         try
         {
-            ReadOnlySpan<byte> ciphertext = ciphertextWithTag.Slice(0, plaintextLength);
-            ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength);
+            ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
+            ReadOnlySpan<byte> receivedTag = ciphertextWithTag[plaintextLength..];
 
             // Decrypt CTR.
-            byte[] ctrIv = BuildCtrIv(receivedTag.ToArray());
-            CtrEncrypt(ciphertext, output.Slice(0, plaintextLength), ctrIv);
+            var ctrIv = BuildCtrIv(receivedTag.ToArray());
+            CtrEncrypt(ciphertext, output[..plaintextLength], ctrIv);
 
             // Recompute and verify tag.
-            byte[] expectedTag = ComputeTag(this._aad.AsSpan(), output.Slice(0, plaintextLength));
+            var expectedTag = ComputeTag(this._aad.AsSpan(), output[..plaintextLength]);
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
-                CryptographicOperations.ZeroMemory(output.Slice(0, plaintextLength));
-                throw new CryptographicException("GCM-SIV authentication tag verification failed.");
+                CryptoHelpers.Clear(output[..plaintextLength]);
+                throw new CryptographicException(
+                    CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
             }
             return plaintextLength;
         }
@@ -221,17 +213,6 @@ public sealed class GcmSivModeTransform
         {
             this._completed = true;
         }
-    }
-
-    /// <summary>
-    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or
-    /// decrypted a message. GCM-SIV transforms are single-use; create a fresh instance per message.
-    /// </summary>
-    private void ThrowIfCompleted()
-    {
-        if (this._completed)
-            throw new InvalidOperationException(
-                "This GCM-SIV transform has already completed and cannot be reused. Create a new instance per message.");
     }
 
     /// <summary>
@@ -249,10 +230,17 @@ public sealed class GcmSivModeTransform
     }
 
     /// <summary>
+    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
+    /// decrypted a message. GCM-SIV transforms are single-use; create a fresh instance per message.
+    /// </summary>
+    private void ThrowIfCompleted() =>
+        CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
+
+    /// <summary>
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources only.
+    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -264,14 +252,9 @@ public sealed class GcmSivModeTransform
             if (this._encCipher is IDisposable disposableCipher)
                 disposableCipher.Dispose();
 
-            CryptographicOperations.ZeroMemory(this._authKey);
-            CryptographicOperations.ZeroMemory(this._nonce);
-
-            if (this._aad is not null)
-            {
-                CryptographicOperations.ZeroMemory(this._aad);
-                this._aad = null;
-            }
+            CryptoHelpers.Clear(this._authKey);
+            CryptoHelpers.Clear(this._nonce);
+            CryptoHelpers.ClearAndNullify(ref this._aad);
 
             this._aadProcessed = false;
         }
@@ -286,7 +269,10 @@ public sealed class GcmSivModeTransform
     /// </summary>
     private void EnsureAadProcessed()
     {
-        if (!this._aadProcessed) { this._aad = Array.Empty<byte>(); this._aadProcessed = true; }
+        if (!this._aadProcessed) {
+            this._aad = [];
+            this._aadProcessed = true;
+        }
     }
 
     /// <summary>
@@ -296,9 +282,9 @@ public sealed class GcmSivModeTransform
     /// </summary>
     private static (byte[] authKey, byte[] encKey) DeriveKeys(IBlockCipher cipher, byte[] nonce)
     {
-        int blockSize = cipher.BlockSize;
-        byte[] authKey = new byte[blockSize];
-        byte[] encKey = new byte[blockSize];
+        var blockSize = cipher.BlockSize;
+        var authKey = new byte[blockSize];
+        var encKey = new byte[blockSize];
 
         byte[]? b0 = null;
         byte[]? b1 = null;
@@ -323,8 +309,8 @@ public sealed class GcmSivModeTransform
         }
         catch
         {
-            CryptographicOperations.ZeroMemory(authKey);
-            CryptographicOperations.ZeroMemory(encKey);
+            CryptoHelpers.Clear(authKey);
+            CryptoHelpers.Clear(encKey);
             throw;
         }
         finally
@@ -337,8 +323,8 @@ public sealed class GcmSivModeTransform
 
         byte[] Derive(int counter)
         {
-            byte[] block = new byte[blockSize];
-            byte[] output = new byte[blockSize];
+            var block = new byte[blockSize];
+            var output = new byte[blockSize];
 
             try
             {
@@ -356,7 +342,7 @@ public sealed class GcmSivModeTransform
             }
             finally
             {
-                CryptographicOperations.ZeroMemory(block);
+                CryptoHelpers.Clear(block);
             }
         }
     }
@@ -370,35 +356,35 @@ public sealed class GcmSivModeTransform
     /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
     private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        int blockSize = this._encCipher.BlockSize;
+        var blockSize = this._encCipher.BlockSize;
 
         // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
-        byte[] polyvalResult = new byte[blockSize];
+        var polyvalResult = new byte[blockSize];
 
         PolyvalUpdate(polyvalResult, aad);
         PolyvalUpdate(polyvalResult, plaintext);
 
         // Length block: LE64(|A| * 8) || LE64(|P| * 8).
-        byte[] lenBlock = new byte[blockSize];
-        ulong aadBits = (ulong)aad.Length * 8;
-        ulong ptBits = (ulong)plaintext.Length * 8;
-        for (int i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
-        for (int i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
+        var lenBlock = new byte[blockSize];
+        var aadBits = (ulong)aad.Length * 8;
+        var ptBits = (ulong)plaintext.Length * 8;
+        for (var i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
+        for (var i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
         PolyvalUpdate(polyvalResult, lenBlock);
 
         // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
-        for (int i = 0; i < NonceLengthBytes; i++)
+        for (var i = 0; i < NonceLengthBytes; i++)
             polyvalResult[i] ^= this._nonce[i];
         polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
 
         // Encrypt with K_enc to produce the tag.
-        byte[] tag = new byte[blockSize];
+        var tag = new byte[blockSize];
         this._encCipher.Encrypt(polyvalResult, tag);
         return tag;
     }
 
     /// <summary>
-    /// Accumulates <paramref name="data" /> into the POLYVAL state block-by-block.
+    /// Accumulates <paramref name="data"/> into the POLYVAL state block-by-block.
     /// POLYVAL(H, X) = reflect(GHASH(reflect(H), reflect(X))).
     /// Internally uses GHASH multiplication on reflected inputs.
     /// </summary>
@@ -406,11 +392,11 @@ public sealed class GcmSivModeTransform
     /// <param name="data">The input bytes to fold into the POLYVAL state.</param>
     private void PolyvalUpdate(byte[] state, ReadOnlySpan<byte> data)
     {
-        int blockSize = 16;
-        for (int offset = 0; offset < data.Length; offset += blockSize)
+        const int blockSize = 16;
+        for (var offset = 0; offset < data.Length; offset += blockSize)
         {
-            byte[] block = new byte[blockSize];
-            int len = Math.Min(blockSize, data.Length - offset);
+            var block = new byte[blockSize];
+            var len = Math.Min(blockSize, data.Length - offset);
             data.Slice(offset, len).CopyTo(block);
             // state ^= block, then multiply by H (authKey) via POLYVAL.
             Xor(state, block, state);
@@ -427,12 +413,12 @@ public sealed class GcmSivModeTransform
     /// <param name="result">The destination block (16 bytes); receives the POLYVAL product.</param>
     private static void PolyvalMultiply(byte[] x, byte[] h, byte[] result)
     {
-        byte[] xr = new byte[16];
-        byte[] hr = new byte[16];
+        var xr = new byte[16];
+        var hr = new byte[16];
         ReflectBytesAndBits(x, xr);
         ReflectBytesAndBits(h, hr);
 
-        byte[] product = new byte[16];
+        var product = new byte[16];
         GhashMultiply(xr, hr, product);
 
         ReflectBytesAndBits(product, result);
@@ -442,12 +428,12 @@ public sealed class GcmSivModeTransform
     /// Reflects a 128-bit value: reverses byte order and bit-reverses each byte.
     /// </summary>
     /// <param name="input">The source 16-byte block.</param>
-    /// <param name="output">The destination 16-byte block; receives <paramref name="input" /> with byte and bit order reversed.</param>
+    /// <param name="output">The destination 16-byte block; receives <paramref name="input"/> with byte and bit order reversed.</param>
     private static void ReflectBytesAndBits(byte[] input, byte[] output)
     {
-        for (int i = 0; i < 16; i++)
+        for (var i = 0; i < 16; i++)
         {
-            byte b = input[15 - i];
+            var b = input[15 - i];
             // Reverse bits within byte.
             b = (byte)(((b & 0x01) << 7) | ((b & 0x02) << 5) | ((b & 0x04) << 3) | ((b & 0x08) << 1) |
                        ((b & 0x10) >> 1) | ((b & 0x20) >> 3) | ((b & 0x40) >> 5) | ((b & 0x80) >> 7));
@@ -464,20 +450,20 @@ public sealed class GcmSivModeTransform
     /// <param name="result">The destination block (16 bytes); receives the GF(2<sup>128</sup>) product.</param>
     private static void GhashMultiply(byte[] x, byte[] h, byte[] result)
     {
-        byte[] z = new byte[16];
-        byte[] v = (byte[])h.Clone();
+        var z = new byte[16];
+        var v = (byte[])h.Clone();
 
-        for (int i = 0; i < 16; i++)
+        for (var i = 0; i < 16; i++)
         {
-            byte xi = x[i];
-            for (int bit = 7; bit >= 0; bit--)
+            var xi = x[i];
+            for (var bit = 7; bit >= 0; bit--)
             {
                 if (((xi >> bit) & 1) == 1)
                     Xor(z, v, z);
 
-                bool lsb = (v[15] & 1) == 1;
+                var lsb = (v[15] & 1) == 1;
                 // Right-shift v by 1.
-                for (int j = 15; j > 0; j--)
+                for (var j = 15; j > 0; j--)
                     v[j] = (byte)((v[j] >> 1) | (v[j - 1] << 7));
                 v[0] >>= 1;
                 // Reduce: if LSB was set, XOR with 0xE1 in MSByte (x^128 + x^7 + x^2 + x + 1).
@@ -492,59 +478,70 @@ public sealed class GcmSivModeTransform
     /// distinguish CTR from POLYVAL blocks per RFC 8452 Section 5.
     /// </summary>
     /// <param name="tag">The POLYVAL-derived authentication tag.</param>
-    /// <returns>The CTR initialisation vector derived from <paramref name="tag" /> per RFC 8452.</returns>
+    /// <returns>The CTR initialisation vector derived from <paramref name="tag"/> per RFC 8452.</returns>
     private static byte[] BuildCtrIv(byte[] tag)
     {
-        byte[] ctrIv = (byte[])tag.Clone();
+        var ctrIv = (byte[])tag.Clone();
         ctrIv[15] |= 0x80; // set bit 127
         return ctrIv;
     }
 
     /// <summary>
-    /// Applies AES-CTR encryption using the supplied <paramref name="counter" /> block,
-    /// producing <c>input XOR keystream</c> in <paramref name="output" />.
+    /// Applies AES-CTR encryption using the supplied <paramref name="counter"/> block,
+    /// producing <c>input XOR keystream</c> in <paramref name="output"/>.
     /// </summary>
     /// <param name="input">The plaintext (or ciphertext) bytes.</param>
-    /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
+    /// <param name="output">The destination span; must be at least <paramref name="input"/>.Length bytes.</param>
     /// <param name="counter">The initial counter block; the low 32 bits are incremented per
     /// block per RFC 8452.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        int blockSize = this._encCipher.BlockSize;
-        byte[] ctr = (byte[])counter.Clone();
+        var blockSize = this._encCipher.BlockSize;
+        var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 
-        for (int offset = 0; offset < input.Length; offset += blockSize)
+        for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             this._encCipher.Encrypt(ctr, ks);
             // GCM-SIV CTR increments only the last 32 bits (little-endian), per RFC 8452.
-            uint lo = (uint)(ctr[12] | (ctr[13] << 8) | (ctr[14] << 16) | (ctr[15] << 24));
+            var lo = (uint)(ctr[12] | (ctr[13] << 8) | (ctr[14] << 16) | (ctr[15] << 24));
             lo++;
             ctr[12] = (byte)lo;
             ctr[13] = (byte)(lo >> 8);
             ctr[14] = (byte)(lo >> 16);
             ctr[15] = (byte)(lo >> 24);
-            int len = Math.Min(blockSize, input.Length - offset);
-            for (int i = 0; i < len; i++)
+            var len = Math.Min(blockSize, input.Length - offset);
+            for (var i = 0; i < len; i++)
                 output[offset + i] = (byte)(input[offset + i] ^ ks[i]);
         }
     }
 
     /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into
-    /// <paramref name="result" />.
+    /// Writes the byte-wise XOR of <paramref name="a"/> and <paramref name="b"/> into
+    /// <paramref name="result"/>.
     /// </summary>
     /// <param name="a">The first operand span.</param>
-    /// <param name="b">The second operand span; must be at least <paramref name="a" />.Length bytes.</param>
-    /// <param name="result">The destination span; must be at least <paramref name="a" />.Length bytes.</param>
+    /// <param name="b">The second operand span; must be at least <paramref name="a"/>.Length bytes.</param>
+    /// <param name="result">The destination span; must be at least <paramref name="a"/>.Length bytes.</param>
     private static void Xor(ReadOnlySpan<byte> a, ReadOnlySpan<byte> b, Span<byte> result)
     {
-        for (int i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
+        for (var i = 0; i < result.Length; i++) result[i] = (byte)(a[i] ^ b[i]);
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    private void ThrowIfDisposed() =>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+#if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
+#endif
+    }
 }

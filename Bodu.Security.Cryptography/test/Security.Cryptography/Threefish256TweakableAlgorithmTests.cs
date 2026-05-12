@@ -21,12 +21,18 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     protected override Threefish256 CreateAlgorithm() => Threefish256.Create();
 
     /// <inheritdoc />
-    protected override SymmetricAlgorithmSpecification GetSpecification() =>
-        new SymmetricAlgorithmSpecification
+    protected override void SetBlockMode(Threefish256 algorithm, CipherBlockMode mode) =>
+        algorithm.BlockMode = mode;
+
+    /// <inheritdoc />
+    protected override TweakableSymmetricAlgorithmSpecification GetSpecification() =>
+        new TweakableSymmetricAlgorithmSpecification
         {
             BlockSizeBits = 256,
             DefaultKeySizeBits = 256,
             LegalKeySizesBits = [256],
+            DefaultTweakSizeBits = 128,
+            LegalTweakSizesBits = [128],
         };
 
     /// <inheritdoc />

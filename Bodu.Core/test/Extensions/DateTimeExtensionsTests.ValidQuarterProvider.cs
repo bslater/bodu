@@ -99,7 +99,7 @@ public partial class DateTimeExtensionsTests
                 3 or 4 or 5 => 2,
                 6 or 7 or 8 => 3,
                 9 or 10 or 11 => 4,
-                _ => throw new ArgumentOutOfRangeException(nameof(dateTime.Month))
+                _ => throw new ArgumentOutOfRangeException(nameof(dateTime))
             };
         }
 
@@ -108,7 +108,7 @@ public partial class DateTimeExtensionsTests
         public DateTime GetQuarterEnd(DateTime dateTime)
         {
             var quarter = GetQuarter(dateTime);
-            var start = GetQuarterStart(dateTime);
+            DateTime start = GetQuarterStart(dateTime);
 
             return quarter switch
             {

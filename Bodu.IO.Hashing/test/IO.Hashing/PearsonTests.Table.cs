@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PearsonTests.Table.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class PearsonTests
     public void Table_WhenAccessed_ShouldReturnIndependentCopy()
     {
         Pearson algorithm = new();
-        byte[] copy = algorithm.Table;
+        var copy = algorithm.Table;
 
         copy[0] ^= 0xFF;
 
@@ -31,7 +31,7 @@ public partial class PearsonTests
     public void Table_WhenBuiltIn_ShouldBeA256ByteUniquePermutation(Pearson.PearsonTableType variant)
     {
         Pearson algorithm = new(8, variant);
-        byte[] table = algorithm.Table;
+        var table = algorithm.Table;
 
         Assert.AreEqual(256, table.Length);
         Assert.AreEqual(256, table.Distinct().Count());

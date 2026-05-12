@@ -15,7 +15,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void DangerousGetArray_WhenItemsBuffered_ShouldReturnSegmentMatchingWrittenRegion()
     {
-        int[] expected = { 3, 6, 9 };
+        int[] expected = [3, 6, 9];
         using var builder = new PooledBufferBuilder<int>();
         builder.AppendRange(expected);
 
@@ -78,7 +78,7 @@ public partial class PooledBufferBuilderTests
     public void DangerousGetArray_WhenCalled_ShouldReturnSegmentWithOffsetZero()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
 
         System.ArraySegment<int> segment = builder.DangerousGetArray();
 
@@ -94,7 +94,7 @@ public partial class PooledBufferBuilderTests
     public void DangerousGetArray_WhenResetCalled_ShouldReturnSegmentWithCountZero()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(new[] { 1, 2, 3 });
+        builder.AppendRange([1, 2, 3]);
         builder.Reset();
 
         System.ArraySegment<int> segment = builder.DangerousGetArray();

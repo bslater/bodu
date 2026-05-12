@@ -16,7 +16,7 @@ public partial class PooledBufferBuilderTests
     public void FreeCapacity_WhenItemsBuffered_ShouldEqualCapacityMinusWrittenCount()
     {
         using var builder = new PooledBufferBuilder<int>(32);
-        builder.AppendRange(new[] { 1, 2, 3, 4 });
+        builder.AppendRange([1, 2, 3, 4]);
 
         Assert.AreEqual(builder.Capacity - builder.WrittenCount, builder.FreeCapacity);
     }
@@ -72,7 +72,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(16);
         builder.Append(1);
-        int freeCapacityBefore = builder.FreeCapacity;
+        var freeCapacityBefore = builder.FreeCapacity;
 
         _ = builder.GetSpan(4); // does not commit data
 
@@ -87,7 +87,7 @@ public partial class PooledBufferBuilderTests
     public void FreeCapacity_WhenAdvanceCalled_ShouldDecreaseByAdvanceAmount()
     {
         using var builder = new PooledBufferBuilder<int>(16);
-        int freeCapacityBefore = builder.FreeCapacity;
+        var freeCapacityBefore = builder.FreeCapacity;
         _ = builder.GetSpan(4);
 
         builder.Advance(4);

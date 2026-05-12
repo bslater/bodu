@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensionsTests.AppendDataAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
     {
         NonCryptographicHashAlgorithm? algorithm = null;
-        using MemoryStream stream = new(SampleData);
+        using MemoryStream stream = new(s_sampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             await algorithm!.AppendDataAsync(stream));
@@ -39,7 +39,7 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             await algorithm.AppendDataAsync(null!));
@@ -51,8 +51,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenBufferSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
             await algorithm.AppendDataAsync(stream, bufferSize: 0));
@@ -64,8 +64,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
         await Assert.ThrowsExactlyAsync<ArgumentOutOfRangeException>(async () =>
             await algorithm.AppendDataAsync(stream, bufferSize: -1));
@@ -79,10 +79,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenStreamIsEmpty_ShouldNotContributeToHash()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         MonitoringNonCryptographicHashAlgorithm baseline = CreateAlgorithm();
 
-        await algorithm.AppendDataAsync(new MemoryStream(Array.Empty<byte>()));
+        await algorithm.AppendDataAsync(new MemoryStream([]));
 
         CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
     }
@@ -95,11 +95,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenCalled_ShouldMatchSynchronousAppendData()
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
-        reference.AppendData(SampleData.AsSpan());
-        byte[] expected = reference.GetCurrentHash();
+        reference.AppendData(s_sampleData.AsSpan());
+        var expected = reference.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm();
-        await algorithm.AppendDataAsync(new MemoryStream(SampleData));
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        await algorithm.AppendDataAsync(new MemoryStream(s_sampleData));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -111,15 +111,15 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
     {
-        byte[] part1 = new byte[] { 1, 2, 3, 4 };
-        byte[] part2 = new byte[] { 5, 6, 7, 8 };
-        byte[] combined = new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 };
+        byte[] part1 = [1, 2, 3, 4];
+        byte[] part2 = [5, 6, 7, 8];
+        byte[] combined = [1, 2, 3, 4, 5, 6, 7, 8];
 
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(combined.AsSpan());
-        byte[] expected = reference.GetCurrentHash();
+        var expected = reference.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         await algorithm.AppendDataAsync(new MemoryStream(part1));
         await algorithm.AppendDataAsync(new MemoryStream(part2));
 
@@ -134,15 +134,15 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenMixedWithSyncAppendData_ShouldAccumulateAllBytes()
     {
-        byte[] part1 = new byte[] { 10, 20 };
-        byte[] part2 = new byte[] { 30, 40 };
-        byte[] combined = new byte[] { 10, 20, 30, 40 };
+        byte[] part1 = [10, 20];
+        byte[] part2 = [30, 40];
+        byte[] combined = [10, 20, 30, 40];
 
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
         reference.AppendData(combined.AsSpan());
-        byte[] expected = reference.GetCurrentHash();
+        var expected = reference.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         algorithm.AppendData(part1.AsSpan());
         await algorithm.AppendDataAsync(new MemoryStream(part2));
 
@@ -157,11 +157,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenBufferSizeSmallerThanInput_ShouldProduceCorrectHash()
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
-        reference.AppendData(SampleData.AsSpan());
-        byte[] expected = reference.GetCurrentHash();
+        reference.AppendData(s_sampleData.AsSpan());
+        var expected = reference.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm();
-        await algorithm.AppendDataAsync(new MemoryStream(SampleData), bufferSize: 1);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        await algorithm.AppendDataAsync(new MemoryStream(s_sampleData), bufferSize: 1);
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -175,11 +175,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenSourceIsFixedChunkStream_ShouldProduceCorrectHash()
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
-        reference.AppendData(SampleData.AsSpan());
-        byte[] expected = reference.GetCurrentHash();
+        reference.AppendData(s_sampleData.AsSpan());
+        var expected = reference.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm();
-        await algorithm.AppendDataAsync(new FixedChunkStream(SampleData, chunkSize: 1));
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        await algorithm.AppendDataAsync(new FixedChunkStream(s_sampleData, chunkSize: 1));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -191,11 +191,11 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     public async Task AppendDataAsync_WhenSourceIsNonSeekable_ShouldProduceCorrectHash()
     {
         MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
-        reference.AppendData(SampleData.AsSpan());
-        byte[] expected = reference.GetCurrentHash();
+        reference.AppendData(s_sampleData.AsSpan());
+        var expected = reference.GetCurrentHash();
 
-        var algorithm = CreateAlgorithm();
-        await algorithm.AppendDataAsync(new NonSeekableStream(SampleData));
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        await algorithm.AppendDataAsync(new NonSeekableStream(s_sampleData));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -207,10 +207,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenSourceFaultsMidRead_ShouldPropagateIOException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
         await Assert.ThrowsExactlyAsync<IOException>(async () =>
-            await algorithm.AppendDataAsync(new FaultingStream(SampleData, throwAfterBytes: 2)));
+            await algorithm.AppendDataAsync(new FaultingStream(s_sampleData, throwAfterBytes: 2)));
     }
 
     // ─── Cancellation ─────────────────────────────────────────────────────────────────────────
@@ -222,8 +222,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenTokenAlreadyCancelled_ShouldThrowOperationCanceledException()
     {
-        var algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(SampleData);
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
         using CancellationTokenSource cts = new();
         cts.Cancel();
 
@@ -239,12 +239,12 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     [TestMethod]
     public async Task AppendDataAsync_WhenCancellationTriggeredMidStream_ShouldThrowOperationCanceledException()
     {
-        var algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         using CancellationTokenSource cts = new();
 
         // cancelAfterRead: 1 cancels the token after the first successful read; the next ReadAsync sees a
         // cancelled token and throws OperationCanceledException before reading any further bytes.
-        using CancellationTriggerStream stream = new(new MemoryStream(SampleData), cts, cancelAfterRead: 1);
+        using CancellationTriggerStream stream = new(new MemoryStream(s_sampleData), cts, cancelAfterRead: 1);
 
         await Assert.ThrowsAsync<OperationCanceledException>(async () =>
             await algorithm.AppendDataAsync(stream, cancellationToken: cts.Token));

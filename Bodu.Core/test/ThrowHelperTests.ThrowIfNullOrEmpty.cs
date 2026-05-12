@@ -47,8 +47,5 @@ public partial class ThrowHelperTests
     [DataRow("\t")]
     [DataRow("\n")]
     [TestMethod]
-    public void ThrowIfNullOrEmpty_WhenValueIsNonEmpty_ShouldNotThrow(string value)
-    {
-        ThrowHelper.ThrowIfNullOrEmpty(value);
-    }
+    public void ThrowIfNullOrEmpty_WhenValueIsNonEmpty_ShouldNotThrow(string value) => ThrowHelper.ThrowIfNullOrEmpty(value);
 }

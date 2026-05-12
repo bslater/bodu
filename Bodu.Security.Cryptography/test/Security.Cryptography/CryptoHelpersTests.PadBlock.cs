@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpersTests.PadBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -80,18 +80,18 @@ public partial class CryptoHelpersTests
     public void PadBlock_WhenValidInput_ShouldApplyCorrectPadding_UsingByteArray(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
-        byte[] result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
+        var input = Convert.FromHexString(inputHex);
+        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
 
         // If expectedHex is fully specified (not ISO10126 with '?'), match entire byte array Else validate last byte is pad count
         if (!expectedHex.Contains('?'))
         {
-            byte[] expected = Convert.FromHexString(expectedHex);
+            var expected = Convert.FromHexString(expectedHex);
             CollectionAssert.AreEqual(expected, result);
         }
         else
         {
-            byte[] expected = Convert.FromHexString(expectedHex[^2..]);
+            var expected = Convert.FromHexString(expectedHex[^2..]);
             Assert.AreEqual(result[^1], expected[0]);
         }
     }
@@ -105,8 +105,8 @@ public partial class CryptoHelpersTests
     public void PadBlock_WhenValidInput_ShouldApplyCorrectPadding_UsingSpan(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
-        int expectedLength = expectedHex.Length / 2;
+        var input = Convert.FromHexString(inputHex);
+        var expectedLength = expectedHex.Length / 2;
 
         Span<byte> destination = expectedLength <= 128
             ? stackalloc byte[expectedLength]
@@ -117,12 +117,12 @@ public partial class CryptoHelpersTests
         // If expectedHex is fully specified (not ISO10126 with '?'), match entire byte array Else validate last byte is pad count
         if (!expectedHex.Contains('?'))
         {
-            byte[] expected = Convert.FromHexString(expectedHex);
+            var expected = Convert.FromHexString(expectedHex);
             Assert.IsTrue(expected.AsSpan().SequenceEqual(destination));
         }
         else
         {
-            byte[] expected = Convert.FromHexString(expectedHex[^2..]);
+            var expected = Convert.FromHexString(expectedHex[^2..]);
             Assert.AreEqual(destination[^1], expected[0]);
         }
     }
@@ -135,9 +135,9 @@ public partial class CryptoHelpersTests
     public void PadBlock_WhenValidInput_ShouldReturnExpectedLength_UsingByteArray(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
-        int expectedLength = expectedHex.Length / 2;
-        byte[] result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
+        var input = Convert.FromHexString(inputHex);
+        var expectedLength = expectedHex.Length / 2;
+        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
 
         Assert.AreEqual(expectedLength, result.Length);
     }
@@ -150,8 +150,8 @@ public partial class CryptoHelpersTests
     public void PadBlock_WhenValidInput_ShouldReturnExpectedLength_UsingSpan(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
-        int expectedLength = expectedHex.Length / 2;
+        var input = Convert.FromHexString(inputHex);
+        var expectedLength = expectedHex.Length / 2;
 
         Span<byte> destination = expectedLength <= 128
             ? stackalloc byte[expectedLength]
@@ -170,8 +170,8 @@ public partial class CryptoHelpersTests
     public void PadBlock_WhenValidInput_ShouldPreserveOriginalBytes_UsingByteArray(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
-        byte[] result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
+        var input = Convert.FromHexString(inputHex);
+        var result = CryptoHelpers.PadBlock(padding, blockSizeBytes, input, 0, input.Length);
 
         CollectionAssert.AreEqual(input, result.Take(input.Length).ToArray());
     }
@@ -184,8 +184,8 @@ public partial class CryptoHelpersTests
     public void PadBlock_WhenValidInput_ShouldPreserveOriginalBytes_UsingSpan(
         PaddingMode padding, string inputHex, int blockSizeBytes, string expectedHex)
     {
-        byte[] input = Convert.FromHexString(inputHex);
-        int expectedLength = expectedHex.Length / 2;
+        var input = Convert.FromHexString(inputHex);
+        var expectedLength = expectedHex.Length / 2;
 
         Span<byte> destination = expectedLength <= 128
             ? stackalloc byte[expectedLength]
@@ -205,7 +205,7 @@ public partial class CryptoHelpersTests
     public void PadBlock_WhenInvalidInput_WithArray_ShouldThrowExactly(
         PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType, int? destinationLength = null)
     {
-        byte[] input = Convert.FromHexString(inputHex);
+        var input = Convert.FromHexString(inputHex);
 
         if (destinationLength.HasValue) return; // cannot test for given destination buffers
 
@@ -229,7 +229,7 @@ public partial class CryptoHelpersTests
     public void PadBlock_WhenInvalidInput_WithSpan_ShouldThrowExactly(
         PaddingMode padding, string inputHex, int blockSizeBytes, Type exceptionType, int? destinationLength = null)
     {
-        byte[] input = Convert.FromHexString(inputHex);
+        var input = Convert.FromHexString(inputHex);
         destinationLength ??= (blockSizeBytes * 2);
 
         Span<byte> destination = destinationLength.Value <= 128

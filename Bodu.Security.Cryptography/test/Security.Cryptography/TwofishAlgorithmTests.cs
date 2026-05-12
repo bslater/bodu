@@ -20,6 +20,10 @@ public sealed partial class TwofishAlgorithmTests
     protected override Twofish CreateAlgorithm() => Twofish.Create();
 
     /// <inheritdoc />
+    protected override void SetBlockMode(Twofish algorithm, CipherBlockMode mode) =>
+        algorithm.BlockMode = mode;
+
+    /// <inheritdoc />
     protected override SymmetricAlgorithmSpecification GetSpecification() =>
         new SymmetricAlgorithmSpecification
         {

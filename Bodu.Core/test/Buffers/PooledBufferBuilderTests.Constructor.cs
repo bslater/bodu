@@ -15,7 +15,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void Constructor_WhenInitialCapacityIsZero_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new PooledBufferBuilder<int>(0);
         });
@@ -30,7 +30,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void Constructor_WhenInitialCapacityIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = new PooledBufferBuilder<int>(-1);
         });

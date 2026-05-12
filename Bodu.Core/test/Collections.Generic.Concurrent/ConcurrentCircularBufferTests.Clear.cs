@@ -80,7 +80,7 @@ public partial class ConcurrentCircularBufferTests
     public void Clear_WhenBufferFull_WithAllowOverwriteTrue_ShouldNotRaiseEvictionEvents()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
-        int evicted = 0;
+        var evicted = 0;
 
         buffer.ItemEvicted += _ => evicted++;
 
@@ -114,10 +114,10 @@ public partial class ConcurrentCircularBufferTests
     public void Clear_WhenBufferResetWithSubsequentEnqueues_ShouldMaintainFifoOrder()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
         buffer.Clear();
 
-        for (int i = 10; i < 15; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 10; i < 15; i++) buffer.Enqueue(new TestItem(i));
 
         var snapshot = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 10, 11, 12, 13, 14 }, snapshot);
@@ -134,7 +134,7 @@ public partial class ConcurrentCircularBufferTests
 
         var toggler = Task.Run(() =>
         {
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 if (!buffer.TryEnqueue(new TestItem(i)))
                     buffer.TryDequeue(out _);
@@ -143,7 +143,7 @@ public partial class ConcurrentCircularBufferTests
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)
+            for (var i = 0; i < 200; i++)
             {
                 buffer.Clear();
                 if (buffer.Count < 0 || buffer.Count > buffer.Capacity)
@@ -166,7 +166,7 @@ public partial class ConcurrentCircularBufferTests
     public void Clear_WhenInvokedDuringConcurrentRead_ShouldProduceConsistentEmptyState()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var stop = new CancellationTokenSource();
         var readErrors = 0;
@@ -183,7 +183,7 @@ public partial class ConcurrentCircularBufferTests
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 try { buffer.Clear(); }
                 catch { Interlocked.Increment(ref readErrors); }
@@ -206,13 +206,13 @@ public partial class ConcurrentCircularBufferTests
     public void Clear_WhenInvokedDuringDequeuePressure_ShouldNotThrowInvalidOperation()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
 
         var exceptions = new ConcurrentBag<Exception>();
 
         var dequeuer = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 try
                 {
@@ -228,7 +228,7 @@ public partial class ConcurrentCircularBufferTests
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 20; i++)
+            for (var i = 0; i < 20; i++)
             {
                 buffer.Clear();
                 Thread.SpinWait(50);
@@ -252,7 +252,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (int i = 0; i < 1000; i++)
+            for (var i = 0; i < 1000; i++)
             {
                 buffer.TryEnqueue(new TestItem(i));
                 Thread.SpinWait(10);
@@ -261,7 +261,7 @@ public partial class ConcurrentCircularBufferTests
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 50; i++)
+            for (var i = 0; i < 50; i++)
             {
                 buffer.Clear();
                 if (buffer.Count < 0 || buffer.Count > buffer.Capacity)
@@ -284,11 +284,11 @@ public partial class ConcurrentCircularBufferTests
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(8, allowOverwrite: true);
         var cts = new CancellationTokenSource();
-        int violations = 0;
+        var violations = 0;
 
         var producer = Task.Run(() =>
         {
-            int i = 0;
+            var i = 0;
             while (!cts.IsCancellationRequested)
             {
                 buffer.TryEnqueue(new TestItem(i++));
@@ -307,7 +307,7 @@ public partial class ConcurrentCircularBufferTests
 
         var clearer = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)
+            for (var i = 0; i < 200; i++)
             {
                 buffer.Clear();
                 var count = buffer.Count;
@@ -334,15 +334,15 @@ public partial class ConcurrentCircularBufferTests
     {
         // Arrange
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity: 6, allowOverwrite: allowOverwrite);
-        for (int i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 6; i++) buffer.Enqueue(new TestItem(i));
 
         using var cts = new CancellationTokenSource();
         var start = new ManualResetEventSlim(false);
 
         // Metrics
-        int iterations = 0;
-        int peekEmptyCount = 0;              // InvalidOperationException from Peek() when empty
-        int indexerRaceCount = 0;            // ArgumentOutOfRangeException from indexer during races
+        var iterations = 0;
+        var peekEmptyCount = 0;              // InvalidOperationException from Peek() when empty
+        var indexerRaceCount = 0;            // ArgumentOutOfRangeException from indexer during races
         var unexpected = new ConcurrentBag<Exception>();
 
         // Reader task that exercises TryPeek, Peek, Contains, and the indexer
@@ -372,7 +372,7 @@ public partial class ConcurrentCircularBufferTests
                     // 4) Indexer: choose a valid index if we can; still allow race with Clear()
                     try
                     {
-                        var snap = buffer.ToArray(); // snapshot to reduce�but not eliminate�races
+                        TestItem[] snap = buffer.ToArray(); // snapshot to reduce�but not eliminate�races
                         if (snap.Length > 0)
                         {
                             // pick first element from the snapshot
@@ -404,7 +404,7 @@ public partial class ConcurrentCircularBufferTests
         var clearer = Task.Run(() =>
         {
             start.Wait();
-            for (int i = 0; i < 60 && !cts.IsCancellationRequested; i++)
+            for (var i = 0; i < 60 && !cts.IsCancellationRequested; i++)
             {
                 buffer.Clear();
 

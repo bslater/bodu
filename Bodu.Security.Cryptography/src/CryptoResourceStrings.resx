@@ -123,6 +123,9 @@
   <data name="CryptographicException_AlreadyFinalized" xml:space="preserve">
     <value>TransformFinalBlock has already been called for this hash computation.</value>
   </data>
+  <data name="CryptographicException_IVRequiredForMode" xml:space="preserve">
+    <value>The cipher mode specified requires that an initialization vector (IV) be used.</value>
+  </data>
   <data name="CryptographicException_InvalidBlockLength" xml:space="preserve">
     <value>Length of the block must be {0}.</value>
   </data>
@@ -227,5 +230,14 @@
   </data>
   <data name="InvalidOperationException_TransformAlreadyFinalized" xml:space="preserve">
     <value>The cryptographic transform has already been finalized and cannot be reused.</value>
+  </data>
+  <data name="CryptographicException_HashSize_PositiveMultipleOf" xml:space="preserve">
+    <value>Invalid hash size: The hash size must be a positive multiple of {0} bytes.</value>
+  </data>
+  <data name="ArgumentException_CtsInputTooShort" xml:space="preserve">
+    <value>CTS mode requires at least one full block ({0} bytes) of input.</value>
+  </data>
+  <data name="CryptographicException_CtrCounterWrapped" xml:space="preserve">
+    <value>The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
 </root>

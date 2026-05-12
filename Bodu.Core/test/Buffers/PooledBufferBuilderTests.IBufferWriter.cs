@@ -255,7 +255,7 @@ public partial class PooledBufferBuilderTests
     {
         using var builder = new PooledBufferBuilder<int>(16);
         builder.Append(1);
-        int countBefore = builder.WrittenCount;
+        var countBefore = builder.WrittenCount;
 
         _ = builder.GetSpan(4);
 

@@ -462,13 +462,13 @@ public sealed partial class NotableDateFilterTests
 	}
 
 	/// <summary>
-	/// Verifies that <see cref="NotableDateFilter.InDateRange" /> throws <see cref="ArgumentException" /> when
+	/// Verifies that <see cref="NotableDateFilter.InDateRange" /> throws <see cref="ArgumentOutOfRangeException" /> when
 	/// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
 	/// </summary>
 	[TestMethod]
-	public void InDateRange_WhenEndDateIsBeforeStartDate_ShouldThrowArgumentException()
+	public void InDateRange_WhenEndDateIsBeforeStartDate_ShouldThrowArgumentOutOfRangeException()
 	{
-		Assert.ThrowsExactly<ArgumentException>(() =>
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
 			_ = NotableDateFilter.InDateRange(new DateTime(2024, 6, 30), new DateTime(2024, 6, 1));
 		});

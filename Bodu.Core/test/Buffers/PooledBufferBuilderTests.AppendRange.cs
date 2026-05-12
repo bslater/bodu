@@ -15,7 +15,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AppendRange_WhenEnumerableUsed_ShouldAppendAllItems_UsingIEnumerable()
     {
-        int[] source = Enumerable.Range(1, 50).ToArray();
+        var source = Enumerable.Range(1, 50).ToArray();
         using var builder = new PooledBufferBuilder<int>();
 
         builder.AppendRange((System.Collections.Generic.IEnumerable<int>)source);
@@ -30,7 +30,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AppendRange_WhenExceedsInitialSize_ShouldExpandBuffer_UsingIEnumerable()
     {
-        int[] source = Enumerable.Range(1, 1000).ToArray();
+        var source = Enumerable.Range(1, 1000).ToArray();
         using var builder = new PooledBufferBuilder<int>();
 
         builder.AppendRange((System.Collections.Generic.IEnumerable<int>)source);
@@ -77,7 +77,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AppendRange_WhenSpanProvided_ShouldAppendAllItemsInOrder_UsingReadOnlySpan()
     {
-        int[] expected = { 3, 6, 9, 12 };
+        int[] expected = [3, 6, 9, 12];
         using var builder = new PooledBufferBuilder<int>(2);
 
         builder.AppendRange(expected.AsSpan());
@@ -92,7 +92,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AppendRange_WhenSpanExceedsCapacity_ShouldGrowBufferAndRetainAllItems_UsingReadOnlySpan()
     {
-        int[] expected = Enumerable.Range(0, 200).ToArray();
+        var expected = Enumerable.Range(0, 200).ToArray();
         using var builder = new PooledBufferBuilder<int>(4);
 
         builder.AppendRange(expected.AsSpan());
@@ -140,7 +140,7 @@ public partial class PooledBufferBuilderTests
     [TestMethod]
     public void AppendRange_WhenMemoryProvided_ShouldAppendAllItemsInOrder_UsingReadOnlyMemory()
     {
-        int[] expected = { 2, 4, 6, 8 };
+        int[] expected = [2, 4, 6, 8];
         using var builder = new PooledBufferBuilder<int>();
 
         builder.AppendRange(expected.AsMemory());
@@ -189,7 +189,7 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
         builder.Append(5);
 
-        builder.AppendRange(System.ReadOnlySpan<int>.Empty);
+        builder.AppendRange([]);
 
         Assert.AreEqual(1, builder.WrittenCount);
     }

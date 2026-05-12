@@ -214,8 +214,8 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
 
-        var genericKeys = dictionary.Keys;
-        var keys = ((IDictionary)dictionary).Keys;
+        ICollection<string> genericKeys = dictionary.Keys;
+        ICollection keys = ((IDictionary)dictionary).Keys;
 
         CollectionAssert.AreEquivalent(genericKeys.Cast<object>().ToList(), keys.Cast<object>().ToList());
     }
@@ -230,8 +230,8 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
 
-        var genericValues = dictionary.Values;
-        var values = ((IDictionary)dictionary).Values;
+        ICollection<int> genericValues = dictionary.Values;
+        ICollection values = ((IDictionary)dictionary).Values;
 
         CollectionAssert.AreEquivalent(genericValues.Cast<object>().ToList(), values.Cast<object>().ToList());
     }

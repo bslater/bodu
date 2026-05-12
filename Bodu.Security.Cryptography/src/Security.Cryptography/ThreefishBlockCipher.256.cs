@@ -26,19 +26,19 @@ namespace Bodu.Security.Cryptography;
 /// The <c>Threefish-256</c> variant operates on four 64-bit words over 72 rounds using modular addition, bitwise rotation, and XOR.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Threefish256" /> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="Threefish256Cipher" /> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example via
-/// <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
+/// Most callers should prefer the higher-level <see cref="Threefish256"/> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="Threefish256Cipher"/> directly only
+/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> (for example via
+/// <see cref="BlockCipherModeFactory"/>) or with an <see cref="IPaddingStrategy"/>.
 /// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
-/// <seealso cref="Threefish256" />
+/// <seealso cref="Threefish256"/>
 public sealed class Threefish256Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Threefish256Cipher" /> class using the specified key and tweak.
+    /// Initializes a new instance of the <see cref="Threefish256Cipher"/> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 256-bit (32-byte) key used for encryption and decryption.</param>
     /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behaviour.</param>
@@ -57,11 +57,11 @@ public sealed class Threefish256Cipher
     protected override int BlockWords => 4;
 
     /// <inheritdoc />
-    protected override int[] RotationSchedule => new int[]
-    {
+    protected override int[] RotationSchedule =>
+    [
         14, 16, 52, 57, 23, 40, 5, 37,
         25, 33, 46, 12, 58, 22, 32, 32
-    };
+    ];
 
     /// <inheritdoc />
     protected override int Rounds => 72;
@@ -72,7 +72,7 @@ public sealed class Threefish256Cipher
     /// <param name="input">The 32-byte ciphertext block to decrypt.</param>
     /// <param name="output">The 32-byte buffer to receive the decrypted plaintext block.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the cipher has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input" /> or <paramref name="output" /> is not 32 bytes.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is not 32 bytes.</exception>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -83,13 +83,14 @@ public sealed class Threefish256Cipher
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-        var key = this.KeySchedule;
-        var tweak = this.TweakSchedule;
+        var key = this._keySchedule;
+        var tweak = this._tweakSchedule;
         var rot = this.RotationSchedule; // Use indexed rotation constants
 
-        for (int d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
+        for (var d = (this.Rounds / 4) - 1; d >= 1; d -= 2)
         {
-            int dm5 = d % 5; int dm3 = d % 3;
+            var dm5 = d % 5;
+            var dm3 = d % 3;
 
             // Reverse post-round subkey injection
             block[0] -= key[dm5 + 1];
@@ -139,7 +140,7 @@ public sealed class Threefish256Cipher
     /// <param name="input">The 32-byte plaintext block to encrypt.</param>
     /// <param name="output">The 32-byte buffer to receive the encrypted ciphertext block.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the cipher has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input" /> or <paramref name="output" /> is not 32 bytes.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is not 32 bytes.</exception>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -150,8 +151,8 @@ public sealed class Threefish256Cipher
         Span<ulong> block = stackalloc ulong[this.BlockWords];
         MemoryMarshal.Cast<byte, ulong>(input).CopyTo(block);
 
-        var key = this.KeySchedule;
-        var tweak = this.TweakSchedule;
+        var key = this._keySchedule;
+        var tweak = this._tweakSchedule;
         var rot = this.RotationSchedule;
 
         // Initial key injection (round 0)
@@ -160,9 +161,10 @@ public sealed class Threefish256Cipher
         block[2] += key[0x02] + tweak[0x01];
         block[3] += key[0x03];
 
-        for (int d = 1; d < this.Rounds / 4; d += 2)
+        for (var d = 1; d < this.Rounds / 4; d += 2)
         {
-            int dm5 = d % 5; int dm3 = d % 3;
+            var dm5 = d % 5;
+            var dm3 = d % 3;
 
             // First 4 MIX rounds
             Mix(ref block[0], ref block[1], rot[0]);

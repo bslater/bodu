@@ -1,13 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ApHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing;
-
 using System.Buffers.Binary;
 using System.IO.Hashing;
+
+namespace Bodu.IO.Hashing;
 
 /// <summary>
 /// Computes a 32-bit non-cryptographic hash using Arash Partow's APHash algorithm, which alternates XOR
@@ -50,8 +50,8 @@ public sealed class ApHash
     private const int HashLength = 4;
     private const uint Seed = 0xAAAAAAAAu;
 
-    private uint workingHash = Seed;
-    private ulong size;
+    private uint _workingHash = Seed;
+    private ulong _size;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ApHash" /> class with a 32-bit hash size.
@@ -64,9 +64,9 @@ public sealed class ApHash
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this.workingHash;
-        ulong size = this.size;
-        foreach (byte b in source)
+        var v = this._workingHash;
+        var size = this._size;
+        foreach (var b in source)
         {
             if ((size & 1UL) == 0UL)
                 v ^= (v << 7) ^ b ^ (v >> 3);
@@ -76,18 +76,18 @@ public sealed class ApHash
             size++;
         }
 
-        this.workingHash = v;
-        this.size = size;
+        this._workingHash = v;
+        this._size = size;
     }
 
     /// <inheritdoc />
     public override void Reset()
     {
-        this.workingHash = Seed;
-        this.size = 0UL;
+        this._workingHash = Seed;
+        this._size = 0UL;
     }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
-        BinaryPrimitives.WriteUInt32LittleEndian(destination, this.workingHash);
+        BinaryPrimitives.WriteUInt32LittleEndian(destination, this._workingHash);
 }

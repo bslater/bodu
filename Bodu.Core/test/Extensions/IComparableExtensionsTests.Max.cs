@@ -23,10 +23,7 @@ public partial class IComparableExtensionsTests
     [DataRow(5, 1, 5, DisplayName = "Receiver larger returns receiver")]
     [DataRow(1, 5, 5, DisplayName = "Argument larger returns argument")]
     [DataRow(5, 5, 5, DisplayName = "Equal values return receiver")]
-    public void Max_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, int expected)
-    {
-        Assert.AreEqual(expected, value.Max(other));
-    }
+    public void Max_WhenEvaluatingIntegerValues_ShouldReturnExpectedResult(int value, int other, int expected) => Assert.AreEqual(expected, value.Max(other));
 
     /// <summary>
     /// Verifies that <c>Max</c> works correctly with a reference type (string) using natural ordering.
@@ -34,10 +31,7 @@ public partial class IComparableExtensionsTests
     [TestMethod]
     [DataRow("banana", "apple", "banana", DisplayName = "Receiver larger returns receiver")]
     [DataRow("apple", "banana", "banana", DisplayName = "Argument larger returns argument")]
-    public void Max_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, string expected)
-    {
-        Assert.AreEqual(expected, value.Max(other));
-    }
+    public void Max_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, string expected) => Assert.AreEqual(expected, value.Max(other));
 
     // =========================================================================
     // Max<T>(T, T, IComparer<T>)
@@ -65,7 +59,7 @@ public partial class IComparableExtensionsTests
     {
         IComparer<int>? comparer = null;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = 5.Max(10, comparer!);
         });

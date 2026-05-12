@@ -21,7 +21,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfMonthDataTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfMonthDataTestData))]
     public void LastDateOfMonth_WhenCalled_ShouldReturnExpectedDay(DateTime input, DateTime expected)
     {
         DateTime actual = input.LastDateOfMonth();

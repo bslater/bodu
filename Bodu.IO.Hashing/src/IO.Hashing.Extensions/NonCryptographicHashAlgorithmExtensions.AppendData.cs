@@ -89,7 +89,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
                 bufferSize,
                 "Buffer size must be greater than zero.");
 
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             int bytesRead;

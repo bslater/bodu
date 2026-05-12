@@ -52,7 +52,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     {
         Func<HashAlgorithm> faultyFactory = () => throw new InvalidOperationException("boom");
 
-        using var hasher = Construct(faultyFactory, 4, 2);
+        using THasher hasher = Construct(faultyFactory, 4, 2);
 
         Exception? caught = null;
         try
@@ -67,7 +67,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         Assert.IsNotNull(caught,
             "ComputeHash did not throw — the factory's InvalidOperationException was silently swallowed.");
 
-        bool propagated =
+        var propagated =
             caught is InvalidOperationException
             || (caught is AggregateException agg
                 && agg.Flatten().InnerExceptions.Any(e => e is InvalidOperationException))
@@ -88,7 +88,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenOffsetIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ComputeHash(hasher, MakeData(4), -1, 4);
@@ -101,7 +101,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ComputeHash(hasher, MakeData(4), 0, -1);
@@ -115,7 +115,7 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenOffsetPlusCountExceedsArrayLength_ShouldThrowArgumentOutOfRangeException()
     {
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ComputeHash(hasher, MakeData(4), 2, 4);
@@ -133,8 +133,8 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenSpanProvided_ShouldReturnHashOfExpectedLength()
     {
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        byte[] result = ComputeHash(hasher, MakeData(8).AsSpan());
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        var result = ComputeHash(hasher, MakeData(8).AsSpan());
 
         Assert.IsNotNull(result);
         Assert.AreEqual(4, result.Length); // MonitoringHashAlgorithm: sizeof(uint)
@@ -147,15 +147,15 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenSameInputUsedAcrossOverloads_ShouldReturnIdenticalHashes()
     {
-        byte[] data = MakeData(13);
+        var data = MakeData(13);
 
-        using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        using var h3 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h3 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
-        byte[] fromSpan = ComputeHash(h1, data.AsSpan());
-        byte[] fromArray = ComputeHash(h2, data);
-        byte[] fromSlice = ComputeHash(h3, data, 0, data.Length);
+        var fromSpan = ComputeHash(h1, data.AsSpan());
+        var fromArray = ComputeHash(h2, data);
+        var fromSlice = ComputeHash(h3, data, 0, data.Length);
 
         CollectionAssert.AreEqual(fromSpan, fromArray, "Span vs array mismatch.");
         CollectionAssert.AreEqual(fromSpan, fromSlice, "Span vs slice mismatch.");
@@ -171,10 +171,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenSameInputHashedOnTwoInstances_ShouldReturnIdenticalResults()
     {
-        byte[] data = MakeData(17);
+        var data = MakeData(17);
 
-        using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
         CollectionAssert.AreEqual(ComputeHash(h1, data), ComputeHash(h2, data));
     }
@@ -185,12 +185,12 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenInputsDifferByOneByte_ShouldReturnDifferentHashes()
     {
-        byte[] a = MakeData(8);
-        byte[] b = (byte[])a.Clone();
+        var a = MakeData(8);
+        var b = (byte[])a.Clone();
         b[3] ^= 0xFF;
 
-        using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
         CollectionAssert.AreNotEqual(ComputeHash(h1, a), ComputeHash(h2, b));
     }
@@ -206,12 +206,12 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenOffsetAndCountSpecified_ShouldHashOnlyThatRegion()
     {
-        byte[] data = MakeData(12);
+        var data = MakeData(12);
         const int offset = 2;
         const int count = 6;
 
-        using var h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        using var h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h1 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher h2 = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
         CollectionAssert.AreEqual(
             ComputeHash(h1, data, offset, count),
@@ -229,11 +229,11 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenInputMutatedAfterReturn_ShouldNotAffectReturnedHash()
     {
-        byte[] data = MakeData(9);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(9);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        byte[] result = ComputeHash(hasher, data);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        var result = ComputeHash(hasher, data);
 
         // Scramble the caller's buffer. The returned hash must not change.
         Array.Fill(data, (byte)0xFF);
@@ -261,11 +261,11 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenVariousConfigurationsUsed_ShouldMatchHandComputedRoot(
         int blockSize, int fanOut, int dataLength)
     {
-        byte[] data = MakeData(dataLength);
-        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        var data = MakeData(dataLength);
+        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
-        using var hasher = Construct(Factory, blockSize, fanOut);
-        byte[] actual = ComputeHash(hasher, data);
+        using THasher hasher = Construct(Factory, blockSize, fanOut);
+        var actual = ComputeHash(hasher, data);
 
         CollectionAssert.AreEqual(expected, actual,
             $"Mismatch: blockSize={blockSize}, fanOut={fanOut}, length={dataLength}");
@@ -283,9 +283,9 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenSingleFullBlock_ShouldReturnLeafHashAsRoot()
     {
         byte[] data = { 1, 2, 3, 4 };
-        byte[] expected = BitConverter.GetBytes((uint)10);
+        var expected = BitConverter.GetBytes((uint)10);
 
-        using var hasher = Construct(Factory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -297,9 +297,9 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenTwoFullBlocks_ShouldCombineIntoRoot()
     {
         byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8 };
-        byte[] expected = BitConverter.GetBytes((uint)36);
+        var expected = BitConverter.GetBytes((uint)36);
 
-        using var hasher = Construct(Factory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -311,9 +311,9 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenPartialTailBlock_ShouldZeroPadAndProduceCorrectRoot()
     {
         byte[] data = { 1, 2, 3, 4, 5 };
-        byte[] expected = BitConverter.GetBytes((uint)15);
+        var expected = BitConverter.GetBytes((uint)15);
 
-        using var hasher = Construct(Factory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -325,9 +325,9 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenThreeLeavesWithFanOutTwo_ShouldProduceCorrectTwoLevelRoot()
     {
         byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-        byte[] expected = BitConverter.GetBytes((uint)78);
+        var expected = BitConverter.GetBytes((uint)78);
 
-        using var hasher = Construct(Factory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -339,9 +339,9 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenThreeLeavesWithFanOutThree_ShouldReduceInOneStep()
     {
         byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-        byte[] expected = BitConverter.GetBytes((uint)78);
+        var expected = BitConverter.GetBytes((uint)78);
 
-        using var hasher = Construct(Factory, blockSize: 4, fanOut: 3);
+        using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 3);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -353,9 +353,9 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenBlockSizeIsOne_ShouldTreatEachByteAsLeaf()
     {
         byte[] data = { 10, 20, 30, 40 };
-        byte[] expected = BitConverter.GetBytes((uint)100);
+        var expected = BitConverter.GetBytes((uint)100);
 
-        using var hasher = Construct(Factory, blockSize: 1, fanOut: 2);
+        using THasher hasher = Construct(Factory, blockSize: 1, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -367,9 +367,9 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenSingleByteInput_ShouldZeroPadAndReturnLeafAsRoot()
     {
         byte[] data = { 7 };
-        byte[] expected = BitConverter.GetBytes((uint)7);
+        var expected = BitConverter.GetBytes((uint)7);
 
-        using var hasher = Construct(Factory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -381,9 +381,9 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     public void ComputeHash_WhenNineBytesWithFanOutThree_ShouldReduceAllThreeLeavesInOneStep()
     {
         byte[] data = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        byte[] expected = BitConverter.GetBytes((uint)45);
+        var expected = BitConverter.GetBytes((uint)45);
 
-        using var hasher = Construct(Factory, blockSize: 4, fanOut: 3);
+        using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 3);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -400,10 +400,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [DataRow(5)]  // one full + one partial
     public void ComputeHash_AtSingleBlockBoundary_ShouldProduceCorrectRoot(int dataLength)
     {
-        byte[] data = MakeData(dataLength);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(dataLength);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data),
             $"Boundary length {dataLength} produced wrong root.");
     }
@@ -417,10 +417,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [DataRow(9)]   // three leaves, third partial
     public void ComputeHash_AtFanOutGroupBoundary_ShouldProduceCorrectRoot(int dataLength)
     {
-        byte[] data = MakeData(dataLength);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(dataLength);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data),
             $"Fan-out group boundary length {dataLength} produced wrong root.");
     }
@@ -438,10 +438,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [DataRow(97)]
     public void ComputeHash_WhenInputLengthIsPrime_ShouldProduceCorrectRoot(int dataLength)
     {
-        byte[] data = MakeData(dataLength);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(dataLength);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data),
             $"Prime-length input {dataLength} produced wrong root.");
     }
@@ -458,10 +458,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [DataRow(1, 100)]  // 1 leaf becomes the root directly
     public void ComputeHash_WhenFanOutExceedsLeafCount_ShouldProduceCorrectRoot(int leafCount, int fanOut)
     {
-        byte[] data = MakeData(DefaultBlockSize * leafCount);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, fanOut);
+        var data = MakeData(DefaultBlockSize * leafCount);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, fanOut);
 
-        using var hasher = Construct(Factory, DefaultBlockSize, fanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, fanOut);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data),
             $"fanOut={fanOut} > leafCount={leafCount} produced wrong root.");
     }
@@ -474,10 +474,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     {
         const int blockSize = 4;
         const int fanOut = 32;
-        byte[] data = MakeData(blockSize * 100);
-        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        var data = MakeData(blockSize * 100);
+        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
-        using var hasher = Construct(Factory, blockSize, fanOut);
+        using THasher hasher = Construct(Factory, blockSize, fanOut);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -492,10 +492,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         // (64 → 32 → 16 → 8 → 4 → 2 → 1 root).
         const int blockSize = 4;
         const int fanOut = 2;
-        byte[] data = MakeData(blockSize * 64);
-        byte[] expected = ComputeAdditiveRoot(data, blockSize, fanOut);
+        var data = MakeData(blockSize * 64);
+        var expected = ComputeAdditiveRoot(data, blockSize, fanOut);
 
-        using var hasher = Construct(Factory, blockSize, fanOut);
+        using THasher hasher = Construct(Factory, blockSize, fanOut);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data),
             "Deep tree (6 levels) produced wrong root.");
     }
@@ -507,10 +507,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenInputIsAllZeros_ShouldProduceCorrectRoot()
     {
-        byte[] data = new byte[DefaultBlockSize * 3];
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = new byte[DefaultBlockSize * 3];
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -521,10 +521,10 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenInputIsAllMaxBytes_ShouldProduceCorrectRoot()
     {
-        byte[] data = Enumerable.Repeat((byte)0xFF, DefaultBlockSize * 3).ToArray();
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = Enumerable.Repeat((byte)0xFF, DefaultBlockSize * 3).ToArray();
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
         CollectionAssert.AreEqual(expected, ComputeHash(hasher, data));
     }
 
@@ -539,14 +539,14 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenCalledTwiceOnSameInstance_ShouldResetStateAndProduceSameResult()
     {
-        byte[] data = MakeData(9);
+        var data = MakeData(9);
 
-        using var reused = Construct(Factory, DefaultBlockSize, DefaultFanOut);
-        using var fresh = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher reused = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher fresh = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
-        byte[] first = ComputeHash(reused, data);
-        byte[] second = ComputeHash(reused, data);
-        byte[] reference = ComputeHash(fresh, data);
+        var first = ComputeHash(reused, data);
+        var second = ComputeHash(reused, data);
+        var reference = ComputeHash(fresh, data);
 
         CollectionAssert.AreEqual(reference, first, "First call deviates from reference.");
         CollectionAssert.AreEqual(reference, second, "Second call deviates from reference.");
@@ -559,17 +559,17 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenCalledWithAlternatingInputSizes_ShouldNotContaminateState()
     {
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
-        byte[] small = MakeData(3);
-        byte[] large = MakeData(20);
+        var small = MakeData(3);
+        var large = MakeData(20);
 
-        byte[] expectedSmall = ComputeAdditiveRoot(small, DefaultBlockSize, DefaultFanOut);
-        byte[] expectedLarge = ComputeAdditiveRoot(large, DefaultBlockSize, DefaultFanOut);
+        var expectedSmall = ComputeAdditiveRoot(small, DefaultBlockSize, DefaultFanOut);
+        var expectedLarge = ComputeAdditiveRoot(large, DefaultBlockSize, DefaultFanOut);
 
-        byte[] hashSmall1 = ComputeHash(hasher, small);
-        byte[] hashLarge = ComputeHash(hasher, large);
-        byte[] hashSmall2 = ComputeHash(hasher, small);
+        var hashSmall1 = ComputeHash(hasher, small);
+        var hashLarge = ComputeHash(hasher, large);
+        var hashSmall2 = ComputeHash(hasher, small);
 
         CollectionAssert.AreEqual(expectedSmall, hashSmall1, "First small call incorrect.");
         CollectionAssert.AreEqual(expectedLarge, hashLarge, "Large call incorrect.");
@@ -583,16 +583,16 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [TestMethod]
     public void ComputeHash_WhenPartialBlockFollowedByDifferentInput_ShouldNotReuseOldTailBytes()
     {
-        using var hasher = Construct(Factory, blockSize: 4, fanOut: 2);
+        using THasher hasher = Construct(Factory, blockSize: 4, fanOut: 2);
 
         // First call leaves a partial tail of {5} in any pooled buffer.
-        byte[] first = ComputeHash(hasher, new byte[] { 1, 2, 3, 4, 5 });
+        var first = ComputeHash(hasher, new byte[] { 1, 2, 3, 4, 5 });
 
         // Second call: same prefix, no tail. Must equal a one-leaf root.
-        byte[] second = ComputeHash(hasher, new byte[] { 1, 2, 3, 4 });
+        var second = ComputeHash(hasher, new byte[] { 1, 2, 3, 4 });
 
-        byte[] expectedFirst = ComputeAdditiveRoot(new byte[] { 1, 2, 3, 4, 5 }, 4, 2);
-        byte[] expectedSecond = ComputeAdditiveRoot(new byte[] { 1, 2, 3, 4 }, 4, 2);
+        var expectedFirst = ComputeAdditiveRoot(new byte[] { 1, 2, 3, 4, 5 }, 4, 2);
+        var expectedSecond = ComputeAdditiveRoot(new byte[] { 1, 2, 3, 4 }, 4, 2);
 
         CollectionAssert.AreEqual(expectedFirst, first, "First result wrong.");
         CollectionAssert.AreEqual(expectedSecond, second, "Old tail bytes leaked into second call.");
@@ -609,12 +609,12 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     [DataRow(25)]
     public void ComputeHash_WhenCalledRepeatedly_ShouldProduceConsistentResults(int callCount)
     {
-        byte[] data = MakeData(13);
-        byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+        var data = MakeData(13);
+        var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
 
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
-        for (int i = 0; i < callCount; i++)
+        for (var i = 0; i < callCount; i++)
         {
             CollectionAssert.AreEqual(expected, ComputeHash(hasher, data),
                 $"Result mismatch on call {i + 1} of {callCount}.");
@@ -630,13 +630,13 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
     {
         int[] lengths = { 4, 12, 5, 8, 9, 4 };
 
-        using var hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
+        using THasher hasher = Construct(Factory, DefaultBlockSize, DefaultFanOut);
 
-        foreach (int len in lengths)
+        foreach (var len in lengths)
         {
-            byte[] data = MakeData(len);
-            byte[] expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
-            byte[] actual = ComputeHash(hasher, data);
+            var data = MakeData(len);
+            var expected = ComputeAdditiveRoot(data, DefaultBlockSize, DefaultFanOut);
+            var actual = ComputeHash(hasher, data);
 
             CollectionAssert.AreEqual(expected, actual,
                 $"Call with length={len} produced wrong result.");
@@ -653,13 +653,13 @@ public abstract partial class MerkleTreeHashTestsBase<THasher>
         const int blockSize = 4;
         const int fanOut = 2;
 
-        byte[] longData = MakeData(9, seed: 0xAA);
-        byte[] shortData = MakeData(5, seed: 0x11);
-        byte[] expectedShort = ComputeAdditiveRoot(shortData, blockSize, fanOut);
+        var longData = MakeData(9, seed: 0xAA);
+        var shortData = MakeData(5, seed: 0x11);
+        var expectedShort = ComputeAdditiveRoot(shortData, blockSize, fanOut);
 
-        using var hasher = Construct(Factory, blockSize, fanOut);
+        using THasher hasher = Construct(Factory, blockSize, fanOut);
         ComputeHash(hasher, longData);
-        byte[] actual = ComputeHash(hasher, shortData);
+        var actual = ComputeHash(hasher, shortData);
 
         CollectionAssert.AreEqual(expectedShort, actual,
             "Second call was contaminated by the first call's tail-block bytes.");

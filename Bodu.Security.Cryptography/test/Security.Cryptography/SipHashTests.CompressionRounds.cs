@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SipHashTests.CompressionRounds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,8 +16,8 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     [DataRow(32)]
     public void CompressionRounds_WhenSetToValidValue_ShouldUpdateCorrectly(int size)
     {
-        using var algorithm = CreateAlgorithm();
-        int original = algorithm.CompressionRounds;
+        using TAlgorithm algorithm = CreateAlgorithm();
+        var original = algorithm.CompressionRounds;
         algorithm.CompressionRounds = size;
 
         Assert.AreEqual(size, algorithm.CompressionRounds);
@@ -30,17 +30,17 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     [TestMethod]
     public void CompressionRounds_WhenDifferent_ShouldProduceDifferentHash()
     {
-        byte[] input = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
+        var input = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray();
         byte[] hashWithRounds4;
         byte[] hashWithRounds8;
 
-        using (var algorithm = CreateAlgorithm())
+        using (TAlgorithm algorithm = CreateAlgorithm())
         {
             algorithm.CompressionRounds = 4;
             hashWithRounds4 = algorithm.ComputeHash(input);
         }
 
-        using (var algorithm = CreateAlgorithm())
+        using (TAlgorithm algorithm = CreateAlgorithm())
         {
             algorithm.CompressionRounds = 8;
             hashWithRounds8 = algorithm.ComputeHash(input);
@@ -61,7 +61,7 @@ public abstract partial class SipHashTests<TTest, TAlgorithm>
     [DataRow(1)]
     public void CompressionRounds_WhenSetBelowMinimum_ShouldThrowExactly(int value)
     {
-        using var algorithm = CreateAlgorithm();
+        using TAlgorithm algorithm = CreateAlgorithm();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

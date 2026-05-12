@@ -27,10 +27,10 @@ public partial class MultisetTests
     [TestCategory("Smoke")]
     public void Ctor_WhenDefault_ShouldBeEmpty()
     {
-        Multiset<string> sut = new Multiset<string>();
+        var mvd = new Multiset<string>();
 
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.DistinctCount);
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.DistinctCount);
     }
 
     /// <summary>
@@ -39,9 +39,9 @@ public partial class MultisetTests
     [TestMethod]
     public void Ctor_WhenDefault_ShouldUseDefaultComparer()
     {
-        Multiset<string> sut = new Multiset<string>();
+        var mvd = new Multiset<string>();
 
-        Assert.AreEqual(EqualityComparer<string>.Default, sut.Comparer);
+        Assert.AreEqual(EqualityComparer<string>.Default, mvd.Comparer);
     }
 
     // --------------------------------------------------------
@@ -54,9 +54,9 @@ public partial class MultisetTests
     [TestMethod]
     public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
     {
-        Multiset<string> sut = new Multiset<string>((IEqualityComparer<string>?)null);
+        var mvd = new Multiset<string>((IEqualityComparer<string>?)null);
 
-        Assert.AreEqual(EqualityComparer<string>.Default, sut.Comparer);
+        Assert.AreEqual(EqualityComparer<string>.Default, mvd.Comparer);
     }
 
     /// <summary>
@@ -65,14 +65,14 @@ public partial class MultisetTests
     [TestMethod]
     public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
     {
-        Multiset<string> sut = new Multiset<string>(StringComparer.OrdinalIgnoreCase);
+        var mvd = new Multiset<string>(StringComparer.OrdinalIgnoreCase);
 
-        sut.Add("A");
-        sut.Add("a");
+        mvd.Add("A");
+        mvd.Add("a");
 
-        Assert.AreEqual(2, sut.Count);
-        Assert.AreEqual(1, sut.DistinctCount);
-        Assert.AreEqual(2, sut.CountOf("A"));
+        Assert.AreEqual(2, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
+        Assert.AreEqual(2, mvd.CountOf("A"));
     }
 
     // --------------------------------------------------------
@@ -97,13 +97,13 @@ public partial class MultisetTests
     [TestMethod]
     public void Ctor_WhenCollectionHasDuplicates_ShouldTrackMultiplicity()
     {
-        Multiset<string> sut = new Multiset<string>(["a", "b", "a", "c", "a"]);
+        var mvd = new Multiset<string>(["a", "b", "a", "c", "a"]);
 
-        Assert.AreEqual(5, sut.Count);
-        Assert.AreEqual(3, sut.DistinctCount);
-        Assert.AreEqual(3, sut.CountOf("a"));
-        Assert.AreEqual(1, sut.CountOf("b"));
-        Assert.AreEqual(1, sut.CountOf("c"));
+        Assert.AreEqual(5, mvd.Count);
+        Assert.AreEqual(3, mvd.DistinctCount);
+        Assert.AreEqual(3, mvd.CountOf("a"));
+        Assert.AreEqual(1, mvd.CountOf("b"));
+        Assert.AreEqual(1, mvd.CountOf("c"));
     }
 
     /// <summary>
@@ -112,10 +112,10 @@ public partial class MultisetTests
     [TestMethod]
     public void Ctor_WhenEmptyCollectionProvided_ShouldBeEmpty()
     {
-        Multiset<string> sut = new Multiset<string>(Array.Empty<string>());
+        var mvd = new Multiset<string>([]);
 
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.DistinctCount);
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.DistinctCount);
     }
 
     /// <summary>
@@ -124,14 +124,14 @@ public partial class MultisetTests
     [TestMethod]
     public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
     {
-        Multiset<string> sut = new Multiset<string>(
-            new[] { "A", "a", "B" },
+        var mvd = new Multiset<string>(
+            ["A", "a", "B"],
             StringComparer.OrdinalIgnoreCase);
 
-        Assert.AreEqual(3, sut.Count);
-        Assert.AreEqual(2, sut.DistinctCount);
-        Assert.AreEqual(2, sut.CountOf("a"));
-        Assert.AreEqual(1, sut.CountOf("b"));
+        Assert.AreEqual(3, mvd.Count);
+        Assert.AreEqual(2, mvd.DistinctCount);
+        Assert.AreEqual(2, mvd.CountOf("a"));
+        Assert.AreEqual(1, mvd.CountOf("b"));
     }
 
     // --------------------------------------------------------
@@ -144,12 +144,12 @@ public partial class MultisetTests
     [TestMethod]
     public void Count_WhenItemsAdded_ShouldReflectTotalWithMultiplicity()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(1);
-        sut.Add(1);
-        sut.Add(2);
+        var mvd = new Multiset<int>();
+        mvd.Add(1);
+        mvd.Add(1);
+        mvd.Add(2);
 
-        Assert.AreEqual(3, sut.Count);
+        Assert.AreEqual(3, mvd.Count);
     }
 
     /// <summary>
@@ -158,12 +158,12 @@ public partial class MultisetTests
     [TestMethod]
     public void DistinctCount_WhenItemsAdded_ShouldReflectUniqueElementCount()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(1);
-        sut.Add(1);
-        sut.Add(2);
+        var mvd = new Multiset<int>();
+        mvd.Add(1);
+        mvd.Add(1);
+        mvd.Add(2);
 
-        Assert.AreEqual(2, sut.DistinctCount);
+        Assert.AreEqual(2, mvd.DistinctCount);
     }
 
     // --------------------------------------------------------
@@ -176,9 +176,9 @@ public partial class MultisetTests
     [TestMethod]
     public void Contains_WhenEmpty_ShouldReturnFalse()
     {
-        Multiset<string> sut = new Multiset<string>();
+        var mvd = new Multiset<string>();
 
-        Assert.IsFalse(sut.Contains("x"));
+        Assert.IsFalse(mvd.Contains("x"));
     }
 
     /// <summary>
@@ -187,10 +187,10 @@ public partial class MultisetTests
     [TestMethod]
     public void Contains_WhenElementPresent_ShouldReturnTrue()
     {
-        Multiset<string> sut = new Multiset<string>();
-        sut.Add("hello");
+        var mvd = new Multiset<string>();
+        mvd.Add("hello");
 
-        Assert.IsTrue(sut.Contains("hello"));
+        Assert.IsTrue(mvd.Contains("hello"));
     }
 
     /// <summary>
@@ -199,10 +199,10 @@ public partial class MultisetTests
     [TestMethod]
     public void Contains_WhenElementAbsent_ShouldReturnFalse()
     {
-        Multiset<string> sut = new Multiset<string>();
-        sut.Add("hello");
+        var mvd = new Multiset<string>();
+        mvd.Add("hello");
 
-        Assert.IsFalse(sut.Contains("world"));
+        Assert.IsFalse(mvd.Contains("world"));
     }
 
     /// <summary>
@@ -211,11 +211,11 @@ public partial class MultisetTests
     [TestMethod]
     public void Contains_WhenAllOccurrencesRemoved_ShouldReturnFalse()
     {
-        Multiset<string> sut = new Multiset<string>();
-        sut.Add("x", 3);
-        sut.RemoveAll("x");
+        var mvd = new Multiset<string>();
+        mvd.Add("x", 3);
+        mvd.RemoveAll("x");
 
-        Assert.IsFalse(sut.Contains("x"));
+        Assert.IsFalse(mvd.Contains("x"));
     }
 
     /// <summary>
@@ -224,12 +224,12 @@ public partial class MultisetTests
     [TestMethod]
     public void Contains_WhenElementReaddedAfterRemoval_ShouldReturnTrue()
     {
-        Multiset<string> sut = new Multiset<string>();
-        sut.Add("y");
-        sut.Remove("y");
-        sut.Add("y");
+        var mvd = new Multiset<string>();
+        mvd.Add("y");
+        mvd.Remove("y");
+        mvd.Add("y");
 
-        Assert.IsTrue(sut.Contains("y"));
+        Assert.IsTrue(mvd.Contains("y"));
     }
 
     // --------------------------------------------------------
@@ -242,9 +242,9 @@ public partial class MultisetTests
     [TestMethod]
     public void CountOf_WhenElementAbsent_ShouldReturnZero()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
-        Assert.AreEqual(0, sut.CountOf(42));
+        Assert.AreEqual(0, mvd.CountOf(42));
     }
 
     /// <summary>
@@ -253,12 +253,12 @@ public partial class MultisetTests
     [TestMethod]
     public void CountOf_WhenElementAddedMultipleTimes_ShouldReturnMultiplicity()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(5);
-        sut.Add(5);
-        sut.Add(5);
+        var mvd = new Multiset<int>();
+        mvd.Add(5);
+        mvd.Add(5);
+        mvd.Add(5);
 
-        Assert.AreEqual(3, sut.CountOf(5));
+        Assert.AreEqual(3, mvd.CountOf(5));
     }
 
     /// <summary>
@@ -267,11 +267,11 @@ public partial class MultisetTests
     [TestMethod]
     public void CountOf_WhenOneOccurrenceRemovedFromMultiple_ShouldReturnDecremented()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(3, 4);
-        sut.Remove(3);
+        var mvd = new Multiset<int>();
+        mvd.Add(3, 4);
+        mvd.Remove(3);
 
-        Assert.AreEqual(3, sut.CountOf(3));
+        Assert.AreEqual(3, mvd.CountOf(3));
     }
 
     // --------------------------------------------------------
@@ -284,13 +284,13 @@ public partial class MultisetTests
     [TestMethod]
     public void Clear_WhenCalled_ShouldRemoveAllElements()
     {
-        Multiset<string> sut = new Multiset<string>(["a", "a", "b"]);
+        var mvd = new Multiset<string>(["a", "a", "b"]);
 
-        sut.Clear();
+        mvd.Clear();
 
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.DistinctCount);
-        Assert.IsFalse(sut.Contains("a"));
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.DistinctCount);
+        Assert.IsFalse(mvd.Contains("a"));
     }
 
     /// <summary>
@@ -299,12 +299,12 @@ public partial class MultisetTests
     [TestMethod]
     public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
-        sut.Clear();
+        mvd.Clear();
 
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.DistinctCount);
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.DistinctCount);
     }
 
     /// <summary>
@@ -313,14 +313,14 @@ public partial class MultisetTests
     [TestMethod]
     public void Clear_WhenCalledThenItemsReAdded_ShouldTrackNewItems()
     {
-        Multiset<string> sut = new Multiset<string>(["old", "old"]);
-        sut.Clear();
-        sut.Add("new", 3);
+        var mvd = new Multiset<string>(["old", "old"]);
+        mvd.Clear();
+        mvd.Add("new", 3);
 
-        Assert.AreEqual(3, sut.Count);
-        Assert.AreEqual(1, sut.DistinctCount);
-        Assert.AreEqual(3, sut.CountOf("new"));
-        Assert.IsFalse(sut.Contains("old"));
+        Assert.AreEqual(3, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
+        Assert.AreEqual(3, mvd.CountOf("new"));
+        Assert.IsFalse(mvd.Contains("old"));
     }
 
     // --------------------------------------------------------
@@ -333,11 +333,11 @@ public partial class MultisetTests
     [TestMethod]
     public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            sut.CopyTo(null!, 0);
+            mvd.CopyTo(null!, 0);
         });
     }
 
@@ -347,11 +347,11 @@ public partial class MultisetTests
     [TestMethod]
     public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
-        Multiset<int> sut = new Multiset<int>();
+        var mvd = new Multiset<int>();
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            sut.CopyTo(new int[5], -1);
+            mvd.CopyTo(new int[5], -1);
         });
     }
 
@@ -361,14 +361,14 @@ public partial class MultisetTests
     [TestMethod]
     public void CopyTo_WhenCalled_ShouldCopyAllElementsWithMultiplicity()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(10, 3);
-        sut.Add(20, 2);
+        var mvd = new Multiset<int>();
+        mvd.Add(10, 3);
+        mvd.Add(20, 2);
 
-        int[] dest = new int[5];
-        sut.CopyTo(dest, 0);
+        var dest = new int[5];
+        mvd.CopyTo(dest, 0);
 
-        int[] sorted = (int[])dest.Clone();
+        var sorted = (int[])dest.Clone();
         System.Array.Sort(sorted);
         CollectionAssert.AreEqual(new[] { 10, 10, 10, 20, 20 }, sorted);
     }
@@ -379,14 +379,14 @@ public partial class MultisetTests
     [TestMethod]
     public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(1);
-        sut.Add(2);
-        sut.Add(3);
+        var mvd = new Multiset<int>();
+        mvd.Add(1);
+        mvd.Add(2);
+        mvd.Add(3);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            sut.CopyTo(new int[2], 0);
+            mvd.CopyTo(new int[2], 0);
         });
     }
 
@@ -396,14 +396,14 @@ public partial class MultisetTests
     [TestMethod]
     public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(1);
-        sut.Add(2);
-        sut.Add(3);
+        var mvd = new Multiset<int>();
+        mvd.Add(1);
+        mvd.Add(2);
+        mvd.Add(3);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            sut.CopyTo(new int[5], 3);
+            mvd.CopyTo(new int[5], 3);
         });
     }
 
@@ -413,10 +413,10 @@ public partial class MultisetTests
     [TestMethod]
     public void CopyTo_WhenMultisetIsEmpty_ShouldNotModifyArray()
     {
-        Multiset<int> sut = new Multiset<int>();
-        int[] dest = new int[] { 99, 88 };
+        var mvd = new Multiset<int>();
+        int[] dest = [99, 88];
 
-        sut.CopyTo(dest, 0);
+        mvd.CopyTo(dest, 0);
 
         Assert.AreEqual(99, dest[0]);
         Assert.AreEqual(88, dest[1]);
@@ -428,11 +428,11 @@ public partial class MultisetTests
     [TestMethod]
     public void CopyTo_WhenOffsetSpecified_ShouldCopyAtCorrectPosition()
     {
-        Multiset<int> sut = new Multiset<int>();
-        sut.Add(42, 2);
-        int[] dest = new int[5];
+        var mvd = new Multiset<int>();
+        mvd.Add(42, 2);
+        var dest = new int[5];
 
-        sut.CopyTo(dest, 2);
+        mvd.CopyTo(dest, 2);
 
         Assert.AreEqual(0, dest[0]);
         Assert.AreEqual(0, dest[1]);

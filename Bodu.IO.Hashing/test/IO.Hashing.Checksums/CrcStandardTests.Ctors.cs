@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcStandardTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class CrcStandardTests
     [TestMethod]
     public void Ctor_WhenNameIsNull_ShouldThrowArgumentNullException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(
             () => new CrcStandard(null!, 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL));
         Assert.AreEqual("name", ex.ParamName);
     }
@@ -27,7 +27,7 @@ public partial class CrcStandardTests
     [TestMethod]
     public void Ctor_WhenNameIsEmpty_ShouldThrowArgumentException()
     {
-        var ex = Assert.ThrowsExactly<ArgumentException>(
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(
             () => new CrcStandard(string.Empty, 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL));
         Assert.AreEqual("name", ex.ParamName);
     }
@@ -47,7 +47,7 @@ public partial class CrcStandardTests
     [DataRow(int.MaxValue)]
     public void Ctor_WhenSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int size)
     {
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
             () => new CrcStandard("Test", size, 0x1UL, 0x0UL, false, false, 0x0UL));
         Assert.AreEqual("size", ex.ParamName);
     }

@@ -22,7 +22,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [DataRow(1024)]
     public void Capacity_WhenCustomCapacityProvided_ShouldBeAtLeastRequested(int capacity)
     {
-        var collection = CreateCollection(capacity);
+        TCollection collection = CreateCollection(capacity);
 
         if (ReportsExactCapacity)
             Assert.AreEqual(capacity, GetCapacity(collection));
@@ -37,8 +37,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Capacity_WhenItemsAddedAndRemovedWithinCapacity_ShouldRemainConstant()
     {
-        var collection = CreateCollection(5);
-        int capacityBefore = GetCapacity(collection);
+        TCollection collection = CreateCollection(5);
+        var capacityBefore = GetCapacity(collection);
 
         AddToTail(collection, 1);
         AddToTail(collection, 2);
@@ -54,8 +54,8 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Capacity_WhenItemsAdded_ShouldBeAtLeastCount()
     {
-        var collection = CreateCollection(4);
-        for (int i = 0; i < 4; i++)
+        TCollection collection = CreateCollection(4);
+        for (var i = 0; i < 4; i++)
             AddToTail(collection, i);
 
         Assert.IsTrue(GetCapacity(collection) >= GetCount(collection));

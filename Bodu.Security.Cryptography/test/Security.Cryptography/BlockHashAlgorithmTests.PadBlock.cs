@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockHashAlgorithmTests.PadBlock.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,10 +20,10 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     [TestMethod]
     public void PadBlock_OnHappyPath_ShouldNeverRaiseNotImplementedException()
     {
-        using var algo = CreateAlgorithm();
+        using TAlgorithm algo = CreateAlgorithm();
         try
         {
-            byte[] tag = algo.ComputeHash(new byte[] { 1, 2, 3, 4, 5 });
+            var tag = algo.ComputeHash(new byte[] { 1, 2, 3, 4, 5 });
             Assert.IsNotNull(tag);
         }
         catch (NotImplementedException)
@@ -48,22 +48,22 @@ public abstract partial class BlockHashAlgorithmTests<TTest, TAlgorithm, TVarian
     [DynamicData(nameof(HashAlgorithmVariants))]
     public void HashPipeline_ExceptionMessages_ShouldContainOnlyPrintableAscii(TVariant variant)
     {
-        var specification = GetSpecification(variant);
+        HashAlgorithmSpecification specification = GetSpecification(variant);
         // Exercise every residual length from 0 up to 2x the configured input block size
         // so we hit every branch of any residual-handling PadBlock path.
-        int limit = Math.Max(16, specification.InputBlockSize * 2);
-        for (int len = 0; len < limit; len++)
+        var limit = Math.Max(16, specification.InputBlockSize * 2);
+        for (var len = 0; len < limit; len++)
         {
-            using var algo = CreateAlgorithm();
-            byte[] data = new byte[len];
+            using TAlgorithm algo = CreateAlgorithm();
+            var data = new byte[len];
             try
             {
-                byte[] tag = algo.ComputeHash(data);
+                var tag = algo.ComputeHash(data);
                 Assert.IsNotNull(tag);
             }
             catch (Exception ex)
             {
-                string message = ex.Message ?? string.Empty;
+                var message = ex.Message ?? string.Empty;
                 Assert.IsFalse(
                     message.Contains('\0'),
                     $"Exception message for input length {len} must not contain NUL characters.");

@@ -20,7 +20,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInYear" /> returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests. FirstDateOfWeekInYearTestData),typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests. FirstDateOfWeekInYearTestData),typeof(DateTimeExtensionsTests))]
     public void FirstDateOfWeekInYear_ShouldReturnExpectedDay(DateTime inputDateTime, DayOfWeek targetDay, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);

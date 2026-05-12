@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkipjackAlgorithmTests.BlockMode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public sealed partial class SkipjackAlgorithmTests
     [DataRow(CipherBlockMode.CTR)]
     public void BlockMode_WhenSetToValidValue_ShouldNotThrow(CipherBlockMode mode)
     {
-        using var algorithm = CreateAlgorithm();
+        using Skipjack algorithm = CreateAlgorithm();
 
         try
         {

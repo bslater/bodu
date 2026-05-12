@@ -8,7 +8,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
-    private static readonly int[] TestArray = new[] { 1, 2, 3, 4, 5 };
+    private static readonly int[] s_testArray = [1, 2, 3, 4, 5];
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> throws
@@ -23,7 +23,7 @@ public partial class ThrowHelperTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            ThrowHelper.ThrowIfIndexOutOfRange(index, TestArray);
+            ThrowHelper.ThrowIfIndexOutOfRange(index, s_testArray);
         });
     }
 
@@ -48,10 +48,7 @@ public partial class ThrowHelperTests
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(4)]
-    public void ThrowIfIndexOutOfRange_Array_WhenIndexIsWithinBounds_ShouldNotThrow(int index)
-    {
-        ThrowHelper.ThrowIfIndexOutOfRange(index, TestArray);
-    }
+    public void ThrowIfIndexOutOfRange_Array_WhenIndexIsWithinBounds_ShouldNotThrow(int index) => ThrowHelper.ThrowIfIndexOutOfRange(index, s_testArray);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange{T}(int, ReadOnlySpan{T}, string?)" /> throws
@@ -66,7 +63,7 @@ public partial class ThrowHelperTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            ThrowHelper.ThrowIfIndexOutOfRange(index, new ReadOnlySpan<int>(TestArray));
+            ThrowHelper.ThrowIfIndexOutOfRange(index, new ReadOnlySpan<int>(s_testArray));
         });
     }
 
@@ -80,7 +77,7 @@ public partial class ThrowHelperTests
     [DataRow(4)]
     public void ThrowIfIndexOutOfRange_ReadOnlySpan_WhenIndexIsWithinBounds_ShouldNotThrow(int index)
     {
-        ReadOnlySpan<int> span = TestArray;
+        ReadOnlySpan<int> span = s_testArray;
 
         ThrowHelper.ThrowIfIndexOutOfRange(index, span);
     }
@@ -98,7 +95,7 @@ public partial class ThrowHelperTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            ThrowHelper.ThrowIfIndexOutOfRange(index, new Span<int>(new int[] { 1, 2, 3, 4, 5 }));
+            ThrowHelper.ThrowIfIndexOutOfRange(index, new Span<int>([1, 2, 3, 4, 5]));
         });
     }
 
@@ -112,7 +109,7 @@ public partial class ThrowHelperTests
     [DataRow(4)]
     public void ThrowIfIndexOutOfRange_Span_WhenIndexIsWithinBounds_ShouldNotThrow(int index)
     {
-        Span<int> span = new int[] { 1, 2, 3, 4, 5 };
+        Span<int> span = [1, 2, 3, 4, 5];
 
         ThrowHelper.ThrowIfIndexOutOfRange(index, span);
     }

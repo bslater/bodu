@@ -31,11 +31,11 @@ public partial class DateTimeFormatInfoExtensionsTests
     /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when FirstDateOfWeekIsSpecified, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LastDateOfWeekTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(LastDateOfWeekTestData))]
     public void LastDateOfWeek_WhenFirstDayOfWeekIsSpecified_ShouldReturnDaySixPositionsLater(
         DayOfWeek firstDayOfWeek, DayOfWeek expected)
     {
-        DateTimeFormatInfo info = (DateTimeFormatInfo)CultureInfo.InvariantCulture.DateTimeFormat.Clone();
+        var info = (DateTimeFormatInfo)CultureInfo.InvariantCulture.DateTimeFormat.Clone();
         info.FirstDayOfWeek = firstDayOfWeek;
 
         DayOfWeek actual = info.LastDayOfWeek();

@@ -22,7 +22,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.MonthName" />, with Culture, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(MonthNameTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(MonthNameTestData))]
     public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
     {
         DateTime input = new DateTime(year, month, 1);
@@ -36,7 +36,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when CultureIsNull, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(MonthNameFrenchTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(MonthNameFrenchTestData))]
     public void MonthName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(int year, int month, string expected)
     {
         var original = CultureInfo.CurrentCulture;

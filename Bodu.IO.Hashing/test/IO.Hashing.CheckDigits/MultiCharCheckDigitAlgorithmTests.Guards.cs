@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitAlgorithmTests.Guards.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
     {
         MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-        char invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
+        var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
 
         TAlgorithm algorithm = CreateAlgorithm();
 
@@ -36,7 +36,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     public void Append_WhenSingleCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
     {
         MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-        char invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
+        var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
 
         TAlgorithm algorithm = CreateAlgorithm();
 
@@ -54,7 +54,7 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     public void GetCurrentCheckDigits_WhenDestinationTooSmall_ShouldThrowArgumentException()
     {
         TAlgorithm algorithm = CreateAlgorithm();
-        char[] tooSmall = new char[algorithm.CheckLength - 1];
+        var tooSmall = new char[algorithm.CheckLength - 1];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

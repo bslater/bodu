@@ -20,20 +20,20 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [DataRow(16)]
     public void Wrapping_WhenFilledFromBothEnds_ShouldPreserveLogicalOrder(int capacity)
     {
-        var collection = CreateCollection(capacity);
-        int half = capacity / 2;
+        TCollection collection = CreateCollection(capacity);
+        var half = capacity / 2;
 
         // Fill the right half via tail (values [half, half+1, ..., capacity-1])
-        for (int i = 0; i < half; i++)
+        for (var i = 0; i < half; i++)
             AddToTail(collection, half + i);
 
         // Fill the left half via head (values [half-1, half-2, ..., 0]; head-side prepends reverse the order)
-        for (int i = 0; i < half; i++)
+        for (var i = 0; i < half; i++)
             AddToHead(collection, half - 1 - i);
 
         // Logical order should be 0, 1, ..., capacity-1
         var expected = new int[capacity];
-        for (int i = 0; i < capacity; i++)
+        for (var i = 0; i < capacity; i++)
             expected[i] = i;
 
         CollectionAssert.AreEqual(expected, ToArray(collection));
@@ -45,7 +45,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void Wrapping_WhenDrainedFromBothEndsInterleaved_ShouldEmptyToZero()
     {
-        var collection = CreateCollection(6);
+        TCollection collection = CreateCollection(6);
         AddToTail(collection, 3);
         AddToTail(collection, 4);
         AddToTail(collection, 5);
@@ -69,11 +69,11 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void Enumerator_WhenAddToHeadCalledDuringIteration_ShouldThrowOnMoveNext()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
         AddToHead(collection, 0);
 
@@ -86,12 +86,12 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void Enumerator_WhenRemoveFromTailCalledDuringIteration_ShouldThrowOnMoveNext()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
 
-        var enumerator = collection.GetEnumerator();
+        IEnumerator<int> enumerator = collection.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
         _ = RemoveFromTail(collection);
 

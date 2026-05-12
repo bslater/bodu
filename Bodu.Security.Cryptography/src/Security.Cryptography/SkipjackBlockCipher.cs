@@ -40,14 +40,14 @@ namespace Bodu.Security.Cryptography;
 /// implementation is <b>not</b> hardened against timing or cache-based side-channel attacks.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Skipjack" /> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="SkipjackBlockCipher" /> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example via
-/// <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
+/// Most callers should prefer the higher-level <see cref="Skipjack"/> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="SkipjackBlockCipher"/> directly only
+/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> (for example via
+/// <see cref="BlockCipherModeFactory"/>) or with an <see cref="IPaddingStrategy"/>.
 /// </para>
 /// </remarks>
 /// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
-/// <seealso cref="Skipjack" />
+/// <seealso cref="Skipjack"/>
 public sealed class SkipjackBlockCipher
     : IBlockCipher
 {
@@ -62,8 +62,8 @@ public sealed class SkipjackBlockCipher
     public const int KeySize = 10;  // 80 bits
 
     // Static F-table (8 × 8 S-box)
-    private static readonly byte[] s_ftable = new byte[256]
-    {
+    private static readonly byte[] s_ftable =
+    [
         0xa3, 0xd7, 0x09, 0x83, 0xf8, 0x48, 0xf6, 0xf4, 0xb3, 0x21, 0x15, 0x78, 0x99, 0xb1, 0xaf, 0xf9,
         0xe7, 0x2d, 0x4d, 0x8a, 0xce, 0x4c, 0xca, 0x2e, 0x52, 0x95, 0xd9, 0x1e, 0x4e, 0x38, 0x44, 0x28,
         0x0a, 0xdf, 0x02, 0xa0, 0x17, 0xf1, 0x60, 0x68, 0x12, 0xb7, 0x7a, 0xc3, 0xe9, 0xfa, 0x3d, 0x53,
@@ -80,34 +80,34 @@ public sealed class SkipjackBlockCipher
         0x0c, 0xef, 0xbc, 0x72, 0x75, 0x6f, 0x37, 0xa1, 0xec, 0xd3, 0x8e, 0x62, 0x8b, 0x86, 0x10, 0xe8,
         0x08, 0x77, 0x11, 0xbe, 0x92, 0x4f, 0x24, 0xc5, 0x32, 0x36, 0x9d, 0xcf, 0xf3, 0xa6, 0xbb, 0xac,
         0x5e, 0x6c, 0xa9, 0x13, 0x57, 0x25, 0xb5, 0xe3, 0xbd, 0xa8, 0x3a, 0x01, 0x05, 0x59, 0x2a, 0x46
-    };
+    ];
 
-    private readonly int[] key0, key1, key2, key3;
+    private readonly int[] _key0, _key1, _key2, _key3;
     private bool _disposed = false;
 
     /// <summary>
-    /// Creates a new <see cref="SkipjackBlockCipher" /> instance using the supplied 80-bit key.
+    /// Initializes a new instance of the <see cref="SkipjackBlockCipher"/> class using the supplied 80-bit key.
     /// </summary>
     /// <param name="keyBytes">Exactly 10 bytes of key material.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="keyBytes" /> is not exactly 10 bytes long.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="keyBytes"/> is not exactly 10 bytes long.</exception>
     public SkipjackBlockCipher(ReadOnlySpan<byte> keyBytes)
     {
         if (keyBytes.Length != KeySize)
             throw new ArgumentException("Skipjack requires an 80-bit key (10 bytes).", nameof(keyBytes));
 
-        this.key0 = new int[32];
-        this.key1 = new int[32];
-        this.key2 = new int[32];
-        this.key3 = new int[32];
+        this._key0 = new int[32];
+        this._key1 = new int[32];
+        this._key2 = new int[32];
+        this._key3 = new int[32];
 
         //
         // expand the key to 128 bytes in 4 parts (saving us a modulo, multiply and an addition).
-        for (int i = 0; i < 32; i++)
+        for (var i = 0; i < 32; i++)
         {
-            key0[i] = keyBytes[(i * 4 + 0) % 10];
-            key1[i] = keyBytes[(i * 4 + 1) % 10];
-            key2[i] = keyBytes[(i * 4 + 2) % 10];
-            key3[i] = keyBytes[(i * 4 + 3) % 10];
+            _key0[i] = keyBytes[(i * 4 + 0) % 10];
+            _key1[i] = keyBytes[(i * 4 + 1) % 10];
+            _key2[i] = keyBytes[(i * 4 + 2) % 10];
+            _key3[i] = keyBytes[(i * 4 + 3) % 10];
         }
     }
 
@@ -120,7 +120,7 @@ public sealed class SkipjackBlockCipher
     /// </summary>
     /// <param name="input">Ciphertext of at least 8 bytes.</param>
     /// <param name="output">Buffer that receives the decrypted plaintext.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input" /> or <paramref name="output" /> is too small.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is too small.</exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>Mirrors the BC/OpenSSL decrypt sequence, including the word-order swap in the input/output stages.</remarks>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
@@ -129,18 +129,18 @@ public sealed class SkipjackBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
         this.ThrowIfDisposed();
 
-        int w2 = (input[0] << 8) + (input[1] & 0xff);
-        int w1 = (input[2] << 8) + (input[3] & 0xff);
-        int w4 = (input[4] << 8) + (input[5] & 0xff);
-        int w3 = (input[6] << 8) + (input[7] & 0xff);
+        var w2 = (input[0] << 8) + (input[1] & 0xff);
+        var w1 = (input[2] << 8) + (input[3] & 0xff);
+        var w4 = (input[4] << 8) + (input[5] & 0xff);
+        var w3 = (input[6] << 8) + (input[7] & 0xff);
 
-        int k = 31;
+        var k = 31;
 
-        for (int t = 0; t < 2; t++)
+        for (var t = 0; t < 2; t++)
         {
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
-                int tmp = w4;
+                var tmp = w4;
                 w4 = w3;
                 w3 = w2;
                 w2 = H(k, w1);
@@ -148,9 +148,9 @@ public sealed class SkipjackBlockCipher
                 k--;
             }
 
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
-                int tmp = w4;
+                var tmp = w4;
                 w4 = w3;
                 w3 = w1 ^ w2 ^ (k + 1);
                 w2 = H(k, w1);
@@ -176,10 +176,10 @@ public sealed class SkipjackBlockCipher
     {
         if (!this._disposed)
         {
-            CryptoHelpers.Clear(this.key0);
-            CryptoHelpers.Clear(this.key1);
-            CryptoHelpers.Clear(this.key2);
-            CryptoHelpers.Clear(this.key3);
+            CryptoHelpers.Clear(this._key0);
+            CryptoHelpers.Clear(this._key1);
+            CryptoHelpers.Clear(this._key2);
+            CryptoHelpers.Clear(this._key3);
 
             this._disposed = true;
         }
@@ -188,9 +188,9 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Encrypts a single 64-bit block.
     /// </summary>
-    /// <param name="input">The plaintext block to encrypt. Must be at least <see cref="BlockBytes" /> bytes long.</param>
-    /// <param name="output">Buffer that receives the 8-byte ciphertext. Must be at least <see cref="BlockBytes" /> bytes long.</param>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input" /> or <paramref name="output" /> is too small.</exception>
+    /// <param name="input">The plaintext block to encrypt. Must be at least <see cref="BlockBytes"/> bytes long.</param>
+    /// <param name="output">Buffer that receives the 8-byte ciphertext. Must be at least <see cref="BlockBytes"/> bytes long.</param>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is too small.</exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>
     /// The routine implements the BC/OpenSSL key-schedule: the key pointer advances by one byte per round and the round constant is (
@@ -202,18 +202,18 @@ public sealed class SkipjackBlockCipher
         ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(output, BlockBytes);
         this.ThrowIfDisposed();
 
-        int w1 = (input[0] << 8) + (input[1] & 0xff);
-        int w2 = (input[2] << 8) + (input[3] & 0xff);
-        int w3 = (input[4] << 8) + (input[5] & 0xff);
-        int w4 = (input[6] << 8) + (input[7] & 0xff);
+        var w1 = (input[0] << 8) + (input[1] & 0xff);
+        var w2 = (input[2] << 8) + (input[3] & 0xff);
+        var w3 = (input[4] << 8) + (input[5] & 0xff);
+        var w4 = (input[6] << 8) + (input[7] & 0xff);
 
-        int k = 0;
+        var k = 0;
 
-        for (int t = 0; t < 2; t++)
+        for (var t = 0; t < 2; t++)
         {
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
-                int tmp = w4;
+                var tmp = w4;
                 w4 = w3;
                 w3 = w2;
                 w2 = G(k, w1);
@@ -221,9 +221,9 @@ public sealed class SkipjackBlockCipher
                 k++;
             }
 
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
-                int tmp = w4;
+                var tmp = w4;
                 w4 = w3;
                 w3 = w1 ^ w2 ^ (k + 1);
                 w2 = G(k, w1);
@@ -243,7 +243,7 @@ public sealed class SkipjackBlockCipher
     }
 
     /// <summary>
-    /// Reads a big-endian 16-bit unsigned integer from <paramref name="s" />.
+    /// Reads a big-endian 16-bit unsigned integer from <paramref name="s"/>.
     /// </summary>
     /// <param name="s">The source byte span.</param>
     /// <param name="o">The byte offset at which to read.</param>
@@ -253,7 +253,7 @@ public sealed class SkipjackBlockCipher
         (ushort)((s[o] << 8) | s[o + 1]);
 
     /// <summary>
-    /// Writes <paramref name="v" /> as big-endian 16-bit value into <paramref name="d" />.
+    /// Writes <paramref name="v"/> as big-endian 16-bit value into <paramref name="d"/>.
     /// </summary>
     /// <param name="d">The destination byte span.</param>
     /// <param name="o">The byte offset at which to write.</param>
@@ -266,7 +266,7 @@ public sealed class SkipjackBlockCipher
     }
 
     /// <summary>
-    /// Skipjack <c>G</c> permutation (forward) – uses 4 key bytes starting at index <paramref name="k" />.
+    /// Skipjack <c>G</c> permutation (forward) – uses 4 key bytes starting at index <paramref name="k"/>.
     /// </summary>
     /// <param name="k">Round-key index (0–31).</param>
     /// <param name="w">16-bit input word.</param>
@@ -282,10 +282,10 @@ public sealed class SkipjackBlockCipher
         g1 = (w >> 8) & 0xff;
         g2 = w & 0xff;
 
-        g3 = s_ftable[g2 ^ key0[k]] ^ g1;
-        g4 = s_ftable[g3 ^ key1[k]] ^ g2;
-        g5 = s_ftable[g4 ^ key2[k]] ^ g3;
-        g6 = s_ftable[g5 ^ key3[k]] ^ g4;
+        g3 = s_ftable[g2 ^ _key0[k]] ^ g1;
+        g4 = s_ftable[g3 ^ _key1[k]] ^ g2;
+        g5 = s_ftable[g4 ^ _key2[k]] ^ g3;
+        g6 = s_ftable[g5 ^ _key3[k]] ^ g4;
 
         return ((g5 << 8) + g6);
     }
@@ -299,28 +299,31 @@ public sealed class SkipjackBlockCipher
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private int H(int k, int w)
     {
-        int h1 = w & 0xff;
-        int h2 = (w >> 8) & 0xff;
+        var h1 = w & 0xff;
+        var h2 = (w >> 8) & 0xff;
 
-        int h3 = s_ftable[h2 ^ key3[k]] ^ h1;
-        int h4 = s_ftable[h3 ^ key2[k]] ^ h2;
-        int h5 = s_ftable[h4 ^ key1[k]] ^ h3;
-        int h6 = s_ftable[h5 ^ key0[k]] ^ h4;
+        var h3 = s_ftable[h2 ^ _key3[k]] ^ h1;
+        var h4 = s_ftable[h3 ^ _key2[k]] ^ h2;
+        var h5 = s_ftable[h4 ^ _key1[k]] ^ h3;
+        var h6 = s_ftable[h5 ^ _key0[k]] ^ h4;
 
         return (h6 << 8) + h5;
     }
 
     /// <summary>
-    /// Throws <see cref="ObjectDisposedException" /> if this cipher has already been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
-    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
         ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (disposed) throw new ObjectDisposedException(nameof(SkipjackBlockCipher));
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

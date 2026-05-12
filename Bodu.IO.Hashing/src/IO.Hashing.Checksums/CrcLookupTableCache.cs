@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.IO.Hashing.Checksums;
-
 using System.Collections.Concurrent;
+
+namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortises
@@ -59,14 +59,14 @@ using System.Collections.Concurrent;
 /// <seealso cref="CrcLookupTableBuilder"/>
 public class CrcLookupTableCache
 {
-    private readonly ConcurrentDictionary<string, ulong[]> localCache;
+    private readonly ConcurrentDictionary<string, ulong[]> _localCache;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CrcLookupTableCache"/> class.
     /// </summary>
     public CrcLookupTableCache()
     {
-        this.localCache = new ConcurrentDictionary<string, ulong[]>();
+        this._localCache = new ConcurrentDictionary<string, ulong[]>();
     }
 
     /// <summary>
@@ -86,6 +86,6 @@ public class CrcLookupTableCache
         ThrowHelper.ThrowIfOutOfRange(size, CrcStandard.MinSize, CrcStandard.MaxSize);
 
         string cacheKey = $"{size}_{polynomial}_{reflectIn}";
-        return this.localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
+        return this._localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
     }
 }

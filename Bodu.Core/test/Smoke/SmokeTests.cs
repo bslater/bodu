@@ -29,7 +29,7 @@ public sealed class SmokeTests
         CircularBuffer<int> buffer = new(capacity: 4);
         buffer.Enqueue(42);
 
-        int actual = buffer.Dequeue();
+        var actual = buffer.Dequeue();
 
         Assert.AreEqual(42, actual);
     }
@@ -45,7 +45,7 @@ public sealed class SmokeTests
         Deque<string> deque = new(capacity: 4);
         deque.AddLast("hello");
 
-        string actual = deque.RemoveFirst();
+        var actual = deque.RemoveFirst();
 
         Assert.AreEqual("hello", actual);
     }
@@ -61,7 +61,7 @@ public sealed class SmokeTests
         EvictingDictionary<string, int> dictionary = new(capacity: 4);
         dictionary.Add("alpha", 1);
 
-        int actual = dictionary["alpha"];
+        var actual = dictionary["alpha"];
 
         Assert.AreEqual(1, actual);
     }

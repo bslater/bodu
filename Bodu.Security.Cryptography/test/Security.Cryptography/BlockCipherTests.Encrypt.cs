@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTests.Encrypt.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,10 +22,10 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public static IEnumerable<object[]> EncryptTestData()
     {
         var instance = new TTest();
-        foreach (var variant in instance.GetBlockCipherVariants())
+        foreach (TVariant variant in instance.GetBlockCipherVariants())
         {
-            var testVectors = instance.GetKnownAnswerTests(variant);
-            foreach (var vector in testVectors)
+            IEnumerable<KnownAnswerTest> testVectors = instance.GetKnownAnswerTests(variant);
+            foreach (KnownAnswerTest vector in testVectors)
             {
                 yield return new object[] { variant, vector.Name, vector.Input, vector.ExpectedOutput, vector.CipherFactory };
             }
@@ -35,16 +35,16 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public static string GetEncryptTestDisplayName(MethodInfo methodInfo, object[] data)
     {
         TVariant variant = (TVariant)data[0];
-        string testName = (string)data[1];
+        var testName = (string)data[1];
         return $"{testName} (Variant: {variant})";
     }
 
     public static IEnumerable<object[]> GetInvalidBlockSizes()
     {
         var instance = new TTest();
-        foreach (var variant in instance.GetBlockCipherVariants())
+        foreach (TVariant variant in instance.GetBlockCipherVariants())
         {
-            int blockSize = instance.GetSpecification(variant).BlockSize;
+            var blockSize = instance.GetSpecification(variant).BlockSize;
 
             yield return new object[] { variant, new byte[0] };
             yield return new object[] { variant, new byte[blockSize - 1] };
@@ -55,16 +55,16 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public static string GetValidSingleBlockTestDisplayName(MethodInfo methodInfo, object[] data)
     {
         TVariant variant = (TVariant)data[0];
-        string testName = (string)data[1];
+        var testName = (string)data[1];
         return $"{testName} (Variant: {variant})";
     }
 
     public static IEnumerable<object[]> GetValidSingleBlockData()
     {
         var instance = new TTest();
-        foreach (var variant in instance.GetBlockCipherVariants())
+        foreach (TVariant variant in instance.GetBlockCipherVariants())
         {
-            int blockSize = instance.GetSpecification(variant).BlockSize;
+            var blockSize = instance.GetSpecification(variant).BlockSize;
 
             yield return new object[] { variant, "All Zeros", new byte[blockSize] };
             yield return new object[] { variant, "Ascending Bytes", Enumerable.Range(0, blockSize).Select(i => (byte)i).ToArray() };
@@ -80,7 +80,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public static string GetInvalidBlockSizeTestDisplayName(MethodInfo methodInfo, object[] data)
     {
         TVariant variant = (TVariant)data[0];
-        byte[] blockSize= (byte[])data[1];
+        var blockSize= (byte[])data[1];
         return $"Block Size:{blockSize.Length} (Variant: {variant})";
     }
 
@@ -90,10 +90,10 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [TestMethod]
     public void Encrypt_WhenCalled_ShouldNotModifyInputBuffer()
     {
-        using var cipher = CreateBlockCipher();
-        byte[] original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
-        byte[] input = original.ToArray();
-        byte[] output = new byte[cipher.BlockSize];
+        using TCipher cipher = CreateBlockCipher();
+        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
+        var input = original.ToArray();
+        var output = new byte[cipher.BlockSize];
 
         cipher.Encrypt(input, output);
 
@@ -108,14 +108,14 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(BlockCipherVariants))]
     public void Encrypt_WhenCalled_WithDiferentInstances_ShouldBeDeterministic(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var cipher1 = CreateBlockCipher(variant);
-        using var cipher2 = CreateBlockCipher(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
+        using TCipher cipher1 = CreateBlockCipher(variant);
+        using TCipher cipher2 = CreateBlockCipher(variant);
 
-        byte[] input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize);
+        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize);
 
-        byte[] output1 = new byte[specification.BlockSize];
-        byte[] output2 = new byte[specification.BlockSize];
+        var output1 = new byte[specification.BlockSize];
+        var output2 = new byte[specification.BlockSize];
 
         cipher1.Encrypt(input, output1);
         cipher2.Encrypt(input, output2);
@@ -131,13 +131,13 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(BlockCipherVariants))]
     public void Encrypt_WhenCalled_WithSameInstsnce_ShouldBeDeterministic(TVariant variant)
     {
-        var specification = GetSpecification(variant);
-        using var cipher = CreateBlockCipher(variant);
+        BlockCipherSpecification specification = GetSpecification(variant);
+        using TCipher cipher = CreateBlockCipher(variant);
 
-        byte[] input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
+        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
 
-        byte[] output1 = new byte[specification.BlockSize];
-        byte[] output2 = new byte[specification.BlockSize];
+        var output1 = new byte[specification.BlockSize];
+        var output2 = new byte[specification.BlockSize];
 
         cipher.Encrypt(input, output1);
         cipher.Encrypt(input, output2);
@@ -152,8 +152,8 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(EncryptTestData), DynamicDataDisplayName = nameof (GetEncryptTestDisplayName))]
     public void Encrypt_WhenKnownInput_ShouldMatchExpected(TVariant variant, string testName, byte[] input, byte[] expected, Func<IBlockCipher>? factory)
     {
-        var engine = factory?.Invoke() ?? CreateBlockCipher(variant);
-        byte[] actual = new byte[expected.Length];
+        IBlockCipher engine = factory?.Invoke() ?? CreateBlockCipher(variant);
+        var actual = new byte[expected.Length];
         engine.Encrypt(input, actual);
 
         TestHelpers.TraceWriteIfNotEqual(expected, actual);
@@ -168,7 +168,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataDisplayName = nameof(GetInvalidBlockSizeTestDisplayName))]
     public void Encrypt_WithInvalidInputSize_ShouldThrowExactly(TVariant variant, byte[] input)
     {
-        using var cipher = CreateBlockCipher(variant);
+        using TCipher cipher = CreateBlockCipher(variant);
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             cipher.Encrypt(input, new byte[cipher.BlockSize]);
@@ -182,7 +182,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(GetInvalidBlockSizes), DynamicDataDisplayName = nameof(GetInvalidBlockSizeTestDisplayName))]
     public void Encrypt_WithInvalidOutSize_ShouldThrowExactly(TVariant variant, byte[] output)
     {
-        using var cipher = CreateBlockCipher(variant);
+        using TCipher cipher = CreateBlockCipher(variant);
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             cipher.Encrypt(new byte[cipher.BlockSize], output);
@@ -196,10 +196,10 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(BlockCipherVariants))]
     public void EncryptDecrypt_WithInPlaceBuffer_ShouldSucceed(TVariant variant)
     {
-        using var cipher = CreateBlockCipher();
+        using TCipher cipher = CreateBlockCipher();
 
-        byte[] original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
-        byte[] buffer = (byte[])original.Clone();
+        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
+        var buffer = (byte[])original.Clone();
 
         cipher.Encrypt(buffer, buffer);
         cipher.Decrypt(buffer, buffer);
@@ -214,11 +214,11 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     [DynamicData(nameof(GetValidSingleBlockData), DynamicDataDisplayName =nameof(GetValidSingleBlockTestDisplayName))]
     public void EncryptDecrypt_WithValidInput_ShouldRoundtrip(TVariant variant, string testName, byte[] input)
     {
-        using var cipher = CreateBlockCipher(variant);
+        using TCipher cipher = CreateBlockCipher(variant);
 
-        byte[] encrypted = new byte[cipher.BlockSize];
+        var encrypted = new byte[cipher.BlockSize];
         cipher.Encrypt(input, encrypted);
-        byte[] actual = new byte[cipher.BlockSize];
+        var actual = new byte[cipher.BlockSize];
         cipher.Decrypt(encrypted, actual);
 
         CollectionAssert.AreEqual(input, actual, $"Cipher mismatch for {testName} using variant '{variant}'.");

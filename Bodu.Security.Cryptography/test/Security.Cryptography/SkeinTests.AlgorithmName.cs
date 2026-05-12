@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SkeinTests.AlgorithmName.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public abstract partial class SkeinTests<TTest, TAlgorithm, TVariant>
     public void AlgorithmName_WhenReadOnDefaultInstance_ShouldFollowSkeinNamingConvention()
     {
         using var skein = new TAlgorithm();
-        string name = skein.AlgorithmName;
+        var name = skein.AlgorithmName;
 
         Assert.IsTrue(name.StartsWith("Skein-", StringComparison.Ordinal),
             $"Expected Skein algorithm name to start with 'Skein-', got '{name}'.");

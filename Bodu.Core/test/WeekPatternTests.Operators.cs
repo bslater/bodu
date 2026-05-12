@@ -39,7 +39,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void OrOperator_WhenDisjointSets_ShouldUniteCorrectly()
     {
-        var result = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday)
+        WeekPattern result = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday)
                    | new WeekPattern(DayOfWeek.Friday);
 
         Assert.IsTrue(result.Contains(DayOfWeek.Monday));
@@ -55,7 +55,7 @@ public partial class WeekPatternTests
     [TestMethod]
     public void OrOperator_WhenWeekdaysCombinedWithWeekend_ShouldProduceFullWeek()
     {
-        var full = WeekPattern.Weekdays | WeekPattern.Weekend;
+        WeekPattern full = WeekPattern.Weekdays | WeekPattern.Weekend;
 
         Assert.AreEqual(7, full.Count);
         Assert.AreEqual(WeekPattern.FromByte(0b1111111), full);
@@ -87,10 +87,7 @@ public partial class WeekPatternTests
     /// <see cref="WeekPattern.Weekend" /> returns an empty pattern, confirming the two are disjoint.
     /// </summary>
     [TestMethod]
-    public void AndOperator_WhenWeekdaysIntersectedWithWeekend_ShouldReturnEmpty()
-    {
-        Assert.AreEqual(WeekPattern.Empty, WeekPattern.Weekdays & WeekPattern.Weekend);
-    }
+    public void AndOperator_WhenWeekdaysIntersectedWithWeekend_ShouldReturnEmpty() => Assert.AreEqual(WeekPattern.Empty, WeekPattern.Weekdays & WeekPattern.Weekend);
 
     /// <summary>
     /// Verifies that applying the <c>^</c> operator with <see cref="WeekPattern.Empty" /> returns a
@@ -122,7 +119,7 @@ public partial class WeekPatternTests
     {
         var a = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
         var b = new WeekPattern(DayOfWeek.Wednesday, DayOfWeek.Friday);
-        var result = a ^ b;
+        WeekPattern result = a ^ b;
 
         Assert.IsTrue(result.Contains(DayOfWeek.Monday), "Monday appears only in a — should be retained.");
         Assert.IsFalse(result.Contains(DayOfWeek.Wednesday), "Wednesday appears in both — should be cancelled.");
@@ -134,39 +131,27 @@ public partial class WeekPatternTests
     /// fully-populated seven-day pattern.
     /// </summary>
     [TestMethod]
-    public void ComplementOperator_WhenAppliedToEmpty_ShouldReturnFullSet()
-    {
-        Assert.AreEqual(WeekPattern.FromByte(0b1111111), ~WeekPattern.Empty);
-    }
+    public void ComplementOperator_WhenAppliedToEmpty_ShouldReturnFullSet() => Assert.AreEqual(WeekPattern.FromByte(0b1111111), ~WeekPattern.Empty);
 
     /// <summary>
     /// Verifies that applying the <c>~</c> operator to a fully-populated pattern returns an empty pattern.
     /// </summary>
     [TestMethod]
-    public void ComplementOperator_WhenAppliedToFullSet_ShouldReturnEmpty()
-    {
-        Assert.AreEqual(WeekPattern.Empty, ~WeekPattern.FromByte(0b1111111));
-    }
+    public void ComplementOperator_WhenAppliedToFullSet_ShouldReturnEmpty() => Assert.AreEqual(WeekPattern.Empty, ~WeekPattern.FromByte(0b1111111));
 
     /// <summary>
     /// Verifies that the complement of <see cref="WeekPattern.Weekdays" /> equals
     /// <see cref="WeekPattern.Weekend" />.
     /// </summary>
     [TestMethod]
-    public void ComplementOperator_WhenAppliedToWeekdays_ShouldReturnWeekend()
-    {
-        Assert.AreEqual(WeekPattern.Weekend, ~WeekPattern.Weekdays);
-    }
+    public void ComplementOperator_WhenAppliedToWeekdays_ShouldReturnWeekend() => Assert.AreEqual(WeekPattern.Weekend, ~WeekPattern.Weekdays);
 
     /// <summary>
     /// Verifies that the complement of <see cref="WeekPattern.Weekend" /> equals
     /// <see cref="WeekPattern.Weekdays" />.
     /// </summary>
     [TestMethod]
-    public void ComplementOperator_WhenAppliedToWeekend_ShouldReturnWeekdays()
-    {
-        Assert.AreEqual(WeekPattern.Weekdays, ~WeekPattern.Weekend);
-    }
+    public void ComplementOperator_WhenAppliedToWeekend_ShouldReturnWeekdays() => Assert.AreEqual(WeekPattern.Weekdays, ~WeekPattern.Weekend);
 
     /// <summary>
     /// Verifies that applying the <c>~</c> operator twice returns the original pattern, confirming the
@@ -200,20 +185,14 @@ public partial class WeekPatternTests
     /// different selected days.
     /// </summary>
     [TestMethod]
-    public void EqualityOperator_WhenDifferentDays_ShouldReturnFalse()
-    {
-        Assert.IsFalse(new WeekPattern(DayOfWeek.Monday) == new WeekPattern(DayOfWeek.Tuesday));
-    }
+    public void EqualityOperator_WhenDifferentDays_ShouldReturnFalse() => Assert.IsFalse(new WeekPattern(DayOfWeek.Monday) == new WeekPattern(DayOfWeek.Tuesday));
 
     /// <summary>
     /// Verifies that the <c>!=</c> operator returns <see langword="true" /> for two instances with
     /// different selected days.
     /// </summary>
     [TestMethod]
-    public void InequalityOperator_WhenDifferentDays_ShouldReturnTrue()
-    {
-        Assert.IsTrue(new WeekPattern(DayOfWeek.Monday) != new WeekPattern(DayOfWeek.Tuesday));
-    }
+    public void InequalityOperator_WhenDifferentDays_ShouldReturnTrue() => Assert.IsTrue(new WeekPattern(DayOfWeek.Monday) != new WeekPattern(DayOfWeek.Tuesday));
 
     /// <summary>
     /// Verifies that the <c>!=</c> operator returns <see langword="false" /> for two instances with
@@ -242,7 +221,7 @@ public partial class WeekPatternTests
     [DataRow((byte)127)]
     public void ImplicitConversionToByte_WhenRoundTripped_ShouldMatchOriginal(byte original)
     {
-        WeekPattern pattern = WeekPattern.FromByte(original);
+        var pattern = WeekPattern.FromByte(original);
         byte converted = pattern;
         Assert.AreEqual(original, converted);
     }
@@ -258,10 +237,7 @@ public partial class WeekPatternTests
     [DataRow((byte)0)]
     [DataRow((byte)1)]
     [DataRow((byte)127)]
-    public void ToByte_WhenCalled_ShouldReturnUnderlyingBitmask(byte value)
-    {
-        Assert.AreEqual(value, WeekPattern.FromByte(value).ToByte());
-    }
+    public void ToByte_WhenCalled_ShouldReturnUnderlyingBitmask(byte value) => Assert.AreEqual(value, WeekPattern.FromByte(value).ToByte());
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ToInt32" /> returns the underlying bitmask value as an
@@ -271,10 +247,7 @@ public partial class WeekPatternTests
     [DataRow((byte)0)]
     [DataRow((byte)1)]
     [DataRow((byte)127)]
-    public void ToInt32_WhenCalled_ShouldReturnUnderlyingBitmaskAsInt(byte value)
-    {
-        Assert.AreEqual((int)value, WeekPattern.FromByte(value).ToInt32());
-    }
+    public void ToInt32_WhenCalled_ShouldReturnUnderlyingBitmaskAsInt(byte value) => Assert.AreEqual((int)value, WeekPattern.FromByte(value).ToInt32());
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ToByte" />, <see cref="WeekPattern.ToInt32" />, and the
@@ -285,8 +258,8 @@ public partial class WeekPatternTests
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        byte viaToByte = pattern.ToByte();
-        int viaToInt32 = pattern.ToInt32();
+        var viaToByte = pattern.ToByte();
+        var viaToInt32 = pattern.ToInt32();
         byte viaImplicitByte = pattern;
 
         Assert.AreEqual(viaToByte, (byte)viaToInt32, "ToByte and ToInt32 should agree.");

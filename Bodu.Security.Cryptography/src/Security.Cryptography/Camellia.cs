@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides a managed implementation of the Camellia symmetric block cipher, exposing the
-/// <see cref="CamelliaBlockCipher" /> engine through the standard <see cref="SymmetricAlgorithm" /> framework.
+/// <see cref="CamelliaBlockCipher"/> engine through the standard <see cref="SymmetricAlgorithm"/> framework.
 /// This class cannot be inherited.
 /// </summary>
 /// <remarks>
@@ -22,9 +22,9 @@ namespace Bodu.Security.Cryptography;
 /// has been evaluated and approved by ISO/IEC, CRYPTREC, and NESSIE.
 /// </para>
 /// <para>
-/// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block
-/// cipher modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherBlockMode.CBC" />
-/// with <see cref="PaddingMode.PKCS7" /> padding and a default key size of 256 bits.
+/// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block
+/// cipher modes via the <see cref="BlockMode"/> property. The default mode is <see cref="CipherBlockMode.CBC"/>
+/// with <see cref="PaddingMode.PKCS7"/> padding and a default key size of 256 bits.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -79,31 +79,33 @@ public sealed class Camellia
     /// </summary>
     internal const int MaxKeySizeBytes = 32;
 
-    private static readonly KeySizes[] CamelliaBlockSizes = { new KeySizes(BlockSizeBits, BlockSizeBits, 0) };
-    private static readonly KeySizes[] CamelliaKeySizes = { new KeySizes(128, 256, 64) };
+    private static readonly KeySizes[] s_camelliaBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
+    private static readonly KeySizes[] s_camelliaKeySizes = [new KeySizes(128, 256, 64)];
 
     private bool _disposed;
 
+    private BlockPaddingMode _blockPadding = BlockPaddingMode.PKCS7;
+
     /// <summary>
-    /// Initialises a new instance of the <see cref="Camellia" /> class with a 256-bit default key size, CBC cipher
+    /// Initializes a new instance of the <see cref="Camellia"/> class with a 256-bit default key size, CBC cipher
     /// mode, and PKCS7 padding.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Call <see cref="SymmetricAlgorithm.GenerateKey" /> and <see cref="SymmetricAlgorithm.GenerateIV" /> to produce
-    /// random key material, or assign <see cref="SymmetricAlgorithm.Key" /> and <see cref="SymmetricAlgorithm.IV" />
-    /// directly before calling <see cref="CreateEncryptor(byte[], byte[])" /> or
-    /// <see cref="CreateDecryptor(byte[], byte[])" />.
+    /// Call <see cref="SymmetricAlgorithm.GenerateKey"/> and <see cref="SymmetricAlgorithm.GenerateIV"/> to produce
+    /// random key material, or assign <see cref="SymmetricAlgorithm.Key"/> and <see cref="SymmetricAlgorithm.IV"/>
+    /// directly before calling <see cref="CreateEncryptor(byte[], byte[])"/> or
+    /// <see cref="CreateDecryptor(byte[], byte[])"/>.
     /// </para>
     /// <para>
-    /// The key size can be changed via <see cref="SymmetricAlgorithm.KeySize" /> to 128, 192, or 256 bits prior to
+    /// The key size can be changed via <see cref="SymmetricAlgorithm.KeySize"/> to 128, 192, or 256 bits prior to
     /// generating or assigning a key.
     /// </para>
     /// </remarks>
     public Camellia()
     {
-        this.LegalBlockSizesValue = CamelliaBlockSizes;
-        this.LegalKeySizesValue = CamelliaKeySizes;
+        this.LegalBlockSizesValue = s_camelliaBlockSizes;
+        this.LegalKeySizesValue = s_camelliaKeySizes;
 
         this.BlockSizeValue = BlockSizeBits;
         this.KeySizeValue = 256;
@@ -117,40 +119,79 @@ public sealed class Camellia
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherBlockMode" /> values. The default is <see cref="CipherBlockMode.CBC" />.
+    /// One of the <see cref="CipherBlockMode"/> values. The default is <see cref="CipherBlockMode.CBC"/>.
     /// </value>
     /// <remarks>
     /// <para>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
-    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
-    /// <see cref="CipherBlockMode.CTR" /> and <see cref="CipherBlockMode.OFB" />, which are not available via the
-    /// standard <see cref="CipherMode" /> enumeration.
+    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property for use with
+    /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including
+    /// <see cref="CipherBlockMode.CTR"/> and <see cref="CipherBlockMode.OFB"/>, which are not available via the
+    /// standard <see cref="CipherMode"/> enumeration.
     /// </para>
     /// </remarks>
     public CipherBlockMode BlockMode { get; set; } = CipherBlockMode.CBC;
 
     /// <summary>
-    /// Creates a new <see cref="Camellia" /> instance with default parameters.
+    /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
-    /// <returns>A new <see cref="Camellia" /> instance.</returns>
+    /// <value>
+    /// One of the <see cref="BlockPaddingMode"/> values. The default is <see cref="BlockPaddingMode.PKCS7"/>.
+    /// </value>
+    /// <remarks>
+    /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
+    /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
+    /// <see cref="PaddingMode"/> equivalent (such as <see cref="BlockPaddingMode.ISO7816_4"/>) leave the base
+    /// property unchanged.
+    /// </remarks>
+    public BlockPaddingMode BlockPadding
+    {
+        get => this._blockPadding;
+        set
+        {
+            this._blockPadding = value;
+            if (Enum.TryParse<PaddingMode>(value.ToString(), out PaddingMode mode) && Enum.IsDefined(mode))
+                this.PaddingValue = mode;
+        }
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// <see cref="BlockPaddingMode"/>.
+    /// </remarks>
+    public override PaddingMode Padding
+    {
+        get => base.Padding;
+        set
+        {
+            base.Padding = value;
+            if (Enum.TryParse<BlockPaddingMode>(value.ToString(), out BlockPaddingMode bpm) && Enum.IsDefined(bpm))
+                this._blockPadding = bpm;
+        }
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="Camellia"/> instance with default parameters.
+    /// </summary>
+    /// <returns>A new <see cref="Camellia"/> instance.</returns>
     public new static Camellia Create() => new Camellia();
 
     /// <summary>
-    /// Creates a symmetric <see cref="Camellia" /> decryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Camellia"/> decryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be exactly 16, 24, or 32 bytes (128, 192, or 256 bits) in
-    /// length. Must not be <see langword="null" />.
+    /// length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
     /// The initialisation vector. Must be exactly 16 bytes (128 bits) in length. Must not be
-    /// <see langword="null" />.
+    /// <see langword="null"/>.
     /// </param>
-    /// <returns>A symmetric <see cref="Camellia" /> decryptor object implementing <see cref="ICryptoTransform" />.</returns>
+    /// <returns>A symmetric <see cref="Camellia"/> decryptor object implementing <see cref="ICryptoTransform"/>.</returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="rgbKey"/> or <paramref name="rgbIV"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="rgbKey" /> is not 16, 24, or 32 bytes in length, or <paramref name="rgbIV" /> is not exactly
+    /// <paramref name="rgbKey"/> is not 16, 24, or 32 bytes in length, or <paramref name="rgbIV"/> is not exactly
     /// 16 bytes in length.
     /// </exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
@@ -159,25 +200,25 @@ public sealed class Camellia
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new CamelliaTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
+        return new CamelliaTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, false);
     }
 
     /// <summary>
-    /// Creates a symmetric <see cref="Camellia" /> encryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Camellia"/> encryptor using the specified key and initialisation vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be exactly 16, 24, or 32 bytes (128, 192, or 256 bits) in
-    /// length. Must not be <see langword="null" />.
+    /// length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
     /// The initialisation vector. Must be exactly 16 bytes (128 bits) in length. Must not be
-    /// <see langword="null" />.
+    /// <see langword="null"/>.
     /// </param>
-    /// <returns>A symmetric <see cref="Camellia" /> encryptor object implementing <see cref="ICryptoTransform" />.</returns>
+    /// <returns>A symmetric <see cref="Camellia"/> encryptor object implementing <see cref="ICryptoTransform"/>.</returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="rgbKey"/> or <paramref name="rgbIV"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="rgbKey" /> is not 16, 24, or 32 bytes in length, or <paramref name="rgbIV" /> is not exactly
+    /// <paramref name="rgbKey"/> is not 16, 24, or 32 bytes in length, or <paramref name="rgbIV"/> is not exactly
     /// 16 bytes in length.
     /// </exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
@@ -186,20 +227,20 @@ public sealed class Camellia
         this.Validate(rgbKey, rgbIV);
 
         IBlockCipher engine = CreateCipher(rgbKey);
-        return new CamelliaTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
+        return new CamelliaTransform(engine, this.BlockMode, this.BlockPadding, rgbIV, true);
     }
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV" />) suitable
+    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV"/>) suitable
     /// for use with the Camellia algorithm.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The generated IV is 16 bytes (128 bits) — matching the Camellia block size — and is assigned directly to
-    /// <see cref="SymmetricAlgorithm.IV" />.
+    /// <see cref="SymmetricAlgorithm.IV"/>.
     /// </para>
     /// <para>
-    /// A new IV should be generated for each independent encryption operation when reusing a <see cref="Camellia" />
+    /// A new IV should be generated for each independent encryption operation when reusing a <see cref="Camellia"/>
     /// instance with the same key.
     /// </para>
     /// </remarks>
@@ -212,12 +253,12 @@ public sealed class Camellia
 
     /// <summary>
     /// Generates a cryptographically random key for use with the Camellia algorithm using the currently configured
-    /// <see cref="SymmetricAlgorithm.KeySize" />.
+    /// <see cref="SymmetricAlgorithm.KeySize"/>.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The generated key length is determined by <see cref="SymmetricAlgorithm.KeySize" />, which defaults to 256
-    /// bits. The generated key is assigned directly to <see cref="SymmetricAlgorithm.Key" />.
+    /// The generated key length is determined by <see cref="SymmetricAlgorithm.KeySize"/>, which defaults to 256
+    /// bits. The generated key is assigned directly to <see cref="SymmetricAlgorithm.Key"/>.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
@@ -228,11 +269,11 @@ public sealed class Camellia
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="Camellia" /> instance and, optionally, the managed
+    /// Releases the unmanaged resources used by the <see cref="Camellia"/> instance and, optionally, the managed
     /// resources.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release
     /// only unmanaged resources.
     /// </param>
     /// <remarks>
@@ -246,8 +287,8 @@ public sealed class Camellia
             if (disposing)
             {
                 // Zero sensitive key material and IV buffers so their contents do not linger in managed memory.
-                CryptoHelpers.Clear(this.KeyValue!);
-                CryptoHelpers.Clear(this.IVValue!);
+                CryptoHelpers.Clear(this.KeyValue);
+                CryptoHelpers.Clear(this.IVValue);
             }
 
             _disposed = true;
@@ -269,42 +310,46 @@ public sealed class Camellia
     private int KeySizeBytes => this.KeySizeValue / 8;
 
     /// <summary>
-    /// Creates a new <see cref="CamelliaBlockCipher" /> engine initialised with the supplied key.
+    /// Creates a new <see cref="CamelliaBlockCipher"/> engine initialised with the supplied key.
     /// </summary>
     /// <param name="key">The key material used to derive the round subkeys.</param>
-    /// <returns>An <see cref="IBlockCipher" /> configured for single-block encryption and decryption.</returns>
+    /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
     private static IBlockCipher CreateCipher(byte[] key) => new CamelliaBlockCipher(key);
 
     /// <summary>
-    /// Validates that <paramref name="key" /> and <paramref name="iv" /> match the algorithm's configured key size
+    /// Validates that <paramref name="key"/> and <paramref name="iv"/> match the algorithm's configured key size
     /// and block size respectively.
     /// </summary>
     /// <param name="key">The key to validate.</param>
     /// <param name="iv">The initialisation vector to validate.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="key" /> or <paramref name="iv" /> is <see langword="null" />.</exception>
-    /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="key"/> is <see langword="null"/>.</exception>
+    /// <exception cref="CryptographicException">The key or IV length is not valid for this algorithm, or the configured
+    /// mode requires an IV and <paramref name="iv"/> is <see langword="null"/>.</exception>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+      "Style",
+      "IDE0011:Add braces",
+      Justification = "Single-statement guard clauses intentionally omit braces to match the project style; multi-line throw expressions remain clear because each condition has only one control-flow outcome.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+      "Roslynator",
+      "RCS1001:Add braces (when expression spans over multiple lines)",
+      Justification = "The multi-line throw expressions are single guard-clause bodies; omitting braces keeps validation paths compact without reducing control-flow clarity.")]
     private void Validate(byte[] key, byte[]? iv)
     {
         ThrowHelper.ThrowIfNull(key);
-        ThrowHelper.ThrowIfNull(iv);
 
         if (key.Length != this.KeySizeBytes)
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                              key.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
+                string.Format(
+                    CryptoResourceStrings.CryptographicException_InvalidKeySize,
+                    key.Length * 8,
+                    CryptoHelpers.FormatLegalSizes(this.LegalKeySizesValue)),
                 nameof(key));
 
-        if (iv!.Length != this.BlockSizeBytes)
-            throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidIVSize,
-                              iv.Length * 8,
-                              CryptoHelpers.FormatLegalSizes(this.LegalBlockSizesValue)),
-                nameof(iv));
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, this.BlockMode, this.BlockSizeBytes, this.LegalBlockSizesValue);
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.
@@ -313,10 +358,10 @@ public sealed class Camellia
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 #else
-        if (_disposed)
-            throw new ObjectDisposedException(nameof(Camellia));
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
 #endif
     }
 }

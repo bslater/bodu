@@ -19,12 +19,12 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.IsWeekday" />, when UsingStandardWeekend, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.WeekendTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.WeekendTestData), typeof(DateTimeExtensionsTests))]
     public void IsWeekday_WhenUsingStandardWeekend_ShouldReturnExpected(DateTime input, CalendarWeekendDefinition weekend, Type? providerType, bool expected)
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 
-        bool actual = input.IsWeekday(weekend, provider);
+        var actual = input.IsWeekday(weekend, provider);
         Assert.AreEqual(!expected, actual, $"Failed for {input} with weekend {weekend}");
     }
 
@@ -34,7 +34,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void IsWeekday_WhenCustomRuleMissingProvider_ShouldThrowExactly()
     {
-        DateTime date = new DateTime(2024, 4, 19);
+        var date = new DateTime(2024, 4, 19);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = date.IsWeekday(CalendarWeekendDefinition.Custom, null!);

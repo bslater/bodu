@@ -9,6 +9,7 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Channels;
@@ -21,7 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/parallel-merkle-tree.svg" alt="Swim-lane diagram showing the Dispatcher thread reading input chunks, slicing them into blocks, hashing each block into a leaf, and submitting leaves into ch L₀; one worker task per tree level consumes from its own channel, groups F incoming nodes, hashes them, and submits the parent to the next level's channel. Adjacent lanes are shown active at the same timestep to emphasise parallelism." />
+/// <img src="../images/diagrams/parallel-merkle-tree.svg" alt="Swim-lane diagram showing the Dispatcher thread reading input chunks, slicing them into blocks, hashing each block into a leaf, and submitting leaves into ch L₀; one worker task per tree level consumes from its own channel, groups F incoming nodes, hashes them, and submits the parent to the next level's channel. Adjacent lanes are shown active at the same timestep to emphasise parallelism."/>
 /// </para>
 /// <para>
 /// The swim-lane diagram above traces a single <c>ComputeHashAsync</c> call across wall-clock time.
@@ -35,8 +36,8 @@ namespace Bodu.Security.Cryptography;
 ///   <b>ch L₀</b> — the purple arrows leaving the amber boxes at the top of the diagram.
 /// </description></item>
 /// <item><description>
-///   <b>Level-worker lanes (consumers).</b> One <see cref="Channel{T}" /> and one background
-///   <see cref="Task" /> are created lazily per tree level as the input grows. Each worker awaits on
+///   <b>Level-worker lanes (consumers).</b> One <see cref="Channel{T}"/> and one background
+///   <see cref="Task"/> are created lazily per tree level as the input grows. Each worker awaits on
 ///   its channel, accumulates nodes until it has <c>fanOut</c> of them, concatenates and hashes that
 ///   group, and enqueues the parent into the next level's channel — the blue and teal boxes, with
 ///   purple channel arrows crossing the lane boundaries.
@@ -156,7 +157,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     private CancellationToken _activeToken;
 
     /// <summary>
-    /// Initialises a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
+    /// Initializes a new instance of the <see cref="ParallelMerkleTreeHash"/> class with the specified hash
     /// algorithm factory, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -188,7 +189,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     { }
 
     /// <summary>
-    /// Initialises a new <see cref="ParallelMerkleTreeHash"/> instance with the specified hash
+    /// Initializes a new instance of the <see cref="ParallelMerkleTreeHash"/> class with the specified hash
     /// algorithm factory delegate, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
@@ -255,7 +256,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(input);
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this.ThrowIfDisposed();
 
         var linked = CancellationTokenSource.CreateLinkedTokenSource(this._cts.Token, cancellationToken);
         try
@@ -264,7 +265,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
 
             // Read in chunks larger than one block so that a single ReadAsync can feed several leaves,
             // keeping the I/O system ahead of the hashing pipeline.
-            byte[] readBuffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 8);
+            var readBuffer = ArrayPool<byte>.Shared.Rent(this._blockSize * 8);
             try
             {
                 int bytesRead;
@@ -306,7 +307,12 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     {
         this.Reset(diagnostics, this._cts.Token);
         this.ProcessBytes(data);
-        return this.FinalizeAsync().GetAwaiter().GetResult();
+
+        // Task.Run escapes any captured synchronisation context so that the async workers
+        // (which themselves run on thread-pool threads) can complete without deadlocking.
+#pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
+        return Task.Run(this.FinalizeAsync).GetAwaiter().GetResult();
+#pragma warning restore VSTHRD002
     }
 
     /// <summary>
@@ -369,11 +375,11 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// constructor.
     /// </para>
     /// </remarks>
-    /// <param name="diagnostics">The diagnostics sink to capture per-level timings, or <see langword="null" />.</param>
+    /// <param name="diagnostics">The diagnostics sink to capture per-level timings, or <see langword="null"/>.</param>
     /// <param name="activeToken">The cancellation token associated with the current hashing session.</param>
     private void Reset(MerkleTreeDiagnostics? diagnostics, CancellationToken activeToken)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this.ThrowIfDisposed();
 
         // Discard all channels and workers from the previous computation. By the time Reset is
         // called, FinalizeAsync has already awaited every worker to completion, so clearing these
@@ -404,10 +410,10 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     {
         while (!data.IsEmpty)
         {
-            int toWrite = Math.Min(this._blockSize - this._bufferLength, data.Length);
-            data.Slice(0, toWrite).CopyTo(this._blockBuffer.AsSpan(this._bufferLength));
+            var toWrite = Math.Min(this._blockSize - this._bufferLength, data.Length);
+            data[..toWrite].CopyTo(this._blockBuffer.AsSpan(this._bufferLength));
             this._bufferLength += toWrite;
-            data = data.Slice(toWrite);
+            data = data[toWrite..];
 
             if (this._bufferLength == this._blockSize)
             {
@@ -422,7 +428,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// if diagnostics are enabled, and submits the hash to level 0.
     /// </summary>
     /// <param name="data">The leaf buffer (owned by the caller until consumed).</param>
-    /// <param name="length">The number of valid bytes in <paramref name="data" />.</param>
+    /// <param name="length">The number of valid bytes in <paramref name="data"/>.</param>
     private void SubmitLeaf(byte[] data, int length)
     {
         var hash = this.HashSpan(data.AsSpan(0, length));
@@ -436,8 +442,8 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Appends <paramref name="hash" /> to the intermediate buffer at the specified tree
-    /// <paramref name="level" />, creating the level's buffer lazily if it does not yet exist.
+    /// Appends <paramref name="hash"/> to the intermediate buffer at the specified tree
+    /// <paramref name="level"/>, creating the level's buffer lazily if it does not yet exist.
     /// </summary>
     /// <param name="level">The tree level (0 for leaves, incrementing upward).</param>
     /// <param name="hash">The hash bytes to append.</param>
@@ -451,7 +457,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     }
 
     /// <summary>
-    /// Grows the internal level buffer list to include <paramref name="level" />, allocating
+    /// Grows the internal level buffer list to include <paramref name="level"/>, allocating
     /// fresh buffers for any intermediate levels.
     /// </summary>
     /// <param name="level">The zero-based tree level that must be addressable.</param>
@@ -489,34 +495,58 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Reads hash nodes from <paramref name="channel"/>, groups them by <see cref="_fanOut"/>, and
-    /// promotes each full group as a combined parent hash to the next level. Any remainder after
-    /// the channel closes is resolved according to the following rules:
+    /// Reads hash nodes from <paramref name="channel" />, groups them by <see cref="_fanOut" />, and promotes each
+    /// complete group as a combined parent hash to the next tree level.
     /// </summary>
+    /// <param name="level">
+    /// The tree level served by this worker.
+    /// </param>
+    /// <param name="channel">
+    /// The bounded channel that supplies input hashes for <paramref name="level" />.
+    /// </param>
+    /// <param name="token">
+    /// The cancellation token used to stop the worker.
+    /// </param>
+    /// <returns>
+    /// A task that completes when the worker has drained <paramref name="channel" /> and promoted or resolved any
+    /// remaining hashes.
+    /// </returns>
     /// <remarks>
     /// <para>
-    /// Zero remainder: every node was promoted in a full group. The final result will emerge
-    /// naturally from a higher level worker.
+    /// This method performs one level of the concurrent Merkle-tree reduction. Complete groups of
+    /// <see cref="_fanOut" /> hashes are combined immediately and written to the next level so that higher-level
+    /// workers can reduce the tree concurrently with continued input production.
     /// </para>
     /// <para>
-    /// One node with no higher level yet existing: no full group was ever promoted from this
-    /// level, making this the topmost level. The single surviving node is the Merkle root and is
-    /// assigned directly without re-hashing, consistent with the single-threaded implementation.
+    /// After <paramref name="channel" /> is closed, any remaining hashes are handled as follows:
     /// </para>
-    /// <para>
-    /// Anything else: a partial group (or a single node whose level already has a higher peer)
-    /// is combined and promoted upward. The next level's worker repeats this logic until a root
-    /// is identified.
-    /// </para>
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// If no hashes remain, every input node from this level was already promoted as part of a complete group.
+    /// No further action is required by this worker; the final root will be produced by a higher-level worker.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// If exactly one hash remains and no higher level has been created, this level is the topmost level. The
+    /// remaining hash is assigned directly as the Merkle root without re-hashing, matching the single-threaded
+    /// implementation.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// In all other cases, the remaining hashes represent either a partial group or a single hash that must still
+    /// be merged with hashes already promoted to a higher level. The remainder is combined and promoted so the next
+    /// level can continue the reduction.
+    /// </description>
+    /// </item>
+    /// </list>
     /// </remarks>
-    /// <param name="level">The tree level this worker serves.</param>
-    /// <param name="channel">The bounded channel producing input hashes for this level.</param>
-    /// <param name="token">The cancellation token that stops the worker.</param>
-    /// <returns>A task that completes when the worker has drained its channel.</returns>
     private async Task RunLevelWorkerAsync(int level, Channel<byte[]> channel, CancellationToken token)
     {
         var pending = new List<byte[]>(this._fanOut);
-        int parentIndex = 0;
+        var parentIndex = 0;
 
         // Drain the channel. The worker below runs concurrently, so tree reduction at this
         // level overlaps with continued leaf production and lower-level promotion.
@@ -589,10 +619,16 @@ public sealed class ParallelMerkleTreeHash : IDisposable
 
         // Complete → await → advance: each iteration closes one level and waits for its
         // worker to finish all promotions before the next level's channel is closed.
-        for (int level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
+        for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
             channel.Writer.Complete();
-            await this._levelWorkers[level];
+
+            // _levelWorkers[level] is intentionally a background Task started via Task.Run in
+            // SubmitLeaf. Awaiting it here is correct: sequential bottom-up draining requires
+            // that level N finishes before level N+1 is closed.
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+            await this._levelWorkers[level].ConfigureAwait(false);
+#pragma warning restore VSTHRD003
         }
 
         return this._rootHash ?? throw new InvalidOperationException("No input data was provided.");
@@ -614,10 +650,12 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// <returns>A task that completes when every level worker has drained and exited.</returns>
     private async Task DrainWorkersAsync()
     {
-        for (int level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
+        for (var level = 0; this._levelChannels.TryGetValue(level, out var channel); level++)
         {
             channel.Writer.TryComplete();
-            try { await this._levelWorkers[level]; }
+#pragma warning disable VSTHRD003 // Avoid awaiting foreign Tasks
+            try { await this._levelWorkers[level].ConfigureAwait(false); }
+#pragma warning restore VSTHRD003
             catch { }
         }
     }
@@ -634,7 +672,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// avoiding an intermediate heap copy of the input bytes.
     /// </remarks>
     /// <param name="data">The bytes to hash.</param>
-    /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm" />.</returns>
+    /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm"/>.</returns>
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
         using var hasher = this._algorithmFactory();
@@ -662,7 +700,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// </para>
     /// </remarks>
     /// <param name="hashes">The child hashes being combined.</param>
-    /// <param name="sourceLevel">The tree level that produced <paramref name="hashes" />.</param>
+    /// <param name="sourceLevel">The tree level that produced <paramref name="hashes"/>.</param>
     /// <param name="parentIndex">The zero-based index of the parent node being computed.</param>
     /// <returns>The combined parent hash.</returns>
     private byte[] CombineAndHash(List<byte[]> hashes, int sourceLevel, int parentIndex)
@@ -670,7 +708,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         using var hasher = this._algorithmFactory();
 
         // Feed all but the last child via TransformBlock — purely state accumulation, no output.
-        for (int i = 0; i < hashes.Count - 1; i++)
+        for (var i = 0; i < hashes.Count - 1; i++)
             hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
 
         // TransformFinalBlock finalises accumulation and populates hasher.Hash.
@@ -693,6 +731,23 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     // -----------------------------------------------------------------------------------------
     // Disposal
     // -----------------------------------------------------------------------------------------
+
+    /// <summary>
+    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// </summary>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown when any public method or property is accessed after the instance has been disposed.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void ThrowIfDisposed()
+    {
+#if NET8_0_OR_GREATER
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+#else
+        if (this._disposed)
+            throw new ObjectDisposedException(this.GetType().Name);
+#endif
+    }
 
     /// <inheritdoc />
     public void Dispose()

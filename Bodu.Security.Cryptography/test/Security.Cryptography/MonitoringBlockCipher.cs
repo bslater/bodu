@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MonitoringBlockCipher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -120,7 +120,7 @@ public sealed class MonitoringBlockCipher
 
         DecryptCalled?.Invoke(this, EventArgs.Empty);
 
-        for (int i = 0; i < input.Length; i++)
+        for (var i = 0; i < input.Length; i++)
             output[i] = (byte)(input[i] ^ xorMask); // reversible
     }
 
@@ -159,7 +159,7 @@ public sealed class MonitoringBlockCipher
 
         EncryptCalled?.Invoke(this, EventArgs.Empty);
 
-        for (int i = 0; i < input.Length; i++)
+        for (var i = 0; i < input.Length; i++)
             output[i] = (byte)(input[i] ^ xorMask);
     }
 }

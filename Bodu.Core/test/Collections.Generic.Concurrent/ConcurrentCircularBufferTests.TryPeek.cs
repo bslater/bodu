@@ -22,7 +22,7 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenAfterClear_ShouldReturnFalse()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        for (int i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 5; i++) buffer.Enqueue(new TestItem(i));
         buffer.Clear();
 
         Assert.IsFalse(buffer.TryPeek(out _), "TryPeek should return false after Clear when empty.");
@@ -40,7 +40,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(2));
 
         // Full, overwrite disabled — TryPeek returns the current oldest (1)
-        Assert.IsTrue(buffer.TryPeek(out var beforeToggle));
+        Assert.IsTrue(buffer.TryPeek(out TestItem? beforeToggle));
         Assert.AreEqual(1, beforeToggle!.Value);
 
         // Enable overwrite and enqueue a new item that evicts 1
@@ -48,7 +48,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(3));
 
         // Now oldest should be 2
-        Assert.IsTrue(buffer.TryPeek(out var afterToggle));
+        Assert.IsTrue(buffer.TryPeek(out TestItem? afterToggle));
         Assert.AreEqual(2, afterToggle!.Value);
     }
 
@@ -59,19 +59,19 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenBufferContainsNullsUnderConcurrency_ShouldYieldNullSafely()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem?>(5);
-        int nullSeen = 0;
+        var nullSeen = 0;
 
         var writer = Task.Run(() =>
         {
-            for (int i = 0; i < 200; i++)             // more churn to rotate head
+            for (var i = 0; i < 200; i++)             // more churn to rotate head
                 buffer.Enqueue(i % 3 == 0 ? null : new TestItem(i));
         });
 
         var peeker = Task.Run(() =>
         {
-            for (int i = 0; i < 1000; i++)            // more opportunities to observe
+            for (var i = 0; i < 1000; i++)            // more opportunities to observe
             {
-                if (buffer.TryPeek(out var item) && item is null)
+                if (buffer.TryPeek(out TestItem? item) && item is null)
                     Interlocked.Increment(ref nullSeen);
                 Thread.SpinWait(20);
             }
@@ -113,7 +113,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(7));
 
         // One item: TryPeek returns it without removing it.
-        Assert.IsTrue(buffer.TryPeek(out var item));
+        Assert.IsTrue(buffer.TryPeek(out TestItem? item));
         Assert.AreEqual(7, item!.Value);
         Assert.AreEqual(1, buffer.Count, "TryPeek must not remove the item.");
 
@@ -137,13 +137,13 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenConcurrentDequeue_ShouldNotThrow()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
         var failures = 0;
 
         var peeker = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 try { buffer.TryPeek(out _); }
                 catch { Interlocked.Increment(ref failures); }
@@ -170,7 +170,7 @@ public partial class ConcurrentCircularBufferTests
 
         var writer = Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
                 buffer.Enqueue(new TestItem(i));
         });
 
@@ -178,7 +178,7 @@ public partial class ConcurrentCircularBufferTests
         {
             while (Volatile.Read(ref peeked) == 0)
             {
-                if (buffer.TryPeek(out var item) && item != null)
+                if (buffer.TryPeek(out TestItem? item) && item != null)
                     Interlocked.Exchange(ref peeked, 1);
             }
         });
@@ -194,14 +194,14 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenManyReaders_ShouldNotThrowOrCorrupt()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        for (int i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
+        for (var i = 0; i < 10; i++) buffer.Enqueue(new TestItem(i));
 
-        int totalAttempts = 0;
-        int failures = 0;
+        var totalAttempts = 0;
+        var failures = 0;
 
-        var tasks = Enumerable.Range(0, 4).Select(_ => Task.Run(() =>
+        Task[] tasks = Enumerable.Range(0, 4).Select(_ => Task.Run(() =>
         {
-            for (int i = 0; i < 100; i++)
+            for (var i = 0; i < 100; i++)
             {
                 try
                 {
@@ -229,7 +229,7 @@ public partial class ConcurrentCircularBufferTests
         var buffer = new ConcurrentCircularBuffer<TestItem>(3);
         buffer.Enqueue(new TestItem(10));
 
-        Assert.IsTrue(buffer.TryPeek(out var peeked));
+        Assert.IsTrue(buffer.TryPeek(out TestItem? peeked));
         Assert.IsNotNull(peeked);
         Assert.AreEqual(10, peeked!.Value);
         Assert.AreEqual(1, buffer.Count, "TryPeek must not remove the element.");
@@ -242,7 +242,7 @@ public partial class ConcurrentCircularBufferTests
     public void TryPeek_WhenRapidEnqueueDequeue_ShouldObserveItemsSometimes()
     {
         var buffer = new ConcurrentCircularBuffer<TestItem>(10);
-        int observed = 0;
+        var observed = 0;
 
         using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
 
@@ -251,12 +251,12 @@ public partial class ConcurrentCircularBufferTests
         // luck — on a loaded CI runner the dequeuer can consistently drain the buffer faster
         // than the peeker samples it, leaving every TryPeek call observing an empty buffer.
         buffer.Enqueue(new TestItem(-1));
-        if (buffer.TryPeek(out var seed) && seed != null)
+        if (buffer.TryPeek(out TestItem? seed) && seed != null)
             Interlocked.Increment(ref observed);
 
         var enqueuer = Task.Run(() =>
         {
-            for (int i = 0; i < 50 && !cts.IsCancellationRequested; i++)
+            for (var i = 0; i < 50 && !cts.IsCancellationRequested; i++)
             {
                 buffer.Enqueue(new TestItem(i));
                 Thread.Sleep(1);
@@ -274,9 +274,9 @@ public partial class ConcurrentCircularBufferTests
 
         var peeker = Task.Run(() =>
         {
-            for (int i = 0; i < 100 && !cts.IsCancellationRequested; i++)
+            for (var i = 0; i < 100 && !cts.IsCancellationRequested; i++)
             {
-                if (buffer.TryPeek(out var item) && item != null)
+                if (buffer.TryPeek(out TestItem? item) && item != null)
                     Interlocked.Increment(ref observed);
                 Thread.Sleep(1);
             }
@@ -300,7 +300,7 @@ public partial class ConcurrentCircularBufferTests
         buffer.Dequeue();               // remove 1
         buffer.Enqueue(new TestItem(4)); // wrap
 
-        Assert.IsTrue(buffer.TryPeek(out var item));
+        Assert.IsTrue(buffer.TryPeek(out TestItem? item));
         Assert.IsNotNull(item);
         Assert.AreEqual(2, item!.Value);
     }

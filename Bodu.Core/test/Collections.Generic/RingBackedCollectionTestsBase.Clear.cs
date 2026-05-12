@@ -14,7 +14,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Clear_WhenCollectionHasItems_ShouldResetCount()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         Clear(collection);
@@ -29,7 +29,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Clear_WhenCalled_ShouldAllowSubsequentOperations()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         Clear(collection);
         AddToTail(collection, 99);
@@ -43,7 +43,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Clear(collection);
 
         Assert.AreEqual(0, GetCount(collection));

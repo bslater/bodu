@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmExtensionsTests.TryVerifyHash.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenByteArrayMatches_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsTrue(algorithm.TryVerifyHash(SampleData, SampleHash));
     }
 
@@ -46,7 +46,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenByteArrayMatchesHex_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsTrue(algorithm.TryVerifyHash(SampleData, SampleHex));
     }
 
@@ -57,7 +57,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenSpanMatches_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         ReadOnlySpan<byte> spanInput = SampleData;
         ReadOnlySpan<byte> expected = SampleHash;
         Assert.IsTrue(algorithm.TryVerifyHash(spanInput, expected));
@@ -70,7 +70,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenMemoryMatches_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         ReadOnlyMemory<byte> memory = SampleData;
         Assert.IsTrue(algorithm.TryVerifyHash(memory, SampleHash));
     }
@@ -81,7 +81,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenStringEncodedMatches_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsTrue(algorithm.TryVerifyHash(SampleString, SampleEncoding, SampleStringHash));
     }
 
@@ -92,7 +92,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenStreamMatchesByteArray_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
         Assert.IsTrue(algorithm.TryVerifyHash(stream, SampleHash));
     }
@@ -104,7 +104,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenStreamMatchesHex_ShouldReturnTrue()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
         Assert.IsTrue(algorithm.TryVerifyHash(stream, SampleHex));
     }
@@ -117,8 +117,8 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenHashDoesNotMatch_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
-        byte[] badHash = BitConverter.GetBytes((uint)999);
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
+        var badHash = BitConverter.GetBytes((uint)999);
         Assert.IsFalse(algorithm.TryVerifyHash(SampleData, badHash));
     }
 
@@ -128,7 +128,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenInputIsEmpty_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash(Array.Empty<byte>(), SampleHash));
     }
 
@@ -139,7 +139,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenInputIsNull_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash((byte[])null!, SampleHash));
     }
 
@@ -150,7 +150,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenExpectedHashIsNull_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash(SampleData, (byte[])null!));
     }
 
@@ -161,7 +161,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenByteArrayExpectedHexIsNull_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash(SampleData, (string)null!));
     }
 
@@ -172,7 +172,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenHexIsMalformed_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash(SampleData, "ZZZZ"));
     }
 
@@ -183,7 +183,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenMemoryExpectedHashIsNull_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         ReadOnlyMemory<byte> memory = SampleData;
         Assert.IsFalse(algorithm.TryVerifyHash(memory, (byte[])null!));
     }
@@ -195,7 +195,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenStreamExpectedHexIsNull_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         using var stream = new MemoryStream(SampleData);
         Assert.IsFalse(algorithm.TryVerifyHash(stream, (string)null!));
     }
@@ -207,7 +207,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenStringInputIsNull_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash(null!, SampleEncoding, SampleStringHash));
     }
 
@@ -218,7 +218,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenEncodingIsNull_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash(SampleString, null!, SampleStringHash));
     }
 
@@ -229,7 +229,7 @@ public partial class HashAlgorithmExtensionsTests
     [TestMethod]
     public void TryVerifyHash_WhenStringExpectedHashIsNull_ShouldReturnFalse()
     {
-        using var algorithm = CreateAlgorithm();
+        using MonitoringHashAlgorithm algorithm = CreateAlgorithm();
         Assert.IsFalse(algorithm.TryVerifyHash(SampleString, SampleEncoding, null!));
     }
 

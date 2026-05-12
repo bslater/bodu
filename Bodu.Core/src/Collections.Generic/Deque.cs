@@ -85,7 +85,8 @@ namespace Bodu.Collections.Generic;
 [DebuggerDisplay("Count = {Count}, Capacity = {Capacity}, AllowGrow = {AllowGrow}")]
 [DebuggerTypeProxy(typeof(DequeDebugView<>))]
 [Serializable]
-public sealed class Deque<T> : RingBackedCollection<T>
+public sealed class Deque<T> 
+    : RingBackedCollection<T>
 {
     private const int DefaultCapacity = 16;
     private const int MinGrowCapacity = 4;

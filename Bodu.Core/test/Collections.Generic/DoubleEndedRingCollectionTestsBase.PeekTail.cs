@@ -14,7 +14,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void PeekTail_WhenItemsPresent_ShouldReturnTailWithoutRemoving()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
@@ -29,7 +29,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void PeekTail_AfterRemoveFromTail_ShouldReturnNewTail()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         _ = RemoveFromTail(collection);
@@ -44,7 +44,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void PeekTail_WhenEmpty_ShouldThrowExactly()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = PeekTail(collection);

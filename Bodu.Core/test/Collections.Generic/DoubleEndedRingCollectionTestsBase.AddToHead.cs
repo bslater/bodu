@@ -14,7 +14,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void AddToHead_WhenEmpty_ShouldPlaceItemAtHead()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToHead(collection, 42);
 
         Assert.AreEqual(1, GetCount(collection));
@@ -28,7 +28,7 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void AddToHead_WhenSpaceAvailable_ShouldReverseInsertionOrder()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToHead(collection, 1);
         AddToHead(collection, 2);
         AddToHead(collection, 3);
@@ -43,8 +43,8 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
     [TestMethod]
     public void AddToHead_WhenItemsAdded_ShouldIncrementCount()
     {
-        var collection = CreateCollection(5);
-        for (int i = 0; i < 5; i++)
+        TCollection collection = CreateCollection(5);
+        for (var i = 0; i < 5; i++)
         {
             AddToHead(collection, i);
             Assert.AreEqual(i + 1, GetCount(collection));

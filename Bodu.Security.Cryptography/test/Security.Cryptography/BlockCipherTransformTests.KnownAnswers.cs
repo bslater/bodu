@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockCipherTransformTests.KnownAnswers.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -101,7 +101,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: true);
 
-        byte[] actual = transform.TransformFinalBlock(answer.Plaintext, 0, answer.Plaintext.Length);
+        var actual = transform.TransformFinalBlock(answer.Plaintext, 0, answer.Plaintext.Length);
 
         CollectionAssert.AreEqual(
             answer.Ciphertext,
@@ -130,7 +130,7 @@ public abstract partial class BlockCipherTransformTests<TTest, TCryptoTransform>
 
         using TCryptoTransform transform = CreateTransformForKnownAnswer(answer, forEncryption: false);
 
-        byte[] actual = transform.TransformFinalBlock(answer.Ciphertext, 0, answer.Ciphertext.Length);
+        var actual = transform.TransformFinalBlock(answer.Ciphertext, 0, answer.Ciphertext.Length);
 
         CollectionAssert.AreEqual(
             answer.Plaintext,

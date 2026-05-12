@@ -14,7 +14,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ToArray_WhenCollectionHasItems_ShouldReturnArrayOfCorrectLength()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
 
@@ -27,7 +27,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ToArray_WhenCollectionIsEmpty_ShouldReturnEmptyArray()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
 
         Assert.AreEqual(0, ToArray(collection).Length);
     }
@@ -38,7 +38,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ToArray_WhenCollectionHasItems_ShouldReturnHeadToTailOrder()
     {
-        var collection = CreateCollection(5);
+        TCollection collection = CreateCollection(5);
         AddToTail(collection, 1);
         AddToTail(collection, 2);
         AddToTail(collection, 3);
@@ -52,7 +52,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     [TestMethod]
     public void ToArray_WhenCalled_ShouldReturnIndependentCopy()
     {
-        var collection = CreateCollection(3);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         var copy = ToArray(collection);

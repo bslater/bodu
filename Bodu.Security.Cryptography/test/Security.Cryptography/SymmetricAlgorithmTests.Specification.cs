@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SymmetricAlgorithmTests.Specification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// transform for each key size listed in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LegalKeySizesBitsData))]
+    [DynamicData(nameof(LegalKeySizeData))]
     public void CreateEncryptor_ForEachLegalKeySize_ShouldSucceed(int keySizeBits)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
@@ -80,7 +80,7 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// transform for each key size listed in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LegalKeySizesBitsData))]
+    [DynamicData(nameof(LegalKeySizeData))]
     public void CreateDecryptor_ForEachLegalKeySize_ShouldSucceed(int keySizeBits)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
@@ -98,18 +98,18 @@ public abstract partial class SymmetricAlgorithmTests<TTest, TAlgorithm>
     /// key size listed in <see cref="SymmetricAlgorithmSpecification.LegalKeySizesBits" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(LegalKeySizesBitsData))]
+    [DynamicData(nameof(LegalKeySizeData))]
     public void CreateEncryptor_WhenIvIsTooShort_ForEachLegalKeySize_ShouldThrowCryptographicException(int keySizeBits)
     {
         using TAlgorithm algorithm = CreateAlgorithm();
         algorithm.KeySize = keySizeBits;
         algorithm.GenerateKey();
 
-        byte[] badIv = new byte[(algorithm.BlockSize / 8) - 1];
+        var badIv = new byte[(algorithm.BlockSize / 8) - 1];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            using var _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
+            using ICryptoTransform _ = algorithm.CreateEncryptor(algorithm.Key, badIv);
         });
     }
 }
