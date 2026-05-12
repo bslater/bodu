@@ -45,7 +45,8 @@ public static class PaddingFactory
         PaddingMode.None => new NoPadding(),
         PaddingMode.ANSIX923 => new Ansix923Padding(),
         PaddingMode.ISO10126 => new Iso10126Padding(),
-        _ => throw new CryptographicException($"Unsupported padding mode: {mode}")
+        _ => throw new CryptographicException(
+            string.Format(CryptoResourceStrings.CryptographicException_UnsupportedPaddingMode, mode))
     };
 
     /// <summary>

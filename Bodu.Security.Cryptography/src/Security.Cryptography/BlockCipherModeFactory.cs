@@ -84,7 +84,8 @@ public static class BlockCipherModeFactory
                 return new CtrModeTransform(cipher, iv!);
 
             default:
-                throw new NotSupportedException($"The cipher mode '{mode}' is not supported.");
+                throw new NotSupportedException(
+                    string.Format(CryptoResourceStrings.NotSupportedException_UnsupportedCipherMode, mode));
         }
     }
 
@@ -102,7 +103,9 @@ public static class BlockCipherModeFactory
     {
         if (iv is null)
         {
-            throw new ArgumentException("An initialisation vector is required for this mode.", name);
+            throw new ArgumentException(
+                CryptoResourceStrings.CryptographicException_IVRequiredForMode,
+                name);
         }
 
         if (iv.Length != requiredSize / 8)
