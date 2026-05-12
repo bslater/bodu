@@ -109,7 +109,7 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfLessThan(blockSize, 1);
         var size = blockSize / 8;
         var result = new byte[count + size];
-        var written = PadBlock(padding, size, new ReadOnlySpan<byte>(block, offset, count), result);
+        var written = PadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), result);
         Array.Resize(ref result, written);
         return result;
     }

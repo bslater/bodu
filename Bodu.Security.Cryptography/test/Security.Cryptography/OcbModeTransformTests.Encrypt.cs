@@ -59,8 +59,8 @@ public sealed partial class OcbModeTransformTests
         var iv = new byte[ExpectedBlockSize];
         var plaintext = new byte[ExpectedBlockSize];
 
-        OcbModeTransform enc16 = CreateTransform(cipher16, (byte[])iv.Clone(), 16);
-        OcbModeTransform enc12 = CreateTransform(cipher12, (byte[])iv.Clone(), 12);
+        OcbModeTransform enc16 = CreateTransform(cipher16, (byte[])iv.Clone(), 128);
+        OcbModeTransform enc12 = CreateTransform(cipher12, (byte[])iv.Clone(), 96);
         var ct16 = new byte[plaintext.Length + 16];
         var ct12 = new byte[plaintext.Length + 12];
         enc16.Encrypt(plaintext, ct16);
