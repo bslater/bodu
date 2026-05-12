@@ -71,22 +71,8 @@ public static class HashAlgorithmHelper
         using T algorithm = factory.Create();
         var hashSizeBytes = algorithm.HashSize >> 3;
         var result = new byte[hashSizeBytes];
-        int bytesWritten;
-        try
-        {
-            CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
-                algorithm.TryComputeHash(input, result, out bytesWritten));
-        }
-        catch (InvalidOperationException ex)
-        {
-            // HashAlgorithm.TryComputeHash raises InvalidOperationException when TryHashFinal
-            // breaks the BCL contract — typically by returning false for a destination that
-            // is already large enough. Surface algorithm-side failure as the helper's
-            // documented CryptographicException.
-            throw new CryptographicException(
-                CryptoResourceStrings.CryptographicException_HashAlgorithmDestinationBufferTooSmall,
-                ex);
-        }
+        CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
+            algorithm.TryComputeHash(input, result, out var bytesWritten));
         if (bytesWritten == result.Length)
             return result;
 
