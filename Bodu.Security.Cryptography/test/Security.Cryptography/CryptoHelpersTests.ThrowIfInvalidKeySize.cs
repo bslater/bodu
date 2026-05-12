@@ -51,13 +51,15 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> throws a
-    /// <see cref="CryptographicException"/> when the key byte length does not match the expected key size in bits.
+    /// <see cref="CryptographicException"/> when the key byte length, expressed in bits, is not one of the values
+    /// permitted by the supplied <see cref="KeySizes"/> table.
     /// </summary>
     /// <param name="actualBytes">The byte length of the supplied key.</param>
-    /// <param name="expectedBits">The required key size, in bits.</param>
+    /// <param name="expectedBits">The algorithm's currently configured key size, in bits. Retained for
+    /// signature compatibility; the validation decision is driven by <see cref="LegalKeySizes"/>.</param>
     [TestMethod]
     [DataRow(8, 128)]
-    [DataRow(32, 128)]
+    [DataRow(40, 128)]
     public void ThrowIfInvalidKeySize_WhenKeyHasWrongLength_ShouldThrowCryptographicException(int actualBytes, int expectedBits)
     {
         var key = new byte[actualBytes];

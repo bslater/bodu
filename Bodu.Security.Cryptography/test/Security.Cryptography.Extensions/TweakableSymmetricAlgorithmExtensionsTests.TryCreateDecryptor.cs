@@ -79,8 +79,8 @@ public partial class TweakableSymmetricAlgorithmExtensionsTests
     {
         using TweakableSymmetricAlgorithm algorithm = CreateAlgorithm();
 
-        // One byte short of required key size
-        var key = new byte[(algorithm.KeySize / 8) + 1];// one byte too long
+        // Empty key length is not in any legal-key-size range.
+        var key = Array.Empty<byte>();
         var iv = new byte[algorithm.BlockSize / 8];
         var tweak = new byte[algorithm.TweakSize / 8];
 
