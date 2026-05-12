@@ -28,7 +28,7 @@ public partial class SimpleReversingSymmetricAlgorithmTests
     protected override SimpleReversingSymmetricAlgorithm CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
     {
         var algorithm = SimpleReversingSymmetricAlgorithm.Create();
-        algorithm.Mode = CipherMode.ECB;
+        algorithm.BlockMode = CipherBlockMode.ECB;
         algorithm.Padding = PaddingMode.None;
         algorithm.Key = answer.Key!;
         algorithm.IV = new byte[algorithm.BlockSize / 8];
