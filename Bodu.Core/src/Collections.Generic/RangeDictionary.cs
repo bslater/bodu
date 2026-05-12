@@ -1,155 +1,14 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Bodu.Collections.Generic;
-
-/// <summary>
-/// Represents a half-open range, where <see cref="StartInclusive" /> is included and
-/// <see cref="EndExclusive" /> is excluded.
-/// </summary>
-/// <typeparam name="T">The comparable endpoint type.</typeparam>
-[DebuggerDisplay("[{StartInclusive}, {EndExclusive})")]
-public readonly struct RangeDictionary<T>
-    where T : IComparable<T>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="RangeDictionary{T}" /> struct.
-    /// </summary>
-    /// <param name="startInclusive">The inclusive start of the range.</param>
-    /// <param name="endExclusive">The exclusive end of the range.</param>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />.
-    /// </exception>
-    public RangeDictionary(T startInclusive, T endExclusive)
-    {
-        ValidateRange(startInclusive, endExclusive, Comparer<T>.Default);
-
-        StartInclusive = startInclusive;
-        EndExclusive = endExclusive;
-    }
-
-    /// <summary>
-    /// Gets the inclusive start of the range.
-    /// </summary>
-    public T StartInclusive { get; }
-
-    /// <summary>
-    /// Gets the exclusive end of the range.
-    /// </summary>
-    public T EndExclusive { get; }
-
-    /// <summary>
-    /// Determines whether the specified value falls inside this range.
-    /// </summary>
-    /// <param name="value">The value to test.</param>
-    /// <returns>
-    /// <see langword="true" /> if <paramref name="value" /> is inside the range; otherwise, <see langword="false" />.
-    /// </returns>
-    public bool Contains(T value)
-    {
-        if (value is null)
-            throw new ArgumentNullException(nameof(value));
-
-        var comparer = Comparer<T>.Default;
-        return comparer.Compare(StartInclusive, value) <= 0 &&
-               comparer.Compare(value, EndExclusive) < 0;
-    }
-
-    /// <inheritdoc />
-    public override string ToString() =>
-        $"[{StartInclusive}, {EndExclusive})";
-
-    internal static void ValidateRange(T startInclusive, T endExclusive, IComparer<T> comparer)
-    {
-        if (startInclusive is null)
-            throw new ArgumentNullException(nameof(startInclusive));
-
-        if (endExclusive is null)
-            throw new ArgumentNullException(nameof(endExclusive));
-
-        if (comparer.Compare(startInclusive, endExclusive) >= 0)
-            throw new ArgumentException("The range start must be less than the range end.");
-    }
-}
-
-/// <summary>
-/// Represents a half-open range mapped to a value.
-/// </summary>
-/// <typeparam name="TKey">The comparable endpoint type.</typeparam>
-/// <typeparam name="TValue">The value type.</typeparam>
-[DebuggerDisplay("[{StartInclusive}, {EndExclusive}) = {Value}")]
-public readonly struct ValueRange<TKey, TValue>
-    where TKey : IComparable<TKey>
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ValueRange{TKey, TValue}" /> struct.
-    /// </summary>
-    /// <param name="startInclusive">The inclusive start of the range.</param>
-    /// <param name="endExclusive">The exclusive end of the range.</param>
-    /// <param name="value">The value mapped to the range.</param>
-    public ValueRange(TKey startInclusive, TKey endExclusive, TValue value)
-    {
-        RangeDictionary<TKey>.ValidateRange(startInclusive, endExclusive, Comparer<TKey>.Default);
-
-        StartInclusive = startInclusive;
-        EndExclusive = endExclusive;
-        Value = value;
-    }
-
-    internal ValueRange(TKey startInclusive, TKey endExclusive, TValue value, bool skipValidation)
-    {
-        StartInclusive = startInclusive;
-        EndExclusive = endExclusive;
-        Value = value;
-    }
-
-    /// <summary>
-    /// Gets the inclusive start of the range.
-    /// </summary>
-    public TKey StartInclusive { get; }
-
-    /// <summary>
-    /// Gets the exclusive end of the range.
-    /// </summary>
-    public TKey EndExclusive { get; }
-
-    /// <summary>
-    /// Gets the value associated with the range.
-    /// </summary>
-    public TValue Value { get; }
-
-    /// <summary>
-    /// Determines whether the specified key falls inside this range.
-    /// </summary>
-    /// <param name="key">The key to test.</param>
-    /// <returns>
-    /// <see langword="true" /> if <paramref name="key" /> is inside the range; otherwise, <see langword="false" />.
-    /// </returns>
-    public bool Contains(TKey key)
-    {
-        if (key is null)
-            throw new ArgumentNullException(nameof(key));
-
-        var comparer = Comparer<TKey>.Default;
-        return comparer.Compare(StartInclusive, key) <= 0 &&
-               comparer.Compare(key, EndExclusive) < 0;
-    }
-
-    /// <inheritdoc />
-    public override string ToString() =>
-        $"[{StartInclusive}, {EndExclusive}) = {Value}";
-}
 
 /// <summary>
 /// Represents a sorted dictionary that maps non-overlapping half-open ranges to values.
@@ -158,17 +17,21 @@ public readonly struct ValueRange<TKey, TValue>
 /// <typeparam name="TValue">The value type.</typeparam>
 /// <remarks>
 /// <para>
-/// Ranges are stored in sorted parallel arrays. Lookups use binary search over range starts and then a single
-/// end-boundary check.
+/// Entries are stored in three parallel arrays — one for the inclusive start of each range, one for the
+/// exclusive end, and one for the associated value. Lookups use binary search across the start endpoints,
+/// followed by a single end-boundary check. Insertions and removals shift the affected suffix of each array.
 /// </para>
 /// <para>
-/// Ranges use half-open semantics: <c>[startInclusive, endExclusive)</c>. Adjacent ranges are allowed; overlapping
-/// ranges are rejected.
+/// Ranges use half-open semantics: <c>[startInclusive, endExclusive)</c>. Adjacent ranges are allowed;
+/// overlapping ranges are rejected with <see cref="ArgumentException" />.
+/// </para>
+/// <para>
+/// This type is not thread-safe.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
 [Serializable]
-public sealed class RangeDictionary<TKey, TValue> 
+public sealed partial class RangeDictionary<TKey, TValue>
     : IReadOnlyCollection<ValueRange<TKey, TValue>>
     where TKey : IComparable<TKey>
 {
@@ -182,7 +45,7 @@ public sealed class RangeDictionary<TKey, TValue>
     private int _version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RangeDictionary{TKey, TValue}" /> class.
+    /// Initializes a new instance of the <see cref="RangeDictionary{TKey, TValue}" /> class using the default endpoint comparer.
     /// </summary>
     public RangeDictionary()
         : this(null)
@@ -190,9 +53,9 @@ public sealed class RangeDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="RangeDictionary{TKey, TValue}" /> class.
+    /// Initializes a new instance of the <see cref="RangeDictionary{TKey, TValue}" /> class using the specified comparer.
     /// </summary>
-    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use the default comparer.</param>
+    /// <param name="comparer">The endpoint comparer, or <see langword="null" /> to use <see cref="Comparer{TKey}.Default" />.</param>
     public RangeDictionary(IComparer<TKey>? comparer)
     {
         _comparer = comparer ?? Comparer<TKey>.Default;
@@ -204,23 +67,29 @@ public sealed class RangeDictionary<TKey, TValue>
     /// <summary>
     /// Gets the comparer used to order range endpoints.
     /// </summary>
+    /// <returns>The active endpoint comparer.</returns>
     public IComparer<TKey> Comparer => _comparer;
 
     /// <summary>
     /// Gets the number of stored ranges.
     /// </summary>
+    /// <returns>The number of ranges currently stored in the dictionary.</returns>
     public int Count => _count;
 
     /// <summary>
     /// Gets the allocated range capacity.
     /// </summary>
+    /// <returns>The current allocated capacity of the underlying storage.</returns>
     public int Capacity => _starts.Length;
 
     /// <summary>
     /// Gets the value associated with the range containing the specified key.
     /// </summary>
-    /// <param name="key">The key to locate.</param>
+    /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
     /// <returns>The value associated with the containing range.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="KeyNotFoundException">No range contains <paramref name="key" />.</exception>
     public TValue this[TKey key]
     {
@@ -238,6 +107,9 @@ public sealed class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="index">The zero-based range index.</param>
     /// <returns>The range entry at <paramref name="index" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
+    /// </exception>
     public ValueRange<TKey, TValue> GetEntryAt(int index)
     {
         ValidateIndex(index);
@@ -250,18 +122,24 @@ public sealed class RangeDictionary<TKey, TValue>
     /// <param name="startInclusive">The inclusive start.</param>
     /// <param name="endExclusive">The exclusive end.</param>
     /// <param name="value">The value to associate with the range.</param>
-    /// <exception cref="ArgumentException">The range overlaps an existing range.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />, or the
+    /// range overlaps an existing range.
+    /// </exception>
     public void Add(TKey startInclusive, TKey endExclusive, TValue value)
     {
-        RangeDictionary<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
+        Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
         int index = LowerBound(startInclusive);
 
         if (index > 0 && _comparer.Compare(_ends[index - 1], startInclusive) > 0)
-            throw new ArgumentException("The specified range overlaps an existing range.");
+            throw new ArgumentException("The specified range overlaps an existing range.", nameof(startInclusive));
 
         if (index < _count && _comparer.Compare(_starts[index], endExclusive) < 0)
-            throw new ArgumentException("The specified range overlaps an existing range.");
+            throw new ArgumentException("The specified range overlaps an existing range.", nameof(endExclusive));
 
         InsertAt(index, startInclusive, endExclusive, value);
     }
@@ -270,6 +148,7 @@ public sealed class RangeDictionary<TKey, TValue>
     /// Adds the specified range entry.
     /// </summary>
     /// <param name="entry">The entry to add.</param>
+    /// <exception cref="ArgumentException">The entry overlaps an existing range.</exception>
     public void Add(ValueRange<TKey, TValue> entry) =>
         Add(entry.StartInclusive, entry.EndExclusive, entry.Value);
 
@@ -281,9 +160,15 @@ public sealed class RangeDictionary<TKey, TValue>
     /// <returns>
     /// <see langword="true" /> if the exact range was removed; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />.
+    /// </exception>
     public bool Remove(TKey startInclusive, TKey endExclusive)
     {
-        RangeDictionary<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
+        Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
         int index = LowerBound(startInclusive);
 
@@ -316,21 +201,27 @@ public sealed class RangeDictionary<TKey, TValue>
     /// <summary>
     /// Determines whether any stored range contains the specified key.
     /// </summary>
-    /// <param name="key">The key to locate.</param>
+    /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> is <see langword="null" />.
+    /// </exception>
     public bool ContainsKey(TKey key) =>
         FindContainingIndex(key) >= 0;
 
     /// <summary>
     /// Attempts to get the value associated with the range containing the specified key.
     /// </summary>
-    /// <param name="key">The key to locate.</param>
+    /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
     /// <param name="value">The value associated with the containing range, if found.</param>
     /// <returns>
     /// <see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> is <see langword="null" />.
+    /// </exception>
     public bool TryGetValue(TKey key, out TValue value)
     {
         int index = FindContainingIndex(key);
@@ -348,11 +239,14 @@ public sealed class RangeDictionary<TKey, TValue>
     /// <summary>
     /// Attempts to get the range entry containing the specified key.
     /// </summary>
-    /// <param name="key">The key to locate.</param>
+    /// <param name="key">The key to locate. Must not be <see langword="null" />.</param>
     /// <param name="entry">The containing range entry, if found.</param>
     /// <returns>
     /// <see langword="true" /> if a range contains the key; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> is <see langword="null" />.
+    /// </exception>
     public bool TryGetEntry(TKey key, out ValueRange<TKey, TValue> entry)
     {
         int index = FindContainingIndex(key);
@@ -375,9 +269,15 @@ public sealed class RangeDictionary<TKey, TValue>
     /// <returns>
     /// <see langword="true" /> if the range overlaps an existing range; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="startInclusive" /> or <paramref name="endExclusive" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="startInclusive" /> is greater than or equal to <paramref name="endExclusive" />.
+    /// </exception>
     public bool Overlaps(TKey startInclusive, TKey endExclusive)
     {
-        RangeDictionary<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
+        Range<TKey>.ValidateRange(startInclusive, endExclusive, _comparer);
 
         int index = LowerBound(startInclusive);
 
@@ -392,10 +292,12 @@ public sealed class RangeDictionary<TKey, TValue>
     /// </summary>
     /// <param name="capacity">The desired capacity.</param>
     /// <returns>The current capacity.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is negative.
+    /// </exception>
     public int EnsureCapacity(int capacity)
     {
-        if (capacity < 0)
-            throw new ArgumentOutOfRangeException(nameof(capacity));
+        ThrowHelper.ThrowIfNegative(capacity);
 
         if (_starts.Length < capacity)
             ResizeStorage(GrowCapacity(capacity));
@@ -404,12 +306,12 @@ public sealed class RangeDictionary<TKey, TValue>
     }
 
     /// <summary>
-    /// Copies the stored range entries to a new array.
+    /// Copies the stored range entries to a new array in ascending sorted order.
     /// </summary>
     /// <returns>A new array containing the stored entries.</returns>
     public ValueRange<TKey, TValue>[] ToArray()
     {
-        var result = new ValueRange<TKey, TValue>[_count];
+        ValueRange<TKey, TValue>[] result = new ValueRange<TKey, TValue>[_count];
 
         for (int i = 0; i < _count; i++)
             result[i] = new ValueRange<TKey, TValue>(_starts[i], _ends[i], _values[i], skipValidation: true);
@@ -420,22 +322,21 @@ public sealed class RangeDictionary<TKey, TValue>
     /// <summary>
     /// Returns an enumerator that iterates through the stored range entries in ascending order.
     /// </summary>
-    /// <returns>The enumerator.</returns>
+    /// <returns>An <see cref="Enumerator" /> over the dictionary entries.</returns>
     public Enumerator GetEnumerator() =>
         new(this);
 
-    /// <inheritdoc />
-    IEnumerator<ValueRange<TKey, TValue>> IEnumerable<ValueRange<TKey, TValue>>.GetEnumerator() =>
-        GetEnumerator();
-
-    /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() =>
-        GetEnumerator();
-
+    /// <summary>
+    /// Locates the index of the range that contains the specified key, if any.
+    /// </summary>
+    /// <param name="key">The key to locate.</param>
+    /// <returns>The index of the containing range, or <c>-1</c> if no range contains the key.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> is <see langword="null" />.
+    /// </exception>
     private int FindContainingIndex(TKey key)
     {
-        if (key is null)
-            throw new ArgumentNullException(nameof(key));
+        ThrowHelper.ThrowIfNull(key);
 
         int index = UpperBound(key) - 1;
 
@@ -445,6 +346,13 @@ public sealed class RangeDictionary<TKey, TValue>
         return _comparer.Compare(key, _ends[index]) < 0 ? index : -1;
     }
 
+    /// <summary>
+    /// Inserts an entry at the specified position, growing storage as needed and shifting trailing entries.
+    /// </summary>
+    /// <param name="index">The insertion index.</param>
+    /// <param name="startInclusive">The inclusive start.</param>
+    /// <param name="endExclusive">The exclusive end.</param>
+    /// <param name="value">The value associated with the entry.</param>
     private void InsertAt(int index, TKey startInclusive, TKey endExclusive, TValue value)
     {
         EnsureCapacity(_count + 1);
@@ -463,6 +371,10 @@ public sealed class RangeDictionary<TKey, TValue>
         _version++;
     }
 
+    /// <summary>
+    /// Removes the entry at the specified index and shifts trailing entries left to keep storage contiguous.
+    /// </summary>
+    /// <param name="index">The index of the entry to remove.</param>
     private void RemoveAt(int index)
     {
         int moveCount = _count - index - 1;
@@ -481,6 +393,11 @@ public sealed class RangeDictionary<TKey, TValue>
         _version++;
     }
 
+    /// <summary>
+    /// Returns the lowest index whose start endpoint is not less than <paramref name="value" />.
+    /// </summary>
+    /// <param name="value">The endpoint to locate.</param>
+    /// <returns>The lower-bound index for <paramref name="value" />.</returns>
     private int LowerBound(TKey value)
     {
         int low = 0;
@@ -499,6 +416,11 @@ public sealed class RangeDictionary<TKey, TValue>
         return low;
     }
 
+    /// <summary>
+    /// Returns the lowest index whose start endpoint is greater than <paramref name="value" />.
+    /// </summary>
+    /// <param name="value">The endpoint to locate.</param>
+    /// <returns>The upper-bound index for <paramref name="value" />.</returns>
     private int UpperBound(TKey value)
     {
         int low = 0;
@@ -517,12 +439,20 @@ public sealed class RangeDictionary<TKey, TValue>
         return low;
     }
 
+    /// <summary>
+    /// Throws <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is not within
+    /// <c>[0, <see cref="Count" />)</c>.
+    /// </summary>
+    /// <param name="index">The index to validate.</param>
     private void ValidateIndex(int index)
     {
-        if ((uint)index >= (uint)_count)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        if ((uint)index >= (uint)_count) throw new ArgumentOutOfRangeException(nameof(index));
     }
 
+    /// <summary>
+    /// Reallocates the parallel storage arrays to the specified capacity.
+    /// </summary>
+    /// <param name="capacity">The new capacity.</param>
     private void ResizeStorage(int capacity)
     {
         Array.Resize(ref _starts, capacity);
@@ -530,6 +460,12 @@ public sealed class RangeDictionary<TKey, TValue>
         Array.Resize(ref _values, capacity);
     }
 
+    /// <summary>
+    /// Computes the next capacity by doubling the current size, with a clamp at <see cref="Array.MaxLength" />
+    /// and a floor at <paramref name="minimum" />.
+    /// </summary>
+    /// <param name="minimum">The minimum acceptable capacity.</param>
+    /// <returns>The chosen capacity.</returns>
     private int GrowCapacity(int minimum)
     {
         int capacity = _starts.Length == 0 ? DefaultCapacity : _starts.Length * 2;
@@ -541,64 +477,5 @@ public sealed class RangeDictionary<TKey, TValue>
             capacity = minimum;
 
         return capacity;
-    }
-
-    /// <summary>
-    /// Enumerates a <see cref="RangeDictionary{TKey, TValue}" /> without allocating.
-    /// </summary>
-    public struct Enumerator : IEnumerator<ValueRange<TKey, TValue>>
-    {
-        private readonly RangeDictionary<TKey, TValue> _owner;
-        private readonly int _version;
-        private int _index;
-        private ValueRange<TKey, TValue> _current;
-
-        internal Enumerator(RangeDictionary<TKey, TValue> owner)
-        {
-            _owner = owner;
-            _version = owner._version;
-            _index = 0;
-            _current = default;
-        }
-
-        /// <inheritdoc />
-        public ValueRange<TKey, TValue> Current => _current;
-
-        /// <inheritdoc />
-        object IEnumerator.Current => Current;
-
-        /// <inheritdoc />
-        public bool MoveNext()
-        {
-            if (_version != _owner._version)
-                throw new InvalidOperationException("The collection was modified during enumeration.");
-
-            if (_index >= _owner._count)
-                return false;
-
-            _current = new ValueRange<TKey, TValue>(
-                _owner._starts[_index],
-                _owner._ends[_index],
-                _owner._values[_index],
-                skipValidation: true);
-
-            _index++;
-            return true;
-        }
-
-        /// <inheritdoc />
-        public void Reset()
-        {
-            if (_version != _owner._version)
-                throw new InvalidOperationException("The collection was modified during enumeration.");
-
-            _index = 0;
-            _current = default;
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-        }
     }
 }

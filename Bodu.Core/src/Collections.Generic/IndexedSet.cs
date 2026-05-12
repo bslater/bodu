@@ -1,11 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSet.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -17,8 +16,12 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="T">The type of elements in the set. Elements must not be <see langword="null" />.</typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="IndexedSet{T}" /> stores elements in a compact contiguous array for deterministic index order,
-/// and maintains a custom open bucket table over those array slots for fast uniqueness checks.
+/// <see cref="IndexedSet{T}" /> stores elements in a compact contiguous array for deterministic index order
+/// and maintains a custom open-addressing bucket table over those array slots for fast uniqueness checks.
+/// The hash table is not a BCL <see cref="System.Collections.Generic.HashSet{T}" /> or
+/// <see cref="System.Collections.Generic.Dictionary{TKey, TValue}" /> wrapper; it is implemented directly with
+/// two parallel <see cref="int" /> arrays — one of bucket heads, one of chain links — sized as power-of-two
+/// capacities and rehashed when the load factor exceeds three quarters.
 /// </para>
 /// <para>
 /// Adding an item appends it to the end of the logical order. Insertions, removals, moves, and indexed
@@ -30,7 +33,7 @@ namespace Bodu.Collections.Generic;
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
 [Serializable]
-public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
+public partial class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     where T : notnull
 {
     private const int DefaultCapacity = 4;
@@ -45,7 +48,7 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     private int _version;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class.
+    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class using the default capacity and comparer.
     /// </summary>
     public IndexedSet()
         : this(0, null)
@@ -65,6 +68,9 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class with the specified initial capacity.
     /// </summary>
     /// <param name="capacity">The initial element capacity.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is negative.
+    /// </exception>
     public IndexedSet(int capacity)
         : this(capacity, null)
     {
@@ -75,10 +81,12 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// </summary>
     /// <param name="capacity">The initial element capacity.</param>
     /// <param name="comparer">The equality comparer, or <see langword="null" /> to use the default comparer.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is negative.
+    /// </exception>
     public IndexedSet(int capacity, IEqualityComparer<T>? comparer)
     {
-        if (capacity < 0)
-            throw new ArgumentOutOfRangeException(nameof(capacity));
+        ThrowHelper.ThrowIfNegative(capacity);
 
         _comparer = comparer ?? EqualityComparer<T>.Default;
         _items = capacity == 0 ? Array.Empty<T>() : new T[capacity];
@@ -90,24 +98,29 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class containing unique elements from the specified collection.
+    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class containing the unique elements from the specified collection.
     /// </summary>
-    /// <param name="collection">The source collection.</param>
+    /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="collection" /> is <see langword="null" />.
+    /// </exception>
     public IndexedSet(IEnumerable<T> collection)
         : this(collection, null)
     {
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class containing unique elements from the specified collection.
+    /// Initializes a new instance of the <see cref="IndexedSet{T}" /> class containing the unique elements from the specified collection.
     /// </summary>
-    /// <param name="collection">The source collection.</param>
+    /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
     /// <param name="comparer">The equality comparer, or <see langword="null" /> to use the default comparer.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="collection" /> is <see langword="null" />.
+    /// </exception>
     public IndexedSet(IEnumerable<T> collection, IEqualityComparer<T>? comparer)
         : this(GetCapacityHint(collection), comparer)
     {
-        if (collection is null)
-            throw new ArgumentNullException(nameof(collection));
+        ThrowHelper.ThrowIfNull(collection);
 
         foreach (T item in collection)
             Add(item);
@@ -116,28 +129,38 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Gets the equality comparer used to compare elements.
     /// </summary>
+    /// <returns>The active equality comparer.</returns>
     public IEqualityComparer<T> Comparer => _comparer;
 
     /// <summary>
     /// Gets the number of elements in the set.
     /// </summary>
+    /// <returns>The number of elements currently stored in the set.</returns>
     public int Count => _count;
 
     /// <summary>
     /// Gets the allocated element capacity.
     /// </summary>
+    /// <returns>The current allocated capacity of the underlying element storage.</returns>
     public int Capacity => _items.Length;
 
     /// <summary>
     /// Gets a value indicating whether the set is read-only.
     /// </summary>
+    /// <returns>Always <see langword="false" />.</returns>
     public bool IsReadOnly => false;
 
     /// <summary>
-    /// Gets or replaces the item at the specified index.
+    /// Gets or replaces the element at the specified index.
     /// </summary>
-    /// <param name="index">The zero-based index.</param>
-    /// <returns>The item at <paramref name="index" />.</returns>
+    /// <param name="index">The zero-based index of the element to access.</param>
+    /// <returns>The element at <paramref name="index" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// The replacement value is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
     /// The replacement value already exists at another index.
     /// </exception>
@@ -151,7 +174,7 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
 
         set
         {
-            ValidateItem(value, nameof(value));
+            ThrowHelper.ThrowIfNull(value);
             ValidateIndex(index);
 
             int existingIndex = IndexOf(value);
@@ -170,13 +193,16 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Adds the specified item to the end of the set.
     /// </summary>
-    /// <param name="item">The item to add.</param>
+    /// <param name="item">The item to add. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if the item was added; otherwise, <see langword="false" /> if the set already contained it.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="item" /> is <see langword="null" />.
+    /// </exception>
     public bool Add(T item)
     {
-        ValidateItem(item, nameof(item));
+        ThrowHelper.ThrowIfNull(item);
 
         if (IndexOf(item) >= 0)
             return false;
@@ -195,12 +221,14 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Adds each unique item from the specified collection.
     /// </summary>
-    /// <param name="collection">The source collection.</param>
+    /// <param name="collection">The source collection. Must not be <see langword="null" />.</param>
     /// <returns>The number of items added.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="collection" /> is <see langword="null" />.
+    /// </exception>
     public int AddRange(IEnumerable<T> collection)
     {
-        if (collection is null)
-            throw new ArgumentNullException(nameof(collection));
+        ThrowHelper.ThrowIfNull(collection);
 
         int added = 0;
 
@@ -216,15 +244,21 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Attempts to insert the specified item at the specified index.
     /// </summary>
-    /// <param name="index">The insertion index.</param>
-    /// <param name="item">The item to insert.</param>
+    /// <param name="index">The insertion index in the range <c>[0, <see cref="Count" />]</c>.</param>
+    /// <param name="item">The item to insert. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if the item was inserted; otherwise, <see langword="false" /> if the set already contained it.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="item" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index" /> is negative or greater than <see cref="Count" />.
+    /// </exception>
     public bool TryInsert(int index, T item)
     {
         ValidateInsertionIndex(index);
-        ValidateItem(item, nameof(item));
+        ThrowHelper.ThrowIfNull(item);
 
         if (IndexOf(item) >= 0)
             return false;
@@ -246,8 +280,14 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Inserts the specified item at the specified index.
     /// </summary>
-    /// <param name="index">The insertion index.</param>
-    /// <param name="item">The item to insert.</param>
+    /// <param name="index">The insertion index in the range <c>[0, <see cref="Count" />]</c>.</param>
+    /// <param name="item">The item to insert. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="item" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index" /> is negative or greater than <see cref="Count" />.
+    /// </exception>
     /// <exception cref="ArgumentException">The item already exists in the set.</exception>
     public void Insert(int index, T item)
     {
@@ -258,13 +298,16 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Removes the specified item from the set.
     /// </summary>
-    /// <param name="item">The item to remove.</param>
+    /// <param name="item">The item to remove. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if the item was removed; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="item" /> is <see langword="null" />.
+    /// </exception>
     public bool Remove(T item)
     {
-        ValidateItem(item, nameof(item));
+        ThrowHelper.ThrowIfNull(item);
 
         int index = IndexOf(item);
         if (index < 0)
@@ -278,6 +321,9 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// Removes the item at the specified index.
     /// </summary>
     /// <param name="index">The zero-based index to remove.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="index" /> is negative or greater than or equal to <see cref="Count" />.
+    /// </exception>
     public void RemoveAt(int index)
     {
         ValidateIndex(index);
@@ -299,6 +345,9 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// </summary>
     /// <param name="oldIndex">The current index.</param>
     /// <param name="newIndex">The target index.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="oldIndex" /> or <paramref name="newIndex" /> is negative or greater than or equal to <see cref="Count" />.
+    /// </exception>
     public void Move(int oldIndex, int newIndex)
     {
         ValidateIndex(oldIndex);
@@ -338,24 +387,30 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Determines whether the set contains the specified item.
     /// </summary>
-    /// <param name="item">The item to locate.</param>
+    /// <param name="item">The item to locate. Must not be <see langword="null" />.</param>
     /// <returns>
     /// <see langword="true" /> if the item exists; otherwise, <see langword="false" />.
     /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="item" /> is <see langword="null" />.
+    /// </exception>
     public bool Contains(T item)
     {
-        ValidateItem(item, nameof(item));
+        ThrowHelper.ThrowIfNull(item);
         return IndexOf(item) >= 0;
     }
 
     /// <summary>
     /// Returns the index of the specified item.
     /// </summary>
-    /// <param name="item">The item to locate.</param>
+    /// <param name="item">The item to locate. Must not be <see langword="null" />.</param>
     /// <returns>The zero-based index, or <c>-1</c> if the item is not present.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="item" /> is <see langword="null" />.
+    /// </exception>
     public int IndexOf(T item)
     {
-        ValidateItem(item, nameof(item));
+        ThrowHelper.ThrowIfNull(item);
 
         if (_count == 0 || _buckets.Length == 0)
             return -1;
@@ -374,15 +429,21 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Copies the set items to the specified array.
     /// </summary>
-    /// <param name="array">The destination array.</param>
+    /// <param name="array">The destination array. Must not be <see langword="null" />.</param>
     /// <param name="arrayIndex">The destination start index.</param>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="arrayIndex" /> is negative.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="array" /> does not have enough space starting at <paramref name="arrayIndex" /> to hold the set.
+    /// </exception>
     public void CopyTo(T[] array, int arrayIndex)
     {
-        if (array is null)
-            throw new ArgumentNullException(nameof(array));
-
-        if (arrayIndex < 0)
-            throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+        ThrowHelper.ThrowIfNull(array);
+        ThrowHelper.ThrowIfNegative(arrayIndex);
 
         if (array.Length - arrayIndex < _count)
             throw new ArgumentException("The destination array does not have sufficient space.", nameof(array));
@@ -395,10 +456,12 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// </summary>
     /// <param name="capacity">The desired item capacity.</param>
     /// <returns>The current item capacity.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="capacity" /> is negative.
+    /// </exception>
     public int EnsureCapacity(int capacity)
     {
-        if (capacity < 0)
-            throw new ArgumentOutOfRangeException(nameof(capacity));
+        ThrowHelper.ThrowIfNegative(capacity);
 
         if (_items.Length < capacity)
             ResizeItemStorage(GrowCapacity(capacity));
@@ -437,7 +500,7 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <returns>A new array containing the set items.</returns>
     public T[] ToArray()
     {
-        var result = new T[_count];
+        T[] result = new T[_count];
         Array.Copy(_items, 0, result, 0, _count);
         return result;
     }
@@ -445,21 +508,26 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
     /// <summary>
     /// Returns an enumerator that iterates through the set in indexed order.
     /// </summary>
-    /// <returns>The enumerator.</returns>
+    /// <returns>An <see cref="Enumerator" /> over the set items.</returns>
     public Enumerator GetEnumerator() =>
         new(this);
 
-    /// <inheritdoc />
-    IEnumerator<T> IEnumerable<T>.GetEnumerator() =>
-        GetEnumerator();
-
-    /// <inheritdoc />
-    IEnumerator IEnumerable.GetEnumerator() =>
-        GetEnumerator();
-
+    /// <summary>
+    /// Adds <paramref name="item" /> via the <see cref="ICollection{T}.Add(T)" /> contract.
+    /// </summary>
+    /// <param name="item">The item to add.</param>
+    /// <remarks>
+    /// Discards the boolean result of <see cref="Add(T)" />; callers that need to detect a duplicate-add should
+    /// invoke the typed <see cref="Add(T)" /> overload directly.
+    /// </remarks>
     void ICollection<T>.Add(T item) =>
         Add(item);
 
+    /// <summary>
+    /// Appends the specified item to the open-addressing hash table.
+    /// </summary>
+    /// <param name="item">The item to add.</param>
+    /// <param name="itemIndex">The index of the item in the contiguous item storage.</param>
     private void AddToHashTable(T item, int itemIndex)
     {
         int bucket = GetBucket(item, _buckets.Length);
@@ -468,6 +536,10 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
         _buckets[bucket] = itemIndex + 1;
     }
 
+    /// <summary>
+    /// Rebuilds the hash table from the contiguous item storage. Used after operations that change the
+    /// logical order of items (insertion at a non-tail index, removal, move, replace).
+    /// </summary>
     private void RebuildHashTable()
     {
         if (_count == 0)
@@ -486,6 +558,11 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
             AddToHashTable(_items[i], i);
     }
 
+    /// <summary>
+    /// Grows the bucket array if the load factor would exceed three quarters at <paramref name="itemCount" />,
+    /// and rebuilds the chain links.
+    /// </summary>
+    /// <param name="itemCount">The intended item count after the pending operation.</param>
     private void EnsureHashCapacity(int itemCount)
     {
         if (itemCount == 0)
@@ -499,23 +576,44 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
         }
     }
 
+    /// <summary>
+    /// Reallocates the bucket array to the specified power-of-two capacity. Existing chain links are
+    /// discarded; the caller is expected to follow with <see cref="RebuildHashTable" /> when items are present.
+    /// </summary>
+    /// <param name="capacity">The new bucket count.</param>
     private void ResizeBuckets(int capacity)
     {
         _buckets = new int[capacity];
     }
 
+    /// <summary>
+    /// Resizes the parallel item and chain-link arrays to the specified capacity.
+    /// </summary>
+    /// <param name="capacity">The new element capacity.</param>
     private void ResizeItemStorage(int capacity)
     {
         Array.Resize(ref _items, capacity);
         Array.Resize(ref _next, capacity);
     }
 
+    /// <summary>
+    /// Returns a power-of-two bucket count that keeps the table within the configured load factor for
+    /// <paramref name="itemCapacity" /> items.
+    /// </summary>
+    /// <param name="itemCapacity">The intended item capacity.</param>
+    /// <returns>The bucket array length to allocate.</returns>
     private int CalculateBucketCapacity(int itemCapacity)
     {
         int minimum = Math.Max(DefaultCapacity, (itemCapacity * MaxLoadFactorDenominator / MaxLoadFactorNumerator) + 1);
         return RoundUpToPowerOfTwo(minimum);
     }
 
+    /// <summary>
+    /// Computes the next item capacity by doubling the current size, with a clamp at
+    /// <see cref="Array.MaxLength" /> and a floor at <paramref name="minimum" />.
+    /// </summary>
+    /// <param name="minimum">The minimum acceptable capacity.</param>
+    /// <returns>The chosen capacity.</returns>
     private int GrowCapacity(int minimum)
     {
         int capacity = _items.Length == 0 ? DefaultCapacity : _items.Length * 2;
@@ -529,12 +627,24 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
         return capacity;
     }
 
+    /// <summary>
+    /// Computes the bucket index for the specified item, masked into the power-of-two bucket array length.
+    /// </summary>
+    /// <param name="item">The item whose hash is to be bucketed.</param>
+    /// <param name="bucketCount">The current bucket array length; must be a power of two.</param>
+    /// <returns>The bucket index in the range <c>[0, bucketCount)</c>.</returns>
     private int GetBucket(T item, int bucketCount)
     {
         int hash = _comparer.GetHashCode(item) & 0x7fffffff;
         return hash & (bucketCount - 1);
     }
 
+    /// <summary>
+    /// Rounds <paramref name="value" /> up to the next power of two, clamped between <c>1</c> and
+    /// <c>2^30</c>.
+    /// </summary>
+    /// <param name="value">The value to round.</param>
+    /// <returns>The smallest power of two greater than or equal to <paramref name="value" />.</returns>
     private static int RoundUpToPowerOfTwo(int value)
     {
         if (value <= 1)
@@ -554,6 +664,12 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
         return value;
     }
 
+    /// <summary>
+    /// Returns a capacity hint suitable for sizing storage from an enumerable, preferring the fast paths
+    /// exposed by <see cref="ICollection{T}" /> and <see cref="IReadOnlyCollection{T}" />.
+    /// </summary>
+    /// <param name="collection">The source enumerable, which may be <see langword="null" />.</param>
+    /// <returns>The hinted capacity, or <c>0</c> when the count cannot be determined cheaply.</returns>
     private static int GetCapacityHint(IEnumerable<T>? collection)
     {
         if (collection is null)
@@ -566,75 +682,23 @@ public class IndexedSet<T> : IList<T>, IReadOnlyList<T>
                 : 0;
     }
 
-    private static void ValidateItem(T item, string paramName)
-    {
-        if (item is null)
-            throw new ArgumentNullException(paramName);
-    }
-
+    /// <summary>
+    /// Throws <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is not within
+    /// <c>[0, <see cref="Count" />)</c>.
+    /// </summary>
+    /// <param name="index">The index to validate.</param>
     private void ValidateIndex(int index)
     {
-        if ((uint)index >= (uint)_count)
-            throw new ArgumentOutOfRangeException(nameof(index));
-    }
-
-    private void ValidateInsertionIndex(int index)
-    {
-        if ((uint)index > (uint)_count)
-            throw new ArgumentOutOfRangeException(nameof(index));
+        if ((uint)index >= (uint)_count) throw new ArgumentOutOfRangeException(nameof(index));
     }
 
     /// <summary>
-    /// Enumerates an <see cref="IndexedSet{T}" /> without allocating.
+    /// Throws <see cref="ArgumentOutOfRangeException" /> if <paramref name="index" /> is not within
+    /// <c>[0, <see cref="Count" />]</c>.
     /// </summary>
-    public struct Enumerator : IEnumerator<T>
+    /// <param name="index">The insertion index to validate.</param>
+    private void ValidateInsertionIndex(int index)
     {
-        private readonly IndexedSet<T> _owner;
-        private readonly int _version;
-        private int _index;
-        private T _current;
-
-        internal Enumerator(IndexedSet<T> owner)
-        {
-            _owner = owner;
-            _version = owner._version;
-            _index = 0;
-            _current = default!;
-        }
-
-        /// <inheritdoc />
-        public T Current => _current;
-
-        /// <inheritdoc />
-        object IEnumerator.Current => Current;
-
-        /// <inheritdoc />
-        public bool MoveNext()
-        {
-            if (_version != _owner._version)
-                throw new InvalidOperationException("The collection was modified during enumeration.");
-
-            if (_index >= _owner._count)
-                return false;
-
-            _current = _owner._items[_index];
-            _index++;
-            return true;
-        }
-
-        /// <inheritdoc />
-        public void Reset()
-        {
-            if (_version != _owner._version)
-                throw new InvalidOperationException("The collection was modified during enumeration.");
-
-            _index = 0;
-            _current = default!;
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-        }
+        if ((uint)index > (uint)_count) throw new ArgumentOutOfRangeException(nameof(index));
     }
 }
