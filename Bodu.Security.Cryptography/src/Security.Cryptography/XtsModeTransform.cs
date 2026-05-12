@@ -61,7 +61,7 @@ namespace Bodu.Security.Cryptography;
 /// using IBlockCipher data  = new AesBlockCipher(key1);
 /// using IBlockCipher tweak = new AesBlockCipher(key2);
 /// byte[] sectorNumber = BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size
-/// Array.Resize(ref sectorNumber, data.BlockSize);
+/// Array.Resize(ref sectorNumber, data.BlockSize / 8);
 /// IBlockCipherModeTransform xts = new XtsModeTransform(data, tweak, sectorNumber);
 ///
 /// byte[] ciphertext = new byte[plaintext.Length];

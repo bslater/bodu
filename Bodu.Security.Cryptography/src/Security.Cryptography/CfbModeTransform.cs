@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CFB instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
 /// IBlockCipherModeTransform cfb = new CfbModeTransform(cipher, iv);
 ///
 /// byte[] ciphertext = new byte[plaintext.Length];

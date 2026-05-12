@@ -67,7 +67,7 @@ namespace Bodu.Security.Cryptography;
 /// // SIV uses a doubled key: first half drives the MAC, second half drives CTR encryption.
 /// using IBlockCipher s2v = new AesBlockCipher(macKey);
 /// using IBlockCipher ctr = new AesBlockCipher(encKey);
-/// byte[] iv = new byte[s2v.BlockSize]; // ignored by SIV — present for interface compatibility
+/// byte[] iv = new byte[s2v.BlockSize / 8]; // ignored by SIV — present for interface compatibility
 /// using IAeadBlockCipherModeTransform siv = new SivModeTransform(s2v, ctr, iv);
 ///
 /// byte[] sealed_ = siv.Encrypt(plaintext, associatedData: header);

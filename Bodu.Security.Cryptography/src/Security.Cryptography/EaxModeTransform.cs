@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] nonce = RandomNumberGenerator.GetBytes(cipher.BlockSize); // unique per message
+/// byte[] nonce = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message
 /// using IAeadBlockCipherModeTransform eax = new EaxModeTransform(cipher, nonce);
 ///
 /// byte[] sealed_   = eax.Encrypt(plaintext, associatedData: header);
