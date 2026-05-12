@@ -114,18 +114,19 @@ public abstract partial class Skein<T>
     /// <paramref name="hashSizeBits"/> is not one of the values in <paramref name="validHashSizesBits"/>.
     /// </exception>
     private protected Skein(ThreefishBlockCipher cipher, int hashSizeBits, int[] validHashSizesBits)
-        : base(blockSize: cipher.BlockSize, keySize: cipher.BlockSize)
+        : base(blockSize: cipher.BlockSize / 8, keySize: cipher.BlockSize / 8)
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSizeBits, validHashSizesBits);
 
         this._cipher = cipher;
         this.HashSizeValue = hashSizeBits;
 
-        var stateWords = cipher.BlockSize / sizeof(ulong);
+        var blockBytes = cipher.BlockSize / 8;
+        var stateWords = blockBytes / sizeof(ulong);
         this._state = new ulong[stateWords];
         this._initialChainingValue = new ulong[stateWords];
-        this._pendingBlock = new byte[cipher.BlockSize];
-        this._ubiCipherOutput = new byte[cipher.BlockSize];
+        this._pendingBlock = new byte[blockBytes];
+        this._ubiCipherOutput = new byte[blockBytes];
 
         // Default to the plain-hash profile: empty key means no KEY UBI phase is run. Callers that want the
         // keyed Skein-MAC mode supply a non-empty key via the Key property before hashing.
