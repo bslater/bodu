@@ -52,14 +52,9 @@ public sealed class SkipjackBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// Length of a Skipjack key (80 bits).
+    /// Length of a Skipjack key, in bits (80 bits / 10 bytes).
     /// </summary>
-    public const int KeySizeBits = 80;
-
-    /// <summary>
-    /// Length of a Skipjack key (10 bytes); equal to <see cref="KeySizeBits"/> / 8.
-    /// </summary>
-    public const int KeySizeBytes = KeySizeBits / 8;
+    public const int KeySize = 80;
 
     // Static F-table (8 × 8 S-box)
     private static readonly byte[] s_ftable =
@@ -94,7 +89,7 @@ public sealed class SkipjackBlockCipher
     /// <exception cref="ArgumentException">Thrown if <paramref name="keyBytes"/> is not exactly 10 bytes long.</exception>
     public SkipjackBlockCipher(ReadOnlySpan<byte> keyBytes)
     {
-        if (keyBytes.Length != KeySizeBytes)
+        if (keyBytes.Length != KeySize / 8)
             throw new ArgumentException(
                 CryptoResourceStrings.ArgumentException_Skipjack_InvalidKeyLength,
                 nameof(keyBytes));
@@ -191,8 +186,8 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Encrypts a single 64-bit block.
     /// </summary>
-    /// <param name="input">The plaintext block to encrypt. Must be exactly <see cref="BlockSize"/> / 8 bytes long (8 bytes for Skipjack).</param>
-    /// <param name="output">Buffer that receives the 8-byte ciphertext. Must be exactly <see cref="BlockSize"/> / 8 bytes long.</param>
+    /// <param name="input">The plaintext block to encrypt. Must be exactly 8 bytes (the Skipjack 64-bit block).</param>
+    /// <param name="output">Buffer that receives the 8-byte ciphertext.</param>
     /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is too small.</exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>

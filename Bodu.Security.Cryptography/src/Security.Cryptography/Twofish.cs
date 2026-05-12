@@ -72,14 +72,14 @@ public sealed class Twofish
     internal const int BlockSizeBits = 128;
 
     /// <summary>
-    /// The minimum permitted key size, in bytes.
+    /// The minimum permitted key size, in bits (128 bits / 16 bytes).
     /// </summary>
-    internal const int MinKeySizeBytes = 16;
+    internal const int MinKeySize = 128;
 
     /// <summary>
-    /// The maximum permitted key size, in bytes.
+    /// The maximum permitted key size, in bits (256 bits / 32 bytes).
     /// </summary>
-    internal const int MaxKeySizeBytes = 32;
+    internal const int MaxKeySize = 256;
 
     // Twofish has a single fixed 128-bit block size.
     private static readonly KeySizes[] s_twofishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];

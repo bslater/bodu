@@ -147,9 +147,15 @@ public abstract class TweakableSymmetricAlgorithm
     }
 
     /// <summary>
-    /// Gets or sets the size, in bits, of the tweak value for the algorithm.
+    /// Gets or sets the size, in bits, of the tweak value for the algorithm. For example, the Threefish family
+    /// uses a 128-bit (16-byte) tweak.
     /// </summary>
-    /// <value>An integer representing the bit length of the tweak. Must match one of the values defined in <see cref="LegalTweakSizes"/>.</value>
+    /// <value>
+    /// An integer representing the bit length of the tweak. Must match one of the values defined in
+    /// <see cref="LegalTweakSizes"/>. Divide by 8 to obtain the equivalent byte length used when
+    /// allocating the <see cref="Tweak"/> buffer.
+    /// </value>
+    /// <returns>The tweak size in bits.</returns>
     /// <exception cref="CryptographicException">Thrown when the value does not match a valid tweak size defined in <see cref="LegalTweakSizes"/>.</exception>
     /// <remarks>Changing this value clears the current tweak. A new one can be generated via <see cref="GenerateTweak"/>.</remarks>
     public virtual int TweakSize

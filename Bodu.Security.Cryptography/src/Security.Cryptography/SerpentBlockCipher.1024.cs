@@ -29,14 +29,9 @@ public sealed class Serpent1024Cipher
     : SerpentBlockCipher
 {
     /// <summary>
-    /// The Serpent-1024 key size, in bits.
+    /// The Serpent-1024 key size, in bits (1024 bits / 128 bytes).
     /// </summary>
-    public const int KeySizeBits = 1024;
-
-    /// <summary>
-    /// The Serpent-1024 key size, in bytes; equal to <see cref="KeySizeBits"/> / 8.
-    /// </summary>
-    public const int KeySizeBytes = KeySizeBits / 8;
+    public const int KeySize = 1024;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Serpent1024Cipher"/> class using the specified key and tweak.

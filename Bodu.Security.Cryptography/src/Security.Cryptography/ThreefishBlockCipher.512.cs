@@ -46,14 +46,9 @@ public sealed class Threefish512Cipher
         : base(key, tweak) { }
 
     /// <summary>
-    /// Length of a Threefish-512 key (512 bits).
+    /// Length of a Threefish-512 key, in bits (512 bits / 64 bytes).
     /// </summary>
-    public const int KeySizeBits = 512;
-
-    /// <summary>
-    /// Length of a Threefish-512 key (64 bytes), equal to <see cref="KeySizeBits"/> / 8.
-    /// </summary>
-    public const int KeySizeBytes = KeySizeBits / 8;
+    public const int KeySize = 512;
 
     /// <inheritdoc />
     public override int BlockSize => 512;
