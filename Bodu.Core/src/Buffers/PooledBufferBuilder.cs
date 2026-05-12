@@ -23,6 +23,14 @@ namespace Bodu.Buffers;
 /// cleared before the underlying array is returned to the pool, preventing unintended object retention.
 /// </para>
 /// <para>
+/// <see cref="ArrayPool{T}.Shared"/> serves rentals out of fixed-size buckets — currently a power-of-two
+/// progression with a minimum bucket of 16 elements on the supported runtimes. As a result, the rented buffer
+/// is always at least as large as the requested capacity, but a request smaller than 16 will still be served
+/// from the 16-element bucket, and larger requests are rounded up to the next bucket size. Callers should
+/// therefore treat the constructor's <c>initialCapacity</c> as a lower bound and read <see cref="Capacity"/>
+/// for the actual rented length.
+/// </para>
+/// <para>
 /// Call <see cref="Reset"/> to clear accumulated data and reuse the current rented buffer without a pool
 /// round-trip. Call <see cref="Dispose"/> when the builder is no longer needed.
 /// </para>
@@ -46,6 +54,14 @@ public sealed class PooledBufferBuilder<T> :
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="initialCapacity"/> is less than 1.
     /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The value is a lower bound, not an exact size: <see cref="ArrayPool{T}.Shared"/> serves rentals out of
+    /// power-of-two buckets with a 16-element minimum on the supported runtimes, so a request smaller than 16
+    /// will still produce a 16-element array and larger requests are rounded up to the next bucket size. Inspect
+    /// <see cref="Capacity"/> immediately after construction to observe the actual rented length.
+    /// </para>
+    /// </remarks>
     public PooledBufferBuilder(int initialCapacity = 256)
     {
         ThrowHelper.ThrowIfLessThan(initialCapacity, 1);
@@ -86,8 +102,10 @@ public sealed class PooledBufferBuilder<T> :
     /// </summary>
     /// <returns>
     /// The length of the underlying rented array. This value is always greater than or equal to
-    /// <see cref="WrittenCount"/> and may be larger than the capacity requested at construction due to
-    /// <see cref="ArrayPool{T}"/> rounding behaviour.
+    /// <see cref="WrittenCount"/> and is typically larger than the capacity requested at construction:
+    /// <see cref="ArrayPool{T}.Shared"/> rounds rentals up to the next bucket size (powers of two with a
+    /// 16-element minimum on the supported runtimes), so requests smaller than 16 still produce a 16-element
+    /// array. Callers should not assume parity with the constructor argument.
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public int Capacity
