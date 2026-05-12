@@ -16,59 +16,60 @@ public sealed partial class OcbModeTransformTests
     /// <summary>
     /// Verifies that a one-bit mutation of the authentication tag causes
     /// <see cref="OcbModeTransform.Decrypt" /> to throw <see cref="CryptographicException" />
-    /// when the transform is configured with a non-default tag length.
+    /// when the transform is configured with a non-default tag size.
     /// </summary>
     /// <remarks>
-    /// Exercises tag lengths shorter than the default 128 bits to confirm that the
+    /// Exercises tag sizes shorter than the default 128 bits to confirm that the
     /// fixed-time tag comparison in <see cref="CryptographicOperations.FixedTimeEquals" />
-    /// operates correctly over a truncated tag window (8 or 12 bytes) rather than
-    /// the full 16-byte block.
+    /// operates correctly over a truncated tag window (64 or 96 bits / 8 or 12 bytes)
+    /// rather than the full 128-bit (16-byte) block.
     /// </remarks>
     [TestMethod]
-    [DataRow(8, DisplayName = "tagLen = 8")]
-    [DataRow(12, DisplayName = "tagLen = 12")]
-    public void Decrypt_WithNonDefaultTagLength_WhenTagTampered_ShouldThrowCryptographicException(int tagLen)
+    [DataRow(64, DisplayName = "tagSize = 64 bits")]
+    [DataRow(96, DisplayName = "tagSize = 96 bits")]
+    public void Decrypt_WithNonDefaultTagSize_WhenTagTampered_ShouldThrowCryptographicException(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = new byte[ExpectedBlockSize];
         var plaintext = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
-        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
-        var ct = new byte[plaintext.Length + tagLen];
+        var tagBytes = tagSize / 8;
+        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagSize);
+        var ct = new byte[plaintext.Length + tagBytes];
         enc.Encrypt(plaintext, ct);
         ct[ct.Length - 1] ^= 0x01;         // flip last byte of tag
 
-        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
+        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagSize);
         Assert.ThrowsExactly<CryptographicException>(() =>
             dec.Decrypt(ct, new byte[plaintext.Length]),
-            $"A tampered tag must always be rejected (tagLen = {tagLen}).");
+            $"A tampered tag must always be rejected (tagSize = {tagSize} bits).");
     }
 
     /// <summary>
-    /// Verifies that decrypting a ciphertext produced with <c>tagLen = 16</c> using a
-    /// transform configured with <c>tagLen = 12</c> throws <see cref="CryptographicException" />.
+    /// Verifies that decrypting a ciphertext produced with <c>tagSize = 128</c> bits using a
+    /// transform configured with <c>tagSize = 96</c> bits throws <see cref="CryptographicException" />.
     /// </summary>
     /// <remarks>
-    /// When the tag lengths are mismatched the ciphertext/tag boundary is shifted: four
+    /// When the tag sizes are mismatched the ciphertext/tag boundary is shifted: four
     /// real ciphertext bytes are absorbed into the 12-byte received-tag window, corrupting
     /// the plaintext that feeds the checksum and causing the recomputed tag to differ from
     /// the received tag.
     /// </remarks>
     [TestMethod]
-    public void Decrypt_WhenTagLengthMismatch_ShouldThrowCryptographicException()
+    public void Decrypt_WhenTagSizeMismatch_ShouldThrowCryptographicException()
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = new byte[ExpectedBlockSize];
         var plaintext = new byte[ExpectedBlockSize];
 
-        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen: 16);
+        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagSize: 128);
         var ct = new byte[plaintext.Length + 16];
         enc.Encrypt(plaintext, ct);
 
-        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen: 12);
+        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagSize: 96);
         Assert.ThrowsExactly<CryptographicException>(() =>
             dec.Decrypt(ct, new byte[ct.Length - 12]),
-            "Decrypting with a mismatched tagLen must fail tag verification.");
+            "Decrypting with a mismatched tagSize must fail tag verification.");
     }
 
     // ── Security properties ───────────────────────────────────────────────────────────────────

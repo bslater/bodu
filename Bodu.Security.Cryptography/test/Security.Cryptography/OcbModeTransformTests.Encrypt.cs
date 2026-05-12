@@ -12,28 +12,29 @@ using System.Linq;
 
 public sealed partial class OcbModeTransformTests
 {
-    // ── Output length — non-default tag lengths ───────────────────────────────────────────────
+    // ── Output length — non-default tag sizes ─────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that <see cref="OcbModeTransform.Encrypt" /> writes exactly
-    /// <c>|PT| + tagLen</c> bytes to the output buffer when a non-default tag length
+    /// <c>|PT| + (tagSize / 8)</c> bytes to the output buffer when a non-default tag size
     /// is used, and that the return value equals the same quantity.
     /// </summary>
     [TestMethod]
-    [DataRow(8, DisplayName = "tagLen = 8")]
-    [DataRow(12, DisplayName = "tagLen = 12")]
-    [DataRow(16, DisplayName = "tagLen = 16")]
-    public void Encrypt_WithGivenTagLength_OutputShouldBePlaintextLengthPlusTagLen(int tagLen)
+    [DataRow(64, DisplayName = "tagSize = 64 bits")]
+    [DataRow(96, DisplayName = "tagSize = 96 bits")]
+    [DataRow(128, DisplayName = "tagSize = 128 bits")]
+    public void Encrypt_WithGivenTagSize_OutputShouldBePlaintextLengthPlusTagBytes(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var plaintext = new byte[ExpectedBlockSize];
-        OcbModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagLen);
-        var output = new byte[plaintext.Length + tagLen];
+        OcbModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagSize);
+        var tagBytes = tagSize / 8;
+        var output = new byte[plaintext.Length + tagBytes];
 
         var written = transform.Encrypt(plaintext, output);
 
-        Assert.AreEqual(plaintext.Length + tagLen, written,
-            $"Encrypt must return |PT| + tagLen bytes (tagLen = {tagLen}).");
+        Assert.AreEqual(plaintext.Length + tagBytes, written,
+            $"Encrypt must return |PT| + (tagSize / 8) bytes (tagSize = {tagSize} bits).");
     }
 
     // ── Domain separation ─────────────────────────────────────────────────────────────────────
