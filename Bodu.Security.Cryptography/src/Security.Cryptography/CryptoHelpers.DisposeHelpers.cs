@@ -151,13 +151,11 @@ internal static partial class CryptoHelpers
     /// </remarks>
     public static void ClearAndNullify(MemoryStream stream)
     {
-        ArgumentNullException.ThrowIfNull(stream);
+        ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(stream);
 
-        if (!stream.TryGetBuffer(out ArraySegment<byte> segment) || segment.Array is null)
-        {
+        if (segment.Array is null)
             throw new InvalidOperationException(
-                "The MemoryStream does not expose its underlying buffer.");
-        }
+                CryptoResourceStrings.InvalidOperationException_MemoryStreamBufferInaccessible);
 
         CryptographicOperations.ZeroMemory(segment.Array.AsSpan(0, segment.Array.Length));
 

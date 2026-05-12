@@ -57,7 +57,9 @@ public sealed class NoPadding : IPaddingStrategy
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         if (input.Length % blockSize != 0)
-            throw new ArgumentException("Input must be a multiple of block size when using no padding.", nameof(input));
+            throw new ArgumentException(
+                CryptoResourceStrings.ArgumentException_NoPadding_InputNotAligned,
+                nameof(input));
         return input.ToArray();
     }
 

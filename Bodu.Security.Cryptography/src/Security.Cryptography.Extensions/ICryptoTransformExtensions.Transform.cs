@@ -207,9 +207,7 @@ public static partial class ICryptoTransformExtensions
         cryptoStream.Write(input);
         cryptoStream.FlushFinalBlock();
 
-        if (!ms.TryGetBuffer(out ArraySegment<byte> segment))
-            throw new InvalidOperationException("Failed to access the internal transformed data buffer.");
-
+        ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(ms);
         segment.AsSpan().CopyTo(destination);
         return segment.Count;
     }

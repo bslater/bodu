@@ -88,7 +88,7 @@ public sealed class Iso7816_4Padding : IPaddingStrategy
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         if (input.Length == 0 || input.Length % blockSize != 0)
-            throw new ArgumentException("Input is not a valid ISO/IEC 7816-4 padded block sequence.", nameof(input));
+            CryptoHelpers.ThrowInvalidPaddedSequence("ISO/IEC 7816-4", nameof(input));
 
         var length = input.Length;
         var start = length - blockSize;
@@ -128,7 +128,7 @@ public sealed class Iso7816_4Padding : IPaddingStrategy
         }
 
         if (terminatorSeen == 0 || valid == 0)
-            throw new CryptographicException("Invalid ISO/IEC 7816-4 padding.");
+            CryptoHelpers.ThrowInvalidPadding("ISO/IEC 7816-4");
 
         return input[..terminatorIndex].ToArray();
     }

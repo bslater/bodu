@@ -324,7 +324,8 @@ public abstract partial class Skein<T>
     /// <param name="block">Ignored.</param>
     /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
     protected override void ProcessBlock(ReadOnlySpan<byte> block) =>
-        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm ProcessBlock pipeline; UBI lookahead requires HashCore / HashFinal to drive compression directly.");
+        throw new InvalidOperationException(
+            CryptoResourceStrings.InvalidOperationException_SkeinBypassesProcessBlock);
 
     /// <summary>
     /// Pipeline contract marker — see the section comment above. Skein's UBI tweak field carries the
@@ -335,7 +336,8 @@ public abstract partial class Skein<T>
     /// <returns>Never returns — always throws.</returns>
     /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
-        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm PadBlock pipeline; UBI encodes message length in the tweak.");
+        throw new InvalidOperationException(
+            CryptoResourceStrings.InvalidOperationException_SkeinBypassesPadBlock);
 
     /// <summary>
     /// Pipeline contract marker — see the section comment above. Skein finalises via the OUTPUT UBI phase
@@ -344,7 +346,8 @@ public abstract partial class Skein<T>
     /// <returns>Never returns — always throws.</returns>
     /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
     protected override byte[] ProcessFinalBlock() =>
-        throw new InvalidOperationException("Skein bypasses the BlockHashAlgorithm ProcessFinalBlock pipeline; the OUTPUT UBI phase is driven from HashFinal.");
+        throw new InvalidOperationException(
+            CryptoResourceStrings.InvalidOperationException_SkeinBypassesProcessFinalBlock);
 
     /// <summary>
     /// Releases the unmanaged resources used by the algorithm, securely clears all intermediate state, and disposes the

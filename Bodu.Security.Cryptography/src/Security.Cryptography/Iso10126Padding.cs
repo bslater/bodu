@@ -95,14 +95,14 @@ public sealed class Iso10126Padding : IPaddingStrategy
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
         if (input.Length == 0 || input.Length % blockSize != 0)
-            throw new ArgumentException("Input is not a valid ISO 10126 padded block sequence.", nameof(input));
+            CryptoHelpers.ThrowInvalidPaddedSequence("ISO 10126", nameof(input));
 
         var length = input.Length;
         int padLen = input[length - 1];
 
         // Only the trailing length byte can be validated; interior pad bytes are random.
         if (padLen < 1 || padLen > blockSize)
-            throw new CryptographicException("Invalid ISO 10126 padding.");
+            CryptoHelpers.ThrowInvalidPadding("ISO 10126");
 
         return input[..(length - padLen)].ToArray();
     }

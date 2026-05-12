@@ -631,7 +631,8 @@ public sealed class ParallelMerkleTreeHash : IDisposable
 #pragma warning restore VSTHRD003
         }
 
-        return this._rootHash ?? throw new InvalidOperationException("No input data was provided.");
+        return this._rootHash ?? throw new InvalidOperationException(
+            CryptoResourceStrings.InvalidOperationException_NoInputData);
     }
 
     /// <summary>
@@ -677,8 +678,8 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     {
         using var hasher = this._algorithmFactory();
         var result = new byte[hasher.HashSize / 8];
-        if (!hasher.TryComputeHash(data, result, out _))
-            throw new CryptographicException("TryComputeHash returned false; the output buffer may be too small.");
+        CryptoHelpers.ThrowIfHashAlgorithmDestinationTooSmall(
+            hasher.TryComputeHash(data, result, out _));
         return result;
     }
 

@@ -240,4 +240,64 @@
   <data name="CryptographicException_CtrCounterWrapped" xml:space="preserve">
     <value>The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
+  <data name="ArgumentException_InvalidIVBits" xml:space="preserve">
+    <value>The initialisation vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes).</value>
+  </data>
+  <data name="ArgumentException_InvalidPaddedSequence" xml:space="preserve">
+    <value>Input is not a valid {0} padded block sequence.</value>
+  </data>
+  <data name="ArgumentException_Camellia_InvalidKeyLength" xml:space="preserve">
+    <value>The Camellia key must be 16, 24, or 32 bytes in length.</value>
+  </data>
+  <data name="ArgumentException_Twofish_InvalidKeyLength" xml:space="preserve">
+    <value>The Twofish key must be 16, 24, or 32 bytes in length.</value>
+  </data>
+  <data name="ArgumentException_Skipjack_InvalidKeyLength" xml:space="preserve">
+    <value>Skipjack requires an 80-bit key (10 bytes).</value>
+  </data>
+  <data name="ArgumentException_NoPadding_InputNotAligned" xml:space="preserve">
+    <value>Input must be a multiple of block size when using no padding.</value>
+  </data>
+  <data name="ArgumentException_InputTooShortForTag" xml:space="preserve">
+    <value>Input must be at least {0} bytes (the tag size).</value>
+  </data>
+  <data name="CryptographicException_HashAlgorithmDestinationBufferTooSmall" xml:space="preserve">
+    <value>The hash algorithm's destination buffer was too small.</value>
+  </data>
+  <data name="CryptographicException_HashAlgorithmDidNotProduceValue" xml:space="preserve">
+    <value>Hash algorithm did not produce a value.</value>
+  </data>
+  <data name="CryptographicException_InvalidPaddingScheme" xml:space="preserve">
+    <value>Invalid {0} padding.</value>
+  </data>
+  <data name="CryptographicException_UnsupportedPaddingMode" xml:space="preserve">
+    <value>Unsupported padding mode: {0}.</value>
+  </data>
+  <data name="InvalidOperationException_CipherFactoryReturnedNull" xml:space="preserve">
+    <value>The cipher factory returned null.</value>
+  </data>
+  <data name="InvalidOperationException_MemoryStreamBufferInaccessible" xml:space="preserve">
+    <value>The MemoryStream does not expose its underlying buffer.</value>
+  </data>
+  <data name="InvalidOperationException_NoInputData" xml:space="preserve">
+    <value>No input data was provided.</value>
+  </data>
+  <data name="InvalidOperationException_SkeinBypassesPadBlock" xml:space="preserve">
+    <value>Skein bypasses the BlockHashAlgorithm PadBlock pipeline; UBI encodes message length in the tweak.</value>
+  </data>
+  <data name="InvalidOperationException_SkeinBypassesProcessBlock" xml:space="preserve">
+    <value>Skein bypasses the BlockHashAlgorithm ProcessBlock pipeline; UBI lookahead requires HashCore / HashFinal to drive compression directly.</value>
+  </data>
+  <data name="InvalidOperationException_SkeinBypassesProcessFinalBlock" xml:space="preserve">
+    <value>Skein bypasses the BlockHashAlgorithm ProcessFinalBlock pipeline; the OUTPUT UBI phase is driven from HashFinal.</value>
+  </data>
+  <data name="NotSupportedException_AadTooLongForLengthEncoding" xml:space="preserve">
+    <value>AAD must be shorter than {0} bytes for {1}-byte length encoding.</value>
+  </data>
+  <data name="NotSupportedException_Poly1305DoesNotUsePadding" xml:space="preserve">
+    <value>Poly1305 does not use block padding.</value>
+  </data>
+  <data name="NotSupportedException_UnsupportedCipherMode" xml:space="preserve">
+    <value>The cipher mode '{0}' is not supported.</value>
+  </data>
 </root>

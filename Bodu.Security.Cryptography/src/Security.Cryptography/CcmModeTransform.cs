@@ -247,7 +247,8 @@ public sealed class CcmModeTransform
         if (hasAad)
         {
             if (aad.Length >= 0xFF00)
-                throw new NotSupportedException("AAD must be shorter than 65280 bytes for 2-byte length encoding.");
+                throw new NotSupportedException(
+                    string.Format(CryptoResourceStrings.NotSupportedException_AadTooLongForLengthEncoding, 0xFF00, 2));
 
             // Encode: 2-byte length + aad + zero-padding to block multiple.
             var encodedLen = 2 + aad.Length;

@@ -79,11 +79,74 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The initialisation vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes)..
+        /// </summary>
+        internal static string ArgumentException_InvalidIVBits {
+            get {
+                return ResourceManager.GetString("ArgumentException_InvalidIVBits", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Invalid IV size {0}. Size of IV must be {1}..
         /// </summary>
         internal static string ArgumentException_InvalidIvLength {
             get {
                 return ResourceManager.GetString("ArgumentException_InvalidIvLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input is not a valid {0} padded block sequence..
+        /// </summary>
+        internal static string ArgumentException_InvalidPaddedSequence {
+            get {
+                return ResourceManager.GetString("ArgumentException_InvalidPaddedSequence", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Camellia key must be 16, 24, or 32 bytes in length..
+        /// </summary>
+        internal static string ArgumentException_Camellia_InvalidKeyLength {
+            get {
+                return ResourceManager.GetString("ArgumentException_Camellia_InvalidKeyLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The Twofish key must be 16, 24, or 32 bytes in length..
+        /// </summary>
+        internal static string ArgumentException_Twofish_InvalidKeyLength {
+            get {
+                return ResourceManager.GetString("ArgumentException_Twofish_InvalidKeyLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skipjack requires an 80-bit key (10 bytes)..
+        /// </summary>
+        internal static string ArgumentException_Skipjack_InvalidKeyLength {
+            get {
+                return ResourceManager.GetString("ArgumentException_Skipjack_InvalidKeyLength", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input must be a multiple of block size when using no padding..
+        /// </summary>
+        internal static string ArgumentException_NoPadding_InputNotAligned {
+            get {
+                return ResourceManager.GetString("ArgumentException_NoPadding_InputNotAligned", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Input must be at least {0} bytes (the tag size)..
+        /// </summary>
+        internal static string ArgumentException_InputTooShortForTag {
+            get {
+                return ResourceManager.GetString("ArgumentException_InputTooShortForTag", resourceCulture);
             }
         }
         
@@ -168,6 +231,24 @@ namespace Bodu {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to The hash algorithm's destination buffer was too small..
+        /// </summary>
+        internal static string CryptographicException_HashAlgorithmDestinationBufferTooSmall {
+            get {
+                return ResourceManager.GetString("CryptographicException_HashAlgorithmDestinationBufferTooSmall", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Hash algorithm did not produce a value..
+        /// </summary>
+        internal static string CryptographicException_HashAlgorithmDidNotProduceValue {
+            get {
+                return ResourceManager.GetString("CryptographicException_HashAlgorithmDidNotProduceValue", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid hash size: The hash size must be a positive multiple of {0} bytes..
         /// </summary>
@@ -257,6 +338,15 @@ namespace Bodu {
                 return ResourceManager.GetString("CryptographicException_InvalidPadding", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid {0} padding..
+        /// </summary>
+        internal static string CryptographicException_InvalidPaddingScheme {
+            get {
+                return ResourceManager.GetString("CryptographicException_InvalidPaddingScheme", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to The specified value for &apos;{0}&apos; is not supported by this algorithm..
@@ -330,6 +420,15 @@ namespace Bodu {
             }
         }
         
+        /// <summary>
+        ///   Looks up a localized string similar to Unsupported padding mode: {0}..
+        /// </summary>
+        internal static string CryptographicException_UnsupportedPaddingMode {
+            get {
+                return ResourceManager.GetString("CryptographicException_UnsupportedPaddingMode", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The customization string must be set before any data is absorbed..
         /// </summary>
@@ -421,11 +520,92 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The cipher factory returned null..
+        /// </summary>
+        internal static string InvalidOperationException_CipherFactoryReturnedNull {
+            get {
+                return ResourceManager.GetString("InvalidOperationException_CipherFactoryReturnedNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The MemoryStream does not expose its underlying buffer..
+        /// </summary>
+        internal static string InvalidOperationException_MemoryStreamBufferInaccessible {
+            get {
+                return ResourceManager.GetString("InvalidOperationException_MemoryStreamBufferInaccessible", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to No input data was provided..
+        /// </summary>
+        internal static string InvalidOperationException_NoInputData {
+            get {
+                return ResourceManager.GetString("InvalidOperationException_NoInputData", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skein bypasses the BlockHashAlgorithm PadBlock pipeline; UBI encodes message length in the tweak..
+        /// </summary>
+        internal static string InvalidOperationException_SkeinBypassesPadBlock {
+            get {
+                return ResourceManager.GetString("InvalidOperationException_SkeinBypassesPadBlock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skein bypasses the BlockHashAlgorithm ProcessBlock pipeline; UBI lookahead requires HashCore / HashFinal to drive compression directly..
+        /// </summary>
+        internal static string InvalidOperationException_SkeinBypassesProcessBlock {
+            get {
+                return ResourceManager.GetString("InvalidOperationException_SkeinBypassesProcessBlock", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Skein bypasses the BlockHashAlgorithm ProcessFinalBlock pipeline; the OUTPUT UBI phase is driven from HashFinal..
+        /// </summary>
+        internal static string InvalidOperationException_SkeinBypassesProcessFinalBlock {
+            get {
+                return ResourceManager.GetString("InvalidOperationException_SkeinBypassesProcessFinalBlock", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The cryptographic transform has already been finalized and cannot be reused..
         /// </summary>
         internal static string InvalidOperationException_TransformAlreadyFinalized {
             get {
                 return ResourceManager.GetString("InvalidOperationException_TransformAlreadyFinalized", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to AAD must be shorter than {0} bytes for {1}-byte length encoding..
+        /// </summary>
+        internal static string NotSupportedException_AadTooLongForLengthEncoding {
+            get {
+                return ResourceManager.GetString("NotSupportedException_AadTooLongForLengthEncoding", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Poly1305 does not use block padding..
+        /// </summary>
+        internal static string NotSupportedException_Poly1305DoesNotUsePadding {
+            get {
+                return ResourceManager.GetString("NotSupportedException_Poly1305DoesNotUsePadding", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The cipher mode '{0}' is not supported..
+        /// </summary>
+        internal static string NotSupportedException_UnsupportedCipherMode {
+            get {
+                return ResourceManager.GetString("NotSupportedException_UnsupportedCipherMode", resourceCulture);
             }
         }
     }

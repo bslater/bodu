@@ -200,9 +200,7 @@ public static partial class ICryptoTransformExtensions
 
             await cryptoStream.FlushFinalBlockAsync(cancellationToken).ConfigureAwait(false);
 
-            if (!ms.TryGetBuffer(out ArraySegment<byte> segment))
-                throw new InvalidOperationException("Failed to access the internal transformed data buffer.");
-
+            ArraySegment<byte> segment = CryptoHelpers.GetBufferOrThrowIfInaccessible(ms);
             segment.AsSpan().CopyTo(destination.Span);
             completed = true;
             return segment.Count;
