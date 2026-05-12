@@ -36,9 +36,9 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 ///
 /// IPaddingStrategy padding = new Pkcs7Padding();
-/// byte[] padded = padding.Pad(plaintext, blockSize: 16);
+/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
 /// // padded.Length is a multiple of 16; the trailing N bytes each equal N.
-/// byte[] recovered = padding.Unpad(padded, blockSize: 16);
+/// byte[] recovered = padding.Unpad(padded, blockSize: 128);
 /// </code>
 /// </example>
 public sealed class Pkcs7Padding : IPaddingStrategy
@@ -50,7 +50,7 @@ public sealed class Pkcs7Padding : IPaddingStrategy
     /// Applies PKCS#7 padding to the input data, ensuring the total output is a multiple of the block size.
     /// </summary>
     /// <param name="input">The data to pad.</param>
-    /// <param name="blockSize">The block size in bytes.</param>
+    /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded data as a byte array.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
@@ -60,9 +60,10 @@ public sealed class Pkcs7Padding : IPaddingStrategy
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
-        var paddingLength = blockSize - (input.Length % blockSize);
+        var size = blockSize / 8;
+        var paddingLength = size - (input.Length % size);
         if (paddingLength == 0)
-            paddingLength = blockSize;
+            paddingLength = size;
 
         var result = new byte[input.Length + paddingLength];
         input.CopyTo(result);
@@ -76,7 +77,7 @@ public sealed class Pkcs7Padding : IPaddingStrategy
     /// Validates and removes PKCS#7 padding from the specified input data.
     /// </summary>
     /// <param name="input">The padded data.</param>
-    /// <param name="blockSize">The block size in bytes.</param>
+    /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The unpadded data as a byte array.</returns>
     /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is empty or not aligned to the block size.</exception>
     /// <exception cref="CryptographicException">Thrown if the padding is invalid or malformed.</exception>
@@ -87,25 +88,27 @@ public sealed class Pkcs7Padding : IPaddingStrategy
                 nameof(blockSize),
                 string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
 
+        var size = blockSize / 8;
+
         // Constant-time padding verification to mitigate CBC padding-oracle attacks (Vaudenay 2002).
-        if (input.Length == 0 || input.Length % blockSize != 0)
+        if (input.Length == 0 || input.Length % size != 0)
             CryptoHelpers.ThrowInvalidPaddedSequence("PKCS#7", nameof(input));
 
         var length = input.Length;
         int padLen = input[length - 1];
 
-        // valid = (padLen >= 1) & (padLen <= blockSize), as a 0/1 mask, branchlessly.
+        // valid = (padLen >= 1) & (padLen <= size), as a 0/1 mask, branchlessly.
         // padLen is a byte value in [0, 255]; (-padLen) is in [-255, 0] and its sign bit
         // is set iff padLen > 0, which gives geOne = 1 iff padLen >= 1.
         var geOne = ((-padLen) >> 31) & 1;                  // 1 iff padLen >= 1
-        var leBlock = ((padLen - blockSize - 1) >> 31) & 1; // 1 iff padLen <= blockSize
+        var leBlock = ((padLen - size - 1) >> 31) & 1;      // 1 iff padLen <= size
         var valid = geOne & leBlock;
 
-        // effective = valid == 1 ? padLen : blockSize  (branchless)
-        var effective = (valid * padLen) + ((1 - valid) * blockSize);
+        // effective = valid == 1 ? padLen : size  (branchless)
+        var effective = (valid * padLen) + ((1 - valid) * size);
 
-        // Walk the last blockSize bytes unconditionally.
-        var start = length - blockSize;
+        // Walk the last block-size bytes unconditionally.
+        var start = length - size;
         for (var i = start; i < length; i++)
         {
             // shouldBePadByte = (i >= length - effective) ? 1 : 0  (branchless)

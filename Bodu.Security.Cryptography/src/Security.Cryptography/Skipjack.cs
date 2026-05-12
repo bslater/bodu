@@ -67,12 +67,12 @@ public sealed class Skipjack
     : SymmetricAlgorithm
 {
     /// <summary>
-    /// The Skipjack block size, in bits.
+    /// Length of the Skipjack block is 64 bits (8 bytes).
     /// </summary>
     internal const int SkipjackBlockSize = 64;
 
     /// <summary>
-    /// The Skipjack key size, in bits. Skipjack defines a single fixed key length.
+    /// Length of the Skipjack key is 80 bits (10 bytes). Skipjack defines a single fixed key length.
     /// </summary>
     internal const int SkipjackKeySize = 80;
 

@@ -10,13 +10,13 @@ public partial class CryptoHelpersTests
 {
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfIvLengthInvalid(byte[], int, string)"/> does not throw when
-    /// the IV length matches the expected length.
+    /// the IV byte length matches the expected block size in bits.
     /// </summary>
     [TestMethod]
     public void ThrowIfIvLengthInvalid_WhenLengthMatches_ShouldNotThrow()
     {
         var iv = new byte[16];
-        CryptoHelpers.ThrowIfIvLengthInvalid(iv, 16);
+        CryptoHelpers.ThrowIfIvLengthInvalid(iv, 128);
     }
 
     /// <summary>
@@ -28,24 +28,26 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfIvLengthInvalid(null!, 16);
+            CryptoHelpers.ThrowIfIvLengthInvalid(null!, 128);
         });
     }
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfIvLengthInvalid(byte[], int, string)"/> throws an
-    /// <see cref="ArgumentException"/> when the IV length does not match the expected length.
+    /// <see cref="ArgumentException"/> when the IV byte length does not match the expected block size in bits.
     /// </summary>
+    /// <param name="actualBytes">The byte length of the supplied IV.</param>
+    /// <param name="expectedBits">The required block size, in bits.</param>
     [TestMethod]
-    [DataRow(8, 16)]
-    [DataRow(32, 16)]
-    public void ThrowIfIvLengthInvalid_WhenLengthMismatches_ShouldThrowArgumentException(int actual, int expected)
+    [DataRow(8, 128)]
+    [DataRow(32, 128)]
+    public void ThrowIfIvLengthInvalid_WhenLengthMismatches_ShouldThrowArgumentException(int actualBytes, int expectedBits)
     {
-        var iv = new byte[actual];
+        var iv = new byte[actualBytes];
 
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            CryptoHelpers.ThrowIfIvLengthInvalid(iv, expected);
+            CryptoHelpers.ThrowIfIvLengthInvalid(iv, expectedBits);
         });
 
         Assert.AreEqual("iv", ex.ParamName);

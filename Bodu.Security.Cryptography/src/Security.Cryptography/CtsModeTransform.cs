@@ -55,7 +55,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CTS instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
 /// IBlockCipherModeTransform cts = new CtsModeTransform(cipher, iv);
 ///
 /// // CTS preserves length: plaintext.Length == ciphertext.Length, no padding required.
@@ -93,7 +93,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         if (input.Length < blockSize)
         {
@@ -126,7 +126,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int EncryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
@@ -150,7 +150,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int DecryptCbc(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         Span<byte> block = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
@@ -176,7 +176,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <param name="output">The destination span for the ciphertext.</param>
     /// <param name="fullBlocks">The number of complete blocks in <paramref name="input"/>.</param>
     /// <param name="tailBytes">The number of bytes in the final partial block (1 to <paramref name="blockSize"/> − 1).</param>
-    /// <param name="blockSize">The underlying cipher block size in bits.</param>
+    /// <param name="blockSize">The underlying cipher block size in bytes.</param>
     /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int EncryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
     {
@@ -188,31 +188,30 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
             EncryptCbc(input[..bodyLength], output[..bodyLength]);
 
         // Penultimate block (full).
-        var size = blockSize / 8;
-        ReadOnlySpan<byte> penultimate = input.Slice(bodyLength, size);
-        Span<byte> e = stackalloc byte[size];
+        ReadOnlySpan<byte> penultimate = input.Slice(bodyLength, blockSize);
+        Span<byte> e = stackalloc byte[blockSize];
 
         // CBC-encrypt the penultimate block: E = CBC_E(P_{n-1}).
-        Span<byte> xored = stackalloc byte[size];
-        for (var i = 0; i < size; i++)
+        Span<byte> xored = stackalloc byte[blockSize];
+        for (var i = 0; i < blockSize; i++)
             xored[i] = (byte)(penultimate[i] ^ this._currentIv[i]);
         this._cipher.Encrypt(xored, e);
 
         // Final partial block: P_n (tailBytes bytes).
-        ReadOnlySpan<byte> tail = input.Slice(bodyLength + size, tailBytes);
+        ReadOnlySpan<byte> tail = input.Slice(bodyLength + blockSize, tailBytes);
 
-        // Build the padded final block: P_n || E[tailBytes..size].
-        Span<byte> padded = stackalloc byte[size];
+        // Build the padded final block: P_n || E[tailBytes..blockSize].
+        Span<byte> padded = stackalloc byte[blockSize];
         tail.CopyTo(padded);
         e[tailBytes..].CopyTo(padded[tailBytes..]);
 
         // C_n = raw_encrypt(padded) — no CBC chain.
-        Span<byte> cn = stackalloc byte[size];
+        Span<byte> cn = stackalloc byte[blockSize];
         this._cipher.Encrypt(padded, cn);
 
         // Output: C_n (full block) then C_{n-1} = E[0..tailBytes].
         cn.CopyTo(output[bodyLength..]);
-        e[..tailBytes].CopyTo(output[(bodyLength + size)..]);
+        e[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
 
         return input.Length;
     }
@@ -225,40 +224,39 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// <param name="output">The destination span for the plaintext.</param>
     /// <param name="fullBlocks">The number of complete blocks in <paramref name="input"/>.</param>
     /// <param name="tailBytes">The number of bytes in the final partial block (1 to <paramref name="blockSize"/> − 1).</param>
-    /// <param name="blockSize">The underlying cipher block size in bits.</param>
+    /// <param name="blockSize">The underlying cipher block size in bytes.</param>
     /// <returns>The number of bytes written to <paramref name="output"/>.</returns>
     private int DecryptCts(ReadOnlySpan<byte> input, Span<byte> output, int fullBlocks, int tailBytes, int blockSize)
     {
         // Body blocks (all before the CTS pair).
         var bodyBlocks = fullBlocks - 1;
-        var size = blockSize / 8;
-        var bodyLength = bodyBlocks * size;
+        var bodyLength = bodyBlocks * blockSize;
 
         if (bodyBlocks > 0)
             DecryptCbc(input[..bodyLength], output[..bodyLength]);
 
         // In the encrypted stream: [C_n (blockSize)] [C_{n-1} truncated (tailBytes)]
-        ReadOnlySpan<byte> cn = input.Slice(bodyLength, size);
-        ReadOnlySpan<byte> cnMinus1Trunc = input.Slice(bodyLength + size, tailBytes);
+        ReadOnlySpan<byte> cn = input.Slice(bodyLength, blockSize);
+        ReadOnlySpan<byte> cnMinus1Trunc = input.Slice(bodyLength + blockSize, tailBytes);
 
         // Step 1: raw-decrypt C_n → gives us P_n || E[tailBytes..].
-        Span<byte> rawDec = stackalloc byte[size];
+        Span<byte> rawDec = stackalloc byte[blockSize];
         this._cipher.Decrypt(cn, rawDec);
 
         // Step 2: reconstruct E (the full encrypted penultimate block).
         // E[0..tailBytes] = C_{n-1} truncated; E[tailBytes..] = rawDec[tailBytes..].
-        Span<byte> e = stackalloc byte[size];
+        Span<byte> e = stackalloc byte[blockSize];
         cnMinus1Trunc.CopyTo(e);
         rawDec[tailBytes..].CopyTo(e[tailBytes..]);
 
         // Step 3: recover P_n = rawDec[0..tailBytes] (the rest was padding from E).
-        rawDec[..tailBytes].CopyTo(output[(bodyLength + size)..]);
+        rawDec[..tailBytes].CopyTo(output[(bodyLength + blockSize)..]);
 
         // Step 4: CBC-decrypt e to get P_{n-1}.
-        Span<byte> block = stackalloc byte[size];
+        Span<byte> block = stackalloc byte[blockSize];
         this._cipher.Decrypt(e, block);
-        Span<byte> penultimateOut = output.Slice(bodyLength, size);
-        for (var i = 0; i < size; i++)
+        Span<byte> penultimateOut = output.Slice(bodyLength, blockSize);
+        for (var i = 0; i < blockSize; i++)
             penultimateOut[i] = (byte)(block[i] ^ this._currentIv[i]);
 
         return input.Length;

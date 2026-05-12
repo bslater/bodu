@@ -65,19 +65,19 @@ public sealed class Camellia
     : SymmetricAlgorithm
 {
     /// <summary>
-    /// The Camellia block size, in bits.
+    /// Length of the Camellia block is 128 bits (16 bytes).
     /// </summary>
     internal const int BlockSizeBits = 128;
 
     /// <summary>
-    /// The minimum permitted key size, in bytes.
+    /// Length of the minimum permitted Camellia key is 128 bits (16 bytes).
     /// </summary>
-    internal const int MinKeySizeBytes = 16;
+    internal const int MinKeySize = 128;
 
     /// <summary>
-    /// The maximum permitted key size, in bytes.
+    /// Length of the maximum permitted Camellia key is 256 bits (32 bytes).
     /// </summary>
-    internal const int MaxKeySizeBytes = 32;
+    internal const int MaxKeySize = 256;
 
     private static readonly KeySizes[] s_camelliaBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
     private static readonly KeySizes[] s_camelliaKeySizes = [new KeySizes(128, 256, 64)];
@@ -250,7 +250,7 @@ public sealed class Camellia
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <summary>
@@ -299,11 +299,6 @@ public sealed class Camellia
         base.Dispose(disposing);
     }
 
-    /// <summary>
-    /// Gets the configured block size expressed in bytes.
-    /// </summary>
-    /// <returns>The block size in bytes.</returns>
-    private int BlockSizeBytes => this.BlockSizeValue / 8;
 
     /// <summary>
     /// Gets the configured key size expressed in bytes.

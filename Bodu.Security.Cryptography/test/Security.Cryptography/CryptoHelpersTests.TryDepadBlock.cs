@@ -21,7 +21,7 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString(inputHex);
         Span<byte> destination = new byte[input.Length];
 
-        var result = CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out var written);
+        var result = CryptoHelpers.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
 
         Assert.IsTrue(result);
     }
@@ -39,7 +39,7 @@ public partial class CryptoHelpersTests
         var expectedLength = expected.Length;
         Span<byte> destination = new byte[input.Length];
 
-        CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out var written);
+        CryptoHelpers.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
 
         Assert.AreEqual(expectedLength, written);
     }
@@ -57,7 +57,7 @@ public partial class CryptoHelpersTests
         var expectedLength = expected.Length;
         Span<byte> destination = new byte[input.Length];
 
-        CryptoHelpers.TryDepadBlock(padding, input.Length, input, destination, out var written);
+        CryptoHelpers.TryDepadBlock(padding, input.Length * 8, input, destination, out var written);
 
         CollectionAssert.AreEqual(input.Take(expectedLength).ToArray(), destination.Slice(0, written).ToArray());
     }
@@ -72,7 +72,7 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString(inputHex);
         Span<byte> destination = new byte[input.Length];
 
-        var result = CryptoHelpers.TryDepadBlock(padding, blockSizeBytes, input, destination, out var written);
+        var result = CryptoHelpers.TryDepadBlock(padding, blockSizeBytes * 8, input, destination, out var written);
 
         Assert.IsFalse(result);
         Assert.AreEqual(0, written);

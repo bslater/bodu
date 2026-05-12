@@ -66,19 +66,19 @@ public interface IPaddingStrategy
     /// Applies padding to the input data to align it with the specified block size.
     /// </summary>
     /// <param name="input">The input data to be padded.</param>
-    /// <param name="blockSize">The block size in bytes that the padded output must align to.</param>
-    /// <returns>A new byte array containing the padded data. The length of the result will be a multiple of <paramref name="blockSize"/>.</returns>
+    /// <param name="blockSize">The block size in bits that the padded output must align to. Must be a positive multiple of 8.</param>
+    /// <returns>A new byte array containing the padded data. The byte length of the result will be a multiple of <paramref name="blockSize"/> / 8.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
     byte[] Pad(ReadOnlySpan<byte> input, int blockSize);
 
     /// <summary>
     /// Removes padding from the input data based on the strategy's padding rules.
     /// </summary>
-    /// <param name="input">The padded input data to unpad. Must be a multiple of the block size.</param>
-    /// <param name="blockSize">The block size in bytes used during the original padding operation.</param>
+    /// <param name="input">The padded input data to unpad. Its byte length must be a multiple of <paramref name="blockSize"/> / 8.</param>
+    /// <param name="blockSize">The block size in bits used during the original padding operation. Must be a positive multiple of 8.</param>
     /// <returns>A new byte array containing the unpadded data.</returns>
     /// <exception cref="ArgumentException">
-    /// Thrown if the input does not conform to the expected padding scheme or is not a multiple of <paramref name="blockSize"/>.
+    /// Thrown if the input does not conform to the expected padding scheme or its byte length is not a multiple of <paramref name="blockSize"/> / 8.
     /// </exception>
     byte[] Unpad(ReadOnlySpan<byte> input, int blockSize);
 }

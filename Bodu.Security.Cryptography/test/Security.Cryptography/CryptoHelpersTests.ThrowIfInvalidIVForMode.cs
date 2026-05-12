@@ -14,13 +14,13 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidIVForMode(byte[], CipherModeKind, int, KeySizes[], string)"/>
-    /// does not throw when the IV length equals the block size and the mode requires an IV.
+    /// does not throw when the IV byte length matches the block size in bits and the mode requires an IV.
     /// </summary>
     [TestMethod]
     public void ThrowIfInvalidIVForMode_WhenIVIsValid_ShouldNotThrow()
     {
         var iv = new byte[16];
-        CryptoHelpers.ThrowIfInvalidIVForMode(iv, CipherModeKind.CBC, 16, LegalBlockSizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(iv, CipherModeKind.CBC, 128, LegalBlockSizes);
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ public partial class CryptoHelpersTests
     [TestMethod]
     public void ThrowIfInvalidIVForMode_WhenIVNullAndModeIsECB_ShouldNotThrow()
     {
-        CryptoHelpers.ThrowIfInvalidIVForMode(null, CipherModeKind.ECB, 16, LegalBlockSizes);
+        CryptoHelpers.ThrowIfInvalidIVForMode(null, CipherModeKind.ECB, 128, LegalBlockSizes);
     }
 
     /// <summary>
@@ -46,13 +46,13 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidIVForMode(null, mode, 16, LegalBlockSizes);
+            CryptoHelpers.ThrowIfInvalidIVForMode(null, mode, 128, LegalBlockSizes);
         });
     }
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidIVForMode(byte[], CipherModeKind, int, KeySizes[], string)"/>
-    /// throws a <see cref="CryptographicException"/> when the IV length does not match the block size.
+    /// throws a <see cref="CryptographicException"/> when the IV byte length does not match the block size in bits.
     /// </summary>
     [TestMethod]
     public void ThrowIfInvalidIVForMode_WhenIVHasWrongLength_ShouldThrowCryptographicException()
@@ -61,7 +61,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidIVForMode(iv, CipherModeKind.CBC, 16, LegalBlockSizes);
+            CryptoHelpers.ThrowIfInvalidIVForMode(iv, CipherModeKind.CBC, 128, LegalBlockSizes);
         });
     }
 }

@@ -47,7 +47,7 @@ namespace Bodu.Security.Cryptography;
 ///
 /// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CFB instead of using this directly.
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize);
+/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
 /// IBlockCipherModeTransform cfb = new CfbModeTransform(cipher, iv);
 ///
 /// byte[] ciphertext = new byte[plaintext.Length];
@@ -79,7 +79,7 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);

@@ -21,7 +21,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// associated data that travels in the clear (packet headers, message metadata, …). The
 /// <see cref="IAeadBlockCipherModeTransform"/> contract gives callers maximum control: invoke
 /// <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData"/>, size the output buffer to
-/// <c>plaintext.Length + TagSize</c> (or <c>ciphertextWithTag.Length - TagSize</c>), call
+/// <c>plaintext.Length + (TagSize / 8)</c> (or <c>ciphertextWithTag.Length - (TagSize / 8)</c>), call
 /// <see cref="IAeadBlockCipherModeTransform.Encrypt"/> or <see cref="IAeadBlockCipherModeTransform.Decrypt"/>, and
 /// interpret the return value. This class collapses that fixed sequence into a single call that returns a correctly
 /// sized array, matching the shape of <c>AesGcm.Encrypt</c> / <c>AesGcm.Decrypt</c> in the BCL but parameterised over
@@ -39,7 +39,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///   <item>
 ///     <term><c>Encrypt(transform, plaintext, associatedData)</c></term>
 ///     <description>One-shot encrypt with associated data; returns ciphertext concatenated with the
-///     <see cref="IAeadBlockCipherModeTransform.TagSize"/>-byte authentication tag.</description>
+///     <see cref="IAeadBlockCipherModeTransform.TagSize"/> / 8 byte authentication tag.</description>
 ///   </item>
 ///   <item>
 ///     <term><c>Decrypt(transform, ciphertextWithTag)</c></term>
@@ -56,8 +56,8 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// message, call exactly one of these helpers, and dispose. The associated-data argument must match byte-for-byte
 /// between the encrypt and decrypt calls — even a single-bit difference will cause the tag check to fail. Tag
 /// verification is constant-time inside the transform implementation, so timing leaks are not a concern. Output arrays
-/// are always sized exactly: <c>plaintext.Length + TagSize</c> on encrypt, <c>ciphertextWithTag.Length - TagSize</c> on
-/// decrypt.
+/// are always sized exactly: <c>plaintext.Length + (TagSize / 8)</c> on encrypt,
+/// <c>ciphertextWithTag.Length - (TagSize / 8)</c> on decrypt.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -97,8 +97,8 @@ public static class AeadBlockCipherModeTransformExtensions
     /// The data to authenticate but not encrypt. May be empty when no associated data is required.
     /// </param>
     /// <returns>
-    /// A newly allocated byte array of length <c>plaintext.Length + transform.TagSize</c>, containing
-    /// the ciphertext followed by the <see cref="IAeadBlockCipherModeTransform.TagSize"/>-byte tag.
+    /// A newly allocated byte array of length <c>plaintext.Length + (transform.TagSize / 8)</c>, containing
+    /// the ciphertext followed by the <see cref="IAeadBlockCipherModeTransform.TagSize"/> / 8 byte tag.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">
@@ -113,7 +113,7 @@ public static class AeadBlockCipherModeTransformExtensions
 
         transform.ProcessAssociatedData(associatedData);
 
-        var output = new byte[plaintext.Length + transform.TagSize];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
         var written = transform.Encrypt(plaintext, output);
 
         if (written != output.Length)
@@ -129,7 +129,7 @@ public static class AeadBlockCipherModeTransformExtensions
     /// <param name="transform">The AEAD transform. Must not be <see langword="null"/>.</param>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <returns>
-    /// A newly allocated byte array of length <c>plaintext.Length + transform.TagSize</c>.
+    /// A newly allocated byte array of length <c>plaintext.Length + (transform.TagSize / 8)</c>.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">
@@ -147,19 +147,19 @@ public static class AeadBlockCipherModeTransformExtensions
     /// </summary>
     /// <param name="transform">The AEAD transform. Must not be <see langword="null"/>.</param>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize"/>-byte tag.
-    /// Must be at least <c>transform.TagSize</c> bytes long.
+    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize"/> / 8 byte tag.
+    /// Must be at least <c>transform.TagSize / 8</c> bytes long.
     /// </param>
     /// <param name="associatedData">
     /// The data authenticated alongside the ciphertext. Must match what was supplied at encryption time.
     /// </param>
     /// <returns>
-    /// A newly allocated byte array of length <c>ciphertextWithTag.Length - transform.TagSize</c> containing
+    /// A newly allocated byte array of length <c>ciphertextWithTag.Length - (transform.TagSize / 8)</c> containing
     /// the recovered plaintext.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ciphertextWithTag"/> is shorter than <c>transform.TagSize</c> bytes.
+    /// <paramref name="ciphertextWithTag"/> is shorter than <c>transform.TagSize / 8</c> bytes.
     /// </exception>
     /// <exception cref="CryptographicException">
     /// The authentication tag did not verify. The returned buffer is not written in this case.
@@ -175,14 +175,15 @@ public static class AeadBlockCipherModeTransformExtensions
     {
         if (transform is null) throw new ArgumentNullException(nameof(transform));
 
-        if (ciphertextWithTag.Length < transform.TagSize)
+        var tagBytes = transform.TagSize / 8;
+        if (ciphertextWithTag.Length < tagBytes)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.ArgumentException_InputTooShortForTag, transform.TagSize),
+                string.Format(CryptoResourceStrings.ArgumentException_InputTooShortForTag, tagBytes),
                 nameof(ciphertextWithTag));
 
         transform.ProcessAssociatedData(associatedData);
 
-        var plaintext = new byte[ciphertextWithTag.Length - transform.TagSize];
+        var plaintext = new byte[ciphertextWithTag.Length - tagBytes];
         var written = transform.Decrypt(ciphertextWithTag, plaintext);
 
         if (written != plaintext.Length)
@@ -197,7 +198,7 @@ public static class AeadBlockCipherModeTransformExtensions
     /// </summary>
     /// <param name="transform">The AEAD transform. Must not be <see langword="null"/>.</param>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize"/>-byte tag.
+    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize"/> / 8 byte tag.
     /// </param>
     /// <returns>A newly allocated byte array containing the recovered plaintext.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>

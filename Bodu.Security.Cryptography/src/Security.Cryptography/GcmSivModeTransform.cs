@@ -78,8 +78,11 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmSivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    private const int TagLengthBytes = 16;
-    private const int NonceLengthBytes = 12;
+    /// <summary>Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits"/> / 8.</summary>
+    private const int TagSizeBits = 128;
+
+    /// <summary>Length of the AES-GCM-SIV nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits"/> / 8.</summary>
+    private const int NonceSizeBits = 96;
 
     private readonly IBlockCipher _encCipher;  // cipher keyed with derived K_enc
     private readonly byte[] _authKey;          // derived K_auth (POLYVAL key)
@@ -115,8 +118,8 @@ public sealed class GcmSivModeTransform
         ThrowHelper.ThrowIfNull(cipherFactory);
         CryptoHelpers.ThrowIfIvLengthInvalid(iv, masterCipher.BlockSize);
 
-        this._nonce = new byte[NonceLengthBytes];
-        iv.AsSpan(0, NonceLengthBytes).CopyTo(this._nonce);
+        this._nonce = new byte[NonceSizeBits / 8];
+        iv.AsSpan(0, NonceSizeBits / 8).CopyTo(this._nonce);
 
         // Derive K_auth and K_enc per RFC 8452 Section 4.
         // Each call: E_K(LE32(i) || nonce), take first 8 bytes.
@@ -141,7 +144,8 @@ public sealed class GcmSivModeTransform
     }
 
     /// <inheritdoc />
-    public int TagSize => TagLengthBytes;
+    /// <value>Length of the AES-GCM-SIV authentication tag is 128 bits (16 bytes).</value>
+    public int TagSize => TagSizeBits;
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -159,7 +163,7 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = plaintext.Length + TagSize;
+        var required = plaintext.Length + (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
         EnsureAadProcessed();
 
@@ -186,8 +190,8 @@ public sealed class GcmSivModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
-        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSizeBits / 8);
+        var plaintextLength = ciphertextWithTag.Length - (TagSizeBits / 8);
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
         EnsureAadProcessed();
 
@@ -283,7 +287,7 @@ public sealed class GcmSivModeTransform
     /// </summary>
     private static (byte[] authKey, byte[] encKey) DeriveKeys(IBlockCipher cipher, byte[] nonce)
     {
-        var blockSize = cipher.BlockSize;
+        var blockSize = cipher.BlockSize / 8;
         var authKey = new byte[blockSize];
         var encKey = new byte[blockSize];
 
@@ -357,7 +361,7 @@ public sealed class GcmSivModeTransform
     /// <returns>The computed AES-GCM-SIV authentication tag.</returns>
     private byte[] ComputeTag(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
-        var blockSize = this._encCipher.BlockSize;
+        var blockSize = this._encCipher.BlockSize / 8;
 
         // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
         var polyvalResult = new byte[blockSize];
@@ -374,7 +378,7 @@ public sealed class GcmSivModeTransform
         PolyvalUpdate(polyvalResult, lenBlock);
 
         // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
-        for (var i = 0; i < NonceLengthBytes; i++)
+        for (var i = 0; i < (NonceSizeBits / 8); i++)
             polyvalResult[i] ^= this._nonce[i];
         polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
 
@@ -497,7 +501,7 @@ public sealed class GcmSivModeTransform
     /// block per RFC 8452.</param>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = this._encCipher.BlockSize;
+        var blockSize = this._encCipher.BlockSize / 8;
         var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 

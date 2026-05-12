@@ -43,7 +43,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
 
     /// <summary>
     /// Verifies that assigning a key whose length exceeds
-    /// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.MaximumKeySize" /> throws
+    /// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.MaximumKeySize" /> / 8 bytes throws
     /// <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]
@@ -53,19 +53,19 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            sut.Key = new byte[sut.MaximumKeySize + 1];
+            sut.Key = new byte[(sut.MaximumKeySize / 8) + 1];
         });
     }
 
     /// <summary>
     /// Verifies that assigning a key of exactly
-    /// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.MaximumKeySize" /> bytes is accepted without throwing.
+    /// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.MaximumKeySize" /> / 8 bytes is accepted without throwing.
     /// </summary>
     [TestMethod]
     public void Key_WhenSetToMaximumSizeKey_ShouldNotThrow()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var key = new byte[sut.MaximumKeySize];
+        var key = new byte[sut.MaximumKeySize / 8];
 
         sut.Key = key;
 
@@ -80,7 +80,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void Key_WhenGetterInvoked_ShouldReturnDefensiveCopy()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var keySize = Math.Max(1, sut.MaximumKeySize / 2);
+        var keySize = Math.Max(1, sut.MaximumKeySize / 16);
         var key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
         sut.Key = key;
 
@@ -98,7 +98,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void Key_WhenOriginalArrayMutatedAfterSetting_ShouldNotAffectInternalKey()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var keySize = Math.Max(1, sut.MaximumKeySize / 2);
+        var keySize = Math.Max(1, sut.MaximumKeySize / 16);
         var key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
         sut.Key = key;
 
@@ -117,7 +117,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void Key_WhenSetToEmptyArray_ShouldRevertToUnkeyedMode()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        sut.Key = new byte[Math.Max(1, sut.MaximumKeySize / 2)];
+        sut.Key = new byte[Math.Max(1, sut.MaximumKeySize / 16)];
 
         sut.Key = [];
 
@@ -137,7 +137,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
 
         Assert.ThrowsExactly<CryptographicUnexpectedOperationException>(() =>
         {
-            sut.Key = new byte[Math.Max(1, sut.MaximumKeySize / 2)];
+            sut.Key = new byte[Math.Max(1, sut.MaximumKeySize / 16)];
         });
     }
 
@@ -169,7 +169,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
 
         Assert.ThrowsExactly<ObjectDisposedException>(() =>
         {
-            sut.Key = new byte[Math.Max(1, sut.MaximumKeySize / 2)];
+            sut.Key = new byte[Math.Max(1, sut.MaximumKeySize / 16)];
         });
     }
 }

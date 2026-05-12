@@ -51,18 +51,6 @@ namespace Bodu.Security.Cryptography;
 public abstract class Threefish
     : TweakableSymmetricAlgorithm
 {
-    /// <summary>
-    /// The block size in bytes.
-    /// </summary>
-    protected readonly int BlockSizeBytes;
-
-    /// <summary>
-    /// The key size in bytes.
-    /// </summary>
-    protected readonly int KeySizeBytes;
-
-    private readonly int _defaultTweakSizeBytes;
-
     private bool _disposed;
 
     /// <summary>
@@ -70,17 +58,20 @@ public abstract class Threefish
     /// </summary>
     /// <param name="blockSizeBits">The block size in bits. Must match the Threefish variant block size (256, 512, or 1024).</param>
     /// <param name="tweakSizeBits">The tweak size in bits. 128 bits for all Threefish variants.</param>
+    /// <remarks>
+    /// Sizes are stored in bits via <see cref="SymmetricAlgorithm.BlockSizeValue"/>,
+    /// <see cref="SymmetricAlgorithm.KeySizeValue"/>, and <see cref="TweakableSymmetricAlgorithm.TweakSizeValue"/>,
+    /// matching the BCL convention. Conversion to bytes occurs only at the byte-array processing boundary
+    /// (e.g. <see cref="GenerateKey"/>, <see cref="GenerateIV"/>, <see cref="GenerateTweak"/>).
+    /// </remarks>
     protected Threefish(int blockSizeBits, int tweakSizeBits)
     {
         this.BlockSizeValue = this.KeySizeValue = blockSizeBits;
         this.FeedbackSizeValue = 8;
 
-        this.BlockSizeBytes = this.KeySizeBytes = blockSizeBits / 8;
-        this._defaultTweakSizeBytes = tweakSizeBits / 8;
-
-        this.LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-        this.LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-        this.LegalTweakSizesValue = new[] { new KeySizes(tweakSizeBits, tweakSizeBits, 0) };
+        this.LegalBlockSizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        this.LegalKeySizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        this.LegalTweakSizesValue = [new KeySizes(tweakSizeBits, tweakSizeBits, 0)];
         this.TweakSizeValue = tweakSizeBits;
 
         this.ModeValue = CipherMode.CBC;
@@ -106,7 +97,7 @@ public abstract class Threefish
         CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
         CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
-        var engine = this.CreateCipher(rgbKey, tweak);
+        ThreefishBlockCipher engine = this.CreateCipher(rgbKey, tweak);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
     }
 
@@ -118,7 +109,7 @@ public abstract class Threefish
         CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
         CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
-        var engine = this.CreateCipher(rgbKey, tweak);
+        ThreefishBlockCipher engine = this.CreateCipher(rgbKey, tweak);
         return new ThreefishTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 
@@ -126,21 +117,21 @@ public abstract class Threefish
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateTweak()
     {
         this.ThrowIfDisposed();
-        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this._defaultTweakSizeBytes);
+        this.TweakValue = CryptoHelpers.GetRandomNonZeroBytes(this.TweakSizeValue / 8);
     }
 
     /// <inheritdoc />
@@ -188,5 +179,5 @@ public abstract class Threefish
     /// <returns>A configured <see cref="IBlockCipher"/> instance for encryption or decryption.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="key"/> is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
-    protected abstract IBlockCipher CreateCipher(byte[] key, byte[] tweak);
+    protected abstract ThreefishBlockCipher CreateCipher(byte[] key, byte[] tweak);
 }

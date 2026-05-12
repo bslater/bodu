@@ -129,29 +129,29 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     /// 128 or 256.
     /// </exception>
     public Shake(int outputBits, int securityLevel)
-        : base(ValidateAndComputeRateBytes(outputBits, securityLevel))
+        : base(ValidateAndComputeRateBits(outputBits, securityLevel))
     {
         this.HashSizeValue = outputBits;
         this._securityLevel = securityLevel;
     }
 
     /// <summary>
-    /// Validates the constructor arguments and returns the absorption rate, in bytes, used to size the inherited
+    /// Validates the constructor arguments and returns the absorption rate, in bits, used to size the inherited
     /// residual buffer.
     /// </summary>
     /// <param name="outputBits">The candidate output size in bits.</param>
     /// <param name="securityLevel">The candidate SHAKE security level.</param>
-    /// <returns>The absorption rate in bytes (168 for SHAKE128, 136 for SHAKE256).</returns>
+    /// <returns>The absorption rate in bits (1344 for SHAKE128, 1088 for SHAKE256).</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="outputBits"/> is not a positive multiple of 8, or <paramref name="securityLevel"/> is not
     /// 128 or 256.
     /// </exception>
-    private static int ValidateAndComputeRateBytes(int outputBits, int securityLevel)
+    private static int ValidateAndComputeRateBits(int outputBits, int securityLevel)
     {
         ThrowHelper.ThrowIfNotPositiveMultipleOf(outputBits, 8);
         CryptoHelpers.ThrowIfInvalidHashSize(securityLevel, s_validSecurityLevels);
 
-        return (1600 - (2 * securityLevel)) / 8;
+        return 1600 - (2 * securityLevel);
     }
 
     /// <inheritdoc />
@@ -260,7 +260,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     {
         this.ThrowIfDisposed();
         Span<byte> rateBuffer = this._residualBlock.Span;
-        var rateBytes = this.BlockSizeBytes;
+        var rateBytes = this.BlockSize / 8;
 
         while (source.Length > 0)
         {
@@ -292,7 +292,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     {
         this.ThrowIfDisposed();
         Span<byte> rateBuffer = this._residualBlock.Span;
-        var rateBytes = this.BlockSizeBytes;
+        var rateBytes = this.BlockSize / 8;
 
         // Apply multi-rate padding: domain suffix byte at the current buffer position, then 0x80 at the last byte.
         rateBuffer[this._residualBytes] ^= DomainSuffix;
@@ -343,7 +343,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
             {
                 var d = c[(x + 4) % 5] ^ c[(x + 1) % 5].RotateBitsLeftUnchecked(1);
                 for (var y = 0; y < 5; y++)
-                    state[x + y * 5] ^= d;
+                    state[x + (y * 5)] ^= d;
             }
 
             // ρ and π combined: rotate each lane and scatter to the π-permuted position.
@@ -357,7 +357,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
             for (var y = 0; y < 5; y++)
             {
                 for (var x = 0; x < 5; x++)
-                    state[x + y * 5] = b[x + y * 5] ^ ((~b[(x + 1) % 5 + y * 5]) & b[(x + 2) % 5 + y * 5]);
+                    state[x + (y * 5)] = b[x + (y * 5)] ^ ((~b[((x + 1) % 5) + (y * 5)]) & b[((x + 2) % 5) + (y * 5)]);
             }
 
             // ι (iota): XOR a round constant into lane (0,0).

@@ -305,7 +305,7 @@ public partial class Blake2bTests
         if (variant != Blake2bVariant.Blake2b_512)
             yield break;
 
-        var key = Enumerable.Range(0, Blake2b.MaxKeySize).Select(i => (byte)i).ToArray();
+        var key = Enumerable.Range(0, Blake2b.MaxKeySize / 8).Select(i => (byte)i).ToArray();
 
         // (name, input-length, expected-hex) — all use the same 64-byte sequential key.
         (string Name, int Length, string Hex)[] entries =

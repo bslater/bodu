@@ -142,7 +142,7 @@ public sealed class Blake3
     /// 256-bit digest.
     /// </summary>
     public Blake3()
-        : base(BlockSize)
+        : base(BlockSize * 8)
     {
         HashSizeValue = 256;
         s_iv.CopyTo(_chunkCv, 0);

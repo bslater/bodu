@@ -65,7 +65,7 @@ public abstract partial class AsconHash<T>
     /// </exception>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The IV state words are assigned together to mirror the five-word Ascon state layout and keep the constructor initialisation visually aligned with the algorithm specification.")]
     protected AsconHash(ulong iv0, ulong iv1, ulong iv2, ulong iv3, ulong iv4, int absorptionRounds, string algorithmName)
-        : base(8)
+        : base(64)
     {
         ThrowHelper.ThrowIfNull(algorithmName);
         ThrowHelper.ThrowIfLessThan(absorptionRounds, 1);

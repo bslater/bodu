@@ -94,7 +94,7 @@ public partial class CryptoHelpersTests
         var input = Convert.FromHexString(inputHex);
         var expected = Convert.FromHexString(expectedHex);
 
-        var result = CryptoHelpers.DepadBlock(padding, input.Length, input, 0, input.Length);
+        var result = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, 0, input.Length);
 
         CollectionAssert.AreEqual(expected, result);
     }
@@ -114,7 +114,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[input.Length]
             : new byte[input.Length];
 
-        _ = CryptoHelpers.DepadBlock(padding, input.Length, input, destination);
+        _ = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, destination);
 
         Assert.IsTrue(destination.Slice(0, expected.Length).SequenceEqual(expected));
     }
@@ -134,7 +134,7 @@ public partial class CryptoHelpersTests
             ? stackalloc byte[input.Length]
             : new byte[input.Length];
 
-        var result = CryptoHelpers.DepadBlock(padding, input.Length, input, destination);
+        var result = CryptoHelpers.DepadBlock(padding, input.Length * 8, input, destination);
 
         Assert.AreEqual(expected.Length, result);
     }
@@ -155,7 +155,7 @@ public partial class CryptoHelpersTests
 
         try
         {
-            _ = CryptoHelpers.DepadBlock(padding, blockSize, input, 0, input.Length);
+            _ = CryptoHelpers.DepadBlock(padding, blockSize * 8, input, 0, input.Length);
             Assert.Fail($"Expected {exceptionType.Name} was not thrown.");
         }
         catch (Exception ex)

@@ -96,21 +96,35 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>The required key size in bytes (128 bits).</summary>
-    public const int KeyBytes = 16;
+    /// <summary>Length of the Ascon-AEAD128 key is 128 bits (16 bytes).</summary>
+    public const int KeySize = 128;
 
-    /// <summary>The required nonce size in bytes (128 bits).</summary>
-    public const int NonceBytes = 16;
+    /// <summary>Length of the Ascon-AEAD128 nonce is 128 bits (16 bytes).</summary>
+    public const int NonceSize = 128;
 
-    /// <summary>The authentication tag size in bytes (128 bits).</summary>
-    public const int TagBytes = 16;
+    /// <summary>Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).</summary>
+    internal const int TagSizeBits = 128;
+
+    /// <summary>Length of the Ascon-AEAD128 sponge absorption rate is 128 bits (16 bytes).</summary>
+    private const int RateSizeBits = 128;
+
+    /// <summary>Byte length of <see cref="KeySize"/> (16 bytes). Derived helper used for span-length checks.</summary>
+    internal const int KeyBytes = KeySize / 8;
+
+    /// <summary>Byte length of <see cref="NonceSize"/> (16 bytes). Derived helper used for span-length checks.</summary>
+    internal const int NonceBytes = NonceSize / 8;
+
+    /// <summary>Byte length of <see cref="TagSizeBits"/> (16 bytes). Derived helper used for span sizing.</summary>
+    internal const int TagBytes = TagSizeBits / 8;
+
+    /// <summary>Byte length of <see cref="RateSizeBits"/> (16 bytes). Derived helper used for block iteration over the sponge rate.</summary>
+    private const int Rate = RateSizeBits / 8;
 
     // IV word for Ascon-AEAD128 (NIST SP 800-232).
     // Encodes algorithm parameters: key=128 bits, rate=128 bits, pa=12, pb=8.
     // Source: NIST SP 800-232 / ascon-c constants.h (ASCON_AEAD128_IV).
     private const ulong IvWord = 0x80800c0800000000UL;
 
-    private const int Rate = 16;
     private const int Pa = 12;
     private const int Pb = 8;
 
@@ -179,7 +193,8 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     }
 
     /// <inheritdoc />
-    public int TagSize => TagBytes;
+    /// <value>Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).</value>
+    public int TagSize => TagSizeBits;
 
     /// <summary>
     /// Absorbs associated data that will be authenticated but not encrypted.

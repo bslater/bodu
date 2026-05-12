@@ -58,7 +58,7 @@ namespace Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
 ///
 /// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] nonce = RandomNumberGenerator.GetBytes(cipher.BlockSize); // unique per message
+/// byte[] nonce = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); // unique per message
 /// using IAeadBlockCipherModeTransform eax = new EaxModeTransform(cipher, nonce);
 ///
 /// byte[] sealed_   = eax.Encrypt(plaintext, associatedData: header);
@@ -72,7 +72,8 @@ namespace Bodu.Security.Cryptography;
 public sealed class EaxModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    private const int DefaultTagSize = 16;
+    private const int DefaultTagSizeBits = 128;
+    private const int DefaultTagSize = DefaultTagSizeBits / 8;
 
     private readonly IBlockCipher _cipher;
     private readonly byte[] _nonce;     // raw user nonce, defensive clone
@@ -106,7 +107,8 @@ public sealed class EaxModeTransform
     }
 
     /// <inheritdoc />
-    public int TagSize => DefaultTagSize;
+    /// <value>Length of the EAX authentication tag is 128 bits (16 bytes).</value>
+    public int TagSize => DefaultTagSizeBits;
 
     /// <inheritdoc />
     public void ProcessAssociatedData(ReadOnlySpan<byte> associatedData)
@@ -125,7 +127,7 @@ public sealed class EaxModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = plaintext.Length + TagSize;
+        var required = plaintext.Length + DefaultTagSize;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, required);
 
         EnsureAadProcessed();
@@ -146,8 +148,8 @@ public sealed class EaxModeTransform
             cPrime = Omac(2, ciphertext);
 
             // Tag = N' XOR H' XOR C'.
-            Span<byte> tag = output.Slice(plaintext.Length, TagSize);
-            for (var i = 0; i < TagSize; i++)
+            Span<byte> tag = output.Slice(plaintext.Length, DefaultTagSize);
+            for (var i = 0; i < DefaultTagSize; i++)
                 tag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             return required;
@@ -167,9 +169,9 @@ public sealed class EaxModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, TagSize);
+        CryptoHelpers.ThrowIfCiphertextTooShort(ciphertextWithTag, DefaultTagSize);
 
-        var plaintextLength = ciphertextWithTag.Length - TagSize;
+        var plaintextLength = ciphertextWithTag.Length - DefaultTagSize;
         CryptoHelpers.ThrowIfOutputBufferTooSmall(output, plaintextLength);
 
         EnsureAadProcessed();
@@ -188,8 +190,8 @@ public sealed class EaxModeTransform
             hPrime = Omac(1, this._aad!);
             cPrime = Omac(2, ciphertext);
 
-            expectedTag = new byte[TagSize];
-            for (var i = 0; i < TagSize; i++)
+            expectedTag = new byte[DefaultTagSize];
+            for (var i = 0; i < DefaultTagSize; i++)
                 expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             // Constant-time tag comparison; throw before emitting any plaintext. On failure, also
@@ -276,7 +278,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private byte[] Omac(byte t, ReadOnlySpan<byte> m)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         var prefixed = new byte[blockSize + m.Length];
 
         try
@@ -297,7 +299,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private byte[] ComputeCmac(ReadOnlySpan<byte> message)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         var zeroBlock = new byte[blockSize];
         var l = new byte[blockSize];
@@ -382,7 +384,7 @@ public sealed class EaxModeTransform
     /// </summary>
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         var ctr = (byte[])counter.Clone();
         Span<byte> ks = stackalloc byte[blockSize];
 

@@ -47,9 +47,9 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
     public void Decrypt_WhenCalled_ShouldNotModifyInputBuffer()
     {
         using TCipher cipher = CreateBlockCipher();
-        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
+        var original = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize / 8);
         var input = original.ToArray();
-        var output = new byte[cipher.BlockSize];
+        var output = new byte[cipher.BlockSize / 8];
 
         cipher.Decrypt(input, output);
 
@@ -68,7 +68,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher1 = CreateBlockCipher(variant);
         using TCipher cipher2 = CreateBlockCipher(variant);
 
-        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize);
+        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher1.BlockSize / 8);
 
         var output1 = new byte[specification.BlockSize];
         var output2 = new byte[specification.BlockSize];
@@ -90,7 +90,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         BlockCipherSpecification specification = GetSpecification(variant);
         using TCipher cipher = CreateBlockCipher(variant);
 
-        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize);
+        var input = TestHelpers.GenerateRandomNonZeroBytes(cipher.BlockSize / 8);
 
         var output1 = new byte[specification.BlockSize];
         var output2 = new byte[specification.BlockSize];
@@ -127,7 +127,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher = CreateBlockCipher(variant);
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            cipher.Decrypt(input, new byte[cipher.BlockSize]);
+            cipher.Decrypt(input, new byte[cipher.BlockSize / 8]);
         });
     }
 
@@ -141,7 +141,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         using TCipher cipher = CreateBlockCipher(variant);
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            cipher.Decrypt(new byte[cipher.BlockSize], output);
+            cipher.Decrypt(new byte[cipher.BlockSize / 8], output);
         });
     }
 }

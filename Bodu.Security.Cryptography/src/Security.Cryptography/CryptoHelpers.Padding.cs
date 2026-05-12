@@ -14,19 +14,19 @@ internal static partial class CryptoHelpers
     /// Removes padding from a block and returns the depadded data as a newly allocated array.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingMode"/> that was applied to <paramref name="block"/>.</param>
-    /// <param name="blockSizeBytes">The block size, in bytes, used when the input was padded.</param>
+    /// <param name="blockSize">The block size, in bits, used when the input was padded. Must be a positive multiple of 8.</param>
     /// <param name="block">The input buffer containing the padded block or blocks.</param>
     /// <param name="offset">The zero-based offset in <paramref name="block"/> at which the padded data begins.</param>
     /// <param name="count">The number of bytes to read from <paramref name="block"/> starting at <paramref name="offset"/>.</param>
     /// <returns>A newly allocated <see cref="byte"/> array containing the input data with padding removed.</returns>
     /// <exception cref="CryptographicException">
-    /// The padding is invalid, the specified range is not a positive multiple of <paramref name="blockSizeBytes"/>,
+    /// The padding is invalid, the specified range is not a positive multiple of <paramref name="blockSize"/> / 8,
     /// or the padding mode is unsupported.
     /// </exception>
-    public static byte[] DepadBlock(PaddingMode padding, int blockSizeBytes, byte[] block, int offset, int count)
+    public static byte[] DepadBlock(PaddingMode padding, int blockSize, byte[] block, int offset, int count)
     {
         var temp = new byte[count];
-        var written = DepadBlock(padding, blockSizeBytes, new ReadOnlySpan<byte>(block, offset, count), temp);
+        var written = DepadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), temp);
         var result = new byte[written];
         Buffer.BlockCopy(temp, 0, result, 0, written);
         return result;
@@ -36,22 +36,24 @@ internal static partial class CryptoHelpers
     /// Removes padding from a block and writes the depadded data into the specified destination span.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingMode"/> applied to <paramref name="source"/>.</param>
-    /// <param name="blockSizeBytes">The block size, in bytes, used when the input was padded.</param>
-    /// <param name="source">The padded input data. Its length must be a positive multiple of <paramref name="blockSizeBytes"/>.</param>
+    /// <param name="blockSize">The block size, in bits, used when the input was padded. Must be a positive multiple of 8.</param>
+    /// <param name="source">The padded input data. Its byte length must be a positive multiple of <paramref name="blockSize"/> / 8.</param>
     /// <param name="destination">The destination span that receives the depadded data.</param>
     /// <returns>The number of bytes written to <paramref name="destination"/> after padding has been removed.</returns>
     /// <exception cref="CryptographicException">
-    /// The padding is invalid, <paramref name="source"/> is not a positive multiple of <paramref name="blockSizeBytes"/>,
+    /// The padding is invalid, <paramref name="source"/> byte length is not a positive multiple of <paramref name="blockSize"/> / 8,
     /// or the padding mode is unsupported.
     /// </exception>
     public static int DepadBlock(
         PaddingMode padding,
-        int blockSizeBytes,
+        int blockSize,
         ReadOnlySpan<byte> source,
         Span<byte> destination)
     {
-        ThrowHelper.ThrowIfLessThanOrEqual(blockSizeBytes, 0);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSizeBytes);
+        ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
+
+        var size = blockSize / 8;
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(source, size);
 
         var count = source.Length;
 
@@ -73,7 +75,7 @@ internal static partial class CryptoHelpers
         }
 
         int padCount = source[^1];
-        if (padCount <= 0 || padCount > blockSizeBytes)
+        if (padCount <= 0 || padCount > size)
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
 
         ReadOnlySpan<byte> padRegion = source[^padCount..];
@@ -107,7 +109,7 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfLessThan(blockSize, 1);
         var size = blockSize / 8;
         var result = new byte[count + size];
-        var written = PadBlock(padding, size, new ReadOnlySpan<byte>(block, offset, count), result);
+        var written = PadBlock(padding, blockSize, new ReadOnlySpan<byte>(block, offset, count), result);
         Array.Resize(ref result, written);
         return result;
     }
@@ -148,7 +150,7 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfLessThan(blockSize, 1);
 
         var size = blockSize / 8;
-        if (padding == PaddingMode.None && source.Length % blockSize != 0)
+        if (padding == PaddingMode.None && source.Length % size != 0)
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_PaddingModeNone_InputNotAligned);
 
         var padCount = size - (source.Length % size);
@@ -202,8 +204,6 @@ internal static partial class CryptoHelpers
         Span<byte> destination,
         out int bytesWritten)
     {
-        ThrowHelper.ThrowIfLessThan(blockSize, 1);
-
         try
         {
             bytesWritten = DepadBlock(padding, blockSize, source, destination);
@@ -232,8 +232,6 @@ internal static partial class CryptoHelpers
         Span<byte> destination,
         out int bytesWritten)
     {
-        ThrowHelper.ThrowIfLessThan(blockSize, 1);
-
         try
         {
             bytesWritten = PadBlock(padding, blockSize, source, destination);
@@ -251,7 +249,7 @@ internal static partial class CryptoHelpers
     /// selector and returns the depadded data as a newly allocated array.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingModeKind"/> that was applied to <paramref name="block"/>.</param>
-    /// <param name="blockSize">The block size, in bytes, used when the input was padded.</param>
+    /// <param name="blockSize">The block size, in bits, used when the input was padded. Must be a positive multiple of 8.</param>
     /// <param name="block">The input buffer containing the padded block or blocks.</param>
     /// <param name="offset">The zero-based offset in <paramref name="block"/> at which the padded data begins.</param>
     /// <param name="count">The number of bytes to read from <paramref name="block"/> starting at <paramref name="offset"/>.</param>
@@ -277,12 +275,12 @@ internal static partial class CryptoHelpers
     /// selector and writes the depadded data into the specified destination span.
     /// </summary>
     /// <param name="padding">The <see cref="PaddingModeKind"/> applied to <paramref name="source"/>.</param>
-    /// <param name="blockSize">The block size, in bits, used when the input was padded.</param>
-    /// <param name="source">The padded input data. Its length must be a positive multiple of <paramref name="blockSize"/>.</param>
+    /// <param name="blockSize">The block size, in bits, used when the input was padded. Must be a positive multiple of 8.</param>
+    /// <param name="source">The padded input data. Its byte length must be a positive multiple of <paramref name="blockSize"/> / 8.</param>
     /// <param name="destination">The destination span that receives the depadded data.</param>
     /// <returns>The number of bytes written to <paramref name="destination"/> after padding has been removed.</returns>
     /// <exception cref="CryptographicException">
-    /// The padding is invalid, <paramref name="source"/> is not a positive multiple of <paramref name="blockSize"/>,
+    /// The padding is invalid, <paramref name="source"/> byte length is not a positive multiple of <paramref name="blockSize"/> / 8,
     /// or the padding mode is unsupported.
     /// </exception>
     /// <exception cref="ArgumentException">Thrown when an argument does not satisfy the method preconditions.</exception>
@@ -295,7 +293,7 @@ internal static partial class CryptoHelpers
         if (padding == PaddingModeKind.ISO7816_4)
         {
             ThrowHelper.ThrowIfLessThanOrEqual(blockSize, 0);
-            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSize);
+            CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(source, blockSize / 8);
 
             var strategy = new Iso7816_4Padding();
             var unpadded = strategy.Unpad(source, blockSize);

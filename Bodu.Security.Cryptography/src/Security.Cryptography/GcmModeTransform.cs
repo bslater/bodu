@@ -82,13 +82,13 @@ namespace Bodu.Security.Cryptography;
 public sealed class GcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>The fixed GCM block size in bytes (16 bytes).</summary>
+    /// <summary>The fixed GCM block size in bits (128 bits = 16 bytes).</summary>
     private const int BlockSize = 128;
 
-    /// <summary>The required GCM nonce size in bytes (12 bytes).</summary>
+    /// <summary>The required GCM nonce size in bits (96 bits = 12 bytes).</summary>
     private const int NonceSize = 96;
 
-    /// <summary>The GCM authentication tag size in bytes (16 bytes).</summary>
+    /// <summary>The GCM authentication tag size in bits (128 bits = 16 bytes).</summary>
     private const int DefaultTagSize = 128;
 
     private readonly IBlockCipher _cipher;
@@ -151,7 +151,7 @@ public sealed class GcmModeTransform
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
 
-        if (cipher.BlockSize != BlockSize / 8)
+        if (cipher.BlockSize != BlockSize)
             throw new ArgumentException(
                 $"GCM requires a block cipher with a {BlockSize / 8}-byte block size.",
                 nameof(cipher));
@@ -197,6 +197,7 @@ public sealed class GcmModeTransform
     }
 
     /// <inheritdoc />
+    /// <value>Length of the GCM authentication tag is 128 bits (16 bytes).</value>
     public int TagSize => DefaultTagSize;
 
     /// <summary>
@@ -241,7 +242,7 @@ public sealed class GcmModeTransform
         this.ThrowIfDisposed();
         this.ThrowIfCompleted();
 
-        var required = checked(plaintext.Length + DefaultTagSize);
+        var required = checked(plaintext.Length + (DefaultTagSize / 8));
         if (output.Length < required)
             throw new ArgumentException(
                 string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
@@ -299,7 +300,7 @@ public sealed class GcmModeTransform
             ReadOnlySpan<byte> ciphertext = ciphertextWithTag[..plaintextLength];
             ReadOnlySpan<byte> receivedTag = ciphertextWithTag.Slice(plaintextLength, DefaultTagSize / 8);
 
-            Span<byte> expectedTag = stackalloc byte[DefaultTagSize];
+            Span<byte> expectedTag = stackalloc byte[DefaultTagSize / 8];
             try
             {
                 this.ComputeTag(this._aad.AsSpan(), ciphertext, expectedTag);

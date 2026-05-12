@@ -69,14 +69,20 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     private static readonly int[] s_permittedHashSizes = [128, 160, 192, 224, 256];
 
     /// <summary>
-    /// The maximum accepted key length, in bytes, for the keyed <c>BLAKE2s-MAC</c> mode.
+    /// Maximum accepted key length for the keyed <c>BLAKE2s-MAC</c> mode is 256 bits (32 bytes).
     /// </summary>
-    public const int MaxKeySize = 32;
+    public const int MaxKeySize = 256;
 
     /// <summary>
-    /// The block size, in bytes, processed by each compression call.
+    /// The block size, in bits, processed by each compression call (64 bytes).
     /// </summary>
-    private const int BlockSizeBytesValue = 64;
+    private const int BlockSizeValue = 512;
+
+    /// <summary>
+    /// Convenience constant for the byte length of <see cref="BlockSizeValue"/>, used when slicing
+    /// or allocating <see cref="byte"/> buffers from the bit-valued constant.
+    /// </summary>
+    private const int BlockSizeBytesValue = BlockSizeValue / 8;
 
     /// <summary>
     /// The SHA-256 initialisation constants used as the BLAKE2s IV.
@@ -111,7 +117,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// <paramref name="hashSize"/> is not one of the supported output sizes.
     /// </exception>
     public Blake2s(int hashSize)
-        : base(BlockSizeBytesValue, MaxKeySize)
+        : base(BlockSizeValue, MaxKeySize)
     {
         CryptoHelpers.ThrowIfInvalidHashSize(hashSize, s_permittedHashSizes);
 

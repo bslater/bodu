@@ -61,7 +61,7 @@ public sealed partial class SivModeTransformTests
 
         var transform = new SivModeTransform(s2vCipher, ctrCipher, new byte[16]);
         transform.ProcessAssociatedData(ad);
-        var output = new byte[plaintext.Length + transform.TagSize];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, output);
 
         CollectionAssert.AreEqual(expected, output,

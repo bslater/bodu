@@ -33,12 +33,12 @@ public sealed partial class GcmSivModeTransformTests
 
         using GcmSivModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData(aad);
-        var outA = new byte[plaintext.Length + transformA.TagSize];
+        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using GcmSivModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData(aad);
-        var outB = new byte[plaintext.Length + transformB.TagSize];
+        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreEqual(outA, outB,
@@ -61,12 +61,12 @@ public sealed partial class GcmSivModeTransformTests
 
         using GcmSivModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData(aad);
-        var outA = new byte[plaintextA.Length + transformA.TagSize];
+        var outA = new byte[plaintextA.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintextA, outA);
 
         using GcmSivModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData(aad);
-        var outB = new byte[plaintextB.Length + transformB.TagSize];
+        var outB = new byte[plaintextB.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintextB, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,
@@ -86,12 +86,12 @@ public sealed partial class GcmSivModeTransformTests
 
         using GcmSivModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData([0x01]);
-        var outA = new byte[plaintext.Length + transformA.TagSize];
+        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using GcmSivModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData([0x02]);
-        var outB = new byte[plaintext.Length + transformB.TagSize];
+        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,

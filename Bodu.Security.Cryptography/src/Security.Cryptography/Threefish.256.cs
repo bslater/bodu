@@ -81,6 +81,6 @@ public sealed class Threefish256
     }
 
     /// <inheritdoc />
-    protected override IBlockCipher CreateCipher(byte[] key, byte[] tweak) =>
+    protected override ThreefishBlockCipher CreateCipher(byte[] key, byte[] tweak) =>
         new Threefish256Cipher(key, tweak);
 }

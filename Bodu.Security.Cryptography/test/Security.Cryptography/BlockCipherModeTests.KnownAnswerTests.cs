@@ -26,10 +26,10 @@ public abstract partial class BlockCipherModeTests<TMode>
 
         using var cipher = new AesBlockCipherFixture(key);
 
-        var iv = new byte[cipher.BlockSize];
+        var iv = new byte[cipher.BlockSize / 8];
         RandomNumberGenerator.Fill(iv);
 
-        var plaintext = new byte[cipher.BlockSize * 4];
+        var plaintext = new byte[cipher.BlockSize / 8 * 4];
         RandomNumberGenerator.Fill(plaintext);
         var ciphertext = new byte[plaintext.Length];
         var recovered = new byte[plaintext.Length];

@@ -67,15 +67,19 @@ public sealed class HashAlgorithmHelperBodyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="HashAlgorithmHelper.HashData{T}(IHashAlgorithmFactory{T}, ReadOnlySpan{byte})" /> throws
-    /// <see cref="CryptographicException" /> when the algorithm refuses to produce a digest into the helper's buffer.
+    /// Verifies that <see cref="HashAlgorithmHelper.HashData{T}(IHashAlgorithmFactory{T}, ReadOnlySpan{byte})" />
+    /// surfaces the <see cref="InvalidOperationException" /> raised by
+    /// <see cref="System.Security.Cryptography.HashAlgorithm.TryComputeHash(ReadOnlySpan{byte}, Span{byte}, out int)" />
+    /// when an algorithm's <see cref="System.Security.Cryptography.HashAlgorithm.TryHashFinal(Span{byte}, out int)" />
+    /// reports failure for a destination that is already large enough — a BCL contract violation that the framework
+    /// flags as a programmer error.
     /// </summary>
     [TestMethod]
-    public void HashData_Span_WhenAlgorithmDoesNotFit_ShouldThrowExactly()
+    public void HashData_Span_WhenAlgorithmTryHashFinalReturnsFalseDespiteAdequateBuffer_ShouldThrowInvalidOperationException()
     {
         var factory = HashAlgorithmFactory.From(() => new RefusingHashAlgorithm());
 
-        Assert.ThrowsExactly<CryptographicException>(() =>
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
             _ = HashAlgorithmHelper.HashData(factory, new byte[] { 1, 2, 3 });
         });
@@ -159,8 +163,12 @@ public sealed class HashAlgorithmHelperBodyTests
     }
 
     /// <summary>
-    /// A <see cref="HashAlgorithm" /> whose <see cref="HashAlgorithm.TryHashFinal" /> always reports failure,
-    /// forcing the helper's failure path that raises <see cref="CryptographicException" />.
+    /// A <see cref="HashAlgorithm" /> whose <see cref="HashAlgorithm.TryHashFinal" /> always reports failure.
+    /// Returning <see langword="false" /> from <c>TryHashFinal</c> when the destination is already at least
+    /// <c>HashSize / 8</c> bytes long violates the BCL contract; the framework surfaces this misuse by raising
+    /// <see cref="InvalidOperationException" /> from
+    /// <see cref="HashAlgorithm.TryComputeHash(ReadOnlySpan{byte}, Span{byte}, out int)" />, and the helper
+    /// propagates that exception unchanged.
     /// </summary>
     private sealed class RefusingHashAlgorithm : HashAlgorithm
     {

@@ -135,11 +135,17 @@
   <data name="CryptographicException_InvalidHashSize" xml:space="preserve">
     <value>Invalid hash size: {0}. Valid sizes are: {1}.</value>
   </data>
+  <data name="CryptographicException_InvalidBlockSize" xml:space="preserve">
+    <value>Specified value does not match the block size for this algorithm. Actual: {0} bits. Valid sizes (bits): {1}.</value>
+  </data>
   <data name="CryptographicException_InvalidIVSize" xml:space="preserve">
-    <value>Invalid IV size: {0}. Valid sizes are: {1}.</value>
+    <value>Specified initialization vector (IV) does not match the block size for this algorithm. Actual: {0} bits. Valid sizes (bits): {1}.</value>
   </data>
   <data name="CryptographicException_InvalidKeySize" xml:space="preserve">
-    <value>Invalid key size: {0}. Valid sizes are: {1}.</value>
+    <value>Specified key is not a valid size for this algorithm. Actual: {0} bits. Valid sizes (bits): {1}.</value>
+  </data>
+  <data name="CryptographicException_InvalidKeyByteLength" xml:space="preserve">
+    <value>Specified key is not a valid length for this algorithm. Actual: {0} bytes. Expected: {1} bytes.</value>
   </data>
   <data name="CryptographicException_InvalidPadding" xml:space="preserve">
     <value>The input block contains invalid padding and cannot be depadded. The padding bytes do not match the expected format for the specified padding mode.</value>
@@ -148,7 +154,7 @@
     <value>The specified value for '{0}' is not supported by this algorithm.</value>
   </data>
   <data name="CryptographicException_InvalidTweakSize" xml:space="preserve">
-    <value>Invalid tweak size: {0}. Valid sizes are: {1}.</value>
+    <value>Specified tweak is not a valid size for this algorithm. Actual: {0} bits. Valid sizes (bits): {1}.</value>
   </data>
   <data name="CryptographicException_PaddingModeNone_InputNotAligned" xml:space="preserve">
     <value>Input length must be a multiple of the block size when using PaddingMode.None.</value>
@@ -193,7 +199,7 @@
     <value>Invalid block size {0}. Size of block must be {1}.</value>
   </data>
   <data name="ArgumentException_InvalidIvLength" xml:space="preserve">
-    <value>Invalid IV size {0}. Size of IV must be {1}.</value>
+    <value>Specified initialization vector (IV) is not a valid size for this algorithm. Actual: {0} bits. Expected: {1} bits.</value>
   </data>
   <data name="ArgumentException_InvalidTweakLength" xml:space="preserve">
     <value>Invalid tweak size {0}. Size of tweak must be {1}.</value>

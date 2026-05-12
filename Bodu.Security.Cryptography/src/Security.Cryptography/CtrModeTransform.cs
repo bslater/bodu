@@ -100,7 +100,7 @@ public sealed class CtrModeTransform : IBlockCipherModeTransform
     {
         ThrowHelper.ThrowIfSpanLengthIsInsufficient(output, 0, input.Length);
 
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
         Span<byte> keystream = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)

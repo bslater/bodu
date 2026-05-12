@@ -63,10 +63,11 @@ public abstract partial class Skein<T>
     where T : Skein<T>, new()
 {
     /// <summary>
-    /// The maximum accepted length, in bytes, for <see cref="Key"/> across every Skein variant. Keys longer than this
-    /// bound are rejected to prevent unbounded memory usage; this value is far above any practical MAC key.
+    /// Maximum accepted length for <see cref="Key"/> across every Skein variant is 8192 bits (1024 bytes). Keys
+    /// longer than this bound are rejected to prevent unbounded memory usage; this value is far above any practical
+    /// MAC key.
     /// </summary>
-    public const int MaxKeySizeBytes = 1024;
+    public const int MaxKeySize = 8192;
 
     /// <summary>
     /// The schema identifier placed in the first four bytes of the configuration block.
@@ -80,9 +81,10 @@ public abstract partial class Skein<T>
     private const ushort SchemaVersion = 1;
 
     /// <summary>
-    /// The fixed size, in bytes, of a Skein tweak value.
+    /// Length of the Skein tweak value is 128 bits (16 bytes). Byte length is derived inline via
+    /// <see cref="TweakSize"/> / 8 where needed.
     /// </summary>
-    private const int TweakSizeBytes = 16;
+    private const int TweakSize = 128;
 
     private readonly ThreefishBlockCipher _cipher;
     private readonly ulong[] _state;
@@ -121,11 +123,12 @@ public abstract partial class Skein<T>
         this._cipher = cipher;
         this.HashSizeValue = hashSizeBits;
 
-        var stateWords = cipher.BlockSize / sizeof(ulong);
+        var blockBytes = cipher.BlockSize / 8;
+        var stateWords = blockBytes / sizeof(ulong);
         this._state = new ulong[stateWords];
         this._initialChainingValue = new ulong[stateWords];
-        this._pendingBlock = new byte[cipher.BlockSize];
-        this._ubiCipherOutput = new byte[cipher.BlockSize];
+        this._pendingBlock = new byte[blockBytes];
+        this._ubiCipherOutput = new byte[blockBytes];
 
         // Default to the plain-hash profile: empty key means no KEY UBI phase is run. Callers that want the
         // keyed Skein-MAC mode supply a non-empty key via the Key property before hashing.
@@ -144,14 +147,14 @@ public abstract partial class Skein<T>
     /// <remarks>
     /// <para>
     /// Unlike <see cref="SipHash{T}"/>, Skein does not require a fixed key length: any byte sequence from zero up to
-    /// <see cref="MaxKeySizeBytes"/> bytes is valid. Setting the key clears any cached initial chaining value so the
+    /// <see cref="MaxKeySize"/> / 8 bytes is valid. Setting the key clears any cached initial chaining value so the
     /// next call to <see cref="Initialize"/> rebuilds the state from the UBI pipeline <c>KEY → CFG</c>.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="ArgumentNullException">The assigned value is <see langword="null"/>.</exception>
     /// <exception cref="CryptographicException">
-    /// The assigned key is longer than <see cref="MaxKeySizeBytes"/> bytes.
+    /// The assigned key is longer than <see cref="MaxKeySize"/> / 8 bytes.
     /// </exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// A hash computation has already started and the key may not be reassigned while the algorithm is in use.
@@ -170,12 +173,12 @@ public abstract partial class Skein<T>
             this.ThrowIfInvalidState();
             ThrowHelper.ThrowIfNull(value);
 
-            if (value.Length > MaxKeySizeBytes)
+            if (value.Length > MaxKeySize / 8)
                 throw new CryptographicException(
                     string.Format(
                         CryptoResourceStrings.CryptographicException_InvalidKeySize,
-                        value.Length,
-                        $"0..{MaxKeySizeBytes}"));
+                        value.Length * 8,
+                        $"0..{MaxKeySize}"));
 
             this.KeyValue = value.Copy();
             this._isChainingValueCached = false;
@@ -192,7 +195,7 @@ public abstract partial class Skein<T>
         get
         {
             this.ThrowIfDisposed();
-            return $"Skein-{this.BlockSizeBytes * 8}-{this.HashSizeValue}";
+            return $"Skein-{this.BlockSize}-{this.HashSizeValue}";
         }
     }
 
@@ -278,9 +281,10 @@ public abstract partial class Skein<T>
         // Process the final message block. The tweak's position field carries the total number of real message bytes
         // absorbed (excluding any zero padding applied to bring the block up to the Skein state size).
         var residual = this._pendingBytes;
-        if (residual < this.BlockSizeBytes)
+        var blockBytes = this.BlockSize / 8;
+        if (residual < blockBytes)
         {
-            Array.Clear(this._pendingBlock, residual, this.BlockSizeBytes - residual);
+            Array.Clear(this._pendingBlock, residual, blockBytes - residual);
         }
 
         this._messageBytesProcessed += (ulong)residual;

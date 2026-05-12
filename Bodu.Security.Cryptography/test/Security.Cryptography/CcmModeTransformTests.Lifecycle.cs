@@ -17,15 +17,15 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class CcmModeTransformTests
 {
     /// <summary>
-    /// Verifies that <see cref="CcmModeTransform.TagSize" /> is exactly 16 bytes — the fixed
-    /// tag length this implementation produces (NIST SP 800-38C Appendix A profile <c>M = 16</c>).
+    /// Verifies that <see cref="CcmModeTransform.TagSize" /> is exactly 128 bits (16 bytes) — the
+    /// fixed tag length this implementation produces (NIST SP 800-38C Appendix A profile <c>M = 16</c>).
     /// </summary>
     [TestMethod]
-    public void TagSize_ShouldBeSixteenBytes()
+    public void TagSize_ShouldBe128Bits()
     {
         using CcmModeTransform transform = MakeTransform();
 
-        Assert.AreEqual(16, transform.TagSize);
+        Assert.AreEqual(128, transform.TagSize);
     }
 
     /// <summary>
@@ -45,12 +45,12 @@ public sealed partial class CcmModeTransformTests
 
         using CcmModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData(aad);
-        var outA = new byte[plaintext.Length + transformA.TagSize];
+        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using CcmModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData(aad);
-        var outB = new byte[plaintext.Length + transformB.TagSize];
+        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreEqual(outA, outB,
@@ -70,12 +70,12 @@ public sealed partial class CcmModeTransformTests
 
         using CcmModeTransform transformA = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformA.ProcessAssociatedData([0x01]);
-        var outA = new byte[plaintext.Length + transformA.TagSize];
+        var outA = new byte[plaintext.Length + (transformA.TagSize / 8)];
         transformA.Encrypt(plaintext, outA);
 
         using CcmModeTransform transformB = CreateTransform(new MonitoringBlockCipher(ExpectedBlockSize, xorMask: 0xAA), iv);
         transformB.ProcessAssociatedData([0x02]);
-        var outB = new byte[plaintext.Length + transformB.TagSize];
+        var outB = new byte[plaintext.Length + (transformB.TagSize / 8)];
         transformB.Encrypt(plaintext, outB);
 
         CollectionAssert.AreNotEqual(outA, outB,

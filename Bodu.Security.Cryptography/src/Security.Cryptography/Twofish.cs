@@ -67,19 +67,19 @@ public sealed class Twofish
     : SymmetricAlgorithm
 {
     /// <summary>
-    /// The Twofish block size, in bits.
+    /// Length of the Twofish block is 128 bits (16 bytes).
     /// </summary>
     internal const int BlockSizeBits = 128;
 
     /// <summary>
-    /// The minimum permitted key size, in bytes.
+    /// Length of the minimum permitted Twofish key is 128 bits (16 bytes).
     /// </summary>
-    internal const int MinKeySizeBytes = 16;
+    internal const int MinKeySize = 128;
 
     /// <summary>
-    /// The maximum permitted key size, in bytes.
+    /// Length of the maximum permitted Twofish key is 256 bits (32 bytes).
     /// </summary>
-    internal const int MaxKeySizeBytes = 32;
+    internal const int MaxKeySize = 256;
 
     // Twofish has a single fixed 128-bit block size.
     private static readonly KeySizes[] s_twofishBlockSizes = [new KeySizes(BlockSizeBits, BlockSizeBits, 0)];
@@ -176,7 +176,8 @@ public sealed class Twofish
     /// Creates a new <see cref="Twofish"/> instance with default parameters.
     /// </summary>
     /// <returns>A new <see cref="Twofish"/> instance.</returns>
-    public new static Twofish Create() => new Twofish();
+    public new static Twofish Create() =>
+        new Twofish();
 
     /// <inheritdoc />
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
@@ -204,14 +205,14 @@ public sealed class Twofish
     public override void GenerateIV()
     {
         this.ThrowIfDisposed();
-        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeBytes);
+        this.IVValue = CryptoHelpers.GetRandomNonZeroBytes(this.BlockSizeValue / 8);
     }
 
     /// <inheritdoc />
     public override void GenerateKey()
     {
         this.ThrowIfDisposed();
-        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeBytes);
+        this.KeyValue = CryptoHelpers.GetRandomNonZeroBytes(this.KeySizeValue / 8);
     }
 
     /// <inheritdoc />
@@ -231,11 +232,8 @@ public sealed class Twofish
         base.Dispose(disposing);
     }
 
-    private int BlockSizeBytes => this.BlockSizeValue / 8;
-
-    private int KeySizeBytes => this.KeySizeValue / 8;
-
-    private static IBlockCipher CreateCipher(byte[] key) => new TwofishBlockCipher(key);
+    private static TwofishBlockCipher CreateCipher(byte[] key) =>
+        new TwofishBlockCipher(key);
 
     /// <summary>
     /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.

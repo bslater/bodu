@@ -12,28 +12,29 @@ using System.Linq;
 
 public sealed partial class OcbModeTransformTests
 {
-    // ── Output length — non-default tag lengths ───────────────────────────────────────────────
+    // ── Output length — non-default tag sizes ─────────────────────────────────────────────────
 
     /// <summary>
     /// Verifies that <see cref="OcbModeTransform.Encrypt" /> writes exactly
-    /// <c>|PT| + tagLen</c> bytes to the output buffer when a non-default tag length
+    /// <c>|PT| + (tagSize / 8)</c> bytes to the output buffer when a non-default tag size
     /// is used, and that the return value equals the same quantity.
     /// </summary>
     [TestMethod]
-    [DataRow(8, DisplayName = "tagLen = 8")]
-    [DataRow(12, DisplayName = "tagLen = 12")]
-    [DataRow(16, DisplayName = "tagLen = 16")]
-    public void Encrypt_WithGivenTagLength_OutputShouldBePlaintextLengthPlusTagLen(int tagLen)
+    [DataRow(64, DisplayName = "tagSize = 64 bits")]
+    [DataRow(96, DisplayName = "tagSize = 96 bits")]
+    [DataRow(128, DisplayName = "tagSize = 128 bits")]
+    public void Encrypt_WithGivenTagSize_OutputShouldBePlaintextLengthPlusTagBytes(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var plaintext = new byte[ExpectedBlockSize];
-        OcbModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagLen);
-        var output = new byte[plaintext.Length + tagLen];
+        OcbModeTransform transform = CreateTransform(cipher, new byte[ExpectedBlockSize], tagSize);
+        var tagBytes = tagSize / 8;
+        var output = new byte[plaintext.Length + tagBytes];
 
         var written = transform.Encrypt(plaintext, output);
 
-        Assert.AreEqual(plaintext.Length + tagLen, written,
-            $"Encrypt must return |PT| + tagLen bytes (tagLen = {tagLen}).");
+        Assert.AreEqual(plaintext.Length + tagBytes, written,
+            $"Encrypt must return |PT| + (tagSize / 8) bytes (tagSize = {tagSize} bits).");
     }
 
     // ── Domain separation ─────────────────────────────────────────────────────────────────────
@@ -58,8 +59,8 @@ public sealed partial class OcbModeTransformTests
         var iv = new byte[ExpectedBlockSize];
         var plaintext = new byte[ExpectedBlockSize];
 
-        OcbModeTransform enc16 = CreateTransform(cipher16, (byte[])iv.Clone(), 16);
-        OcbModeTransform enc12 = CreateTransform(cipher12, (byte[])iv.Clone(), 12);
+        OcbModeTransform enc16 = CreateTransform(cipher16, (byte[])iv.Clone(), 128);
+        OcbModeTransform enc12 = CreateTransform(cipher12, (byte[])iv.Clone(), 96);
         var ct16 = new byte[plaintext.Length + 16];
         var ct12 = new byte[plaintext.Length + 12];
         enc16.Encrypt(plaintext, ct16);
@@ -97,11 +98,11 @@ public sealed partial class OcbModeTransformTests
         var plaintext = new byte[ExpectedBlockSize];
 
         var enc1 = new OcbModeTransform(cipher1, iv);
-        var ct1 = new byte[plaintext.Length + enc1.TagSize];
+        var ct1 = new byte[plaintext.Length + (enc1.TagSize / 8)];
         enc1.Encrypt(plaintext, ct1);
 
         var enc2 = new OcbModeTransform(cipher2, iv);
-        var ct2 = new byte[plaintext.Length + enc2.TagSize];
+        var ct2 = new byte[plaintext.Length + (enc2.TagSize / 8)];
         enc2.Encrypt(plaintext, ct2);
 
         CollectionAssert.AreNotEqual(ct1, ct2,

@@ -29,9 +29,9 @@ public sealed class Serpent512Cipher
     : SerpentBlockCipher
 {
     /// <summary>
-    /// The Serpent-512 key size in bytes.
+    /// Length of the Serpent-512 key is 512 bits (64 bytes).
     /// </summary>
-    public const int KeySize = 64;
+    public const int KeySize = 512;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Serpent512Cipher"/> class using the specified key and tweak.
@@ -42,7 +42,8 @@ public sealed class Serpent512Cipher
         : base(key, tweak) { }
 
     /// <inheritdoc />
-    public override int BlockSize => 64;
+    /// <value>Length of the Serpent-512 block is 512 bits (64 bytes).</value>
+    public override int BlockSize => 512;
 
     /// <inheritdoc />
     private protected override int BlockWords => 16;

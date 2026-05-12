@@ -46,7 +46,7 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     public override string AlgorithmName => nameof(MonitoringBufferedBlockHashAlgorithm);
 
     /// <summary>
-    /// Initialises a new instance with the default 8-byte block size.
+    /// Initialises a new instance with the default 8-byte (64-bit) block size.
     /// </summary>
     public MonitoringBufferedBlockHashAlgorithm()
         : this(8)
@@ -56,9 +56,9 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// <summary>
     /// Initialises a new instance with the specified block size.
     /// </summary>
-    /// <param name="blockSize">The block size, in bytes, to forward to the base constructor.</param>
+    /// <param name="blockSize">The block size, in bytes, to forward to the base constructor (converted to bits).</param>
     public MonitoringBufferedBlockHashAlgorithm(int blockSize)
-        : base(blockSize)
+        : base(blockSize * 8)
     {
     }
 
@@ -78,7 +78,7 @@ public sealed class MonitoringBufferedBlockHashAlgorithm
     /// Gets the block size that was supplied to the base constructor.
     /// </summary>
     /// <returns>The configured block size, in bytes.</returns>
-    public int ConfiguredBlockSize => this.BlockSizeBytes;
+    public int ConfiguredBlockSize => this.BlockSize / 8;
 
     /// <summary>
     /// Gets a defensive copy of the residual buffer for test assertion purposes.

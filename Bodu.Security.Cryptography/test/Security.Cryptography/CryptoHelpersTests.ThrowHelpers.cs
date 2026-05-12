@@ -118,7 +118,7 @@ public partial class CryptoHelpersTests
         var value = new byte[8];
         var legal = new[] { new KeySizes(64, 64, 0) };
 
-        CryptoHelpers.ThrowIfInvalidBlockSize(value, 8, legal);
+        CryptoHelpers.ThrowIfInvalidBlockSize(value, 64, legal);
     }
 
     /// <summary>
@@ -132,7 +132,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(null!, 8, legal);
+            CryptoHelpers.ThrowIfInvalidBlockSize(null!, 64, legal);
         });
     }
 
@@ -147,7 +147,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(value, 8, null!);
+            CryptoHelpers.ThrowIfInvalidBlockSize(value, 64, null!);
         });
     }
 
@@ -163,7 +163,7 @@ public partial class CryptoHelpersTests
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidBlockSize(value, 8, legal);
+            CryptoHelpers.ThrowIfInvalidBlockSize(value, 64, legal);
         });
     }
 

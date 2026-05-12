@@ -61,7 +61,7 @@ namespace Bodu.Security.Cryptography;
 /// using IBlockCipher data  = new AesBlockCipher(key1);
 /// using IBlockCipher tweak = new AesBlockCipher(key2);
 /// byte[] sectorNumber = BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size
-/// Array.Resize(ref sectorNumber, data.BlockSize);
+/// Array.Resize(ref sectorNumber, data.BlockSize / 8);
 /// IBlockCipherModeTransform xts = new XtsModeTransform(data, tweak, sectorNumber);
 ///
 /// byte[] ciphertext = new byte[plaintext.Length];
@@ -100,11 +100,11 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
         if (tweak is null) throw new ArgumentNullException(nameof(tweak));
         if (tweakCipher.BlockSize != dataCipher.BlockSize)
             throw new ArgumentException(
-                $"tweakCipher block size ({tweakCipher.BlockSize}) must equal dataCipher block size ({dataCipher.BlockSize}).",
+                $"tweakCipher block size ({tweakCipher.BlockSize} bits) must equal dataCipher block size ({dataCipher.BlockSize} bits).",
                 nameof(tweakCipher));
-        if (tweak.Length != dataCipher.BlockSize)
+        if (tweak.Length != dataCipher.BlockSize / 8)
             throw new ArgumentException(
-                $"Tweak length ({tweak.Length}) must equal the cipher block size ({dataCipher.BlockSize}).",
+                $"Tweak length ({tweak.Length} bytes) must equal the cipher block size ({dataCipher.BlockSize / 8} bytes).",
                 nameof(tweak));
 
         this._tweak = (byte[])tweak.Clone();
@@ -113,7 +113,7 @@ public sealed class XtsModeTransform : IBlockCipherModeTransform
     /// <inheritdoc />
     public int Transform(ReadOnlySpan<byte> input, Span<byte> output, bool encrypt)
     {
-        var blockSize = this._cipher.BlockSize;
+        var blockSize = this._cipher.BlockSize / 8;
 
         // Empty input is a no-op, consistent with CbcModeTransform.
         CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, blockSize, throwIfZero: false);

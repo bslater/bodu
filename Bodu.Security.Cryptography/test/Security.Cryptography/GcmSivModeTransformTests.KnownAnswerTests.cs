@@ -72,7 +72,7 @@ public sealed partial class GcmSivModeTransformTests
         var expected = Convert.FromHexString(expectedOutputHex);
 
         GcmSivModeTransform transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
-        var output = new byte[plaintext.Length + transform.TagSize];
+        var output = new byte[plaintext.Length + (transform.TagSize / 8)];
         transform.Encrypt(plaintext, output);
 
         CollectionAssert.AreEqual(expected, output,
@@ -92,7 +92,7 @@ public sealed partial class GcmSivModeTransformTests
         var ciphertextTag = Convert.FromHexString(expectedOutputHex);
 
         GcmSivModeTransform transform = MakeGcmSiv(keyHex, nonceHex, aadHex);
-        var plaintextLength = ciphertextTag.Length - transform.TagSize;
+        var plaintextLength = ciphertextTag.Length - (transform.TagSize / 8);
         var output = new byte[plaintextLength];
         var written = transform.Decrypt(ciphertextTag, output);
 
@@ -115,7 +115,7 @@ public sealed partial class GcmSivModeTransformTests
         var enc = new GcmSivModeTransform(
             new AesBlockCipherFixture(masterKey), k => new AesBlockCipherFixture(k), iv);
         var pt = new byte[] { 0x01, 0x02, 0x03, 0x04 };
-        var ct = new byte[pt.Length + enc.TagSize];
+        var ct = new byte[pt.Length + (enc.TagSize / 8)];
         enc.Encrypt(pt, ct);
         ct[ct.Length - 1] ^= 0xFF; // corrupt last tag byte
 
@@ -145,7 +145,7 @@ public sealed partial class GcmSivModeTransformTests
         using var mc1 = new AesBlockCipherFixture(key);
         var enc = new GcmSivModeTransform(mc1, k => new AesBlockCipherFixture(k), iv);
         enc.ProcessAssociatedData(aad);
-        var ciphertext = new byte[plaintext.Length + enc.TagSize];
+        var ciphertext = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ciphertext);
 
         using var mc2 = new AesBlockCipherFixture(key);

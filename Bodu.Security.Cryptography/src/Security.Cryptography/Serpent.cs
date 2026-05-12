@@ -60,9 +60,9 @@ public abstract class Serpent
         this.BlockSizeBytes = this.KeySizeBytes = blockSizeBits / 8;
         this._defaultTweakSizeBytes = tweakSizeBits / 8;
 
-        this.LegalBlockSizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-        this.LegalKeySizesValue = new[] { new KeySizes(blockSizeBits, blockSizeBits, 0) };
-        this.LegalTweakSizesValue = new[] { new KeySizes(tweakSizeBits, tweakSizeBits, 0) };
+        this.LegalBlockSizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        this.LegalKeySizesValue = [new KeySizes(blockSizeBits, blockSizeBits, 0)];
+        this.LegalTweakSizesValue = [new KeySizes(tweakSizeBits, tweakSizeBits, 0)];
         this.TweakSizeValue = tweakSizeBits;
 
         this.ModeValue = CipherMode.CBC;
@@ -88,7 +88,7 @@ public abstract class Serpent
         CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
         CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
-        var engine = this.CreateCipher(rgbKey, tweak);
+        IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
         return new SerpentTransform(engine, this.BlockMode, this.Padding, rgbIV, false);
     }
 
@@ -100,7 +100,7 @@ public abstract class Serpent
         CryptoHelpers.ThrowIfInvalidIVForMode(rgbIV, this.BlockMode, this.BlockSize, this.LegalBlockSizes);
         CryptoHelpers.ThrowIfInvalidTweakSize(tweak, this.TweakSize, this.LegalTweakSizes);
 
-        var engine = this.CreateCipher(rgbKey, tweak);
+        IBlockCipher engine = this.CreateCipher(rgbKey, tweak);
         return new SerpentTransform(engine, this.BlockMode, this.Padding, rgbIV, true);
     }
 

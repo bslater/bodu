@@ -14,13 +14,13 @@ public partial class CryptoHelpersTests
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> does not
-    /// throw when the supplied key matches the expected size.
+    /// throw when the byte length of the supplied key matches the expected key size in bits.
     /// </summary>
     [TestMethod]
     public void ThrowIfInvalidKeySize_WhenKeyMatchesExpectedSize_ShouldNotThrow()
     {
         var key = new byte[16];
-        CryptoHelpers.ThrowIfInvalidKeySize(key, 16, LegalKeySizes);
+        CryptoHelpers.ThrowIfInvalidKeySize(key, 128, LegalKeySizes);
     }
 
     /// <summary>
@@ -32,7 +32,7 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidKeySize(null!, 16, LegalKeySizes);
+            CryptoHelpers.ThrowIfInvalidKeySize(null!, 128, LegalKeySizes);
         });
     }
 
@@ -45,24 +45,28 @@ public partial class CryptoHelpersTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidKeySize(new byte[16], 16, null!);
+            CryptoHelpers.ThrowIfInvalidKeySize(new byte[16], 128, null!);
         });
     }
 
     /// <summary>
     /// Verifies that <see cref="CryptoHelpers.ThrowIfInvalidKeySize(byte[], int, KeySizes[], string)"/> throws a
-    /// <see cref="CryptographicException"/> when the key length does not match the expected size.
+    /// <see cref="CryptographicException"/> when the key byte length, expressed in bits, is not one of the values
+    /// permitted by the supplied <see cref="KeySizes"/> table.
     /// </summary>
+    /// <param name="actualBytes">The byte length of the supplied key.</param>
+    /// <param name="expectedBits">The algorithm's currently configured key size, in bits. Retained for
+    /// signature compatibility; the validation decision is driven by <see cref="LegalKeySizes"/>.</param>
     [TestMethod]
-    [DataRow(8, 16)]
-    [DataRow(32, 16)]
-    public void ThrowIfInvalidKeySize_WhenKeyHasWrongLength_ShouldThrowCryptographicException(int actual, int expected)
+    [DataRow(8, 128)]
+    [DataRow(40, 128)]
+    public void ThrowIfInvalidKeySize_WhenKeyHasWrongLength_ShouldThrowCryptographicException(int actualBytes, int expectedBits)
     {
-        var key = new byte[actual];
+        var key = new byte[actualBytes];
 
         Assert.ThrowsExactly<CryptographicException>(() =>
         {
-            CryptoHelpers.ThrowIfInvalidKeySize(key, expected, LegalKeySizes);
+            CryptoHelpers.ThrowIfInvalidKeySize(key, expectedBits, LegalKeySizes);
         });
     }
 }

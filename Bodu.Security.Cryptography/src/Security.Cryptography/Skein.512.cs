@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Supplying a non-empty <see cref="Skein{T}.Key"/> turns the instance into the keyed Skein-MAC-512 variant by prepending
 /// a <c>KEY</c> UBI phase to the standard <c>CFG → MSG → OUT</c> pipeline. The key length is not fixed: any byte
-/// sequence from zero up to <see cref="Skein{T}.MaxKeySizeBytes"/> bytes is valid.
+/// sequence from zero up to <see cref="Skein{T}.MaxKeySize"/> / 8 bytes is valid.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>State / block size: 512 bits (64 bytes).</description></item>
 ///   <item><description>Output sizes: 128, 160, 224, 256, 384, or 512 bits — default 512.</description></item>
 ///   <item><description>Underlying cipher: <see cref="Threefish512Cipher"/> tweakable block cipher under UBI mode.</description></item>
-///   <item><description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySizeBytes"/> bytes.</description></item>
+///   <item><description>Optional variable-length key: 0–<see cref="Skein{T}.MaxKeySize"/> / 8 bytes.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Skein-512.</strong> The general-purpose Skein default, recommended by the Skein 1.3

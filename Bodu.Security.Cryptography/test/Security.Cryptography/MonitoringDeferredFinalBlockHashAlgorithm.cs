@@ -42,9 +42,9 @@ public sealed class MonitoringDeferredFinalBlockHashAlgorithm
     /// <see cref="System.Security.Cryptography.HashAlgorithm" /> infrastructure has a non-zero
     /// <c>HashSize</c> when <c>ComputeHash</c> is invoked).
     /// </summary>
-    /// <param name="blockSize">The block size, in bytes, to forward to the base constructor.</param>
+    /// <param name="blockSize">The block size, in bytes, to forward to the base constructor (converted to bits).</param>
     public MonitoringDeferredFinalBlockHashAlgorithm(int blockSize)
-        : base(blockSize)
+        : base(blockSize * 8)
     {
         this.HashSizeValue = 8;
     }

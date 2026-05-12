@@ -18,8 +18,9 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyedAndUnkeyed_ShouldProduceDifferentDigests()
     {
         using TAlgorithm reference = CreateAlgorithm();
-        var message = new byte[reference.MaximumKeySize];
-        var keySize = Math.Max(1, reference.MaximumKeySize / 2);
+        var maxKeyBytes = reference.MaximumKeySize / 8;
+        var message = new byte[maxKeyBytes];
+        var keySize = Math.Max(1, maxKeyBytes / 2);
         var key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
 
         byte[] unkeyedHash;
@@ -44,8 +45,9 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyedWithSameKeyAndInput_ShouldProduceConsistentDigest()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var keySize = Math.Max(1, sut.MaximumKeySize / 2);
-        var message = new byte[sut.MaximumKeySize * 2];
+        var maxKeyBytes = sut.MaximumKeySize / 8;
+        var keySize = Math.Max(1, maxKeyBytes / 2);
+        var message = new byte[maxKeyBytes * 2];
         var key = Enumerable.Range(1, keySize).Select(i => (byte)i).ToArray();
         sut.Key = key;
 
@@ -62,8 +64,9 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenDifferentKeysUsed_ShouldProduceDifferentDigests()
     {
         using TAlgorithm reference = CreateAlgorithm();
-        var message = new byte[reference.MaximumKeySize];
-        var keySize = Math.Max(1, reference.MaximumKeySize / 2);
+        var maxKeyBytes = reference.MaximumKeySize / 8;
+        var message = new byte[maxKeyBytes];
+        var keySize = Math.Max(1, maxKeyBytes / 2);
         var key1 = Enumerable.Range(0, keySize).Select(i => (byte)i).ToArray();
         var key2 = Enumerable.Range(0, keySize).Select(i => (byte)(i ^ 0xFF)).ToArray();
 
@@ -93,8 +96,9 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyCleared_ShouldMatchUnkeyedDigest()
     {
         using TAlgorithm reference = CreateAlgorithm();
-        var message = new byte[reference.MaximumKeySize];
-        var key = new byte[Math.Max(1, reference.MaximumKeySize / 2)];
+        var maxKeyBytes = reference.MaximumKeySize / 8;
+        var message = new byte[maxKeyBytes];
+        var key = new byte[Math.Max(1, maxKeyBytes / 2)];
 
         byte[] unkeyedHash;
         byte[] clearedKeyHash;
@@ -123,7 +127,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyedWithEmptyInput_ShouldReturnNonEmptyDigest()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var keySize = Math.Max(1, sut.MaximumKeySize / 2);
+        var keySize = Math.Max(1, (sut.MaximumKeySize / 8) / 2);
         sut.Key = Enumerable.Range(0, keySize).Select(i => (byte)i).ToArray();
 
         var digest = sut.ComputeHash([]);
@@ -141,8 +145,9 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyChangedBetweenCalls_ShouldProduceDifferentDigests()
     {
         using TAlgorithm sut = CreateAlgorithm();
-        var message = new byte[sut.MaximumKeySize];
-        var keySize = Math.Max(1, sut.MaximumKeySize / 2);
+        var maxKeyBytes = sut.MaximumKeySize / 8;
+        var message = new byte[maxKeyBytes];
+        var keySize = Math.Max(1, maxKeyBytes / 2);
         var key1 = Enumerable.Range(0, keySize).Select(i => (byte)i).ToArray();
         var key2 = Enumerable.Range(0, keySize).Select(i => (byte)(255 - i)).ToArray();
 
@@ -163,7 +168,7 @@ public abstract partial class KeyedDeferredFinalBlockHashAlgorithmTests<TTest, T
     public void ComputeHash_WhenKeyIsMinimalOneByteKey_ShouldDifferFromUnkeyedDigest()
     {
         using TAlgorithm reference = CreateAlgorithm();
-        var message = new byte[reference.MaximumKeySize];
+        var message = new byte[reference.MaximumKeySize / 8];
         byte[] key = [0x42];
 
         byte[] unkeyedHash;

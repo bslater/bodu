@@ -81,7 +81,7 @@ public abstract partial class BlockCipherTests<TTest, TCipher, TVariant>
         }
 
         using TCipher cipher = CreateBlockCipher();
-        var buffer = new byte[cipher.BlockSize];
+        var buffer = new byte[cipher.BlockSize / 8];
         cipher.Encrypt(buffer, buffer);
         cipher.Dispose();
 

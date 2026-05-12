@@ -502,7 +502,7 @@ public abstract partial class KeyedBlockHashAlgorithmTests<TTest, TAlgorithm, TV
     }
 
     /// <summary>
-    /// Verifies that assigning a key longer than <see cref="Skein{T}.MaxKeySizeBytes" /> throws
+    /// Verifies that assigning a key longer than <see cref="Skein{T}.MaxKeySize" /> / 8 bytes throws
     /// <see cref="CryptographicException" />.
     /// </summary>
     [TestMethod]

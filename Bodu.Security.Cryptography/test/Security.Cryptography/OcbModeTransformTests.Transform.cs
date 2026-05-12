@@ -12,38 +12,39 @@ using System.Linq;
 
 public sealed partial class OcbModeTransformTests
 {
-    // ── Non-default tag length ─────────────────────────────────────────────────────────────────
+    // ── Non-default tag size ───────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that a plaintext encrypted with a non-default tag length is fully recovered
-    /// by a subsequent decrypt operation using the same key, nonce, and tag length.
+    /// Verifies that a plaintext encrypted with a non-default tag size is fully recovered
+    /// by a subsequent decrypt operation using the same key, nonce, and tag size.
     /// </summary>
     /// <remarks>
-    /// Exercises tag lengths 8, 12, and 16 bytes to confirm that the tag-length parameter
-    /// is consistently applied across both the encrypt and decrypt paths, including the
-    /// nonce-word construction (RFC 7253 §2.4), block processing, and tag output or
-    /// verification.
+    /// Exercises tag sizes 64, 96, and 128 bits (8, 12, and 16 bytes) to confirm that the
+    /// tag-size parameter is consistently applied across both the encrypt and decrypt paths,
+    /// including the nonce-word construction (RFC 7253 §2.4), block processing, and tag
+    /// output or verification.
     /// </remarks>
     [TestMethod]
-    [DataRow(8, DisplayName = "tagLen = 8")]
-    [DataRow(12, DisplayName = "tagLen = 12")]
-    [DataRow(16, DisplayName = "tagLen = 16")]
-    public void EncryptThenDecrypt_WithNonDefaultTagLength_ShouldRoundTrip(int tagLen)
+    [DataRow(64, DisplayName = "tagSize = 64 bits")]
+    [DataRow(96, DisplayName = "tagSize = 96 bits")]
+    [DataRow(128, DisplayName = "tagSize = 128 bits")]
+    public void EncryptThenDecrypt_WithNonDefaultTagSize_ShouldRoundTrip(int tagSize)
     {
         using var cipher = new AesBlockCipherFixture(new byte[16]);
         var iv = Enumerable.Repeat((byte)0x5A, ExpectedBlockSize).ToArray();
         var plaintext = TestHelpers.GenerateRandomNonZeroBytes(ExpectedBlockSize * 3);
 
-        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
-        var ct = new byte[plaintext.Length + tagLen];
+        var tagBytes = tagSize / 8;
+        OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone(), tagSize);
+        var ct = new byte[plaintext.Length + tagBytes];
         enc.Encrypt(plaintext, ct);
 
-        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagLen);
+        OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone(), tagSize);
         var recovered = new byte[plaintext.Length];
         dec.Decrypt(ct, recovered);
 
         CollectionAssert.AreEqual(plaintext, recovered,
-            $"Round-trip must recover plaintext for tagLen = {tagLen}.");
+            $"Round-trip must recover plaintext for tagSize = {tagSize} bits.");
     }
 
     // ── Long plaintext / L-array coverage ────────────────────────────────────────────────────
@@ -82,7 +83,7 @@ public sealed partial class OcbModeTransformTests
         var plaintext = TestHelpers.GenerateRandomNonZeroBytes(plaintextLength);
 
         OcbModeTransform enc = CreateTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[plaintext.Length + enc.TagSize];
+        var ct = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         OcbModeTransform dec = CreateTransform(cipher, (byte[])iv.Clone());
@@ -120,7 +121,7 @@ public sealed partial class OcbModeTransformTests
         var plaintext = Enumerable.Range(0, ptLen).Select(i => (byte)(i & 0xFF)).ToArray();
 
         var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
-        var ct = new byte[ptLen + enc.TagSize];
+        var ct = new byte[ptLen + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
@@ -161,7 +162,7 @@ public sealed partial class OcbModeTransformTests
 
         var enc = new OcbModeTransform(cipher, (byte[])iv.Clone());
         enc.ProcessAssociatedData(aad);
-        var ct = new byte[plaintext.Length + enc.TagSize];
+        var ct = new byte[plaintext.Length + (enc.TagSize / 8)];
         enc.Encrypt(plaintext, ct);
 
         var dec = new OcbModeTransform(cipher, (byte[])iv.Clone());
@@ -197,11 +198,11 @@ public sealed partial class OcbModeTransformTests
         var plaintext = new byte[ExpectedBlockSize];
 
         var enc1 = new OcbModeTransform(cipher1, iv1);
-        var ct1 = new byte[plaintext.Length + enc1.TagSize];
+        var ct1 = new byte[plaintext.Length + (enc1.TagSize / 8)];
         enc1.Encrypt(plaintext, ct1);
 
         var enc2 = new OcbModeTransform(cipher2, iv2);
-        var ct2 = new byte[plaintext.Length + enc2.TagSize];
+        var ct2 = new byte[plaintext.Length + (enc2.TagSize / 8)];
         enc2.Encrypt(plaintext, ct2);
 
         CollectionAssert.AreEqual(ct1, ct2,
