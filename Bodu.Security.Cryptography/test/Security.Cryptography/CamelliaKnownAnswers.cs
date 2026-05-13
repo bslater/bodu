@@ -52,7 +52,7 @@ internal static class CamelliaKnownAnswers
 
     private const string ProfileRfc3713 = "RFC 3713 Appendix A";
 
-    private const string ProfileBouncyCastle = "Bouncy Castle CamelliaTest.java avalanche";
+    private const string ProfileAvalanche = "Camellia single-bit avalanche fixtures (zero / high-bit input)";
 
     private const string ProfileRfc5528 = "RFC 5528 Section 4.1 Camellia-CTR keystream";
 
@@ -69,7 +69,7 @@ internal static class CamelliaKnownAnswers
         new BlockCipherKnownAnswer
         {
             Name = "Camellia128_ZeroKey_HighBitPlaintext",
-            Profile = ProfileBouncyCastle,
+            Profile = ProfileAvalanche,
             Plaintext = Convert.FromHexString("80000000000000000000000000000000"),
             Ciphertext = Convert.FromHexString("07923A39EB0A817D1C4D87BDB82D1F1C"),
             Key = Convert.FromHexString("00000000000000000000000000000000"),
@@ -77,7 +77,7 @@ internal static class CamelliaKnownAnswers
         new BlockCipherKnownAnswer
         {
             Name = "Camellia128_HighBitKey_ZeroPlaintext",
-            Profile = ProfileBouncyCastle,
+            Profile = ProfileAvalanche,
             Plaintext = Convert.FromHexString("00000000000000000000000000000000"),
             Ciphertext = Convert.FromHexString("6C227F749319A3AA7DA235A9BBA05A2C"),
             Key = Convert.FromHexString("80000000000000000000000000000000"),

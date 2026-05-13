@@ -45,7 +45,7 @@ public sealed record KeyedHashAlgorithmKnownAnswer
 
     /// <summary>
     /// Gets an optional free-form profile tag describing the source or category of this vector — for example
-    /// <c>"Spec Appendix C"</c>, <c>"NIST CD KAT"</c>, or <c>"BouncyCastle reference"</c>. Surfaced in failure
+    /// <c>"Spec Appendix C"</c>, <c>"NIST CD KAT"</c>, or <c>"RFC 8439 Section 2.5.2"</c>. Surfaced in failure
     /// diagnostics so a test report makes the provenance obvious.
     /// </summary>
     public string? Profile { get; init; }

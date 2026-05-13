@@ -16,9 +16,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Skipjack is a block cipher designed by the United States National Security Agency (NSA) and declassified in 1998. It operates on
-/// 64-bit (8-byte) blocks, uses a fixed 80-bit (10-byte) key, and applies an unbalanced Feistel network across 32 rounds. Skipjack
-/// is supported here for legacy and research scenarios only.
+/// Skipjack is a block cipher designed by the United States National Security Agency (NSA), specified in FIPS PUB 185
+/// (1994) and declassified in 1998. It operates on 64-bit (8-byte) blocks, uses a fixed 80-bit (10-byte) key, and applies
+/// an unbalanced Feistel network across 32 rounds whose round function alternates between two rules known as
+/// <em>Rule A</em> and <em>Rule B</em>. Skipjack is supported here for legacy and research scenarios only.
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block cipher modes via the
@@ -59,6 +60,7 @@ namespace Bodu.Security.Cryptography;
 /// byte[] ciphertext = skipjack.Encrypt(legacyPlaintext);
 /// </code>
 /// </example>
+/// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso>
 /// <seealso href="../guides/cryptography/skipjack.html">Using Skipjack (guide with full encrypt / decrypt examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>

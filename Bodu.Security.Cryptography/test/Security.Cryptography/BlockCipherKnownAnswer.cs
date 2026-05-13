@@ -113,7 +113,7 @@ public sealed record BlockCipherKnownAnswer
 
     /// <summary>
     /// Gets an optional free-form profile tag describing the source or category of this vector — for
-    /// example <c>"RFC 3713 Appendix A"</c>, <c>"NIST AES KAT"</c>, or <c>"Bouncy Castle reference"</c>.
+    /// example <c>"RFC 3713 Appendix A"</c>, <c>"NIST AES KAT"</c>, or <c>"NESSIE submission"</c>.
     /// Surfaced in failure diagnostics so a test report makes the provenance obvious.
     /// </summary>
     public string? Profile { get; init; }

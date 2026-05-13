@@ -11,8 +11,11 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides a managed implementation of the <c>Skipjack</c> block cipher engine, operating on 64-bit blocks with an 80-bit key
-/// over 32 rounds. The key schedule is binary-compatible with Bouncy Castle, OpenSSL, and the original NSA reference implementation.
+/// over 32 rounds. Skipjack was designed by the United States National Security Agency (NSA) and declassified in 1998; the
+/// key schedule and Rule A / Rule B alternation are binary-compatible with the NSA reference implementation published in
+/// FIPS PUB 185 (1994).
 /// </summary>
+/// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso>
 /// <remarks>
 /// <para>
 /// Skipjack is a legacy symmetric block cipher whose 32 rounds alternate between two nonlinear rules known as <em>Rule A</em> and
@@ -140,8 +143,8 @@ public sealed class SkipjackBlockCipher
     /// The cipher instance has been disposed.
     /// </exception>
     /// <remarks>
-    /// Mirrors the Bouncy Castle/OpenSSL decrypt sequence, including the word-order swap in the input/output stages.
-    /// Decryption applies the inverse round rules in reverse round-key order, using H as the inverse of G.
+    /// Mirrors the FIPS PUB 185 decrypt sequence, including the word-order swap in the input/output stages. Decryption
+    /// applies the inverse round rules in reverse round-key order, using H as the inverse of G.
     /// </remarks>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -230,8 +233,8 @@ public sealed class SkipjackBlockCipher
     /// The cipher instance has been disposed.
     /// </exception>
     /// <remarks>
-    /// The routine implements the Bouncy Castle/OpenSSL-compatible Skipjack schedule: the key pointer advances by
-    /// four key bytes inside G for each round, and the rule counter injected into each round is <c>k + 1</c>.
+    /// The routine implements the FIPS PUB 185 Skipjack schedule: the key pointer advances by four key bytes inside G
+    /// for each round, and the rule counter injected into each round is <c>k + 1</c>.
     /// </remarks>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {

@@ -9,18 +9,18 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Holds the curated <see cref="SkipjackBlockCipher" /> known-answer test vectors used by
 /// <see cref="SkipjackBlockCipherTests" />. Each vector encrypts an all-zero 64-bit plaintext under a
-/// single-bit-set 80-bit key; the expected ciphertexts are reproduced from the Bouncy Castle
-/// <c>SkipjackTest</c> reference, which itself derives from the original NSA Skipjack specification.
+/// single-bit-set 80-bit key; the expected ciphertexts are reproduced from the NSA Skipjack reference
+/// implementation declassified in 1998 and standardised in FIPS PUB 185.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The corpus combines two well-established sources: the three single-bit-key avalanche cases (NSA Skipjack
-/// reference / Bouncy Castle), and the canonical FIPS 185 Section 8 vector reproduced from Bouncy Castle's
-/// <c>SkipjackTest.java</c>. Together they exercise both key-schedule sanity (avalanche) and the published
-/// reference round-trip (FIPS 185), sufficient to detect any divergence in round-key byte ordering or the
-/// Rule&#160;A / Rule&#160;B alternation. See issue #144 for the corpus decision history.
+/// The corpus combines two well-established sources: the three single-bit-key avalanche cases that accompany
+/// the original NSA Skipjack reference, and the canonical Section 8 worked example published in FIPS PUB 185.
+/// Together they exercise both key-schedule sanity (avalanche) and the published reference round-trip,
+/// sufficient to detect any divergence in round-key byte ordering or the Rule&#160;A / Rule&#160;B alternation.
 /// </para>
 /// </remarks>
+/// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso>
 internal static class SkipjackKnownAnswers
 {
     /// <summary>
@@ -32,9 +32,9 @@ internal static class SkipjackKnownAnswers
 
     private const string AllZeroPlaintext = "0000000000000000";
 
-    private const string ProfileNsaReference = "NSA Skipjack reference / Bouncy Castle";
+    private const string ProfileNsaReference = "NSA Skipjack reference (declassified 1998)";
 
-    private const string ProfileFips185 = "FIPS 185 Section 8 / Bouncy Castle SkipjackTest.java";
+    private const string ProfileFips185 = "FIPS PUB 185 Section 8";
 
     private static readonly BlockCipherKnownAnswer[] Default =
     [

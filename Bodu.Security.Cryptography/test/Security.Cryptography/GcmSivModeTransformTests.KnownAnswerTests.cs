@@ -15,9 +15,9 @@ namespace Bodu.Security.Cryptography;
 /// Known-answer tests for <see cref="GcmSivModeTransform" /> against RFC 8452 Appendix C.
 /// </summary>
 /// <remarks>
-/// Only RFC 8452 C.1 (empty PT, empty AAD) is included. Vectors C.2–C.10 require verification
-/// against a reference implementation (BouncyCastle, OpenSSL) before the expected CT+Tag values
-/// can be hardcoded. Add them following the same pattern once confirmed.
+/// Only RFC 8452 C.1 (empty PT, empty AAD) is included. Vectors C.2–C.10 require independent
+/// verification before the expected CT+Tag values can be hardcoded. Add them following the same
+/// pattern once confirmed.
 /// </remarks>
 public sealed partial class GcmSivModeTransformTests
 {

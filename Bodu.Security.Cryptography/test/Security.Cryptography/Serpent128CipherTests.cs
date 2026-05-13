@@ -9,8 +9,9 @@ using Bodu.Test;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Concrete test class exercising <see cref="Serpent128Cipher" /> against the canonical Serpent test vectors published by the
-/// Bouncy Castle project (derived from the Anderson / Biham / Knudsen AES submission reference implementation).
+/// Concrete test class exercising <see cref="Serpent128Cipher" /> against the canonical Serpent test vectors from the
+/// NESSIE submission by Ross Anderson, Eli Biham, and Lars Knudsen — the same corpus published with the original
+/// Serpent AES candidate submission.
 /// </summary>
 /// <remarks>
 /// Serpent-128 is the standardised, non-tweakable Serpent variant — distinct from the experimental wide-block

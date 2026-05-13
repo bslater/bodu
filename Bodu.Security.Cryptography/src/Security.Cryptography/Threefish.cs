@@ -17,8 +17,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Threefish is the tweakable block cipher used as the core primitive of the Skein hash function. Each variant operates on a block
-/// whose size in bits matches its key size (256, 512, or 1024 bits) together with a 128-bit tweak. Derived classes must implement
+/// Threefish is a tweakable block cipher designed by Bruce Schneier, Niels Ferguson, Stefan Lucks, Doug Whiting,
+/// Mihir Bellare, Tadayoshi Kohno, Jon Callas, and Jesse Walker as the core primitive of the Skein hash function,
+/// submitted to the NIST SHA-3 competition (2008). Each variant operates on a block whose size in bits matches its
+/// key size (256, 512, or 1024 bits) together with a 128-bit tweak. Derived classes must implement
 /// <see cref="CreateCipher(byte[], byte[])"/> to instantiate the appropriate concrete engine.
 /// </para>
 /// <para>
@@ -48,6 +50,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="Threefish1024"/>
 /// <seealso cref="TweakableSymmetricAlgorithm"/>
 /// <seealso cref="Skein{T}"/>
+/// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/skein.pdf">The Skein Hash Function Family (Schneier et al., 2010) — specifies Threefish</seealso>
 public abstract class Threefish
     : TweakableSymmetricAlgorithm
 {

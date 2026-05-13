@@ -15,8 +15,11 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Twofish is a symmetric-key block cipher designed by Bruce Schneier, John Kelsey, Doug Whiting, David Wagner,
-/// Chris Hall, and Niels Ferguson. It was one of the Advanced Encryption Standard finalists. Twofish operates on
-/// 128-bit blocks and supports 128-bit, 192-bit, and 256-bit keys.
+/// Chris Hall, and Niels Ferguson, and submitted as one of the five finalists in the Advanced Encryption Standard
+/// (AES) competition. The reference paper, <em>Twofish: A 128-Bit Block Cipher</em> (1998), specifies a 16-round
+/// Feistel network with key-dependent S-boxes, an MDS-based linear layer, and a Pseudo-Hadamard Transform
+/// providing diffusion across the Feistel halves. Twofish operates on 128-bit blocks and supports 128-bit,
+/// 192-bit, and 256-bit keys.
 /// </para>
 /// <para>
 /// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block
@@ -59,6 +62,7 @@ namespace Bodu.Security.Cryptography;
 /// byte[] roundTrip  = twofish.Decrypt(ciphertext);
 /// </code>
 /// </example>
+/// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/paper-twofish-paper.pdf">Twofish: A 128-Bit Block Cipher (Schneier, Kelsey, Whiting, Wagner, Hall, Ferguson, 1998)</seealso>
 /// <seealso href="../guides/cryptography/twofish.html">Using Twofish (guide with full encrypt / decrypt examples)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>

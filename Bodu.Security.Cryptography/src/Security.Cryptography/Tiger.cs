@@ -12,9 +12,9 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a hash using the <c>Tiger</c> cryptographic hash algorithm by Ross Anderson and Eli Biham, optimised for 64-bit
-/// platforms. Supports output sizes of 128, 160, or 192 bits and both the original <c>Tiger</c> and <c>Tiger2</c> padding variants.
-/// This class cannot be inherited.
+/// Computes a hash using the <c>Tiger</c> cryptographic hash algorithm by Ross Anderson and Eli Biham (1996),
+/// optimised for 64-bit platforms. Supports output sizes of 128, 160, or 192 bits and both the original
+/// <c>Tiger</c> and <c>Tiger2</c> padding variants. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -54,6 +54,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] digest = tiger.ComputeHash(message);
 /// </code>
 /// </example>
+/// <seealso href="https://www.cs.technion.ac.il/~biham/Reports/Tiger/">Tiger home page (Anderson / Biham)</seealso>
+/// <seealso href="../guides/cryptography/tiger.html">Using Tiger</seealso>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-3--a-cryptographic-digest">Cryptographic digest guide</seealso>
 public sealed partial class Tiger
     : BlockHashAlgorithm<Tiger>
