@@ -4,10 +4,41 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfGreaterThanOrEqualOther{T}" /> contract matrix with
+    /// explicit ParamName disambiguation: when the guard fails, ParamName must be the name of the
+    /// <c>value</c> parameter, never the <c>other</c> parameter — the offending caller-supplied input is
+    /// <c>value</c>, not the comparison reference.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The value compared against <paramref name="other" />.</param>
+    /// <param name="other">The comparison reference.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("equal → throw on value", 5, 5, true)]
+    [DataRow("greater → throw on value", 6, 5, true)]
+    [DataRow("less → pass", 4, 5, false)]
+    [DataRow("MinValue vs MaxValue → pass", int.MinValue, int.MaxValue, false)]
+    [DataRow("MaxValue vs MaxValue → throw on value", int.MaxValue, int.MaxValue, true)]
+    public void ThrowIfGreaterThanOrEqualOther_WhenInvokedWithVariousPairs_ShouldFollowContract(
+        string testName, int value, int other, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentException) : null;
+        string? expectedParam = expectsException ? "value" : null;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfGreaterThanOrEqualOther(value, other, "value", "other"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfGreaterThanOrEqualOther" />, when ValueIsGreaterThanOrEqualToOther, throws <see cref="ArgumentException" />.
     /// </summary>
