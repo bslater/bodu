@@ -752,8 +752,12 @@ public sealed class NotableDateRuleBuilder
         if (_tags.Count > 0)
         {
             JsonArray tags = [];
+
+            // JsonArray.Add<T>(T) creates a JsonValueCustomized<T> that requires a
+            // TypeInfoResolver at serialisation time; the typed JsonValue.Create(string?)
+            // overload yields a JsonValuePrimitive that serialises without one.
             foreach (string tag in _tags)
-                tags.Add(tag);
+                tags.Add(JsonValue.Create(tag));
             node["tags"] = tags;
         }
 

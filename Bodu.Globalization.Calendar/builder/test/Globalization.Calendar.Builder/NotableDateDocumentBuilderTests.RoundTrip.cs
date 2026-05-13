@@ -1019,7 +1019,11 @@ public partial class NotableDateDocumentBuilderTests
         XDocument doc = builder.ToXDocument();
         XDocument fromXml = XDocument.Parse(builder.ToXml());
 
-        Assert.IsTrue(XNode.DeepEquals(doc, fromXml));
+        // XNode.DeepEquals is not appropriate here: XDocument.Parse exposes the
+        // default-namespace declaration as an explicit xmlns XAttribute on the root,
+        // while the in-memory tree constructed by ToXDocument does not. Both render
+        // to byte-identical XML via XmlWriter, so compare the serialised payloads.
+        Assert.AreEqual(doc.ToString(), fromXml.ToString());
     }
 
     // ============================================================================
