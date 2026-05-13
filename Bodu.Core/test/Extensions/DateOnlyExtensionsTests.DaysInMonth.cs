@@ -14,14 +14,15 @@ using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
-public partial class DateOnlyExtensionTests
+public partial class DateOnlyExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtension.DaysInMonth" />, when Called, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly)" /> returns the Gregorian day count for the month of the
+    /// supplied <see cref="DateOnly" /> value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.DaysInMonthTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.DaysInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
     public void DaysInMonth_WhenCalled_ShouldReturnDaysInMonth(DateTime inputDateTime, int expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -30,4 +31,80 @@ public partial class DateOnlyExtensionTests
         Assert.AreEqual(expected, actual);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, System.Globalization.CultureInfo)" /> returns the day count
+    /// computed by the supplied culture's calendar.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WithCulture_WhenCultureSupplied_ShouldUseSuppliedCalendar()
+    {
+        var date = new DateOnly(2024, 2, 15);
+        var culture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+
+        var actual = date.DaysInMonth(culture);
+
+        Assert.AreEqual(29, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, System.Globalization.CultureInfo)" /> falls back to
+    /// <see cref="System.Globalization.CultureInfo.CurrentCulture" /> when the supplied <paramref name="culture" /> is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WithCulture_WhenCultureIsNull_ShouldFallBackToCurrentCulture()
+    {
+        var originalCulture = System.Globalization.CultureInfo.CurrentCulture;
+        try
+        {
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+            var date = new DateOnly(2023, 2, 15);
+
+            var actual = date.DaysInMonth((System.Globalization.CultureInfo?)null);
+
+            Assert.AreEqual(28, actual);
+        }
+        finally
+        {
+            System.Globalization.CultureInfo.CurrentCulture = originalCulture;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, System.Globalization.Calendar)" /> returns the day count
+    /// computed by the supplied <see cref="System.Globalization.Calendar" /> instance.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WithCalendar_WhenCalendarSupplied_ShouldUseSuppliedCalendar()
+    {
+        var date = new DateOnly(2023, 4, 10);
+        var calendar = new System.Globalization.GregorianCalendar();
+
+        var actual = date.DaysInMonth(calendar);
+
+        Assert.AreEqual(30, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, System.Globalization.Calendar)" /> falls back to the
+    /// current culture's calendar when the supplied <paramref name="calendar" /> is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WithCalendar_WhenCalendarIsNull_ShouldFallBackToCurrentCultureCalendar()
+    {
+        var originalCulture = System.Globalization.CultureInfo.CurrentCulture;
+        try
+        {
+            System.Globalization.CultureInfo.CurrentCulture = System.Globalization.CultureInfo.GetCultureInfo("en-US");
+            var date = new DateOnly(2024, 2, 15);
+
+            var actual = date.DaysInMonth((System.Globalization.Calendar?)null);
+
+            Assert.AreEqual(29, actual);
+        }
+        finally
+        {
+            System.Globalization.CultureInfo.CurrentCulture = originalCulture;
+        }
+    }
 }

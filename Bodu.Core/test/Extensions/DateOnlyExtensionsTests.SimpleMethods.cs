@@ -110,26 +110,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, CultureInfo)" /> returns the day count for the supplied culture.
-    /// </summary>
-    [TestMethod]
-    public void DaysInMonth_WithCulture_ShouldReturnCalendarSpecificCount()
-    {
-        var date = new DateOnly(2024, 2, 1);
-        Assert.AreEqual(29, date.DaysInMonth(CultureInfo.InvariantCulture));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, Calendar)" /> returns the day count for the supplied calendar.
-    /// </summary>
-    [TestMethod]
-    public void DaysInMonth_WithCalendar_ShouldReturnCalendarSpecificCount()
-    {
-        var date = new DateOnly(2024, 2, 1);
-        Assert.AreEqual(29, date.DaysInMonth(new GregorianCalendar()));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.IsLeapYear(DateOnly)" /> returns the Gregorian leap-year result for the date's year.
     /// </summary>
     [TestMethod]
