@@ -4,10 +4,46 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> contract with explicit ParamName
+    /// assertions: null → <see cref="ArgumentNullException" /> on "value"; empty or whitespace-only →
+    /// <see cref="ArgumentException" /> on "value"; non-whitespace → pass.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The string passed to the guard.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
+    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
+    [TestMethod]
+    [DataRow("null → ANE on value", null, "ArgumentNullException", "value")]
+    [DataRow("empty → AE on value", "", "ArgumentException", "value")]
+    [DataRow("spaces only → AE on value", "   ", "ArgumentException", "value")]
+    [DataRow("tab only → AE on value", "\t", "ArgumentException", "value")]
+    [DataRow("newline only → AE on value", "\n", "ArgumentException", "value")]
+    [DataRow("non-whitespace → pass", "Valid", "", "")]
+    [DataRow("leading whitespace then content → pass", "  trimmed", "", "")]
+    [DataRow("internal space → pass", "middle space", "", "")]
+    public void ThrowIfNullOrWhiteSpace_WhenInvokedWithVariousStrings_ShouldFollowContract(
+        string testName, string? value, string expectedExceptionTypeName, string expectedParamName)
+    {
+        Type? expected = expectedExceptionTypeName.Length == 0
+            ? null
+            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
+        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfNullOrWhiteSpace(value!, "value"),
+            expected,
+            param);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> throws <see cref="ArgumentNullException" />
     /// when the value is <see langword="null" />.
