@@ -315,6 +315,79 @@ public sealed class NotableDateResolutionWindowTests
         Assert.IsTrue(window.Contains(new DateTime(2025, 1, 2)));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="NotableDateResolutionWindow.ResolveByName" /> rejects an empty name with
+    /// <see cref="ArgumentException" /> exposing the <c>ruleName</c> parameter.
+    /// </summary>
+    [TestMethod]
+    public void ResolveByName_WhenNameIsEmpty_ShouldThrowArgumentException()
+    {
+        NotableDateResolutionWindow window = new(
+            new DateTime(2024, 1, 1),
+            new DateTime(2024, 12, 31));
+
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = window.ResolveByName(string.Empty, 2024, null, null);
+        });
+
+        Assert.AreEqual("ruleName", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateResolutionWindow.ResolveByName" /> returns <see langword="null" /> when the
+    /// requested territory does not overlap the stored entry's territory.
+    /// </summary>
+    [TestMethod]
+    public void ResolveByName_WhenRequestedTerritoryDoesNotMatchStored_ShouldReturnNull()
+    {
+        NotableDate known = Date("Federal Holiday", new DateTime(2024, 6, 10), territoryCode: "AU");
+
+        NotableDateResolutionWindow window = new(
+            new DateTime(2024, 1, 1),
+            new DateTime(2024, 12, 31));
+
+        window.AddBlocker(known);
+
+        Assert.IsNull(window.ResolveByName("Federal Holiday", 2024, "US", null));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateResolutionWindow.ResolveByName" /> matches via parent / child territory
+    /// containment when the stored entry's territory contains the requested subdivision.
+    /// </summary>
+    [TestMethod]
+    public void ResolveByName_WhenStoredTerritoryContainsRequestedSubdivision_ShouldReturnMatch()
+    {
+        NotableDate known = Date("Federal Holiday", new DateTime(2024, 6, 10), territoryCode: "AU");
+
+        NotableDateResolutionWindow window = new(
+            new DateTime(2024, 1, 1),
+            new DateTime(2024, 12, 31));
+
+        window.AddBlocker(known);
+
+        Assert.AreEqual(new DateTime(2024, 6, 10), window.ResolveByName("Federal Holiday", 2024, "AU-NSW", null));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateResolutionWindow.ResolveByName" /> matches a stored territory-neutral entry
+    /// against any requested territory.
+    /// </summary>
+    [TestMethod]
+    public void ResolveByName_WhenStoredTerritoryIsNull_ShouldMatchAnyRequestedTerritory()
+    {
+        NotableDate known = Date("Global", new DateTime(2024, 6, 10));
+
+        NotableDateResolutionWindow window = new(
+            new DateTime(2024, 1, 1),
+            new DateTime(2024, 12, 31));
+
+        window.AddBlocker(known);
+
+        Assert.AreEqual(new DateTime(2024, 6, 10), window.ResolveByName("Global", 2024, "AU", null));
+    }
+
     private static NotableDateRule Rule(string name) =>
         new()
         {
