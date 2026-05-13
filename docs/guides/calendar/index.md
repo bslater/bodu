@@ -43,6 +43,43 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 
 </div>
 
+### `Bodu.Globalization.Calendar` — Reference
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="rule-reference.md">NotableDateRule and ObservanceAdjustment reference</a></h3>
+  <p>Authoritative field-by-field reference for <code>NotableDateRule</code> and <code>ObservanceAdjustment</code> — every property, what it controls, and worked examples for each resolution strategy.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="adjustment-rules.md">Observance adjustment rules</a></h3>
+  <p>The full trigger and action catalogues — every <code>AdjustmentTrigger</code> and <code>AdjustmentAction</code> value with descriptions, companion fields, real-world patterns, and custom <code>IAdjustmentHandler</code> implementation.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="resolution-pipeline.md">The resolution pipeline</a></h3>
+  <p>Step-by-step walkthrough of all eight pipeline stages — from rule loading through adjustment evaluation, collision resolution, and per-year caching — with a concrete trace for Christmas Day 2027 in Australia.</p>
+</div>
+
+</div>
+
+### `Bodu.Globalization.Calendar` — Patterns
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="holiday-patterns.md">Holiday patterns and examples</a></h3>
+  <p>End-to-end examples for fixed-date holidays, weekend substitution rules (AU/NZ, UK, US), floating weekday-of-month holidays, Easter clusters, lunar and algorithmic dates, multi-day events, and subdivision-level variants.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="building-the-service.md">Building and extending the service</a></h3>
+  <p>How to use the registry and factory types — <code>NotableDateAlgorithmRegistry</code>, <code>AdjustmentHandlerRegistry</code>, <code>NotableDateFilter</code> composition, <code>INotableDateRuleOverrideProvider</code>, <code>INotableDateNameLocalizer</code>, <code>INotableDateCollisionResolver</code>, and the plugin system.</p>
+</div>
+
+</div>
+
 ### `Bodu.Globalization.Calendar.Algorithms`
 
 <div class="bodu-cards">
