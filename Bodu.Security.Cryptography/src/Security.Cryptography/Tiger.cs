@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Computes a hash using the <c>Tiger</c> cryptographic hash algorithm by Ross Anderson and Eli Biham (1996),
 /// optimized for 64-bit platforms. Supports output sizes of 128, 160, or 192 bits and both the original
-/// <c>Tiger</c> and <c>Tiger2</c> padding variants. This class cannot be inherited.
+/// <see cref="TigerHashingVariant.Tiger"/> and <see cref="TigerHashingVariant.Tiger2"/> padding variants. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>

@@ -28,7 +28,7 @@ namespace Bodu.Collections.Extensions;
 /// <para>
 /// <c>CountOrDefault</c> avoids enumerating known collection types and otherwise performs a single eager pass. The
 /// <c>RecursiveSelect</c> family is fully deferred and yields nodes in pre-order traversal. Both methods reject a
-/// <see langword="null"/> source via <c>ThrowHelper</c> rather than failing mid-enumeration.
+/// <see langword="null"/> source via <see cref="ThrowHelper"/> rather than failing mid-enumeration.
 /// </para>
 /// <example>
 /// <code language="csharp">

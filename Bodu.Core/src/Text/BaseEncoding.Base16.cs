@@ -14,7 +14,7 @@ namespace Bodu.Text;
 // ─────────────────────────────────────────────────────────────────────────────── Base16 implementation ───────────────────────────────────────────────────────────────────────────────
 
 /// <summary>
-/// Partial <c>BaseEncoding</c> class – Base16 (hexadecimal) helpers.
+/// Partial <see cref="BaseEncoding"/> class – Base16 (hexadecimal) helpers.
 /// </summary>
 public static partial class BaseEncoding
 {

@@ -138,7 +138,7 @@ public static partial class SequenceGenerator
     /// pair of counters, a running accumulator, or a parser state — that cannot be folded into a single value.
     /// </para>
     /// <para>
-    /// The state object is opaque to <c>SequenceGenerator</c>: if <typeparamref name="TState"/> is mutable the caller is responsible
+    /// The state object is opaque to <see cref="SequenceGenerator"/>: if <typeparamref name="TState"/> is mutable the caller is responsible
     /// for the mutation discipline, and if it is a struct each call to <paramref name="iterateFunction"/> may need to return an
     /// updated copy. Iteration is deferred and produces no allocations beyond the iterator state itself.
     /// </para>

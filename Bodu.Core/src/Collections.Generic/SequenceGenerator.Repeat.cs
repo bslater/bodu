@@ -57,7 +57,7 @@ public static partial class SequenceGenerator
     /// <remarks>
     /// <para>
     /// Functionally equivalent to <see cref="System.Linq.Enumerable.Repeat{TResult}(TResult, int)"/>; prefer this overload when the
-    /// rest of the pipeline already lives in <c>SequenceGenerator</c> for stylistic consistency, or when interoperating with the
+    /// rest of the pipeline already lives in <see cref="SequenceGenerator"/> for stylistic consistency, or when interoperating with the
     /// unbounded <see cref="Repeat{T}(T)"/> form. The BCL alternative is otherwise equivalent in behavior and performance.
     /// </para>
     /// <para>

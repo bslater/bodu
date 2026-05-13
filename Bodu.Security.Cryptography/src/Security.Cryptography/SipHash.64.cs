@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a 64-bit keyed hash using the <c>SipHash</c> algorithm by Aumasson and Bernstein. Produces an 8-byte authentication
+/// Computes a 64-bit keyed hash using the <see cref="SipHash{T}"/> algorithm by Aumasson and Bernstein. Produces an 8-byte authentication
 /// tag from a 128-bit key and is intended to protect hash tables against collision-based denial-of-service attacks. This class
 /// cannot be inherited.
 /// </summary>

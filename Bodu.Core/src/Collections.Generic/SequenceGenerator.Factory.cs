@@ -27,7 +27,7 @@ public static partial class SequenceGenerator
     /// This is the preferred bridge from imperative or external enumerator implementations into a deferred, LINQ-friendly sequence.
     /// Reach for it when an existing component exposes a <c>GetEnumerator</c>-shaped method but does not implement
     /// <see cref="IEnumerable{T}"/>, or when the iteration logic is simpler to express by hand than via the other
-    /// <c>SequenceGenerator</c> overloads.
+    /// <see cref="SequenceGenerator"/> overloads.
     /// </para>
     /// <para>
     /// Argument validation runs eagerly; iteration itself is fully deferred. The wrapper is finite or infinite according to the

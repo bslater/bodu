@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides a managed implementation of the <c>Skipjack</c> block cipher engine, operating on 64-bit blocks with an 80-bit key
+/// Provides a managed implementation of the <see cref="Skipjack"/> block cipher engine, operating on 64-bit blocks with an 80-bit key
 /// over 32 rounds. Skipjack was designed by the United States National Security Agency (NSA) and declassified in 1998; the
 /// key schedule and Rule A / Rule B alternation are binary-compatible with the NSA reference implementation published in
 /// FIPS PUB 185 (1994).
