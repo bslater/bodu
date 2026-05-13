@@ -63,7 +63,7 @@
   -->
 
   <NotableDate name="German Unity Day">
-    <Rule name="Fixed German Unity Day"
+    <Rule name="fixed-oct-03-de"
           category="Holiday"
           territory="DE"
           nonWorking="true"
@@ -79,7 +79,7 @@
   -->
 
   <NotableDate name="Epiphany">
-    <Rule name="Fixed Epiphany (DE-BW, DE-BY, DE-ST)"
+    <Rule name="fixed-jan-06-de-bw"
           category="Holiday"
           territory="DE-BW,DE-BY,DE-ST"
           nonWorking="true"
@@ -95,7 +95,7 @@
   -->
 
   <NotableDate name="International Women's Day">
-    <Rule name="International Women's Day Non-Working Day (DE-BE, DE-MV)"
+    <Rule name="fixed-mar-08-de-be"
           category="Holiday"
           territory="DE-BE,DE-MV"
           nonWorking="true"
@@ -111,7 +111,7 @@
   -->
 
   <NotableDate name="Corpus Christi">
-    <Rule name="Sixtieth Day After Western Easter Corpus Christi (DE)"
+    <Rule name="offset-easter-sunday+60-de-bw"
           category="Holiday"
           territory="DE-BW,DE-BY,DE-HE,DE-NW,DE-RP,DE-SL"
           nonWorking="true"
@@ -128,7 +128,7 @@
   -->
 
   <NotableDate name="Assumption of Mary">
-    <Rule name="Fixed Assumption of Mary (DE-BY, DE-SL)"
+    <Rule name="fixed-aug-15-de-by"
           category="Holiday"
           territory="DE-BY,DE-SL"
           nonWorking="true"
@@ -144,7 +144,7 @@
   -->
 
   <NotableDate name="Reformation Day">
-    <Rule name="Fixed Reformation Day (DE)"
+    <Rule name="fixed-oct-31-de-bb"
           category="Holiday"
           territory="DE-BB,DE-HB,DE-HH,DE-MV,DE-NI,DE-SN,DE-ST,DE-SH,DE-TH"
           nonWorking="true"
@@ -160,7 +160,7 @@
   -->
 
   <NotableDate name="All Saints' Day">
-    <Rule name="Fixed All Saints Day (DE)"
+    <Rule name="fixed-nov-01-de-bw"
           category="Holiday"
           territory="DE-BW,DE-BY,DE-NW,DE-RP,DE-SL"
           nonWorking="true"
@@ -176,7 +176,7 @@
   -->
 
   <NotableDate name="Repentance Day">
-    <Rule name="Repentance Day (DE-SN)"
+    <Rule name="algo-buss-und-bettag-de-sn"
           category="Holiday"
           territory="DE-SN"
           nonWorking="true"

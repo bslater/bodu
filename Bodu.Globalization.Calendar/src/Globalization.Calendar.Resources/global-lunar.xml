@@ -39,7 +39,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <NotableDate name="Lunar New Year">
-    <Rule name="Lunar New Year"
+    <Rule name="fixed-lunisolar-01-01"
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
@@ -52,7 +52,7 @@
   </NotableDate>
 
   <NotableDate name="Lantern Festival">
-    <Rule name="Lantern Festival"
+    <Rule name="offset-lunar-new-year+14"
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
@@ -64,7 +64,7 @@
   </NotableDate>
 
   <NotableDate name="Qingming Festival">
-    <Rule name="Qingming Festival"
+    <Rule name="algo-qingming"
           category="Observance"
           comment="Qingming Jie (清明節), also known as Tomb-Sweeping Day or Pure Brightness Festival. A solar term that falls on the fifteenth day after the Spring Equinox, typically 4–5 April. Families visit and clean the graves of their ancestors, making offerings of food, flowers, and paper goods. Requires a custom INotableDateAlgorithm registered under the key 'qingming'.">
       <Algorithm key="qingming" />
@@ -74,7 +74,7 @@
   </NotableDate>
 
   <NotableDate name="Dragon Boat Festival">
-    <Rule name="Dragon Boat Festival"
+    <Rule name="fixed-lunisolar-05-05"
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
@@ -87,7 +87,7 @@
   </NotableDate>
 
   <NotableDate name="Qixi Festival">
-    <Rule name="Qixi Festival"
+    <Rule name="fixed-lunisolar-07-07"
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
@@ -100,7 +100,7 @@
   </NotableDate>
 
   <NotableDate name="Hungry Ghost Festival">
-    <Rule name="Hungry Ghost Festival"
+    <Rule name="fixed-lunisolar-07-15"
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
@@ -113,7 +113,7 @@
   </NotableDate>
 
   <NotableDate name="Mid-Autumn Festival">
-    <Rule name="Mid-Autumn Festival"
+    <Rule name="fixed-lunisolar-08-15"
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
@@ -126,7 +126,7 @@
   </NotableDate>
 
   <NotableDate name="Double Ninth Festival">
-    <Rule name="Double Ninth Festival"
+    <Rule name="fixed-lunisolar-09-09"
           category="Cultural"
           firstYear="1901"
           lastYear="2100"
@@ -139,7 +139,7 @@
   </NotableDate>
 
   <NotableDate name="Winter Solstice Festival">
-    <Rule name="Fixed Winter Solstice Festival"
+    <Rule name="fixed-dec-22"
           category="Cultural"
           comment="Dongzhi Festival (冬至節). Observed on the winter solstice, which falls on 22 December in the majority of years (occasionally 21 or 23 December astronomically). One of the most important festivals in the Chinese calendar, marking the return of longer days and the peak of yin energy. Families gather for reunion meals featuring tangyuan (glutinous rice balls) in southern China and jiaozi (dumplings) in northern China. The date is expressed here as a Fixed rule on 22 December following modern civil-calendar convention. Consumers requiring the exact astronomical winter solstice date should register a custom INotableDateAlgorithm.">
       <Fixed month="December" day="22" />

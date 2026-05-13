@@ -15,67 +15,67 @@
   -->
 
   <NotableDate name="World Cancer Day">
-    <Rule name="Fixed World Cancer Day" category="Observance" firstYear="2000"
+    <Rule name="fixed-feb-04" category="Observance" firstYear="2000"
           comment="Led by the Union for International Cancer Control (UICC) and supported by the World Health Organization. First observed on 4 February 2000 following the Charter of Paris Against Cancer.">
       <Fixed month="February" day="4" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Autism Awareness Day">
-    <Rule name="Fixed World Autism Awareness Day" category="Observance" firstYear="2008"
+    <Rule name="fixed-apr-02" category="Observance" firstYear="2008"
           comment="Designated by the United Nations General Assembly in 2007 (resolution 62/139) and first observed on 2 April 2008, to highlight the need to improve the quality of life of autistic people.">
       <Fixed month="April" day="2" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Health Day">
-    <Rule name="Fixed World Health Day" category="Observance">
+    <Rule name="fixed-apr-07" category="Observance">
       <Fixed month="April" day="7" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World No Tobacco Day">
-    <Rule name="Fixed World No Tobacco Day" category="Observance" firstYear="1987"
+    <Rule name="fixed-may-31" category="Observance" firstYear="1987"
           comment="Established by the World Health Organization in 1987 to draw global attention to the tobacco epidemic and the preventable death and disease it causes.">
       <Fixed month="May" day="31" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Blood Donor Day">
-    <Rule name="Fixed World Blood Donor Day" category="Observance">
+    <Rule name="fixed-jun-14" category="Observance">
       <Fixed month="June" day="14" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Hepatitis Day">
-    <Rule name="Fixed World Hepatitis Day" category="Observance" firstYear="2008"
+    <Rule name="fixed-jul-28" category="Observance" firstYear="2008"
           comment="Designated by the World Health Organization and observed annually on the birthday of Nobel Prize-winning virologist Baruch Blumberg, who discovered the hepatitis B virus.">
       <Fixed month="July" day="28" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Suicide Prevention Day">
-    <Rule name="Fixed World Suicide Prevention Day" category="Observance" firstYear="2003"
+    <Rule name="fixed-sep-10" category="Observance" firstYear="2003"
           comment="Organised by the International Association for Suicide Prevention (IASP) in association with the World Health Organization, first observed on 10 September 2003.">
       <Fixed month="September" day="10" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Mental Health Day">
-    <Rule name="Fixed World Mental Health Day" category="Observance">
+    <Rule name="fixed-oct-10" category="Observance">
       <Fixed month="October" day="10" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Diabetes Day">
-    <Rule name="Fixed World Diabetes Day" category="Observance" firstYear="1991"
+    <Rule name="fixed-nov-14" category="Observance" firstYear="1991"
           comment="Established in 1991 by the International Diabetes Federation (IDF) and the World Health Organization. The date marks the birthday of Sir Frederick Banting, who co-discovered insulin in 1922.">
       <Fixed month="November" day="14" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World AIDS Day">
-    <Rule name="Fixed World AIDS Day" category="Observance">
+    <Rule name="fixed-dec-01" category="Observance">
       <Fixed month="December" day="1" />
     </Rule>
   </NotableDate>
@@ -85,7 +85,7 @@
   -->
 
   <NotableDate name="Breast Cancer Awareness Month">
-    <Rule name="Fixed Breast Cancer Awareness Month" category="Observance" durationDays="31"
+    <Rule name="fixed-oct-01" category="Observance" durationDays="31"
           comment="A month-long breast cancer awareness campaign observed in October. The durationDays value of 31 spans the full civil month of October, inclusive of 1 October.">
       <Fixed month="October" day="1" />
       <Tag>Health</Tag>
@@ -95,7 +95,7 @@
   </NotableDate>
 
   <NotableDate name="Movember">
-    <Rule name="Fixed Movember" category="Observance" durationDays="30" firstYear="2003"
+    <Rule name="fixed-nov-01" category="Observance" durationDays="30" firstYear="2003"
           comment="A month-long men's health awareness campaign observed in November. The durationDays value of 30 spans the full civil month of November, inclusive of 1 November.">
       <Fixed month="November" day="1" />
       <Tag>Health</Tag>

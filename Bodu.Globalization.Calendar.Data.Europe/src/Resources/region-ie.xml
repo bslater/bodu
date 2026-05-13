@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <NotableDates xmlns="urn:bodu:globalization:calendar">
   <NotableDate name="St Patrick's Day">
-    <Rule name="Ireland" category="Holiday" territory="IE" nonWorking="true">
+    <Rule name="fixed-mar-17-ie" category="Holiday" territory="IE" nonWorking="true">
       <Fixed month="March" day="17" />
     </Rule>
   </NotableDate>

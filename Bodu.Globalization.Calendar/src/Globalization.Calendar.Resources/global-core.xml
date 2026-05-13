@@ -16,20 +16,20 @@
   -->
 
   <NotableDate name="New Year's Day">
-    <Rule name="Fixed New Year's Day With Weekend Roll" category="Holiday" nonWorking="true">
+    <Rule name="fixed-jan-01-weekend-roll" category="Holiday" nonWorking="true">
       <Fixed month="January" day="1" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Workers' Day">
-    <Rule name="Fixed International Workers' Day" category="Observance">
+    <Rule name="fixed-may-01" category="Observance">
       <Fixed month="May" day="1" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="New Year's Eve">
-    <Rule name="Fixed New Year's Eve" category="Cultural"
+    <Rule name="fixed-dec-31" category="Cultural"
           comment="The last day of the year in the Gregorian calendar, universally marked as a transition to the new year and widely celebrated with public gatherings, fireworks, and cultural events.">
       <Fixed month="December" day="31" />
     </Rule>

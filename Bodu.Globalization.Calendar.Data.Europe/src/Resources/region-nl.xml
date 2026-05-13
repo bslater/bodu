@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <NotableDates xmlns="urn:bodu:globalization:calendar">
   <NotableDate name="King's Day">
-    <Rule name="Netherlands" category="Holiday" territory="NL" nonWorking="true">
+    <Rule name="fixed-apr-27-nl" category="Holiday" territory="NL" nonWorking="true">
       <Fixed month="April" day="27" />
     </Rule>
   </NotableDate>

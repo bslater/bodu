@@ -28,7 +28,7 @@
 
   <UseFrom resource="./global-all.xml">
     <Use name="New Year's Day" territory="NZ" nonWorking="true">
-      <Rule name="New Zealand New Year's Day With Weekend Roll" category="Holiday" nonWorking="true">
+      <Rule name="fixed-jan-01-weekend-roll-nz" category="Holiday" nonWorking="true">
         <Tag>NationalHoliday</Tag>
         <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
       </Rule>
@@ -48,13 +48,13 @@
     <Use name="Easter Sunday" territory="NZ" />
     <Use name="Easter Monday" territory="NZ" nonWorking="true" />
     <Use name="Christmas Day" territory="NZ" nonWorking="true">
-      <Rule name="New Zealand Christmas Day With Weekend Roll" category="Holiday" nonWorking="true">
+      <Rule name="fixed-dec-25-weekend-roll-nz" category="Holiday" nonWorking="true">
         <Tag>NationalHoliday</Tag>
         <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
       </Rule>
     </Use>
     <Use name="Boxing Day" territory="NZ" nonWorking="true">
-      <Rule name="New Zealand Boxing Day With Weekend Roll" category="Holiday" nonWorking="true">
+      <Rule name="fixed-dec-26-weekend-roll-nz" category="Holiday" nonWorking="true">
         <Tag>NationalHoliday</Tag>
         <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
       </Rule>
@@ -79,7 +79,7 @@
   -->
 
   <NotableDate name="Day after New Year's Day">
-    <Rule name="Fixed Day After New Year's Day With Weekend Roll"
+    <Rule name="fixed-jan-02-weekend-roll-nz"
           category="Holiday"
           territory="NZ"
           nonWorking="true"
@@ -91,7 +91,7 @@
   </NotableDate>
 
   <NotableDate name="Waitangi Day">
-    <Rule name="Fixed Waitangi Day With Weekend Roll"
+    <Rule name="fixed-feb-06-weekend-roll-nz"
           category="Holiday"
           territory="NZ"
           nonWorking="true"
@@ -103,7 +103,7 @@
   </NotableDate>
 
   <NotableDate name="Anzac Day">
-    <Rule name="Fixed Anzac Day With Weekend Roll"
+    <Rule name="fixed-apr-25-weekend-roll-nz"
           category="Remembrance"
           territory="NZ"
           nonWorking="true"
@@ -115,7 +115,7 @@
   </NotableDate>
 
   <NotableDate name="Sovereign's Birthday">
-    <Rule name="First Monday In June Sovereign's Birthday"
+    <Rule name="weekday-1st-mon-jun-nz"
           category="Holiday"
           territory="NZ"
           nonWorking="true"
@@ -126,7 +126,7 @@
   </NotableDate>
 
   <NotableDate name="Matariki">
-    <Rule name="Matariki"
+    <Rule name="algo-matariki-nz"
           category="Holiday"
           territory="NZ"
           nonWorking="true"
@@ -139,7 +139,7 @@
   </NotableDate>
 
   <NotableDate name="Labour Day">
-    <Rule name="Fourth Monday In October Labour Day"
+    <Rule name="weekday-4th-mon-oct-nz"
           category="Holiday"
           territory="NZ"
           nonWorking="true"
@@ -154,14 +154,14 @@
   -->
 
   <NotableDate name="Father's Day">
-    <Rule name="First Sunday In September Father's Day" category="Observance" territory="NZ"
+    <Rule name="weekday-1st-sun-sep-nz" category="Observance" territory="NZ"
           comment="In New Zealand and Australia, Father's Day is observed on the first Sunday of September, not the third Sunday of June as in most other countries.">
       <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Guy Fawkes Night">
-    <Rule name="Fixed Guy Fawkes Night" category="Cultural" territory="NZ"
+    <Rule name="fixed-nov-05-nz" category="Cultural" territory="NZ"
           comment="Commemorates the foiling of the Gunpowder Plot of 5 November 1605. Widely observed in New Zealand as a fireworks celebration, reflecting the country's British heritage.">
       <Fixed month="November" day="5" />
     </Rule>

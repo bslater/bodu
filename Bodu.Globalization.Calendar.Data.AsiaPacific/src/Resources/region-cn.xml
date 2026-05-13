@@ -16,21 +16,21 @@
   </UseFrom>
 
   <NotableDate name="New Year's Day">
-    <Rule name="Fixed China New Year's Day" category="Holiday" territory="CN" nonWorking="true">
+    <Rule name="fixed-jan-01-cn" category="Holiday" territory="CN" nonWorking="true">
       <Fixed month="January" day="1" />
       <Tag>China</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Labour Day">
-    <Rule name="Fixed China Labour Day" category="Holiday" territory="CN" nonWorking="true">
+    <Rule name="fixed-may-01-cn" category="Holiday" territory="CN" nonWorking="true">
       <Fixed month="May" day="1" />
       <Tag>China</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="National Day">
-    <Rule name="Fixed China National Day" category="Holiday" territory="CN" nonWorking="true" durationDays="7"
+    <Rule name="fixed-oct-01-cn" category="Holiday" territory="CN" nonWorking="true" durationDays="7"
           comment="Mainland China National Day Golden Week. The durationDays value of 7 represents the common statutory public-holiday period beginning on 1 October.">
       <Fixed month="October" day="1" />
       <Tag>China</Tag>

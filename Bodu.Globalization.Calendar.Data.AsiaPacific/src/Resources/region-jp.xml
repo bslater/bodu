@@ -12,42 +12,42 @@
   </UseFrom>
 
   <NotableDate name="Coming of Age Day">
-    <Rule name="Second Monday In January Coming Of Age Day" category="Holiday" territory="JP" nonWorking="true" firstYear="2000">
+    <Rule name="weekday-2nd-mon-jan-jp" category="Holiday" territory="JP" nonWorking="true" firstYear="2000">
       <DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Second" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Setsubun">
-    <Rule name="Fixed Setsubun" category="Cultural" territory="JP">
+    <Rule name="fixed-feb-03-jp" category="Cultural" territory="JP">
       <Fixed month="February" day="3" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="National Foundation Day">
-    <Rule name="Fixed National Foundation Day" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="fixed-feb-11-jp" category="Holiday" territory="JP" nonWorking="true">
       <Fixed month="February" day="11" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Emperor's Birthday">
-    <Rule name="Fixed Emperor Naruhito Birthday" category="Holiday" territory="JP" nonWorking="true" firstYear="2020">
+    <Rule name="fixed-feb-23-jp" category="Holiday" territory="JP" nonWorking="true" firstYear="2020">
       <Fixed month="February" day="23" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Vernal Equinox Day">
-    <Rule name="Vernal Equinox Day" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="algo-jp-vernal-equinox" category="Holiday" territory="JP" nonWorking="true">
       <Algorithm key="jp-vernal-equinox" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Golden Week">
-    <Rule name="Golden Week" category="Cultural" territory="JP" durationDays="7"
+    <Rule name="fixed-apr-29-jp" category="Cultural" territory="JP" durationDays="7"
           comment="Japanese holiday period beginning on 29 April and conventionally spanning through 5 May. The durationDays value of 7 represents the inclusive 29 April to 5 May period; individual public holidays remain separately defined.">
       <Fixed month="April" day="29" />
       <Tag>Japan</Tag>
@@ -56,49 +56,49 @@
   </NotableDate>
 
   <NotableDate name="Showa Day">
-    <Rule name="Fixed Showa Day" category="Holiday" territory="JP" nonWorking="true" firstYear="2007">
+    <Rule name="fixed-apr-29-jp" category="Holiday" territory="JP" nonWorking="true" firstYear="2007">
       <Fixed month="April" day="29" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Constitution Memorial Day">
-    <Rule name="Fixed Constitution Memorial Day" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="fixed-may-03-jp" category="Holiday" territory="JP" nonWorking="true">
       <Fixed month="May" day="3" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Greenery Day">
-    <Rule name="Fixed Greenery Day" category="Holiday" territory="JP" nonWorking="true" firstYear="2007">
+    <Rule name="fixed-may-04-jp" category="Holiday" territory="JP" nonWorking="true" firstYear="2007">
       <Fixed month="May" day="4" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Children's Day">
-    <Rule name="Fixed Japanese Children's Day" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="fixed-may-05-jp" category="Holiday" territory="JP" nonWorking="true">
       <Fixed month="May" day="5" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Marine Day">
-    <Rule name="Third Monday In July Marine Day" category="Holiday" territory="JP" nonWorking="true" firstYear="2003">
+    <Rule name="weekday-3rd-mon-jul-jp" category="Holiday" territory="JP" nonWorking="true" firstYear="2003">
       <DayOfWeekInMonth month="July" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Mountain Day">
-    <Rule name="Fixed Mountain Day" category="Holiday" territory="JP" nonWorking="true" firstYear="2016">
+    <Rule name="fixed-aug-11-jp" category="Holiday" territory="JP" nonWorking="true" firstYear="2016">
       <Fixed month="August" day="11" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Obon">
-    <Rule name="Fixed Obon" category="Cultural" territory="JP" durationDays="3"
+    <Rule name="fixed-aug-13-jp" category="Cultural" territory="JP" durationDays="3"
           comment="Japanese ancestral festival commonly observed from 13 to 15 August in many regions. The durationDays value of 3 spans the common August Obon period inclusively.">
       <Fixed month="August" day="13" />
       <Tag>Japan</Tag>
@@ -107,35 +107,35 @@
   </NotableDate>
 
   <NotableDate name="Respect for the Aged Day">
-    <Rule name="Third Monday In September Respect For The Aged Day" category="Holiday" territory="JP" nonWorking="true" firstYear="2003">
+    <Rule name="weekday-3rd-mon-sep-jp" category="Holiday" territory="JP" nonWorking="true" firstYear="2003">
       <DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Autumnal Equinox Day">
-    <Rule name="Autumnal Equinox Day" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="algo-jp-autumnal-equinox" category="Holiday" territory="JP" nonWorking="true">
       <Algorithm key="jp-autumnal-equinox" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Sports Day">
-    <Rule name="Second Monday In October Sports Day" category="Holiday" territory="JP" nonWorking="true" firstYear="2020">
+    <Rule name="weekday-2nd-mon-oct-jp" category="Holiday" territory="JP" nonWorking="true" firstYear="2020">
       <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Culture Day">
-    <Rule name="Fixed Culture Day" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="fixed-nov-03-jp" category="Holiday" territory="JP" nonWorking="true">
       <Fixed month="November" day="3" />
       <Tag>Japan</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Labour Thanksgiving Day">
-    <Rule name="Fixed Labour Thanksgiving Day" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="fixed-nov-23-jp" category="Holiday" territory="JP" nonWorking="true">
       <Fixed month="November" day="23" />
       <Tag>Japan</Tag>
     </Rule>

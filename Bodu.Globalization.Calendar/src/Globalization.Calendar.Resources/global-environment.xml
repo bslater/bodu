@@ -16,66 +16,66 @@
   -->
 
   <NotableDate name="World Wetlands Day">
-    <Rule name="Fixed World Wetlands Day" category="Observance" firstYear="1997"
+    <Rule name="fixed-feb-02" category="Observance" firstYear="1997"
           comment="First observed in 1997 to mark the anniversary of the signing of the Ramsar Convention on Wetlands on 2 February 1971 in Ramsar, Iran.">
       <Fixed month="February" day="2" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day of Forests">
-    <Rule name="Fixed International Day of Forests" category="Observance" firstYear="2013"
+    <Rule name="fixed-mar-21" category="Observance" firstYear="2013"
           comment="Proclaimed by the United Nations General Assembly in 2012 (resolution 67/200) and first observed on 21 March 2013, to raise awareness of the importance of all types of forests.">
       <Fixed month="March" day="21" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Water Day">
-    <Rule name="Fixed World Water Day" category="Observance">
+    <Rule name="fixed-mar-22" category="Observance">
       <Fixed month="March" day="22" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Earth Hour">
-    <Rule name="Last Saturday In March Earth Hour" category="Observance" firstYear="2007"
+    <Rule name="weekday-last-sat-mar" category="Observance" firstYear="2007"
           comment="A global environmental awareness event associated with switching off non-essential lights for one hour, now generally held on the last Saturday in March at 8:30 pm local time.">
       <DayOfWeekInMonth month="March" dayOfWeek="Saturday" weekOrdinal="Last" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Earth Day">
-    <Rule name="Fixed Earth Day" category="Observance">
+    <Rule name="fixed-apr-22" category="Observance">
       <Fixed month="April" day="22" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day for Biological Diversity">
-    <Rule name="Fixed International Day for Biological Diversity" category="Observance" firstYear="2001"
+    <Rule name="fixed-may-22" category="Observance" firstYear="2001"
           comment="Proclaimed by the United Nations in 2000 (resolution 55/201). Observed annually on 22 May, the date of the adoption of the text of the Convention on Biological Diversity in 1992.">
       <Fixed month="May" day="22" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Environment Day">
-    <Rule name="Fixed World Environment Day" category="Observance">
+    <Rule name="fixed-jun-05" category="Observance">
       <Fixed month="June" day="5" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Oceans Day">
-    <Rule name="Fixed World Oceans Day" category="Observance">
+    <Rule name="fixed-jun-08" category="Observance">
       <Fixed month="June" day="8" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Day to Combat Desertification and Drought">
-    <Rule name="Fixed World Day to Combat Desertification and Drought" category="Observance" firstYear="1995"
+    <Rule name="fixed-jun-17" category="Observance" firstYear="1995"
           comment="Proclaimed by the United Nations General Assembly in 1994 (resolution 49/115) and first observed on 17 June 1995, the day of the adoption of the United Nations Convention to Combat Desertification (UNCCD) in 1994.">
       <Fixed month="June" day="17" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Soil Day">
-    <Rule name="Fixed World Soil Day" category="Observance" firstYear="2014"
+    <Rule name="fixed-dec-05" category="Observance" firstYear="2014"
           comment="Recommended by the International Union of Soil Sciences (IUSS) in 2002 and officially designated by the United Nations General Assembly in 2013 (resolution 68/232). The date marks the birthday of King Bhumibol Adulyadej of Thailand, a champion of sustainable land management.">
       <Fixed month="December" day="5" />
     </Rule>
@@ -86,7 +86,7 @@
   -->
 
   <NotableDate name="Plastic Free July">
-    <Rule name="Fixed Plastic Free July" category="Observance" durationDays="31" firstYear="2011"
+    <Rule name="fixed-jul-01" category="Observance" durationDays="31" firstYear="2011"
           comment="A month-long environmental campaign encouraging reduced single-use plastic consumption. The durationDays value of 31 spans the full civil month of July, inclusive of 1 July.">
       <Fixed month="July" day="1" />
       <Tag>Environment</Tag>
@@ -96,7 +96,7 @@
   </NotableDate>
 
   <NotableDate name="Clean Up the World Weekend">
-    <Rule name="Third Friday In September Clean Up the World Weekend" category="Observance" durationDays="3" firstYear="1993"
+    <Rule name="weekday-3rd-fri-sep" category="Observance" durationDays="3" firstYear="1993"
           comment="A global environmental community action weekend commonly observed over the third weekend of September. The durationDays value of 3 spans Friday through Sunday, inclusive of the start date.">
       <DayOfWeekInMonth month="September" dayOfWeek="Friday" weekOrdinal="Third" />
       <Tag>Environment</Tag>
