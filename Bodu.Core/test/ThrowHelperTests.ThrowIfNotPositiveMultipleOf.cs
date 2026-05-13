@@ -4,10 +4,41 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> contract for the
+    /// <see cref="int" /> instantiation with explicit ParamName assertions: zero, negative, or non-multiple
+    /// values throw <see cref="ArgumentOutOfRangeException" /> on "value"; positive multiples pass.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The value passed to the guard.</param>
+    /// <param name="divisor">The required divisor.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("zero → throw on value", 0, 2, true)]
+    [DataRow("negative → throw on value", -2, 2, true)]
+    [DataRow("positive non-multiple → throw on value", 7, 2, true)]
+    [DataRow("positive non-multiple of 3 → throw on value", 5, 3, true)]
+    [DataRow("exact divisor → pass", 2, 2, false)]
+    [DataRow("positive multiple → pass", 9, 3, false)]
+    public void ThrowIfNotPositiveMultipleOf_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, int value, int divisor, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        string? expectedParam = expectsException ? "value" : null;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor, "value"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPositiveMultipleOf{T}" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the integer value is zero, negative, or not a multiple

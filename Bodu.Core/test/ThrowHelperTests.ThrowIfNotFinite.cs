@@ -4,10 +4,71 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the <see cref="ThrowHelper.ThrowIfNotFinite(double, string?)" /> contract with explicit
+    /// ParamName assertions: NaN and ±Infinity throw <see cref="ArgumentOutOfRangeException" /> on "value";
+    /// any finite value passes (including zero, denormals, and the boundary <see cref="double.MaxValue" />
+    /// / <see cref="double.MinValue" /> values).
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The <see cref="double" /> value passed to the guard.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("NaN → throw on value", double.NaN, true)]
+    [DataRow("+Infinity → throw on value", double.PositiveInfinity, true)]
+    [DataRow("-Infinity → throw on value", double.NegativeInfinity, true)]
+    [DataRow("zero → pass", 0.0, false)]
+    [DataRow("negative finite → pass", -1.5, false)]
+    [DataRow("MaxValue → pass", double.MaxValue, false)]
+    [DataRow("MinValue → pass", double.MinValue, false)]
+    [DataRow("Epsilon → pass", double.Epsilon, false)]
+    public void ThrowIfNotFinite_Double_WhenInvokedWithVariousValues_ShouldFollowContract(
+        string testName, double value, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        string? expectedParam = expectsException ? "value" : null;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfNotFinite(value, "value"),
+            expected,
+            expectedParam);
+    }
+
+    /// <summary>
+    /// Same contract matrix as the <see cref="double" /> overload but for the <see cref="float" /> overload.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The <see cref="float" /> value passed to the guard.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("NaN → throw on value", float.NaN, true)]
+    [DataRow("+Infinity → throw on value", float.PositiveInfinity, true)]
+    [DataRow("-Infinity → throw on value", float.NegativeInfinity, true)]
+    [DataRow("zero → pass", 0.0f, false)]
+    [DataRow("negative finite → pass", -1.5f, false)]
+    [DataRow("MaxValue → pass", float.MaxValue, false)]
+    [DataRow("MinValue → pass", float.MinValue, false)]
+    [DataRow("Epsilon → pass", float.Epsilon, false)]
+    public void ThrowIfNotFinite_Float_WhenInvokedWithVariousValues_ShouldFollowContract(
+        string testName, float value, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        string? expectedParam = expectsException ? "value" : null;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfNotFinite(value, "value"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotFinite(double, string?)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the value is <see cref="double.NaN" />.

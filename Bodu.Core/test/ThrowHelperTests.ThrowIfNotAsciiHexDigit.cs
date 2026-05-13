@@ -4,10 +4,48 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> contract with explicit ParamName
+    /// assertions: ASCII '0'-'9', 'A'-'F', and 'a'-'f' pass; anything else throws
+    /// <see cref="ArgumentOutOfRangeException" /> on "value". Boundary chars on either side of each accepted
+    /// range are tested explicitly.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The character passed to the guard.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("'0' → pass", '0', false)]
+    [DataRow("'9' → pass", '9', false)]
+    [DataRow("'A' → pass", 'A', false)]
+    [DataRow("'F' → pass", 'F', false)]
+    [DataRow("'a' → pass", 'a', false)]
+    [DataRow("'f' → pass", 'f', false)]
+    [DataRow("'/' (one before '0') → throw on value", '/', true)]
+    [DataRow("':' (one after '9') → throw on value", ':', true)]
+    [DataRow("'@' (one before 'A') → throw on value", '@', true)]
+    [DataRow("'G' (one after 'F') → throw on value", 'G', true)]
+    [DataRow("'`' (one before 'a') → throw on value", '`', true)]
+    [DataRow("'g' (one after 'f') → throw on value", 'g', true)]
+    [DataRow("non-hex letter → throw on value", 'z', true)]
+    public void ThrowIfNotAsciiHexDigit_WhenInvokedWithVariousChars_ShouldFollowContract(
+        string testName, char value, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        string? expectedParam = expectsException ? "value" : null;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfNotAsciiHexDigit(value, "value"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotAsciiHexDigit" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> for characters that are not valid ASCII hex digits.
