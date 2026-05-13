@@ -662,12 +662,13 @@ public partial class EvictingDictionary<TKey, TValue>
     /// end of the list and cleared. If no eligible item is found, the oldest item is returned.
     /// </summary>
     /// <returns>The key to evict according to the Second-Chance strategy.</returns>
-    /// <exception cref="InvalidOperationException">The internal order list is empty.</exception>
+    /// <remarks>
+    /// Called only from <see cref="EvictOne"/> after that method has already verified the order list is non-empty, so no defensive
+    /// empty-list checks are performed here. The clock sweep preserves the total node count by removing and re-appending each cycled
+    /// item, so <c>_order.First</c> is guaranteed to be non-null after the loop completes.
+    /// </remarks>
     private TKey GetSecondChanceCandidate()
     {
-        if (_order is null || _order.Count == 0)
-            throw new InvalidOperationException("No eviction candidate available: the order list is empty.");
-
         LinkedListNode<TKey>? node = _order.First;
         while (node is not null)
         {
@@ -687,10 +688,7 @@ public partial class EvictingDictionary<TKey, TValue>
             item.Node = _order.AddLast(key);
         }
 
-        if (_order.First is not null)
-            return _order.First.Value;
-
-        throw new InvalidOperationException("No eviction candidate found after second-chance evaluation.");
+        return _order.First!.Value;
     }
 
     /// <summary>
