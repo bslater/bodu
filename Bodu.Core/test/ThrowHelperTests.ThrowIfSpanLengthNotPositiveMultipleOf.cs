@@ -35,13 +35,13 @@ public partial class ThrowHelperTests
 
         AssertGuard(
             $"Span<T>: {testName}",
-            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(buffer.AsSpan(), divisor, "span"),
+            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(buffer.AsSpan(), divisor, paramName: "span"),
             expected,
             expectedParam);
 
         AssertGuard(
             $"ReadOnlySpan<T>: {testName}",
-            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf((ReadOnlySpan<int>)buffer, divisor, "span"),
+            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf((ReadOnlySpan<int>)buffer, divisor, paramName: "span"),
             expected,
             expectedParam);
     }
