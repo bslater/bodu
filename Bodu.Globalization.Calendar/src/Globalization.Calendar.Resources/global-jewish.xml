@@ -51,7 +51,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <NotableDate name="Purim">
-    <Rule name="fixed-hebrew-lastadar-14"
+    <Rule name="fixed-hebrew-last-adar-14"
           category="Religious"
           calendarType="System.Globalization.HebrewCalendar"
           comment="The Feast of Lots. Observed on 14 Adar (or 14 Adar II in a Hebrew leap year — the LastAdar alias resolves to Adar II in leap years and Adar I in standard years). Commemorates the salvation of the Jewish people from Haman's plot to destroy them, as recounted in the Book of Esther. Observed with the public reading of the Megillah (Book of Esther), wearing of costumes, sending of food gifts (mishloach manot), charitable giving, and festive meals. Resolved via the Fixed strategy using HebrewCalendar (month LastAdar, day 14) with sweepCalendarYears.">

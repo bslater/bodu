@@ -40,7 +40,7 @@
   </NotableDate>
 
   <NotableDate name="Vernal Equinox Day">
-    <Rule name="algo-jp-vernal-equinox-jp" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="algo-jp-vernal-equinox" category="Holiday" territory="JP" nonWorking="true">
       <Algorithm key="jp-vernal-equinox" />
       <Tag>Japan</Tag>
     </Rule>
@@ -114,7 +114,7 @@
   </NotableDate>
 
   <NotableDate name="Autumnal Equinox Day">
-    <Rule name="algo-jp-autumnal-equinox-jp" category="Holiday" territory="JP" nonWorking="true">
+    <Rule name="algo-jp-autumnal-equinox" category="Holiday" territory="JP" nonWorking="true">
       <Algorithm key="jp-autumnal-equinox" />
       <Tag>Japan</Tag>
     </Rule>
