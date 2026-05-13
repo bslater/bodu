@@ -5,9 +5,13 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
+using Json.Schema;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Reflection;
+using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
 using SysGlobal = System.Globalization;
@@ -15,19 +19,23 @@ using SysGlobal = System.Globalization;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Parses authored JSON payloads into <see cref="NotableDateRule" /> instances. Companion to
-/// <see cref="NotableDateRuleParser" /> for authors who prefer a JSON authoring format.
+/// Parses authored JSON payloads into <see cref="NotableDateRule" /> instances after schema validation.
+/// Companion to <see cref="NotableDateRuleParser" /> for authors who prefer a JSON authoring format.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The JSON vocabulary mirrors the XML schema (<c>NotableDates.xsd</c>) one-for-one: a top-level object
-/// with optional <c>useFrom</c> and <c>notableDates</c> arrays; each rule selects exactly one of
-/// <c>fixed</c>, <c>dayOfWeekInMonth</c>, <c>offsetFromAnchor</c>, or <c>algorithm</c> as its strategy.
+/// JSON inputs are validated against the embedded <c>NotableDates.schema.json</c> (a JSON Schema
+/// draft 2020-12 document that mirrors <c>NotableDates.xsd</c>) before parsing. Schema violations
+/// surface as <see cref="JsonException" /> so authoring errors are caught at parse time rather than
+/// at first query — exactly as the XML pathway surfaces <see cref="System.Xml.Schema.XmlSchemaValidationException" />.
 /// </para>
 /// <para>
-/// Validation is performed in two phases: <see cref="JsonSerializer" /> handles structural validation
-/// against the DTO shape, then a semantic pass enforces the same invariants the XML parser enforces —
-/// "exactly one strategy" on a rule, unique adjustment keys within a rule, and recognised enum values.
+/// The JSON vocabulary mirrors the XML schema one-for-one: a top-level object with optional
+/// <c>useFrom</c> and <c>notableDates</c> arrays; each rule selects exactly one of <c>fixed</c>,
+/// <c>dayOfWeekInMonth</c>, <c>offsetFromAnchor</c>, or <c>algorithm</c> as its strategy. After
+/// schema validation succeeds, a semantic pass enforces the remaining invariants the XML parser
+/// enforces — unique adjustment keys within a rule, resolvable enum/type names, and the override-body
+/// name/category requirement.
 /// </para>
 /// </remarks>
 public static class NotableDateRuleJsonParser
@@ -39,8 +47,15 @@ public static class NotableDateRuleJsonParser
 		AllowTrailingCommas = false,
 	};
 
+	private static readonly JsonSchema Schema = LoadSchema();
+
+	private static readonly EvaluationOptions ValidationOptions = new()
+	{
+		OutputFormat = OutputFormat.List,
+	};
+
 	/// <summary>
-	/// Parses the supplied JSON string into rules.
+	/// Parses the supplied JSON string into rules after validating it against the embedded schema.
 	/// </summary>
 	/// <param name="json">The JSON payload. Must not be <see langword="null" />, empty, or whitespace.</param>
 	/// <returns>The parsed rules.</returns>
@@ -50,26 +65,46 @@ public static class NotableDateRuleJsonParser
 	/// feed the result to a loader such as <see cref="JsonResourceNotableDateRuleProvider" />.
 	/// </remarks>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="json" /> is <see langword="null" />, empty, or whitespace.</exception>
-	/// <exception cref="JsonException">Thrown when <paramref name="json" /> is not well-formed JSON.</exception>
+	/// <exception cref="JsonException">Thrown when <paramref name="json" /> is not well-formed JSON, or fails schema validation against the embedded <c>NotableDates.schema.json</c>.</exception>
 	/// <exception cref="InvalidOperationException">Thrown when the document fails semantic validation.</exception>
 	public static List<NotableDateRule> ParseJson(string json) =>
 		ParseDocument(json).LocalRules.ToList();
 
 	/// <summary>
 	/// Parses the supplied JSON string into a <see cref="ParsedNotableDateDocument" />, exposing local rules
-	/// together with any <c>useFrom</c> directives.
+	/// together with any <c>useFrom</c> directives, after validating it against the embedded schema.
 	/// </summary>
 	/// <param name="json">The JSON payload. Must not be <see langword="null" />, empty, or whitespace.</param>
 	/// <returns>The parsed document, including imports and rules.</returns>
 	/// <exception cref="ArgumentNullException">Thrown when <paramref name="json" /> is <see langword="null" />, empty, or whitespace.</exception>
-	/// <exception cref="JsonException">Thrown when <paramref name="json" /> is not well-formed JSON.</exception>
+	/// <exception cref="JsonException">Thrown when <paramref name="json" /> is not well-formed JSON, or fails schema validation against the embedded <c>NotableDates.schema.json</c>.</exception>
 	/// <exception cref="InvalidOperationException">Thrown when the document fails semantic validation.</exception>
 	public static ParsedNotableDateDocument ParseDocument(string json)
 	{
 		if (string.IsNullOrWhiteSpace(json))
 			throw new ArgumentNullException(nameof(json));
 
-		var dto = JsonSerializer.Deserialize<NotableDatesDocumentDto>(json, SerializerOptions)
+		JsonNode? node;
+		try
+		{
+			node = JsonNode.Parse(json, documentOptions: new JsonDocumentOptions
+			{
+				CommentHandling = JsonCommentHandling.Skip,
+				AllowTrailingCommas = false,
+			});
+		}
+		catch (JsonException ex)
+		{
+			// JsonNode.Parse can leak the internal JsonReaderException subclass; re-throw as
+			// the documented public type so the parser surfaces a single, stable exception type
+			// — matching how XmlReader surfaces XmlException directly for malformed XML.
+			throw new JsonException(ex.Message, ex.Path, ex.LineNumber, ex.BytePositionInLine);
+		}
+
+		ValidateDocument(node);
+
+		// Schema validation enforces type:object at the root, so a successful Validate guarantees a non-null tree.
+		var dto = node!.Deserialize<NotableDatesDocumentDto>(SerializerOptions)
 			?? throw new InvalidOperationException(
 				string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, "root", "NotableDates"));
 
@@ -138,18 +173,21 @@ public static class NotableDateRuleJsonParser
 	}
 
 	/// <summary>
-	/// Maps an <see cref="OverrideRuleDto" /> onto a <see cref="NotableDateRuleOverrideBody" />.
+	/// Maps an <see cref="OverrideRuleDto" /> onto a <see cref="NotableDateRuleOverrideBody" />, enforcing
+	/// the XSD-mandated <c>name</c> and <c>category</c> requirement on the override body.
 	/// </summary>
 	/// <param name="dto">The override DTO to map.</param>
 	/// <returns>The mapped <see cref="NotableDateRuleOverrideBody" />.</returns>
 	private static NotableDateRuleOverrideBody MapOverrideBody(OverrideRuleDto dto)
 	{
+		var ruleName = RequireString(dto.Name, "name", "rule");
+		var category = ParseRequiredEnum<NotableDateCategory>(dto.Category, "category", "rule");
 		var strategy = DetectOverrideStrategy(dto);
 
 		var body = new NotableDateRuleOverrideBody
 		{
-			RuleName = dto.Name,
-			Category = ParseOptionalEnum<NotableDateCategory>(dto.Category, "category", "rule"),
+			RuleName = ruleName,
+			Category = category,
 			TerritoryCode = dto.Territory,
 			IsNonWorkingDay = dto.NonWorking,
 			FirstYear = dto.FirstYear,
@@ -628,6 +666,89 @@ public static class NotableDateRuleJsonParser
 			if (!seen.Add(adjustment.Key))
 				throw new InvalidOperationException(
 					string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_DuplicateAdjustmentKey, adjustment.Key, contextName));
+		}
+	}
+
+	// ----------------------------------------------------------------------------
+	// Schema validation
+	// ----------------------------------------------------------------------------
+
+	/// <summary>
+	/// Loads the embedded JSON Schema used to validate notable-date JSON documents.
+	/// </summary>
+	/// <returns>The compiled <see cref="JsonSchema" />.</returns>
+	private static JsonSchema LoadSchema()
+	{
+		var assembly = Assembly.GetExecutingAssembly();
+		const string schemaResourceName = "Bodu.Globalization.Calendar.NotableDates.schema.json";
+
+		using var stream = assembly.GetManifestResourceStream(schemaResourceName)
+			?? throw new FileNotFoundException(
+				string.Format(CultureInfo.InvariantCulture,
+					CalendarResourceStrings.FileNotFoundException_EmbeddedSchemaResourceNotFound,
+					schemaResourceName,
+					assembly.FullName));
+
+		using var reader = new StreamReader(stream);
+		return JsonSchema.FromText(reader.ReadToEnd());
+	}
+
+	/// <summary>
+	/// Validates the parsed JSON tree against the embedded schema, throwing on the first
+	/// schema violation.
+	/// </summary>
+	/// <param name="node">The parsed JSON node to validate.</param>
+	/// <exception cref="JsonException">The document fails schema validation.</exception>
+	private static void ValidateDocument(JsonNode? node)
+	{
+		var results = Schema.Evaluate(node, ValidationOptions);
+		if (results.IsValid) return;
+
+		throw new JsonException(string.Format(CultureInfo.InvariantCulture,
+			CalendarResourceStrings.JsonException_SchemaValidationError,
+			FormatValidationFailures(results)));
+	}
+
+	/// <summary>
+	/// Flattens a failed schema evaluation into a single diagnostic message that lists each
+	/// failing instance location with the keyword(s) that rejected it.
+	/// </summary>
+	/// <param name="results">The failed evaluation results to summarise.</param>
+	/// <returns>A semicolon-separated diagnostic message.</returns>
+	private static string FormatValidationFailures(EvaluationResults results)
+	{
+		var builder = new StringBuilder();
+		AppendFailures(builder, results);
+		return builder.Length == 0 ? "schema validation failed" : builder.ToString();
+	}
+
+	/// <summary>
+	/// Appends every failing detail in <paramref name="results" /> onto <paramref name="builder" />.
+	/// </summary>
+	/// <param name="builder">The buffer that accumulates the diagnostic message.</param>
+	/// <param name="results">The evaluation results to walk for failures.</param>
+	private static void AppendFailures(StringBuilder builder, EvaluationResults results)
+	{
+		if (results.Errors is { Count: > 0 })
+		{
+			foreach (var error in results.Errors)
+			{
+				if (builder.Length > 0) builder.Append("; ");
+				builder.Append(results.InstanceLocation);
+				builder.Append(": ");
+				builder.Append(error.Key);
+				builder.Append(' ');
+				builder.Append(error.Value);
+			}
+		}
+
+		if (results.Details is { Count: > 0 })
+		{
+			foreach (var detail in results.Details)
+			{
+				if (!detail.IsValid)
+					AppendFailures(builder, detail);
+			}
 		}
 	}
 
