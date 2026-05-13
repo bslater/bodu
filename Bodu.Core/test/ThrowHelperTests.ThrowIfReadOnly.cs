@@ -4,12 +4,40 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfReadOnly{T}" /> contract matrix with explicit ParamName
+    /// assertions: null collection → <see cref="ArgumentNullException" />, read-only collection or array →
+    /// <see cref="ArgumentException" />, writable collection → no throw.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="collection">The collection passed to the guard.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
+    /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfReadOnlyContractData), DynamicDataSourceType.Method)]
+    public void ThrowIfReadOnly_WhenInvokedWithVariousCollections_ShouldFollowContract(
+        string testName, ICollection<int>? collection, Type? expectedExceptionType, string? expectedParamName)
+    {
+        AssertGuard(testName, () => ThrowHelper.ThrowIfReadOnly(collection!, "collection"), expectedExceptionType, expectedParamName);
+    }
+
+    private static IEnumerable<object?[]> ThrowIfReadOnlyContractData()
+    {
+        yield return new object?[] { "null → ArgumentNullException", null, typeof(ArgumentNullException), "collection" };
+        yield return new object?[] { "ReadOnlyCollection → ArgumentException", new ReadOnlyCollection<int>(new[] { 1, 2 }), typeof(ArgumentException), "collection" };
+        yield return new object?[] { "array (read-only ICollection view) → ArgumentException", new[] { 1, 2, 3 }, typeof(ArgumentException), "collection" };
+        yield return new object?[] { "writable List<int> → no throw", new List<int> { 1, 2, 3 }, null, null };
+        yield return new object?[] { "empty writable List<int> → no throw", new List<int>(), null, null };
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfReadOnly{T}" /> throws <see cref="ArgumentNullException" />
     /// when the collection is <see langword="null" />.
