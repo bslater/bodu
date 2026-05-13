@@ -93,11 +93,12 @@ public static class NotableDateRuleJsonParser
 				AllowTrailingCommas = false,
 			});
 		}
-		catch (JsonException ex) when (ex.GetType() != typeof(JsonException))
+		catch (JsonException ex)
 		{
-			// Normalise reader-level subclasses (JsonReaderException, etc.) to the public
-			// JsonException type so consumers can assert against a single, documented type.
-			throw new JsonException(ex.Message, ex.Path, ex.LineNumber, ex.BytePositionInLine, ex);
+			// JsonNode.Parse can leak the internal JsonReaderException subclass; re-throw as
+			// the documented public type so the parser surfaces a single, stable exception type
+			// — matching how XmlReader surfaces XmlException directly for malformed XML.
+			throw new JsonException(ex.Message, ex.Path, ex.LineNumber, ex.BytePositionInLine);
 		}
 
 		ValidateDocument(node);
