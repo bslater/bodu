@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IResourcePathResolver.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,11 +22,11 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public interface IResourcePathResolver
 {
-	/// <summary>
-	/// Resolves a child resource path relative to the specified document resource path.
-	/// </summary>
-	/// <param name="documentPath">The fully qualified resource path of the document declaring the reference.</param>
-	/// <param name="childPath">The referenced child resource path.</param>
-	/// <returns>The fully qualified resolved resource path.</returns>
-	string Resolve(string documentPath, string childPath);
+    /// <summary>
+    /// Resolves a child resource path relative to the specified document resource path.
+    /// </summary>
+    /// <param name="documentPath">The fully qualified resource path of the document declaring the reference.</param>
+    /// <param name="childPath">The referenced child resource path.</param>
+    /// <returns>The fully qualified resolved resource path.</returns>
+    string Resolve(string documentPath, string childPath);
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AllowAllPluginTrustPolicy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,6 +23,6 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class AllowAllPluginTrustPolicy : IPluginTrustPolicy
 {
-	/// <inheritdoc />
-	public PluginTrustResult Evaluate(PluginTrustContext context) => new(Trusted: true, Reason: null);
+    /// <inheritdoc />
+    public PluginTrustResult Evaluate(PluginTrustContext context) => new(Trusted: true, Reason: null);
 }

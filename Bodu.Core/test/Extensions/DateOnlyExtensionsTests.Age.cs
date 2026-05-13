@@ -6,7 +6,7 @@
 
 namespace Bodu.Extensions;
 
-public partial class DateOnlyExtensionTests
+public partial class DateOnlyExtensionsTests
 {
     /// <summary>
     /// Verifies that the <see cref="DateOnlyExtensions.Age(DateOnly, DateOnly)" /> method returns the expected age in full calendar

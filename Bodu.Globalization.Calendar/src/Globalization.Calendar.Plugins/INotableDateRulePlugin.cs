@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateRulePlugin.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,10 +17,10 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public interface INotableDateRulePlugin : INotableDatePlugin
 {
-	/// <summary>
-	/// Returns the rule providers this plugin contributes. The enumeration is consumed once during service construction; plugin
-	/// authors may defer heavy work until an individual provider's <see cref="INotableDateRuleProvider.LoadRules" /> is invoked.
-	/// </summary>
-	/// <returns>Zero or more rule providers. Never <see langword="null" />.</returns>
-	IEnumerable<INotableDateRuleProvider> GetRuleProviders();
+    /// <summary>
+    /// Returns the rule providers this plugin contributes. The enumeration is consumed once during service construction; plugin
+    /// authors may defer heavy work until an individual provider's <see cref="INotableDateRuleProvider.LoadRules" /> is invoked.
+    /// </summary>
+    /// <returns>Zero or more rule providers. Never <see langword="null" />.</returns>
+    IEnumerable<INotableDateRuleProvider> GetRuleProviders();
 }

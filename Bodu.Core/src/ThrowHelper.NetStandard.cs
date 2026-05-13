@@ -701,9 +701,9 @@ public static partial class ThrowHelper
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNegative<T>(T value)
-        where T : IComparable<T>
+        where T : struct, IComparable<T>
     {
-        if (value.CompareTo(default!) < 0)
+        if (value.CompareTo(default) < 0)
             throw new ArgumentOutOfRangeException(nameof(value), ResourceStrings.Arg_OutOfRange_RequireNonNegative);
     }
 
@@ -793,9 +793,9 @@ public static partial class ThrowHelper
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotZero<T>(T value)
-        where T : IEquatable<T>
+        where T : struct, IEquatable<T>
     {
-        if (!value.Equals(default!))
+        if (!value.Equals(default))
             throw new ArgumentOutOfRangeException(nameof(value), ResourceStrings.Arg_OutOfRange_RequireZero);
     }
 
@@ -936,9 +936,9 @@ public static partial class ThrowHelper
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfPositive<T>(T value)
-        where T : IComparable<T>
+        where T : struct, IComparable<T>
     {
-        if (value.CompareTo(default!) > 0)
+        if (value.CompareTo(default) > 0)
             throw new ArgumentOutOfRangeException(nameof(value), ResourceStrings.Arg_OutOfRange_RequireNonPositive);
     }
 
@@ -990,9 +990,9 @@ public static partial class ThrowHelper
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfZero<T>(T value)
-        where T : IEquatable<T>
+        where T : struct, IEquatable<T>
     {
-        if (value.Equals(default!))
+        if (value.Equals(default))
             throw new ArgumentOutOfRangeException(nameof(value), ResourceStrings.Arg_OutOfRange_RequireNonZero);
     }
 
@@ -1006,9 +1006,9 @@ public static partial class ThrowHelper
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfZeroOrNegative<T>(T value)
-        where T : IComparable<T>
+        where T : struct, IComparable<T>
     {
-        if (value.CompareTo(default!) <= 0)
+        if (value.CompareTo(default) <= 0)
             throw new ArgumentOutOfRangeException(nameof(value), ResourceStrings.Arg_OutOfRange_RequirePositive);
     }
 
@@ -1022,9 +1022,9 @@ public static partial class ThrowHelper
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfZeroOrPositive<T>(T value)
-        where T : IComparable<T>
+        where T : struct, IComparable<T>
     {
-        if (value.CompareTo(default!) >= 0)
+        if (value.CompareTo(default) >= 0)
             throw new ArgumentOutOfRangeException(nameof(value), ResourceStrings.Arg_OutOfRange_RequireNegative);
     }
 

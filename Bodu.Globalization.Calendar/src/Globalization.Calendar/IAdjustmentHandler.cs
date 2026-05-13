@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IAdjustmentHandler.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -47,10 +47,10 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public interface IAdjustmentHandler
 {
-	/// <summary>
-	/// Evaluates the adjustment and, if active, computes the new date.
-	/// </summary>
-	/// <param name="context">The current adjustment context, including the date being evaluated and surrounding metadata.</param>
-	/// <returns>An <see cref="AdjustmentHandlerResult" /> describing whether the handler activated and what date it produced.</returns>
-	AdjustmentHandlerResult Apply(AdjustmentHandlerContext context);
+    /// <summary>
+    /// Evaluates the adjustment and, if active, computes the new date.
+    /// </summary>
+    /// <param name="context">The current adjustment context, including the date being evaluated and surrounding metadata.</param>
+    /// <returns>An <see cref="AdjustmentHandlerResult" /> describing whether the handler activated and what date it produced.</returns>
+    AdjustmentHandlerResult Apply(AdjustmentHandlerContext context);
 }

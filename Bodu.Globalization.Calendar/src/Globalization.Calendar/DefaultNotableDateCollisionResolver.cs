@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DefaultNotableDateCollisionResolver.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,16 +45,15 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public sealed class DefaultNotableDateCollisionResolver : INotableDateCollisionResolver
 {
-	/// <inheritdoc />
-	public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping)
-	{
-		if (overlapping is null || overlapping.Count == 0)
-			return Array.Empty<NotableDate>();
+    /// <inheritdoc />
+    public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping)
+    {
+        if (overlapping is null || overlapping.Count == 0)
+            return [];
 
-		return overlapping
-			.Distinct()
-			.OrderBy(d => (int)d.Category)
-			.ThenBy(d => d.Name, StringComparer.OrdinalIgnoreCase)
-			.ToList();
-	}
+        return [.. overlapping
+            .Distinct()
+            .OrderBy(d => (int)d.Category)
+            .ThenBy(d => d.Name, StringComparer.OrdinalIgnoreCase)];
+    }
 }

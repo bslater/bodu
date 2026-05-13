@@ -526,15 +526,13 @@ public sealed partial class RangeSet<T>
 
     /// <summary>
     /// Removes <paramref name="count" /> consecutive ranges starting at <paramref name="index" /> and shifts
-    /// any trailing ranges left to keep storage contiguous.
+    /// any trailing ranges left to keep storage contiguous. The single caller in <see cref="Add(T, T)" />
+    /// only invokes this when <paramref name="count" /> is positive, so no defensive guard is performed.
     /// </summary>
     /// <param name="index">The index of the first range to remove.</param>
-    /// <param name="count">The number of ranges to remove.</param>
+    /// <param name="count">The number of ranges to remove. Must be greater than zero.</param>
     private void RemoveRange(int index, int count)
     {
-        if (count <= 0)
-            return;
-
         var moveCount = _count - index - count;
 
         if (moveCount > 0)

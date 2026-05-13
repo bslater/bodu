@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LosarNotableDateAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,46 +33,46 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </para>
 /// </remarks>
 public sealed class LosarNotableDateAlgorithm
-	: INotableDateAlgorithm
+    : INotableDateAlgorithm
 {
-	/// <summary>
-	/// Computes the approximate date of Losar for the specified year.
-	/// </summary>
-	/// <param name="year">The year for which to calculate Losar. Must be greater than or equal to 1.</param>
-	/// <param name="calendar">
-	/// An optional <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use. When <see langword="null" />,
-	/// <see cref="SysGlobal.GregorianCalendar" /> is assumed.
-	/// </param>
-	/// <returns>
-	/// A <see cref="DateTime" /> representing the approximate date of Losar, or <see langword="null" /> if the date cannot be
-	/// determined. The returned <see cref="DateTime.Kind" /> is always <see cref="DateTimeKind.Unspecified" />.
-	/// </returns>
-	/// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
-	/// <exception cref="NotSupportedException">Thrown when the specified <paramref name="calendar" /> type is unsupported.</exception>
-	public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
-	{
-		if (year < 1)
-			throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.ArgumentOutOfRangeException_YearOutOfRange);
+    /// <summary>
+    /// Computes the approximate date of Losar for the specified year.
+    /// </summary>
+    /// <param name="year">The year for which to calculate Losar. Must be greater than or equal to 1.</param>
+    /// <param name="calendar">
+    /// An optional <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use. When <see langword="null" />,
+    /// <see cref="SysGlobal.GregorianCalendar" /> is assumed.
+    /// </param>
+    /// <returns>
+    /// A <see cref="DateTime" /> representing the approximate date of Losar, or <see langword="null" /> if the date cannot be
+    /// determined. The returned <see cref="DateTime.Kind" /> is always <see cref="DateTimeKind.Unspecified" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
+    /// <exception cref="NotSupportedException">Thrown when the specified <paramref name="calendar" /> type is unsupported.</exception>
+    public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
+    {
+        if (year < 1)
+            throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.ArgumentOutOfRangeException_YearOutOfRange);
 
-		// The Tibetan New Year falls on or shortly after the second new moon after the winter
-		// solstice. The winter solstice is approximately 21 December; the second new moon after
-		// it is typically in late January or February. Using 20 January as the search start
-		// reliably catches the correct lunation for the vast majority of years.
-		DateTime? newMoon = LunarPhaseAlgorithm.GetNewMoonOnOrAfter(new DateTime(year, 1, 20));
-		if (newMoon is null)
-			return null;
+        // The Tibetan New Year falls on or shortly after the second new moon after the winter
+        // solstice. The winter solstice is approximately 21 December; the second new moon after
+        // it is typically in late January or February. Using 20 January as the search start
+        // reliably catches the correct lunation for the vast majority of years.
+        DateTime? newMoon = LunarPhaseAlgorithm.GetNewMoonOnOrAfter(new DateTime(year, 1, 20));
+        if (newMoon is null)
+            return null;
 
-		SysGlobal.Calendar targetCalendar = calendar ?? new SysGlobal.GregorianCalendar();
+        SysGlobal.Calendar targetCalendar = calendar ?? new SysGlobal.GregorianCalendar();
 
-		if (targetCalendar.GetType() == typeof(SysGlobal.GregorianCalendar))
-			return DateTime.SpecifyKind(newMoon.Value, DateTimeKind.Unspecified);
+        if (targetCalendar.GetType() == typeof(SysGlobal.GregorianCalendar))
+            return DateTime.SpecifyKind(newMoon.Value, DateTimeKind.Unspecified);
 
-		return new DateTime(
-			targetCalendar.GetYear(newMoon.Value),
-			targetCalendar.GetMonth(newMoon.Value),
-			targetCalendar.GetDayOfMonth(newMoon.Value),
-			0, 0, 0, 0,
-			targetCalendar,
-			DateTimeKind.Unspecified);
-	}
+        return new DateTime(
+            targetCalendar.GetYear(newMoon.Value),
+            targetCalendar.GetMonth(newMoon.Value),
+            targetCalendar.GetDayOfMonth(newMoon.Value),
+            0, 0, 0, 0,
+            targetCalendar,
+            DateTimeKind.Unspecified);
+    }
 }

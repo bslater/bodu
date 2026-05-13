@@ -29,7 +29,7 @@ internal sealed class CachingCalculationAnchorResolver : ICalculationAnchorResol
     private readonly IReadOnlyDictionary<string, NotableDateRule> _rulesByName;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="CachingCalculationAnchorResolver" /> class.
+    /// Initializes a new instance of the <see cref="CachingCalculationAnchorResolver" /> class.
     /// </summary>
     /// <param name="rules">The rules available for anchor resolution.</param>
     /// <param name="ruleResolver">The resolver used to calculate rule anchor dates.</param>

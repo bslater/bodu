@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateAlgorithmPlugin.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,9 +18,9 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public interface INotableDateAlgorithmPlugin : INotableDatePlugin
 {
-	/// <summary>
-	/// Returns the algorithm registrations this plugin contributes.
-	/// </summary>
-	/// <returns>Zero or more key-keyed algorithm pairs. Never <see langword="null" />.</returns>
-	IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> GetAlgorithms();
+    /// <summary>
+    /// Returns the algorithm registrations this plugin contributes.
+    /// </summary>
+    /// <returns>Zero or more key-keyed algorithm pairs. Never <see langword="null" />.</returns>
+    IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> GetAlgorithms();
 }

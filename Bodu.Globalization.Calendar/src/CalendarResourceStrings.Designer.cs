@@ -295,6 +295,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to JSON failed schema validation: {0}.
+        /// </summary>
+        internal static string JsonException_SchemaValidationError {
+            get {
+                return ResourceManager.GetString("JsonException_SchemaValidationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The calendar type &apos;{0}&apos; is not supported by {1}. Only {2} is supported..
         /// </summary>
         internal static string NotSupportedException_CalendarTypeNotSupported {

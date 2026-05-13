@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateNameLocalizer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,11 +38,11 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public interface INotableDateNameLocalizer
 {
-	/// <summary>
-	/// Returns the display name for the supplied notable date in the requested culture.
-	/// </summary>
-	/// <param name="notableDate">The notable date being rendered. Must not be <see langword="null" />.</param>
-	/// <param name="culture">The target culture. <see langword="null" /> defaults to <see cref="CultureInfo.CurrentCulture" />.</param>
-	/// <returns>The localised display name. Implementations should fall back to <see cref="NotableDate.Name" /> when no translation is found.</returns>
-	string GetDisplayName(NotableDate notableDate, CultureInfo? culture = null);
+    /// <summary>
+    /// Returns the display name for the supplied notable date in the requested culture.
+    /// </summary>
+    /// <param name="notableDate">The notable date being rendered. Must not be <see langword="null" />.</param>
+    /// <param name="culture">The target culture. <see langword="null" /> defaults to <see cref="CultureInfo.CurrentCulture" />.</param>
+    /// <returns>The localised display name. Implementations should fall back to <see cref="NotableDate.Name" /> when no translation is found.</returns>
+    string GetDisplayName(NotableDate notableDate, CultureInfo? culture = null);
 }

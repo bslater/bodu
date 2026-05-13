@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RuleTier.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,25 +18,25 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </remarks>
 internal enum RuleTier
 {
-	/// <summary>
-	/// The rule produces its date directly without referencing any other rule. Includes
-	/// <see cref="DateResolutionStrategy.Fixed" /> and <see cref="DateResolutionStrategy.DayOfWeekInMonth" /> rules.
-	/// </summary>
-	Fixed = 0,
+    /// <summary>
+    /// The rule produces its date directly without referencing any other rule. Includes
+    /// <see cref="DateResolutionStrategy.Fixed" /> and <see cref="DateResolutionStrategy.DayOfWeekInMonth" /> rules.
+    /// </summary>
+    Fixed = 0,
 
-	/// <summary>
-	/// The rule's date is calculated as an offset from another rule whose tier is <see cref="Fixed" />.
-	/// </summary>
-	OffsetFromFixed,
+    /// <summary>
+    /// The rule's date is calculated as an offset from another rule whose tier is <see cref="Fixed" />.
+    /// </summary>
+    OffsetFromFixed,
 
-	/// <summary>
-	/// The rule's date is computed by an algorithm. Includes <see cref="DateResolutionStrategy.Algorithm" /> rules.
-	/// </summary>
-	Algorithmic,
+    /// <summary>
+    /// The rule's date is computed by an algorithm. Includes <see cref="DateResolutionStrategy.Algorithm" /> rules.
+    /// </summary>
+    Algorithmic,
 
-	/// <summary>
-	/// The rule's date is calculated as an offset from a rule whose tier is <see cref="Algorithmic" /> (or transitively from another
-	/// <see cref="OffsetFromAlgorithmic" /> rule rooted at an algorithmic anchor).
-	/// </summary>
-	OffsetFromAlgorithmic,
+    /// <summary>
+    /// The rule's date is calculated as an offset from a rule whose tier is <see cref="Algorithmic" /> (or transitively from another
+    /// <see cref="OffsetFromAlgorithmic" /> rule rooted at an algorithmic anchor).
+    /// </summary>
+    OffsetFromAlgorithmic,
 }

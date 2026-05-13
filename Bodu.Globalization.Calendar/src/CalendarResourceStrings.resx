@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
 	<!--
 		Microsoft ResX Schema
@@ -255,6 +255,13 @@
 	<!-- {0} = validation error message -->
 	<data name="XmlSchemaValidationException_SchemaValidationError" xml:space="preserve">
 		<value>Schema validation error: {0}</value>
+	</data>
+
+	<!-- ==================== JsonException ==================== -->
+
+	<!-- {0} = validation error message -->
+	<data name="JsonException_SchemaValidationError" xml:space="preserve">
+		<value>JSON failed schema validation: {0}</value>
 	</data>
 
 	<!-- ==================== PluginMissingAttributeException ==================== -->

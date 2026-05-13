@@ -4,10 +4,39 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayMultidimensional" /> contract matrix with explicit
+    /// ParamName assertions: null array → <see cref="ArgumentNullException" />, multi-dimensional array →
+    /// <see cref="ArgumentException" />, single-dimensional array → no throw.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="array">The array passed to the guard.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
+    /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfArrayMultidimensionalContractData), DynamicDataSourceType.Method)]
+    public void ThrowIfArrayMultidimensional_WhenInvokedWithVariousArrays_ShouldFollowContract(
+        string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
+    {
+        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayMultidimensional(array!, "array"), expectedExceptionType, expectedParamName);
+    }
+
+    private static IEnumerable<object?[]> ThrowIfArrayMultidimensionalContractData()
+    {
+        yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
+        yield return new object?[] { "rank-2 → ArgumentException", new int[2, 3], typeof(ArgumentException), "array" };
+        yield return new object?[] { "rank-3 → ArgumentException", new int[2, 2, 2], typeof(ArgumentException), "array" };
+        yield return new object?[] { "rank-1 → no throw", new int[5], null, null };
+        yield return new object?[] { "rank-1 empty → no throw", Array.Empty<int>(), null, null };
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayMultidimensional" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
     /// </summary>

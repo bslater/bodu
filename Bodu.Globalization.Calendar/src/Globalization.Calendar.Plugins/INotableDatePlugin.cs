@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDatePlugin.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,13 +25,13 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public interface INotableDatePlugin
 {
-	/// <summary>
-	/// Gets a stable, human-readable name identifying the plugin. Used in diagnostic messages and for authoring trust policies.
-	/// </summary>
-	string Name { get; }
+    /// <summary>
+    /// Gets a stable, human-readable name identifying the plugin. Used in diagnostic messages and for authoring trust policies.
+    /// </summary>
+    string Name { get; }
 
-	/// <summary>
-	/// Gets the semantic version of the plugin's contents. Authors increment this when rules or algorithms change.
-	/// </summary>
-	Version Version { get; }
+    /// <summary>
+    /// Gets the semantic version of the plugin's contents. Authors increment this when rules or algorithms change.
+    /// </summary>
+    Version Version { get; }
 }

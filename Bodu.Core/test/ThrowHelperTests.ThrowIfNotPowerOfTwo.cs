@@ -4,10 +4,44 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> contract for the <see cref="int" />
+    /// instantiation with explicit ParamName assertions: zero, negative, and positive non-power-of-two
+    /// values throw <see cref="ArgumentOutOfRangeException" /> on "value"; <c>1, 2, 4, …, 2^30</c> pass.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The value passed to the guard.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("zero → throw on value", 0, true)]
+    [DataRow("negative → throw on value", -1, true)]
+    [DataRow("MinValue → throw on value", int.MinValue, true)]
+    [DataRow("positive non-power → throw on value", 3, true)]
+    [DataRow("positive non-power 100 → throw on value", 100, true)]
+    [DataRow("1 (2^0) → pass", 1, false)]
+    [DataRow("2 (2^1) → pass", 2, false)]
+    [DataRow("4 (2^2) → pass", 4, false)]
+    [DataRow("1024 (2^10) → pass", 1024, false)]
+    [DataRow("2^30 → pass", 1073741824, false)]
+    public void ThrowIfNotPowerOfTwo_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, int value, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        string? expectedParam = expectsException ? "value" : null;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfNotPowerOfTwo(value, "value"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the value is zero.

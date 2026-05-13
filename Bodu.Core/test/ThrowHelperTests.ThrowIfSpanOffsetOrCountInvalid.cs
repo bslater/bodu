@@ -4,10 +4,56 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfSpanOffsetOrCountInvalid{T}(System.Span{T}, int, int, string, string, string)" />
+    /// contract matrix with explicit ParamName disambiguation across the span / offset / count parameters.
+    /// Tests both the <see cref="Span{T}" /> entry point and the canonical
+    /// <see cref="ReadOnlySpan{T}" /> implementation. Spans are value types so there is no null branch.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="bufferLength">The backing buffer length.</param>
+    /// <param name="offset">The offset.</param>
+    /// <param name="count">The count.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw is expected.</param>
+    /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />, or empty if not asserted.</param>
+    [TestMethod]
+    [DataRow("negative offset → AOORE on offset", 5, -1, 0, "ArgumentOutOfRangeException", "offset")]
+    [DataRow("offset > length → AOORE on offset", 5, 6, 0, "ArgumentOutOfRangeException", "offset")]
+    [DataRow("negative count → AOORE on count", 5, 0, -1, "ArgumentOutOfRangeException", "count")]
+    [DataRow("count > length → AOORE on count", 5, 0, 6, "ArgumentOutOfRangeException", "count")]
+    [DataRow("offset+count > length → ArgumentException", 5, 2, 5, "ArgumentException", "")]
+    [DataRow("valid window at start → pass", 5, 0, 5, "", "")]
+    [DataRow("valid window in middle → pass", 5, 2, 3, "", "")]
+    [DataRow("valid empty slice at end → pass", 5, 5, 0, "", "")]
+    public void ThrowIfSpanOffsetOrCountInvalid_Span_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, int bufferLength, int offset, int count, string expectedExceptionTypeName, string expectedParamName)
+    {
+        Type? expected = expectedExceptionTypeName.Length == 0
+            ? null
+            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
+        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+        int[] buffer = new int[bufferLength];
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanOffsetOrCountInvalid(buffer.AsSpan(), offset, count, "span", "offset", "count"),
+            expected,
+            param);
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanOffsetOrCountInvalid((ReadOnlySpan<int>)buffer, offset, count, "span", "offset", "count"),
+            expected,
+            param);
+    }
+
     // Span<T> overload (delegates to ReadOnlySpan<T>)
 
     /// <summary>

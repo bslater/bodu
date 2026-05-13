@@ -53,6 +53,7 @@
     <None Remove="Globalization.Calendar.Resources\global-un.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xml" />
     <None Remove="Globalization.Calendar\NotableDates.xsd" />
+    <None Remove="Globalization.Calendar\NotableDates.schema.json" />
     <None Remove="Globalization.Calendar.Resources\global-animals.xml" />
     <None Remove="Globalization.Calendar.Resources\global-buddhist.xml" />
     <None Remove="Globalization.Calendar.Resources\global-family.xml" />
@@ -87,6 +88,9 @@
     <EmbeddedResource Include="Globalization.Calendar\NotableDates.xsd">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Globalization.Calendar\NotableDates.schema.json">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-animals.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-buddhist.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-family.xml" />
@@ -96,6 +100,10 @@
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-jewish.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-lunar.xml" />
     <EmbeddedResource Include="Globalization.Calendar.Resources\global-science.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="JsonSchema.Net" Version="7.3.4" />
   </ItemGroup>
 
   <ItemGroup>

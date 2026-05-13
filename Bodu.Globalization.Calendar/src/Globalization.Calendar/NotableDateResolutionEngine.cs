@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionEngine.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,11 +23,11 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
 {
     private const int AdjustmentMaterialisationPaddingDays = 14;
 
-    private readonly INotableDateRuleOccurrenceResolver occurrenceResolver;
-    private readonly INotableDateResolutionAdjustmentProcessor? adjustmentProcessor;
+    private readonly INotableDateRuleOccurrenceResolver _occurrenceResolver;
+    private readonly INotableDateResolutionAdjustmentProcessor? _adjustmentProcessor;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="NotableDateResolutionEngine" /> class.
+    /// Initializes a new instance of the <see cref="NotableDateResolutionEngine" /> class.
     /// </summary>
     /// <param name="occurrenceResolver">The resolver used to materialise base rule occurrences.</param>
     /// <param name="adjustmentProcessor">The optional processor used to apply observance adjustments.</param>
@@ -38,8 +38,8 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
     {
         ArgumentNullException.ThrowIfNull(occurrenceResolver);
 
-        this.occurrenceResolver = occurrenceResolver;
-        this.adjustmentProcessor = adjustmentProcessor;
+        this._occurrenceResolver = occurrenceResolver;
+        this._adjustmentProcessor = adjustmentProcessor;
     }
 
     /// <inheritdoc />
@@ -49,7 +49,7 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
 
         NotableDateResolutionWindow window = new(request.StartDate, request.EndDate);
         NotableDateResolutionRequest materialisationRequest = CreateMaterialisationRequest(request);
-        IReadOnlyList<ResolvedNotableDateOccurrence> occurrences = occurrenceResolver.ResolveOccurrences(materialisationRequest);
+        IReadOnlyList<ResolvedNotableDateOccurrence> occurrences = _occurrenceResolver.ResolveOccurrences(materialisationRequest);
 
         foreach (ResolvedNotableDateOccurrence occurrence in occurrences)
         {
@@ -63,7 +63,7 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
             }
         }
 
-        adjustmentProcessor?.ApplyAdjustments(window, request, occurrences);
+        _adjustmentProcessor?.ApplyAdjustments(window, request, occurrences);
 
         return window.OutputDates;
     }
@@ -75,7 +75,7 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
     /// <returns>The materialisation request.</returns>
     private NotableDateResolutionRequest CreateMaterialisationRequest(NotableDateResolutionRequest request)
     {
-        if (adjustmentProcessor is null)
+        if (_adjustmentProcessor is null)
             return request;
 
         DateTime startDate = AddDaysWithinRange(request.StartDate, -AdjustmentMaterialisationPaddingDays);

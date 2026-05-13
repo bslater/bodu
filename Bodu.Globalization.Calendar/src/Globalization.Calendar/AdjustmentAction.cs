@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentAction.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,41 +15,41 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 public enum AdjustmentAction
 {
-	/// <summary>
-	/// Leaves the date unchanged. Useful when an adjustment is used purely to flag an observance (for example, marking the date as a
-	/// non-working day) without rescheduling it.
-	/// </summary>
-	None = 0,
+    /// <summary>
+    /// Leaves the date unchanged. Useful when an adjustment is used purely to flag an observance (for example, marking the date as a
+    /// non-working day) without rescheduling it.
+    /// </summary>
+    None = 0,
 
-	/// <summary>
-	/// Adds <see cref="ObservanceAdjustment.OffsetDays" /> to the calculated date. Negative values move backwards.
-	/// </summary>
-	AddDays,
+    /// <summary>
+    /// Adds <see cref="ObservanceAdjustment.OffsetDays" /> to the calculated date. Negative values move backwards.
+    /// </summary>
+    AddDays,
 
-	/// <summary>
-	/// Moves the date forward to the next weekday as defined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
-	/// </summary>
-	MoveToNextWeekday,
+    /// <summary>
+    /// Moves the date forward to the next weekday as defined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
+    /// </summary>
+    MoveToNextWeekday,
 
-	/// <summary>
-	/// Moves the date backward to the previous weekday as defined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
-	/// </summary>
-	MoveToPreviousWeekday,
+    /// <summary>
+    /// Moves the date backward to the previous weekday as defined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
+    /// </summary>
+    MoveToPreviousWeekday,
 
-	/// <summary>
-	/// Moves the date forward, skipping all days flagged as non-working for the active territory (weekends and other notable
-	/// non-working dates).
-	/// </summary>
-	MoveToNextNonWorkingDay,
+    /// <summary>
+    /// Moves the date forward, skipping all days flagged as non-working for the active territory (weekends and other notable
+    /// non-working dates).
+    /// </summary>
+    MoveToNextNonWorkingDay,
 
-	/// <summary>
-	/// Replaces the date with the resolved date of another notable date rule named by <see cref="ObservanceAdjustment.TargetRuleName" />.
-	/// </summary>
-	ReplaceWithNamedDate,
+    /// <summary>
+    /// Replaces the date with the resolved date of another notable date rule named by <see cref="ObservanceAdjustment.TargetRuleName" />.
+    /// </summary>
+    ReplaceWithNamedDate,
 
-	/// <summary>
-	/// Delegates the adjustment to a registered <see cref="IAdjustmentHandler" /> looked up by
-	/// <see cref="ObservanceAdjustment.HandlerKey" />.
-	/// </summary>
-	Custom,
+    /// <summary>
+    /// Delegates the adjustment to a registered <see cref="IAdjustmentHandler" /> looked up by
+    /// <see cref="ObservanceAdjustment.HandlerKey" />.
+    /// </summary>
+    Custom,
 }

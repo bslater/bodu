@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentReason.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,42 +50,42 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public sealed record AdjustmentReason
 {
-	/// <summary>
-	/// Initialises a new instance of the <see cref="AdjustmentReason" /> record.
-	/// </summary>
-	/// <param name="originalDate">The date that was originally calculated before the adjustment fired.</param>
-	/// <param name="trigger">The trigger condition that activated the adjustment.</param>
-	/// <param name="action">The action that the adjustment performed.</param>
-	/// <param name="handlerKey">Optional key identifying the custom handler when <paramref name="action" /> is <see cref="AdjustmentAction.Custom" />.</param>
-	public AdjustmentReason(DateTime originalDate, AdjustmentTrigger trigger, AdjustmentAction action, string? handlerKey = null)
-	{
-		OriginalDate = originalDate;
-		Trigger = trigger;
-		Action = action;
-		HandlerKey = handlerKey;
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AdjustmentReason" /> record.
+    /// </summary>
+    /// <param name="originalDate">The date that was originally calculated before the adjustment fired.</param>
+    /// <param name="trigger">The trigger condition that activated the adjustment.</param>
+    /// <param name="action">The action that the adjustment performed.</param>
+    /// <param name="handlerKey">Optional key identifying the custom handler when <paramref name="action" /> is <see cref="AdjustmentAction.Custom" />.</param>
+    public AdjustmentReason(DateTime originalDate, AdjustmentTrigger trigger, AdjustmentAction action, string? handlerKey = null)
+    {
+        OriginalDate = originalDate;
+        Trigger = trigger;
+        Action = action;
+        HandlerKey = handlerKey;
+    }
 
-	/// <summary>
-	/// Gets the date that was originally calculated for the notable date before the adjustment fired.
-	/// </summary>
-	/// <returns>The unshifted anchor date as produced by the rule's <see cref="DateResolutionStrategy" />.</returns>
-	public DateTime OriginalDate { get; }
+    /// <summary>
+    /// Gets the date that was originally calculated for the notable date before the adjustment fired.
+    /// </summary>
+    /// <returns>The unshifted anchor date as produced by the rule's <see cref="DateResolutionStrategy" />.</returns>
+    public DateTime OriginalDate { get; }
 
-	/// <summary>
-	/// Gets the trigger condition that activated the adjustment.
-	/// </summary>
-	/// <returns>The <see cref="AdjustmentTrigger" /> value supplied on the <see cref="ObservanceAdjustment" />.</returns>
-	public AdjustmentTrigger Trigger { get; }
+    /// <summary>
+    /// Gets the trigger condition that activated the adjustment.
+    /// </summary>
+    /// <returns>The <see cref="AdjustmentTrigger" /> value supplied on the <see cref="ObservanceAdjustment" />.</returns>
+    public AdjustmentTrigger Trigger { get; }
 
-	/// <summary>
-	/// Gets the action that the adjustment performed.
-	/// </summary>
-	/// <returns>The <see cref="AdjustmentAction" /> value supplied on the <see cref="ObservanceAdjustment" />.</returns>
-	public AdjustmentAction Action { get; }
+    /// <summary>
+    /// Gets the action that the adjustment performed.
+    /// </summary>
+    /// <returns>The <see cref="AdjustmentAction" /> value supplied on the <see cref="ObservanceAdjustment" />.</returns>
+    public AdjustmentAction Action { get; }
 
-	/// <summary>
-	/// Gets the optional key identifying the custom handler that performed a <see cref="AdjustmentAction.Custom" /> action.
-	/// </summary>
-	/// <returns>The <see cref="ObservanceAdjustment.HandlerKey" /> of the custom handler, or <see langword="null" /> for built-in actions.</returns>
-	public string? HandlerKey { get; }
+    /// <summary>
+    /// Gets the optional key identifying the custom handler that performed a <see cref="AdjustmentAction.Custom" /> action.
+    /// </summary>
+    /// <returns>The <see cref="ObservanceAdjustment.HandlerKey" /> of the custom handler, or <see langword="null" /> for built-in actions.</returns>
+    public string? HandlerKey { get; }
 }

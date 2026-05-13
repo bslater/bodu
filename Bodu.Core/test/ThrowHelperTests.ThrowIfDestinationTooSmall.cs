@@ -4,10 +4,48 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the multi-parameter contract for the
+    /// <see cref="ThrowHelper.ThrowIfDestinationTooSmall{TSource, TDestination}(TSource[], TDestination[], string)" />
+    /// array overload: source-null → ANE on the hardcoded <c>source</c> name; destination-null and
+    /// destination-too-small → ArgumentException-derived with ParamName for <c>destination</c>.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="sourceLength">Source length, or <c>-1</c> to pass null.</param>
+    /// <param name="destinationLength">Destination length, or <c>-1</c> to pass null.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
+    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
+    [TestMethod]
+    [DataRow("null source → ANE on source", -1, 5, "ArgumentNullException", "source")]
+    [DataRow("null destination → ANE on destination", 5, -1, "ArgumentNullException", "destination")]
+    [DataRow("destination shorter than source → AE on destination", 5, 3, "ArgumentException", "destination")]
+    [DataRow("equal lengths → pass", 5, 5, "", "")]
+    [DataRow("destination larger → pass", 3, 5, "", "")]
+    [DataRow("both empty → pass", 0, 0, "", "")]
+    public void ThrowIfDestinationTooSmall_Array_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, int sourceLength, int destinationLength, string expectedExceptionTypeName, string expectedParamName)
+    {
+        int[]? source = sourceLength < 0 ? null : new int[sourceLength];
+        byte[]? destination = destinationLength < 0 ? null : new byte[destinationLength];
+        Type? expected = expectedExceptionTypeName.Length == 0
+            ? null
+            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
+        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfDestinationTooSmall(source!, destination!, "destination"),
+            expected,
+            param);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationTooSmall" />, Array, when DestinationTooSmall, throws <see cref="ArgumentException" />.
     /// </summary>

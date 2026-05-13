@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="JsonResourceNotableDateRuleProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,40 +39,40 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public sealed class JsonResourceNotableDateRuleProvider : NotableDateRuleResourceProviderBase
 {
-	/// <summary>
-	/// Initialises a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded
-	/// resources against a single assembly.
-	/// </summary>
-	/// <param name="jsonResourceName">The logical resource path of the root JSON payload (for example
-	/// <c>MyApp/Calendar/Resources/custom-rules.json</c>). Must not be <see langword="null" />.</param>
-	/// <param name="resourcePathResolver">The resolver used to translate relative <c>useFrom</c> paths into fully
-	/// qualified resource names. Must not be <see langword="null" />.</param>
-	/// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing
-	/// assembly when <see langword="null" />.</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="jsonResourceName" /> or
-	/// <paramref name="resourcePathResolver" /> is <see langword="null" />.</exception>
-	public JsonResourceNotableDateRuleProvider(string jsonResourceName, IResourcePathResolver resourcePathResolver, Assembly? assembly = null)
-		: base(jsonResourceName, resourcePathResolver, assembly)
-	{
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded
+    /// resources against a single assembly.
+    /// </summary>
+    /// <param name="jsonResourceName">The logical resource path of the root JSON payload (for example
+    /// <c>MyApp/Calendar/Resources/custom-rules.json</c>). Must not be <see langword="null" />.</param>
+    /// <param name="resourcePathResolver">The resolver used to translate relative <c>useFrom</c> paths into fully
+    /// qualified resource names. Must not be <see langword="null" />.</param>
+    /// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing
+    /// assembly when <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="jsonResourceName" /> or
+    /// <paramref name="resourcePathResolver" /> is <see langword="null" />.</exception>
+    public JsonResourceNotableDateRuleProvider(string jsonResourceName, IResourcePathResolver resourcePathResolver, Assembly? assembly = null)
+        : base(jsonResourceName, resourcePathResolver, assembly)
+    {
+    }
 
-	/// <summary>
-	/// Initialises a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded
-	/// resources against an ordered chain of assemblies.
-	/// </summary>
-	/// <param name="jsonResourceName">The logical resource path of the root JSON payload. Must not be
-	/// <see langword="null" />.</param>
-	/// <param name="resourcePathResolver">The resolver used to translate relative <c>useFrom</c> paths into fully
-	/// qualified resource names. Must not be <see langword="null" />.</param>
-	/// <param name="assemblies">The ordered chain of assemblies searched for embedded resources; the first assembly
-	/// containing a requested resource wins. Must not be <see langword="null" /> or empty, and must not contain
-	/// <see langword="null" /> entries.</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="jsonResourceName" />,
-	/// <paramref name="resourcePathResolver" />, or <paramref name="assemblies" /> is <see langword="null" />.</exception>
-	/// <exception cref="ArgumentException">Thrown when <paramref name="assemblies" /> is empty or contains a
-	/// <see langword="null" /> entry.</exception>
-	public JsonResourceNotableDateRuleProvider(string jsonResourceName, IResourcePathResolver resourcePathResolver, IEnumerable<Assembly> assemblies)
-		: base(jsonResourceName, resourcePathResolver, assemblies)
-	{
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded
+    /// resources against an ordered chain of assemblies.
+    /// </summary>
+    /// <param name="jsonResourceName">The logical resource path of the root JSON payload. Must not be
+    /// <see langword="null" />.</param>
+    /// <param name="resourcePathResolver">The resolver used to translate relative <c>useFrom</c> paths into fully
+    /// qualified resource names. Must not be <see langword="null" />.</param>
+    /// <param name="assemblies">The ordered chain of assemblies searched for embedded resources; the first assembly
+    /// containing a requested resource wins. Must not be <see langword="null" /> or empty, and must not contain
+    /// <see langword="null" /> entries.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="jsonResourceName" />,
+    /// <paramref name="resourcePathResolver" />, or <paramref name="assemblies" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="assemblies" /> is empty or contains a
+    /// <see langword="null" /> entry.</exception>
+    public JsonResourceNotableDateRuleProvider(string jsonResourceName, IResourcePathResolver resourcePathResolver, IEnumerable<Assembly> assemblies)
+        : base(jsonResourceName, resourcePathResolver, assemblies)
+    {
+    }
 }

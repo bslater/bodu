@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateAlgorithmRegistry.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,18 +38,18 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public interface INotableDateAlgorithmRegistry
 {
-	/// <summary>
-	/// Attempts to retrieve the <see cref="INotableDateAlgorithm" /> registered against the specified key.
-	/// </summary>
-	/// <param name="key">The registry key. Must not be <see langword="null" /> or whitespace.</param>
-	/// <param name="algorithm">When this method returns <see langword="true" />, contains the resolved algorithm.</param>
-	/// <returns><see langword="true" /> if an algorithm is registered for <paramref name="key" />; otherwise <see langword="false" />.</returns>
-	bool TryGet(string key, out INotableDateAlgorithm algorithm);
+    /// <summary>
+    /// Attempts to retrieve the <see cref="INotableDateAlgorithm" /> registered against the specified key.
+    /// </summary>
+    /// <param name="key">The registry key. Must not be <see langword="null" /> or whitespace.</param>
+    /// <param name="algorithm">When this method returns <see langword="true" />, contains the resolved algorithm.</param>
+    /// <returns><see langword="true" /> if an algorithm is registered for <paramref name="key" />; otherwise <see langword="false" />.</returns>
+    bool TryGet(string key, out INotableDateAlgorithm algorithm);
 
-	/// <summary>
-	/// Indicates whether an algorithm is registered against the specified key.
-	/// </summary>
-	/// <param name="key">The registry key.</param>
-	/// <returns><see langword="true" /> if an algorithm is registered; otherwise <see langword="false" />.</returns>
-	bool Contains(string key);
+    /// <summary>
+    /// Indicates whether an algorithm is registered against the specified key.
+    /// </summary>
+    /// <param name="key">The registry key.</param>
+    /// <returns><see langword="true" /> if an algorithm is registered; otherwise <see langword="false" />.</returns>
+    bool Contains(string key);
 }

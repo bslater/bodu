@@ -72,7 +72,7 @@ public partial class DateOnlyExtensionsTests
                                                         // Backtrack to previous Wednesday → 2024-04-17
             DateOnly expected = new DateOnly(2024, 4, 17);
 
-            DateOnly actual = input.FirstDateOfWeek(null!);
+            DateOnly actual = input.FirstDateOfWeek((CultureInfo?)null);
 
             Assert.AreEqual(expected, actual, "Expected fallback to CultureInfo.CurrentCulture with Wednesday as start of week.");
         }

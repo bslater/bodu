@@ -4,10 +4,40 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the contract for <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" />: when the guard
+    /// fails, ParamName must reference the <c>count</c> parameter — the offending caller-supplied input —
+    /// never the <c>available</c> parameter, which is a derived quantity.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="count">The count being validated.</param>
+    /// <param name="available">The number of available items.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("count > available → throw on count", 6, 5, true)]
+    [DataRow("negative count → throw on count", -1, 5, true)]
+    [DataRow("count == 0, available == 0 → pass", 0, 0, false)]
+    [DataRow("count == available → pass", 5, 5, false)]
+    [DataRow("count < available → pass", 3, 5, false)]
+    public void ThrowIfCountExceedsAvailable_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, int count, int available, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        string? expectedParam = expectsException ? "count" : null;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfCountExceedsAvailable(count, available, "count"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfCountExceedsAvailable" />, when CountIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>

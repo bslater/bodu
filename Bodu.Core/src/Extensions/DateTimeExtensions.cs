@@ -864,38 +864,6 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the number of ticks since midnight for the specified hour, minute, and second.
-    /// </summary>
-    /// <param name="hour">The hour component, in the range 0 through 23 inclusive.</param>
-    /// <param name="minute">The minute component, in the range 0 through 59 inclusive.</param>
-    /// <param name="second">The second component, in the range 0 through 59 inclusive.</param>
-    /// <returns>
-    /// A <see cref="long"/> value representing the number of ticks since midnight (00:00:00.000) for the specified time components. The
-    /// result is always between 0 and <c>DateTimeExtensions.TicksPerDay - 1</c>.
-    /// </returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="hour"/> is not between 0 and 23, or <paramref name="minute"/> or <paramref name="second"/> is not
-    /// between 0 and 59.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// This method calculates the total number of seconds from midnight using the specified hour, minute, and second values, and converts
-    /// that total into ticks. It is equivalent in effect to <c>new TimeSpan(hour, minute, second).Ticks</c>, but avoids object allocation
-    /// and is optimised for internal use.
-    /// </para>
-    /// </remarks>
-    private static long GetTicksForTime(int hour, int minute, int second)
-    {
-        if (hour >= 0 && hour < 24 && minute >= 0 && minute < 60 && second >= 0 && second < 60)
-        {
-            var t = (hour * 3600) + (minute * 60) + second;
-            return t * DateTimeExtensions.TicksPerSecond;
-        }
-
-        throw new ArgumentOutOfRangeException(null, ResourceStrings.Arg_OutOfRange_BadHourMinuteSecond);
-    }
-
-    /// <summary>
     /// Returns the number of ticks representing the time-of-day portion of the specified <see cref="DateTime"/>.
     /// </summary>
     /// <param name="dateTime">The <see cref="System.DateTime"/> instance from which to extract the time portion.</param>

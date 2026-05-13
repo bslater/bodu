@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionService.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,14 +19,13 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal sealed class NotableDateResolutionService
 {
-    private readonly IReadOnlyList<NotableDateRule> effectiveRules;
-    private readonly INotableDateResolutionEngine resolutionEngine;
-    private readonly INotableDateCollisionResolver? collisionResolver;
-    private readonly CalendarWeekendDefinition weekendDefinition;
-    private readonly IWeekendDefinitionProvider? weekendProvider;
+    private readonly INotableDateResolutionEngine _resolutionEngine;
+    private readonly INotableDateCollisionResolver? _collisionResolver;
+    private readonly CalendarWeekendDefinition _weekendDefinition;
+    private readonly IWeekendDefinitionProvider? _weekendProvider;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="NotableDateResolutionService" /> class.
+    /// Initializes a new instance of the <see cref="NotableDateResolutionService" /> class.
     /// </summary>
     /// <param name="ruleProviders">The rule providers used to load notable-date rules.</param>
     /// <param name="algorithmRegistry">The optional algorithm registry used to resolve algorithm-backed rules.</param>
@@ -55,16 +54,16 @@ internal sealed class NotableDateResolutionService
         if (weekendDefinition == CalendarWeekendDefinition.Custom && weekendProvider is null)
             throw new ArgumentNullException(nameof(weekendProvider));
 
-        this.effectiveRules = LoadRules(ruleProviders);
-        this.collisionResolver = collisionResolver;
-        this.weekendDefinition = weekendDefinition;
-        this.weekendProvider = weekendProvider;
+        this.EffectiveRules = LoadRules(ruleProviders);
+        this._collisionResolver = collisionResolver;
+        this._weekendDefinition = weekendDefinition;
+        this._weekendProvider = weekendProvider;
 
-        NotableDateRuleResolver ruleResolver = new(this.effectiveRules, algorithmRegistry);
-        ICalculationAnchorResolver calculationAnchors = new CachingCalculationAnchorResolver(this.effectiveRules, ruleResolver);
-        AnchorRelativeRuleIndex anchorRelativeRules = new(this.effectiveRules);
+        NotableDateRuleResolver ruleResolver = new(this.EffectiveRules, algorithmRegistry);
+        ICalculationAnchorResolver calculationAnchors = new CachingCalculationAnchorResolver(this.EffectiveRules, ruleResolver);
+        AnchorRelativeRuleIndex anchorRelativeRules = new(this.EffectiveRules);
         INotableDateRuleOccurrenceResolver occurrenceResolver = new NotableDateRuleOccurrenceResolver(
-            this.effectiveRules,
+            this.EffectiveRules,
             ruleResolver,
             calculationAnchors,
             anchorRelativeRules);
@@ -75,14 +74,14 @@ internal sealed class NotableDateResolutionService
             adjustmentHandlers,
             occurrenceResolver);
 
-        this.resolutionEngine = new NotableDateResolutionEngine(occurrenceResolver, adjustmentProcessor);
+        this._resolutionEngine = new NotableDateResolutionEngine(occurrenceResolver, adjustmentProcessor);
     }
 
     /// <summary>
     /// Gets the effective rules loaded by this resolution service.
     /// </summary>
     /// <returns>A read-only list of <see cref="NotableDateRule" /> entries forming the post-merge effective rule set.</returns>
-    internal IReadOnlyList<NotableDateRule> EffectiveRules => effectiveRules;
+    internal IReadOnlyList<NotableDateRule> EffectiveRules { get; }
 
     /// <summary>
     /// Resolves notable dates for the specified request.
@@ -94,7 +93,7 @@ internal sealed class NotableDateResolutionService
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        IReadOnlyList<NotableDate> resolved = resolutionEngine.Resolve(request);
+        IReadOnlyList<NotableDate> resolved = _resolutionEngine.Resolve(request);
 
         return ApplyCollisionResolution(resolved);
     }
@@ -193,7 +192,7 @@ internal sealed class NotableDateResolutionService
     {
         DateTime day = date.Date;
 
-        if (day.IsWeekend(weekendDefinition, weekendProvider))
+        if (day.IsWeekend(_weekendDefinition, _weekendProvider))
             return true;
 
         return GetNotableDates(day, territoryCode, calendarType)
@@ -209,7 +208,7 @@ internal sealed class NotableDateResolutionService
     /// <returns>The loaded rules.</returns>
     private static IReadOnlyList<NotableDateRule> LoadRules(IEnumerable<INotableDateRuleProvider> ruleProviders)
     {
-        List<NotableDateRule> rules = new();
+        List<NotableDateRule> rules = [];
 
         foreach (INotableDateRuleProvider provider in ruleProviders)
         {
@@ -228,14 +227,14 @@ internal sealed class NotableDateResolutionService
     /// <returns>The collision-resolved dates.</returns>
     private IReadOnlyList<NotableDate> ApplyCollisionResolution(IReadOnlyList<NotableDate> dates)
     {
-        if (collisionResolver is null)
+        if (_collisionResolver is null)
             return Sort(dates);
 
-        List<NotableDate> resolved = new();
+        List<NotableDate> resolved = [];
 
         foreach (IGrouping<DateTime, NotableDate> group in dates.GroupBy(date => date.Date.Date).OrderBy(group => group.Key))
         {
-            IReadOnlyList<NotableDate>? groupResult = collisionResolver.Resolve(group.Key, group.ToList());
+            IReadOnlyList<NotableDate>? groupResult = _collisionResolver.Resolve(group.Key, [.. group]);
 
             if (groupResult is null)
                 continue;
@@ -252,10 +251,9 @@ internal sealed class NotableDateResolutionService
     /// <param name="dates">The dates to sort.</param>
     /// <returns>The sorted dates.</returns>
     private static IReadOnlyList<NotableDate> Sort(IEnumerable<NotableDate> dates) =>
-        dates
+        [.. dates
             .OrderBy(date => date.Date)
             .ThenBy(date => date.Name, StringComparer.OrdinalIgnoreCase)
             .ThenBy(date => date.TerritoryCode, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(date => date.CalendarType?.FullName, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            .ThenBy(date => date.CalendarType?.FullName, StringComparer.OrdinalIgnoreCase)];
 }

@@ -24,13 +24,13 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateResolutionAdjustmentProcessor
 {
-    private readonly CalendarWeekendDefinition weekendDefinition;
-    private readonly IWeekendDefinitionProvider? weekendProvider;
-    private readonly IAdjustmentHandlerRegistry? handlerRegistry;
-    private readonly INotableDateRuleOccurrenceResolver? occurrenceResolver;
+    private readonly CalendarWeekendDefinition _weekendDefinition;
+    private readonly IWeekendDefinitionProvider? _weekendProvider;
+    private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
+    private readonly INotableDateRuleOccurrenceResolver? _occurrenceResolver;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="NotableDateResolutionAdjustmentProcessor" /> class.
+    /// Initializes a new instance of the <see cref="NotableDateResolutionAdjustmentProcessor" /> class.
     /// </summary>
     /// <param name="weekendDefinition">The weekend definition used for weekend checks.</param>
     /// <param name="weekendProvider">The optional custom weekend provider.</param>
@@ -53,10 +53,10 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
         if (weekendDefinition == CalendarWeekendDefinition.Custom && weekendProvider is null)
             throw new ArgumentNullException(nameof(weekendProvider));
 
-        this.weekendDefinition = weekendDefinition;
-        this.weekendProvider = weekendProvider;
-        this.handlerRegistry = handlerRegistry;
-        this.occurrenceResolver = occurrenceResolver;
+        this._weekendDefinition = weekendDefinition;
+        this._weekendProvider = weekendProvider;
+        this._handlerRegistry = handlerRegistry;
+        this._occurrenceResolver = occurrenceResolver;
     }
 
     /// <inheritdoc />
@@ -128,7 +128,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
     /// <see langword="true" /> to emit adjusted occurrences when they match the request projection; otherwise,
     /// <see langword="false" /> to add adjusted dates as blockers only.
     /// </param>
-    private void ApplyOccurrenceAdjustments(
+    private static void ApplyOccurrenceAdjustments(
         NotableDateAdjuster adjuster,
         NotableDateResolutionWindow window,
         NotableDateResolutionRequest request,
@@ -216,7 +216,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
         window.ExpandBackwardTo(day);
         window.ExpandForwardTo(day);
 
-        if (occurrenceResolver is null)
+        if (_occurrenceResolver is null)
             return;
 
         NotableDateResolutionRequest blockerRequest = new(
@@ -226,7 +226,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
             territoryCode,
             calendarType);
 
-        IReadOnlyList<ResolvedNotableDateOccurrence> blockers = occurrenceResolver.ResolveOccurrences(blockerRequest);
+        IReadOnlyList<ResolvedNotableDateOccurrence> blockers = _occurrenceResolver.ResolveOccurrences(blockerRequest);
 
         foreach (ResolvedNotableDateOccurrence blocker in blockers)
         {
@@ -258,9 +258,9 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
 
                 return window.IsNonWorkingDay(date, territoryCode, calendarType, IsWeekend);
             },
-            weekendDefinition,
-            weekendProvider,
-            handlerRegistry,
+            _weekendDefinition,
+            _weekendProvider,
+            _handlerRegistry,
             (ruleName, year, territoryCode, calendarType) => window.ResolveByName(ruleName, year, territoryCode, calendarType));
 
     /// <summary>
@@ -335,7 +335,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
     /// <returns>The materialised date set.</returns>
     private static HashSet<DateTime> CreateMaterialisedDateSet(DateTime startDate, DateTime endDate)
     {
-        HashSet<DateTime> dates = new();
+        HashSet<DateTime> dates = [];
 
         for (DateTime date = startDate.Date; date <= endDate.Date; date = date.AddDays(1))
         {
@@ -366,5 +366,5 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
     /// </summary>
     /// <param name="date">The date to test.</param>
     /// <returns><see langword="true" /> when the date is a weekend; otherwise, <see langword="false" />.</returns>
-    private bool IsWeekend(DateTime date) => date.IsWeekend(weekendDefinition, weekendProvider);
+    private bool IsWeekend(DateTime date) => date.IsWeekend(_weekendDefinition, _weekendProvider);
 }

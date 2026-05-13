@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HinduPaksha.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,15 +18,15 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </remarks>
 public enum HinduPaksha
 {
-	/// <summary>
-	/// The bright fortnight (Shukla Paksha), running from the new moon (Amavasya) to the full moon (Purnima). Tithis are numbered
-	/// 1 (Pratipada) through 15 (Purnima).
-	/// </summary>
-	Shukla = 0,
+    /// <summary>
+    /// The bright fortnight (Shukla Paksha), running from the new moon (Amavasya) to the full moon (Purnima). Tithis are numbered
+    /// 1 (Pratipada) through 15 (Purnima).
+    /// </summary>
+    Shukla = 0,
 
-	/// <summary>
-	/// The dark fortnight (Krishna Paksha), running from just after the full moon to the next new moon. Tithis are numbered 1
-	/// (Pratipada) through 15 (Amavasya).
-	/// </summary>
-	Krishna = 1,
+    /// <summary>
+    /// The dark fortnight (Krishna Paksha), running from just after the full moon to the next new moon. Tithis are numbered 1
+    /// (Pratipada) through 15 (Amavasya).
+    /// </summary>
+    Krishna = 1,
 }

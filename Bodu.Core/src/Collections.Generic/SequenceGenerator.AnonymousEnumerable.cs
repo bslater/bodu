@@ -28,7 +28,7 @@ public static partial class SequenceGenerator
         /// <param name="createEnumerator">The delegate used to generate the enumerator.</param>
         internal AnonymousEnumerable(Func<IEnumerator<TResult>> createEnumerator)
         {
-            _createEnumerator = createEnumerator ?? throw new ArgumentNullException(nameof(createEnumerator));
+            _createEnumerator = createEnumerator;
         }
 
         /// <inheritdoc />

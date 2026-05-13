@@ -4,10 +4,41 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the contract for <see cref="ThrowHelper.ThrowIfDestinationSpanTooSmall{TSource, TDestination}" />:
+    /// when the destination is shorter than the source, ParamName must reference the <c>destination</c>
+    /// parameter, never the <c>source</c>. Spans are value types so there is no null branch.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="sourceLength">The source span length.</param>
+    /// <param name="destinationLength">The destination span length.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("destination shorter than source → throw on destination", 10, 5, true)]
+    [DataRow("equal lengths → pass", 5, 5, false)]
+    [DataRow("destination larger → pass", 3, 5, false)]
+    [DataRow("both empty → pass", 0, 0, false)]
+    public void ThrowIfDestinationSpanTooSmall_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, int sourceLength, int destinationLength, bool expectsException)
+    {
+        byte[] source = new byte[sourceLength];
+        byte[] destination = new byte[destinationLength];
+        Type? expected = expectsException ? typeof(ArgumentException) : null;
+        string? expectedParam = expectsException ? "destination" : null;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfDestinationSpanTooSmall<byte, byte>(source.AsSpan(), destination.AsSpan(), "destination"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfDestinationSpanTooSmall" />, when DestinationTooSmall, throws <see cref="ArgumentException" />.
     /// </summary>

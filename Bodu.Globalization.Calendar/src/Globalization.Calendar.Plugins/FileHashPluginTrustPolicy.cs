@@ -23,52 +23,52 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
 {
-	/// <summary>A normalised, case-insensitive map from assembly name to the pinned SHA-256 digest.</summary>
-	private readonly IReadOnlyDictionary<string, byte[]> _allowedHashesByAssemblyName;
+    /// <summary>A normalised, case-insensitive map from assembly name to the pinned SHA-256 digest.</summary>
+    private readonly IReadOnlyDictionary<string, byte[]> _allowedHashesByAssemblyName;
 
-	/// <summary>
-	/// Initialises a new instance of the <see cref="FileHashPluginTrustPolicy" /> class.
-	/// </summary>
-	/// <param name="allowedHashesByAssemblyName">Dictionary of trusted assembly names mapped to their SHA-256 digests. Assembly names are compared case-insensitively. Must not be <see langword="null" />.</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="allowedHashesByAssemblyName" /> is <see langword="null" />.</exception>
-	public FileHashPluginTrustPolicy(IReadOnlyDictionary<string, byte[]> allowedHashesByAssemblyName)
-	{
-		if (allowedHashesByAssemblyName is null) throw new ArgumentNullException(nameof(allowedHashesByAssemblyName));
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FileHashPluginTrustPolicy" /> class.
+    /// </summary>
+    /// <param name="allowedHashesByAssemblyName">Dictionary of trusted assembly names mapped to their SHA-256 digests. Assembly names are compared case-insensitively. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="allowedHashesByAssemblyName" /> is <see langword="null" />.</exception>
+    public FileHashPluginTrustPolicy(IReadOnlyDictionary<string, byte[]> allowedHashesByAssemblyName)
+    {
+        if (allowedHashesByAssemblyName is null) throw new ArgumentNullException(nameof(allowedHashesByAssemblyName));
 
-		var normalised = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
-		foreach (var entry in allowedHashesByAssemblyName)
-		{
-			if (string.IsNullOrWhiteSpace(entry.Key))
-				continue;
-			if (entry.Value is null)
-				continue;
+        var normalised = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        foreach (KeyValuePair<string, byte[]> entry in allowedHashesByAssemblyName)
+        {
+            if (string.IsNullOrWhiteSpace(entry.Key))
+                continue;
+            if (entry.Value is null)
+                continue;
 
-			normalised[entry.Key] = entry.Value;
-		}
+            normalised[entry.Key] = entry.Value;
+        }
 
-		_allowedHashesByAssemblyName = normalised;
-	}
+        _allowedHashesByAssemblyName = normalised;
+    }
 
-	/// <inheritdoc />
-	public PluginTrustResult Evaluate(PluginTrustContext context)
-	{
-		var name = context.AssemblyName.Name;
-		if (string.IsNullOrEmpty(name))
-			return new PluginTrustResult(Trusted: false, Reason: "Plugin assembly name is missing.");
+    /// <inheritdoc />
+    public PluginTrustResult Evaluate(PluginTrustContext context)
+    {
+        var name = context.AssemblyName.Name;
+        if (string.IsNullOrEmpty(name))
+            return new PluginTrustResult(Trusted: false, Reason: "Plugin assembly name is missing.");
 
-		if (!_allowedHashesByAssemblyName.TryGetValue(name, out var expected))
-			return new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' is not in the hash allowlist.");
+        if (!_allowedHashesByAssemblyName.TryGetValue(name, out var expected))
+            return new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' is not in the hash allowlist.");
 
-		if (expected.Length != context.FileHash.Length)
-			return new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' hash length mismatch.");
+        if (expected.Length != context.FileHash.Length)
+            return new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' hash length mismatch.");
 
-		// Constant-time comparison is overkill for a plain integrity check, but cheap — use it anyway.
-		var diff = 0;
-		for (var i = 0; i < expected.Length; i++)
-			diff |= expected[i] ^ context.FileHash[i];
+        // Constant-time comparison is overkill for a plain integrity check, but cheap — use it anyway.
+        var diff = 0;
+        for (var i = 0; i < expected.Length; i++)
+            diff |= expected[i] ^ context.FileHash[i];
 
-		return diff == 0
-			? new PluginTrustResult(Trusted: true, Reason: null)
-			: new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' hash does not match the pinned value.");
-	}
+        return diff == 0
+            ? new PluginTrustResult(Trusted: true, Reason: null)
+            : new PluginTrustResult(Trusted: false, Reason: $"Assembly '{name}' hash does not match the pinned value.");
+    }
 }

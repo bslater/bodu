@@ -4,10 +4,44 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible{T}" /> contract for the
+    /// <c>int</c> instantiation: null array → <see cref="ArgumentNullException" />, compatible
+    /// <c>int[]</c> → no throw, incompatible types → <see cref="ArgumentException" />.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="array">The array passed to the guard.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
+    /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfArrayTypeIsNotCompatibleContractData), DynamicDataSourceType.Method)]
+    public void ThrowIfArrayTypeIsNotCompatible_WhenInvokedWithVariousArrays_ShouldFollowContract(
+        string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
+    {
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array!, "array"),
+            expectedExceptionType,
+            expectedParamName);
+    }
+
+    private static IEnumerable<object?[]> ThrowIfArrayTypeIsNotCompatibleContractData()
+    {
+        yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
+        yield return new object?[] { "string[] expected int[] → ArgumentException", new string[3], typeof(ArgumentException), "array" };
+        yield return new object?[] { "double[] expected int[] → ArgumentException", new double[3], typeof(ArgumentException), "array" };
+        yield return new object?[] { "object[] expected int[] → ArgumentException", new object[3], typeof(ArgumentException), "array" };
+        yield return new object?[] { "matching int[] → no throw", new int[5], null, null };
+        yield return new object?[] { "empty int[] → no throw", Array.Empty<int>(), null, null };
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible" />, when ArrayTypeIsIncorrect, throws <see cref="ArgumentException" />.
     /// </summary>

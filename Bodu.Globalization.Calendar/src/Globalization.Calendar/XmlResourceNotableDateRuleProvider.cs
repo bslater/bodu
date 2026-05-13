@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlResourceNotableDateRuleProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -61,30 +61,30 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public sealed class XmlResourceNotableDateRuleProvider : NotableDateRuleResourceProviderBase
 {
-	/// <summary>
-	/// Initialises a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
-	/// against a single assembly.
-	/// </summary>
-	/// <param name="xmlResourceName">The logical resource path of the root XML payload (e.g. <c>Bodu/Globalization/Calendar/Resources/global-all.xml</c>). Must not be <see langword="null" />.</param>
-	/// <param name="resourcePathResolver">The resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names. Must not be <see langword="null" />.</param>
-	/// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly when <see langword="null" />.</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" /> or <paramref name="resourcePathResolver" /> is <see langword="null" />.</exception>
-	public XmlResourceNotableDateRuleProvider(string xmlResourceName, IResourcePathResolver resourcePathResolver, Assembly? assembly = null)
-		: base(xmlResourceName, resourcePathResolver, assembly)
-	{
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
+    /// against a single assembly.
+    /// </summary>
+    /// <param name="xmlResourceName">The logical resource path of the root XML payload (e.g. <c>Bodu/Globalization/Calendar/Resources/global-all.xml</c>). Must not be <see langword="null" />.</param>
+    /// <param name="resourcePathResolver">The resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names. Must not be <see langword="null" />.</param>
+    /// <param name="assembly">The assembly containing the embedded resource(s). Defaults to the currently executing assembly when <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" /> or <paramref name="resourcePathResolver" /> is <see langword="null" />.</exception>
+    public XmlResourceNotableDateRuleProvider(string xmlResourceName, IResourcePathResolver resourcePathResolver, Assembly? assembly = null)
+        : base(xmlResourceName, resourcePathResolver, assembly)
+    {
+    }
 
-	/// <summary>
-	/// Initialises a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
-	/// against an ordered chain of assemblies.
-	/// </summary>
-	/// <param name="xmlResourceName">The logical resource path of the root XML payload. Must not be <see langword="null" />.</param>
-	/// <param name="resourcePathResolver">The resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names. Must not be <see langword="null" />.</param>
-	/// <param name="assemblies">The ordered chain of assemblies searched for embedded resources; the first assembly containing a requested resource wins. Use this overload to layer a companion data pack over the main library, so <c>&lt;UseFrom&gt;</c> directives can resolve targets that live in a different assembly. Must not be <see langword="null" /> or empty, and must not contain <see langword="null" /> entries.</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" />, <paramref name="resourcePathResolver" />, or <paramref name="assemblies" /> is <see langword="null" />.</exception>
-	/// <exception cref="ArgumentException">Thrown when <paramref name="assemblies" /> is empty or contains a <see langword="null" /> entry.</exception>
-	public XmlResourceNotableDateRuleProvider(string xmlResourceName, IResourcePathResolver resourcePathResolver, IEnumerable<Assembly> assemblies)
-		: base(xmlResourceName, resourcePathResolver, assemblies)
-	{
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources
+    /// against an ordered chain of assemblies.
+    /// </summary>
+    /// <param name="xmlResourceName">The logical resource path of the root XML payload. Must not be <see langword="null" />.</param>
+    /// <param name="resourcePathResolver">The resolver used to translate relative <c>&lt;UseFrom&gt;</c> paths into fully qualified resource names. Must not be <see langword="null" />.</param>
+    /// <param name="assemblies">The ordered chain of assemblies searched for embedded resources; the first assembly containing a requested resource wins. Use this overload to layer a companion data pack over the main library, so <c>&lt;UseFrom&gt;</c> directives can resolve targets that live in a different assembly. Must not be <see langword="null" /> or empty, and must not contain <see langword="null" /> entries.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xmlResourceName" />, <paramref name="resourcePathResolver" />, or <paramref name="assemblies" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="assemblies" /> is empty or contains a <see langword="null" /> entry.</exception>
+    public XmlResourceNotableDateRuleProvider(string xmlResourceName, IResourcePathResolver resourcePathResolver, IEnumerable<Assembly> assemblies)
+        : base(xmlResourceName, resourcePathResolver, assemblies)
+    {
+    }
 }

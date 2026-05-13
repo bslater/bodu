@@ -4,10 +4,36 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfLessThan{T}(T, T, string)" /> contract matrix with
+    /// explicit ParamName assertions: <c>value &lt; min</c> throws <see cref="ArgumentOutOfRangeException" />
+    /// with ParamName "value"; <c>value &gt;= min</c> passes.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The value compared against <paramref name="min" />.</param>
+    /// <param name="min">The inclusive minimum.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("equal → pass", 5, 5, false)]
+    [DataRow("greater than → pass", 6, 5, false)]
+    [DataRow("less than → throw", 4, 5, true)]
+    [DataRow("MinValue vs 0 → throw", int.MinValue, 0, true)]
+    [DataRow("MaxValue vs MinValue → pass", int.MaxValue, int.MinValue, false)]
+    public void ThrowIfLessThan_WhenInvokedWithVariousPairs_ShouldFollowContract(
+        string testName, int value, int min, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        string? expectedParam = expectsException ? "value" : null;
+
+        AssertGuard(testName, () => ThrowHelper.ThrowIfLessThan(value, min, "value"), expected, expectedParam);
+    }
+
     // Non-nullable overloads
 
     /// <summary>

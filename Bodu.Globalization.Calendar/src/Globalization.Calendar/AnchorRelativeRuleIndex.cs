@@ -24,7 +24,7 @@ internal sealed class AnchorRelativeRuleIndex
     private readonly Dictionary<string, SortedDictionary<int, List<NotableDateRule>>> _rulesByAnchorAndOffset;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="AnchorRelativeRuleIndex" /> class.
+    /// Initializes a new instance of the <see cref="AnchorRelativeRuleIndex" /> class.
     /// </summary>
     /// <param name="rules">The rules to index.</param>
     /// <exception cref="ArgumentNullException"><paramref name="rules" /> is <see langword="null" />.</exception>
@@ -48,13 +48,13 @@ internal sealed class AnchorRelativeRuleIndex
 
             if (!_rulesByAnchorAndOffset.TryGetValue(rule.AnchorRuleName, out SortedDictionary<int, List<NotableDateRule>>? byOffset))
             {
-                byOffset = new SortedDictionary<int, List<NotableDateRule>>();
+                byOffset = [];
                 _rulesByAnchorAndOffset.Add(rule.AnchorRuleName, byOffset);
             }
 
             if (!byOffset.TryGetValue(offsetDays, out List<NotableDateRule>? offsetRules))
             {
-                offsetRules = new List<NotableDateRule>();
+                offsetRules = [];
                 byOffset.Add(offsetDays, offsetRules);
             }
 
@@ -81,12 +81,12 @@ internal sealed class AnchorRelativeRuleIndex
             throw new ArgumentException("The anchor rule name cannot be null, empty, or white-space.", nameof(anchorRuleName));
 
         if (minOffsetDays > maxOffsetDays)
-            return Array.Empty<NotableDateRule>();
+            return [];
 
         if (!_rulesByAnchorAndOffset.TryGetValue(anchorRuleName, out SortedDictionary<int, List<NotableDateRule>>? byOffset))
-            return Array.Empty<NotableDateRule>();
+            return [];
 
-        List<NotableDateRule> results = new();
+        List<NotableDateRule> results = [];
 
         foreach (KeyValuePair<int, List<NotableDateRule>> pair in byOffset)
         {
@@ -99,10 +99,9 @@ internal sealed class AnchorRelativeRuleIndex
             results.AddRange(pair.Value);
         }
 
-        return results
+        return [.. results
             .OrderBy(rule => rule.OffsetDays.GetValueOrDefault())
             .ThenBy(rule => rule.Priority)
-            .ThenBy(rule => rule.Name, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            .ThenBy(rule => rule.Name, StringComparer.OrdinalIgnoreCase)];
     }
 }

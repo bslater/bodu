@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDatePluginException.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,20 +18,20 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public class NotableDatePluginException : Exception
 {
-	/// <summary>
-	/// Initialises a new instance of the <see cref="NotableDatePluginException" /> class with a message.
-	/// </summary>
-	/// <param name="message">The exception message.</param>
-	public NotableDatePluginException(string message) : base(message)
-	{
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDatePluginException" /> class with a message.
+    /// </summary>
+    /// <param name="message">The exception message.</param>
+    public NotableDatePluginException(string message) : base(message)
+    {
+    }
 
-	/// <summary>
-	/// Initialises a new instance of the <see cref="NotableDatePluginException" /> class with a message and an inner exception.
-	/// </summary>
-	/// <param name="message">The exception message.</param>
-	/// <param name="innerException">The underlying cause.</param>
-	public NotableDatePluginException(string message, Exception innerException) : base(message, innerException)
-	{
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDatePluginException" /> class with a message and an inner exception.
+    /// </summary>
+    /// <param name="message">The exception message.</param>
+    /// <param name="innerException">The underlying cause.</param>
+    public NotableDatePluginException(string message, Exception innerException) : base(message, innerException)
+    {
+    }
 }
