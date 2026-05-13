@@ -193,4 +193,48 @@ public sealed class ResourcePathResolverTests
 			_ = resolver.Resolve("/Bodu/Globalization/Calendar/Resources/au-all.xml", "../../../../../escape.xml");
 		});
 	}
+
+	/// <summary>
+	/// Verifies that <c>.</c> segments in the child path are collapsed by the resolver.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenChildContainsCurrentDirectorySegments_ShouldCollapseThem()
+	{
+		IResourcePathResolver resolver = new ResourcePathResolver();
+
+		string result = resolver.Resolve(
+			"/Bodu/Globalization/Calendar/Resources/au-all.xml",
+			"./neighbour.xml");
+
+		Assert.AreEqual("/Bodu/Globalization/Calendar/Resources/neighbour.xml", result);
+	}
+
+	/// <summary>
+	/// Verifies that a child path whose <c>..</c> segments resolve exactly to the root produces a path
+	/// at the canonical root.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenChildResolvesAtRoot_ShouldReturnRootRelativePath()
+	{
+		IResourcePathResolver resolver = new ResourcePathResolver();
+
+		string result = resolver.Resolve(
+			"/Bodu/document.xml",
+			"../sibling.xml");
+
+		Assert.AreEqual("/sibling.xml", result);
+	}
+
+	/// <summary>
+	/// Verifies that a child path resolved relative to a root-level document path joins onto the root segment.
+	/// </summary>
+	[TestMethod]
+	public void Resolve_WhenDocumentIsAtRoot_ShouldJoinChildOntoRoot()
+	{
+		IResourcePathResolver resolver = new ResourcePathResolver();
+
+		string result = resolver.Resolve("/document.xml", "child.xml");
+
+		Assert.AreEqual("/child.xml", result);
+	}
 }
