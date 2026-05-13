@@ -26,9 +26,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Globalization.Calendar
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Globalization.Calendar.Test", "Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj", "{7D628D91-802A-450A-B65A-67C9396D6188}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Globalization.Calendar.Builder", "Bodu.Globalization.Calendar\builder\src\Bodu.Globalization.Calendar.Builder.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Globalization.Calendar.Builder", "Bodu.Globalization.Calendar.Builder\src\Bodu.Globalization.Calendar.Builder.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Globalization.Calendar.Builder.Test", "Bodu.Globalization.Calendar\builder\test\Bodu.Globalization.Calendar.Builder.Test.csproj", "{B2C3D4E5-F6A7-8901-BCDE-F12345678901}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bodu.Globalization.Calendar.Builder.Test", "Bodu.Globalization.Calendar.Builder\test\Bodu.Globalization.Calendar.Builder.Test.csproj", "{B2C3D4E5-F6A7-8901-BCDE-F12345678901}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "doc", "docs\doc.csproj", "{6ABC151C-660B-421E-92A6-8A6AAB9448C2}"
 EndProject
