@@ -105,4 +105,17 @@ public sealed class NotableDateBuilder
             ["rules"] = rules,
         };
     }
+
+    /// <summary>
+    /// Creates an independent copy of this builder, deep-cloning every authored rule so that subsequent
+    /// mutations of either builder do not bleed across the boundary.
+    /// </summary>
+    /// <returns>A new <see cref="NotableDateBuilder" /> with the same rule set as this instance.</returns>
+    public NotableDateBuilder Clone()
+    {
+        NotableDateBuilder copy = new();
+        foreach (NotableDateRuleBuilder rule in _rules)
+            copy._rules.Add(rule.Clone());
+        return copy;
+    }
 }

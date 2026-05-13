@@ -471,6 +471,166 @@ public sealed class NotableDateRuleBuilder
     }
 
     /// <summary>
+    /// Removes the first authored tag whose value matches <paramref name="tag" /> using a case-insensitive comparison.
+    /// </summary>
+    /// <param name="tag">The tag value to remove. Must not be <see langword="null" /> or whitespace.</param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// No-op when no tag with the supplied value has been added. Comparison uses
+    /// <see cref="StringComparer.OrdinalIgnoreCase" /> to match the case-insensitive semantics applied by
+    /// <see cref="Build(string)" /> when projecting the tag set onto the immutable rule.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="tag" /> is <see langword="null" />, empty, or whitespace.</exception>
+    public NotableDateRuleBuilder RemoveTag(string tag)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
+
+        int index = _tags.FindIndex(t => string.Equals(t, tag, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+            _tags.RemoveAt(index);
+        return this;
+    }
+
+    /// <summary>
+    /// Removes every tag previously added via <see cref="AddTag(string)" />.
+    /// </summary>
+    /// <returns>This builder instance, for method chaining.</returns>
+    public NotableDateRuleBuilder ClearTags()
+    {
+        _tags.Clear();
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the adjustment authored against <paramref name="key" />.
+    /// </summary>
+    /// <param name="key">The adjustment key to remove. Must not be <see langword="null" /> or whitespace.</param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// No-op when no adjustment with the supplied key has been added. Comparison uses
+    /// <see cref="StringComparer.OrdinalIgnoreCase" /> so that callers do not need to remember the exact casing
+    /// of the original <see cref="AddAdjustment(string, Action{ObservanceAdjustmentBuilder})" /> call.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.</exception>
+    public NotableDateRuleBuilder RemoveAdjustment(string key)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(key);
+
+        int index = _adjustments.FindIndex(a => string.Equals(a.Key, key, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+            _adjustments.RemoveAt(index);
+        return this;
+    }
+
+    /// <summary>
+    /// Removes every adjustment previously added via
+    /// <see cref="AddAdjustment(string, Action{ObservanceAdjustmentBuilder})" />.
+    /// </summary>
+    /// <returns>This builder instance, for method chaining.</returns>
+    public NotableDateRuleBuilder ClearAdjustments()
+    {
+        _adjustments.Clear();
+        return this;
+    }
+
+    /// <summary>
+    /// Resets the previously selected resolution strategy and clears every strategy-specific field, so that
+    /// <see cref="Fixed(int, int, bool, bool)" />, <see cref="Fixed(string, int, bool, bool)" />,
+    /// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />,
+    /// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" />
+    /// can be called again on the same builder.
+    /// </summary>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// Intended for the template-factory pattern: clone a configured builder, call <see cref="ClearStrategy" /> on the
+    /// copy, then re-author with a different strategy. Without an explicit reset the single-strategy invariant
+    /// would reject the subsequent strategy call.
+    /// </para>
+    /// </remarks>
+    public NotableDateRuleBuilder ClearStrategy()
+    {
+        _strategy = null;
+
+        _fixedMonthNumber = null;
+        _fixedMonthToken = null;
+        _fixedDay = null;
+        _skipLeapMonth = false;
+        _sweepCalendarYears = false;
+
+        _dowMonth = null;
+        _dowDayOfWeek = null;
+        _dowWeekOrdinal = null;
+
+        _anchorRuleName = null;
+        _offsetDays = null;
+
+        _algorithmKey = null;
+        _algorithmType = null;
+        _algorithmMonth = null;
+        _algorithmDay = null;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Creates an independent copy of this builder, suitable for use as a template that can then be tweaked for
+    /// per-variant rules without mutating the source.
+    /// </summary>
+    /// <returns>A new <see cref="NotableDateRuleBuilder" /> with the same configuration as this instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// Scalar fields are copied by value. Tags are duplicated into an independent list so additions on either side
+    /// do not bleed across the boundary. Each authored adjustment is cloned via
+    /// <see cref="ObservanceAdjustmentBuilder.Clone" />, so subsequent mutations on the cloned rule's adjustments
+    /// remain isolated from the source.
+    /// </para>
+    /// </remarks>
+    public NotableDateRuleBuilder Clone()
+    {
+        NotableDateRuleBuilder copy = new()
+        {
+            _ruleName = _ruleName,
+            _category = _category,
+            _isNonWorkingDay = _isNonWorkingDay,
+            _firstYear = _firstYear,
+            _lastYear = _lastYear,
+            _occurrenceYears = _occurrenceYears,
+            _durationDays = _durationDays,
+            _priority = _priority,
+            _territoryCode = _territoryCode,
+            _calendarType = _calendarType,
+            _comment = _comment,
+            _strategy = _strategy,
+            _fixedMonthNumber = _fixedMonthNumber,
+            _fixedMonthToken = _fixedMonthToken,
+            _fixedDay = _fixedDay,
+            _skipLeapMonth = _skipLeapMonth,
+            _sweepCalendarYears = _sweepCalendarYears,
+            _dowMonth = _dowMonth,
+            _dowDayOfWeek = _dowDayOfWeek,
+            _dowWeekOrdinal = _dowWeekOrdinal,
+            _anchorRuleName = _anchorRuleName,
+            _offsetDays = _offsetDays,
+            _algorithmKey = _algorithmKey,
+            _algorithmType = _algorithmType,
+            _algorithmMonth = _algorithmMonth,
+            _algorithmDay = _algorithmDay,
+        };
+
+        copy._tags.AddRange(_tags);
+
+        foreach ((string key, ObservanceAdjustmentBuilder adjustment) in _adjustments)
+            copy._adjustments.Add((key, adjustment.Clone()));
+
+        return copy;
+    }
+
+    /// <summary>
     /// Builds a <see cref="NotableDateRule" /> record from the current builder state.
     /// </summary>
     /// <param name="notableDateName">The canonical name of the notable date. Must not be <see langword="null" /> or whitespace.</param>

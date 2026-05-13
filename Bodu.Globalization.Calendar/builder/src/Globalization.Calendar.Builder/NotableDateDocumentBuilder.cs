@@ -240,4 +240,23 @@ public sealed class NotableDateDocumentBuilder
             ["notableDates"] = notableDates,
         };
     }
+
+    /// <summary>
+    /// Creates an independent copy of this document builder, deep-cloning every notable date entry so that
+    /// subsequent mutations of either builder do not bleed across the boundary.
+    /// </summary>
+    /// <returns>A new <see cref="NotableDateDocumentBuilder" /> with the same notable date entries as this instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// Intended for the template-factory pattern: configure a baseline document once, clone it for each variant,
+    /// and tweak only the entries that differ between variants.
+    /// </para>
+    /// </remarks>
+    public NotableDateDocumentBuilder Clone()
+    {
+        NotableDateDocumentBuilder copy = new();
+        foreach ((string name, NotableDateBuilder builder) in _dates)
+            copy._dates.Add((name, builder.Clone()));
+        return copy;
+    }
 }
