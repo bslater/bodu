@@ -78,4 +78,32 @@ public sealed class AsalhaPujaNotableDateAlgorithmTests
 		Assert.IsNotNull(result);
 		Assert.AreEqual(DateTimeKind.Unspecified, result!.Value.Kind);
 	}
+
+	/// <summary>
+	/// Verifies that supplying an explicit <see cref="System.Globalization.GregorianCalendar" /> matches the default
+	/// (null) calendar path.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenCalendarIsExplicitlyGregorian_ShouldMatchDefaultPath()
+	{
+		DateTime? withDefault = _algorithm.GetDate(2024);
+		DateTime? withGregorian = _algorithm.GetDate(2024, new System.Globalization.GregorianCalendar());
+
+		Assert.AreEqual(withDefault, withGregorian);
+	}
+
+	/// <summary>
+	/// Verifies that supplying a <see cref="System.Globalization.JulianCalendar" /> projects the result through the
+	/// non-Gregorian projection branch.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenCalendarIsJulian_ShouldProjectThroughTargetCalendar()
+	{
+		System.Globalization.JulianCalendar julian = new();
+
+		DateTime? result = _algorithm.GetDate(2024, julian);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(2024, julian.GetYear(result!.Value));
+	}
 }
