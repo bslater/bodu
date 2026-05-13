@@ -84,11 +84,21 @@ public static class NotableDateRuleJsonParser
 		if (string.IsNullOrWhiteSpace(json))
 			throw new ArgumentNullException(nameof(json));
 
-		var node = JsonNode.Parse(json, documentOptions: new JsonDocumentOptions
+		JsonNode? node;
+		try
 		{
-			CommentHandling = JsonCommentHandling.Skip,
-			AllowTrailingCommas = false,
-		});
+			node = JsonNode.Parse(json, documentOptions: new JsonDocumentOptions
+			{
+				CommentHandling = JsonCommentHandling.Skip,
+				AllowTrailingCommas = false,
+			});
+		}
+		catch (JsonException ex) when (ex.GetType() != typeof(JsonException))
+		{
+			// Normalise reader-level subclasses (JsonReaderException, etc.) to the public
+			// JsonException type so consumers can assert against a single, documented type.
+			throw new JsonException(ex.Message, ex.Path, ex.LineNumber, ex.BytePositionInLine, ex);
+		}
 
 		ValidateDocument(node);
 
