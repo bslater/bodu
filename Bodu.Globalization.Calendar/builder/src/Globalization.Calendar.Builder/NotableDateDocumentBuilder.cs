@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -23,15 +25,19 @@ namespace Bodu.Globalization.Calendar;
 /// <item><description><see cref="Build" /> — returns the rules as an <see cref="IReadOnlyList{T}" /> of <see cref="NotableDateRule" /> for direct in-process use.</description></item>
 /// <item><description><see cref="ToXDocument" /> — serialises the rules to an <see cref="XDocument" /> matching the <c>NotableDates.xsd</c> schema.</description></item>
 /// <item><description><see cref="ToXml" /> — serialises the rules to an XML string suitable for storage or transmission.</description></item>
+/// <item><description><see cref="ToJsonNode" /> — serialises the rules to a <see cref="JsonObject" /> matching <c>NotableDates.schema.json</c>.</description></item>
+/// <item><description><see cref="ToJson" /> — serialises the rules to an indented JSON string suitable for storage or transmission.</description></item>
 /// <item><description><see cref="ToProvider" /> — wraps the built rules in an <see cref="INotableDateRuleProvider" /> ready for use with <see cref="NotableDateService" />.</description></item>
 /// </list>
 /// <para>
 /// The XML produced by <see cref="ToXDocument" /> and <see cref="ToXml" /> conforms to the <c>urn:bodu:globalization:calendar</c>
-/// namespace and can be round-tripped through <see cref="NotableDateRuleParser.ParseXml(string)" />.
+/// namespace and can be round-tripped through <see cref="NotableDateRuleParser.ParseXml(string)" />. The JSON produced by
+/// <see cref="ToJsonNode" /> and <see cref="ToJson" /> conforms to <c>NotableDates.schema.json</c> and can be round-tripped through
+/// <see cref="NotableDateRuleJsonParser.ParseJson(string)" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <para>Defining two notable dates, serialising to XML, and passing them into the service:</para>
+/// <para>Defining two notable dates, persisting to XML or JSON, and passing them into the service:</para>
 /// <code>
 /// NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
 ///     .AddDate("Christmas Day", date => date
@@ -49,8 +55,9 @@ namespace Bodu.Globalization.Calendar;
 ///             .NonWorking()
 ///             .OffsetFromAnchor("Easter Sunday", 1)));
 ///
-/// // Persist as XML.
+/// // Persist as XML or JSON.
 /// string xml = builder.ToXml();
+/// string json = builder.ToJson();
 ///
 /// // Or pass directly to the service.
 /// NotableDateService service = new(new[] { builder.ToProvider() });
@@ -162,6 +169,33 @@ public sealed class NotableDateDocumentBuilder
         new InlineNotableDateRuleProvider(Build());
 
     /// <summary>
+    /// Serialises the builder state to a <see cref="JsonObject" /> conforming to <c>NotableDates.schema.json</c>.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="JsonObject" /> with a <c>notableDates</c> array containing one entry per accumulated notable date,
+    /// suitable for parsing via <see cref="NotableDateRuleJsonParser.ParseJson(string)" /> after stringification.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when any notable date entry contains no rules, or when a rule has no resolution strategy selected.
+    /// </exception>
+    public JsonObject ToJsonNode() => BuildJsonDocument();
+
+    /// <summary>
+    /// Serialises the builder state to an indented schema-valid JSON string.
+    /// </summary>
+    /// <returns>
+    /// An indented JSON string whose root object contains a <c>notableDates</c> array conforming to
+    /// <c>NotableDates.schema.json</c>.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when any notable date entry contains no rules, or when a rule has no resolution strategy selected.
+    /// </exception>
+    public string ToJson() => BuildJsonDocument().ToJsonString(s_jsonSerializerOptions);
+
+    /// <summary>The serializer options shared by <see cref="ToJson" /> for indented output.</summary>
+    private static readonly JsonSerializerOptions s_jsonSerializerOptions = new() { WriteIndented = true };
+
+    /// <summary>
     /// Builds the underlying <see cref="XDocument" /> shared by <see cref="ToXDocument" /> and <see cref="ToXml" />.
     /// </summary>
     /// <returns>
@@ -179,5 +213,28 @@ public sealed class NotableDateDocumentBuilder
             root.Add(builder.ToXElement(name, SchemaNamespace));
 
         return new XDocument(new XDeclaration("1.0", "utf-8", null), root);
+    }
+
+    /// <summary>
+    /// Builds the underlying <see cref="JsonObject" /> shared by <see cref="ToJsonNode" /> and <see cref="ToJson" />.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="JsonObject" /> whose <c>notableDates</c> property is a <see cref="JsonArray" /> of one child per
+    /// accumulated notable date entry, in the order they were added.
+    /// </returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when any notable date entry contains no rules, or when a rule has no resolution strategy selected.
+    /// </exception>
+    private JsonObject BuildJsonDocument()
+    {
+        JsonArray notableDates = [];
+
+        foreach ((string name, NotableDateBuilder builder) in _dates)
+            notableDates.Add(builder.ToJsonNode(name));
+
+        return new JsonObject
+        {
+            ["notableDates"] = notableDates,
+        };
     }
 }
