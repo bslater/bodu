@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateBuilder.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,6 +42,7 @@ public sealed class NotableDateBuilder
     public NotableDateBuilder AddRule(Action<NotableDateRuleBuilder> configure)
     {
         ThrowHelper.ThrowIfNull(configure);
+
         NotableDateRuleBuilder ruleBuilder = new();
         configure(ruleBuilder);
         _rules.Add(ruleBuilder);
@@ -94,6 +95,7 @@ public sealed class NotableDateBuilder
             throw new InvalidOperationException($"At least one rule must be added to the notable date entry '{notableDateName}'.");
 
         JsonArray rules = [];
+
         foreach (NotableDateRuleBuilder rule in _rules)
             rules.Add(rule.ToJsonNode(notableDateName));
 
@@ -102,5 +104,18 @@ public sealed class NotableDateBuilder
             ["name"] = notableDateName,
             ["rules"] = rules,
         };
+    }
+
+    /// <summary>
+    /// Creates an independent copy of this builder, deep-cloning every authored rule so that subsequent
+    /// mutations of either builder do not bleed across the boundary.
+    /// </summary>
+    /// <returns>A new <see cref="NotableDateBuilder" /> with the same rule set as this instance.</returns>
+    public NotableDateBuilder Clone()
+    {
+        NotableDateBuilder copy = new();
+        foreach (NotableDateRuleBuilder rule in _rules)
+            copy._rules.Add(rule.Clone());
+        return copy;
     }
 }

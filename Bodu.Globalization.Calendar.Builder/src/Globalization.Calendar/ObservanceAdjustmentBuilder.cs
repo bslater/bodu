@@ -461,6 +461,45 @@ public sealed class ObservanceAdjustmentBuilder
     }
 
     /// <summary>
+    /// Creates an independent copy of this builder, suitable for use as a template that can then be tweaked for
+    /// per-variant adjustments without mutating the source.
+    /// </summary>
+    /// <returns>A new <see cref="ObservanceAdjustmentBuilder" /> with the same configuration as this instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// Scalar fields are copied by value. The handler-parameter dictionary, when authored, is cloned so that
+    /// later additions to either builder do not bleed across the boundary.
+    /// </para>
+    /// </remarks>
+    public ObservanceAdjustmentBuilder Clone()
+    {
+        ObservanceAdjustmentBuilder copy = new()
+        {
+            _trigger = _trigger,
+            _action = _action,
+            _dayOfWeek = _dayOfWeek,
+            _isNonWorkingDay = _isNonWorkingDay,
+            _offsetDays = _offsetDays,
+            _territoryCode = _territoryCode,
+            _calendarType = _calendarType,
+            _effectiveFromYear = _effectiveFromYear,
+            _effectiveToYear = _effectiveToYear,
+            _comparisonMonth = _comparisonMonth,
+            _comparisonDay = _comparisonDay,
+            _weekOrdinal = _weekOrdinal,
+            _targetRuleName = _targetRuleName,
+            _priority = _priority,
+            _handlerKey = _handlerKey,
+            _maxAdjustmentReachDays = _maxAdjustmentReachDays,
+        };
+
+        if (_handlerParameters is not null)
+            copy._handlerParameters = new Dictionary<string, string>(_handlerParameters, StringComparer.Ordinal);
+
+        return copy;
+    }
+
+    /// <summary>
     /// Converts a Gregorian month number (1–12) to its full English name.
     /// </summary>
     /// <param name="month">The month number.</param>

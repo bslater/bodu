@@ -66,13 +66,13 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateDocumentBuilder
 {
     /// <summary>The XML namespace applied to the produced <c>NotableDates</c> document, matching <c>NotableDates.xsd</c>.</summary>
-    private static readonly XNamespace SchemaNamespace = XNamespace.Get("urn:bodu:globalization:calendar");
+    private static readonly XNamespace s_schemaNamespace = XNamespace.Get("urn:bodu:globalization:calendar");
 
     /// <summary>The notable date entries accumulated by <see cref="AddDate(string, System.Action{NotableDateBuilder})" />, each paired with its canonical name.</summary>
     private readonly List<(string Name, NotableDateBuilder Builder)> _dates = [];
 
     /// <summary>
-    /// Initialises a new, empty <see cref="NotableDateDocumentBuilder" />.
+    /// Initializes a new instance of the <see cref="NotableDateDocumentBuilder"/> class.
     /// </summary>
     private NotableDateDocumentBuilder() { }
 
@@ -93,9 +93,12 @@ public sealed class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(name);
         ThrowHelper.ThrowIfNull(configure);
+
         NotableDateBuilder dateBuilder = new();
+
         configure(dateBuilder);
         _dates.Add((name, dateBuilder));
+
         return this;
     }
 
@@ -207,10 +210,10 @@ public sealed class NotableDateDocumentBuilder
     /// </exception>
     private XDocument BuildDocument()
     {
-        XElement root = new(SchemaNamespace + "NotableDates");
+        XElement root = new(s_schemaNamespace + "NotableDates");
 
         foreach ((string name, NotableDateBuilder builder) in _dates)
-            root.Add(builder.ToXElement(name, SchemaNamespace));
+            root.Add(builder.ToXElement(name, s_schemaNamespace));
 
         return new XDocument(new XDeclaration("1.0", "utf-8", null), root);
     }
@@ -236,5 +239,24 @@ public sealed class NotableDateDocumentBuilder
         {
             ["notableDates"] = notableDates,
         };
+    }
+
+    /// <summary>
+    /// Creates an independent copy of this document builder, deep-cloning every notable date entry so that
+    /// subsequent mutations of either builder do not bleed across the boundary.
+    /// </summary>
+    /// <returns>A new <see cref="NotableDateDocumentBuilder" /> with the same notable date entries as this instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// Intended for the template-factory pattern: configure a baseline document once, clone it for each variant,
+    /// and tweak only the entries that differ between variants.
+    /// </para>
+    /// </remarks>
+    public NotableDateDocumentBuilder Clone()
+    {
+        NotableDateDocumentBuilder copy = new();
+        foreach ((string name, NotableDateBuilder builder) in _dates)
+            copy._dates.Add((name, builder.Clone()));
+        return copy;
     }
 }

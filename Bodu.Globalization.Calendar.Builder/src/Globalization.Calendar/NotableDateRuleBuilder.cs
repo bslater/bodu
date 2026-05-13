@@ -27,6 +27,9 @@ namespace Bodu.Globalization.Calendar;
 /// Exactly one strategy method — <see cref="Fixed(int, int, bool, bool)" />, <see cref="Fixed(string, int, bool, bool)" />,
 /// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />, <see cref="OffsetFromAnchor(string, int)" />, or
 /// <see cref="Algorithm(string?, Type?, string?, int?)" /> — must be called before the rule can be built or serialised.
+/// Calling a strategy method when a strategy has already been selected throws
+/// <see cref="InvalidOperationException" />; each builder instance commits to its strategy on the first
+/// successful strategy call.
 /// </para>
 /// </remarks>
 public sealed class NotableDateRuleBuilder
@@ -137,7 +140,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder RuleName(string name)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(name);
+
         _ruleName = name;
+
         return this;
     }
 
@@ -149,6 +154,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Category(NotableDateCategory category)
     {
         _category = category;
+
         return this;
     }
 
@@ -160,6 +166,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder NonWorking(bool value = true)
     {
         _isNonWorkingDay = value;
+
         return this;
     }
 
@@ -171,6 +178,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder FirstYear(int year)
     {
         _firstYear = year;
+
         return this;
     }
 
@@ -182,6 +190,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder LastYear(int year)
     {
         _lastYear = year;
+
         return this;
     }
 
@@ -195,7 +204,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder OccurrenceYears(int years)
     {
         ThrowHelper.ThrowIfLessThan(years, 1);
+
         _occurrenceYears = years;
+
         return this;
     }
 
@@ -208,7 +219,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Duration(int days)
     {
         ThrowHelper.ThrowIfLessThan(days, 1);
+
         _durationDays = days;
+
         return this;
     }
 
@@ -221,7 +234,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Territory(string code)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(code);
+
         _territoryCode = code;
+
         return this;
     }
 
@@ -238,7 +253,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder CalendarType(Type calendarType)
     {
         ThrowHelper.ThrowIfNull(calendarType);
+
         _calendarType = calendarType;
+
         return this;
     }
 
@@ -250,6 +267,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Priority(int priority)
     {
         _priority = priority;
+
         return this;
     }
 
@@ -262,7 +280,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Comment(string comment)
     {
         ThrowHelper.ThrowIfNull(comment);
+
         _comment = comment;
+
         return this;
     }
 
@@ -275,7 +295,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder AddTag(string tag)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
+
         _tags.Add(tag);
+
         return this;
     }
 
@@ -295,18 +317,23 @@ public sealed class NotableDateRuleBuilder
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="month" /> is less than 1 or greater than 13, or <paramref name="day" /> is less than 1 or greater than 31.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
-        ThrowHelper.ThrowIfLessThan(month, 1);
-        ThrowHelper.ThrowIfGreaterThan(month, 13);
-        ThrowHelper.ThrowIfLessThan(day, 1);
-        ThrowHelper.ThrowIfGreaterThan(day, 31);
+        ThrowHelper.ThrowIfOutOfRange(month, 1, 13);
+        ThrowHelper.ThrowIfOutOfRange(day, 1,31);
+
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.Fixed;
         _fixedMonthNumber = month;
         _fixedMonthToken = null;
         _fixedDay = day;
         _skipLeapMonth = skipLeapMonth;
         _sweepCalendarYears = sweepCalendarYears;
+
         return this;
     }
 
@@ -328,17 +355,22 @@ public sealed class NotableDateRuleBuilder
     /// <returns>This builder instance, for method chaining.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="monthToken" /> is <see langword="null" />, empty, or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="day" /> is less than 1 or greater than 31.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder Fixed(string monthToken, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(monthToken);
-        ThrowHelper.ThrowIfLessThan(day, 1);
-        ThrowHelper.ThrowIfGreaterThan(day, 31);
+        ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.Fixed;
         _fixedMonthToken = monthToken;
         _fixedMonthNumber = null;
         _fixedDay = day;
         _skipLeapMonth = skipLeapMonth;
         _sweepCalendarYears = sweepCalendarYears;
+
         return this;
     }
 
@@ -351,14 +383,19 @@ public sealed class NotableDateRuleBuilder
     /// <param name="weekOrdinal">The ordinal occurrence within the month (e.g. <see cref="WeekOfMonthOrdinal.Second" />).</param>
     /// <returns>This builder instance, for method chaining.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="month" /> is less than 1 or greater than 12.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder DayOfWeekInMonth(int month, DayOfWeek dayOfWeek, WeekOfMonthOrdinal weekOrdinal)
     {
-        ThrowHelper.ThrowIfLessThan(month, 1);
-        ThrowHelper.ThrowIfGreaterThan(month, 12);
+        ThrowHelper.ThrowIfOutOfRange(month, 1,12);
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.DayOfWeekInMonth;
         _dowMonth = month;
         _dowDayOfWeek = dayOfWeek;
         _dowWeekOrdinal = weekOrdinal;
+
         return this;
     }
 
@@ -370,12 +407,18 @@ public sealed class NotableDateRuleBuilder
     /// <param name="offsetDays">The number of days to add to the anchor date. Negative values move the date backwards.</param>
     /// <returns>This builder instance, for method chaining.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="anchorRuleName" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder OffsetFromAnchor(string anchorRuleName, int offsetDays)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(anchorRuleName);
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.OffsetFromAnchor;
         _anchorRuleName = anchorRuleName;
         _offsetDays = offsetDays;
+
         return this;
     }
 
@@ -388,13 +431,19 @@ public sealed class NotableDateRuleBuilder
     /// <param name="month">An optional month token passed to the algorithm's two-argument constructor.</param>
     /// <param name="day">An optional day of month passed to the algorithm's two-argument constructor.</param>
     /// <returns>This builder instance, for method chaining.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder Algorithm(string? key = null, Type? algorithmType = null, string? month = null, int? day = null)
     {
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.Algorithm;
         _algorithmKey = key;
         _algorithmType = algorithmType;
         _algorithmMonth = month;
         _algorithmDay = day;
+
         return this;
     }
 
@@ -413,10 +462,172 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
         ThrowHelper.ThrowIfNull(configure);
+
         ObservanceAdjustmentBuilder builder = new();
         configure(builder);
         _adjustments.Add((key, builder));
+
         return this;
+    }
+
+    /// <summary>
+    /// Removes the first authored tag whose value matches <paramref name="tag" /> using a case-insensitive comparison.
+    /// </summary>
+    /// <param name="tag">The tag value to remove. Must not be <see langword="null" /> or whitespace.</param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// No-op when no tag with the supplied value has been added. Comparison uses
+    /// <see cref="StringComparer.OrdinalIgnoreCase" /> to match the case-insensitive semantics applied by
+    /// <see cref="Build(string)" /> when projecting the tag set onto the immutable rule.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="tag" /> is <see langword="null" />, empty, or whitespace.</exception>
+    public NotableDateRuleBuilder RemoveTag(string tag)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
+
+        int index = _tags.FindIndex(t => string.Equals(t, tag, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+            _tags.RemoveAt(index);
+        return this;
+    }
+
+    /// <summary>
+    /// Removes every tag previously added via <see cref="AddTag(string)" />.
+    /// </summary>
+    /// <returns>This builder instance, for method chaining.</returns>
+    public NotableDateRuleBuilder ClearTags()
+    {
+        _tags.Clear();
+        return this;
+    }
+
+    /// <summary>
+    /// Removes the adjustment authored against <paramref name="key" />.
+    /// </summary>
+    /// <param name="key">The adjustment key to remove. Must not be <see langword="null" /> or whitespace.</param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// No-op when no adjustment with the supplied key has been added. Comparison uses
+    /// <see cref="StringComparer.OrdinalIgnoreCase" /> so that callers do not need to remember the exact casing
+    /// of the original <see cref="AddAdjustment(string, Action{ObservanceAdjustmentBuilder})" /> call.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.</exception>
+    public NotableDateRuleBuilder RemoveAdjustment(string key)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(key);
+
+        int index = _adjustments.FindIndex(a => string.Equals(a.Key, key, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+            _adjustments.RemoveAt(index);
+        return this;
+    }
+
+    /// <summary>
+    /// Removes every adjustment previously added via
+    /// <see cref="AddAdjustment(string, Action{ObservanceAdjustmentBuilder})" />.
+    /// </summary>
+    /// <returns>This builder instance, for method chaining.</returns>
+    public NotableDateRuleBuilder ClearAdjustments()
+    {
+        _adjustments.Clear();
+        return this;
+    }
+
+    /// <summary>
+    /// Resets the previously selected resolution strategy and clears every strategy-specific field, so that
+    /// <see cref="Fixed(int, int, bool, bool)" />, <see cref="Fixed(string, int, bool, bool)" />,
+    /// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />,
+    /// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" />
+    /// can be called again on the same builder.
+    /// </summary>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// Intended for the template-factory pattern: clone a configured builder, call <see cref="ClearStrategy" /> on the
+    /// copy, then re-author with a different strategy. Without an explicit reset the single-strategy invariant
+    /// would reject the subsequent strategy call.
+    /// </para>
+    /// </remarks>
+    public NotableDateRuleBuilder ClearStrategy()
+    {
+        _strategy = null;
+
+        _fixedMonthNumber = null;
+        _fixedMonthToken = null;
+        _fixedDay = null;
+        _skipLeapMonth = false;
+        _sweepCalendarYears = false;
+
+        _dowMonth = null;
+        _dowDayOfWeek = null;
+        _dowWeekOrdinal = null;
+
+        _anchorRuleName = null;
+        _offsetDays = null;
+
+        _algorithmKey = null;
+        _algorithmType = null;
+        _algorithmMonth = null;
+        _algorithmDay = null;
+
+        return this;
+    }
+
+    /// <summary>
+    /// Creates an independent copy of this builder, suitable for use as a template that can then be tweaked for
+    /// per-variant rules without mutating the source.
+    /// </summary>
+    /// <returns>A new <see cref="NotableDateRuleBuilder" /> with the same configuration as this instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// Scalar fields are copied by value. Tags are duplicated into an independent list so additions on either side
+    /// do not bleed across the boundary. Each authored adjustment is cloned via
+    /// <see cref="ObservanceAdjustmentBuilder.Clone" />, so subsequent mutations on the cloned rule's adjustments
+    /// remain isolated from the source.
+    /// </para>
+    /// </remarks>
+    public NotableDateRuleBuilder Clone()
+    {
+        NotableDateRuleBuilder copy = new()
+        {
+            _ruleName = _ruleName,
+            _category = _category,
+            _isNonWorkingDay = _isNonWorkingDay,
+            _firstYear = _firstYear,
+            _lastYear = _lastYear,
+            _occurrenceYears = _occurrenceYears,
+            _durationDays = _durationDays,
+            _priority = _priority,
+            _territoryCode = _territoryCode,
+            _calendarType = _calendarType,
+            _comment = _comment,
+            _strategy = _strategy,
+            _fixedMonthNumber = _fixedMonthNumber,
+            _fixedMonthToken = _fixedMonthToken,
+            _fixedDay = _fixedDay,
+            _skipLeapMonth = _skipLeapMonth,
+            _sweepCalendarYears = _sweepCalendarYears,
+            _dowMonth = _dowMonth,
+            _dowDayOfWeek = _dowDayOfWeek,
+            _dowWeekOrdinal = _dowWeekOrdinal,
+            _anchorRuleName = _anchorRuleName,
+            _offsetDays = _offsetDays,
+            _algorithmKey = _algorithmKey,
+            _algorithmType = _algorithmType,
+            _algorithmMonth = _algorithmMonth,
+            _algorithmDay = _algorithmDay,
+        };
+
+        copy._tags.AddRange(_tags);
+
+        foreach ((string key, ObservanceAdjustmentBuilder adjustment) in _adjustments)
+            copy._adjustments.Add((key, adjustment.Clone()));
+
+        return copy;
     }
 
     /// <summary>
@@ -429,6 +640,7 @@ public sealed class NotableDateRuleBuilder
     internal NotableDateRule Build(string notableDateName)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateName);
+
         if (_strategy is null)
             throw new InvalidOperationException($"A resolution strategy must be selected (Fixed, DayOfWeekInMonth, OffsetFromAnchor, or Algorithm) before building the rule for '{notableDateName}'.");
 
@@ -631,11 +843,13 @@ public sealed class NotableDateRuleBuilder
         _strategy!.Value switch
         {
             DateResolutionStrategy.Fixed => BuildFixedElement(ns),
-            DateResolutionStrategy.DayOfWeekInMonth => new XElement(ns + "DayOfWeekInMonth",
+            DateResolutionStrategy.DayOfWeekInMonth => new XElement(
+                ns + "DayOfWeekInMonth",
                 new XAttribute("month", GregorianMonthName(_dowMonth!.Value)),
                 new XAttribute("dayOfWeek", _dowDayOfWeek!.Value.ToString()),
                 new XAttribute("weekOrdinal", _dowWeekOrdinal!.Value.ToString())),
-            DateResolutionStrategy.OffsetFromAnchor => new XElement(ns + "OffsetFromAnchor",
+            DateResolutionStrategy.OffsetFromAnchor => new XElement(
+                ns + "OffsetFromAnchor",
                 new XAttribute("name", _anchorRuleName!),
                 new XAttribute("offset", _offsetDays!.Value.ToString(CultureInfo.InvariantCulture))),
             DateResolutionStrategy.Algorithm => BuildAlgorithmElement(ns),
@@ -836,4 +1050,17 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The full English month name (e.g. <c>"March"</c>).</returns>
     private static string GregorianMonthName(int month) =>
         new DateTime(2000, month, 1).ToString("MMMM", CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Throws when a resolution strategy has already been selected for this rule. Called by every strategy
+    /// configurator to enforce that each builder instance commits to exactly one strategy.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when <see cref="_strategy" /> already has a value.</exception>
+    private void ThrowIfStrategyAlreadySet()
+    {
+        if (_strategy.HasValue)
+            throw new InvalidOperationException(
+                $"A resolution strategy ('{_strategy.Value}') has already been selected for this rule; " +
+                "each rule must specify exactly one strategy.");
+    }
 }

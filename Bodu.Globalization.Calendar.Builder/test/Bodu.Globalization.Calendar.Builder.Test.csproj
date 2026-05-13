@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Bodu.Globalization.Calendar.csproj" />
+    <ProjectReference Include="..\..\Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <ProjectReference Include="..\src\Bodu.Globalization.Calendar.Builder.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.RoundTrip.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -1016,8 +1016,8 @@ public partial class NotableDateDocumentBuilderTests
             .AddDate("Test B", date => date
                 .AddRule(rule => rule.Category(NotableDateCategory.Religious).Algorithm(key: "k")));
 
-        XDocument doc = builder.ToXDocument();
-        XDocument fromXml = XDocument.Parse(builder.ToXml());
+        var doc = builder.ToXDocument();
+        var fromXml = XDocument.Parse(builder.ToXml());
 
         // XNode.DeepEquals is not appropriate here: XDocument.Parse exposes the
         // default-namespace declaration as an explicit xmlns XAttribute on the root,
@@ -1037,7 +1037,7 @@ public partial class NotableDateDocumentBuilderTests
     /// <returns>The parsed rules.</returns>
     private static List<NotableDateRule> BuildAndReparse(Action<NotableDateDocumentBuilder> configure)
     {
-        NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create();
+        var builder = NotableDateDocumentBuilder.Create();
         configure(builder);
         return NotableDateRuleParser.ParseXml(builder.ToXml());
     }
