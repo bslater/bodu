@@ -131,4 +131,64 @@ public class ObservanceAdjustmentBuilderTests
             _ = builder.HandlerKey(string.Empty);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> throws
+    /// <see cref="ArgumentNullException" /> when the key is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void AddHandlerParameter_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    {
+        ObservanceAdjustmentBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = builder.AddHandlerParameter(null!, "value");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> throws an argument exception
+    /// when the key is whitespace.
+    /// </summary>
+    [TestMethod]
+    public void AddHandlerParameter_WhenKeyIsWhitespace_ShouldThrowArgumentException()
+    {
+        ObservanceAdjustmentBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = builder.AddHandlerParameter("   ", "value");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> throws
+    /// <see cref="ArgumentNullException" /> when the value is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void AddHandlerParameter_WhenValueIsNull_ShouldThrowArgumentNullException()
+    {
+        ObservanceAdjustmentBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = builder.AddHandlerParameter("key", null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ObservanceAdjustmentBuilder.MaxAdjustmentReachDays" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the day count is negative.
+    /// </summary>
+    [TestMethod]
+    public void MaxAdjustmentReachDays_WhenNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        ObservanceAdjustmentBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = builder.MaxAdjustmentReachDays(-1);
+        });
+    }
 }

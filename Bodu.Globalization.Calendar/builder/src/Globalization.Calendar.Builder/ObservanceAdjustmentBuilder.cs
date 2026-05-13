@@ -24,6 +24,12 @@ namespace Bodu.Globalization.Calendar;
 /// Only <see cref="When(AdjustmentTrigger)" /> and <see cref="Action(AdjustmentAction)" /> are required; all other properties are optional
 /// and default to the same values as their <see cref="ObservanceAdjustment" /> counterparts.
 /// </para>
+/// <para>
+/// <see cref="AddHandlerParameter(string, string)" /> and <see cref="MaxAdjustmentReachDays(int)" /> populate
+/// <see cref="ObservanceAdjustment.HandlerParameters" /> and <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" /> respectively.
+/// Both fields are programmatic-only — they are not part of the <c>NotableDates.xsd</c> schema, so values supplied here are honoured by
+/// <see cref="Build(string)" /> but omitted from <see cref="ToXElement(string, XNamespace)" />.
+/// </para>
 /// </remarks>
 public sealed class ObservanceAdjustmentBuilder
 {
@@ -71,6 +77,12 @@ public sealed class ObservanceAdjustmentBuilder
 
     /// <summary>The custom-handler registry key set via <see cref="HandlerKey(string)" />, consumed by <see cref="AdjustmentTrigger.Custom" />/<see cref="AdjustmentAction.Custom" />.</summary>
     private string? _handlerKey;
+
+    /// <summary>The handler parameter accumulator populated by <see cref="AddHandlerParameter(string, string)" />, or <see langword="null" /> when none are authored.</summary>
+    private Dictionary<string, string>? _handlerParameters;
+
+    /// <summary>The symmetric reach envelope in days set via <see cref="MaxAdjustmentReachDays(int)" />, or <see langword="null" /> to use the action-specific default heuristic.</summary>
+    private int? _maxAdjustmentReachDays;
 
     /// <summary>
     /// Sets the condition that activates this adjustment.
@@ -245,6 +257,54 @@ public sealed class ObservanceAdjustmentBuilder
     }
 
     /// <summary>
+    /// Adds a key/value pair to the parameters forwarded to the registered <see cref="IAdjustmentHandler" />.
+    /// </summary>
+    /// <param name="key">The parameter name. Must not be <see langword="null" />, empty, or whitespace.</param>
+    /// <param name="value">The parameter value. Must not be <see langword="null" />; an empty string is permitted.</param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// Repeated calls with the same <paramref name="key" /> replace the previously authored value
+    /// (last-write-wins). Values populate <see cref="ObservanceAdjustment.HandlerParameters" /> and are
+    /// consumed only by registered <see cref="IAdjustmentHandler" /> implementations. The dictionary is
+    /// not part of the <c>NotableDates.xsd</c> schema, so values supplied here are honoured by
+    /// <see cref="Build(string)" /> but omitted from <see cref="ToXElement(string, XNamespace)" />.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value" /> is <see langword="null" />.</exception>
+    public ObservanceAdjustmentBuilder AddHandlerParameter(string key, string value)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(key);
+        ThrowHelper.ThrowIfNull(value);
+        _handlerParameters ??= new Dictionary<string, string>(StringComparer.Ordinal);
+        _handlerParameters[key] = value;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the maximum reach in days that this adjustment can shift the calculated date in either direction.
+    /// </summary>
+    /// <param name="days">The symmetric envelope in days. Must be non-negative.</param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// Consumed by the prototype range-resolution pipeline (<c>NotableDateService.ResolveNotableDatesInRange</c>) to
+    /// size the per-rule and global fringe envelope when an adjustment's actual reach exceeds the action's default
+    /// heuristic. The value populates <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" />. It is not part of
+    /// the <c>NotableDates.xsd</c> schema, so values supplied here are honoured by <see cref="Build(string)" /> but
+    /// omitted from <see cref="ToXElement(string, XNamespace)" />.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="days" /> is negative.</exception>
+    public ObservanceAdjustmentBuilder MaxAdjustmentReachDays(int days)
+    {
+        ThrowHelper.ThrowIfLessThan(days, 0);
+        _maxAdjustmentReachDays = days;
+        return this;
+    }
+
+    /// <summary>
     /// Builds an <see cref="ObservanceAdjustment" /> record from the current builder state.
     /// </summary>
     /// <param name="key">The adjustment key used for inheritance merging. Must not be <see langword="null" /> or whitespace.</param>
@@ -282,6 +342,10 @@ public sealed class ObservanceAdjustmentBuilder
             TargetRuleName = _targetRuleName,
             Priority = _priority,
             HandlerKey = _handlerKey,
+            HandlerParameters = _handlerParameters is null
+                ? null
+                : new Dictionary<string, string>(_handlerParameters, StringComparer.Ordinal),
+            MaxAdjustmentReachDays = _maxAdjustmentReachDays,
         };
     }
 

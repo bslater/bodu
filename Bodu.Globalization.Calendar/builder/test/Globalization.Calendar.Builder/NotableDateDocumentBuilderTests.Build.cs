@@ -334,6 +334,120 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
+    /// Verifies that handler parameters set via <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> are
+    /// populated on the built <see cref="ObservanceAdjustment.HandlerParameters" /> dictionary.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenAdjustmentHasHandlerParameters_ShouldPopulateHandlerParameters()
+    {
+        IReadOnlyList<NotableDateRule> rules = NotableDateDocumentBuilder.Create()
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("custom", adj => adj
+                        .When(AdjustmentTrigger.Custom)
+                        .Action(AdjustmentAction.Custom)
+                        .HandlerKey("my-handler")
+                        .AddHandlerParameter("enabled", "true")
+                        .AddHandlerParameter("timeout", "30"))))
+            .Build();
+
+        ObservanceAdjustment adj = rules[0].Adjustments[0];
+        Assert.IsNotNull(adj.HandlerParameters);
+        Assert.AreEqual(2, adj.HandlerParameters!.Count);
+        Assert.AreEqual("true", adj.HandlerParameters["enabled"]);
+        Assert.AreEqual("30", adj.HandlerParameters["timeout"]);
+    }
+
+    /// <summary>
+    /// Verifies that repeated <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> calls with the same
+    /// key apply last-write-wins semantics on the built adjustment.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenAdjustmentHasRepeatedHandlerParameterKey_ShouldUseLastValue()
+    {
+        IReadOnlyList<NotableDateRule> rules = NotableDateDocumentBuilder.Create()
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("custom", adj => adj
+                        .When(AdjustmentTrigger.Custom)
+                        .Action(AdjustmentAction.Custom)
+                        .AddHandlerParameter("mode", "first")
+                        .AddHandlerParameter("mode", "second"))))
+            .Build();
+
+        ObservanceAdjustment adj = rules[0].Adjustments[0];
+        Assert.IsNotNull(adj.HandlerParameters);
+        Assert.AreEqual(1, adj.HandlerParameters!.Count);
+        Assert.AreEqual("second", adj.HandlerParameters["mode"]);
+    }
+
+    /// <summary>
+    /// Verifies that an adjustment with no <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> calls
+    /// leaves <see cref="ObservanceAdjustment.HandlerParameters" /> as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenAdjustmentHasNoHandlerParameters_ShouldLeaveHandlerParametersNull()
+    {
+        IReadOnlyList<NotableDateRule> rules = NotableDateDocumentBuilder.Create()
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("simple", adj => adj
+                        .When(AdjustmentTrigger.Always)
+                        .Action(AdjustmentAction.None))))
+            .Build();
+
+        Assert.IsNull(rules[0].Adjustments[0].HandlerParameters);
+    }
+
+    /// <summary>
+    /// Verifies that the value supplied to <see cref="ObservanceAdjustmentBuilder.MaxAdjustmentReachDays" /> is
+    /// populated on the built <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" /> property.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenAdjustmentHasMaxAdjustmentReachDays_ShouldPopulateMaxAdjustmentReachDays()
+    {
+        IReadOnlyList<NotableDateRule> rules = NotableDateDocumentBuilder.Create()
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("wide-reach", adj => adj
+                        .When(AdjustmentTrigger.Always)
+                        .Action(AdjustmentAction.AddDays)
+                        .OffsetDays(45)
+                        .MaxAdjustmentReachDays(60))))
+            .Build();
+
+        Assert.AreEqual(60, rules[0].Adjustments[0].MaxAdjustmentReachDays);
+    }
+
+    /// <summary>
+    /// Verifies that an adjustment without a <see cref="ObservanceAdjustmentBuilder.MaxAdjustmentReachDays" /> call
+    /// leaves <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" /> as <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Build_WhenAdjustmentHasNoMaxAdjustmentReachDays_ShouldLeaveMaxAdjustmentReachDaysNull()
+    {
+        IReadOnlyList<NotableDateRule> rules = NotableDateDocumentBuilder.Create()
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("simple", adj => adj
+                        .When(AdjustmentTrigger.Always)
+                        .Action(AdjustmentAction.None))))
+            .Build();
+
+        Assert.IsNull(rules[0].Adjustments[0].MaxAdjustmentReachDays);
+    }
+
+    /// <summary>
     /// Verifies that territory scoping set on an <see cref="ObservanceAdjustmentBuilder" /> is correctly
     /// propagated to the built <see cref="ObservanceAdjustment" /> along with other adjustment properties.
     /// </summary>
