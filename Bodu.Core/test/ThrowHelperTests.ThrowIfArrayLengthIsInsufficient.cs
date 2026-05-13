@@ -4,10 +4,44 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayLengthIsInsufficient" /> contract matrix: null
+    /// array → <see cref="ArgumentNullException" />, length below required → <see cref="ArgumentException" />,
+    /// length equal to required → no throw, length above required → no throw.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="array">The array passed to the guard.</param>
+    /// <param name="minimumLength">The required minimum length.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
+    /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfArrayLengthIsInsufficientContractData), DynamicDataSourceType.Method)]
+    public void ThrowIfArrayLengthIsInsufficient_WhenInvokedWithVariousLengths_ShouldFollowContract(
+        string testName, Array? array, int minimumLength, Type? expectedExceptionType, string? expectedParamName)
+    {
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, minimumLength, "array"),
+            expectedExceptionType,
+            expectedParamName);
+    }
+
+    private static IEnumerable<object?[]> ThrowIfArrayLengthIsInsufficientContractData()
+    {
+        yield return new object?[] { "null array → ArgumentNullException", null, 4, typeof(ArgumentNullException), "array" };
+        yield return new object?[] { "array shorter than required → ArgumentException", new int[3], 4, typeof(ArgumentException), "array" };
+        yield return new object?[] { "array length equals required → no throw", new int[4], 4, null, null };
+        yield return new object?[] { "array length exceeds required → no throw", new int[10], 4, null, null };
+        yield return new object?[] { "empty array, minimum 0 → no throw", Array.Empty<int>(), 0, null, null };
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
     /// </summary>
