@@ -1,9 +1,11 @@
 # tools/
 
-Maintenance scripts for the CRC subsystem. All scripts require **PowerShell 7+** and are
-intended to be run from the repository root.
+Maintenance scripts for the library. CRC scripts are PowerShell; cipher-vector
+scripts are Python. All scripts are intended to be run from the repository root.
 
-## Scripts
+## CRC subsystem (PowerShell 7+)
+
+### Scripts
 
 | Script | Purpose |
 | --- | --- |
@@ -58,3 +60,15 @@ Currently exposed:
 Keep the list in `CrcStandard.cs` and the matching `$Common` set in `tools/Generate-CrcDocs.ps1` in sync.
 
 Anything outside this list is still fully accessible through `CrcStandard.Get(CrcStandards.X)` or `CrcStandard.FromName("CRC-X/Y")`.
+
+## Cipher vector cross-validation (Python 3.8+)
+
+| Path | Purpose |
+| --- | --- |
+| `cipher-vectors/wide_serpent.py` | Independent Python port of the wide-block tweakable Serpent variants (Serpent-256, Serpent-512, Serpent-1024). The wide-block constructions are non-standard and have no published reference vectors, so the C# KAT files (`Serpent256KnownAnswers.cs`, `Serpent512KnownAnswers.cs`, `Serpent1024KnownAnswers.cs`) pin ciphertexts that have been confirmed by this second implementation. Running the script prints the same vector rows the KAT files reference. |
+
+```bash
+python3 tools/cipher-vectors/wide_serpent.py
+```
+
+If the script's output ever diverges from the KAT rows in the test project, either the C# implementation has regressed or this port has, and the discrepancy must be investigated before changing either side.
