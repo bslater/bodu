@@ -154,10 +154,88 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 		Assert.AreEqual(new DateTime(2026, 7, 4), date);
 	}
 
+	/// <summary>
+	/// Verifies that the resolver invokes the two-parameter <c>(string-month, int-day)</c> constructor when the
+	/// candidate constructor's first parameter type is <see cref="string" />. The token is forwarded verbatim.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAlgorithmTypeHasStringDayConstructor_ShouldForwardMonthTokenVerbatim()
+	{
+		NotableDateRule rule = new()
+		{
+			Name = "String Algorithm",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Religious,
+			AlgorithmType = typeof(StringMonthIntDayAlgorithm),
+			AlgorithmMonth = "Special",
+			AlgorithmDay = 7,
+		};
+
+		NotableDateRuleResolver resolver = new(new[] { rule });
+
+		DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
+
+		Assert.AreEqual(new DateTime(2026, 1, 7), date);
+		Assert.AreEqual("Special", StringMonthIntDayAlgorithm.LastMonthToken);
+	}
+
+	/// <summary>
+	/// Verifies that an algorithm constructor throwing during activation surfaces as <see langword="null" /> from
+	/// <c>TryCreateAlgorithm</c> — the <see cref="System.Reflection.TargetInvocationException" /> wrapping branch.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAlgorithmConstructorThrows_ShouldReturnNull()
+	{
+		NotableDateRule rule = new()
+		{
+			Name = "Throwing Algorithm",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Religious,
+			AlgorithmType = typeof(ThrowingTwoArgAlgorithm),
+			AlgorithmMonth = "5",
+			AlgorithmDay = 1,
+		};
+
+		NotableDateRuleResolver resolver = new(new[] { rule });
+
+		DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
+
+		Assert.IsNull(date);
+	}
+
 	private sealed class JulyFourthAlgorithm : INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null) =>
 			new(year, 7, 4);
+	}
+
+	private sealed class StringMonthIntDayAlgorithm : INotableDateAlgorithm
+	{
+		public static string? LastMonthToken { get; private set; }
+
+		private readonly int _day;
+
+		public StringMonthIntDayAlgorithm(string month, int day)
+		{
+			LastMonthToken = month;
+			_day = day;
+		}
+
+		public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null) =>
+			new(year, 1, _day);
+	}
+
+	private sealed class ThrowingTwoArgAlgorithm : INotableDateAlgorithm
+	{
+		public ThrowingTwoArgAlgorithm(int month, int day)
+		{
+			_ = month;
+			_ = day;
+			throw new InvalidOperationException("Constructor deliberately throws.");
+		}
+
+		public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null) =>
+			new(year, 1, 1);
 	}
 
 	private sealed class MonthEnumDayAlgorithm : INotableDateAlgorithm

@@ -155,6 +155,40 @@ public sealed class NotableDateServicePluginIntegrationTests
 		Assert.IsTrue(results.Any(r => r.Name == "Plugin Only"));
 	}
 
+	/// <summary>
+	/// Verifies that when an algorithm rule's key is present in neither the host nor the plugin registry, the composite
+	/// registry's <c>Contains</c> / <c>TryGet</c> short-circuits both layers and the service emits no occurrence for the
+	/// rule — exercising the <see cref="NotableDateService.CompositeAlgorithmRegistry" /> double-miss branch.
+	/// </summary>
+	[TestMethod]
+	public void CompositeAlgorithmRegistry_WhenKeyMissingFromBothLayers_ShouldEmitNoOccurrence()
+	{
+		var loader = new ExternalPluginLoader(new AllowAllPluginTrustPolicy());
+		var plugin = loader.Load(Plugin1Path);
+
+		var hostRegistry = new NotableDateAlgorithmRegistry()
+			.Register("host.only", new HostOverrideAlgorithm(new DateTime(2050, 1, 1)));
+
+		// The consumer rule targets an algorithm key that exists on neither layer.
+		var orphan = new NotableDateRule
+		{
+			Name = "Orphan Algorithm Rule",
+			Strategy = DateResolutionStrategy.Algorithm,
+			Category = NotableDateCategory.Observance,
+			AlgorithmKey = "missing.everywhere",
+		};
+
+		var service = new NotableDateService(
+			ruleProviders: new[] { new InMemoryRuleProvider(orphan) },
+			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+			algorithmRegistry: hostRegistry,
+			plugins: new[] { plugin });
+
+		IReadOnlyList<NotableDate> results = service.GetNotableDates(2050);
+
+		Assert.IsFalse(results.Any(r => r.Name == "Orphan Algorithm Rule"));
+	}
+
 	private sealed class InMemoryRuleProvider : INotableDateRuleProvider
 	{
 		private readonly NotableDateRule[] _rules;

@@ -148,4 +148,75 @@ public sealed class NotableDateRuleResolverHebrewAliasTests
 		Assert.IsNotNull(date);
 		Assert.AreEqual(2026, date!.Value.Year);
 	}
+
+	/// <summary>
+	/// Verifies that every supported Hebrew month alias resolves to a non-null Gregorian date in a year whose sweep
+	/// covers both a regular and a leap Hebrew year (Gregorian 2026 → Hebrew 5786 regular, 5787 leap). This drives
+	/// every switch arm of <c>ResolveHebrewMonthAlias</c> through both its <c>isLeapYear</c> branches.
+	/// </summary>
+	[DataRow("Tishri")]
+	[DataRow("Heshvan")]
+	[DataRow("Kislev")]
+	[DataRow("Tevet")]
+	[DataRow("Shevat")]
+	[DataRow("AdarI")]
+	[DataRow("LastAdar")]
+	[DataRow("Nisan")]
+	[DataRow("Iyar")]
+	[DataRow("Sivan")]
+	[DataRow("Tammuz")]
+	[DataRow("Av")]
+	[DataRow("Elul")]
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAliasSpansLeapAndRegularYears_ShouldResolveSuccessfully(string alias)
+	{
+		NotableDateRule rule = new()
+		{
+			Name = $"{alias} Observance",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Religious,
+			Day = 1,
+			CalendarMonthAlias = alias,
+			CalendarType = typeof(SysGlobal.HebrewCalendar),
+			SweepCalendarYears = true,
+		};
+
+		NotableDateRuleResolver resolver = new(new[] { rule });
+
+		// Both calendar years scanned by the sweep are exercised — 5786 (regular) supplies the false-branch arms,
+		// 5787 (leap) supplies the true-branch arms.
+		DateTime? date = resolver.ResolveAnchorDate(rule, 2026);
+
+		Assert.IsNotNull(date, $"Expected the '{alias}' alias to resolve to a valid Gregorian date in 2026.");
+	}
+
+	/// <summary>
+	/// Verifies that <c>AdarII</c> resolves only in a Hebrew leap year. The sweep across Gregorian 2027 includes
+	/// Hebrew 5787 (leap, has AdarII at month index 7); resolution must succeed and the resulting Hebrew month
+	/// must be the leap AdarII slot.
+	/// </summary>
+	[TestMethod]
+	public void ResolveAnchorDate_WhenAliasIsAdarIIInLeapHebrewYear_ShouldResolveToMonthSeven()
+	{
+		NotableDateRule rule = new()
+		{
+			Name = "Purim (AdarII)",
+			Strategy = DateResolutionStrategy.Fixed,
+			Category = NotableDateCategory.Religious,
+			Day = 14,
+			CalendarMonthAlias = "AdarII",
+			CalendarType = typeof(SysGlobal.HebrewCalendar),
+			SweepCalendarYears = true,
+		};
+
+		NotableDateRuleResolver resolver = new(new[] { rule });
+
+		DateTime? date = resolver.ResolveAnchorDate(rule, 2027);
+
+		Assert.IsNotNull(date);
+
+		SysGlobal.HebrewCalendar hebrew = new();
+		Assert.AreEqual(7, hebrew.GetMonth(date!.Value));
+		Assert.AreEqual(13, hebrew.GetMonthsInYear(hebrew.GetYear(date.Value)));
+	}
 }
