@@ -163,4 +163,76 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 		Assert.IsNotNull(result);
 		Assert.AreEqual(DateTimeKind.Unspecified, result!.Value.Kind);
 	}
+
+	/// <summary>
+	/// Verifies that supplying an explicit <see cref="System.Globalization.GregorianCalendar" /> matches the default
+	/// (null) calendar path.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenCalendarIsExplicitlyGregorian_ShouldMatchDefaultPath()
+	{
+		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
+
+		DateTime? withDefault = sut.GetDate(2024);
+		DateTime? withGregorian = sut.GetDate(2024, new System.Globalization.GregorianCalendar());
+
+		Assert.AreEqual(withDefault, withGregorian);
+	}
+
+	/// <summary>
+	/// Verifies that supplying a <see cref="System.Globalization.JulianCalendar" /> projects the result through the
+	/// non-Gregorian projection branch.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenCalendarIsJulian_ShouldProjectThroughTargetCalendar()
+	{
+		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Kartik, HinduPaksha.Krishna, 15);
+		System.Globalization.JulianCalendar julian = new();
+
+		DateTime? result = sut.GetDate(2024, julian);
+
+		Assert.IsNotNull(result);
+		Assert.AreEqual(2024, julian.GetYear(result!.Value));
+	}
+
+	/// <summary>
+	/// Verifies that every defined <see cref="HinduLunarMonth" /> resolves a non-null Gregorian date for a representative
+	/// year. This exercises every branch of the private <c>GetSearchMonth</c> switch and ensures the algorithm produces
+	/// a valid result regardless of which lunar month is requested.
+	/// </summary>
+	[DataRow(HinduLunarMonth.Chaitra)]
+	[DataRow(HinduLunarMonth.Vaisakha)]
+	[DataRow(HinduLunarMonth.Jyeshtha)]
+	[DataRow(HinduLunarMonth.Ashadha)]
+	[DataRow(HinduLunarMonth.Shravana)]
+	[DataRow(HinduLunarMonth.Bhadrapada)]
+	[DataRow(HinduLunarMonth.Ashvin)]
+	[DataRow(HinduLunarMonth.Kartik)]
+	[DataRow(HinduLunarMonth.Margashirsha)]
+	[DataRow(HinduLunarMonth.Pausha)]
+	[DataRow(HinduLunarMonth.Magha)]
+	[DataRow(HinduLunarMonth.Phalguna)]
+	[TestMethod]
+	public void GetDate_WhenEveryDefinedMonthAtTithiOne_ShouldReturnNonNull(HinduLunarMonth month)
+	{
+		var sut = new HinduLunarNotableDateAlgorithm(month, HinduPaksha.Shukla, 1);
+
+		DateTime? result = sut.GetDate(2024);
+
+		Assert.IsNotNull(result);
+	}
+
+	/// <summary>
+	/// Verifies that requesting the <see cref="HinduLunarMonth.Pausha" /> month for year 1 clamps the search year so the
+	/// search is not attempted in year 0, returning a valid date.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenPaushaRequestedForYearOne_ShouldClampSearchYearAndReturnDate()
+	{
+		var sut = new HinduLunarNotableDateAlgorithm(HinduLunarMonth.Pausha, HinduPaksha.Shukla, 1);
+
+		DateTime? result = sut.GetDate(1);
+
+		Assert.IsNotNull(result);
+	}
 }

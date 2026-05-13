@@ -85,4 +85,36 @@ public sealed class QingmingNotableDateAlgorithmTests
 		Assert.IsNotNull(result);
 		Assert.AreEqual(DateTimeKind.Unspecified, result!.Value.Kind);
 	}
+
+	/// <summary>
+	/// Verifies that supplying an explicit <see cref="System.Globalization.GregorianCalendar" /> instance produces the
+	/// same date as the default (null) calendar path.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenCalendarIsExplicitlyGregorian_ShouldMatchDefaultPath()
+	{
+		DateTime? withDefault = _algorithm.GetDate(2024);
+		DateTime? withGregorian = _algorithm.GetDate(2024, new System.Globalization.GregorianCalendar());
+
+		Assert.AreEqual(withDefault, withGregorian);
+	}
+
+	/// <summary>
+	/// Verifies that supplying a <see cref="System.Globalization.JulianCalendar" /> instance projects the computed Qingming
+	/// date through the non-Gregorian projection branch and returns a <see cref="DateTime" /> whose Julian-calendar year
+	/// matches the requested year.
+	/// </summary>
+	[TestMethod]
+	public void GetDate_WhenCalendarIsJulian_ShouldProjectThroughTargetCalendar()
+	{
+		System.Globalization.JulianCalendar julian = new();
+
+		DateTime? result = _algorithm.GetDate(2024, julian);
+
+		Assert.IsNotNull(result);
+
+		// The projection branch reconstructs a DateTime via the calendar's GetYear / GetMonth / GetDayOfMonth pieces.
+		// Reading those pieces back from the Julian calendar should round-trip to the requested year.
+		Assert.AreEqual(2024, julian.GetYear(result!.Value));
+	}
 }
