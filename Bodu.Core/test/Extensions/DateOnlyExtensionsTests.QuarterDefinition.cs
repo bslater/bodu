@@ -9,7 +9,7 @@ namespace Bodu.Extensions;
 public partial class DateOnlyExtensionsTests
 {
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(CalendarQuarterDefinition, int, int)" /> throws
+    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)" /> throws
     /// <see cref="InvalidOperationException" /> when the supplied <see cref="CalendarQuarterDefinition.Custom" /> definition requires a
     /// provider-based overload.
     /// </summary>
@@ -18,12 +18,12 @@ public partial class DateOnlyExtensionsTests
     {
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = DateOnlyExtensions.GetFirstDateOfQuarter(CalendarQuarterDefinition.Custom, 1, 2024);
+            _ = DateOnlyExtensions.GetFirstDateOfQuarter(2024, 1, CalendarQuarterDefinition.Custom);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfQuarter(CalendarQuarterDefinition, int, int)" /> throws
+    /// Verifies that <see cref="DateOnlyExtensions.GetLastDateOfQuarter(int, int, CalendarQuarterDefinition)" /> throws
     /// <see cref="InvalidOperationException" /> for the Custom definition.
     /// </summary>
     [TestMethod]
@@ -31,7 +31,7 @@ public partial class DateOnlyExtensionsTests
     {
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            _ = DateOnlyExtensions.GetLastDateOfQuarter(CalendarQuarterDefinition.Custom, 1, 2024);
+            _ = DateOnlyExtensions.GetLastDateOfQuarter(2024, 1, CalendarQuarterDefinition.Custom);
         });
     }
 }

@@ -49,7 +49,7 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(CalendarQuarterDefinition, int, int)" /> returns the expected quarter-start <see cref="DateOnly" /> for each <c>(year, quarter, definition)</c> triple.
+    /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)" /> returns the expected quarter-start <see cref="DateOnly" /> for each <c>(year, quarter, definition)</c> triple.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests))]
@@ -57,7 +57,7 @@ public partial class DateOnlyExtensionsTests
     {
         DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
 
-        var actual = DateOnlyExtensions.GetFirstDateOfQuarter(definition, quarter, year);
+        var actual = DateOnlyExtensions.GetFirstDateOfQuarter(year, quarter, definition);
 
         Assert.AreEqual(expected, actual);
     }
@@ -71,7 +71,7 @@ public partial class DateOnlyExtensionsTests
         {
         DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
 
-        var actual = DateOnlyExtensions.GetFirstDateOfQuarter(quarter, year);
+        var actual = DateOnlyExtensions.GetFirstDateOfQuarter(year, quarter);
 
         Assert.AreEqual(expected, actual);
     }
@@ -157,7 +157,7 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the static <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(CalendarQuarterDefinition, int, int)" /> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined definition.
+    /// Verifies that the static <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)" /> overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined definition.
     /// </summary>
     [TestMethod]
     public void FirstDateOfQuarter_WhenDefinitionIsInvalidAndQuarterIsValid_ShouldThrowExactly()
@@ -166,7 +166,7 @@ public partial class DateOnlyExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateOnlyExtensions.GetFirstDateOfQuarter(definition, 1, 2025);
+            _ = DateOnlyExtensions.GetFirstDateOfQuarter(2025, 1, definition);
         });
     }
 
@@ -181,7 +181,7 @@ public partial class DateOnlyExtensionsTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateOnlyExtensions.GetFirstDateOfQuarter(CalendarQuarterDefinition.JanuaryToDecember, quarter, 2025);
+            _ = DateOnlyExtensions.GetFirstDateOfQuarter(2025, quarter, CalendarQuarterDefinition.JanuaryToDecember);
         });
     }
 
@@ -196,7 +196,7 @@ public partial class DateOnlyExtensionsTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateOnlyExtensions.GetFirstDateOfQuarter(quarter, 2025);
+            _ = DateOnlyExtensions.GetFirstDateOfQuarter(2025, quarter);
         });
     }
 
