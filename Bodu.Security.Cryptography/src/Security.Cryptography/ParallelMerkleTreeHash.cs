@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/parallel-merkle-tree.svg" alt="Swim-lane diagram showing the Dispatcher thread reading input chunks, slicing them into blocks, hashing each block into a leaf, and submitting leaves into ch L₀; one worker task per tree level consumes from its own channel, groups F incoming nodes, hashes them, and submits the parent to the next level's channel. Adjacent lanes are shown active at the same timestep to emphasise parallelism."/>
+/// <img src="../images/diagrams/parallel-merkle-tree.svg" alt="Swim-lane diagram showing the Dispatcher thread reading input chunks, slicing them into blocks, hashing each block into a leaf, and submitting leaves into ch L₀; one worker task per tree level consumes from its own channel, groups F incoming nodes, hashes them, and submits the parent to the next level's channel. Adjacent lanes are shown active at the same timestep to emphasize parallelism."/>
 /// </para>
 /// <para>
 /// The swim-lane diagram above traces a single <c>ComputeHashAsync</c> call across wall-clock time.
@@ -51,7 +51,7 @@ namespace Bodu.Security.Cryptography;
 /// </description></item>
 /// <item><description>
 ///   <b>Root extraction.</b> The bottom lane activates only at the end: the last surviving node on
-///   <c>ch L₂</c> is recognised as the root and returned to the caller.
+///   <c>ch L₂</c> is recognized as the root and returned to the caller.
 /// </description></item>
 /// </list>
 /// </para>
@@ -74,7 +74,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <b>Thread safety:</b> concurrent calls from multiple threads on the same instance produce
-/// undefined behaviour and are not supported. The <c>ComputeHash*</c> APIs must be called
+/// undefined behavior and are not supported. The <c>ComputeHash*</c> APIs must be called
 /// sequentially. If concurrent hashing is required, construct an independent instance per
 /// thread or task; instances do not share any mutable state with one another.
 /// </para>
@@ -92,7 +92,7 @@ namespace Bodu.Security.Cryptography;
 /// <c>t₄</c> in the Dispatcher lane closes the lowest channel first; the Level 0 worker then
 /// drains, emits its final parent, and closes <c>ch L₁</c>, and so on up the tree. This ordering
 /// guarantees that every node a worker promotes into level N+1 arrives before level N+1's channel
-/// is closed, eliminating the lost-node race that would otherwise cause finalisation to deadlock.
+/// is closed, eliminating the lost-node race that would otherwise cause finalization to deadlock.
 /// </para>
 /// <para>
 /// <strong>When to choose ParallelMerkleTreeHash.</strong> Pick this for very large inputs where
@@ -236,7 +236,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     ///   Supplying a fresh instance per call ensures each computation's trace is isolated.
     /// </param>
     /// <param name="cancellationToken">
-    ///   Token used to cancel the operation. When signalled, the read loop is stopped and all
+    ///   Token used to cancel the operation. When signaled, the read loop is stopped and all
     ///   active level workers are drained before the exception is propagated.
     /// </param>
     /// <returns>
@@ -248,7 +248,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// </exception>
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
     /// <exception cref="OperationCanceledException">
-    ///   <paramref name="cancellationToken"/> was cancelled before all data could be read.
+    ///   <paramref name="cancellationToken"/> was canceled before all data could be read.
     /// </exception>
     public async Task<byte[]> ComputeHashAsync(
         Stream input,
@@ -308,7 +308,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         this.Reset(diagnostics, this._cts.Token);
         this.ProcessBytes(data);
 
-        // Task.Run escapes any captured synchronisation context so that the async workers
+        // Task.Run escapes any captured synchronization context so that the async workers
         // (which themselves run on thread-pool threads) can complete without deadlocking.
 #pragma warning disable VSTHRD002 // Avoid problematic synchronous waits
         return Task.Run(this.FinalizeAsync).GetAwaiter().GetResult();
@@ -371,7 +371,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     /// </para>
     /// <para>
     /// This method is always the first thing called by every public <c>ComputeHash</c> overload,
-    /// even on the very first use, which avoids the need for any eager initialisation in the
+    /// even on the very first use, which avoids the need for any eager initialization in the
     /// constructor.
     /// </para>
     /// </remarks>
@@ -587,7 +587,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
     }
 
     // -----------------------------------------------------------------------------------------
-    // Finalisation
+    // Finalization
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
@@ -712,7 +712,7 @@ public sealed class ParallelMerkleTreeHash : IDisposable
         for (var i = 0; i < hashes.Count - 1; i++)
             hasher.TransformBlock(hashes[i], 0, hashes[i].Length, null, 0);
 
-        // TransformFinalBlock finalises accumulation and populates hasher.Hash.
+        // TransformFinalBlock finalizes accumulation and populates hasher.Hash.
         hasher.TransformFinalBlock(hashes[^1], 0, hashes[^1].Length);
 
         var result = hasher.Hash!;

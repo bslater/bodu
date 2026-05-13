@@ -4,14 +4,14 @@ title: Using MurmurHash3
 
 # Using MurmurHash3
 
-MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011) and distributed in the [SMHasher](https://github.com/aappleby/smhasher) reference repository. It produces excellent avalanche behaviour — every input bit influences every output bit — and passes all of the standard non-cryptographic hash quality tests. It is widely used in databases, distributed systems, and probabilistic data structures (Bloom filters, HyperLogLog).
+MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011) and distributed in the [SMHasher](https://github.com/aappleby/smhasher) reference repository. It produces excellent avalanche behavior — every input bit influences every output bit — and passes all of the standard non-cryptographic hash quality tests. It is widely used in databases, distributed systems, and probabilistic data structures (Bloom filters, HyperLogLog).
 
 **Bodu.IO.Hashing** provides two variants:
 
-| Type | Output | Optimised for | Notes |
+| Type | Output | Optimized for | Notes |
 |---|---|---|---|
 | `MurmurHash3_32` | 32 bits | All platforms | General-purpose 32-bit fingerprint. |
-| `MurmurHash3_x64_128` | 128 bits | 64-bit platforms | 128-bit fingerprint; the highest-quality variant. |
+| `MurmurHash3_128` | 128 bits | 64-bit platforms | 128-bit fingerprint; the highest-quality variant. |
 
 Both derive from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> via a shared `MurmurHash3<T>` base. Both buffer their input internally, consistent with MurmurHash3's one-shot design.
 
@@ -39,7 +39,7 @@ using Bodu.IO.Hashing;
 
 byte[] data = Encoding.UTF8.GetBytes("the quick brown fox");
 
-using var murmur = new MurmurHash3_x64_128();
+using var murmur = new MurmurHash3_128();
 murmur.Append(data);
 byte[] digest = murmur.GetCurrentHash();   // 16 bytes
 ```
@@ -133,20 +133,20 @@ bool MightContain(string item)
 
 ## MurmurHash3 vs the other fingerprints
 
-| Criterion | MurmurHash3 | FNV-1a | CityHash | XxHash |
+| Criterion | MurmurHash3 | FNV-1a | CityHash | BCL xxHash |
 |---|---|---|---|---|
-| Output widths | 32 · 128-bit | 32 · 64-bit | 32 · 64 · 128-bit | 32 · 64-bit |
-| Seed support | Yes | No (fixed offset basis) | No | Yes |
+| Output widths | 32 · 128-bit | 32 · 64-bit | 32 · 64 · 128-bit | 32 · 64 · 128-bit |
+| Seed support | Yes | No (fixed offset basis) | No | Limited (BCL contract) |
 | Streaming (constant memory) | No — buffers input | Yes | No — buffers input | No — buffers input |
 | Relative throughput (large inputs) | Good | Moderate | Excellent | Excellent |
 | Distribution quality | Excellent | Good | Excellent | Excellent |
 
-Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche — for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer **CityHash** or **XxHash**. For constant-memory streaming, prefer **FNV-1a** or **CRC**.
+Reach for **MurmurHash3** when you need a seeded 32- or 128-bit fingerprint with high-quality avalanche — for Bloom filters, consistent hashing, and bucketing. For the fastest throughput on large buffers, prefer **CityHash** (in Bodu) or `System.IO.Hashing.XxHash64` (in the BCL). For constant-memory streaming, prefer **FNV-1a** or **CRC**.
 
 ## Where to go next
 
-- [Using XxHash](xxhash.md) — another high-quality seeded fingerprint family.
-- [Using FNV](fnv.md) — constant-memory streaming alternative.
 - [Using CityHash](cityhash.md) — fastest throughput on large inputs.
+- [Using FNV](fnv.md) — constant-memory streaming alternative.
+- [Using Pearson](pearson.md) — configurable output width from 8 to 2048 bits.
 - [Algorithm families](../../docs/algorithm-families.md) — when to use a fingerprint vs a checksum vs a keyed hash.
 - [Bodu.IO.Hashing namespace page](../../apidoc/Bodu.IO.Hashing.md) — key types and design notes.

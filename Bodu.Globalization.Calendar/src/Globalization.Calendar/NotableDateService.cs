@@ -33,7 +33,7 @@ namespace Bodu.Globalization.Calendar;
 /// holidays, Australian state observances, and so on — ship in separate <c>Bodu.Globalization.Calendar.Data.*</c> assemblies and
 /// are added by passing the pack's <c>CreateProvider()</c> result through the full constructor. The full constructor accepts
 /// base rule providers, weekend definitions, override providers, algorithm registries, custom adjustment handlers, collision
-/// resolvers, and name localisers, enabling complete control over the resolution pipeline.
+/// resolvers, and name localizers, enabling complete control over the resolution pipeline.
 /// </para>
 /// </remarks>
 /// <example>
@@ -71,7 +71,7 @@ public sealed class NotableDateService : INotableDateService
     /// <summary>The ordered list of override providers applied on top of the base rule set.</summary>
     private readonly IReadOnlyList<INotableDateRuleOverrideProvider> _overrideProviders;
 
-    /// <summary>Snapshot of all override removals, materialised once at construction to avoid re-querying providers per year.</summary>
+    /// <summary>Snapshot of all override removals, materialized once at construction to avoid re-querying providers per year.</summary>
     private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
 
     /// <summary>The merged rule set after all overrides have been applied; drives every resolution pass.</summary>
@@ -198,7 +198,7 @@ public sealed class NotableDateService : INotableDateService
             .Where(r => r is not null)];
         _overrideProviders = overrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)[];
 
-        // Snapshot every override provider's removals at construction so that IsRemovedByOverride iterates a materialised list
+        // Snapshot every override provider's removals at construction so that IsRemovedByOverride iterates a materialized list
         // once per rule × year × territory rather than re-invoking GetRemovals on every check. This pins the cost of any
         // non-trivial override provider (database-backed, configuration-bound, lazily-enumerated) to a single call per provider
         // and removes a runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation.
@@ -418,11 +418,11 @@ public sealed class NotableDateService : INotableDateService
             _resolvedWindows.Add(new DateRange(request.StartDate, request.EndDate));
         }
 
-        List<NotableDate> localised = new(resolved.Count);
+        List<NotableDate> localized = new(resolved.Count);
         foreach (NotableDate notable in resolved)
-            localised.Add(LocaliseIfNeeded(notable));
+            localized.Add(LocaliseIfNeeded(notable));
 
-        return [.. localised
+        return [.. localized
             .GroupBy(n => n.Date.Date)
             .OrderBy(g => g.Key)
             .SelectMany(g => _collisionResolver.Resolve(g.Key, [.. g]) ?? [])];
@@ -511,7 +511,7 @@ public sealed class NotableDateService : INotableDateService
         // open a fresh generation for the next year, leading to year-by-year recursion until DateTime overflows. Returning an
         // empty snapshot for any cache-miss query during nested generation collapses both vectors: dependent predicates see only
         // what is already cached, the bounded walk falls through its 366-iteration cap, and only the outer caller fully
-        // materialises a year.
+        // materializes a year.
         HashSet<int> inProgress = _generatingYears.Value!;
         if (inProgress.Count > 0)
             return [];
@@ -536,7 +536,7 @@ public sealed class NotableDateService : INotableDateService
     }
 
     /// <summary>
-    /// Materialises the notable dates for <paramref name="year" /> by resolving every configured rule, adding all base dates
+    /// Materializes the notable dates for <paramref name="year" /> by resolving every configured rule, adding all base dates
     /// to a generation-local context, and then applying observance adjustments against that completed base-date view.
     /// </summary>
     /// <param name="year">The civil year to generate.</param>
@@ -544,7 +544,7 @@ public sealed class NotableDateService : INotableDateService
     private IReadOnlyList<NotableDate> GenerateYear(int year) => GenerateYearCore(year);
 
     /// <summary>
-    /// Materialises the notable dates for <paramref name="year" /> and returns only those that satisfy
+    /// Materializes the notable dates for <paramref name="year" /> and returns only those that satisfy
     /// <paramref name="filter" />.
     /// </summary>
     /// <remarks>
@@ -745,30 +745,30 @@ public sealed class NotableDateService : INotableDateService
     }
 
     /// <summary>
-    /// If a name-localiser is configured, replaces the name on <paramref name="notable" /> with
-    /// its localised form; otherwise returns <paramref name="notable" /> unchanged.
+    /// If a name-localizer is configured, replaces the name on <paramref name="notable" /> with
+    /// its localized form; otherwise returns <paramref name="notable" /> unchanged.
     /// </summary>
-    /// <param name="notable">The notable date to potentially localise.</param>
-    /// <returns>The localised or original notable date.</returns>
+    /// <param name="notable">The notable date to potentially localize.</param>
+    /// <returns>The localized or original notable date.</returns>
     private NotableDate LocaliseIfNeeded(NotableDate notable)
     {
         if (_nameLocalizer is null) return notable;
 
-        var localised = _nameLocalizer.GetDisplayName(notable, CultureInfo.CurrentCulture);
-        if (string.IsNullOrEmpty(localised) || string.Equals(localised, notable.Name, StringComparison.Ordinal))
+        var localized = _nameLocalizer.GetDisplayName(notable, CultureInfo.CurrentCulture);
+        if (string.IsNullOrEmpty(localized) || string.Equals(localized, notable.Name, StringComparison.Ordinal))
             return notable;
 
-        return notable with { Name = localised };
+        return notable with { Name = localized };
     }
 
     /// <summary>
     /// Filters the full-year notable-date list for the requested territory and calendar type,
-    /// applies localisation, and returns the results ordered by observed date.
+    /// applies localization, and returns the results ordered by observed date.
     /// </summary>
     /// <param name="perYear">The unfiltered notable dates for a single year.</param>
     /// <param name="territoryCode">The territory code filter, or <see langword="null" />.</param>
     /// <param name="calendarType">The calendar type filter, or <see langword="null" />.</param>
-    /// <returns>The filtered, localised, and ordered notable-date list.</returns>
+    /// <returns>The filtered, localized, and ordered notable-date list.</returns>
     private IReadOnlyList<NotableDate> ProjectAndOrder(IReadOnlyList<NotableDate> perYear, string? territoryCode, Type? calendarType)
     {
         var matching = new List<NotableDate>();

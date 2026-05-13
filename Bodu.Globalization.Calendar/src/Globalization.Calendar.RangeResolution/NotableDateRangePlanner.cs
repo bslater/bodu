@@ -13,13 +13,13 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// <remarks>
 /// <para>
 /// Rule selection is deliberately simple: a rule is eligible when it passes the static territory, calendar, and filter checks.
-/// The main pass evaluates each eligible rule for every civil year that the request window spans, materialising the rule's
+/// The main pass evaluates each eligible rule for every civil year that the request window spans, materializing the rule's
 /// resolved date and admitting it when it intersects the window.
 /// </para>
 /// <para>
 /// Cross-year roll-overs (for example, <c>31 Dec</c> with a forward observance adjustment landing on <c>3 Jan</c>) are handled by
 /// a separate fringe pass at the pipeline level. The planner identifies which adjacent civil years that pass needs to scan and
-/// the fringe day-window itself; the actual fringe materialisation lives in the pipeline.
+/// the fringe day-window itself; the actual fringe materialization lives in the pipeline.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateRangePlanner
@@ -70,7 +70,7 @@ internal sealed class NotableDateRangePlanner
         if (request is null) throw new ArgumentNullException(nameof(request));
 
         // Eligible rules: filtered by static territory, calendar, and filter checks. Year applicability is deferred to per-(rule,
-        // year) materialisation since FirstYear / LastYear / OccurrenceYears bounds depend on the year being resolved.
+        // year) materialization since FirstYear / LastYear / OccurrenceYears bounds depend on the year being resolved.
         List<RuleStaticProfile> eligible = [];
         foreach (RuleStaticProfile profile in _analysis.Profiles)
         {

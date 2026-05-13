@@ -8,7 +8,7 @@
 
   Country-specific rules explicitly import only the inherited global and
   Christian dates that France observes, and override naming, territory,
-  nonWorking, adjustment, or tagging behaviour where required.
+  nonWorking, adjustment, or tagging behavior where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

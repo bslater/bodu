@@ -35,7 +35,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Each 64-bit input block is absorbed during a compression phase consisting of <see cref="CompressionRounds"/> rounds. Once all
 /// input has been processed, <see cref="FinalizationRounds"/> rounds are applied to produce the final digest. The defaults
-/// (<c>c = 2</c>, <c>d = 4</c>) correspond to the standard <c>SipHash-2-4</c> parameterisation.
+/// (<c>c = 2</c>, <c>d = 4</c>) correspond to the standard <c>SipHash-2-4</c> parameterization.
 /// </para>
 /// <para>
 /// <strong>When to choose SipHash.</strong> SipHash is the de-facto standard for protecting hash tables and
@@ -293,9 +293,9 @@ public abstract class SipHash<T>
     }
 
     /// <summary>
-    /// Rebuilds the internal SipHash state vectors from the current key whenever the key is assigned or the instance is re-initialised.
+    /// Rebuilds the internal SipHash state vectors from the current key whenever the key is assigned or the instance is re-initialized.
     /// </summary>
-    /// <remarks>XORs the key halves with the SipHash initial constants, then applies the SipHash-128 finalisation tweak if required.</remarks>
+    /// <remarks>XORs the key halves with the SipHash initial constants, then applies the SipHash-128 finalization tweak if required.</remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected override void OnKeyChanged()
     {

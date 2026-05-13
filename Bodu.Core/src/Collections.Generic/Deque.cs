@@ -13,14 +13,14 @@ namespace Bodu.Collections.Generic;
 
 /// <summary>
 /// Represents a double-ended queue (deque) backed by a contiguous circular array. Elements may be added or
-/// removed from either end in amortised O(1) time. The <see cref="AllowGrow"/> property selects between
-/// growable and fixed-capacity behaviour at runtime.
+/// removed from either end in amortized O(1) time. The <see cref="AllowGrow"/> property selects between
+/// growable and fixed-capacity behavior at runtime.
 /// </summary>
 /// <typeparam name="T">Specifies the type of elements stored in the deque.</typeparam>
 /// <remarks>
 /// <para>
 /// <see cref="Deque{T}"/> stores its elements in a single backing array using head and tail indices that wrap
-/// around modulo the capacity. This gives O(1) amortised cost for adds and removes at either end, plus O(1)
+/// around modulo the capacity. This gives O(1) amortized cost for adds and removes at either end, plus O(1)
 /// random read access through the indexer in head-to-tail logical order.
 /// </para>
 /// <para>The growth policy is controlled by the mutable <see cref="AllowGrow"/> property:</para>
@@ -156,7 +156,7 @@ public sealed class Deque<T>
     /// <param name="collection">The collection from which elements are copied. Must not be <see langword="null"/>.</param>
     /// <param name="capacity">The initial backing-array capacity. Must be greater than zero, and at least <c>collection.Count</c> when <paramref name="allowGrow"/> is <see langword="false"/>.</param>
     /// <param name="allowGrow">
-    /// <see langword="true"/> to allow the deque to expand its backing array when full; <see langword="false"/> for fixed-capacity behaviour.
+    /// <see langword="true"/> to allow the deque to expand its backing array when full; <see langword="false"/> for fixed-capacity behavior.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="capacity"/> is less than 1.</exception>
@@ -168,7 +168,7 @@ public sealed class Deque<T>
         : this(Materialize(collection), capacity, allowGrow) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Deque{T}"/> class using a pre-materialised
+    /// Initializes a new instance of the <see cref="Deque{T}"/> class using a pre-materialized
     /// array of elements, with the specified capacity and growth policy.
     /// </summary>
     /// <param name="items">The source elements to populate the deque. Must not be <see langword="null"/>.</param>
@@ -178,7 +178,7 @@ public sealed class Deque<T>
     /// </param>
     /// <param name="allowGrow">
     /// <see langword="true"/> to allow the deque to expand its backing array when full;
-    /// <see langword="false"/> for fixed-capacity behaviour.
+    /// <see langword="false"/> for fixed-capacity behavior.
     /// </param>
     /// <exception cref="InvalidOperationException">
     /// <paramref name="allowGrow"/> is <see langword="false"/>, an explicit capacity was supplied, and
@@ -194,7 +194,7 @@ public sealed class Deque<T>
     /// Throws when <paramref name="allowGrow"/> is <see langword="false"/> and the supplied collection size
     /// exceeds the explicit <paramref name="capacity"/>. Returns the items unchanged on success.
     /// </summary>
-    /// <param name="items">The materialised source elements.</param>
+    /// <param name="items">The materialized source elements.</param>
     /// <param name="capacity">The requested capacity, or <see cref="UseFloorCapacity"/>.</param>
     /// <param name="allowGrow">Whether the deque is permitted to grow.</param>
     /// <returns><paramref name="items"/>, unchanged.</returns>
@@ -212,7 +212,7 @@ public sealed class Deque<T>
     /// requested capacity, returns the source length so the base never truncates; otherwise returns the
     /// requested capacity.
     /// </summary>
-    /// <param name="items">The materialised source elements.</param>
+    /// <param name="items">The materialized source elements.</param>
     /// <param name="capacity">The requested capacity, or <see cref="UseFloorCapacity"/>.</param>
     /// <param name="allowGrow">Whether the deque is permitted to grow.</param>
     /// <returns>The capacity to forward to the base constructor.</returns>
@@ -228,10 +228,10 @@ public sealed class Deque<T>
     }
 
     /// <summary>
-    /// Materialises <paramref name="collection"/> into an array exactly once, performing the null-check.
+    /// Materializes <paramref name="collection"/> into an array exactly once, performing the null-check.
     /// </summary>
     /// <param name="collection">The source collection. Must not be <see langword="null"/>.</param>
-    /// <returns>The materialised array; never <see langword="null"/>.</returns>
+    /// <returns>The materialized array; never <see langword="null"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
     private static T[] Materialize(IEnumerable<T> collection)
     {

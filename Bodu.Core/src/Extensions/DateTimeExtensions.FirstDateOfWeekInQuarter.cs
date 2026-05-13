@@ -18,7 +18,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the first occurrence of <paramref name="dayOfWeek"/> within the quarter, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>This overload uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>. The search begins on the first day of the quarter and proceeds forward to locate the first matching weekday.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration.</exception>
     public static DateTime FirstDateOfWeekInQuarter(this DateTime dateTime, DayOfWeek dayOfWeek)
@@ -43,7 +43,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the first occurrence of <paramref name="dayOfWeek"/> within the quarter, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>The start of the quarter is computed using <paramref name="definition"/>, and the search proceeds forward to the first date that matches the specified <paramref name="dayOfWeek"/>.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration,
@@ -77,7 +77,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the first occurrence of <paramref name="dayOfWeek"/> within the quarter, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>The start of the quarter is determined by the supplied <paramref name="provider"/>, and the search proceeds forward to the first date that matches the specified <paramref name="dayOfWeek"/>.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration.</exception>
@@ -99,7 +99,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the first occurrence of <paramref name="dayOfWeek"/> within the quarter, using <see cref="DateTimeKind.Unspecified"/>.</returns>
     /// <remarks>
     /// <para>This overload uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>.</para>
-    /// <para>The returned value is normalised to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
+    /// <para>The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of <see cref="DateTime.MaxValue"/>,
@@ -130,7 +130,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the first occurrence of <paramref name="dayOfWeek"/> within the quarter, using <see cref="DateTimeKind.Unspecified"/>.</returns>
     /// <remarks>
     /// <para>The start of the quarter is computed using <paramref name="definition"/>, and the search proceeds forward to the first date that matches the specified <paramref name="dayOfWeek"/>.</para>
-    /// <para>The returned value is normalised to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
+    /// <para>The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of <see cref="DateTime.MaxValue"/>,

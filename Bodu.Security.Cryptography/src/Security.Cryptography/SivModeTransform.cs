@@ -11,7 +11,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Synthetic Initialisation Vector (SIV) mode to two underlying <see cref="IBlockCipher"/>
+/// Applies Synthetic Initialization Vector (SIV) mode to two underlying <see cref="IBlockCipher"/>
 /// instances, providing deterministic authenticated encryption per RFC 5297 (AES-SIV).
 /// </summary>
 /// <remarks>
@@ -272,7 +272,7 @@ public sealed class SivModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data S2V contribution has been initialised before payload processing.
+    /// Ensures the associated-data S2V contribution has been initialized before payload processing.
     /// </summary>
     private void EnsureAadProcessed()
     {
@@ -289,7 +289,7 @@ public sealed class SivModeTransform
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="plaintext">The plaintext bytes.</param>
-    /// <returns>The S2V synthetic initialisation vector.</returns>
+    /// <returns>The S2V synthetic initialization vector.</returns>
     private byte[] S2V(ReadOnlySpan<byte> aad, ReadOnlySpan<byte> plaintext)
     {
         var blockSize = this._s2vCipher.BlockSize / 8;

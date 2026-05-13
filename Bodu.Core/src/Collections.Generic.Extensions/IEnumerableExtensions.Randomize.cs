@@ -23,14 +23,14 @@ public static partial class IEnumerableExtensions
         source.Randomize(RandomizationMode.BufferAll, new SystemRandomAdapter(), null);
 
     /// <summary>
-    /// Randomises the source sequence using a specified strategy and random number generator.
+    /// Randomizes the source sequence using a specified strategy and random number generator.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
-    /// <param name="source">The sequence to randomise.</param>
-    /// <param name="mode">The randomisation strategy to apply.</param>
+    /// <param name="source">The sequence to randomize.</param>
+    /// <param name="mode">The randomization strategy to apply.</param>
     /// <param name="rng">The random number generator to use.</param>
     /// <param name="count">The number of items to return; returns all items when <see langword="null"/>.</param>
-    /// <returns>A randomised sequence of <typeparamref name="T"/>.</returns>
+    /// <returns>A randomized sequence of <typeparamref name="T"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="source"/> or <paramref name="rng"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="count"/> is negative, exceeds the number of available elements, or if <paramref name="mode"/> is not
@@ -139,10 +139,10 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Buffers all elements from the source and yields a randomised subset using in-place shuffling.
+    /// Buffers all elements from the source and yields a randomized subset using in-place shuffling.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
-    /// <param name="source">The sequence to randomise.</param>
+    /// <param name="source">The sequence to randomize.</param>
     /// <param name="rng">The random number generator.</param>
     /// <param name="count">The number of items to return; all items when <see langword="null"/>.</param>
     /// <returns>A shuffled subset of the source sequence.</returns>
@@ -191,16 +191,16 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Shuffles elements from the source sequence using a fixed-size sliding window, yielding elements one at a time whilst streaming.
+    /// Shuffles elements from the source sequence using a fixed-size sliding window, yielding elements one at a time while streaming.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
-    /// <param name="source">The sequence to randomise.</param>
+    /// <param name="source">The sequence to randomize.</param>
     /// <param name="rng">The random number generator.</param>
     /// <param name="windowSize">
     /// The size of the rolling window used during shuffling. A larger window increases randomness at the cost of latency before the
     /// first element is yielded. Defaults to 64. Must be greater than zero.
     /// </param>
-    /// <returns>A randomised sequence of elements produced using a sliding window strategy.</returns>
+    /// <returns>A randomized sequence of elements produced using a sliding window strategy.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="windowSize"/> is zero or negative.</exception>
     /// <remarks>
     /// <para>

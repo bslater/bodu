@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-#pragma warning disable SYSLIB0050 // CrcStandard intentionally implements ISerializable for cross-process serialisation of CRC parameters.
+#pragma warning disable SYSLIB0050 // CrcStandard intentionally implements ISerializable for cross-process serialization of CRC parameters.
 
 using System.Runtime.Serialization;
 
@@ -21,7 +21,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// reflected on the way out, and what value the register is XOR-ed with at the end. <c>CRC-32/ISO-HDLC</c> and
 /// <c>CRC-32/BZIP2</c> share a polynomial but disagree on reflection; <c>CRC-16/MODBUS</c> and <c>CRC-16/USB</c> share
 /// nearly everything but the initial value. <see cref="CrcStandard"/> captures one such parameter bundle as an
-/// immutable, equatable, serialisable value, decoupling the choice of variant from the engine that runs it.
+/// immutable, equatable, serializable value, decoupling the choice of variant from the engine that runs it.
 /// </para>
 /// <para>
 /// <strong>Three ways to obtain a standard.</strong>
@@ -35,7 +35,7 @@ namespace Bodu.IO.Hashing.Checksums;
 ///   </item>
 ///   <item>
 ///     <term><see cref="Get(CrcStandards)"/></term>
-///     <description>Materialises any catalogue entry from its <see cref="CrcStandards"/> enum value — useful when the
+///     <description>Materializes any catalogue entry from its <see cref="CrcStandards"/> enum value — useful when the
 ///     choice is data-driven (e.g. read from configuration).</description>
 ///   </item>
 ///   <item>
@@ -60,7 +60,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// engines for the same standard is inexpensive.
 /// </para>
 /// <para>
-/// <strong>Equality and serialisation.</strong> <see cref="CrcStandard"/> is a value-style type: two instances are
+/// <strong>Equality and serialization.</strong> <see cref="CrcStandard"/> is a value-style type: two instances are
 /// equal iff every parameter matches (the <see cref="Name"/> is informational only and does not affect identity).
 /// <see cref="System.Runtime.Serialization.ISerializable"/> support is provided so a chosen standard can survive
 /// process boundaries unchanged.

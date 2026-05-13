@@ -31,7 +31,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Internally, the input is split into 16-byte blocks, each treated as a 130-bit number (with an additional high bit if full-sized),
 /// and accumulated using modular arithmetic modulo <c>2¹³⁰ - 5</c>. After processing all blocks, the accumulator is finalized by adding
-/// the second half of the key <c>s</c> and serialising the result as the final MAC tag.
+/// the second half of the key <c>s</c> and serializing the result as the final MAC tag.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -119,10 +119,10 @@ public sealed class Poly1305
     /// for multiple messages violates the security guarantees of the algorithm and may lead to forgery attacks.
     /// </para>
     /// <para>
-    /// The framework-invoked automatic re-initialisation that occurs at the end of <see cref="HashAlgorithm.ComputeHash(byte[])"/> and
+    /// The framework-invoked automatic re-initialization that occurs at the end of <see cref="HashAlgorithm.ComputeHash(byte[])"/> and
     /// related APIs is tolerated so that callers can read <see cref="HashAlgorithm.Hash"/> without tripping the key-set guard. However,
-    /// explicit reuse of a finalised instance — for example, a second <see cref="HashAlgorithm.ComputeHash(byte[])"/> call — is rejected
-    /// by the inherited finalised-state guard on frameworks prior to .NET 6. A fresh instance should be created for each message.
+    /// explicit reuse of a finalized instance — for example, a second <see cref="HashAlgorithm.ComputeHash(byte[])"/> call — is rejected
+    /// by the inherited finalized-state guard on frameworks prior to .NET 6. A fresh instance should be created for each message.
     /// </para>
     /// </remarks>
     public override bool CanReuseTransform => false;
@@ -230,7 +230,7 @@ public sealed class Poly1305
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "StyleCop.CSharp.ReadabilityRules",
         "SA1107:Code should not contain multiple statements on one line",
-        Justification = "Grouped carry-propagation statements intentionally mirror the Poly1305 limb-normalisation and reduction steps, keeping each carry and mask operation together as one logical arithmetic transition.")]
+        Justification = "Grouped carry-propagation statements intentionally mirror the Poly1305 limb-normalization and reduction steps, keeping each carry and mask operation together as one logical arithmetic transition.")]
     protected override byte[] ProcessFinalBlock()
     {
         // Final modular reduction: canonicalize accumulator to [0..2^130-5]
@@ -271,9 +271,9 @@ public sealed class Poly1305
         BinaryPrimitives.WriteUInt32LittleEndian(tag[12..], (uint)c);
 
 #if !NET6_0_OR_GREATER
-        // Mark the instance as finalised so the base-class HashCore/HashFinal guards
+        // Mark the instance as finalized so the base-class HashCore/HashFinal guards
         // reject subsequent streaming after the MAC has been produced. The key itself
-        // is retained until Dispose so that the framework's automatic re-initialisation
+        // is retained until Dispose so that the framework's automatic re-initialization
         // (invoked by ComputeHash via CaptureHashCodeAndReinitialize) can succeed without
         // tripping the key-set check in Initialize.
         this._finalized = true;
@@ -291,7 +291,7 @@ public sealed class Poly1305
     protected override bool ShouldPadFinalBlock() => false;
 
     /// <summary>
-    /// Rebuilds the polynomial key schedule and resets the accumulator whenever the key is assigned or the instance is re-initialised.
+    /// Rebuilds the polynomial key schedule and resets the accumulator whenever the key is assigned or the instance is re-initialized.
     /// </summary>
     /// <remarks>
     /// Loads and clamps <c>r</c>, precomputes the <c>5 * r[i]</c> helpers, and captures the second half of the key <c>s</c> used in

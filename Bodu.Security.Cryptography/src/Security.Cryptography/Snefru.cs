@@ -34,7 +34,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// Each input block is processed by 8 rounds consisting of an S-box substitution step followed by a word-wise circular rotation.
-/// After all input has been absorbed, the internal state is serialised in big-endian byte order to produce the final digest.
+/// After all input has been absorbed, the internal state is serialized in big-endian byte order to produce the final digest.
 /// </para>
 /// <para>
 /// <strong>When to choose Snefru.</strong> Academic study and legacy interop only — Snefru has practical
@@ -170,7 +170,7 @@ public abstract partial class Snefru<T>
     }
 
     /// <summary>
-    /// Finalizes the hash computation by serialising the internal state to a byte array in big-endian format.
+    /// Finalizes the hash computation by serializing the internal state to a byte array in big-endian format.
     /// </summary>
     /// <returns>The computed hash as a byte array.</returns>
     protected override byte[] ProcessFinalBlock()

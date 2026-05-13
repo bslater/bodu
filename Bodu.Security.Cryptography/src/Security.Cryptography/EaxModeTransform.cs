@@ -195,7 +195,7 @@ public sealed class EaxModeTransform
                 expectedTag[i] = (byte)(nPrime[i] ^ hPrime[i] ^ cPrime[i]);
 
             // Constant-time tag comparison; throw before emitting any plaintext. On failure, also
-            // zero any data the caller may have pre-seeded into the output buffer — defence-in-depth
+            // zero any data the caller may have pre-seeded into the output buffer — defense-in-depth
             // aligned with AsconAead128.Decrypt.
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
@@ -261,7 +261,7 @@ public sealed class EaxModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data contribution has been initialised before payload processing.
+    /// Ensures the associated-data contribution has been initialized before payload processing.
     /// </summary>
     private void EnsureAadProcessed()
     {

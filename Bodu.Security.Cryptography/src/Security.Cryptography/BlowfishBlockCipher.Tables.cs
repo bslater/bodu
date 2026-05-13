@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 public sealed partial class BlowfishBlockCipher
 {
     // ----------------------------------------------------------------------------------------
-    // Static initialisers — hexadecimal digits of pi (π), per the Blowfish specification.
+    // Static initializers — hexadecimal digits of pi (π), per the Blowfish specification.
     // These immutable tables are copied into the per-instance P-array/S-box arrays before the key
     // schedule mutates the working copies into key-dependent state.
     // ----------------------------------------------------------------------------------------

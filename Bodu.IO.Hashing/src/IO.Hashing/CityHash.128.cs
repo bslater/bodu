@@ -187,7 +187,7 @@ public sealed class CityHash128
 
     /// <summary>
     /// Computes a 128-bit hash of a &lt; 128-byte input by folding it into the 128-bit seed using a
-    /// Murmur-style mixing loop. This is the short-input specialisation invoked by
+    /// Murmur-style mixing loop. This is the short-input specialization invoked by
     /// <see cref="CityHash128WithSeed(ReadOnlySpan{byte}, ulong, ulong)" />.
     /// </summary>
     /// <param name="source">The input span. Length must be less than 128 bytes.</param>

@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// All ASCON hash algorithms share a 320-bit internal state comprising five 64-bit words, a 64-bit (8-byte) rate, and a 256-bit
-/// output. They differ in their pre-computed initialisation state and in the number of Ascon-p rounds applied after each absorbed
+/// output. They differ in their pre-computed initialization state and in the number of Ascon-p rounds applied after each absorbed
 /// block. The initial squeeze always uses the full 12-round permutation (Ascon-p12); subsequent squeeze blocks use the same round
 /// count as absorption.
 /// </para>
@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// multiple of the eight-byte rate.
 /// </para>
 /// <para>
-/// Concrete derived types supply the five pre-computed post-initialisation state words and the absorption round count via the
+/// Concrete derived types supply the five pre-computed post-initialization state words and the absorption round count via the
 /// protected constructor. No further overrides are required.
 /// </para>
 /// </remarks>
@@ -63,7 +63,7 @@ public abstract partial class AsconHash<T>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="absorptionRounds"/> is less than 1 or greater than 12.
     /// </exception>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The IV state words are assigned together to mirror the five-word Ascon state layout and keep the constructor initialisation visually aligned with the algorithm specification.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The IV state words are assigned together to mirror the five-word Ascon state layout and keep the constructor initialization visually aligned with the algorithm specification.")]
     protected AsconHash(ulong iv0, ulong iv1, ulong iv2, ulong iv3, ulong iv4, int absorptionRounds, string algorithmName)
         : base(64)
     {
@@ -156,7 +156,7 @@ public abstract partial class AsconHash<T>
     /// <summary>
     /// Absorbs a single 8-byte rate block into the sponge state and applies the Ascon-p permutation. Full message blocks use
     /// the configured absorption round count; the final padded block always uses 12 rounds to match the reference squeeze
-    /// initialisation.
+    /// initialization.
     /// </summary>
     /// <param name="block">The 8-byte input block to absorb. Its length must equal the configured block size.</param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)

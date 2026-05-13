@@ -79,7 +79,7 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The initialisation vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes)..
+        ///   Looks up a localized string similar to The initialization vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes)..
         /// </summary>
         internal static string ArgumentException_InvalidIVBits {
             get {

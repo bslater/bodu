@@ -26,7 +26,7 @@ public static partial class TweakableSymmetricAlgorithmExtensions
     /// <remarks>
     /// <para>
     /// This method wraps <see cref="TweakableSymmetricAlgorithm.CreateDecryptor()"/> in a try/catch block, returning
-    /// <see langword="false"/> if the operation fails due to an invalid or uninitialised key, IV, or tweak.
+    /// <see langword="false"/> if the operation fails due to an invalid or uninitialized key, IV, or tweak.
     /// </para>
     /// <para>
     /// Use this overload when the algorithm has already been fully configured. To supply keying material explicitly, use
@@ -52,11 +52,11 @@ public static partial class TweakableSymmetricAlgorithmExtensions
     }
 
     /// <summary>
-    /// Attempts to create a decryptor using the specified key, initialisation vector, and tweak.
+    /// Attempts to create a decryptor using the specified key, initialization vector, and tweak.
     /// </summary>
     /// <param name="algorithm">The tweakable symmetric algorithm to use for decryption. Must not be <see langword="null"/>.</param>
     /// <param name="key">The decryption key.</param>
-    /// <param name="iv">The initialisation vector.</param>
+    /// <param name="iv">The initialization vector.</param>
     /// <param name="tweak">The tweak value to apply during decryption.</param>
     /// <param name="transform">
     /// When this method returns, contains the created <see cref="ICryptoTransform"/> if the operation succeeded; otherwise,

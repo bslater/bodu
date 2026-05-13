@@ -153,7 +153,7 @@ Console.WriteLine(isHoliday); // True
 
 ## Pattern 6 — layer custom override rules
 
-Override providers let you add, remove, or modify rules on top of the base rule set without touching the source XML. This is useful for organisation-specific closures or territory-specific corrections.
+Override providers let you add, remove, or modify rules on top of the base rule set without touching the source XML. This is useful for organization-specific closures or territory-specific corrections.
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -281,24 +281,6 @@ service.Invalidate(2026);
 service.Invalidate();
 ```
 
-## Understanding the resolution pipeline
-
-```
-INotableDateRuleProvider(s)         → base rules
-  + INotableDateRuleOverrideProvider(s) → merged effective rules
-      → NotableDateRuleResolver.ResolveAnchorDate(rule, year)
-          → NotableDateAdjuster (weekday adjustments)
-              → NotableDate(s) for the year  [cached]
-```
-
-1. **Rule loading** — base providers supply the initial rule list; override providers add, remove, or patch rules.
-2. **Anchor resolution** — `NotableDateRuleResolver` dispatches each rule's `DateResolutionStrategy` to the correct logic (fixed date, *n*th weekday, offset, or algorithm).
-3. **Adjustment** — `NotableDateAdjuster` shifts the anchor when it falls on a weekend, applying the `ObservanceAdjustment` policy on the rule.
-4. **Caching** — the resolved list for a year is stored in a thread-safe `ConcurrentDictionary` and reused on subsequent calls.
-
-## Where to go next
-
-- [Date calculation algorithms](algorithms.md) — the built-in algorithm types and how to implement a custom one.
 ## Working with NotableDate results
 
 `NotableDate` is an immutable record. Key properties:
@@ -338,7 +320,7 @@ Filtered queries apply the predicate in two stages:
 
 1. **Primary gate (rule-level)** — evaluated against each `NotableDateRule` *before* the date is resolved. Rules that fail are skipped entirely, avoiding the cost of algorithm invocation and adjustment evaluation. Factory methods such as `ForCategory`, `WithTag`, `WithName`, and `IsNonWorkingDay` operate at this stage.
 
-2. **Secondary gate (date-level)** — evaluated against the materialised `NotableDate` *after* resolution. Factory methods such as `InDateRange`, `WasAdjusted`, and `WithMinDuration` operate here because their result is not known until the date is computed.
+2. **Secondary gate (date-level)** — evaluated against the materialized `NotableDate` *after* resolution. Factory methods such as `InDateRange`, `WasAdjusted`, and `WithMinDuration` operate here because their result is not known until the date is computed.
 
 Filtered queries bypass the per-year cache so that unfiltered queries continue to return complete cached results.
 
@@ -370,15 +352,16 @@ NotableDateFilter combined = NotableDateFilter.AllOf(
 ```
 INotableDateRuleProvider(s)              → base rules
   + INotableDateRuleOverrideProvider(s)  → merged effective rules
-      → NotableDateRuleResolver.ResolveAnchorDate(rule, year)
-          → NotableDateAdjuster (ObservanceAdjustment rules)
-              → NotableDate(s) for the year  [cached per year]
+      → DateResolutionStrategy dispatch (Fixed / DayOfWeekInMonth / OffsetFromAnchor / Algorithm)
+          → INotableDateAlgorithm.Calculate(year)  (for Algorithm strategy)
+              → ObservanceAdjustment pipeline  (IAdjustmentHandler registry)
+                  → NotableDate(s) for the year  [cached per year]
 ```
 
-1. **Rule loading** — base providers supply the initial rule list; override providers add, remove, or patch rules on top.
-2. **Anchor resolution** — `NotableDateRuleResolver` dispatches each rule's `DateResolutionStrategy` to the correct logic: fixed date, *n*th weekday-of-month, algorithm, or offset from another rule.
-3. **Adjustment** — `NotableDateAdjuster` applies `ObservanceAdjustment` specs to the anchor, shifting it when the trigger condition is met (e.g. falls on a weekend).
-4. **Caching** — the resolved list for each year is stored in a thread-safe `ConcurrentDictionary` and reused on subsequent unfiltered calls. `Invalidate()` clears the cache.
+1. **Rule loading** — base providers (<xref:Bodu.Globalization.Calendar.INotableDateRuleProvider>) supply the initial rule list; override providers (<xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider>) add, remove (`RuleRemoval`), or patch rules on top.
+2. **Anchor resolution** — each rule's <xref:Bodu.Globalization.Calendar.DateResolutionStrategy> is dispatched to the matching logic: fixed date, *n*th weekday-of-month, offset from another rule, or a named <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm> resolved through the algorithm registry.
+3. **Adjustment** — the <xref:Bodu.Globalization.Calendar.ObservanceAdjustment> chain on the rule is run by the <xref:Bodu.Globalization.Calendar.IAdjustmentHandlerRegistry>, shifting the anchor when the trigger condition is met (e.g. falls on a weekend).
+4. **Caching** — the resolved list for each year is stored in a thread-safe `ConcurrentDictionary` and reused on subsequent unfiltered calls. `Invalidate()` clears the whole cache; `Invalidate(year)` clears one year.
 
 ## Where to go next
 

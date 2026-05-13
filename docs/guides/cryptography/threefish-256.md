@@ -31,7 +31,7 @@ byte[] plaintext = Encoding.UTF8.GetBytes("a message to protect");
 
 // Encrypt
 byte[] key, iv, tweak, ciphertext;
-using (var alg = new Threefish256 { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7 })
+using (var alg = new Threefish256 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 })
 {
     alg.GenerateKey();
     alg.GenerateIV();
@@ -46,7 +46,7 @@ using (var alg = new Threefish256 { BlockMode = CipherBlockMode.CBC, Padding = P
 
 // Decrypt — supplying the same Key, IV and Tweak
 byte[] recovered;
-using (var alg = new Threefish256 { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7,
+using (var alg = new Threefish256 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7,
                                      Key = key, IV = iv, Tweak = tweak })
 {
     recovered = alg.Decrypt(ciphertext);
@@ -64,7 +64,7 @@ CTR gives you variable-length output, random-access seeking, and no padding:
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,    // CTR doesn't pad
 };
 alg.GenerateKey();
@@ -110,7 +110,7 @@ A common pattern is to set the tweak to a record ID, a filesystem path, or a mes
 ## File encryption
 
 ```csharp
-using var alg = new Threefish256 { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7 };
+using var alg = new Threefish256 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 };
 alg.GenerateKey();
 alg.GenerateIV();
 alg.GenerateTweak();
@@ -137,7 +137,7 @@ tweak = new byte[16]; src.ReadExactly(tweak);
 
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.PKCS7,
     Key       = LoadKeyFromVault(),
     IV        = iv,

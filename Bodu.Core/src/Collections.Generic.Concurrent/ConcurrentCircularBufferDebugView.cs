@@ -16,7 +16,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 /// <remarks>
 /// This proxy renders the buffer's contents as a flat array in the debugger by capturing a snapshot via
 /// <see cref="ConcurrentCircularBuffer{T}.ToArray"/> each time the debugger expands the items. The snapshot is
-/// stable for inspection but is not synchronised with concurrent producers or consumers.
+/// stable for inspection but is not synchronized with concurrent producers or consumers.
 /// </remarks>
 internal sealed class ConcurrentCircularBufferDebugView<T>
     where T : class?

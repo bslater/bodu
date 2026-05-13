@@ -30,8 +30,6 @@
           href: io-hashing/cityhash.md
         - name: Using MurmurHash3
           href: io-hashing/murmurhash3.md
-        - name: Using XxHash
-          href: io-hashing/xxhash.md
         - name: Using Pearson
           href: io-hashing/pearson.md
         - name: Classic string hashes

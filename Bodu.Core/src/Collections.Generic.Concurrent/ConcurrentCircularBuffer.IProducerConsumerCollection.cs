@@ -37,7 +37,7 @@ public partial class ConcurrentCircularBuffer<T> :
     /// <returns><see langword="true"/> if an element was removed; otherwise <see langword="false"/>.</returns>
     /// <remarks>
     /// Forwards to <see cref="TryDequeue(out T?)"/>. Because <typeparamref name="T"/> is constrained to a
-    /// reference type, the <see cref="MaybeNullWhenAttribute"/> on the interface signature is honoured: the
+    /// reference type, the <see cref="MaybeNullWhenAttribute"/> on the interface signature is honored: the
     /// out parameter is <see langword="null"/> when the method returns <see langword="false"/>.
     /// </remarks>
     bool IProducerConsumerCollection<T>.TryTake([MaybeNullWhen(false)] out T item)

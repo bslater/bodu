@@ -15,7 +15,7 @@
 
   Country-specific rules explicitly import only the inherited global and Christian
   dates that Canada observes, and override naming, territory, nonWorking, adjustment,
-  or tagging behaviour where required.
+  or tagging behavior where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -202,7 +202,7 @@
           territory="CA-MB"
           nonWorking="true"
           firstYear="2008"
-          comment="Introduced in Manitoba, first observed on the third Monday of February 2008. Named in honour of Louis Riel, Métis leader and founder of the province of Manitoba.">
+          comment="Introduced in Manitoba, first observed on the third Monday of February 2008. Named in honor of Louis Riel, Métis leader and founder of the province of Manitoba.">
       <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>ProvinceHoliday</Tag>
     </Rule>

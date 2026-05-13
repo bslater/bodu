@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Ascon-AEAD128 is a permutation-based AEAD scheme built on the 320-bit ASCON sponge. It uses a 128-bit (16-byte) rate,
-/// Ascon-p12 for initialisation and finalisation, and Ascon-p8 during associated-data and ciphertext processing.
+/// Ascon-p12 for initialization and finalization, and Ascon-p8 during associated-data and ciphertext processing.
 /// </para>
 /// <para>
 /// The algorithm proceeds through four phases:
@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// <list type="number">
 /// <item>
 /// <description>
-/// <b>Initialisation</b>: the state is loaded as <c>[IV ‖ K₀ ‖ K₁ ‖ N₀ ‖ N₁]</c>, Ascon-p12 is applied, and the key is
+/// <b>Initialization</b>: the state is loaded as <c>[IV ‖ K₀ ‖ K₁ ‖ N₀ ‖ N₁]</c>, Ascon-p12 is applied, and the key is
 /// XORed into state words 3 and 4.
 /// </description>
 /// </item>
@@ -44,7 +44,7 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// <b>Finalisation</b>: the key is injected into the state, Ascon-p12 is applied, and the 128-bit tag is extracted by
+/// <b>Finalization</b>: the key is injected into the state, Ascon-p12 is applied, and the 128-bit tag is extracted by
 /// XORing the key into state words 3 and 4.
 /// </description>
 /// </item>
@@ -64,7 +64,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Key size: 128 bits (16 bytes).</description></item>
 ///   <item><description>Nonce size: 128 bits (16 bytes), must be unique per key.</description></item>
 ///   <item><description>Tag size: 128 bits (16 bytes).</description></item>
-///   <item><description>State: 320-bit sponge; rate: 16 bytes; permutation Ascon-p12 (init/finalise) + Ascon-p8 (absorb).</description></item>
+///   <item><description>State: 320-bit sponge; rate: 16 bytes; permutation Ascon-p12 (init/finalize) + Ascon-p8 (absorb).</description></item>
 ///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
 /// </list>
 /// <para>
@@ -177,7 +177,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
         var k0 = this._key.K0;
         var k1 = this._key.K1;
 
-        // Initialisation: [IV || K0 || K1 || N0 || N1] → p12 → S3 ^= K0, S4 ^= K1.
+        // Initialization: [IV || K0 || K1 || N0 || N1] → p12 → S3 ^= K0, S4 ^= K1.
         this._state = new AsconState
         {
             S0 = IvWord,
@@ -441,7 +441,7 @@ public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
     }
 
     /// <summary>
-    /// Applies the finalisation phase: injects the key into words 1 and 2, applies Ascon-p12, and writes the tag from
+    /// Applies the finalization phase: injects the key into words 1 and 2, applies Ascon-p12, and writes the tag from
     /// words 3 and 4 XORed with the key halves.
     /// </summary>
     /// <param name="tag">Destination span for the 16-byte authentication tag.</param>

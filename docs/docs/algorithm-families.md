@@ -14,7 +14,7 @@ The Bodu hashing and cryptography libraries provide six distinct algorithm famil
 
 | Library | Family | Subtypes |
 |---|---|---|
-| `Bodu.IO.Hashing` | Fingerprint | FNV · CityHash · MurmurHash3 · XxHash · Pearson · Bernstein / classic string hashes |
+| `Bodu.IO.Hashing` | Fingerprint | FNV · CityHash · MurmurHash3 · Pearson · Bernstein / classic string hashes |
 | `Bodu.IO.Hashing` | Checksum | CRC (polynomial-remainder) · Fletcher / Adler (twin-accumulator) |
 | `Bodu.IO.Hashing` | Check digit | Mod 10 (Luhn, EAN, GTIN, UPC) · Quasigroup (Damm) · Dihedral (Verhoeff) · Mod 11 (ISBN-10, SEDOL, CUSIP) · Mod 97-10 (IBAN, LEI) |
 | `Bodu.Security.Cryptography` | Cryptographic hash | Plain digest (Tiger, CubeHash, Snefru, Whirlpool, Blake2/3, Skein, ASCON) · Extendable output / XOF (Shake, AsconXof, AsconCxof) · Tree (Merkle) |
@@ -41,20 +41,21 @@ Fingerprint algorithms map an arbitrary byte sequence to a fixed-size integer va
 
 - **Avalanche** — a single-bit change in the input flips approximately half of the output bits.
 - **Distribution** — output values are uniformly distributed across the integer range, so hash-table buckets fill evenly.
-- **Streaming behaviour** — whether the algorithm processes arbitrary chunks without buffering the entire input. FNV and Pearson are streaming and constant-memory; CityHash and xxHash buffer internally for SIMD efficiency.
+- **Streaming behavior** — whether the algorithm processes arbitrary chunks without buffering the entire input. FNV and Pearson are streaming and constant-memory; CityHash and MurmurHash3 buffer internally for SIMD efficiency.
 
 | Type | Output | Notes |
 |---|---|---|
 | `Fnv1a32` / `Fnv1a64` | 32 / 64 bits | Simple, constant-memory, portable. Preferred over FNV-1 for better avalanche. |
 | `Fnv132` / `Fnv164` | 32 / 64 bits | Original FNV-1 — use only for legacy interoperability. |
 | `CityHash32` / `CityHash64` / `CityHash128` | 32 / 64 / 128 bits | SIMD-friendly; fastest option for large inputs, at the cost of in-memory buffering. |
-| `MurmurHash3_32` / `MurmurHash3_x64_128` | 32 / 128 bits | Seeded; excellent avalanche and collision resistance for a non-cryptographic hash. |
-| `XxHash32` / `XxHash64` | 32 / 64 bits | High-throughput; seeded; non-streaming (buffers input). |
+| `MurmurHash3_32` / `MurmurHash3_128` | 32 / 128 bits | Seeded; excellent avalanche and collision resistance for a non-cryptographic hash. |
 | `Pearson` | 8–2048 bits | Table-driven; configurable output width in 8-bit steps; five built-in permutation tables. |
 | `Bernstein` | 32 bits | Classic djb2; configurable add-vs-XOR variant and initial value. |
-| `BKDR` / `SDBM` / `JSHash` / `Elf64` / `ApHash` / `Pjw32` | 32–64 bits | Classic string hashes from compilers, databases, and early web tooling. |
+| `BKDR` / `SDBM` / `JSHash` / `Elf64` / `ApHash` / `Pjw32` / `SuperFastHash` | 32–64 bits | Classic string hashes from compilers, databases, and early web tooling. |
 
-→ Guides: [Using FNV](../guides/io-hashing/fnv.md) · [Using CityHash](../guides/io-hashing/cityhash.md) · [Using MurmurHash3](../guides/io-hashing/murmurhash3.md) · [Using XxHash](../guides/io-hashing/xxhash.md) · [Using Pearson](../guides/io-hashing/pearson.md) · [Classic string hashes](../guides/io-hashing/string-hashes.md)
+→ Guides: [Using FNV](../guides/io-hashing/fnv.md) · [Using CityHash](../guides/io-hashing/cityhash.md) · [Using MurmurHash3](../guides/io-hashing/murmurhash3.md) · [Using Pearson](../guides/io-hashing/pearson.md) · [Classic string hashes](../guides/io-hashing/string-hashes.md)
+
+> **BCL note.** `System.IO.Hashing` ships `XxHash32`, `XxHash64`, `XxHash3`, and `XxHash128` from .NET 6 onwards. Bodu does not duplicate these — prefer the BCL types directly. The Bodu types listed above are the ones that are *not* in `System.IO.Hashing`.
 
 ---
 
@@ -70,7 +71,7 @@ Checksum algorithms produce a short tag specifically designed to detect common *
 
 There are two structural subfamilies:
 
-- **Polynomial-remainder checksums (CRC).** Treat the input as a polynomial over GF(2) and compute the remainder when dividing by a fixed generator polynomial. Catches all single-bit errors, all double-bit errors within the burst length, and almost all burst errors up to the polynomial width. The Bodu `Crc` engine is parameterised by `CrcStandard` and covers 113 named standards from the [RevEng catalogue](../guides/io-hashing/crc-catalogue.md).
+- **Polynomial-remainder checksums (CRC).** Treat the input as a polynomial over GF(2) and compute the remainder when dividing by a fixed generator polynomial. Catches all single-bit errors, all double-bit errors within the burst length, and almost all burst errors up to the polynomial width. The Bodu `Crc` engine is parameterized by `CrcStandard` and covers 113 named standards from the [RevEng catalogue](../guides/io-hashing/crc-catalogue.md).
 - **Twin-accumulator checksums (Fletcher, Adler).** Two running sums, one of bytes and one of partial sums, combined into the final tag. The cross-position accumulator catches **transpositions** that a single additive sum cannot. Adler uses a prime modulus (the canonical zlib check); Adler-32C uses a power-of-two modulus for SIMD throughput; Fletcher uses a width-based modulus.
 
 | Type | Output | Subfamily |
@@ -99,7 +100,7 @@ There are five mathematical subfamilies, each with different error-detection gua
 
 | Subfamily | Algorithm | Detects | Bodu types |
 |---|---|---|---|
-| **Mod 10 (weighted sum)** | Sum digits with alternating multipliers, take mod 10. Catches all single-digit substitutions; misses some adjacent transpositions (e.g. 0↔9). | Single-digit errors, most transpositions | `Luhn`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `WeightedMod10` |
+| **Mod 10 (weighted sum)** | Sum digits with alternating multipliers, take mod 10. Catches all single-digit substitutions; misses some adjacent transpositions (e.g. 0↔9). | Single-digit errors, most transpositions | `Luhn`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `AbaRoutingNumber` |
 | **Quasigroup** | Damm's table-based group operation. Catches **all** single-digit substitutions and **all** adjacent transpositions. | All single-digit and adjacent-transposition errors | `Damm` |
 | **Dihedral group D₅** | Verhoeff's permutation tables over the dihedral group. Catches all single-digit substitutions, all adjacent transpositions, and most twin / jump-twin errors. | The widest error coverage of any decimal scheme | `Verhoeff` |
 | **Mod 11** | Weighted sum mod 11, with `X` representing the value 10. Used in book and securities identifiers. | All single-digit errors, most transpositions | `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` |
@@ -127,7 +128,7 @@ Types in `Bodu.IO.Hashing.Checksums` (alphanumeric or multi-character output):
 | `Sedol` | London Stock Exchange securities |
 | `Cusip` | North American securities (ANSI X9.6) |
 | `Lei` | Legal Entity Identifiers (ISO 17442) |
-| `WeightedMod10` | Configurable weighted mod 10 — base for custom schemes |
+| `Iso7064Mod11_2` / `Iso7064Mod97_10` | Generic ISO 7064 building blocks for custom schemes |
 
 → Guide: [Check digits](../guides/io-hashing/check-digits.md)
 
@@ -160,12 +161,12 @@ One-way functions that compress an arbitrary-length input to a fixed-size digest
 There are three structural shapes within the family:
 
 - **Plain digest** — fixed-size output. Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, ASCON-Hash.
-- **Extendable output (XOF)** — squeezes any number of output bytes after `Append`. Use for KDF-like constructions or when the consumer chooses the output width. Shake, AsconXof, AsconCxof (the *C* variant accepts a domain customisation string).
+- **Extendable output (XOF)** — squeezes any number of output bytes after `Append`. Use for KDF-like constructions or when the consumer chooses the output width. Shake, AsconXof, AsconCxof (the *C* variant accepts a domain customization string).
 - **Tree** — input is split into leaves, hashed in parallel, and combined into a root digest. Supports incremental updates and verifiable inclusion proofs. `MerkleTreeHash` and `ParallelMerkleTreeHash`.
 
 | Type | Output | Notes |
 |---|---|---|
-| `Tiger` | 128 / 160 / 192 bits | Optimised for 64-bit platforms (1995); two padding variants (Tiger / Tiger2). |
+| `Tiger` | 128 / 160 / 192 bits | Optimized for 64-bit platforms (1995); two padding variants (Tiger / Tiger2). |
 | `CubeHash` | Configurable | SHA-3 finalist; tunable rounds and block size trade security margin for throughput. |
 | `Snefru128` / `Snefru256` | 128 / 256 bits | **Cryptanalytically broken.** Use for interoperability only. |
 | `Whirlpool` | 512 bits | ISO/IEC 10118-3; AES-derived round function. |
@@ -173,7 +174,7 @@ There are three structural shapes within the family:
 | `Skein256` / `Skein512` / `Skein1024` | Configurable | Built on the Threefish cipher in UBI mode. |
 | `Shake` | Variable | Keccak-based XOF (FIPS 202). |
 | `AsconHash256` / `AsconHashA256` | 256 bits | NIST SP 800-232; 12- and 8-round sponge variants. |
-| `AsconXof128` / `AsconCxof128` | Variable | NIST SP 800-232 XOF / customisable XOF. |
+| `AsconXof128` / `AsconCxof128` | Variable | NIST SP 800-232 XOF / customizable XOF. |
 | `MerkleTreeHash` / `ParallelMerkleTreeHash` | Configurable | Tree-structured hashing built over any inner `HashAlgorithm`. |
 
 → Guides: [Using Tiger](../guides/cryptography/tiger.md) · [Using CubeHash](../guides/cryptography/cubehash.md) · [Using Snefru](../guides/cryptography/snefru.md) · [ASCON hashing](../guides/cryptography/ascon-hashing.md) · [ASCON XOF](../guides/cryptography/ascon-xof.md) · [Using Merkle trees](../guides/cryptography/merkle-trees.md)
@@ -194,13 +195,13 @@ There are two subtypes:
 
 | Type | Output | Subtype |
 |---|---|---|
-| `SipHash64` | 64 bits | PRF — keyed hash for hash-table flooding defence. Default rounds: SipHash-2-4. |
+| `SipHash64` | 64 bits | PRF — keyed hash for hash-table flooding defense. Default rounds: SipHash-2-4. |
 | `SipHash128` | 128 bits | PRF — wider output; lower collision probability for routing / sharding. |
 | `Poly1305` | 128 bits | One-time authenticator (RFC 8439); the key **must not** be reused across messages. |
 
 → Guides: [Using SipHash](../guides/cryptography/siphash.md) · [Using Poly1305](../guides/cryptography/poly1305.md)
 
-> **Keyed hash vs cipher.** A MAC and a cipher both require a key, but they serve opposite purposes. A cipher transforms plaintext to ciphertext and back — it does not produce a summary. A MAC summarises a message into a fixed-size tag — it does not encrypt. Use both together (encrypt-then-MAC, or an AEAD mode) when you need both confidentiality and integrity.
+> **Keyed hash vs cipher.** A MAC and a cipher both require a key, but they serve opposite purposes. A cipher transforms plaintext to ciphertext and back — it does not produce a summary. A MAC summarizes a message into a fixed-size tag — it does not encrypt. Use both together (encrypt-then-MAC, or an AEAD mode) when you need both confidentiality and integrity.
 
 ---
 
@@ -235,7 +236,7 @@ A *tweakable block cipher* accepts a third public input — the **tweak** — in
 Typical uses: disk encryption (block / sector number as tweak), per-record encryption (record ID as tweak), protocol domain separation.
 
 **Designed for:** all the same use cases as a standard cipher, plus fine-grained domain separation without re-keying.  
-**Not designed for:** replacing IVs — the tweak is public domain separation, not a randomisation source. A fresh, unique IV is still required per message.
+**Not designed for:** replacing IVs — the tweak is public domain separation, not a randomization source. A fresh, unique IV is still required per message.
 
 | Type | Block | Key | Tweak | Notes |
 |---|---|---|---|---|
@@ -280,7 +281,7 @@ There are two construction styles in the library:
 | `AsconHash256` | Crypto Hash | 256-bit one-way digest; 12-round permutation; maximum margin. |
 | `AsconHashA256` | Crypto Hash | 256-bit one-way digest; 8-round permutation; higher throughput. |
 | `AsconXof128` | Crypto Hash (XOF) | Variable-length output. |
-| `AsconCxof128` | Crypto Hash (XOF) | Customisable XOF; accepts a domain customisation string. |
+| `AsconCxof128` | Crypto Hash (XOF) | Customizable XOF; accepts a domain customization string. |
 | `AsconAead128` | Cipher (AEAD) | 128-bit key, 128-bit nonce, 128-bit tag. |
 
 See the [ASCON family guide](../guides/cryptography/ascon.md) for selection guidance.
@@ -292,7 +293,7 @@ See the [ASCON family guide](../guides/cryptography/ascon.md) for selection guid
 | You need… | Reach for | Family |
 |---|---|---|
 | Fast hash-table key or in-memory bucket index | `Fnv1a64`, `CityHash64` | Fingerprint |
-| Best throughput on large buffers | `CityHash64`, `XxHash64` | Fingerprint |
+| Best throughput on large buffers | `CityHash64`, `MurmurHash3_128` (or BCL `System.IO.Hashing.XxHash64`) | Fingerprint |
 | A specific on-wire checksum (zlib, PNG, Ethernet, Modbus, iSCSI, NVMe) | `Crc` + `CrcStandard.*` | Checksum |
 | A cheap checksum that also catches adjacent transpositions | `Fletcher32` or `Adler32` | Checksum |
 | Validate a credit card or barcode a user typed | `Luhn`, `Ean13`, `Gtin14` | Check digit |
@@ -317,4 +318,7 @@ See the [ASCON family guide](../guides/cryptography/ascon.md) for selection guid
 - [Bodu.Globalization.Calendar](calendar/index.md) — notable date resolution and calculators.
 
 **Guides**
-- [Bodu.Core guides](../guides/core/) · [Bodu.IO.Hashing guides](../guides/io-hashing/) · [Bodu.Security.Cryptography guides](../guides/cryptography/) · [Bodu.Globalization.Calendar guides](../guides/calendar/)
+- [Bodu.Core guides](../guides/core/index.md) · [Bodu.IO.Hashing guides](../guides/io-hashing/index.md) · [Bodu.Security.Cryptography guides](../guides/cryptography/index.md) · [Bodu.Globalization.Calendar guides](../guides/calendar/index.md)
+
+**API references**
+- [Bodu.Collections.Generic](../apidoc/Bodu.Collections.Generic.md) · [Bodu.IO.Hashing](../apidoc/Bodu.IO.Hashing.md) · [Bodu.Security.Cryptography](../apidoc/Bodu.Security.Cryptography.md) · [Bodu.Globalization.Calendar](../apidoc/Bodu.Globalization.Calendar.md)

@@ -207,7 +207,7 @@ public sealed class GcmModeTransform
     /// </summary>
     /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
     /// <param name="initialCounterBlock">The precomputed 16-byte initial counter block, <c>J0</c>.</param>
-    /// <returns>A new <see cref="GcmModeTransform"/> initialised with the supplied <c>J0</c>.</returns>
+    /// <returns>A new <see cref="GcmModeTransform"/> initialized with the supplied <c>J0</c>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
     /// <paramref name="cipher"/> does not have a 16-byte block size, or <paramref name="initialCounterBlock"/>
@@ -307,7 +307,7 @@ public sealed class GcmModeTransform
 
                 // Verify before producing plaintext. On failure, zero whatever the caller passed in
                 // so a pre-filled output buffer cannot leak data the caller may have used to seed
-                // the destination — defence-in-depth aligned with AsconAead128.Decrypt.
+                // the destination — defense-in-depth aligned with AsconAead128.Decrypt.
                 if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
                 {
                     CryptoHelpers.Clear(output[..plaintextLength]);
@@ -353,7 +353,7 @@ public sealed class GcmModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data contribution has been finalised exactly once before payload bytes are
+    /// Ensures the associated-data contribution has been finalized exactly once before payload bytes are
     /// processed; treats an unset AAD as empty.
     /// </summary>
     private void EnsureAssociatedDataProcessed()

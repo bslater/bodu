@@ -25,7 +25,7 @@ namespace Bodu.Globalization.Calendar;
 /// emitted <see cref="NotableDate" />. All other rule metadata — <see cref="NotableDate.Name" />,
 /// <see cref="NotableDate.Category" />, <see cref="NotableDate.TerritoryCode" />, <see cref="NotableDate.Tags" />,
 /// duration, and any <see cref="ObservanceAdjustment" /> entries — is layered on top by the service. Algorithms therefore
-/// concern themselves only with <em>when</em> the event falls, never with <em>how</em> it is labelled or scoped.
+/// concern themselves only with <em>when</em> the event falls, never with <em>how</em> it is labeled or scoped.
 /// </para>
 /// <para>
 /// Implementations should be deterministic, side-effect-free, and safe to invoke concurrently. The same algorithm

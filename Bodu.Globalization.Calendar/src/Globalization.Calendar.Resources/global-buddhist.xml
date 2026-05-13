@@ -59,7 +59,7 @@
   <NotableDate name="Vesak">
     <Rule name="algo-vesak"
           category="Religious"
-          comment="Buddha Day (Vesak / Wesak / Visakha Bucha). The most important day in the Theravada Buddhist calendar, celebrating the birth, enlightenment (Bodhi), and final passing (parinirvana) of the Gautama Buddha in a single observance. Falls on the full moon of the month of Vaisakha (April/May). Recognised by the United Nations as a day of international recognition since 1999. A public holiday in Thailand, Sri Lanka, Myanmar, Cambodia, Indonesia, and several other countries. The precise Gregorian date varies by year and by whether the Thai, Sri Lankan, or UN calculation method is used. Requires a custom INotableDateAlgorithm registered under the key 'vesak'.">
+          comment="Buddha Day (Vesak / Wesak / Visakha Bucha). The most important day in the Theravada Buddhist calendar, celebrating the birth, enlightenment (Bodhi), and final passing (parinirvana) of the Gautama Buddha in a single observance. Falls on the full moon of the month of Vaisakha (April/May). Recognized by the United Nations as a day of international recognition since 1999. A public holiday in Thailand, Sri Lanka, Myanmar, Cambodia, Indonesia, and several other countries. The precise Gregorian date varies by year and by whether the Thai, Sri Lankan, or UN calculation method is used. Requires a custom INotableDateAlgorithm registered under the key 'vesak'.">
       <Algorithm key="vesak" />
       <Tag>BuddhistCalendar</Tag>
     </Rule>

@@ -25,7 +25,7 @@ public static partial class DateTimeExtensions
     /// <item><description>week 1 is the first week containing at least four days of the new year;</description></item>
     /// <item><description>years contain either 52 or 53 weeks.</description></item>
     /// </list>
-    /// <para>The returned value is normalised to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
+    /// <para>The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="isoYear"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of <see cref="DateTime.MaxValue"/>,

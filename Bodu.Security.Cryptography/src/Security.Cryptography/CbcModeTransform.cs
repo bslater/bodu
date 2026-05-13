@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// XOR that precedes the next encryption, and the IV supplies that feedback for the very first block.
 /// </para>
 /// <para>
-/// The initialisation vector must equal the cipher block size in length and should be unpredictable for each message; repeating an IV
+/// The initialization vector must equal the cipher block size in length and should be unpredictable for each message; repeating an IV
 /// under the same key weakens confidentiality. The instance retains the most recent ciphertext block as the chaining value, so
 /// successive calls to <see cref="Transform"/> continue the stream.
 /// </para>
@@ -36,7 +36,7 @@ namespace Bodu.Security.Cryptography;
 /// attacks unless the padding check is performed in constant time and never leaks via timing or error messages.
 /// </para>
 /// <para>
-/// CBC is sequential — neither encryption nor decryption parallelises across blocks within a single message.
+/// CBC is sequential — neither encryption nor decryption parallelizes across blocks within a single message.
 /// Random access into the ciphertext is not supported.
 /// </para>
 /// </remarks>
@@ -63,10 +63,10 @@ public sealed class CbcModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CbcModeTransform"/> class with the specified cipher and initialisation vector.
+    /// Initializes a new instance of the <see cref="CbcModeTransform"/> class with the specified cipher and initialization vector.
     /// </summary>
     /// <param name="cipher">The block cipher over which CBC is applied.</param>
-    /// <param name="iv">The initialisation vector used as the chaining value for the first block. A defensive copy is taken.</param>
+    /// <param name="iv">The initialization vector used as the chaining value for the first block. A defensive copy is taken.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     public CbcModeTransform(IBlockCipher cipher, byte[] iv)
     {

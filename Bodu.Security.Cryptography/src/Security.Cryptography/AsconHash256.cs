@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// ASCON-HASH256 uses the full 12-round Ascon-p permutation (Ascon-p12) at every phase: initialisation, per-block absorption, and
+/// ASCON-HASH256 uses the full 12-round Ascon-p permutation (Ascon-p12) at every phase: initialization, per-block absorption, and
 /// output squeezing. This makes it the most conservative ASCON hash variant with respect to security margin.
 /// </para>
 /// <para>
@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 ///   <item><description>Output size: 256 bits (32 bytes), fixed.</description></item>
 ///   <item><description>State: 320 bits sponge; rate: 64 bits (8 bytes).</description></item>
-///   <item><description>Permutation: Ascon-p12 at every phase (initialisation, absorption, squeezing).</description></item>
+///   <item><description>Permutation: Ascon-p12 at every phase (initialization, absorption, squeezing).</description></item>
 ///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
 /// </list>
 /// <para>

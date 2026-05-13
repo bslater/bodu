@@ -8,7 +8,7 @@ title: ASCON authenticated encryption — AsconAead128
 integrity: the recipient can verify that neither the ciphertext nor the associated metadata has
 been altered since the sender encrypted it.
 
-<xref:Bodu.Security.Cryptography.AsconAead128> implements `ASCON-AEAD128` as standardised in
+<xref:Bodu.Security.Cryptography.AsconAead128> implements `ASCON-AEAD128` as standardized in
 NIST SP 800-232. It uses a 128-bit key, a 128-bit nonce, and appends a 128-bit authentication
 tag to every encrypted message.
 
@@ -23,7 +23,7 @@ tag to every encrypted message.
 ASCON-AEAD128 is a sponge-based AEAD built on the same 320-bit state and Ascon-p permutation
 used by the hash and XOF variants. Every encryption proceeds through four fixed phases:
 
-1. **Initialisation** — the state is loaded as `[IV ‖ K₀ ‖ K₁ ‖ N₀ ‖ N₁]` and Ascon-p12 is
+1. **Initialization** — the state is loaded as `[IV ‖ K₀ ‖ K₁ ‖ N₀ ‖ N₁]` and Ascon-p12 is
    applied, followed by XORing the key into state words S₃ and S₄.
 2. **Associated-data absorption** — each 16-byte block of AAD is absorbed with Ascon-p8 between
    blocks. A domain-separation constant (XOR of 1 into S₄) is always applied after the AD phase,
@@ -31,7 +31,7 @@ used by the hash and XOF variants. Every encryption proceeds through four fixed 
 3. **Encryption / decryption** — plaintext or ciphertext is processed in 16-byte blocks with
    Ascon-p8 between blocks. The final partial block is Ascon-padded and absorbed without a
    trailing permutation.
-4. **Finalisation** — the key is injected into the state, Ascon-p12 is applied, and the
+4. **Finalization** — the key is injected into the state, Ascon-p12 is applied, and the
    128-bit tag is extracted by XORing the key into state words S₃ and S₄.
 
 ## The single-use instance contract

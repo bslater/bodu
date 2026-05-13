@@ -16,7 +16,7 @@ public static partial class DateTimeExtensions
     /// <param name="dateTime">The date and time value whose date is preserved while the time is reset to midnight.</param>
     /// <returns>An object whose value is set to 00:00:00 on the same calendar day as <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
-    /// <para>This method is functionally equivalent to <see cref="StartOfDay(DateTime)"/> and to accessing <see cref="DateTime.Date"/>. It normalises the time component to midnight while retaining the date and <see cref="DateTime.Kind"/> of the input.</para>
+    /// <para>This method is functionally equivalent to <see cref="StartOfDay(DateTime)"/> and to accessing <see cref="DateTime.Date"/>. It normalizes the time component to midnight while retaining the date and <see cref="DateTime.Kind"/> of the input.</para>
     /// <para><b>Example:</b></para>
     /// <code>
     ///<![CDATA[

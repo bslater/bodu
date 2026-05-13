@@ -89,7 +89,7 @@ The parallel version produces the same root as the sequential one when called wi
 
 ## Pattern 5 — capturing diagnostics
 
-`ParallelMerkleTreeHash.ComputeHashAsync` accepts an optional <xref:Bodu.Security.Cryptography.MerkleTreeDiagnostics> that records every node the pipeline built — level, index, child hashes, and the produced hash value. Useful when you want to visualise the tree, cross-check an implementation against a known-good one, or produce a Merkle proof for a specific leaf:
+`ParallelMerkleTreeHash.ComputeHashAsync` accepts an optional <xref:Bodu.Security.Cryptography.MerkleTreeDiagnostics> that records every node the pipeline built — level, index, child hashes, and the produced hash value. Useful when you want to visualize the tree, cross-check an implementation against a known-good one, or produce a Merkle proof for a specific leaf:
 
 ```csharp
 using System.Security.Cryptography;

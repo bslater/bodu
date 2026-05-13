@@ -84,7 +84,7 @@ public sealed partial class Whirlpool
     /// <returns>A 256-byte array containing the full 8-bit S-box.</returns>
     /// <remarks>
     /// The mini-box construction is the one published with <c>Whirlpool-T</c> in 2001 and retained by the
-    /// standardised <c>Whirlpool</c> function in 2003. Each input byte is split into two 4-bit halves which
+    /// standardized <c>Whirlpool</c> function in 2003. Each input byte is split into two 4-bit halves which
     /// are routed through <c>E</c>, <c>E^-1</c> and <c>R</c> in the pattern described in the original paper.
     /// </remarks>
     private static byte[] BuildMiniBoxSBox()

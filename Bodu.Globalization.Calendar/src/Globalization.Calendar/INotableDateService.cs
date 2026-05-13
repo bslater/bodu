@@ -76,7 +76,7 @@ public interface INotableDateService
     /// <para>
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" /> before its date
     /// is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then evaluated against each
-    /// materialised <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
+    /// materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
     /// bypass the per-year cache so that unfiltered queries continue to return complete, cached results.
     /// </para>
     /// </remarks>
@@ -107,7 +107,7 @@ public interface INotableDateService
     /// <para>
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" /> before its date
     /// is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then evaluated against each
-    /// materialised <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
+    /// materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
     /// bypass the per-year cache so that unfiltered queries continue to return complete, cached results.
     /// </para>
     /// </remarks>
@@ -137,7 +137,7 @@ public interface INotableDateService
     /// <para>
     /// The filter is applied in two stages. The primary gate is evaluated against each <see cref="NotableDateRule" /> before its date
     /// is resolved; rules that fail the primary gate are skipped entirely. The secondary gate is then evaluated against each
-    /// materialised <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
+    /// materialized <see cref="NotableDate" />, discarding dates that do not satisfy the full filter criteria. Filtered queries
     /// bypass the per-year cache so that unfiltered queries continue to return complete, cached results.
     /// </para>
     /// </remarks>

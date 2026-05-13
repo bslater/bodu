@@ -46,7 +46,7 @@ namespace Bodu.IO.Hashing;
 /// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base
 /// class buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})"/> is called. Memory
 /// consumption therefore grows linearly with input length between resets — avoid feeding it multi-gigabyte
-/// streams. Instances are not thread-safe; share behind explicit synchronisation.
+/// streams. Instances are not thread-safe; share behind explicit synchronization.
 /// </para>
 /// <note type="important">
 /// MurmurHash3 is <b>not</b> cryptographically secure. It must <b>not</b> be used for password hashing, digital
@@ -82,7 +82,7 @@ public abstract class MurmurHash3<T>
     /// size and seed.
     /// </summary>
     /// <param name="hashSize">The desired hash output size in bits. Must be one of 32 or 128.</param>
-    /// <param name="seed">The 32-bit seed value used to initialise the hash state.</param>
+    /// <param name="seed">The 32-bit seed value used to initialize the hash state.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="hashSize" /> is not one of the supported values (32 or 128).
     /// </exception>
@@ -93,7 +93,7 @@ public abstract class MurmurHash3<T>
     }
 
     /// <summary>
-    /// Gets the 32-bit seed used to initialise the hash computation.
+    /// Gets the 32-bit seed used to initialize the hash computation.
     /// </summary>
     /// <returns>The seed value supplied at construction time, or zero if no seed was specified.</returns>
     public uint Seed { get; }
@@ -128,10 +128,10 @@ public abstract class MurmurHash3<T>
     protected abstract byte[] ComputeHashCore(ReadOnlySpan<byte> source);
 
     /// <summary>
-    /// Applies the MurmurHash3 32-bit finalisation mix to thoroughly diffuse the bits of a 32-bit value.
+    /// Applies the MurmurHash3 32-bit finalization mix to thoroughly diffuse the bits of a 32-bit value.
     /// </summary>
     /// <param name="h">The 32-bit value to mix.</param>
-    /// <returns>The finalised 32-bit value with strong avalanche properties.</returns>
+    /// <returns>The finalized 32-bit value with strong avalanche properties.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static uint FMix32(uint h)
     {
@@ -144,10 +144,10 @@ public abstract class MurmurHash3<T>
     }
 
     /// <summary>
-    /// Applies the MurmurHash3 64-bit finalisation mix to thoroughly diffuse the bits of a 64-bit value.
+    /// Applies the MurmurHash3 64-bit finalization mix to thoroughly diffuse the bits of a 64-bit value.
     /// </summary>
     /// <param name="k">The 64-bit value to mix.</param>
-    /// <returns>The finalised 64-bit value with strong avalanche properties.</returns>
+    /// <returns>The finalized 64-bit value with strong avalanche properties.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static ulong FMix64(ulong k)
     {

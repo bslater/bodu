@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The adjuster centralises every evaluation concern that the previous implementation duplicated across <c>NotableDateService</c> and
+/// The adjuster centralizes every evaluation concern that the previous implementation duplicated across <c>NotableDateService</c> and
 /// the partial <c>NotableDateAdjuster</c>: the trigger condition, the rule's territory and calendar scope, the effective year window,
 /// and the action dispatch. This means that callers can apply an adjustment in isolation (for example from inside a custom handler)
 /// without losing any of those guards.

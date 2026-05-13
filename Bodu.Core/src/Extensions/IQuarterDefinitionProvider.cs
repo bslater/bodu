@@ -44,7 +44,7 @@ public interface IQuarterDefinitionProvider
     /// <param name="dateTime">The input <see cref="DateTime"/> for which to determine the quarter.</param>
     /// <returns>An integer in the range 1 to 4 representing the quarter that includes <paramref name="dateTime"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="dateTime"/> cannot be mapped to a recognised fiscal year.
+    /// Thrown when <paramref name="dateTime"/> cannot be mapped to a recognized fiscal year.
     /// </exception>
     int GetQuarter(DateTime dateTime);
 
@@ -54,7 +54,7 @@ public interface IQuarterDefinitionProvider
     /// <param name="dateOnly">The input <see cref="DateOnly"/> for which to determine the quarter.</param>
     /// <returns>An integer in the range 1 to 4 representing the quarter that includes <paramref name="dateOnly"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="dateOnly"/> cannot be mapped to a recognised fiscal year.
+    /// Thrown when <paramref name="dateOnly"/> cannot be mapped to a recognized fiscal year.
     /// </exception>
     int GetQuarter(DateOnly dateOnly);
 
@@ -67,7 +67,7 @@ public interface IQuarterDefinitionProvider
     /// The result preserves the original <see cref="DateTime.Kind"/>.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="dateTime"/> cannot be mapped to a recognised fiscal year.
+    /// Thrown when <paramref name="dateTime"/> cannot be mapped to a recognized fiscal year.
     /// </exception>
     DateTime GetQuarterEnd(DateTime dateTime);
 
@@ -95,7 +95,7 @@ public interface IQuarterDefinitionProvider
     /// <param name="dateOnly">The input <see cref="DateOnly"/> for which to determine the end of the quarter.</param>
     /// <returns>A <see cref="DateOnly"/> representing the final day of the quarter that includes <paramref name="dateOnly"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="dateOnly"/> cannot be mapped to a recognised fiscal year.
+    /// Thrown when <paramref name="dateOnly"/> cannot be mapped to a recognized fiscal year.
     /// </exception>
     DateOnly GetQuarterEndDate(DateOnly dateOnly);
 
@@ -126,7 +126,7 @@ public interface IQuarterDefinitionProvider
     /// The result preserves the original <see cref="DateTime.Kind"/>.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="dateTime"/> cannot be mapped to a recognised fiscal year.
+    /// Thrown when <paramref name="dateTime"/> cannot be mapped to a recognized fiscal year.
     /// </exception>
     DateTime GetQuarterStart(DateTime dateTime);
 
@@ -154,7 +154,7 @@ public interface IQuarterDefinitionProvider
     /// <param name="dateOnly">The input <see cref="DateOnly"/> for which to determine the start of the quarter.</param>
     /// <returns>A <see cref="DateOnly"/> representing the first day of the quarter that includes <paramref name="dateOnly"/>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="dateOnly"/> cannot be mapped to a recognised fiscal year.
+    /// Thrown when <paramref name="dateOnly"/> cannot be mapped to a recognized fiscal year.
     /// </exception>
     DateOnly GetQuarterStartDate(DateOnly dateOnly);
 

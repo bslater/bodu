@@ -19,14 +19,14 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// All ASCON XOF algorithms share a 320-bit internal state of five 64-bit words, a 64-bit (8-byte) rate, and a
-/// variable-length output. They differ in their pre-computed initialisation state, in the number of absorption rounds (pb),
+/// variable-length output. They differ in their pre-computed initialization state, in the number of absorption rounds (pb),
 /// and in whether a customization string may be supplied before absorption.
 /// </para>
 /// <para>
 /// The lifecycle of an instance is:
 /// </para>
 /// <list type="number">
-/// <item><description>Optionally customise (only <see cref="AsconCxof128"/>).</description></item>
+/// <item><description>Optionally customize (only <see cref="AsconCxof128"/>).</description></item>
 /// <item><description>Call <see cref="Absorb"/> zero or more times to supply input data.</description></item>
 /// <item>
 /// <description>
@@ -104,8 +104,8 @@ public abstract class AsconXof<T>
     /// <exception cref="ArgumentOutOfRangeException">
     /// <paramref name="absorptionRounds"/> is less than 1 or greater than 12.
     /// </exception>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The IV state words are assigned together to mirror the five-word Ascon initial state and keep the algorithm parameter initialisation grouped as a single logical operation.")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines", Justification = "The five IV words are intentionally kept together on the first line because they form the complete five-word Ascon initial state; the remaining parameters configure behaviour rather than state.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The IV state words are assigned together to mirror the five-word Ascon initial state and keep the algorithm parameter initialization grouped as a single logical operation.")]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines", Justification = "The five IV words are intentionally kept together on the first line because they form the complete five-word Ascon initial state; the remaining parameters configure behavior rather than state.")]
     protected AsconXof(
         ulong iv0, ulong iv1, ulong iv2, ulong iv3, ulong iv4,
         int absorptionRounds,
@@ -223,7 +223,7 @@ public abstract class AsconXof<T>
     /// <summary>
     /// Creates a new instance of <typeparamref name="T"/> using its public parameterless constructor.
     /// </summary>
-    /// <returns>A new, uninitialised <typeparamref name="T"/> instance.</returns>
+    /// <returns>A new, uninitialized <typeparamref name="T"/> instance.</returns>
     public static T Create() => new T();
 
     /// <summary>
@@ -292,7 +292,7 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// Finalises a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte
+    /// Finalizes a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte
     /// position, absorbing the padded block, and applying <see cref="_absorptionRounds"/> Ascon-p rounds. Resets the
     /// residual counter to zero so that the next call to <see cref="Absorb"/> starts from a clean state.
     /// </summary>
@@ -313,7 +313,7 @@ public abstract class AsconXof<T>
 
     /// <summary>
     /// XORs <paramref name="value"/> into state word 4 (<c>S4</c>). Used by <see cref="AsconCxof128"/> to inject the
-    /// customization domain-separation constant after the customization absorption phase is finalised.
+    /// customization domain-separation constant after the customization absorption phase is finalized.
     /// </summary>
     /// <param name="value">The value to XOR into <c>S4</c>.</param>
     protected void XorS4(ulong value) =>

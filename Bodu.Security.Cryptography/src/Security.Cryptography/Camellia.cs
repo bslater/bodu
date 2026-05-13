@@ -156,7 +156,7 @@ public sealed class Camellia
 
     /// <inheritdoc />
     /// <remarks>
-    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// Also synchronizes <see cref="BlockPadding"/> when the assigned value has a matching member in
     /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding
@@ -177,14 +177,14 @@ public sealed class Camellia
     public new static Camellia Create() => new Camellia();
 
     /// <summary>
-    /// Creates a symmetric <see cref="Camellia"/> decryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Camellia"/> decryptor using the specified key and initialization vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be exactly 16, 24, or 32 bytes (128, 192, or 256 bits) in
     /// length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 16 bytes (128 bits) in length. Must not be
+    /// The initialization vector. Must be exactly 16 bytes (128 bits) in length. Must not be
     /// <see langword="null"/>.
     /// </param>
     /// <returns>A symmetric <see cref="Camellia"/> decryptor object implementing <see cref="ICryptoTransform"/>.</returns>
@@ -205,14 +205,14 @@ public sealed class Camellia
     }
 
     /// <summary>
-    /// Creates a symmetric <see cref="Camellia"/> encryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Camellia"/> encryptor using the specified key and initialization vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be exactly 16, 24, or 32 bytes (128, 192, or 256 bits) in
     /// length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 16 bytes (128 bits) in length. Must not be
+    /// The initialization vector. Must be exactly 16 bytes (128 bits) in length. Must not be
     /// <see langword="null"/>.
     /// </param>
     /// <returns>A symmetric <see cref="Camellia"/> encryptor object implementing <see cref="ICryptoTransform"/>.</returns>
@@ -233,7 +233,7 @@ public sealed class Camellia
     }
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV"/>) suitable
+    /// Generates a cryptographically random initialization vector (<see cref="SymmetricAlgorithm.IV"/>) suitable
     /// for use with the Camellia algorithm.
     /// </summary>
     /// <remarks>
@@ -279,7 +279,7 @@ public sealed class Camellia
     /// only unmanaged resources.
     /// </param>
     /// <remarks>
-    /// Clears any cached key material and initialisation vector before delegating to the base implementation. This
+    /// Clears any cached key material and initialization vector before delegating to the base implementation. This
     /// method is idempotent and safe to call multiple times.
     /// </remarks>
     protected override void Dispose(bool disposing)
@@ -307,7 +307,7 @@ public sealed class Camellia
     private int KeySizeBytes => this.KeySizeValue / 8;
 
     /// <summary>
-    /// Creates a new <see cref="CamelliaBlockCipher"/> engine initialised with the supplied key.
+    /// Creates a new <see cref="CamelliaBlockCipher"/> engine initialized with the supplied key.
     /// </summary>
     /// <param name="key">The key material used to derive the round subkeys.</param>
     /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>

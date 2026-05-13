@@ -13,7 +13,7 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// The FNV-1a variant XORs each input byte before multiplying by the FNV prime, improving avalanche
-/// behaviour relative to the original FNV-1 form. The 32-bit configuration uses prime <c>0x01000193</c> and
+/// behavior relative to the original FNV-1 form. The 32-bit configuration uses prime <c>0x01000193</c> and
 /// offset basis <c>0x811C9DC5</c>.
 /// </para>
 /// <para>

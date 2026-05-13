@@ -23,7 +23,7 @@ public static partial class DateTimeExtensions
     /// <item><term>Q3</term><description>July – September</description></item>
     /// <item><term>Q4</term><description>October – December</description></item>
     /// </list>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     public static DateTime FirstDateOfQuarter(this DateTime dateTime) => FirstDateOfQuarterInternal(dateTime, CalendarQuarterDefinition.JanuaryToDecember);
 
@@ -36,7 +36,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>The <paramref name="definition"/> controls whether quarters are aligned to the first day of a month (e.g. January – March) or anchored to a custom day-of-month boundary.</para>
     /// <para>For provider-driven (e.g. 4-4-5 fiscal) quarters, use the <see cref="FirstDateOfQuarter(DateTime, IQuarterDefinitionProvider)"/> overload instead.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="definition"/> is not a defined value of the <see cref="CalendarQuarterDefinition"/> enumeration.</exception>
     /// <exception cref="InvalidOperationException">Thrown if <paramref name="definition"/> is <see cref="CalendarQuarterDefinition.Custom"/>; use the provider-based overload instead.</exception>
@@ -59,7 +59,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the first day of the quarter containing <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>This overload supports advanced or domain-specific quarter systems by delegating boundary logic to the supplied <paramref name="provider"/> — for example, 4-4-5 retail calendars or regional fiscal quarters.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="provider"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the <paramref name="provider"/> returns a date outside the range of <see cref="DateTime.MinValue"/> and <see cref="DateTime.MaxValue"/>.</exception>
@@ -78,7 +78,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the first day of the specified quarter and year, using <see cref="DateTimeKind.Unspecified"/>.</returns>
     /// <remarks>
     /// <para>This overload uses the standard calendar alignment defined by <see cref="CalendarQuarterDefinition.JanuaryToDecember"/>.</para>
-    /// <para>The returned value is normalised to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
+    /// <para>The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of <see cref="DateTime.MaxValue"/>,
@@ -95,7 +95,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the first day of the specified quarter, using <see cref="DateTimeKind.Unspecified"/>.</returns>
     /// <remarks>
     /// <para>The <paramref name="definition"/> controls whether quarters are aligned to the first day of a month or anchored to a custom day-of-month boundary.</para>
-    /// <para>The returned value is normalised to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
+    /// <para>The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="quarter"/> is less than 1 or greater than 4,

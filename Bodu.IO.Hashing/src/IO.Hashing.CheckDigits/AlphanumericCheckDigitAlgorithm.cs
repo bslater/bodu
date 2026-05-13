@@ -22,7 +22,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <para>
 /// The streaming surface — <see cref="Append(ReadOnlySpan{char})" />, <see cref="Reset" />, and
 /// <see cref="GetCurrentCheckDigit" /> — mirrors the familiar hash-algorithm idiom. Reading the current check
-/// character is non-destructive and idempotent. Concrete implementations document their empty-body behaviour.
+/// character is non-destructive and idempotent. Concrete implementations document their empty-body behavior.
 /// </para>
 /// <para>
 /// Instances are <b>not</b> thread-safe. Each thread that needs a running check should construct its own instance.
@@ -83,7 +83,7 @@ public abstract class AlphanumericCheckDigitAlgorithm
     /// <summary>
     /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
     /// </summary>
-    /// <remarks>Equivalent in behaviour to constructing a fresh instance of the same concrete type.</remarks>
+    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
     public abstract void Reset();
 
     /// <summary>

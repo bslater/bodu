@@ -177,7 +177,7 @@ public static class HashAlgorithmHelper
     /// <param name="algorithm">The hash algorithm receiving the data.</param>
     /// <param name="stream">The input stream to read from.</param>
     /// <param name="cancellationToken">The cancellation token for the async reads.</param>
-    /// <returns>A task that completes when the stream has been fully consumed and the hash finalised.</returns>
+    /// <returns>A task that completes when the stream has been fully consumed and the hash finalized.</returns>
     private static async ValueTask AppendDataFromStreamInternalAsync(HashAlgorithm algorithm, Stream stream, CancellationToken cancellationToken)
     {
         var buffer = ArrayPool<byte>.Shared.Rent(8192);

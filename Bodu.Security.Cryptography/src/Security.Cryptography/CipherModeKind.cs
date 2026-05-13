@@ -32,13 +32,13 @@ namespace Bodu.Security.Cryptography;
 /// <list type="number">
 /// <item><description><b>ECB</b> — no feedback. Identical plaintext blocks produce identical ciphertext blocks.</description></item>
 /// <item><description><b>CBC</b> — previous ciphertext block XORed into the next plaintext before encryption; the first block uses the IV.</description></item>
-/// <item><description><b>CFB</b> — encrypted previous ciphertext, or IV, acts as keystream; self-synchronising.</description></item>
+/// <item><description><b>CFB</b> — encrypted previous ciphertext, or IV, acts as keystream; self-synchronizing.</description></item>
 /// <item><description><b>OFB</b> — encrypted previous keystream block feeds forward; plaintext is independent of the keystream chain.</description></item>
 /// <item><description><b>CTR</b> — successive counter values are encrypted to produce an independent, random-access keystream.</description></item>
 /// </list>
 /// </para>
 /// <para>
-/// Modes differ in security properties, parallelism, whether they require an initialisation vector or nonce,
+/// Modes differ in security properties, parallelism, whether they require an initialization vector or nonce,
 /// and whether they provide authentication. Use <see cref="BlockCipherModeFactory.Create" /> to obtain an
 /// <see cref="IBlockCipherModeTransform" /> for a given value.
 /// </para>
@@ -56,7 +56,7 @@ public enum CipherModeKind
     /// <remarks>
     /// <para>
     /// CBC provides confidentiality by chaining ciphertext blocks, so identical plaintext blocks produce
-    /// different ciphertexts assuming different IVs. The first block uses an initialisation vector (IV)
+    /// different ciphertexts assuming different IVs. The first block uses an initialization vector (IV)
     /// instead of a previous ciphertext block.
     /// </para>
     /// <para>
@@ -76,7 +76,7 @@ public enum CipherModeKind
     /// produce identical ciphertext blocks. It is insecure for virtually all real-world messages and should
     /// only be used as a primitive inside a higher-level construction.
     /// </para>
-    /// <para>This mode does not require an initialisation vector.</para>
+    /// <para>This mode does not require an initialization vector.</para>
     /// </remarks>
     ECB = CipherMode.ECB,
 
@@ -103,7 +103,7 @@ public enum CipherModeKind
     /// </summary>
     /// <remarks>
     /// <para>
-    /// CFB turns a block cipher into a self-synchronising stream cipher. It can recover from bit errors after
+    /// CFB turns a block cipher into a self-synchronizing stream cipher. It can recover from bit errors after
     /// a few blocks and uses the cipher's encryption primitive for both encryption and decryption. The IV is
     /// used to seed the feedback register for the first block.
     /// </para>
@@ -222,7 +222,7 @@ public enum CipherModeKind
     /// widely used for key wrapping and contexts where generating a unique nonce is unreliable.
     /// </para>
     /// <para>
-    /// The CTR counter is initialised from the SIV with bits 31 and 63 cleared to prevent counter wrap.
+    /// The CTR counter is initialized from the SIV with bits 31 and 63 cleared to prevent counter wrap.
     /// Both encrypt and decrypt use only the cipher's encryption primitive (CTR property).
     /// </para>
     /// <para>

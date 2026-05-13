@@ -19,7 +19,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// <see cref="CubeHash"/> operates on a 1024-bit internal state updated through a sequence of ARX (Addition, Rotation, XOR)
-/// operations. The number of initialisation, transformation, and finalisation rounds, the hash output size, and the input block size
+/// operations. The number of initialization, transformation, and finalization rounds, the hash output size, and the input block size
 /// are all configurable. See <a href="https://en.wikipedia.org/wiki/CubeHash">Wikipedia</a> for an overview.
 /// </para>
 /// <para>
@@ -29,11 +29,11 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>State size: 1024 bits (32 × 32-bit words).</description></item>
 ///   <item><description>Output size: 224, 256, 384, or 512 bits (default 512); pass the desired size to <see cref="CubeHash(int)"/>.</description></item>
 ///   <item><description>Input block size: configurable, <see cref="MinInputBlockSize"/>–<see cref="MaxInputBlockSize"/> bytes (default 32).</description></item>
-///   <item><description>Rounds: initialisation, per-block, and finalisation counts each independently configurable up to <see cref="MaxRounds"/>; defaults are 16 / 16 / 32.</description></item>
+///   <item><description>Rounds: initialization, per-block, and finalization counts each independently configurable up to <see cref="MaxRounds"/>; defaults are 16 / 16 / 32.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose CubeHash.</strong> Pick CubeHash for academic study, cryptographic competition
-/// reproducibility, or interop with code that has settled on a specific CubeHash parameterisation. The defaults
+/// reproducibility, or interop with code that has settled on a specific CubeHash parameterization. The defaults
 /// (CubeHash 16/32/+160/512) match the SHA-3 competition submission. For new general-purpose cryptographic
 /// hashing prefer SHA-2, SHA-3, or <see cref="Blake2b"/>.
 /// </para>
@@ -61,7 +61,7 @@ public sealed class CubeHash
     public const int MaxInputBlockSize = 128;
 
     /// <summary>
-    /// The maximum number of rounds permitted for initialisation, processing, or finalization.
+    /// The maximum number of rounds permitted for initialization, processing, or finalization.
     /// </summary>
     public const int MaxRounds = 4096;
 
@@ -76,7 +76,7 @@ public sealed class CubeHash
     public const int MinInputBlockSize = 1;
 
     /// <summary>
-    /// The minimum number of rounds permitted for initialisation, processing, or finalization.
+    /// The minimum number of rounds permitted for initialization, processing, or finalization.
     /// </summary>
     public const int MinRounds = 1;
 
@@ -104,7 +104,7 @@ public sealed class CubeHash
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CubeHash"/> class with default parameters:
-    /// 512-bit output, 32-byte input block, and 16 / 16 / 32 initialisation / transform / finalisation rounds.
+    /// 512-bit output, 32-byte input block, and 16 / 16 / 32 initialization / transform / finalization rounds.
     /// </summary>
     public CubeHash()
     {
@@ -119,7 +119,7 @@ public sealed class CubeHash
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CubeHash"/> class with the specified hash output size
-    /// and default algorithm parameters: 32-byte input block and 16 / 16 / 32 initialisation / transform / finalisation rounds.
+    /// and default algorithm parameters: 32-byte input block and 16 / 16 / 32 initialization / transform / finalization rounds.
     /// </summary>
     /// <param name="hashSize">
     /// The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.
@@ -154,11 +154,11 @@ public sealed class CubeHash
     /// Must be between <see cref="MinInputBlockSize"/> and <see cref="MaxInputBlockSize"/> inclusive.
     /// </param>
     /// <param name="finalizationRounds">
-    /// The number of finalisation rounds applied after all input has been processed.
+    /// The number of finalization rounds applied after all input has been processed.
     /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
     /// </param>
     /// <param name="initializationRounds">
-    /// The number of initialisation rounds to run before processing input data.
+    /// The number of initialization rounds to run before processing input data.
     /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -192,7 +192,7 @@ public sealed class CubeHash
     /// <para>Follows the <see cref="CubeHash"/> naming convention from the original submission: <c>CubeHashr+b/w+f-h</c>, where:</para>
     /// <list type="bullet">
     /// <item>
-    /// <description><c>r</c> = number of initialisation rounds</description>
+    /// <description><c>r</c> = number of initialization rounds</description>
     /// </item>
     /// <item>
     /// <description><c>b</c> = number of transformation rounds per block</description>
@@ -284,10 +284,10 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Gets or sets the number of initialisation rounds to run before processing input data.
+    /// Gets or sets the number of initialization rounds to run before processing input data.
     /// </summary>
     /// <remarks>
-    /// Initialisation rounds mix the initial state of the algorithm before the first input byte is processed. Increasing this value
+    /// Initialization rounds mix the initial state of the algorithm before the first input byte is processed. Increasing this value
     /// enhances initial diffusion but increases computation time.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Value is less than <see cref="MinRounds"/> or greater than <see cref="MaxRounds"/>.</exception>
@@ -408,7 +408,7 @@ public sealed class CubeHash
             this._pendingBytes = 0;
 
             // CubeHash extends HashAlgorithm directly (not BufferedBlockHashAlgorithm),
-            // so the centralised HashValue / HashSizeValue clearing in the latter does not apply here.
+            // so the centralized HashValue / HashSizeValue clearing in the latter does not apply here.
             CryptoHelpers.ClearAndNullify(ref this.HashValue);
             this.HashSizeValue = 0;
         }
@@ -502,12 +502,12 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Finalises the hash computation and returns the computed digest in little-endian byte order.
+    /// Finalizes the hash computation and returns the computed digest in little-endian byte order.
     /// </summary>
     /// <returns>
     /// A byte array containing the computed hash value. Its length is <see cref="HashAlgorithm.HashSize"/> divided by 8.
     /// </returns>
-    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalisation state.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalization state.</exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();
@@ -536,7 +536,7 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Ensures the initial state is computed and cached. Reinitialises the existing state array in-place to avoid allocation.
+    /// Ensures the initial state is computed and cached. Reinitializes the existing state array in-place to avoid allocation.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EnsureInitialized()
@@ -557,7 +557,7 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Resets the working state to the cached post-initialisation snapshot.
+    /// Resets the working state to the cached post-initialization snapshot.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void InitializeVectors() => this._initializedState.CopyTo(this._state, 0);

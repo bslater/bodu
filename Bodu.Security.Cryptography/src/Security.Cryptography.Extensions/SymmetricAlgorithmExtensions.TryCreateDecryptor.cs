@@ -12,11 +12,11 @@ namespace Bodu.Security.Cryptography.Extensions;
 public static partial class SymmetricAlgorithmExtensions
 {
     /// <summary>
-    /// Attempts to create a decryptor using the specified decryption key and initialisation vector (IV).
+    /// Attempts to create a decryptor using the specified decryption key and initialization vector (IV).
     /// </summary>
     /// <param name="algorithm">The symmetric algorithm to use for decryption. Must not be <see langword="null"/>.</param>
     /// <param name="key">The secret key to use for the cryptographic operation.</param>
-    /// <param name="iv">The initialisation vector.</param>
+    /// <param name="iv">The initialization vector.</param>
     /// <param name="transform">
     /// When this method returns, contains the created <see cref="ICryptoTransform"/> if the operation succeeded; otherwise,
     /// <see langword="null"/>.

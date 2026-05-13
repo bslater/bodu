@@ -6,10 +6,10 @@
   Ascension, and Pentecost-related observances. Dates derived from Easter
   use OffsetFromAnchor rules.
 
-  These entries represent commonly recognised Christian observances. They
+  These entries represent commonly recognized Christian observances. They
   are not universally public holidays or non-working days in every country.
   Country-specific resources should import only the dates they observe and
-  override nonWorking, weekend adjustment, naming, or suppression behaviour
+  override nonWorking, weekend adjustment, naming, or suppression behavior
   where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"

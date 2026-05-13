@@ -31,7 +31,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <strong>Output shape.</strong> The returned table contains <c>1 &lt;&lt; min(size, 8)</c> entries (256 for any width
 /// of 8 bits or more, smaller for sub-byte widths). Each entry is masked to <c>size</c> bits and is suitable for direct
 /// XOR into a CRC register of the corresponding width. Output bit reflection (the <c>ReflectOut</c> step) is <em>not</em>
-/// applied here — that is a finalisation step performed by the engine after the table-driven loop completes.
+/// applied here — that is a finalization step performed by the engine after the table-driven loop completes.
 /// </para>
 /// <para>The method is pure, deterministic, and allocation-bounded by the table size; results are safe to cache and share.</para>
 /// </remarks>

@@ -28,7 +28,7 @@ public partial struct WeekPattern : System.IFormattable
     /// <see cref="ToString(string, IFormatProvider)"/> for supported values.
     /// </param>
     /// <returns>A formatted string representing the selected days.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="format"/> is not recognised.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="format"/> is not recognized.</exception>
     public string ToString(string format) => ToString(format, null!);
 
     /// <summary>
@@ -68,7 +68,7 @@ public partial struct WeekPattern : System.IFormattable
     /// </param>
     /// <param name="provider">An <see cref="IFormatProvider"/> (currently ignored).</param>
     /// <returns>A formatted seven-character string representing the selected days.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="format"/> is not recognised.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="format"/> is not recognized.</exception>
     public string ToString(string? format, IFormatProvider? provider)
     {
         (var startDay, var unselectedChar, var isBinary) = ParseFormatForToString(format);

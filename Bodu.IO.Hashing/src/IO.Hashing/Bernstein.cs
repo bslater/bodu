@@ -29,7 +29,7 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// <strong>When to choose Bernstein.</strong> djb2 is the canonical "C-style" hash for short string keys —
 /// language symbol tables, environment-variable maps, and small associative containers. Pick it when
-/// interoperating with code that has standardised on djb2 (Perl, Python's older string hash, Tcl variable
+/// interoperating with code that has standardized on djb2 (Perl, Python's older string hash, Tcl variable
 /// tables, etc.) or when the seed/variant flexibility is useful. Empirically the XOR-modified form
 /// (<c>djb2a</c>, <see cref="UseModifiedAlgorithm"/> set to <see langword="true"/>) gives slightly better
 /// avalanche than the default additive form. For new code without an interop constraint, <see cref="Fnv1a32"/>

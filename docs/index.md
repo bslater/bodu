@@ -32,41 +32,44 @@ Four independent NuGet packages that share a single solution, a single set of co
 <div class="bodu-card">
   <img src="images/hero-core.svg" alt="Bodu.Core" />
   <h3>Bodu.Core</h3>
-  <p>Fixed-capacity collections (circular buffer, evicting dictionary), buffer conversion, array and text utilities, and a centralised argument-validation helper.</p>
+  <p>Fixed-capacity collections (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey,TValue&gt;</code>), a day-of-week <code>WeekPattern</code> value type, pooled buffers, date / numeric / span / array extensions, and a centralized <code>ThrowHelper</code>.</p>
   <div class="bodu-card-links">
-    <a href="xref:Bodu.Collections.Generic">Overview</a>
-    <a href="xref:Bodu">API reference</a>
+    <a href="docs/core/index.md">Introduction</a>
+    <a href="guides/core/index.md">Guides</a>
+    <a href="apidoc/Bodu.Collections.Generic.md">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
   <img src="images/hero-io.svg" alt="Bodu.IO.Hashing" />
   <h3>Bodu.IO.Hashing</h3>
-  <p>Non-cryptographic checksums built on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> — the full CRC RevEng catalogue (widths 1–64 bits) and the Fletcher family (16 / 32 / 64 bits), with shared lookup-table caching and resumable hashing.</p>
+  <p>Non-cryptographic hashes on <code>System.IO.Hashing.NonCryptographicHashAlgorithm</code> — the full CRC RevEng catalogue (1–64 bits), Fletcher 16 / 32 / 64, Adler-32 / 32C / 64, FNV, CityHash, MurmurHash3, Pearson, classic string hashes — plus single- and multi-character check digits (Luhn, EAN, IBAN, ISBN, …).</p>
   <div class="bodu-card-links">
-    <a href="xref:Bodu.IO.Hashing">Overview</a>
+    <a href="docs/io-hashing/index.md">Introduction</a>
     <a href="guides/io-hashing/index.md">Guides</a>
+    <a href="apidoc/Bodu.IO.Hashing.md">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
   <img src="images/hero-crypto.svg" alt="Bodu.Security.Cryptography" />
   <h3>Bodu.Security.Cryptography</h3>
-  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with AEAD mode transforms, keyed and cryptographic hashes (SipHash, Tiger, ASCON), Merkle-tree hashing, and the classic non-cryptographic hash families (Adler, FNV-1a, CityHash).</p>
+  <p>Managed block ciphers (Threefish 256 / 512 / 1024, Serpent 128 / 256 / 512 / 1024, Camellia, Twofish, Blowfish, Skipjack), an AES adapter paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake, ASCON), and Merkle-tree hashing.</p>
   <div class="bodu-card-links">
-    <a href="xref:Bodu.Security.Cryptography">Overview</a>
+    <a href="docs/cryptography/index.md">Introduction</a>
     <a href="guides/cryptography/index.md">Guides</a>
+    <a href="apidoc/Bodu.Security.Cryptography.md">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
   <img src="images/hero-calendar.svg" alt="Bodu.Globalization.Calendar" />
   <h3>Bodu.Globalization.Calendar</h3>
-  <p>Notable-date resolution with fixed, rule-based, offset-based, and dynamic calculators — including Gregorian-computus Easter and lunar-calendar Lunar New Year — driven by a pluggable XML rule source and adjustment pipeline. Region-specific public-holiday rules ship in companion <code>Data.Americas</code>, <code>Data.Europe</code>, and <code>Data.AsiaPacific</code> packs that ship and re-release independently of the main library.</p>
+  <p>Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies — including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming — driven from pluggable XML or JSON rule sources and an observance-adjustment pipeline. Region-specific public-holiday rules ship in companion <code>Data.Americas</code>, <code>Data.Europe</code>, and <code>Data.AsiaPacific</code> packs that release independently of the main library.</p>
   <div class="bodu-card-links">
-    <a href="xref:Bodu.Globalization.Calendar">Overview</a>
-    <a href="guides/calendar/data-packs.md">Data packs</a>
-    <a href="xref:Bodu.Globalization.Calendar">API reference</a>
+    <a href="docs/calendar/index.md">Introduction</a>
+    <a href="guides/calendar/index.md">Guides</a>
+    <a href="apidoc/Bodu.Globalization.Calendar.md">API reference</a>
   </div>
 </div>
 
@@ -95,7 +98,7 @@ dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 - **Nullable reference types** are enabled throughout. Public APIs declare their null-intent explicitly.
 - **Analyzer-clean**: StyleCop, Roslynator, .NET analyzers, AsyncFixer, and Threading analyzers run at build time; doc-comment warnings are treated as errors.
 - **Deterministic builds** for reproducible package outputs.
-- **Documentation-first**: every public type and member carries XML documentation in British English, which drives this API reference.
+- **Documentation-first**: every public type and member carries XML documentation in US English, which drives this API reference.
 - **MIT licensed** and free of external runtime dependencies.
 
 ## Where to go next
@@ -103,6 +106,7 @@ dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 <div class="bodu-nav">
   <a href="docs/introduction.md">Introduction</a>
   <a href="docs/getting-started.md">Getting started</a>
-  <a href="xref:Bodu">API reference</a>
+  <a href="docs/algorithm-families.md">Algorithm families</a>
   <a href="articles/index.md">Articles</a>
+  <a href="api/index.html">API reference</a>
 </div>

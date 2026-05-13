@@ -104,7 +104,7 @@ public sealed class GcmSivModeTransform
     /// supplied byte array. Called once to produce the per-message encryption cipher.
     /// </param>
     /// <param name="iv">
-    /// The initialisation vector. The first 12 bytes are used as the GCM-SIV nonce.
+    /// The initialization vector. The first 12 bytes are used as the GCM-SIV nonce.
     /// Must equal the master cipher block size. A defensive copy is taken.
     /// </param>
     /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
@@ -269,7 +269,7 @@ public sealed class GcmSivModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data (AAD) POLYVAL contribution has been finalised exactly once
+    /// Ensures the associated-data (AAD) POLYVAL contribution has been finalized exactly once
     /// before payload bytes are processed; no-op on subsequent invocations.
     /// </summary>
     private void EnsureAadProcessed()
@@ -483,7 +483,7 @@ public sealed class GcmSivModeTransform
     /// distinguish CTR from POLYVAL blocks per RFC 8452 Section 5.
     /// </summary>
     /// <param name="tag">The POLYVAL-derived authentication tag.</param>
-    /// <returns>The CTR initialisation vector derived from <paramref name="tag"/> per RFC 8452.</returns>
+    /// <returns>The CTR initialization vector derived from <paramref name="tag"/> per RFC 8452.</returns>
     private static byte[] BuildCtrIv(byte[] tag)
     {
         var ctrIv = (byte[])tag.Clone();

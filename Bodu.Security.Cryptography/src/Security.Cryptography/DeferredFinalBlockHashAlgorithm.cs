@@ -12,8 +12,8 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Base class for hash algorithms that defer compression of the final full block until <see cref="HashAlgorithm.HashFinal"/>
-/// so that a finalisation flag may be raised on the last compression call (the Blake-family shape). Owns the
-/// defer-on-full-block buffering loop and the zero-pad-then-finalise orchestration; the residual buffer, running
+/// so that a finalization flag may be raised on the last compression call (the Blake-family shape). Owns the
+/// defer-on-full-block buffering loop and the zero-pad-then-finalize orchestration; the residual buffer, running
 /// byte counter, and disposal latch are inherited from <see cref="BufferedBlockHashAlgorithm{T}"/>.
 /// </summary>
 /// <typeparam name="T">The concrete hash algorithm derived from this class. Must expose a public parameterless constructor.</typeparam>
@@ -37,7 +37,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>Derived classes must implement the following:</para>
 /// <list type="bullet">
 /// <item><description><see cref="HashAlgorithm.Initialize"/> resets the algorithm-specific chaining variables to their initial state. Override and call <c>base.Initialize()</c> first.</description></item>
-/// <item><description><see cref="ProcessBlock"/> compresses a single block, receiving the per-block counter and the finalisation flag.</description></item>
+/// <item><description><see cref="ProcessBlock"/> compresses a single block, receiving the per-block counter and the finalization flag.</description></item>
 /// <item><description><see cref="ProcessFinalBlock"/> extracts the digest from the chaining variables after the final compression has run.</description></item>
 /// </list>
 /// <para>
@@ -83,7 +83,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// <param name="source">The input bytes to consume. May be empty, partial, exact-block, or multi-block in length.</param>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// On target frameworks prior to .NET 6, the hash algorithm has already been finalised and cannot accept more input.
+    /// On target frameworks prior to .NET 6, the hash algorithm has already been finalized and cannot accept more input.
     /// </exception>
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
@@ -119,7 +119,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Finalises the hash computation. Zero-pads the residual buffer (if not already full) up to the block size,
+    /// Finalizes the hash computation. Zero-pads the residual buffer (if not already full) up to the block size,
     /// performs the final compression with <c>isFinal: true</c> and a counter equal to the total bytes consumed
     /// (<see cref="BufferedBlockHashAlgorithm{T}._totalBytes"/> plus the residual byte count), and returns the
     /// digest produced by <see cref="ProcessFinalBlock"/>.
@@ -127,7 +127,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// <returns>The computed hash bytes as produced by <see cref="ProcessFinalBlock"/>.</returns>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// On target frameworks prior to .NET 6, the hash computation has already been finalised.
+    /// On target frameworks prior to .NET 6, the hash computation has already been finalized.
     /// </exception>
     protected override byte[] HashFinal()
     {
@@ -164,7 +164,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// </param>
     /// <param name="isFinal">
     /// <see langword="true"/> for the last compression call (raised by <see cref="HashFinal"/>); otherwise
-    /// <see langword="false"/>. Algorithms that maintain a finalisation flag should consult this parameter rather
+    /// <see langword="false"/>. Algorithms that maintain a finalization flag should consult this parameter rather
     /// than tracking message length internally.
     /// </param>
     /// <remarks>
@@ -180,7 +180,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
     /// <returns>A byte array containing the final computed hash value.</returns>
     /// <remarks>
     /// This method is invoked once per <see cref="HashAlgorithm.HashFinal"/> call, immediately after the final
-    /// compression. It reads from the internal hash state and serialises the result to a byte array in the format
+    /// compression. It reads from the internal hash state and serializes the result to a byte array in the format
     /// expected by consumers of the algorithm (typically little-endian for Blake-family hashes).
     /// </remarks>
     protected abstract byte[] ProcessFinalBlock();

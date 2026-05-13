@@ -25,7 +25,7 @@ public enum NotableDateCategory
     None = 0,
 
     /// <summary>
-    /// A public holiday, typically recognised with an official day off work or school.
+    /// A public holiday, typically recognized with an official day off work or school.
     /// </summary>
     Holiday,
 

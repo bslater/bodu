@@ -22,7 +22,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Threefish is a tweakable block cipher optimised for 64-bit platforms and forms the core primitive of the Skein hash function.
+/// Threefish is a tweakable block cipher optimized for 64-bit platforms and forms the core primitive of the Skein hash function.
 /// The <c>Threefish-512</c> variant operates on eight 64-bit words over 72 rounds using modular addition, bitwise rotation, and XOR.
 /// </para>
 /// <para>
@@ -41,7 +41,7 @@ public sealed class Threefish512Cipher
     /// Initializes a new instance of the <see cref="Threefish512Cipher"/> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 512-bit (64-byte) key used for encryption and decryption.</param>
-    /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behaviour.</param>
+    /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behavior.</param>
     public Threefish512Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         : base(key, tweak) { }
 

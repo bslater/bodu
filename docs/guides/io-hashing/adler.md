@@ -48,7 +48,7 @@ byte[] full = adler.GetCurrentHash();
 adler.Reset();                              // A = 1, B = 0 — zlib's canonical initial state
 ```
 
-`GetCurrentHash` finalises on a copy of the accumulators, so calling it mid-stream is cheap and safe.
+`GetCurrentHash` finalizes on a copy of the accumulators, so calling it mid-stream is cheap and safe.
 
 ## Pattern 3 — streaming a file
 
@@ -90,7 +90,7 @@ outputStream.Write(trailer);
 ## Picking a variant
 
 - **Need interoperability with zlib, PNG, rsync, or any tool that speaks RFC 1950?** Use <xref:Bodu.IO.Hashing.Checksums.Adler32>. The modulus (65521) and initial state (`A=1, B=0`) are fixed by the specification.
-- **Hashing large buffers in a hot loop on a SIMD-capable CPU?** Use <xref:Bodu.IO.Hashing.Checksums.Adler32C>. The power-of-two modulus removes the `% 65521` reduction and lets auto-vectorisation stay vectorised. The digest is **not** interchangeable with Adler-32.
+- **Hashing large buffers in a hot loop on a SIMD-capable CPU?** Use <xref:Bodu.IO.Hashing.Checksums.Adler32C>. The power-of-two modulus removes the `% 65521` reduction and lets auto-vectorization stay vectorized. The digest is **not** interchangeable with Adler-32.
 - **Checksumming very long streams where a 32-bit space is uncomfortable?** Use <xref:Bodu.IO.Hashing.Checksums.Adler64>. Four bytes of digest become eight.
 
 ## Adler vs Fletcher vs CRC

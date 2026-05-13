@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Ascon-XOF128 is the NIST SP 800-232 standardised extendable output function. It uses an 8-byte (64-bit) rate, Ascon-p12
+/// Ascon-XOF128 is the NIST SP 800-232 standardized extendable output function. It uses an 8-byte (64-bit) rate, Ascon-p12
 /// for the absorption-to-squeeze transition, and Ascon-p8 between absorption and squeeze blocks. This provides a security
 /// strength of 128 bits against collision, preimage, and second-preimage attacks (for output lengths ≥ 32 bytes).
 /// </para>

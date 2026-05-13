@@ -250,9 +250,9 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Validates an initialisation vector against the configured <paramref name="mode"/>.
+    /// Validates an initialization vector against the configured <paramref name="mode"/>.
     /// </summary>
-    /// <param name="iv">The initialisation vector to validate, or <see langword="null"/>.</param>
+    /// <param name="iv">The initialization vector to validate, or <see langword="null"/>.</param>
     /// <param name="mode">The configured cipher mode.</param>
     /// <param name="blockSizeBits">The required IV size, in bits, when the mode requires one.</param>
     /// <param name="legalBlockSizes">The legal block sizes (in bits) for the algorithm, used for error formatting.</param>
@@ -294,7 +294,7 @@ internal static partial class CryptoHelpers
     /// Throws an <see cref="ArgumentException"/> if the byte length of <paramref name="iv"/> does not
     /// equal <paramref name="blockSizeBits"/> / 8.
     /// </summary>
-    /// <param name="iv">The initialisation vector to validate.</param>
+    /// <param name="iv">The initialization vector to validate.</param>
     /// <param name="blockSizeBits">The required IV size, in bits.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="iv"/> is <see langword="null"/>.</exception>
@@ -421,7 +421,7 @@ internal static partial class CryptoHelpers
     /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="value"/>
     /// does not equal <paramref name="blockSizeBits"/> / 8.
     /// </summary>
-    /// <param name="value">The block-sized value to validate, such as an initialisation vector.</param>
+    /// <param name="value">The block-sized value to validate, such as an initialization vector.</param>
     /// <param name="blockSizeBits">The required block size, in bits.</param>
     /// <param name="legalBlockSizes">The legal block sizes for the algorithm (in bits).</param>
     /// <param name="paramValueName">The name of the value parameter. Supplied automatically by the compiler.</param>
@@ -490,7 +490,7 @@ internal static partial class CryptoHelpers
     /// Always thrown when invoked; the exception message identifies the failing <paramref name="paddingScheme" />.
     /// </exception>
     /// <remarks>
-    /// Used by <c>Unpad</c> entry points when the input length is not a positive multiple of the block size, signalling
+    /// Used by <c>Unpad</c> entry points when the input length is not a positive multiple of the block size, signaling
     /// that the caller passed something other than the output of a matching <c>Pad</c> operation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

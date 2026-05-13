@@ -18,7 +18,7 @@ namespace Bodu.Collections.Generic;
 /// <typeparam name="TElement">Specifies the element type of the underlying queue.</typeparam>
 /// <typeparam name="TPriority">Specifies the priority type of the underlying queue.</typeparam>
 /// <remarks>
-/// The view materialises the queue's element-priority pairs into an array sorted by priority so that the
+/// The view materializes the queue's element-priority pairs into an array sorted by priority so that the
 /// debugger surfaces the dequeue order rather than the heap-storage order. The underlying queue is not
 /// mutated by this view.
 /// </remarks>

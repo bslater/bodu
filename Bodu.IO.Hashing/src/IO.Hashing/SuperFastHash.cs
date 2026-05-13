@@ -17,8 +17,8 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// The algorithm seeds the running hash with the total length of the input and therefore requires the entire
-/// payload to be visible before finalisation. Appended bytes are accumulated in an internal buffer and the
-/// full compute is executed each time the current hash is requested. The finalised 32-bit value is written to
+/// payload to be visible before finalization. Appended bytes are accumulated in an internal buffer and the
+/// full compute is executed each time the current hash is requested. The finalized 32-bit value is written to
 /// the output buffer in little-endian byte order.
 /// </para>
 /// <para>
@@ -36,7 +36,7 @@ namespace Bodu.IO.Hashing;
 /// <see cref="CityHash64"/> or a CRC variant via <see cref="Bodu.IO.Hashing.Checksums.Crc"/>.
 /// </para>
 /// <para>
-/// Instances are not thread-safe; share behind explicit synchronisation.
+/// Instances are not thread-safe; share behind explicit synchronization.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -82,7 +82,7 @@ public sealed class SuperFastHash
     }
 
     /// <summary>
-    /// Computes Paul Hsieh's SuperFastHash over the supplied payload and returns the finalised 32-bit value.
+    /// Computes Paul Hsieh's SuperFastHash over the supplied payload and returns the finalized 32-bit value.
     /// </summary>
     /// <param name="data">The input bytes to hash.</param>
     /// <returns>The 32-bit SuperFastHash value. Returns <c>0</c> when <paramref name="data" /> is empty.</returns>
@@ -90,7 +90,7 @@ public sealed class SuperFastHash
     /// The pre-avalanche loop consumes the payload in 4-byte blocks, reading each half as a little-endian
     /// 16-bit word. Any residual 1, 2, or 3 trailing bytes are folded in by a dedicated tail branch, and the
     /// final avalanche mixes the result prior to return. The odd-byte tail branches sign-extend the trailing
-    /// byte via <see cref="sbyte" /> to match Hsieh's reference C <c>(signed char)</c> behaviour.
+    /// byte via <see cref="sbyte" /> to match Hsieh's reference C <c>(signed char)</c> behavior.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Compute(ReadOnlySpan<byte> data)

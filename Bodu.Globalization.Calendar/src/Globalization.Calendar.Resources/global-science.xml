@@ -2,10 +2,10 @@
 <!--
   Global science and technology notable-date resource using the Western/Gregorian calendar.
 
-  These entries represent internationally recognised science, technology, and
+  These entries represent internationally recognized science, technology, and
   innovation observances. They are not universally public holidays or non-working
   days in every country. Country-specific resources should import only the dates
-  they observe and override naming, suppression, or behavioural rules where required.
+  they observe and override naming, suppression, or behavioral rules where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -55,7 +55,7 @@
 
   <NotableDate name="Pi Day">
     <Rule name="fixed-mar-14" category="Cultural" firstYear="1988"
-          comment="A mathematical culture observance held on 14 March because 3/14 matches the first three significant digits of pi in month/day notation. The first recognised celebration was organised at the Exploratorium in San Francisco in 1988.">
+          comment="A mathematical culture observance held on 14 March because 3/14 matches the first three significant digits of pi in month/day notation. The first recognized celebration was organized at the Exploratorium in San Francisco in 1988.">
       <Fixed month="March" day="14" />
     </Rule>
   </NotableDate>

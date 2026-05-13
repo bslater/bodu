@@ -28,12 +28,12 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item><description><see cref="ProcessBlock"/> processes a single complete block of input data.</description></item>
 /// <item><description><see cref="PadBlock"/> pads the final input segment and encodes the total message length.</description></item>
-/// <item><description><see cref="ProcessFinalBlock"/> finalises the hash computation and returns the resulting digest.</description></item>
+/// <item><description><see cref="ProcessFinalBlock"/> finalizes the hash computation and returns the resulting digest.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="BlockHashAlgorithm{T}"/> for any classic
 /// Merkle–Damgård cryptographic hash — the family includes the SHA-2 hashes, Tiger, Whirlpool, Snefru, and
-/// similar designs that finalise by appending a length-encoding pad to the last partial block. For the
+/// similar designs that finalize by appending a length-encoding pad to the last partial block. For the
 /// BLAKE-family pattern (final-block flag, no length-encoding pad) derive from
 /// <see cref="DeferredFinalBlockHashAlgorithm{T}"/> instead. For a keyed Merkle–Damgård hash (Poly1305,
 /// SipHash) derive from <see cref="KeyedBlockHashAlgorithm{T}"/>, which adds key handling on top of this
@@ -119,12 +119,12 @@ public abstract class BlockHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Finalises the hash computation by padding and processing any residual data, and returns the resulting digest.
+    /// Finalizes the hash computation by padding and processing any residual data, and returns the resulting digest.
     /// </summary>
     /// <returns>A byte array containing the final computed hash value.</returns>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// On target frameworks prior to .NET 6, the hash computation has already been finalised.
+    /// On target frameworks prior to .NET 6, the hash computation has already been finalized.
     /// </exception>
     protected override byte[] HashFinal()
     {
@@ -190,7 +190,7 @@ public abstract class BlockHashAlgorithm<T>
     /// </summary>
     /// <returns>A byte array containing the final computed hash value.</returns>
     /// <remarks>
-    /// This method is invoked after all input has been processed and padded. It reads from the internal hash state and serialises the
+    /// This method is invoked after all input has been processed and padded. It reads from the internal hash state and serializes the
     /// result to a byte array in the format expected by consumers of the algorithm (e.g., big-endian or little-endian).
     /// </remarks>
     protected abstract byte[] ProcessFinalBlock();
@@ -201,7 +201,7 @@ public abstract class BlockHashAlgorithm<T>
     /// <returns><see langword="true"/> if the final block should be padded; otherwise, <see langword="false"/>.</returns>
     /// <remarks>
     /// This method is used to decide whether padding is required for the final block of input data. Derived classes can override this
-    /// method to implement their own logic for padding behaviour. By default, this method returns <see langword="true"/>, indicating
+    /// method to implement their own logic for padding behavior. By default, this method returns <see langword="true"/>, indicating
     /// that padding is required.
     /// </remarks>
     protected virtual bool ShouldPadFinalBlock() => true;

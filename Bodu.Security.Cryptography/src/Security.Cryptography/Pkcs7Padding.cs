@@ -20,8 +20,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to choose PKCS7.</strong> The default for confidentiality-only block-cipher modes (CBC, ECB) —
-/// PKCS#7 is what every mainstream library, JCE, OpenSSL, .NET, and Bouncy Castle ship as the default padding,
-/// and what every interoperable file format expects. For ISO/EMV environments use <see cref="Iso7816_4Padding"/>;
+/// PKCS#7 is the padding that every mainstream cryptographic library ships as the default, and what every
+/// interoperable file format expects. For ISO/EMV environments use <see cref="Iso7816_4Padding"/>;
 /// when integrating with code that emits trailing zeros use <see cref="ZeroPadding"/>; when the surrounding
 /// mode (CTR, CTS, AEAD) provides its own alignment use <see cref="NoPadding"/>.
 /// </para>

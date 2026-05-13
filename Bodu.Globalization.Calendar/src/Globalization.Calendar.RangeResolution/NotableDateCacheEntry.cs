@@ -7,7 +7,7 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Represents a single entry in the chronological range-resolution cache, carrying the originating rule profile, the materialised
+/// Represents a single entry in the chronological range-resolution cache, carrying the originating rule profile, the materialized
 /// base notable date, an optional adjusted form, and the entry's emission qualification state.
 /// </summary>
 /// <remarks>
@@ -23,8 +23,8 @@ internal sealed class NotableDateCacheEntry
     /// Initializes a new instance of the <see cref="NotableDateCacheEntry" /> class.
     /// </summary>
     /// <param name="profile">The static profile of the originating rule.</param>
-    /// <param name="anchorYear">The civil year of the anchor date used to materialise <paramref name="baseNotable" />.</param>
-    /// <param name="baseNotable">The materialised base notable date (pre-adjustment).</param>
+    /// <param name="anchorYear">The civil year of the anchor date used to materialize <paramref name="baseNotable" />.</param>
+    /// <param name="baseNotable">The materialized base notable date (pre-adjustment).</param>
     /// <param name="state">The initial qualification state.</param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="profile" /> or <paramref name="baseNotable" /> is <see langword="null" />.
@@ -48,19 +48,19 @@ internal sealed class NotableDateCacheEntry
     public RuleStaticProfile Profile { get; }
 
     /// <summary>
-    /// Gets the civil year of the anchor date used to materialise <see cref="BaseNotable" />.
+    /// Gets the civil year of the anchor date used to materialize <see cref="BaseNotable" />.
     /// </summary>
     /// <returns>A four-digit civil year.</returns>
     public int AnchorYear { get; }
 
     /// <summary>
-    /// Gets the materialised base notable date (pre-adjustment).
+    /// Gets the materialized base notable date (pre-adjustment).
     /// </summary>
     /// <returns>The base <see cref="NotableDate" /> supplied at construction. Never <see langword="null" />.</returns>
     public NotableDate BaseNotable { get; }
 
     /// <summary>
-    /// Gets or sets the materialised observed notable date produced by an observance adjustment, or <see langword="null" /> when no
+    /// Gets or sets the materialized observed notable date produced by an observance adjustment, or <see langword="null" /> when no
     /// adjustment has been applied.
     /// </summary>
     /// <returns>The adjusted <see cref="NotableDate" />, or <see langword="null" /> when no adjustment has fired for this entry.</returns>

@@ -25,7 +25,7 @@ using Bodu.IO.Hashing.CheckDigits;
 /// <i>omitted</i> — and produces the two check digits via <see cref="GetCurrentCheckDigits(Span{char})" />.
 /// <see cref="IsValid(ReadOnlySpan{char})" /> accepts the complete <c>CC + DD + BBAN</c> form; whitespace and
 /// other formatting characters are <b>not</b> tolerated, in keeping with ISO 13616 strict mode. Callers should
-/// normalise textual IBANs (for example, by removing spaces) before passing them in.
+/// normalize textual IBANs (for example, by removing spaces) before passing them in.
 /// </para>
 /// <para>
 /// <b>Worked example.</b> For the body <c>"GBWEST12345698765432"</c>, the computed check is <c>"82"</c>, and the

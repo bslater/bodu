@@ -218,7 +218,7 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Recursively traverses a tree-like structure, yielding transformed elements with access to index and depth, and controlling behaviour
+    /// Recursively traverses a tree-like structure, yielding transformed elements with access to index and depth, and controlling behavior
     /// at each node using a <see cref="RecursiveSelectControl"/> value.
     /// </summary>
     /// <typeparam name="TSource">The type of input elements in the source sequence.</typeparam>
@@ -322,7 +322,7 @@ public static partial class IEnumerableExtensions
     }
 
     /// <summary>
-    /// Represents shared traversal state for recursive selection routines, coordinating early-exit behaviour across all recursion levels.
+    /// Represents shared traversal state for recursive selection routines, coordinating early-exit behavior across all recursion levels.
     /// </summary>
     internal sealed class RecursionState
     {

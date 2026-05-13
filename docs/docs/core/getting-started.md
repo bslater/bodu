@@ -39,13 +39,13 @@ using Bodu.Collections.Generic;
 
 var cache = new EvictingDictionary<string, byte[]>(
     capacity: 100,
-    policy: EvictingDictionaryPolicy.Lru);
+    policy: EvictingDictionaryPolicy.LeastRecentlyUsed);
 
 cache["alpha"] = LoadFromDisk("alpha");
 _ = cache.TryGetValue("alpha", out byte[]? value); // touches LRU order
 ```
 
-Policies: `Fifo`, `Lru`, `Lfu`.
+Policies: `FirstInFirstOut`, `LeastRecentlyUsed`, `LeastFrequentlyUsed`, `MostRecentlyUsed`, `RandomReplacement`, `SecondChance`.
 
 ### Deque (`Deque<T>`)
 
@@ -87,7 +87,7 @@ DateTime endOfQuarter   = today.LastDateOfQuarter();
 int isoWeek             = today.IsoWeekOfYear();
 ```
 
-### Centralised argument validation (`ThrowHelper`)
+### Centralized argument validation (`ThrowHelper`)
 
 ```csharp
 using Bodu;
@@ -105,5 +105,6 @@ public static double Average(IReadOnlyList<int> values)
 ## Where to go next
 
 - **[Bodu.Core introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.Core guides](../../guides/core/)** — recipe-style walk-throughs.
+- **[Bodu.Core guides](../../guides/core/index.md)** — recipe-style walk-throughs for circular buffers, deques, evicting dictionaries, and `WeekPattern`.
 - **[Bodu.Collections.Generic API reference](../../apidoc/Bodu.Collections.Generic.md)** — full type-by-type docs.
+- **[Algorithm families](../algorithm-families.md)** — cross-library taxonomy if you also need hashing or cryptography.

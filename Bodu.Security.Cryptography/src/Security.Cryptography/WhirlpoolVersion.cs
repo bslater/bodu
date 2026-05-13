@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Whirlpool was proposed by Paulo S. L. M. Barreto and Vincent Rijmen in 2000 and revised twice before
-/// being standardised in <c>ISO/IEC 10118-3</c>. The three published revisions use the same overall
+/// being standardized in <c>ISO/IEC 10118-3</c>. The three published revisions use the same overall
 /// Merkle–Damgård construction around the internal <c>W</c> block cipher but differ in the non-linear
 /// substitution layer and the linear diffusion matrix:
 /// </para>
@@ -38,7 +38,7 @@ namespace Bodu.Security.Cryptography;
 /// </description>
 /// </item>
 /// </list>
-/// <note type="important">Only <see cref="WhirlpoolInfo3"/> is the standardised variant. The earlier
+/// <note type="important">Only <see cref="WhirlpoolInfo3"/> is the standardized variant. The earlier
 /// revisions are provided for interoperability with legacy data and academic study.</note>
 /// </remarks>
 public enum WhirlpoolVersion

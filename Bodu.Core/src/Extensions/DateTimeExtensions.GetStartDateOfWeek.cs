@@ -21,7 +21,7 @@ public static partial class DateTimeExtensions
     /// <remarks>
     /// <para>This method uses the culture-defined week numbering system. It begins by identifying the first occurrence of the culture's <see cref="DateTimeFormatInfo.FirstDayOfWeek"/> on or before January 1 of the supplied year, then advances in 7-day intervals to calculate the start of the supplied week.</para>
     /// <para>The result is validated by recalculating the week number for the computed date using the internal week-of-year calculation and comparing it to <paramref name="week"/>. Dates that fall in the previous calendar year (such as the start of ISO week 1 in late December) are handled correctly.</para>
-    /// <para>The returned value is normalised to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
+    /// <para>The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of <see cref="DateTime.MaxValue"/>,

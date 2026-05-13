@@ -18,7 +18,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// When adjustment evaluation asks whether a candidate date outside the known request window is non-working, this processor
-/// can expand the known window and materialise neighbouring occurrences as blockers without emitting those blockers to the
+/// can expand the known window and materialize neighbouring occurrences as blockers without emitting those blockers to the
 /// caller.
 /// </para>
 /// </remarks>
@@ -72,21 +72,21 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
         DateTime knownStart = request.StartDate;
         DateTime knownEnd = request.EndDate;
 
-        HashSet<DateTime> materialisedDates = CreateMaterialisedDateSet(request.StartDate, request.EndDate);
+        HashSet<DateTime> materializedDates = CreateMaterializedDateSet(request.StartDate, request.EndDate);
         NotableDateAdjuster? adjuster = null;
 
         void EnsureKnown(DateTime candidateDate, string? territoryCode, Type? calendarType)
         {
             DateTime day = candidateDate.Date;
 
-            if (materialisedDates.Contains(day))
+            if (materializedDates.Contains(day))
                 return;
 
             if (day > knownEnd)
             {
                 for (DateTime current = knownEnd.AddDays(1); current <= day; current = current.AddDays(1))
                 {
-                    MaterialiseBlockerDate(current, territoryCode, calendarType, materialisedDates, window, request, adjuster!);
+                    MaterializeBlockerDate(current, territoryCode, calendarType, materializedDates, window, request, adjuster!);
                 }
 
                 knownEnd = day > knownEnd ? day : knownEnd;
@@ -97,14 +97,14 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
             {
                 for (DateTime current = knownStart.AddDays(-1); current >= day; current = current.AddDays(-1))
                 {
-                    MaterialiseBlockerDate(current, territoryCode, calendarType, materialisedDates, window, request, adjuster!);
+                    MaterializeBlockerDate(current, territoryCode, calendarType, materializedDates, window, request, adjuster!);
                 }
 
                 knownStart = day < knownStart ? day : knownStart;
                 return;
             }
 
-            MaterialiseBlockerDate(day, territoryCode, calendarType, materialisedDates, window, request, adjuster!);
+            MaterializeBlockerDate(day, territoryCode, calendarType, materializedDates, window, request, adjuster!);
         }
 
         adjuster = CreateAdjuster(window, EnsureKnown);
@@ -190,27 +190,27 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
     }
 
     /// <summary>
-    /// Materialises a neighbouring date as blocker context.
+    /// Materializes a neighbouring date as blocker context.
     /// </summary>
-    /// <param name="date">The date to materialise.</param>
+    /// <param name="date">The date to materialize.</param>
     /// <param name="territoryCode">The optional territory context.</param>
     /// <param name="calendarType">The optional calendar type context.</param>
-    /// <param name="materialisedDates">The set of materialised anchor dates.</param>
+    /// <param name="materializedDates">The set of materialized anchor dates.</param>
     /// <param name="window">The resolution window.</param>
     /// <param name="request">The originating request.</param>
     /// <param name="adjuster">The adjustment evaluator.</param>
-    private void MaterialiseBlockerDate(
+    private void MaterializeBlockerDate(
         DateTime date,
         string? territoryCode,
         Type? calendarType,
-        HashSet<DateTime> materialisedDates,
+        HashSet<DateTime> materializedDates,
         NotableDateResolutionWindow window,
         NotableDateResolutionRequest request,
         NotableDateAdjuster adjuster)
     {
         DateTime day = date.Date;
 
-        if (!materialisedDates.Add(day))
+        if (!materializedDates.Add(day))
             return;
 
         window.ExpandBackwardTo(day);
@@ -245,7 +245,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
     /// Creates an adjustment evaluator bound to the supplied resolution window.
     /// </summary>
     /// <param name="window">The resolution window.</param>
-    /// <param name="ensureKnown">Callback used to materialise neighbouring candidate dates.</param>
+    /// <param name="ensureKnown">Callback used to materialize neighbouring candidate dates.</param>
     /// <returns>The adjustment evaluator.</returns>
     private NotableDateAdjuster CreateAdjuster(
         NotableDateResolutionWindow window,
@@ -328,12 +328,12 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
         };
 
     /// <summary>
-    /// Creates the initial set of materialised dates for a request.
+    /// Creates the initial set of materialized dates for a request.
     /// </summary>
     /// <param name="startDate">The inclusive start date.</param>
     /// <param name="endDate">The inclusive end date.</param>
-    /// <returns>The materialised date set.</returns>
-    private static HashSet<DateTime> CreateMaterialisedDateSet(DateTime startDate, DateTime endDate)
+    /// <returns>The materialized date set.</returns>
+    private static HashSet<DateTime> CreateMaterializedDateSet(DateTime startDate, DateTime endDate)
     {
         HashSet<DateTime> dates = [];
 

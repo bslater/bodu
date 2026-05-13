@@ -9,7 +9,7 @@ using BoduExt = Bodu.Extensions;
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Orchestrates the chronological range-resolution pipeline: planning, tiered occurrence materialisation, observance adjustment,
+/// Orchestrates the chronological range-resolution pipeline: planning, tiered occurrence materialization, observance adjustment,
 /// and emission ordering.
 /// </summary>
 /// <remarks>
@@ -46,7 +46,7 @@ internal sealed class NotableDateRangePipeline
     /// <param name="weekendDefinition">The weekend definition used during adjustment evaluation.</param>
     /// <param name="weekendProvider">The optional custom weekend provider.</param>
     /// <param name="handlerRegistry">The optional custom adjustment handler registry.</param>
-    /// <param name="overrideRemovals">The override removals consulted when materialising rules. Each entry suppresses a rule for matching years and territories.</param>
+    /// <param name="overrideRemovals">The override removals consulted when materializing rules. Each entry suppresses a rule for matching years and territories.</param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="analysis" /> or <paramref name="ruleResolver" /> is <see langword="null" />.
     /// </exception>
@@ -78,8 +78,8 @@ internal sealed class NotableDateRangePipeline
     /// Resolution runs in two passes followed by an adjustment phase:
     /// </para>
     /// <list type="number">
-    ///   <item><description><b>Main pass</b> — every eligible rule is materialised for the civil years that the request range spans. Rules whose resolved date falls inside the request window enter the cache in <see cref="NotableDateCacheState.InWindow" />; those just outside enter as <see cref="NotableDateCacheState.Computed" /> for adjustment context.</description></item>
-    ///   <item><description><b>Fringe pass</b> — for each adjacent civil year the request window touches inside the planner's fringe distance, every <see cref="RuleTier.Fixed" /> rule with at least one adjustment is materialised when its resolved date falls inside the fringe window. This catches cross-year roll-overs such as <c>31 Dec</c> rolling forward to <c>3 Jan</c> without a global reach expansion.</description></item>
+    ///   <item><description><b>Main pass</b> — every eligible rule is materialized for the civil years that the request range spans. Rules whose resolved date falls inside the request window enter the cache in <see cref="NotableDateCacheState.InWindow" />; those just outside enter as <see cref="NotableDateCacheState.Computed" /> for adjustment context.</description></item>
+    ///   <item><description><b>Fringe pass</b> — for each adjacent civil year the request window touches inside the planner's fringe distance, every <see cref="RuleTier.Fixed" /> rule with at least one adjustment is materialized when its resolved date falls inside the fringe window. This catches cross-year roll-overs such as <c>31 Dec</c> rolling forward to <c>3 Jan</c> without a global reach expansion.</description></item>
     ///   <item><description><b>Adjustment phase</b> — observance adjustments are applied using the cache as the non-working day context. Adjusted dates that intersect the request promote the entry to <see cref="NotableDateCacheState.Adjusted" /> and supersede the base on emission.</description></item>
     /// </list>
     /// </remarks>
@@ -126,7 +126,7 @@ internal sealed class NotableDateRangePipeline
     }
 
     /// <summary>
-    /// Materialises adjacent-year rules whose observance adjustment chain or multi-day duration may project an emission into the
+    /// Materializes adjacent-year rules whose observance adjustment chain or multi-day duration may project an emission into the
     /// requested window. Covers two fringe-relevant categories: rules with at least one <see cref="ObservanceAdjustment" /> and
     /// rules with <see cref="NotableDateRule.DurationDays" /> greater than one.
     /// </summary>
@@ -138,7 +138,7 @@ internal sealed class NotableDateRangePipeline
     /// </para>
     /// <list type="bullet">
     ///   <item><description><b>Tier 1 (Fixed) with adjustment</b> — for example, a <c>31 Dec</c> holiday whose <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> rolls forward into the new year.</description></item>
-    ///   <item><description><b>Tier 2 (OffsetFromFixed) with adjustment</b> — for example, <c>"Day after Christmas"</c> with a weekend roll-forward. The rule's root anchor is materialised on-demand for the fringe year if Pass 1 did not load it.</description></item>
+    ///   <item><description><b>Tier 2 (OffsetFromFixed) with adjustment</b> — for example, <c>"Day after Christmas"</c> with a weekend roll-forward. The rule's root anchor is materialized on-demand for the fringe year if Pass 1 did not load it.</description></item>
     ///   <item><description><b>Tier 1 (Fixed) with multi-day duration</b> — for example, a seven-day festival starting <c>30 Dec</c> whose span reaches into early January.</description></item>
     /// </list>
     /// <para>
@@ -189,9 +189,9 @@ internal sealed class NotableDateRangePipeline
 
     /// <summary>
     /// Resolves the anchor date of a fringe-year rule. Tier 1 rules use the rule resolver directly; Tier 2 rules read the root
-    /// anchor from the cache, materialising it on-demand when the main pass did not process it for this year.
+    /// anchor from the cache, materializing it on-demand when the main pass did not process it for this year.
     /// </summary>
-    /// <param name="profile">The rule profile being materialised.</param>
+    /// <param name="profile">The rule profile being materialized.</param>
     /// <param name="year">The fringe-year being processed.</param>
     /// <param name="plan">The active resolution plan.</param>
     /// <param name="cache">The shared cache being populated.</param>
@@ -215,8 +215,8 @@ internal sealed class NotableDateRangePipeline
 
         if (rootAnchor is null)
         {
-            // On-demand: the main pass only materialises Tier 1 rules for candidate years, so the root anchor of a Tier 2 fringe
-            // rule may be missing for the fringe year. Materialise it here so this offset rule (and any sibling Tier 2 rules in
+            // On-demand: the main pass only materializes Tier 1 rules for candidate years, so the root anchor of a Tier 2 fringe
+            // rule may be missing for the fringe year. Materialize it here so this offset rule (and any sibling Tier 2 rules in
             // the fringe pass that share the same root) can read it. The anchor enters the cache as Computed unless its own
             // resolved date independently lands in the request window.
             if (!_analysis.TryGetProfile(profile.RootAnchorRuleName!, out RuleStaticProfile rootProfile)) return null;
@@ -254,9 +254,9 @@ internal sealed class NotableDateRangePipeline
     }
 
     /// <summary>
-    /// Materialises Tier 1 (Fixed / DayOfWeekInMonth) rules across every candidate year and territory.
+    /// Materializes Tier 1 (Fixed / DayOfWeekInMonth) rules across every candidate year and territory.
     /// </summary>
-    /// <param name="profile">The rule profile to materialise.</param>
+    /// <param name="profile">The rule profile to materialize.</param>
     /// <param name="plan">The active resolution plan.</param>
     /// <param name="cache">The shared cache being populated.</param>
     private void ProcessDirect(RuleStaticProfile profile, NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
@@ -283,7 +283,7 @@ internal sealed class NotableDateRangePipeline
     }
 
     /// <summary>
-    /// Materialises Tier 3 algorithmic rules for the years demanded by <see cref="NotableDateRangePlan.GetAnchorYears" />.
+    /// Materializes Tier 3 algorithmic rules for the years demanded by <see cref="NotableDateRangePlan.GetAnchorYears" />.
     /// </summary>
     /// <param name="plan">The active resolution plan.</param>
     /// <param name="cache">The shared cache being populated.</param>
@@ -318,7 +318,7 @@ internal sealed class NotableDateRangePipeline
     }
 
     /// <summary>
-    /// Materialises a Tier 2 or Tier 4 offset rule by reading its root anchor from the cache and applying the static
+    /// Materializes a Tier 2 or Tier 4 offset rule by reading its root anchor from the cache and applying the static
     /// <see cref="RuleStaticProfile.OffsetFromRoot" />.
     /// </summary>
     /// <param name="profile">The offset rule profile.</param>
@@ -359,7 +359,7 @@ internal sealed class NotableDateRangePipeline
     /// list into one entry per territory that matches the request context. Entries suppressed by an override
     /// <see cref="RuleRemoval" /> for the supplied year and territory are skipped before reaching the cache.
     /// </summary>
-    /// <param name="profile">The rule profile being materialised.</param>
+    /// <param name="profile">The rule profile being materialized.</param>
     /// <param name="year">The anchor year.</param>
     /// <param name="anchorDate">The resolved anchor date.</param>
     /// <param name="plan">The active resolution plan.</param>
@@ -587,7 +587,7 @@ internal sealed class NotableDateRangePipeline
     /// <c>NotableDateService.GenerateYear</c> path so override removals behave consistently across both pipelines.
     /// </summary>
     /// <param name="rule">The rule under consideration.</param>
-    /// <param name="year">The civil year being materialised.</param>
+    /// <param name="year">The civil year being materialized.</param>
     /// <param name="territory">The territory the entry would be tagged with, or <see langword="null" /> for territory-neutral.</param>
     /// <returns><see langword="true" /> when at least one configured removal matches; otherwise, <see langword="false" />.</returns>
     private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)

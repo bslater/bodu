@@ -4,7 +4,7 @@ title: Using Tiger
 
 # Using Tiger
 
-<xref:Bodu.Security.Cryptography.Tiger> is a 1995 cryptographic hash by Anderson and Biham, optimised for 64-bit platforms and widely deployed in file-transfer and content-addressing systems (most famously Direct Connect's Tiger Tree Hash). It processes 64-byte blocks and produces a **192-bit digest by default**, with 160-bit and 128-bit truncations available.
+<xref:Bodu.Security.Cryptography.Tiger> is a 1995 cryptographic hash by Anderson and Biham, optimized for 64-bit platforms and widely deployed in file-transfer and content-addressing systems (most famously Direct Connect's Tiger Tree Hash). It processes 64-byte blocks and produces a **192-bit digest by default**, with 160-bit and 128-bit truncations available.
 
 Tiger derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>, so any API that accepts a standard .NET hash accepts Tiger.
 

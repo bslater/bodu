@@ -4,9 +4,9 @@ title: Cipher block modes
 
 # Cipher block modes
 
-This page walks through each of the five classic block cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherBlockMode>, shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs.
+This page walks through each of the five classic block cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherModeKind>, shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs.
 
-For the data-flow visualisation, see the panels on the <xref:Bodu.Security.Cryptography.CipherBlockMode> API page. Each panel in that diagram corresponds to one section below.
+For the data-flow visualization, see the panels on the <xref:Bodu.Security.Cryptography.CipherModeKind> API page. Each panel in that diagram corresponds to one section below.
 
 ## CBC — the default
 
@@ -25,7 +25,7 @@ byte[] plaintext = System.Text.Encoding.UTF8.GetBytes("confidential payload");
 
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();
@@ -40,7 +40,7 @@ The IV must travel with the ciphertext so the receiver can decrypt. Don't put it
 
 ## CTR — parallel, seekable, stream-shaped
 
-**Use for:** random-access scenarios (disk-like), high-throughput pipelines where you want to parallelise encryption per block, or when the plaintext length isn't known up front and you don't want padding.
+**Use for:** random-access scenarios (disk-like), high-throughput pipelines where you want to parallelize encryption per block, or when the plaintext length isn't known up front and you don't want padding.
 
 **IV (counter):** same length as the block. **Must be unique per message under a given key.** Reuse is catastrophic.
 
@@ -49,7 +49,7 @@ The IV must travel with the ciphertext so the receiver can decrypt. Don't put it
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,   // CTR is a stream cipher
 };
 alg.GenerateKey();
@@ -62,7 +62,7 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 
 **Design note.** The counter wraps after 2^(block_size) encryptions. `CtrModeTransform` detects this and throws <xref:System.Security.Cryptography.CryptographicException> rather than silently reusing keystream. In practice the block sizes on this library (64 to 1024 bits) are more than enough for any real workload, but this guard is your safety net.
 
-## CFB — self-synchronising stream cipher
+## CFB — self-synchronizing stream cipher
 
 **Use for:** byte-streamed encryption where a small transmission error should self-heal within a block or two.
 
@@ -73,7 +73,7 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CFB,
+    BlockMode = CipherModeKind.CFB,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();
@@ -97,7 +97,7 @@ Both directions use the cipher's *encryption* primitive — the decryptor never 
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.OFB,
+    BlockMode = CipherModeKind.OFB,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();
@@ -108,7 +108,7 @@ byte[] ciphertext = alg.Encrypt(plaintext);
 byte[] recovered  = alg.Decrypt(ciphertext);
 ```
 
-OFB is rarely the best choice today — CTR gives you the same stream-cipher behaviour *plus* random access. Reach for OFB only when you have a specific interoperability requirement.
+OFB is rarely the best choice today — CTR gives you the same stream-cipher behavior *plus* random access. Reach for OFB only when you have a specific interoperability requirement.
 
 ## ECB — almost never
 
@@ -121,7 +121,7 @@ OFB is rarely the best choice today — CTR gives you the same stream-cipher beh
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.ECB,
+    BlockMode = CipherModeKind.ECB,
     Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();
@@ -140,7 +140,7 @@ ECB encrypts every block independently. That means identical plaintext blocks en
 |---|---|---|
 | A safe default for a single message with a random IV | **CBC** | Confidentiality with simple assumptions. |
 | Seekable, parallelisable, stream-shaped encryption | **CTR** | Keystream depends only on counter; blocks are independent. |
-| Byte-level streaming with self-healing on errors | **CFB** | Error propagates for one block then resynchronises. |
+| Byte-level streaming with self-healing on errors | **CFB** | Error propagates for one block then resynchronizes. |
 | Bit-exact error isolation on an unreliable channel | **OFB** | Keystream is plaintext-independent. |
 | A cipher primitive for something you're building | **ECB** | The lowest level; you must add your own chaining. |
 

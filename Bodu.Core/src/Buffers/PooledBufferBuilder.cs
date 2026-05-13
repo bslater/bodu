@@ -13,7 +13,7 @@ namespace Bodu.Buffers;
 
 /// <summary>
 /// Provides an efficient way to accumulate elements into a pooled buffer, with automatic resizing and fast-path
-/// optimisations for collection-based and span-based sources.
+/// optimizations for collection-based and span-based sources.
 /// </summary>
 /// <typeparam name="T">The type of elements to buffer.</typeparam>
 /// <remarks>
@@ -87,7 +87,7 @@ public sealed class PooledBufferBuilder<T> :
     /// <returns>
     /// The length of the underlying rented array. This value is always greater than or equal to
     /// <see cref="WrittenCount"/> and may be larger than the capacity requested at construction due to
-    /// <see cref="ArrayPool{T}"/> rounding behaviour.
+    /// <see cref="ArrayPool{T}"/> rounding behavior.
     /// </returns>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>
     public int Capacity
@@ -283,7 +283,7 @@ public sealed class PooledBufferBuilder<T> :
     /// </summary>
     /// <returns>
     /// The underlying rented array. Only the first <see cref="WrittenCount"/> elements are valid; the remainder
-    /// may contain uninitialised or pooled data.
+    /// may contain uninitialized or pooled data.
     /// </returns>
     /// <remarks>The returned array is not a copy. Modifying it directly will corrupt the internal state.</remarks>
     /// <exception cref="ObjectDisposedException">Thrown if the instance has been disposed.</exception>

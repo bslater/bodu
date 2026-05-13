@@ -10,7 +10,7 @@ using System.Numerics;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Provides a generic base class for Adler-style checksum algorithms parameterised by the accumulator type.
+/// Provides a generic base class for Adler-style checksum algorithms parameterized by the accumulator type.
 /// </summary>
 /// <typeparam name="T">
 /// The unsigned numeric type used for internal state accumulation, either <see cref="uint" /> or
@@ -28,10 +28,10 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <strong>When to choose Adler.</strong> Adler-32 is the canonical checksum used by zlib (RFC 1950) — pick
 /// <see cref="Adler32"/> any time interoperability with zlib, deflate, or PNG's chunk integrity is required.
 /// It is faster than CRC at the cost of weaker error-detection guarantees, and is therefore preferred where
-/// throughput matters more than rigorous coverage of burst errors. <see cref="Adler64"/> generalises the
+/// throughput matters more than rigorous coverage of burst errors. <see cref="Adler64"/> generalizes the
 /// construction to 64 bits for very large inputs where the Adler-32 collision floor becomes a concern;
 /// <see cref="Adler32C"/> swaps the prime modulus 65521 for the power-of-two 65536 to enable cheaper modular
-/// reductions in vectorised paths — its outputs are <em>not</em> interchangeable with standard Adler-32.
+/// reductions in vectorized paths — its outputs are <em>not</em> interchangeable with standard Adler-32.
 /// For stronger error detection prefer <see cref="Crc"/>; for hash-table keying prefer
 /// <see cref="Bodu.IO.Hashing.MurmurHash3{T}"/> or <see cref="Bodu.IO.Hashing.CityHash{T}"/>.
 /// </para>
@@ -40,7 +40,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})"/> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset"/> /
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> shape; snapshotting is
-/// non-destructive. Instances are not thread-safe; share behind explicit synchronisation.
+/// non-destructive. Instances are not thread-safe; share behind explicit synchronization.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
 /// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -64,7 +64,7 @@ public abstract class Adler<T>
     where T : unmanaged, INumber<T>
 {
     /// <summary>
-    /// The A accumulator, initialised to one and updated with each input byte.
+    /// The A accumulator, initialized to one and updated with each input byte.
     /// </summary>
     protected T partA;
 

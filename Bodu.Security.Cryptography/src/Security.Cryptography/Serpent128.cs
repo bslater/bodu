@@ -16,9 +16,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Serpent is an Advanced Encryption Standard (AES) finalist by Ross Anderson, Eli Biham, and Lars Knudsen. It is a 32-round
-/// substitution–permutation network that combines eight 4-bit S-boxes with a bitsliced linear transform, and is widely
-/// regarded as one of the most conservative designs among the AES finalists.
+/// Serpent is an Advanced Encryption Standard (AES) finalist by Ross Anderson, Eli Biham, and Lars Knudsen, first
+/// published in 1998 (NESSIE submission, <em>Serpent: A Proposal for the Advanced Encryption Standard</em>). It is a
+/// 32-round substitution–permutation network that combines eight 4-bit S-boxes with a bitsliced linear transform,
+/// and is widely regarded as one of the most conservative designs among the AES finalists.
 /// </para>
 /// <para>
 /// This class integrates with the standard <see cref="SymmetricAlgorithm"/> framework and supports the extended block-cipher
@@ -62,6 +63,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] roundTrip  = serpent.Decrypt(ciphertext);
 /// </code>
 /// </example>
+/// <seealso href="https://www.cl.cam.ac.uk/~rja14/serpent.html">Serpent home page (Anderson / Biham / Knudsen)</seealso>
+/// <seealso href="https://www.cl.cam.ac.uk/~rja14/Papers/serpent.pdf">Serpent: A Proposal for the Advanced Encryption Standard (1998)</seealso>
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
@@ -153,7 +156,7 @@ public sealed class Serpent128
 
     /// <inheritdoc />
     /// <remarks>
-    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// Also synchronizes <see cref="BlockPadding"/> when the assigned value has a matching member in
     /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding

@@ -59,7 +59,7 @@ public readonly record struct TerritoryCode
     /// <summary>
     /// Gets the two-letter ISO 3166-1 alpha-2 country code (e.g. <c>AU</c>, <c>US</c>).
     /// </summary>
-    /// <returns>The upper-case two-letter country code. Never <see langword="null" /> for an initialised value.</returns>
+    /// <returns>The upper-case two-letter country code. Never <see langword="null" /> for an initialized value.</returns>
     public string Country { get; }
 
     /// <summary>

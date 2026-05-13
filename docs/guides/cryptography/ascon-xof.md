@@ -6,15 +6,15 @@ title: ASCON extendable output — AsconXof128 and AsconCxof128
 
 An **extendable output function (XOF)** is a hash with no fixed output length. You absorb any
 amount of input, then squeeze out as many bytes as you need — 32, 64, or a million. ASCON-XOF128
-and ASCON-CXOF128 are the XOF members of the ASCON family, standardised in NIST SP 800-232.
+and ASCON-CXOF128 are the XOF members of the ASCON family, standardized in NIST SP 800-232.
 
 **Bodu.Security.Cryptography** provides two concrete types, both inheriting from the abstract
 `AsconXof<T>` base:
 
-| Type | Algorithm name | Customisation | Typical use |
+| Type | Algorithm name | Customization | Typical use |
 |---|---|---|---|
 | <xref:Bodu.Security.Cryptography.AsconXof128> | `ASCON-XOF128` | None | General-purpose variable-length output, key derivation, stream seed. |
-| <xref:Bodu.Security.Cryptography.AsconCxof128> | `ASCON-CXOF128` | Optional customisation string | Multiple independent output functions from the same primitive. |
+| <xref:Bodu.Security.Cryptography.AsconCxof128> | `ASCON-CXOF128` | Optional customization string | Multiple independent output functions from the same primitive. |
 
 ## Fixed parameters
 
@@ -144,10 +144,10 @@ for (int i = 0; i < 1024; i++)
 This is useful for generating large amounts of deterministic pseudo-random material from a fixed
 seed — effectively a stream cipher output.
 
-## Pattern 6 — CXOF128 with a customisation string
+## Pattern 6 — CXOF128 with a customization string
 
-`AsconCxof128` extends the XOF lifecycle with an optional customisation step before absorption.
-Two instances with different customisation strings produce completely independent outputs for the
+`AsconCxof128` extends the XOF lifecycle with an optional customization step before absorption.
+Two instances with different customization strings produce completely independent outputs for the
 same absorbed input.
 
 ```csharp
@@ -156,13 +156,13 @@ using Bodu.Security.Cryptography;
 
 byte[] message = Encoding.UTF8.GetBytes("the quick brown fox");
 
-// Derive an encryption key — customisation string identifies the context.
+// Derive an encryption key — customization string identifies the context.
 using var encXof = new AsconCxof128();
 encXof.Customize(Encoding.UTF8.GetBytes("enc-key-v1"));
 encXof.Absorb(message);
 byte[] encKey = encXof.GetHash(32);
 
-// Derive a MAC key — different customisation string, independent output.
+// Derive a MAC key — different customization string, independent output.
 using var macXof = new AsconCxof128();
 macXof.Customize(Encoding.UTF8.GetBytes("mac-key-v1"));
 macXof.Absorb(message);
@@ -175,21 +175,21 @@ Call `Customize` **before** any call to `Absorb`. Calling it afterwards, or call
 time on the same instance, throws `InvalidOperationException`. Call `Initialize()` to reset and
 allow a fresh `Customize`.
 
-### Customisation string semantics
+### Customization string semantics
 
-The customisation string is absorbed into the sponge using the standard Ascon padding rule, and
+The customization string is absorbed into the sponge using the standard Ascon padding rule, and
 then a domain-separation constant (XOR of 1 into state word S₄) is injected before the message
 absorption phase begins. This ensures:
 
-- Two instances with different customisation strings produce unrelated output.
-- An instance with an empty customisation string produces output that differs from
+- Two instances with different customization strings produce unrelated output.
+- An instance with an empty customization string produces output that differs from
   `AsconXof128` for the same message (because the domain-separation constant is always applied).
-- The customisation string may be public — it is not a secret.
+- The customization string may be public — it is not a secret.
 
-## Pattern 7 — empty customisation string (not the same as no customisation)
+## Pattern 7 — empty customization string (not the same as no customization)
 
 Calling `Customize(ReadOnlySpan<byte>.Empty)` still applies the ASCON-CXOF128 domain separation.
-The output differs from `AsconXof128` even with no customisation bytes:
+The output differs from `AsconXof128` even with no customization bytes:
 
 ```csharp
 using Bodu.Security.Cryptography;
@@ -206,9 +206,9 @@ byte[] xofOutput = AsconXof128.HashData(message, 32);
 // cxofOutput != xofOutput
 ```
 
-If `Customize` is not called at all, `AsconCxof128` operates without the customisation domain
+If `Customize` is not called at all, `AsconCxof128` operates without the customization domain
 separation — identically to a plain `AsconXof128` for the same absorbed input. The
-customisation step is optional by design.
+customization step is optional by design.
 
 ## Pattern 8 — reusing an instance
 
@@ -227,7 +227,7 @@ for (int i = 0; i < messages.Length; i++)
 }
 ```
 
-For `AsconCxof128`, `Initialize()` also clears the customisation state, so `Customize` can be
+For `AsconCxof128`, `Initialize()` also clears the customization state, so `Customize` can be
 called again on the reset instance.
 
 ## Algorithm selection
@@ -235,7 +235,7 @@ called again on the reset instance.
 | If you need… | Reach for |
 |---|---|
 | Variable-length output from a single input | `AsconXof128` |
-| Multiple independent output streams for different application domains | `AsconCxof128` with distinct customisation strings |
+| Multiple independent output streams for different application domains | `AsconCxof128` with distinct customization strings |
 | A fixed 256-bit digest | `AsconHash256` or `AsconHashA256` |
 | Output derived from multiple pieces of context | Call `Absorb` multiple times on one `AsconXof128` instance |
 

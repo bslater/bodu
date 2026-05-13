@@ -57,7 +57,7 @@
        per-rule changes. The optional clearTags and clearAdjustments
        flags discard the inherited set before the override is
        applied; clearInherited drops every inherited variant for
-       this directive entirely, leaving only the rule materialised
+       this directive entirely, leaving only the rule materialized
        from the directive itself. When both a flat attribute on Use
        and the nested Rule specify the same scalar, the nested Rule
        wins (innermost-wins). The optional 'as' attribute renames

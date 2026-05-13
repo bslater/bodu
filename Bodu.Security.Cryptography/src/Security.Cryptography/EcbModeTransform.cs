@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// <img src="../images/diagrams/classic-modes.svg" alt="ECB panel — each plaintext block is encrypted independently to its ciphertext block with no feedback."/>
 /// </para>
 /// <para>
-/// Encryption computes <c>Cᵢ = E(Pᵢ)</c> and decryption <c>Pᵢ = D(Cᵢ)</c>; no initialisation vector is used.
+/// Encryption computes <c>Cᵢ = E(Pᵢ)</c> and decryption <c>Pᵢ = D(Cᵢ)</c>; no initialization vector is used.
 /// See <b>panel 1</b> of the diagram above: each column is entirely self-contained, so the three cells carry
 /// no arrows between them.
 /// </para>
@@ -30,7 +30,7 @@ namespace Bodu.Security.Cryptography;
 /// <strong>When to use ECB.</strong> Only as a building block inside a larger, well-understood construction —
 /// for example, encrypting a single fixed-length tweak inside an XTS or wide-block scheme. For protecting
 /// arbitrary plaintext, use <see cref="CbcModeTransform"/> as a baseline, <see cref="CtrModeTransform"/> when
-/// random access or stream-cipher behaviour is wanted, or one of the AEAD modes
+/// random access or stream-cipher behavior is wanted, or one of the AEAD modes
 /// (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>, …) when authentication matters.
 /// </para>
 /// <para>

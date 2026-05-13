@@ -7,19 +7,19 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a variable-length output using the <c>Ascon-CXOF128</c> customisable extendable output function (CXOF) as
-/// defined in NIST SP 800-232. Supports an optional customisation string that domain-separates outputs from
+/// Computes a variable-length output using the <c>Ascon-CXOF128</c> customizable extendable output function (CXOF) as
+/// defined in NIST SP 800-232. Supports an optional customization string that domain-separates outputs from
 /// <see cref="AsconXof128"/>. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Ascon-CXOF128 extends <see cref="AsconXof128"/> with a customisation phase. The customisation string <c>Z</c> is
-/// absorbed before any message data, using a dedicated domain-separation constant to ensure that different customisation
-/// strings produce independent output functions. An empty customisation string does <b>not</b> produce the same output as
+/// Ascon-CXOF128 extends <see cref="AsconXof128"/> with a customization phase. The customization string <c>Z</c> is
+/// absorbed before any message data, using a dedicated domain-separation constant to ensure that different customization
+/// strings produce independent output functions. An empty customization string does <b>not</b> produce the same output as
 /// <see cref="AsconXof128"/>.
 /// </para>
 /// <para>
-/// If no customisation string is required, prefer <see cref="AsconXof128"/> directly. Use Ascon-CXOF128 when you need
+/// If no customization string is required, prefer <see cref="AsconXof128"/> directly. Use Ascon-CXOF128 when you need
 /// distinct output functions for different application contexts (for example, key derivation vs. masking) from a single
 /// primitive.
 /// </para>
@@ -37,16 +37,16 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <list type="bullet">
 ///   <item><description>Output size: variable, any positive multiple of 8 bits.</description></item>
-///   <item><description>Customisation string: optional bytes absorbed before message data, domain-separates outputs.</description></item>
+///   <item><description>Customization string: optional bytes absorbed before message data, domain-separates outputs.</description></item>
 ///   <item><description>State: 320-bit sponge; rate: 8 bytes (64 bits).</description></item>
 ///   <item><description>Permutation: Ascon-p12 for transitions; Ascon-p8 between absorption rounds.</description></item>
 ///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
 /// </list>
 /// <para>
-/// <strong>When to choose Ascon-CXOF128.</strong> Pick the customisable XOF when you need multiple
+/// <strong>When to choose Ascon-CXOF128.</strong> Pick the customizable XOF when you need multiple
 /// independent output streams from one primitive — KMAC-style domain separation per protocol layer,
 /// per-purpose KDFs (signing-key vs. encryption-key vs. binding-tag), or hash-based DRBGs that must not
-/// collide across applications. For uncustomised XOF output use <see cref="AsconXof128"/>; for fixed-length
+/// collide across applications. For uncustomized XOF output use <see cref="AsconXof128"/>; for fixed-length
 /// 256-bit hashes use <see cref="AsconHash256"/>; for the AEAD member of the suite use
 /// <see cref="AsconAead128"/>.
 /// </para>
@@ -83,18 +83,18 @@ public sealed class AsconCxof128 : AsconXof<AsconCxof128>
     { }
 
     /// <summary>
-    /// Absorbs a customisation string that domain-separates this instance from other uses of the same primitive. Must be
+    /// Absorbs a customization string that domain-separates this instance from other uses of the same primitive. Must be
     /// called before any call to <see cref="AsconXof{T}.Absorb"/>.
     /// </summary>
     /// <param name="customization">
-    /// The customisation string. May be empty to indicate the default (un-customised) domain. Calling this method with an
+    /// The customization string. May be empty to indicate the default (un-customized) domain. Calling this method with an
     /// empty span is distinct from not calling it at all.
     /// </param>
     /// <remarks>
     /// <para>
-    /// Per NIST SP 800-232, the customisation string is absorbed into the sponge using the standard Ascon padding rule,
-    /// followed by a domain-separation constant (XOR of 1 into state word S4) that distinguishes the customised initial
-    /// state from the un-customised one.
+    /// Per NIST SP 800-232, the customization string is absorbed into the sponge using the standard Ascon padding rule,
+    /// followed by a domain-separation constant (XOR of 1 into state word S4) that distinguishes the customized initial
+    /// state from the un-customized one.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>

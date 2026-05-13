@@ -8,7 +8,7 @@ SipHash is a family of **keyed** pseudo-random functions designed by Aumasson an
 
 **Bodu.Security.Cryptography** ships two widths:
 
-| Type | Output | Parameterisation (default) | When to reach for it |
+| Type | Output | Parameterization (default) | When to reach for it |
 |---|---|---|---|
 | <xref:Bodu.Security.Cryptography.SipHash64> | 64 bits | SipHash-2-4 | The standard choice — hash-table keys, sharding, short fingerprints. |
 | <xref:Bodu.Security.Cryptography.SipHash128> | 128 bits | SipHash-2-4 | Longer output for content-addressing or de-duplication where 64 bits is uncomfortable. |
@@ -74,7 +74,7 @@ using var sip = new SipHash64
 };
 ```
 
-Both rounds must be set **before** the first `TransformBlock` / `ComputeHash` — the setters throw once hashing has started, since changing the schedule mid-stream would invalidate state. The reported `AlgorithmName` includes the parameterisation (e.g. `"SipHash-4-8-128"`), which is useful in logs and interop headers.
+Both rounds must be set **before** the first `TransformBlock` / `ComputeHash` — the setters throw once hashing has started, since changing the schedule mid-stream would invalidate state. The reported `AlgorithmName` includes the parameterization (e.g. `"SipHash-4-8-128"`), which is useful in logs and interop headers.
 
 ```csharp
 using var sip = new SipHash128 { Key = key, CompressionRounds = 4, FinalizationRounds = 8 };

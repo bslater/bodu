@@ -71,7 +71,7 @@ public sealed class Threefish512
     /// </summary>
     /// <returns>A new <see cref="Threefish512"/> instance.</returns>
     /// <remarks>
-    /// The key, initialisation vector, and tweak are generated on demand the first time they are accessed unless assigned explicitly
+    /// The key, initialization vector, and tweak are generated on demand the first time they are accessed unless assigned explicitly
     /// via <see cref="SymmetricAlgorithm.Key"/>, <see cref="SymmetricAlgorithm.IV"/>, or <see cref="TweakableSymmetricAlgorithm.Tweak"/>.
     /// </remarks>
     public new static Threefish512 Create()

@@ -9,7 +9,7 @@ using System.Collections.Concurrent;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortises
+/// Thread-safe cache of precomputed CRC lookup tables keyed by width, polynomial, and input reflection — amortizes
 /// the per-tuple build cost of <see cref="CrcLookupTableBuilder.BuildLookupTable(int, ulong, bool)"/> across every
 /// <see cref="Crc"/> instance that uses the same <see cref="CrcStandard"/>.
 /// </summary>
@@ -17,7 +17,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <para>
 /// Building a CRC lookup table is cheap in absolute terms but not free, and the same table is needed every time a
 /// <see cref="Crc"/> instance is constructed for a given <see cref="CrcStandard"/>. <see cref="CrcLookupTableCache"/>
-/// memoises tables under the unique key <c>(width, polynomial, reflectIn)</c>: the first lookup for a tuple builds and
+/// memoizes tables under the unique key <c>(width, polynomial, reflectIn)</c>: the first lookup for a tuple builds and
 /// stores the table; subsequent lookups return the same shared array.
 /// </para>
 /// <para>

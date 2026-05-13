@@ -21,7 +21,7 @@ using Bodu.IO.Hashing.CheckDigits;
 /// absorbed.
 /// </para>
 /// <para>
-/// The running remainder <c>r</c> is initialised to zero. Each body character is absorbed as <c>r ← (r·10 + a) mod 97</c>
+/// The running remainder <c>r</c> is initialized to zero. Each body character is absorbed as <c>r ← (r·10 + a) mod 97</c>
 /// for a decimal digit or <c>r ← (r·100 + a) mod 97</c> for an uppercase letter (whose value is two decimal
 /// digits). The two-digit check code is <c>(98 - (r · 100) mod 97) mod 97</c>, formatted as two ASCII decimal
 /// digits; the complete sequence <c>body + check</c> is valid when its running remainder, including the check

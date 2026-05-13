@@ -14,7 +14,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <para>
 /// This variant maintains two running sums (A and B) and combines them as
 /// <c><![CDATA[(B << 16) | A]]></c>, but uses a modulus of 65536 rather than the standard 65521 to enable
-/// cheaper modular reductions in vectorised code paths. Outputs differ from standard <see cref="Adler32" />
+/// cheaper modular reductions in vectorized code paths. Outputs differ from standard <see cref="Adler32" />
 /// and are not interchangeable.
 /// </para>
 /// <para>

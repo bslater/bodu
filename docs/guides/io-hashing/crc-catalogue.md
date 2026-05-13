@@ -10,9 +10,9 @@ For walk-through usage of the CRC engine, see [Using CRC](crc.md).
 
 ## Attribution
 
-The CRC parameter sets in this catalogue are sourced from **Greg Cook's CRC RevEng Catalogue of parametrised CRC algorithms** at [https://reveng.sourceforge.io/crc-catalogue/all.htm](https://reveng.sourceforge.io/crc-catalogue/all.htm).
+The CRC parameter sets in this catalogue are sourced from **Greg Cook's CRC RevEng Catalogue of parameterized CRC algorithms** at [https://reveng.sourceforge.io/crc-catalogue/all.htm](https://reveng.sourceforge.io/crc-catalogue/all.htm).
 
-The catalogue is distributed as part of the CRC RevEng project at <https://reveng.sourceforge.io/>. Please consult the upstream page for the authoritative parameter definitions, alias history, and licence terms that apply to the underlying data.
+The catalogue is distributed as part of the CRC RevEng project at <https://reveng.sourceforge.io/>. Please consult the upstream page for the authoritative parameter definitions, alias history, and license terms that apply to the underlying data.
 
 - **Catalogue last fetched (UTC):** 2026-04-20T08:57:51Z
 - **This page regenerated (UTC):** 2026-04-20T22:24:42Z
@@ -20,7 +20,7 @@ The catalogue is distributed as part of the CRC RevEng project at <https://reven
 
 ## Accessing standards
 
-The catalogue is a **lazy-materialised data table**. Loading <xref:Bodu.IO.Hashing.Checksums.CrcStandard> allocates only the packed spec rows and the per-entry cache slots — individual <xref:Bodu.IO.Hashing.Checksums.CrcStandard> instances are constructed on first access and then memoised, so a process that uses only a handful of standards pays for only a handful of allocations.
+The catalogue is a **lazy-materialized data table**. Loading <xref:Bodu.IO.Hashing.Checksums.CrcStandard> allocates only the packed spec rows and the per-entry cache slots — individual <xref:Bodu.IO.Hashing.Checksums.CrcStandard> instances are constructed on first access and then memoized, so a process that uses only a handful of standards pays for only a handful of allocations.
 
 Three entry points:
 
@@ -45,7 +45,7 @@ foreach (CrcStandard std in CrcStandard.All) { ... }
 
 ## Support policy
 
-`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialise any CRC of width 1–64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.Checksums.CrcStandards> and cannot be constructed through `CrcStandard`.
+`CrcStandard` represents all scalar parameters as <xref:System.UInt64>, so the library can materialize any CRC of width 1–64 bits. Entries whose width exceeds 64 bits are listed below for completeness but are **not** exposed by <xref:Bodu.IO.Hashing.Checksums.CrcStandards> and cannot be constructed through `CrcStandard`.
 
 Aliases share a single catalogue instance with their canonical standard. `CrcStandard.FromName` resolves both canonical and alias names, so `FromName("CRC-32")` and `FromName("CRC-32/ISO-HDLC")` return the same instance.
 

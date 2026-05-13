@@ -132,7 +132,7 @@ public static class NotableDateRuleParser
 
     /// <summary>
     /// Parses a validated <see cref="XDocument" /> into a <see cref="ParsedNotableDateDocument" />,
-    /// materialising each &lt;NotableDate&gt; child into zero or more <see cref="NotableDateRule" />
+    /// materializing each &lt;NotableDate&gt; child into zero or more <see cref="NotableDateRule" />
     /// instances along with any &lt;Use&gt; group references.
     /// </summary>
     /// <param name="document">The notable-date XML document to parse; must already be schema-validated.</param>
@@ -377,7 +377,7 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if <paramref name="localName" /> is a recognised
+    /// Returns <see langword="true" /> if <paramref name="localName" /> is a recognized
     /// calculation-strategy element name (for example <c>Fixed</c>, <c>EasterSunday</c>).
     /// </summary>
     /// <param name="localName">The local name of the XML element.</param>
@@ -576,7 +576,7 @@ public static class NotableDateRuleParser
     /// </remarks>
     /// <param name="monthName">The month token — either an English month name or an integer 1–13.</param>
     /// <returns>The month number.</returns>
-    /// <exception cref="FormatException"><paramref name="monthName" /> is neither a recognised English month name nor an integer in 1–13.</exception>
+    /// <exception cref="FormatException"><paramref name="monthName" /> is neither a recognized English month name nor an integer in 1–13.</exception>
     private static int ParseMonth(string monthName)
     {
         ThrowHelper.ThrowIfNullOrEmpty(monthName);
@@ -611,7 +611,7 @@ public static class NotableDateRuleParser
     /// <returns>
     /// A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.
     /// </returns>
-    /// <exception cref="FormatException"><paramref name="token" /> is not a recognised month token.</exception>
+    /// <exception cref="FormatException"><paramref name="token" /> is not a recognized month token.</exception>
     private static (int? numericMonth, string? alias) ParseMonthToken(string token)
     {
         ThrowHelper.ThrowIfNullOrEmpty(token);

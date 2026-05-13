@@ -8,8 +8,6 @@
       href: cityhash.md
     - name: Using MurmurHash3
       href: murmurhash3.md
-    - name: Using XxHash
-      href: xxhash.md
     - name: Using Pearson
       href: pearson.md
     - name: Classic string hashes

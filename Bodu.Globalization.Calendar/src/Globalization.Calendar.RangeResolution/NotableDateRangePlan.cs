@@ -12,9 +12,9 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The plan describes which rules are eligible to contribute to the request, which civil years they will be materialised against,
+/// The plan describes which rules are eligible to contribute to the request, which civil years they will be materialized against,
 /// and which years of each algorithmic anchor must be computed. The pipeline iterates the plan exactly — no rule is processed and
-/// no algorithm is invoked outside of what the plan authorises.
+/// no algorithm is invoked outside of what the plan authorizes.
 /// </para>
 /// <para>
 /// Cross-year observance roll-overs (for example, <c>31 Dec</c> rolling forward to <c>3 Jan</c>) are handled by a fringe pass that
@@ -32,7 +32,7 @@ internal sealed class NotableDateRangePlan
     /// </summary>
     /// <param name="request">The originating request.</param>
     /// <param name="eligibleRules">The rule profiles that may contribute to the request.</param>
-    /// <param name="candidateYears">The civil years considered by the main pass for direct rule materialisation.</param>
+    /// <param name="candidateYears">The civil years considered by the main pass for direct rule materialization.</param>
     /// <param name="fringeYears">The adjacent civil years scanned by the fringe pass for adjustment-driven candidates.</param>
     /// <param name="fringeStartDate">The inclusive start of the fringe scan window.</param>
     /// <param name="fringeEndDate">The inclusive end of the fringe scan window.</param>
@@ -68,7 +68,7 @@ internal sealed class NotableDateRangePlan
     public IReadOnlyList<RuleStaticProfile> EligibleRules { get; }
 
     /// <summary>
-    /// Gets the civil years considered by the main materialisation pass — one entry per year that the request window spans.
+    /// Gets the civil years considered by the main materialization pass — one entry per year that the request window spans.
     /// </summary>
     /// <returns>An ordered list of four-digit civil years. Never <see langword="null" /> and never empty for a valid request.</returns>
     public IReadOnlyList<int> CandidateYears { get; }

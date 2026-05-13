@@ -24,7 +24,7 @@ public static partial class SequenceGenerator
     /// <see cref="Repeat{T}(T, int)"/> overload or <see cref="System.Linq.Enumerable.Repeat{TResult}(TResult, int)"/>.
     /// </para>
     /// <para>
-    /// The sequence is never materialised: the iterator yields the same captured reference (or value) on every call to <c>MoveNext</c>,
+    /// The sequence is never materialized: the iterator yields the same captured reference (or value) on every call to <c>MoveNext</c>,
     /// so memory usage is constant regardless of how many elements the consumer reads.
     /// </para>
     /// <para>
@@ -58,7 +58,7 @@ public static partial class SequenceGenerator
     /// <para>
     /// Functionally equivalent to <see cref="System.Linq.Enumerable.Repeat{TResult}(TResult, int)"/>; prefer this overload when the
     /// rest of the pipeline already lives in <c>SequenceGenerator</c> for stylistic consistency, or when interoperating with the
-    /// unbounded <see cref="Repeat{T}(T)"/> form. The BCL alternative is otherwise equivalent in behaviour and performance.
+    /// unbounded <see cref="Repeat{T}(T)"/> form. The BCL alternative is otherwise equivalent in behavior and performance.
     /// </para>
     /// <para>
     /// A <paramref name="count"/> of <c>0</c> returns an empty sequence and never invokes the iterator beyond its initial setup.

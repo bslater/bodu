@@ -130,7 +130,7 @@ public sealed class Isbn10
     /// <returns>
     /// <see langword="true" /> if the sequence is empty or evaluates as valid under ISBN-10; otherwise,
     /// <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> has the wrong
-    /// length or contains an unrecognised character.
+    /// length or contains an unrecognized character.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {

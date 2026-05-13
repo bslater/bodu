@@ -4,7 +4,7 @@
   notable-date sets via UseAll, producing a broad, country-neutral
   calendar for consumers calling `new NotableDateService()`.
 
-  These rules represent internationally recognised civic, cultural,
+  These rules represent internationally recognized civic, cultural,
   educational, environmental, family, food and agriculture, health, animal
   welfare, remembrance, science and technology, social, United Nations,
   and multi-tradition religious (lunar, Islamic, Jewish, Hindu, and
@@ -19,7 +19,7 @@
   Country-specific resources should avoid UseAll against these global
   files unless that country intentionally adopts the full set. Instead,
   country resources should cherry-pick relevant entries and override
-  jurisdiction-specific behaviour such as nonWorking flags, weekend
+  jurisdiction-specific behavior such as nonWorking flags, weekend
   adjustments, local naming, or suppression rules.
 
   Note on algorithm-keyed rules: the lunar, Islamic, Jewish, Hindu, and

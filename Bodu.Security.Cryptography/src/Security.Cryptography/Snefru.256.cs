@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// <see cref="Snefru256"/> maintains an 8-word internal state and absorbs input in 32-byte blocks into a 512-bit working buffer,
-/// applying 8 rounds of S-box substitution and word rotation per block. On finalisation the state is XOR-folded from the permuted
-/// buffer and serialised in big-endian byte order. See <see cref="Snefru{T}"/> for shared background.
+/// applying 8 rounds of S-box substitution and word rotation per block. On finalization the state is XOR-folded from the permuted
+/// buffer and serialized in big-endian byte order. See <see cref="Snefru{T}"/> for shared background.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>

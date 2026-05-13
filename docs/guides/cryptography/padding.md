@@ -6,7 +6,7 @@ title: Padding
 
 Block ciphers encrypt fixed-size blocks. When a plaintext is not a whole number of blocks long, the last block has to be *padded* — and the receiver has to know how to *unpad* it. This page covers the padding schemes supported by the library and shows when each one is appropriate.
 
-The five framework modes come from the standard <xref:System.Security.Cryptography.PaddingMode> enum. Set them via the algorithm's `Padding` property, or construct a strategy directly through <xref:Bodu.Security.Cryptography.PaddingFactory>. An extended <xref:Bodu.Security.Cryptography.BoduPaddingMode> enum mirrors those values and adds ISO/IEC 7816-4 bit padding for scenarios where the framework enum is not expressive enough.
+The five framework modes come from the standard <xref:System.Security.Cryptography.PaddingMode> enum. Set them via the algorithm's `Padding` property, or construct a strategy directly through <xref:Bodu.Security.Cryptography.PaddingFactory>. An extended <xref:Bodu.Security.Cryptography.PaddingModeKind> enum mirrors those values and adds ISO/IEC 7816-4 bit padding for scenarios where the framework enum is not expressive enough.
 
 ## PKCS7 — the safe default
 
@@ -17,7 +17,7 @@ PKCS7 appends *N* bytes, each with the value *N*, where *N* is chosen to bring t
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();
@@ -44,7 +44,7 @@ Zero padding appends `0x00` bytes until the plaintext reaches a block boundary. 
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.Zeros,
 };
 alg.GenerateKey();
@@ -70,7 +70,7 @@ ANSI X.923 appends `N - 1` bytes of value `0x00` followed by a trailing byte hol
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.ANSIX923,
 };
 alg.GenerateKey();
@@ -93,19 +93,19 @@ ISO 10126 is shaped like ANSI X.923 except the interior pad bytes are cryptograp
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.ISO10126,
 };
 ```
 
 ## ISO/IEC 7816-4 — bit padding (one-and-zeros)
 
-**Use for:** smart-card protocols and crypto constructions that require the 7816-4 shape (for example CMAC, SHA-3/Keccak). Access this mode through the extended <xref:Bodu.Security.Cryptography.BoduPaddingMode> enum, which is not part of the framework `PaddingMode` surface.
+**Use for:** smart-card protocols and crypto constructions that require the 7816-4 shape (for example CMAC, SHA-3/Keccak). Access this mode through the extended <xref:Bodu.Security.Cryptography.PaddingModeKind> enum, which is not part of the framework `PaddingMode` surface.
 
 ISO/IEC 7816-4 appends a single `0x80` byte followed by `0x00` bytes out to the next block boundary. When the plaintext is already block-aligned, a full extra block of padding is appended. `Unpad` scans the final block in constant time for the rightmost `0x80`: everything after it must be `0x00`, and the byte itself marks the end of the plaintext.
 
 ```csharp
-IPaddingStrategy bitPadding = PaddingFactory.Create(BoduPaddingMode.ISO7816_4);
+IPaddingStrategy bitPadding = PaddingFactory.Create(PaddingModeKind.ISO7816_4);
 
 byte[] padded   = bitPadding.Pad(plaintext, blockSize: 32);
 byte[] unpadded = bitPadding.Unpad(padded, blockSize: 32);
@@ -119,7 +119,7 @@ byte[] unpadded = bitPadding.Unpad(padded, blockSize: 32);
 // Stream-shaped mode: ciphertext length == plaintext length.
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();
@@ -143,7 +143,7 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 | Already block-aligned | CBC, ECB | **None** (if sure) | Exactly plaintext length |
 | Interop with ANSI X.923 spec | CBC, ECB | **ANSIX923** | Plaintext + 1–block bytes |
 | Interop with legacy ISO 10126 ciphertext | CBC, ECB | **ISO10126** | Plaintext + 1–block bytes |
-| Smart-card / CMAC / bit-oriented protocols | CBC, ECB | **ISO7816_4** (via `BoduPaddingMode`) | Plaintext + 1–block bytes |
+| Smart-card / CMAC / bit-oriented protocols | CBC, ECB | **ISO7816_4** (via `PaddingModeKind`) | Plaintext + 1–block bytes |
 
 ## Using the strategy directly
 

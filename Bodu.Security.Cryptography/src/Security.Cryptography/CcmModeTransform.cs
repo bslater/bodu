@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// CCM is the <b>CTR + CBC-MAC</b> instantiation of the generic AEAD shape above: the top pipeline is the
-/// plain CTR keystream generator (panel labelled <em>Keystream Generator (CTR)</em>), and the bottom
+/// plain CTR keystream generator (panel labeled <em>Keystream Generator (CTR)</em>), and the bottom
 /// pipeline is a CBC-MAC chain over the formatted nonce, associated data, and ciphertext that produces
 /// the tag.
 /// </para>
@@ -218,7 +218,7 @@ public sealed class CcmModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data (AAD) MAC contribution has been finalised exactly once before
+    /// Ensures the associated-data (AAD) MAC contribution has been finalized exactly once before
     /// payload bytes are processed; no-op on subsequent invocations.
     /// </summary>
     private void EnsureAadProcessed()

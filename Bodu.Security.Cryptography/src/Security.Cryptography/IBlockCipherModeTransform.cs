@@ -15,7 +15,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// Implementations wrap an <see cref="IBlockCipher"/> and own any mode state required between calls, such as the evolving
-/// initialisation vector, feedback register, or counter. Successive calls to <see cref="Transform"/> continue the stream from the
+/// initialization vector, feedback register, or counter. Successive calls to <see cref="Transform"/> continue the stream from the
 /// state left by the previous call.
 /// </para>
 /// <para>
@@ -49,7 +49,7 @@ namespace Bodu.Security.Cryptography;
 /// existing mode infrastructure or building a higher-level construction on top.
 /// </para>
 /// <para>
-/// Implementations are stateful and not thread-safe; share behind explicit synchronisation, or allocate one per
+/// Implementations are stateful and not thread-safe; share behind explicit synchronization, or allocate one per
 /// consumer. Most modes reset cleanly when constructed afresh — there is no in-place reset method on this interface.
 /// </para>
 /// </remarks>

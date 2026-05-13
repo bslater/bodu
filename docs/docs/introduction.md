@@ -12,10 +12,10 @@ If you are new to Bodu, start with the **library introductions** below to unders
 
 | Package | What it provides | Target framework |
 |---|---|---|
-| **[Bodu.Core](core/)** | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), a day-of-week `WeekPattern` value type, pooled buffers, and a comprehensive set of date, numeric, span, and text extensions sitting on a centralised `ThrowHelper`. | `net8.0` |
-| **[Bodu.IO.Hashing](io-hashing/)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract — fingerprints (FNV, CityHash, MurmurHash3, XxHash, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0` |
-| **[Bodu.Security.Cryptography](cryptography/)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with five AEAD mode transforms, keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
-| **[Bodu.Globalization.Calendar](calendar/)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. | `net8.0` |
+| **[Bodu.Core](core/index.md)** | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), a day-of-week `WeekPattern` value type, pooled buffers, and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0` |
+| **[Bodu.IO.Hashing](io-hashing/index.md)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract — fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0` |
+| **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
+| **[Bodu.Globalization.Calendar](calendar/index.md)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. | `net8.0` |
 
 Each package is versioned and released independently. Take the one you need and ignore the others — there are no cross-package runtime dependencies. `Bodu.IO.Hashing` and `Bodu.Security.Cryptography` both depend on `Bodu.Core` for shared argument-validation helpers.
 
@@ -26,42 +26,46 @@ Each library has a dedicated introduction page that explains its namespaces, the
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="core/index.html">Bodu.Core</a></h3>
+  <h3><a href="core/index.md">Bodu.Core</a></h3>
   <p>Bounded collections, eviction-aware caches, day-of-week patterns, pooled buffers, and date / numeric / span extensions. Useful in almost any application; depended on internally by the hashing and cryptography packages.</p>
   <div class="bodu-card-links">
-    <a href="core/index.html">Introduction</a>
-    <a href="core/getting-started.html">Getting started</a>
-    <a href="../guides/core/">Guides</a>
+    <a href="core/index.md">Introduction</a>
+    <a href="core/getting-started.md">Getting started</a>
+    <a href="../guides/core/index.md">Guides</a>
+    <a href="../apidoc/Bodu.Collections.Generic.md">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="io-hashing/index.html">Bodu.IO.Hashing</a></h3>
-  <p>Non-cryptographic hashes — fingerprints, checksums, and human-readable check digits. Optimised for speed, portability, and error-detection coverage rather than adversary resistance.</p>
+  <h3><a href="io-hashing/index.md">Bodu.IO.Hashing</a></h3>
+  <p>Non-cryptographic hashes — fingerprints, checksums, and human-readable check digits. Optimized for speed, portability, and error-detection coverage rather than adversary resistance.</p>
   <div class="bodu-card-links">
-    <a href="io-hashing/index.html">Introduction</a>
-    <a href="io-hashing/getting-started.html">Getting started</a>
-    <a href="../guides/io-hashing/">Guides</a>
+    <a href="io-hashing/index.md">Introduction</a>
+    <a href="io-hashing/getting-started.md">Getting started</a>
+    <a href="../guides/io-hashing/index.md">Guides</a>
+    <a href="../apidoc/Bodu.IO.Hashing.md">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="cryptography/index.html">Bodu.Security.Cryptography</a></h3>
+  <h3><a href="cryptography/index.md">Bodu.Security.Cryptography</a></h3>
   <p>Block ciphers, authenticated encryption, keyed hashes, and cryptographic digests with a formal adversary model. Drops into any API that expects <code>SymmetricAlgorithm</code> or <code>HashAlgorithm</code>.</p>
   <div class="bodu-card-links">
-    <a href="cryptography/index.html">Introduction</a>
-    <a href="cryptography/getting-started.html">Getting started</a>
-    <a href="../guides/cryptography/">Guides</a>
+    <a href="cryptography/index.md">Introduction</a>
+    <a href="cryptography/getting-started.md">Getting started</a>
+    <a href="../guides/cryptography/index.md">Guides</a>
+    <a href="../apidoc/Bodu.Security.Cryptography.md">API reference</a>
   </div>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="calendar/index.html">Bodu.Globalization.Calendar</a></h3>
+  <h3><a href="calendar/index.md">Bodu.Globalization.Calendar</a></h3>
   <p>Notable-date resolution and dynamic calendar calculators driven from pluggable XML or JSON rule sources, with an observance-adjustment pipeline, plugin host, and territory filtering.</p>
   <div class="bodu-card-links">
-    <a href="calendar/index.html">Introduction</a>
-    <a href="calendar/getting-started.html">Getting started</a>
-    <a href="../guides/calendar/">Guides</a>
+    <a href="calendar/index.md">Introduction</a>
+    <a href="calendar/getting-started.md">Getting started</a>
+    <a href="../guides/calendar/index.md">Guides</a>
+    <a href="../apidoc/Bodu.Globalization.Calendar.md">API reference</a>
   </div>
 </div>
 
@@ -78,7 +82,7 @@ If your problem touches **hashing**, **checksums**, or **encryption**, the [Algo
 | A fixed-capacity ring buffer, deque, or evicting cache | `CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<K,V>` | Bodu.Core |
 | A day-of-week bitmask value type | `WeekPattern` | Bodu.Core |
 | A standard on-the-wire checksum (CRC, Adler-32, Fletcher) | `Crc` + `CrcStandard`, `Adler32`, `Fletcher32` | Bodu.IO.Hashing |
-| A fast hash-table fingerprint | `Fnv1a64`, `CityHash64`, `XxHash64`, `MurmurHash3` | Bodu.IO.Hashing |
+| A fast hash-table fingerprint | `Fnv1a64`, `CityHash64`, `MurmurHash3_128` | Bodu.IO.Hashing |
 | Validation of a credit card, IBAN, ISBN, GTIN, … | `Luhn`, `Iban`, `Isbn13`, `Gtin14` | Bodu.IO.Hashing |
 | Encryption of data under a key | `Threefish*`, `Serpent*`, `Camellia`, `Twofish`, `Blowfish`, `AesBlockCipher` | Bodu.Security.Cryptography |
 | Authenticated encryption (encrypt + integrity in one) | `AesBlockCipher` + `GcmModeTransform`, `AsconAead128` | Bodu.Security.Cryptography |
@@ -92,7 +96,7 @@ If your problem touches **hashing**, **checksums**, or **encryption**, the [Algo
 - **Nullable reference types** are enabled solution-wide. Public APIs make their null-intent explicit.
 - **Analyzer-clean.** StyleCop.Analyzers, Roslynator, the .NET analyzers, AsyncFixer, and the Visual Studio Threading analyzers run at build time. Doc-comment warnings — including `CS1591` — are treated as errors.
 - **Deterministic builds** produce reproducible package outputs.
-- **Documentation-first.** Every public type and member carries XML documentation in British English, and that documentation is the source of truth for this site. The API reference you see here is generated directly from the source.
+- **Documentation-first.** Every public type and member carries XML documentation in US English, and that documentation is the source of truth for this site. The API reference you see here is generated directly from the source.
 - **MIT licensed**, no external runtime dependencies beyond the BCL.
 
 ## Testing and conventions
@@ -104,4 +108,4 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Algorithm families](algorithm-families.md)** — the cross-library taxonomy of fingerprints, checksums, check digits, cryptographic hashes, keyed hashes, and symmetric ciphers.
 - **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md).
-- **[API reference](../api/)** — the full auto-generated type-by-type documentation.
+- **API references:** [Bodu.Collections.Generic](../apidoc/Bodu.Collections.Generic.md) · [Bodu.IO.Hashing](../apidoc/Bodu.IO.Hashing.md) · [Bodu.Security.Cryptography](../apidoc/Bodu.Security.Cryptography.md) · [Bodu.Globalization.Calendar](../apidoc/Bodu.Globalization.Calendar.md).

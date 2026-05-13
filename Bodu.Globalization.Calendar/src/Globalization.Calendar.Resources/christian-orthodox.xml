@@ -8,7 +8,7 @@
   expressed on the civil Gregorian calendar.
 
   Country-specific resources should import only the dates they observe and
-  override territory, nonWorking, naming, or adjustment behaviour where required.
+  override territory, nonWorking, naming, or adjustment behavior where required.
 
   Algorithm keys used:
     orthodox-easter-sunday — Orthodox Pascha/Easter Sunday, calculated using

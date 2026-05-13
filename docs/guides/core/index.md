@@ -4,7 +4,7 @@ title: Bodu.Core guides
 
 # Bodu.Core guides
 
-Recipe-style walk-throughs for **Bodu.Core**, organised by namespace. Each guide on this page is a focused walk-through of one headline type.
+Recipe-style walk-throughs for **Bodu.Core**, organized by namespace. Each guide on this page is a focused walk-through of one headline type.
 
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Core introduction](../../docs/core/index.md) and the [getting-started page](../../docs/core/getting-started.md). For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](../../apidoc/Bodu.Collections.Generic.md).
 
@@ -26,17 +26,17 @@ If you have not yet installed the package or want the high-level shape of the li
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="circular-buffer.html">Circular buffer</a></h3>
+  <h3><a href="circular-buffer.md">Circular buffer</a></h3>
   <p>Fixed-capacity FIFO ring buffer — single-threaded <code>CircularBuffer&lt;T&gt;</code> and thread-safe <code>ConcurrentCircularBuffer&lt;T&gt;</code>; configurable overwrite-on-full.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="deque.html">Deque</a></h3>
+  <h3><a href="deque.md">Deque</a></h3>
   <p>Double-ended queue — <code>Deque&lt;T&gt;</code> with O(1) <code>AddFirst</code> / <code>AddLast</code> / <code>RemoveFirst</code> / <code>RemoveLast</code>; growable or fixed-capacity.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="evicting-dictionary.html">Evicting dictionary</a></h3>
+  <h3><a href="evicting-dictionary.md">Evicting dictionary</a></h3>
   <p>Capacity-bounded key-value store with FIFO, LRU, and LFU eviction policies.</p>
 </div>
 
@@ -47,7 +47,7 @@ If you have not yet installed the package or want the high-level shape of the li
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="week-pattern.html">WeekPattern</a></h3>
+  <h3><a href="week-pattern.md">WeekPattern</a></h3>
   <p>Immutable bitmask value type for sets of days of the week; supports composition (<code>MTuW</code>), bitwise operators, parsing, and enumeration.</p>
 </div>
 

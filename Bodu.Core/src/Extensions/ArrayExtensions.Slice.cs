@@ -54,7 +54,7 @@ public static partial class ArrayExtensions
     /// <param name="index">The starting index in the <paramref name="array"/> from which copying begins.</param>
     /// <param name="count">The number of elements to copy from the <paramref name="array"/>.</param>
     /// <returns>A new array containing the copied elements from the <paramref name="array"/> starting from <paramref name="index"/>.</returns>
-    /// <remarks>This method is optimised and does not perform validation. Ensure the inputs are valid.</remarks>
+    /// <remarks>This method is optimized and does not perform validation. Ensure the inputs are valid.</remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="array" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when an argument is outside its valid range.</exception>
     public static T[] SliceInternal<T>(this T[] array, int index, int count)

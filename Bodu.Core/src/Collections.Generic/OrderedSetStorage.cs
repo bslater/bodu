@@ -28,7 +28,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// This type is internal and is not thread-safe. Consumers are responsible for boundary semantics, choosing
-/// which operations to expose, and synchronising external mutators.
+/// which operations to expose, and synchronizing external mutators.
 /// </para>
 /// </remarks>
 [Serializable]

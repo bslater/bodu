@@ -4,7 +4,7 @@ title: Using CubeHash
 
 # Using CubeHash
 
-CubeHash is Daniel J. Bernstein's 2008 submission to the NIST SHA-3 competition. It is a sponge-style hash built from a single simple permutation ("Cube"), parameterised by round counts and block size so you can dial the speed / margin trade-off. The default configuration reproduces the **CubeHash 16/32–512** variant submitted to the SHA-3 contest.
+CubeHash is Daniel J. Bernstein's 2008 submission to the NIST SHA-3 competition. It is a sponge-style hash built from a single simple permutation ("Cube"), parameterized by round counts and block size so you can dial the speed / margin trade-off. The default configuration reproduces the **CubeHash 16/32–512** variant submitted to the SHA-3 contest.
 
 The type is <xref:Bodu.Security.Cryptography.CubeHash>, and it derives from <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType>.
 
@@ -18,7 +18,7 @@ The type is <xref:Bodu.Security.Cryptography.CubeHash>, and it derives from <xre
 | `InitializationRounds` | 16 | 1–4096 | Permutation rounds during init. |
 | `FinalizationRounds` | 32 | 1–4096 | Permutation rounds after the last block. |
 
-The published naming convention is **CubeHash `r+b`/`w+f`-`h`** — initialisation rounds `i`, transform rounds `r`, block size `b`, finalisation rounds `f`, output bits `h`. `AlgorithmName` reflects the current configuration, e.g. `"CubeHash16+16/32+32-512"`.
+The published naming convention is **CubeHash `r+b`/`w+f`-`h`** — initialization rounds `i`, transform rounds `r`, block size `b`, finalization rounds `f`, output bits `h`. `AlgorithmName` reflects the current configuration, e.g. `"CubeHash16+16/32+32-512"`.
 
 ## Pattern 1 — default CubeHash (the SHA-3 submission)
 
@@ -115,7 +115,7 @@ using var cube = new CubeHash
 ## When to use CubeHash
 
 - **Research** into sponge constructions, SHA-3 alternatives, or round-count vs speed trade-offs.
-- **Interoperability** with systems that use a specific CubeHash parameterisation.
+- **Interoperability** with systems that use a specific CubeHash parameterization.
 
 For new work without an interoperability requirement, the BCL's SHA-2 and SHA-3 families are hardware-accelerated and have broader analysis behind them. CubeHash's value is its knob-turnable parameter space — useful when that is specifically what you want.
 

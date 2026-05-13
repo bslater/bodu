@@ -107,7 +107,7 @@ byte[] full = pearson.GetCurrentHash();
 pearson.Reset();                             // back to the initial offsets
 ```
 
-`GetCurrentHash` finalises on a copy, so mid-stream snapshots are cheap and do not disturb in-progress hashing.
+`GetCurrentHash` finalizes on a copy, so mid-stream snapshots are cheap and do not disturb in-progress hashing.
 
 ## Pearson vs the other non-cryptographic hashes
 

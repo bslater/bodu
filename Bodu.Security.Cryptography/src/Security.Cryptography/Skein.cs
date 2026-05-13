@@ -45,7 +45,7 @@ namespace Bodu.Security.Cryptography;
 /// potential future extension (see <see cref="SkeinTweakType"/>).
 /// </para>
 /// <para>
-/// <strong>When to choose Skein.</strong> Pick the Skein family for interop with code that has standardised on
+/// <strong>When to choose Skein.</strong> Pick the Skein family for interop with code that has standardized on
 /// it (the SHA-3 finalist round attracted a long tail of adopters, and Skein remains common in research code).
 /// Skein-512 is the recommended default; Skein-256 is the narrower variant and Skein-1024 the widest. For new
 /// general-purpose cryptographic hashing without an interop requirement <see cref="Blake2b"/> is faster on
@@ -140,7 +140,7 @@ public abstract partial class Skein<T>
     /// </summary>
     /// <value>
     /// A byte array holding the key material. An empty array — the default — produces a plain, unkeyed hash; a
-    /// non-empty array triggers a preliminary <c>KEY</c> UBI phase whenever the algorithm is initialised. Both the
+    /// non-empty array triggers a preliminary <c>KEY</c> UBI phase whenever the algorithm is initialized. Both the
     /// getter and the setter operate on defensive copies so external callers cannot mutate the internal key.
     /// </value>
     /// <returns>A defensive copy of the current key, or an empty array if no key has been configured.</returns>
@@ -260,7 +260,7 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
-    /// Finalises the Skein computation by flushing the residual message block and running the output UBI chain to
+    /// Finalizes the Skein computation by flushing the residual message block and running the output UBI chain to
     /// produce the digest.
     /// </summary>
     /// <returns>A byte array containing the computed hash, of length <see cref="HashAlgorithm.HashSize"/> / 8.</returns>
@@ -347,7 +347,7 @@ public abstract partial class Skein<T>
     /// This method never returns because Skein bypasses the base padding pipeline.
     /// </returns>
     /// <exception cref="InvalidOperationException">
-    /// Always thrown because Skein performs finalisation through UBI rather than
+    /// Always thrown because Skein performs finalization through UBI rather than
     /// <see cref="BlockHashAlgorithm{T}.PadBlock(ReadOnlySpan{byte}, ulong)" />.
     /// </exception>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
@@ -356,13 +356,13 @@ public abstract partial class Skein<T>
 
     /// <summary>
     /// Satisfies the base final-block processing contract, but is unreachable for Skein because hash
-    /// finalisation is performed by the OUTPUT UBI phase.
+    /// finalization is performed by the OUTPUT UBI phase.
     /// </summary>
     /// <returns>
     /// This method never returns because Skein bypasses the base final-block pipeline.
     /// </returns>
     /// <exception cref="InvalidOperationException">
-    /// Always thrown because Skein drives finalisation from <see cref="HashFinal" /> rather than
+    /// Always thrown because Skein drives finalization from <see cref="HashFinal" /> rather than
     /// <see cref="BlockHashAlgorithm{T}.ProcessFinalBlock" />.
     /// </exception>
     protected override byte[] ProcessFinalBlock() =>

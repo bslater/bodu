@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <note type="important">
 /// This type is a **non-standard Serpent-derived construction** and is not interoperable with any reference Serpent
-/// implementation. Its cryptographic properties have not been externally analysed. For standard, externally vetted Serpent,
+/// implementation. Its cryptographic properties have not been externally analyzed. For standard, externally vetted Serpent,
 /// use <see cref="Serpent128Cipher"/>.
 /// </note>
 /// </remarks>
@@ -37,7 +37,7 @@ public sealed class Serpent1024Cipher
     /// Initializes a new instance of the <see cref="Serpent1024Cipher"/> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 1024-bit (128-byte) key used for encryption and decryption.</param>
-    /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behaviour.</param>
+    /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behavior.</param>
     public Serpent1024Cipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
         : base(key, tweak) { }
 

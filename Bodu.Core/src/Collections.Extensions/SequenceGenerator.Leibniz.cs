@@ -32,7 +32,7 @@ public static partial class SequenceGenerator
     /// <remarks>
     /// <para>
     /// The Leibniz series is the alternating series whose partial sums converge to <c>π/4</c>. Use this generator when illustrating
-    /// convergence behaviour, when computing rough approximations to π by summing terms and multiplying by <c>4</c>, or when
+    /// convergence behavior, when computing rough approximations to π by summing terms and multiplying by <c>4</c>, or when
     /// demonstrating how slowly such an alternating series converges.
     /// </para>
     /// <para>

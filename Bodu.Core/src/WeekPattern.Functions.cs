@@ -115,7 +115,7 @@ public partial struct WeekPattern
 
     /// <summary>
     /// Parses the format string for use in <see cref="ParseExact"/> or <see cref="TryParseExact"/>,
-    /// throwing <see cref="FormatException"/> if the format is unrecognised or <see langword="null"/>.
+    /// throwing <see cref="FormatException"/> if the format is unrecognized or <see langword="null"/>.
     /// </summary>
     private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForParse(string format)
     {
@@ -128,7 +128,7 @@ public partial struct WeekPattern
 
     /// <summary>
     /// Parses the format string for use in <see cref="ToString(string, IFormatProvider)"/>,
-    /// throwing <see cref="ArgumentException"/> if the format is unrecognised.
+    /// throwing <see cref="ArgumentException"/> if the format is unrecognized.
     /// </summary>
     private static (char? startDay, char? unselectedChar, bool isBinary) ParseFormatForToString(string? format)
     {
@@ -149,7 +149,7 @@ public partial struct WeekPattern
     /// <c>startDay</c> is <c>'S'</c> or <c>'M'</c>; <c>unselectedChar</c> is the placeholder symbol;
     /// <c>isBinary</c> indicates binary output mode.
     /// </param>
-    /// <returns><see langword="true"/> if the format is recognised; otherwise, <see langword="false"/>.</returns>
+    /// <returns><see langword="true"/> if the format is recognized; otherwise, <see langword="false"/>.</returns>
     private static bool TryParseFormatInfo(string format, out (char? startDay, char? unselectedChar, bool isBinary) info)
     {
         info = default;

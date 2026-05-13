@@ -22,7 +22,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <list type="bullet">
 ///   <item><description>Output size: 64 bits (8 bytes).</description></item>
 ///   <item><description>Modulus: <c>4294967291</c> (largest prime &lt; 2<sup>32</sup>).</description></item>
-///   <item><description>Compatibility: <strong>not</strong> a standardised wire format — consumers must agree on Adler-64 explicitly.</description></item>
+///   <item><description>Compatibility: <strong>not</strong> a standardized wire format — consumers must agree on Adler-64 explicitly.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose Adler64.</strong> Pick <see cref="Adler64"/> when 32 bits are not enough — very

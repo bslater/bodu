@@ -10,7 +10,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
 /// Extends <see cref="ICryptoTransform"/> with one-shot, span/memory-aware, stream-to-stream, and async transform
-/// helpers — sized buffers, finalisation, and stream pumping rolled into single calls.
+/// helpers — sized buffers, finalization, and stream pumping rolled into single calls.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// raw API forces callers to size output buffers, allocate result arrays, distinguish intermediate <c>TransformBlock</c>
 /// calls from the final <c>TransformFinalBlock</c>, and reset the transform between messages. This class wraps those
 /// operations behind two verb-led names — <c>Transform</c> for whole-input processing and <c>TransformFinalBlock</c>
-/// for finalisation — that hide the buffering arithmetic and give the caller back a correctly sized result.
+/// for finalization — that hide the buffering arithmetic and give the caller back a correctly sized result.
 /// </para>
 /// <para>
 /// The API surface clusters into four groups:
@@ -43,7 +43,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///     extension drives the read/transform/write loop with a tunable buffer.</description>
 ///   </item>
 ///   <item>
-///     <term>Finalisation</term>
+///     <term>Finalization</term>
 ///     <description><c>TransformFinalBlock</c> overloads that mirror the same input shapes (no-arg, byte array, slice,
 ///     span, memory) for emitting the final, padded block.</description>
 ///   </item>
@@ -53,7 +53,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <see cref="ICryptoTransform.TransformFinalBlock(byte[], int, int)"/> has run, the transform should be disposed and a
 /// fresh one created for the next message. None of these helpers dispose the transform or the supplied streams; the
 /// caller owns the lifetime. Methods that allocate a result array always return exactly the number of bytes produced.
-/// Async overloads honour <see cref="System.Threading.CancellationToken"/> at every read boundary.
+/// Async overloads honor <see cref="System.Threading.CancellationToken"/> at every read boundary.
 /// </para>
 /// <example>
 /// <code language="csharp">

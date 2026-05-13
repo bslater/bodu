@@ -4,11 +4,11 @@ title: Deque
 
 # Deque
 
-`Deque<T>` is a double-ended queue (deque) backed by a contiguous circular array. Elements may be added or removed from either end in amortised O(1) time. The `AllowGrow` property controls whether the backing array expands automatically when full or whether the deque rejects further inserts — letting one type cover both growable and fixed-capacity scenarios.
+`Deque<T>` is a double-ended queue (deque) backed by a contiguous circular array. Elements may be added or removed from either end in amortized O(1) time. The `AllowGrow` property controls whether the backing array expands automatically when full or whether the deque rejects further inserts — letting one type cover both growable and fixed-capacity scenarios.
 
 For a single-ended FIFO buffer with eviction-on-full semantics, see [Circular buffer](circular-buffer.md). For thread-safe concurrent FIFO access, use `ConcurrentCircularBuffer<T>` (a separate, lock-free implementation).
 
-![Deque backing array with Head, Tail, wrap-around, and AllowGrow behaviour](../../images/diagrams/deque.svg)
+![Deque backing array with Head, Tail, wrap-around, and AllowGrow behavior](../../images/diagrams/deque.svg)
 
 `Head` and `Tail` index into a contiguous backing array but advance modulo `Capacity`, so the logical sequence may wrap past the end of the array. `AddFirst` / `RemoveFirst` operate at the head end; `AddLast` / `RemoveLast` operate at the tail end. The indexer `this[i]` reads in logical order, hiding the wrap from callers.
 

@@ -46,7 +46,7 @@ internal static class Alphanumeric
     /// <param name="ch">The character to expand.</param>
     /// <returns>The integer value in the range 0 to 38.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="ch" /> is not a recognised CUSIP character.
+    /// Thrown when <paramref name="ch" /> is not a recognized CUSIP character.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static int ExpandCusip(char ch)
@@ -72,7 +72,7 @@ internal static class Alphanumeric
     /// <param name="value">The character sequence to validate.</param>
     /// <param name="paramName">The parameter name used in any thrown exception.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when any element of <paramref name="value" /> is not a recognised alphanumeric character.
+    /// Thrown when any element of <paramref name="value" /> is not a recognized alphanumeric character.
     /// </exception>
     public static void ValidateAlphanumeric(ReadOnlySpan<char> value, string paramName)
     {
@@ -91,12 +91,12 @@ internal static class Alphanumeric
     }
 
     /// <summary>
-    /// Validates that every character in <paramref name="value" /> is a recognised CUSIP character.
+    /// Validates that every character in <paramref name="value" /> is a recognized CUSIP character.
     /// </summary>
     /// <param name="value">The character sequence to validate.</param>
     /// <param name="paramName">The parameter name used in any thrown exception.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when any element of <paramref name="value" /> is not a recognised CUSIP character.
+    /// Thrown when any element of <paramref name="value" /> is not a recognized CUSIP character.
     /// </exception>
     public static void ValidateCusip(ReadOnlySpan<char> value, string paramName)
     {
@@ -118,14 +118,14 @@ internal static class Alphanumeric
     }
 
     /// <summary>
-    /// Validates that every character in <paramref name="value" /> is a recognised SEDOL character, i.e. an
+    /// Validates that every character in <paramref name="value" /> is a recognized SEDOL character, i.e. an
     /// ASCII decimal digit or an uppercase consonant (vowels <c>'A'</c>, <c>'E'</c>, <c>'I'</c>, <c>'O'</c>, and
     /// <c>'U'</c> are disallowed).
     /// </summary>
     /// <param name="value">The character sequence to validate.</param>
     /// <param name="paramName">The parameter name used in any thrown exception.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when any element of <paramref name="value" /> is not a recognised SEDOL character.
+    /// Thrown when any element of <paramref name="value" /> is not a recognized SEDOL character.
     /// </exception>
     public static void ValidateSedol(ReadOnlySpan<char> value, string paramName)
     {

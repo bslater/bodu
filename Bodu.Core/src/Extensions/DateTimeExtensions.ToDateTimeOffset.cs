@@ -16,7 +16,7 @@ public static partial class DateTimeExtensions
     /// <param name="dateTime">The date and time value to convert.</param>
     /// <returns>A <see cref="DateTimeOffset"/> representing the same point in time as <paramref name="dateTime"/>, with the offset derived from its <see cref="DateTime.Kind"/>.</returns>
     /// <remarks>
-    /// <para>The behaviour depends on the <see cref="DateTime.Kind"/> of the input:</para>
+    /// <para>The behavior depends on the <see cref="DateTime.Kind"/> of the input:</para>
     /// <list type="bullet">
     /// <item><term><see cref="DateTimeKind.Utc"/></term><description>applies a zero offset (UTC).</description></item>
     /// <item><term><see cref="DateTimeKind.Local"/></term><description>applies the system's local time zone offset.</description></item>

@@ -40,7 +40,7 @@ public static partial class HashAlgorithmExtensions
     /// Comparison is performed using <see cref="CryptographicOperations.FixedTimeEquals"/> to mitigate timing side-channel attacks.
     /// </para>
     /// <para>
-    /// If <paramref name="cancellationToken"/> is already cancelled on entry, an <see cref="OperationCanceledException"/> is thrown
+    /// If <paramref name="cancellationToken"/> is already canceled on entry, an <see cref="OperationCanceledException"/> is thrown
     /// immediately before any I/O begins.
     /// </para>
     /// </remarks>
@@ -50,7 +50,7 @@ public static partial class HashAlgorithmExtensions
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(expectedHash);
 
-        // Throw OperationCanceledException directly for an already-cancelled token.
+        // Throw OperationCanceledException directly for an already-canceled token.
         // ComputeHashAsync would otherwise throw the derived TaskCanceledException.
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -90,7 +90,7 @@ public static partial class HashAlgorithmExtensions
     /// A malformed <paramref name="expectedHex"/> string is treated as a non-match and returns <see langword="false"/>.
     /// </para>
     /// <para>
-    /// If <paramref name="cancellationToken"/> is already cancelled on entry, an <see cref="OperationCanceledException"/> is thrown
+    /// If <paramref name="cancellationToken"/> is already canceled on entry, an <see cref="OperationCanceledException"/> is thrown
     /// immediately before any I/O begins.
     /// </para>
     /// </remarks>
@@ -100,7 +100,7 @@ public static partial class HashAlgorithmExtensions
         ThrowHelper.ThrowIfNull(stream);
         ThrowHelper.ThrowIfNull(expectedHex);
 
-        // Throw OperationCanceledException directly for an already-cancelled token.
+        // Throw OperationCanceledException directly for an already-canceled token.
         // ComputeHashAsync would otherwise throw the derived TaskCanceledException.
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -146,7 +146,7 @@ public static partial class HashAlgorithmExtensions
     /// <see cref="CryptographicOperations.FixedTimeEquals"/> to mitigate timing side-channel attacks.
     /// </para>
     /// <para>
-    /// If <paramref name="cancellationToken"/> is already cancelled on entry, an <see cref="OperationCanceledException"/> is thrown
+    /// If <paramref name="cancellationToken"/> is already canceled on entry, an <see cref="OperationCanceledException"/> is thrown
     /// immediately before any I/O begins.
     /// </para>
     /// </remarks>
@@ -155,7 +155,7 @@ public static partial class HashAlgorithmExtensions
         ThrowHelper.ThrowIfNull(algorithm);
         ThrowHelper.ThrowIfNull(stream);
 
-        // Throw OperationCanceledException directly for an already-cancelled token.
+        // Throw OperationCanceledException directly for an already-canceled token.
         // ComputeHashAsync would otherwise throw the derived TaskCanceledException.
         cancellationToken.ThrowIfCancellationRequested();
 

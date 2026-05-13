@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// BLAKE2s is specified in <see href="https://www.rfc-editor.org/rfc/rfc7693">RFC 7693</see> and is optimised for
+/// BLAKE2s is specified in <see href="https://www.rfc-editor.org/rfc/rfc7693">RFC 7693</see> and is optimized for
 /// 8-bit to 32-bit platforms. It operates on 64-byte (512-bit) blocks and maintains eight 32-bit state words,
 /// applying 10 rounds of the BLAKE2 <c>G</c> mixing function per block.
 /// </para>
@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// This implementation inherits its residual buffer, byte-counter and lookahead-buffering loop from
 /// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>: the final message block is not compressed until
 /// <see cref="HashAlgorithm.HashFinal"/> is called, at which point the <c>finalization</c> flag is set and the
-/// output bytes are serialised in little-endian order then truncated to the configured output length.
+/// output bytes are serialized in little-endian order then truncated to the configured output length.
 /// </para>
 /// <para>
 /// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.Key"/> switches the instance into
@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Output size: configurable — 128, 160, 192, 224, or 256 bits.</description></item>
 ///   <item><description>Block size: 64 bytes (512 bits); 8 × 32-bit state words; 10 rounds.</description></item>
 ///   <item><description>Optional key: 1–32 bytes for BLAKE2s-MAC mode (RFC 7693 §2.8).</description></item>
-///   <item><description>Specification: RFC 7693; optimised for 8/16/32-bit hosts.</description></item>
+///   <item><description>Specification: RFC 7693; optimized for 8/16/32-bit hosts.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose BLAKE2s.</strong> Pick BLAKE2s on 32-bit hosts, embedded targets, or any time the
@@ -85,7 +85,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     private const int BlockSizeBytesValue = BlockSizeValue / 8;
 
     /// <summary>
-    /// The SHA-256 initialisation constants used as the BLAKE2s IV.
+    /// The SHA-256 initialization constants used as the BLAKE2s IV.
     /// </summary>
     private static readonly uint[] s_iv =
     [
@@ -149,7 +149,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// <returns>The currently configured output size in bits.</returns>
     /// <remarks>
     /// The full BLAKE2s compression is always run using all 256 bits of internal state. Shorter output lengths
-    /// are produced by truncating the serialised state after finalisation. The property may only be changed
+    /// are produced by truncating the serialized state after finalization. The property may only be changed
     /// before hashing has begun; once <see cref="HashAlgorithm.TransformBlock"/> or a <c>ComputeHash</c>
     /// overload has been called, the value is immutable until <see cref="HashAlgorithm.Initialize"/> is called.
     /// </remarks>
@@ -212,7 +212,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// <summary>
     /// Compresses a single 64-byte block using the BLAKE2s <c>F</c> compression function. Invoked by
     /// <see cref="DeferredFinalBlockHashAlgorithm{T}"/> with <paramref name="isFinal"/> set to <see langword="true"/>
-    /// for the last call (which inverts the finalisation flag word) and to <see langword="false"/> otherwise.
+    /// for the last call (which inverts the finalization flag word) and to <see langword="false"/> otherwise.
     /// </summary>
     /// <param name="block">The 64-byte block to compress.</param>
     /// <param name="totalBytesIncludingThisBlock">
@@ -220,7 +220,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
     /// counter (the BLAKE2 <c>t0</c> / <c>t1</c> input pair).
     /// </param>
     /// <param name="isFinal">
-    /// <see langword="true"/> if this is the final block; causes the finalisation flag word to be inverted.
+    /// <see langword="true"/> if this is the final block; causes the finalization flag word to be inverted.
     /// </param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
     {
@@ -229,7 +229,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
         for (var i = 0; i < 16; i++)
             m[i] = BinaryPrimitives.ReadUInt32LittleEndian(block.Slice(i * 4, 4));
 
-        // Initialise the 16-element working vector.
+        // Initialize the 16-element working vector.
         Span<uint> v =
         [
             this._h[0],
@@ -274,7 +274,7 @@ public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
 
     /// <inheritdoc />
     /// <remarks>
-    /// Serialises the eight 32-bit state words in little-endian order and truncates the result to the configured
+    /// Serializes the eight 32-bit state words in little-endian order and truncates the result to the configured
     /// output length (which need not be a multiple of four bytes).
     /// </remarks>
     protected override byte[] ProcessFinalBlock()

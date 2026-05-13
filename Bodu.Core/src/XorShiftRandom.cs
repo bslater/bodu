@@ -36,7 +36,7 @@ public sealed class XorShiftRandom :
     /// <summary>
     /// Initializes a new instance of the <see cref="XorShiftRandom"/> class with a 32-bit signed integer seed.
     /// </summary>
-    /// <param name="seed">The seed used to initialise the random generator.</param>
+    /// <param name="seed">The seed used to initialize the random generator.</param>
     public XorShiftRandom(int seed)
         : this((uint)seed)
     { }
@@ -44,7 +44,7 @@ public sealed class XorShiftRandom :
     /// <summary>
     /// Initializes a new instance of the <see cref="XorShiftRandom"/> class with a 32-bit unsigned seed.
     /// </summary>
-    /// <param name="seed">The seed used to initialise the random generator.</param>
+    /// <param name="seed">The seed used to initialize the random generator.</param>
     public XorShiftRandom(uint seed)
     {
         // Initialize four internal states with XOR-variations of the seed for better distribution

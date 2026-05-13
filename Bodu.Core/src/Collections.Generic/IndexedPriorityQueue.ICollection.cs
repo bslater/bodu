@@ -20,7 +20,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
     ICollection
 {
     /// <summary>
-    /// Lazily-allocated synchronisation root returned by the explicit <see cref="ICollection.SyncRoot"/> implementation.
+    /// Lazily-allocated synchronization root returned by the explicit <see cref="ICollection.SyncRoot"/> implementation.
     /// </summary>
     [NonSerialized]
     private object? _syncRoot;
@@ -33,10 +33,10 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority> :
     bool ICollection.IsSynchronized => false;
 
     /// <summary>
-    /// Gets a lazily-initialised object that can be used to synchronise access to the queue.
+    /// Gets a lazily-initialized object that can be used to synchronize access to the queue.
     /// </summary>
     /// <value>A non-null object suitable as a <see cref="Monitor"/> target.</value>
-    /// <returns>The synchronisation root.</returns>
+    /// <returns>The synchronization root.</returns>
     object ICollection.SyncRoot =>
         _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
 

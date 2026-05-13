@@ -38,7 +38,7 @@ byte[] plaintext = System.Text.Encoding.UTF8.GetBytes("legacy payload");
 using IBlockCipher cipher = new SkipjackBlockCipher(key);
 
 // 2. Wrap with a mode transform.
-IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv);
+IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
 
 // 3. Choose a padding strategy.
 IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
@@ -53,7 +53,7 @@ Decrypt is the same flow reversed:
 
 ```csharp
 using IBlockCipher cipher = new SkipjackBlockCipher(key);
-IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv);
+IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
 IPaddingStrategy padding = PaddingFactory.Create(PaddingMode.PKCS7);
 
 byte[] decrypted = new byte[ciphertext.Length];
@@ -69,7 +69,7 @@ byte[] iv    = new byte[32];  RandomNumberGenerator.Fill(iv);
 byte[] tweak = new byte[16];  RandomNumberGenerator.Fill(tweak);
 
 using IBlockCipher cipher = new Threefish256Cipher(key, tweak);
-IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherBlockMode.CTR, cipher, iv);
+IBlockCipherModeTransform mode = BlockCipherModeFactory.Create(CipherModeKind.CTR, cipher, iv);
 
 // CTR is a stream mode — no padding.
 byte[] ciphertext = new byte[plaintext.Length];
@@ -87,7 +87,7 @@ using Bodu.Security.Cryptography.Extensions;
 
 using var alg = new Skipjack
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.PKCS7,
     Key       = key,    // same 10 bytes
     IV        = iv,     // same 8 bytes
@@ -97,14 +97,14 @@ byte[] ciphertext = alg.Encrypt(plaintext);
 byte[] recovered  = alg.Decrypt(ciphertext);
 ```
 
-Internally, `Skipjack.CreateEncryptor` builds the same `SkipjackBlockCipher` + `CbcModeTransform` + `Pkcs7Padding` you composed by hand in Pattern 1. **The ciphertext is byte-for-byte identical.** That's the contract worth remembering: the two patterns are equivalent — the wrapper exists for convenience, not for behaviour.
+Internally, `Skipjack.CreateEncryptor` builds the same `SkipjackBlockCipher` + `CbcModeTransform` + `Pkcs7Padding` you composed by hand in Pattern 1. **The ciphertext is byte-for-byte identical.** That's the contract worth remembering: the two patterns are equivalent — the wrapper exists for convenience, not for behavior.
 
 The Threefish wrappers carry the same equivalence, with `Tweak` flowing into the constructor of `Threefish*Cipher`:
 
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,
     Key       = key,    // 32 bytes
     IV        = iv,     // 32 bytes
@@ -127,7 +127,7 @@ byte[] plaintext = RandomNumberGenerator.GetBytes(64);
 byte[] direct;
 using (IBlockCipher cipher = new SkipjackBlockCipher(key))
 {
-    var mode = BlockCipherModeFactory.Create(CipherBlockMode.CBC, cipher, iv);
+    var mode = BlockCipherModeFactory.Create(CipherModeKind.CBC, cipher, iv);
     var pad  = PaddingFactory.Create(PaddingMode.PKCS7);
 
     byte[] padded = pad.Pad(plaintext, cipher.BlockSize);
@@ -139,7 +139,7 @@ using (IBlockCipher cipher = new SkipjackBlockCipher(key))
 byte[] viaAlg;
 using (var alg = new Skipjack
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.PKCS7,
     Key       = key,
     IV        = iv,
@@ -151,7 +151,7 @@ using (var alg = new Skipjack
 Debug.Assert(direct.SequenceEqual(viaAlg));
 ```
 
-## When to favour each pattern
+## When to favor each pattern
 
 **Reach for the direct primitive when:**
 

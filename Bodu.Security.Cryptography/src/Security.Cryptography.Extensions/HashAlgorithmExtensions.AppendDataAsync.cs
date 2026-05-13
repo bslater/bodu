@@ -17,7 +17,7 @@ public static partial class HashAlgorithmExtensions
 {
     /// <summary>
     /// Asynchronously reads all bytes from <paramref name="source"/> and feeds them into the
-    /// hash accumulator via <see cref="HashAlgorithm.TransformBlock"/>, without finalising the
+    /// hash accumulator via <see cref="HashAlgorithm.TransformBlock"/>, without finalizing the
     /// computation.
     /// </summary>
     /// <param name="algorithm">The hash algorithm to use. Must not be <see langword="null"/>.</param>
@@ -29,8 +29,8 @@ public static partial class HashAlgorithmExtensions
     /// The number of bytes read per iteration. Must be greater than zero. Defaults to 4096.
     /// </param>
     /// <param name="cancellationToken">
-    /// Token used to cancel the read loop. When signalled, the current
-    /// <see cref="Stream.ReadAsync"/> is cancelled and <see cref="OperationCanceledException"/>
+    /// Token used to cancel the read loop. When signaled, the current
+    /// <see cref="Stream.ReadAsync"/> is canceled and <see cref="OperationCanceledException"/>
     /// is propagated to the caller.
     /// </param>
     /// <returns>A <see cref="Task"/> that completes when all bytes have been fed into the accumulator.</returns>
@@ -43,7 +43,7 @@ public static partial class HashAlgorithmExtensions
     /// </para>
     /// <para>
     /// Because only <see cref="HashAlgorithm.TransformBlock"/> is called, the hash state is
-    /// not finalised after this method returns. The caller is responsible for calling
+    /// not finalized after this method returns. The caller is responsible for calling
     /// <see cref="HashAlgorithm.TransformFinalBlock"/> when all data has been supplied.
     /// </para>
     /// <para>
@@ -63,7 +63,7 @@ public static partial class HashAlgorithmExtensions
     /// <paramref name="bufferSize"/> is less than or equal to zero.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// <paramref name="cancellationToken"/> was signalled before or during the read loop.
+    /// <paramref name="cancellationToken"/> was signaled before or during the read loop.
     /// </exception>
     /// <exception cref="IOException">
     /// <paramref name="source"/> threw an <see cref="IOException"/> during a read.

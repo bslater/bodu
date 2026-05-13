@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// BLAKE2b is specified in <see href="https://www.rfc-editor.org/rfc/rfc7693">RFC 7693</see> and is optimised for
+/// BLAKE2b is specified in <see href="https://www.rfc-editor.org/rfc/rfc7693">RFC 7693</see> and is optimized for
 /// 64-bit platforms. It operates on 128-byte (1024-bit) blocks and maintains eight 64-bit state words, applying
 /// 12 rounds of the BLAKE2 <c>G</c> mixing function per block.
 /// </para>
@@ -26,7 +26,7 @@ namespace Bodu.Security.Cryptography;
 /// This implementation inherits its residual buffer, byte-counter and lookahead-buffering loop from
 /// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/>: the final message block is not compressed until
 /// <see cref="HashAlgorithm.HashFinal"/> is called, at which point the <c>finalization</c> flag is set and the
-/// output bytes are serialised in little-endian order then truncated to the configured output length.
+/// output bytes are serialized in little-endian order then truncated to the configured output length.
 /// </para>
 /// <para>
 /// Supplying a non-empty <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}.Key"/> switches the instance into
@@ -41,7 +41,7 @@ namespace Bodu.Security.Cryptography;
 ///   <item><description>Output size: configurable — 128, 160, 192, 224, 256, 384, or 512 bits.</description></item>
 ///   <item><description>Block size: 128 bytes (1024 bits); 8 × 64-bit state words; 12 rounds.</description></item>
 ///   <item><description>Optional key: 1–64 bytes for BLAKE2b-MAC mode (RFC 7693 §2.8).</description></item>
-///   <item><description>Specification: RFC 7693; optimised for 64-bit hosts.</description></item>
+///   <item><description>Specification: RFC 7693; optimized for 64-bit hosts.</description></item>
 /// </list>
 /// <para>
 /// <strong>When to choose BLAKE2b.</strong> The right pick on 64-bit platforms when SHA-2 / SHA-3 throughput
@@ -87,7 +87,7 @@ public sealed class Blake2b
     private const int BlockSizeBytesValue = BlockSizeValue / 8;
 
     /// <summary>
-    /// The SHA-512 initialisation constants used as the BLAKE2b IV.
+    /// The SHA-512 initialization constants used as the BLAKE2b IV.
     /// </summary>
     private static readonly ulong[] s_iv =
     [
@@ -151,7 +151,7 @@ public sealed class Blake2b
     /// <returns>The currently configured output size in bits.</returns>
     /// <remarks>
     /// The full BLAKE2b compression is always run using all 512 bits of internal state. Shorter output lengths
-    /// are produced by truncating the serialised state after finalisation. The property may only be changed
+    /// are produced by truncating the serialized state after finalization. The property may only be changed
     /// before hashing has begun; once <see cref="HashAlgorithm.TransformBlock"/> or a <c>ComputeHash</c>
     /// overload has been called, the value is immutable until <see cref="HashAlgorithm.Initialize"/> is called.
     /// </remarks>
@@ -214,7 +214,7 @@ public sealed class Blake2b
     /// <summary>
     /// Compresses a single 128-byte block using the BLAKE2b <c>F</c> compression function. Invoked by
     /// <see cref="DeferredFinalBlockHashAlgorithm{T}"/> with <paramref name="isFinal"/> set to <see langword="true"/>
-    /// for the last call (which inverts the finalisation flag word) and to <see langword="false"/> otherwise.
+    /// for the last call (which inverts the finalization flag word) and to <see langword="false"/> otherwise.
     /// </summary>
     /// <param name="block">The 128-byte block to compress.</param>
     /// <param name="totalBytesIncludingThisBlock">
@@ -222,7 +222,7 @@ public sealed class Blake2b
     /// counter (the BLAKE2 <c>t0</c> input).
     /// </param>
     /// <param name="isFinal">
-    /// <see langword="true"/> if this is the final block; causes the finalisation flag word to be inverted.
+    /// <see langword="true"/> if this is the final block; causes the finalization flag word to be inverted.
     /// </param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
     {
@@ -231,7 +231,7 @@ public sealed class Blake2b
         for (var i = 0; i < 16; i++)
             m[i] = BinaryPrimitives.ReadUInt64LittleEndian(block.Slice(i * 8, 8));
 
-        // Initialise the 16-element working vector.
+        // Initialize the 16-element working vector.
         Span<ulong> v =
         [
             this._h[0],
@@ -276,7 +276,7 @@ public sealed class Blake2b
 
     /// <inheritdoc />
     /// <remarks>
-    /// Serialises the eight 64-bit state words in little-endian order and truncates the result to the configured
+    /// Serializes the eight 64-bit state words in little-endian order and truncates the result to the configured
     /// output length (which need not be a multiple of eight bytes).
     /// </remarks>
     protected override byte[] ProcessFinalBlock()

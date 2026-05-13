@@ -57,7 +57,7 @@ fnv.Append(data);
 ulong key = BitConverter.ToUInt64(fnv.GetCurrentHash());
 ```
 
-Constant-memory and streaming. For SIMD-friendly throughput on large buffers, swap in `CityHash64` or `XxHash64`. For seeded hashes used in databases or probabilistic data structures, use `MurmurHash3_x64_128`.
+Constant-memory and streaming. For SIMD-friendly throughput on large buffers, swap in `CityHash64`. For seeded hashes used in databases or probabilistic data structures, use `MurmurHash3_128`. For xxHash specifically, prefer `System.IO.Hashing.XxHash64` from the BCL — Bodu does not duplicate it.
 
 ### Fingerprint — Pearson with custom output width
 
@@ -80,7 +80,7 @@ bool valid = Luhn.IsValid("4539 1488 0343 6467".Replace(" ", ""));
 char digit  = Luhn.ComputeCheckDigit("453914880343646");
 ```
 
-Other check-digit types follow the same `IsValid` / `ComputeCheckDigit` contract. For multi-character checksums, see `Iban`, `Isbn13`, `Cusip`, `Lei` in the [Checksums namespace](index.md#bodu-io-hashing-checksums--checksums).
+Other check-digit types follow the same `IsValid` / `ComputeCheckDigit` contract. For multi-character checksums, see <xref:Bodu.IO.Hashing.Checksums.Iban>, <xref:Bodu.IO.Hashing.Checksums.Isbn13>, <xref:Bodu.IO.Hashing.Checksums.Cusip>, and <xref:Bodu.IO.Hashing.Checksums.Lei>.
 
 ### Check digit — IBAN (multi-character)
 
@@ -106,6 +106,7 @@ bool   match  = hash.VerifyHash(data, expected);
 ## Where to go next
 
 - **[Bodu.IO.Hashing introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Algorithm families](../algorithm-families.md)** — fingerprint vs checksum vs check digit.
-- **[Bodu.IO.Hashing guides](../../guides/io-hashing/)** — per-algorithm walk-throughs.
+- **[Algorithm families](../algorithm-families.md)** — fingerprint vs checksum vs check digit, plus the cryptographic families.
+- **[Bodu.IO.Hashing guides](../../guides/io-hashing/index.md)** — per-algorithm walk-throughs.
 - **[Bodu.IO.Hashing API reference](../../apidoc/Bodu.IO.Hashing.md)** — full type-by-type docs.
+- **[CRC catalogue](../../guides/io-hashing/crc-catalogue.md)** — the full RevEng-catalogue table of named CRC standards.

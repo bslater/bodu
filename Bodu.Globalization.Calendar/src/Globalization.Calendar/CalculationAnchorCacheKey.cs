@@ -21,7 +21,7 @@ namespace Bodu.Globalization.Calendar;
 /// <c>Start of Lent</c> may be calculated as an offset from an <c>Easter Sunday</c> anchor.
 /// </para>
 /// <para>
-/// A calculation anchor is not automatically a materialised <see cref="NotableDate" />. It becomes visible to callers only
+/// A calculation anchor is not automatically a materialized <see cref="NotableDate" />. It becomes visible to callers only
 /// when an enabled <see cref="NotableDateRule" /> explicitly emits it.
 /// </para>
 /// </remarks>

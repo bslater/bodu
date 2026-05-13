@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Blowfish is a symmetric-key block cipher designed by Bruce Schneier in 1993. It operates on 64-bit (8-byte) blocks and accepts a
 /// variable-length key of between 32 and 448 bits (4 to 56 bytes). The cipher applies a 16-round Feistel network using four 256-entry
-/// S-boxes and an 18-entry P-array, all initialised from the hexadecimal digits of pi (π). The key schedule is computationally
+/// S-boxes and an 18-entry P-array, all initialized from the hexadecimal digits of pi (π). The key schedule is computationally
 /// intensive by design, making brute-force attacks significantly more expensive.
 /// </para>
 /// <para>
@@ -34,7 +34,7 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 ///   <item><description>Block size: 64 bits (8 bytes).</description></item>
 ///   <item><description>Key size: variable, 32–448 bits (4–56 bytes).</description></item>
-///   <item><description>16-round Feistel network with key-dependent S-boxes initialised from the digits of π.</description></item>
+///   <item><description>16-round Feistel network with key-dependent S-boxes initialized from the digits of π.</description></item>
 ///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
 /// </list>
 /// <para>
@@ -184,7 +184,7 @@ public sealed class Blowfish
 
     /// <inheritdoc />
     /// <remarks>
-    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// Also synchronizes <see cref="BlockPadding"/> when the assigned value has a matching member in
     /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding
@@ -205,14 +205,14 @@ public sealed class Blowfish
     public new static Blowfish Create() => new Blowfish();
 
     /// <summary>
-    /// Creates a symmetric <see cref="Blowfish"/> decryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Blowfish"/> decryptor using the specified key and initialization vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySize"/> and
     /// <see cref="MaxKeySize"/> bytes in length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
+    /// The initialization vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
     /// cipher mode other than ECB.
     /// </param>
     /// <returns>A symmetric <see cref="Blowfish"/> decryptor object implementing <see cref="ICryptoTransform"/>.</returns>
@@ -233,14 +233,14 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Creates a symmetric <see cref="Blowfish"/> encryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Blowfish"/> encryptor using the specified key and initialization vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySize"/> and
     /// <see cref="MaxKeySize"/> bytes in length. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
+    /// The initialization vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
     /// cipher mode other than ECB.
     /// </param>
     /// <returns>A symmetric <see cref="Blowfish"/> encryptor object implementing <see cref="ICryptoTransform"/>.</returns>
@@ -261,7 +261,7 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV"/>) suitable for use with the
+    /// Generates a cryptographically random initialization vector (<see cref="SymmetricAlgorithm.IV"/>) suitable for use with the
     /// Blowfish algorithm.
     /// </summary>
     /// <remarks>
@@ -310,7 +310,7 @@ public sealed class Blowfish
     /// resources.
     /// </param>
     /// <remarks>
-    /// Clears any cached key material and initialisation vector before delegating to the base implementation. This method is
+    /// Clears any cached key material and initialization vector before delegating to the base implementation. This method is
     /// idempotent and safe to call multiple times.
     /// </remarks>
     protected override void Dispose(bool disposing)
@@ -331,7 +331,7 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Creates a new <see cref="BlowfishBlockCipher"/> engine initialised with the supplied key.
+    /// Creates a new <see cref="BlowfishBlockCipher"/> engine initialized with the supplied key.
     /// </summary>
     /// <param name="key">The key material used to derive the P-array and S-boxes.</param>
     /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
