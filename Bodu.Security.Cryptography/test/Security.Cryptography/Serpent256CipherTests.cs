@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Serpent256CipherTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,13 +13,10 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Serpent-256 is a non-standard construction with no published reference vectors. The known-answer tests here are
-/// self-generated — they validate determinism and regression stability across runs rather than algorithmic conformance with an
-/// external reference. End-to-end correctness is additionally covered by the inherited round-trip tests in
-/// <see cref="BlockCipherTests{TTest, TCipher, TVariant}" />.
-/// </para>
-/// <para>
-/// TODO(gh-142): Decide vector strategy for wide-block Serpent. See <see cref="BlockCipherKnownAnswer" /> for the gap policy.
+/// Serpent-256 is a non-standard construction with no externally published reference vectors. The KAT rows used here are
+/// cross-validated against an independent Python port of the wide-block round function (see
+/// <c>tools/cipher-vectors/wide_serpent.py</c>), which is hand-translated from the C# source and exercises the same Serpent
+/// S-boxes, bitsliced linear transform, prekey recurrence, cross-lane rotation, and five-word tweak schedule.
 /// </para>
 /// </remarks>
 [TestClass]
@@ -57,30 +54,10 @@ internal sealed class Serpent256CipherTests
     }
 
     /// <inheritdoc />
-    /// <remarks>
-    /// Serpent-256 is a non-standard construction with no externally vetted reference vectors. The single self-referential
-    /// vector below captures the cipher's own output at test-discovery time so that <c>EncryptTestData</c> and
-    /// <c>DecryptTestData</c> have at least one row (MSTest fails empty <c>[DynamicData]</c> sources). Algorithmic
-    /// correctness is anchored by the inherited round-trip and determinism tests.
-    /// </remarks>
-    protected override IEnumerable<KnownAnswerTest> GetKnownAnswerTests(TweakableBlockCipherVariant variant)
-    {
-        if (variant == TweakableBlockCipherVariant.DefaultKeyAndTweak)
-            yield break;
+    protected override IReadOnlyList<BlockCipherKnownAnswer> GetKnownAnswers(TweakableBlockCipherVariant variant) =>
+        Serpent256KnownAnswers.For(variant);
 
-        BlockCipherSpecification spec = GetSpecification(variant);
-        var input = new byte[spec.BlockSize];
-        var expected = new byte[spec.BlockSize];
-
-        using (var cipher = new Serpent256Cipher(spec.TestKey, spec.TestTweak))
-            cipher.Encrypt(input, expected);
-
-        yield return new KnownAnswerTest
-        {
-            Name = "Serpent-256 / ZeroedKeyAndTweak / plaintext=00×32 (self-referential regression vector)",
-            Input = input,
-            ExpectedOutput = expected,
-            CipherFactory = () => new Serpent256Cipher(spec.TestKey, spec.TestTweak),
-        };
-    }
+    /// <inheritdoc />
+    protected override IBlockCipher CreateBlockCipherForAnswer(BlockCipherKnownAnswer answer) =>
+        new Serpent256Cipher(answer.Key!, answer.Tweak!);
 }

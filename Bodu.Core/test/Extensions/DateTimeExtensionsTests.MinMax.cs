@@ -32,6 +32,7 @@ public partial class DateTimeExtensionsTests
         DateTime? later = new DateTime(2024, 12, 31);
 
         Assert.AreEqual(later, DateTimeExtensions.Max(earlier, later));
+        Assert.AreEqual(later, DateTimeExtensions.Max(later, earlier));
         Assert.AreEqual(later, DateTimeExtensions.Max(later, (DateTime?)null));
         Assert.AreEqual(earlier, DateTimeExtensions.Max((DateTime?)null, earlier));
         Assert.IsNull(DateTimeExtensions.Max((DateTime?)null, (DateTime?)null));
@@ -61,6 +62,7 @@ public partial class DateTimeExtensionsTests
         DateTime? later = new DateTime(2024, 12, 31);
 
         Assert.AreEqual(earlier, DateTimeExtensions.Min(earlier, later));
+        Assert.AreEqual(earlier, DateTimeExtensions.Min(later, earlier));
         Assert.AreEqual(later, DateTimeExtensions.Min(later, (DateTime?)null));
         Assert.AreEqual(earlier, DateTimeExtensions.Min((DateTime?)null, earlier));
         Assert.IsNull(DateTimeExtensions.Min((DateTime?)null, (DateTime?)null));

@@ -29,6 +29,7 @@ public partial class DateOnlyExtensionsTests
     [DataRow(2000, 1, 1, 2024, 1, 1, 24, DisplayName = "Same month/day - exact years")]
     [DataRow(2000, 6, 15, 2024, 6, 14, 23, DisplayName = "Day before birthday - prior year")]
     [DataRow(2000, 6, 15, 2024, 6, 16, 24, DisplayName = "Day after birthday - current year")]
+    [DataRow(2000, 12, 31, 2024, 4, 18, 23, DisplayName = "AsAt earlier month than birthday - prior year")]
     [DataRow(2000, 1, 1, 1999, 12, 31, 0, DisplayName = "AsAt before birth - clamped to zero")]
     public void Age_WhenInvokedWithAsAtDate_ShouldReturnCompletedYears(int by, int bm, int bd, int ay, int am, int ad, int expected)
     {
@@ -110,7 +111,8 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, CultureInfo)" /> returns the day count for the supplied culture.
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, CultureInfo)" /> returns the day count computed using the
+    /// supplied culture's calendar.
     /// </summary>
     [TestMethod]
     public void DaysInMonth_WithCulture_ShouldReturnCalendarSpecificCount()
@@ -120,13 +122,77 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, Calendar)" /> returns the day count for the supplied calendar.
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, CultureInfo)" /> falls back to
+    /// <see cref="CultureInfo.CurrentCulture" /> when the supplied culture is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WithCulture_WhenCultureIsNull_ShouldFallBackToCurrentCulture()
+    {
+        var originalCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            var date = new DateOnly(2023, 2, 15);
+
+            Assert.AreEqual(28, date.DaysInMonth((CultureInfo?)null));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, Calendar)" /> returns the day count computed using the
+    /// supplied <see cref="Calendar" /> instance.
     /// </summary>
     [TestMethod]
     public void DaysInMonth_WithCalendar_ShouldReturnCalendarSpecificCount()
     {
         var date = new DateOnly(2024, 2, 1);
         Assert.AreEqual(29, date.DaysInMonth(new GregorianCalendar()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, Calendar)" /> falls back to the current culture's calendar
+    /// when the supplied calendar is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInMonth_WithCalendar_WhenCalendarIsNull_ShouldFallBackToCurrentCultureCalendar()
+    {
+        var originalCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            var date = new DateOnly(2024, 2, 15);
+
+            Assert.AreEqual(29, date.DaysInMonth((Calendar?)null));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextOccurrence(DateOnly, int, DateOnly)" /> returns the next aligned occurrence,
+    /// returns the start when the reference is earlier than the start, and throws for non-positive intervals.
+    /// </summary>
+    [TestMethod]
+    public void NextOccurrence_SmokeTest_ShouldExerciseAllBranches()
+    {
+        var start = new DateOnly(2024, 1, 1);
+
+        Assert.AreEqual(new DateOnly(2024, 1, 16), start.NextOccurrence(intervalDays: 5, new DateOnly(2024, 1, 12)));
+        Assert.AreEqual(start, start.NextOccurrence(intervalDays: 3, new DateOnly(2024, 1, 1).AddDays(-5)));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = start.NextOccurrence(intervalDays: 0, new DateOnly(2024, 1, 10));
+        });
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = start.NextOccurrence(intervalDays: -1, new DateOnly(2024, 1, 10));
+        });
     }
 
     /// <summary>

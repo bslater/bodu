@@ -4,10 +4,49 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the <see cref="ThrowHelper.ThrowIfSpanLengthOutOfRange{T}(System.Span{T}, int, int, string)" />
+    /// contract for both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" />: length below min or above
+    /// max throws <see cref="ArgumentOutOfRangeException" /> with ParamName "span"; in-range passes.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="spanLength">The span length.</param>
+    /// <param name="minLength">Inclusive minimum.</param>
+    /// <param name="maxLength">Inclusive maximum.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("below min → throw on span", 0, 1, 10, true)]
+    [DataRow("above max → throw on span", 11, 1, 10, true)]
+    [DataRow("at min → pass", 1, 1, 10, false)]
+    [DataRow("at max → pass", 10, 1, 10, false)]
+    [DataRow("inside → pass", 5, 1, 10, false)]
+    [DataRow("degenerate single value → pass", 7, 7, 7, false)]
+    public void ThrowIfSpanLengthOutOfRange_WhenInvokedWithVariousLengths_ShouldFollowContract(
+        string testName, int spanLength, int minLength, int maxLength, bool expectsException)
+    {
+        int[] buffer = new int[spanLength];
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        string? expectedParam = expectsException ? "span" : null;
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthOutOfRange(buffer.AsSpan(), minLength, maxLength, "span"),
+            expected,
+            expectedParam);
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthOutOfRange((ReadOnlySpan<int>)buffer, minLength, maxLength, "span"),
+            expected,
+            expectedParam);
+    }
+
     // Span<T> overload
 
     /// <summary>

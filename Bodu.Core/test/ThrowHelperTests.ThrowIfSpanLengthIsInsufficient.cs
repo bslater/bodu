@@ -4,10 +4,48 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient{T}(System.Span{T}, int, string)" />
+    /// two-argument overload contract for both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" />: a span
+    /// shorter than the minimum throws <see cref="ArgumentException" /> with ParamName "span"; equal or longer
+    /// passes.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="spanLength">Span length.</param>
+    /// <param name="minimum">Required minimum length.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("shorter than minimum → throw on span", 2, 3, true)]
+    [DataRow("empty span, positive minimum → throw on span", 0, 1, true)]
+    [DataRow("exactly minimum → pass", 3, 3, false)]
+    [DataRow("longer than minimum → pass", 10, 3, false)]
+    [DataRow("any length, minimum 0 → pass", 5, 0, false)]
+    public void ThrowIfSpanLengthIsInsufficient_TwoArg_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, int spanLength, int minimum, bool expectsException)
+    {
+        int[] buffer = new int[spanLength];
+        Type? expected = expectsException ? typeof(ArgumentException) : null;
+        string? expectedParam = expectsException ? "span" : null;
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthIsInsufficient(buffer.AsSpan(), minimum, "span"),
+            expected,
+            expectedParam);
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthIsInsufficient((ReadOnlySpan<int>)buffer, minimum, "span"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthIsInsufficient" />, ReadOnlySpan, when Insufficient, throws <see cref="ArgumentException" />.
     /// </summary>

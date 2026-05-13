@@ -47,7 +47,7 @@ public partial class DateOnlyExtensionsTests
             var input = DateOnly.FromDateTime(inputDateTime);
             var expected = DateOnly.FromDateTime(expectedDateTime);
 
-            var actual = input.LastDateOfWeek(null!);
+            var actual = input.LastDateOfWeek((CultureInfo?)null);
 
             Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
         }

@@ -4,10 +4,30 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+using System.Collections.Generic;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayIsNotZeroBased" /> contract matrix: null array →
+    /// <see cref="ArgumentNullException" />, non-zero-based array → <see cref="ArgumentException" />, zero-based
+    /// array → no throw. ParamName is asserted for every throwing row.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="array">The array passed to the guard.</param>
+    /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" /> if it must pass.</param>
+    /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
+    [TestMethod]
+    [DynamicData(nameof(ThrowIfArrayIsNotZeroBasedContractData), DynamicDataSourceType.Method)]
+    public void ThrowIfArrayIsNotZeroBased_WhenInvokedWithVariousArrays_ShouldFollowContract(
+        string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
+    {
+        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayIsNotZeroBased(array!, "array"), expectedExceptionType, expectedParamName);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotZeroBased" />, when ArrayIsNotZeroBased, throws <see cref="ArgumentException" />.
     /// </summary>
@@ -27,6 +47,15 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DynamicData(nameof(GetZeroBasedArrayTestData))]
     public void ThrowIfArrayIsNotZeroBased_WhenArrayIsZeroBased_ShouldNotThrow(Array array) => ThrowHelper.ThrowIfArrayIsNotZeroBased(array);
+
+    private static IEnumerable<object?[]> ThrowIfArrayIsNotZeroBasedContractData()
+    {
+        yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
+        yield return new object?[] { "non-zero lower bound → ArgumentException", Array.CreateInstance(typeof(int), new[] { 3 }, new[] { 1 }), typeof(ArgumentException), "array" };
+        yield return new object?[] { "negative lower bound → ArgumentException", Array.CreateInstance(typeof(string), new[] { 3 }, new[] { -10 }), typeof(ArgumentException), "array" };
+        yield return new object?[] { "empty zero-based int array → no throw", Array.Empty<int>(), null, null };
+        yield return new object?[] { "zero-based string array → no throw", new string[5], null, null };
+    }
 
     private static IEnumerable<object[]> GetNonZeroBasedArrayTestData()
     {

@@ -605,18 +605,15 @@ internal sealed class OrderedSetStorage<T>
     }
 
     /// <summary>
-    /// Rounds <paramref name="value" /> up to the next power of two, clamped to <c>[1, 2^30]</c>.
+    /// Rounds <paramref name="value" /> up to the next power of two. The single caller in
+    /// <see cref="CalculateBucketCapacity(int)" /> always supplies a value in the range
+    /// <c>[<see cref="DefaultCapacity" />, Array.MaxLength]</c>, so the <c>value &lt;= 1</c> and
+    /// <c>value &gt;= 2^30</c> clamps required by a fully-general implementation are not needed here.
     /// </summary>
-    /// <param name="value">The value to round.</param>
+    /// <param name="value">The value to round. Must be greater than one and less than <c>2^30</c>.</param>
     /// <returns>The smallest power of two greater than or equal to <paramref name="value" />.</returns>
     private static int RoundUpToPowerOfTwo(int value)
     {
-        if (value <= 1)
-            return 1;
-
-        if (value >= 1 << 30)
-            return 1 << 30;
-
         value--;
         value |= value >> 1;
         value |= value >> 2;

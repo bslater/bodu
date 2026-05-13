@@ -4,11 +4,46 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
     private static readonly int[] s_testArray = [1, 2, 3, 4, 5];
+
+    /// <summary>
+    /// Verifies the multi-parameter contract for the <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" />
+    /// array overload: when the array is <see langword="null" />, ParamName must be the array parameter; when
+    /// the index is invalid, ParamName must be the index parameter — never just the first parameter.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="index">The index passed to the guard.</param>
+    /// <param name="arrayIsNull">If <see langword="true" />, null is passed for <c>array</c>.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
+    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
+    [TestMethod]
+    [DataRow("null array → ANE on array", 0, true, "ArgumentNullException", "array")]
+    [DataRow("negative index → AOORE on index", -1, false, "ArgumentOutOfRangeException", "index")]
+    [DataRow("index == Length → AOORE on index", 5, false, "ArgumentOutOfRangeException", "index")]
+    [DataRow("index > Length → AOORE on index", 99, false, "ArgumentOutOfRangeException", "index")]
+    [DataRow("index in range → pass", 2, false, "", "")]
+    public void ThrowIfIndexOutOfRange_Array_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, int index, bool arrayIsNull, string expectedExceptionTypeName, string expectedParamName)
+    {
+        Array? array = arrayIsNull ? null : s_testArray;
+        Type? expected = expectedExceptionTypeName.Length == 0
+            ? null
+            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
+        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfIndexOutOfRange(index, array!, "index"),
+            expected,
+            param);
+    }
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> throws

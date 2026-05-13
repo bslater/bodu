@@ -21,7 +21,7 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>This overload uses <see cref="CultureInfo.CurrentCulture"/> to determine the first day of the week, based on <see cref="DateTimeFormatInfo.FirstDayOfWeek"/>.</para>
     /// </remarks>
-    public static DateOnly FirstDateOfWeek(this DateOnly date) => date.FirstDateOfWeek(null!);
+    public static DateOnly FirstDateOfWeek(this DateOnly date) => date.FirstDateOfWeek((CultureInfo?)null);
 
     /// <summary>
     /// Returns a new <see cref="DateOnly"/> representing the first day of the week that contains the specified <paramref name="date"/>, using the first day of the week defined by the supplied or current culture.
@@ -32,15 +32,15 @@ public static partial class DateOnlyExtensions
     /// <remarks>
     /// <para>This method computes the day offset between <paramref name="date"/> and the culture-specific first day of the week, and subtracts that offset.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if the resulting date is earlier than <see cref="DateOnly.MinValue"/> or later than <see cref="DateOnly.MaxValue"/>.</exception>
-    public static DateOnly FirstDateOfWeek(this DateOnly date, CultureInfo culture)
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the resulting date is earlier than <see cref="DateOnly.MinValue"/>.</exception>
+    public static DateOnly FirstDateOfWeek(this DateOnly date, CultureInfo? culture)
     {
         culture ??= Thread.CurrentThread.CurrentCulture;
         DayOfWeek firstDayOfWeek = culture.DateTimeFormat.FirstDayOfWeek;
 
         var dayNumber = date.DayNumber - ((7 + (date.DayOfWeek - firstDayOfWeek)) % 7);
 
-        if (dayNumber < DateOnly.MinValue.DayNumber || dayNumber > DateOnly.MaxValue.DayNumber)
+        if (dayNumber < DateOnly.MinValue.DayNumber)
             throw new ArgumentOutOfRangeException(
                 nameof(date),
                 string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateOnly)));
@@ -59,7 +59,7 @@ public static partial class DateOnlyExtensions
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="weekend"/> is not a defined <see cref="CalendarWeekendDefinition"/> value,
-    /// -or- the resulting date is earlier than <see cref="DateOnly.MinValue"/> or later than <see cref="DateOnly.MaxValue"/>.
+    /// -or- the resulting date is earlier than <see cref="DateOnly.MinValue"/>.
     /// </exception>
     public static DateOnly FirstDateOfWeek(this DateOnly date, CalendarWeekendDefinition weekend)
     {
@@ -68,7 +68,7 @@ public static partial class DateOnlyExtensions
 
         var dayNumber = date.DayNumber - ((7 + (date.DayOfWeek - firstDayOfWeek)) % 7);
 
-        if (dayNumber < DateOnly.MinValue.DayNumber || dayNumber > DateOnly.MaxValue.DayNumber)
+        if (dayNumber < DateOnly.MinValue.DayNumber)
             throw new ArgumentOutOfRangeException(
                 nameof(date),
                 string.Format(ResourceStrings.Arg_OutOfRange_ResultingValueOutOfRangeForType, nameof(DateOnly)));

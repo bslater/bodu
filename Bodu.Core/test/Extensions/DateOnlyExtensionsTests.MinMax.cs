@@ -34,6 +34,7 @@ public partial class DateOnlyExtensionsTests
         DateOnly? later = new DateOnly(2024, 12, 31);
 
         Assert.AreEqual(later, DateOnlyExtensions.Max(earlier, later));
+        Assert.AreEqual(later, DateOnlyExtensions.Max(later, earlier));
         Assert.AreEqual(later, DateOnlyExtensions.Max(later, (DateOnly?)null));
         Assert.AreEqual(earlier, DateOnlyExtensions.Max((DateOnly?)null, earlier));
         Assert.IsNull(DateOnlyExtensions.Max((DateOnly?)null, (DateOnly?)null));
@@ -65,6 +66,7 @@ public partial class DateOnlyExtensionsTests
         DateOnly? later = new DateOnly(2024, 12, 31);
 
         Assert.AreEqual(earlier, DateOnlyExtensions.Min(earlier, later));
+        Assert.AreEqual(earlier, DateOnlyExtensions.Min(later, earlier));
         Assert.AreEqual(later, DateOnlyExtensions.Min(later, (DateOnly?)null));
         Assert.AreEqual(earlier, DateOnlyExtensions.Min((DateOnly?)null, earlier));
         Assert.IsNull(DateOnlyExtensions.Min((DateOnly?)null, (DateOnly?)null));

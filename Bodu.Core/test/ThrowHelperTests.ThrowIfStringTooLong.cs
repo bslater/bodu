@@ -4,10 +4,45 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfStringTooLong" /> contract with explicit ParamName
+    /// assertions: null → <see cref="ArgumentNullException" /> on "value"; length > max →
+    /// <see cref="ArgumentOutOfRangeException" /> on "value"; length &lt;= max → pass.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The string passed to the guard, or <see langword="null" />.</param>
+    /// <param name="maxLength">Inclusive maximum length.</param>
+    /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
+    /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
+    [TestMethod]
+    [DataRow("null → ANE on value", null, 10, "ArgumentNullException", "value")]
+    [DataRow("longer than max → AOORE on value", "abcdef", 5, "ArgumentOutOfRangeException", "value")]
+    [DataRow("non-empty vs max=0 → AOORE on value", "x", 0, "ArgumentOutOfRangeException", "value")]
+    [DataRow("exactly at max → pass", "abcde", 5, "", "")]
+    [DataRow("empty vs max=0 → pass", "", 0, "", "")]
+    [DataRow("below max → pass", "abc", 10, "", "")]
+    public void ThrowIfStringTooLong_WhenInvokedWithVariousInputs_ShouldFollowContract(
+        string testName, string? value, int maxLength, string expectedExceptionTypeName, string expectedParamName)
+    {
+        Type? expected = expectedExceptionTypeName.Length == 0
+            ? null
+            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
+        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+
+        AssertGuard(
+            testName,
+            () => ThrowHelper.ThrowIfStringTooLong(value!, maxLength, "value"),
+            expected,
+            param);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> throws <see cref="ArgumentNullException" />
     /// when the string value is <see langword="null" />.
