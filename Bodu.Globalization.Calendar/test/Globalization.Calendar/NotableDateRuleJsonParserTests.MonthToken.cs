@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Linq;
+using System.Text.Json;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -84,11 +85,11 @@ public partial class NotableDateRuleJsonParserTests
 	}
 
 	/// <summary>
-	/// Verifies that a Fixed rule authored with a numeric month token outside the supported 1..13 range surfaces as
-	/// a <see cref="FormatException" />.
+	/// Verifies that a Fixed rule authored with a numeric month token outside the supported 1..13 range is rejected
+	/// by schema validation as <see cref="JsonException" /> via the <c>monthOrNumber</c> oneOf constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenFixedMonthIsOutOfRangeNumeric_ShouldThrowFormatException()
+	public void ParseJson_WhenFixedMonthIsOutOfRangeNumeric_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -100,18 +101,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<FormatException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that a Fixed rule authored with the zero numeric month value is rejected with a
-	/// <see cref="FormatException" />.
+	/// Verifies that a Fixed rule authored with the zero numeric month value is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>monthOrNumber</c> oneOf constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenFixedMonthIsZeroNumeric_ShouldThrowFormatException()
+	public void ParseJson_WhenFixedMonthIsZeroNumeric_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -123,7 +124,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<FormatException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
@@ -224,10 +225,12 @@ public partial class NotableDateRuleJsonParserTests
 	}
 
 	/// <summary>
-	/// Verifies that a DayOfWeekInMonth rule authored with a numeric month token resolves to the corresponding integer.
+	/// Verifies that a DayOfWeekInMonth rule authored with a numeric month token is rejected by schema validation
+	/// as <see cref="JsonException" />. The <c>dayOfWeekInMonthStrategy.month</c> field is typed as <c>monthName</c>
+	/// (Gregorian enum names only), matching the XSD's literal type.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenDayOfWeekInMonthIsNumericMonth_ShouldReturnNumericMonth()
+	public void ParseJson_WhenDayOfWeekInMonthIsNumericMonth_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -239,17 +242,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
-
-		Assert.AreEqual(10, rule.Month);
+		Assert.ThrowsExactly<JsonException>(() =>
+		{
+			_ = NotableDateRuleJsonParser.ParseJson(json);
+		});
 	}
 
 	/// <summary>
-	/// Verifies that a DayOfWeekInMonth rule authored with a numeric month outside 1..13 throws
-	/// <see cref="FormatException" />.
+	/// Verifies that a DayOfWeekInMonth rule authored with a numeric month outside 1..13 is rejected by schema
+	/// validation as <see cref="JsonException" /> via the <c>monthName</c> enum constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenDayOfWeekInMonthIsOutOfRangeMonth_ShouldThrowFormatException()
+	public void ParseJson_WhenDayOfWeekInMonthIsOutOfRangeMonth_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -261,7 +265,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<FormatException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
@@ -319,5 +323,132 @@ public partial class NotableDateRuleJsonParserTests
 
 		Assert.AreEqual(1, rule.Adjustments.Length);
 		Assert.IsNull(rule.Adjustments[0].ComparisonDate);
+	}
+
+	/// <summary>
+	/// Verifies that every supported English Gregorian month name on a Fixed strategy resolves to the matching
+	/// integer 1..12. Exercises <c>ParseMonthToken</c> across the full Gregorian month enumeration.
+	/// </summary>
+	[TestCategory("Regression")]
+	[DataRow("January", 1)]
+	[DataRow("February", 2)]
+	[DataRow("March", 3)]
+	[DataRow("April", 4)]
+	[DataRow("May", 5)]
+	[DataRow("June", 6)]
+	[DataRow("July", 7)]
+	[DataRow("August", 8)]
+	[DataRow("September", 9)]
+	[DataRow("October", 10)]
+	[DataRow("November", 11)]
+	[DataRow("December", 12)]
+	[TestMethod]
+	public void ParseJson_WhenFixedMonthIsEnglishMonthName_ShouldReturnExpectedMonth(string monthToken, int expectedMonth)
+	{
+		string json = BuildFixedMonthJson(monthToken);
+
+		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+
+		Assert.AreEqual(expectedMonth, rule.Month);
+		Assert.IsNull(rule.CalendarMonthAlias);
+	}
+
+	/// <summary>
+	/// Verifies that every simple Hebrew month name (those whose calendar position does not depend on the leap year)
+	/// resolves to its canonical integer 1..7 via <c>ParseMonthToken</c>'s Hebrew alias path.
+	/// </summary>
+	[TestCategory("Regression")]
+	[DataRow("Tishri", 1)]
+	[DataRow("Heshvan", 2)]
+	[DataRow("Kislev", 3)]
+	[DataRow("Tevet", 4)]
+	[DataRow("Shevat", 5)]
+	[DataRow("AdarI", 6)]
+	[DataRow("AdarII", 7)]
+	[TestMethod]
+	public void ParseJson_WhenFixedMonthIsSimpleHebrewName_ShouldReturnExpectedMonth(string monthToken, int expectedMonth)
+	{
+		string json = BuildFixedMonthJson(monthToken, calendarType: "System.Globalization.HebrewCalendar", category: "Religious");
+
+		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+
+		Assert.AreEqual(expectedMonth, rule.Month);
+		Assert.IsNull(rule.CalendarMonthAlias);
+	}
+
+	/// <summary>
+	/// Verifies that every leap-year-dependent Hebrew month name populates <see cref="NotableDateRule.CalendarMonthAlias" />
+	/// and leaves <see cref="NotableDateRule.Month" /> unset so the resolver can pick the runtime-correct slot.
+	/// </summary>
+	[TestCategory("Regression")]
+	[DataRow("LastAdar")]
+	[DataRow("Nisan")]
+	[DataRow("Iyar")]
+	[DataRow("Sivan")]
+	[DataRow("Tammuz")]
+	[DataRow("Av")]
+	[DataRow("Elul")]
+	[TestMethod]
+	public void ParseJson_WhenFixedMonthIsLeapDependentHebrewAlias_ShouldPopulateCalendarMonthAlias(string monthAlias)
+	{
+		string json = BuildFixedMonthJson(monthAlias, calendarType: "System.Globalization.HebrewCalendar", category: "Religious");
+
+		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+
+		Assert.IsNull(rule.Month);
+		Assert.AreEqual(monthAlias, rule.CalendarMonthAlias);
+	}
+
+	/// <summary>
+	/// Verifies that every supported string-form numeric month token <c>"1"</c> through <c>"13"</c> resolves to the
+	/// matching integer, exercising the schema's string-numeric pattern branch and <c>ParseMonthToken</c>'s numeric
+	/// alternative.
+	/// </summary>
+	[TestCategory("Regression")]
+	[DataRow("1", 1)]
+	[DataRow("2", 2)]
+	[DataRow("3", 3)]
+	[DataRow("4", 4)]
+	[DataRow("5", 5)]
+	[DataRow("6", 6)]
+	[DataRow("7", 7)]
+	[DataRow("8", 8)]
+	[DataRow("9", 9)]
+	[DataRow("10", 10)]
+	[DataRow("11", 11)]
+	[DataRow("12", 12)]
+	[DataRow("13", 13)]
+	[TestMethod]
+	public void ParseJson_WhenFixedMonthIsStringNumeric_ShouldReturnExpectedMonth(string monthToken, int expectedMonth)
+	{
+		string json = BuildFixedMonthJson(monthToken);
+
+		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+
+		Assert.AreEqual(expectedMonth, rule.Month);
+		Assert.IsNull(rule.CalendarMonthAlias);
+	}
+
+	/// <summary>
+	/// Builds a minimal Fixed-strategy notable-date document with the supplied month token, optional calendar type,
+	/// and optional category. The helper centralises the boilerplate consumed by the month-token data-driven tests so
+	/// each row varies only the under-test value.
+	/// </summary>
+	/// <param name="monthToken">The month token to author on the Fixed strategy.</param>
+	/// <param name="calendarType">An optional calendar-type assembly-qualified name to author on the rule.</param>
+	/// <param name="category">The notable-date category enum value to author. Defaults to <c>"Holiday"</c>.</param>
+	/// <returns>A JSON document with one notable date and one Fixed rule.</returns>
+	private static string BuildFixedMonthJson(string monthToken, string? calendarType = null, string category = "Holiday")
+	{
+		string calendarTypeClause = calendarType is null ? string.Empty : $@", ""calendarType"": ""{calendarType}""";
+		return $@"{{
+			""notableDates"": [
+				{{ ""name"": ""MonthTokenTest"", ""rules"": [ {{
+					""name"": ""MonthTokenTestRule"",
+					""category"": ""{category}""{calendarTypeClause},
+					""fixed"": {{ ""month"": ""{monthToken}"", ""day"": 1 }}
+				}} ] }}
+			]
+		}}";
 	}
 }

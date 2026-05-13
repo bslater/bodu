@@ -6,6 +6,7 @@
 
 using Bodu.Extensions;
 using System.Linq;
+using System.Text.Json;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -29,6 +30,8 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Anzac Day"",
 					""rule"": {
+						""name"": ""Anzac Day Rule"",
+						""category"": ""Holiday"",
 						""fixed"": { ""month"": ""April"", ""day"": 25 }
 					}
 				} ]
@@ -58,7 +61,9 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Festival"",
 					""rule"": {
-						""fixed"": { ""month"": ""5"", ""day"": 5, ""skipLeapMonth"": true, ""sweepCalendarYears"": true }
+						""name"": ""Festival Rule"",
+						""category"": ""Cultural"",
+						""fixed"": { ""month"": ""May"", ""day"": 5, ""skipLeapMonth"": true, ""sweepCalendarYears"": true }
 					}
 				} ]
 			} ]
@@ -84,6 +89,8 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Passover"",
 					""rule"": {
+						""name"": ""Passover Rule"",
+						""category"": ""Religious"",
 						""fixed"": { ""month"": ""Nisan"", ""day"": 15 }
 					}
 				} ]
@@ -109,6 +116,8 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Good Friday"",
 					""rule"": {
+						""name"": ""Good Friday Rule"",
+						""category"": ""Holiday"",
 						""offsetFromAnchor"": { ""name"": ""Easter Sunday"", ""offset"": -2 }
 					}
 				} ]
@@ -135,6 +144,8 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Labour Day"",
 					""rule"": {
+						""name"": ""Labour Day Rule"",
+						""category"": ""Holiday"",
 						""dayOfWeekInMonth"": { ""month"": ""September"", ""dayOfWeek"": ""Monday"", ""weekOrdinal"": ""First"" }
 					}
 				} ]
@@ -162,6 +173,8 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Easter Sunday"",
 					""rule"": {
+						""name"": ""Easter Sunday Rule"",
+						""category"": ""Religious"",
 						""algorithm"": { ""key"": ""easter-sunday"" }
 					}
 				} ]
@@ -187,7 +200,7 @@ public partial class NotableDateRuleJsonParserTests
 				""resource"": ""shared.json"",
 				""uses"": [ {
 					""name"": ""Inherited"",
-					""rule"": { ""territory"": ""US"", ""priority"": 5 }
+					""rule"": { ""name"": ""Inherited Rule"", ""category"": ""Holiday"", ""territory"": ""US"", ""priority"": 5 }
 				} ]
 			} ]
 		}";
@@ -201,11 +214,11 @@ public partial class NotableDateRuleJsonParserTests
 	}
 
 	/// <summary>
-	/// Verifies that an override body declaring more than one strategy surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that an override body declaring more than one strategy is rejected by schema validation
+	/// as <see cref="JsonException" /> via the <c>atMostOneStrategy</c> clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseDocument_WhenOverrideHasMultipleStrategies_ShouldThrowInvalidOperationException()
+	public void ParseDocument_WhenOverrideHasMultipleStrategies_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""useFrom"": [ {
@@ -213,6 +226,8 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Overloaded"",
 					""rule"": {
+						""name"": ""Overloaded Rule"",
+						""category"": ""Holiday"",
 						""fixed"": { ""month"": ""January"", ""day"": 1 },
 						""algorithm"": { ""key"": ""anything"" }
 					}
@@ -220,7 +235,7 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseDocument(json);
 		});
@@ -238,7 +253,7 @@ public partial class NotableDateRuleJsonParserTests
 				""resource"": ""shared.json"",
 				""uses"": [ {
 					""name"": ""Tagged"",
-					""rule"": { ""tags"": [""Public"", ""Federal"", ""   ""] }
+					""rule"": { ""name"": ""Tagged Rule"", ""category"": ""Holiday"", ""tags"": [""Public"", ""Federal"", ""   ""] }
 				} ]
 			} ]
 		}";
@@ -263,6 +278,8 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Adjusted"",
 					""rule"": {
+						""name"": ""Adjusted Rule"",
+						""category"": ""Holiday"",
 						""adjustments"": [
 							{ ""key"": ""weekend-roll"", ""when"": ""IfWeekend"", ""action"": ""MoveToNextWeekday"" }
 						]
@@ -293,6 +310,8 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Duplicate"",
 					""rule"": {
+						""name"": ""Duplicate Rule"",
+						""category"": ""Holiday"",
 						""adjustments"": [
 							{ ""key"": ""same"", ""when"": ""IfWeekend"", ""action"": ""MoveToNextWeekday"" },
 							{ ""key"": ""same"", ""when"": ""Always"", ""action"": ""None"" }
@@ -321,6 +340,7 @@ public partial class NotableDateRuleJsonParserTests
 				""uses"": [ {
 					""name"": ""Scalar"",
 					""rule"": {
+						""name"": ""Scalar Rule"",
 						""category"": ""Holiday"",
 						""territory"": ""AU"",
 						""nonWorking"": true,
@@ -401,28 +421,28 @@ public partial class NotableDateRuleJsonParserTests
 	}
 
 	/// <summary>
-	/// Verifies that a <c>useFrom</c> entry whose <c>resource</c> is missing surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that a <c>useFrom</c> entry whose <c>resource</c> is missing is rejected by schema
+	/// validation as <see cref="JsonException" /> via the <c>useFrom.required</c> clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseDocument_WhenUseFromResourceIsMissing_ShouldThrowInvalidOperationException()
+	public void ParseDocument_WhenUseFromResourceIsMissing_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""useFrom"": [ { ""uses"": [ { ""name"": ""Anything"" } ] } ]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseDocument(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that a <c>use</c> entry whose <c>name</c> is missing surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that a <c>use</c> entry whose <c>name</c> is missing is rejected by schema validation
+	/// as <see cref="JsonException" /> via the <c>use.required</c> clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseDocument_WhenUseDirectiveNameIsMissing_ShouldThrowInvalidOperationException()
+	public void ParseDocument_WhenUseDirectiveNameIsMissing_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""useFrom"": [ {
@@ -431,7 +451,7 @@ public partial class NotableDateRuleJsonParserTests
 			} ]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseDocument(json);
 		});

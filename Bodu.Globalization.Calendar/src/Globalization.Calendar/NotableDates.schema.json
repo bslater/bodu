@@ -78,7 +78,7 @@
       ]
     },
     "monthOrNumber": {
-      "oneOf": [
+      "anyOf": [
         {
           "type": "string",
           "enum": [
@@ -109,6 +109,10 @@
             "Av",
             "Elul"
           ]
+        },
+        {
+          "type": "string",
+          "pattern": "^(1[0-3]|[1-9])$"
         },
         {
           "type": "integer",
