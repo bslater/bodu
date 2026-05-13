@@ -37,7 +37,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <NotableDate name="Makar Sankranti">
-    <Rule name="Fixed Makar Sankranti"
+    <Rule name="fixed-jan-14"
           category="Cultural"
           comment="Solar harvest festival marking the sun's transition into Makara. Commonly observed on 14 January by modern civil-calendar convention, though astronomical timing can vary.">
       <Fixed month="January" day="14" />
@@ -46,7 +46,7 @@
   </NotableDate>
 
   <NotableDate name="Pongal">
-    <Rule name="Fixed Pongal"
+    <Rule name="fixed-jan-14"
           category="Cultural"
           durationDays="4"
           comment="Tamil harvest festival. The durationDays value of 4 represents the common sequence of Bhogi, Thai Pongal, Mattu Pongal, and Kaanum Pongal beginning on 14 January by modern civil-calendar convention.">
@@ -57,7 +57,7 @@
   </NotableDate>
 
   <NotableDate name="Saraswati Puja">
-    <Rule name="Saraswati Puja"
+    <Rule name="algo-saraswati-puja"
           category="Religious"
           comment="Vasant Panchami observance dedicated to Saraswati, goddess of learning, music, and the arts. Requires a custom INotableDateAlgorithm registered under the key 'saraswati-puja'.">
       <Algorithm key="saraswati-puja" />
@@ -66,7 +66,7 @@
   </NotableDate>
 
   <NotableDate name="Maha Shivaratri">
-    <Rule name="Maha Shivaratri"
+    <Rule name="algo-maha-shivaratri"
           category="Religious"
           comment="Great Night of Shiva. Observed on the fourteenth night of the dark fortnight in the Hindu month of Phalguna or Magha, depending on regional calendar convention. Requires a custom INotableDateAlgorithm registered under the key 'maha-shivaratri'.">
       <Algorithm key="maha-shivaratri" />
@@ -75,7 +75,7 @@
   </NotableDate>
 
   <NotableDate name="Holi">
-    <Rule name="Holi"
+    <Rule name="algo-holi"
           category="Religious"
           durationDays="2"
           comment="The Festival of Colours. Begins on the full moon (Purnima) of Phalguna with Holika Dahan (the lighting of bonfires symbolising the victory of good over evil), followed the next day by Rangwali Holi (the coloured powder celebration). Widely celebrated across India and Hindu communities worldwide as a spring festival marking the triumph of virtue over vice and the arrival of the harvest season. A public holiday in India and Nepal. Requires a custom INotableDateAlgorithm registered under the key 'holi'.">
@@ -85,7 +85,7 @@
   </NotableDate>
 
   <NotableDate name="Ram Navami">
-    <Rule name="Ram Navami"
+    <Rule name="algo-ram-navami"
           category="Religious"
           comment="The birthday of Lord Rama, the seventh avatar of Vishnu and the hero of the Ramayana. Observed on the ninth day of the bright fortnight of Chaitra, towards the end of the nine-day Chaitra Navaratri festival. Observed with fasting, prayers, devotional singing (bhajan and kirtan), and readings from the Ramayana. Requires a custom INotableDateAlgorithm registered under the key 'ram-navami'.">
       <Algorithm key="ram-navami" />
@@ -94,7 +94,7 @@
   </NotableDate>
 
   <NotableDate name="Raksha Bandhan">
-    <Rule name="Raksha Bandhan"
+    <Rule name="algo-raksha-bandhan"
           category="Cultural"
           comment="Festival celebrating sibling bonds, observed on the full moon day of Shravana. Requires a custom INotableDateAlgorithm registered under the key 'raksha-bandhan'.">
       <Algorithm key="raksha-bandhan" />
@@ -103,7 +103,7 @@
   </NotableDate>
 
   <NotableDate name="Janmashtami">
-    <Rule name="Janmashtami"
+    <Rule name="algo-janmashtami"
           category="Religious"
           comment="The birthday of Lord Krishna, the eighth avatar of Vishnu. Observed on the eighth day (Ashtami) of the dark fortnight of Bhadrapada, typically in August or September. Celebrated with midnight prayer vigils, devotional singing, fasting, and the staging of Krishna's birth scene (jhankis). A public holiday in India and observed by Hindu communities worldwide. Requires a custom INotableDateAlgorithm registered under the key 'janmashtami'.">
       <Algorithm key="janmashtami" />
@@ -112,7 +112,7 @@
   </NotableDate>
 
   <NotableDate name="Ganesh Chaturthi">
-    <Rule name="Ganesh Chaturthi"
+    <Rule name="algo-ganesh-chaturthi"
           category="Religious"
           durationDays="10"
           comment="Festival honouring Lord Ganesha, beginning on the fourth day of the bright fortnight of Bhadrapada. The durationDays value of 10 spans the common festival period through Anant Chaturdashi. Requires a custom INotableDateAlgorithm registered under the key 'ganesh-chaturthi'.">
@@ -122,7 +122,7 @@
   </NotableDate>
 
   <NotableDate name="Onam">
-    <Rule name="Onam"
+    <Rule name="algo-onam"
           category="Cultural"
           durationDays="10"
           comment="Kerala harvest festival centred on Thiruvonam in the Malayalam month of Chingam. The durationDays value of 10 represents the common festival period from Atham to Thiruvonam. Requires a custom INotableDateAlgorithm registered under the key 'onam'.">
@@ -133,7 +133,7 @@
   </NotableDate>
 
   <NotableDate name="Navaratri">
-    <Rule name="Navaratri"
+    <Rule name="algo-navaratri"
           category="Religious"
           durationDays="9"
           comment="Nine nights dedicated to the goddess Durga and her nine forms (Navadurga). The most widely observed Navaratri begins on the first day of the bright fortnight of Ashvin (September/October). Observed with fasting, prayers, traditional dance (Garba, Dandiya), and the construction of Golu (doll displays in South India). Concludes on the tenth day with Vijayadashami (Dussehra). Requires a custom INotableDateAlgorithm registered under the key 'navaratri'.">
@@ -143,7 +143,7 @@
   </NotableDate>
 
   <NotableDate name="Dussehra">
-    <Rule name="Dussehra"
+    <Rule name="algo-dussehra"
           category="Religious"
           comment="Vijayadashami. The tenth day of the bright fortnight of Ashvin, immediately following the conclusion of Navaratri. Celebrates the victory of Lord Rama over the demon king Ravana (in North India) and the victory of the goddess Durga over the buffalo demon Mahishasura (in Bengal and South India). Observed with the burning of effigies of Ravana, Kumbhakarna, and Meghnad, theatrical performances of the Ramayana (Ramlila), and weapon-worship (Ayudha Puja). A national public holiday in India. Requires a custom INotableDateAlgorithm registered under the key 'dussehra'.">
       <Algorithm key="dussehra" />
@@ -152,7 +152,7 @@
   </NotableDate>
 
   <NotableDate name="Karva Chauth">
-    <Rule name="Karva Chauth"
+    <Rule name="algo-karva-chauth"
           category="Cultural"
           comment="Fasting observance commonly followed by married Hindu women, observed on the fourth day after the full moon in Kartik. Requires a custom INotableDateAlgorithm registered under the key 'karva-chauth'.">
       <Algorithm key="karva-chauth" />
@@ -161,7 +161,7 @@
   </NotableDate>
 
   <NotableDate name="Diwali">
-    <Rule name="Diwali"
+    <Rule name="algo-diwali"
           category="Religious"
           durationDays="5"
           comment="Deepavali, the Festival of Lights. The main day falls on the new moon (Amavasya) of the month of Kartik (October/November), with the five-day festival beginning two days before and ending two days after. Celebrates the return of Lord Rama to Ayodhya, the victory of Lord Krishna over the demon Narakasura, and the goddess Lakshmi's blessing of prosperity. Observed with the lighting of oil lamps (diyas) and candles, fireworks, exchange of sweets and gifts, prayers to Lakshmi and Ganesha, and rangoli decoration. A national public holiday in India and a public holiday in several other countries. The durationDays value of 5 spans the entire traditional five-day period from Dhanteras to Bhai Dooj. Requires a custom INotableDateAlgorithm registered under the key 'diwali'.">

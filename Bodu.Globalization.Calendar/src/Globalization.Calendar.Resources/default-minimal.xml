@@ -13,7 +13,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <NotableDate name="New Year's Day">
-    <Rule name="Fixed New Year's Day With Weekend Roll" category="Holiday" nonWorking="true">
+    <Rule name="fixed-jan-01-weekend-roll" category="Holiday" nonWorking="true">
       <Fixed month="January" day="1" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>

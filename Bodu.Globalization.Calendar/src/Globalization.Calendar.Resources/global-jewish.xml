@@ -51,7 +51,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <NotableDate name="Purim">
-    <Rule name="Purim"
+    <Rule name="fixed-hebrew-lastadar-14"
           category="Religious"
           calendarType="System.Globalization.HebrewCalendar"
           comment="The Feast of Lots. Observed on 14 Adar (or 14 Adar II in a Hebrew leap year — the LastAdar alias resolves to Adar II in leap years and Adar I in standard years). Commemorates the salvation of the Jewish people from Haman's plot to destroy them, as recounted in the Book of Esther. Observed with the public reading of the Megillah (Book of Esther), wearing of costumes, sending of food gifts (mishloach manot), charitable giving, and festive meals. Resolved via the Fixed strategy using HebrewCalendar (month LastAdar, day 14) with sweepCalendarYears.">
@@ -61,7 +61,7 @@
   </NotableDate>
 
   <NotableDate name="Passover">
-    <Rule name="Passover"
+    <Rule name="fixed-hebrew-nisan-15"
           category="Religious"
           durationDays="7"
           calendarType="System.Globalization.HebrewCalendar"
@@ -72,7 +72,7 @@
   </NotableDate>
 
   <NotableDate name="Shavuot">
-    <Rule name="Shavuot"
+    <Rule name="offset-passover+50"
           category="Religious"
           comment="The Feast of Weeks (also Pentecost). Observed on 6 Sivan, fifty days after the first day of Passover (15 Nisan). Commemorates the giving of the Torah at Mount Sinai. Observed with synagogue services, all-night Torah study (tikkun leil Shavuot), and the eating of dairy foods. One day in Israel and among Reform communities; two days in traditional diaspora practice. Authored as a fixed fifty-day offset from Passover; Nisan is always 30 days and Iyar always 29, so this offset is invariant.">
       <OffsetFromAnchor name="Passover" offset="50" />
@@ -81,7 +81,7 @@
   </NotableDate>
 
   <NotableDate name="Rosh Hashanah">
-    <Rule name="Rosh Hashanah"
+    <Rule name="fixed-hebrew-tishri-01"
           category="Religious"
           durationDays="2"
           calendarType="System.Globalization.HebrewCalendar"
@@ -92,7 +92,7 @@
   </NotableDate>
 
   <NotableDate name="Yom Kippur">
-    <Rule name="Yom Kippur"
+    <Rule name="offset-rosh-hashanah+9"
           category="Religious"
           comment="The Day of Atonement. Observed on 10 Tishri, nine days after Rosh Hashanah, closing the Ten Days of Repentance. The holiest day of the Jewish year, dedicated to prayer, fasting, and repentance. Synagogue services run for most of the day. A national holiday in Israel, where public life effectively halts. Authored as a fixed nine-day offset from Rosh Hashanah; the Hebrew calendar guarantees this offset is invariant.">
       <OffsetFromAnchor name="Rosh Hashanah" offset="9" />
@@ -101,7 +101,7 @@
   </NotableDate>
 
   <NotableDate name="Sukkot">
-    <Rule name="Sukkot"
+    <Rule name="offset-rosh-hashanah+14"
           category="Religious"
           durationDays="7"
           comment="The Feast of Tabernacles. Begins on 15 Tishri, fourteen days after Rosh Hashanah and five days after Yom Kippur. Commemorates the forty years the Israelites spent wandering in the desert after the Exodus. Observed by dwelling and eating in a sukkah (temporary hut) for seven days in Israel (eight in the diaspora by traditional practice). The durationDays value here represents the Israeli/Reform seven-day observance; regional rules may override to eight days for diaspora practice. Authored as a fixed fourteen-day offset from Rosh Hashanah; the Hebrew calendar guarantees this offset is invariant.">
@@ -111,7 +111,7 @@
   </NotableDate>
 
   <NotableDate name="Hanukkah">
-    <Rule name="Hanukkah"
+    <Rule name="fixed-hebrew-kislev-25"
           category="Religious"
           durationDays="8"
           calendarType="System.Globalization.HebrewCalendar"

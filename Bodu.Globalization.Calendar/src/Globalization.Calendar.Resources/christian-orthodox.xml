@@ -23,7 +23,7 @@
   -->
 
   <NotableDate name="Orthodox Christmas Eve">
-    <Rule name="Fixed Orthodox Christmas Eve" category="Observance">
+    <Rule name="fixed-jan-06" category="Observance">
       <Fixed month="January" day="6" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -31,7 +31,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Christmas Day">
-    <Rule name="Fixed Orthodox Christmas Day" category="Holiday" nonWorking="true">
+    <Rule name="fixed-jan-07" category="Holiday" nonWorking="true">
       <Fixed month="January" day="7" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -39,7 +39,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox New Year">
-    <Rule name="Fixed Orthodox New Year" category="Observance">
+    <Rule name="fixed-jan-14" category="Observance">
       <Fixed month="January" day="14" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -47,7 +47,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Epiphany">
-    <Rule name="Fixed Orthodox Epiphany" category="Observance">
+    <Rule name="fixed-jan-19" category="Observance">
       <Fixed month="January" day="19" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -59,7 +59,7 @@
   -->
 
   <NotableDate name="Orthodox Easter Sunday">
-    <Rule name="Orthodox Easter Sunday" category="Religious">
+    <Rule name="algo-orthodox-easter-sunday" category="Religious">
       <Algorithm key="orthodox-easter-sunday" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -71,7 +71,7 @@
   -->
 
   <NotableDate name="Orthodox Clean Monday">
-    <Rule name="Forty-Eighth Day Before Orthodox Easter" category="Religious">
+    <Rule name="offset-orthodox-easter-sunday-48" category="Religious">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="-48" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -79,7 +79,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Lazarus Saturday">
-    <Rule name="Eighth Day Before Orthodox Easter" category="Religious">
+    <Rule name="offset-orthodox-easter-sunday-8" category="Religious">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="-8" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -87,7 +87,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Palm Sunday">
-    <Rule name="Seventh Day Before Orthodox Easter" category="Religious">
+    <Rule name="offset-orthodox-easter-sunday-7" category="Religious">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="-7" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -95,7 +95,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Holy Thursday">
-    <Rule name="Third Day Before Orthodox Easter" category="Religious">
+    <Rule name="offset-orthodox-easter-sunday-3" category="Religious">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="-3" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -103,7 +103,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Good Friday">
-    <Rule name="Second Day Before Orthodox Easter" category="Holiday">
+    <Rule name="offset-orthodox-easter-sunday-2" category="Holiday">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="-2" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -111,7 +111,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Holy Saturday">
-    <Rule name="One Day Before Orthodox Easter" category="Religious">
+    <Rule name="offset-orthodox-easter-sunday-1" category="Religious">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="-1" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -123,7 +123,7 @@
   -->
 
   <NotableDate name="Orthodox Bright Week">
-    <Rule name="Orthodox Bright Week" category="Religious" durationDays="7">
+    <Rule name="offset-orthodox-easter-sunday+0" category="Religious" durationDays="7">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="0" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -131,7 +131,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Easter Monday">
-    <Rule name="One Day After Orthodox Easter" category="Holiday">
+    <Rule name="offset-orthodox-easter-sunday+1" category="Holiday">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="1" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -139,7 +139,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Ascension Day">
-    <Rule name="Thirty-Ninth Day After Orthodox Easter" category="Religious">
+    <Rule name="offset-orthodox-easter-sunday+39" category="Religious">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="39" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -147,7 +147,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Pentecost">
-    <Rule name="Forty-Ninth Day After Orthodox Easter" category="Religious">
+    <Rule name="offset-orthodox-easter-sunday+49" category="Religious">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="49" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>
@@ -155,7 +155,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Pentecost Monday">
-    <Rule name="Fiftieth Day After Orthodox Easter" category="Religious">
+    <Rule name="offset-orthodox-easter-sunday+50" category="Religious">
       <OffsetFromAnchor name="Orthodox Easter Sunday" offset="50" />
       <Tag>Christian</Tag>
       <Tag>OrthodoxChristian</Tag>

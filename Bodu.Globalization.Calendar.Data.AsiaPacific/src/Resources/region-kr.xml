@@ -13,63 +13,63 @@
   </UseFrom>
 
   <NotableDate name="New Year's Day">
-    <Rule name="Fixed Korea New Year's Day" category="Holiday" territory="KR" nonWorking="true">
+    <Rule name="fixed-jan-01-kr" category="Holiday" territory="KR" nonWorking="true">
       <Fixed month="January" day="1" />
       <Tag>Korea</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Independence Movement Day">
-    <Rule name="Fixed Independence Movement Day" category="Holiday" territory="KR" nonWorking="true">
+    <Rule name="fixed-mar-01-kr" category="Holiday" territory="KR" nonWorking="true">
       <Fixed month="March" day="1" />
       <Tag>Korea</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Children's Day">
-    <Rule name="Fixed Korea Children's Day" category="Holiday" territory="KR" nonWorking="true">
+    <Rule name="fixed-may-05-kr" category="Holiday" territory="KR" nonWorking="true">
       <Fixed month="May" day="5" />
       <Tag>Korea</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Memorial Day">
-    <Rule name="Fixed Korea Memorial Day" category="Holiday" territory="KR" nonWorking="true">
+    <Rule name="fixed-jun-06-kr" category="Holiday" territory="KR" nonWorking="true">
       <Fixed month="June" day="6" />
       <Tag>Korea</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Constitution Day">
-    <Rule name="Fixed Constitution Day" category="Civic" territory="KR">
+    <Rule name="fixed-jul-17-kr" category="Civic" territory="KR">
       <Fixed month="July" day="17" />
       <Tag>Korea</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Liberation Day">
-    <Rule name="Fixed Liberation Day" category="Holiday" territory="KR" nonWorking="true">
+    <Rule name="fixed-aug-15-kr" category="Holiday" territory="KR" nonWorking="true">
       <Fixed month="August" day="15" />
       <Tag>Korea</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="National Foundation Day">
-    <Rule name="Fixed Korea National Foundation Day" category="Holiday" territory="KR" nonWorking="true">
+    <Rule name="fixed-oct-03-kr" category="Holiday" territory="KR" nonWorking="true">
       <Fixed month="October" day="3" />
       <Tag>Korea</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Hangul Day">
-    <Rule name="Fixed Hangul Day" category="Holiday" territory="KR" nonWorking="true">
+    <Rule name="fixed-oct-09-kr" category="Holiday" territory="KR" nonWorking="true">
       <Fixed month="October" day="9" />
       <Tag>Korea</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Christmas Day">
-    <Rule name="Fixed Korea Christmas Day" category="Holiday" territory="KR" nonWorking="true">
+    <Rule name="fixed-dec-25-kr" category="Holiday" territory="KR" nonWorking="true">
       <Fixed month="December" day="25" />
       <Tag>Korea</Tag>
     </Rule>

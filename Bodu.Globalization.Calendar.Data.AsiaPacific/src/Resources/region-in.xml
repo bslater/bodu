@@ -31,21 +31,21 @@
   </UseFrom>
 
   <NotableDate name="Republic Day">
-    <Rule name="Fixed India Republic Day" category="Holiday" territory="IN" nonWorking="true">
+    <Rule name="fixed-jan-26-in" category="Holiday" territory="IN" nonWorking="true">
       <Fixed month="January" day="26" />
       <Tag>India</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Independence Day">
-    <Rule name="Fixed India Independence Day" category="Holiday" territory="IN" nonWorking="true">
+    <Rule name="fixed-aug-15-in" category="Holiday" territory="IN" nonWorking="true">
       <Fixed month="August" day="15" />
       <Tag>India</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Gandhi Jayanti">
-    <Rule name="Fixed Gandhi Jayanti" category="Holiday" territory="IN" nonWorking="true">
+    <Rule name="fixed-oct-02-in" category="Holiday" territory="IN" nonWorking="true">
       <Fixed month="October" day="2" />
       <Tag>India</Tag>
     </Rule>

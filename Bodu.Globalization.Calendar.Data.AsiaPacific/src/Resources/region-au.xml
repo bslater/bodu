@@ -19,7 +19,7 @@
 
   <UseFrom resource="./global-all.xml">
     <Use name="New Year's Day" category="Holiday">
-      <Rule name="Australian New Year's Day" territory="AU" category="Holiday" nonWorking="true">
+      <Rule name="fixed-jan-01-weekend-roll-au" territory="AU" category="Holiday" nonWorking="true">
         <Tag>NationalHoliday</Tag>
       </Rule>
     </Use>
@@ -40,7 +40,7 @@
     <Use name="Easter Monday" territory="AU" nonWorking="true" />
     <Use name="Christmas Eve" territory="AU" />
     <Use name="Christmas Day" territory="AU" nonWorking="true">
-      <Rule name="Australian Christmas Day With Non-Working-Day Roll" category="Holiday" nonWorking="true">
+      <Rule name="fixed-dec-25-nonworking-roll-au" category="Holiday" nonWorking="true">
         <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
       </Rule>
     </Use>
@@ -64,7 +64,7 @@
   -->
 
   <NotableDate name="Australia Day">
-    <Rule name="Fixed Australia Day With Weekend Roll"
+    <Rule name="fixed-jan-26-weekend-roll-au"
           category="Holiday"
           territory="AU"
           nonWorking="true"
@@ -76,7 +76,7 @@
   </NotableDate>
 
   <NotableDate name="Anzac Day">
-    <Rule name="Fixed Anzac Day With WA And NT Weekend Substitution"
+    <Rule name="fixed-apr-25-weekend-roll-au"
           category="Remembrance"
           territory="AU"
           nonWorking="true"
@@ -89,7 +89,7 @@
   </NotableDate>
 
   <NotableDate name="Boxing Day">
-    <Rule name="Fixed Australian Boxing Day With Non-Working-Day Roll"
+    <Rule name="fixed-dec-26-nonworking-roll-au"
           category="Holiday"
           territory="AU"
           nonWorking="true">
@@ -104,7 +104,7 @@
   -->
 
   <NotableDate name="Harmony Day">
-    <Rule name="Fixed Harmony Day"
+    <Rule name="fixed-mar-21-au"
           category="Observance"
           territory="AU">
       <Fixed month="March" day="21" />
@@ -112,7 +112,7 @@
   </NotableDate>
 
   <NotableDate name="National Sorry Day">
-    <Rule name="Fixed National Sorry Day"
+    <Rule name="fixed-may-26-au"
           category="Remembrance"
           territory="AU">
       <Fixed month="May" day="26" />
@@ -120,7 +120,7 @@
   </NotableDate>
 
   <NotableDate name="National Reconciliation Week">
-    <Rule name="Fixed National Reconciliation Week"
+    <Rule name="fixed-may-27-au"
           category="Observance"
           territory="AU"
           durationDays="7">
@@ -129,7 +129,7 @@
   </NotableDate>
 
   <NotableDate name="Mabo Day">
-    <Rule name="Fixed Mabo Day"
+    <Rule name="fixed-jun-03-au"
           category="Remembrance"
           territory="AU">
       <Fixed month="June" day="3" />
@@ -137,7 +137,7 @@
   </NotableDate>
 
   <NotableDate name="NAIDOC Week">
-    <Rule name="First Sunday In July NAIDOC Week"
+    <Rule name="weekday-1st-sun-jul-au"
           category="Observance"
           durationDays="7"
           territory="AU">
@@ -146,7 +146,7 @@
   </NotableDate>
 
   <NotableDate name="Father's Day">
-    <Rule name="First Sunday In September Father's Day"
+    <Rule name="weekday-1st-sun-sep-au"
           category="Observance"
           territory="AU"
           comment="In Australia and New Zealand, Father's Day is observed on the first Sunday of September, not the third Sunday of June as in most other countries.">
@@ -155,7 +155,7 @@
   </NotableDate>
 
   <NotableDate name="R U OK? Day">
-    <Rule name="Second Thursday In September R U OK Day" 
+    <Rule name="weekday-2nd-thu-sep-au" 
           category="Observance"
           territory="AU">
       <DayOfWeekInMonth month="September" dayOfWeek="Thursday" weekOrdinal="Second" />
@@ -167,7 +167,7 @@
   -->
 
   <NotableDate name="King's Birthday">
-    <Rule name="Second Monday In June King's Birthday (NSW)"
+    <Rule name="weekday-2nd-mon-jun-au-nsw"
           category="Holiday"
           territory="AU-NSW"
           nonWorking="true">
@@ -177,7 +177,7 @@
   </NotableDate>
 
   <NotableDate name="Bank Holiday">
-    <Rule name="First Monday In August Bank Holiday (NSW)"
+    <Rule name="weekday-1st-mon-aug-au-nsw"
           category="Observance"
           territory="AU-NSW"
           comment="Observed by banks and the financial sector only; not a general public holiday.">
@@ -187,7 +187,7 @@
   </NotableDate>
 
   <NotableDate name="Labour Day">
-    <Rule name="First Monday In October Labour Day (NSW)"
+    <Rule name="weekday-1st-mon-oct-au-nsw"
           category="Holiday"
           territory="AU-NSW"
           nonWorking="true">
@@ -201,7 +201,7 @@
   -->
 
   <NotableDate name="Labour Day">
-    <Rule name="Second Monday In March Labour Day (VIC)"
+    <Rule name="weekday-2nd-mon-mar-au-vic"
           category="Holiday"
           territory="AU-VIC"
           nonWorking="true">
@@ -211,7 +211,7 @@
   </NotableDate>
 
   <NotableDate name="King's Birthday">
-    <Rule name="Second Monday In June King's Birthday (VIC)"
+    <Rule name="weekday-2nd-mon-jun-au-vic"
           category="Holiday"
           territory="AU-VIC"
           nonWorking="true">
@@ -221,7 +221,7 @@
   </NotableDate>
 
   <NotableDate name="AFL Grand Final Friday">
-    <Rule name="Last Friday In September AFL Grand Final Friday"
+    <Rule name="weekday-last-fri-sep-au-vic"
           category="Holiday"
           territory="AU-VIC"
           firstYear="2015"
@@ -234,7 +234,7 @@
   </NotableDate>
 
   <NotableDate name="Melbourne Cup Day">
-    <Rule name="First Tuesday In November Melbourne Cup Day"
+    <Rule name="weekday-1st-tue-nov-au-vic"
           category="Holiday"
           territory="AU-VIC"
           nonWorking="true"
@@ -249,7 +249,7 @@
   -->
 
   <NotableDate name="Labour Day">
-    <Rule name="First Monday In May Labour Day (QLD)"
+    <Rule name="weekday-1st-mon-may-au-qld"
           category="Holiday"
           territory="AU-QLD"
           nonWorking="true">
@@ -259,7 +259,7 @@
   </NotableDate>
 
   <NotableDate name="Royal Queensland Show">
-    <Rule name="Second Wednesday In August Royal Queensland Show (Brisbane)"
+    <Rule name="weekday-2nd-wed-aug-au-qld"
           category="Cultural"
           territory="AU-QLD"
           nonWorking="true"
@@ -270,7 +270,7 @@
   </NotableDate>
 
   <NotableDate name="King's Birthday">
-    <Rule name="First Monday In October King's Birthday (QLD)"
+    <Rule name="weekday-1st-mon-oct-au-qld"
           category="Holiday"
           territory="AU-QLD"
           firstYear="2016"
@@ -286,7 +286,7 @@
   -->
 
   <NotableDate name="Adelaide Cup Day">
-    <Rule name="Second Monday In March Adelaide Cup Day"
+    <Rule name="weekday-2nd-mon-mar-au-sa"
           category="Holiday"
           territory="AU-SA"
           nonWorking="true">
@@ -296,7 +296,7 @@
   </NotableDate>
 
   <NotableDate name="King's Birthday">
-    <Rule name="Second Monday In June King's Birthday (SA)"
+    <Rule name="weekday-2nd-mon-jun-au-sa"
           category="Holiday"
           territory="AU-SA"
           nonWorking="true">
@@ -306,7 +306,7 @@
   </NotableDate>
 
   <NotableDate name="Labour Day">
-    <Rule name="First Monday In October Labour Day (SA)"
+    <Rule name="weekday-1st-mon-oct-au-sa"
           category="Holiday"
           territory="AU-SA"
           nonWorking="true">
@@ -316,7 +316,7 @@
   </NotableDate>
 
   <NotableDate name="Proclamation Day">
-    <Rule name="Fixed Proclamation Day With Weekend Roll"
+    <Rule name="fixed-dec-26-weekend-roll-au-sa"
           category="Holiday"
           territory="AU-SA"
           nonWorking="true"
@@ -332,7 +332,7 @@
   -->
 
   <NotableDate name="Labour Day">
-    <Rule name="First Monday In March Labour Day (WA)"
+    <Rule name="weekday-1st-mon-mar-au-wa"
           category="Holiday"
           territory="AU-WA"
           nonWorking="true">
@@ -342,7 +342,7 @@
   </NotableDate>
 
   <NotableDate name="Western Australia Day">
-    <Rule name="First Monday In June Western Australia Day"
+    <Rule name="weekday-1st-mon-jun-au-wa"
           category="Holiday"
           territory="AU-WA"
           nonWorking="true">
@@ -352,7 +352,7 @@
   </NotableDate>
 
   <NotableDate name="King's Birthday">
-    <Rule name="Last Monday In September King's Birthday (WA)"
+    <Rule name="weekday-last-mon-sep-au-wa"
           category="Holiday"
           territory="AU-WA"
           nonWorking="true"
@@ -368,7 +368,7 @@
   -->
 
   <NotableDate name="Eight Hours Day">
-    <Rule name="Second Monday In March Eight Hours Day"
+    <Rule name="weekday-2nd-mon-mar-au-tas"
           category="Holiday"
           territory="AU-TAS"
           nonWorking="true">
@@ -378,7 +378,7 @@
   </NotableDate>
 
   <NotableDate name="King's Birthday">
-    <Rule name="Second Monday In June King's Birthday (TAS)"
+    <Rule name="weekday-2nd-mon-jun-au-tas"
           category="Holiday"
           territory="AU-TAS"
           nonWorking="true">
@@ -388,7 +388,7 @@
   </NotableDate>
 
   <NotableDate name="Recreation Day">
-    <Rule name="First Monday In November Recreation Day"
+    <Rule name="weekday-1st-mon-nov-au-tas"
           category="Holiday"
           territory="AU-TAS"
           nonWorking="true"
@@ -403,7 +403,7 @@
   -->
 
   <NotableDate name="May Day">
-    <Rule name="First Monday In May May Day"
+    <Rule name="weekday-1st-mon-may-au-nt"
           category="Holiday"
           territory="AU-NT"
           nonWorking="true">
@@ -413,7 +413,7 @@
   </NotableDate>
 
   <NotableDate name="King's Birthday">
-    <Rule name="Second Monday In June King's Birthday (NT)"
+    <Rule name="weekday-2nd-mon-jun-au-nt"
           category="Holiday"
           territory="AU-NT"
           nonWorking="true">
@@ -423,7 +423,7 @@
   </NotableDate>
 
   <NotableDate name="Picnic Day">
-    <Rule name="First Monday In August Picnic Day"
+    <Rule name="weekday-1st-mon-aug-au-nt"
           category="Holiday"
           territory="AU-NT"
           nonWorking="true">
@@ -437,7 +437,7 @@
   -->
 
   <NotableDate name="Canberra Day">
-    <Rule name="Second Monday In March Canberra Day"
+    <Rule name="weekday-2nd-mon-mar-au-act"
           category="Holiday"
           territory="AU-ACT"
           nonWorking="true">
@@ -447,7 +447,7 @@
   </NotableDate>
 
   <NotableDate name="Reconciliation Day">
-    <Rule name="Last Monday In May Reconciliation Day"
+    <Rule name="weekday-last-mon-may-au-act"
           category="Holiday"
           territory="AU-ACT"
           firstYear="2018"
@@ -460,7 +460,7 @@
   </NotableDate>
 
   <NotableDate name="King's Birthday">
-    <Rule name="Second Monday In June King's Birthday (ACT)"
+    <Rule name="weekday-2nd-mon-jun-au-act"
           category="Holiday"
           territory="AU-ACT"
           nonWorking="true">
@@ -470,7 +470,7 @@
   </NotableDate>
 
   <NotableDate name="Labour Day">
-    <Rule name="First Monday In October Labour Day (ACT)"
+    <Rule name="weekday-1st-mon-oct-au-act"
           category="Holiday"
           territory="AU-ACT"
           nonWorking="true">

@@ -15,49 +15,49 @@
   -->
 
   <NotableDate name="World Wildlife Day">
-    <Rule name="Fixed World Wildlife Day" category="Observance" firstYear="2014"
+    <Rule name="fixed-mar-03" category="Observance" firstYear="2014"
           comment="Proclaimed by the United Nations in 2013 and first observed on 3 March 2014, the date of the 1973 signing of CITES.">
       <Fixed month="March" day="3" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Bee Day">
-    <Rule name="Fixed World Bee Day" category="Observance" firstYear="2018"
+    <Rule name="fixed-may-20" category="Observance" firstYear="2018"
           comment="Designated by the United Nations in 2017 and first observed in 2018. The date marks the birthday of Anton Janša, a pioneer of modern beekeeping.">
       <Fixed month="May" day="20" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Tiger Day">
-    <Rule name="Fixed International Tiger Day" category="Observance" firstYear="2010"
+    <Rule name="fixed-jul-29" category="Observance" firstYear="2010"
           comment="Established at the Saint Petersburg Tiger Summit in 2010 to raise awareness of tiger conservation.">
       <Fixed month="July" day="29" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Cat Day">
-    <Rule name="Fixed International Cat Day" category="Observance" firstYear="2002"
+    <Rule name="fixed-aug-08" category="Observance" firstYear="2002"
           comment="An international cat welfare observance created by the International Fund for Animal Welfare and now associated with cat welfare and responsible care awareness.">
       <Fixed month="August" day="8" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Elephant Day">
-    <Rule name="Fixed World Elephant Day" category="Observance" firstYear="2012"
+    <Rule name="fixed-aug-12" category="Observance" firstYear="2012"
           comment="Founded in 2012 by Patricia Sims and the Elephant Reintroduction Foundation to draw attention to the critical status of both Asian and African elephants.">
       <Fixed month="August" day="12" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Dog Day">
-    <Rule name="Fixed International Dog Day" category="Observance"
+    <Rule name="fixed-aug-26" category="Observance"
           comment="An international companion-animal observance that celebrates dogs, promotes adoption and responsible ownership, and recognises working and assistance dogs.">
       <Fixed month="August" day="26" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Animal Day">
-    <Rule name="Fixed World Animal Day" category="Observance" firstYear="1931"
+    <Rule name="fixed-oct-04" category="Observance" firstYear="1931"
           comment="Originated at a congress of ecologists in Florence in 1931. The date coincides with the Feast of Saint Francis of Assisi, patron saint of animals.">
       <Fixed month="October" day="4" />
     </Rule>

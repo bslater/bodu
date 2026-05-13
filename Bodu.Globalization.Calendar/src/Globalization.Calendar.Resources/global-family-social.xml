@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <NotableDates xmlns="urn:bodu:globalization:calendar">
   <NotableDate name="Friendship Day">
-    <Rule name="Friendship Day" category="Observance">
+    <Rule name="weekday-1st-sun-aug" category="Observance">
       <DayOfWeekInMonth month="August" dayOfWeek="Sunday" weekOrdinal="First" />
       <Tag>Social</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Grandparents Day">
-    <Rule name="Grandparents Day" category="Observance">
+    <Rule name="weekday-1st-sun-sep" category="Observance">
       <DayOfWeekInMonth month="September" dayOfWeek="Sunday" weekOrdinal="First" />
       <Tag>Family</Tag>
     </Rule>

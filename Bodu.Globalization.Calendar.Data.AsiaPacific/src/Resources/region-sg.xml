@@ -26,21 +26,21 @@
   </UseFrom>
 
   <NotableDate name="New Year's Day">
-    <Rule name="Fixed Singapore New Year's Day" category="Holiday" territory="SG" nonWorking="true">
+    <Rule name="fixed-jan-01-sg" category="Holiday" territory="SG" nonWorking="true">
       <Fixed month="January" day="1" />
       <Tag>Singapore</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Labour Day">
-    <Rule name="Fixed Singapore Labour Day" category="Holiday" territory="SG" nonWorking="true">
+    <Rule name="fixed-may-01-sg" category="Holiday" territory="SG" nonWorking="true">
       <Fixed month="May" day="1" />
       <Tag>Singapore</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="National Day">
-    <Rule name="Fixed Singapore National Day" category="Holiday" territory="SG" nonWorking="true">
+    <Rule name="fixed-aug-09-sg" category="Holiday" territory="SG" nonWorking="true">
       <Fixed month="August" day="9" />
       <Tag>Singapore</Tag>
     </Rule>

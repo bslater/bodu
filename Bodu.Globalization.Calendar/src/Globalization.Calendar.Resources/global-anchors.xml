@@ -29,7 +29,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <NotableDate name="Lunar New Year">
-    <Rule name="Lunar New Year"
+    <Rule name="fixed-lunisolar-01-01"
           category="Cultural"
           durationDays="15"
           firstYear="1901"
@@ -43,7 +43,7 @@
   </NotableDate>
 
   <NotableDate name="Ramadan Start">
-    <Rule name="Ramadan Start"
+    <Rule name="fixed-hijri-09-01"
           category="Religious"
           durationDays="30"
           calendarType="System.Globalization.HijriCalendar"
@@ -55,7 +55,7 @@
   </NotableDate>
 
   <NotableDate name="Orthodox Easter">
-    <Rule name="Orthodox Easter" category="Religious">
+    <Rule name="algo-orthodox-easter" category="Religious">
       <Algorithm key="OrthodoxEaster" />
       <Tag>Christian</Tag>
       <Tag>Orthodox</Tag>

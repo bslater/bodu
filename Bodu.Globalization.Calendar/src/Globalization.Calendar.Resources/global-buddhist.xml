@@ -37,7 +37,7 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
   <NotableDate name="Parinirvana Day">
-    <Rule name="Fixed Parinirvana Day"
+    <Rule name="fixed-feb-15"
           category="Religious"
           comment="Nirvana Day. Commemorates the death and final passing into Nirvana (parinirvana) of Siddhartha Gautama (the Buddha) at approximately age 80. Observed primarily in Mahayana Buddhist communities on 15 February by longstanding convention, though the date varies in some traditions (8 February in Japanese Zen, 15 February in Chinese and Tibetan traditions). The 15 February fixed date used here follows the most widely observed Mahayana convention.">
       <Fixed month="February" day="15" />
@@ -46,7 +46,7 @@
   </NotableDate>
 
   <NotableDate name="Losar">
-    <Rule name="Losar"
+    <Rule name="algo-losar"
           category="Religious"
           durationDays="3"
           comment="Tibetan New Year (Losar, lo meaning 'year', sar meaning 'new'). The first day of the first month of the Tibetan lunar calendar, typically falling in February or March in the Gregorian calendar. The most important festival in the Tibetan Buddhist calendar, celebrated over three days with prayers, offerings, traditional foods, and family gatherings. Also observed by Mongolian and Himalayan Buddhist communities. The precise Gregorian date is determined by the Tibetan lunisolar calendar, which may differ from the Chinese lunisolar calendar by up to several days. Requires a custom INotableDateAlgorithm registered under the key 'losar'.">
@@ -57,7 +57,7 @@
   </NotableDate>
 
   <NotableDate name="Vesak">
-    <Rule name="Vesak"
+    <Rule name="algo-vesak"
           category="Religious"
           comment="Buddha Day (Vesak / Wesak / Visakha Bucha). The most important day in the Theravada Buddhist calendar, celebrating the birth, enlightenment (Bodhi), and final passing (parinirvana) of the Gautama Buddha in a single observance. Falls on the full moon of the month of Vaisakha (April/May). Recognised by the United Nations as a day of international recognition since 1999. A public holiday in Thailand, Sri Lanka, Myanmar, Cambodia, Indonesia, and several other countries. The precise Gregorian date varies by year and by whether the Thai, Sri Lankan, or UN calculation method is used. Requires a custom INotableDateAlgorithm registered under the key 'vesak'.">
       <Algorithm key="vesak" />
@@ -66,7 +66,7 @@
   </NotableDate>
 
   <NotableDate name="Asalha Puja">
-    <Rule name="Asalha Puja"
+    <Rule name="algo-asalha-puja"
           category="Religious"
           comment="Dharma Day (Asalha Puja / Asanha Bucha). Falls on the full moon of the month of Asalha (June/July in the Theravada lunisolar calendar). Commemorates the Buddha's first turning of the Wheel of Dharma — the delivery of his first sermon to the five ascetics at Deer Park in Sarnath, India, following his enlightenment. A public holiday in Thailand. Requires a custom INotableDateAlgorithm registered under the key 'asalha-puja'.">
       <Algorithm key="asalha-puja" />
@@ -75,7 +75,7 @@
   </NotableDate>
 
   <NotableDate name="Vassa">
-    <Rule name="Vassa"
+    <Rule name="offset-asalha-puja+1"
           category="Religious"
           durationDays="90"
           comment="The Rains Retreat (Vassa / Buddhist Lent / Khao Phansa). The three-month period of intensified monastic practice observed primarily in Theravada countries. Begins the day after Asalha Puja (the full moon of Asalha) and ends with Pavarana (full moon of Ashvin, approximately three months later). During Vassa, monks and novices reside in their monasteries and limit travel. The beginning of Vassa is a public holiday in Thailand (Asanha Bucha / Khao Phansa). The durationDays value of 90 is an approximation; the exact duration is from the day after Asalha Puja full moon to the Pavarana full moon, which is 89–90 days depending on the year. Resolved via OffsetFromAnchor from Asalha Puja (+1 day); no algorithm registration is required.">
@@ -85,7 +85,7 @@
   </NotableDate>
 
   <NotableDate name="Bodhi Day">
-    <Rule name="Fixed Bodhi Day"
+    <Rule name="fixed-dec-08"
           category="Religious"
           comment="Commemorates the enlightenment (Bodhi) of the Buddha Gautama under the Bodhi tree at Bodh Gaya. Observed on 8 December in Japanese Zen (Rohatsu) and most East Asian Mahayana traditions, following the convention established in Japanese Buddhism. Observed with meditation, recitation of sutras, and other practices. The Theravada tradition incorporates the enlightenment into the Vesak celebration rather than marking it separately.">
       <Fixed month="December" day="8" />

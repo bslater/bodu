@@ -20,21 +20,21 @@
   -->
 
   <NotableDate name="Epiphany">
-    <Rule name="Fixed Epiphany" category="Observance">
+    <Rule name="fixed-jan-06" category="Observance">
       <Fixed month="January" day="6" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Candlemas">
-    <Rule name="Fixed Candlemas" category="Observance">
+    <Rule name="fixed-feb-02" category="Observance">
       <Fixed month="February" day="2" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Annunciation">
-    <Rule name="Fixed Annunciation" category="Observance">
+    <Rule name="fixed-mar-25" category="Observance">
       <Fixed month="March" day="25" />
       <Tag>Christian</Tag>
     </Rule>
@@ -45,7 +45,7 @@
   -->
 
   <NotableDate name="Easter Sunday">
-    <Rule name="Western Easter Sunday" category="Observance" firstYear="1583">
+    <Rule name="algo-easter-sunday" category="Observance" firstYear="1583">
       <Algorithm key="easter-sunday"
                   type="Bodu.Globalization.Calendar.Algorithms.EasterSundayNotableDateAlgorithm, Bodu.Globalization.Calendar" />
       <Tag>Christian</Tag>
@@ -57,42 +57,42 @@
   -->
 
   <NotableDate name="Shrove Tuesday">
-    <Rule name="Tuesday Before Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday-47" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="-47" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Ash Wednesday">
-    <Rule name="Wednesday Before Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday-46" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="-46" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Palm Sunday">
-    <Rule name="Sunday Before Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday-7" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="-7" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Maundy Thursday">
-    <Rule name="Thursday Before Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday-3" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="-3" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Good Friday">
-    <Rule name="Friday Before Western Easter" category="Holiday" firstYear="1583">
+    <Rule name="offset-easter-sunday-2" category="Holiday" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="-2" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Holy Saturday">
-    <Rule name="Saturday Before Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday-1" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="-1" />
       <Tag>Christian</Tag>
     </Rule>
@@ -103,42 +103,42 @@
   -->
 
   <NotableDate name="Easter Monday">
-    <Rule name="Monday After Western Easter" category="Holiday" firstYear="1583">
+    <Rule name="offset-easter-sunday+1" category="Holiday" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="1" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Ascension Day">
-    <Rule name="Thirty-Ninth Day After Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday+39" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="39" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Pentecost Sunday">
-    <Rule name="Forty-Ninth Day After Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday+49" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="49" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Whit Monday">
-    <Rule name="Fiftieth Day After Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday+50" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="50" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Trinity Sunday">
-    <Rule name="Fifty-Sixth Day After Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday+56" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="56" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Corpus Christi">
-    <Rule name="Sixtieth Day After Western Easter" category="Observance" firstYear="1583">
+    <Rule name="offset-easter-sunday+60" category="Observance" firstYear="1583">
       <OffsetFromAnchor name="Easter Sunday" offset="60" />
       <Tag>Christian</Tag>
     </Rule>
@@ -149,28 +149,28 @@
   -->
 
   <NotableDate name="All Saints' Day">
-    <Rule name="Fixed All Saints Day" category="Observance">
+    <Rule name="fixed-nov-01" category="Observance">
       <Fixed month="November" day="1" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="All Souls' Day">
-    <Rule name="Fixed All Souls Day" category="Observance">
+    <Rule name="fixed-nov-02" category="Observance">
       <Fixed month="November" day="2" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Christmas Eve">
-    <Rule name="Fixed Christmas Eve" category="Observance">
+    <Rule name="fixed-dec-24" category="Observance">
       <Fixed month="December" day="24" />
       <Tag>Christian</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Christmas Day">
-    <Rule name="Fixed Christmas Day With Weekend Roll" category="Holiday" nonWorking="true">
+    <Rule name="fixed-dec-25-weekend-roll" category="Holiday" nonWorking="true">
       <Fixed month="December" day="25" />
       <Tag>Christian</Tag>
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
@@ -178,7 +178,7 @@
   </NotableDate>
 
   <NotableDate name="Boxing Day">
-    <Rule name="Fixed Boxing Day" category="Holiday">
+    <Rule name="fixed-dec-26" category="Holiday">
       <Fixed month="December" day="26" />
       <Tag>Christian</Tag>
     </Rule>
