@@ -202,10 +202,12 @@ public sealed class NotableDateRuleOccurrenceResolverEligibilityTests
 	}
 
 	/// <summary>
-	/// Verifies that an anchor-relative rule whose anchor cannot be resolved does not emit a dependent occurrence.
+	/// Verifies that an anchor-relative rule whose anchor cannot be resolved surfaces as
+	/// <see cref="InvalidOperationException" /> at resolution time — misconfigured offset chains do not silently
+	/// produce empty results.
 	/// </summary>
 	[TestMethod]
-	public void ResolveOccurrences_WhenAnchorIsMissing_ShouldNotEmitDependent()
+	public void ResolveOccurrences_WhenAnchorIsMissing_ShouldThrowInvalidOperationException()
 	{
 		NotableDateRule orphanOffset = new()
 		{
@@ -218,10 +220,10 @@ public sealed class NotableDateRuleOccurrenceResolverEligibilityTests
 
 		NotableDateRuleOccurrenceResolver resolver = CreateResolver(orphanOffset);
 
-		IReadOnlyList<ResolvedNotableDateOccurrence> actual = resolver.ResolveOccurrences(
-			Window(2024, 1, 1, 2024, 12, 31));
-
-		Assert.AreEqual(0, actual.Count);
+		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		{
+			_ = resolver.ResolveOccurrences(Window(2024, 1, 1, 2024, 12, 31));
+		});
 	}
 
 	/// <summary>

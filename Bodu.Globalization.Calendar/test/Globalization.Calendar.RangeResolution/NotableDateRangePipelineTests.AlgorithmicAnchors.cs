@@ -225,8 +225,9 @@ public sealed class NotableDateRangePipelineAlgorithmicAnchorsTests
 	}
 
 	/// <summary>
-	/// Verifies that <see cref="RuleStaticAnalysis.GetDependents" /> returns the rules whose root anchor is the
-	/// supplied name, in declaration order.
+	/// Verifies that <see cref="RuleStaticAnalysis.GetDependents" /> returns every rule whose root anchor is the
+	/// supplied name. An algorithm-backed anchor rule is its own dependent (its root anchor is itself), so the
+	/// returned list includes the anchor along with any offset rules that target it.
 	/// </summary>
 	[TestMethod]
 	public void RuleStaticAnalysis_GetDependents_ShouldReturnRulesAnchoredOnNamedRoot()
@@ -261,9 +262,8 @@ public sealed class NotableDateRangePipelineAlgorithmicAnchorsTests
 
 		IReadOnlyList<RuleStaticProfile> dependents = analysis.GetDependents("Easter Sunday");
 
-		Assert.AreEqual(2, dependents.Count);
 		CollectionAssert.AreEquivalent(
-			new[] { "Good Friday", "Easter Monday" },
+			new[] { "Easter Sunday", "Good Friday", "Easter Monday" },
 			dependents.Select(p => p.Rule.Name).ToArray());
 	}
 
