@@ -11,7 +11,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 
 public partial class NotableDateDocumentBuilderTests
 {
-    private static readonly XNamespace CalendarNs = XNamespace.Get("urn:bodu:globalization:calendar");
+    private static readonly XNamespace s_calendarNs = XNamespace.Get("urn:bodu:globalization:calendar");
 
     /// <summary>
     /// Verifies that <see cref="NotableDateDocumentBuilder.ToXml" /> produces XML that is accepted by
@@ -133,7 +133,7 @@ public partial class NotableDateDocumentBuilderTests
                 .AddRule(rule => rule.Category(NotableDateCategory.Holiday).Fixed(12, 26)));
 
         var doc = builder.ToXDocument();
-        var notableDates = doc.Descendants(CalendarNs + "NotableDate").ToList();
+        var notableDates = doc.Descendants(s_calendarNs + "NotableDate").ToList();
 
         Assert.HasCount(2, notableDates);
         Assert.AreEqual("Christmas Day", notableDates[0].Attribute("name")?.Value);
@@ -275,8 +275,8 @@ public partial class NotableDateDocumentBuilderTests
                         .AddHandlerParameter("enabled", "true")
                         .MaxAdjustmentReachDays(45))));
 
-        XDocument doc = builder.ToXDocument();
-        XElement adjElement = doc.Descendants(CalendarNs + "Adjustment").Single();
+        var doc = builder.ToXDocument();
+        XElement adjElement = doc.Descendants(s_calendarNs + "Adjustment").Single();
 
         Assert.IsNull(adjElement.Attribute("handlerParameters"));
         Assert.IsNull(adjElement.Attribute("maxAdjustmentReachDays"));

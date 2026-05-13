@@ -1,8 +1,8 @@
-﻿// // ---------------------------------------------------------------------------------------------------------------
-// // <copyright file="NotableDateBuilder.cs" company="PlaceholderCompany">
-// //     Copyright (c) PlaceholderCompany. All rights reserved.
-// // </copyright>
-// // ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="NotableDateBuilder.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
 
 using System.Text.Json.Nodes;
 using System.Xml.Linq;
