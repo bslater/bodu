@@ -32,7 +32,7 @@
     <Use name="Easter Sunday" territory="US" />
     <Use name="Christmas Eve" territory="US" />
     <Use name="Christmas Day" territory="US" nonWorking="true">
-      <Rule name="United States Christmas Day With Non-Working-Day Roll" category="Holiday" nonWorking="true">
+      <Rule name="fixed-dec-25-nonworking-roll-us" category="Holiday" nonWorking="true">
         <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
       </Rule>
     </Use>
@@ -52,42 +52,42 @@
   -->
 
   <NotableDate name="Martin Luther King Jr. Day">
-    <Rule name="Third Monday In January Martin Luther King Jr. Day" category="Holiday" territory="US" nonWorking="true" firstYear="1986"
+    <Rule name="weekday-3rd-mon-jan-us" category="Holiday" territory="US" nonWorking="true" firstYear="1986"
           comment="Designated a federal holiday by the Martin Luther King Jr. Holiday Act signed by President Reagan in 1983. First observed on the third Monday of January 1986.">
       <DayOfWeekInMonth month="January" dayOfWeek="Monday" weekOrdinal="Third" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Presidents' Day">
-    <Rule name="Third Monday In February Presidents' Day" category="Holiday" territory="US" nonWorking="true"
+    <Rule name="weekday-3rd-mon-feb-us" category="Holiday" territory="US" nonWorking="true"
           comment="Officially Washington's Birthday under federal law (5 U.S.C. § 6103). Commonly known as Presidents' Day following the 1971 Uniform Monday Holiday Act, which moved it from 22 February to the third Monday of February.">
       <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="St. Patrick's Day">
-    <Rule name="Fixed St. Patrick's Day" category="Cultural" territory="US"
+    <Rule name="fixed-mar-17-us" category="Cultural" territory="US"
           comment="Not a federal holiday, but widely celebrated across the United States. Irish-American communities have observed it since the 18th century; the day is now marked by parades, public gatherings, and traditional green decorations in cities nationwide.">
       <Fixed month="March" day="17" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Memorial Day">
-    <Rule name="Last Monday In May Memorial Day" category="Holiday" territory="US" nonWorking="true"
+    <Rule name="weekday-last-mon-may-us" category="Holiday" territory="US" nonWorking="true"
           comment="A federal holiday honouring United States military personnel who have died in the performance of their military duties. Moved to the last Monday of May by the Uniform Monday Holiday Act of 1968.">
       <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Flag Day">
-    <Rule name="Fixed Flag Day" category="Observance" territory="US"
+    <Rule name="fixed-jun-14-us" category="Observance" territory="US"
           comment="Commemorates the adoption of the flag of the United States on 14 June 1777 by the Second Continental Congress. Not a federal holiday; designated as National Flag Day by Congress in 1949 (Public Law 81-81).">
       <Fixed month="June" day="14" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Juneteenth">
-    <Rule name="Fixed Juneteenth With Weekend Roll" category="Holiday" territory="US" nonWorking="true" firstYear="2021"
+    <Rule name="fixed-jun-19-weekend-roll-us" category="Holiday" territory="US" nonWorking="true" firstYear="2021"
           comment="Juneteenth National Independence Day. Commemorates 19 June 1865, when Union soldiers arrived in Galveston, Texas and announced the end of slavery, more than two months after the end of the Civil War. Established as a federal holiday by the Juneteenth National Independence Day Act signed by President Biden on 17 June 2021.">
       <Fixed month="June" day="19" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
@@ -95,7 +95,7 @@
   </NotableDate>
 
   <NotableDate name="Independence Day">
-    <Rule name="Fixed Independence Day With Weekend Roll" category="Holiday" territory="US" nonWorking="true"
+    <Rule name="fixed-jul-04-weekend-roll-us" category="Holiday" territory="US" nonWorking="true"
           comment="Commemorates the adoption of the Declaration of Independence on 4 July 1776. When 4 July falls on a weekend, the observed federal holiday shifts to the nearest weekday.">
       <Fixed month="July" day="4" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
@@ -103,28 +103,28 @@
   </NotableDate>
 
   <NotableDate name="Labor Day">
-    <Rule name="First Monday In September Labor Day" category="Holiday" territory="US" nonWorking="true"
+    <Rule name="weekday-1st-mon-sep-us" category="Holiday" territory="US" nonWorking="true"
           comment="A federal holiday celebrating the American labour movement and the contributions of workers. Moved to the first Monday of September by the Uniform Monday Holiday Act of 1968.">
       <DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Columbus Day">
-    <Rule name="Second Monday In October Columbus Day" category="Holiday" territory="US" nonWorking="true"
+    <Rule name="weekday-2nd-mon-oct-us" category="Holiday" territory="US" nonWorking="true"
           comment="A federal holiday commemorating Christopher Columbus's arrival in the Americas on 12 October 1492. Moved to the second Monday of October by the Uniform Monday Holiday Act of 1968. Many states and municipalities also observe Indigenous Peoples' Day on the same date.">
       <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Indigenous Peoples' Day">
-    <Rule name="Second Monday In October Indigenous Peoples Day" category="Observance" territory="US" firstYear="1992"
+    <Rule name="weekday-2nd-mon-oct-us" category="Observance" territory="US" firstYear="1992"
           comment="Observed by a growing number of U.S. states and municipalities on the second Monday of October — the same date as the federal Columbus Day. First formally adopted by Berkeley, California in 1992. Recognised at the federal level by Presidential Proclamation from 2021.">
       <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Veterans Day">
-    <Rule name="Fixed Veterans Day With Weekend Roll" category="Holiday" territory="US" nonWorking="true"
+    <Rule name="fixed-nov-11-weekend-roll-us" category="Holiday" territory="US" nonWorking="true"
           comment="A federal holiday honouring all United States military veterans. Observed on 11 November, the anniversary of the armistice that ended World War I in 1918. When 11 November falls on a weekend, the observed day shifts to the nearest weekday.">
       <Fixed month="November" day="11" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
@@ -132,21 +132,21 @@
   </NotableDate>
 
   <NotableDate name="Thanksgiving">
-    <Rule name="Fourth Thursday In November Thanksgiving" category="Holiday" territory="US" nonWorking="true"
+    <Rule name="weekday-4th-thu-nov-us" category="Holiday" territory="US" nonWorking="true"
           comment="A national holiday giving thanks for the harvest and blessings of the previous year. Set on the fourth Thursday of November by Congress in 1941.">
       <DayOfWeekInMonth month="November" dayOfWeek="Thursday" weekOrdinal="Fourth" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Black Friday">
-    <Rule name="Day After Thanksgiving Black Friday" category="Cultural" territory="US"
+    <Rule name="offset-thanksgiving+1-us" category="Cultural" territory="US"
           comment="The day after Thanksgiving, traditionally regarded as the start of the Christmas shopping season. Not a federal holiday; observed informally as a major retail event.">
       <OffsetFromAnchor name="Thanksgiving" offset="1" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Pearl Harbor Remembrance Day">
-    <Rule name="Fixed Pearl Harbor Remembrance Day" category="Remembrance" territory="US" firstYear="1994"
+    <Rule name="fixed-dec-07-us" category="Remembrance" territory="US" firstYear="1994"
           comment="Designated by Congress in 1994 (Public Law 103-308) to honour the 2,403 Americans killed and 1,178 wounded in the Japanese attack on Pearl Harbor on 7 December 1941. Not a federal holiday.">
       <Fixed month="December" day="7" />
     </Rule>

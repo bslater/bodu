@@ -16,26 +16,26 @@
   -->
 
   <NotableDate name="International Day of Education">
-    <Rule name="Fixed International Day of Education" category="Observance" firstYear="2019"
+    <Rule name="fixed-jan-24" category="Observance" firstYear="2019"
           comment="Proclaimed by the United Nations General Assembly in 2018 (resolution 73/25) and first observed on 24 January 2019, to celebrate education and its role in peace and development.">
       <Fixed month="January" day="24" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Book and Copyright Day">
-    <Rule name="Fixed World Book and Copyright Day" category="Observance">
+    <Rule name="fixed-apr-23" category="Observance">
       <Fixed month="April" day="23" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Literacy Day">
-    <Rule name="Fixed International Literacy Day" category="Observance">
+    <Rule name="fixed-sep-08" category="Observance">
       <Fixed month="September" day="8" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="World Teachers' Day">
-    <Rule name="Fixed World Teachers' Day" category="Observance">
+    <Rule name="fixed-oct-05" category="Observance">
       <Fixed month="October" day="5" />
     </Rule>
   </NotableDate>
@@ -45,7 +45,7 @@
   -->
 
   <NotableDate name="Safer Internet Day">
-    <Rule name="Second Tuesday In February Safer Internet Day" category="Observance" firstYear="2004"
+    <Rule name="weekday-2nd-tue-feb" category="Observance" firstYear="2004"
           comment="Organised by the Insafe and INHOPE networks with support of the European Commission. First observed in 2004 as part of the EU-funded SafeBorders project; now promoted in over 180 countries. Observed on the second Tuesday of February each year.">
       <DayOfWeekInMonth month="February" dayOfWeek="Tuesday" weekOrdinal="Second" />
     </Rule>

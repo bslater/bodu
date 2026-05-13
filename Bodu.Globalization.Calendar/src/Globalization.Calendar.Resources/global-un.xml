@@ -16,37 +16,37 @@
   -->
 
   <NotableDate name="International Women's Day">
-    <Rule name="Fixed International Women's Day" category="Observance">
+    <Rule name="fixed-mar-08" category="Observance">
       <Fixed month="March" day="8" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day of Happiness">
-    <Rule name="Fixed International Day of Happiness" category="Observance">
+    <Rule name="fixed-mar-20" category="Observance">
       <Fixed month="March" day="20" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Youth Day">
-    <Rule name="Fixed International Youth Day" category="Observance">
+    <Rule name="fixed-aug-12" category="Observance">
       <Fixed month="August" day="12" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day of Peace">
-    <Rule name="Fixed International Day of Peace" category="Observance">
+    <Rule name="fixed-sep-21" category="Observance">
       <Fixed month="September" day="21" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="United Nations Day">
-    <Rule name="Fixed United Nations Day" category="Observance">
+    <Rule name="fixed-oct-24" category="Observance">
       <Fixed month="October" day="24" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Human Rights Day">
-    <Rule name="Fixed Human Rights Day" category="Observance">
+    <Rule name="fixed-dec-10" category="Observance">
       <Fixed month="December" day="10" />
     </Rule>
   </NotableDate>
@@ -56,7 +56,7 @@
   -->
 
   <NotableDate name="World Interfaith Harmony Week">
-    <Rule name="Fixed World Interfaith Harmony Week" category="Observance" durationDays="7" firstYear="2011"
+    <Rule name="fixed-feb-01" category="Observance" durationDays="7" firstYear="2011"
           comment="Proclaimed by the United Nations General Assembly in 2010 (resolution 65/5) and first observed during 1–7 February 2011, to foster harmony between all people regardless of their faith.">
       <Fixed month="February" day="1" />
     </Rule>
@@ -67,14 +67,14 @@
   -->
 
   <NotableDate name="World Press Freedom Day">
-    <Rule name="Fixed World Press Freedom Day" category="Observance" firstYear="1993"
+    <Rule name="fixed-may-03" category="Observance" firstYear="1993"
           comment="Proclaimed by the United Nations General Assembly in 1993 (resolution A/RES/48/432) following a recommendation from UNESCO's General Conference. First observed on 3 May 1993.">
       <Fixed month="May" day="3" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="International Day of Democracy">
-    <Rule name="Fixed International Day of Democracy" category="Observance" firstYear="2008"
+    <Rule name="fixed-sep-15" category="Observance" firstYear="2008"
           comment="Proclaimed by the United Nations General Assembly in 2007 (resolution 62/7) and first observed on 15 September 2008, coinciding with the anniversary of the Universal Declaration on Democracy adopted by the Inter-Parliamentary Union in 1997.">
       <Fixed month="September" day="15" />
     </Rule>
@@ -85,7 +85,7 @@
   -->
 
   <NotableDate name="World Habitat Day">
-    <Rule name="First Monday In October World Habitat Day" category="Observance" firstYear="1986"
+    <Rule name="weekday-1st-mon-oct" category="Observance" firstYear="1986"
           comment="Established by the United Nations General Assembly in 1985 (resolution 40/202) and first observed on the first Monday of October 1986, to reflect on the state of human settlements and the basic right of all to adequate shelter.">
       <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
     </Rule>

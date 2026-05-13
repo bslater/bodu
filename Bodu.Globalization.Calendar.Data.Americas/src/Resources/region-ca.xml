@@ -30,7 +30,7 @@
     <Use name="International Women's Day" territory="CA" />
     <Use name="Halloween" territory="CA" />
     <Use name="Remembrance Day" territory="CA" nonWorking="true">
-      <Rule name="Canadian Remembrance Day With Weekend Roll" category="Holiday" nonWorking="true">
+      <Rule name="fixed-nov-11-weekend-roll-ca" category="Holiday" nonWorking="true">
         <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
       </Rule>
     </Use>
@@ -46,7 +46,7 @@
     <Use name="Easter Monday" territory="CA" nonWorking="true" />
     <Use name="Christmas Eve" territory="CA" />
     <Use name="Christmas Day" territory="CA" nonWorking="true">
-      <Rule name="Canadian Christmas Day With Non-Working-Day Roll" category="Holiday" nonWorking="true">
+      <Rule name="fixed-dec-25-nonworking-roll-ca" category="Holiday" nonWorking="true">
         <Adjustment key="weekend-roll" when="IfNonWorkingDay" action="MoveToNextNonWorkingDay" />
       </Rule>
     </Use>
@@ -66,7 +66,7 @@
   -->
 
   <NotableDate name="Victoria Day">
-    <Rule name="Victoria Day" category="Holiday" territory="CA" nonWorking="true"
+    <Rule name="algo-victoria-day-ca" category="Holiday" territory="CA" nonWorking="true"
           comment="Victoria Day falls on the Monday immediately preceding 25 May (Canada Holidays Act, RSC 1985 c H-5.1). This rule requires a custom INotableDateAlgorithm registered under the key 'victoria-day'.">
       <Algorithm key="victoria-day" />
       <Tag>FederalHoliday</Tag>
@@ -74,7 +74,7 @@
   </NotableDate>
 
   <NotableDate name="Canada Day">
-    <Rule name="Fixed Canada Day With Weekend Roll" category="Holiday" territory="CA" nonWorking="true"
+    <Rule name="fixed-jul-01-weekend-roll-ca" category="Holiday" territory="CA" nonWorking="true"
           comment="When 1 July falls on a Sunday, the following Monday is observed as the statutory holiday (Canada Holidays Act). No substitute day is designated when 1 July falls on a Saturday.">
       <Fixed month="July" day="1" />
       <Tag>FederalHoliday</Tag>
@@ -83,14 +83,14 @@
   </NotableDate>
 
   <NotableDate name="Labour Day">
-    <Rule name="First Monday In September Labour Day" category="Holiday" territory="CA" nonWorking="true">
+    <Rule name="weekday-1st-mon-sep-ca" category="Holiday" territory="CA" nonWorking="true">
       <DayOfWeekInMonth month="September" dayOfWeek="Monday" weekOrdinal="First" />
       <Tag>FederalHoliday</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="National Day for Truth and Reconciliation">
-    <Rule name="Fixed National Day for Truth and Reconciliation With Weekend Roll"
+    <Rule name="fixed-sep-30-weekend-roll-ca"
           category="Holiday"
           territory="CA"
           nonWorking="true"
@@ -103,14 +103,14 @@
   </NotableDate>
 
   <NotableDate name="Thanksgiving">
-    <Rule name="Second Monday In October Thanksgiving" category="Holiday" territory="CA" nonWorking="true">
+    <Rule name="weekday-2nd-mon-oct-ca" category="Holiday" territory="CA" nonWorking="true">
       <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" />
       <Tag>FederalHoliday</Tag>
     </Rule>
   </NotableDate>
 
   <NotableDate name="Boxing Day">
-    <Rule name="Fixed Boxing Day With Non-Working-Day Roll" category="Holiday" territory="CA" nonWorking="true"
+    <Rule name="fixed-dec-26-nonworking-roll-ca" category="Holiday" territory="CA" nonWorking="true"
           comment="A federal statutory holiday. Also a provincial holiday in Ontario and New Brunswick.">
       <Fixed month="December" day="26" />
       <Tag>FederalHoliday</Tag>
@@ -123,7 +123,7 @@
   -->
 
   <NotableDate name="National Indigenous Peoples Day">
-    <Rule name="Fixed National Indigenous Peoples Day" category="Observance" territory="CA" firstYear="1996"
+    <Rule name="fixed-jun-21-ca" category="Observance" territory="CA" firstYear="1996"
           comment="Proclaimed by Governor General Roméo LeBlanc in 1996 on the recommendation of the Royal Commission on Aboriginal Peoples, in recognition of the unique heritage, diverse cultures, and outstanding contributions of Indigenous peoples.">
       <Fixed month="June" day="21" />
     </Rule>
@@ -137,7 +137,7 @@
   -->
 
   <NotableDate name="Family Day">
-    <Rule name="Third Monday In February Family Day (AB)"
+    <Rule name="weekday-3rd-mon-feb-ca-ab"
           category="Holiday"
           territory="CA-AB"
           nonWorking="true"
@@ -146,7 +146,7 @@
       <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>ProvinceHoliday</Tag>
     </Rule>
-    <Rule name="Third Monday In February Family Day (SK)"
+    <Rule name="weekday-3rd-mon-feb-ca-sk"
           category="Holiday"
           territory="CA-SK"
           nonWorking="true"
@@ -155,7 +155,7 @@
       <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>ProvinceHoliday</Tag>
     </Rule>
-    <Rule name="Third Monday In February Family Day (ON)"
+    <Rule name="weekday-3rd-mon-feb-ca-on"
           category="Holiday"
           territory="CA-ON"
           nonWorking="true"
@@ -164,7 +164,7 @@
       <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>ProvinceHoliday</Tag>
     </Rule>
-    <Rule name="Third Monday In February Family Day (BC)"
+    <Rule name="weekday-3rd-mon-feb-ca-bc"
           category="Holiday"
           territory="CA-BC"
           nonWorking="true"
@@ -173,7 +173,7 @@
       <DayOfWeekInMonth month="February" dayOfWeek="Monday" weekOrdinal="Third" />
       <Tag>ProvinceHoliday</Tag>
     </Rule>
-    <Rule name="Third Monday In February Family Day (NB)"
+    <Rule name="weekday-3rd-mon-feb-ca-nb"
           category="Holiday"
           territory="CA-NB"
           nonWorking="true"
@@ -185,7 +185,7 @@
   </NotableDate>
 
   <NotableDate name="Island Day">
-    <Rule name="Third Monday In February Island Day"
+    <Rule name="weekday-3rd-mon-feb-ca-pe"
           category="Holiday"
           territory="CA-PE"
           nonWorking="true"
@@ -197,7 +197,7 @@
   </NotableDate>
 
   <NotableDate name="Louis Riel Day">
-    <Rule name="Third Monday In February Louis Riel Day"
+    <Rule name="weekday-3rd-mon-feb-ca-mb"
           category="Holiday"
           territory="CA-MB"
           nonWorking="true"
@@ -209,7 +209,7 @@
   </NotableDate>
 
   <NotableDate name="Nova Scotia Heritage Day">
-    <Rule name="Third Monday In February Nova Scotia Heritage Day"
+    <Rule name="weekday-3rd-mon-feb-ca-ns"
           category="Holiday"
           territory="CA-NS"
           nonWorking="true"
@@ -225,7 +225,7 @@
   -->
 
   <NotableDate name="Fête nationale du Québec">
-    <Rule name="Fixed Fête nationale du Québec With Weekend Roll"
+    <Rule name="fixed-jun-24-weekend-roll-ca-qc"
           category="Holiday"
           territory="CA-QC"
           nonWorking="true"
@@ -244,7 +244,7 @@
   -->
 
   <NotableDate name="Nunavut Day">
-    <Rule name="Fixed Nunavut Day With Weekend Roll"
+    <Rule name="fixed-jul-09-weekend-roll-ca-nu"
           category="Holiday"
           territory="CA-NU"
           nonWorking="true"
@@ -257,7 +257,7 @@
   </NotableDate>
 
   <NotableDate name="British Columbia Day">
-    <Rule name="First Monday In August British Columbia Day"
+    <Rule name="weekday-1st-mon-aug-ca-bc"
           category="Holiday"
           territory="CA-BC"
           nonWorking="true">
@@ -267,7 +267,7 @@
   </NotableDate>
 
   <NotableDate name="Civic Holiday">
-    <Rule name="First Monday In August Civic Holiday"
+    <Rule name="weekday-1st-mon-aug-ca-on"
           category="Holiday"
           territory="CA-ON,CA-MB,CA-SK,CA-NU"
           nonWorking="true"
@@ -278,7 +278,7 @@
   </NotableDate>
 
   <NotableDate name="Heritage Day">
-    <Rule name="First Monday In August Heritage Day (AB)"
+    <Rule name="weekday-1st-mon-aug-ca-ab"
           category="Observance"
           territory="CA-AB"
           comment="Observed on the first Monday of August in Alberta as a general provincial holiday; not a statutory holiday under provincial legislation.">
@@ -288,7 +288,7 @@
   </NotableDate>
 
   <NotableDate name="New Brunswick Day">
-    <Rule name="First Monday In August New Brunswick Day"
+    <Rule name="weekday-1st-mon-aug-ca-nb"
           category="Holiday"
           territory="CA-NB"
           nonWorking="true">
@@ -298,7 +298,7 @@
   </NotableDate>
 
   <NotableDate name="Discovery Day">
-    <Rule name="Third Monday In August Discovery Day (YT)"
+    <Rule name="weekday-3rd-mon-aug-ca-yt"
           category="Holiday"
           territory="CA-YT"
           nonWorking="true"

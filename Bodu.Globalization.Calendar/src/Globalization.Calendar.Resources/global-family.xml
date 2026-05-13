@@ -31,14 +31,14 @@
   -->
 
   <NotableDate name="Mother's Day">
-    <Rule name="Second Sunday In May Mother's Day" category="Observance"
+    <Rule name="weekday-2nd-sun-may" category="Observance"
           comment="The most widely observed form of Mother's Day, falling on the second Sunday of May. First held in the United States in 1908; adopted by many countries throughout the 20th century. Regional exceptions are defined in their respective region files.">
       <DayOfWeekInMonth month="May" dayOfWeek="Sunday" weekOrdinal="Second" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Father's Day">
-    <Rule name="Third Sunday In June Father's Day" category="Observance"
+    <Rule name="weekday-3rd-sun-jun" category="Observance"
           comment="The most widely observed form of Father's Day, falling on the third Sunday of June. Originated in the United States in 1910; now adopted by many countries. Australia and New Zealand instead observe Father's Day on the first Sunday in September (see their respective region files).">
       <DayOfWeekInMonth month="June" dayOfWeek="Sunday" weekOrdinal="Third" />
     </Rule>
