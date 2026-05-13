@@ -7,18 +7,21 @@
 using Bodu.Extensions;
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Text.Json.Nodes;
 using System.Xml.Linq;
 
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides a fluent interface for constructing a single <see cref="NotableDateRule" /> and its corresponding XML representation.
+/// Provides a fluent interface for constructing a single <see cref="NotableDateRule" /> and its corresponding XML
+/// or JSON representation.
 /// </summary>
 /// <remarks>
 /// <para>
 /// A <see cref="NotableDateRuleBuilder" /> is obtained via
 /// <see cref="NotableDateBuilder.AddRule(System.Action{NotableDateRuleBuilder})" />. The builder accumulates rule properties and
-/// produces both a domain object and a schema-valid <c>&lt;Rule&gt;</c> XML element when the enclosing document is built.
+/// produces a domain object, a schema-valid <c>&lt;Rule&gt;</c> XML element, and a schema-valid <c>rule</c> JSON object when the
+/// enclosing document is built.
 /// </para>
 /// <para>
 /// Exactly one strategy method — <see cref="Fixed(int, int, bool, bool)" />, <see cref="Fixed(string, int, bool, bool)" />,
@@ -685,6 +688,122 @@ public sealed class NotableDateRuleBuilder
             element.Add(new XAttribute("day", _algorithmDay.Value.ToString(CultureInfo.InvariantCulture)));
 
         return element;
+    }
+
+    /// <summary>
+    /// Builds a schema-valid <c>rule</c> <see cref="JsonObject" /> from the current builder state.
+    /// </summary>
+    /// <param name="notableDateName">
+    /// The canonical name of the notable date. Used to generate the JSON <c>name</c> property when no explicit
+    /// <see cref="RuleName(string)" /> has been set.
+    /// </param>
+    /// <returns>The constructed <see cref="JsonObject" /> conforming to the rule entry of <c>NotableDates.schema.json</c>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when no resolution strategy has been selected.</exception>
+    internal JsonObject ToJsonNode(string notableDateName)
+    {
+        if (_strategy is null)
+            throw new InvalidOperationException($"A resolution strategy must be selected before serialising the rule for '{notableDateName}'.");
+
+        string effectiveName = _ruleName ?? GenerateDefaultRuleName(notableDateName);
+
+        JsonObject node = new()
+        {
+            ["name"] = effectiveName,
+            ["category"] = _category.ToString(),
+        };
+
+        if (_isNonWorkingDay.HasValue) node["nonWorking"] = _isNonWorkingDay.Value;
+        if (_firstYear.HasValue) node["firstYear"] = _firstYear.Value;
+        if (_lastYear.HasValue) node["lastYear"] = _lastYear.Value;
+        if (_occurrenceYears.HasValue) node["occurrenceYears"] = _occurrenceYears.Value;
+        if (_durationDays.HasValue) node["durationDays"] = _durationDays.Value;
+        if (_priority.HasValue) node["priority"] = _priority.Value;
+        if (_calendarType is not null) node["calendarType"] = _calendarType.AssemblyQualifiedName ?? _calendarType.FullName ?? _calendarType.Name;
+        if (_territoryCode is not null) node["territory"] = _territoryCode;
+        if (_comment is not null) node["comment"] = _comment;
+
+        switch (_strategy.Value)
+        {
+            case DateResolutionStrategy.Fixed:
+                node["fixed"] = BuildFixedJsonNode();
+                break;
+            case DateResolutionStrategy.DayOfWeekInMonth:
+                node["dayOfWeekInMonth"] = new JsonObject
+                {
+                    ["month"] = GregorianMonthName(_dowMonth!.Value),
+                    ["dayOfWeek"] = _dowDayOfWeek!.Value.ToString(),
+                    ["weekOrdinal"] = _dowWeekOrdinal!.Value.ToString(),
+                };
+                break;
+            case DateResolutionStrategy.OffsetFromAnchor:
+                node["offsetFromAnchor"] = new JsonObject
+                {
+                    ["name"] = _anchorRuleName!,
+                    ["offset"] = _offsetDays!.Value,
+                };
+                break;
+            case DateResolutionStrategy.Algorithm:
+                node["algorithm"] = BuildAlgorithmJsonNode();
+                break;
+            default:
+                throw new NotSupportedException($"Unsupported strategy: {_strategy.Value}");
+        }
+
+        if (_tags.Count > 0)
+        {
+            JsonArray tags = [];
+            foreach (string tag in _tags)
+                tags.Add(tag);
+            node["tags"] = tags;
+        }
+
+        if (_adjustments.Count > 0)
+        {
+            JsonArray adjustments = [];
+            foreach ((string key, ObservanceAdjustmentBuilder builder) in _adjustments)
+                adjustments.Add(builder.ToJsonNode(key));
+            node["adjustments"] = adjustments;
+        }
+
+        return node;
+    }
+
+    /// <summary>
+    /// Builds a <c>fixed</c> <see cref="JsonObject" /> from the current Fixed strategy fields.
+    /// </summary>
+    /// <returns>The Fixed strategy JSON object.</returns>
+    private JsonObject BuildFixedJsonNode()
+    {
+        string monthAttr = _fixedMonthNumber.HasValue
+            ? GregorianMonthName(_fixedMonthNumber.Value)
+            : _fixedMonthToken!;
+
+        JsonObject node = new()
+        {
+            ["month"] = monthAttr,
+            ["day"] = _fixedDay!.Value,
+        };
+
+        if (_skipLeapMonth) node["skipLeapMonth"] = true;
+        if (_sweepCalendarYears) node["sweepCalendarYears"] = true;
+
+        return node;
+    }
+
+    /// <summary>
+    /// Builds an <c>algorithm</c> <see cref="JsonObject" /> from the current Algorithm strategy fields.
+    /// </summary>
+    /// <returns>The Algorithm strategy JSON object.</returns>
+    private JsonObject BuildAlgorithmJsonNode()
+    {
+        JsonObject node = [];
+
+        if (_algorithmKey is not null) node["key"] = _algorithmKey;
+        if (_algorithmType is not null) node["type"] = _algorithmType.AssemblyQualifiedName ?? _algorithmType.FullName ?? _algorithmType.Name;
+        if (_algorithmMonth is not null) node["month"] = _algorithmMonth;
+        if (_algorithmDay.HasValue) node["day"] = _algorithmDay.Value;
+
+        return node;
     }
 
     /// <summary>

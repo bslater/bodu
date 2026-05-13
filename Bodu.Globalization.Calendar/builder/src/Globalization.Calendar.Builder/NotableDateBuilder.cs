@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Text.Json.Nodes;
 using System.Xml.Linq;
 
 namespace Bodu.Globalization.Calendar;
@@ -79,5 +80,27 @@ public sealed class NotableDateBuilder
             element.Add(rule.ToXElement(notableDateName, ns));
 
         return element;
+    }
+
+    /// <summary>
+    /// Builds a schema-valid <c>notableDate</c> <see cref="JsonObject" /> from the current builder state.
+    /// </summary>
+    /// <param name="notableDateName">The canonical name for the <c>name</c> property.</param>
+    /// <returns>The constructed <see cref="JsonObject" /> conforming to the notable-date entry of <c>NotableDates.schema.json</c>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when no rules have been added to this entry.</exception>
+    internal JsonObject ToJsonNode(string notableDateName)
+    {
+        if (_rules.Count == 0)
+            throw new InvalidOperationException($"At least one rule must be added to the notable date entry '{notableDateName}'.");
+
+        JsonArray rules = [];
+        foreach (NotableDateRuleBuilder rule in _rules)
+            rules.Add(rule.ToJsonNode(notableDateName));
+
+        return new JsonObject
+        {
+            ["name"] = notableDateName,
+            ["rules"] = rules,
+        };
     }
 }

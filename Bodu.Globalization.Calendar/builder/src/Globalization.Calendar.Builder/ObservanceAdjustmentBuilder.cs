@@ -6,23 +6,31 @@
 
 using Bodu.Extensions;
 using System.Globalization;
+using System.Text.Json.Nodes;
 using System.Xml.Linq;
 
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides a fluent interface for constructing an <see cref="ObservanceAdjustment" /> and its corresponding XML representation.
+/// Provides a fluent interface for constructing an <see cref="ObservanceAdjustment" /> and its corresponding XML or JSON representation.
 /// </summary>
 /// <remarks>
 /// <para>
 /// An <see cref="ObservanceAdjustmentBuilder" /> is obtained via
 /// <see cref="NotableDateRuleBuilder.AddAdjustment(string, System.Action{ObservanceAdjustmentBuilder})" />. The builder accumulates
-/// adjustment properties and produces both a domain object and a schema-valid <c>&lt;Adjustment&gt;</c> XML element when the
-/// enclosing rule is built.
+/// adjustment properties and produces a domain object, a schema-valid <c>&lt;Adjustment&gt;</c> XML element, and a schema-valid
+/// <c>adjustment</c> JSON object when the enclosing rule is built.
 /// </para>
 /// <para>
 /// Only <see cref="When(AdjustmentTrigger)" /> and <see cref="Action(AdjustmentAction)" /> are required; all other properties are optional
 /// and default to the same values as their <see cref="ObservanceAdjustment" /> counterparts.
+/// </para>
+/// <para>
+/// <see cref="AddHandlerParameter(string, string)" /> and <see cref="MaxAdjustmentReachDays(int)" /> populate
+/// <see cref="ObservanceAdjustment.HandlerParameters" /> and <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" /> respectively.
+/// Both fields are programmatic-only — they are not part of the <c>NotableDates.xsd</c> or <c>NotableDates.schema.json</c>
+/// schemas, so values supplied here are honoured by <see cref="Build(string)" /> but omitted from
+/// <see cref="ToXElement(string, XNamespace)" /> and <see cref="ToJsonNode(string)" />.
 /// </para>
 /// </remarks>
 public sealed class ObservanceAdjustmentBuilder
@@ -71,6 +79,12 @@ public sealed class ObservanceAdjustmentBuilder
 
     /// <summary>The custom-handler registry key set via <see cref="HandlerKey(string)" />, consumed by <see cref="AdjustmentTrigger.Custom" />/<see cref="AdjustmentAction.Custom" />.</summary>
     private string? _handlerKey;
+
+    /// <summary>The handler parameter accumulator populated by <see cref="AddHandlerParameter(string, string)" />, or <see langword="null" /> when none are authored.</summary>
+    private Dictionary<string, string>? _handlerParameters;
+
+    /// <summary>The symmetric reach envelope in days set via <see cref="MaxAdjustmentReachDays(int)" />, or <see langword="null" /> to use the action-specific default heuristic.</summary>
+    private int? _maxAdjustmentReachDays;
 
     /// <summary>
     /// Sets the condition that activates this adjustment.
@@ -245,6 +259,56 @@ public sealed class ObservanceAdjustmentBuilder
     }
 
     /// <summary>
+    /// Adds a key/value pair to the parameters forwarded to the registered <see cref="IAdjustmentHandler" />.
+    /// </summary>
+    /// <param name="key">The parameter name. Must not be <see langword="null" />, empty, or whitespace.</param>
+    /// <param name="value">The parameter value. Must not be <see langword="null" />; an empty string is permitted.</param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// Repeated calls with the same <paramref name="key" /> replace the previously authored value
+    /// (last-write-wins). Values populate <see cref="ObservanceAdjustment.HandlerParameters" /> and are
+    /// consumed only by registered <see cref="IAdjustmentHandler" /> implementations. The dictionary is
+    /// not part of the <c>NotableDates.xsd</c> or <c>NotableDates.schema.json</c> schemas, so values
+    /// supplied here are honoured by <see cref="Build(string)" /> but omitted from
+    /// <see cref="ToXElement(string, XNamespace)" /> and <see cref="ToJsonNode(string)" />.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value" /> is <see langword="null" />.</exception>
+    public ObservanceAdjustmentBuilder AddHandlerParameter(string key, string value)
+    {
+        ThrowHelper.ThrowIfNullOrWhiteSpace(key);
+        ThrowHelper.ThrowIfNull(value);
+        _handlerParameters ??= new Dictionary<string, string>(StringComparer.Ordinal);
+        _handlerParameters[key] = value;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the maximum reach in days that this adjustment can shift the calculated date in either direction.
+    /// </summary>
+    /// <param name="days">The symmetric envelope in days. Must be non-negative.</param>
+    /// <returns>This builder instance, for method chaining.</returns>
+    /// <remarks>
+    /// <para>
+    /// Consumed by the prototype range-resolution pipeline (<c>NotableDateService.ResolveNotableDatesInRange</c>) to
+    /// size the per-rule and global fringe envelope when an adjustment's actual reach exceeds the action's default
+    /// heuristic. The value populates <see cref="ObservanceAdjustment.MaxAdjustmentReachDays" />. It is not part of
+    /// the <c>NotableDates.xsd</c> or <c>NotableDates.schema.json</c> schemas, so values supplied here are honoured
+    /// by <see cref="Build(string)" /> but omitted from <see cref="ToXElement(string, XNamespace)" /> and
+    /// <see cref="ToJsonNode(string)" />.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="days" /> is negative.</exception>
+    public ObservanceAdjustmentBuilder MaxAdjustmentReachDays(int days)
+    {
+        ThrowHelper.ThrowIfLessThan(days, 0);
+        _maxAdjustmentReachDays = days;
+        return this;
+    }
+
+    /// <summary>
     /// Builds an <see cref="ObservanceAdjustment" /> record from the current builder state.
     /// </summary>
     /// <param name="key">The adjustment key used for inheritance merging. Must not be <see langword="null" /> or whitespace.</param>
@@ -282,6 +346,10 @@ public sealed class ObservanceAdjustmentBuilder
             TargetRuleName = _targetRuleName,
             Priority = _priority,
             HandlerKey = _handlerKey,
+            HandlerParameters = _handlerParameters is null
+                ? null
+                : new Dictionary<string, string>(_handlerParameters, StringComparer.Ordinal),
+            MaxAdjustmentReachDays = _maxAdjustmentReachDays,
         };
     }
 
@@ -346,6 +414,50 @@ public sealed class ObservanceAdjustmentBuilder
             element.Add(new XAttribute("handlerKey", _handlerKey));
 
         return element;
+    }
+
+    /// <summary>
+    /// Builds a schema-valid <c>adjustment</c> <see cref="JsonObject" /> from the current builder state.
+    /// </summary>
+    /// <param name="key">The adjustment key. Must not be <see langword="null" /> or whitespace.</param>
+    /// <returns>The constructed <see cref="JsonObject" /> conforming to the adjustment entry of <c>NotableDates.schema.json</c>.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="When(AdjustmentTrigger)" /> or <see cref="Action(AdjustmentAction)" /> has not been called.
+    /// </exception>
+    internal JsonObject ToJsonNode(string key)
+    {
+        if (_trigger is null)
+            throw new InvalidOperationException("An adjustment trigger must be set via When() before serialising.");
+        if (_action is null)
+            throw new InvalidOperationException("An adjustment action must be set via Action() before serialising.");
+
+        JsonObject node = new()
+        {
+            ["key"] = key,
+            ["when"] = _trigger.Value.ToString(),
+            ["action"] = _action.Value.ToString(),
+        };
+
+        if (_dayOfWeek.HasValue) node["dayOfWeek"] = _dayOfWeek.Value.ToString();
+        if (_weekOrdinal.HasValue) node["weekOrdinal"] = _weekOrdinal.Value.ToString();
+        if (_offsetDays != 0) node["days"] = _offsetDays;
+        if (_priority != 100) node["priority"] = _priority;
+        if (_isNonWorkingDay.HasValue) node["nonWorking"] = _isNonWorkingDay.Value;
+        if (_territoryCode is not null) node["territory"] = _territoryCode;
+        if (_calendarType is not null) node["calendarType"] = _calendarType.AssemblyQualifiedName ?? _calendarType.FullName ?? _calendarType.Name;
+        if (_effectiveFromYear.HasValue) node["fromYear"] = _effectiveFromYear.Value;
+        if (_effectiveToYear.HasValue) node["toYear"] = _effectiveToYear.Value;
+
+        if (_comparisonMonth.HasValue && _comparisonDay.HasValue)
+        {
+            node["comparisonMonth"] = GregorianMonthName(_comparisonMonth.Value);
+            node["comparisonDay"] = _comparisonDay.Value;
+        }
+
+        if (_targetRuleName is not null) node["target"] = _targetRuleName;
+        if (_handlerKey is not null) node["handlerKey"] = _handlerKey;
+
+        return node;
     }
 
     /// <summary>

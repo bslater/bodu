@@ -256,6 +256,40 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
+    /// Verifies that values supplied via <see cref="ObservanceAdjustmentBuilder.AddHandlerParameter" /> and
+    /// <see cref="ObservanceAdjustmentBuilder.MaxAdjustmentReachDays" /> are omitted from the serialised XML
+    /// (they are programmatic-only properties not defined by the schema).
+    /// </summary>
+    [TestMethod]
+    public void ToXml_WhenAdjustmentHasProgrammaticOnlyFields_ShouldOmitFromXml()
+    {
+        NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
+            .AddDate("Test", date => date
+                .AddRule(rule => rule
+                    .Category(NotableDateCategory.Holiday)
+                    .Fixed(1, 1)
+                    .AddAdjustment("custom", adj => adj
+                        .When(AdjustmentTrigger.Custom)
+                        .Action(AdjustmentAction.Custom)
+                        .HandlerKey("my-handler")
+                        .AddHandlerParameter("enabled", "true")
+                        .MaxAdjustmentReachDays(45))));
+
+        XDocument doc = builder.ToXDocument();
+        XElement adjElement = doc.Descendants(CalendarNs + "Adjustment").Single();
+
+        Assert.IsNull(adjElement.Attribute("handlerParameters"));
+        Assert.IsNull(adjElement.Attribute("maxAdjustmentReachDays"));
+
+        // The XML must still round-trip cleanly through the parser.
+        List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(builder.ToXml());
+        ObservanceAdjustment adj = parsed[0].Adjustments[0];
+        Assert.AreEqual("my-handler", adj.HandlerKey);
+        Assert.IsNull(adj.HandlerParameters);
+        Assert.IsNull(adj.MaxAdjustmentReachDays);
+    }
+
+    /// <summary>
     /// Verifies that a comparison date set via <see cref="ObservanceAdjustmentBuilder.ComparisonDate" /> is serialised
     /// as <c>comparisonMonth</c> and <c>comparisonDay</c> attributes and round-trips through the parser.
     /// </summary>
