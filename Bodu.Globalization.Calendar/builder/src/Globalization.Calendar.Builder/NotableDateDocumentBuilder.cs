@@ -93,9 +93,12 @@ public sealed class NotableDateDocumentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(name);
         ThrowHelper.ThrowIfNull(configure);
+
         NotableDateBuilder dateBuilder = new();
+
         configure(dateBuilder);
         _dates.Add((name, dateBuilder));
+
         return this;
     }
 

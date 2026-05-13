@@ -41,7 +41,7 @@ public sealed class InlineNotableDateRuleProvider : INotableDateRuleProvider
     private readonly IReadOnlyList<NotableDateRule> _rules;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InlineNotableDateRuleProvider"/> class. with the specified rules.
+    /// Initializes a new instance of the <see cref="InlineNotableDateRuleProvider"/> class with the specified rules.
     /// </summary>
     /// <param name="rules">The rules to expose. Must not be <see langword="null" />.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="rules" /> is <see langword="null" />.</exception>

@@ -140,7 +140,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder RuleName(string name)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(name);
+
         _ruleName = name;
+
         return this;
     }
 
@@ -152,6 +154,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Category(NotableDateCategory category)
     {
         _category = category;
+
         return this;
     }
 
@@ -163,6 +166,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder NonWorking(bool value = true)
     {
         _isNonWorkingDay = value;
+
         return this;
     }
 
@@ -174,6 +178,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder FirstYear(int year)
     {
         _firstYear = year;
+
         return this;
     }
 
@@ -185,6 +190,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder LastYear(int year)
     {
         _lastYear = year;
+
         return this;
     }
 
@@ -198,7 +204,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder OccurrenceYears(int years)
     {
         ThrowHelper.ThrowIfLessThan(years, 1);
+
         _occurrenceYears = years;
+
         return this;
     }
 
@@ -211,7 +219,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Duration(int days)
     {
         ThrowHelper.ThrowIfLessThan(days, 1);
+
         _durationDays = days;
+
         return this;
     }
 
@@ -224,7 +234,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Territory(string code)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(code);
+
         _territoryCode = code;
+
         return this;
     }
 
@@ -241,7 +253,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder CalendarType(Type calendarType)
     {
         ThrowHelper.ThrowIfNull(calendarType);
+
         _calendarType = calendarType;
+
         return this;
     }
 
@@ -253,6 +267,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Priority(int priority)
     {
         _priority = priority;
+
         return this;
     }
 
@@ -265,7 +280,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Comment(string comment)
     {
         ThrowHelper.ThrowIfNull(comment);
+
         _comment = comment;
+
         return this;
     }
 
@@ -278,7 +295,9 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder AddTag(string tag)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
+
         _tags.Add(tag);
+
         return this;
     }
 
@@ -303,10 +322,9 @@ public sealed class NotableDateRuleBuilder
     /// </exception>
     public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
-        ThrowHelper.ThrowIfLessThan(month, 1);
-        ThrowHelper.ThrowIfGreaterThan(month, 13);
-        ThrowHelper.ThrowIfLessThan(day, 1);
-        ThrowHelper.ThrowIfGreaterThan(day, 31);
+        ThrowHelper.ThrowIfOutOfRange(month, 1, 13);
+        ThrowHelper.ThrowIfOutOfRange(day, 1,31);
+
         ThrowIfStrategyAlreadySet();
 
         _strategy = DateResolutionStrategy.Fixed;
@@ -315,6 +333,7 @@ public sealed class NotableDateRuleBuilder
         _fixedDay = day;
         _skipLeapMonth = skipLeapMonth;
         _sweepCalendarYears = sweepCalendarYears;
+
         return this;
     }
 
@@ -342,8 +361,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Fixed(string monthToken, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(monthToken);
-        ThrowHelper.ThrowIfLessThan(day, 1);
-        ThrowHelper.ThrowIfGreaterThan(day, 31);
+        ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
         ThrowIfStrategyAlreadySet();
 
         _strategy = DateResolutionStrategy.Fixed;
@@ -352,6 +370,7 @@ public sealed class NotableDateRuleBuilder
         _fixedDay = day;
         _skipLeapMonth = skipLeapMonth;
         _sweepCalendarYears = sweepCalendarYears;
+
         return this;
     }
 
@@ -369,14 +388,14 @@ public sealed class NotableDateRuleBuilder
     /// </exception>
     public NotableDateRuleBuilder DayOfWeekInMonth(int month, DayOfWeek dayOfWeek, WeekOfMonthOrdinal weekOrdinal)
     {
-        ThrowHelper.ThrowIfLessThan(month, 1);
-        ThrowHelper.ThrowIfGreaterThan(month, 12);
+        ThrowHelper.ThrowIfOutOfRange(month, 1,12);
         ThrowIfStrategyAlreadySet();
 
         _strategy = DateResolutionStrategy.DayOfWeekInMonth;
         _dowMonth = month;
         _dowDayOfWeek = dayOfWeek;
         _dowWeekOrdinal = weekOrdinal;
+
         return this;
     }
 
@@ -399,6 +418,7 @@ public sealed class NotableDateRuleBuilder
         _strategy = DateResolutionStrategy.OffsetFromAnchor;
         _anchorRuleName = anchorRuleName;
         _offsetDays = offsetDays;
+
         return this;
     }
 
@@ -423,6 +443,7 @@ public sealed class NotableDateRuleBuilder
         _algorithmType = algorithmType;
         _algorithmMonth = month;
         _algorithmDay = day;
+
         return this;
     }
 
@@ -441,9 +462,11 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
         ThrowHelper.ThrowIfNull(configure);
+
         ObservanceAdjustmentBuilder builder = new();
         configure(builder);
         _adjustments.Add((key, builder));
+
         return this;
     }
 
@@ -457,6 +480,7 @@ public sealed class NotableDateRuleBuilder
     internal NotableDateRule Build(string notableDateName)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateName);
+
         if (_strategy is null)
             throw new InvalidOperationException($"A resolution strategy must be selected (Fixed, DayOfWeekInMonth, OffsetFromAnchor, or Algorithm) before building the rule for '{notableDateName}'.");
 

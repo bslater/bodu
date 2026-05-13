@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateBuilder.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,6 +42,7 @@ public sealed class NotableDateBuilder
     public NotableDateBuilder AddRule(Action<NotableDateRuleBuilder> configure)
     {
         ThrowHelper.ThrowIfNull(configure);
+
         NotableDateRuleBuilder ruleBuilder = new();
         configure(ruleBuilder);
         _rules.Add(ruleBuilder);
@@ -94,6 +95,7 @@ public sealed class NotableDateBuilder
             throw new InvalidOperationException($"At least one rule must be added to the notable date entry '{notableDateName}'.");
 
         JsonArray rules = [];
+
         foreach (NotableDateRuleBuilder rule in _rules)
             rules.Add(rule.ToJsonNode(notableDateName));
 
