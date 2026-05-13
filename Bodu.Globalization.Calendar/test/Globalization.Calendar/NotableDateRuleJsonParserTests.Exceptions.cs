@@ -48,11 +48,11 @@ public partial class NotableDateRuleJsonParserTests
 	}
 
 	/// <summary>
-	/// Verifies that a rule declaring no strategy at all surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that a rule declaring no strategy at all is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>oneOf</c> exactly-one-strategy clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenRuleHasNoStrategy_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenRuleHasNoStrategy_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -60,18 +60,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that a rule declaring more than one strategy surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that a rule declaring more than one strategy is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>oneOf</c> exactly-one-strategy clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenRuleHasMultipleStrategies_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenRuleHasMultipleStrategies_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -84,7 +84,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
@@ -118,11 +118,11 @@ public partial class NotableDateRuleJsonParserTests
 	}
 
 	/// <summary>
-	/// Verifies that an unrecognised category enum value surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that an unrecognised category enum value is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>notableDateCategory</c> enum constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenCategoryIsUnknown_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenCategoryIsUnknown_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -134,18 +134,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that an unrecognised month token on a Fixed rule surfaces as
-	/// <see cref="FormatException" />.
+	/// Verifies that an unrecognised month token on a Fixed rule is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>monthOrNumber</c> oneOf constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenFixedMonthIsUnknown_ShouldThrowFormatException()
+	public void ParseJson_WhenFixedMonthIsUnknown_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -157,18 +157,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<FormatException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that omitting the required <c>month</c> field on a Fixed strategy surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that omitting the required <c>month</c> field on a Fixed strategy is rejected by
+	/// schema validation as <see cref="JsonException" /> via the <c>fixedStrategy</c> required clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenFixedMissingMonth_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenFixedMissingMonth_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -180,7 +180,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});

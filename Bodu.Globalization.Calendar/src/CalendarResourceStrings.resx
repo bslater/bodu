@@ -257,6 +257,13 @@
 		<value>Schema validation error: {0}</value>
 	</data>
 
+	<!-- ==================== JsonException ==================== -->
+
+	<!-- {0} = validation error message -->
+	<data name="JsonException_SchemaValidationError" xml:space="preserve">
+		<value>JSON failed schema validation: {0}</value>
+	</data>
+
 	<!-- ==================== PluginMissingAttributeException ==================== -->
 
 	<data name="PluginMissingAttributeException_PluginAttributeMissing" xml:space="preserve">
