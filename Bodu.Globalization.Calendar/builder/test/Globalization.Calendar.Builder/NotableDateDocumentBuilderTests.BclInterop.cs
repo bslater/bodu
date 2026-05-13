@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Extensions;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
@@ -25,70 +26,138 @@ public partial class NotableDateDocumentBuilderTests
     // The builder itself does not expose serialisation-attributed types — it
     // emits XLinq / JsonNode trees directly — so the DTOs live alongside the
     // tests and are populated from the rules returned by `Build()`.
+    //
+    // The document exercised here mixes all four resolution strategies plus the
+    // optional scalars, tags, and adjustments that survive both XML and JSON
+    // schema validation, so a green run proves the round-trip is viable for a
+    // realistic policy document rather than a single trivial rule.
     // ============================================================================
 
     private const string BclInteropSchemaNamespace = "urn:bodu:globalization:calendar";
 
     /// <summary>
-    /// Verifies that a Fixed rule authored via <see cref="NotableDateDocumentBuilder" />, projected onto a
-    /// schema-conformant DTO, serialised by the BCL <see cref="XmlSerializer" />, and re-parsed by
-    /// <see cref="NotableDateRuleParser" /> round-trips with every core field preserved.
+    /// Verifies that a multi-rule document authored via <see cref="NotableDateDocumentBuilder" /> — mixing
+    /// every resolution strategy, optional scalars, tags, and adjustments — projects onto schema-conformant
+    /// DTOs, serialises through the BCL <see cref="XmlSerializer" />, and re-parses by
+    /// <see cref="NotableDateRuleParser" /> with every authored field preserved.
     /// </summary>
     [TestMethod]
-    public void BclInterop_BuilderAuthoredFixedRule_XmlSerializerOutput_ShouldParseViaLibraryParser()
+    public void BclInterop_BuilderAuthoredComprehensiveDocument_XmlSerializerOutput_ShouldParseViaLibraryParser()
     {
-        IReadOnlyList<NotableDateRule> built = NotableDateDocumentBuilder.Create()
-            .AddDate("Christmas Day", date => date
-                .AddRule(rule => rule
-                    .Category(NotableDateCategory.Holiday)
-                    .NonWorking()
-                    .Fixed(12, 25)))
-            .Build();
-
+        IReadOnlyList<NotableDateRule> built = BuildComprehensiveRules();
         BclXmlNotableDates dto = ProjectToBclXmlDto(built);
-        string xml = SerialiseViaXmlSerializer(dto);
 
+        string xml = SerialiseViaXmlSerializer(dto);
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
-        NotableDateRule rule = parsed[0];
-        Assert.AreEqual(built[0].Name, rule.Name);
-        Assert.AreEqual(built[0].Strategy, rule.Strategy);
-        Assert.AreEqual(built[0].Category, rule.Category);
-        Assert.AreEqual(built[0].IsNonWorkingDay, rule.IsNonWorkingDay);
-        Assert.AreEqual(built[0].Month, rule.Month);
-        Assert.AreEqual(built[0].Day, rule.Day);
+        AssertParsedMatchesBuilt(built, parsed);
     }
 
     /// <summary>
-    /// Verifies that a Fixed rule authored via <see cref="NotableDateDocumentBuilder" />, projected onto a
-    /// schema-conformant DTO, serialised by the BCL <see cref="JsonSerializer" />, and re-parsed by
-    /// <see cref="NotableDateRuleJsonParser" /> round-trips with every core field preserved.
+    /// Verifies that a multi-rule document authored via <see cref="NotableDateDocumentBuilder" /> — mixing
+    /// every resolution strategy, optional scalars, tags, and adjustments — projects onto schema-conformant
+    /// DTOs, serialises through the BCL <see cref="JsonSerializer" />, and re-parses by
+    /// <see cref="NotableDateRuleJsonParser" /> with every authored field preserved.
     /// </summary>
     [TestMethod]
-    public void BclInterop_BuilderAuthoredFixedRule_JsonSerializerOutput_ShouldParseViaLibraryParser()
+    public void BclInterop_BuilderAuthoredComprehensiveDocument_JsonSerializerOutput_ShouldParseViaLibraryParser()
     {
-        IReadOnlyList<NotableDateRule> built = NotableDateDocumentBuilder.Create()
-            .AddDate("Christmas Day", date => date
-                .AddRule(rule => rule
-                    .Category(NotableDateCategory.Holiday)
-                    .NonWorking()
-                    .Fixed(12, 25)))
-            .Build();
-
+        IReadOnlyList<NotableDateRule> built = BuildComprehensiveRules();
         BclJsonNotableDates dto = ProjectToBclJsonDto(built);
-        string json = SerialiseViaJsonSerializer(dto);
 
+        string json = SerialiseViaJsonSerializer(dto);
         List<NotableDateRule> parsed = NotableDateRuleJsonParser.ParseJson(json);
 
-        Assert.AreEqual(1, parsed.Count);
-        NotableDateRule rule = parsed[0];
-        Assert.AreEqual(built[0].Name, rule.Name);
-        Assert.AreEqual(built[0].Strategy, rule.Strategy);
-        Assert.AreEqual(built[0].Category, rule.Category);
-        Assert.AreEqual(built[0].IsNonWorkingDay, rule.IsNonWorkingDay);
-        Assert.AreEqual(built[0].Month, rule.Month);
-        Assert.AreEqual(built[0].Day, rule.Day);
+        AssertParsedMatchesBuilt(built, parsed);
+    }
+
+    // ============================================================================
+    // Fixture
+    // ============================================================================
+
+    /// <summary>
+    /// Builds the comprehensive set of rules exercised by both interop tests: one entry per resolution
+    /// strategy, with the optional scalars, tags, and adjustments that the schemas accept.
+    /// </summary>
+    /// <returns>The rules produced by <see cref="NotableDateDocumentBuilder.Build" />.</returns>
+    private static IReadOnlyList<NotableDateRule> BuildComprehensiveRules() =>
+        NotableDateDocumentBuilder.Create()
+            .AddDate("Australia Day", date => date
+                .AddRule(rule => rule
+                    .RuleName("Australia Day (Fixed)")
+                    .Category(NotableDateCategory.Holiday)
+                    .Territory("AU")
+                    .NonWorking()
+                    .FirstYear(1994)
+                    .Priority(10)
+                    .AddTag("Federal")
+                    .Fixed(1, 26)
+                    .AddAdjustment("weekend-roll", adj => adj
+                        .When(AdjustmentTrigger.IfWeekend)
+                        .Action(AdjustmentAction.MoveToNextWeekday))))
+            .AddDate("Easter Sunday", date => date
+                .AddRule(rule => rule
+                    .RuleName("Easter Sunday (Algorithm)")
+                    .Category(NotableDateCategory.Religious)
+                    .AddTag("Christian")
+                    .Algorithm(key: "easter-gregorian")))
+            .AddDate("Easter Monday", date => date
+                .AddRule(rule => rule
+                    .RuleName("Easter Monday (OffsetFromAnchor)")
+                    .Category(NotableDateCategory.Holiday)
+                    .NonWorking()
+                    .OffsetFromAnchor("Easter Sunday", 1)))
+            .AddDate("Thanksgiving", date => date
+                .AddRule(rule => rule
+                    .RuleName("Thanksgiving (DayOfWeekInMonth)")
+                    .Category(NotableDateCategory.Holiday)
+                    .Territory("US")
+                    .DayOfWeekInMonth(11, DayOfWeek.Thursday, WeekOfMonthOrdinal.Fourth)))
+            .Build();
+
+    /// <summary>
+    /// Asserts that the parsed rules match the originally built rules on every field that survives the
+    /// round-trip through schema-conformant serialisation.
+    /// </summary>
+    /// <param name="built">The rules produced by the builder.</param>
+    /// <param name="parsed">The rules produced by the library parser.</param>
+    private static void AssertParsedMatchesBuilt(IReadOnlyList<NotableDateRule> built, IReadOnlyList<NotableDateRule> parsed)
+    {
+        Assert.AreEqual(built.Count, parsed.Count, "Rule count mismatch.");
+        for (int i = 0; i < built.Count; i++)
+        {
+            NotableDateRule b = built[i];
+            NotableDateRule p = parsed[i];
+
+            Assert.AreEqual(b.Name, p.Name, $"Name mismatch at index {i}.");
+            Assert.AreEqual(b.RuleName, p.RuleName, $"RuleName mismatch at index {i}.");
+            Assert.AreEqual(b.Strategy, p.Strategy, $"Strategy mismatch at index {i}.");
+            Assert.AreEqual(b.Category, p.Category, $"Category mismatch at index {i}.");
+            Assert.AreEqual(b.IsNonWorkingDay, p.IsNonWorkingDay, $"IsNonWorkingDay mismatch at index {i}.");
+            Assert.AreEqual(b.FirstYear, p.FirstYear, $"FirstYear mismatch at index {i}.");
+            Assert.AreEqual(b.Priority, p.Priority, $"Priority mismatch at index {i}.");
+            Assert.AreEqual(b.TerritoryCode, p.TerritoryCode, $"TerritoryCode mismatch at index {i}.");
+            Assert.AreEqual(b.Month, p.Month, $"Month mismatch at index {i}.");
+            Assert.AreEqual(b.Day, p.Day, $"Day mismatch at index {i}.");
+            Assert.AreEqual(b.DayOfWeek, p.DayOfWeek, $"DayOfWeek mismatch at index {i}.");
+            Assert.AreEqual(b.WeekOrdinal, p.WeekOrdinal, $"WeekOrdinal mismatch at index {i}.");
+            Assert.AreEqual(b.AnchorRuleName, p.AnchorRuleName, $"AnchorRuleName mismatch at index {i}.");
+            Assert.AreEqual(b.OffsetDays, p.OffsetDays, $"OffsetDays mismatch at index {i}.");
+            Assert.AreEqual(b.AlgorithmKey, p.AlgorithmKey, $"AlgorithmKey mismatch at index {i}.");
+
+            // Tags are an order-independent set.
+            CollectionAssert.AreEquivalent(b.Tags.ToList(), p.Tags.ToList(), $"Tags mismatch at index {i}.");
+
+            Assert.AreEqual(b.Adjustments.Length, p.Adjustments.Length, $"Adjustment count mismatch at index {i}.");
+            for (int j = 0; j < b.Adjustments.Length; j++)
+            {
+                ObservanceAdjustment ba = b.Adjustments[j];
+                ObservanceAdjustment pa = p.Adjustments[j];
+                Assert.AreEqual(ba.Key, pa.Key, $"Adjustment key mismatch at rule {i}, adjustment {j}.");
+                Assert.AreEqual(ba.Trigger, pa.Trigger, $"Adjustment trigger mismatch at rule {i}, adjustment {j}.");
+                Assert.AreEqual(ba.Action, pa.Action, $"Adjustment action mismatch at rule {i}, adjustment {j}.");
+            }
+        }
     }
 
     // ============================================================================
@@ -116,25 +185,70 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Projects a single rule onto a <see cref="BclXmlRule" />, populating the strategy element that
-    /// matches <see cref="NotableDateRule.Strategy" />.
+    /// matches <see cref="NotableDateRule.Strategy" /> plus any authored tags and adjustments.
     /// </summary>
     /// <param name="rule">The source rule.</param>
     /// <returns>The DTO representation.</returns>
-    private static BclXmlRule ProjectRuleToBclXml(NotableDateRule rule) =>
-        new()
+    private static BclXmlRule ProjectRuleToBclXml(NotableDateRule rule)
+    {
+        BclXmlRule dto = new()
         {
             Name = rule.RuleName ?? $"{rule.Name} ({rule.Strategy})",
             Category = rule.Category,
             NonWorking = rule.IsNonWorkingDay ?? false,
             NonWorkingSpecified = rule.IsNonWorkingDay.HasValue,
-            Fixed = rule.Strategy == DateResolutionStrategy.Fixed && rule.Month.HasValue
-                ? new BclXmlFixed
+            FirstYear = (ushort)(rule.FirstYear ?? 0),
+            FirstYearSpecified = rule.FirstYear.HasValue,
+            Priority = rule.Priority,
+            PrioritySpecified = rule.Priority != 100,
+            Territory = rule.TerritoryCode,
+            Tags = rule.Tags.ToList(),
+            Adjustments = rule.Adjustments
+                .Select(a => new BclXmlAdjustment
                 {
-                    Month = GregorianMonthName(rule.Month.Value),
-                    Day = rule.Day!.Value,
-                }
-                : null,
+                    Key = a.Key,
+                    When = a.Trigger,
+                    Action = a.Action,
+                })
+                .ToList(),
         };
+
+        switch (rule.Strategy)
+        {
+            case DateResolutionStrategy.Fixed:
+                dto.Fixed = new BclXmlFixed
+                {
+                    Month = GregorianMonthName(rule.Month!.Value),
+                    Day = rule.Day!.Value,
+                };
+                break;
+            case DateResolutionStrategy.DayOfWeekInMonth:
+                dto.DayOfWeekInMonth = new BclXmlDayOfWeekInMonth
+                {
+                    Month = GregorianMonthName(rule.Month!.Value),
+                    DayOfWeek = rule.DayOfWeek!.Value,
+                    WeekOrdinal = rule.WeekOrdinal!.Value,
+                };
+                break;
+            case DateResolutionStrategy.OffsetFromAnchor:
+                dto.OffsetFromAnchor = new BclXmlOffsetFromAnchor
+                {
+                    Name = rule.AnchorRuleName!,
+                    Offset = rule.OffsetDays!.Value,
+                };
+                break;
+            case DateResolutionStrategy.Algorithm:
+                dto.Algorithm = new BclXmlAlgorithm
+                {
+                    Key = rule.AlgorithmKey,
+                };
+                break;
+            default:
+                throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}");
+        }
+
+        return dto;
+    }
 
     /// <summary>
     /// Projects the built rules onto a <see cref="BclJsonNotableDates" /> tree, grouping by canonical
@@ -157,24 +271,64 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Projects a single rule onto a <see cref="BclJsonRule" />, populating the strategy property that
-    /// matches <see cref="NotableDateRule.Strategy" />.
+    /// matches <see cref="NotableDateRule.Strategy" /> plus any authored tags and adjustments.
     /// </summary>
     /// <param name="rule">The source rule.</param>
     /// <returns>The DTO representation.</returns>
-    private static BclJsonRule ProjectRuleToBclJson(NotableDateRule rule) =>
-        new()
+    private static BclJsonRule ProjectRuleToBclJson(NotableDateRule rule)
+    {
+        BclJsonRule dto = new()
         {
             Name = rule.RuleName ?? $"{rule.Name} ({rule.Strategy})",
             Category = rule.Category,
             NonWorking = rule.IsNonWorkingDay,
-            Fixed = rule.Strategy == DateResolutionStrategy.Fixed && rule.Month.HasValue
-                ? new BclJsonFixed
-                {
-                    Month = GregorianMonthName(rule.Month.Value),
-                    Day = rule.Day!.Value,
-                }
+            FirstYear = rule.FirstYear,
+            Priority = rule.Priority != 100 ? rule.Priority : null,
+            Territory = rule.TerritoryCode,
+            Tags = rule.Tags.Count > 0 ? rule.Tags.ToList() : null,
+            Adjustments = rule.Adjustments.Length > 0
+                ? rule.Adjustments
+                    .Select(a => new BclJsonAdjustment { Key = a.Key, When = a.Trigger, Action = a.Action })
+                    .ToList()
                 : null,
         };
+
+        switch (rule.Strategy)
+        {
+            case DateResolutionStrategy.Fixed:
+                dto.Fixed = new BclJsonFixed
+                {
+                    Month = GregorianMonthName(rule.Month!.Value),
+                    Day = rule.Day!.Value,
+                };
+                break;
+            case DateResolutionStrategy.DayOfWeekInMonth:
+                dto.DayOfWeekInMonth = new BclJsonDayOfWeekInMonth
+                {
+                    Month = GregorianMonthName(rule.Month!.Value),
+                    DayOfWeek = rule.DayOfWeek!.Value,
+                    WeekOrdinal = rule.WeekOrdinal!.Value,
+                };
+                break;
+            case DateResolutionStrategy.OffsetFromAnchor:
+                dto.OffsetFromAnchor = new BclJsonOffsetFromAnchor
+                {
+                    Name = rule.AnchorRuleName!,
+                    Offset = rule.OffsetDays!.Value,
+                };
+                break;
+            case DateResolutionStrategy.Algorithm:
+                dto.Algorithm = new BclJsonAlgorithm
+                {
+                    Key = rule.AlgorithmKey,
+                };
+                break;
+            default:
+                throw new NotSupportedException($"Unsupported strategy: {rule.Strategy}");
+        }
+
+        return dto;
+    }
 
     /// <summary>
     /// Serialises the DTO graph via <see cref="XmlSerializer" /> with the schema namespace as the default,
@@ -223,7 +377,7 @@ public partial class NotableDateDocumentBuilderTests
 
     /// <summary>
     /// Converts a Gregorian month number (1–12) to its full English name as required by the
-    /// <c>monthOrNumber</c> simple type in the schema.
+    /// <c>monthOrNumber</c> and <c>monthName</c> simple types in the schema.
     /// </summary>
     /// <param name="month">The month number.</param>
     /// <returns>The full English month name (e.g. <c>"December"</c>).</returns>
@@ -263,8 +417,10 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// A single <c>Rule</c> element. Only the Fixed strategy is modelled here; other strategies follow the
-    /// same attribute / child-element pattern when this interop surface is extended.
+    /// A single <c>Rule</c> element. The strategy choice is modelled as four mutually exclusive properties
+    /// (<see cref="Fixed" />, <see cref="DayOfWeekInMonth" />, <see cref="OffsetFromAnchor" />,
+    /// <see cref="Algorithm" />); exactly one is set per projected rule, matching the schema's
+    /// <c>&lt;xs:choice&gt;</c>.
     /// </summary>
     public sealed class BclXmlRule
     {
@@ -294,10 +450,62 @@ public partial class NotableDateDocumentBuilderTests
         [XmlIgnore]
         public bool NonWorkingSpecified { get; set; }
 
+        /// <summary>Gets or sets the inclusive first applicable year.</summary>
+        /// <returns>The <c>firstYear</c> attribute value; honoured only when <see cref="FirstYearSpecified" /> is <see langword="true" />.</returns>
+        [XmlAttribute("firstYear")]
+        public ushort FirstYear { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether <see cref="FirstYear" /> should be emitted.</summary>
+        /// <returns><see langword="true" /> to include the attribute; otherwise <see langword="false" />.</returns>
+        [XmlIgnore]
+        public bool FirstYearSpecified { get; set; }
+
+        /// <summary>Gets or sets the tie-break priority.</summary>
+        /// <returns>The <c>priority</c> attribute value; honoured only when <see cref="PrioritySpecified" /> is <see langword="true" />.</returns>
+        [XmlAttribute("priority")]
+        public int Priority { get; set; }
+
+        /// <summary>Gets or sets a value indicating whether <see cref="Priority" /> should be emitted.</summary>
+        /// <returns><see langword="true" /> to include the attribute; otherwise <see langword="false" />.</returns>
+        [XmlIgnore]
+        public bool PrioritySpecified { get; set; }
+
+        /// <summary>Gets or sets the territory scope.</summary>
+        /// <returns>The <c>territory</c> attribute value, or <see langword="null" /> when the rule applies globally.</returns>
+        [XmlAttribute("territory")]
+        public string? Territory { get; set; }
+
+        // Strategy choice — at most one of the following four is populated per rule.
+
         /// <summary>Gets or sets the Fixed strategy element.</summary>
         /// <returns>The <c>Fixed</c> child element, or <see langword="null" /> when another strategy applies.</returns>
         [XmlElement("Fixed", Namespace = BclInteropSchemaNamespace)]
         public BclXmlFixed? Fixed { get; set; }
+
+        /// <summary>Gets or sets the DayOfWeekInMonth strategy element.</summary>
+        /// <returns>The <c>DayOfWeekInMonth</c> child element, or <see langword="null" /> when another strategy applies.</returns>
+        [XmlElement("DayOfWeekInMonth", Namespace = BclInteropSchemaNamespace)]
+        public BclXmlDayOfWeekInMonth? DayOfWeekInMonth { get; set; }
+
+        /// <summary>Gets or sets the OffsetFromAnchor strategy element.</summary>
+        /// <returns>The <c>OffsetFromAnchor</c> child element, or <see langword="null" /> when another strategy applies.</returns>
+        [XmlElement("OffsetFromAnchor", Namespace = BclInteropSchemaNamespace)]
+        public BclXmlOffsetFromAnchor? OffsetFromAnchor { get; set; }
+
+        /// <summary>Gets or sets the Algorithm strategy element.</summary>
+        /// <returns>The <c>Algorithm</c> child element, or <see langword="null" /> when another strategy applies.</returns>
+        [XmlElement("Algorithm", Namespace = BclInteropSchemaNamespace)]
+        public BclXmlAlgorithm? Algorithm { get; set; }
+
+        /// <summary>Gets or sets the tag values.</summary>
+        /// <returns>The repeated <c>Tag</c> elements; empty when no tags are authored.</returns>
+        [XmlElement("Tag", Namespace = BclInteropSchemaNamespace)]
+        public List<string> Tags { get; set; } = new();
+
+        /// <summary>Gets or sets the adjustments.</summary>
+        /// <returns>The repeated <c>Adjustment</c> elements; empty when no adjustments are authored.</returns>
+        [XmlElement("Adjustment", Namespace = BclInteropSchemaNamespace)]
+        public List<BclXmlAdjustment> Adjustments { get; set; } = new();
     }
 
     /// <summary>
@@ -314,6 +522,76 @@ public partial class NotableDateDocumentBuilderTests
         /// <returns>The <c>day</c> attribute value in the range 1–31; required by the schema.</returns>
         [XmlAttribute("day")]
         public int Day { get; set; }
+    }
+
+    /// <summary>
+    /// The <c>DayOfWeekInMonth</c> strategy child element, locking onto the <em>n</em>th occurrence of a
+    /// weekday within a Gregorian month.
+    /// </summary>
+    public sealed class BclXmlDayOfWeekInMonth
+    {
+        /// <summary>Gets or sets the Gregorian month name.</summary>
+        /// <returns>The <c>month</c> attribute value; required by the schema.</returns>
+        [XmlAttribute("month")]
+        public string Month { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the weekday.</summary>
+        /// <returns>The <c>dayOfWeek</c> attribute value; required by the schema.</returns>
+        [XmlAttribute("dayOfWeek")]
+        public DayOfWeek DayOfWeek { get; set; }
+
+        /// <summary>Gets or sets the ordinal occurrence within the month.</summary>
+        /// <returns>The <c>weekOrdinal</c> attribute value; required by the schema.</returns>
+        [XmlAttribute("weekOrdinal")]
+        public WeekOfMonthOrdinal WeekOrdinal { get; set; }
+    }
+
+    /// <summary>
+    /// The <c>OffsetFromAnchor</c> strategy child element, resolving relative to another named rule.
+    /// </summary>
+    public sealed class BclXmlOffsetFromAnchor
+    {
+        /// <summary>Gets or sets the anchor rule name.</summary>
+        /// <returns>The <c>name</c> attribute value; required by the schema.</returns>
+        [XmlAttribute("name")]
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the day offset relative to the anchor date.</summary>
+        /// <returns>The <c>offset</c> attribute value; required by the schema.</returns>
+        [XmlAttribute("offset")]
+        public int Offset { get; set; }
+    }
+
+    /// <summary>
+    /// The <c>Algorithm</c> strategy child element, delegating resolution to a registered algorithm.
+    /// </summary>
+    public sealed class BclXmlAlgorithm
+    {
+        /// <summary>Gets or sets the algorithm registry key.</summary>
+        /// <returns>The <c>key</c> attribute value, or <see langword="null" /> when the algorithm is selected by type.</returns>
+        [XmlAttribute("key")]
+        public string? Key { get; set; }
+    }
+
+    /// <summary>
+    /// An <c>Adjustment</c> child element, expressing a conditional date shift attached to the parent rule.
+    /// </summary>
+    public sealed class BclXmlAdjustment
+    {
+        /// <summary>Gets or sets the adjustment key.</summary>
+        /// <returns>The <c>key</c> attribute value; required by the schema.</returns>
+        [XmlAttribute("key")]
+        public string Key { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the activation condition.</summary>
+        /// <returns>The <c>when</c> attribute value; required by the schema.</returns>
+        [XmlAttribute("when")]
+        public AdjustmentTrigger When { get; set; }
+
+        /// <summary>Gets or sets the modification applied when the adjustment activates.</summary>
+        /// <returns>The <c>action</c> attribute value; required by the schema.</returns>
+        [XmlAttribute("action")]
+        public AdjustmentAction Action { get; set; }
     }
 
     // ============================================================================
@@ -348,8 +626,9 @@ public partial class NotableDateDocumentBuilderTests
     }
 
     /// <summary>
-    /// A single rule entry. Only the Fixed strategy is modelled here; other strategies follow the same
-    /// property pattern when this interop surface is extended.
+    /// A single rule entry. Exactly one of the strategy properties (<see cref="Fixed" />,
+    /// <see cref="DayOfWeekInMonth" />, <see cref="OffsetFromAnchor" />, <see cref="Algorithm" />) is set
+    /// per projected rule, matching the schema's <c>exactlyOneStrategy</c> constraint.
     /// </summary>
     public sealed class BclJsonRule
     {
@@ -368,10 +647,50 @@ public partial class NotableDateDocumentBuilderTests
         [JsonPropertyName("nonWorking")]
         public bool? NonWorking { get; set; }
 
+        /// <summary>Gets or sets the inclusive first applicable year.</summary>
+        /// <returns>The <c>firstYear</c> property value, or <see langword="null" /> to omit the property.</returns>
+        [JsonPropertyName("firstYear")]
+        public int? FirstYear { get; set; }
+
+        /// <summary>Gets or sets the tie-break priority.</summary>
+        /// <returns>The <c>priority</c> property value, or <see langword="null" /> to omit the property.</returns>
+        [JsonPropertyName("priority")]
+        public int? Priority { get; set; }
+
+        /// <summary>Gets or sets the territory scope.</summary>
+        /// <returns>The <c>territory</c> property value, or <see langword="null" /> when the rule applies globally.</returns>
+        [JsonPropertyName("territory")]
+        public string? Territory { get; set; }
+
         /// <summary>Gets or sets the Fixed strategy object.</summary>
         /// <returns>The <c>fixed</c> nested object, or <see langword="null" /> when another strategy applies.</returns>
         [JsonPropertyName("fixed")]
         public BclJsonFixed? Fixed { get; set; }
+
+        /// <summary>Gets or sets the DayOfWeekInMonth strategy object.</summary>
+        /// <returns>The <c>dayOfWeekInMonth</c> nested object, or <see langword="null" /> when another strategy applies.</returns>
+        [JsonPropertyName("dayOfWeekInMonth")]
+        public BclJsonDayOfWeekInMonth? DayOfWeekInMonth { get; set; }
+
+        /// <summary>Gets or sets the OffsetFromAnchor strategy object.</summary>
+        /// <returns>The <c>offsetFromAnchor</c> nested object, or <see langword="null" /> when another strategy applies.</returns>
+        [JsonPropertyName("offsetFromAnchor")]
+        public BclJsonOffsetFromAnchor? OffsetFromAnchor { get; set; }
+
+        /// <summary>Gets or sets the Algorithm strategy object.</summary>
+        /// <returns>The <c>algorithm</c> nested object, or <see langword="null" /> when another strategy applies.</returns>
+        [JsonPropertyName("algorithm")]
+        public BclJsonAlgorithm? Algorithm { get; set; }
+
+        /// <summary>Gets or sets the tag values.</summary>
+        /// <returns>The <c>tags</c> array, or <see langword="null" /> to omit the property.</returns>
+        [JsonPropertyName("tags")]
+        public List<string>? Tags { get; set; }
+
+        /// <summary>Gets or sets the adjustments.</summary>
+        /// <returns>The <c>adjustments</c> array, or <see langword="null" /> to omit the property.</returns>
+        [JsonPropertyName("adjustments")]
+        public List<BclJsonAdjustment>? Adjustments { get; set; }
     }
 
     /// <summary>
@@ -388,5 +707,74 @@ public partial class NotableDateDocumentBuilderTests
         /// <returns>The <c>day</c> property value in the range 1–31; required by the schema.</returns>
         [JsonPropertyName("day")]
         public int Day { get; set; }
+    }
+
+    /// <summary>
+    /// The <c>dayOfWeekInMonth</c> strategy nested object.
+    /// </summary>
+    public sealed class BclJsonDayOfWeekInMonth
+    {
+        /// <summary>Gets or sets the Gregorian month name.</summary>
+        /// <returns>The <c>month</c> property value; required by the schema.</returns>
+        [JsonPropertyName("month")]
+        public string Month { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the weekday.</summary>
+        /// <returns>The <c>dayOfWeek</c> property value; required by the schema.</returns>
+        [JsonPropertyName("dayOfWeek")]
+        public DayOfWeek DayOfWeek { get; set; }
+
+        /// <summary>Gets or sets the ordinal occurrence within the month.</summary>
+        /// <returns>The <c>weekOrdinal</c> property value; required by the schema.</returns>
+        [JsonPropertyName("weekOrdinal")]
+        public WeekOfMonthOrdinal WeekOrdinal { get; set; }
+    }
+
+    /// <summary>
+    /// The <c>offsetFromAnchor</c> strategy nested object.
+    /// </summary>
+    public sealed class BclJsonOffsetFromAnchor
+    {
+        /// <summary>Gets or sets the anchor rule name.</summary>
+        /// <returns>The <c>name</c> property value; required by the schema.</returns>
+        [JsonPropertyName("name")]
+        public string Name { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the day offset relative to the anchor date.</summary>
+        /// <returns>The <c>offset</c> property value; required by the schema.</returns>
+        [JsonPropertyName("offset")]
+        public int Offset { get; set; }
+    }
+
+    /// <summary>
+    /// The <c>algorithm</c> strategy nested object.
+    /// </summary>
+    public sealed class BclJsonAlgorithm
+    {
+        /// <summary>Gets or sets the algorithm registry key.</summary>
+        /// <returns>The <c>key</c> property value, or <see langword="null" /> when the algorithm is selected by type.</returns>
+        [JsonPropertyName("key")]
+        public string? Key { get; set; }
+    }
+
+    /// <summary>
+    /// An <c>adjustment</c> object, expressing a conditional date shift attached to the parent rule.
+    /// </summary>
+    public sealed class BclJsonAdjustment
+    {
+        /// <summary>Gets or sets the adjustment key.</summary>
+        /// <returns>The <c>key</c> property value; required by the schema.</returns>
+        [JsonPropertyName("key")]
+        public string Key { get; set; } = string.Empty;
+
+        /// <summary>Gets or sets the activation condition.</summary>
+        /// <returns>The <c>when</c> property value; required by the schema.</returns>
+        [JsonPropertyName("when")]
+        public AdjustmentTrigger When { get; set; }
+
+        /// <summary>Gets or sets the modification applied when the adjustment activates.</summary>
+        /// <returns>The <c>action</c> property value; required by the schema.</returns>
+        [JsonPropertyName("action")]
+        public AdjustmentAction Action { get; set; }
     }
 }
