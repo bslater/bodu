@@ -178,4 +178,129 @@ public class NotableDateRuleBuilderTests
             _ = builder.AddAdjustment("key", null!);
         });
     }
+
+    // ============================================================================
+    // Strategy uniqueness — each builder commits to exactly one resolution strategy.
+    // ============================================================================
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.Fixed(int, int, bool, bool)" /> throws
+    /// <see cref="InvalidOperationException" /> when any other strategy has already been selected on the
+    /// builder, including a previous call to either Fixed overload.
+    /// </summary>
+    /// <param name="firstStrategy">The strategy name applied to the builder before the second Fixed call.</param>
+    [TestMethod]
+    [DataRow("Fixed")]
+    [DataRow("DayOfWeekInMonth")]
+    [DataRow("OffsetFromAnchor")]
+    [DataRow("Algorithm")]
+    public void Fixed_WhenStrategyAlreadySet_ForNumericMonth_ShouldThrowInvalidOperationException(string firstStrategy)
+    {
+        NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = builder.Fixed(2, 2);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.Fixed(string, int, bool, bool)" /> throws
+    /// <see cref="InvalidOperationException" /> when any other strategy has already been selected on the
+    /// builder, including a previous call to either Fixed overload.
+    /// </summary>
+    /// <param name="firstStrategy">The strategy name applied to the builder before the second Fixed call.</param>
+    [TestMethod]
+    [DataRow("Fixed")]
+    [DataRow("DayOfWeekInMonth")]
+    [DataRow("OffsetFromAnchor")]
+    [DataRow("Algorithm")]
+    public void Fixed_WhenStrategyAlreadySet_ForMonthToken_ShouldThrowInvalidOperationException(string firstStrategy)
+    {
+        NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = builder.Fixed("March", 17);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.DayOfWeekInMonth" /> throws
+    /// <see cref="InvalidOperationException" /> when any other strategy has already been selected on the
+    /// builder, including a previous call to itself.
+    /// </summary>
+    /// <param name="firstStrategy">The strategy name applied to the builder before the DayOfWeekInMonth call.</param>
+    [TestMethod]
+    [DataRow("Fixed")]
+    [DataRow("DayOfWeekInMonth")]
+    [DataRow("OffsetFromAnchor")]
+    [DataRow("Algorithm")]
+    public void DayOfWeekInMonth_WhenStrategyAlreadySet_ShouldThrowInvalidOperationException(string firstStrategy)
+    {
+        NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = builder.DayOfWeekInMonth(11, DayOfWeek.Thursday, WeekOfMonthOrdinal.Fourth);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.OffsetFromAnchor" /> throws
+    /// <see cref="InvalidOperationException" /> when any other strategy has already been selected on the
+    /// builder, including a previous call to itself.
+    /// </summary>
+    /// <param name="firstStrategy">The strategy name applied to the builder before the OffsetFromAnchor call.</param>
+    [TestMethod]
+    [DataRow("Fixed")]
+    [DataRow("DayOfWeekInMonth")]
+    [DataRow("OffsetFromAnchor")]
+    [DataRow("Algorithm")]
+    public void OffsetFromAnchor_WhenStrategyAlreadySet_ShouldThrowInvalidOperationException(string firstStrategy)
+    {
+        NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = builder.OffsetFromAnchor("Easter Sunday", 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.Algorithm" /> throws
+    /// <see cref="InvalidOperationException" /> when any other strategy has already been selected on the
+    /// builder, including a previous call to itself.
+    /// </summary>
+    /// <param name="firstStrategy">The strategy name applied to the builder before the Algorithm call.</param>
+    [TestMethod]
+    [DataRow("Fixed")]
+    [DataRow("DayOfWeekInMonth")]
+    [DataRow("OffsetFromAnchor")]
+    [DataRow("Algorithm")]
+    public void Algorithm_WhenStrategyAlreadySet_ShouldThrowInvalidOperationException(string firstStrategy)
+    {
+        NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = builder.Algorithm(key: "easter-gregorian");
+        });
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="NotableDateRuleBuilder" /> with the named strategy already selected.
+    /// </summary>
+    /// <param name="strategy">The strategy identifier — one of <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, or <c>Algorithm</c>.</param>
+    /// <returns>A builder whose strategy has been applied; subsequent strategy calls must throw.</returns>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="strategy" /> is not a recognised strategy identifier.</exception>
+    private static NotableDateRuleBuilder NewBuilderWithStrategy(string strategy) =>
+        strategy switch
+        {
+            "Fixed" => new NotableDateRuleBuilder().Fixed(1, 1),
+            "DayOfWeekInMonth" => new NotableDateRuleBuilder().DayOfWeekInMonth(1, DayOfWeek.Monday, WeekOfMonthOrdinal.First),
+            "OffsetFromAnchor" => new NotableDateRuleBuilder().OffsetFromAnchor("anchor", 1),
+            "Algorithm" => new NotableDateRuleBuilder().Algorithm(key: "algo"),
+            _ => throw new ArgumentException($"Unknown strategy identifier: {strategy}", nameof(strategy)),
+        };
 }

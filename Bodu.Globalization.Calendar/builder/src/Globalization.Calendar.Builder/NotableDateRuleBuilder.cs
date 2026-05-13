@@ -27,6 +27,9 @@ namespace Bodu.Globalization.Calendar;
 /// Exactly one strategy method — <see cref="Fixed(int, int, bool, bool)" />, <see cref="Fixed(string, int, bool, bool)" />,
 /// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />, <see cref="OffsetFromAnchor(string, int)" />, or
 /// <see cref="Algorithm(string?, Type?, string?, int?)" /> — must be called before the rule can be built or serialised.
+/// Calling a strategy method when a strategy has already been selected throws
+/// <see cref="InvalidOperationException" />; each builder instance commits to its strategy on the first
+/// successful strategy call.
 /// </para>
 /// </remarks>
 public sealed class NotableDateRuleBuilder
@@ -295,12 +298,17 @@ public sealed class NotableDateRuleBuilder
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="month" /> is less than 1 or greater than 13, or <paramref name="day" /> is less than 1 or greater than 31.
     /// </exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfLessThan(month, 1);
         ThrowHelper.ThrowIfGreaterThan(month, 13);
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.Fixed;
         _fixedMonthNumber = month;
         _fixedMonthToken = null;
@@ -328,11 +336,16 @@ public sealed class NotableDateRuleBuilder
     /// <returns>This builder instance, for method chaining.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="monthToken" /> is <see langword="null" />, empty, or whitespace.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="day" /> is less than 1 or greater than 31.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder Fixed(string monthToken, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(monthToken);
         ThrowHelper.ThrowIfLessThan(day, 1);
         ThrowHelper.ThrowIfGreaterThan(day, 31);
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.Fixed;
         _fixedMonthToken = monthToken;
         _fixedMonthNumber = null;
@@ -351,10 +364,15 @@ public sealed class NotableDateRuleBuilder
     /// <param name="weekOrdinal">The ordinal occurrence within the month (e.g. <see cref="WeekOfMonthOrdinal.Second" />).</param>
     /// <returns>This builder instance, for method chaining.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="month" /> is less than 1 or greater than 12.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder DayOfWeekInMonth(int month, DayOfWeek dayOfWeek, WeekOfMonthOrdinal weekOrdinal)
     {
         ThrowHelper.ThrowIfLessThan(month, 1);
         ThrowHelper.ThrowIfGreaterThan(month, 12);
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.DayOfWeekInMonth;
         _dowMonth = month;
         _dowDayOfWeek = dayOfWeek;
@@ -370,9 +388,14 @@ public sealed class NotableDateRuleBuilder
     /// <param name="offsetDays">The number of days to add to the anchor date. Negative values move the date backwards.</param>
     /// <returns>This builder instance, for method chaining.</returns>
     /// <exception cref="ArgumentException">Thrown when <paramref name="anchorRuleName" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder OffsetFromAnchor(string anchorRuleName, int offsetDays)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(anchorRuleName);
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.OffsetFromAnchor;
         _anchorRuleName = anchorRuleName;
         _offsetDays = offsetDays;
@@ -388,8 +411,13 @@ public sealed class NotableDateRuleBuilder
     /// <param name="month">An optional month token passed to the algorithm's two-argument constructor.</param>
     /// <param name="day">An optional day of month passed to the algorithm's two-argument constructor.</param>
     /// <returns>This builder instance, for method chaining.</returns>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when a resolution strategy has already been selected for this rule.
+    /// </exception>
     public NotableDateRuleBuilder Algorithm(string? key = null, Type? algorithmType = null, string? month = null, int? day = null)
     {
+        ThrowIfStrategyAlreadySet();
+
         _strategy = DateResolutionStrategy.Algorithm;
         _algorithmKey = key;
         _algorithmType = algorithmType;
@@ -836,4 +864,17 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The full English month name (e.g. <c>"March"</c>).</returns>
     private static string GregorianMonthName(int month) =>
         new DateTime(2000, month, 1).ToString("MMMM", CultureInfo.InvariantCulture);
+
+    /// <summary>
+    /// Throws when a resolution strategy has already been selected for this rule. Called by every strategy
+    /// configurator to enforce that each builder instance commits to exactly one strategy.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Thrown when <see cref="_strategy" /> already has a value.</exception>
+    private void ThrowIfStrategyAlreadySet()
+    {
+        if (_strategy.HasValue)
+            throw new InvalidOperationException(
+                $"A resolution strategy ('{_strategy.Value}') has already been selected for this rule; " +
+                "each rule must specify exactly one strategy.");
+    }
 }
