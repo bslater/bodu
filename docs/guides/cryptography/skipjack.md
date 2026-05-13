@@ -31,7 +31,7 @@ using Bodu.Security.Cryptography.Extensions;
 byte[] plaintext = Encoding.UTF8.GetBytes("legacy payload");
 
 byte[] key, iv, ciphertext;
-using (var alg = new Skipjack { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7 })
+using (var alg = new Skipjack { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 })
 {
     alg.GenerateKey();           // 10 bytes
     alg.GenerateIV();            // 8 bytes
@@ -43,7 +43,7 @@ using (var alg = new Skipjack { BlockMode = CipherBlockMode.CBC, Padding = Paddi
 }
 
 byte[] recovered;
-using (var alg = new Skipjack { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7,
+using (var alg = new Skipjack { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7,
                                  Key = key, IV = iv })
 {
     recovered = alg.Decrypt(ciphertext);
@@ -57,7 +57,7 @@ Debug.Assert(plaintext.SequenceEqual(recovered));
 ```csharp
 using var alg = new Skipjack
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();
@@ -82,7 +82,7 @@ byte[] key = new byte[]
 using var alg = new Skipjack
 {
     Key       = key,
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateIV();

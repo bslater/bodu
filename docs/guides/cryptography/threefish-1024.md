@@ -28,7 +28,7 @@ using Bodu.Security.Cryptography.Extensions;
 byte[] plaintext = Encoding.UTF8.GetBytes("a substantial payload that benefits from a 128-byte block");
 
 byte[] key, iv, tweak, ciphertext;
-using (var alg = new Threefish1024 { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7 })
+using (var alg = new Threefish1024 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 })
 {
     alg.GenerateKey();
     alg.GenerateIV();
@@ -42,7 +42,7 @@ using (var alg = new Threefish1024 { BlockMode = CipherBlockMode.CBC, Padding = 
 }
 
 byte[] recovered;
-using (var alg = new Threefish1024 { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7,
+using (var alg = new Threefish1024 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7,
                                       Key = key, IV = iv, Tweak = tweak })
 {
     recovered = alg.Decrypt(ciphertext);
@@ -56,7 +56,7 @@ Debug.Assert(plaintext.SequenceEqual(recovered));
 ```csharp
 using var alg = new Threefish1024
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();

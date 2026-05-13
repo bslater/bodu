@@ -22,7 +22,7 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="encryption-basics.html">Encryption basics</a></h3>
+  <h3><a href="encryption-basics.md">Encryption basics</a></h3>
   <p>The mental model: <code>BlockMode</code> vs .NET's <code>Mode</code>, how Key / IV / Tweak / Padding combine, generating random key material, and disposing safely.</p>
 </div>
 
@@ -32,12 +32,12 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 </div>
 
 <div class="bodu-card">
-  <h3><a href="padding.html">Padding</a></h3>
+  <h3><a href="padding.md">Padding</a></h3>
   <p>PKCS7, Zeros, None — how each one pads, when it round-trips cleanly, and when it silently loses bytes.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="composing-primitives.html">Composing primitives</a></h3>
+  <h3><a href="composing-primitives.md">Composing primitives</a></h3>
   <p>The two patterns side by side — manual <code>IBlockCipher</code> + <code>BlockCipherModeFactory</code> + <code>PaddingFactory</code>, and the equivalent through the <code>SymmetricAlgorithm</code> wrappers.</p>
 </div>
 
@@ -67,7 +67,7 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="aead-modes.html">AEAD modes</a></h3>
+  <h3><a href="aead-modes.md">AEAD modes</a></h3>
   <p>GCM, CCM, OCB3, EAX, SIV, GCM-SIV — authenticated encryption with associated data using <code>AesBlockCipher</code> + the mode transforms, via the one-shot extension methods.</p>
 </div>
 
@@ -78,27 +78,27 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="hashing.html">Hashing overview</a></h3>
+  <h3><a href="hashing.md">Hashing overview</a></h3>
   <p>Cross-cutting overview of keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru), and Merkle trees.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="tiger.html">Using Tiger</a></h3>
+  <h3><a href="tiger.md">Using Tiger</a></h3>
   <p>128 / 160 / 192-bit cryptographic digest optimised for 64-bit platforms; two padding variants (Tiger / Tiger2).</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="cubehash.html">Using CubeHash</a></h3>
+  <h3><a href="cubehash.md">Using CubeHash</a></h3>
   <p>SHA-3 finalist with tunable rounds and block size.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="snefru.html">Using Snefru</a></h3>
+  <h3><a href="snefru.md">Using Snefru</a></h3>
   <p>Snefru-128 / Snefru-256 — legacy cryptographic digest; interoperability use only.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="merkle-trees.html">Using Merkle trees</a></h3>
+  <h3><a href="merkle-trees.md">Using Merkle trees</a></h3>
   <p>Tree-structured streaming integrity over any inner <code>HashAlgorithm</code>.</p>
 </div>
 
@@ -111,12 +111,12 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="siphash.html">Using SipHash</a></h3>
+  <h3><a href="siphash.md">Using SipHash</a></h3>
   <p>SipHash-64 and SipHash-128 — keyed PRF designed for hash-flooding-resistant hash tables.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="poly1305.html">Using Poly1305</a></h3>
+  <h3><a href="poly1305.md">Using Poly1305</a></h3>
   <p>One-time authenticator (RFC 8439); pair with ChaCha20 or AES-CTR.</p>
 </div>
 
@@ -127,22 +127,22 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="ascon.html">ASCON overview</a></h3>
+  <h3><a href="ascon.md">ASCON overview</a></h3>
   <p>All five NIST SP 800-232 types — Hash256, HashA256, XOF128, CXOF128, AEAD128 — with selection guidance.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="ascon-hashing.html">ASCON hashing</a></h3>
+  <h3><a href="ascon-hashing.md">ASCON hashing</a></h3>
   <p><code>AsconHash256</code> (12-round, max margin) and <code>AsconHashA256</code> (8-round, higher throughput).</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="ascon-xof.html">ASCON extendable output (XOF)</a></h3>
+  <h3><a href="ascon-xof.md">ASCON extendable output (XOF)</a></h3>
   <p><code>AsconXof128</code> and <code>AsconCxof128</code> — squeeze any number of bytes; CXOF accepts a domain customisation string.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="ascon-aead.html">ASCON authenticated encryption (AEAD)</a></h3>
+  <h3><a href="ascon-aead.md">ASCON authenticated encryption (AEAD)</a></h3>
   <p><code>AsconAead128</code> — sponge-based AEAD with no separate block cipher dependency.</p>
 </div>
 

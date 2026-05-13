@@ -4,9 +4,9 @@ title: Cipher block modes
 
 # Cipher block modes
 
-This page walks through each of the five classic block cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherBlockMode>, shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs.
+This page walks through each of the five classic block cipher modes exposed via <xref:Bodu.Security.Cryptography.CipherModeKind>, shows a complete encrypt-and-decrypt round-trip for each, and calls out the IV rules and security trade-offs.
 
-For the data-flow visualisation, see the panels on the <xref:Bodu.Security.Cryptography.CipherBlockMode> API page. Each panel in that diagram corresponds to one section below.
+For the data-flow visualisation, see the panels on the <xref:Bodu.Security.Cryptography.CipherModeKind> API page. Each panel in that diagram corresponds to one section below.
 
 ## CBC — the default
 
@@ -25,7 +25,7 @@ byte[] plaintext = System.Text.Encoding.UTF8.GetBytes("confidential payload");
 
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();
@@ -49,7 +49,7 @@ The IV must travel with the ciphertext so the receiver can decrypt. Don't put it
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,   // CTR is a stream cipher
 };
 alg.GenerateKey();
@@ -73,7 +73,7 @@ byte[] recovered  = alg.Decrypt(ciphertext);
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.CFB,
+    BlockMode = CipherModeKind.CFB,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();
@@ -97,7 +97,7 @@ Both directions use the cipher's *encryption* primitive — the decryptor never 
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.OFB,
+    BlockMode = CipherModeKind.OFB,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();
@@ -121,7 +121,7 @@ OFB is rarely the best choice today — CTR gives you the same stream-cipher beh
 ```csharp
 using var alg = new Threefish256
 {
-    BlockMode = CipherBlockMode.ECB,
+    BlockMode = CipherModeKind.ECB,
     Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();

@@ -28,7 +28,7 @@ using Bodu.Security.Cryptography.Extensions;
 byte[] plaintext = Encoding.UTF8.GetBytes("a longer record payload for the 64-byte block cipher");
 
 byte[] key, iv, tweak, ciphertext;
-using (var alg = new Threefish512 { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7 })
+using (var alg = new Threefish512 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 })
 {
     alg.GenerateKey();
     alg.GenerateIV();
@@ -42,7 +42,7 @@ using (var alg = new Threefish512 { BlockMode = CipherBlockMode.CBC, Padding = P
 }
 
 byte[] recovered;
-using (var alg = new Threefish512 { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7,
+using (var alg = new Threefish512 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7,
                                      Key = key, IV = iv, Tweak = tweak })
 {
     recovered = alg.Decrypt(ciphertext);
@@ -56,7 +56,7 @@ Debug.Assert(plaintext.SequenceEqual(recovered));
 ```csharp
 using var alg = new Threefish512
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();
@@ -79,7 +79,7 @@ If you've stored a key in a secrets manager, load it directly rather than callin
 byte[] key = LoadKeyFromVault(keyId: "threefish-512/main");
 Debug.Assert(key.Length == 64);
 
-using var alg = new Threefish512 { Key = key, BlockMode = CipherBlockMode.CTR, Padding = PaddingMode.None };
+using var alg = new Threefish512 { Key = key, BlockMode = CipherModeKind.CTR, Padding = PaddingMode.None };
 alg.GenerateIV();           // fresh per message
 alg.GenerateTweak();        // or set a per-record tweak
 
@@ -105,7 +105,7 @@ byte[] EncryptRecord(byte[] key, byte[] iv, long recordId, byte[] plaintext)
         Key       = key,
         IV        = iv,
         Tweak     = RecordTweak(recordId),
-        BlockMode = CipherBlockMode.CBC,
+        BlockMode = CipherModeKind.CBC,
         Padding   = PaddingMode.PKCS7,
     };
     return alg.Encrypt(plaintext);

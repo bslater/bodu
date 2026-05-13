@@ -14,7 +14,7 @@ The Bodu hashing and cryptography libraries provide six distinct algorithm famil
 
 | Library | Family | Subtypes |
 |---|---|---|
-| `Bodu.IO.Hashing` | Fingerprint | FNV · CityHash · MurmurHash3 · XxHash · Pearson · Bernstein / classic string hashes |
+| `Bodu.IO.Hashing` | Fingerprint | FNV · CityHash · MurmurHash3 · Pearson · Bernstein / classic string hashes |
 | `Bodu.IO.Hashing` | Checksum | CRC (polynomial-remainder) · Fletcher / Adler (twin-accumulator) |
 | `Bodu.IO.Hashing` | Check digit | Mod 10 (Luhn, EAN, GTIN, UPC) · Quasigroup (Damm) · Dihedral (Verhoeff) · Mod 11 (ISBN-10, SEDOL, CUSIP) · Mod 97-10 (IBAN, LEI) |
 | `Bodu.Security.Cryptography` | Cryptographic hash | Plain digest (Tiger, CubeHash, Snefru, Whirlpool, Blake2/3, Skein, ASCON) · Extendable output / XOF (Shake, AsconXof, AsconCxof) · Tree (Merkle) |
@@ -41,20 +41,21 @@ Fingerprint algorithms map an arbitrary byte sequence to a fixed-size integer va
 
 - **Avalanche** — a single-bit change in the input flips approximately half of the output bits.
 - **Distribution** — output values are uniformly distributed across the integer range, so hash-table buckets fill evenly.
-- **Streaming behaviour** — whether the algorithm processes arbitrary chunks without buffering the entire input. FNV and Pearson are streaming and constant-memory; CityHash and xxHash buffer internally for SIMD efficiency.
+- **Streaming behaviour** — whether the algorithm processes arbitrary chunks without buffering the entire input. FNV and Pearson are streaming and constant-memory; CityHash and MurmurHash3 buffer internally for SIMD efficiency.
 
 | Type | Output | Notes |
 |---|---|---|
 | `Fnv1a32` / `Fnv1a64` | 32 / 64 bits | Simple, constant-memory, portable. Preferred over FNV-1 for better avalanche. |
 | `Fnv132` / `Fnv164` | 32 / 64 bits | Original FNV-1 — use only for legacy interoperability. |
 | `CityHash32` / `CityHash64` / `CityHash128` | 32 / 64 / 128 bits | SIMD-friendly; fastest option for large inputs, at the cost of in-memory buffering. |
-| `MurmurHash3_32` / `MurmurHash3_x64_128` | 32 / 128 bits | Seeded; excellent avalanche and collision resistance for a non-cryptographic hash. |
-| `XxHash32` / `XxHash64` | 32 / 64 bits | High-throughput; seeded; non-streaming (buffers input). |
+| `MurmurHash3_32` / `MurmurHash3_128` | 32 / 128 bits | Seeded; excellent avalanche and collision resistance for a non-cryptographic hash. |
 | `Pearson` | 8–2048 bits | Table-driven; configurable output width in 8-bit steps; five built-in permutation tables. |
 | `Bernstein` | 32 bits | Classic djb2; configurable add-vs-XOR variant and initial value. |
-| `BKDR` / `SDBM` / `JSHash` / `Elf64` / `ApHash` / `Pjw32` | 32–64 bits | Classic string hashes from compilers, databases, and early web tooling. |
+| `BKDR` / `SDBM` / `JSHash` / `Elf64` / `ApHash` / `Pjw32` / `SuperFastHash` | 32–64 bits | Classic string hashes from compilers, databases, and early web tooling. |
 
-→ Guides: [Using FNV](../guides/io-hashing/fnv.md) · [Using CityHash](../guides/io-hashing/cityhash.md) · [Using MurmurHash3](../guides/io-hashing/murmurhash3.md) · [Using XxHash](../guides/io-hashing/xxhash.md) · [Using Pearson](../guides/io-hashing/pearson.md) · [Classic string hashes](../guides/io-hashing/string-hashes.md)
+→ Guides: [Using FNV](../guides/io-hashing/fnv.md) · [Using CityHash](../guides/io-hashing/cityhash.md) · [Using MurmurHash3](../guides/io-hashing/murmurhash3.md) · [Using Pearson](../guides/io-hashing/pearson.md) · [Classic string hashes](../guides/io-hashing/string-hashes.md)
+
+> **BCL note.** `System.IO.Hashing` ships `XxHash32`, `XxHash64`, `XxHash3`, and `XxHash128` from .NET 6 onwards. Bodu does not duplicate these — prefer the BCL types directly. The Bodu types listed above are the ones that are *not* in `System.IO.Hashing`.
 
 ---
 
@@ -99,7 +100,7 @@ There are five mathematical subfamilies, each with different error-detection gua
 
 | Subfamily | Algorithm | Detects | Bodu types |
 |---|---|---|---|
-| **Mod 10 (weighted sum)** | Sum digits with alternating multipliers, take mod 10. Catches all single-digit substitutions; misses some adjacent transpositions (e.g. 0↔9). | Single-digit errors, most transpositions | `Luhn`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `WeightedMod10` |
+| **Mod 10 (weighted sum)** | Sum digits with alternating multipliers, take mod 10. Catches all single-digit substitutions; misses some adjacent transpositions (e.g. 0↔9). | Single-digit errors, most transpositions | `Luhn`, `Ean8`, `Ean13`, `Gtin14`, `UpcA`, `AbaRoutingNumber` |
 | **Quasigroup** | Damm's table-based group operation. Catches **all** single-digit substitutions and **all** adjacent transpositions. | All single-digit and adjacent-transposition errors | `Damm` |
 | **Dihedral group D₅** | Verhoeff's permutation tables over the dihedral group. Catches all single-digit substitutions, all adjacent transpositions, and most twin / jump-twin errors. | The widest error coverage of any decimal scheme | `Verhoeff` |
 | **Mod 11** | Weighted sum mod 11, with `X` representing the value 10. Used in book and securities identifiers. | All single-digit errors, most transpositions | `Isbn10`, `Sedol`, `Cusip`, `Iso7064Mod11_2` |
@@ -127,7 +128,7 @@ Types in `Bodu.IO.Hashing.Checksums` (alphanumeric or multi-character output):
 | `Sedol` | London Stock Exchange securities |
 | `Cusip` | North American securities (ANSI X9.6) |
 | `Lei` | Legal Entity Identifiers (ISO 17442) |
-| `WeightedMod10` | Configurable weighted mod 10 — base for custom schemes |
+| `Iso7064Mod11_2` / `Iso7064Mod97_10` | Generic ISO 7064 building blocks for custom schemes |
 
 → Guide: [Check digits](../guides/io-hashing/check-digits.md)
 
@@ -292,7 +293,7 @@ See the [ASCON family guide](../guides/cryptography/ascon.md) for selection guid
 | You need… | Reach for | Family |
 |---|---|---|
 | Fast hash-table key or in-memory bucket index | `Fnv1a64`, `CityHash64` | Fingerprint |
-| Best throughput on large buffers | `CityHash64`, `XxHash64` | Fingerprint |
+| Best throughput on large buffers | `CityHash64`, `MurmurHash3_128` (or BCL `System.IO.Hashing.XxHash64`) | Fingerprint |
 | A specific on-wire checksum (zlib, PNG, Ethernet, Modbus, iSCSI, NVMe) | `Crc` + `CrcStandard.*` | Checksum |
 | A cheap checksum that also catches adjacent transpositions | `Fletcher32` or `Adler32` | Checksum |
 | Validate a credit card or barcode a user typed | `Luhn`, `Ean13`, `Gtin14` | Check digit |
@@ -317,4 +318,7 @@ See the [ASCON family guide](../guides/cryptography/ascon.md) for selection guid
 - [Bodu.Globalization.Calendar](calendar/index.md) — notable date resolution and calculators.
 
 **Guides**
-- [Bodu.Core guides](../guides/core/) · [Bodu.IO.Hashing guides](../guides/io-hashing/) · [Bodu.Security.Cryptography guides](../guides/cryptography/) · [Bodu.Globalization.Calendar guides](../guides/calendar/)
+- [Bodu.Core guides](../guides/core/index.md) · [Bodu.IO.Hashing guides](../guides/io-hashing/index.md) · [Bodu.Security.Cryptography guides](../guides/cryptography/index.md) · [Bodu.Globalization.Calendar guides](../guides/calendar/index.md)
+
+**API references**
+- [Bodu.Collections.Generic](../apidoc/Bodu.Collections.Generic.md) · [Bodu.IO.Hashing](../apidoc/Bodu.IO.Hashing.md) · [Bodu.Security.Cryptography](../apidoc/Bodu.Security.Cryptography.md) · [Bodu.Globalization.Calendar](../apidoc/Bodu.Globalization.Calendar.md)

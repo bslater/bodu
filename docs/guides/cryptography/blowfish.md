@@ -30,7 +30,7 @@ using Bodu.Security.Cryptography.Extensions;
 byte[] plaintext = Encoding.UTF8.GetBytes("message under Blowfish");
 
 byte[] key, iv, ciphertext;
-using (var alg = new Blowfish { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7 })
+using (var alg = new Blowfish { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 })
 {
     alg.GenerateKey();    // 16 bytes at the default 128-bit key size
     alg.GenerateIV();     // 8 bytes
@@ -42,7 +42,7 @@ using (var alg = new Blowfish { BlockMode = CipherBlockMode.CBC, Padding = Paddi
 }
 
 byte[] recovered;
-using (var alg = new Blowfish { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7,
+using (var alg = new Blowfish { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7,
                                  Key = key, IV = iv })
 {
     recovered = alg.Decrypt(ciphertext);
@@ -59,7 +59,7 @@ Blowfish accepts keys up to 448 bits. Set `KeySize` *before* generating the key,
 using var alg = new Blowfish
 {
     KeySize   = 256,              // 32-byte key
-    BlockMode = CipherBlockMode.CBC,
+    BlockMode = CipherModeKind.CBC,
     Padding   = PaddingMode.PKCS7,
 };
 alg.GenerateKey();                // 32 bytes
@@ -75,7 +75,7 @@ Any byte length from 4 to 56 is valid; longer keys only strengthen the cipher up
 ```csharp
 using var alg = new Blowfish
 {
-    BlockMode = CipherBlockMode.CTR,
+    BlockMode = CipherModeKind.CTR,
     Padding   = PaddingMode.None,
 };
 alg.GenerateKey();

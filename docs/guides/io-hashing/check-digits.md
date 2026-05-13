@@ -15,7 +15,7 @@ The library splits its check-digit types across two namespaces according to the 
 | Namespace | Base class | Input | Output | Types |
 |---|---|---|---|---|
 | `Bodu.IO.Hashing.CheckDigits` | `CheckDigitAlgorithm` | ASCII decimal digits (`'0'`–`'9'`) | Single `char` | Luhn, Damm, Verhoeff, EAN-8/13, GTIN-14, UPC-A, ISIN, ABA |
-| `Bodu.IO.Hashing.Checksums` | `AlphanumericCheckDigitAlgorithm` | Digits and/or letters | One or two `char`s | IBAN, ISBN-10/13, SEDOL, CUSIP, LEI, WeightedMod10 |
+| `Bodu.IO.Hashing.Checksums` | `AlphanumericCheckDigitAlgorithm` | Digits and/or letters | One or two `char`s | IBAN, ISBN-10/13, SEDOL, CUSIP, LEI, `Iso7064Mod11_2`, `Iso7064Mod97_10` |
 
 Both namespaces expose the same streaming idiom: `Append` digits or characters into the running state; call `GetCurrentCheckDigit()` (or `GetCurrentCheckDigits()`) to read the result non-destructively; call `Reset()` to restart.
 

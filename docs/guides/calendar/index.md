@@ -19,10 +19,11 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 | Namespace | What lives here | Guides |
 |---|---|---|
 | `Bodu.Globalization.Calendar` | Service, rules, results, providers, adjustments, registries, parsers — the resolution pipeline. | [Using NotableDateService](notable-dates.md) · [Authoring notable date rules](rule-authoring.md) |
-| `Bodu.Globalization.Calendar.Algorithms` | Built-in date calculators — Gregorian and Orthodox Easter, Hindu Lunar, Losar, Vesak, Asalha Puja, Qingming, Lunar phase. | [Date calculation algorithms](algorithms.md) |
-| `Bodu.Globalization.Calendar.Plugins` | Plugin host with trust policies for loading rules / algorithms from external assemblies. | (no dedicated guide yet — see API reference) |
-| `Bodu.Globalization.Calendar.Extensions` | Working-day arithmetic over `DateOnly` and `DateTime` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … | (covered in [Using NotableDateService](notable-dates.md)) |
-| `Bodu.Globalization.Calendar.Providers` | Companion-pack rule providers (Americas / Europe / AsiaPacific). | [Calendar data packs](data-packs.md) |
+| `Bodu.Globalization.Calendar.Algorithms` | Built-in date calculators — `EasterSundayNotableDateAlgorithm`, `HinduLunarNotableDateAlgorithm`, `LosarNotableDateAlgorithm`, `VesakNotableDateAlgorithm`, `AsalhaPujaNotableDateAlgorithm`, `QingmingNotableDateAlgorithm`. | [Date calculation algorithms](algorithms.md) |
+| `Bodu.Globalization.Calendar.Providers` | Bundled `EasterSundayNotableDateProviderBase` implementations — `GregorianEasterSundayNotableDateProvider`, `OrthodoxEasterSundayNotableDateProvider`. | [Date calculation algorithms](algorithms.md) |
+| `Bodu.Globalization.Calendar.Plugins` | Plugin host with trust policies for loading rules / algorithms from external assemblies — `ExternalPluginLoader`, `IPluginTrustPolicy`, and the deny-by-default trust policies. | (no dedicated guide yet — see API reference) |
+| `Bodu.Extensions` | Working-day arithmetic over `DateOnly` and `DateTime` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … (`NotableDateOnlyExtensions`, `NotableDateTimeExtensions`). | (covered in [Using NotableDateService](notable-dates.md)) |
+| `Bodu.Globalization.Calendar.Data.*` | Region-specific public-holiday rule providers shipped in `Bodu.Globalization.Calendar.Data.Americas`, `.Europe`, and `.AsiaPacific` companion packages. | [Calendar data packs](data-packs.md) |
 
 ## Guides
 
@@ -31,12 +32,12 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="notable-dates.html">Using NotableDateService</a></h3>
+  <h3><a href="notable-dates.md">Using NotableDateService</a></h3>
   <p>The main entry point — resolving notable dates for a year, filtering by territory and category, querying a date range, layering override providers, and working-day arithmetic over <code>DateOnly</code> / <code>DateTime</code>.</p>
 </div>
 
 <div class="bodu-card">
-  <h3><a href="rule-authoring.html">Authoring notable date rules</a></h3>
+  <h3><a href="rule-authoring.md">Authoring notable date rules</a></h3>
   <p>How to add your own rules — as in-code objects, embedded XML / JSON resource files, or companion assemblies — and how to layer runtime overrides.</p>
 </div>
 
@@ -47,8 +48,8 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="algorithms.html">Date calculation algorithms</a></h3>
-  <p>The built-in algorithm types — Easter (Gregorian / Orthodox), Hindu Lunar, Losar, Vesak, Asalha Puja, Qingming, Lunar phase — with registration guidance and a custom-algorithm walk-through.</p>
+  <h3><a href="algorithms.md">Date calculation algorithms</a></h3>
+  <p>The built-in algorithm types — Easter (Gregorian / Orthodox), Hindu Lunar, Losar, Vesak, Asalha Puja, Qingming — with registration guidance and a custom-algorithm walk-through.</p>
 </div>
 
 </div>
@@ -58,7 +59,7 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 <div class="bodu-cards">
 
 <div class="bodu-card">
-  <h3><a href="data-packs.html">Calendar data packs</a></h3>
+  <h3><a href="data-packs.md">Calendar data packs</a></h3>
   <p>The official <code>Bodu.Globalization.Calendar.Data.*</code> companion assemblies — Americas, Europe, and Asia-Pacific — and how to compose them with the resolution pipeline.</p>
 </div>
 

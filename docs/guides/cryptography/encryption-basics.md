@@ -6,7 +6,7 @@ title: Encryption basics
 
 This page introduces the mental model that every cipher in the library follows. If you know `System.Security.Cryptography.SymmetricAlgorithm` from the BCL, most of this will feel familiar — with three twists:
 
-1. **`BlockMode`** replaces `Mode`. The inherited `Mode` property (type <xref:System.Security.Cryptography.CipherMode>) only knows about the modes the BCL defined. Bodu ciphers expose a new `BlockMode` property of type <xref:Bodu.Security.Cryptography.CipherBlockMode>, which adds `CTR`, `OFB`, and friends. *Set `BlockMode`, not `Mode`.*
+1. **`BlockMode`** replaces `Mode`. The inherited `Mode` property (type <xref:System.Security.Cryptography.CipherMode>) only knows about the modes the BCL defined. Bodu ciphers expose a new `BlockMode` property of type <xref:Bodu.Security.Cryptography.CipherModeKind>, which adds `CTR`, `OFB`, and friends. *Set `BlockMode`, not `Mode`.*
 2. **Tweak** is a first-class input for Threefish. Threefish is a *tweakable* block cipher; each call is parameterised by a key, an IV, **and** a 128-bit tweak that acts as a domain-separation label.
 3. **Key / IV / Tweak are lazily generated.** If you never set them, they are materialised on first read from a cryptographically secure RNG. Read the property, or call `GenerateKey()` / `GenerateIV()` / `GenerateTweak()` explicitly.
 
@@ -18,7 +18,7 @@ using Bodu.Security.Cryptography;
 
 // 1. Choose and configure the algorithm.
 using var alg = new Threefish256();
-alg.BlockMode = CipherBlockMode.CBC;   // how blocks chain
+alg.BlockMode = CipherModeKind.CBC;   // how blocks chain
 alg.Padding   = PaddingMode.PKCS7;     // how the last (partial) block is filled
 
 // 2. Produce key material. This is cryptographically random.
@@ -57,7 +57,7 @@ The repetitive `CreateEncryptor()` / `TransformFinalBlock()` dance can be collap
 ```csharp
 using Bodu.Security.Cryptography.Extensions;
 
-using var alg = new Threefish256 { BlockMode = CipherBlockMode.CBC, Padding = PaddingMode.PKCS7 };
+using var alg = new Threefish256 { BlockMode = CipherModeKind.CBC, Padding = PaddingMode.PKCS7 };
 alg.GenerateKey();
 alg.GenerateIV();
 alg.GenerateTweak();
