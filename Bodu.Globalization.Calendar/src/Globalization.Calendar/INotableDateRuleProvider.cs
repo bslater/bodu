@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateRuleProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -36,10 +36,10 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public interface INotableDateRuleProvider
 {
-	/// <summary>
-	/// Loads every <see cref="NotableDateRule" /> exposed by this provider.
-	/// </summary>
-	/// <returns>The notable date rules.</returns>
-	/// <exception cref="System.Exception">Thrown if the underlying source cannot be loaded or is invalid.</exception>
-	IEnumerable<NotableDateRule> LoadRules();
+    /// <summary>
+    /// Loads every <see cref="NotableDateRule" /> exposed by this provider.
+    /// </summary>
+    /// <returns>The notable date rules.</returns>
+    /// <exception cref="System.Exception">Thrown if the underlying source cannot be loaded or is invalid.</exception>
+    IEnumerable<NotableDateRule> LoadRules();
 }

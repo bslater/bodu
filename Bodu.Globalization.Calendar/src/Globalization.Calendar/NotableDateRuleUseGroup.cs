@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleUseGroup.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -66,6 +66,6 @@ namespace Bodu.Globalization.Calendar;
 /// rule from the source is inherited unchanged.
 /// </param>
 public sealed record NotableDateRuleUseGroup(
-	string SourceResource,
-	bool UseAll,
-	ImmutableArray<NotableDateRuleUseDirective> Uses);
+    string SourceResource,
+    bool UseAll,
+    ImmutableArray<NotableDateRuleUseDirective> Uses);

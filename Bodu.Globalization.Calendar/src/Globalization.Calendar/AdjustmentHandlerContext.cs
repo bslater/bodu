@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentHandlerContext.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,8 +30,8 @@ namespace Bodu.Globalization.Calendar;
 /// <param name="TerritoryCode">The territory currently being resolved, if any.</param>
 /// <param name="CalendarType">The calendar currently being resolved, if any.</param>
 public sealed record AdjustmentHandlerContext(
-	DateTime Date,
-	ObservanceAdjustment Adjustment,
-	NotableDateRule Rule,
-	string? TerritoryCode,
-	Type? CalendarType);
+    DateTime Date,
+    ObservanceAdjustment Adjustment,
+    NotableDateRule Rule,
+    string? TerritoryCode,
+    Type? CalendarType);

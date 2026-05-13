@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -76,22 +76,22 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public interface INotableDateAlgorithm
 {
-	/// <summary>
-	/// Computes the anchor date of the notable event for the specified year and optional calendar system.
-	/// </summary>
-	/// <param name="year">The target year for the calculation. Must be greater than or equal to 1.</param>
-	/// <param name="calendar">
-	/// An optional <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use. When <see langword="null" />,
-	/// <see cref="SysGlobal.GregorianCalendar" /> is assumed.
-	/// </param>
-	/// <returns>
-	/// The computed <see cref="DateTime" /> representing the notable event in the given year and calendar system, or
-	/// <see langword="null" /> when no occurrence exists for that year (for example, the year is outside the algorithm's supported
-	/// range or the supplied calendar produces no candidate date).
-	/// </returns>
-	/// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
-	/// <exception cref="NotSupportedException">
-	/// Thrown when the specified <paramref name="calendar" /> type is not supported by the algorithm.
-	/// </exception>
-	DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null);
+    /// <summary>
+    /// Computes the anchor date of the notable event for the specified year and optional calendar system.
+    /// </summary>
+    /// <param name="year">The target year for the calculation. Must be greater than or equal to 1.</param>
+    /// <param name="calendar">
+    /// An optional <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use. When <see langword="null" />,
+    /// <see cref="SysGlobal.GregorianCalendar" /> is assumed.
+    /// </param>
+    /// <returns>
+    /// The computed <see cref="DateTime" /> representing the notable event in the given year and calendar system, or
+    /// <see langword="null" /> when no occurrence exists for that year (for example, the year is outside the algorithm's supported
+    /// range or the supplied calendar produces no candidate date).
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when the specified <paramref name="calendar" /> type is not supported by the algorithm.
+    /// </exception>
+    DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null);
 }

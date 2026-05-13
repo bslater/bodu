@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateCacheKey.cs" company="PlaceholderCompany." />
 // ---------------------------------------------------------------------------------------------------------------
 
@@ -18,7 +18,7 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </para>
 /// </remarks>
 internal readonly record struct NotableDateCacheKey(
-	string RuleName,
-	int AnchorYear,
-	string? TerritoryCode,
-	Type? CalendarType);
+    string RuleName,
+    int AnchorYear,
+    string? TerritoryCode,
+    Type? CalendarType);

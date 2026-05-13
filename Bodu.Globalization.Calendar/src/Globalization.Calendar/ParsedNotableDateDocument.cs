@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ParsedNotableDateDocument.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -55,28 +55,28 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public sealed record ParsedNotableDateDocument
 {
-	/// <summary>
-	/// Initialises a new instance of the <see cref="ParsedNotableDateDocument" /> record.
-	/// </summary>
-	/// <param name="useGroups">The cherry-pick groups that pull rules from other resources. Default-uninitialised arrays are coerced to <see cref="ImmutableArray{T}.Empty" />.</param>
-	/// <param name="localRules">The notable date rules declared locally in this document. Default-uninitialised arrays are coerced to <see cref="ImmutableArray{T}.Empty" />.</param>
-	public ParsedNotableDateDocument(
-		ImmutableArray<NotableDateRuleUseGroup> useGroups,
-		ImmutableArray<NotableDateRule> localRules)
-	{
-		UseGroups = useGroups.IsDefault ? ImmutableArray<NotableDateRuleUseGroup>.Empty : useGroups;
-		LocalRules = localRules.IsDefault ? ImmutableArray<NotableDateRule>.Empty : localRules;
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ParsedNotableDateDocument"/> class.
+    /// </summary>
+    /// <param name="useGroups">The cherry-pick groups that pull rules from other resources. Default-uninitialised arrays are coerced to <see cref="ImmutableArray{T}.Empty" />.</param>
+    /// <param name="localRules">The notable date rules declared locally in this document. Default-uninitialised arrays are coerced to <see cref="ImmutableArray{T}.Empty" />.</param>
+    public ParsedNotableDateDocument(
+        ImmutableArray<NotableDateRuleUseGroup> useGroups,
+        ImmutableArray<NotableDateRule> localRules)
+    {
+        UseGroups = useGroups.IsDefault ? [] : useGroups;
+        LocalRules = localRules.IsDefault ? [] : localRules;
+    }
 
-	/// <summary>
-	/// Gets the cherry-pick groups that pull rules from other resources, in document order.
-	/// </summary>
-	/// <returns>The <see cref="NotableDateRuleUseGroup" /> entries authored on the document, or <see cref="ImmutableArray{T}.Empty" /> when no <c>&lt;Use&gt;</c> directives were declared.</returns>
-	public ImmutableArray<NotableDateRuleUseGroup> UseGroups { get; }
+    /// <summary>
+    /// Gets the cherry-pick groups that pull rules from other resources, in document order.
+    /// </summary>
+    /// <returns>The <see cref="NotableDateRuleUseGroup" /> entries authored on the document, or <see cref="ImmutableArray{T}.Empty" /> when no <c>&lt;Use&gt;</c> directives were declared.</returns>
+    public ImmutableArray<NotableDateRuleUseGroup> UseGroups { get; }
 
-	/// <summary>
-	/// Gets the notable date rules declared locally in this document, in document order.
-	/// </summary>
-	/// <returns>The <see cref="NotableDateRule" /> entries authored directly on the document, or <see cref="ImmutableArray{T}.Empty" /> when no local rules were declared.</returns>
-	public ImmutableArray<NotableDateRule> LocalRules { get; }
+    /// <summary>
+    /// Gets the notable date rules declared locally in this document, in document order.
+    /// </summary>
+    /// <returns>The <see cref="NotableDateRule" /> entries authored directly on the document, or <see cref="ImmutableArray{T}.Empty" /> when no local rules were declared.</returns>
+    public ImmutableArray<NotableDateRule> LocalRules { get; }
 }

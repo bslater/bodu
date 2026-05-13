@@ -64,20 +64,14 @@ public sealed class ResourcePathResolver : IResourcePathResolver
     /// </summary>
     /// <param name="path">The path to normalise.</param>
     /// <returns>The path with backslashes replaced by forward slashes.</returns>
-    private static string Normalize(string path)
-    {
-        return path.Replace('\\', '/');
-    }
+    private static string Normalize(string path) => path.Replace('\\', '/');
 
     /// <summary>
     /// Returns <see langword="true" /> if <paramref name="path" /> begins with a forward slash and is therefore an absolute path.
     /// </summary>
     /// <param name="path">The path to test.</param>
     /// <returns><see langword="true" /> if the path is rooted; otherwise <see langword="false" />.</returns>
-    private static bool IsRooted(string path)
-    {
-        return path.StartsWith("/", StringComparison.Ordinal);
-    }
+    private static bool IsRooted(string path) => path.StartsWith("/", StringComparison.Ordinal);
 
     /// <summary>
     /// Collapses <c>.</c> and <c>..</c> segments from an absolute path and returns the canonical form.

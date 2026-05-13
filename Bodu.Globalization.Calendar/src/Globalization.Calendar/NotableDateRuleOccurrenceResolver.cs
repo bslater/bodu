@@ -29,7 +29,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
     private readonly IReadOnlyList<string> anchorRuleNames;
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="NotableDateRuleOccurrenceResolver" /> class.
+    /// Initializes a new instance of the <see cref="NotableDateRuleOccurrenceResolver" /> class.
     /// </summary>
     /// <param name="rules">The rules available for occurrence resolution.</param>
     /// <param name="ruleResolver">The resolver used for direct rule-date calculation.</param>
@@ -54,14 +54,13 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         this.ruleResolver = ruleResolver;
         this.calculationAnchors = calculationAnchors;
         this.anchorRelativeRules = anchorRelativeRules;
-        this.anchorRuleNames = rules
+        this.anchorRuleNames = [.. rules
             .Where(rule => rule.Strategy == DateResolutionStrategy.OffsetFromAnchor)
             .Select(rule => rule.AnchorRuleName)
             .Where(name => !string.IsNullOrWhiteSpace(name))
             .Select(name => name!)
             .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)];
     }
 
     /// <inheritdoc />
@@ -69,18 +68,17 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
     {
         ArgumentNullException.ThrowIfNull(request);
 
-        List<ResolvedNotableDateOccurrence> occurrences = new();
-        HashSet<OccurrenceKey> seen = new();
+        List<ResolvedNotableDateOccurrence> occurrences = [];
+        HashSet<OccurrenceKey> seen = [];
 
         ResolveDirectOccurrences(request, occurrences, seen);
         ResolveAnchorRelativeOccurrences(request, occurrences, seen);
 
-        return occurrences
+        return [.. occurrences
             .OrderBy(occurrence => occurrence.AnchorDate)
             .ThenBy(occurrence => occurrence.Rule.Priority)
             .ThenBy(occurrence => occurrence.Rule.Name, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase)];
     }
 
     /// <summary>

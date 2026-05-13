@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentApplyResult.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,17 +18,17 @@ namespace Bodu.Globalization.Calendar;
 /// <param name="HandlerKey">The custom handler key invoked, when applicable.</param>
 /// <param name="IsNonWorkingOverride">An optional override for the resulting date's non-working flag.</param>
 internal readonly record struct AdjustmentApplyResult(
-	bool Activated,
-	DateTime AdjustedDate,
-	AdjustmentTrigger Trigger = default,
-	AdjustmentAction Action = default,
-	string? HandlerKey = null,
-	bool? IsNonWorkingOverride = null)
+    bool Activated,
+    DateTime AdjustedDate,
+    AdjustmentTrigger Trigger = default,
+    AdjustmentAction Action = default,
+    string? HandlerKey = null,
+    bool? IsNonWorkingOverride = null)
 {
-	/// <summary>
-	/// Creates a result indicating that the adjustment did not activate.
-	/// </summary>
-	/// <param name="originalDate">The unchanged date.</param>
-	/// <returns>An inactive result.</returns>
-	public static AdjustmentApplyResult NotActivated(DateTime originalDate) => new(false, originalDate);
+    /// <summary>
+    /// Creates a result indicating that the adjustment did not activate.
+    /// </summary>
+    /// <param name="originalDate">The unchanged date.</param>
+    /// <returns>An inactive result.</returns>
+    public static AdjustmentApplyResult NotActivated(DateTime originalDate) => new(false, originalDate);
 }

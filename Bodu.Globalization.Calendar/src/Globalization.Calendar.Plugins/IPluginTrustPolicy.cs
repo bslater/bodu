@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IPluginTrustPolicy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,10 +26,10 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public interface IPluginTrustPolicy
 {
-	/// <summary>
-	/// Evaluates the candidate plugin and returns whether it is trusted.
-	/// </summary>
-	/// <param name="context">The context describing the candidate. Never <see langword="default" />.</param>
-	/// <returns>A <see cref="PluginTrustResult" /> indicating the decision and an optional reason.</returns>
-	PluginTrustResult Evaluate(PluginTrustContext context);
+    /// <summary>
+    /// Evaluates the candidate plugin and returns whether it is trusted.
+    /// </summary>
+    /// <param name="context">The context describing the candidate. Never <see langword="default" />.</param>
+    /// <returns>A <see cref="PluginTrustResult" /> indicating the decision and an optional reason.</returns>
+    PluginTrustResult Evaluate(PluginTrustContext context);
 }

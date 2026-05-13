@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="INotableDateRuleOverrideProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,16 +45,16 @@ namespace Bodu.Globalization.Calendar;
 /// </example>
 public interface INotableDateRuleOverrideProvider
 {
-	/// <summary>
-	/// Returns the names of base rules that should be removed from the active rule set, optionally scoped to specific years.
-	/// </summary>
-	/// <returns>The override removals.</returns>
-	IEnumerable<RuleRemoval> GetRemovals();
+    /// <summary>
+    /// Returns the names of base rules that should be removed from the active rule set, optionally scoped to specific years.
+    /// </summary>
+    /// <returns>The override removals.</returns>
+    IEnumerable<RuleRemoval> GetRemovals();
 
-	/// <summary>
-	/// Returns the additional <see cref="NotableDateRule" /> instances to layer on top of the base rule set. Rules with the same
-	/// <see cref="NotableDateRule.Name" /> as a base rule replace that base rule entirely.
-	/// </summary>
-	/// <returns>The additional rules.</returns>
-	IEnumerable<NotableDateRule> GetAdditions();
+    /// <summary>
+    /// Returns the additional <see cref="NotableDateRule" /> instances to layer on top of the base rule set. Rules with the same
+    /// <see cref="NotableDateRule.Name" /> as a base rule replace that base rule entirely.
+    /// </summary>
+    /// <returns>The additional rules.</returns>
+    IEnumerable<NotableDateRule> GetAdditions();
 }

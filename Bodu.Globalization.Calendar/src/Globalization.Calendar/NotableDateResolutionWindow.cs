@@ -19,19 +19,19 @@ namespace Bodu.Globalization.Calendar;
 internal sealed class NotableDateResolutionWindow
 {
     /// <summary>The full set of notable dates known to the window, including both emitted and blocker entries.</summary>
-    private readonly List<NotableDate> _knownDates = new();
+    private readonly List<NotableDate> _knownDates = [];
 
     /// <summary>The subset of <see cref="_knownDates" /> emitted to callers in the resolution output.</summary>
-    private readonly List<NotableDate> _outputDates = new();
+    private readonly List<NotableDate> _outputDates = [];
 
     /// <summary>The subset of <see cref="_knownDates" /> flagged non-working, used for working-day arithmetic.</summary>
-    private readonly List<NotableDate> _nonWorkingDates = new();
+    private readonly List<NotableDate> _nonWorkingDates = [];
 
     /// <summary>The base occurrences materialised into the window, used to drive observance-adjustment evaluation.</summary>
-    private readonly List<ResolvedNotableDateOccurrence> _baseOccurrences = new();
+    private readonly List<ResolvedNotableDateOccurrence> _baseOccurrences = [];
 
     /// <summary>
-    /// Initialises a new instance of the <see cref="NotableDateResolutionWindow" /> class.
+    /// Initializes a new instance of the <see cref="NotableDateResolutionWindow" /> class.
     /// </summary>
     /// <param name="startDate">The inclusive start of the known chronological window.</param>
     /// <param name="endDate">The inclusive end of the known chronological window.</param>
@@ -76,12 +76,11 @@ internal sealed class NotableDateResolutionWindow
     /// Gets the base occurrences that have been materialised into the window.
     /// </summary>
     /// <returns>A read-only list of <see cref="ResolvedNotableDateOccurrence" /> entries ordered by anchor date, priority, name, and territory.</returns>
-    public IReadOnlyList<ResolvedNotableDateOccurrence> BaseOccurrences => _baseOccurrences
+    public IReadOnlyList<ResolvedNotableDateOccurrence> BaseOccurrences => [.. _baseOccurrences
         .OrderBy(occurrence => occurrence.AnchorDate)
         .ThenBy(occurrence => occurrence.Rule.Priority)
         .ThenBy(occurrence => occurrence.Rule.Name, StringComparer.OrdinalIgnoreCase)
-        .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase)
-        .ToList();
+        .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase)];
 
     /// <summary>
     /// Adds a base occurrence to the known window and emitted output.
@@ -101,20 +100,14 @@ internal sealed class NotableDateResolutionWindow
     /// </summary>
     /// <param name="notable">The adjusted notable date.</param>
     /// <exception cref="ArgumentNullException"><paramref name="notable" /> is <see langword="null" />.</exception>
-    public void AddAdjusted(NotableDate notable)
-    {
-        AddKnownDate(notable, emit: true);
-    }
+    public void AddAdjusted(NotableDate notable) => AddKnownDate(notable, emit: true);
 
     /// <summary>
     /// Adds a notable date as a blocker without emitting it to callers.
     /// </summary>
     /// <param name="notable">The notable date to add as a blocker.</param>
     /// <exception cref="ArgumentNullException"><paramref name="notable" /> is <see langword="null" />.</exception>
-    public void AddBlocker(NotableDate notable)
-    {
-        AddKnownDate(notable, emit: false);
-    }
+    public void AddBlocker(NotableDate notable) => AddKnownDate(notable, emit: false);
 
     /// <summary>
     /// Determines whether the specified date is inside the known chronological window.
@@ -290,10 +283,9 @@ internal sealed class NotableDateResolutionWindow
     /// <param name="dates">The dates to sort.</param>
     /// <returns>The sorted dates.</returns>
     private static IReadOnlyList<NotableDate> Sort(IEnumerable<NotableDate> dates) =>
-        dates
+        [.. dates
             .OrderBy(date => date.Date)
             .ThenBy(date => date.Name, StringComparer.OrdinalIgnoreCase)
             .ThenBy(date => date.TerritoryCode, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(date => date.CalendarType?.FullName, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+            .ThenBy(date => date.CalendarType?.FullName, StringComparer.OrdinalIgnoreCase)];
 }

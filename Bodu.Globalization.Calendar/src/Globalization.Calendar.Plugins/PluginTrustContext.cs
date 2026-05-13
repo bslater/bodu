@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PluginTrustContext.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,6 +15,6 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <param name="AssemblyName">The assembly name metadata, including any public-key token a signed assembly carries.</param>
 /// <param name="FileHash">The SHA-256 hash of the plugin assembly's bytes, computed by the loader before any code from the assembly runs. Never <see langword="null" />.</param>
 public readonly record struct PluginTrustContext(
-	string AssemblyPath,
-	AssemblyName AssemblyName,
-	byte[] FileHash);
+    string AssemblyPath,
+    AssemblyName AssemblyName,
+    byte[] FileHash);

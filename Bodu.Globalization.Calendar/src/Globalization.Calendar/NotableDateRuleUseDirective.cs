@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleUseDirective.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -89,18 +89,18 @@ namespace Bodu.Globalization.Calendar;
 /// </param>
 /// <param name="OverrideBody">Optional override body supplied via a nested <c>&lt;Rule&gt;</c> child. Fields on the body win over the flat attributes where both are present.</param>
 public sealed record NotableDateRuleUseDirective(
-	string SourceRuleName,
-	string? LocalName = null,
-	NotableDateCategory? Category = null,
-	string? TerritoryCode = null,
-	bool? IsNonWorkingDay = null,
-	int? FirstYear = null,
-	int? LastYear = null,
-	int? OccurrenceYears = null,
-	int? DurationDays = null,
-	int? Priority = null,
-	string? Comment = null,
-	bool ClearTags = false,
-	bool ClearAdjustments = false,
-	bool ClearInherited = false,
-	NotableDateRuleOverrideBody? OverrideBody = null);
+    string SourceRuleName,
+    string? LocalName = null,
+    NotableDateCategory? Category = null,
+    string? TerritoryCode = null,
+    bool? IsNonWorkingDay = null,
+    int? FirstYear = null,
+    int? LastYear = null,
+    int? OccurrenceYears = null,
+    int? DurationDays = null,
+    int? Priority = null,
+    string? Comment = null,
+    bool ClearTags = false,
+    bool ClearAdjustments = false,
+    bool ClearInherited = false,
+    NotableDateRuleOverrideBody? OverrideBody = null);

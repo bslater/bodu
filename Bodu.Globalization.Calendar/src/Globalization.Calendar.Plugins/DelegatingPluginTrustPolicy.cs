@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelegatingPluginTrustPolicy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,19 +12,19 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </summary>
 public sealed class DelegatingPluginTrustPolicy : IPluginTrustPolicy
 {
-	/// <summary>The delegate invoked to evaluate each candidate plugin context.</summary>
-	private readonly Func<PluginTrustContext, PluginTrustResult> _evaluator;
+    /// <summary>The delegate invoked to evaluate each candidate plugin context.</summary>
+    private readonly Func<PluginTrustContext, PluginTrustResult> _evaluator;
 
-	/// <summary>
-	/// Initialises a new instance of the <see cref="DelegatingPluginTrustPolicy" /> class.
-	/// </summary>
-	/// <param name="evaluator">The callback invoked to evaluate each candidate. Must not be <see langword="null" />.</param>
-	/// <exception cref="ArgumentNullException">Thrown when <paramref name="evaluator" /> is <see langword="null" />.</exception>
-	public DelegatingPluginTrustPolicy(Func<PluginTrustContext, PluginTrustResult> evaluator)
-	{
-		_evaluator = evaluator ?? throw new ArgumentNullException(nameof(evaluator));
-	}
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DelegatingPluginTrustPolicy" /> class.
+    /// </summary>
+    /// <param name="evaluator">The callback invoked to evaluate each candidate. Must not be <see langword="null" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="evaluator" /> is <see langword="null" />.</exception>
+    public DelegatingPluginTrustPolicy(Func<PluginTrustContext, PluginTrustResult> evaluator)
+    {
+        _evaluator = evaluator ?? throw new ArgumentNullException(nameof(evaluator));
+    }
 
-	/// <inheritdoc />
-	public PluginTrustResult Evaluate(PluginTrustContext context) => _evaluator(context);
+    /// <inheritdoc />
+    public PluginTrustResult Evaluate(PluginTrustContext context) => _evaluator(context);
 }

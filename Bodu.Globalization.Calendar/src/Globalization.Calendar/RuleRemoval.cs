@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RuleRemoval.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,4 +48,8 @@ namespace Bodu.Globalization.Calendar;
 /// <param name="FromYear">Optional inclusive first year of the suppression. <see langword="null" /> for no lower bound.</param>
 /// <param name="ToYear">Optional inclusive last year of the suppression. <see langword="null" /> for no upper bound.</param>
 /// <param name="TerritoryCode">Optional territory scope. When supplied, suppression applies only when the active territory falls within the supplied scope (a country-level scope covers all of its subdivisions).</param>
-public sealed record RuleRemoval(string RuleName, int? FromYear = null, int? ToYear = null, string? TerritoryCode = null);
+public sealed record RuleRemoval(
+    string RuleName,
+    int? FromYear = null,
+    int? ToYear = null,
+    string? TerritoryCode = null);

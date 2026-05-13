@@ -302,7 +302,7 @@ namespace Bodu {
                 return ResourceManager.GetString("JsonException_SchemaValidationError", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The calendar type &apos;{0}&apos; is not supported by {1}. Only {2} is supported..
         /// </summary>
