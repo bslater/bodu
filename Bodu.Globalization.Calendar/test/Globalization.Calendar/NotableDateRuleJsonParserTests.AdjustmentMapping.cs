@@ -6,6 +6,7 @@
 
 using Bodu.Extensions;
 using System.Linq;
+using System.Text.Json;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -17,10 +18,11 @@ namespace Bodu.Globalization.Calendar;
 public partial class NotableDateRuleJsonParserTests
 {
 	/// <summary>
-	/// Verifies that an adjustment whose <c>key</c> is missing surfaces as <see cref="InvalidOperationException" />.
+	/// Verifies that an adjustment whose <c>key</c> is missing is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenAdjustmentKeyIsMissing_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenAdjustmentKeyIsMissing_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -35,17 +37,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that an adjustment whose <c>when</c> is missing surfaces as <see cref="InvalidOperationException" />.
+	/// Verifies that an adjustment whose <c>when</c> is missing is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenAdjustmentTriggerIsMissing_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenAdjustmentTriggerIsMissing_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -60,18 +63,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that an adjustment whose <c>when</c> is an unrecognised enum value surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that an adjustment whose <c>when</c> is an unrecognised enum value is rejected by schema
+	/// validation as <see cref="JsonException" /> via the <c>adjustmentTrigger</c> enum constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenAdjustmentTriggerIsUnknown_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenAdjustmentTriggerIsUnknown_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -86,17 +89,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that an adjustment whose <c>action</c> is missing surfaces as <see cref="InvalidOperationException" />.
+	/// Verifies that an adjustment whose <c>action</c> is missing is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenAdjustmentActionIsMissing_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenAdjustmentActionIsMissing_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -111,18 +115,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that an adjustment whose <c>action</c> is an unrecognised enum value surfaces as
-	/// <see cref="InvalidOperationException" />.
+	/// Verifies that an adjustment whose <c>action</c> is an unrecognised enum value is rejected by schema
+	/// validation as <see cref="JsonException" /> via the <c>adjustmentAction</c> enum constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenAdjustmentActionIsUnknown_ShouldThrowInvalidOperationException()
+	public void ParseJson_WhenAdjustmentActionIsUnknown_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -137,7 +141,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});

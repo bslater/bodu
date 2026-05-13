@@ -111,6 +111,10 @@
           ]
         },
         {
+          "type": "string",
+          "pattern": "^([1-9]|1[0-3])$"
+        },
+        {
           "type": "integer",
           "minimum": 1,
           "maximum": 13

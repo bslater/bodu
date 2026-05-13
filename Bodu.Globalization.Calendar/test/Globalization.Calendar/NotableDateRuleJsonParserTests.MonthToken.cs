@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Linq;
+using System.Text.Json;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -84,11 +85,11 @@ public partial class NotableDateRuleJsonParserTests
 	}
 
 	/// <summary>
-	/// Verifies that a Fixed rule authored with a numeric month token outside the supported 1..13 range surfaces as
-	/// a <see cref="FormatException" />.
+	/// Verifies that a Fixed rule authored with a numeric month token outside the supported 1..13 range is rejected
+	/// by schema validation as <see cref="JsonException" /> via the <c>monthOrNumber</c> oneOf constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenFixedMonthIsOutOfRangeNumeric_ShouldThrowFormatException()
+	public void ParseJson_WhenFixedMonthIsOutOfRangeNumeric_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -100,18 +101,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<FormatException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
 	}
 
 	/// <summary>
-	/// Verifies that a Fixed rule authored with the zero numeric month value is rejected with a
-	/// <see cref="FormatException" />.
+	/// Verifies that a Fixed rule authored with the zero numeric month value is rejected by schema validation as
+	/// <see cref="JsonException" /> via the <c>monthOrNumber</c> oneOf constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenFixedMonthIsZeroNumeric_ShouldThrowFormatException()
+	public void ParseJson_WhenFixedMonthIsZeroNumeric_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -123,7 +124,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<FormatException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
@@ -224,10 +225,12 @@ public partial class NotableDateRuleJsonParserTests
 	}
 
 	/// <summary>
-	/// Verifies that a DayOfWeekInMonth rule authored with a numeric month token resolves to the corresponding integer.
+	/// Verifies that a DayOfWeekInMonth rule authored with a numeric month token is rejected by schema validation
+	/// as <see cref="JsonException" />. The <c>dayOfWeekInMonthStrategy.month</c> field is typed as <c>monthName</c>
+	/// (Gregorian enum names only), matching the XSD's literal type.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenDayOfWeekInMonthIsNumericMonth_ShouldReturnNumericMonth()
+	public void ParseJson_WhenDayOfWeekInMonthIsNumericMonth_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -239,17 +242,18 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
-
-		Assert.AreEqual(10, rule.Month);
+		Assert.ThrowsExactly<JsonException>(() =>
+		{
+			_ = NotableDateRuleJsonParser.ParseJson(json);
+		});
 	}
 
 	/// <summary>
-	/// Verifies that a DayOfWeekInMonth rule authored with a numeric month outside 1..13 throws
-	/// <see cref="FormatException" />.
+	/// Verifies that a DayOfWeekInMonth rule authored with a numeric month outside 1..13 is rejected by schema
+	/// validation as <see cref="JsonException" /> via the <c>monthName</c> enum constraint.
 	/// </summary>
 	[TestMethod]
-	public void ParseJson_WhenDayOfWeekInMonthIsOutOfRangeMonth_ShouldThrowFormatException()
+	public void ParseJson_WhenDayOfWeekInMonthIsOutOfRangeMonth_ShouldThrowJsonException()
 	{
 		const string json = @"{
 			""notableDates"": [
@@ -261,7 +265,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<FormatException>(() =>
+		Assert.ThrowsExactly<JsonException>(() =>
 		{
 			_ = NotableDateRuleJsonParser.ParseJson(json);
 		});
