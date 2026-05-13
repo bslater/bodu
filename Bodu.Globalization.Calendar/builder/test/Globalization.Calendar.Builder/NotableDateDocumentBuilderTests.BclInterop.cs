@@ -6,6 +6,7 @@
 
 using Bodu.Extensions;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -50,7 +51,7 @@ public partial class NotableDateDocumentBuilderTests
         string xml = SerialiseViaXmlSerializer(dto);
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        AssertParsedMatchesBuilt(built, parsed);
+        AssertRuleListsEquivalent(built, parsed);
     }
 
     /// <summary>
@@ -68,7 +69,61 @@ public partial class NotableDateDocumentBuilderTests
         string json = SerialiseViaJsonSerializer(dto);
         List<NotableDateRule> parsed = NotableDateRuleJsonParser.ParseJson(json);
 
-        AssertParsedMatchesBuilt(built, parsed);
+        AssertRuleListsEquivalent(built, parsed);
+    }
+
+    /// <summary>
+    /// Verifies that an embedded library resource — the canonical <c>default-minimal.xml</c> shipped with
+    /// the calendar assembly — parses, projects onto schema-conformant DTOs, serialises through the BCL
+    /// <see cref="XmlSerializer" />, and re-parses with every rule field intact. Proves the round-trip
+    /// works for authored content that was not produced by the fluent builder.
+    /// </summary>
+    [TestMethod]
+    public void BclInterop_ResourceXmlPayload_XmlSerializerOutput_ShouldReparseIdentically()
+    {
+        string sourceXml = LoadEmbeddedXmlResource("Bodu.Globalization.Calendar.Resources.default-minimal.xml");
+
+        List<NotableDateRule> fromResource = NotableDateRuleParser.ParseXml(sourceXml);
+        BclXmlNotableDates dto = ProjectToBclXmlDto(fromResource);
+        string xmlFromBcl = SerialiseViaXmlSerializer(dto);
+        List<NotableDateRule> fromBcl = NotableDateRuleParser.ParseXml(xmlFromBcl);
+
+        AssertRuleListsEquivalent(fromResource, fromBcl);
+    }
+
+    /// <summary>
+    /// Verifies that an embedded library resource — the canonical <c>default-minimal.xml</c> shipped with
+    /// the calendar assembly — parses, projects onto schema-conformant DTOs, serialises through the BCL
+    /// <see cref="JsonSerializer" />, and parses back through <see cref="NotableDateRuleJsonParser" />
+    /// with every rule field intact. Demonstrates that the same authored content survives the cross-format
+    /// XML → JSON round-trip.
+    /// </summary>
+    [TestMethod]
+    public void BclInterop_ResourceXmlPayload_JsonSerializerOutput_ShouldReparseIdentically()
+    {
+        string sourceXml = LoadEmbeddedXmlResource("Bodu.Globalization.Calendar.Resources.default-minimal.xml");
+
+        List<NotableDateRule> fromResource = NotableDateRuleParser.ParseXml(sourceXml);
+        BclJsonNotableDates dto = ProjectToBclJsonDto(fromResource);
+        string jsonFromBcl = SerialiseViaJsonSerializer(dto);
+        List<NotableDateRule> fromBcl = NotableDateRuleJsonParser.ParseJson(jsonFromBcl);
+
+        AssertRuleListsEquivalent(fromResource, fromBcl);
+    }
+
+    /// <summary>
+    /// Loads an embedded XML resource from the main calendar assembly's manifest.
+    /// </summary>
+    /// <param name="manifestResourceName">The fully qualified manifest resource name (e.g. <c>Bodu.Globalization.Calendar.Resources.default-minimal.xml</c>).</param>
+    /// <returns>The UTF-8 decoded resource content.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when the resource is not found in the assembly manifest.</exception>
+    private static string LoadEmbeddedXmlResource(string manifestResourceName)
+    {
+        Assembly assembly = typeof(NotableDateRuleParser).Assembly;
+        using Stream stream = assembly.GetManifestResourceStream(manifestResourceName)
+            ?? throw new InvalidOperationException($"Embedded resource not found: {manifestResourceName}.");
+        using StreamReader reader = new(stream, Encoding.UTF8);
+        return reader.ReadToEnd();
     }
 
     // ============================================================================
@@ -116,46 +171,46 @@ public partial class NotableDateDocumentBuilderTests
             .Build();
 
     /// <summary>
-    /// Asserts that the parsed rules match the originally built rules on every field that survives the
-    /// round-trip through schema-conformant serialisation.
+    /// Asserts that two lists of rules are equivalent on every field that survives the round-trip through
+    /// schema-conformant serialisation.
     /// </summary>
-    /// <param name="built">The rules produced by the builder.</param>
-    /// <param name="parsed">The rules produced by the library parser.</param>
-    private static void AssertParsedMatchesBuilt(IReadOnlyList<NotableDateRule> built, IReadOnlyList<NotableDateRule> parsed)
+    /// <param name="expected">The reference rule list (typically the builder output or the resource parse).</param>
+    /// <param name="actual">The rule list produced by the library parser after the BCL serialisation pass.</param>
+    private static void AssertRuleListsEquivalent(IReadOnlyList<NotableDateRule> expected, IReadOnlyList<NotableDateRule> actual)
     {
-        Assert.AreEqual(built.Count, parsed.Count, "Rule count mismatch.");
-        for (int i = 0; i < built.Count; i++)
+        Assert.AreEqual(expected.Count, actual.Count, "Rule count mismatch.");
+        for (int i = 0; i < expected.Count; i++)
         {
-            NotableDateRule b = built[i];
-            NotableDateRule p = parsed[i];
+            NotableDateRule e = expected[i];
+            NotableDateRule a = actual[i];
 
-            Assert.AreEqual(b.Name, p.Name, $"Name mismatch at index {i}.");
-            Assert.AreEqual(b.RuleName, p.RuleName, $"RuleName mismatch at index {i}.");
-            Assert.AreEqual(b.Strategy, p.Strategy, $"Strategy mismatch at index {i}.");
-            Assert.AreEqual(b.Category, p.Category, $"Category mismatch at index {i}.");
-            Assert.AreEqual(b.IsNonWorkingDay, p.IsNonWorkingDay, $"IsNonWorkingDay mismatch at index {i}.");
-            Assert.AreEqual(b.FirstYear, p.FirstYear, $"FirstYear mismatch at index {i}.");
-            Assert.AreEqual(b.Priority, p.Priority, $"Priority mismatch at index {i}.");
-            Assert.AreEqual(b.TerritoryCode, p.TerritoryCode, $"TerritoryCode mismatch at index {i}.");
-            Assert.AreEqual(b.Month, p.Month, $"Month mismatch at index {i}.");
-            Assert.AreEqual(b.Day, p.Day, $"Day mismatch at index {i}.");
-            Assert.AreEqual(b.DayOfWeek, p.DayOfWeek, $"DayOfWeek mismatch at index {i}.");
-            Assert.AreEqual(b.WeekOrdinal, p.WeekOrdinal, $"WeekOrdinal mismatch at index {i}.");
-            Assert.AreEqual(b.AnchorRuleName, p.AnchorRuleName, $"AnchorRuleName mismatch at index {i}.");
-            Assert.AreEqual(b.OffsetDays, p.OffsetDays, $"OffsetDays mismatch at index {i}.");
-            Assert.AreEqual(b.AlgorithmKey, p.AlgorithmKey, $"AlgorithmKey mismatch at index {i}.");
+            Assert.AreEqual(e.Name, a.Name, $"Name mismatch at index {i}.");
+            Assert.AreEqual(e.RuleName, a.RuleName, $"RuleName mismatch at index {i}.");
+            Assert.AreEqual(e.Strategy, a.Strategy, $"Strategy mismatch at index {i}.");
+            Assert.AreEqual(e.Category, a.Category, $"Category mismatch at index {i}.");
+            Assert.AreEqual(e.IsNonWorkingDay, a.IsNonWorkingDay, $"IsNonWorkingDay mismatch at index {i}.");
+            Assert.AreEqual(e.FirstYear, a.FirstYear, $"FirstYear mismatch at index {i}.");
+            Assert.AreEqual(e.Priority, a.Priority, $"Priority mismatch at index {i}.");
+            Assert.AreEqual(e.TerritoryCode, a.TerritoryCode, $"TerritoryCode mismatch at index {i}.");
+            Assert.AreEqual(e.Month, a.Month, $"Month mismatch at index {i}.");
+            Assert.AreEqual(e.Day, a.Day, $"Day mismatch at index {i}.");
+            Assert.AreEqual(e.DayOfWeek, a.DayOfWeek, $"DayOfWeek mismatch at index {i}.");
+            Assert.AreEqual(e.WeekOrdinal, a.WeekOrdinal, $"WeekOrdinal mismatch at index {i}.");
+            Assert.AreEqual(e.AnchorRuleName, a.AnchorRuleName, $"AnchorRuleName mismatch at index {i}.");
+            Assert.AreEqual(e.OffsetDays, a.OffsetDays, $"OffsetDays mismatch at index {i}.");
+            Assert.AreEqual(e.AlgorithmKey, a.AlgorithmKey, $"AlgorithmKey mismatch at index {i}.");
 
             // Tags are an order-independent set.
-            CollectionAssert.AreEquivalent(b.Tags.ToList(), p.Tags.ToList(), $"Tags mismatch at index {i}.");
+            CollectionAssert.AreEquivalent(e.Tags.ToList(), a.Tags.ToList(), $"Tags mismatch at index {i}.");
 
-            Assert.AreEqual(b.Adjustments.Length, p.Adjustments.Length, $"Adjustment count mismatch at index {i}.");
-            for (int j = 0; j < b.Adjustments.Length; j++)
+            Assert.AreEqual(e.Adjustments.Length, a.Adjustments.Length, $"Adjustment count mismatch at index {i}.");
+            for (int j = 0; j < e.Adjustments.Length; j++)
             {
-                ObservanceAdjustment ba = b.Adjustments[j];
-                ObservanceAdjustment pa = p.Adjustments[j];
-                Assert.AreEqual(ba.Key, pa.Key, $"Adjustment key mismatch at rule {i}, adjustment {j}.");
-                Assert.AreEqual(ba.Trigger, pa.Trigger, $"Adjustment trigger mismatch at rule {i}, adjustment {j}.");
-                Assert.AreEqual(ba.Action, pa.Action, $"Adjustment action mismatch at rule {i}, adjustment {j}.");
+                ObservanceAdjustment ea = e.Adjustments[j];
+                ObservanceAdjustment aa = a.Adjustments[j];
+                Assert.AreEqual(ea.Key, aa.Key, $"Adjustment key mismatch at rule {i}, adjustment {j}.");
+                Assert.AreEqual(ea.Trigger, aa.Trigger, $"Adjustment trigger mismatch at rule {i}, adjustment {j}.");
+                Assert.AreEqual(ea.Action, aa.Action, $"Adjustment action mismatch at rule {i}, adjustment {j}.");
             }
         }
     }
