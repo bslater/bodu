@@ -25,8 +25,9 @@ public partial class ThrowHelperTests
     [DataRow("start=MaxValue-1 count=1 lands on MaxValue → pass", int.MaxValue - 1, 1, "")]
     [DataRow("start=MaxValue count=0 → pass (count == 0 short-circuit)", int.MaxValue, 0, "")]
     [DataRow("start=MaxValue count=1 lands on MaxValue → pass", int.MaxValue, 1, "")]
-    [DataRow("start=MaxValue-10 count=11 overflows → throw", int.MaxValue - 10, 11, "ArgumentOutOfRangeException")]
-    [DataRow("start=MaxValue-2 count=3 overflows → throw", int.MaxValue - 2, 3, "ArgumentOutOfRangeException")]
+    [DataRow("start=MaxValue-10 count=12 overflows → throw", int.MaxValue - 10, 12, "ArgumentOutOfRangeException")]
+    [DataRow("start=MaxValue-2 count=4 overflows → throw", int.MaxValue - 2, 4, "ArgumentOutOfRangeException")]
+    [DataRow("start=MaxValue count=2 overflows → throw", int.MaxValue, 2, "ArgumentOutOfRangeException")]
     [DataRow("count=-5 with positive start → pass (count <= 0 short-circuit)", 1000, -5, "")]
     public void ThrowIfSequenceRangeOverflows_Int32_WhenInvokedWithBoundaryValues_ShouldFollowContract(
         string testName, int start, int count, string expectExceptionType)

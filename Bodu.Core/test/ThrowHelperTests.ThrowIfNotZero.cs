@@ -38,10 +38,10 @@ public partial class ThrowHelperTests
 
         Action act = kind switch
         {
-            "int" => () => ThrowHelper.ThrowIfNotZero(value: sign),
-            "long" => () => ThrowHelper.ThrowIfNotZero(value: (long)sign),
-            "double" => () => ThrowHelper.ThrowIfNotZero(value: (double)sign),
-            "decimal" => () => ThrowHelper.ThrowIfNotZero(value: (decimal)sign),
+            "int" => () => ThrowHelper.ThrowIfNotZero(sign, "value"),
+            "long" => () => ThrowHelper.ThrowIfNotZero((long)sign, "value"),
+            "double" => () => ThrowHelper.ThrowIfNotZero((double)sign, "value"),
+            "decimal" => () => ThrowHelper.ThrowIfNotZero((decimal)sign, "value"),
             _ => () => throw new InvalidOperationException($"Unknown kind '{kind}'."),
         };
 
