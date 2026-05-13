@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.RoundTripJson.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -1107,7 +1107,7 @@ public partial class NotableDateDocumentBuilderTests
     /// <returns>The parsed rules.</returns>
     private static List<NotableDateRule> BuildAndReparseViaJson(Action<NotableDateDocumentBuilder> configure)
     {
-        NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create();
+        var builder = NotableDateDocumentBuilder.Create();
         configure(builder);
         return NotableDateRuleJsonParser.ParseJson(builder.ToJson());
     }

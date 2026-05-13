@@ -659,11 +659,13 @@ public sealed class NotableDateRuleBuilder
         _strategy!.Value switch
         {
             DateResolutionStrategy.Fixed => BuildFixedElement(ns),
-            DateResolutionStrategy.DayOfWeekInMonth => new XElement(ns + "DayOfWeekInMonth",
+            DateResolutionStrategy.DayOfWeekInMonth => new XElement(
+                ns + "DayOfWeekInMonth",
                 new XAttribute("month", GregorianMonthName(_dowMonth!.Value)),
                 new XAttribute("dayOfWeek", _dowDayOfWeek!.Value.ToString()),
                 new XAttribute("weekOrdinal", _dowWeekOrdinal!.Value.ToString())),
-            DateResolutionStrategy.OffsetFromAnchor => new XElement(ns + "OffsetFromAnchor",
+            DateResolutionStrategy.OffsetFromAnchor => new XElement(
+                ns + "OffsetFromAnchor",
                 new XAttribute("name", _anchorRuleName!),
                 new XAttribute("offset", _offsetDays!.Value.ToString(CultureInfo.InvariantCulture))),
             DateResolutionStrategy.Algorithm => BuildAlgorithmElement(ns),

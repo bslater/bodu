@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateDocumentBuilderTests.BclInterop.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -408,7 +408,7 @@ public partial class NotableDateDocumentBuilderTests
         XmlSerializerNamespaces namespaces = new();
         namespaces.Add(string.Empty, BclInteropSchemaNamespace);
 
-        using XmlWriter writer = XmlWriter.Create(sb, settings);
+        using var writer = XmlWriter.Create(sb, settings);
         new XmlSerializer(typeof(BclXmlNotableDates)).Serialize(writer, dto, namespaces);
         return sb.ToString();
     }

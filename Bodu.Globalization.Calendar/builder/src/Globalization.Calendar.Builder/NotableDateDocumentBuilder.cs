@@ -66,13 +66,13 @@ namespace Bodu.Globalization.Calendar;
 public sealed class NotableDateDocumentBuilder
 {
     /// <summary>The XML namespace applied to the produced <c>NotableDates</c> document, matching <c>NotableDates.xsd</c>.</summary>
-    private static readonly XNamespace SchemaNamespace = XNamespace.Get("urn:bodu:globalization:calendar");
+    private static readonly XNamespace s_schemaNamespace = XNamespace.Get("urn:bodu:globalization:calendar");
 
     /// <summary>The notable date entries accumulated by <see cref="AddDate(string, System.Action{NotableDateBuilder})" />, each paired with its canonical name.</summary>
     private readonly List<(string Name, NotableDateBuilder Builder)> _dates = [];
 
     /// <summary>
-    /// Initialises a new, empty <see cref="NotableDateDocumentBuilder" />.
+    /// Initializes a new instance of the <see cref="NotableDateDocumentBuilder"/> class.
     /// </summary>
     private NotableDateDocumentBuilder() { }
 
@@ -207,10 +207,10 @@ public sealed class NotableDateDocumentBuilder
     /// </exception>
     private XDocument BuildDocument()
     {
-        XElement root = new(SchemaNamespace + "NotableDates");
+        XElement root = new(s_schemaNamespace + "NotableDates");
 
         foreach ((string name, NotableDateBuilder builder) in _dates)
-            root.Add(builder.ToXElement(name, SchemaNamespace));
+            root.Add(builder.ToXElement(name, s_schemaNamespace));
 
         return new XDocument(new XDeclaration("1.0", "utf-8", null), root);
     }
