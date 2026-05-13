@@ -151,4 +151,93 @@ public sealed class ResolvedWindowSetTests
 
 		Assert.AreEqual(0, set.Ranges.Count);
 	}
+
+	/// <summary>
+	/// Verifies that <see cref="ResolvedWindowSet.Contains(DateTime)" /> returns <see langword="false" /> on an empty set.
+	/// </summary>
+	[TestMethod]
+	public void Contains_WhenSetIsEmpty_ShouldReturnFalse()
+	{
+		ResolvedWindowSet set = new();
+
+		Assert.IsFalse(set.Contains(new DateTime(2026, 1, 1)));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="ResolvedWindowSet.Contains(DateTime)" /> returns <see langword="true" /> when the date
+	/// lies inside a tracked range.
+	/// </summary>
+	[TestMethod]
+	public void Contains_WhenDateIsInsideTrackedRange_ShouldReturnTrue()
+	{
+		ResolvedWindowSet set = new();
+		set.Add(new DateRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31)));
+
+		Assert.IsTrue(set.Contains(new DateTime(2026, 2, 15)));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="ResolvedWindowSet.Contains(DateTime)" /> returns <see langword="true" /> when the date
+	/// equals the inclusive start boundary.
+	/// </summary>
+	[TestMethod]
+	public void Contains_WhenDateIsOnStartBoundary_ShouldReturnTrue()
+	{
+		ResolvedWindowSet set = new();
+		set.Add(new DateRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31)));
+
+		Assert.IsTrue(set.Contains(new DateTime(2026, 1, 1)));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="ResolvedWindowSet.Contains(DateTime)" /> returns <see langword="true" /> when the date
+	/// equals the inclusive end boundary.
+	/// </summary>
+	[TestMethod]
+	public void Contains_WhenDateIsOnEndBoundary_ShouldReturnTrue()
+	{
+		ResolvedWindowSet set = new();
+		set.Add(new DateRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31)));
+
+		Assert.IsTrue(set.Contains(new DateTime(2026, 3, 31)));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="ResolvedWindowSet.Contains(DateTime)" /> returns <see langword="false" /> when the date
+	/// is earlier than every tracked range.
+	/// </summary>
+	[TestMethod]
+	public void Contains_WhenDateIsBeforeEveryTrackedRange_ShouldReturnFalse()
+	{
+		ResolvedWindowSet set = new();
+		set.Add(new DateRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31)));
+
+		Assert.IsFalse(set.Contains(new DateTime(2025, 12, 31)));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="ResolvedWindowSet.Contains(DateTime)" /> returns <see langword="false" /> when the date
+	/// falls in the gap between two disjoint tracked ranges.
+	/// </summary>
+	[TestMethod]
+	public void Contains_WhenDateIsInGapBetweenTwoTrackedRanges_ShouldReturnFalse()
+	{
+		ResolvedWindowSet set = new();
+		set.Add(new DateRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31)));
+		set.Add(new DateRange(new DateTime(2026, 6, 1), new DateTime(2026, 9, 30)));
+
+		Assert.IsFalse(set.Contains(new DateTime(2026, 5, 1)));
+	}
+
+	/// <summary>
+	/// Verifies that <see cref="ResolvedWindowSet.Contains(DateTime)" /> ignores the time component when comparing days.
+	/// </summary>
+	[TestMethod]
+	public void Contains_WhenDateHasTimeComponent_ShouldIgnoreTimeOfDay()
+	{
+		ResolvedWindowSet set = new();
+		set.Add(new DateRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 1)));
+
+		Assert.IsTrue(set.Contains(new DateTime(2026, 1, 1, 23, 59, 59)));
+	}
 }
