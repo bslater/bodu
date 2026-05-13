@@ -4,10 +4,48 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf{T}(System.Span{T}, int, string)" />
+    /// contract for both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" />: a zero-length span or a
+    /// length that is not a positive multiple of the divisor throws <see cref="ArgumentException" /> with
+    /// ParamName "span"; valid positive multiples pass.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="length">The span length.</param>
+    /// <param name="divisor">The required divisor.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("zero length → throw on span", 0, 4, true)]
+    [DataRow("not a multiple → throw on span", 5, 2, true)]
+    [DataRow("not a multiple of 3 → throw on span", 7, 3, true)]
+    [DataRow("exact divisor → pass", 4, 4, false)]
+    [DataRow("multiple → pass", 12, 4, false)]
+    public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenInvokedWithVariousLengths_ShouldFollowContract(
+        string testName, int length, int divisor, bool expectsException)
+    {
+        int[] buffer = new int[length];
+        Type? expected = expectsException ? typeof(ArgumentException) : null;
+        string? expectedParam = expectsException ? "span" : null;
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf(buffer.AsSpan(), divisor, "span"),
+            expected,
+            expectedParam);
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf((ReadOnlySpan<int>)buffer, divisor, "span"),
+            expected,
+            expectedParam);
+    }
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfSpanLengthNotPositiveMultipleOf" />, ReadOnlySpan, when LengthInvalid, throws <see cref="ArgumentException" />.
     /// </summary>

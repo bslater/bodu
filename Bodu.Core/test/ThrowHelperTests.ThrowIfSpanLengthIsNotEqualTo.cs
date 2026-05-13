@@ -4,10 +4,47 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System;
+
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+    /// <summary>
+    /// Verifies the <see cref="ThrowHelper.ThrowIfSpanLengthIsNotEqualTo{T}(System.Span{T}, int, string)" />
+    /// contract for both <see cref="Span{T}" /> and <see cref="ReadOnlySpan{T}" />: length mismatch throws
+    /// <see cref="ArgumentException" /> with ParamName "span"; exact match passes.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="spanLength">The span length.</param>
+    /// <param name="expectedLength">The required exact length.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("shorter → throw on span", 3, 4, true)]
+    [DataRow("longer → throw on span", 5, 4, true)]
+    [DataRow("empty vs nonzero → throw on span", 0, 4, true)]
+    [DataRow("exact match → pass", 4, 4, false)]
+    [DataRow("both empty → pass", 0, 0, false)]
+    public void ThrowIfSpanLengthIsNotEqualTo_WhenInvokedWithVariousLengths_ShouldFollowContract(
+        string testName, int spanLength, int expectedLength, bool expectsException)
+    {
+        int[] buffer = new int[spanLength];
+        Type? expected = expectsException ? typeof(ArgumentException) : null;
+        string? expectedParam = expectsException ? "span" : null;
+
+        AssertGuard(
+            $"Span<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthIsNotEqualTo(buffer.AsSpan(), expectedLength, "span"),
+            expected,
+            expectedParam);
+
+        AssertGuard(
+            $"ReadOnlySpan<T>: {testName}",
+            () => ThrowHelper.ThrowIfSpanLengthIsNotEqualTo((ReadOnlySpan<int>)buffer, expectedLength, "span"),
+            expected,
+            expectedParam);
+    }
+
     // Span<T> overload
 
     /// <summary>
