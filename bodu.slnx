@@ -9,8 +9,8 @@
   <Folder Name="/Bodu.Globalization.Calendar/">
     <Project Path="Bodu.Globalization.Calendar\src\Bodu.Globalization.Calendar.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test\Bodu.Globalization.Calendar.Test.csproj" />
-    <Project Path="Bodu.Globalization.Calendar\builder\src\Bodu.Globalization.Calendar.Builder.csproj" />
-    <Project Path="Bodu.Globalization.Calendar\builder\test\Bodu.Globalization.Calendar.Builder.Test.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Builder\src\Bodu.Globalization.Calendar.Builder.csproj" />
+    <Project Path="Bodu.Globalization.Calendar.Builder\test\Bodu.Globalization.Calendar.Builder.Test.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test-plugins\Globalization.Calendar.Plugin1.TestAssembly\Bodu.Globalization.Calendar.Plugin1.TestAssembly.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test-plugins\Globalization.Calendar.Plugin2.TestAssembly\Bodu.Globalization.Calendar.Plugin2.TestAssembly.csproj" />
     <Project Path="Bodu.Globalization.Calendar\test-plugins\Globalization.Calendar.Plugin3.TestAssembly\Bodu.Globalization.Calendar.Plugin3.TestAssembly.csproj" />
