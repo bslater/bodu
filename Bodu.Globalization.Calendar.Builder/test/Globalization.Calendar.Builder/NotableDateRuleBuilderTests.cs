@@ -1,12 +1,12 @@
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateRuleBuilderTests.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateRuleBuilderTests.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
 /// Verifies the validation behaviour of <see cref="NotableDateRuleBuilder" />.
@@ -364,7 +364,7 @@ public class NotableDateRuleBuilderTests
         Assert.AreEqual(originalRule.Month, cloneRule.Month);
         Assert.AreEqual(originalRule.Day, cloneRule.Day);
         CollectionAssert.AreEquivalent(originalRule.Tags.ToList(), cloneRule.Tags.ToList());
-        Assert.AreEqual(originalRule.Adjustments.Length, cloneRule.Adjustments.Length);
+        Assert.HasCount(originalRule.Adjustments.Length, cloneRule.Adjustments);
         Assert.AreEqual(originalRule.Adjustments[0].Key, cloneRule.Adjustments[0].Key);
     }
 
@@ -385,10 +385,10 @@ public class NotableDateRuleBuilderTests
         NotableDateRule originalRule = original.Build("Test");
         NotableDateRule copyRule = copy.Build("Test");
 
-        Assert.AreEqual(1, originalRule.Tags.Count);
-        Assert.IsTrue(originalRule.Tags.Contains("Federal"));
-        Assert.AreEqual(2, copyRule.Tags.Count);
-        Assert.IsTrue(copyRule.Tags.Contains("Christian"));
+        Assert.HasCount(1, originalRule.Tags);
+        Assert.Contains("Federal", originalRule.Tags);
+        Assert.HasCount(2, copyRule.Tags);
+        Assert.Contains("Christian", copyRule.Tags);
     }
 
     /// <summary>
@@ -414,9 +414,9 @@ public class NotableDateRuleBuilderTests
         NotableDateRule originalRule = original.Build("Test");
         NotableDateRule copyRule = copy.Build("Test");
 
-        Assert.AreEqual(1, originalRule.Adjustments.Length);
+        Assert.HasCount(1, originalRule.Adjustments);
         Assert.AreEqual("weekend-roll", originalRule.Adjustments[0].Key);
-        Assert.AreEqual(2, copyRule.Adjustments.Length);
+        Assert.HasCount(2, copyRule.Adjustments);
     }
 
     // ============================================================================
@@ -437,9 +437,9 @@ public class NotableDateRuleBuilderTests
             .RemoveTag("Federal")
             .Build("Test");
 
-        Assert.AreEqual(1, rule.Tags.Count);
-        Assert.IsTrue(rule.Tags.Contains("Public"));
-        Assert.IsFalse(rule.Tags.Contains("Federal"));
+        Assert.HasCount(1, rule.Tags);
+        Assert.Contains("Public", rule.Tags);
+        Assert.DoesNotContain("Federal", rule.Tags);
     }
 
     /// <summary>
@@ -455,7 +455,7 @@ public class NotableDateRuleBuilderTests
             .RemoveTag("FEDERAL")
             .Build("Test");
 
-        Assert.AreEqual(0, rule.Tags.Count);
+        Assert.IsEmpty(rule.Tags);
     }
 
     /// <summary>
@@ -471,8 +471,8 @@ public class NotableDateRuleBuilderTests
             .RemoveTag("Christian")
             .Build("Test");
 
-        Assert.AreEqual(1, rule.Tags.Count);
-        Assert.IsTrue(rule.Tags.Contains("Federal"));
+        Assert.HasCount(1, rule.Tags);
+        Assert.Contains("Federal", rule.Tags);
     }
 
     /// <summary>
@@ -504,7 +504,7 @@ public class NotableDateRuleBuilderTests
             .ClearTags()
             .Build("Test");
 
-        Assert.AreEqual(0, rule.Tags.Count);
+        Assert.IsEmpty(rule.Tags);
     }
 
     /// <summary>
@@ -521,7 +521,7 @@ public class NotableDateRuleBuilderTests
             .RemoveAdjustment("weekend-roll")
             .Build("Test");
 
-        Assert.AreEqual(1, rule.Adjustments.Length);
+        Assert.HasCount(1, rule.Adjustments);
         Assert.AreEqual("leap-skip", rule.Adjustments[0].Key);
     }
 
@@ -538,7 +538,7 @@ public class NotableDateRuleBuilderTests
             .RemoveAdjustment("weekend-roll")
             .Build("Test");
 
-        Assert.AreEqual(0, rule.Adjustments.Length);
+        Assert.IsEmpty(rule.Adjustments);
     }
 
     /// <summary>
@@ -554,7 +554,7 @@ public class NotableDateRuleBuilderTests
             .RemoveAdjustment("never-added")
             .Build("Test");
 
-        Assert.AreEqual(1, rule.Adjustments.Length);
+        Assert.HasCount(1, rule.Adjustments);
         Assert.AreEqual("weekend-roll", rule.Adjustments[0].Key);
     }
 
@@ -586,7 +586,7 @@ public class NotableDateRuleBuilderTests
             .ClearAdjustments()
             .Build("Test");
 
-        Assert.AreEqual(0, rule.Adjustments.Length);
+        Assert.IsEmpty(rule.Adjustments);
     }
 
     /// <summary>

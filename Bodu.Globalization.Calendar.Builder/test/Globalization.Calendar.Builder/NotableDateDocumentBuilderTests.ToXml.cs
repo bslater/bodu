@@ -1,13 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateDocumentBuilderTests.ToXml.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateDocumentBuilderTests.ToXml.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
 using System.Xml.Linq;
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 public partial class NotableDateDocumentBuilderTests
 {
@@ -31,18 +31,18 @@ public partial class NotableDateDocumentBuilderTests
                         .Action(AdjustmentAction.MoveToNextWeekday)
                         .NonWorking())));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         NotableDateRule rule = parsed[0];
         Assert.AreEqual("Christmas Day", rule.Name);
         Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
         Assert.AreEqual(NotableDateCategory.Holiday, rule.Category);
-        Assert.AreEqual(true, rule.IsNonWorkingDay);
+        Assert.IsTrue(rule.IsNonWorkingDay);
         Assert.AreEqual(12, rule.Month);
         Assert.AreEqual(25, rule.Day);
-        Assert.AreEqual(1, rule.Adjustments.Length);
+        Assert.HasCount(1, rule.Adjustments);
         Assert.AreEqual("weekend-roll", rule.Adjustments[0].Key);
         Assert.AreEqual(AdjustmentTrigger.IfWeekend, rule.Adjustments[0].Trigger);
         Assert.AreEqual(AdjustmentAction.MoveToNextWeekday, rule.Adjustments[0].Action);
@@ -62,10 +62,10 @@ public partial class NotableDateDocumentBuilderTests
                     .Territory("US")
                     .DayOfWeekInMonth(11, DayOfWeek.Thursday, WeekOfMonthOrdinal.Fourth)));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         NotableDateRule rule = parsed[0];
         Assert.AreEqual(DateResolutionStrategy.DayOfWeekInMonth, rule.Strategy);
         Assert.AreEqual(11, rule.Month);
@@ -88,10 +88,10 @@ public partial class NotableDateDocumentBuilderTests
                     .NonWorking()
                     .OffsetFromAnchor("Easter Sunday", 1)));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         NotableDateRule rule = parsed[0];
         Assert.AreEqual(DateResolutionStrategy.OffsetFromAnchor, rule.Strategy);
         Assert.AreEqual("Easter Sunday", rule.AnchorRuleName);
@@ -111,10 +111,10 @@ public partial class NotableDateDocumentBuilderTests
                     .Category(NotableDateCategory.Religious)
                     .Algorithm(key: "easter-gregorian")));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         Assert.AreEqual(DateResolutionStrategy.Algorithm, parsed[0].Strategy);
         Assert.AreEqual("easter-gregorian", parsed[0].AlgorithmKey);
     }
@@ -135,7 +135,7 @@ public partial class NotableDateDocumentBuilderTests
         var doc = builder.ToXDocument();
         var notableDates = doc.Descendants(CalendarNs + "NotableDate").ToList();
 
-        Assert.AreEqual(2, notableDates.Count);
+        Assert.HasCount(2, notableDates);
         Assert.AreEqual("Christmas Day", notableDates[0].Attribute("name")?.Value);
         Assert.AreEqual("Boxing Day", notableDates[1].Attribute("name")?.Value);
     }
@@ -155,12 +155,12 @@ public partial class NotableDateDocumentBuilderTests
                     .AddTag("Christian")
                     .AddTag("Public")));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
-        Assert.IsTrue(parsed[0].Tags.Contains("Christian"));
-        Assert.IsTrue(parsed[0].Tags.Contains("Public"));
+        Assert.HasCount(1, parsed);
+        Assert.Contains("Christian", parsed[0].Tags);
+        Assert.Contains("Public", parsed[0].Tags);
     }
 
     /// <summary>
@@ -182,10 +182,10 @@ public partial class NotableDateDocumentBuilderTests
                     .Comment("Test remark")
                     .Fixed(7, 4)));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         NotableDateRule rule = parsed[0];
         Assert.AreEqual("AU", rule.TerritoryCode);
         Assert.AreEqual(2000, rule.FirstYear);
@@ -212,10 +212,10 @@ public partial class NotableDateDocumentBuilderTests
                         .Action(AdjustmentAction.AddDays)
                         .OffsetDays(-1))));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         Assert.AreEqual(-1, parsed[0].Adjustments[0].OffsetDays);
     }
 
@@ -231,10 +231,10 @@ public partial class NotableDateDocumentBuilderTests
                     .Category(NotableDateCategory.Cultural)
                     .Fixed(5, 5, skipLeapMonth: true)));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         Assert.IsTrue(parsed[0].SkipLeapMonth);
     }
 
@@ -307,10 +307,10 @@ public partial class NotableDateDocumentBuilderTests
                         .ComparisonDate(3, 20)
                         .OffsetDays(1))));
 
-        string xml = builder.ToXml();
+        var xml = builder.ToXml();
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         ObservanceAdjustment adj = parsed[0].Adjustments[0];
         Assert.IsNotNull(adj.ComparisonDate);
         Assert.AreEqual(3, adj.ComparisonDate!.Value.Month);

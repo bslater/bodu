@@ -1,10 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ObservanceAdjustmentBuilderTests.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="ObservanceAdjustmentBuilderTests.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
 /// Verifies the validation behaviour of <see cref="ObservanceAdjustmentBuilder" />.

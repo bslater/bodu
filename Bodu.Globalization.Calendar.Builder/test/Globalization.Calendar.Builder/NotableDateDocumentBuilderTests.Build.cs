@@ -1,13 +1,13 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateDocumentBuilderTests.Build.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateDocumentBuilderTests.Build.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
 using System.Collections.Immutable;
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 public partial class NotableDateDocumentBuilderTests
 {
@@ -26,12 +26,12 @@ public partial class NotableDateDocumentBuilderTests
                     .Fixed(12, 25)))
             .Build();
 
-        Assert.AreEqual(1, rules.Count);
+        Assert.HasCount(1, rules);
         NotableDateRule rule = rules[0];
         Assert.AreEqual("Christmas Day", rule.Name);
         Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
         Assert.AreEqual(NotableDateCategory.Holiday, rule.Category);
-        Assert.AreEqual(true, rule.IsNonWorkingDay);
+        Assert.IsTrue(rule.IsNonWorkingDay);
         Assert.AreEqual(12, rule.Month);
         Assert.AreEqual(25, rule.Day);
     }
@@ -55,13 +55,13 @@ public partial class NotableDateDocumentBuilderTests
                         .NonWorking())))
             .Build();
 
-        Assert.AreEqual(1, rules.Count);
+        Assert.HasCount(1, rules);
         ImmutableArray<ObservanceAdjustment> adjustments = rules[0].Adjustments;
-        Assert.AreEqual(1, adjustments.Length);
+        Assert.HasCount(1, adjustments);
         Assert.AreEqual("weekend-roll", adjustments[0].Key);
         Assert.AreEqual(AdjustmentTrigger.IfWeekend, adjustments[0].Trigger);
         Assert.AreEqual(AdjustmentAction.MoveToNextWeekday, adjustments[0].Action);
-        Assert.AreEqual(true, adjustments[0].IsNonWorkingDay);
+        Assert.IsTrue(adjustments[0].IsNonWorkingDay);
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public partial class NotableDateDocumentBuilderTests
                     .DayOfWeekInMonth(10, DayOfWeek.Monday, WeekOfMonthOrdinal.Second)))
             .Build();
 
-        Assert.AreEqual(1, rules.Count);
+        Assert.HasCount(1, rules);
         NotableDateRule rule = rules[0];
         Assert.AreEqual(DateResolutionStrategy.DayOfWeekInMonth, rule.Strategy);
         Assert.AreEqual(10, rule.Month);
@@ -102,7 +102,7 @@ public partial class NotableDateDocumentBuilderTests
                     .OffsetFromAnchor("Easter Sunday", 1)))
             .Build();
 
-        Assert.AreEqual(1, rules.Count);
+        Assert.HasCount(1, rules);
         NotableDateRule rule = rules[0];
         Assert.AreEqual(DateResolutionStrategy.OffsetFromAnchor, rule.Strategy);
         Assert.AreEqual("Easter Sunday", rule.AnchorRuleName);
@@ -123,7 +123,7 @@ public partial class NotableDateDocumentBuilderTests
                     .Algorithm(key: "easter-gregorian")))
             .Build();
 
-        Assert.AreEqual(1, rules.Count);
+        Assert.HasCount(1, rules);
         Assert.AreEqual(DateResolutionStrategy.Algorithm, rules[0].Strategy);
         Assert.AreEqual("easter-gregorian", rules[0].AlgorithmKey);
     }
@@ -142,7 +142,7 @@ public partial class NotableDateDocumentBuilderTests
                 .AddRule(rule => rule.Category(NotableDateCategory.Holiday).Fixed(12, 26)))
             .Build();
 
-        Assert.AreEqual(2, rules.Count);
+        Assert.HasCount(2, rules);
         Assert.AreEqual("Christmas Day", rules[0].Name);
         Assert.AreEqual("Boxing Day", rules[1].Name);
     }
@@ -168,7 +168,7 @@ public partial class NotableDateDocumentBuilderTests
                     .DayOfWeekInMonth(6, DayOfWeek.Monday, WeekOfMonthOrdinal.Second)))
             .Build();
 
-        Assert.AreEqual(2, rules.Count);
+        Assert.HasCount(2, rules);
         Assert.AreEqual("King's Birthday", rules[0].Name);
         Assert.AreEqual("King's Birthday", rules[1].Name);
         Assert.AreEqual("queensland", rules[0].RuleName);
@@ -196,7 +196,7 @@ public partial class NotableDateDocumentBuilderTests
                     .Fixed(7, 4)))
             .Build();
 
-        Assert.AreEqual(1, rules.Count);
+        Assert.HasCount(1, rules);
         NotableDateRule rule = rules[0];
         Assert.AreEqual("AU", rule.TerritoryCode);
         Assert.AreEqual(2000, rule.FirstYear);
@@ -204,7 +204,7 @@ public partial class NotableDateDocumentBuilderTests
         Assert.AreEqual(3, rule.DurationDays);
         Assert.AreEqual(50, rule.Priority);
         Assert.AreEqual("Test comment", rule.Comment);
-        Assert.IsTrue(rule.Tags.Contains("TestTag"));
+        Assert.Contains("TestTag", rule.Tags);
     }
 
     /// <summary>
@@ -288,7 +288,7 @@ public partial class NotableDateDocumentBuilderTests
         INotableDateRuleProvider provider = builder.ToProvider();
         var providerRules = provider.LoadRules().ToList();
 
-        Assert.AreEqual(builtRules.Count, providerRules.Count);
+        Assert.HasCount(builtRules.Count, providerRules);
         Assert.AreEqual(builtRules[0].Name, providerRules[0].Name);
         Assert.AreEqual(builtRules[0].Month, providerRules[0].Month);
         Assert.AreEqual(builtRules[0].Day, providerRules[0].Day);
@@ -308,7 +308,7 @@ public partial class NotableDateDocumentBuilderTests
                     .Fixed("March", 17)))
             .Build();
 
-        Assert.AreEqual(1, rules.Count);
+        Assert.HasCount(1, rules);
         Assert.AreEqual(3, rules[0].Month);
         Assert.IsNull(rules[0].CalendarMonthAlias);
     }
@@ -328,7 +328,7 @@ public partial class NotableDateDocumentBuilderTests
                     .Fixed("Nisan", 15)))
             .Build();
 
-        Assert.AreEqual(1, rules.Count);
+        Assert.HasCount(1, rules);
         Assert.IsNull(rules[0].Month);
         Assert.AreEqual("Nisan", rules[0].CalendarMonthAlias);
     }
@@ -355,7 +355,7 @@ public partial class NotableDateDocumentBuilderTests
 
         ObservanceAdjustment adj = rules[0].Adjustments[0];
         Assert.IsNotNull(adj.HandlerParameters);
-        Assert.AreEqual(2, adj.HandlerParameters!.Count);
+        Assert.HasCount(2, adj.HandlerParameters);
         Assert.AreEqual("true", adj.HandlerParameters["enabled"]);
         Assert.AreEqual("30", adj.HandlerParameters["timeout"]);
     }
@@ -381,7 +381,7 @@ public partial class NotableDateDocumentBuilderTests
 
         ObservanceAdjustment adj = rules[0].Adjustments[0];
         Assert.IsNotNull(adj.HandlerParameters);
-        Assert.AreEqual(1, adj.HandlerParameters!.Count);
+        Assert.HasCount(1, adj.HandlerParameters);
         Assert.AreEqual("second", adj.HandlerParameters["mode"]);
     }
 

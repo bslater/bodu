@@ -1,12 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateDocumentBuilderTests.Clone.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateDocumentBuilderTests.Clone.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 public partial class NotableDateDocumentBuilderTests
 {
@@ -45,7 +43,7 @@ public partial class NotableDateDocumentBuilderTests
         IReadOnlyList<NotableDateRule> originalRules = original.Build();
         IReadOnlyList<NotableDateRule> copyRules = copy.Build();
 
-        Assert.AreEqual(originalRules.Count, copyRules.Count);
+        Assert.HasCount(originalRules.Count, copyRules);
         Assert.AreEqual(originalRules[0].Name, copyRules[0].Name);
         Assert.AreEqual(originalRules[0].Strategy, copyRules[0].Strategy);
         Assert.AreEqual(originalRules[0].Month, copyRules[0].Month);
@@ -68,8 +66,8 @@ public partial class NotableDateDocumentBuilderTests
             .AddDate("Christmas Day", date => date
                 .AddRule(rule => rule.Category(NotableDateCategory.Holiday).Fixed(12, 25)));
 
-        Assert.AreEqual(1, original.Build().Count);
-        Assert.AreEqual(2, copy.Build().Count);
+        Assert.HasCount(1, original.Build());
+        Assert.HasCount(2, copy.Build());
     }
 
     /// <summary>
@@ -113,16 +111,16 @@ public partial class NotableDateDocumentBuilderTests
         Assert.AreEqual(1, australiaDay.Month);
         Assert.AreEqual(26, australiaDay.Day);
         Assert.AreEqual("AU", australiaDay.TerritoryCode);
-        Assert.AreEqual(1, australiaDay.Tags.Count);
+        Assert.HasCount(1, australiaDay.Tags);
 
         // …while sharing the template's Holiday/NonWorking/weekend-roll baseline.
         Assert.IsNull(christmas.TerritoryCode);
         Assert.IsNull(newYears.TerritoryCode);
-        Assert.AreEqual(0, christmas.Tags.Count);
-        Assert.AreEqual(0, newYears.Tags.Count);
-        Assert.AreEqual(1, christmas.Adjustments.Length);
-        Assert.AreEqual(1, newYears.Adjustments.Length);
-        Assert.AreEqual(1, australiaDay.Adjustments.Length);
+        Assert.IsEmpty(christmas.Tags);
+        Assert.IsEmpty(newYears.Tags);
+        Assert.HasCount(1, christmas.Adjustments);
+        Assert.HasCount(1, newYears.Adjustments);
+        Assert.HasCount(1, australiaDay.Adjustments);
         Assert.AreEqual("weekend-roll", christmas.Adjustments[0].Key);
     }
 

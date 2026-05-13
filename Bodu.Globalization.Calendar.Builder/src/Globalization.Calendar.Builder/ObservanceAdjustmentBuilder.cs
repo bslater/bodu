@@ -1,15 +1,15 @@
-// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ObservanceAdjustmentBuilder.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="ObservanceAdjustmentBuilder.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
 using System.Globalization;
 using System.Text.Json.Nodes;
 using System.Xml.Linq;
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
 /// Provides a fluent interface for constructing an <see cref="ObservanceAdjustment" /> and its corresponding XML or JSON representation.
@@ -309,6 +309,44 @@ public sealed class ObservanceAdjustmentBuilder
     }
 
     /// <summary>
+    /// Creates an independent copy of this builder, suitable for use as a template that can then be tweaked for
+    /// per-variant adjustments without mutating the source.
+    /// </summary>
+    /// <returns>A new <see cref="ObservanceAdjustmentBuilder" /> with the same configuration as this instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// Scalar fields are copied by value. The handler-parameter dictionary, when authored, is cloned so that
+    /// later additions to either builder do not bleed across the boundary.
+    /// </para>
+    /// </remarks>
+    public ObservanceAdjustmentBuilder Clone()
+    {
+        ObservanceAdjustmentBuilder copy = new()
+        {
+            _trigger = _trigger,
+            _action = _action,
+            _dayOfWeek = _dayOfWeek,
+            _isNonWorkingDay = _isNonWorkingDay,
+            _offsetDays = _offsetDays,
+            _territoryCode = _territoryCode,
+            _calendarType = _calendarType,
+            _effectiveFromYear = _effectiveFromYear,
+            _effectiveToYear = _effectiveToYear,
+            _comparisonMonth = _comparisonMonth,
+            _comparisonDay = _comparisonDay,
+            _weekOrdinal = _weekOrdinal,
+            _targetRuleName = _targetRuleName,
+            _priority = _priority,
+            _handlerKey = _handlerKey,
+            _maxAdjustmentReachDays = _maxAdjustmentReachDays,
+        };
+
+        if (_handlerParameters is not null)
+            copy._handlerParameters = new Dictionary<string, string>(_handlerParameters, StringComparer.Ordinal);
+
+        return copy;
+    }
+    /// <summary>
     /// Builds an <see cref="ObservanceAdjustment" /> record from the current builder state.
     /// </summary>
     /// <param name="key">The adjustment key used for inheritance merging. Must not be <see langword="null" /> or whitespace.</param>
@@ -458,45 +496,6 @@ public sealed class ObservanceAdjustmentBuilder
         if (_handlerKey is not null) node["handlerKey"] = _handlerKey;
 
         return node;
-    }
-
-    /// <summary>
-    /// Creates an independent copy of this builder, suitable for use as a template that can then be tweaked for
-    /// per-variant adjustments without mutating the source.
-    /// </summary>
-    /// <returns>A new <see cref="ObservanceAdjustmentBuilder" /> with the same configuration as this instance.</returns>
-    /// <remarks>
-    /// <para>
-    /// Scalar fields are copied by value. The handler-parameter dictionary, when authored, is cloned so that
-    /// later additions to either builder do not bleed across the boundary.
-    /// </para>
-    /// </remarks>
-    public ObservanceAdjustmentBuilder Clone()
-    {
-        ObservanceAdjustmentBuilder copy = new()
-        {
-            _trigger = _trigger,
-            _action = _action,
-            _dayOfWeek = _dayOfWeek,
-            _isNonWorkingDay = _isNonWorkingDay,
-            _offsetDays = _offsetDays,
-            _territoryCode = _territoryCode,
-            _calendarType = _calendarType,
-            _effectiveFromYear = _effectiveFromYear,
-            _effectiveToYear = _effectiveToYear,
-            _comparisonMonth = _comparisonMonth,
-            _comparisonDay = _comparisonDay,
-            _weekOrdinal = _weekOrdinal,
-            _targetRuleName = _targetRuleName,
-            _priority = _priority,
-            _handlerKey = _handlerKey,
-            _maxAdjustmentReachDays = _maxAdjustmentReachDays,
-        };
-
-        if (_handlerParameters is not null)
-            copy._handlerParameters = new Dictionary<string, string>(_handlerParameters, StringComparer.Ordinal);
-
-        return copy;
     }
 
     /// <summary>

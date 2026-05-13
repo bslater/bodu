@@ -1,15 +1,16 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateDocumentBuilderTests.RoundTripJson.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateDocumentBuilderTests.RoundTripJson.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
 using Bodu.Globalization.Calendar.Algorithms;
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Text.Json.Nodes;
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 public partial class NotableDateDocumentBuilderTests
 {
@@ -30,7 +31,7 @@ public partial class NotableDateDocumentBuilderTests
                     .Category(NotableDateCategory.Holiday)
                     .Fixed(12, 25))));
 
-        Assert.AreEqual(1, parsed.Count);
+        Assert.HasCount(1, parsed);
         NotableDateRule rule = parsed[0];
         Assert.AreEqual("Christmas Day", rule.Name);
         Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
@@ -434,10 +435,10 @@ public partial class NotableDateDocumentBuilderTests
                     .AddTag("Public")
                     .AddTag("Federal"))));
 
-        Assert.AreEqual(3, parsed[0].Tags.Count);
-        Assert.IsTrue(parsed[0].Tags.Contains("Christian"));
-        Assert.IsTrue(parsed[0].Tags.Contains("Public"));
-        Assert.IsTrue(parsed[0].Tags.Contains("Federal"));
+        Assert.HasCount(3, parsed[0].Tags);
+        Assert.Contains("Christian", parsed[0].Tags);
+        Assert.Contains("Public", parsed[0].Tags);
+        Assert.Contains("Federal", parsed[0].Tags);
     }
 
     /// <summary>
@@ -454,7 +455,7 @@ public partial class NotableDateDocumentBuilderTests
                     .NonWorking(false)
                     .Fixed(1, 1))));
 
-        Assert.AreEqual(false, parsed[0].IsNonWorkingDay);
+        Assert.IsFalse(parsed[0].IsNonWorkingDay);
     }
 
     /// <summary>
@@ -500,7 +501,7 @@ public partial class NotableDateDocumentBuilderTests
         Assert.AreEqual("Comprehensive Rule", rule.Name);
         Assert.AreEqual("variant-a", rule.RuleName);
         Assert.AreEqual(NotableDateCategory.Civic, rule.Category);
-        Assert.AreEqual(true, rule.IsNonWorkingDay);
+        Assert.IsTrue(rule.IsNonWorkingDay);
         Assert.AreEqual(1950, rule.FirstYear);
         Assert.AreEqual(2099, rule.LastYear);
         Assert.AreEqual(2, rule.OccurrenceYears);
@@ -508,7 +509,7 @@ public partial class NotableDateDocumentBuilderTests
         Assert.AreEqual(25, rule.Priority);
         Assert.AreEqual("AU-NSW", rule.TerritoryCode);
         Assert.AreEqual("Round-trip coverage test", rule.Comment);
-        Assert.AreEqual(2, rule.Tags.Count);
+        Assert.HasCount(2, rule.Tags);
     }
 
     // ============================================================================
@@ -768,7 +769,7 @@ public partial class NotableDateDocumentBuilderTests
                         .Action(AdjustmentAction.None)
                         .NonWorking(false)))));
 
-        Assert.AreEqual(false, parsed[0].Adjustments[0].IsNonWorkingDay);
+        Assert.IsFalse(parsed[0].Adjustments[0].IsNonWorkingDay);
     }
 
     /// <summary>
@@ -852,7 +853,7 @@ public partial class NotableDateDocumentBuilderTests
                     .Territory("AU-WA")
                     .DayOfWeekInMonth(9, DayOfWeek.Monday, WeekOfMonthOrdinal.Last))));
 
-        Assert.AreEqual(3, parsed.Count);
+        Assert.HasCount(3, parsed);
         Assert.IsTrue(parsed.All(r => r.Name == "King's Birthday"));
         Assert.AreEqual("queensland", parsed[0].RuleName);
         Assert.AreEqual("other-states", parsed[1].RuleName);
@@ -877,7 +878,7 @@ public partial class NotableDateDocumentBuilderTests
             .AddDate("New Year's Day", date => date
                 .AddRule(rule => rule.Category(NotableDateCategory.Holiday).Fixed(1, 1))));
 
-        Assert.AreEqual(3, parsed.Count);
+        Assert.HasCount(3, parsed);
         Assert.AreEqual("Christmas Day", parsed[0].Name);
         Assert.AreEqual("Boxing Day", parsed[1].Name);
         Assert.AreEqual("New Year's Day", parsed[2].Name);
@@ -908,8 +909,8 @@ public partial class NotableDateDocumentBuilderTests
                         .Action(AdjustmentAction.Custom)
                         .HandlerKey("special-case")))));
 
-        var adjustments = parsed[0].Adjustments;
-        Assert.AreEqual(3, adjustments.Length);
+        ImmutableArray<ObservanceAdjustment> adjustments = parsed[0].Adjustments;
+        Assert.HasCount(3, adjustments);
         Assert.AreEqual("saturday-shift", adjustments[0].Key);
         Assert.AreEqual("sunday-shift", adjustments[1].Key);
         Assert.AreEqual("custom-rule", adjustments[2].Key);
@@ -956,15 +957,15 @@ public partial class NotableDateDocumentBuilderTests
                     .Duration(8)
                     .Fixed("Kislev", 25))));
 
-        Assert.AreEqual(4, parsed.Count);
+        Assert.HasCount(4, parsed);
 
         // Australia Day
         Assert.AreEqual("Australia Day", parsed[0].Name);
         Assert.AreEqual(1, parsed[0].Month);
         Assert.AreEqual(26, parsed[0].Day);
         Assert.AreEqual("AU", parsed[0].TerritoryCode);
-        Assert.AreEqual(true, parsed[0].IsNonWorkingDay);
-        Assert.AreEqual(1, parsed[0].Adjustments.Length);
+        Assert.IsTrue(parsed[0].IsNonWorkingDay);
+        Assert.HasCount(1, parsed[0].Adjustments);
         Assert.AreEqual("weekend-roll", parsed[0].Adjustments[0].Key);
 
         // Easter Sunday
@@ -1013,7 +1014,7 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void RoundTripJson_ToJson_ShouldProduceObjectWithNotableDatesArray()
     {
-        string json = NotableDateDocumentBuilder.Create()
+        var json = NotableDateDocumentBuilder.Create()
             .AddDate("Test", date => date
                 .AddRule(rule => rule.Category(NotableDateCategory.Holiday).Fixed(1, 1)))
             .ToJson();
@@ -1031,9 +1032,9 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void RoundTripJson_EmptyDocument_ShouldRoundTripAsEmptyNotableDatesArray()
     {
-        string json = NotableDateDocumentBuilder.Create().ToJson();
+        var json = NotableDateDocumentBuilder.Create().ToJson();
         List<NotableDateRule> parsed = NotableDateRuleJsonParser.ParseJson(json);
-        Assert.AreEqual(0, parsed.Count);
+        Assert.IsEmpty(parsed);
     }
 
     // ============================================================================
@@ -1074,8 +1075,8 @@ public partial class NotableDateDocumentBuilderTests
         List<NotableDateRule> fromXml = NotableDateRuleParser.ParseXml(builder.ToXml());
         List<NotableDateRule> fromJson = NotableDateRuleJsonParser.ParseJson(builder.ToJson());
 
-        Assert.AreEqual(fromXml.Count, fromJson.Count);
-        for (int i = 0; i < fromXml.Count; i++)
+        Assert.HasCount(fromXml.Count, fromJson);
+        for (var i = 0; i < fromXml.Count; i++)
         {
             Assert.AreEqual(fromXml[i].Name, fromJson[i].Name);
             Assert.AreEqual(fromXml[i].Strategy, fromJson[i].Strategy);
@@ -1091,8 +1092,8 @@ public partial class NotableDateDocumentBuilderTests
             Assert.AreEqual(fromXml[i].IsNonWorkingDay, fromJson[i].IsNonWorkingDay);
             Assert.AreEqual(fromXml[i].DurationDays, fromJson[i].DurationDays);
             Assert.AreEqual(fromXml[i].Priority, fromJson[i].Priority);
-            Assert.AreEqual(fromXml[i].Tags.Count, fromJson[i].Tags.Count);
-            Assert.AreEqual(fromXml[i].Adjustments.Length, fromJson[i].Adjustments.Length);
+            Assert.HasCount(fromXml[i].Tags.Count, fromJson[i].Tags);
+            Assert.HasCount(fromXml[i].Adjustments.Length, fromJson[i].Adjustments);
         }
     }
 

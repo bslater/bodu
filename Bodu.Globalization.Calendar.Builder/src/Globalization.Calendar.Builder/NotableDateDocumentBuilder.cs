@@ -1,8 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateDocumentBuilder.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateDocumentBuilder.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using System.Text;
 using System.Text.Json;
@@ -10,7 +10,7 @@ using System.Text.Json.Nodes;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
 /// Provides a fluent interface for constructing a <c>NotableDates</c> document — a collection of named notable date entries —
@@ -68,6 +68,9 @@ public sealed class NotableDateDocumentBuilder
     /// <summary>The XML namespace applied to the produced <c>NotableDates</c> document, matching <c>NotableDates.xsd</c>.</summary>
     private static readonly XNamespace s_schemaNamespace = XNamespace.Get("urn:bodu:globalization:calendar");
 
+    /// <summary>The serializer options shared by <see cref="ToJson" /> for indented output.</summary>
+    private static readonly JsonSerializerOptions s_jsonSerializerOptions = new() { WriteIndented = true };
+
     /// <summary>The notable date entries accumulated by <see cref="AddDate(string, System.Action{NotableDateBuilder})" />, each paired with its canonical name.</summary>
     private readonly List<(string Name, NotableDateBuilder Builder)> _dates = [];
 
@@ -115,7 +118,7 @@ public sealed class NotableDateDocumentBuilder
     {
         List<NotableDateRule> rules = [];
 
-        foreach ((string name, NotableDateBuilder builder) in _dates)
+        foreach ((var name, NotableDateBuilder builder) in _dates)
             rules.AddRange(builder.Build(name));
 
         return rules;
@@ -195,8 +198,24 @@ public sealed class NotableDateDocumentBuilder
     /// </exception>
     public string ToJson() => BuildJsonDocument().ToJsonString(s_jsonSerializerOptions);
 
-    /// <summary>The serializer options shared by <see cref="ToJson" /> for indented output.</summary>
-    private static readonly JsonSerializerOptions s_jsonSerializerOptions = new() { WriteIndented = true };
+    /// <summary>
+    /// Creates an independent copy of this document builder, deep-cloning every notable date entry so that
+    /// subsequent mutations of either builder do not bleed across the boundary.
+    /// </summary>
+    /// <returns>A new <see cref="NotableDateDocumentBuilder" /> with the same notable date entries as this instance.</returns>
+    /// <remarks>
+    /// <para>
+    /// Intended for the template-factory pattern: configure a baseline document once, clone it for each variant,
+    /// and tweak only the entries that differ between variants.
+    /// </para>
+    /// </remarks>
+    public NotableDateDocumentBuilder Clone()
+    {
+        NotableDateDocumentBuilder copy = new();
+        foreach ((var name, NotableDateBuilder builder) in _dates)
+            copy._dates.Add((name, builder.Clone()));
+        return copy;
+    }
 
     /// <summary>
     /// Builds the underlying <see cref="XDocument" /> shared by <see cref="ToXDocument" /> and <see cref="ToXml" />.
@@ -212,7 +231,7 @@ public sealed class NotableDateDocumentBuilder
     {
         XElement root = new(s_schemaNamespace + "NotableDates");
 
-        foreach ((string name, NotableDateBuilder builder) in _dates)
+        foreach ((var name, NotableDateBuilder builder) in _dates)
             root.Add(builder.ToXElement(name, s_schemaNamespace));
 
         return new XDocument(new XDeclaration("1.0", "utf-8", null), root);
@@ -232,31 +251,12 @@ public sealed class NotableDateDocumentBuilder
     {
         JsonArray notableDates = [];
 
-        foreach ((string name, NotableDateBuilder builder) in _dates)
+        foreach ((var name, NotableDateBuilder builder) in _dates)
             notableDates.Add(builder.ToJsonNode(name));
 
         return new JsonObject
         {
             ["notableDates"] = notableDates,
         };
-    }
-
-    /// <summary>
-    /// Creates an independent copy of this document builder, deep-cloning every notable date entry so that
-    /// subsequent mutations of either builder do not bleed across the boundary.
-    /// </summary>
-    /// <returns>A new <see cref="NotableDateDocumentBuilder" /> with the same notable date entries as this instance.</returns>
-    /// <remarks>
-    /// <para>
-    /// Intended for the template-factory pattern: configure a baseline document once, clone it for each variant,
-    /// and tweak only the entries that differ between variants.
-    /// </para>
-    /// </remarks>
-    public NotableDateDocumentBuilder Clone()
-    {
-        NotableDateDocumentBuilder copy = new();
-        foreach ((string name, NotableDateBuilder builder) in _dates)
-            copy._dates.Add((name, builder.Clone()));
-        return copy;
     }
 }

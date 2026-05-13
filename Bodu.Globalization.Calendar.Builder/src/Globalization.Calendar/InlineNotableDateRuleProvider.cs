@@ -1,8 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="InlineNotableDateRuleProvider.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="InlineNotableDateRuleProvider.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
+
+using Bodu.Globalization.Calendar.Builder;
 
 namespace Bodu.Globalization.Calendar;
 

@@ -1,8 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateDocumentBuilderTests.BclInterop.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateDocumentBuilderTests.BclInterop.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
 using System.Globalization;
@@ -13,7 +13,7 @@ using System.Text.Json.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 public partial class NotableDateDocumentBuilderTests
 {
@@ -36,6 +36,13 @@ public partial class NotableDateDocumentBuilderTests
 
     private const string BclInteropSchemaNamespace = "urn:bodu:globalization:calendar";
 
+    private static readonly JsonSerializerOptions s_jsonSerializerOptions = new()
+    {
+        WriteIndented = true,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        Converters = { new JsonStringEnumConverter() },
+    };
+
     /// <summary>
     /// Verifies that a multi-rule document authored via <see cref="NotableDateDocumentBuilder" /> — mixing
     /// every resolution strategy, optional scalars, tags, and adjustments — projects onto schema-conformant
@@ -48,7 +55,7 @@ public partial class NotableDateDocumentBuilderTests
         IReadOnlyList<NotableDateRule> built = BuildComprehensiveRules();
         BclXmlNotableDates dto = ProjectToBclXmlDto(built);
 
-        string xml = SerialiseViaXmlSerializer(dto);
+        var xml = SerialiseViaXmlSerializer(dto);
         List<NotableDateRule> parsed = NotableDateRuleParser.ParseXml(xml);
 
         AssertRuleListsEquivalent(built, parsed);
@@ -66,7 +73,7 @@ public partial class NotableDateDocumentBuilderTests
         IReadOnlyList<NotableDateRule> built = BuildComprehensiveRules();
         BclJsonNotableDates dto = ProjectToBclJsonDto(built);
 
-        string json = SerialiseViaJsonSerializer(dto);
+        var json = SerialiseViaJsonSerializer(dto);
         List<NotableDateRule> parsed = NotableDateRuleJsonParser.ParseJson(json);
 
         AssertRuleListsEquivalent(built, parsed);
@@ -81,11 +88,11 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void BclInterop_ResourceXmlPayload_XmlSerializerOutput_ShouldReparseIdentically()
     {
-        string sourceXml = LoadEmbeddedXmlResource("Bodu.Globalization.Calendar.Resources.default-minimal.xml");
+        var sourceXml = LoadEmbeddedXmlResource("Bodu.Globalization.Calendar.Resources.default-minimal.xml");
 
         List<NotableDateRule> fromResource = NotableDateRuleParser.ParseXml(sourceXml);
         BclXmlNotableDates dto = ProjectToBclXmlDto(fromResource);
-        string xmlFromBcl = SerialiseViaXmlSerializer(dto);
+        var xmlFromBcl = SerialiseViaXmlSerializer(dto);
         List<NotableDateRule> fromBcl = NotableDateRuleParser.ParseXml(xmlFromBcl);
 
         AssertRuleListsEquivalent(fromResource, fromBcl);
@@ -101,11 +108,11 @@ public partial class NotableDateDocumentBuilderTests
     [TestMethod]
     public void BclInterop_ResourceXmlPayload_JsonSerializerOutput_ShouldReparseIdentically()
     {
-        string sourceXml = LoadEmbeddedXmlResource("Bodu.Globalization.Calendar.Resources.default-minimal.xml");
+        var sourceXml = LoadEmbeddedXmlResource("Bodu.Globalization.Calendar.Resources.default-minimal.xml");
 
         List<NotableDateRule> fromResource = NotableDateRuleParser.ParseXml(sourceXml);
         BclJsonNotableDates dto = ProjectToBclJsonDto(fromResource);
-        string jsonFromBcl = SerialiseViaJsonSerializer(dto);
+        var jsonFromBcl = SerialiseViaJsonSerializer(dto);
         List<NotableDateRule> fromBcl = NotableDateRuleJsonParser.ParseJson(jsonFromBcl);
 
         AssertRuleListsEquivalent(fromResource, fromBcl);
@@ -178,8 +185,8 @@ public partial class NotableDateDocumentBuilderTests
     /// <param name="actual">The rule list produced by the library parser after the BCL serialisation pass.</param>
     private static void AssertRuleListsEquivalent(IReadOnlyList<NotableDateRule> expected, IReadOnlyList<NotableDateRule> actual)
     {
-        Assert.AreEqual(expected.Count, actual.Count, "Rule count mismatch.");
-        for (int i = 0; i < expected.Count; i++)
+        Assert.HasCount(expected.Count, actual, "Rule count mismatch.");
+        for (var i = 0; i < expected.Count; i++)
         {
             NotableDateRule e = expected[i];
             NotableDateRule a = actual[i];
@@ -203,8 +210,8 @@ public partial class NotableDateDocumentBuilderTests
             // Tags are an order-independent set.
             CollectionAssert.AreEquivalent(e.Tags.ToList(), a.Tags.ToList(), $"Tags mismatch at index {i}.");
 
-            Assert.AreEqual(e.Adjustments.Length, a.Adjustments.Length, $"Adjustment count mismatch at index {i}.");
-            for (int j = 0; j < e.Adjustments.Length; j++)
+            Assert.HasCount(e.Adjustments.Length, a.Adjustments, $"Adjustment count mismatch at index {i}.");
+            for (var j = 0; j < e.Adjustments.Length; j++)
             {
                 ObservanceAdjustment ea = e.Adjustments[j];
                 ObservanceAdjustment aa = a.Adjustments[j];
@@ -228,14 +235,13 @@ public partial class NotableDateDocumentBuilderTests
     private static BclXmlNotableDates ProjectToBclXmlDto(IReadOnlyList<NotableDateRule> rules) =>
         new()
         {
-            NotableDates = rules
+            NotableDates = [.. rules
                 .GroupBy(r => r.Name)
                 .Select(g => new BclXmlNotableDate
                 {
                     Name = g.Key,
-                    Rules = g.Select(ProjectRuleToBclXml).ToList(),
-                })
-                .ToList(),
+                    Rules = [.. g.Select(ProjectRuleToBclXml)],
+                })],
         };
 
     /// <summary>
@@ -257,15 +263,14 @@ public partial class NotableDateDocumentBuilderTests
             Priority = rule.Priority,
             PrioritySpecified = rule.Priority != 100,
             Territory = rule.TerritoryCode,
-            Tags = rule.Tags.ToList(),
-            Adjustments = rule.Adjustments
+            Tags = [.. rule.Tags],
+            Adjustments = [.. rule.Adjustments
                 .Select(a => new BclXmlAdjustment
                 {
                     Key = a.Key,
                     When = a.Trigger,
                     Action = a.Action,
-                })
-                .ToList(),
+                })],
         };
 
         switch (rule.Strategy)
@@ -314,14 +319,13 @@ public partial class NotableDateDocumentBuilderTests
     private static BclJsonNotableDates ProjectToBclJsonDto(IReadOnlyList<NotableDateRule> rules) =>
         new()
         {
-            NotableDates = rules
+            NotableDates = [.. rules
                 .GroupBy(r => r.Name)
                 .Select(g => new BclJsonNotableDate
                 {
                     Name = g.Key,
-                    Rules = g.Select(ProjectRuleToBclJson).ToList(),
-                })
-                .ToList(),
+                    Rules = [.. g.Select(ProjectRuleToBclJson)],
+                })],
         };
 
     /// <summary>
@@ -340,11 +344,9 @@ public partial class NotableDateDocumentBuilderTests
             FirstYear = rule.FirstYear,
             Priority = rule.Priority != 100 ? rule.Priority : null,
             Territory = rule.TerritoryCode,
-            Tags = rule.Tags.Count > 0 ? rule.Tags.ToList() : null,
+            Tags = rule.Tags.Count > 0 ? [.. rule.Tags] : null,
             Adjustments = rule.Adjustments.Length > 0
-                ? rule.Adjustments
-                    .Select(a => new BclJsonAdjustment { Key = a.Key, When = a.Trigger, Action = a.Action })
-                    .ToList()
+                ? [.. rule.Adjustments.Select(a => new BclJsonAdjustment { Key = a.Key, When = a.Trigger, Action = a.Action })]
                 : null,
         };
 
@@ -419,16 +421,8 @@ public partial class NotableDateDocumentBuilderTests
     /// </summary>
     /// <param name="dto">The root DTO to serialise.</param>
     /// <returns>The JSON payload.</returns>
-    private static string SerialiseViaJsonSerializer(BclJsonNotableDates dto)
-    {
-        JsonSerializerOptions options = new()
-        {
-            WriteIndented = true,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-            Converters = { new JsonStringEnumConverter() },
-        };
-        return JsonSerializer.Serialize(dto, options);
-    }
+    private static string SerialiseViaJsonSerializer(BclJsonNotableDates dto) =>
+        JsonSerializer.Serialize(dto, s_jsonSerializerOptions);
 
     /// <summary>
     /// Converts a Gregorian month number (1–12) to its full English name as required by the

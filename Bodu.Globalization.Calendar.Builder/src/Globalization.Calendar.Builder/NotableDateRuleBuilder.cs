@@ -1,8 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateRuleBuilder.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateRuleBuilder.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
 using System.Collections.Immutable;
@@ -10,7 +10,7 @@ using System.Globalization;
 using System.Text.Json.Nodes;
 using System.Xml.Linq;
 
-namespace Bodu.Globalization.Calendar;
+namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
 /// Provides a fluent interface for constructing a single <see cref="NotableDateRule" /> and its corresponding XML
@@ -323,7 +323,7 @@ public sealed class NotableDateRuleBuilder
     public NotableDateRuleBuilder Fixed(int month, int day, bool skipLeapMonth = false, bool sweepCalendarYears = false)
     {
         ThrowHelper.ThrowIfOutOfRange(month, 1, 13);
-        ThrowHelper.ThrowIfOutOfRange(day, 1,31);
+        ThrowHelper.ThrowIfOutOfRange(day, 1, 31);
 
         ThrowIfStrategyAlreadySet();
 
@@ -388,7 +388,7 @@ public sealed class NotableDateRuleBuilder
     /// </exception>
     public NotableDateRuleBuilder DayOfWeekInMonth(int month, DayOfWeek dayOfWeek, WeekOfMonthOrdinal weekOrdinal)
     {
-        ThrowHelper.ThrowIfOutOfRange(month, 1,12);
+        ThrowHelper.ThrowIfOutOfRange(month, 1, 12);
         ThrowIfStrategyAlreadySet();
 
         _strategy = DateResolutionStrategy.DayOfWeekInMonth;
@@ -487,7 +487,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
 
-        int index = _tags.FindIndex(t => string.Equals(t, tag, StringComparison.OrdinalIgnoreCase));
+        var index = _tags.FindIndex(t => string.Equals(t, tag, StringComparison.OrdinalIgnoreCase));
         if (index >= 0)
             _tags.RemoveAt(index);
         return this;
@@ -520,7 +520,7 @@ public sealed class NotableDateRuleBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
 
-        int index = _adjustments.FindIndex(a => string.Equals(a.Key, key, StringComparison.OrdinalIgnoreCase));
+        var index = _adjustments.FindIndex(a => string.Equals(a.Key, key, StringComparison.OrdinalIgnoreCase));
         if (index >= 0)
             _adjustments.RemoveAt(index);
         return this;
@@ -624,7 +624,7 @@ public sealed class NotableDateRuleBuilder
 
         copy._tags.AddRange(_tags);
 
-        foreach ((string key, ObservanceAdjustmentBuilder adjustment) in _adjustments)
+        foreach ((var key, ObservanceAdjustmentBuilder adjustment) in _adjustments)
             copy._adjustments.Add((key, adjustment.Clone()));
 
         return copy;
@@ -709,7 +709,7 @@ public sealed class NotableDateRuleBuilder
         if (_strategy is null)
             throw new InvalidOperationException($"A resolution strategy must be selected before serialising the rule for '{notableDateName}'.");
 
-        string effectiveName = _ruleName ?? GenerateDefaultRuleName(notableDateName);
+        var effectiveName = _ruleName ?? GenerateDefaultRuleName(notableDateName);
 
         XElement element = new(ns + "Rule",
             new XAttribute("name", effectiveName),
@@ -744,14 +744,104 @@ public sealed class NotableDateRuleBuilder
 
         element.Add(BuildStrategyElement(ns));
 
-        foreach (string tag in _tags)
+        foreach (var tag in _tags)
             element.Add(new XElement(ns + "Tag", tag));
 
-        foreach ((string key, ObservanceAdjustmentBuilder builder) in _adjustments)
+        foreach ((var key, ObservanceAdjustmentBuilder builder) in _adjustments)
             element.Add(builder.ToXElement(key, ns));
 
         return element;
     }
+
+    /// <summary>
+    /// Builds a schema-valid <c>rule</c> <see cref="JsonObject" /> from the current builder state.
+    /// </summary>
+    /// <param name="notableDateName">
+    /// The canonical name of the notable date. Used to generate the JSON <c>name</c> property when no explicit
+    /// <see cref="RuleName(string)" /> has been set.
+    /// </param>
+    /// <returns>The constructed <see cref="JsonObject" /> conforming to the rule entry of <c>NotableDates.schema.json</c>.</returns>
+    /// <exception cref="InvalidOperationException">Thrown when no resolution strategy has been selected.</exception>
+    internal JsonObject ToJsonNode(string notableDateName)
+    {
+        if (_strategy is null)
+            throw new InvalidOperationException($"A resolution strategy must be selected before serialising the rule for '{notableDateName}'.");
+
+        var effectiveName = _ruleName ?? GenerateDefaultRuleName(notableDateName);
+
+        JsonObject node = new()
+        {
+            ["name"] = effectiveName,
+            ["category"] = _category.ToString(),
+        };
+
+        if (_isNonWorkingDay.HasValue) node["nonWorking"] = _isNonWorkingDay.Value;
+        if (_firstYear.HasValue) node["firstYear"] = _firstYear.Value;
+        if (_lastYear.HasValue) node["lastYear"] = _lastYear.Value;
+        if (_occurrenceYears.HasValue) node["occurrenceYears"] = _occurrenceYears.Value;
+        if (_durationDays.HasValue) node["durationDays"] = _durationDays.Value;
+        if (_priority.HasValue) node["priority"] = _priority.Value;
+        if (_calendarType is not null) node["calendarType"] = _calendarType.AssemblyQualifiedName ?? _calendarType.FullName ?? _calendarType.Name;
+        if (_territoryCode is not null) node["territory"] = _territoryCode;
+        if (_comment is not null) node["comment"] = _comment;
+
+        switch (_strategy.Value)
+        {
+            case DateResolutionStrategy.Fixed:
+                node["fixed"] = BuildFixedJsonNode();
+                break;
+            case DateResolutionStrategy.DayOfWeekInMonth:
+                node["dayOfWeekInMonth"] = new JsonObject
+                {
+                    ["month"] = GregorianMonthName(_dowMonth!.Value),
+                    ["dayOfWeek"] = _dowDayOfWeek!.Value.ToString(),
+                    ["weekOrdinal"] = _dowWeekOrdinal!.Value.ToString(),
+                };
+                break;
+            case DateResolutionStrategy.OffsetFromAnchor:
+                node["offsetFromAnchor"] = new JsonObject
+                {
+                    ["name"] = _anchorRuleName!,
+                    ["offset"] = _offsetDays!.Value,
+                };
+                break;
+            case DateResolutionStrategy.Algorithm:
+                node["algorithm"] = BuildAlgorithmJsonNode();
+                break;
+            default:
+                throw new NotSupportedException($"Unsupported strategy: {_strategy.Value}");
+        }
+
+        if (_tags.Count > 0)
+        {
+            JsonArray tags = [];
+
+            // JsonArray.Add<T>(T) creates a JsonValueCustomized<T> that requires a
+            // TypeInfoResolver at serialisation time; the typed JsonValue.Create(string?)
+            // overload yields a JsonValuePrimitive that serialises without one.
+            foreach (var tag in _tags)
+                tags.Add(JsonValue.Create(tag));
+            node["tags"] = tags;
+        }
+
+        if (_adjustments.Count > 0)
+        {
+            JsonArray adjustments = [];
+            foreach ((var key, ObservanceAdjustmentBuilder builder) in _adjustments)
+                adjustments.Add(builder.ToJsonNode(key));
+            node["adjustments"] = adjustments;
+        }
+
+        return node;
+    }
+
+    /// <summary>
+    /// Converts a Gregorian month number (1–12) to its full English name.
+    /// </summary>
+    /// <param name="month">The month number.</param>
+    /// <returns>The full English month name (e.g. <c>"March"</c>).</returns>
+    private static string GregorianMonthName(int month) =>
+        new DateTime(2000, month, 1).ToString("MMMM", CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Applies the Fixed strategy fields to a base rule record.
@@ -773,7 +863,7 @@ public sealed class NotableDateRuleBuilder
         }
 
         // String token — parse similar to the parser's ParseMonthToken logic.
-        string token = _fixedMonthToken!;
+        var token = _fixedMonthToken!;
 
         if (DateTime.TryParseExact(token, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsed))
         {
@@ -787,7 +877,7 @@ public sealed class NotableDateRuleBuilder
             };
         }
 
-        if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out int numeric) && numeric is >= 1 and <= 13)
+        if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 13)
         {
             return rule with
             {
@@ -799,7 +889,7 @@ public sealed class NotableDateRuleBuilder
             };
         }
 
-        int? hebrewFixed = token switch
+        var hebrewFixed = token switch
         {
             "Tishri" => 1,
             "Heshvan" => 2,
@@ -856,6 +946,7 @@ public sealed class NotableDateRuleBuilder
             _ => throw new NotSupportedException($"Unsupported strategy: {_strategy.Value}"),
         };
 
+
     /// <summary>
     /// Builds a <c>&lt;Fixed&gt;</c> element from the current Fixed strategy fields.
     /// </summary>
@@ -863,7 +954,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>The Fixed strategy element.</returns>
     private XElement BuildFixedElement(XNamespace ns)
     {
-        string monthAttr = _fixedMonthNumber.HasValue
+        var monthAttr = _fixedMonthNumber.HasValue
             ? GregorianMonthName(_fixedMonthNumber.Value)
             : _fixedMonthToken!;
 
@@ -905,94 +996,12 @@ public sealed class NotableDateRuleBuilder
     }
 
     /// <summary>
-    /// Builds a schema-valid <c>rule</c> <see cref="JsonObject" /> from the current builder state.
-    /// </summary>
-    /// <param name="notableDateName">
-    /// The canonical name of the notable date. Used to generate the JSON <c>name</c> property when no explicit
-    /// <see cref="RuleName(string)" /> has been set.
-    /// </param>
-    /// <returns>The constructed <see cref="JsonObject" /> conforming to the rule entry of <c>NotableDates.schema.json</c>.</returns>
-    /// <exception cref="InvalidOperationException">Thrown when no resolution strategy has been selected.</exception>
-    internal JsonObject ToJsonNode(string notableDateName)
-    {
-        if (_strategy is null)
-            throw new InvalidOperationException($"A resolution strategy must be selected before serialising the rule for '{notableDateName}'.");
-
-        string effectiveName = _ruleName ?? GenerateDefaultRuleName(notableDateName);
-
-        JsonObject node = new()
-        {
-            ["name"] = effectiveName,
-            ["category"] = _category.ToString(),
-        };
-
-        if (_isNonWorkingDay.HasValue) node["nonWorking"] = _isNonWorkingDay.Value;
-        if (_firstYear.HasValue) node["firstYear"] = _firstYear.Value;
-        if (_lastYear.HasValue) node["lastYear"] = _lastYear.Value;
-        if (_occurrenceYears.HasValue) node["occurrenceYears"] = _occurrenceYears.Value;
-        if (_durationDays.HasValue) node["durationDays"] = _durationDays.Value;
-        if (_priority.HasValue) node["priority"] = _priority.Value;
-        if (_calendarType is not null) node["calendarType"] = _calendarType.AssemblyQualifiedName ?? _calendarType.FullName ?? _calendarType.Name;
-        if (_territoryCode is not null) node["territory"] = _territoryCode;
-        if (_comment is not null) node["comment"] = _comment;
-
-        switch (_strategy.Value)
-        {
-            case DateResolutionStrategy.Fixed:
-                node["fixed"] = BuildFixedJsonNode();
-                break;
-            case DateResolutionStrategy.DayOfWeekInMonth:
-                node["dayOfWeekInMonth"] = new JsonObject
-                {
-                    ["month"] = GregorianMonthName(_dowMonth!.Value),
-                    ["dayOfWeek"] = _dowDayOfWeek!.Value.ToString(),
-                    ["weekOrdinal"] = _dowWeekOrdinal!.Value.ToString(),
-                };
-                break;
-            case DateResolutionStrategy.OffsetFromAnchor:
-                node["offsetFromAnchor"] = new JsonObject
-                {
-                    ["name"] = _anchorRuleName!,
-                    ["offset"] = _offsetDays!.Value,
-                };
-                break;
-            case DateResolutionStrategy.Algorithm:
-                node["algorithm"] = BuildAlgorithmJsonNode();
-                break;
-            default:
-                throw new NotSupportedException($"Unsupported strategy: {_strategy.Value}");
-        }
-
-        if (_tags.Count > 0)
-        {
-            JsonArray tags = [];
-
-            // JsonArray.Add<T>(T) creates a JsonValueCustomized<T> that requires a
-            // TypeInfoResolver at serialisation time; the typed JsonValue.Create(string?)
-            // overload yields a JsonValuePrimitive that serialises without one.
-            foreach (string tag in _tags)
-                tags.Add(JsonValue.Create(tag));
-            node["tags"] = tags;
-        }
-
-        if (_adjustments.Count > 0)
-        {
-            JsonArray adjustments = [];
-            foreach ((string key, ObservanceAdjustmentBuilder builder) in _adjustments)
-                adjustments.Add(builder.ToJsonNode(key));
-            node["adjustments"] = adjustments;
-        }
-
-        return node;
-    }
-
-    /// <summary>
     /// Builds a <c>fixed</c> <see cref="JsonObject" /> from the current Fixed strategy fields.
     /// </summary>
     /// <returns>The Fixed strategy JSON object.</returns>
     private JsonObject BuildFixedJsonNode()
     {
-        string monthAttr = _fixedMonthNumber.HasValue
+        var monthAttr = _fixedMonthNumber.HasValue
             ? GregorianMonthName(_fixedMonthNumber.Value)
             : _fixedMonthToken!;
 
@@ -1031,7 +1040,7 @@ public sealed class NotableDateRuleBuilder
     /// <returns>A descriptive rule name suitable for the XML <c>name</c> attribute.</returns>
     private string GenerateDefaultRuleName(string notableDateName)
     {
-        string strategySuffix = _strategy!.Value switch
+        var strategySuffix = _strategy!.Value switch
         {
             DateResolutionStrategy.Fixed => "Fixed",
             DateResolutionStrategy.DayOfWeekInMonth => "DayOfWeekInMonth",
@@ -1042,14 +1051,6 @@ public sealed class NotableDateRuleBuilder
 
         return $"{notableDateName} ({strategySuffix})";
     }
-
-    /// <summary>
-    /// Converts a Gregorian month number (1–12) to its full English name.
-    /// </summary>
-    /// <param name="month">The month number.</param>
-    /// <returns>The full English month name (e.g. <c>"March"</c>).</returns>
-    private static string GregorianMonthName(int month) =>
-        new DateTime(2000, month, 1).ToString("MMMM", CultureInfo.InvariantCulture);
 
     /// <summary>
     /// Throws when a resolution strategy has already been selected for this rule. Called by every strategy
