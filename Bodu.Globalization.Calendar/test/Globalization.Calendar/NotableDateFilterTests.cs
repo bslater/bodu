@@ -468,7 +468,7 @@ public sealed partial class NotableDateFilterTests
 	[TestMethod]
 	public void InDateRange_WhenEndDateIsBeforeStartDate_ShouldThrowArgumentException()
 	{
-		Assert.ThrowsExactly<ArgumentException>(() =>
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
 			_ = NotableDateFilter.InDateRange(new DateTime(2024, 6, 30), new DateTime(2024, 6, 1));
 		});

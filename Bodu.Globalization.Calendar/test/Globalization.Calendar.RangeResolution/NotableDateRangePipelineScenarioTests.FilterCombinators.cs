@@ -399,7 +399,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	[TestMethod]
 	public void Filter_InDateRange_WhenEndIsBeforeStart_ShouldThrowArgumentException()
 	{
-		ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+		ArgumentException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
 			_ = NotableDateFilter.InDateRange(new DateTime(2026, 12, 31), new DateTime(2026, 1, 1));
 		});
