@@ -303,4 +303,334 @@ public class NotableDateRuleBuilderTests
             "Algorithm" => new NotableDateRuleBuilder().Algorithm(key: "algo"),
             _ => throw new ArgumentException($"Unknown strategy identifier: {strategy}", nameof(strategy)),
         };
+
+    // ============================================================================
+    // Clone — deep-copy semantics for template-factory authoring.
+    // ============================================================================
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.Clone" /> produces a new instance rather than returning
+    /// the original reference.
+    /// </summary>
+    [TestMethod]
+    public void Clone_WhenInvoked_ShouldReturnIndependentInstance()
+    {
+        NotableDateRuleBuilder original = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .Fixed(12, 25);
+
+        NotableDateRuleBuilder copy = original.Clone();
+
+        Assert.AreNotSame(original, copy);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.Clone" /> produces a rule whose built representation
+    /// equals the source's built representation on every authored field.
+    /// </summary>
+    [TestMethod]
+    public void Clone_WhenSourceFullyConfigured_ShouldProduceIdenticalBuiltRule()
+    {
+        NotableDateRuleBuilder original = new NotableDateRuleBuilder()
+            .RuleName("Christmas Fixed")
+            .Category(NotableDateCategory.Holiday)
+            .Territory("AU")
+            .NonWorking()
+            .FirstYear(1900)
+            .LastYear(2099)
+            .Duration(1)
+            .Priority(10)
+            .Comment("Test")
+            .AddTag("Federal")
+            .AddTag("Public")
+            .Fixed(12, 25)
+            .AddAdjustment("weekend-roll", adj => adj
+                .When(AdjustmentTrigger.IfWeekend)
+                .Action(AdjustmentAction.MoveToNextWeekday));
+
+        NotableDateRule originalRule = original.Build("Christmas Day");
+        NotableDateRule cloneRule = original.Clone().Build("Christmas Day");
+
+        Assert.AreEqual(originalRule.Name, cloneRule.Name);
+        Assert.AreEqual(originalRule.RuleName, cloneRule.RuleName);
+        Assert.AreEqual(originalRule.Strategy, cloneRule.Strategy);
+        Assert.AreEqual(originalRule.Category, cloneRule.Category);
+        Assert.AreEqual(originalRule.TerritoryCode, cloneRule.TerritoryCode);
+        Assert.AreEqual(originalRule.IsNonWorkingDay, cloneRule.IsNonWorkingDay);
+        Assert.AreEqual(originalRule.FirstYear, cloneRule.FirstYear);
+        Assert.AreEqual(originalRule.LastYear, cloneRule.LastYear);
+        Assert.AreEqual(originalRule.DurationDays, cloneRule.DurationDays);
+        Assert.AreEqual(originalRule.Priority, cloneRule.Priority);
+        Assert.AreEqual(originalRule.Month, cloneRule.Month);
+        Assert.AreEqual(originalRule.Day, cloneRule.Day);
+        CollectionAssert.AreEquivalent(originalRule.Tags.ToList(), cloneRule.Tags.ToList());
+        Assert.AreEqual(originalRule.Adjustments.Length, cloneRule.Adjustments.Length);
+        Assert.AreEqual(originalRule.Adjustments[0].Key, cloneRule.Adjustments[0].Key);
+    }
+
+    /// <summary>
+    /// Verifies that mutating the cloned builder's tag list after <see cref="NotableDateRuleBuilder.Clone" />
+    /// has no effect on the source's tag list.
+    /// </summary>
+    [TestMethod]
+    public void Clone_WhenCloneAddsTag_ShouldNotMutateSourceTags()
+    {
+        NotableDateRuleBuilder original = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .AddTag("Federal")
+            .Fixed(12, 25);
+
+        NotableDateRuleBuilder copy = original.Clone().AddTag("Christian");
+
+        NotableDateRule originalRule = original.Build("Test");
+        NotableDateRule copyRule = copy.Build("Test");
+
+        Assert.AreEqual(1, originalRule.Tags.Count);
+        Assert.IsTrue(originalRule.Tags.Contains("Federal"));
+        Assert.AreEqual(2, copyRule.Tags.Count);
+        Assert.IsTrue(copyRule.Tags.Contains("Christian"));
+    }
+
+    /// <summary>
+    /// Verifies that mutating the cloned builder's adjustment list after <see cref="NotableDateRuleBuilder.Clone" />
+    /// has no effect on the source's adjustment list.
+    /// </summary>
+    [TestMethod]
+    public void Clone_WhenCloneAddsAdjustment_ShouldNotMutateSourceAdjustments()
+    {
+        NotableDateRuleBuilder original = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .Fixed(12, 25)
+            .AddAdjustment("weekend-roll", adj => adj
+                .When(AdjustmentTrigger.IfWeekend)
+                .Action(AdjustmentAction.MoveToNextWeekday));
+
+        NotableDateRuleBuilder copy = original.Clone()
+            .AddAdjustment("leap-skip", adj => adj
+                .When(AdjustmentTrigger.IfLeapYear)
+                .Action(AdjustmentAction.AddDays)
+                .OffsetDays(1));
+
+        NotableDateRule originalRule = original.Build("Test");
+        NotableDateRule copyRule = copy.Build("Test");
+
+        Assert.AreEqual(1, originalRule.Adjustments.Length);
+        Assert.AreEqual("weekend-roll", originalRule.Adjustments[0].Key);
+        Assert.AreEqual(2, copyRule.Adjustments.Length);
+    }
+
+    // ============================================================================
+    // Removal — RemoveTag / ClearTags / RemoveAdjustment / ClearAdjustments / ClearStrategy.
+    // ============================================================================
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RemoveTag" /> removes a previously-added tag.
+    /// </summary>
+    [TestMethod]
+    public void RemoveTag_WhenTagPresent_ShouldRemoveFromBuiltRule()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .AddTag("Federal")
+            .AddTag("Public")
+            .Fixed(1, 1)
+            .RemoveTag("Federal")
+            .Build("Test");
+
+        Assert.AreEqual(1, rule.Tags.Count);
+        Assert.IsTrue(rule.Tags.Contains("Public"));
+        Assert.IsFalse(rule.Tags.Contains("Federal"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RemoveTag" /> matches case-insensitively.
+    /// </summary>
+    [TestMethod]
+    public void RemoveTag_WhenTagDifferentCase_ShouldStillRemove()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .AddTag("Federal")
+            .Fixed(1, 1)
+            .RemoveTag("FEDERAL")
+            .Build("Test");
+
+        Assert.AreEqual(0, rule.Tags.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RemoveTag" /> is a no-op when the tag isn't present.
+    /// </summary>
+    [TestMethod]
+    public void RemoveTag_WhenTagAbsent_ShouldBeNoOp()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .AddTag("Federal")
+            .Fixed(1, 1)
+            .RemoveTag("Christian")
+            .Build("Test");
+
+        Assert.AreEqual(1, rule.Tags.Count);
+        Assert.IsTrue(rule.Tags.Contains("Federal"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RemoveTag" /> throws when the supplied value is whitespace.
+    /// </summary>
+    [TestMethod]
+    public void RemoveTag_WhenTagWhitespace_ShouldThrowArgumentException()
+    {
+        NotableDateRuleBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = builder.RemoveTag("   ");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.ClearTags" /> removes every previously-added tag.
+    /// </summary>
+    [TestMethod]
+    public void ClearTags_WhenTagsPresent_ShouldYieldEmptyTagSet()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .AddTag("Federal")
+            .AddTag("Public")
+            .AddTag("Christian")
+            .Fixed(1, 1)
+            .ClearTags()
+            .Build("Test");
+
+        Assert.AreEqual(0, rule.Tags.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RemoveAdjustment" /> removes the adjustment whose key matches.
+    /// </summary>
+    [TestMethod]
+    public void RemoveAdjustment_WhenKeyPresent_ShouldRemoveFromBuiltRule()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .Fixed(1, 1)
+            .AddAdjustment("weekend-roll", adj => adj.When(AdjustmentTrigger.IfWeekend).Action(AdjustmentAction.MoveToNextWeekday))
+            .AddAdjustment("leap-skip", adj => adj.When(AdjustmentTrigger.IfLeapYear).Action(AdjustmentAction.AddDays).OffsetDays(1))
+            .RemoveAdjustment("weekend-roll")
+            .Build("Test");
+
+        Assert.AreEqual(1, rule.Adjustments.Length);
+        Assert.AreEqual("leap-skip", rule.Adjustments[0].Key);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RemoveAdjustment" /> matches case-insensitively.
+    /// </summary>
+    [TestMethod]
+    public void RemoveAdjustment_WhenKeyDifferentCase_ShouldStillRemove()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .Fixed(1, 1)
+            .AddAdjustment("Weekend-Roll", adj => adj.When(AdjustmentTrigger.IfWeekend).Action(AdjustmentAction.MoveToNextWeekday))
+            .RemoveAdjustment("weekend-roll")
+            .Build("Test");
+
+        Assert.AreEqual(0, rule.Adjustments.Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RemoveAdjustment" /> is a no-op when the key isn't present.
+    /// </summary>
+    [TestMethod]
+    public void RemoveAdjustment_WhenKeyAbsent_ShouldBeNoOp()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .Fixed(1, 1)
+            .AddAdjustment("weekend-roll", adj => adj.When(AdjustmentTrigger.IfWeekend).Action(AdjustmentAction.MoveToNextWeekday))
+            .RemoveAdjustment("never-added")
+            .Build("Test");
+
+        Assert.AreEqual(1, rule.Adjustments.Length);
+        Assert.AreEqual("weekend-roll", rule.Adjustments[0].Key);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.RemoveAdjustment" /> throws when the supplied key is whitespace.
+    /// </summary>
+    [TestMethod]
+    public void RemoveAdjustment_WhenKeyWhitespace_ShouldThrowArgumentException()
+    {
+        NotableDateRuleBuilder builder = new();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = builder.RemoveAdjustment("   ");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.ClearAdjustments" /> removes every previously-added adjustment.
+    /// </summary>
+    [TestMethod]
+    public void ClearAdjustments_WhenAdjustmentsPresent_ShouldYieldEmptyAdjustmentSet()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .Fixed(1, 1)
+            .AddAdjustment("weekend-roll", adj => adj.When(AdjustmentTrigger.IfWeekend).Action(AdjustmentAction.MoveToNextWeekday))
+            .AddAdjustment("leap-skip", adj => adj.When(AdjustmentTrigger.IfLeapYear).Action(AdjustmentAction.AddDays).OffsetDays(1))
+            .ClearAdjustments()
+            .Build("Test");
+
+        Assert.AreEqual(0, rule.Adjustments.Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.ClearStrategy" /> resets the strategy discriminator so that
+    /// a subsequent strategy method call succeeds rather than throwing the single-strategy invariant exception.
+    /// </summary>
+    /// <param name="firstStrategy">The strategy applied before <c>ClearStrategy</c>.</param>
+    [TestMethod]
+    [DataRow("Fixed")]
+    [DataRow("DayOfWeekInMonth")]
+    [DataRow("OffsetFromAnchor")]
+    [DataRow("Algorithm")]
+    public void ClearStrategy_WhenStrategySet_ShouldAllowSubsequentStrategyCall(string firstStrategy)
+    {
+        NotableDateRuleBuilder builder = NewBuilderWithStrategy(firstStrategy)
+            .Category(NotableDateCategory.Holiday)
+            .ClearStrategy();
+
+        // Should not throw — the strategy was cleared.
+        _ = builder.Algorithm(key: "easter-gregorian");
+
+        NotableDateRule rule = builder.Build("Test");
+        Assert.AreEqual(DateResolutionStrategy.Algorithm, rule.Strategy);
+        Assert.AreEqual("easter-gregorian", rule.AlgorithmKey);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleBuilder.ClearStrategy" /> wipes the strategy-specific fields, so a
+    /// re-authored strategy does not pick up stale values from the previous one.
+    /// </summary>
+    [TestMethod]
+    public void ClearStrategy_WhenStrategySet_ShouldWipeStrategySpecificFields()
+    {
+        NotableDateRule rule = new NotableDateRuleBuilder()
+            .Category(NotableDateCategory.Holiday)
+            .OffsetFromAnchor("Easter Sunday", 1)
+            .ClearStrategy()
+            .Fixed(12, 25)
+            .Build("Test");
+
+        Assert.AreEqual(DateResolutionStrategy.Fixed, rule.Strategy);
+        Assert.AreEqual(12, rule.Month);
+        Assert.AreEqual(25, rule.Day);
+        Assert.IsNull(rule.AnchorRuleName);
+        Assert.IsNull(rule.OffsetDays);
+    }
 }
