@@ -1121,9 +1121,9 @@ public static partial class ThrowHelper
     public static void ThrowIfNegative<T>(
         T value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
-        where T : IComparable<T>
+        where T : struct, IComparable<T>
     {
-        if (value.CompareTo(default!) < 0)
+        if (value.CompareTo(default) < 0)
             throw new ArgumentOutOfRangeException(paramName, ResourceStrings.Arg_OutOfRange_RequireNonNegative);
     }
 
@@ -1229,9 +1229,9 @@ public static partial class ThrowHelper
     public static void ThrowIfNotZero<T>(
         T value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
-        where T : IEquatable<T>
+        where T : struct, IEquatable<T>
     {
-        if (!value.Equals(default!))
+        if (!value.Equals(default))
             throw new ArgumentOutOfRangeException(paramName, ResourceStrings.Arg_OutOfRange_RequireZero);
     }
 
@@ -1394,9 +1394,9 @@ public static partial class ThrowHelper
     public static void ThrowIfPositive<T>(
         T value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
-        where T : IComparable<T>
+        where T : struct, IComparable<T>
     {
-        if (value.CompareTo(default!) > 0)
+        if (value.CompareTo(default) > 0)
             throw new ArgumentOutOfRangeException(paramName, ResourceStrings.Arg_OutOfRange_RequireNonPositive);
     }
 
@@ -1559,9 +1559,9 @@ public static partial class ThrowHelper
     public static void ThrowIfZero<T>(
         T value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
-        where T : IEquatable<T>
+        where T : struct, IEquatable<T>
     {
-        if (value.Equals(default!))
+        if (value.Equals(default))
             throw new ArgumentOutOfRangeException(paramName, ResourceStrings.Arg_OutOfRange_RequireNonZero);
     }
 
@@ -1578,9 +1578,9 @@ public static partial class ThrowHelper
     public static void ThrowIfZeroOrNegative<T>(
         T value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
-        where T : IComparable<T>
+        where T : struct, IComparable<T>
     {
-        if (value.CompareTo(default!) <= 0)
+        if (value.CompareTo(default) <= 0)
             throw new ArgumentOutOfRangeException(paramName, ResourceStrings.Arg_OutOfRange_RequirePositive);
     }
 
@@ -1597,9 +1597,9 @@ public static partial class ThrowHelper
     public static void ThrowIfZeroOrPositive<T>(
         T value,
         [CallerArgumentExpression(nameof(value))] string? paramName = null)
-        where T : IComparable<T>
+        where T : struct, IComparable<T>
     {
-        if (value.CompareTo(default!) >= 0)
+        if (value.CompareTo(default) >= 0)
             throw new ArgumentOutOfRangeException(paramName, ResourceStrings.Arg_OutOfRange_RequireNegative);
     }
 
