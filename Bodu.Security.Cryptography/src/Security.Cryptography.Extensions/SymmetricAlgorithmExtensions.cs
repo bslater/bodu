@@ -45,12 +45,12 @@ namespace Bodu.Security.Cryptography.Extensions;
 ///   </item>
 /// </list>
 /// <para>
-/// All operations honour the algorithm's configured <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode"/>
+/// All operations honor the algorithm's configured <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode"/>
 /// and <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding"/>; for AEAD modes (GCM, CCM, EAX, …) prefer
 /// the dedicated <see cref="AeadBlockCipherModeTransformExtensions"/> in the same namespace, which handles associated
-/// data and tag layout. Async overloads honour <see cref="System.Threading.CancellationToken"/> at every read boundary.
+/// data and tag layout. Async overloads honor <see cref="System.Threading.CancellationToken"/> at every read boundary.
 /// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> instances are not thread-safe; share them only behind
-/// explicit synchronisation.
+/// explicit synchronization.
 /// </para>
 /// <example>
 /// <code language="csharp">

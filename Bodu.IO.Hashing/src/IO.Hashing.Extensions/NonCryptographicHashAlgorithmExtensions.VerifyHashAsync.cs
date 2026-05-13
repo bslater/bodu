@@ -35,14 +35,14 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <see langword="null" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// <paramref name="cancellationToken" /> was signalled before or during stream reading.
+    /// <paramref name="cancellationToken" /> was signaled before or during stream reading.
     /// </exception>
     /// <remarks>
     /// <para>
     /// The algorithm state is reset before the stream is read. Any prior incremental state is discarded.
     /// </para>
     /// <para>
-    /// If <paramref name="cancellationToken" /> is already cancelled on entry, an
+    /// If <paramref name="cancellationToken" /> is already canceled on entry, an
     /// <see cref="OperationCanceledException" /> is thrown immediately before any I/O begins.
     /// </para>
     /// </remarks>
@@ -87,7 +87,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <see langword="null" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// <paramref name="cancellationToken" /> was signalled before or during stream reading.
+    /// <paramref name="cancellationToken" /> was signaled before or during stream reading.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -96,7 +96,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// non-match and returns <see langword="false" />.
     /// </para>
     /// <para>
-    /// If <paramref name="cancellationToken" /> is already cancelled on entry, an
+    /// If <paramref name="cancellationToken" /> is already canceled on entry, an
     /// <see cref="OperationCanceledException" /> is thrown immediately before any I/O begins.
     /// </para>
     /// </remarks>
@@ -147,7 +147,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// Thrown if <paramref name="algorithm" /> or <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// <paramref name="cancellationToken" /> was signalled before or during stream reading.
+    /// <paramref name="cancellationToken" /> was signaled before or during stream reading.
     /// </exception>
     /// <remarks>
     /// <para>
@@ -155,7 +155,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <see cref="ReadOnlyMemory{T}" /> buffer.
     /// </para>
     /// <para>
-    /// If <paramref name="cancellationToken" /> is already cancelled on entry, an
+    /// If <paramref name="cancellationToken" /> is already canceled on entry, an
     /// <see cref="OperationCanceledException" /> is thrown immediately before any I/O begins.
     /// </para>
     /// </remarks>

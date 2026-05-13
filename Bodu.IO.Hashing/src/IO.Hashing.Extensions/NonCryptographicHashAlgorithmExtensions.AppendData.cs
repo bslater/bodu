@@ -15,7 +15,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 {
     /// <summary>
     /// Feeds a span of bytes into the ongoing hash computation of the specified <see cref="NonCryptographicHashAlgorithm" />
-    /// without finalising it.
+    /// without finalizing it.
     /// </summary>
     /// <param name="algorithm">
     /// The <see cref="NonCryptographicHashAlgorithm" /> instance receiving the data. Must not be <see langword="null" />.
@@ -47,7 +47,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
     /// <summary>
     /// Reads all bytes from <paramref name="source" /> and feeds them into the hash accumulator via
-    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />, without finalising the computation.
+    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />, without finalizing the computation.
     /// </summary>
     /// <param name="algorithm">
     /// The <see cref="NonCryptographicHashAlgorithm" /> instance receiving the data. Must not be <see langword="null" />.
@@ -70,7 +70,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <remarks>
     /// <para>
     /// This method allows large or streaming sources to be incorporated into an incremental hash computation. Because only
-    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> is called, the hash state is not finalised after
+    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> is called, the hash state is not finalized after
     /// this method returns.
     /// </para>
     /// <para>

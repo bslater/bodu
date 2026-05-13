@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// <remarks>
 /// <para>
 /// The request identifies the inclusive date range the caller cares about and the optional territory, calendar, and filter
-/// context that should be applied during materialisation and emission.
+/// context that should be applied during materialization and emission.
 /// </para>
 /// </remarks>
 internal sealed record NotableDateRangeRequest

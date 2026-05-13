@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Calendar;
 /// <summary>
 /// Represents a composable predicate applied in two stages when querying <see cref="NotableDate" /> instances from an
 /// <see cref="INotableDateService" />: a primary gate evaluated against the originating <see cref="NotableDateRule" /> before the date
-/// is resolved, and a secondary gate evaluated against the materialised <see cref="NotableDate" />.
+/// is resolved, and a secondary gate evaluated against the materialized <see cref="NotableDate" />.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -22,21 +22,21 @@ namespace Bodu.Globalization.Calendar;
 /// resolving the date. When a rule fails the primary gate the service skips the date-resolution step entirely, avoiding the cost of
 /// algorithm invocation, calendar conversion, and observance-adjustment evaluation for rules that cannot produce matching dates.
 /// Filters whose criteria are fully known from the rule — such as <see cref="ForCategory" />, <see cref="WithTag" />,
-/// <see cref="WithName" />, and <see cref="IsNonWorkingDay" /> — are deterministic at this stage and maximise the optimisation.
+/// <see cref="WithName" />, and <see cref="IsNonWorkingDay" /> — are deterministic at this stage and maximize the optimization.
 /// </para>
 /// <para>
-/// <b>Secondary gate (date-level)</b>: Predicates that require the materialised <see cref="NotableDate" /> — such as
+/// <b>Secondary gate (date-level)</b>: Predicates that require the materialized <see cref="NotableDate" /> — such as
 /// <see cref="InDateRange" /> and <see cref="WasAdjusted" /> — are evaluated after the date is resolved. These predicates always
 /// allow the rule to pass the primary gate; all filtering occurs on the resolved date.
 /// </para>
 /// <para>
-/// <b>Composition behaviour</b>: When filters are combined with <see cref="And" />, a rule is skipped as soon as any primary-capable
+/// <b>Composition behavior</b>: When filters are combined with <see cref="And" />, a rule is skipped as soon as any primary-capable
 /// clause evaluates to <see langword="false" />. When combined with <see cref="Or" />, a rule is skipped only if every branch's
 /// primary gate returns <see langword="false" />.
 /// </para>
 /// <para>
 /// <b>Caching</b>: Filtered queries bypass the per-year cache maintained by <see cref="NotableDateService" /> so that unfiltered
-/// queries continue to receive complete, correctly cached results. The primary gate optimisation therefore applies on every filtered
+/// queries continue to receive complete, correctly cached results. The primary gate optimization therefore applies on every filtered
 /// call rather than only on the first (cold) access.
 /// </para>
 /// </remarks>
@@ -74,14 +74,14 @@ public sealed class NotableDateFilter
     /// <summary>The primary gate predicate evaluated against each <see cref="NotableDateRule" /> before date resolution.</summary>
     private readonly Func<NotableDateRule, bool> _ruleGate;
 
-    /// <summary>The secondary gate predicate evaluated against each materialised <see cref="NotableDate" />.</summary>
+    /// <summary>The secondary gate predicate evaluated against each materialized <see cref="NotableDate" />.</summary>
     private readonly Func<NotableDate, bool> _dateGate;
 
     /// <summary>
     /// Initializes a new <see cref="NotableDateFilter" /> with explicit primary and secondary gate delegates.
     /// </summary>
     /// <param name="ruleGate">The primary gate predicate evaluated against each rule before date resolution.</param>
-    /// <param name="dateGate">The secondary gate predicate evaluated against each materialised date.</param>
+    /// <param name="dateGate">The secondary gate predicate evaluated against each materialized date.</param>
     private NotableDateFilter(Func<NotableDateRule, bool> ruleGate, Func<NotableDate, bool> dateGate)
     {
         _ruleGate = ruleGate;
@@ -386,7 +386,7 @@ public sealed class NotableDateFilter
         _ruleGate(rule);
 
     /// <summary>
-    /// Evaluates the secondary gate against the materialised <paramref name="date" />.
+    /// Evaluates the secondary gate against the materialized <paramref name="date" />.
     /// </summary>
     /// <param name="date">The resolved notable date to evaluate.</param>
     /// <returns><see langword="true" /> if the date satisfies all filter criteria; otherwise <see langword="false" />.</returns>

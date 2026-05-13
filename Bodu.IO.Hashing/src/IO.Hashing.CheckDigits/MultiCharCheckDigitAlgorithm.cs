@@ -14,14 +14,14 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Parallel in design to <see cref="CheckDigitAlgorithm" />, this base generalises the output from a single
+/// Parallel in design to <see cref="CheckDigitAlgorithm" />, this base generalizes the output from a single
 /// character to a run of <see cref="CheckLength" /> decimal digits, and broadens the input to whichever subset
 /// of ASCII the concrete algorithm accepts via <see cref="InputAlphabet" />.
 /// </para>
 /// <para>
 /// The streaming surface — <see cref="Append(ReadOnlySpan{char})" />, <see cref="Reset" />, and the two
 /// <c>GetCurrentCheckDigits</c> overloads — mirrors the familiar hash-algorithm idiom. Reading the current check
-/// code is non-destructive and idempotent. Concrete implementations document their empty-body behaviour.
+/// code is non-destructive and idempotent. Concrete implementations document their empty-body behavior.
 /// </para>
 /// <para>
 /// Instances are <b>not</b> thread-safe. Each thread that needs a running check should construct its own instance.
@@ -82,7 +82,7 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// <summary>
     /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
     /// </summary>
-    /// <remarks>Equivalent in behaviour to constructing a fresh instance of the same concrete type.</remarks>
+    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
     public abstract void Reset();
 
     /// <summary>

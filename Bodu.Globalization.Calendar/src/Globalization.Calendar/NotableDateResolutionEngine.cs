@@ -7,21 +7,21 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Coordinates notable-date occurrence materialisation for a requested chronological window.
+/// Coordinates notable-date occurrence materialization for a requested chronological window.
 /// </summary>
 /// <remarks>
 /// <para>
 /// This engine is the integration seam between the rule occurrence resolver and the chronological resolution window.
 /// </para>
 /// <para>
-/// When adjustment processing is enabled, the engine materialises a small padded source window around the requested output
+/// When adjustment processing is enabled, the engine materializes a small padded source window around the requested output
 /// window. This allows adjusted dates whose original anchor lies just outside the requested range to still be projected into
 /// the caller's observed-date output.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
 {
-    private const int AdjustmentMaterialisationPaddingDays = 14;
+    private const int AdjustmentMaterializationPaddingDays = 14;
 
     private readonly INotableDateRuleOccurrenceResolver _occurrenceResolver;
     private readonly INotableDateResolutionAdjustmentProcessor? _adjustmentProcessor;
@@ -29,7 +29,7 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateResolutionEngine" /> class.
     /// </summary>
-    /// <param name="occurrenceResolver">The resolver used to materialise base rule occurrences.</param>
+    /// <param name="occurrenceResolver">The resolver used to materialize base rule occurrences.</param>
     /// <param name="adjustmentProcessor">The optional processor used to apply observance adjustments.</param>
     /// <exception cref="ArgumentNullException"><paramref name="occurrenceResolver" /> is <see langword="null" />.</exception>
     public NotableDateResolutionEngine(
@@ -48,8 +48,8 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
         ArgumentNullException.ThrowIfNull(request);
 
         NotableDateResolutionWindow window = new(request.StartDate, request.EndDate);
-        NotableDateResolutionRequest materialisationRequest = CreateMaterialisationRequest(request);
-        IReadOnlyList<ResolvedNotableDateOccurrence> occurrences = _occurrenceResolver.ResolveOccurrences(materialisationRequest);
+        NotableDateResolutionRequest materializationRequest = CreateMaterializationRequest(request);
+        IReadOnlyList<ResolvedNotableDateOccurrence> occurrences = _occurrenceResolver.ResolveOccurrences(materializationRequest);
 
         foreach (ResolvedNotableDateOccurrence occurrence in occurrences)
         {
@@ -69,17 +69,17 @@ internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
     }
 
     /// <summary>
-    /// Creates the occurrence materialisation request used by the engine.
+    /// Creates the occurrence materialization request used by the engine.
     /// </summary>
     /// <param name="request">The caller's original request.</param>
-    /// <returns>The materialisation request.</returns>
-    private NotableDateResolutionRequest CreateMaterialisationRequest(NotableDateResolutionRequest request)
+    /// <returns>The materialization request.</returns>
+    private NotableDateResolutionRequest CreateMaterializationRequest(NotableDateResolutionRequest request)
     {
         if (_adjustmentProcessor is null)
             return request;
 
-        DateTime startDate = AddDaysWithinRange(request.StartDate, -AdjustmentMaterialisationPaddingDays);
-        DateTime endDate = AddDaysWithinRange(request.EndDate, AdjustmentMaterialisationPaddingDays);
+        DateTime startDate = AddDaysWithinRange(request.StartDate, -AdjustmentMaterializationPaddingDays);
+        DateTime endDate = AddDaysWithinRange(request.EndDate, AdjustmentMaterializationPaddingDays);
 
         return new NotableDateResolutionRequest(
             startDate,

@@ -16,7 +16,7 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// For each input byte, JSHash updates the running hash as
-/// <c><![CDATA[hash ^= (hash << 5) + (hash >> 2) + byte]]></c>, seeded with <c>0x4E67C6A7</c>. The finalised
+/// <c><![CDATA[hash ^= (hash << 5) + (hash >> 2) + byte]]></c>, seeded with <c>0x4E67C6A7</c>. The finalized
 /// hash is written to the output buffer in little-endian byte order.
 /// </para>
 /// <para>

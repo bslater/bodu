@@ -73,7 +73,7 @@ public static partial class SequenceGenerator
     /// When <paramref name="step"/> is <c>0</c> the method returns an infinite sequence — callers must compose it with an operator
     /// such as <c>Take</c> or <c>TakeWhile</c> to bound enumeration.
     /// </para>
-    /// <para>The result is deferred and allocation-light; no array or list is materialised.</para>
+    /// <para>The result is deferred and allocation-light; no array or list is materialized.</para>
     /// </remarks>
     /// <example>
     /// <code language="csharp">

@@ -18,7 +18,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// Supply an implementation via the <c>nameLocalizer</c> parameter of the <see cref="NotableDateService" /> constructor. When
-/// supplied, the service replaces each resolved <see cref="NotableDate.Name" /> with the localised form before returning results.
+/// supplied, the service replaces each resolved <see cref="NotableDate.Name" /> with the localized form before returning results.
 /// </para>
 /// </remarks>
 /// <example>
@@ -43,6 +43,6 @@ public interface INotableDateNameLocalizer
     /// </summary>
     /// <param name="notableDate">The notable date being rendered. Must not be <see langword="null" />.</param>
     /// <param name="culture">The target culture. <see langword="null" /> defaults to <see cref="CultureInfo.CurrentCulture" />.</param>
-    /// <returns>The localised display name. Implementations should fall back to <see cref="NotableDate.Name" /> when no translation is found.</returns>
+    /// <returns>The localized display name. Implementations should fall back to <see cref="NotableDate.Name" /> when no translation is found.</returns>
     string GetDisplayName(NotableDate notableDate, CultureInfo? culture = null);
 }

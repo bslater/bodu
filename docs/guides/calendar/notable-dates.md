@@ -153,7 +153,7 @@ Console.WriteLine(isHoliday); // True
 
 ## Pattern 6 — layer custom override rules
 
-Override providers let you add, remove, or modify rules on top of the base rule set without touching the source XML. This is useful for organisation-specific closures or territory-specific corrections.
+Override providers let you add, remove, or modify rules on top of the base rule set without touching the source XML. This is useful for organization-specific closures or territory-specific corrections.
 
 ```csharp
 using Bodu.Globalization.Calendar;
@@ -320,7 +320,7 @@ Filtered queries apply the predicate in two stages:
 
 1. **Primary gate (rule-level)** — evaluated against each `NotableDateRule` *before* the date is resolved. Rules that fail are skipped entirely, avoiding the cost of algorithm invocation and adjustment evaluation. Factory methods such as `ForCategory`, `WithTag`, `WithName`, and `IsNonWorkingDay` operate at this stage.
 
-2. **Secondary gate (date-level)** — evaluated against the materialised `NotableDate` *after* resolution. Factory methods such as `InDateRange`, `WasAdjusted`, and `WithMinDuration` operate here because their result is not known until the date is computed.
+2. **Secondary gate (date-level)** — evaluated against the materialized `NotableDate` *after* resolution. Factory methods such as `InDateRange`, `WasAdjusted`, and `WithMinDuration` operate here because their result is not known until the date is computed.
 
 Filtered queries bypass the per-year cache so that unfiltered queries continue to return complete cached results.
 

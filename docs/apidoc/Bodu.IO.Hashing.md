@@ -24,16 +24,16 @@ Reach for this library when you need a fast, deterministic checksum for error de
 **Fingerprints — `Bodu.IO.Hashing`**
 
 - <xref:Bodu.IO.Hashing.Fnv1a32> / <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.Fnv132> / <xref:Bodu.IO.Hashing.Fnv164> — constant-memory streaming FNV; prefer `Fnv1a*` for better avalanche.
-- <xref:Bodu.IO.Hashing.CityHash32> / <xref:Bodu.IO.Hashing.CityHash64> / <xref:Bodu.IO.Hashing.CityHash128> — SIMD-friendly hashes optimised for long inputs.
+- <xref:Bodu.IO.Hashing.CityHash32> / <xref:Bodu.IO.Hashing.CityHash64> / <xref:Bodu.IO.Hashing.CityHash128> — SIMD-friendly hashes optimized for long inputs.
 - <xref:Bodu.IO.Hashing.MurmurHash3_32> / <xref:Bodu.IO.Hashing.MurmurHash3_128> — seeded high-avalanche fingerprints.
 - <xref:Bodu.IO.Hashing.Pearson> — table-driven hash with output widths from 8 to 2048 bits in 8-bit steps; five built-in permutation tables via <xref:Bodu.IO.Hashing.PearsonTableType>.
 - <xref:Bodu.IO.Hashing.Bernstein>, <xref:Bodu.IO.Hashing.BKDR>, <xref:Bodu.IO.Hashing.SDBM>, <xref:Bodu.IO.Hashing.JSHash>, <xref:Bodu.IO.Hashing.Elf64>, <xref:Bodu.IO.Hashing.ApHash>, <xref:Bodu.IO.Hashing.Pjw32>, <xref:Bodu.IO.Hashing.SuperFastHash> — classic string hashes from compilers and early web tooling.
 - <xref:Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm`1> — abstract CRTP base for buffered block-oriented algorithms.
-- <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — optional contract that reverse-finalises a stored digest and continues appending; implemented by <xref:Bodu.IO.Hashing.Checksums.Crc>.
+- <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — optional contract that reverse-finalizes a stored digest and continues appending; implemented by <xref:Bodu.IO.Hashing.Checksums.Crc>.
 
 **Checksums — `Bodu.IO.Hashing.Checksums`**
 
-- <xref:Bodu.IO.Hashing.Checksums.Crc> — the single CRC engine. Configured with a <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, it handles widths from 1 to 64 bits, honours polynomial, initial value, input / output reflection, and final XOR, and ships with a shared lookup-table cache.
+- <xref:Bodu.IO.Hashing.Checksums.Crc> — the single CRC engine. Configured with a <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, it handles widths from 1 to 64 bits, honors polynomial, initial value, input / output reflection, and final XOR, and ships with a shared lookup-table cache.
 - <xref:Bodu.IO.Hashing.Checksums.CrcStandard> — an immutable parameter set: name, width, polynomial, initial value, reflect-in, reflect-out, XOR-out. Exposes common standards as named properties (`CRC32_ISOHDLC`, `CRC32_ISCSI`, `CRC16_MODBUS`, `CRC64_XZ`, …) and provides `FromName` / `TryFromName` over canonical names and published aliases.
 - <xref:Bodu.IO.Hashing.Checksums.CrcStandards> — an enum covering every canonical CRC RevEng entry (113 standards as of the last catalogue fetch).
 - <xref:Bodu.IO.Hashing.Checksums.CrcLookupTableCache> — thread-safe cache of 256-entry lookup tables, keyed by (width, polynomial, reflect-in), shared process-wide through <xref:Bodu.IO.Hashing.Checksums.Crc.GlobalCache>.
@@ -82,6 +82,6 @@ byte[] combined = crc.ComputeHashFrom(previous, Encoding.UTF8.GetBytes(" jumps o
 - **Not cryptographically secure.** Every algorithm here is designed for error detection and hash-table distribution, not authentication. An attacker who can choose the input can trivially forge the output. Pair with a MAC or signature if integrity against an adversary matters — see <xref:Bodu.Security.Cryptography.SipHash64> for a keyed short-input hash, or `System.Security.Cryptography.SHA256` for a full cryptographic digest.
 - **Shared lookup tables.** <xref:Bodu.IO.Hashing.Checksums.Crc> instances with identical (width, polynomial, reflect-in) triples share a single 256-entry lookup table through <xref:Bodu.IO.Hashing.Checksums.Crc.GlobalCache>. Constructing a hundred `Crc(CrcStandard.CRC32_ISOHDLC)` instances allocates one table, not a hundred.
 - **Non-destructive `GetCurrentHash`.** Calling `NonCryptographicHashAlgorithm.GetCurrentHash` snapshots the accumulator and applies the final reflect / XOR / width-mask on the copy, so in-progress hashing is not disturbed. Call it as many times as you like.
-- **Resumable.** <xref:Bodu.IO.Hashing.Checksums.Crc> implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — reverse-finalise a stored digest, append further data, re-finalise. Handy for chunked streams where re-reading earlier bytes is expensive.
+- **Resumable.** <xref:Bodu.IO.Hashing.Checksums.Crc> implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> — reverse-finalize a stored digest, append further data, re-finalize. Handy for chunked streams where re-reading earlier bytes is expensive.
 - **Determinism and portability.** All algorithms produce identical byte-for-byte output across platforms and architectures for the same input and configuration.
 - **See also:** the [Using CRC](~/guides/io-hashing/crc.md) and [Using Fletcher](~/guides/io-hashing/fletcher.md) guides, the [full CRC catalogue](~/guides/io-hashing/crc-catalogue.md), the [Bodu.IO.Hashing introduction](~/docs/io-hashing/index.md), and the [Algorithm families](~/docs/algorithm-families.md) overview.

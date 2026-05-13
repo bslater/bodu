@@ -14,24 +14,24 @@ namespace Bodu.Collections.Generic;
 public sealed partial class Multiset<T>
     : System.Collections.ICollection
 {
-    /// <summary>Lazily initialised synchronisation root for <see cref="System.Collections.ICollection.SyncRoot"/>.</summary>
+    /// <summary>Lazily initialized synchronization root for <see cref="System.Collections.ICollection.SyncRoot"/>.</summary>
     [NonSerialized]
     private object? _syncRoot;
 
     /// <summary>
-    /// Gets a value indicating whether access to the <see cref="Multiset{T}"/> is synchronised (thread-safe).
+    /// Gets a value indicating whether access to the <see cref="Multiset{T}"/> is synchronized (thread-safe).
     /// Always returns <see langword="false"/>; <see cref="Multiset{T}"/> is not thread-safe.
     /// </summary>
     /// <value>Always <see langword="false"/>.</value>
     /// <returns><see langword="false"/>.</returns>
-    /// <remarks>External synchronisation is the caller's responsibility.</remarks>
+    /// <remarks>External synchronization is the caller's responsibility.</remarks>
     bool ICollection.IsSynchronized => false;
 
     /// <summary>
-    /// Gets a lazily-initialised object that can be used to synchronise access to the <see cref="Multiset{T}"/>.
+    /// Gets a lazily-initialized object that can be used to synchronize access to the <see cref="Multiset{T}"/>.
     /// </summary>
     /// <value>A non-null object suitable as a <see cref="Monitor"/> target.</value>
-    /// <returns>The synchronisation root object.</returns>
+    /// <returns>The synchronization root object.</returns>
     object ICollection.SyncRoot =>
         _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
 

@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.Checksums
 {
     /// <summary>
     /// Identifies a CRC parameter set defined in the <a href="https://reveng.sourceforge.io/crc-catalogue/all.htm">CRC RevEng catalogue</a>.
-    /// Pass to <see cref="CrcStandard.Get(CrcStandards)" /> to materialise the corresponding <see cref="CrcStandard" /> on demand.
+    /// Pass to <see cref="CrcStandard.Get(CrcStandards)" /> to materialize the corresponding <see cref="CrcStandard" /> on demand.
     /// </summary>
     /// <remarks>
     /// <para>The enum covers only canonical names. Published aliases (for example <c>CRC-32</c> or <c>PKZIP</c>) are not separate

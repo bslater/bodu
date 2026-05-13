@@ -25,7 +25,7 @@ namespace Bodu.IO.Hashing;
 /// <strong>When to choose BKDR.</strong> BKDR is the polynomial rolling hash from K&amp;R's "The C Programming
 /// Language" — a textbook choice for symbol tables, lexer keyword maps, and other small-string keying tasks.
 /// Pick it when interoperating with code that already uses the K&amp;R formulation, or when the input is a
-/// short identifier and avalanche quality matters less than predictable behaviour. For modern hash-table
+/// short identifier and avalanche quality matters less than predictable behavior. For modern hash-table
 /// workloads prefer <see cref="Fnv1a32"/> (better avalanche on the same per-byte cost) or
 /// <see cref="MurmurHash3_32"/> (much better distribution on inputs longer than ~16 bytes).
 /// </para>

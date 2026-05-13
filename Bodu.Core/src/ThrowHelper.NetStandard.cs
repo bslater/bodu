@@ -23,7 +23,7 @@ public static partial class ThrowHelper
     /// Thrown when <paramref name="array" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when any element in <paramref name="array" /> is not a recognised numeric type.
+    /// Thrown when any element in <paramref name="array" /> is not a recognized numeric type.
     /// </exception>
     /// <remarks>
     /// Validates that each non-null element is one of the primitive numeric types: <see cref="byte" />,
@@ -773,7 +773,7 @@ public static partial class ThrowHelper
     /// exactly one set bit (i.e. <c>value &lt;= 0</c> or <c>(value &amp; (value - 1)) != 0</c>).
     /// </exception>
     /// <remarks>
-    /// A specialisation of the positive-multiple-of family. When the divisor is itself an arbitrary positive
+    /// A specialization of the positive-multiple-of family. When the divisor is itself an arbitrary positive
     /// integer rather than a power of two, use <see cref="ThrowIfNotPositiveMultipleOf(int, int)" /> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -830,7 +830,7 @@ public static partial class ThrowHelper
     /// <remarks>
     /// Useful for validating inputs to algorithms that operate on uppercase alphanumeric identifiers, such as
     /// ISO 7064 MOD 97-10 (IBAN / LEI), ISIN, SEDOL, and CUSIP. Lowercase letters are <b>not</b> accepted — the
-    /// caller is expected to normalise before validation.
+    /// caller is expected to normalize before validation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotAsciiAlphanumericUppercase(char value)

@@ -74,7 +74,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <c>(width, polynomial, reflectIn)</c> tuple and shared via <see cref="GlobalCache"/>, so creating multiple
 /// <see cref="Crc"/> instances for the same standard is cheap. The hot path uses byte-at-a-time table lookups; for
 /// throughput-critical code consider re-using a single instance and feeding it large spans rather than repeatedly
-/// constructing new ones. Instances are <strong>not thread-safe</strong>; share behind explicit synchronisation.
+/// constructing new ones. Instances are <strong>not thread-safe</strong>; share behind explicit synchronization.
 /// </para>
 /// <note type="important">CRC is <strong>not</strong> cryptographically secure. It detects accidental corruption,
 /// not adversarial tampering — collisions are easy to construct. Use a member of <c>Bodu.Security.Cryptography</c> or
@@ -207,7 +207,7 @@ public sealed class Crc
 
     /// <inheritdoc />
     /// <remarks>
-    /// Finalisation (output reflection, XOR-out, and width-masking) is applied to a snapshot of the accumulator so that
+    /// Finalization (output reflection, XOR-out, and width-masking) is applied to a snapshot of the accumulator so that
     /// the instance remains usable for further <see cref="Append(ReadOnlySpan{byte})" /> calls after retrieval.
     /// </remarks>
     protected override void GetCurrentHashCore(Span<byte> destination)
@@ -220,7 +220,7 @@ public sealed class Crc
     /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state first.
     /// </summary>
     /// <param name="data">The input data to hash.</param>
-    /// <returns>A byte array containing the finalised CRC value, sized according to <see cref="Size" />.</returns>
+    /// <returns>A byte array containing the finalized CRC value, sized according to <see cref="Size" />.</returns>
     public byte[] ComputeHash(ReadOnlySpan<byte> data)
     {
         this.Reset();
@@ -234,8 +234,8 @@ public sealed class Crc
 
     /// <inheritdoc />
     /// <remarks>
-    /// Reverses finalisation on <paramref name="previousHash" /> by undoing XOR-out and reflection (if applicable),
-    /// continues the CRC computation with the full <paramref name="newData" /> array, and returns the finalised CRC
+    /// Reverses finalization on <paramref name="previousHash" /> by undoing XOR-out and reflection (if applicable),
+    /// continues the CRC computation with the full <paramref name="newData" /> array, and returns the finalized CRC
     /// hash value as a new byte array.
     /// </remarks>
     public byte[] ComputeHashFrom(byte[] previousHash, byte[] newData)
@@ -248,7 +248,7 @@ public sealed class Crc
 
     /// <inheritdoc />
     /// <remarks>
-    /// Reverses finalisation on <paramref name="previousHash" /> and continues the CRC computation with a sliced segment
+    /// Reverses finalization on <paramref name="previousHash" /> and continues the CRC computation with a sliced segment
     /// of <paramref name="newData" /> (starting at <paramref name="offset" /> and spanning <paramref name="length" />).
     /// </remarks>
     public byte[] ComputeHashFrom(byte[] previousHash, byte[] newData, int offset, int length)
@@ -261,7 +261,7 @@ public sealed class Crc
 
     /// <inheritdoc />
     /// <remarks>
-    /// Reverses finalisation on <paramref name="previousHash" />, resumes the CRC computation with the contents of
+    /// Reverses finalization on <paramref name="previousHash" />, resumes the CRC computation with the contents of
     /// <paramref name="newData" />, and returns the final CRC hash as a new byte array.
     /// </remarks>
     public byte[] ComputeHashFrom(ReadOnlySpan<byte> previousHash, ReadOnlySpan<byte> newData)
@@ -273,9 +273,9 @@ public sealed class Crc
 
     /// <inheritdoc />
     /// <remarks>
-    /// Reverses finalisation on <paramref name="previousHash" /> by undoing the XOR-out and reflection (if applicable),
-    /// continues the CRC computation with <paramref name="newData" />, and finalises the result into
-    /// <paramref name="destination" />. After this call returns, the instance accumulator reflects the finalised state;
+    /// Reverses finalization on <paramref name="previousHash" /> by undoing the XOR-out and reflection (if applicable),
+    /// continues the CRC computation with <paramref name="newData" />, and finalizes the result into
+    /// <paramref name="destination" />. After this call returns, the instance accumulator reflects the finalized state;
     /// call <see cref="Reset" /> before reusing the instance for a new computation from the initial value.
     /// </remarks>
     public bool TryComputeHashFrom(
@@ -289,19 +289,19 @@ public sealed class Crc
                 "Hash length does not match the expected length.",
                 nameof(previousHash));
 
-        // Deserialise prior hash value. The width-byte hash is stored little-endian; read into an 8-byte buffer so
+        // Deserialize prior hash value. The width-byte hash is stored little-endian; read into an 8-byte buffer so
         // that widths below 64 bits zero-extend cleanly.
         Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
         previousHash.CopyTo(fullWord);
         this._workingHash = BinaryPrimitives.ReadUInt64LittleEndian(fullWord);
 
-        // Undo finalisation: XOR first, then reflect back to the working-state orientation when the algorithm applies
+        // Undo finalization: XOR first, then reflect back to the working-state orientation when the algorithm applies
         // XOR-reflected output.
         this._workingHash ^= this._standard.XOrOut;
         if (this._standard.ReflectIn ^ this._standard.ReflectOut)
             this._workingHash = NumericExtensions.ReverseBitsUnchecked(this._workingHash, this._hashSizeBits);
 
-        // Continue hashing and finalise again.
+        // Continue hashing and finalize again.
         this.ProcessBlocks(newData);
 
         if (destination.Length < this.HashLengthInBytes)
@@ -331,8 +331,8 @@ public sealed class Crc
     /// <summary>
     /// Applies final output reflection, XOR-out, and width-masking to the supplied working CRC value.
     /// </summary>
-    /// <param name="value">The working CRC accumulator to finalise.</param>
-    /// <returns>The finalised CRC output value, width-masked to the standard's polynomial size.</returns>
+    /// <param name="value">The working CRC accumulator to finalize.</param>
+    /// <returns>The finalized CRC output value, width-masked to the standard's polynomial size.</returns>
     /// <remarks>
     /// The supplied <paramref name="value" /> is passed by value and the result is returned; no instance state is
     /// mutated. This is the load-bearing property that lets <see cref="GetCurrentHashCore" /> stay non-destructive.

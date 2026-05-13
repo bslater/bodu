@@ -34,7 +34,7 @@ namespace Bodu.IO.Hashing.Extensions;
 ///   </item>
 ///   <item>
 ///     <term>One-shot compute</term>
-///     <description><c>ComputeHash</c> / <c>ComputeHashAsync</c> — append, finalise, and reset in a single call,
+///     <description><c>ComputeHash</c> / <c>ComputeHashAsync</c> — append, finalize, and reset in a single call,
 ///     returning the digest as a freshly allocated <see cref="byte"/> array. Inputs include byte arrays, byte-array
 ///     slices, <see cref="System.ReadOnlyMemory{T}"/>, and <see cref="System.IO.Stream"/>.</description>
 ///   </item>
@@ -56,7 +56,7 @@ namespace Bodu.IO.Hashing.Extensions;
 /// so verification is constant-time and safe to use against attacker-supplied digests even though the underlying
 /// algorithm itself provides no preimage resistance. The algorithm instance is stateful and reset after each
 /// <c>ComputeHash</c> or <c>VerifyHash</c> call, but it is not thread-safe — share instances only behind explicit
-/// synchronisation. Stream overloads do not dispose the supplied stream.
+/// synchronization. Stream overloads do not dispose the supplied stream.
 /// </para>
 /// <example>
 /// <code language="csharp">

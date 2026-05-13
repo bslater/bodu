@@ -10,13 +10,13 @@ namespace Bodu.Collections.Generic.Extensions;
 
 /// <summary>
 /// Provides deferred-execution combinators over <see cref="IEnumerable{T}"/> — batching, caching, multi-aggregate fan-out,
-/// recursive descent, randomisation, and set-membership predicates — that complement the standard LINQ surface for production
+/// recursive descent, randomization, and set-membership predicates — that complement the standard LINQ surface for production
 /// pipeline code.
 /// </summary>
 /// <remarks>
 /// <para>
 /// LINQ-to-Objects covers the common cases — <c>Where</c>, <c>Select</c>, <c>GroupBy</c>, <c>Aggregate</c> — but most non-trivial
-/// pipelines end up reaching for the same hand-rolled helpers: chunking a stream into fixed-size windows, materialising once and
+/// pipelines end up reaching for the same hand-rolled helpers: chunking a stream into fixed-size windows, materializing once and
 /// replaying many times, walking a tree of children without recursion, or computing several aggregates in a single pass to avoid
 /// re-enumerating an expensive source. This class collects those helpers behind verb-led names and shapes them so that they
 /// compose naturally with the rest of LINQ.

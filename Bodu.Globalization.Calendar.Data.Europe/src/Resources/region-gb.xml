@@ -8,7 +8,7 @@
 
   Country-specific rules explicitly import only the inherited global and
   Christian dates that the United Kingdom observes, and override naming,
-  territory, nonWorking, adjustment, or tagging behaviour where required.
+  territory, nonWorking, adjustment, or tagging behavior where required.
 
   Note on family observances:
     - Mothering Sunday (the UK equivalent of Mother's Day) falls on the
@@ -79,7 +79,7 @@
           category="Cultural"
           territory="GB"
           firstYear="1583"
-          comment="Observed on the fourth Sunday of Lent (Laetare Sunday), 21 days before Easter Sunday. A longstanding British and Irish tradition distinct from the internationally observed Mother's Day on the second Sunday in May. Historically, it was the day when people returned to their 'mother church'; today it is celebrated as a day to honour mothers.">
+          comment="Observed on the fourth Sunday of Lent (Laetare Sunday), 21 days before Easter Sunday. A longstanding British and Irish tradition distinct from the internationally observed Mother's Day on the second Sunday in May. Historically, it was the day when people returned to their 'mother church'; today it is celebrated as a day to honor mothers.">
       <OffsetFromAnchor name="Easter Sunday" offset="-21" />
       <Tag>Christian</Tag>
     </Rule>
@@ -173,7 +173,7 @@
 
   <NotableDate name="Saint Andrew's Day">
     <Rule name="fixed-nov-30-weekend-roll-gb-sct" category="Holiday" territory="GB-SCT" nonWorking="true"
-          comment="Scotland's national day, honouring its patron saint Andrew the Apostle. Established as a bank holiday in Scotland by the St Andrew's Day Bank Holiday (Scotland) Act 2007, first observed on 30 November 2007.">
+          comment="Scotland's national day, honoring its patron saint Andrew the Apostle. Established as a bank holiday in Scotland by the St Andrew's Day Bank Holiday (Scotland) Act 2007, first observed on 30 November 2007.">
       <Fixed month="November" day="30" />
       <Tag>BankHoliday</Tag>
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
@@ -186,7 +186,7 @@
 
   <NotableDate name="Saint Patrick's Day">
     <Rule name="fixed-mar-17-weekend-roll-gb-nir" category="Holiday" territory="GB-NIR" nonWorking="true"
-          comment="A bank holiday in Northern Ireland only, honouring the patron saint of Ireland on the traditional date of his death (17 March, c. 461 AD). Also widely observed as a cultural celebration throughout the rest of the UK and Ireland.">
+          comment="A bank holiday in Northern Ireland only, honoring the patron saint of Ireland on the traditional date of his death (17 March, c. 461 AD). Also widely observed as a cultural celebration throughout the rest of the UK and Ireland.">
       <Fixed month="March" day="17" />
       <Tag>BankHoliday</Tag>
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />

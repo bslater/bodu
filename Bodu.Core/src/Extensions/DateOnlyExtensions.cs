@@ -15,7 +15,7 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="DateOnly"/> intentionally exposes very little behaviour beyond a numeric day count, leaving callers to build calendar
+/// <see cref="DateOnly"/> intentionally exposes very little behavior beyond a numeric day count, leaving callers to build calendar
 /// logic by hand or to fall back to <see cref="DateTime"/>. This class supplies the period and weekday arithmetic that most
 /// scheduling, reporting, and fiscal-calendar code needs, expressed directly on <see cref="DateOnly"/> so the time component
 /// cannot leak in by accident.

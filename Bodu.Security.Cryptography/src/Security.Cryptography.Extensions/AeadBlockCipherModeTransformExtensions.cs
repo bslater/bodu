@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <c>plaintext.Length + (TagSize / 8)</c> (or <c>ciphertextWithTag.Length - (TagSize / 8)</c>), call
 /// <see cref="IAeadBlockCipherModeTransform.Encrypt"/> or <see cref="IAeadBlockCipherModeTransform.Decrypt"/>, and
 /// interpret the return value. This class collapses that fixed sequence into a single call that returns a correctly
-/// sized array, matching the shape of <c>AesGcm.Encrypt</c> / <c>AesGcm.Decrypt</c> in the BCL but parameterised over
+/// sized array, matching the shape of <c>AesGcm.Encrypt</c> / <c>AesGcm.Decrypt</c> in the BCL but parameterized over
 /// <em>any</em> AEAD transform implementation.
 /// </para>
 /// <para>

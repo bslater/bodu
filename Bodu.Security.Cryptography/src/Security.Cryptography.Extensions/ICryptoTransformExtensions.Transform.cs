@@ -162,7 +162,7 @@ public static partial class ICryptoTransformExtensions
                 else
                 {
                     // The primary flow failed before FlushFinalBlock completed, so Dispose will
-                    // attempt to finalise an incomplete transform and raise a CryptographicException
+                    // attempt to finalize an incomplete transform and raise a CryptographicException
                     // of its own. Swallow that secondary exception so the original cause propagates.
                     try { cryptoStream.Dispose(); }
                     catch { }

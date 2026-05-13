@@ -153,7 +153,7 @@ public sealed class Skipjack
 
     /// <inheritdoc />
     /// <remarks>
-    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// Also synchronizes <see cref="BlockPadding"/> when the assigned value has a matching member in
     /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding
@@ -168,14 +168,14 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Creates a symmetric <see cref="Skipjack"/> decryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Skipjack"/> decryptor using the specified key and initialization vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be exactly 10 bytes (80 bits) in length. Must not be
     /// <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
+    /// The initialization vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
     /// cipher mode other than ECB.
     /// </param>
     /// <returns>A symmetric <see cref="Skipjack"/> decryptor object implementing <see cref="ICryptoTransform"/>.</returns>
@@ -195,14 +195,14 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Creates a symmetric <see cref="Skipjack"/> encryptor using the specified key and initialisation vector.
+    /// Creates a symmetric <see cref="Skipjack"/> encryptor using the specified key and initialization vector.
     /// </summary>
     /// <param name="rgbKey">
     /// The secret key for the symmetric algorithm. Must be exactly 10 bytes (80 bits) in length. Must not be
     /// <see langword="null"/>.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialisation vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
+    /// The initialization vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
     /// cipher mode other than ECB.
     /// </param>
     /// <returns>A symmetric <see cref="Skipjack"/> encryptor object implementing <see cref="ICryptoTransform"/>.</returns>
@@ -222,7 +222,7 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Generates a cryptographically random initialisation vector (<see cref="SymmetricAlgorithm.IV"/>) suitable for use with the
+    /// Generates a cryptographically random initialization vector (<see cref="SymmetricAlgorithm.IV"/>) suitable for use with the
     /// Skipjack algorithm.
     /// </summary>
     /// <remarks>
@@ -271,7 +271,7 @@ public sealed class Skipjack
     /// resources.
     /// </param>
     /// <remarks>
-    /// Clears any cached key material and initialisation vector before delegating to the base implementation. This method is
+    /// Clears any cached key material and initialization vector before delegating to the base implementation. This method is
     /// idempotent and safe to call multiple times.
     /// </remarks>
     protected override void Dispose(bool disposing)
@@ -292,7 +292,7 @@ public sealed class Skipjack
     }
 
     /// <summary>
-    /// Creates a new <see cref="SkipjackBlockCipher"/> engine initialised with the supplied key.
+    /// Creates a new <see cref="SkipjackBlockCipher"/> engine initialized with the supplied key.
     /// </summary>
     /// <param name="key">The 10-byte key material used to derive the round subkeys.</param>
     /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>

@@ -25,12 +25,12 @@ namespace Bodu.Security.Cryptography;
 /// makes OFB a synchronous stream cipher — the keystream is independent of the plaintext — and immune to bit-flip propagation.
 /// </para>
 /// <para>
-/// The initialisation vector must equal the cipher block size in length and must never be reused under the same
+/// The initialization vector must equal the cipher block size in length and must never be reused under the same
 /// key, otherwise keystreams collide and confidentiality is lost.
 /// </para>
 /// <para>
-/// <strong>When to use OFB.</strong> Pick OFB only for legacy interop. For stream-cipher behaviour
-/// <see cref="CtrModeTransform"/> is the modern default — it parallelises, supports random access, and is the
+/// <strong>When to use OFB.</strong> Pick OFB only for legacy interop. For stream-cipher behavior
+/// <see cref="CtrModeTransform"/> is the modern default — it parallelizes, supports random access, and is the
 /// mode used by every major AEAD construction. OFB's main historical advantage was that bit errors in
 /// transmission do not propagate, but unauthenticated stream ciphers cannot detect those errors at all, so the
 /// guarantee is rarely useful in practice. As with CFB, OFB has no built-in authentication; reach for an AEAD
@@ -63,10 +63,10 @@ public sealed class OfbModeTransform : IBlockCipherModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OfbModeTransform"/> class with the specified cipher and initialisation vector.
+    /// Initializes a new instance of the <see cref="OfbModeTransform"/> class with the specified cipher and initialization vector.
     /// </summary>
     /// <param name="cipher">The block cipher used to generate the keystream.</param>
-    /// <param name="iv">The initialisation vector used to seed the feedback register. A defensive copy is taken.</param>
+    /// <param name="iv">The initialization vector used to seed the feedback register. A defensive copy is taken.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     public OfbModeTransform(IBlockCipher cipher, byte[] iv)
     {

@@ -11,12 +11,12 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This resolver is responsible only for materialising rule occurrences. It does not apply observance adjustments.
+/// This resolver is responsible only for materializing rule occurrences. It does not apply observance adjustments.
 /// </para>
 /// <para>
 /// Rules that are calculated as offsets from a shared anchor are resolved through the calculation-anchor cache and
 /// narrowed through <see cref="AnchorRelativeRuleIndex" />. This allows a query window containing <c>Start of Lent</c>
-/// to calculate <c>Easter Sunday</c> internally without materialising Easter Sunday into the output unless the Easter
+/// to calculate <c>Easter Sunday</c> internally without materializing Easter Sunday into the output unless the Easter
 /// rule itself also falls inside the requested window.
 /// </para>
 /// </remarks>
@@ -183,7 +183,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
     }
 
     /// <summary>
-    /// Adds a materialised occurrence when it intersects the requested output window and satisfies the date filter.
+    /// Adds a materialized occurrence when it intersects the requested output window and satisfies the date filter.
     /// </summary>
     /// <param name="rule">The rule that produced the occurrence.</param>
     /// <param name="anchorDate">The resolved occurrence date.</param>
@@ -225,12 +225,12 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
     }
 
     /// <summary>
-    /// Creates a materialised notable date from a rule and resolved anchor date.
+    /// Creates a materialized notable date from a rule and resolved anchor date.
     /// </summary>
     /// <param name="rule">The source rule.</param>
     /// <param name="date">The resolved date.</param>
     /// <param name="territoryCode">The expanded territory code.</param>
-    /// <returns>The materialised notable date.</returns>
+    /// <returns>The materialized notable date.</returns>
     private static NotableDate BuildNotableDate(
         NotableDateRule rule,
         DateTime date,
@@ -374,7 +374,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         rightEnd.Date >= leftStart.Date;
 
     /// <summary>
-    /// Identifies a materialised occurrence for de-duplication.
+    /// Identifies a materialized occurrence for de-duplication.
     /// </summary>
     /// <param name="Name">The occurrence name.</param>
     /// <param name="Date">The occurrence date.</param>

@@ -516,7 +516,7 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Parses a required enum-valued field, throwing when missing or unrecognised.
+    /// Parses a required enum-valued field, throwing when missing or unrecognized.
     /// </summary>
     /// <typeparam name="TEnum">The target enum type.</typeparam>
     /// <param name="raw">The raw string value to parse.</param>
@@ -712,7 +712,7 @@ public static class NotableDateRuleJsonParser
     /// Flattens a failed schema evaluation into a single diagnostic message that lists each
     /// failing instance location with the keyword(s) that rejected it.
     /// </summary>
-    /// <param name="results">The failed evaluation results to summarise.</param>
+    /// <param name="results">The failed evaluation results to summarize.</param>
     /// <returns>A semicolon-separated diagnostic message.</returns>
     private static string FormatValidationFailures(EvaluationResults results)
     {

@@ -137,7 +137,7 @@ public static partial class HashAlgorithmExtensions
     /// The expected hash value as a byte array. A <see langword="null"/> value causes the task to resolve to <see langword="false"/>.
     /// </param>
     /// <param name="cancellationToken">
-    /// Pre-checked before delegation. If already cancelled, the task resolves to <see langword="false"/>; the synchronous
+    /// Pre-checked before delegation. If already canceled, the task resolves to <see langword="false"/>; the synchronous
     /// delegate cannot otherwise observe the token.
     /// </param>
     /// <returns>
@@ -173,7 +173,7 @@ public static partial class HashAlgorithmExtensions
     /// The expected hash as a hexadecimal string. A <see langword="null"/> value causes the task to resolve to <see langword="false"/>.
     /// </param>
     /// <param name="cancellationToken">
-    /// Pre-checked before delegation. If already cancelled, the task resolves to <see langword="false"/>; the synchronous
+    /// Pre-checked before delegation. If already canceled, the task resolves to <see langword="false"/>; the synchronous
     /// delegate cannot otherwise observe the token.
     /// </param>
     /// <returns>
@@ -214,7 +214,7 @@ public static partial class HashAlgorithmExtensions
     /// The expected hash value as a byte array. A <see langword="null"/> value causes the task to resolve to <see langword="false"/>.
     /// </param>
     /// <param name="cancellationToken">
-    /// Pre-checked before delegation. If already cancelled, the task resolves to <see langword="false"/>; the synchronous
+    /// Pre-checked before delegation. If already canceled, the task resolves to <see langword="false"/>; the synchronous
     /// delegate cannot otherwise observe the token.
     /// </param>
     /// <returns>

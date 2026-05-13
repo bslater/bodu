@@ -17,7 +17,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// This class implements the Blowfish symmetric block cipher designed by Bruce Schneier. It operates on 64-bit (8-byte) blocks and
 /// accepts a variable-length key of between 32 and 448 bits (4 to 56 bytes). The cipher uses a 16-round Feistel network with four
-/// 256-entry, 32-bit S-boxes and an 18-entry 32-bit P-array, all initialised from the hexadecimal digits of pi (π).
+/// 256-entry, 32-bit S-boxes and an 18-entry 32-bit P-array, all initialized from the hexadecimal digits of pi (π).
 /// </para>
 /// <para>
 /// The block operation follows the Blowfish specification directly: split the 64-bit block into two big-endian 32-bit halves,
@@ -96,7 +96,7 @@ public sealed partial class BlowfishBlockCipher
 
         // Blowfish has an intentionally expensive key schedule. Construction completes the full expansion so
         // Encrypt/Decrypt only execute the 16-round block transform.
-        this.InitialiseKeySchedule(key);
+        this.InitializeKeySchedule(key);
     }
 
     /// <inheritdoc />
@@ -271,7 +271,7 @@ public sealed partial class BlowfishBlockCipher
     /// <param name="key">The raw Blowfish key (between 4 and 56 bytes).</param>
     /// <remarks>
     /// <para>
-    /// Blowfish key expansion has three specification-defined phases. First, the mutable P-array and S-boxes are initialised
+    /// Blowfish key expansion has three specification-defined phases. First, the mutable P-array and S-boxes are initialized
     /// from the hexadecimal digits of π. Second, each P-array word is XORed with a 32-bit big-endian word assembled from the
     /// supplied key, cycling through key bytes as required. Third, the all-zero block is repeatedly encrypted with the evolving
     /// cipher state to replace the P-array and all four S-boxes in pairs.
@@ -281,9 +281,9 @@ public sealed partial class BlowfishBlockCipher
     /// S-boxes. The original key span is not retained.
     /// </para>
     /// </remarks>
-    private void InitialiseKeySchedule(ReadOnlySpan<byte> key)
+    private void InitializeKeySchedule(ReadOnlySpan<byte> key)
     {
-        // Phase 1: copy the pi-derived initialisers into the mutable working arrays.
+        // Phase 1: copy the pi-derived initializers into the mutable working arrays.
         s_initP.CopyTo(this._p, 0);
         s_initS0.CopyTo(this._s0, 0);
         s_initS1.CopyTo(this._s1, 0);

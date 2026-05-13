@@ -7,12 +7,12 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Provides options that customise how a <see cref="ResourcePathResolver" /> recognises and rewrites resource paths.
+/// Provides options that customize how a <see cref="ResourcePathResolver" /> recognizes and rewrites resource paths.
 /// </summary>
 public sealed class ResourcePathResolverOptions
 {
     /// <summary>
-    /// Gets the set of fully qualified resource prefixes recognised by the resolver.
+    /// Gets the set of fully qualified resource prefixes recognized by the resolver.
     /// </summary>
     /// <returns>
     /// An <see cref="IReadOnlySet{T}" /> of case-sensitive, ordinal-compared prefixes. A path that begins with one of these

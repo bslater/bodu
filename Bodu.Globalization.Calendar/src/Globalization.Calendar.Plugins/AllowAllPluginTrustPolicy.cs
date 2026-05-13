@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <b>Dev and test only.</b> This policy performs no verification whatsoever. It exists so unit tests and local development
 /// sessions can run without wiring up an allowlist every time. Production hosts — or any host that loads plugins from user-
 /// controlled paths — must use <see cref="FileHashPluginTrustPolicy" />, <see cref="StrongNamePluginTrustPolicy" />, or a
-/// bespoke <see cref="DelegatingPluginTrustPolicy" /> that enforces the relevant organisational policy.
+/// bespoke <see cref="DelegatingPluginTrustPolicy" /> that enforces the relevant organizational policy.
 /// </para>
 /// <para>
 /// The type is intentionally discoverable in IntelliSense so test code can reference it directly; its XML documentation makes

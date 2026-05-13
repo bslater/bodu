@@ -32,7 +32,7 @@ namespace Bodu.Extensions;
 /// <para>
 /// All methods are <c>ref struct</c>-friendly, allocation-free, and operate in place; reversing a partial window leaves elements
 /// outside the window untouched. The methods are not thread-safe — concurrent access to the underlying buffer must be
-/// synchronised externally.
+/// synchronized externally.
 /// </para>
 /// <example>
 /// <code language="csharp">

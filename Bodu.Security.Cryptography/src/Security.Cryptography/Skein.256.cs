@@ -32,7 +32,7 @@ namespace Bodu.Security.Cryptography;
 /// </list>
 /// <para>
 /// <strong>When to choose Skein-256.</strong> The narrowest Skein variant — pick it when 32-byte output is enough
-/// and the surrounding system has standardised on Skein. <see cref="Skein512"/> is the more common default and
+/// and the surrounding system has standardized on Skein. <see cref="Skein512"/> is the more common default and
 /// offers a stronger security margin; <see cref="Skein1024"/> is for cases that want the widest state. For new
 /// general-purpose hashing without an interop constraint <see cref="Blake2b"/> or SHA-2 is the more widely
 /// deployed default.

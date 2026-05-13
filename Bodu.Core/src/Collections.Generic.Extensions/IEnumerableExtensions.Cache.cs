@@ -54,7 +54,7 @@ public static partial class IEnumerableExtensions
         private IEnumerator<T>? _enumerator;
         private volatile ExceptionDispatchInfo? _exception;
         private int _exceptionIndex = -1;
-        private int _initializationState; // 0 = not initialised, 1 = initialising, 2 = initialised
+        private int _initializationState; // 0 = not initialized, 1 = initializing, 2 = initialized
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheEnumerable{T}"/> class.
@@ -91,15 +91,15 @@ public static partial class IEnumerableExtensions
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
-        /// Ensures the cache is initialised and the source enumerator is safely acquired.
+        /// Ensures the cache is initialized and the source enumerator is safely acquired.
         /// </summary>
         private void EnsureInitialized()
         {
-            // Fast path: already initialised
+            // Fast path: already initialized
             if (Volatile.Read(ref _cache) != null)
                 return;
 
-            // Try to claim initialisation responsibility
+            // Try to claim initialization responsibility
             if (Interlocked.CompareExchange(ref _initializationState, 1, 0) == 0)
             {
                 try
@@ -117,12 +117,12 @@ public static partial class IEnumerableExtensions
             }
             else
             {
-                // Spin until the initialising thread finishes (success or failure)
+                // Spin until the initializing thread finishes (success or failure)
                 SpinWait spin = default;
                 while (Volatile.Read(ref _initializationState) != 2)
                     spin.SpinOnce();
 
-                // Re-throw any exception captured during initialisation
+                // Re-throw any exception captured during initialization
                 _exception?.Throw();
             }
         }

@@ -33,8 +33,8 @@ public static partial class IEnumerableExtensions
     /// This method avoids repeated enumeration of either sequence by building a <see cref="HashSet{T}"/> for O(1) membership lookups.
     /// </para>
     /// <para>
-    /// The set is built from whichever collection has fewer elements, when both sizes are known, to minimise allocation and fill cost.
-    /// When sizes are unknown or equal, the set is built from <paramref name="items"/>, which is always materialised and is typically
+    /// The set is built from whichever collection has fewer elements, when both sizes are known, to minimize allocation and fill cost.
+    /// When sizes are unknown or equal, the set is built from <paramref name="items"/>, which is always materialized and is typically
     /// the smaller "needle" set in common usage.
     /// </para>
     /// </remarks>
@@ -55,9 +55,9 @@ public static partial class IEnumerableExtensions
         if (itemsCount == 0)
             return false;
 
-        // Build the membership HashSet from the smaller of the two collections to minimise both
+        // Build the membership HashSet from the smaller of the two collections to minimize both
         // allocation and fill cost. When source is known to be smaller, build from source and
-        // iterate items; otherwise, build from items (always materialised, typically smaller).
+        // iterate items; otherwise, build from items (always materialized, typically smaller).
         var sourceIsSmaller = itemsCount.HasValue
             && source is ICollection<T> sourceCollection
             && sourceCollection.Count < itemsCount.Value;

@@ -12,12 +12,12 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Resolves the anchor date of a <see cref="NotableDateRule" /> for a specified year, dispatching to the appropriate strategy and
-/// honouring temporal bounds, recurrence cadences, anchor look-ups, and algorithm registry resolution.
+/// honoring temporal bounds, recurrence cadences, anchor look-ups, and algorithm registry resolution.
 /// </summary>
 /// <remarks>
 /// <para>
 /// This class replaces the earlier <c>NotableDateResolver</c>. It preserves the same surface area (<see cref="ResolveAnchorDate" />)
-/// while finishing several previously incomplete behaviours: <see cref="NotableDateRule.OccurrenceYears" /> is now honoured;
+/// while finishing several previously incomplete behaviors: <see cref="NotableDateRule.OccurrenceYears" /> is now honored;
 /// circular <c>OffsetFromAnchor</c> chains are detected at every depth; algorithms are looked up via
 /// <see cref="INotableDateAlgorithmRegistry" /> with a CLR <see cref="Type" /> fallback for backward compatibility.
 /// </para>

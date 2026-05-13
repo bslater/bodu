@@ -18,7 +18,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This class extends <see cref="BlockHashAlgorithm{T}"/> with key-handling logic shared by keyed block hashes such as
-/// <see cref="Poly1305"/> and <see cref="SipHash{T}"/>. It centralises defensive copying, key-length validation, disposal of
+/// <see cref="Poly1305"/> and <see cref="SipHash{T}"/>. It centralizes defensive copying, key-length validation, disposal of
 /// secret material, and the hook (<see cref="OnKeyChanged"/>) used by derived classes to derive any key-dependent schedule or
 /// internal state.
 /// </para>
@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to derive from this class.</strong> Pick <see cref="KeyedBlockHashAlgorithm{T}"/> for keyed
-/// hashes that follow the Merkle–Damgård pad-and-finalise pattern and require a fixed-length key —
+/// hashes that follow the Merkle–Damgård pad-and-finalize pattern and require a fixed-length key —
 /// <see cref="Poly1305"/> (32-byte key) and <see cref="SipHash{T}"/> (16-byte key) are the canonical users.
 /// For BLAKE-family hashes that accept an <em>optional</em> variable-length key derive from
 /// <see cref="KeyedDeferredFinalBlockHashAlgorithm{T}"/> instead. For unkeyed Merkle–Damgård hashes use
@@ -163,7 +163,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
 
         // A keyed MAC is unusable without a key. We refuse to silently regenerate one:
         // callers must explicitly set Key (or invoke GenerateKey on subclasses that
-        // support it) before re-initialisation.
+        // support it) before re-initialization.
         if (this.KeyValue is null || this.KeyValue.Length != this.KeySizeValue / 8)
             throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
 
@@ -171,7 +171,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Called after <see cref="KeyValue"/> has been assigned or the algorithm has been re-initialised. Derived classes override
+    /// Called after <see cref="KeyValue"/> has been assigned or the algorithm has been re-initialized. Derived classes override
     /// this to rebuild any key-dependent internal state such as a round-key schedule, precomputed vectors, or accumulator reset.
     /// </summary>
     /// <remarks>

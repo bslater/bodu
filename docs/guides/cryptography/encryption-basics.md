@@ -7,8 +7,8 @@ title: Encryption basics
 This page introduces the mental model that every cipher in the library follows. If you know `System.Security.Cryptography.SymmetricAlgorithm` from the BCL, most of this will feel familiar — with three twists:
 
 1. **`BlockMode`** replaces `Mode`. The inherited `Mode` property (type <xref:System.Security.Cryptography.CipherMode>) only knows about the modes the BCL defined. Bodu ciphers expose a new `BlockMode` property of type <xref:Bodu.Security.Cryptography.CipherModeKind>, which adds `CTR`, `OFB`, and friends. *Set `BlockMode`, not `Mode`.*
-2. **Tweak** is a first-class input for Threefish. Threefish is a *tweakable* block cipher; each call is parameterised by a key, an IV, **and** a 128-bit tweak that acts as a domain-separation label.
-3. **Key / IV / Tweak are lazily generated.** If you never set them, they are materialised on first read from a cryptographically secure RNG. Read the property, or call `GenerateKey()` / `GenerateIV()` / `GenerateTweak()` explicitly.
+2. **Tweak** is a first-class input for Threefish. Threefish is a *tweakable* block cipher; each call is parameterized by a key, an IV, **and** a 128-bit tweak that acts as a domain-separation label.
+3. **Key / IV / Tweak are lazily generated.** If you never set them, they are materialized on first read from a cryptographically secure RNG. Read the property, or call `GenerateKey()` / `GenerateIV()` / `GenerateTweak()` explicitly.
 
 ## Anatomy of an encryption
 
@@ -47,7 +47,7 @@ The four numbered steps above are the shape of **every** encryption in the libra
 | Input | Role | Secret? | Reuse across messages? |
 |---|---|---|---|
 | **Key** | Selects which permutation family to use. | **Yes.** Never transmit or log in the clear. | Yes, within a rotation policy (e.g. rotate per month / per volume). |
-| **IV** (initialisation vector) | Randomises the ciphertext so two messages with the same key and plaintext encrypt to different ciphertexts. | No — the IV travels with the ciphertext. | **No.** Must be unique per message under a given key. For `CBC` it must also be *unpredictable*. For `CTR` / `OFB` reuse is catastrophic. |
+| **IV** (initialization vector) | Randomizes the ciphertext so two messages with the same key and plaintext encrypt to different ciphertexts. | No — the IV travels with the ciphertext. | **No.** Must be unique per message under a given key. For `CBC` it must also be *unpredictable*. For `CTR` / `OFB` reuse is catastrophic. |
 | **Tweak** (Threefish only) | Domain separator. Encrypting the same plaintext under the same key but a different tweak yields unrelated ciphertext. | No — treat like an IV. | Depends on use. For generic encryption, it behaves like an auxiliary IV; for disk encryption-style uses, it encodes the sector/record number. |
 
 ## Using the extension methods
@@ -76,7 +76,7 @@ int bytesRead = alg.Encrypt(src, dst, bufferSize: 4096);
 
 ## Lazy material generation
 
-Reading the `Key`, `IV`, or `Tweak` property on an un-initialised algorithm **allocates random bytes**. That is usually what you want for a fresh encryption, but it means that:
+Reading the `Key`, `IV`, or `Tweak` property on an un-initialized algorithm **allocates random bytes**. That is usually what you want for a fresh encryption, but it means that:
 
 - Reading `alg.Key` once and then encrypting is safe — the same bytes are cached in `KeyValue` and used on the next access.
 - Reading `alg.Key` *before* decrypting a previously-encrypted message will silently generate a **different** key. Decryption will then fail with garbled output or a padding error. Always re-assign the exact bytes used at encryption time.

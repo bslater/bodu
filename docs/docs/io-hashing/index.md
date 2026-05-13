@@ -8,7 +8,7 @@ title: Bodu.IO.Hashing — Introduction
 
 > **Adversary model: none.** Nothing in this library is safe against an attacker who can choose inputs. Use it for error detection, distribution, fingerprinting, and identifier validation — for anything security-sensitive, see [Bodu.Security.Cryptography](../cryptography/index.md).
 
-The library is organised around three subfamilies, each in its own namespace.
+The library is organized around three subfamilies, each in its own namespace.
 
 ## Namespaces and headline types
 
@@ -27,13 +27,13 @@ Fast, distribution-quality hash functions for hash-table keys, in-memory cache b
 | <xref:Bodu.IO.Hashing.BKDR> / <xref:Bodu.IO.Hashing.SDBM> / <xref:Bodu.IO.Hashing.JSHash> / <xref:Bodu.IO.Hashing.Elf64> / <xref:Bodu.IO.Hashing.ApHash> / <xref:Bodu.IO.Hashing.Pjw32> | 32–64 bits | Classic string hashes from compilers and early web servers. |
 | <xref:Bodu.IO.Hashing.SuperFastHash> | 32 bits | Paul Hsieh's hash; designed for short keys. |
 | <xref:Bodu.IO.Hashing.BlockNonCryptographicHashAlgorithm`1> | — | Abstract base for buffered block-oriented algorithms; CRTP-style extension point. |
-| <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> | — | Optional contract: reverse-finalise a stored digest, append more bytes, finalise again. Implemented by `Crc`. |
+| <xref:Bodu.IO.Hashing.IResumableHashAlgorithm> | — | Optional contract: reverse-finalize a stored digest, append more bytes, finalize again. Implemented by `Crc`. |
 
 > **BCL note.** `XxHash32` / `XxHash64` / `XxHash3` / `XxHash128` from `System.IO.Hashing` already cover the xxHash family — Bodu does not duplicate them. Use the BCL types directly when you want xxHash.
 
 ### `Bodu.IO.Hashing.Checksums` — Checksums
 
-Error-detection algorithms with characterised guarantees over specific error patterns. Also hosts the multi-character / alphanumeric check-digit algorithms for codes like IBAN, ISBN, and CUSIP.
+Error-detection algorithms with characterized guarantees over specific error patterns. Also hosts the multi-character / alphanumeric check-digit algorithms for codes like IBAN, ISBN, and CUSIP.
 
 | Type | Output | Subfamily |
 |---|---|---|
@@ -73,7 +73,7 @@ Extension methods over `NonCryptographicHashAlgorithm` for ergonomic one-shot co
 
 For the structural differences between fingerprints, checksums, and check digits — and how to choose between types that look similar — see [Algorithm families](../algorithm-families.md). The short version:
 
-| Subfamily | Optimised for | Operates on |
+| Subfamily | Optimized for | Operates on |
 |---|---|---|
 | Fingerprint | Distribution and speed | Binary buffer |
 | Checksum | Error-pattern detection | Binary buffer |
@@ -95,7 +95,7 @@ byte[] full    = hash.GetCurrentHash();
 hash.Reset();                              // back to the initial state
 ```
 
-Only `Crc` currently implements `IResumableHashAlgorithm` (reverse-finalise a stored digest, append more bytes, finalise again).
+Only `Crc` currently implements `IResumableHashAlgorithm` (reverse-finalize a stored digest, append more bytes, finalize again).
 
 ## Where to go next
 

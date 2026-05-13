@@ -47,7 +47,7 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 
 **Cryptographic hashes** (`HashAlgorithm` lifecycle)
 
-- <xref:Bodu.Security.Cryptography.Tiger> — 128 / 160 / 192-bit cryptographic digest optimised for 64-bit platforms; two padding variants (Tiger / Tiger2).
+- <xref:Bodu.Security.Cryptography.Tiger> — 128 / 160 / 192-bit cryptographic digest optimized for 64-bit platforms; two padding variants (Tiger / Tiger2).
 - <xref:Bodu.Security.Cryptography.CubeHash> — Bernstein's SHA-3 competition candidate.
 - <xref:Bodu.Security.Cryptography.Snefru128>, <xref:Bodu.Security.Cryptography.Snefru256> — Ralph Merkle's hash (**cryptanalytically broken**; included for research and interoperability).
 - <xref:Bodu.Security.Cryptography.Whirlpool> — 512-bit digest (ISO/IEC 10118-3) with an AES-derived round function.
@@ -65,13 +65,13 @@ For non-cryptographic checksums and hash-table hashes (CRC, Fletcher, Adler, FNV
 **ASCON family — NIST SP 800-232**
 
 - <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> — 256-bit sponge digests (12- and 8-round variants).
-- <xref:Bodu.Security.Cryptography.AsconXof128>, <xref:Bodu.Security.Cryptography.AsconCxof128> — variable-length / customisable XOF.
+- <xref:Bodu.Security.Cryptography.AsconXof128>, <xref:Bodu.Security.Cryptography.AsconCxof128> — variable-length / customizable XOF.
 - <xref:Bodu.Security.Cryptography.AsconAead128> — sponge-based authenticated encryption (no separate block cipher required).
 
 **Extensions and helpers**
 
 - <xref:Bodu.Security.Cryptography.Extensions.SymmetricAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions>, <xref:Bodu.Security.Cryptography.Extensions.HashAlgorithmExtensions>, <xref:Bodu.Security.Cryptography.Extensions.ICryptoTransformExtensions> — ergonomic one-shot, async, and verify helpers.
-- <xref:Bodu.Security.Cryptography.CryptoHelpers> — secure zeroisation, padding helpers, cryptographically secure random key/IV/tweak generation, bit reflection.
+- <xref:Bodu.Security.Cryptography.CryptoHelpers> — secure zeroization, padding helpers, cryptographically secure random key/IV/tweak generation, bit reflection.
 - <xref:Bodu.Security.Cryptography.HashAlgorithmHelper>, <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> — helper utilities for `HashAlgorithm` consumers and factory abstractions used by the keyed / Merkle constructions.
 
 ## Example
@@ -98,7 +98,7 @@ ulong slot = BitConverter.ToUInt64(sip.ComputeHash(data));
   - <xref:Bodu.Security.Cryptography.SipHash64> is keyed and collision-resistant but short-output; use it for hash-table protection and message authentication over small inputs, not as a drop-in for a MAC like HMAC-SHA256.
   - <xref:Bodu.Security.Cryptography.Tiger> is a classic cryptographic hash. Prefer BCL-provided SHA-2 / SHA-3 for new designs; use Tiger for interoperability with existing Tiger-based systems.
   - For error-detection and hash-table distribution (CRC, Fletcher, Adler, FNV, CityHash, MurmurHash3, Pearson, and the classic short hashes) use the non-cryptographic types in <xref:Bodu.IO.Hashing>.
-- **Thread safety.** Instances of the cipher and hash types follow the standard .NET convention: **not thread-safe** during a single `TransformBlock` / `ComputeHash` / encryption session. Create one instance per logical operation, or synchronise externally. AEAD mode transforms (`GcmModeTransform`, etc.) are **single-use per message** — construct a fresh transform on the encrypt side and another on the decrypt side.
+- **Thread safety.** Instances of the cipher and hash types follow the standard .NET convention: **not thread-safe** during a single `TransformBlock` / `ComputeHash` / encryption session. Create one instance per logical operation, or synchronize externally. AEAD mode transforms (`GcmModeTransform`, etc.) are **single-use per message** — construct a fresh transform on the encrypt side and another on the decrypt side.
 - **Allocation discipline.** Hot-path types allocate their working buffers in the constructor and reuse them; `CryptoHelpers.ClearIfNotNull` (and equivalents) zero secret material at disposal time.
 - **Determinism and portability.** All algorithms produce identical byte-for-byte output across platforms and architectures for the same input and configuration.
 - **See also:** <xref:Bodu.IO.Hashing> for CRC, Fletcher, Adler, and other non-cryptographic hashes; the [Bodu.Security.Cryptography introduction](~/docs/cryptography/index.md), the [encryption basics guide](~/guides/cryptography/encryption-basics.md), the [AEAD modes guide](~/guides/cryptography/aead-modes.md), and the [hashing guide](~/guides/cryptography/hashing.md).

@@ -14,8 +14,8 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="SipHash128"/> is parameterised as <c>SipHash-c-d</c>, where <c>c</c> is the number of compression rounds and
-/// <c>d</c> is the number of finalisation rounds. The default configuration corresponds to <c>SipHash-2-4</c>.
+/// <see cref="SipHash128"/> is parameterized as <c>SipHash-c-d</c>, where <c>c</c> is the number of compression rounds and
+/// <c>d</c> is the number of finalization rounds. The default configuration corresponds to <c>SipHash-2-4</c>.
 /// </para>
 /// <para>See <see cref="SipHash{T}"/> for a description of the round structure.</para>
 /// <para>
@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 ///   <item><description>Tag size: 128 bits (16 bytes).</description></item>
 ///   <item><description>Key size: 128 bits (16 bytes).</description></item>
-///   <item><description>Default parameterisation: SipHash-2-4 (2 compression rounds, 4 finalisation rounds).</description></item>
+///   <item><description>Default parameterization: SipHash-2-4 (2 compression rounds, 4 finalization rounds).</description></item>
 ///   <item><description>Multi-message key reuse is supported — unlike <see cref="Poly1305"/>.</description></item>
 /// </list>
 /// <para>
@@ -47,7 +47,7 @@ public sealed class SipHash128
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SipHash128"/> class with a fixed 128-bit output size, the default
-    /// <c>SipHash-2-4</c> parameterisation, and a freshly generated random key.
+    /// <c>SipHash-2-4</c> parameterization, and a freshly generated random key.
     /// </summary>
     /// <remarks>
     /// The instance is created with the following defaults:

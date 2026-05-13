@@ -2,10 +2,10 @@
 <!--
   Global health notable-date resource using the Western/Gregorian calendar.
 
-  These entries represent internationally recognised health and public-health
+  These entries represent internationally recognized health and public-health
   observances. They are not universally public holidays or non-working days in
   every country. Country-specific resources should import only the dates they
-  observe and override naming, suppression, or behavioural rules where required.
+  observe and override naming, suppression, or behavioral rules where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -56,7 +56,7 @@
 
   <NotableDate name="World Suicide Prevention Day">
     <Rule name="fixed-sep-10" category="Observance" firstYear="2003"
-          comment="Organised by the International Association for Suicide Prevention (IASP) in association with the World Health Organization, first observed on 10 September 2003.">
+          comment="Organized by the International Association for Suicide Prevention (IASP) in association with the World Health Organization, first observed on 10 September 2003.">
       <Fixed month="September" day="10" />
     </Rule>
   </NotableDate>

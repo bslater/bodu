@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Computes a 512-bit cryptographic hash using the <c>Whirlpool</c> algorithm designed by Paulo S. L. M.
 /// Barreto and Vincent Rijmen. Supports all three published revisions: <c>Whirlpool-0</c> (2000),
-/// <c>Whirlpool-T</c> (2001) and the final <c>Whirlpool</c> function standardised by <c>ISO/IEC 10118-3</c>
+/// <c>Whirlpool-T</c> (2001) and the final <c>Whirlpool</c> function standardized by <c>ISO/IEC 10118-3</c>
 /// in 2003. This class cannot be inherited.
 /// </summary>
 /// <remarks>
@@ -70,7 +70,7 @@ public sealed partial class Whirlpool
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Whirlpool"/> class configured for
-    /// <see cref="WhirlpoolVersion.WhirlpoolInfo3"/>, the standardised <c>ISO/IEC 10118-3</c> revision.
+    /// <see cref="WhirlpoolVersion.WhirlpoolInfo3"/>, the standardized <c>ISO/IEC 10118-3</c> revision.
     /// </summary>
     public Whirlpool()
         : base(BlockSizeBits)
@@ -201,7 +201,7 @@ public sealed partial class Whirlpool
         padded[inputLength] = 0x80;
 
         // Only the low 64 bits of the bit count are populated; the upper 192 bits remain zero. This
-        // matches the behaviour of every widely deployed Whirlpool implementation.
+        // matches the behavior of every widely deployed Whirlpool implementation.
         var bitLength = messageLength * 8;
         BinaryPrimitives.WriteUInt64BigEndian(padded.AsSpan(totalLength - 8), bitLength);
 
@@ -221,7 +221,7 @@ public sealed partial class Whirlpool
         Span<ulong> tempKey = stackalloc ulong[8];
         Span<ulong> tempState = stackalloc ulong[8];
 
-        // Read the message block (big-endian) and initialise the round key from the hash state.
+        // Read the message block (big-endian) and initialize the round key from the hash state.
         // The first sigma step XORs the message against the initial key to seed the cipher state.
         for (var i = 0; i < 8; i++)
         {
@@ -242,7 +242,7 @@ public sealed partial class Whirlpool
             tempState.CopyTo(state);
         }
 
-        // Miyaguchi–Preneel finalisation: H_{i+1} = W_{H_i}(M) ⊕ M ⊕ H_i.
+        // Miyaguchi–Preneel finalization: H_{i+1} = W_{H_i}(M) ⊕ M ⊕ H_i.
         for (var i = 0; i < 8; i++)
             this._state[i] ^= state[i] ^ message[i];
     }

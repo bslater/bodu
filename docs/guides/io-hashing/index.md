@@ -4,7 +4,7 @@ title: Bodu.IO.Hashing guides
 
 # Bodu.IO.Hashing guides
 
-Recipe-style walk-throughs for **Bodu.IO.Hashing**, organised by namespace. Each guide on this page is a focused walk-through of one algorithm or family.
+Recipe-style walk-throughs for **Bodu.IO.Hashing**, organized by namespace. Each guide on this page is a focused walk-through of one algorithm or family.
 
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.IO.Hashing introduction](../../docs/io-hashing/index.md) and the [getting-started page](../../docs/io-hashing/getting-started.md). For the cross-library map of fingerprints / checksums / check digits and how they relate to the cryptographic families, see [Algorithm families](../../docs/algorithm-families.md).
 

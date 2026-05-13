@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// Cached anchors are not emitted as notable dates. They are internal calculation facts. A cached anchor becomes visible to
-/// callers only when a corresponding <see cref="NotableDateRule" /> is materialised into a <see cref="NotableDate" />.
+/// callers only when a corresponding <see cref="NotableDateRule" /> is materialized into a <see cref="NotableDate" />.
 /// </para>
 /// </remarks>
 internal sealed class CachingCalculationAnchorResolver : ICalculationAnchorResolver
@@ -50,7 +50,7 @@ internal sealed class CachingCalculationAnchorResolver : ICalculationAnchorResol
             if (string.IsNullOrWhiteSpace(rule.Name))
                 continue;
 
-            // Match NotableDateRuleResolver's current behaviour: duplicate names collapse with the last rule winning.
+            // Match NotableDateRuleResolver's current behavior: duplicate names collapse with the last rule winning.
             rulesByName[rule.Name] = rule;
         }
 

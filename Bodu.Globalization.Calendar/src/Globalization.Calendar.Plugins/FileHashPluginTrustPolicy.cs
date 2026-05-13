@@ -23,7 +23,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
 {
-    /// <summary>A normalised, case-insensitive map from assembly name to the pinned SHA-256 digest.</summary>
+    /// <summary>A normalized, case-insensitive map from assembly name to the pinned SHA-256 digest.</summary>
     private readonly IReadOnlyDictionary<string, byte[]> _allowedHashesByAssemblyName;
 
     /// <summary>
@@ -35,7 +35,7 @@ public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
     {
         if (allowedHashesByAssemblyName is null) throw new ArgumentNullException(nameof(allowedHashesByAssemblyName));
 
-        var normalised = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
+        var normalized = new Dictionary<string, byte[]>(StringComparer.OrdinalIgnoreCase);
         foreach (KeyValuePair<string, byte[]> entry in allowedHashesByAssemblyName)
         {
             if (string.IsNullOrWhiteSpace(entry.Key))
@@ -43,10 +43,10 @@ public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
             if (entry.Value is null)
                 continue;
 
-            normalised[entry.Key] = entry.Value;
+            normalized[entry.Key] = entry.Value;
         }
 
-        _allowedHashesByAssemblyName = normalised;
+        _allowedHashesByAssemblyName = normalized;
     }
 
     /// <inheritdoc />

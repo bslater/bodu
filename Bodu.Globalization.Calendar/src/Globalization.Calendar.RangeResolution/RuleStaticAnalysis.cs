@@ -60,7 +60,7 @@ internal sealed class RuleStaticAnalysis
     /// <remarks>
     /// <para>
     /// This is intentionally distinct from per-rule reach: the planner needs a single fringe distance to decide which adjacent
-    /// civil years to scan, while the pipeline filters individual fringe-year materialisations using each rule's own
+    /// civil years to scan, while the pipeline filters individual fringe-year materializations using each rule's own
     /// <see cref="RuleStaticProfile.MinObservedReach" /> / <see cref="RuleStaticProfile.MaxObservedReach" />.
     /// </para>
     /// </remarks>
@@ -99,7 +99,7 @@ internal sealed class RuleStaticAnalysis
     /// <summary>
     /// Builds a <see cref="RuleStaticAnalysis" /> from the supplied rule set.
     /// </summary>
-    /// <param name="rules">The effective rules to analyse.</param>
+    /// <param name="rules">The effective rules to analyze.</param>
     /// <returns>The constructed analysis.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="rules" /> is <see langword="null" />.</exception>
     public static RuleStaticAnalysis Build(IReadOnlyList<NotableDateRule> rules)

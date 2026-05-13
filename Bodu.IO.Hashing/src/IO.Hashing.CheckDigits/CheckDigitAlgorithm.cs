@@ -70,7 +70,7 @@ public abstract class CheckDigitAlgorithm
     /// <summary>
     /// Resets the algorithm to its initial state, discarding any digits previously absorbed.
     /// </summary>
-    /// <remarks>Equivalent in behaviour to constructing a fresh instance of the same concrete type.</remarks>
+    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
     public abstract void Reset();
 
     /// <summary>

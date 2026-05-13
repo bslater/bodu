@@ -2,10 +2,10 @@
 <!--
   Global food and agriculture notable-date resource using the Western/Gregorian calendar.
 
-  These entries represent internationally recognised food security, agriculture,
+  These entries represent internationally recognized food security, agriculture,
   nutrition, and dietary observances. They are not universally public holidays or
   non-working days in every country. Country-specific resources should import only
-  the dates they observe and override naming, suppression, or behavioural rules
+  the dates they observe and override naming, suppression, or behavioral rules
   where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
@@ -24,7 +24,7 @@
 
   <NotableDate name="International Tea Day">
     <Rule name="fixed-may-21" category="Observance" firstYear="2020"
-          comment="Observed by the United Nations on 21 May and led by the Food and Agriculture Organization (FAO), recognising tea's cultural heritage, health benefits, economic importance, and sustainable production.">
+          comment="Observed by the United Nations on 21 May and led by the Food and Agriculture Organization (FAO), recognizing tea's cultural heritage, health benefits, economic importance, and sustainable production.">
       <Fixed month="May" day="21" />
     </Rule>
   </NotableDate>
@@ -66,7 +66,7 @@
 
   <NotableDate name="World Vegan Day">
     <Rule name="fixed-nov-01" category="Cultural" firstYear="1994"
-          comment="Established in 1994 by the Vegan Society to mark the organisation's 50th anniversary and to celebrate veganism worldwide.">
+          comment="Established in 1994 by the Vegan Society to mark the organization's 50th anniversary and to celebrate veganism worldwide.">
       <Fixed month="November" day="1" />
     </Rule>
   </NotableDate>

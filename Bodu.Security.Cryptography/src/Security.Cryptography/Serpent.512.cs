@@ -72,7 +72,7 @@ public sealed class Serpent512
     /// </summary>
     /// <returns>A new <see cref="Serpent512"/> instance.</returns>
     /// <remarks>
-    /// The key, initialisation vector, and tweak are generated on demand the first time they are accessed unless assigned
+    /// The key, initialization vector, and tweak are generated on demand the first time they are accessed unless assigned
     /// explicitly via <see cref="SymmetricAlgorithm.Key"/>, <see cref="SymmetricAlgorithm.IV"/>, or
     /// <see cref="TweakableSymmetricAlgorithm.Tweak"/>.
     /// </remarks>

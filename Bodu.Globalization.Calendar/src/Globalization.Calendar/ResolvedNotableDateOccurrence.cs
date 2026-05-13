@@ -19,7 +19,7 @@ namespace Bodu.Globalization.Calendar;
 /// <param name="Rule">The originating rule.</param>
 /// <param name="AnchorDate">The unadjusted anchor date resolved from the rule.</param>
 /// <param name="TerritoryCode">The expanded territory code for this occurrence, or <see langword="null" /> for global.</param>
-/// <param name="BaseDate">The materialised unadjusted notable date.</param>
+/// <param name="BaseDate">The materialized unadjusted notable date.</param>
 internal sealed record ResolvedNotableDateOccurrence(
     NotableDateRule Rule,
     DateTime AnchorDate,

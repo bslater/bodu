@@ -39,7 +39,7 @@ public static partial class DateOnlyExtensions
     /// </summary>
     /// <param name="date">The starting date value from which to search forward.</param>
     /// <param name="weekend">The <see cref="CalendarWeekendDefinition"/> that determines which days are considered weekends.</param>
-    /// <param name="provider">An optional <see cref="IWeekendDefinitionProvider"/> that supplies custom weekend logic when <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/>. If <see langword="null"/>, the default behaviour for the supplied <paramref name="weekend"/> applies.</param>
+    /// <param name="provider">An optional <see cref="IWeekendDefinitionProvider"/> that supplies custom weekend logic when <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/>. If <see langword="null"/>, the default behavior for the supplied <paramref name="weekend"/> applies.</param>
     /// <returns>A <see cref="DateOnly"/> value set to the first calendar day after <paramref name="date"/> that is not a weekend under the specified <paramref name="weekend"/> rule and the logic of <paramref name="provider"/>.</returns>
     /// <remarks>
     /// <para>The method evaluates each successive day following <paramref name="date"/> until it finds one that is not considered a weekend, either by the supplied <paramref name="weekend"/> pattern or by the custom logic of <paramref name="provider"/>.</para>

@@ -17,7 +17,7 @@ namespace Bodu.Globalization.Calendar;
 /// <c>date.NextWorkingDay()</c>) without threading a service instance through every call site.
 /// </para>
 /// <para>
-/// When <see cref="Default" /> has not been assigned, the property lazily materialises a new <see cref="NotableDateService" />
+/// When <see cref="Default" /> has not been assigned, the property lazily materializes a new <see cref="NotableDateService" />
 /// configured with the embedded minimal rule set. The lazy fallback is constructed under
 /// <see cref="System.Threading.LazyThreadSafetyMode.ExecutionAndPublication" /> and is therefore safe to consume from multiple
 /// threads.

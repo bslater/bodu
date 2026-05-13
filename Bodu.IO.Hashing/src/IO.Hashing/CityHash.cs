@@ -50,7 +50,7 @@ namespace Bodu.IO.Hashing;
 /// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base
 /// class buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})"/> is called. Memory
 /// consumption grows linearly with input length between resets — avoid feeding it multi-gigabyte streams.
-/// Instances are not thread-safe; share behind explicit synchronisation.
+/// Instances are not thread-safe; share behind explicit synchronization.
 /// </para>
 /// <note type="important">
 /// CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password hashing, digital
@@ -84,7 +84,7 @@ public abstract class CityHash<T>
     /// <summary>The second Murmur-style mixing constant used in 32-bit operations.</summary>
     protected const uint C2 = 0x1B873593U;
 
-    /// <summary>The 32-bit finalisation magic constant applied during the iterative mixing phase.</summary>
+    /// <summary>The 32-bit finalization magic constant applied during the iterative mixing phase.</summary>
     protected const uint HashMagic = 0xE6546B64U;
 
     /// <summary>The first 64-bit mixing constant, derived from the CityHash reference implementation.</summary>
@@ -103,7 +103,7 @@ public abstract class CityHash<T>
     protected const ulong K3 = 0xC949D7C7509E6557UL;
 
     /// <summary>
-    /// The prime multiplier used by the 64-bit <see cref="HashLen16(ulong, ulong)" /> finalisation step.
+    /// The prime multiplier used by the 64-bit <see cref="HashLen16(ulong, ulong)" /> finalization step.
     /// </summary>
     protected const ulong KMul = 0x9DDFEA08EB382D69UL;
 
@@ -141,7 +141,7 @@ public abstract class CityHash<T>
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        // CityHash is a one-shot algorithm; finalisation re-runs over the accumulated buffer so that
+        // CityHash is a one-shot algorithm; finalization re-runs over the accumulated buffer so that
         // GetCurrentHash remains non-destructive and may be invoked multiple times.
         byte[] data = this._inputBuffer.ToArray();
         byte[] digest = this.ComputeHashCore(data);

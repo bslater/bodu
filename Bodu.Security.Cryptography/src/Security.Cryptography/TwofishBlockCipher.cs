@@ -48,7 +48,7 @@ public sealed class TwofishBlockCipher
     };
 
     // Reed-Solomon matrix used by the key schedule to derive S = (S{k-1}, ..., S0),
-    // the key material that parameterises the four key-dependent S-boxes.
+    // the key material that parameterizes the four key-dependent S-boxes.
     // Multiplication is performed over GF(2^8) using the RS field polynomial with low reduction byte 0x4D.
     private static readonly byte[,] s_rs =
     {
@@ -101,7 +101,7 @@ public sealed class TwofishBlockCipher
                 CryptoResourceStrings.ArgumentException_Twofish_InvalidKeyLength,
                 nameof(key));
 
-        this.InitialiseKeySchedule(key);
+        this.InitializeKeySchedule(key);
     }
 
     /// <inheritdoc />
@@ -259,7 +259,7 @@ public sealed class TwofishBlockCipher
     /// can be evaluated during encryption and decryption using table lookups and XORs.
     /// </para>
     /// </remarks>
-    private void InitialiseKeySchedule(ReadOnlySpan<byte> key)
+    private void InitializeKeySchedule(ReadOnlySpan<byte> key)
     {
         // k is the number of 64-bit key words in the specification: 2, 3, or 4 for 128-, 192-, or 256-bit keys.
         var keyWords = key.Length / 8;

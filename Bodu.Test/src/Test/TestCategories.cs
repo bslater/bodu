@@ -25,7 +25,7 @@ namespace Bodu.Test;
 ///   <item>
 ///     <description>
 ///       <see cref="Regression" /> — tests omitted from the default build run because they are exhaustive,
-///       parametrised over published vectors, or otherwise duplicate coverage already provided by structural
+///       parameterized over published vectors, or otherwise duplicate coverage already provided by structural
 ///       tests. The default <c>bvt.runsettings</c> filters these out; <c>regression.runsettings</c> includes
 ///       everything.
 ///     </description>

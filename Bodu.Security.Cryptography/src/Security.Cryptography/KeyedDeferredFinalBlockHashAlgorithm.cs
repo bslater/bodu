@@ -12,7 +12,7 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Represents the abstract base class for hash algorithms that support an optional secret key and defer compression
 /// of the final block until <see cref="HashAlgorithm.HashFinal"/> is called, following the BLAKE-family
-/// deferred-finalisation pattern.
+/// deferred-finalization pattern.
 /// </summary>
 /// <typeparam name="T">
 /// The concrete derived algorithm type. Must expose a public parameterless constructor.
@@ -20,7 +20,7 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// This class extends <see cref="DeferredFinalBlockHashAlgorithm{T}"/> with optional key-handling logic shared by
-/// keyed BLAKE-family hashes such as <see cref="Blake2b"/> and <see cref="Blake2s"/>. It centralises defensive
+/// keyed BLAKE-family hashes such as <see cref="Blake2b"/> and <see cref="Blake2s"/>. It centralizes defensive
 /// copying, key-length validation, secure disposal of secret material, and the sealed <see cref="Initialize"/>
 /// override that orchestrates hash-state reset followed by key-block injection when a key is set.
 /// </para>
@@ -177,7 +177,7 @@ public abstract class KeyedDeferredFinalBlockHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Resets the algorithm-specific chaining variables to their initialisation values and encodes any
+    /// Resets the algorithm-specific chaining variables to their initialization values and encodes any
     /// configuration parameters (such as digest length and key length) into the parameter block. Called by the
     /// sealed <see cref="Initialize"/> before key-block injection.
     /// </summary>

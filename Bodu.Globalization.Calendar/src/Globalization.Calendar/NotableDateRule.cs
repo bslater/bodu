@@ -319,7 +319,7 @@ public sealed record NotableDateRule
     // --- Adjustments + metadata --------------------------------------------------------------
 
     /// <summary>
-    /// Gets the observance adjustments evaluated against the resolved date. Defaults to an empty array (never default-uninitialised).
+    /// Gets the observance adjustments evaluated against the resolved date. Defaults to an empty array (never default-uninitialized).
     /// </summary>
     /// <returns>An immutable array of <see cref="ObservanceAdjustment" /> entries in evaluation order. Empty when no adjustments are authored.</returns>
     public ImmutableArray<ObservanceAdjustment> Adjustments { get; init; } = [];

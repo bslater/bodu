@@ -10,7 +10,7 @@ using System.IO.Hashing;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes a 32-bit non-cryptographic hash using the SDBM algorithm popularised by the public-domain NDBM
+/// Computes a 32-bit non-cryptographic hash using the SDBM algorithm popularized by the public-domain NDBM
 /// database library. This class cannot be inherited.
 /// </summary>
 /// <remarks>
@@ -22,7 +22,7 @@ namespace Bodu.IO.Hashing;
 /// <para>
 /// <strong>When to choose SDBM.</strong> SDBM is the public-domain hash from the NDBM/SDBM database library
 /// and the historical default in many Unix tools — pick it when interoperating with code that has
-/// standardised on the SDBM mix, or when a small, dependency-free 32-bit hash is sufficient. Empirically
+/// standardized on the SDBM mix, or when a small, dependency-free 32-bit hash is sufficient. Empirically
 /// SDBM gives slightly better distribution than <see cref="Bernstein"/> and <see cref="ApHash"/> on short
 /// keys at the same per-byte cost. For modern hash-table workloads prefer <see cref="Fnv1a32"/> (better
 /// avalanche, same cost) or <see cref="MurmurHash3_32"/> (markedly better distribution on inputs longer than

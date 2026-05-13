@@ -8,7 +8,7 @@ namespace Bodu.Extensions;
 
 /// <summary>
 /// Provides bit-level and byte-level transformations over the integral primitive types — endian conversion, byte and word swaps,
-/// bit reversal and rotation, and unchecked arithmetic helpers — for hashing, serialisation, and protocol code.
+/// bit reversal and rotation, and unchecked arithmetic helpers — for hashing, serialization, and protocol code.
 /// </summary>
 /// <remarks>
 /// <para>

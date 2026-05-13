@@ -47,7 +47,7 @@ public partial class ConcurrentCircularBuffer<T>
     /// Gets a value indicating whether access to the <see cref="ConcurrentCircularBuffer{T}"/> is synchronized (thread safe).
     /// </summary>
     /// <value>
-    /// Always <see langword="false"/>. <see cref="ConcurrentCircularBuffer{T}"/> manages its own internal synchronisation and does
+    /// Always <see langword="false"/>. <see cref="ConcurrentCircularBuffer{T}"/> manages its own internal synchronization and does
     /// not expose a public lock object.
     /// </value>
     /// <remarks>
@@ -57,13 +57,13 @@ public partial class ConcurrentCircularBuffer<T>
     bool ICollection.IsSynchronized => false;
 
     /// <summary>
-    /// Gets an object that can be used to synchronise access to the collection. Not supported on this type —
-    /// <see cref="ConcurrentCircularBuffer{T}"/> manages its own internal synchronisation.
+    /// Gets an object that can be used to synchronize access to the collection. Not supported on this type —
+    /// <see cref="ConcurrentCircularBuffer{T}"/> manages its own internal synchronization.
     /// </summary>
     /// <exception cref="NotSupportedException">Always thrown. Use the thread-safe members of this class directly.</exception>
     /// <remarks>
     /// Exposing a <see cref="ICollection.SyncRoot"/> would allow callers to take the same lock used internally, undermining the
-    /// concurrency guarantees of the collection. This matches the behaviour of <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/>
+    /// concurrency guarantees of the collection. This matches the behavior of <see cref="System.Collections.Concurrent.ConcurrentQueue{T}"/>
     /// and other BCL concurrent collections.
     /// </remarks>
     object ICollection.SyncRoot =>

@@ -140,7 +140,7 @@ public abstract partial class SerpentBlockCipherBase
     /// </summary>
     /// <param name="disposing">
     /// <see langword="true"/> when invoked from <see cref="Dispose()"/>; <see langword="false"/> when invoked from the
-    /// finaliser.
+    /// finalizer.
     /// </param>
     /// <remarks>
     /// The base implementation records the disposed state. Derived Serpent implementations should override this method to
@@ -194,8 +194,8 @@ public abstract partial class SerpentBlockCipherBase
     /// written back into the same bit position of the four result words.
     /// </para>
     /// <para>
-    /// This is the canonical Serpent bitslice representation. The implementation favours portability and readability over
-    /// hand-minimised Boolean gate expressions; correctness is anchored against standard Serpent test vectors.
+    /// This is the canonical Serpent bitslice representation. The implementation favors portability and readability over
+    /// hand-minimized Boolean gate expressions; correctness is anchored against standard Serpent test vectors.
     /// </para>
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -382,7 +382,7 @@ public abstract partial class SerpentBlockCipherBase
     /// <para>
     /// The recurrence is the Serpent key schedule expansion
     /// <c>w[i] = ROL(w[i-window] ^ w[i-5] ^ w[i-3] ^ w[i-1] ^ phi ^ i, 11)</c>
-    /// for <c>i = 0..prekeys.Length - window - 1</c>. The caller initialises <c>prekeys[0..window-1]</c> with the seed and
+    /// for <c>i = 0..prekeys.Length - window - 1</c>. The caller initializes <c>prekeys[0..window-1]</c> with the seed and
     /// this helper computes the remaining entries in place.
     /// </para>
     /// <para>

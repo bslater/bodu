@@ -113,7 +113,7 @@ public sealed class CityHash32
     }
 
     /// <summary>
-    /// Hashes 5 to 12 bytes by reading 4-byte words from the start, end, and centre of the input.
+    /// Hashes 5 to 12 bytes by reading 4-byte words from the start, end, and center of the input.
     /// </summary>
     /// <param name="s">The input span. Length must be in the range [5, 12].</param>
     /// <returns>The 32-bit hash value.</returns>
@@ -157,7 +157,7 @@ public sealed class CityHash32
     /// <remarks>
     /// The algorithm seeds three accumulators (<c>h</c>, <c>g</c>, <c>f</c>) from the tail of the input, then iterates over
     /// 20-byte blocks from the start. A three-way permutation is applied after each block to rotate accumulator roles.
-    /// After the loop, each accumulator undergoes a double rotate-multiply finalisation before the results are merged.
+    /// After the loop, each accumulator undergoes a double rotate-multiply finalization before the results are merged.
     /// </remarks>
     private static uint Hash32Len25Plus(ReadOnlySpan<byte> s)
     {
@@ -224,7 +224,7 @@ public sealed class CityHash32
             Permute3(ref f, ref h, ref g);
         }
 
-        // Finalise each accumulator with a double rotate-multiply pass.
+        // Finalize each accumulator with a double rotate-multiply pass.
         g = g.RotateBitsRightUnchecked(11) * C1;
         g = g.RotateBitsRightUnchecked(17) * C1;
 

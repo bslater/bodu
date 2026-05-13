@@ -6,7 +6,7 @@ title: Bodu.Core — Introduction
 
 **Bodu.Core** is the foundation package of the Bodu suite — a collection of high-performance, framework-style building blocks for .NET applications. It is also the only Bodu package depended on by the others (`Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, and `Bodu.Globalization.Calendar` all use its `ThrowHelper` for shared argument validation).
 
-The library is organised around eight focused namespaces, each with a clear responsibility.
+The library is organized around eight focused namespaces, each with a clear responsibility.
 
 ## Namespaces and headline types
 
@@ -18,7 +18,7 @@ Top-level primitives that don't fit into a sub-namespace.
 | <xref:Bodu.WeekPattern> | Immutable bitmask value type for sets of days of the week. Supports composition (`MTuW`), bitwise operators, parsing, and enumeration. |
 | <xref:Bodu.IRandomGenerator> | Abstraction over random number generators — used by collections that need pluggable randomness. |
 | <xref:Bodu.XorShiftRandom> | Fast non-cryptographic xor-shift PRNG implementing `IRandomGenerator`. |
-| <xref:Bodu.ThrowHelper> | Centralised parameter validation: `ThrowIfNull`, `ThrowIfOutOfRange`, `ThrowIfArrayLengthIsInsufficient`, `ThrowIfEnumValueIsUndefined`, and many more. Uses `[CallerArgumentExpression]` so call sites stay compact. |
+| <xref:Bodu.ThrowHelper> | Centralized parameter validation: `ThrowIfNull`, `ThrowIfOutOfRange`, `ThrowIfArrayLengthIsInsufficient`, `ThrowIfEnumValueIsUndefined`, and many more. Uses `[CallerArgumentExpression]` so call sites stay compact. |
 
 ### `Bodu.Buffers`
 Pooled buffer infrastructure.
@@ -96,7 +96,7 @@ Text and XML helpers used internally by the other Bodu packages; available publi
 | Date arithmetic — first Monday, ISO week-of-year, age | <xref:Bodu.Extensions.DateTimeExtensions>, <xref:Bodu.Extensions.DateOnlyExtensions> |
 | Bit / byte rotation and reversal | <xref:Bodu.Extensions.NumericExtensions> |
 | Base16 / Base24 / Base32 / Base64 encoding | <xref:Bodu.Text.BaseEncoding> |
-| Centralised argument validation in your own code | <xref:Bodu.ThrowHelper> |
+| Centralized argument validation in your own code | <xref:Bodu.ThrowHelper> |
 
 ## Where to go next
 

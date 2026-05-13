@@ -41,7 +41,7 @@ Fingerprint algorithms map an arbitrary byte sequence to a fixed-size integer va
 
 - **Avalanche** — a single-bit change in the input flips approximately half of the output bits.
 - **Distribution** — output values are uniformly distributed across the integer range, so hash-table buckets fill evenly.
-- **Streaming behaviour** — whether the algorithm processes arbitrary chunks without buffering the entire input. FNV and Pearson are streaming and constant-memory; CityHash and MurmurHash3 buffer internally for SIMD efficiency.
+- **Streaming behavior** — whether the algorithm processes arbitrary chunks without buffering the entire input. FNV and Pearson are streaming and constant-memory; CityHash and MurmurHash3 buffer internally for SIMD efficiency.
 
 | Type | Output | Notes |
 |---|---|---|
@@ -71,7 +71,7 @@ Checksum algorithms produce a short tag specifically designed to detect common *
 
 There are two structural subfamilies:
 
-- **Polynomial-remainder checksums (CRC).** Treat the input as a polynomial over GF(2) and compute the remainder when dividing by a fixed generator polynomial. Catches all single-bit errors, all double-bit errors within the burst length, and almost all burst errors up to the polynomial width. The Bodu `Crc` engine is parameterised by `CrcStandard` and covers 113 named standards from the [RevEng catalogue](../guides/io-hashing/crc-catalogue.md).
+- **Polynomial-remainder checksums (CRC).** Treat the input as a polynomial over GF(2) and compute the remainder when dividing by a fixed generator polynomial. Catches all single-bit errors, all double-bit errors within the burst length, and almost all burst errors up to the polynomial width. The Bodu `Crc` engine is parameterized by `CrcStandard` and covers 113 named standards from the [RevEng catalogue](../guides/io-hashing/crc-catalogue.md).
 - **Twin-accumulator checksums (Fletcher, Adler).** Two running sums, one of bytes and one of partial sums, combined into the final tag. The cross-position accumulator catches **transpositions** that a single additive sum cannot. Adler uses a prime modulus (the canonical zlib check); Adler-32C uses a power-of-two modulus for SIMD throughput; Fletcher uses a width-based modulus.
 
 | Type | Output | Subfamily |
@@ -161,12 +161,12 @@ One-way functions that compress an arbitrary-length input to a fixed-size digest
 There are three structural shapes within the family:
 
 - **Plain digest** — fixed-size output. Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, ASCON-Hash.
-- **Extendable output (XOF)** — squeezes any number of output bytes after `Append`. Use for KDF-like constructions or when the consumer chooses the output width. Shake, AsconXof, AsconCxof (the *C* variant accepts a domain customisation string).
+- **Extendable output (XOF)** — squeezes any number of output bytes after `Append`. Use for KDF-like constructions or when the consumer chooses the output width. Shake, AsconXof, AsconCxof (the *C* variant accepts a domain customization string).
 - **Tree** — input is split into leaves, hashed in parallel, and combined into a root digest. Supports incremental updates and verifiable inclusion proofs. `MerkleTreeHash` and `ParallelMerkleTreeHash`.
 
 | Type | Output | Notes |
 |---|---|---|
-| `Tiger` | 128 / 160 / 192 bits | Optimised for 64-bit platforms (1995); two padding variants (Tiger / Tiger2). |
+| `Tiger` | 128 / 160 / 192 bits | Optimized for 64-bit platforms (1995); two padding variants (Tiger / Tiger2). |
 | `CubeHash` | Configurable | SHA-3 finalist; tunable rounds and block size trade security margin for throughput. |
 | `Snefru128` / `Snefru256` | 128 / 256 bits | **Cryptanalytically broken.** Use for interoperability only. |
 | `Whirlpool` | 512 bits | ISO/IEC 10118-3; AES-derived round function. |
@@ -174,7 +174,7 @@ There are three structural shapes within the family:
 | `Skein256` / `Skein512` / `Skein1024` | Configurable | Built on the Threefish cipher in UBI mode. |
 | `Shake` | Variable | Keccak-based XOF (FIPS 202). |
 | `AsconHash256` / `AsconHashA256` | 256 bits | NIST SP 800-232; 12- and 8-round sponge variants. |
-| `AsconXof128` / `AsconCxof128` | Variable | NIST SP 800-232 XOF / customisable XOF. |
+| `AsconXof128` / `AsconCxof128` | Variable | NIST SP 800-232 XOF / customizable XOF. |
 | `MerkleTreeHash` / `ParallelMerkleTreeHash` | Configurable | Tree-structured hashing built over any inner `HashAlgorithm`. |
 
 → Guides: [Using Tiger](../guides/cryptography/tiger.md) · [Using CubeHash](../guides/cryptography/cubehash.md) · [Using Snefru](../guides/cryptography/snefru.md) · [ASCON hashing](../guides/cryptography/ascon-hashing.md) · [ASCON XOF](../guides/cryptography/ascon-xof.md) · [Using Merkle trees](../guides/cryptography/merkle-trees.md)
@@ -195,13 +195,13 @@ There are two subtypes:
 
 | Type | Output | Subtype |
 |---|---|---|
-| `SipHash64` | 64 bits | PRF — keyed hash for hash-table flooding defence. Default rounds: SipHash-2-4. |
+| `SipHash64` | 64 bits | PRF — keyed hash for hash-table flooding defense. Default rounds: SipHash-2-4. |
 | `SipHash128` | 128 bits | PRF — wider output; lower collision probability for routing / sharding. |
 | `Poly1305` | 128 bits | One-time authenticator (RFC 8439); the key **must not** be reused across messages. |
 
 → Guides: [Using SipHash](../guides/cryptography/siphash.md) · [Using Poly1305](../guides/cryptography/poly1305.md)
 
-> **Keyed hash vs cipher.** A MAC and a cipher both require a key, but they serve opposite purposes. A cipher transforms plaintext to ciphertext and back — it does not produce a summary. A MAC summarises a message into a fixed-size tag — it does not encrypt. Use both together (encrypt-then-MAC, or an AEAD mode) when you need both confidentiality and integrity.
+> **Keyed hash vs cipher.** A MAC and a cipher both require a key, but they serve opposite purposes. A cipher transforms plaintext to ciphertext and back — it does not produce a summary. A MAC summarizes a message into a fixed-size tag — it does not encrypt. Use both together (encrypt-then-MAC, or an AEAD mode) when you need both confidentiality and integrity.
 
 ---
 
@@ -236,7 +236,7 @@ A *tweakable block cipher* accepts a third public input — the **tweak** — in
 Typical uses: disk encryption (block / sector number as tweak), per-record encryption (record ID as tweak), protocol domain separation.
 
 **Designed for:** all the same use cases as a standard cipher, plus fine-grained domain separation without re-keying.  
-**Not designed for:** replacing IVs — the tweak is public domain separation, not a randomisation source. A fresh, unique IV is still required per message.
+**Not designed for:** replacing IVs — the tweak is public domain separation, not a randomization source. A fresh, unique IV is still required per message.
 
 | Type | Block | Key | Tweak | Notes |
 |---|---|---|---|---|
@@ -281,7 +281,7 @@ There are two construction styles in the library:
 | `AsconHash256` | Crypto Hash | 256-bit one-way digest; 12-round permutation; maximum margin. |
 | `AsconHashA256` | Crypto Hash | 256-bit one-way digest; 8-round permutation; higher throughput. |
 | `AsconXof128` | Crypto Hash (XOF) | Variable-length output. |
-| `AsconCxof128` | Crypto Hash (XOF) | Customisable XOF; accepts a domain customisation string. |
+| `AsconCxof128` | Crypto Hash (XOF) | Customizable XOF; accepts a domain customization string. |
 | `AsconAead128` | Cipher (AEAD) | 128-bit key, 128-bit nonce, 128-bit tag. |
 
 See the [ASCON family guide](../guides/cryptography/ascon.md) for selection guidance.

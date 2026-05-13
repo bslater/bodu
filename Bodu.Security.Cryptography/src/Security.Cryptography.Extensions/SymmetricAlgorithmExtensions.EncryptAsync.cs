@@ -27,7 +27,7 @@ public static partial class SymmetricAlgorithmExtensions
     /// <paramref name="algorithm"/>, <paramref name="sourceStream"/>, or <paramref name="targetStream"/> is <see langword="null"/>.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// The operation was cancelled via <paramref name="cancellationToken"/>.
+    /// The operation was canceled via <paramref name="cancellationToken"/>.
     /// </exception>
     public static Task EncryptAsync(
         this SymmetricAlgorithm algorithm,
@@ -53,7 +53,7 @@ public static partial class SymmetricAlgorithmExtensions
     /// <paramref name="bufferSize"/> is less than or equal to zero.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// The operation was cancelled via <paramref name="cancellationToken"/>.
+    /// The operation was canceled via <paramref name="cancellationToken"/>.
     /// </exception>
     /// <example>
     /// <code>

@@ -2,10 +2,10 @@
 <!--
   Global remembrance notable-date resource using the Western/Gregorian calendar.
 
-  These entries represent internationally recognised remembrance observances.
+  These entries represent internationally recognized remembrance observances.
   They are not universally public holidays or non-working days in every country.
   Country-specific resources should import only the dates they observe and
-  override naming, suppression, or behavioural rules where required.
+  override naming, suppression, or behavioral rules where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">

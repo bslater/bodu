@@ -2,11 +2,11 @@
 <!--
   Global education and literacy notable-date resource using the Western/Gregorian calendar.
 
-  These entries represent internationally recognised education, literacy,
+  These entries represent internationally recognized education, literacy,
   and knowledge-related observances. They are not universally public holidays
   or non-working days in every country. Country-specific resources should
   import only the dates they observe and override naming, suppression, or
-  behavioural rules where required.
+  behavioral rules where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -46,7 +46,7 @@
 
   <NotableDate name="Safer Internet Day">
     <Rule name="weekday-2nd-tue-feb" category="Observance" firstYear="2004"
-          comment="Organised by the Insafe and INHOPE networks with support of the European Commission. First observed in 2004 as part of the EU-funded SafeBorders project; now promoted in over 180 countries. Observed on the second Tuesday of February each year.">
+          comment="Organized by the Insafe and INHOPE networks with support of the European Commission. First observed in 2004 as part of the EU-funded SafeBorders project; now promoted in over 180 countries. Observed on the second Tuesday of February each year.">
       <DayOfWeekInMonth month="February" dayOfWeek="Tuesday" weekOrdinal="Second" />
     </Rule>
   </NotableDate>

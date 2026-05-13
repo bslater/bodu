@@ -26,7 +26,7 @@ namespace Bodu.Globalization.Extensions;
 /// <para>
 /// All methods are pure, allocation-free, and reject a <see langword="null"/> <see cref="System.Globalization.DateTimeFormatInfo"/>
 /// with <see cref="ArgumentNullException"/>. Results are sensitive to the supplied <see cref="System.Globalization.DateTimeFormatInfo"/> —
-/// they intentionally do <em>not</em> consult ambient culture state — so callers can rely on deterministic behaviour even when the
+/// they intentionally do <em>not</em> consult ambient culture state — so callers can rely on deterministic behavior even when the
 /// current thread's culture changes between calls.
 /// </para>
 /// <example>

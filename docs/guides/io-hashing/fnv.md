@@ -4,7 +4,7 @@ title: Using FNV
 
 # Using FNV
 
-Fowler–Noll–Vo is a simple, very fast non-cryptographic hash: each input byte multiplies the running state by a prime and then XORs (FNV-1a) or XORs first then multiplies (FNV-1). It has excellent distribution for short strings and is the default hash in a long list of scripting languages, serialisers, and hash tables.
+Fowler–Noll–Vo is a simple, very fast non-cryptographic hash: each input byte multiplies the running state by a prime and then XORs (FNV-1a) or XORs first then multiplies (FNV-1). It has excellent distribution for short strings and is the default hash in a long list of scripting languages, serializers, and hash tables.
 
 **Bodu.IO.Hashing** ships the four canonical widths and variants:
 

@@ -29,7 +29,7 @@ namespace Bodu.Security.Cryptography;
 /// <note type="important">
 /// The wide-block tweakable Serpent family is a <b>non-standard, experimental construction</b> developed for this library. It is
 /// not interoperable with canonical Serpent implementations at any block size, and its cryptographic properties have not been
-/// externally analysed. Use the canonical <see cref="Serpent128Cipher"/> when Serpent compatibility is required.
+/// externally analyzed. Use the canonical <see cref="Serpent128Cipher"/> when Serpent compatibility is required.
 /// </note>
 /// </remarks>
 public abstract partial class SerpentBlockCipher

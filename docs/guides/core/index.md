@@ -4,7 +4,7 @@ title: Bodu.Core guides
 
 # Bodu.Core guides
 
-Recipe-style walk-throughs for **Bodu.Core**, organised by namespace. Each guide on this page is a focused walk-through of one headline type.
+Recipe-style walk-throughs for **Bodu.Core**, organized by namespace. Each guide on this page is a focused walk-through of one headline type.
 
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Core introduction](../../docs/core/index.md) and the [getting-started page](../../docs/core/getting-started.md). For the auto-generated API reference, see the [Bodu.Collections.Generic namespace page](../../apidoc/Bodu.Collections.Generic.md).
 

@@ -115,7 +115,7 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
     /// Loads every configured resource and flattens the rule definitions — including cross-file
     /// <c>UseFrom</c> references — into a single rule list.
     /// </summary>
-    /// <returns>The materialised rule list.</returns>
+    /// <returns>The materialized rule list.</returns>
     private List<NotableDateRule> LoadAndFlatten()
     {
         var documentCache = new Dictionary<string, ParsedNotableDateDocument>(StringComparer.OrdinalIgnoreCase);
@@ -186,8 +186,8 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
                         }
 
                         NotableDateRule seed = matches[0];
-                        NotableDateRule localised = ApplyOverrides(seed, directive);
-                        byKey[KeyOf(localised)] = localised;
+                        NotableDateRule localized = ApplyOverrides(seed, directive);
+                        byKey[KeyOf(localized)] = localized;
                         continue;
                     }
 
@@ -202,12 +202,12 @@ public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProv
                             || string.IsNullOrWhiteSpace(targetRuleName)
                             || string.Equals(sourceRule.RuleName, targetRuleName, StringComparison.OrdinalIgnoreCase);
 
-                        NotableDateRule localised = ApplyOverrides(sourceRule, isOverrideTarget ? directive : directiveScalarsOnly);
+                        NotableDateRule localized = ApplyOverrides(sourceRule, isOverrideTarget ? directive : directiveScalarsOnly);
 
                         // Remove the inherited entry under its source-side key before re-keying, since the merge may shift any
                         // component of the dedupe key (territory rename via flat attribute, RuleName rename via the body).
                         byKey.Remove(KeyOf(sourceRule));
-                        byKey[KeyOf(localised)] = localised;
+                        byKey[KeyOf(localized)] = localized;
                     }
                 }
             }

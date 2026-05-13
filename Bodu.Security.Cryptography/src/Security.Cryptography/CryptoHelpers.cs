@@ -25,7 +25,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Random byte generation methods use <see cref="RandomNumberGenerator"/> and operate on <see cref="Span{T}"/> where
-/// possible to minimise allocations in performance-sensitive paths.
+/// possible to minimize allocations in performance-sensitive paths.
 /// </para>
 /// </remarks>
 internal static partial class CryptoHelpers

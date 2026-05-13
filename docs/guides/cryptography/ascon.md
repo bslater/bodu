@@ -4,7 +4,7 @@ title: Using ASCON
 
 # Using ASCON
 
-**ASCON** is a family of lightweight cryptographic algorithms standardised by NIST in
+**ASCON** is a family of lightweight cryptographic algorithms standardized by NIST in
 [SP 800-232](https://doi.org/10.6028/NIST.SP.800-232) (August 2025). All members of the family
 share a single 320-bit sponge state — five 64-bit words — and a common permutation called
 Ascon-p. The permutation is compact enough to run on the smallest microcontrollers, yet resists
@@ -17,7 +17,7 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 | <xref:Bodu.Security.Cryptography.AsconHash256> | `ASCON-HASH256` | Hash | Fixed-length 256-bit digest. Conservative 12-round absorption. |
 | <xref:Bodu.Security.Cryptography.AsconHashA256> | `ASCON-HASHA256` | Hash | Fixed-length 256-bit digest. 8-round absorption for higher throughput. |
 | <xref:Bodu.Security.Cryptography.AsconXof128> | `ASCON-XOF128` | XOF | Variable-length output — squeeze any number of bytes from a single absorbed message. |
-| <xref:Bodu.Security.Cryptography.AsconCxof128> | `ASCON-CXOF128` | XOF | Variable-length output with a customisation string — separates output domains from the same primitive. |
+| <xref:Bodu.Security.Cryptography.AsconCxof128> | `ASCON-CXOF128` | XOF | Variable-length output with a customization string — separates output domains from the same primitive. |
 | <xref:Bodu.Security.Cryptography.AsconAead128> | `ASCON-AEAD128` | AEAD | Authenticated encryption — 128-bit key, 128-bit nonce, 128-bit authentication tag. |
 
 ## Choosing the right algorithm
@@ -27,7 +27,7 @@ all known distinguishing attacks and has a well-studied, wide peer-reviewed secu
 | A fixed-length 256-bit digest (conservative) | `AsconHash256` | 12-round absorption throughout — maximum security margin. |
 | A fixed-length 256-bit digest (throughput) | `AsconHashA256` | 8-round absorption — faster on large inputs; squeeze phase is unchanged. |
 | An output of arbitrary length — key derivation, stream seed | `AsconXof128` | Squeeze as many bytes as needed from one absorbed input. |
-| Multiple independent output functions from one primitive | `AsconCxof128` | A customisation string domain-separates the output; same primitive, different contexts. |
+| Multiple independent output functions from one primitive | `AsconCxof128` | A customization string domain-separates the output; same primitive, different contexts. |
 | Encrypt-and-authenticate a message | `AsconAead128` | Sponge-based AEAD with a 128-bit key and tag; no separate MAC step required. |
 
 When in doubt: reach for `AsconHash256` for hashing and `AsconAead128` for authenticated encryption.
@@ -46,7 +46,7 @@ identical rounds (up to 12) to the 320-bit state. Each round is:
 
 The round count is the throughput / margin trade-off. Absorption phases use 12 rounds
 (`AsconHash256`) or 8 rounds (`AsconHashA256`, `AsconXof128`, `AsconCxof128`, `AsconAead128`).
-Squeeze phases and AEAD finalisation always use 12 rounds, so the output step carries the full
+Squeeze phases and AEAD finalization always use 12 rounds, so the output step carries the full
 security margin in every variant.
 
 ## Quick-start examples

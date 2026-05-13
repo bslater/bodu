@@ -41,7 +41,7 @@ using System.Runtime.CompilerServices;
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> shape via
 /// <see cref="BlockNonCryptographicHashAlgorithm{T}"/>. Snapshotting is non-destructive — call
 /// <c>GetCurrentHash</c> as often as needed. Instances are not thread-safe; share behind explicit
-/// synchronisation, or allocate one per consumer.
+/// synchronization, or allocate one per consumer.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password
 /// hashing, digital signatures, or integrity validation in security-sensitive applications.</note>

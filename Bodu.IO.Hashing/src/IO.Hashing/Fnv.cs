@@ -17,7 +17,7 @@ namespace Bodu.IO.Hashing;
 /// <typeparam name="TSelf">The concrete derived type. Must expose a public parameterless constructor.</typeparam>
 /// <remarks>
 /// <para>
-/// FNV maintains a running hash initialised from an <c>offset basis</c> and processes each input byte by
+/// FNV maintains a running hash initialized from an <c>offset basis</c> and processes each input byte by
 /// combining multiplication with a large <c>FNV prime</c> and a bitwise XOR. Derived types select the width
 /// and variant:
 /// </para>
@@ -41,7 +41,7 @@ namespace Bodu.IO.Hashing;
 /// returns the running state to its initial offset basis.
 /// </para>
 /// <para>
-/// <strong>Thread safety.</strong> Instances are not thread-safe; share behind explicit synchronisation, or
+/// <strong>Thread safety.</strong> Instances are not thread-safe; share behind explicit synchronization, or
 /// allocate one per consumer.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used

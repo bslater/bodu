@@ -71,7 +71,7 @@ The package contains five subfamilies. They share base classes but differ struct
 | <xref:Bodu.Security.Cryptography.Skein256> / <xref:Bodu.Security.Cryptography.Skein512> / <xref:Bodu.Security.Cryptography.Skein1024> | Configurable | Plain digest built on Threefish in UBI mode. |
 | <xref:Bodu.Security.Cryptography.Shake> | Variable | Keccak XOF (FIPS 202). |
 | <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256> | 256 bits | NIST SP 800-232 sponge digest; 12 / 8 round variants. |
-| <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Variable | NIST SP 800-232 XOF / customisable XOF. |
+| <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Variable | NIST SP 800-232 XOF / customizable XOF. |
 | <xref:Bodu.Security.Cryptography.MerkleTreeHash> / <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Configurable | Tree hashing over any inner `HashAlgorithm`. |
 | <xref:Bodu.Security.Cryptography.BlockHashAlgorithm`1>, <xref:Bodu.Security.Cryptography.BufferedBlockHashAlgorithm`1>, <xref:Bodu.Security.Cryptography.DeferredFinalBlockHashAlgorithm`1>, <xref:Bodu.Security.Cryptography.KeyedBlockHashAlgorithm`1> | — | Abstract bases for block-oriented digests (extension points). |
 | <xref:Bodu.Security.Cryptography.HashAlgorithmFactory>, <xref:Bodu.Security.Cryptography.IHashAlgorithmFactory`1>, <xref:Bodu.Security.Cryptography.DelegateHashAlgorithmFactory`1> | — | Factory abstraction over `HashAlgorithm` for keyed / Merkle constructions. |
@@ -91,7 +91,7 @@ The package contains five subfamilies. They share base classes but differ struct
 | Type | Role |
 |---|---|
 | <xref:Bodu.Security.Cryptography.AsconHash256> / <xref:Bodu.Security.Cryptography.AsconHashA256> | 256-bit cryptographic digest |
-| <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Variable-length / customisable XOF |
+| <xref:Bodu.Security.Cryptography.AsconXof128> / <xref:Bodu.Security.Cryptography.AsconCxof128> | Variable-length / customizable XOF |
 | <xref:Bodu.Security.Cryptography.AsconAead128> | 128-bit-key authenticated encryption |
 
 ### Extensions
@@ -118,7 +118,7 @@ The package contains five subfamilies. They share base classes but differ struct
 | Encrypt a message under a key | `Threefish512`, `Camellia`, `Twofish`, `Serpent128`, `Blowfish`, `Skipjack` |
 | Per-record / per-sector encryption without re-keying | `Threefish256` / `Threefish512` / `Threefish1024` with `Tweak` |
 | Authenticated encryption (encrypt + integrity in one) | `AesBlockCipher` + `GcmModeTransform`, `AsconAead128` |
-| Hash-table flooding defence | `SipHash64` / `SipHash128` |
+| Hash-table flooding defense | `SipHash64` / `SipHash128` |
 | One-time authenticator (e.g. paired with ChaCha20) | `Poly1305` |
 | Cryptographic digest for content addressing | `Tiger`, `CubeHash`, `AsconHash256`, `Blake2b`, `Whirlpool`, `Skein512` |
 | Variable-length output | `AsconXof128`, `AsconCxof128`, `Shake`, `Blake3` |

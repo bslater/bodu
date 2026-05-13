@@ -75,7 +75,7 @@ public sealed class CtsModeTransform : IBlockCipherModeTransform
     /// </summary>
     /// <param name="cipher">The underlying block cipher.</param>
     /// <param name="iv">
-    /// The initialisation vector for the CBC chain. Must equal the cipher block size. A defensive copy
+    /// The initialization vector for the CBC chain. Must equal the cipher block size. A defensive copy
     /// is taken; the caller's array is not modified.
     /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>

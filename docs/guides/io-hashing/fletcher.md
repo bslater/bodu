@@ -28,7 +28,7 @@ Swap `Fletcher32` for `Fletcher16` or `Fletcher64` depending on how much collisi
 
 ## Pattern 2 — the `Append` / `GetCurrentHash` / `Reset` lifecycle
 
-The BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> exposes three methods that Fletcher honours verbatim:
+The BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> exposes three methods that Fletcher honors verbatim:
 
 ```csharp
 using Bodu.IO.Hashing;
@@ -44,7 +44,7 @@ byte[] full = fletcher.GetCurrentHash();
 fletcher.Reset();                         // back to zeroed A and B
 ```
 
-`GetCurrentHash` finalises on a copy of the accumulators, so calling it mid-stream is cheap and safe.
+`GetCurrentHash` finalizes on a copy of the accumulators, so calling it mid-stream is cheap and safe.
 
 ## Pattern 3 — streaming over a file
 

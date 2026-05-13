@@ -23,7 +23,7 @@ public partial class EvictingDictionary<TKey, TValue> :
     {
         get
         {
-            // Lazy initialisation using a compare-and-swap to avoid allocating under contention.
+            // Lazy initialization using a compare-and-swap to avoid allocating under contention.
             return _syncRoot ?? Interlocked.CompareExchange(ref _syncRoot, new object(), null) ?? _syncRoot!;
         }
     }

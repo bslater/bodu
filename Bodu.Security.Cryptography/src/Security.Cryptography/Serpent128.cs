@@ -156,7 +156,7 @@ public sealed class Serpent128
 
     /// <inheritdoc />
     /// <remarks>
-    /// Also synchronises <see cref="BlockPadding"/> when the assigned value has a matching member in
+    /// Also synchronizes <see cref="BlockPadding"/> when the assigned value has a matching member in
     /// <see cref="PaddingModeKind"/>.
     /// </remarks>
     public override PaddingMode Padding

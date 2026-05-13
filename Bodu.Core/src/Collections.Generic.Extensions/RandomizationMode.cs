@@ -7,7 +7,7 @@
 namespace Bodu.Collections.Generic.Extensions;
 
 /// <summary>
-/// Specifies the available strategies for randomising a sequence.
+/// Specifies the available strategies for randomizing a sequence.
 /// </summary>
 /// <remarks>Use <see cref="RandomizationMode"/> values with <c>Randomize</c> overloads to control how the source sequence is processed and shuffled.</remarks>
 public enum RandomizationMode
@@ -23,7 +23,7 @@ public enum RandomizationMode
     ReservoirSample,
 
     /// <summary>
-    /// Shuffles elements using a sliding window whilst streaming, limiting memory use to the window size.
+    /// Shuffles elements using a sliding window while streaming, limiting memory use to the window size.
     /// </summary>
     StreamWindowed,
 

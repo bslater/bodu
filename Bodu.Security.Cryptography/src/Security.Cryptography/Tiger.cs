@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Computes a hash using the <c>Tiger</c> cryptographic hash algorithm by Ross Anderson and Eli Biham (1996),
-/// optimised for 64-bit platforms. Supports output sizes of 128, 160, or 192 bits and both the original
+/// optimized for 64-bit platforms. Supports output sizes of 128, 160, or 192 bits and both the original
 /// <c>Tiger</c> and <c>Tiger2</c> padding variants. This class cannot be inherited.
 /// </summary>
 /// <remarks>
@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// The full 192-bit digest is always computed internally; shorter outputs (<c>Tiger/128</c> and <c>Tiger/160</c>) are produced by
-/// truncation after finalisation. The padding byte is selected via <see cref="Variant"/>:
+/// truncation after finalization. The padding byte is selected via <see cref="Variant"/>:
 /// <see cref="TigerHashingVariant.Tiger"/> uses <c>0x01</c> (the original specification) and
 /// <see cref="TigerHashingVariant.Tiger2"/> uses <c>0x80</c>.
 /// </para>
@@ -38,7 +38,7 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 ///   <item><description>Output size: 128, 160, or 192 bits — internally always 192 bits, then truncated.</description></item>
 ///   <item><description>Block size: 64 bytes (512 bits); three 64-bit state variables.</description></item>
-///   <item><description>Three passes per block, eight S-box rounds per pass; optimised for 64-bit hosts.</description></item>
+///   <item><description>Three passes per block, eight S-box rounds per pass; optimized for 64-bit hosts.</description></item>
 ///   <item><description>Padding variant: <see cref="TigerHashingVariant.Tiger"/> (<c>0x01</c>) or <see cref="TigerHashingVariant.Tiger2"/> (<c>0x80</c>).</description></item>
 /// </list>
 /// <para>
@@ -255,7 +255,7 @@ public sealed partial class Tiger
     }
 
     /// <summary>
-    /// Finalises the hash computation and returns the digest, truncated to <see cref="HashSize"/> / 8 bytes where applicable.
+    /// Finalizes the hash computation and returns the digest, truncated to <see cref="HashSize"/> / 8 bytes where applicable.
     /// </summary>
     /// <returns>A byte array of 16, 20, or 24 bytes corresponding to the configured hash size (128, 160, or 192 bits).</returns>
     protected override byte[] ProcessFinalBlock()

@@ -21,13 +21,13 @@
 
   Algorithm keys used:
     holi            — Full moon day (Purnima) in the month of Phalguna (Feb/Mar).
-                      The main day of colour is the following day (Dhuleti/Rang
+                      The main day of color is the following day (Dhuleti/Rang
                       Panchami); this rule marks the Holika Dahan bonfire night.
     ram-navami      — Ninth day of Chaitra (March/April). Birth of Lord Rama.
     janmashtami     — Eighth day of the dark fortnight of Bhadrapada (Aug/Sep).
                       Birth of Lord Krishna.
     navaratri       — First day of the bright fortnight of Ashvin (Sep/Oct).
-                      Nine-night festival honouring the goddess Durga.
+                      Nine-night festival honoring the goddess Durga.
     dussehra        — Tenth day of the bright fortnight of Ashvin (Sep/Oct),
                       immediately following the end of Navaratri.
     diwali          — Fifteenth day of the dark fortnight of Kartik (new moon,
@@ -78,7 +78,7 @@
     <Rule name="algo-holi"
           category="Religious"
           durationDays="2"
-          comment="The Festival of Colours. Begins on the full moon (Purnima) of Phalguna with Holika Dahan (the lighting of bonfires symbolising the victory of good over evil), followed the next day by Rangwali Holi (the coloured powder celebration). Widely celebrated across India and Hindu communities worldwide as a spring festival marking the triumph of virtue over vice and the arrival of the harvest season. A public holiday in India and Nepal. Requires a custom INotableDateAlgorithm registered under the key 'holi'.">
+          comment="The Festival of Colors. Begins on the full moon (Purnima) of Phalguna with Holika Dahan (the lighting of bonfires symbolizing the victory of good over evil), followed the next day by Rangwali Holi (the colored powder celebration). Widely celebrated across India and Hindu communities worldwide as a spring festival marking the triumph of virtue over vice and the arrival of the harvest season. A public holiday in India and Nepal. Requires a custom INotableDateAlgorithm registered under the key 'holi'.">
       <Algorithm key="holi" />
       <Tag>HinduCalendar</Tag>
     </Rule>
@@ -87,7 +87,7 @@
   <NotableDate name="Ram Navami">
     <Rule name="algo-ram-navami"
           category="Religious"
-          comment="The birthday of Lord Rama, the seventh avatar of Vishnu and the hero of the Ramayana. Observed on the ninth day of the bright fortnight of Chaitra, towards the end of the nine-day Chaitra Navaratri festival. Observed with fasting, prayers, devotional singing (bhajan and kirtan), and readings from the Ramayana. Requires a custom INotableDateAlgorithm registered under the key 'ram-navami'.">
+          comment="The birthday of Lord Rama, the seventh avatar of Vishnu and the hero of the Ramayana. Observed on the ninth day of the bright fortnight of Chaitra, toward the end of the nine-day Chaitra Navaratri festival. Observed with fasting, prayers, devotional singing (bhajan and kirtan), and readings from the Ramayana. Requires a custom INotableDateAlgorithm registered under the key 'ram-navami'.">
       <Algorithm key="ram-navami" />
       <Tag>HinduCalendar</Tag>
     </Rule>
@@ -115,7 +115,7 @@
     <Rule name="algo-ganesh-chaturthi"
           category="Religious"
           durationDays="10"
-          comment="Festival honouring Lord Ganesha, beginning on the fourth day of the bright fortnight of Bhadrapada. The durationDays value of 10 spans the common festival period through Anant Chaturdashi. Requires a custom INotableDateAlgorithm registered under the key 'ganesh-chaturthi'.">
+          comment="Festival honoring Lord Ganesha, beginning on the fourth day of the bright fortnight of Bhadrapada. The durationDays value of 10 spans the common festival period through Anant Chaturdashi. Requires a custom INotableDateAlgorithm registered under the key 'ganesh-chaturthi'.">
       <Algorithm key="ganesh-chaturthi" />
       <Tag>HinduCalendar</Tag>
     </Rule>
@@ -125,7 +125,7 @@
     <Rule name="algo-onam"
           category="Cultural"
           durationDays="10"
-          comment="Kerala harvest festival centred on Thiruvonam in the Malayalam month of Chingam. The durationDays value of 10 represents the common festival period from Atham to Thiruvonam. Requires a custom INotableDateAlgorithm registered under the key 'onam'.">
+          comment="Kerala harvest festival centered on Thiruvonam in the Malayalam month of Chingam. The durationDays value of 10 represents the common festival period from Atham to Thiruvonam. Requires a custom INotableDateAlgorithm registered under the key 'onam'.">
       <Algorithm key="onam" />
       <Tag>HinduCalendar</Tag>
       <Tag>MalayaliTradition</Tag>

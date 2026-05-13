@@ -21,7 +21,7 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// When computing multi-byte hashes (for example a 64-bit digest), the algorithm is repeated for each byte
-/// of the result, using a different initialisation for each output byte to reduce collisions.
+/// of the result, using a different initialization for each output byte to reduce collisions.
 /// </para>
 /// <para>
 /// <strong>When to choose Pearson.</strong> Pearson is interesting in two niches: extremely small lookup

@@ -34,7 +34,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication:
 /// each <b>·α</b> box doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the
-/// base tweak. The two XOR nodes inside each cell — before and after the data cipher — realise the
+/// base tweak. The two XOR nodes inside each cell — before and after the data cipher — realize the
 /// <c>⊕ T_j</c> pairs in the equation above.
 /// </para>
 /// <para>

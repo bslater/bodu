@@ -16,7 +16,7 @@ namespace Bodu.Globalization.Calendar;
 /// </para>
 /// <para>
 /// Once the anchor date is known, a requested date window can be converted into a minimum and maximum offset. Only rules
-/// whose authored offsets fall within that range need to be materialised.
+/// whose authored offsets fall within that range need to be materialized.
 /// </para>
 /// </remarks>
 internal sealed class AnchorRelativeRuleIndex

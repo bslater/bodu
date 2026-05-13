@@ -17,7 +17,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on January 1 of the same calendar year as <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>This method calculates the first day of the year using Gregorian calendar rules.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// <para><b>Example:</b></para>
     /// <code>
     ///<![CDATA[

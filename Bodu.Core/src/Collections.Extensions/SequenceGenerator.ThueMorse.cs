@@ -24,7 +24,7 @@ public static partial class SequenceGenerator
     /// <para>
     /// Use this generator to drive cube-free sequence demonstrations, fair-division algorithms, or anywhere a deterministic but
     /// non-periodic binary feed is useful. Compared to building the sequence by repeated bitwise complement and concatenation, this
-    /// implementation uses a per-index <c>popcount</c> reduction so it can produce a single index without first materialising the
+    /// implementation uses a per-index <c>popcount</c> reduction so it can produce a single index without first materializing the
     /// preceding <c>n</c> bits.
     /// </para>
     /// <para>

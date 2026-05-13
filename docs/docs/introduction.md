@@ -12,7 +12,7 @@ If you are new to Bodu, start with the **library introductions** below to unders
 
 | Package | What it provides | Target framework |
 |---|---|---|
-| **[Bodu.Core](core/index.md)** | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), a day-of-week `WeekPattern` value type, pooled buffers, and a comprehensive set of date, numeric, span, and text extensions sitting on a centralised `ThrowHelper`. | `net8.0` |
+| **[Bodu.Core](core/index.md)** | Bounded collections (`CircularBuffer<T>`, `Deque<T>`, `EvictingDictionary<TKey,TValue>`), a day-of-week `WeekPattern` value type, pooled buffers, and a comprehensive set of date, numeric, span, and text extensions sitting on a centralized `ThrowHelper`. | `net8.0` |
 | **[Bodu.IO.Hashing](io-hashing/index.md)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract — fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0` |
 | **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
 | **[Bodu.Globalization.Calendar](calendar/index.md)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. | `net8.0` |
@@ -38,7 +38,7 @@ Each library has a dedicated introduction page that explains its namespaces, the
 
 <div class="bodu-card">
   <h3><a href="io-hashing/index.md">Bodu.IO.Hashing</a></h3>
-  <p>Non-cryptographic hashes — fingerprints, checksums, and human-readable check digits. Optimised for speed, portability, and error-detection coverage rather than adversary resistance.</p>
+  <p>Non-cryptographic hashes — fingerprints, checksums, and human-readable check digits. Optimized for speed, portability, and error-detection coverage rather than adversary resistance.</p>
   <div class="bodu-card-links">
     <a href="io-hashing/index.md">Introduction</a>
     <a href="io-hashing/getting-started.md">Getting started</a>
@@ -96,7 +96,7 @@ If your problem touches **hashing**, **checksums**, or **encryption**, the [Algo
 - **Nullable reference types** are enabled solution-wide. Public APIs make their null-intent explicit.
 - **Analyzer-clean.** StyleCop.Analyzers, Roslynator, the .NET analyzers, AsyncFixer, and the Visual Studio Threading analyzers run at build time. Doc-comment warnings — including `CS1591` — are treated as errors.
 - **Deterministic builds** produce reproducible package outputs.
-- **Documentation-first.** Every public type and member carries XML documentation in British English, and that documentation is the source of truth for this site. The API reference you see here is generated directly from the source.
+- **Documentation-first.** Every public type and member carries XML documentation in US English, and that documentation is the source of truth for this site. The API reference you see here is generated directly from the source.
 - **MIT licensed**, no external runtime dependencies beyond the BCL.
 
 ## Testing and conventions

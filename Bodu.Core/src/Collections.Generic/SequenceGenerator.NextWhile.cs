@@ -30,7 +30,7 @@ public static partial class SequenceGenerator
     /// </para>
     /// <para>
     /// The condition is checked before each yield, so the sequence terminates as soon as the predicate fails — including on the
-    /// very first element, which produces an empty sequence. Behaviour is fully deterministic provided
+    /// very first element, which produces an empty sequence. Behavior is fully deterministic provided
     /// <paramref name="conditionHandler"/> and <paramref name="resultSelector"/> are themselves pure.
     /// </para>
     /// <para>
@@ -144,7 +144,7 @@ public static partial class SequenceGenerator
     /// </para>
     /// <para>
     /// As with the other overloads, the predicate is evaluated before each emission, the sequence may be infinite if it never
-    /// fails, and behaviour is deterministic provided the supplied delegates are pure with respect to the state.
+    /// fails, and behavior is deterministic provided the supplied delegates are pure with respect to the state.
     /// </para>
     /// </remarks>
     /// <example>

@@ -11,7 +11,7 @@ using System.Diagnostics;
 namespace Bodu.Collections.Generic;
 
 /// <summary>
-/// Represents a binary min-heap priority queue keyed by element identity, supporting O(log n) re-prioritisation
+/// Represents a binary min-heap priority queue keyed by element identity, supporting O(log n) re-prioritization
 /// (decrease- or increase-key) and removal of any element by value.
 /// </summary>
 /// <typeparam name="TElement">Specifies the element type used as the queue's identity. Must be non-null and unique within the queue.</typeparam>
@@ -34,7 +34,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// Ordering is determined by an <see cref="IComparer{TPriority}"/>; smaller priorities are dequeued first
-/// (min-heap). To obtain max-heap behaviour, supply a reversed comparer. Element identity uses an
+/// (min-heap). To obtain max-heap behavior, supply a reversed comparer. Element identity uses an
 /// <see cref="IEqualityComparer{TElement}"/>; both default to the framework default comparer when not specified.
 /// </para>
 /// <para>
@@ -43,7 +43,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// <see cref="IndexedPriorityQueue{TElement, TPriority}"/> is not thread-safe. Concurrent reads and writes
-/// require external synchronisation.
+/// require external synchronization.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}")]
@@ -60,7 +60,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
 
     /// <summary>
     /// Backing storage for the heap. Slots <c>[0.._size)</c> are valid heap nodes; the remainder is
-    /// uninitialised reserve capacity.
+    /// uninitialized reserve capacity.
     /// </summary>
     private (TElement Element, TPriority Priority)[] _nodes;
 
@@ -82,7 +82,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
 
     /// <summary>
     /// Mutation counter used by <see cref="Enumerator"/> to detect concurrent modification. Incremented on
-    /// every operation that adds, removes, or re-prioritises an element, and on <see cref="Clear"/>.
+    /// every operation that adds, removes, or re-prioritizes an element, and on <see cref="Clear"/>.
     /// </summary>
     private int _version;
 
@@ -359,7 +359,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Adds the specified element with the specified priority, or re-prioritises it if already present.
+    /// Adds the specified element with the specified priority, or re-prioritizes it if already present.
     /// </summary>
     /// <param name="element">The element to add or update. Must not be <see langword="null"/>.</param>
     /// <param name="priority">The priority to assign.</param>
@@ -420,9 +420,9 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Re-prioritises the specified element. The element must already be present.
+    /// Re-prioritizes the specified element. The element must already be present.
     /// </summary>
-    /// <param name="element">The element to re-prioritise. Must not be <see langword="null"/>.</param>
+    /// <param name="element">The element to re-prioritize. Must not be <see langword="null"/>.</param>
     /// <param name="priority">The new priority to assign.</param>
     /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
     /// <exception cref="KeyNotFoundException"><paramref name="element"/> is not present in the queue.</exception>
@@ -441,9 +441,9 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Attempts to re-prioritise the specified element.
+    /// Attempts to re-prioritize the specified element.
     /// </summary>
-    /// <param name="element">The element to re-prioritise. Must not be <see langword="null"/>.</param>
+    /// <param name="element">The element to re-prioritize. Must not be <see langword="null"/>.</param>
     /// <param name="priority">The new priority to assign.</param>
     /// <returns><see langword="true"/> if the element was found and updated; otherwise, <see langword="false"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="element"/> is <see langword="null"/>.</exception>
@@ -573,7 +573,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     }
 
     /// <summary>
-    /// Re-prioritises the node at the specified slot, performing the appropriate sift-up or sift-down.
+    /// Re-prioritizes the node at the specified slot, performing the appropriate sift-up or sift-down.
     /// </summary>
     /// <param name="slot">The slot in <see cref="_nodes"/> whose priority is being changed.</param>
     /// <param name="newPriority">The replacement priority.</param>

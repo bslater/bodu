@@ -20,7 +20,7 @@ namespace Bodu.Globalization.Calendar;
 /// its originally calculated position.
 /// </para>
 /// <para>
-/// Multi-day events such as Hanukkah or Ramadan are modelled by setting <see cref="DurationDays" /> to a value greater than one. The
+/// Multi-day events such as Hanukkah or Ramadan are modeled by setting <see cref="DurationDays" /> to a value greater than one. The
 /// <see cref="Date" /> property always points at the anchor day; consumers iterating dates within the span should walk
 /// <see cref="EndDate" /> inclusively.
 /// </para>
@@ -150,10 +150,10 @@ public sealed record NotableDate
     /// Gets the display name for the notable date, qualified by territory and calendar suffixes when those are scoped.
     /// </summary>
     /// <remarks>
-    /// This property does not perform translation. To localise a notable date's name into the active culture, supply an
+    /// This property does not perform translation. To localize a notable date's name into the active culture, supply an
     /// <see cref="INotableDateNameLocalizer" /> when constructing the <see cref="NotableDateService" />.
     /// </remarks>
-    /// <returns>The display name, with parenthesised territory and calendar suffixes appended when applicable. Never <see langword="null" />.</returns>
+    /// <returns>The display name, with parenthesized territory and calendar suffixes appended when applicable. Never <see langword="null" />.</returns>
     public string DisplayName
     {
         get

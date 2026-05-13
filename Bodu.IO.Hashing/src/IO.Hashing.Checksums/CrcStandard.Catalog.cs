@@ -157,13 +157,13 @@ public sealed partial class CrcStandard
         new CatalogEntry("CRC-64/XZ", 64, 0x42F0E1EBA9EA3693UL, 0xFFFFFFFFFFFFFFFFUL, true, true, 0xFFFFFFFFFFFFFFFFUL),
     };
 
-    /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialised on first <see cref="Get(CrcStandards)" />.</summary>
+    /// <summary>Lazy per-entry cache: index by <c>(int)CrcStandards</c> ordinal, materialized on first <see cref="Get(CrcStandards)" />.</summary>
     private static readonly CrcStandard?[] s_cache = new CrcStandard?[s_catalog.Length];
 
     /// <summary>Lazy map from canonical name or alias to the enum ordinal. Built on first <see cref="FromName(string)" /> call.</summary>
     private static Dictionary<string, CrcStandards>? s_nameToEnum;
 
-    /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialised on first <see cref="All" /> access.</summary>
+    /// <summary>Lazy snapshot of every catalogue <see cref="CrcStandard" /> instance; materialized on first <see cref="All" /> access.</summary>
     private static IReadOnlyList<CrcStandard>? s_all;
 
     /// <summary>
@@ -171,7 +171,7 @@ public sealed partial class CrcStandard
     /// </summary>
     /// <value>A read-only list containing one <see cref="CrcStandard" /> per canonical entry.</value>
     /// <remarks>
-    /// <para>The backing array is built lazily on first access and then memoised, so merely loading this type does not construct any
+    /// <para>The backing array is built lazily on first access and then memoized, so merely loading this type does not construct any
     /// <see cref="CrcStandard" /> instances. Aliases are not included as separate entries; use <see cref="FromName(string)" /> to
     /// resolve an alias to its canonical instance.</para>
     /// </remarks>
@@ -186,7 +186,7 @@ public sealed partial class CrcStandard
    }
 
     /// <summary>
-    /// Materialises — or retrieves from cache — the <see cref="CrcStandard" /> identified by the given enum value.
+    /// Materializes — or retrieves from cache — the <see cref="CrcStandard" /> identified by the given enum value.
     /// </summary>
     /// <param name="standard">The catalogue entry to resolve. Must be a defined <see cref="CrcStandards" /> value.</param>
     /// <returns>The shared <see cref="CrcStandard" /> instance for <paramref name="standard" />.</returns>

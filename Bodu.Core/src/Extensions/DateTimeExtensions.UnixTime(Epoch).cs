@@ -80,10 +80,10 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Returns the number of milliseconds that have elapsed between the Unix epoch (1970-01-01T00:00:00Z) and the specified <see cref="DateTime"/>.
     /// </summary>
-    /// <param name="dateTime">The date and time value to convert. The value is first normalised to UTC using <see cref="DateTime.ToUniversalTime()"/>.</param>
+    /// <param name="dateTime">The date and time value to convert. The value is first normalized to UTC using <see cref="DateTime.ToUniversalTime()"/>.</param>
     /// <returns>The total number of milliseconds since the Unix epoch.</returns>
     /// <remarks>
-    /// <para>This method normalises the input to UTC before computing the elapsed time. Use <see cref="FromUnixTimeMilliseconds(long)"/> to convert back.</para>
+    /// <para>This method normalizes the input to UTC before computing the elapsed time. Use <see cref="FromUnixTimeMilliseconds(long)"/> to convert back.</para>
     /// </remarks>
     /// <seealso cref="FromUnixTimeMilliseconds(long)"/>
     public static long ToUnixTimeMilliseconds(this DateTime dateTime) => (dateTime.ToUniversalTime().Ticks / TicksPerMillisecond) - UnixEpochMilliseconds;
@@ -91,10 +91,10 @@ public static partial class DateTimeExtensions
     /// <summary>
     /// Returns the number of seconds that have elapsed between the Unix epoch (1970-01-01T00:00:00Z) and the specified <see cref="DateTime"/>.
     /// </summary>
-    /// <param name="dateTime">The date and time value to convert. The value is first normalised to UTC using <see cref="DateTime.ToUniversalTime()"/>.</param>
+    /// <param name="dateTime">The date and time value to convert. The value is first normalized to UTC using <see cref="DateTime.ToUniversalTime()"/>.</param>
     /// <returns>The total number of seconds since the Unix epoch.</returns>
     /// <remarks>
-    /// <para>This method normalises the input to UTC before computing the elapsed time. Use <see cref="FromUnixTimeSeconds(long)"/> to convert back.</para>
+    /// <para>This method normalizes the input to UTC before computing the elapsed time. Use <see cref="FromUnixTimeSeconds(long)"/> to convert back.</para>
     /// </remarks>
     /// <seealso cref="FromUnixTimeSeconds(long)"/>
     public static long ToUnixTimeSeconds(this DateTime dateTime) => (dateTime.ToUniversalTime().Ticks / TicksPerSecond) - UnixEpochSeconds;

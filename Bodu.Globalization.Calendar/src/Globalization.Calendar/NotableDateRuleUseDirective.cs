@@ -34,7 +34,7 @@ namespace Bodu.Globalization.Calendar;
 /// </list>
 /// <para>
 /// The merged rule is what eventually drives a <see cref="NotableDate" /> at resolution time, so directives are the right place to
-/// adapt an inherited rule to a host's territory, weekend roll behaviour, or non-working flag without redeclaring the rule in full.
+/// adapt an inherited rule to a host's territory, weekend roll behavior, or non-working flag without redeclaring the rule in full.
 /// </para>
 /// </remarks>
 /// <example>

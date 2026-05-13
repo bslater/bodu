@@ -31,8 +31,8 @@ A **`NotableDateRule`** is an authored recipe — a strategy (fixed, *n*th weekd
 | <xref:Bodu.Globalization.Calendar.INotableDateAlgorithm>, <xref:Bodu.Globalization.Calendar.INotableDateAlgorithmRegistry>, <xref:Bodu.Globalization.Calendar.NotableDateAlgorithmRegistry> | Pluggable algorithm contract and registry. |
 | <xref:Bodu.Globalization.Calendar.INotableDateProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider> | Rule-source contracts. |
 | <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider>, <xref:Bodu.Globalization.Calendar.NotableDateRuleResourceProviderBase> | Built-in resource-backed rule providers (and their base class). |
-| <xref:Bodu.Globalization.Calendar.INotableDateNameLocalizer> | Pluggable display-name localisation. |
-| <xref:Bodu.Globalization.Calendar.INotableDateCollisionResolver>, <xref:Bodu.Globalization.Calendar.DefaultNotableDateCollisionResolver> | Behaviour when multiple rules resolve to the same date. |
+| <xref:Bodu.Globalization.Calendar.INotableDateNameLocalizer> | Pluggable display-name localization. |
+| <xref:Bodu.Globalization.Calendar.INotableDateCollisionResolver>, <xref:Bodu.Globalization.Calendar.DefaultNotableDateCollisionResolver> | Behavior when multiple rules resolve to the same date. |
 | <xref:Bodu.Globalization.Calendar.IResourcePathResolver>, <xref:Bodu.Globalization.Calendar.ResourcePathResolver>, <xref:Bodu.Globalization.Calendar.ResourcePathResolverOptions> | Resource-path resolution for embedded providers. |
 | <xref:Bodu.Globalization.Calendar.NotableDateRuleParser>, <xref:Bodu.Globalization.Calendar.NotableDateRuleJsonParser>, <xref:Bodu.Globalization.Calendar.ParsedNotableDateDocument>, <xref:Bodu.Globalization.Calendar.NotableDateRuleUseGroup>, <xref:Bodu.Globalization.Calendar.NotableDateRuleUseDirective>, <xref:Bodu.Globalization.Calendar.NotableDateRuleOverrideBody>, <xref:Bodu.Globalization.Calendar.RuleRemoval> | XML / JSON rule-document model. |
 

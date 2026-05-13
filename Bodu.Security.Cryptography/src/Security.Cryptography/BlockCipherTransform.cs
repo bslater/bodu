@@ -27,18 +27,18 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// A <see cref="BlockCipherTransform"/> instance represents a single cryptographic transform operation. Once
-/// <see cref="TransformFinalBlock"/> has completed, the instance is finalised and cannot be used for another
+/// <see cref="TransformFinalBlock"/> has completed, the instance is finalized and cannot be used for another
 /// operation. Consequently, <see cref="CanReuseTransform"/> returns <see langword="false"/>. Callers that need to
 /// encrypt or decrypt additional data must create a new transform instance.
 /// </para>
 /// <para>
-/// Finalisation is distinct from disposal. After <see cref="TransformFinalBlock"/> completes, subsequent transform
+/// Finalization is distinct from disposal. After <see cref="TransformFinalBlock"/> completes, subsequent transform
 /// calls throw <see cref="InvalidOperationException"/>. After <see cref="Dispose"/> is called, subsequent transform
 /// calls throw <see cref="ObjectDisposedException"/>.
 /// </para>
 /// <para>
 /// The transform is intentionally not reusable because the underlying block cipher mode transform may contain
-/// mutable chaining, feedback, or counter state. Clearing deferred padding input after finalisation is not sufficient
+/// mutable chaining, feedback, or counter state. Clearing deferred padding input after finalization is not sufficient
 /// to restore the mode transform to its initial IV or counter state.
 /// </para>
 /// <para>
@@ -83,7 +83,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// The block cipher mode transform that applies chaining, feedback, counter, or equivalent mode semantics.
     /// </summary>
     /// <remarks>
-    /// This object may contain mutable per-operation state and is therefore not reset after finalisation.
+    /// This object may contain mutable per-operation state and is therefore not reset after finalization.
     /// </remarks>
     private readonly IBlockCipherModeTransform _mode;
 
@@ -114,14 +114,14 @@ public abstract class BlockCipherTransform : ICryptoTransform
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BlockCipherTransform"/> class using the specified cipher
-    /// engine, mode, padding scheme, initialisation vector, and transform direction.
+    /// engine, mode, padding scheme, initialization vector, and transform direction.
     /// </summary>
     /// <param name="cipher">
     /// The configured <see cref="IBlockCipher"/> engine to use. Must not be <see langword="null"/>.
     /// </param>
     /// <param name="cipherMode">The block cipher mode of operation.</param>
     /// <param name="paddingMode">The padding scheme to apply to the final block.</param>
-    /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
+    /// <param name="iv">The initialization vector for the cipher mode. Must match the cipher block size.</param>
     /// <param name="encrypt">
     /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
     /// </param>
@@ -136,7 +136,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BlockCipherTransform"/> class using the specified cipher
-    /// engine, mode, extended padding scheme, initialisation vector, and transform direction.
+    /// engine, mode, extended padding scheme, initialization vector, and transform direction.
     /// </summary>
     /// <param name="cipher">
     /// The configured <see cref="IBlockCipher"/> engine to use. Must not be <see langword="null"/>.
@@ -146,7 +146,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// The extended padding scheme to apply to the final block. Accepts values beyond the framework
     /// <see cref="PaddingMode"/> enum, including <see cref="PaddingModeKind.ISO7816_4"/>.
     /// </param>
-    /// <param name="iv">The initialisation vector for the cipher mode. Must match the cipher block size.</param>
+    /// <param name="iv">The initialization vector for the cipher mode. Must match the cipher block size.</param>
     /// <param name="encrypt">
     /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
     /// </param>
@@ -207,7 +207,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <returns>The number of bytes written to <paramref name="outputBuffer"/>.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
-    /// This transform has already been finalised and cannot be reused.
+    /// This transform has already been finalized and cannot be reused.
     /// </exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="inputBuffer"/> or <paramref name="outputBuffer"/> is <see langword="null"/>.
@@ -279,7 +279,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// <returns>A new byte array containing the transformed and padded, or depadded, final block.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
-    /// This transform has already been finalised and cannot be reused.
+    /// This transform has already been finalized and cannot be reused.
     /// </exception>
     /// <exception cref="ArgumentNullException"><paramref name="inputBuffer"/> is <see langword="null"/>.</exception>
     /// <exception cref="ArgumentException">
@@ -324,7 +324,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
             {
                 // Decrypt path: ciphertext must be block-aligned once any deferred buffer is
                 // re-attached. Validate the combined length so a malformed final call surfaces
-                // as a CryptographicException with a recognisable message rather than crashing
+                // as a CryptographicException with a recognizable message rather than crashing
                 // deeper in the mode transform.
                 var combined = Combine(this._deferredInput, input);
                 CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(
@@ -374,7 +374,7 @@ public abstract class BlockCipherTransform : ICryptoTransform
     /// Throws if this transform has already completed its final block operation.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// This transform has already been finalised and cannot be reused.
+    /// This transform has already been finalized and cannot be reused.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfFinalized()

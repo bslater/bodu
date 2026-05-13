@@ -31,7 +31,7 @@ public abstract partial class RingBackedCollection<T>
     bool ICollection.IsSynchronized => false;
 
     /// <summary>
-    /// Gets a lazily-initialised object that can be used to synchronize access to the collection.
+    /// Gets a lazily-initialized object that can be used to synchronize access to the collection.
     /// </summary>
     /// <value>A non-null object suitable as a <see cref="Monitor"/> target.</value>
     /// <returns>The synchronization root.</returns>

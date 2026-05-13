@@ -4,11 +4,11 @@ title: Using MurmurHash3
 
 # Using MurmurHash3
 
-MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011) and distributed in the [SMHasher](https://github.com/aappleby/smhasher) reference repository. It produces excellent avalanche behaviour — every input bit influences every output bit — and passes all of the standard non-cryptographic hash quality tests. It is widely used in databases, distributed systems, and probabilistic data structures (Bloom filters, HyperLogLog).
+MurmurHash3 is a non-cryptographic hash family designed by Austin Appleby (2011) and distributed in the [SMHasher](https://github.com/aappleby/smhasher) reference repository. It produces excellent avalanche behavior — every input bit influences every output bit — and passes all of the standard non-cryptographic hash quality tests. It is widely used in databases, distributed systems, and probabilistic data structures (Bloom filters, HyperLogLog).
 
 **Bodu.IO.Hashing** provides two variants:
 
-| Type | Output | Optimised for | Notes |
+| Type | Output | Optimized for | Notes |
 |---|---|---|---|
 | `MurmurHash3_32` | 32 bits | All platforms | General-purpose 32-bit fingerprint. |
 | `MurmurHash3_128` | 128 bits | 64-bit platforms | 128-bit fingerprint; the highest-quality variant. |

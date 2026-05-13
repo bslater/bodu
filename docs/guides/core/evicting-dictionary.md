@@ -105,7 +105,7 @@ bool hasB = lru.ContainsKey("b");   // false — evicted
 
 ## Thread safety
 
-`EvictingDictionary<TKey, TValue>` is **not thread-safe**. Concurrent reads can mutate eviction metadata (LRU access order, LFU access counts), so concurrent read-read is also not safe without external synchronisation. Wrap with a lock or `ReaderWriterLockSlim` when multiple threads access the same instance.
+`EvictingDictionary<TKey, TValue>` is **not thread-safe**. Concurrent reads can mutate eviction metadata (LRU access order, LFU access counts), so concurrent read-read is also not safe without external synchronization. Wrap with a lock or `ReaderWriterLockSlim` when multiple threads access the same instance.
 
 ## API summary
 

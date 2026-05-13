@@ -29,7 +29,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <paramref name="bufferSize" /> is less than or equal to zero.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// The operation was cancelled.
+    /// The operation was canceled.
     /// </exception>
     public static async ValueTask<byte[]> ComputeHashAsync(
         this NonCryptographicHashAlgorithm algorithm,

@@ -47,7 +47,7 @@ namespace Bodu.Collections.Generic;
 /// The result uses this instance's comparer.
 /// </para>
 /// <para>
-/// <see cref="Multiset{T}"/> is not thread-safe. Concurrent reads and writes require external synchronisation.
+/// <see cref="Multiset{T}"/> is not thread-safe. Concurrent reads and writes require external synchronization.
 /// </para>
 /// </remarks>
 [DebuggerDisplay("Count = {Count}, DistinctCount = {DistinctCount}")]

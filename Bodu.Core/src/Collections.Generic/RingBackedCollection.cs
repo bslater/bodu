@@ -38,7 +38,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <list type="bullet">
 /// <item><description><see cref="CircularBuffer{T}"/> adds the single-ended <c>Enqueue</c> / <c>Dequeue</c> / <c>Peek</c> surface with an <c>AllowOverwrite</c> toggle and eviction events.</description></item>
-/// <item><description><see cref="Deque{T}"/> adds the double-ended <c>AddFirst</c> / <c>AddLast</c> / <c>RemoveFirst</c> / <c>RemoveLast</c> / <c>PeekFirst</c> / <c>PeekLast</c> surface, with an <c>AllowGrow</c> toggle for fixed-vs-growable behaviour.</description></item>
+/// <item><description><see cref="Deque{T}"/> adds the double-ended <c>AddFirst</c> / <c>AddLast</c> / <c>RemoveFirst</c> / <c>RemoveLast</c> / <c>PeekFirst</c> / <c>PeekLast</c> surface, with an <c>AllowGrow</c> toggle for fixed-vs-growable behavior.</description></item>
 /// </list>
 /// <para>
 /// This type is not thread-safe. For thread-safe single-ended FIFO access, use
@@ -113,7 +113,7 @@ public abstract partial class RingBackedCollection<T>
         else
         {
             // Bound peak allocation to `capacity` for arbitrarily large sources: TakeLast buffers at most `capacity`
-            // elements while consuming the enumerator once, so the trailing window is materialised without
+            // elements while consuming the enumerator once, so the trailing window is materialized without
             // copying every preceding element.
             T[] tail = collection.TakeLast(capacity).ToArray();
             Array.Copy(tail, _array, tail.Length);

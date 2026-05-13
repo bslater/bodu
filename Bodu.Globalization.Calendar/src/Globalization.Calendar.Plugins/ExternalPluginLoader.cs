@@ -19,9 +19,9 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <para>
 /// The loader follows a conservative discovery model: it reads a <em>single</em> attribute — <see cref="NotableDatePluginAttribute" /> —
 /// from the plugin assembly and activates the declared type. It does not enumerate the assembly's type list, does not invoke
-/// module initialisers of unrelated types, and does not consider any assembly that fails the trust policy. The plugin's static
-/// constructors and module initialiser still run at load time (a limitation of .NET assembly loading that cannot be bypassed
-/// without a sandbox); the trust policy is the line of defence against that.
+/// module initializers of unrelated types, and does not consider any assembly that fails the trust policy. The plugin's static
+/// constructors and module initializer still run at load time (a limitation of .NET assembly loading that cannot be bypassed
+/// without a sandbox); the trust policy is the line of defense against that.
 /// </para>
 /// <para>
 /// Each plugin is isolated in a dedicated non-collectible <see cref="AssemblyLoadContext" /> so its transitive private

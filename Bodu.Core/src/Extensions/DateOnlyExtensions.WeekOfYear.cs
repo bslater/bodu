@@ -50,7 +50,7 @@ public static partial class DateOnlyExtensions
     /// <param name="weekStart">The <see cref="DayOfWeek"/> on which each week begins.</param>
     /// <returns>An integer in the range 1 – 53 representing the week of the year that contains <paramref name="date"/>.</returns>
     /// <remarks>
-    /// <para>This overload enables custom calendar logic such as ISO 8601 (<see cref="CalendarWeekRule.FirstFourDayWeek"/>, <see cref="DayOfWeek.Monday"/>) or localised U.S./European systems.</para>
+    /// <para>This overload enables custom calendar logic such as ISO 8601 (<see cref="CalendarWeekRule.FirstFourDayWeek"/>, <see cref="DayOfWeek.Monday"/>) or localized U.S./European systems.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="weekRule"/> is not a defined value of the <see cref="CalendarWeekRule"/> enumeration,

@@ -15,9 +15,9 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// <see cref="CityHash64" /> selects one of four internal mixing paths depending on the input length: a compact path for 0–16 bytes,
-/// a four-word path for 17–32 bytes, an eight-word path with byte-swap finalisation for 33–64 bytes, and a full iterative path that
+/// a four-word path for 17–32 bytes, an eight-word path with byte-swap finalization for 33–64 bytes, and a full iterative path that
 /// consumes 64-byte blocks using two pairs of seeded weak hash accumulators for inputs of 65 bytes or more. All paths converge through
-/// the shared <c>HashLen16</c> finaliser, which applies two rounds of multiply-shift-XOR to distribute entropy across all output bits.
+/// the shared <c>HashLen16</c> finalizer, which applies two rounds of multiply-shift-XOR to distribute entropy across all output bits.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
@@ -101,7 +101,7 @@ public sealed class CityHash64
     }
 
     /// <summary>
-    /// Hashes 33 to 64 bytes by reading eight 64-bit words spread across the full input span, including a byte-swap finalisation step.
+    /// Hashes 33 to 64 bytes by reading eight 64-bit words spread across the full input span, including a byte-swap finalization step.
     /// </summary>
     /// <param name="s">The input span. Length must be in the range [33, 64].</param>
     /// <returns>The 64-bit hash value.</returns>

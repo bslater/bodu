@@ -42,7 +42,7 @@ public partial struct WeekPattern
     /// </param>
     /// <returns>A <see cref="WeekPattern"/> parsed according to the specified format.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="input"/> or <paramref name="format"/> is <see langword="null"/>.</exception>
-    /// <exception cref="FormatException">Thrown if <paramref name="input"/> or <paramref name="format"/> is invalid or unrecognised.</exception>
+    /// <exception cref="FormatException">Thrown if <paramref name="input"/> or <paramref name="format"/> is invalid or unrecognized.</exception>
     public static WeekPattern ParseExact(string input, string format)
     {
         ThrowHelper.ThrowIfNull(input);

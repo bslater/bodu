@@ -24,8 +24,8 @@ namespace Bodu.IO.Hashing;
 /// Many non-cryptographic hashes — Murmur, CityHash, Pearson, the FNV variants — define their compression step over a
 /// fixed block size (4, 8, 16, or 32 bytes) and must buffer trailing bytes that do not fill a complete block. Writing
 /// that buffering loop correctly is fiddly: handle straddling input, accumulate the running message length, and pad
-/// once on finalisation. <see cref="BlockNonCryptographicHashAlgorithm{T}"/> centralises that machinery so derived
-/// types only express the algorithm-specific behaviour.
+/// once on finalization. <see cref="BlockNonCryptographicHashAlgorithm{T}"/> centralizes that machinery so derived
+/// types only express the algorithm-specific behavior.
 /// </para>
 /// <para>
 /// <strong>Inheritance contract.</strong> Derived classes implement four members and may override two more:
@@ -43,7 +43,7 @@ namespace Bodu.IO.Hashing;
 /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})"/> entry point and is
 /// drained block-by-block into the residual buffer. <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/>
 /// is intentionally non-destructive: the base class clones the live instance via <see cref="Clone"/>, runs padding and
-/// finalisation on the clone, and copies the digest into the destination span. Callers may inspect the running hash as
+/// finalization on the clone, and copies the digest into the destination span. Callers may inspect the running hash as
 /// often as they like without disturbing further input. <see cref="Reset"/> clears the residual buffer and total length
 /// before invoking <see cref="ResetState"/>.
 /// </para>
@@ -61,7 +61,7 @@ namespace Bodu.IO.Hashing;
 /// inputs. They do not provide preimage or collision resistance and must not be used for password hashing, message
 /// authentication, or any security-sensitive context — use a member of <c>Bodu.Security.Cryptography</c> or the BCL's
 /// <see cref="System.Security.Cryptography.HashAlgorithm"/> hierarchy instead. Instances are not thread-safe; share
-/// behind explicit synchronisation.
+/// behind explicit synchronization.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -219,7 +219,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     protected abstract void ProcessBlock(ReadOnlySpan<byte> block);
 
     /// <summary>
-    /// Finalises the hash computation and produces the final hash output.
+    /// Finalizes the hash computation and produces the final hash output.
     /// </summary>
     /// <returns>A byte array containing the final computed hash value.</returns>
     protected abstract byte[] ProcessFinalBlock();

@@ -25,7 +25,7 @@ This page is the cross-cutting overview — how the families relate, which to ch
 | A fast non-cryptographic fingerprint for hash tables, bucketing, caches | <xref:Bodu.IO.Hashing.Checksums.Adler32>, <xref:Bodu.IO.Hashing.Fnv1a32>, <xref:Bodu.IO.Hashing.Fnv1a64>, <xref:Bodu.IO.Hashing.CityHash64> | Cheap, well-spread, **not** cryptographic. |
 | A hash-table key or short fingerprint, resistant to collision-DoS | <xref:Bodu.Security.Cryptography.SipHash64>, <xref:Bodu.Security.Cryptography.SipHash128> | Keyed, collision-resistant for short inputs. |
 | A cryptographic digest for signatures, fingerprints, or content addressing | <xref:Bodu.Security.Cryptography.Tiger>, or `System.Security.Cryptography.SHA256` (BCL) | Collision-resistant against active attackers. |
-| A NIST-standardised 256-bit digest with a small state footprint (SP 800-232) | <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> | Two variants: max margin (`ASCON-HASH256`) or higher throughput (`ASCON-HASHA256`). |
+| A NIST-standardized 256-bit digest with a small state footprint (SP 800-232) | <xref:Bodu.Security.Cryptography.AsconHash256>, <xref:Bodu.Security.Cryptography.AsconHashA256> | Two variants: max margin (`ASCON-HASH256`) or higher throughput (`ASCON-HASHA256`). |
 | A rolling integrity check over a long stream with partial re-verification | <xref:Bodu.Security.Cryptography.MerkleTreeHash>, <xref:Bodu.Security.Cryptography.ParallelMerkleTreeHash> | Subtree recomputation without rehashing the whole input. |
 | An on-the-wire CRC (zlib, PNG, Modbus, iSCSI, …) or a Fletcher checksum | <xref:Bodu.IO.Hashing.Checksums.Crc>, <xref:Bodu.IO.Hashing.Checksums.Fletcher32> | Non-cryptographic, `System.IO.Hashing` contract — see the [Bodu.IO.Hashing guides](../io-hashing/index.md). |
 
@@ -68,11 +68,11 @@ ulong slotHash = BitConverter.ToUInt64(digest);
 // Use the output as a stable 64-bit hash for routing / bucketing.
 ```
 
-`SipHash128` gives you a 128-bit output for use cases that care about longer collision resistance. Both types expose `CompressionRounds` and `FinalizationRounds` if you need to trade speed for margin (defaults are the standard SipHash-2-4 parameterisation).
+`SipHash128` gives you a 128-bit output for use cases that care about longer collision resistance. Both types expose `CompressionRounds` and `FinalizationRounds` if you need to trade speed for margin (defaults are the standard SipHash-2-4 parameterization).
 
 ## Pattern 3 — a cryptographic digest
 
-<xref:Bodu.Security.Cryptography.Tiger> is a classic 192-bit cryptographic hash optimised for 64-bit platforms. Use it for interoperability with existing Tiger-based systems, or when you want a digest in the same family as SHA-2 without pulling in a second dependency.
+<xref:Bodu.Security.Cryptography.Tiger> is a classic 192-bit cryptographic hash optimized for 64-bit platforms. Use it for interoperability with existing Tiger-based systems, or when you want a digest in the same family as SHA-2 without pulling in a second dependency.
 
 ```csharp
 using Bodu.Security.Cryptography;

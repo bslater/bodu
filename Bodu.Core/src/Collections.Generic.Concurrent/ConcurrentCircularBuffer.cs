@@ -89,7 +89,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
     /// <summary>
     /// Maximum number of complete snapshot/index/contains attempts before falling back to a best-effort or
-    /// failing read. Sized for sustained-contention scenarios; under typical load a snapshot stabilises on
+    /// failing read. Sized for sustained-contention scenarios; under typical load a snapshot stabilizes on
     /// the first attempt.
     /// </summary>
     private const int SnapshotOuterRetryBudget = 64;
@@ -134,7 +134,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
         : this(capacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwrite behaviour.
+    /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class with the specified capacity and overwrite behavior.
     /// </summary>
     /// <param name="capacity">
     /// The maximum number of elements the buffer can hold. Must be at least 2. See the class remarks for an
@@ -168,7 +168,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <summary>
     /// Initializes a new instance of the <see cref="ConcurrentCircularBuffer{T}"/> class.
     /// Initializes a new instance by copying from <paramref name="collection"/>, using the specified capacity
-    /// and overwrite behaviour.
+    /// and overwrite behavior.
     /// </summary>
     /// <param name="collection">
     /// The collection whose elements are copied into the buffer. Must not be <see langword="null"/>.
@@ -206,7 +206,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <see cref="Capacity"/> elements when the source is larger. The instance is not yet observable by other
     /// threads at this point, so the lock-free producer protocol is bypassed.
     /// </summary>
-    /// <param name="items">The materialised source elements.</param>
+    /// <param name="items">The materialized source elements.</param>
     /// <remarks>
     /// <para>
     /// Writes occur in published-state form: each populated slot's <c>Sequence</c> is set to its publication
@@ -259,7 +259,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <remarks>
     /// Toggling this property concurrently with an in-flight <see cref="Enqueue"/> or <see cref="TryEnqueue"/>
     /// is safe but may have a benign window where a producer that observed the previous value commits its
-    /// behaviour (eviction or rejection) before the new value takes effect. The window does not corrupt buffer
+    /// behavior (eviction or rejection) before the new value takes effect. The window does not corrupt buffer
     /// state.
     /// </remarks>
     public bool AllowOverwrite
@@ -481,9 +481,9 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// element published at that logical position — never a value from an earlier or later generation.
     /// </para>
     /// <para>
-    /// If a slot cannot be stabilised within its retry budget, the entire snapshot is restarted. After the
+    /// If a slot cannot be stabilized within its retry budget, the entire snapshot is restarted. After the
     /// outer retry budget is exhausted under sustained churn, a best-effort snapshot is returned in which
-    /// individual slots that still cannot be stabilised contribute the default value of <typeparamref name="T"/>;
+    /// individual slots that still cannot be stabilized contribute the default value of <typeparamref name="T"/>;
     /// every committed slot in that fallback path is still sequence-validated, so a torn or stale-generation
     /// reference is never returned.
     /// </para>
@@ -530,7 +530,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
 
     /// <summary>
     /// Produces a best-effort snapshot when the standard <see cref="ToArray"/> retry budget is exhausted.
-    /// Each slot is still sequence-validated; slots that cannot be stabilised are written as
+    /// Each slot is still sequence-validated; slots that cannot be stabilized are written as
     /// <see langword="default"/> rather than as a torn or stale-generation value.
     /// </summary>
     /// <returns>The best-effort snapshot array.</returns>
@@ -570,7 +570,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     /// <returns>
     /// <see langword="true"/> when the slot was observed in the expected published state both before and
     /// after the value read; <see langword="false"/> when the slot has been reclaimed, has not yet been
-    /// published, or could not be stabilised within the inner retry budget.
+    /// published, or could not be stabilized within the inner retry budget.
     /// </returns>
     /// <remarks>
     /// Implements the seqlock read protocol: read sequence, read value, re-read sequence; commit when both

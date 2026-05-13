@@ -4,7 +4,7 @@ title: Guides
 
 # Guides
 
-Recipe-style walk-throughs and conceptual introductions for every library in the Bodu suite. Each library's guide section is organised by **namespace**, with one walk-through per headline type.
+Recipe-style walk-throughs and conceptual introductions for every library in the Bodu suite. Each library's guide section is organized by **namespace**, with one walk-through per headline type.
 
 If you are new to Bodu, start with the [introduction](../docs/introduction.md) for the project overview, the [getting-started page](../docs/getting-started.md) for install commands, or the [algorithm families](../docs/algorithm-families.md) page if you need to choose between hashing or cryptography types that sound similar.
 
@@ -234,7 +234,7 @@ Cryptographic primitives with a formal adversary model — block ciphers, AEAD c
 
 <div class="bodu-card">
   <h3><a href="cryptography/tiger.md">Using Tiger</a></h3>
-  <p>128 / 160 / 192-bit cryptographic digest optimised for 64-bit platforms.</p>
+  <p>128 / 160 / 192-bit cryptographic digest optimized for 64-bit platforms.</p>
 </div>
 
 <div class="bodu-card">

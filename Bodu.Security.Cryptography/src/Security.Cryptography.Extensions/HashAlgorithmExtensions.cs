@@ -50,10 +50,10 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <para>
 /// Every digest comparison routes through
 /// <see cref="CryptographicOperations.FixedTimeEquals(System.ReadOnlySpan{byte}, System.ReadOnlySpan{byte})"/> so an
-/// attacker cannot infer a partial-match by timing the call. The async overloads honour
+/// attacker cannot infer a partial-match by timing the call. The async overloads honor
 /// <see cref="System.Threading.CancellationToken"/> at every read boundary. <see cref="HashAlgorithm"/> instances are
 /// stateful and reset after each verification or compute call; they are not thread-safe, so share instances only behind
-/// explicit synchronisation. Stream overloads do not dispose the supplied <see cref="System.IO.Stream"/>.
+/// explicit synchronization. Stream overloads do not dispose the supplied <see cref="System.IO.Stream"/>.
 /// </para>
 /// <para>
 /// For non-cryptographic algorithms (CRC, xxHash, Fletcher, …) prefer the

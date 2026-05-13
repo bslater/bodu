@@ -25,7 +25,7 @@ namespace Bodu.IO.Hashing;
 /// For better avalanche on hash-table keys prefer <see cref="Fnv1a32"/> or <see cref="MurmurHash3_32"/>; for
 /// content fingerprinting prefer <see cref="CityHash{T}"/>. APHash, <see cref="JSHash"/>, <see cref="SDBM"/>,
 /// and <see cref="Pjw32"/> are siblings in the same low-cost niche and produce comparable distribution; the
-/// choice between them is usually driven by interop with an existing system that standardises on one.
+/// choice between them is usually driven by interop with an existing system that standardizes on one.
 /// </para>
 /// <para>
 /// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.

@@ -7,7 +7,7 @@
 namespace Bodu;
 
 /// <summary>
-/// Provides centralised guard clause methods for argument validation, offering consistent and concise exception
+/// Provides centralized guard clause methods for argument validation, offering consistent and concise exception
 /// throwing across both legacy and modern .NET target frameworks.
 /// </summary>
 /// <remarks>

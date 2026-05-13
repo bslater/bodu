@@ -382,7 +382,7 @@ public static partial class ArrayExtensions
     /// hardware.
     /// </para>
     /// <para>
-    /// For unmanaged element types, zero-initialisation of the backing array is elided via
+    /// For unmanaged element types, zero-initialization of the backing array is elided via
     /// <see cref="GC.AllocateUninitializedArray{T}"/>, since <see cref="ReadOnlySpan{T}.CopyTo"/>
     /// overwrites every element before the array is returned.
     /// </para>

@@ -5,7 +5,7 @@ title: ASCON hashing — AsconHash256 and AsconHashA256
 # ASCON hashing — AsconHash256 and AsconHashA256
 
 `ASCON-HASH256` and `ASCON-HASHA256` are the two fixed-output hash algorithms in the ASCON
-family, standardised in NIST SP 800-232. Both are sponge constructions built on a 320-bit
+family, standardized in NIST SP 800-232. Both are sponge constructions built on a 320-bit
 internal state with an 8-byte (64-bit) absorption rate, and both produce a **256-bit (32-byte)
 digest**. The family was designed for constrained hardware — but the same properties that make
 it attractive there (compact state, simple round function, well-studied security margin) make it
@@ -91,7 +91,7 @@ Console.WriteLine(performance.AlgorithmName);     // "ASCON-HASHA256"
 
 The 12-round variant applies 50 % more permutation work per absorbed block, giving deeper
 cryptanalytic margin. The 8-round variant reduces absorption work in exchange for higher
-throughput; the squeeze phase retains 12 rounds in both cases, so finalisation is equally strong
+throughput; the squeeze phase retains 12 rounds in both cases, so finalization is equally strong
 in both variants.
 
 When in doubt, use `AsconHash256`. Switch to `AsconHashA256` only when profiling shows the

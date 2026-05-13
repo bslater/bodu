@@ -24,7 +24,7 @@ namespace Bodu.Security.Cryptography;
 /// a <see cref="DelegateHashAlgorithmFactory{T}"/> — the right pick whenever the algorithm needs configuration
 /// (a key, a round count, a variant flag) at the construction site. Implement
 /// <see cref="IHashAlgorithmFactory{T}"/> directly only when adding instance pooling, telemetry, or other
-/// cross-cutting behaviour around algorithm creation.
+/// cross-cutting behavior around algorithm creation.
 /// </para>
 /// <para>
 /// <strong>How it is consumed.</strong> Pass the factory to the static helpers on
@@ -42,6 +42,6 @@ public interface IHashAlgorithmFactory<out T>
     /// <summary>
     /// Creates and returns a new instance of the hash algorithm with any necessary configuration applied.
     /// </summary>
-    /// <returns>A fully initialised <typeparamref name="T"/> instance, ready for data input.</returns>
+    /// <returns>A fully initialized <typeparamref name="T"/> instance, ready for data input.</returns>
     T Create();
 }

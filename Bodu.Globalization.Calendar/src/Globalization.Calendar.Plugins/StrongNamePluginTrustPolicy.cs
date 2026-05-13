@@ -23,7 +23,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
 {
-    /// <summary>The set of normalised, lowercase-hex public-key tokens that are permitted to load.</summary>
+    /// <summary>The set of normalized, lowercase-hex public-key tokens that are permitted to load.</summary>
     private readonly HashSet<string> _allowedTokens;
 
     /// <summary>
@@ -34,7 +34,7 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
     public StrongNamePluginTrustPolicy(IEnumerable<string> allowedPublicKeyTokens)
     {
         if (allowedPublicKeyTokens is null) throw new ArgumentNullException(nameof(allowedPublicKeyTokens));
-        _allowedTokens = new HashSet<string>(allowedPublicKeyTokens.Select(NormaliseToken), StringComparer.OrdinalIgnoreCase);
+        _allowedTokens = new HashSet<string>(allowedPublicKeyTokens.Select(NormalizeToken), StringComparer.OrdinalIgnoreCase);
     }
 
     /// <inheritdoc />
@@ -50,10 +50,10 @@ public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
             : new PluginTrustResult(Trusted: false, Reason: $"Public-key token '{token}' is not in the allowlist.");
     }
 
-    /// <summary>Normalises a public-key token string to trimmed lowercase, returning an empty string for <see langword="null" /> input.</summary>
+    /// <summary>Normalizes a public-key token string to trimmed lowercase, returning an empty string for <see langword="null" /> input.</summary>
     /// <param name="token">The raw token string.</param>
-    /// <returns>The normalised lowercase token.</returns>
-    private static string NormaliseToken(string token) =>
+    /// <returns>The normalized lowercase token.</returns>
+    private static string NormalizeToken(string token) =>
         (token ?? string.Empty).Trim().ToLowerInvariant();
 
     /// <summary>Converts a byte array to its lowercase hexadecimal string representation.</summary>

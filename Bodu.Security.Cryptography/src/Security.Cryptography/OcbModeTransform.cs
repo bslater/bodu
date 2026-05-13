@@ -16,7 +16,7 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — OCB3 realises both the keystream and the MAC pipelines as a single offset-driven pass over each block."/>
+/// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — OCB3 realizes both the keystream and the MAC pipelines as a single offset-driven pass over each block."/>
 /// </para>
 /// <para>
 /// OCB3 collapses the two pipelines of the generic AEAD shape above into a <em>single pass</em>: the
@@ -33,7 +33,7 @@ namespace Bodu.Security.Cryptography;
 /// (8, 12, and 16 bytes).
 /// </para>
 /// <para>
-/// Offset initialisation uses the RFC 7253 §2.4 K_top stretch:
+/// Offset initialization uses the RFC 7253 §2.4 K_top stretch:
 /// <code>
 ///   Nonce  = num2str(TAGLEN mod 128, 7) || zeros(120-bitlen(N)) || 1 || N
 ///   bottom = str2num(Nonce[123..128])
@@ -98,7 +98,7 @@ public sealed class OcbModeTransform
     /// </summary>
     /// <param name="cipher">The block cipher. Must have a 128-bit (16-byte) block size.</param>
     /// <param name="iv">
-    /// The initialisation vector. The first 12 bytes are used as the OCB3 nonce.
+    /// The initialization vector. The first 12 bytes are used as the OCB3 nonce.
     /// Must equal the cipher block size. A defensive copy is taken.
     /// </param>
     /// <param name="tagSize">
@@ -462,7 +462,7 @@ public sealed class OcbModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data authentication contribution has been initialised before payload processing.
+    /// Ensures the associated-data authentication contribution has been initialized before payload processing.
     /// </summary>
     private void EnsureAadProcessed()
     {

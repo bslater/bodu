@@ -41,7 +41,7 @@ public static partial class IEnumerableExtensions
         if (items is ICollection<T> itemsCollection && itemsCollection.Count == 0)
             return true;
 
-        // Materialise the source into a HashSet for O(1) membership lookups.
+        // Materialize the source into a HashSet for O(1) membership lookups.
         var sourceSet = new HashSet<T>(source, comparer);
         if (sourceSet.Count == 0)
             return false;

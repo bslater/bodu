@@ -52,7 +52,7 @@ The distribution is good enough that `% shardCount` gives very close to uniform 
 
 ## Pattern 3 — `Append` / `GetCurrentHash` / `Reset`
 
-CityHash's reference implementation is a one-shot algorithm: it reads the whole buffer, decides which length-specialised path to take, and returns a result. To plug that into the streaming <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract, the Bodu implementation **buffers the appended bytes** and applies the final mixing on `GetCurrentHash`.
+CityHash's reference implementation is a one-shot algorithm: it reads the whole buffer, decides which length-specialized path to take, and returns a result. To plug that into the streaming <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract, the Bodu implementation **buffers the appended bytes** and applies the final mixing on `GetCurrentHash`.
 
 ```csharp
 using Bodu.IO.Hashing;

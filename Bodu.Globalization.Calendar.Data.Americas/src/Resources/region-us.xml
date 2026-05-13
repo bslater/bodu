@@ -7,7 +7,7 @@
 
   Country-specific rules explicitly import only the inherited global and
   Christian dates that the United States observes, and override naming,
-  territory, nonWorking, adjustment, or tagging behaviour where required.
+  territory, nonWorking, adjustment, or tagging behavior where required.
 -->
 <NotableDates xmlns="urn:bodu:globalization:calendar"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -74,7 +74,7 @@
 
   <NotableDate name="Memorial Day">
     <Rule name="weekday-last-mon-may-us" category="Holiday" territory="US" nonWorking="true"
-          comment="A federal holiday honouring United States military personnel who have died in the performance of their military duties. Moved to the last Monday of May by the Uniform Monday Holiday Act of 1968.">
+          comment="A federal holiday honoring United States military personnel who have died in the performance of their military duties. Moved to the last Monday of May by the Uniform Monday Holiday Act of 1968.">
       <DayOfWeekInMonth month="May" dayOfWeek="Monday" weekOrdinal="Last" />
     </Rule>
   </NotableDate>
@@ -118,14 +118,14 @@
 
   <NotableDate name="Indigenous Peoples' Day">
     <Rule name="weekday-2nd-mon-oct-us" category="Observance" territory="US" firstYear="1992"
-          comment="Observed by a growing number of U.S. states and municipalities on the second Monday of October — the same date as the federal Columbus Day. First formally adopted by Berkeley, California in 1992. Recognised at the federal level by Presidential Proclamation from 2021.">
+          comment="Observed by a growing number of U.S. states and municipalities on the second Monday of October — the same date as the federal Columbus Day. First formally adopted by Berkeley, California in 1992. Recognized at the federal level by Presidential Proclamation from 2021.">
       <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="Second" />
     </Rule>
   </NotableDate>
 
   <NotableDate name="Veterans Day">
     <Rule name="fixed-nov-11-weekend-roll-us" category="Holiday" territory="US" nonWorking="true"
-          comment="A federal holiday honouring all United States military veterans. Observed on 11 November, the anniversary of the armistice that ended World War I in 1918. When 11 November falls on a weekend, the observed day shifts to the nearest weekday.">
+          comment="A federal holiday honoring all United States military veterans. Observed on 11 November, the anniversary of the armistice that ended World War I in 1918. When 11 November falls on a weekend, the observed day shifts to the nearest weekday.">
       <Fixed month="November" day="11" />
       <Adjustment key="weekend-roll" when="IfWeekend" action="MoveToNextWeekday" />
     </Rule>
@@ -147,7 +147,7 @@
 
   <NotableDate name="Pearl Harbor Remembrance Day">
     <Rule name="fixed-dec-07-us" category="Remembrance" territory="US" firstYear="1994"
-          comment="Designated by Congress in 1994 (Public Law 103-308) to honour the 2,403 Americans killed and 1,178 wounded in the Japanese attack on Pearl Harbor on 7 December 1941. Not a federal holiday.">
+          comment="Designated by Congress in 1994 (Public Law 103-308) to honor the 2,403 Americans killed and 1,178 wounded in the Japanese attack on Pearl Harbor on 7 December 1941. Not a federal holiday.">
       <Fixed month="December" day="7" />
     </Rule>
   </NotableDate>

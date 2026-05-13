@@ -247,7 +247,7 @@
     <value>The CTR counter has wrapped to its initial value. Continuing would reuse the keystream.</value>
   </data>
   <data name="ArgumentException_InvalidIVBits" xml:space="preserve">
-    <value>The initialisation vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes).</value>
+    <value>The initialization vector must be {0} bits ({1} bytes) long; the supplied IV is {2} bits ({3} bytes).</value>
   </data>
   <data name="ArgumentException_InvalidPaddedSequence" xml:space="preserve">
     <value>Input is not a valid {0} padded block sequence.</value>

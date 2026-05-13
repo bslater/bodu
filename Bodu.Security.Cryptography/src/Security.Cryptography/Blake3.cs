@@ -93,10 +93,10 @@ public sealed class Blake3
     /// <summary>Output length in bytes.</summary>
     private const int OutLen = 32;
 
-    // ---- initialisation vector (first eight words of the SHA-256 IV) ----
+    // ---- initialization vector (first eight words of the SHA-256 IV) ----
 
     /// <summary>
-    /// The BLAKE3 initialisation vector, taken from the fractional parts of the square roots of
+    /// The BLAKE3 initialization vector, taken from the fractional parts of the square roots of
     /// the first eight prime numbers, identical to the SHA-256 IV.
     /// </summary>
     private static readonly uint[] s_iv =
@@ -182,7 +182,7 @@ public sealed class Blake3
 
     /// <inheritdoc />
     /// <remarks>
-    /// Clears the CV stack and restores <see cref="_chunkCv"/> to the BLAKE3 initialisation vector, ready for a new
+    /// Clears the CV stack and restores <see cref="_chunkCv"/> to the BLAKE3 initialization vector, ready for a new
     /// chunk. The inherited residual buffer and counters are cleared by the base call (which also throws
     /// <see cref="ObjectDisposedException"/> if the instance has been disposed).
     /// </remarks>
@@ -307,7 +307,7 @@ public sealed class Blake3
     /// </summary>
     /// <param name="rightCv">
     /// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack"/>
-    /// until finalisation so the last parent merge can be marked with <see cref="FlagRoot"/>.
+    /// until finalization so the last parent merge can be marked with <see cref="FlagRoot"/>.
     /// </param>
     /// <returns>
     /// An 8-element array containing the 256-bit root chaining value of the complete message.
@@ -315,7 +315,7 @@ public sealed class Blake3
     /// <remarks>
     /// <para>
     /// Intermediate chunks may already have been folded into balanced subtrees on
-    /// <see cref="_cvStack"/>. Finalisation differs from normal chunk pushing because the final
+    /// <see cref="_cvStack"/>. Finalization differs from normal chunk pushing because the final
     /// chunk must not be pre-merged as a non-root parent. Instead, the stack is folded into the
     /// final chunk from right to left, applying <see cref="FlagRoot"/> to the last parent
     /// compression.
@@ -406,7 +406,7 @@ public sealed class Blake3
             G(state, 3, 4, 9, 14, blockWords[s_msgSchedule[round, 14]], blockWords[s_msgSchedule[round, 15]]);
         }
 
-        // Finalise: XOR the two halves of the state.
+        // Finalize: XOR the two halves of the state.
         for (var i = 0; i < 8; i++)
             state[i] ^= state[i + 8];
 

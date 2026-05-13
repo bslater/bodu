@@ -36,7 +36,7 @@ using var crc16 = new Crc(CrcStandard.Get(CrcStandards.CRC16_XMODEM));
 using var crc8  = new Crc(CrcStandard.Get(CrcStandards.CRC8_SAEJ1850));
 ```
 
-Instances are memoised inside <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, so repeated calls to `Get` for the same entry return the same reference.
+Instances are memoized inside <xref:Bodu.IO.Hashing.Checksums.CrcStandard>, so repeated calls to `Get` for the same entry return the same reference.
 
 ## Pattern 3 — look up by name (including aliases)
 
@@ -73,7 +73,7 @@ Widths 1–64 bits are supported. `CrcStandard` validates the width at construct
 
 ## Pattern 5 — streaming over bytes
 
-Because <xref:Bodu.IO.Hashing.Checksums.Crc> derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, the BCL streaming helpers apply. Call `Append` as many times as you like, then `GetCurrentHash` to finalise.
+Because <xref:Bodu.IO.Hashing.Checksums.Crc> derives from <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType>, the BCL streaming helpers apply. Call `Append` as many times as you like, then `GetCurrentHash` to finalize.
 
 ```csharp
 using Bodu.IO.Hashing;
@@ -93,11 +93,11 @@ using (FileStream fs = File.OpenRead("archive.bin"))
 byte[] fingerprint = crc.GetCurrentHash();
 ```
 
-`GetCurrentHash` is **non-destructive** — finalisation (output reflection, XOR-out, width-masking) is applied to a snapshot of the accumulator, so you can call it repeatedly without disturbing in-progress hashing. To restart from the initial value, call `Reset`.
+`GetCurrentHash` is **non-destructive** — finalization (output reflection, XOR-out, width-masking) is applied to a snapshot of the accumulator, so you can call it repeatedly without disturbing in-progress hashing. To restart from the initial value, call `Reset`.
 
 ## Pattern 6 — resume from a stored digest
 
-<xref:Bodu.IO.Hashing.Checksums.Crc> implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm>, which lets you reverse-finalise a digest you computed earlier, append new bytes, and finalise again. Handy for append-only logs and chunked uploads where rehashing the whole input is expensive.
+<xref:Bodu.IO.Hashing.Checksums.Crc> implements <xref:Bodu.IO.Hashing.IResumableHashAlgorithm>, which lets you reverse-finalize a digest you computed earlier, append new bytes, and finalize again. Handy for append-only logs and chunked uploads where rehashing the whole input is expensive.
 
 ```csharp
 using System.Text;
@@ -107,7 +107,7 @@ using var crc = new Crc(CrcStandard.CRC32_ISOHDLC);
 
 byte[] firstDigest = crc.ComputeHash(Encoding.UTF8.GetBytes("the quick brown fox"));
 
-// Later — resume from firstDigest, append a continuation, and finalise.
+// Later — resume from firstDigest, append a continuation, and finalize.
 byte[] combined = crc.ComputeHashFrom(
     previousHash: firstDigest,
     newData:      Encoding.UTF8.GetBytes(" jumps over the lazy dog"));
@@ -129,7 +129,7 @@ CrcLookupTableCache cache = Crc.GlobalCache;
 Crc.GlobalCache = new CrcLookupTableCache();
 ```
 
-In practice you'll rarely need to touch the cache directly — the default behaviour is what you want.
+In practice you'll rarely need to touch the cache directly — the default behavior is what you want.
 
 ## Where to go next
 

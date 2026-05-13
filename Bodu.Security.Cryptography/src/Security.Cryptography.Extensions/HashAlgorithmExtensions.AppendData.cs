@@ -13,7 +13,7 @@ namespace Bodu.Security.Cryptography.Extensions;
 public static partial class HashAlgorithmExtensions
 {
     /// <summary>
-    /// Feeds a span of bytes into the ongoing hash computation of the specified <see cref="HashAlgorithm"/> without finalising it.
+    /// Feeds a span of bytes into the ongoing hash computation of the specified <see cref="HashAlgorithm"/> without finalizing it.
     /// </summary>
     /// <param name="algorithm">The <see cref="HashAlgorithm"/> instance receiving the data. Must not be <see langword="null"/>.</param>
     /// <param name="data">The span of bytes to feed into the hash computation.</param>

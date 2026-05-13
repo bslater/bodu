@@ -34,7 +34,7 @@ namespace Bodu.Collections.Generic;
 /// </para>
 /// <para>
 /// <see cref="EvictingDictionary{TKey, TValue}"/> is not thread-safe. Concurrent reads and writes (including reads, which mutate
-/// eviction metadata for some policies) require external synchronisation.
+/// eviction metadata for some policies) require external synchronization.
 /// </para>
 /// <example>
 /// <code language="csharp">
@@ -147,7 +147,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <remarks>
     /// <para>Creates an empty dictionary with the specified capacity and eviction policy, using the specified key comparer.</para>
     /// <para>
-    /// Initialises the internal storage for key/value pairs, and, where applicable, the eviction tracking structure: FIFO, LRU, MRU, and
+    /// Initializes the internal storage for key/value pairs, and, where applicable, the eviction tracking structure: FIFO, LRU, MRU, and
     /// SecondChance use a linked list; LFU uses a sorted dictionary of frequency lists; RandomReplacement does not require additional tracking.
     /// </para>
     /// </remarks>
@@ -277,7 +277,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// configured <see cref="EvictingDictionaryPolicy"/> (e.g., FirstInFirstOut, LeastRecentlyUsed, or LeastFrequentlyUsed).
     /// </para>
     /// <para>
-    /// Consumers can use this event to record historical data, notify observers, or synchronise
+    /// Consumers can use this event to record historical data, notify observers, or synchronize
     /// external caches. The key and value provided are no longer present in the dictionary.
     /// </para>
     /// </remarks>
@@ -454,7 +454,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// </summary>
     /// <exception cref="InvalidOperationException">
     /// Thrown if the configured eviction policy fails to produce a candidate while the dictionary is at or above its capacity. This
-    /// indicates that the internal tracking structures have become desynchronised from the underlying store.
+    /// indicates that the internal tracking structures have become desynchronized from the underlying store.
     /// </exception>
     private void EvictOne()
     {
@@ -567,7 +567,7 @@ public partial class EvictingDictionary<TKey, TValue>
     /// <returns>
     /// An <see cref="IEnumerable{T}"/> of <see cref="KeyValuePair{TKey, TValue}"/> in the order determined by the current eviction policy.
     /// </returns>
-    /// <exception cref="InvalidOperationException">The eviction policy is unrecognised or unsupported for ordering.</exception>
+    /// <exception cref="InvalidOperationException">The eviction policy is unrecognized or unsupported for ordering.</exception>
     /// <remarks>
     /// This method is used primarily for diagnostics, testing, or enumeration purposes, and reflects the internal priority used for
     /// eviction, not insertion order.
@@ -648,7 +648,7 @@ public partial class EvictingDictionary<TKey, TValue>
 
     /// <summary>
     /// Throws <see cref="InvalidOperationException"/> if <paramref name="capturedVersion"/> no longer matches the current
-    /// <see cref="_version"/>, signalling that the dictionary was modified during enumeration.
+    /// <see cref="_version"/>, signaling that the dictionary was modified during enumeration.
     /// </summary>
     /// <param name="capturedVersion">The version observed at the start of enumeration.</param>
     private void ThrowIfVersionChanged(int capturedVersion)

@@ -20,7 +20,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the culturally defined last day of the week containing <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>This overload uses <see cref="CultureInfo.CurrentCulture"/> to determine the last day of the week, inferred from <see cref="DateTimeFormatInfo.FirstDayOfWeek"/>.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     public static DateTime LastDateOfWeek(this DateTime dateTime) => dateTime.LastDateOfWeek((CultureInfo?)null);
 
@@ -32,7 +32,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the culturally defined last day of the week containing <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>This method computes the day offset between <paramref name="dateTime"/> and the culture-specific last day of the week, adds that offset, and resets the time to midnight.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the resulting date is earlier than <see cref="DateTime.MinValue"/> or later than <see cref="DateTime.MaxValue"/>.</exception>
     public static DateTime LastDateOfWeek(this DateTime dateTime, CultureInfo? culture)
@@ -63,7 +63,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the last day of the week containing <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>The method infers the start of the week based on the specified <paramref name="weekend"/> value, then calculates the last day as six days after the inferred start. If <see cref="CalendarWeekendDefinition.None"/> is supplied, the method defaults to using <see cref="DayOfWeek.Monday"/>.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="weekend"/> is not a defined <see cref="CalendarWeekendDefinition"/> value,

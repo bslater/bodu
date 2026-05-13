@@ -97,7 +97,7 @@ byte[] ciphertext = alg.Encrypt(plaintext);
 byte[] recovered  = alg.Decrypt(ciphertext);
 ```
 
-Internally, `Skipjack.CreateEncryptor` builds the same `SkipjackBlockCipher` + `CbcModeTransform` + `Pkcs7Padding` you composed by hand in Pattern 1. **The ciphertext is byte-for-byte identical.** That's the contract worth remembering: the two patterns are equivalent — the wrapper exists for convenience, not for behaviour.
+Internally, `Skipjack.CreateEncryptor` builds the same `SkipjackBlockCipher` + `CbcModeTransform` + `Pkcs7Padding` you composed by hand in Pattern 1. **The ciphertext is byte-for-byte identical.** That's the contract worth remembering: the two patterns are equivalent — the wrapper exists for convenience, not for behavior.
 
 The Threefish wrappers carry the same equivalence, with `Tweak` flowing into the constructor of `Threefish*Cipher`:
 
@@ -151,7 +151,7 @@ using (var alg = new Skipjack
 Debug.Assert(direct.SequenceEqual(viaAlg));
 ```
 
-## When to favour each pattern
+## When to favor each pattern
 
 **Reach for the direct primitive when:**
 

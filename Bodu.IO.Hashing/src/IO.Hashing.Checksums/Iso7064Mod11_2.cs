@@ -19,7 +19,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <c>'0'</c>–<c>'9'</c> plus the sentinel <c>'X'</c> used to represent the value ten.
 /// </para>
 /// <para>
-/// The working digit is initialised to zero, and for each body digit <c>a</c> it is updated as
+/// The working digit is initialized to zero, and for each body digit <c>a</c> it is updated as
 /// <c>p ← ((p + a) × 2) mod 11</c>. The check character is chosen so that <c>(p + c) mod 11 = 1</c>, i.e.
 /// <c>c = (12 - p) mod 11</c>; the sequence <c>body + c</c> is valid when the same identity holds.
 /// </para>

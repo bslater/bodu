@@ -4,7 +4,7 @@ title: Bodu.Globalization.Calendar guides
 
 # Bodu.Globalization.Calendar guides
 
-Recipe-style walk-throughs for **Bodu.Globalization.Calendar**, organised by namespace.
+Recipe-style walk-throughs for **Bodu.Globalization.Calendar**, organized by namespace.
 
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) and the [getting-started page](../../docs/calendar/getting-started.md). For the auto-generated API reference, see the [Bodu.Globalization.Calendar namespace page](../../apidoc/Bodu.Globalization.Calendar.md).
 

@@ -14,7 +14,7 @@ namespace Bodu.Globalization.Calendar;
 /// <remarks>
 /// <para>
 /// Paths are resolved using a logical path model where <c>/</c> is the canonical separator.
-/// Backslash characters are accepted as input and normalised to <c>/</c>.
+/// Backslash characters are accepted as input and normalized to <c>/</c>.
 /// </para>
 /// <para>
 /// The resolver does not convert paths to embedded-resource names or file-system paths. Provider-specific mapping should
@@ -62,7 +62,7 @@ public sealed class ResourcePathResolver : IResourcePathResolver
     /// <summary>
     /// Replaces all backslash characters in <paramref name="path" /> with forward slashes.
     /// </summary>
-    /// <param name="path">The path to normalise.</param>
+    /// <param name="path">The path to normalize.</param>
     /// <returns>The path with backslashes replaced by forward slashes.</returns>
     private static string Normalize(string path) => path.Replace('\\', '/');
 
@@ -76,8 +76,8 @@ public sealed class ResourcePathResolver : IResourcePathResolver
     /// <summary>
     /// Collapses <c>.</c> and <c>..</c> segments from an absolute path and returns the canonical form.
     /// </summary>
-    /// <param name="path">The absolute path to normalise. Need not already begin with <c>/</c>.</param>
-    /// <returns>The normalised absolute path, always starting with <c>/</c>.</returns>
+    /// <param name="path">The absolute path to normalize. Need not already begin with <c>/</c>.</param>
+    /// <returns>The normalized absolute path, always starting with <c>/</c>.</returns>
     /// <exception cref="InvalidOperationException">Thrown when <c>..</c> traversal escapes the root.</exception>
     private static string NormalizeAbsolute(string path)
     {
@@ -105,7 +105,7 @@ public sealed class ResourcePathResolver : IResourcePathResolver
     }
 
     /// <summary>
-    /// Returns the parent directory segment of <paramref name="documentPath" /> after normalising it to an absolute path.
+    /// Returns the parent directory segment of <paramref name="documentPath" /> after normalizing it to an absolute path.
     /// </summary>
     /// <param name="documentPath">The fully qualified resource path of a document.</param>
     /// <returns>The parent directory path, or <c>/</c> when the document is at the root.</returns>

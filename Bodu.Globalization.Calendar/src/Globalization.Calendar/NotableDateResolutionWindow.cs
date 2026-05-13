@@ -27,7 +27,7 @@ internal sealed class NotableDateResolutionWindow
     /// <summary>The subset of <see cref="_knownDates" /> flagged non-working, used for working-day arithmetic.</summary>
     private readonly List<NotableDate> _nonWorkingDates = [];
 
-    /// <summary>The base occurrences materialised into the window, used to drive observance-adjustment evaluation.</summary>
+    /// <summary>The base occurrences materialized into the window, used to drive observance-adjustment evaluation.</summary>
     private readonly List<ResolvedNotableDateOccurrence> _baseOccurrences = [];
 
     /// <summary>
@@ -73,7 +73,7 @@ internal sealed class NotableDateResolutionWindow
     public IReadOnlyList<NotableDate> KnownDates => Sort(_knownDates);
 
     /// <summary>
-    /// Gets the base occurrences that have been materialised into the window.
+    /// Gets the base occurrences that have been materialized into the window.
     /// </summary>
     /// <returns>A read-only list of <see cref="ResolvedNotableDateOccurrence" /> entries ordered by anchor date, priority, name, and territory.</returns>
     public IReadOnlyList<ResolvedNotableDateOccurrence> BaseOccurrences => [.. _baseOccurrences

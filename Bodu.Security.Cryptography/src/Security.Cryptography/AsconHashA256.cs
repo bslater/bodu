@@ -27,7 +27,7 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 ///   <item><description>Output size: 256 bits (32 bytes), fixed.</description></item>
 ///   <item><description>State: 320 bits sponge; rate: 64 bits (8 bytes).</description></item>
-///   <item><description>Permutation: Ascon-p12 for initialisation and the first squeeze; Ascon-p8 for absorption and subsequent squeezes.</description></item>
+///   <item><description>Permutation: Ascon-p12 for initialization and the first squeeze; Ascon-p8 for absorption and subsequent squeezes.</description></item>
 ///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
 /// </list>
 /// <para>

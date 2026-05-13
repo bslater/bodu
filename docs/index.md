@@ -32,7 +32,7 @@ Four independent NuGet packages that share a single solution, a single set of co
 <div class="bodu-card">
   <img src="images/hero-core.svg" alt="Bodu.Core" />
   <h3>Bodu.Core</h3>
-  <p>Fixed-capacity collections (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey,TValue&gt;</code>), a day-of-week <code>WeekPattern</code> value type, pooled buffers, date / numeric / span / array extensions, and a centralised <code>ThrowHelper</code>.</p>
+  <p>Fixed-capacity collections (<code>CircularBuffer&lt;T&gt;</code>, <code>Deque&lt;T&gt;</code>, <code>EvictingDictionary&lt;TKey,TValue&gt;</code>), a day-of-week <code>WeekPattern</code> value type, pooled buffers, date / numeric / span / array extensions, and a centralized <code>ThrowHelper</code>.</p>
   <div class="bodu-card-links">
     <a href="docs/core/index.md">Introduction</a>
     <a href="guides/core/index.md">Guides</a>
@@ -98,7 +98,7 @@ dotnet add package Bodu.Globalization.Calendar.Data.AsiaPacific
 - **Nullable reference types** are enabled throughout. Public APIs declare their null-intent explicitly.
 - **Analyzer-clean**: StyleCop, Roslynator, .NET analyzers, AsyncFixer, and Threading analyzers run at build time; doc-comment warnings are treated as errors.
 - **Deterministic builds** for reproducible package outputs.
-- **Documentation-first**: every public type and member carries XML documentation in British English, which drives this API reference.
+- **Documentation-first**: every public type and member carries XML documentation in US English, which drives this API reference.
 - **MIT licensed** and free of external runtime dependencies.
 
 ## Where to go next

@@ -14,7 +14,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Finalisation combines the A and B accumulators into a 64-bit hash as
+/// Finalization combines the A and B accumulators into a 64-bit hash as
 /// <c><![CDATA[(B << 32) | A]]></c>, written in big-endian byte order.
 /// </para>
 /// </remarks>

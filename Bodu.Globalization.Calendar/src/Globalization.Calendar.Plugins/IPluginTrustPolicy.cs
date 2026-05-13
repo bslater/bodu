@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
 /// Gates whether a candidate plugin assembly may be loaded. The host passes every prospective plugin through a trust policy
-/// before <see cref="ExternalPluginLoader" /> materialises any code from the assembly.
+/// before <see cref="ExternalPluginLoader" /> materializes any code from the assembly.
 /// </summary>
 /// <remarks>
 /// <para>

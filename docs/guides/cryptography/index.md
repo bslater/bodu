@@ -4,7 +4,7 @@ title: Bodu.Security.Cryptography guides
 
 # Bodu.Security.Cryptography guides
 
-Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organised by the type hierarchy of the library: foundations → standard ciphers → tweakable ciphers → AEAD → cryptographic hashes → keyed hashes → ASCON.
+Recipe-style walk-throughs for **Bodu.Security.Cryptography**, organized by the type hierarchy of the library: foundations → standard ciphers → tweakable ciphers → AEAD → cryptographic hashes → keyed hashes → ASCON.
 
 If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Security.Cryptography introduction](../../docs/cryptography/index.md) and the [getting-started page](../../docs/cryptography/getting-started.md). Not sure which primitive to use? See [Algorithm families](../../docs/algorithm-families.md).
 
@@ -84,7 +84,7 @@ For the auto-generated API reference, see the [Bodu.Security.Cryptography namesp
 
 <div class="bodu-card">
   <h3><a href="tiger.md">Using Tiger</a></h3>
-  <p>128 / 160 / 192-bit cryptographic digest optimised for 64-bit platforms; two padding variants (Tiger / Tiger2).</p>
+  <p>128 / 160 / 192-bit cryptographic digest optimized for 64-bit platforms; two padding variants (Tiger / Tiger2).</p>
 </div>
 
 <div class="bodu-card">
@@ -138,7 +138,7 @@ The library also exposes `Whirlpool`, `Blake2b`, `Blake2s`, `Blake3`, `Skein256`
 
 <div class="bodu-card">
   <h3><a href="ascon-xof.md">ASCON extendable output (XOF)</a></h3>
-  <p><code>AsconXof128</code> and <code>AsconCxof128</code> — squeeze any number of bytes; CXOF accepts a domain customisation string.</p>
+  <p><code>AsconXof128</code> and <code>AsconCxof128</code> — squeeze any number of bytes; CXOF accepts a domain customization string.</p>
 </div>
 
 <div class="bodu-card">

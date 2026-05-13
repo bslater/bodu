@@ -22,11 +22,11 @@ namespace Bodu.Security.Cryptography;
 /// This class is the common ancestor for both block-buffered patterns offered by the library:
 /// <see cref="BlockHashAlgorithm{T}"/> (Merkle&#8211;Damg&#229;rd-style; pads the final partial block before processing) and
 /// the Blake-family-style sibling that defers the final full block until <see cref="HashAlgorithm.HashFinal"/> so that
-/// a finalisation flag may be raised on the last compression call.
+/// a finalization flag may be raised on the last compression call.
 /// </para>
 /// <para>
 /// The grandparent intentionally does <em>not</em> implement <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})"/> or
-/// <see cref="HashAlgorithm.HashFinal"/>, because the buffering loops and finalisation shapes of the two derived patterns
+/// <see cref="HashAlgorithm.HashFinal"/>, because the buffering loops and finalization shapes of the two derived patterns
 /// genuinely differ. Each derived base owns its own <see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})"/> override and
 /// reads <see cref="BlockSize"/>, <see cref="_residualBlock"/>, <see cref="_residualBytes"/> and
 /// <see cref="_totalBytes"/> directly.
@@ -35,28 +35,28 @@ namespace Bodu.Security.Cryptography;
 /// <list type="bullet">
 /// <item><description><see cref="HashAlgorithm.Initialize"/> resets any algorithm-specific state (chaining variables, IV, schedule). Override and call <c>base.Initialize()</c> first.</description></item>
 /// <item><description><see cref="HashAlgorithm.HashCore(ReadOnlySpan{byte})"/> consumes the input span using the buffering shape required by the algorithm family.</description></item>
-/// <item><description><see cref="HashAlgorithm.HashFinal"/> finalises the computation and returns the digest.</description></item>
+/// <item><description><see cref="HashAlgorithm.HashFinal"/> finalizes the computation and returns the digest.</description></item>
 /// </list>
 /// <para>
 /// <strong>Don't derive from this class directly.</strong> Use one of the four pattern-specific bases that
-/// extend it — the buffering loops and finalisation shapes differ enough that the right derivation point
+/// extend it — the buffering loops and finalization shapes differ enough that the right derivation point
 /// depends on which family the algorithm belongs to:
 /// </para>
 /// <list type="bullet">
 ///   <item>
 ///     <term>Merkle–Damgård, unkeyed</term>
 ///     <description><see cref="BlockHashAlgorithm{T}"/> — Tiger, Whirlpool, Snefru, the SHA-2 family,
-///     classic block-padding hashes that finalise by padding the last partial block.</description>
+///     classic block-padding hashes that finalize by padding the last partial block.</description>
 ///   </item>
 ///   <item>
 ///     <term>Merkle–Damgård, keyed</term>
 ///     <description><see cref="KeyedBlockHashAlgorithm{T}"/> — Poly1305, SipHash, and any keyed hash whose
-///     finalisation is "pad then compress".</description>
+///     finalization is "pad then compress".</description>
 ///   </item>
 ///   <item>
 ///     <term>Blake-style, unkeyed</term>
 ///     <description><see cref="DeferredFinalBlockHashAlgorithm{T}"/> — BLAKE3 and other algorithms that need
-///     to defer the last full block so a finalisation flag can be set.</description>
+///     to defer the last full block so a finalization flag can be set.</description>
 ///   </item>
 ///   <item>
 ///     <term>Blake-style, optionally keyed</term>
@@ -67,7 +67,7 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// Derive from <see cref="BufferedBlockHashAlgorithm{T}"/> directly only when implementing a <em>new</em>
 /// buffering pattern that doesn't fit either family — e.g. a sponge construction with a non-Merkle–Damgård
-/// finalisation step.
+/// finalization step.
 /// </para>
 /// </remarks>
 public abstract class BufferedBlockHashAlgorithm<T>
@@ -123,8 +123,8 @@ public abstract class BufferedBlockHashAlgorithm<T>
 #if !NET6_0_OR_GREATER
 
     /// <summary>
-    /// Indicates whether the hash computation has been finalised. Used in .NET Standard environments to enforce the
-    /// "no input after finalisation" contract that .NET 6+ enforces in the framework itself.
+    /// Indicates whether the hash computation has been finalized. Used in .NET Standard environments to enforce the
+    /// "no input after finalization" contract that .NET 6+ enforces in the framework itself.
     /// </summary>
     protected bool _finalized;
 #endif
@@ -163,12 +163,12 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// <remarks>
     /// <para>
     /// This method does not reset the <see cref="HashAlgorithm.State"/> property explicitly on .NET 6+ targets &#8212;
-    /// the framework manages that transition. On earlier targets, derived classes that need the already-finalised
+    /// the framework manages that transition. On earlier targets, derived classes that need the already-finalized
     /// guard should reset their <c>_finalized</c> backing field from their own <c>Initialize</c> override.
     /// </para>
     /// <para>
     /// Derived classes that need to validate state before the reset (for example, a keyed MAC that refuses to be
-    /// re-initialised when no key has been set) should perform that validation before calling
+    /// re-initialized when no key has been set) should perform that validation before calling
     /// <c>base.Initialize()</c>. Once the base call returns, the residual buffer is empty,
     /// <see cref="_residualBytes"/> is <c>0</c>, and <see cref="_totalBytes"/> is <c>0</c>.
     /// </para>
@@ -249,7 +249,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
     /// </exception>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// On target frameworks prior to .NET 6, the hash algorithm has already been finalised and cannot accept more
+    /// On target frameworks prior to .NET 6, the hash algorithm has already been finalized and cannot accept more
     /// input data.
     /// </exception>
     protected override void HashCore(byte[] array, int ibStart, int cbSize)

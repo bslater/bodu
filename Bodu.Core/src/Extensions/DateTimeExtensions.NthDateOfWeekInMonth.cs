@@ -19,7 +19,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the requested occurrence of <paramref name="dayOfWeek"/> within the same calendar month and year as <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
     /// <para>For <see cref="WeekOfMonthOrdinal.Last"/>, the method returns the final matching <paramref name="dayOfWeek"/> in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple of seven days to reach the desired ordinal.</para>
-    /// <para>The returned value has its time component normalised to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
+    /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="dayOfWeek"/> is not a defined value of the <see cref="DayOfWeek"/> enumeration,
@@ -61,7 +61,7 @@ public static partial class DateTimeExtensions
     /// <returns>An object whose value is set to midnight (00:00:00) on the requested occurrence of <paramref name="dayOfWeek"/> within the specified <paramref name="year"/> and <paramref name="month"/>, using <see cref="DateTimeKind.Unspecified"/>.</returns>
     /// <remarks>
     /// <para>For <see cref="WeekOfMonthOrdinal.Last"/>, the method returns the final matching <paramref name="dayOfWeek"/> in the month. For other ordinal values, the method locates the first matching weekday and offsets by a multiple of seven days to reach the desired ordinal.</para>
-    /// <para>The returned value is normalised to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
+    /// <para>The returned value is normalized to midnight (00:00:00) and uses <see cref="DateTimeKind.Unspecified"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown if <paramref name="year"/> is less than the <c>Year</c> of <see cref="DateTime.MinValue"/> or greater than that of <see cref="DateTime.MaxValue"/>,

@@ -47,7 +47,7 @@ public static class BlockCipherModeFactory
     /// <param name="mode">The cipher mode to apply (for example <see cref="CipherModeKind.CBC"/>, <see cref="CipherModeKind.CFB"/>,
     /// <see cref="CipherModeKind.OFB"/>, <see cref="CipherModeKind.ECB"/>, or <see cref="CipherModeKind.CTR"/>).</param>
     /// <param name="cipher">The underlying block cipher to wrap.</param>
-    /// <param name="iv">The initialisation vector or initial counter. Required by all modes except <see cref="CipherModeKind.ECB"/>
+    /// <param name="iv">The initialization vector or initial counter. Required by all modes except <see cref="CipherModeKind.ECB"/>
     /// and must have the same length as <see cref="IBlockCipher.BlockSize"/>.</param>
     /// <returns>An <see cref="IBlockCipherModeTransform"/> that applies <paramref name="mode"/> over <paramref name="cipher"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> is <see langword="null"/>.</exception>
@@ -95,7 +95,7 @@ public static class BlockCipherModeFactory
     /// <see cref="ArgumentException"/> against the supplied parameter name.
     /// </summary>
     /// <param name="name">The caller-visible parameter name reported in any exception.</param>
-    /// <param name="iv">The initialisation vector to validate.</param>
+    /// <param name="iv">The initialization vector to validate.</param>
     /// <param name="requiredSize">The required length of <paramref name="iv"/>, in bits.</param>
     /// <exception cref="ArgumentException"><paramref name="iv"/> is <see langword="null"/> or
     /// does not have the required length.</exception>
@@ -111,7 +111,7 @@ public static class BlockCipherModeFactory
         if (iv.Length != requiredSize / 8)
         {
             throw new ArgumentException(
-                $"The initialisation vector must be {requiredSize} bits ({requiredSize / 8} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
+                $"The initialization vector must be {requiredSize} bits ({requiredSize / 8} bytes) long; the supplied IV is {iv.Length * 8} bits ({iv.Length} bytes).",
                 name);
         }
     }

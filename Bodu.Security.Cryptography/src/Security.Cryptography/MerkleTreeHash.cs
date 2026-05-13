@@ -23,8 +23,8 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Input bytes are divided into fixed-size blocks — the top row of the diagram above, with <c>blockSize</c>
-/// labelled <b>B</b>. Each block is hashed independently to form a leaf node (<em>Level 0</em>). Leaf hashes
-/// are then grouped by <c>fanOut</c> (labelled <b>F</b>, shown as 3 in the diagram) and combined into
+/// labeled <b>B</b>. Each block is hashed independently to form a leaf node (<em>Level 0</em>). Leaf hashes
+/// are then grouped by <c>fanOut</c> (labeled <b>F</b>, shown as 3 in the diagram) and combined into
 /// parent nodes, repeating level by level until a single root hash remains at the top.
 /// </para>
 /// <para>
@@ -258,7 +258,7 @@ public sealed class MerkleTreeHash : IDisposable
     }
 
     /// <summary>
-    /// Finalises any trailing partial leaf, combines intermediate node hashes up the tree, and
+    /// Finalizes any trailing partial leaf, combines intermediate node hashes up the tree, and
     /// returns the root hash.
     /// </summary>
     /// <returns>The root Merkle-tree hash bytes.</returns>

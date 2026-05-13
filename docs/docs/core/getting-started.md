@@ -87,7 +87,7 @@ DateTime endOfQuarter   = today.LastDateOfQuarter();
 int isoWeek             = today.IsoWeekOfYear();
 ```
 
-### Centralised argument validation (`ThrowHelper`)
+### Centralized argument validation (`ThrowHelper`)
 
 ```csharp
 using Bodu;

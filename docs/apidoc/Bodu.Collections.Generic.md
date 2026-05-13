@@ -39,7 +39,7 @@ Reach for this library when you need a fixed-capacity FIFO queue, a deque with O
 
 **Related namespaces in `Bodu.Core`**
 
-- <xref:Bodu> — `WeekPattern` (day-of-week bitmask), `IRandomGenerator` / `XorShiftRandom`, and `ThrowHelper` centralised argument validation.
+- <xref:Bodu> — `WeekPattern` (day-of-week bitmask), `IRandomGenerator` / `XorShiftRandom`, and `ThrowHelper` centralized argument validation.
 - <xref:Bodu.Buffers> — `PooledBufferBuilder<T>` for `ArrayPool<T>`-backed zero-allocation building.
 - <xref:Bodu.Extensions> — date / numeric / span / array extensions and the calendar-shape enums.
 - <xref:Bodu.Collections.Extensions>, <xref:Bodu.Collections.Generic.Extensions> — sequence-shaping helpers (recursive selection, sliding windows, batched enumeration, pluggable random shuffles).
@@ -68,8 +68,8 @@ if (!cache.TryGetValue(id, out User user))
 
 ## Notes
 
-- **Thread safety.** `CircularBuffer<T>`, `Deque<T>`, and `EvictingDictionary<TKey, TValue>` are **not** thread-safe; external synchronisation is required if accessed concurrently. For a concurrent FIFO, use <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, which is designed for multi-producer / multi-consumer scenarios under the Vyukov algorithm.
-- **Capacity is fixed.** Both `CircularBuffer<T>` and `EvictingDictionary<TKey, TValue>` reject a non-positive capacity at construction time. Allocation happens once, up front, not incrementally — this is a deliberate choice for predictable memory behaviour in long-running services.
+- **Thread safety.** `CircularBuffer<T>`, `Deque<T>`, and `EvictingDictionary<TKey, TValue>` are **not** thread-safe; external synchronization is required if accessed concurrently. For a concurrent FIFO, use <xref:Bodu.Collections.Generic.Concurrent.ConcurrentCircularBuffer`1>, which is designed for multi-producer / multi-consumer scenarios under the Vyukov algorithm.
+- **Capacity is fixed.** Both `CircularBuffer<T>` and `EvictingDictionary<TKey, TValue>` reject a non-positive capacity at construction time. Allocation happens once, up front, not incrementally — this is a deliberate choice for predictable memory behavior in long-running services.
 - **Eviction policies differ in cost.** `FirstInFirstOut` and `RandomReplacement` are O(1); `LeastRecentlyUsed` and `MostRecentlyUsed` maintain a linked recency list and are O(1) per access; `LeastFrequentlyUsed` and `SecondChance` carry a small bookkeeping overhead on access. Pick the policy that matches your workload rather than defaulting to LRU.
 - **Enumeration is snapshot-stable** for non-concurrent types — iterating while mutating throws, per the usual .NET contract.
 - **See also:** the [circular buffer guide](~/guides/core/circular-buffer.md), the [evicting dictionary guide](~/guides/core/evicting-dictionary.md), and the [Bodu.Core introduction](~/docs/core/index.md) for the full scenario table.

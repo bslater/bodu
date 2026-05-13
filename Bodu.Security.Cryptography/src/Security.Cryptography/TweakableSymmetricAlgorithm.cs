@@ -14,7 +14,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Serves as the abstract base class for tweakable symmetric algorithms, which accept an additional tweak value in addition to
-/// the key and initialisation vector.
+/// the key and initialization vector.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -28,7 +28,7 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>What is a tweak?</strong> A tweak is a third keying input alongside key and IV — a per-message
-/// (or per-position) value that varies the cipher's behaviour without renegotiating the key. Tweaks are
+/// (or per-position) value that varies the cipher's behavior without renegotiating the key. Tweaks are
 /// what make tweakable block ciphers a natural fit for disk encryption (the sector number is the tweak),
 /// authenticated modes built from the cipher (the message position is the tweak), and protocols that need
 /// to bind ciphertext to a position or message identifier.
@@ -187,10 +187,10 @@ public abstract class TweakableSymmetricAlgorithm
         this.CreateDecryptor(rgbKey, rgbIV, this.Tweak);
 
     /// <summary>
-    /// Creates a symmetric decryptor using the specified key, initialisation vector (IV), and tweak value.
+    /// Creates a symmetric decryptor using the specified key, initialization vector (IV), and tweak value.
     /// </summary>
     /// <param name="rgbKey">The secret key to use for decryption.</param>
-    /// <param name="rgbIV">The initialisation vector to use for the decryption operation.</param>
+    /// <param name="rgbIV">The initialization vector to use for the decryption operation.</param>
     /// <param name="tweak">The tweak value that modifies the decryption process.</param>
     /// <returns>An <see cref="ICryptoTransform"/> instance that can be used to perform the decryption.</returns>
     /// <exception cref="ArgumentNullException">
@@ -214,10 +214,10 @@ public abstract class TweakableSymmetricAlgorithm
         this.CreateEncryptor(this.Key, this.IV, this.Tweak);
 
     /// <summary>
-    /// Creates a symmetric encryptor using the specified key, initialisation vector (IV), and tweak value.
+    /// Creates a symmetric encryptor using the specified key, initialization vector (IV), and tweak value.
     /// </summary>
     /// <param name="rgbKey">The secret key to use for encryption.</param>
-    /// <param name="rgbIV">The initialisation vector to use for the encryption operation.</param>
+    /// <param name="rgbIV">The initialization vector to use for the encryption operation.</param>
     /// <param name="tweak">The tweak value that modifies the encryption process.</param>
     /// <returns>An <see cref="ICryptoTransform"/> instance that can be used to perform the encryption.</returns>
     /// <exception cref="ArgumentNullException">
@@ -238,7 +238,7 @@ public abstract class TweakableSymmetricAlgorithm
     /// <exception cref="CryptographicException">Thrown if <see cref="TweakSize"/> is not configured to a valid size.</exception>
     /// <remarks>
     /// <para>
-    /// This method initialises the tweak with random or algorithm-specific data. The generated size will match the current
+    /// This method initializes the tweak with random or algorithm-specific data. The generated size will match the current
     /// <see cref="TweakSize"/>. If no size has been set, an exception will be thrown.
     /// </para>
     /// </remarks>
@@ -334,7 +334,7 @@ public abstract class TweakableSymmetricAlgorithm
     /// </summary>
     /// <exception cref="CryptographicException">Thrown if the internal tweak value is <see langword="null"/> or empty.</exception>
     /// <remarks>
-    /// Call this method before using the <see cref="Tweak"/> property to ensure that the tweak has been initialised.
+    /// Call this method before using the <see cref="Tweak"/> property to ensure that the tweak has been initialized.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfTweakNotSet()

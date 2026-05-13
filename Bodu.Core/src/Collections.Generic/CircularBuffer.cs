@@ -25,7 +25,7 @@ namespace Bodu.Collections.Generic;
 /// that wrap around modulo the capacity, giving O(1) cost for adds, removes, and peeks.
 /// </para>
 /// <para>
-/// The behaviour on a full buffer is controlled by the mutable <see cref="AllowOverwrite"/> property:
+/// The behavior on a full buffer is controlled by the mutable <see cref="AllowOverwrite"/> property:
 /// </para>
 /// <list type="bullet">
 /// <item>
@@ -85,7 +85,7 @@ public sealed class CircularBuffer<T>
         : this(capacity, allowOverwrite: true) { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class with the specified capacity and overwrite behaviour.
+    /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class with the specified capacity and overwrite behavior.
     /// </summary>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
     /// <param name="allowOverwrite">
@@ -121,7 +121,7 @@ public sealed class CircularBuffer<T>
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CircularBuffer{T}"/> class by copying elements from the specified collection, applying
-    /// the specified capacity and overwrite behaviour.
+    /// the specified capacity and overwrite behavior.
     /// </summary>
     /// <param name="collection">The collection from which elements are copied. Must not be <see langword="null"/>.</param>
     /// <param name="capacity">The maximum number of elements the buffer can contain. Must be greater than zero.</param>
@@ -142,21 +142,21 @@ public sealed class CircularBuffer<T>
     }
 
     /// <summary>
-    /// Materialises <paramref name="collection"/> into an array exactly once and enforces the no-overwrite
+    /// Materializes <paramref name="collection"/> into an array exactly once and enforces the no-overwrite
     /// overflow policy before the base constructor sees the source. Returning a <c>T[]</c> avoids a second
     /// enumeration in the base ctor.
     /// </summary>
     /// <param name="collection">The collection from which elements will be copied.</param>
     /// <param name="capacity">The maximum number of elements the buffer can contain.</param>
     /// <param name="allowOverwrite">Whether eviction is permitted; controls whether the size check is enforced.</param>
-    /// <returns>The materialised array; never <see langword="null"/>.</returns>
+    /// <returns>The materialized array; never <see langword="null"/>.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="collection"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">
     /// <paramref name="allowOverwrite"/> is <see langword="false"/> and the collection size exceeds <paramref name="capacity"/>.
     /// </exception>
     /// <remarks>
     /// When eviction is permitted, only the trailing <paramref name="capacity"/> elements would survive the base-ctor
-    /// trim, so the source is materialised through <see cref="Enumerable.TakeLast{TSource}"/> for non-array inputs to
+    /// trim, so the source is materialized through <see cref="Enumerable.TakeLast{TSource}"/> for non-array inputs to
     /// bound the allocation. The no-overwrite path still requires a full enumeration to enforce the size contract.
     /// </remarks>
     private static T[] MaterializeWithOverflowPolicy(IEnumerable<T> collection, int capacity, bool allowOverwrite)

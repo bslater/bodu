@@ -282,7 +282,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     }
 
     /// <summary>
-    /// Finalises the hash computation by applying SHAKE multi-rate padding, absorbing the final block, and
+    /// Finalizes the hash computation by applying SHAKE multi-rate padding, absorbing the final block, and
     /// squeezing the requested number of output bytes from the sponge state.
     /// </summary>
     /// <returns>
@@ -302,7 +302,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
         XorBlockIntoState(rateBuffer, this._state, rateBytes);
         KeccakF(this._state);
 
-        // Squeeze output bytes from the state (little-endian lane serialisation).
+        // Squeeze output bytes from the state (little-endian lane serialization).
         var outputBytes = this.HashSizeValue / 8;
         var output = new byte[outputBytes];
         var written = 0;
@@ -392,7 +392,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
     }
 
     /// <summary>
-    /// Serialises the leading lanes of the Keccak state into the destination span using little-endian byte order.
+    /// Serializes the leading lanes of the Keccak state into the destination span using little-endian byte order.
     /// </summary>
     /// <param name="state">The source 25-element state array.</param>
     /// <param name="destination">The span to write output bytes into. Its length determines how many bytes are extracted.</param>
@@ -403,7 +403,7 @@ public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
         for (var i = 0; i < lanes; i++)
             BinaryPrimitives.WriteUInt64LittleEndian(destination.Slice(i * 8, 8), state[i]);
 
-        // Serialise any sub-lane tail bytes.
+        // Serialize any sub-lane tail bytes.
         var remainder = destination.Length % 8;
         if (remainder > 0)
         {

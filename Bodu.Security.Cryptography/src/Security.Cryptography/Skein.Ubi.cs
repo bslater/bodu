@@ -245,7 +245,7 @@ public abstract partial class Skein<T>
             outputBlock.Clear();
             BinaryPrimitives.WriteUInt64LittleEndian(outputBlock, counter);
 
-            // Restore the saved chaining value so every output counter is applied to the same finalised state.
+            // Restore the saved chaining value so every output counter is applied to the same finalized state.
             savedChainingValue.CopyTo(this._state);
 
             this.Ubi(outputBlock, SkeinTweakType.Out, first: true, final: true, position: sizeof(ulong));
@@ -257,7 +257,7 @@ public abstract partial class Skein<T>
             counter++;
         }
 
-        // Leave the chaining state in its finalised position so that a caller inspecting it cannot read stale output.
+        // Leave the chaining state in its finalized position so that a caller inspecting it cannot read stale output.
         savedChainingValue.CopyTo(this._state);
     }
 }

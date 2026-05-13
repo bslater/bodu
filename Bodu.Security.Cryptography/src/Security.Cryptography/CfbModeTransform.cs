@@ -11,7 +11,7 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Applies the Cipher Feedback (CFB) mode transformation to an underlying <see cref="IBlockCipher"/>, turning it into a
-/// self-synchronising stream cipher.
+/// self-synchronizing stream cipher.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -25,19 +25,19 @@ namespace Bodu.Security.Cryptography;
 /// into or out of the resulting keystream.
 /// </para>
 /// <para>
-/// The initialisation vector must equal the cipher block size in length and should be unique and unpredictable per message under a given key.
+/// The initialization vector must equal the cipher block size in length and should be unique and unpredictable per message under a given key.
 /// </para>
 /// <para>
 /// <strong>When to use CFB.</strong> Pick CFB only for interoperability with legacy formats — it was the
 /// stream-cipher mode of choice in PGP / OpenPGP and certain disk-encryption layouts. CFB removes the padding
 /// requirement that <see cref="CbcModeTransform"/> imposes, but inherits the same lack of authentication and
 /// adds bit-flip propagation across multiple blocks. For new code prefer <see cref="CtrModeTransform"/> for
-/// stream-cipher behaviour, or an AEAD mode (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>)
+/// stream-cipher behavior, or an AEAD mode (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>)
 /// for authenticated encryption.
 /// </para>
 /// <para>
 /// CFB is sequential at the block level: each ciphertext block must be produced before the next can be
-/// computed, so the mode does not parallelise within a message.
+/// computed, so the mode does not parallelize within a message.
 /// </para>
 /// </remarks>
 /// <example>
@@ -54,7 +54,7 @@ namespace Bodu.Security.Cryptography;
 /// int written = cfb.Transform(plaintext, ciphertext, encrypt: true);
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronising-stream-cipher">CFB walk-through in the cipher-modes guide</seealso>
+/// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronizing-stream-cipher">CFB walk-through in the cipher-modes guide</seealso>
 public sealed class CfbModeTransform : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
@@ -62,10 +62,10 @@ public sealed class CfbModeTransform : IBlockCipherModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CfbModeTransform"/> class with the specified cipher and initialisation vector.
+    /// Initializes a new instance of the <see cref="CfbModeTransform"/> class with the specified cipher and initialization vector.
     /// </summary>
     /// <param name="cipher">The block cipher over which CFB is applied.</param>
-    /// <param name="iv">The initialisation vector used as the feedback register for the first block. A defensive copy is taken.</param>
+    /// <param name="iv">The initialization vector used as the feedback register for the first block. A defensive copy is taken.</param>
     /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
     public CfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
