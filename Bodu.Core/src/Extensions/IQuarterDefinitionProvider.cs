@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IQuarterDefinitionProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -211,8 +211,8 @@ public interface IQuarterDefinitionProvider
     /// </remarks>
     int GetFiscalYear(DateTime dateTime)
     {
-        int calendarYear = dateTime.Year;
-        for (int candidate = calendarYear - 1; candidate <= calendarYear + 1; candidate++)
+        var calendarYear = dateTime.Year;
+        for (var candidate = calendarYear - 1; candidate <= calendarYear + 1; candidate++)
         {
             DateTime q1Start = GetQuarterStart(1, candidate);
             DateTime q4End = GetQuarterEnd(4, candidate);

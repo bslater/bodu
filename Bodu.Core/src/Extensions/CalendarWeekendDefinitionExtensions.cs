@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarWeekendDefinitionExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public static class CalendarWeekendDefinitionExtensions
         WeekPattern pattern = WeekPattern.Empty;
         for (var i = 0; i < 7; i++)
         {
-            DayOfWeek day = (DayOfWeek)i;
+            var day = (DayOfWeek)i;
             if (!DateTimeExtensions.IsWeekend(day, weekend, provider))
                 pattern = pattern.With(day);
         }
@@ -69,7 +69,9 @@ public static class CalendarWeekendDefinitionExtensions
     /// </para>
     /// </remarks>
     public static CalendarWeekendDefinition ToCalendarWeekendDefinition(this WeekPattern workingWeek) =>
-        TryGetCalendarWeekendDefinition(workingWeek, out CalendarWeekendDefinition value) ? value : CalendarWeekendDefinition.Custom;
+        TryGetCalendarWeekendDefinition(workingWeek, out CalendarWeekendDefinition value)
+            ? value
+            : CalendarWeekendDefinition.Custom;
 
     /// <summary>
     /// Attempts to identify the supplied <see cref="WeekPattern" /> as a built-in
@@ -84,17 +86,35 @@ public static class CalendarWeekendDefinitionExtensions
     /// <see langword="true" /> when <paramref name="workingWeek" /> corresponds to a built-in weekend definition;
     /// otherwise <see langword="false" />.
     /// </returns>
-    public static bool TryGetCalendarWeekendDefinition(this WeekPattern workingWeek, out CalendarWeekendDefinition value)
+    public static bool TryGetCalendarWeekendDefinition(
+        this WeekPattern workingWeek,
+        out CalendarWeekendDefinition value)
     {
-        if (workingWeek == WeekPattern.MondayToFriday) { value = CalendarWeekendDefinition.SaturdaySunday; return true; }
-        if (workingWeek == WeekPattern.SundayToThursday) { value = CalendarWeekendDefinition.FridaySaturday; return true; }
-        if (workingWeek == WeekPattern.SaturdayToWednesday) { value = CalendarWeekendDefinition.ThursdayFriday; return true; }
-        if (workingWeek == WeekPattern.SaturdayToThursday) { value = CalendarWeekendDefinition.FridayOnly; return true; }
-        if (workingWeek == WeekPattern.MondayToSaturday) { value = CalendarWeekendDefinition.SundayOnly; return true; }
-        if (workingWeek.Count == 7) { value = CalendarWeekendDefinition.None; return true; }
+        (var matched, value) = workingWeek switch
+        {
+            var week when week == WeekPattern.MondayToFriday =>
+                (true, CalendarWeekendDefinition.SaturdaySunday),
 
-        value = CalendarWeekendDefinition.Custom;
-        return false;
+            var week when week == WeekPattern.SundayToThursday =>
+                (true, CalendarWeekendDefinition.FridaySaturday),
+
+            var week when week == WeekPattern.SaturdayToWednesday =>
+                (true, CalendarWeekendDefinition.ThursdayFriday),
+
+            var week when week == WeekPattern.SaturdayToThursday =>
+                (true, CalendarWeekendDefinition.FridayOnly),
+
+            var week when week == WeekPattern.MondayToSaturday =>
+                (true, CalendarWeekendDefinition.SundayOnly),
+
+            var week when week.Count == 7 =>
+                (true, CalendarWeekendDefinition.None),
+
+            _ =>
+                (false, CalendarWeekendDefinition.Custom),
+        };
+
+        return matched;
     }
 
     /// <summary>
