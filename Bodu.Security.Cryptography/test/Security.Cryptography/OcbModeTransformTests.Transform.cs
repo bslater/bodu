@@ -6,9 +6,9 @@
 
 namespace Bodu.Security.Cryptography;
 
+using System.Linq;
 using Bodu.Test;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Linq;
 
 public sealed partial class OcbModeTransformTests
 {

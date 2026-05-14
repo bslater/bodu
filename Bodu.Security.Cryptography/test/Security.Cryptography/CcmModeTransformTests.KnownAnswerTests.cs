@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 
 namespace Bodu.Security.Cryptography;
 
@@ -49,8 +47,8 @@ public sealed partial class CcmModeTransformTests
         {
             "feffe9928665731c6d6a8f9467308308",  // key
             "cafebabefacedbaddecaf88800000000",  // IV (first 12 bytes = nonce, last 4 ignored)
-            "",                                  // AAD
-            "",                                  // plaintext (empty)
+string.Empty,                                  // AAD
+string.Empty,                                  // plaintext (empty)
             // Tag for empty message, no AAD, with this nonce and key (computed from standard):
             // (Placeholder — replace with NIST CAVP verified value after implementation test)
             "PLACEHOLDER_TAG_32HEX_CHARS_HERE"

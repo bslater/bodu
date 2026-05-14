@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Bodu.Security.Cryptography.Extensions;
 

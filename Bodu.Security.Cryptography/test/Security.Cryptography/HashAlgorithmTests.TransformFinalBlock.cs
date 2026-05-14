@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Security.Cryptography;
-using static Bodu.Security.Cryptography.AsconHashA256Tests;
 
 namespace Bodu.Security.Cryptography;
 

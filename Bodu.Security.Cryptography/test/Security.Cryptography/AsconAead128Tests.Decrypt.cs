@@ -133,8 +133,8 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_WhenAadMismatch_ShouldThrowCryptographicException()
     {
-        byte[] aad1     = [0x01, 0x02];
-        byte[] aad2     = [0xFF, 0xFF];
+        byte[] aad1 = [0x01, 0x02];
+        byte[] aad2 = [0xFF, 0xFF];
         byte[] plaintext = [0x10, 0x20, 0x30, 0x40];
         var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
 
@@ -158,7 +158,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void Decrypt_ShouldReturnCorrectByteCount()
     {
-        var plaintext  = new byte[20];
+        var plaintext = new byte[20];
         var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
         using AsconAead128 enc = MakeInstance();
         enc.Encrypt(plaintext, ciphertext);

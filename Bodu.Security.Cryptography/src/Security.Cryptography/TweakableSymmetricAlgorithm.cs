@@ -8,7 +8,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 

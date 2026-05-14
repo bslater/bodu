@@ -33,7 +33,7 @@ public partial class PaddingFactoryTests
     {
         CryptographicException ex = Assert.ThrowsExactly<CryptographicException>((Action)(() =>
         {
-            PaddingFactory.Create((Cryptography.PaddingModeKind)(Cryptography.PaddingModeKind)999);
+            PaddingFactory.Create((Cryptography.PaddingModeKind)999);
         }));
         Assert.IsFalse(ex.Message.Contains("this."), "Exception message must not contain 'this.' artifact.");
     }

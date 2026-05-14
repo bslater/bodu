@@ -88,7 +88,7 @@ public sealed class Blowfish
     private static readonly KeySizes[] s_blowfishBlockSizes = [new KeySizes(BlowFishBlockSize, BlowFishBlockSize, 0)];
 
     // Legal key sizes span 32..448 bits in 8-bit (single-byte) increments.
-    private static readonly KeySizes[] s_blowfishKeySizes = [new KeySizes(MinKeySize, MaxKeySize , 8)];
+    private static readonly KeySizes[] s_blowfishKeySizes = [new KeySizes(MinKeySize, MaxKeySize, 8)];
 
     private bool _disposed = false;
 

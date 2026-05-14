@@ -106,7 +106,7 @@ public abstract partial class CryptoTransformTests<TCryptoTransform>
             transform.TransformBlock(inputBuffer, 0, -1, outputBuffer, 0);
         });
 
-        if(ex.ParamName!=null)
+        if (ex.ParamName != null)
             Assert.AreEqual("inputCount", ex.ParamName);
     }
 

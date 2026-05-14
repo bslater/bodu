@@ -73,7 +73,7 @@ public class AsconStateTests
     [TestMethod]
     public void Permute_DifferentRoundCounts_ShouldProduceDifferentResults()
     {
-        var p8  = new AsconState { S0 = 0x01UL, S1 = 0x02UL, S2 = 0x03UL, S3 = 0x04UL, S4 = 0x05UL };
+        var p8 = new AsconState { S0 = 0x01UL, S1 = 0x02UL, S2 = 0x03UL, S3 = 0x04UL, S4 = 0x05UL };
         AsconState p12 = p8;
 
         p8.Permute(8);

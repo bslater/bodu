@@ -238,7 +238,7 @@ public partial class AsconXof128Tests
     [TestMethod]
     public void GetHash_EmptyInputDiffersFromNonEmpty()
     {
-        var empty    = AsconXof128.HashData([], 32);
+        var empty = AsconXof128.HashData([], 32);
         var nonEmpty = AsconXof128.HashData([0x00], 32);
 
         CollectionAssert.AreNotEqual(empty, nonEmpty,

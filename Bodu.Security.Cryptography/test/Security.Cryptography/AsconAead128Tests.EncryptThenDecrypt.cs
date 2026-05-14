@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Security.Cryptography;
-
 namespace Bodu.Security.Cryptography;
 
 public partial class AsconAead128Tests
@@ -41,7 +39,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void EncryptThenDecrypt_WithAad_ShouldRecoverPlaintext()
     {
-        byte[] aad       = [0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE, 0xBA, 0xBE,
+        byte[] aad = [0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE, 0xBA, 0xBE,
                              0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
                              0x01]; // 17 bytes — exercises partial AD block
         var plaintext = new byte[32];
@@ -85,7 +83,7 @@ public partial class AsconAead128Tests
     [TestMethod]
     public void EncryptThenDecrypt_WithExactlyOneBlock_ShouldRecoverPlaintext()
     {
-        byte[] plaintext  = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+        byte[] plaintext = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
                               0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F];
         var ciphertext = new byte[plaintext.Length + AsconAead128.TagBytes];
         using AsconAead128 enc = MakeInstance();

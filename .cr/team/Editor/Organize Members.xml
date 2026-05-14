@@ -4,7 +4,9 @@
     <Schemes>
       <Item Id="{537ce5d1-771a-4e99-9f4a-c409ebd5e213}">
         <Rules>
-          <Item Id="{1eb07ab2-16f0-4bf2-a2a6-33b899b861b8}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{1eb07ab2-16f0-4bf2-a2a6-33b899b861b8}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule">
+            <EmptyLineCount>1</EmptyLineCount>
+          </Item>
           <Item Id="{ebd30c1d-59b5-4a03-9f33-8813a996b952}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
           <Item Id="{02fdb982-e0dd-4b47-84c3-f44926013188}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
           <Item Id="{f5649b7d-32eb-4a64-88b4-5de14ed335e4}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
@@ -151,10 +153,81 @@
           </Item>
           <Item Id="{b8475833-a96e-4e5a-825c-bf3266fcf330}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
         </Rules>
+        <IsActive>False</IsActive>
       </Item>
-      <Item Id="{fb41924a-35f9-47ee-8f8c-74cc34c4bf63}" />
+      <Item Id="{fb41924a-35f9-47ee-8f8c-74cc34c4bf63}">
+        <IsActive>True</IsActive>
+        <Rules>
+          <Item Id="{b98b9ab7-3a4c-4b50-8c32-771f758e4507}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{175afa49-1b02-4335-8697-426564eb966b}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{793c3efa-da34-4af7-9338-b079461a74c8}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{2a66d808-4878-480c-b9b8-8ae03700c1e8}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{3f3676c5-45dd-45df-888a-0f07b1b3707d}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{1b549ff5-3ce2-43ff-93bc-f4da46903b6a}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{761299d1-70d4-44bf-b06b-ccd7c409e448}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{b0120844-0819-42f0-a49b-62c4c7497a99}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{00b09b98-ac03-48d2-b2a0-9c6e1b7ba907}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{612527cd-1b3e-41be-8a3c-fce9731c5798}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{9766d442-e0fb-427f-99b0-405fc57f6d4f}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule">
+            <SortingRule Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.MultipleSortingsRule">
+              <Sortings>
+                <Item Id="{5b789986-3b23-4ba7-a33e-1ab63b49ba23}">
+                  <Sorting>Name</Sorting>
+                  <Order>Ascending</Order>
+                  <WrapInRegion>False</WrapInRegion>
+                  <RegionName IsNil="true" />
+                </Item>
+              </Sortings>
+            </SortingRule>
+          </Item>
+          <Item Id="{f2379393-c0e5-4bee-a551-6383d0c1f843}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{7c815ce6-5ac8-4c71-a1a9-b7fc8adea37c}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{300ff320-0e96-446c-8de9-3f808dafce55}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule">
+            <SortingRule Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.MultipleSortingsRule">
+              <Sortings>
+                <Item Id="{1a119f3d-8e6e-42ee-9b0a-8319bf6cf5d8}">
+                  <Sorting>ExplicitInterfaceName</Sorting>
+                  <Order>Ascending</Order>
+                  <WrapInRegion>False</WrapInRegion>
+                  <RegionName IsNil="true" />
+                </Item>
+              </Sortings>
+            </SortingRule>
+          </Item>
+          <Item Id="{f0d58f97-1bb4-4762-95e4-fb7f7b1e184f}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule">
+            <SortingRule Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.MultipleSortingsRule">
+              <Sortings>
+                <Item Id="{eae78850-ba9b-4c85-8a7e-0d86b080ca45}">
+                  <Sorting>Visibility</Sorting>
+                  <Order>Descending</Order>
+                  <WrapInRegion>False</WrapInRegion>
+                  <RegionName IsNil="true" />
+                </Item>
+              </Sortings>
+            </SortingRule>
+          </Item>
+          <Item Id="{b1d169c2-df12-4479-8c61-2af5bbee8a06}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule">
+            <SortingRule Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.MultipleSortingsRule">
+              <Sortings>
+                <Item Id="{822abc92-f91d-4283-87aa-e23124e6d949}">
+                  <Sorting>Name</Sorting>
+                  <Order>Descending</Order>
+                  <WrapInRegion>False</WrapInRegion>
+                  <RegionName IsNil="true" />
+                </Item>
+              </Sortings>
+            </SortingRule>
+          </Item>
+          <Item Id="{b02e42bb-4a64-4196-8d23-aca15029a893}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{096ce198-34f5-4265-8a4a-4a4b00c711ac}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{eddf6fb8-a51b-4632-b8fd-20965a20efe2}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{0aa19952-807c-40eb-ab92-6c7a5f3f79b2}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+          <Item Id="{e7160382-ae65-4f07-aaac-72e124360b1d}" Type="DevExpress.CodeAnalysis.CodeCleanUp.OrganizeMembers.OrganizeMembersGroupAndSortRule" />
+        </Rules>
+      </Item>
     </Schemes>
-    <RemoveExistingLineBreaks>True</RemoveExistingLineBreaks>
+    <RemoveExistingLineBreaks>False</RemoveExistingLineBreaks>
     <InsertEmptyLinesAtTypeStartEnd>True</InsertEmptyLinesAtTypeStartEnd>
+    <UseMemberSections>False</UseMemberSections>
   </Options>
 </Root>
