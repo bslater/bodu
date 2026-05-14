@@ -137,14 +137,14 @@ public static partial class NumericExtensions
     public static short LeastCommonMultiple(this short[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
-        if (values[0] < 0) throw new ArgumentOutOfRangeException(nameof(values));
+        ThrowHelper.ThrowIfNegative(values[0], nameof(values));
         ulong acc = (ulong)values[0];
         for (int i = 1; i < values.Length; i++)
         {
             short v = values[i];
-            if (v < 0) throw new ArgumentOutOfRangeException(nameof(values));
+            ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Lcm(acc, (ulong)v);
         }
 
@@ -168,14 +168,14 @@ public static partial class NumericExtensions
     public static int LeastCommonMultiple(this int[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
-        if (values[0] < 0) throw new ArgumentOutOfRangeException(nameof(values));
+        ThrowHelper.ThrowIfNegative(values[0], nameof(values));
         ulong acc = (ulong)values[0];
         for (int i = 1; i < values.Length; i++)
         {
             int v = values[i];
-            if (v < 0) throw new ArgumentOutOfRangeException(nameof(values));
+            ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Lcm(acc, (ulong)v);
         }
 
@@ -199,14 +199,14 @@ public static partial class NumericExtensions
     public static long LeastCommonMultiple(this long[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
-        if (values[0] < 0) throw new ArgumentOutOfRangeException(nameof(values));
+        ThrowHelper.ThrowIfNegative(values[0], nameof(values));
         ulong acc = (ulong)values[0];
         for (int i = 1; i < values.Length; i++)
         {
             long v = values[i];
-            if (v < 0) throw new ArgumentOutOfRangeException(nameof(values));
+            ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Lcm(acc, (ulong)v);
         }
 
@@ -227,7 +227,7 @@ public static partial class NumericExtensions
     public static ushort LeastCommonMultiple(this ushort[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = values[0];
         for (int i = 1; i < values.Length; i++)
@@ -249,7 +249,7 @@ public static partial class NumericExtensions
     public static uint LeastCommonMultiple(this uint[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = values[0];
         for (int i = 1; i < values.Length; i++)
@@ -272,7 +272,7 @@ public static partial class NumericExtensions
     public static ulong LeastCommonMultiple(this ulong[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = values[0];
         for (int i = 1; i < values.Length; i++)

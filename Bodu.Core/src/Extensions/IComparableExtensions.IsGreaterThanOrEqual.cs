@@ -39,8 +39,10 @@ public static partial class IComparableExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="comparer"/> is <see langword="null"/>.</exception>
     /// <remarks>If <paramref name="other"/> is <see langword="null"/>, the method returns <see langword="false"/>.</remarks>
     public static bool IsGreaterThanOrEqual<T>(this T value, T? other, IComparer<T> comparer)
-        where T : struct =>
-            comparer is null
-                ? throw new ArgumentNullException(nameof(comparer))
-                : other is not null && comparer.Compare(value, other.Value) >= 0;
+        where T : struct
+    {
+        ThrowHelper.ThrowIfNull(comparer);
+
+        return other is not null && comparer.Compare(value, other.Value) >= 0;
+    }
 }

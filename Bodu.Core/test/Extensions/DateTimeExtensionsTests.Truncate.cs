@@ -40,14 +40,14 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when ResolutionIsInvalid, throws <see cref="ArgumentException" />.
+    /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when ResolutionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
     public void Truncate_WhenResolutionIsInvalid_ShouldThrowExactly()
     {
         DateTimeResolution invalid = (DateTimeResolution)999;
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = Sample.Truncate(invalid);
         });

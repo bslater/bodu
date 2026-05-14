@@ -35,7 +35,7 @@ public static partial class ArrayExtensions
     public static T[,] ToMatrix<T>(this T[][] source, bool transpose)
     {
         ThrowHelper.ThrowIfNull(source);
-        if (source.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(source));
+        ThrowHelper.ThrowIfArrayLengthIsZero(source);
 
         T[] firstRow = source[0] ?? throw new ArgumentNullException(nameof(source));
         int rows = source.Length;

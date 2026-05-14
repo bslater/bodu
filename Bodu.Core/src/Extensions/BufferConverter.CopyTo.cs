@@ -127,8 +127,7 @@ public static partial class BufferConverter
     public static void CopyTo<T>(this T value, byte[] targetArray, int index)
         where T : unmanaged
     {
-        if (targetArray == null)
-            throw new ArgumentNullException(nameof(targetArray));
+        ThrowHelper.ThrowIfNull(targetArray);
 
 #if NET5_0_OR_GREATER
         var elementSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();

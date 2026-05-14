@@ -63,13 +63,18 @@ public static partial class DateTimeExtensions
     /// </list>
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="kind"/> is not a defined value of the <see cref="DateTimeKind"/> enumeration.</exception>
-    public static string ToIsoString(this DateTime dateTime, DateTimeKind kind) => kind switch
+    public static string ToIsoString(this DateTime dateTime, DateTimeKind kind)
     {
-        DateTimeKind.Utc => dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ", CultureInfo.InvariantCulture),
-        DateTimeKind.Local => dateTime.ToLocalTime().ToString("o", CultureInfo.InvariantCulture),
-        DateTimeKind.Unspecified => DateTime.SpecifyKind(dateTime, DateTimeKind.Unspecified).ToString("o", CultureInfo.InvariantCulture),
-        _ => throw new ArgumentOutOfRangeException(nameof(kind), "Invalid DateTimeKind value.")
-    };
+        ThrowHelper.ThrowIfEnumValueIsUndefined(kind);
+
+        return kind switch
+        {
+            DateTimeKind.Utc => dateTime.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fffffffZ", CultureInfo.InvariantCulture),
+            DateTimeKind.Local => dateTime.ToLocalTime().ToString("o", CultureInfo.InvariantCulture),
+            DateTimeKind.Unspecified => DateTime.SpecifyKind(dateTime, DateTimeKind.Unspecified).ToString("o", CultureInfo.InvariantCulture),
+            _ => throw new ArgumentOutOfRangeException(nameof(kind), "Invalid DateTimeKind value.")
+        };
+    }
 
     /// <summary>
     /// Returns a string representation of the specified <paramref name="dateTime"/> using a custom format and an optional culture.
@@ -78,10 +83,11 @@ public static partial class DateTimeExtensions
     /// <param name="format">A valid date-time format string (e.g. <c>"yyyy-MM-ddTHH:mm:ss"</c>). Must not be <see langword="null"/> or whitespace.</param>
     /// <param name="culture">An optional <see cref="CultureInfo"/> used for culture-specific formatting. If <see langword="null"/>, <see cref="CultureInfo.InvariantCulture"/> is used.</param>
     /// <returns>A formatted <see cref="string"/> representation of <paramref name="dateTime"/> using the supplied format and culture.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is <see langword="null"/>, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="format"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException">Thrown if <paramref name="format"/> is empty or whitespace.</exception>
     public static string ToIsoString(this DateTime dateTime, string format, CultureInfo? culture = null)
     {
-        if (string.IsNullOrWhiteSpace(format)) throw new ArgumentNullException(nameof(format), "Format string must be specified.");
+        ThrowHelper.ThrowIfNullOrWhiteSpace(format);
 
         return dateTime.ToString(format, culture ?? CultureInfo.InvariantCulture);
     }

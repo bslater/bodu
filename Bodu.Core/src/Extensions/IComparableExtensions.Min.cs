@@ -38,8 +38,10 @@ public static partial class IComparableExtensions
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="comparer"/> is <see langword="null"/>.</exception>
     /// <remarks>When the two values compare equal under <paramref name="comparer"/>, <paramref name="value"/> is returned.</remarks>
-    public static T Min<T>(this T value, T other, IComparer<T> comparer) =>
-        comparer is null
-            ? throw new ArgumentNullException(nameof(comparer))
-            : comparer.Compare(value, other) <= 0 ? value : other;
+    public static T Min<T>(this T value, T other, IComparer<T> comparer)
+    {
+        ThrowHelper.ThrowIfNull(comparer);
+
+        return comparer.Compare(value, other) <= 0 ? value : other;
+    }
 }

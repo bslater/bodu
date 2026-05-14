@@ -83,12 +83,12 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToIsoString" />, with EmptyFormat, throws <see cref="ArgumentNullException" />.
+    /// Verifies that <see cref="DateTimeExtensions.ToIsoString" />, with EmptyFormat, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
     public void ToIsoString_WithEmptyFormat_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 4, 20);
-        Assert.ThrowsExactly<ArgumentNullException>(() => input.ToIsoString(""));
+        Assert.ThrowsExactly<ArgumentException>(() => input.ToIsoString(""));
     }
 }
