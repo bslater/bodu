@@ -159,6 +159,19 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the hex overload <c>TryVerifyHash(NonCryptographicHashAlgorithm, byte[], string)</c> returns
+    /// <see langword="false" /> when the byte-array input is <see langword="null" />, exercising the null-input
+    /// short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void TryVerifyHash_WhenByteArrayInputIsNull_ForHexOverload_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.IsFalse(algorithm.TryVerifyHash((byte[])null!, s_sampleHex));
+    }
+
+    /// <summary>
     /// Verifies that a null stream in the hex overload returns <see langword="false" /> rather than throwing.
     /// </summary>
     [TestMethod]
