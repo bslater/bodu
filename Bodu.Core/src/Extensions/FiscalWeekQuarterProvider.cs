@@ -159,6 +159,12 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
         Is53WeekFiscalYear(fiscalYear) ? 53 : 52;
 
     /// <inheritdoc />
+    public int GetFiscalYear(DateTime dateTime) => GetFiscalYearFor(dateTime);
+
+    /// <inheritdoc />
+    public int GetFiscalYear(DateOnly dateOnly) => GetFiscalYearFor(dateOnly.ToDateTime(TimeOnly.MinValue));
+
+    /// <inheritdoc />
     public int GetQuarter(DateTime dateTime)
     {
         var fiscalYear = GetFiscalYearFor(dateTime);
