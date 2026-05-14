@@ -32,10 +32,10 @@
 
   <g transform="translate(10 10)">
     <rect class="panel" width="800" height="480" rx="8"/>
-    <rect class="header" width="800" height="30" rx="8"/>
-    <rect class="header" y="22" width="800" height="8"/>
+    <rect class="header" width="800" height="46" rx="8"/>
+    <rect class="header" y="38" width="800" height="8"/>
     <text class="title" x="16" y="20">Merkle Tree — block size B, fan-out F = 3</text>
-    <text class="formula" x="800" y="20" text-anchor="end" dx="-16">leaves: H(Bₖ) · internal: H(child₁ ‖ child₂ ‖ … ‖ child_F) · root: single surviving node</text>
+    <text class="formula" x="784" y="38" text-anchor="end">leaves: H(Bₖ) · internal: H(child₁ ‖ child₂ ‖ … ‖ child_F) · root: single surviving node</text>
 
     <!-- ========================================================== -->
     <!-- Row 1: Input stream sliced into blocks B₁..B₇ (tail B₇ short) -->
