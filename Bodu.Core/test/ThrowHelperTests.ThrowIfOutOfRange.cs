@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfOutOfRange.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,9 +34,9 @@ public partial class ThrowHelperTests
         string testName, int value, int min, int max, bool inclusive, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
-        AssertGuard(testName, () => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive, "value"), expected, expectedParam);
+        AssertGuard(testName, () => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive, nameof(value)), expected, expectedParam);
     }
 
     /// <summary>

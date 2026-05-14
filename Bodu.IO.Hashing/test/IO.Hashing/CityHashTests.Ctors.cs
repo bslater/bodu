@@ -44,7 +44,8 @@ public abstract partial class CityHashTests<TTest, TAlgorithm>
         Assert.IsNotNull(algorithm);
     }
 
-    private sealed class TestCityHash : CityHash<TAlgorithm>
+    private sealed class TestCityHash
+        : CityHash<TAlgorithm>
     {
         public TestCityHash(int hashSize)
             : base(hashSize)

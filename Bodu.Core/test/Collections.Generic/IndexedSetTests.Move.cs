@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.Move.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class IndexedSetTests
     [DataRow(int.MaxValue, 0)]
     public void Move_WhenOldIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int oldIndex, int newIndex)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -41,7 +41,7 @@ public partial class IndexedSetTests
     [DataRow(0, int.MaxValue)]
     public void Move_WhenNewIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int oldIndex, int newIndex)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -59,7 +59,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Move_WhenSourceAndDestinationAreEqual_ShouldLeaveSetUnchanged()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.Move(1, 1);
 
@@ -72,7 +72,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Move_WhenMovingForward_ShouldShiftInterveningLeft()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3, 4, 5 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3, 4, 5]);
 
         sut.Move(1, 3);
 
@@ -85,7 +85,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Move_WhenMovingBackward_ShouldShiftInterveningRight()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3, 4, 5 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3, 4, 5]);
 
         sut.Move(3, 1);
 
@@ -99,7 +99,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Move_WhenItemRelocated_ShouldUpdateIndexOf()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30, 40 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30, 40]);
 
         sut.Move(0, 2);
 

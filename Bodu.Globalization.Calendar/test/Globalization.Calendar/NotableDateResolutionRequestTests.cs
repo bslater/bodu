@@ -18,7 +18,7 @@ public sealed class NotableDateResolutionRequestTests
     /// Verifies that request dates are normalised to their date component.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenDateTimesContainTimeComponents_ShouldNormalizeToDates()
+    public void Ctor_WhenDateTimesContainTimeComponents_ShouldNormalizeToDates()
     {
         NotableDateResolutionRequest request = new(
             new DateTime(2024, 2, 10, 13, 30, 00),
@@ -39,7 +39,7 @@ public sealed class NotableDateResolutionRequestTests
     /// Verifies that invalid request windows are rejected.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenEndDateIsEarlierThanStartDate_ShouldThrowArgumentException()
+    public void Ctor_WhenEndDateIsEarlierThanStartDate_ShouldThrowArgumentException()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

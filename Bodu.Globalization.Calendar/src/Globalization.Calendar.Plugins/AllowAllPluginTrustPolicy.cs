@@ -21,7 +21,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// the production caveat explicit, and the type name is deliberately blunt to discourage its use outside of trusted contexts.
 /// </para>
 /// </remarks>
-public sealed class AllowAllPluginTrustPolicy : IPluginTrustPolicy
+public sealed class AllowAllPluginTrustPolicy
+    : IPluginTrustPolicy
 {
     /// <inheritdoc />
     public PluginTrustResult Evaluate(PluginTrustContext context) => new(Trusted: true, Reason: null);

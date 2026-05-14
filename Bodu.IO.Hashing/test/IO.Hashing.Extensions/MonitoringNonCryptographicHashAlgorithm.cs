@@ -18,7 +18,8 @@ namespace Bodu.IO.Hashing.Extensions;
 /// The hash output is <c>BitConverter.GetBytes((uint)sum)</c> in the platform byte order, making the expected hash
 /// of any input trivially computable without reference vectors.
 /// </remarks>
-public sealed class MonitoringNonCryptographicHashAlgorithm : NonCryptographicHashAlgorithm
+public sealed class MonitoringNonCryptographicHashAlgorithm
+    : NonCryptographicHashAlgorithm
 {
     private uint _sum;
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionAdjustmentProcessorTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     /// Verifies that construction rejects an undefined weekend definition.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeException()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

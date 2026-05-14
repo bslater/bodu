@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionEngineTests.AddDaysWithinRange.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -73,7 +73,8 @@ public sealed class NotableDateResolutionEngineAddDaysWithinRangeTests
 			ruleProviders: new[] { (INotableDateRuleProvider)new EmptyRuleProvider() },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
 
-	private sealed class EmptyRuleProvider : INotableDateRuleProvider
+	private sealed class EmptyRuleProvider
+		: INotableDateRuleProvider
 	{
 		public IEnumerable<NotableDateRule> LoadRules() => Array.Empty<NotableDateRule>();
 	}

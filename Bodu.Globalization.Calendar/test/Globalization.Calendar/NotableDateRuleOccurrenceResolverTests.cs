@@ -316,7 +316,8 @@ public sealed class NotableDateRuleOccurrenceResolverTests
             IsNonWorkingDay = false,
         };
 
-    private sealed class CountingEasterAlgorithm : INotableDateAlgorithm
+    private sealed class CountingEasterAlgorithm
+        : INotableDateAlgorithm
     {
         public static int CallCount { get; private set; }
 

@@ -63,7 +63,7 @@ public partial class WeekPatternTests
     /// when the stored bitmask value exceeds the valid range of 0–127.
     /// </summary>
     [TestMethod]
-    public void SerializationConstructor_WhenStoredValueIsOutOfRange_ShouldThrowException()
+    public void SerializationCtor_WhenStoredValueIsOutOfRange_ShouldThrowException()
     {
         var info = new SerializationInfo(typeof(WeekPattern), new FormatterConverter());
         var context = new StreamingContext(StreamingContextStates.All);

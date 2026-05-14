@@ -68,7 +68,8 @@ namespace Bodu.Security.Cryptography;
 /// int written = xts.Transform(plaintext, ciphertext, encrypt: true);
 /// </code>
 /// </example>
-public sealed class XtsModeTransform : IBlockCipherModeTransform
+public sealed class XtsModeTransform
+    : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
     private readonly IBlockCipher _tweakCipher;

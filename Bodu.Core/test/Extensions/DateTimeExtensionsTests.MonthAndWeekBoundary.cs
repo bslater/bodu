@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.MonthAndWeekBoundary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(2000, 2, 2000, 2, 1)]
     public void GetFirstDateOfMonth_ShouldReturnFirstDayOfMonth(int year, int month, int expY, int expM, int expD)
     {
-        var actual = DateTimeExtensions.GetFirstDateOfMonth(year, month);
+        DateTime actual = DateTimeExtensions.GetFirstDateOfMonth(year, month);
         Assert.AreEqual(new DateTime(expY, expM, expD), actual);
         Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
     }
@@ -48,7 +48,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(2024, 12, 2024, 12, 31)]
     public void GetLastDateOfMonth_ShouldReturnLastDayOfMonth(int year, int month, int expY, int expM, int expD)
     {
-        var actual = DateTimeExtensions.GetLastDateOfMonth(year, month);
+        DateTime actual = DateTimeExtensions.GetLastDateOfMonth(year, month);
         Assert.AreEqual(new DateTime(expY, expM, expD), actual);
         Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
     }
@@ -75,7 +75,7 @@ public partial class DateTimeExtensionsTests
     public void GetFirstDateOfWeekInMonth_ShouldReturnFirstOccurrenceOfWeekday()
     {
         // First Monday of April 2024 is April 1, 2024.
-        var actual = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 4, DayOfWeek.Monday);
+        DateTime actual = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 4, DayOfWeek.Monday);
         Assert.AreEqual(new DateTime(2024, 4, 1), actual);
         Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
         Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
@@ -89,7 +89,7 @@ public partial class DateTimeExtensionsTests
     public void GetFirstDateOfWeekInMonth_WhenMonthStartsDifferentDay_ShouldReturnFirstMatchingDay()
     {
         // First Saturday of April 2024 (which starts on a Monday) is April 6, 2024.
-        var actual = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 4, DayOfWeek.Saturday);
+        DateTime actual = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 4, DayOfWeek.Saturday);
         Assert.AreEqual(new DateTime(2024, 4, 6), actual);
     }
 
@@ -118,7 +118,7 @@ public partial class DateTimeExtensionsTests
     public void GetLastDateOfWeekInMonth_ShouldReturnLastOccurrenceOfWeekday()
     {
         // Last Monday of April 2024 is April 29, 2024.
-        var actual = DateTimeExtensions.GetLastDateOfWeekInMonth(2024, 4, DayOfWeek.Monday);
+        DateTime actual = DateTimeExtensions.GetLastDateOfWeekInMonth(2024, 4, DayOfWeek.Monday);
         Assert.AreEqual(new DateTime(2024, 4, 29), actual);
         Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
         Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
@@ -132,7 +132,7 @@ public partial class DateTimeExtensionsTests
     public void GetLastDateOfWeekInMonth_WhenMonthEndsDifferentDay_ShouldReturnLastMatchingDay()
     {
         // Last Sunday of April 2024 is April 28, 2024.
-        var actual = DateTimeExtensions.GetLastDateOfWeekInMonth(2024, 4, DayOfWeek.Sunday);
+        DateTime actual = DateTimeExtensions.GetLastDateOfWeekInMonth(2024, 4, DayOfWeek.Sunday);
         Assert.AreEqual(new DateTime(2024, 4, 28), actual);
     }
 

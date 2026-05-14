@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmExtensionsTests.TryVerifyHashCatchPath.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -206,7 +206,8 @@ public partial class HashAlgorithmExtensionsTests
     /// A read stream that throws on every read operation to force <see cref="HashAlgorithm.ComputeHash(Stream)" />
     /// into its exception path.
     /// </summary>
-    private sealed class ThrowingStream : Stream
+    private sealed class ThrowingStream
+        : Stream
     {
         public override bool CanRead => true;
 

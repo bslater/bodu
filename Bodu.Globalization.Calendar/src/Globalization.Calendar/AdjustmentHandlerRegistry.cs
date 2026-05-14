@@ -39,7 +39,8 @@ namespace Bodu.Globalization.Calendar;
 /// };
 /// </code>
 /// </example>
-public sealed class AdjustmentHandlerRegistry : IAdjustmentHandlerRegistry
+public sealed class AdjustmentHandlerRegistry
+    : IAdjustmentHandlerRegistry
 {
     /// <summary>The case-insensitive key-to-handler mapping maintained by this registry.</summary>
     private readonly Dictionary<string, IAdjustmentHandler> _handlers = new(StringComparer.OrdinalIgnoreCase);
@@ -48,12 +49,12 @@ public sealed class AdjustmentHandlerRegistry : IAdjustmentHandlerRegistry
     private readonly object _gate = new();
 
     /// <summary>
-    /// Initializes a new, empty <see cref="AdjustmentHandlerRegistry" />.
+    /// Initializes a new instance of the <see cref="AdjustmentHandlerRegistry"/> class.
     /// </summary>
     public AdjustmentHandlerRegistry() { }
 
     /// <summary>
-    /// Initializes a new <see cref="AdjustmentHandlerRegistry" /> seeded with the supplied handlers.
+    /// Initializes a new instance of the <see cref="AdjustmentHandlerRegistry"/> class seeded with the supplied handlers.
     /// </summary>
     /// <param name="handlers">The key/handler pairs to register. Must not be <see langword="null" />.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="handlers" /> is <see langword="null" />.</exception>

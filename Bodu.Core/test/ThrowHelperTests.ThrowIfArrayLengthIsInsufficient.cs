@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayLengthIsInsufficient.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,13 +22,13 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayLengthIsInsufficientContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfArrayLengthIsInsufficientContractData))]
     public void ThrowIfArrayLengthIsInsufficient_WhenInvokedWithVariousLengths_ShouldFollowContract(
         string testName, Array? array, int minimumLength, Type? expectedExceptionType, string? expectedParamName)
     {
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, minimumLength, "array"),
+            () => ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, minimumLength, nameof(array)),
             expectedExceptionType,
             expectedParamName);
     }

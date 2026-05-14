@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleResolverTests.AlgorithmInstantiation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 	/// parameterless constructor instantiates and invokes the algorithm.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenAlgorithmTypeHasParameterlessConstructor_ShouldReturnAlgorithmResult()
+	public void ResolveAnchorDate_WhenAlgorithmTypeHasParameterlessCtor_ShouldReturnAlgorithmResult()
 	{
 		NotableDateRule rule = new()
 		{
@@ -65,7 +65,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 	/// when no parameterless overload exists.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenAlgorithmTypeHasNoCompatibleConstructor_ShouldReturnNull()
+	public void ResolveAnchorDate_WhenAlgorithmTypeHasNoCompatibleCtor_ShouldReturnNull()
 	{
 		NotableDateRule rule = new()
 		{
@@ -135,7 +135,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 	/// constructor falls back to the parameterless constructor and produces its default date.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenAlgorithmArgumentsDoNotMatchConstructor_ShouldFallbackToParameterless()
+	public void ResolveAnchorDate_WhenAlgorithmArgumentsDoNotMatchCtor_ShouldFallbackToParameterless()
 	{
 		NotableDateRule rule = new()
 		{
@@ -159,7 +159,7 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 	/// candidate constructor's first parameter type is <see cref="string" />. The token is forwarded verbatim.
 	/// </summary>
 	[TestMethod]
-	public void ResolveAnchorDate_WhenAlgorithmTypeHasStringDayConstructor_ShouldForwardMonthTokenVerbatim()
+	public void ResolveAnchorDate_WhenAlgorithmTypeHasStringDayCtor_ShouldForwardMonthTokenVerbatim()
 	{
 		NotableDateRule rule = new()
 		{
@@ -203,13 +203,15 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 		Assert.IsNull(date);
 	}
 
-	private sealed class JulyFourthAlgorithm : INotableDateAlgorithm
+	private sealed class JulyFourthAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null) =>
 			new(year, 7, 4);
 	}
 
-	private sealed class StringMonthIntDayAlgorithm : INotableDateAlgorithm
+	private sealed class StringMonthIntDayAlgorithm
+		: INotableDateAlgorithm
 	{
 		public static string? LastMonthToken { get; private set; }
 
@@ -225,7 +227,8 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 			new(year, 1, _day);
 	}
 
-	private sealed class ThrowingTwoArgAlgorithm : INotableDateAlgorithm
+	private sealed class ThrowingTwoArgAlgorithm
+		: INotableDateAlgorithm
 	{
 		public ThrowingTwoArgAlgorithm(int month, int day)
 		{
@@ -238,7 +241,8 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 			new(year, 1, 1);
 	}
 
-	private sealed class MonthEnumDayAlgorithm : INotableDateAlgorithm
+	private sealed class MonthEnumDayAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly int _month;
 		private readonly int _day;
@@ -253,7 +257,8 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 			new(year, _month, _day);
 	}
 
-	private sealed class IntMonthIntDayAlgorithm : INotableDateAlgorithm
+	private sealed class IntMonthIntDayAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly int _month;
 		private readonly int _day;
@@ -268,7 +273,8 @@ public sealed class NotableDateRuleResolverAlgorithmInstantiationTests
 			new(year, _month, _day);
 	}
 
-	private sealed class RequiresTwoArgsAlgorithm : INotableDateAlgorithm
+	private sealed class RequiresTwoArgsAlgorithm
+		: INotableDateAlgorithm
 	{
 		public RequiresTwoArgsAlgorithm(int month, int day)
 		{

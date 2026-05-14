@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSet.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,7 +29,8 @@ public sealed partial class IndexedSet<T>
     /// <see cref="InvalidOperationException" />.
     /// </remarks>
     [Serializable]
-    public struct Enumerator : IEnumerator<T>
+    public struct Enumerator
+        : IEnumerator<T>
     {
         /// <summary>
         /// The storage being enumerated.

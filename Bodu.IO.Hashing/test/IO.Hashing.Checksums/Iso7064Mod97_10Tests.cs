@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Iso7064Mod97_10Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Contains unit tests for the <see cref="Iso7064Mod97_10" /> check-code algorithm.
 /// </summary>
 [TestClass]
-public sealed class Iso7064Mod97_10Tests : MultiCharCheckDigitAlgorithmTests<Iso7064Mod97_10Tests, Iso7064Mod97_10>
+public sealed class Iso7064Mod97_10Tests
+    : MultiCharCheckDigitAlgorithmTests<Iso7064Mod97_10Tests, Iso7064Mod97_10>
 {
     /// <inheritdoc />
     protected override MultiCharCheckDigitAlgorithmSpecification GetSpecification() => new()

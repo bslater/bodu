@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FletcherCtorGuardTests.TestFletcher.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,7 +13,8 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     /// arbitrary hash sizes. The parameterless public constructor satisfies the CRTP <c>new()</c> constraint and
     /// is never invoked directly by tests.
     /// </summary>
-    private sealed class TestFletcher : Fletcher<TestFletcher>
+    private sealed class TestFletcher
+        : Fletcher<TestFletcher>
     {
         public TestFletcher()
             : base(16)

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlResourceNotableDateRuleProviderTests.Exceptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
 	/// with <see cref="ArgumentNullException" /> and exposes the parameter name on the exception.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenResourcePathResolverIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenResourcePathResolverIsNull_ShouldThrowArgumentNullException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{

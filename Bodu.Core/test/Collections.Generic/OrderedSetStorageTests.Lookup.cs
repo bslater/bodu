@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.Lookup.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class OrderedSetStorageTests
     [DataRow(int.MaxValue)]
     public void GetAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -58,7 +58,7 @@ public partial class OrderedSetStorageTests
     [DataRow(2, 30)]
     public void GetAt_WhenIndexIsValid_ShouldReturnElementAtIndex(int index, int expected)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20, 30 });
+        OrderedSetStorage<int> sut = CreateStorage([10, 20, 30]);
 
         Assert.AreEqual(expected, sut.GetAt(index));
     }
@@ -73,7 +73,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Contains_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<string> sut = CreateStorage(new[] { "a" });
+        OrderedSetStorage<string> sut = CreateStorage(["a"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -104,7 +104,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Contains_WhenItemIsPresent_ShouldReturnTrue()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.IsTrue(sut.Contains(2));
     }
@@ -116,7 +116,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Contains_WhenItemIsAbsent_ShouldReturnFalse()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.IsFalse(sut.Contains(99));
     }
@@ -150,7 +150,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void IndexOf_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<string> sut = CreateStorage(new[] { "a" });
+        OrderedSetStorage<string> sut = CreateStorage(["a"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -184,7 +184,7 @@ public partial class OrderedSetStorageTests
     [DataRow(99, -1)]
     public void IndexOf_WhenStoragePopulated_ShouldReturnExpectedIndex(int item, int expected)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20, 30 });
+        OrderedSetStorage<int> sut = CreateStorage([10, 20, 30]);
 
         Assert.AreEqual(expected, sut.IndexOf(item));
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfCountExceedsAvailable.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,11 +29,11 @@ public partial class ThrowHelperTests
         string testName, int count, int available, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "count" : null;
+        var expectedParam = expectsException ? "count" : null;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfCountExceedsAvailable(count, available, "count"),
+            () => ThrowHelper.ThrowIfCountExceedsAvailable(count, available, nameof(count)),
             expected,
             expectedParam);
     }

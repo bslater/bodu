@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.Insert.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<string> sut = CreateStorage(new[] { "a", "b" });
+        OrderedSetStorage<string> sut = CreateStorage(["a", "b"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -38,7 +38,7 @@ public partial class OrderedSetStorageTests
     [DataRow(int.MinValue)]
     public void TryInsert_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -52,7 +52,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -71,10 +71,10 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenItemIsDuplicate_ShouldReturnFalseAndPreserveState()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int versionBefore = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var versionBefore = sut._version;
 
-        bool inserted = sut.TryInsert(0, 2);
+        var inserted = sut.TryInsert(0, 2);
 
         Assert.IsFalse(inserted);
         Assert.AreEqual(3, sut.Count);
@@ -92,7 +92,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenIndexIsZero_ShouldPrepend()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.IsTrue(sut.TryInsert(0, 99));
 
@@ -105,7 +105,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenIndexIsInterior_ShouldShiftLaterElementsRight()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.IsTrue(sut.TryInsert(1, 99));
 
@@ -118,7 +118,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenIndexEqualsCount_ShouldAppend()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.IsTrue(sut.TryInsert(3, 99));
 
@@ -145,7 +145,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenInserted_ShouldBeFindable()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20, 30 });
+        OrderedSetStorage<int> sut = CreateStorage([10, 20, 30]);
 
         Assert.IsTrue(sut.TryInsert(1, 99));
 
@@ -163,7 +163,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ReplaceAt_WhenValueIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<string> sut = CreateStorage(new[] { "a", "b" });
+        OrderedSetStorage<string> sut = CreateStorage(["a", "b"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -180,7 +180,7 @@ public partial class OrderedSetStorageTests
     [DataRow(int.MinValue)]
     public void ReplaceAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -195,7 +195,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ReplaceAt_WhenValueExistsAtAnotherIndex_ShouldThrowArgumentException()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -214,7 +214,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ReplaceAt_WhenValueIsNew_ShouldReplaceAndRehash()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         sut.ReplaceAt(1, 99);
 
@@ -230,8 +230,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ReplaceAt_WhenValueIsAlreadyAtIndex_ShouldBeNoOp()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int versionBefore = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var versionBefore = sut._version;
 
         sut.ReplaceAt(1, 2);
 
@@ -252,7 +252,7 @@ public partial class OrderedSetStorageTests
     [DataRow(int.MaxValue, 0)]
     public void Move_WhenOldIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int oldIndex, int newIndex)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -269,7 +269,7 @@ public partial class OrderedSetStorageTests
     [DataRow(0, int.MaxValue)]
     public void Move_WhenNewIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int oldIndex, int newIndex)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -287,8 +287,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Move_WhenSourceAndDestinationAreEqual_ShouldBeNoOp()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int versionBefore = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var versionBefore = sut._version;
 
         sut.Move(1, 1);
 
@@ -302,7 +302,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Move_WhenMovingForward_ShouldShiftInterveningLeft()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3, 4, 5 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4, 5]);
 
         sut.Move(1, 3);
 
@@ -315,7 +315,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Move_WhenMovingBackward_ShouldShiftInterveningRight()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3, 4, 5 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4, 5]);
 
         sut.Move(3, 1);
 
@@ -328,7 +328,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Move_WhenMovingFirstToLast_ShouldRotateLeftByOne()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3, 4 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4]);
 
         sut.Move(0, 3);
 
@@ -341,7 +341,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Move_WhenMovingLastToFirst_ShouldRotateRightByOne()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3, 4 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4]);
 
         sut.Move(3, 0);
 
@@ -354,7 +354,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Move_WhenItemRelocated_ShouldUpdateIndexOf()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20, 30, 40 });
+        OrderedSetStorage<int> sut = CreateStorage([10, 20, 30, 40]);
 
         sut.Move(0, 2);
 

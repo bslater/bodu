@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CusipTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Contains unit tests for the <see cref="Cusip" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class CusipTests : AlphanumericCheckDigitAlgorithmTests<CusipTests, Cusip>
+public sealed class CusipTests
+    : AlphanumericCheckDigitAlgorithmTests<CusipTests, Cusip>
 {
     /// <inheritdoc />
     protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()

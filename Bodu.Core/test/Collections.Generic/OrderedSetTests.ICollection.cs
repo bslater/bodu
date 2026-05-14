@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.ICollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ICollectionAdd_WhenItemIsDuplicate_ShouldLeaveSetUnchanged()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
         ICollection<int> typed = sut;
 
         typed.Add(2);

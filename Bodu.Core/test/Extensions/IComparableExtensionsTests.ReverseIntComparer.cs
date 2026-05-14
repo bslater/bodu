@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IComparableExtensionsTests.ReverseIntComparer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,7 +14,8 @@ public partial class IComparableExtensionsTests
     /// Provides an <see cref="IComparer{T}" /> whose ordering is the reverse of the natural integer comparer,
     /// allowing tests to observe the effect of a custom comparer on range and clamp semantics.
     /// </summary>
-    internal sealed class ReverseIntComparer : IComparer<int>
+    internal sealed class ReverseIntComparer
+        : IComparer<int>
     {
         public static readonly ReverseIntComparer Instance = new();
 

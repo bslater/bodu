@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfNullWithMessage.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class ThrowHelperTests
     {
         object value = null!;
         var paramName = "myParam";
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             ThrowHelper.ThrowIfNull(value, paramName);
         });
@@ -49,7 +49,7 @@ public partial class ThrowHelperTests
         const string Message = "custom message text";
         const string Param = "explicitParam";
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             ThrowHelper.ThrowIfNull<object>(value, Message, Param);
         });

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.Contains.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -47,7 +47,7 @@ public partial class IndexedSetTests
     [DataRow(4, false)]
     public void Contains_WhenItemPresenceVaries_ShouldReturnExpected(int item, bool expected)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.AreEqual(expected, sut.Contains(item));
     }
@@ -58,7 +58,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Contains_WhenCustomComparerProvided_ShouldUseComparerForEquality()
     {
-        IndexedSet<string> sut = CreateSet(new[] { "Hello" }, StringComparer.OrdinalIgnoreCase);
+        IndexedSet<string> sut = CreateSet(["Hello"], StringComparer.OrdinalIgnoreCase);
 
         Assert.IsTrue(sut.Contains("HELLO"));
         Assert.IsTrue(sut.Contains("hello"));

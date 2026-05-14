@@ -16,7 +16,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// is <see cref="DateResolutionStrategy.Algorithm" /> and whose <see cref="NotableDateRule.AlgorithmKey" /> matches the
 /// registered key. Keys are compared case-insensitively; a plugin must not register two algorithms under the same key.
 /// </remarks>
-public interface INotableDateAlgorithmPlugin : INotableDatePlugin
+public interface INotableDateAlgorithmPlugin
+    : INotableDatePlugin
 {
     /// <summary>
     /// Returns the algorithm registrations this plugin contributes.

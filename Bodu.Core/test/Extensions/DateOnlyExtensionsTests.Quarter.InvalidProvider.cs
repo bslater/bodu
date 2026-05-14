@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.Quarter.InvalidProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,7 +28,8 @@ public partial class DateOnlyExtensionsTests
     /// to exercise validation in <see cref="DateOnlyExtensions.Quarter(DateOnly, IQuarterDefinitionProvider)" />. Other interface
     /// members throw <see cref="NotImplementedException" /> because the validation runs before they are reached.
     /// </summary>
-    private sealed class InvalidQuarterProvider : IQuarterDefinitionProvider
+    private sealed class InvalidQuarterProvider
+        : IQuarterDefinitionProvider
     {
         public int GetQuarter(DateTime dateTime) => 99;
 

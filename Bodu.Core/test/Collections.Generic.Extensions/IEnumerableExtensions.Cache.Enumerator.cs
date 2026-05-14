@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Cache.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,8 +17,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     [TestMethod]
     public void Enumerator_Current_WhenEnumerating_ShouldReturnLatestElement()
     {
-        var actual = Yielding().Cache();
-        using var enumerator = actual.GetEnumerator();
+        IEnumerable<int> actual = Yielding().Cache();
+        using IEnumerator<int> enumerator = actual.GetEnumerator();
 
         Assert.IsTrue(enumerator.MoveNext());
         Assert.AreEqual(1, enumerator.Current);
@@ -44,7 +44,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     public void Enumerator_WhenObtainedTwice_ShouldYieldIdenticalValuesFromCache()
     {
         var tracker = new TrackingEnumerable<int>(YieldOneTwoThree());
-        var cached = tracker.Cache();
+        IEnumerable<int> cached = tracker.Cache();
 
         var first = cached.ToList();
         var second = cached.ToList();
@@ -70,7 +70,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         IEnumerable cached = Yielding().Cache();
 
         var values = new List<int>();
-        foreach (object item in cached)
+        foreach (var item in cached)
             values.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
@@ -90,7 +90,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     [TestMethod]
     public void Enumerator_NonGenericCurrent_AfterMoveNext_ShouldReturnLatestElement()
     {
-        var actual = Yielding().Cache();
+        IEnumerable<int> actual = Yielding().Cache();
         using IEnumerator<int> typed = actual.GetEnumerator();
         IEnumerator legacy = typed;
 
@@ -110,14 +110,14 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     [TestMethod]
     public void Enumerator_Dispose_ShouldBeIdempotentAndNotAffectOtherEnumerators()
     {
-        var actual = Yielding().Cache();
-        var first = actual.GetEnumerator();
+        IEnumerable<int> actual = Yielding().Cache();
+        IEnumerator<int> first = actual.GetEnumerator();
 
         Assert.IsTrue(first.MoveNext());
         first.Dispose();
         first.Dispose(); // idempotent
 
-        var second = actual.GetEnumerator();
+        IEnumerator<int> second = actual.GetEnumerator();
         Assert.IsTrue(second.MoveNext());
         Assert.AreEqual(1, second.Current);
 
@@ -134,8 +134,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     [TestMethod]
     public void Enumerator_MoveNext_WhenSequenceExhausted_ShouldReturnFalse()
     {
-        var actual = new[] { 1, 2 }.Cache();
-        using var enumerator = actual.GetEnumerator();
+        IEnumerable<int> actual = new[] { 1, 2 }.Cache();
+        using IEnumerator<int> enumerator = actual.GetEnumerator();
 
         Assert.IsTrue(enumerator.MoveNext());
         Assert.IsTrue(enumerator.MoveNext());
@@ -150,8 +150,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     [TestMethod]
     public void Enumerator_WhenSourceIsEmpty_ShouldYieldNothing()
     {
-        var actual = EmptySource().Cache();
-        using var enumerator = actual.GetEnumerator();
+        IEnumerable<int> actual = EmptySource().Cache();
+        using IEnumerator<int> enumerator = actual.GetEnumerator();
 
         Assert.IsFalse(enumerator.MoveNext());
 

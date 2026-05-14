@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Plugin3.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,8 @@ namespace Bodu.Globalization.Calendar.Plugin3.TestAssembly;
 /// <c>Activator.CreateInstance</c> fails after the plugin passes the trust and attribute
 /// checks.
 /// </summary>
-public sealed class ThrowingConstructorPlugin : INotableDatePlugin
+public sealed class ThrowingConstructorPlugin
+	: INotableDatePlugin
 {
 	/// <summary>
 	/// Always throws <see cref="InvalidOperationException" /> on construction so the loader

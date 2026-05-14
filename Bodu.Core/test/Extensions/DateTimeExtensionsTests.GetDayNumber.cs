@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.GetDayNumber.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,8 +21,8 @@ public partial class DateTimeExtensionsTests
     [DataRow(9999, 12, 31)] // last valid date
     public void GetDayNumber_ForValidDate_ShouldReturnExpectedDayNumber(int year, int month, int day)
     {
-        int expected = new DateOnly(year, month, day).DayNumber;
-        int actual = DateTimeExtensions.GetDayNumber(year, month, day);
+        var expected = new DateOnly(year, month, day).DayNumber;
+        var actual = DateTimeExtensions.GetDayNumber(year, month, day);
         Assert.AreEqual(expected, actual);
     }
 

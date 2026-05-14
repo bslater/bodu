@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Randomize.StreamWindowed.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
         const int windowSize = 64;
         var source = Enumerable.Range(1, windowSize).ToArray();
 
-        int[] result = source
+        var result = source
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
@@ -39,7 +39,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
         // overflows the initial fill so the streaming-replacement loop runs many times.
         var source = Enumerable.Range(1, 200).ToArray();
 
-        int[] result = source
+        var result = source
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
@@ -58,7 +58,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     {
         var source = Enumerable.Range(1, 200).ToArray();
 
-        int[] result = source
+        var result = source
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 
@@ -73,9 +73,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_StreamWindowed_WhenSourceIsEmpty_ShouldYieldNoItems()
     {
-        int[] source = Array.Empty<int>();
+        var source = Array.Empty<int>();
 
-        int[] result = source
+        var result = source
             .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
             .ToArray();
 

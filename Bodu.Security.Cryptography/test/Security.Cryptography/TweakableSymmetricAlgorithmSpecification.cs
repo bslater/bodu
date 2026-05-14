@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmSpecification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.Security.Cryptography;
 /// Extends <see cref="SymmetricAlgorithmSpecification" /> with tweak-related metadata required to drive
 /// tweak-validation tests in <see cref="TweakableSymmetricAlgorithmTests{TTest, TAlgorithm}" />.
 /// </summary>
-public sealed record TweakableSymmetricAlgorithmSpecification : SymmetricAlgorithmSpecification
+public sealed record TweakableSymmetricAlgorithmSpecification
+    : SymmetricAlgorithmSpecification
 {
     /// <summary>Gets the expected default <see cref="TweakableSymmetricAlgorithm.TweakSize" /> in bits on a freshly constructed instance.</summary>
     public required int DefaultTweakSizeBits { get; init; }

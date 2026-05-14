@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayMultidimensional.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,11 +21,14 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayMultidimensionalContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfArrayMultidimensionalContractData))]
     public void ThrowIfArrayMultidimensional_WhenInvokedWithVariousArrays_ShouldFollowContract(
         string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
     {
-        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayMultidimensional(array!, "array"), expectedExceptionType, expectedParamName);
+        AssertGuard(testName, () =>
+        {
+            ThrowHelper.ThrowIfArrayMultidimensional(array!, nameof(array));
+        }, expectedExceptionType, expectedParamName);
     }
 
     private static IEnumerable<object?[]> ThrowIfArrayMultidimensionalContractData()

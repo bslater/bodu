@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.SimpleMethods.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -128,7 +128,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void DaysInMonth_WithCulture_WhenCultureIsNull_ShouldFallBackToCurrentCulture()
     {
-        var originalCulture = CultureInfo.CurrentCulture;
+        CultureInfo originalCulture = CultureInfo.CurrentCulture;
         try
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
@@ -160,7 +160,7 @@ public partial class DateOnlyExtensionsTests
     [TestMethod]
     public void DaysInMonth_WithCalendar_WhenCalendarIsNull_ShouldFallBackToCurrentCultureCalendar()
     {
-        var originalCulture = CultureInfo.CurrentCulture;
+        CultureInfo originalCulture = CultureInfo.CurrentCulture;
         try
         {
             CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
@@ -282,7 +282,7 @@ public partial class DateOnlyExtensionsTests
     public void LastDateOfWeek_NoCulture_ShouldReturnDateInSameWeek()
     {
         var monday = new DateOnly(2024, 4, 8); // Monday
-        var result = monday.LastDateOfWeek();
+        DateOnly result = monday.LastDateOfWeek();
 
         // The result must be at most 6 days after the input and not earlier.
         Assert.IsTrue(result >= monday);

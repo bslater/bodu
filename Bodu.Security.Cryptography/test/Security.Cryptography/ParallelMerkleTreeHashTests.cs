@@ -21,7 +21,8 @@ namespace Bodu.Security.Cryptography;
 /// on this class.
 /// </remarks>
 [TestClass]
-public partial class ParallelMerkleTreeHashTests : MerkleTreeHashTestsBase<ParallelMerkleTreeHash>
+public partial class ParallelMerkleTreeHashTests
+    : MerkleTreeHashTestsBase<ParallelMerkleTreeHash>
 {
     // ─── Factory thunks — adapt the base class to ParallelMerkleTreeHash's ctor/overloads ─────
 

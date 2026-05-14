@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensionsTests.CountOrDefault.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -99,7 +99,9 @@ public sealed partial class IEnumerableExtensionsTests_CountOrDefault
     /// <see cref="IReadOnlyCollection{T}" /> of <see cref="object" /> but not <see cref="ICollection" />,
     /// used to exercise the second fast-path in <c>CountOrDefault</c>.
     /// </summary>
-    private sealed class ReadOnlyCountOnly : IEnumerable, IReadOnlyCollection<object>
+    private sealed class ReadOnlyCountOnly
+        : IEnumerable
+        , IReadOnlyCollection<object>
     {
         private readonly int _count;
 

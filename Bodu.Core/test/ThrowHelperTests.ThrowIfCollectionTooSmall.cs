@@ -23,19 +23,19 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionTypeName">The thrown exception's short type name, or empty if no throw.</param>
     /// <param name="expectedParamName">The expected ParamName, or empty if not asserted.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfCollectionTooSmallContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfCollectionTooSmallContractData))]
     public void ThrowIfCollectionTooSmall_WhenInvokedWithVariousCollections_ShouldFollowContract(
         string testName, ICollection<int>? collection, int minimum, string expectedExceptionTypeName, string expectedParamName)
     {
-        Type? expected = expectedExceptionTypeName.Length == 0
-            ? null
-            : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
-                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+        Type? expected = expectedExceptionTypeName.Length != 0
+            ? Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
+                ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.")
+            : null;
+        var param = expectedParamName.Length != 0 ? expectedParamName : null;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfCollectionTooSmall(collection!, minimum, "collection"),
+            () => ThrowHelper.ThrowIfCollectionTooSmall(collection!, minimum, nameof(collection)),
             expected,
             param);
     }
@@ -83,6 +83,6 @@ public partial class ThrowHelperTests
         yield return new object[] { new List<int> { 1 }, 1 };
         yield return new object[] { new List<int> { 1, 2 }, 2 };
         yield return new object[] { new int[] { 1, 2, 3 }, 2 };
-        yield return new object[] { new int[] { }, 0 };
+        yield return new object[] { Array.Empty<int>(), 0 };
     }
 }

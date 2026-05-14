@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipelineTests.AlgorithmicAnchors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -302,7 +302,8 @@ public sealed class NotableDateRangePipelineAlgorithmicAnchorsTests
 	/// <summary>
 	/// Minimal Easter algorithm that returns a fixed date and counts invocations to verify caching.
 	/// </summary>
-	private sealed class CountingAlgorithm : INotableDateAlgorithm
+	private sealed class CountingAlgorithm
+		: INotableDateAlgorithm
 	{
 		public static int CallCount { get; private set; }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.Indexer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class OrderedSetTests
     [DataRow(int.MinValue)]
     public void Indexer_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -49,7 +49,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Indexer_WhenSetPopulated_ShouldReturnElementInInsertionOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        OrderedSet<int> sut = CreateSet([10, 20, 30]);
 
         Assert.AreEqual(10, sut[0]);
         Assert.AreEqual(20, sut[1]);
@@ -63,7 +63,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Indexer_WhenItemRemoved_ShouldReflectShiftedIndices()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30, 40 });
+        OrderedSet<int> sut = CreateSet([10, 20, 30, 40]);
 
         sut.Remove(20);
 

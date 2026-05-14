@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TweakableSymmetricAlgorithmTests.ProtectedHelpers.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -159,7 +159,8 @@ public sealed class TweakableSymmetricAlgorithmProtectedHelperTests
     /// <summary>
     /// Minimal <see cref="TweakableSymmetricAlgorithm" /> stub used to exercise protected helpers.
     /// </summary>
-    private sealed class BareTweakableAlgorithm : TweakableSymmetricAlgorithm
+    private sealed class BareTweakableAlgorithm
+        : TweakableSymmetricAlgorithm
     {
         /// <summary>
         /// Initialises a new instance with no legal tweak sizes by default.

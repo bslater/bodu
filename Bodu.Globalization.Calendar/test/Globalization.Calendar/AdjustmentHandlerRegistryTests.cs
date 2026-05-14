@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdjustmentHandlerRegistryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public sealed class AdjustmentHandlerRegistryTests
 	/// Verifies that the parameterless constructor yields an empty, functional registry.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenParameterless_ShouldReturnEmptyRegistry()
+	public void Ctor_WhenParameterless_ShouldReturnEmptyRegistry()
 	{
 		var registry = new AdjustmentHandlerRegistry();
 
@@ -31,7 +31,7 @@ public sealed class AdjustmentHandlerRegistryTests
 	/// Verifies that the seeded constructor registers every supplied pair.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenSeeded_ShouldRegisterAllSuppliedHandlers()
+	public void Ctor_WhenSeeded_ShouldRegisterAllSuppliedHandlers()
 	{
 		var handlerA = new StubHandler();
 		var handlerB = new StubHandler();
@@ -53,7 +53,7 @@ public sealed class AdjustmentHandlerRegistryTests
 	/// <see cref="ArgumentNullException" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenHandlersIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenHandlersIsNull_ShouldThrowArgumentNullException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
@@ -172,7 +172,8 @@ public sealed class AdjustmentHandlerRegistryTests
 	/// Minimal <see cref="IAdjustmentHandler" /> test double. Never invoked by tests in this
 	/// file — only its reference identity matters.
 	/// </summary>
-	private sealed class StubHandler : IAdjustmentHandler
+	private sealed class StubHandler
+		: IAdjustmentHandler
 	{
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
 			new AdjustmentHandlerResult(false, context.Date, null);

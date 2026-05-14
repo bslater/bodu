@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.MonthBoundary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class DateOnlyExtensionsTests
     [DataRow(2000, 2, 2000, 2, 1)]
     public void GetFirstDateOfMonth_FromYearMonth_ShouldReturnFirstDayOfMonth(int year, int month, int expY, int expM, int expD)
     {
-        var actual = DateOnlyExtensions.GetFirstDateOfMonth(year, month);
+        DateOnly actual = DateOnlyExtensions.GetFirstDateOfMonth(year, month);
         Assert.AreEqual(new DateOnly(expY, expM, expD), actual);
     }
 
@@ -47,7 +47,7 @@ public partial class DateOnlyExtensionsTests
     [DataRow(2024, 12, 2024, 12, 31)]
     public void GetLastDateOfMonth_FromYearMonth_ShouldReturnLastDayOfMonth(int year, int month, int expY, int expM, int expD)
     {
-        var actual = DateOnlyExtensions.GetLastDateOfMonth(year, month);
+        DateOnly actual = DateOnlyExtensions.GetLastDateOfMonth(year, month);
         Assert.AreEqual(new DateOnly(expY, expM, expD), actual);
     }
 

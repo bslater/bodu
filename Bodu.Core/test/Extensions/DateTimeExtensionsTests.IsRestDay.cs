@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.IsRestDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsRestDay_WhenDayNotInPattern_ShouldReturnTrue()
     {
-        DateTime saturday = new DateTime(2026, 5, 16);
+        var saturday = new DateTime(2026, 5, 16);
 
         Assert.IsTrue(saturday.IsRestDay(WeekPattern.Weekdays));
     }
@@ -30,7 +30,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsRestDay_WhenDayInPattern_ShouldReturnFalse()
     {
-        DateTime monday = new DateTime(2026, 5, 11);
+        var monday = new DateTime(2026, 5, 11);
 
         Assert.IsFalse(monday.IsRestDay(WeekPattern.Weekdays));
     }
@@ -42,7 +42,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsRestDay_WhenUsingWorkingDaysOfWeekSugar_ShouldMatchWeekPatternOverload()
     {
-        DateTime friday = new DateTime(2026, 5, 15);
+        var friday = new DateTime(2026, 5, 15);
 
         Assert.IsTrue(friday.IsRestDay(WorkingDaysOfWeek.SundayToThursday));
         Assert.IsFalse(friday.IsRestDay(WorkingDaysOfWeek.MondayToFriday));

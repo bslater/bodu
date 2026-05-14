@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public partial class IndexedSetTests
         where T : notnull
     {
         var result = new T[set.Count];
-        for (int i = 0; i < set.Count; i++)
+        for (var i = 0; i < set.Count; i++)
             result[i] = set[i];
 
         return result;

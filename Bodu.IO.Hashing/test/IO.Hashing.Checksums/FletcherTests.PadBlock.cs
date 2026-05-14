@@ -55,7 +55,8 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     /// hash flow. Also exposes <see cref="PadBlockExposed(byte[], ulong)" /> for direct assertion without going via
     /// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" />.
     /// </summary>
-    private sealed class PaddingFletcher : Fletcher<PaddingFletcher>
+    private sealed class PaddingFletcher
+        : Fletcher<PaddingFletcher>
     {
         public PaddingFletcher()
             : base(32)

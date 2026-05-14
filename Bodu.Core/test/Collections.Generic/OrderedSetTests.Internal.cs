@@ -19,7 +19,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void DebuggerStorage_WhenAccessed_ShouldReturnUnderlyingStorage()
     {
-        var sut = new OrderedSet<int>(new[] { 1, 2, 3 });
+        var sut = new OrderedSet<int>([1, 2, 3]);
 
         OrderedSetStorage<int> storage = sut.DebuggerStorage;
 
@@ -75,7 +75,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsSubsetOf_WhenOtherIsReadOnlyCollectionOnly_ShouldUseProjectionWithReadOnlyHint()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
         var other = new ReadOnlyCollectionOnly<int>([1, 2, 3]);
 
         Assert.IsTrue(sut.IsSubsetOf(other));
@@ -89,7 +89,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsSubsetOf_WhenOtherHasNoCountHint_ShouldStillEvaluateCorrectly()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
         Assert.IsTrue(sut.IsSubsetOf(YieldNumbers()));
 
@@ -109,9 +109,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsProperSubsetOf_WhenProjectionLargerButMissingElement_ShouldReturnFalse()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
-        Assert.IsFalse(sut.IsProperSubsetOf(new[] { 1, 3, 4 }));
+        Assert.IsFalse(sut.IsProperSubsetOf([1, 3, 4]));
     }
 
     /// <summary>
@@ -122,9 +122,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsProperSupersetOf_WhenProjectionSmallerButContainsMissingElement_ShouldReturnFalse()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        Assert.IsFalse(sut.IsProperSupersetOf(new[] { 1, 9 }));
+        Assert.IsFalse(sut.IsProperSupersetOf([1, 9]));
     }
 
     /// <summary>
@@ -132,7 +132,8 @@ public partial class OrderedSetTests
     /// implementing <see cref="ICollection{T}" /> so capacity-hint helpers see the read-only-collection branch.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
-    private sealed class ReadOnlyCollectionOnly<T> : IReadOnlyCollection<T>
+    private sealed class ReadOnlyCollectionOnly<T>
+        : IReadOnlyCollection<T>
     {
         private readonly T[] _items;
 

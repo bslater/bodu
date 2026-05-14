@@ -56,7 +56,8 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#ofb--synchronous-stream-cipher">OFB walk-through in the cipher-modes guide</seealso>
-public sealed class OfbModeTransform : IBlockCipherModeTransform
+public sealed class OfbModeTransform
+    : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
     private readonly byte[] _currentIv;

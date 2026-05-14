@@ -53,11 +53,11 @@ namespace Bodu.Extensions;
 /// from the input date itself.
 /// </para>
 /// </remarks>
-public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
+public sealed class FiscalWeekQuarterProvider
+    : IQuarterDefinitionProvider
 {
     private readonly int _anchorMonth;
     private readonly DayOfWeek _anchorDayOfWeek;
-    private readonly DayOfWeek _firstDayOfWeek;
     private readonly bool _useNearestDayOfWeek;
     private readonly FiscalWeekPattern _pattern;
 
@@ -109,8 +109,9 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     /// </list>
     /// <para>
     /// When <paramref name="isFiscalYearEnd"/> is <see langword="true"/>, the anchor is the first day
-    /// of the month following <paramref name="month"/>, and the first day of the fiscal week is shifted
-    /// forward by one day relative to <paramref name="dayOfWeek"/>.
+    /// of the month following <paramref name="month"/>. The fiscal year still begins on the occurrence
+    /// of <paramref name="dayOfWeek"/> selected by <paramref name="useNearestDayOfWeek"/>, so the fiscal
+    /// week boundary always coincides with <paramref name="dayOfWeek"/>.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -132,7 +133,6 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
         _pattern = pattern;
         _anchorMonth = month + (isFiscalYearEnd ? 1 : 0);
         _anchorDayOfWeek = dayOfWeek;
-        _firstDayOfWeek = isFiscalYearEnd ? (DayOfWeek)(((int)dayOfWeek + 1) % 7) : dayOfWeek;
         _useNearestDayOfWeek = useNearestDayOfWeek;
     }
 
@@ -353,7 +353,7 @@ public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
     private int GetFiscalYearFor(DateTime dateTime)
     {
         var weekStartTicks = dateTime.Ticks
-            - DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(dateTime.Ticks, _firstDayOfWeek);
+            - DateTimeExtensions.GetTicksSincePreviousOrSameDayOfWeek(dateTime.Ticks, _anchorDayOfWeek);
 
         var calendarYear = dateTime.Year;
         for (var candidate = calendarYear - 1; candidate <= calendarYear + 1; candidate++)

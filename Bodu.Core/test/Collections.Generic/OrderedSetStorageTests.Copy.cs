@@ -21,7 +21,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -37,7 +37,7 @@ public partial class OrderedSetStorageTests
     [DataRow(int.MinValue)]
     public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException(int arrayIndex)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -52,7 +52,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -67,7 +67,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -85,8 +85,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void CopyTo_WhenIndexIsZero_ShouldCopyInInsertionOrder()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20, 30 });
-        int[] target = new int[3];
+        OrderedSetStorage<int> sut = CreateStorage([10, 20, 30]);
+        var target = new int[3];
 
         sut.CopyTo(target, 0);
 
@@ -100,7 +100,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void CopyTo_WhenIndexIsNonZero_ShouldCopyStartingAtOffset()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20 });
+        OrderedSetStorage<int> sut = CreateStorage([10, 20]);
         int[] target = [99, 99, 99, 99];
 
         sut.CopyTo(target, 1);
@@ -134,7 +134,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        int[] array = sut.ToArray();
+        var array = sut.ToArray();
 
         Assert.AreEqual(0, array.Length);
     }
@@ -146,9 +146,9 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ToArray_WhenStoragePopulated_ShouldReturnInsertionOrderedArray()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20, 30 });
+        OrderedSetStorage<int> sut = CreateStorage([10, 20, 30]);
 
-        int[] array = sut.ToArray();
+        var array = sut.ToArray();
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
         Assert.AreEqual(sut.Count, array.Length);
@@ -161,8 +161,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int[] snapshot = sut.ToArray();
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var snapshot = sut.ToArray();
 
         sut.Add(4);
 

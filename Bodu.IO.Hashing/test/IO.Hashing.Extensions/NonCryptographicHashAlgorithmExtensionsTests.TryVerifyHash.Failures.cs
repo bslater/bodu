@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensionsTests.TryVerifyHash.Failures.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -249,7 +249,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// A readable <see cref="Stream" /> whose every read raises <see cref="IOException" />, used to drive the
     /// exception-safe false-return branch of stream-based <c>TryVerifyHash</c> overloads.
     /// </summary>
-    private sealed class ThrowingStream : Stream
+    private sealed class ThrowingStream
+        : Stream
     {
         public override bool CanRead => true;
 

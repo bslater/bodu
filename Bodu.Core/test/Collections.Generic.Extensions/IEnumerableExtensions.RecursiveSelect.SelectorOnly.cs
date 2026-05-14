@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.RecursiveSelect.SelectorOnly.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     [TestMethod]
     public void RecursiveSelect_SelectorOnly_ShouldApplyProjectionToEveryElement()
     {
-        var root = NodeSampleTree.BuildSampleTree();
+        Node[] root = NodeSampleTree.BuildSampleTree();
 
         var actual = root.RecursiveSelect(
             childSelector: n => n.Children,

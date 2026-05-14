@@ -53,7 +53,8 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#ecb--almost-never">ECB walk-through in the cipher-modes guide</seealso>
-public sealed class EcbModeTransform : IBlockCipherModeTransform
+public sealed class EcbModeTransform
+    : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
 

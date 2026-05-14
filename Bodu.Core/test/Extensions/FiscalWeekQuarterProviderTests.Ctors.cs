@@ -1,4 +1,4 @@
-// --------------------------------------------------------------------------------------------------------------- //
+﻿// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="FiscalWeekQuarterProviderTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class FiscalWeekQuarterProviderTests
     [TestMethod]
     [DataRow(0)]
     [DataRow(-1)]
-    public void Constructor_WhenMonthIsBelowValidRange_ShouldThrowException(int month)
+    public void Ctor_WhenMonthIsBelowValidRange_ShouldThrowException(int month)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             new FiscalWeekQuarterProvider(month));
@@ -31,7 +31,7 @@ public partial class FiscalWeekQuarterProviderTests
     [TestMethod]
     [DataRow(13)]
     [DataRow(100)]
-    public void Constructor_WhenMonthIsAboveValidRange_ShouldThrowException(int month)
+    public void Ctor_WhenMonthIsAboveValidRange_ShouldThrowException(int month)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             new FiscalWeekQuarterProvider(month));
@@ -42,7 +42,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// <c>dayOfWeek</c> is not a defined <see cref="DayOfWeek" /> value.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenDayOfWeekIsUndefined_ShouldThrowException()
+    public void Ctor_WhenDayOfWeekIsUndefined_ShouldThrowException()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             new FiscalWeekQuarterProvider(1, (DayOfWeek)99));
@@ -53,7 +53,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// <c>pattern</c> is not a defined <see cref="FiscalWeekPattern" /> value.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenPatternIsUndefined_ShouldThrowException()
+    public void Ctor_WhenPatternIsUndefined_ShouldThrowException()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: (FiscalWeekPattern)99));
@@ -90,7 +90,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// detection results, confirming that the pattern does not affect quarter boundary arithmetic.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenPatternDiffers_ShouldNotAffectQuarterBoundaries()
+    public void Ctor_WhenPatternDiffers_ShouldNotAffectQuarterBoundaries()
     {
         var p544 = new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks544);
         var p445 = new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
@@ -105,7 +105,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// without throwing, confirming that the end-month path of the constructor is reachable.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenIsFiscalYearEndIsTrue_ShouldInitialiseWithoutThrowing()
+    public void Ctor_WhenIsFiscalYearEndIsTrue_ShouldInitialiseWithoutThrowing()
     {
         // Fiscal year ends in January; provider derives the start from the following month.
         var provider = new FiscalWeekQuarterProvider(1, DayOfWeek.Saturday, isFiscalYearEnd: true);

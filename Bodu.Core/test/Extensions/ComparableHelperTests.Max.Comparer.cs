@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ComparableHelperTests.Max.Comparer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class ComparableHelperTests
     [DataRow(10, 3, 10)]
     public void Max_WhenComparerIsDefault_ShouldReturnLarger(int first, int second, int expected)
     {
-        int actual = ComparableHelper.Max(first, second, Comparer<int>.Default);
+        var actual = ComparableHelper.Max(first, second, Comparer<int>.Default);
         Assert.AreEqual(expected, actual);
     }
 
@@ -43,7 +43,7 @@ public partial class ComparableHelperTests
     public void Max_WhenOneArgumentIsNullWithComparer_ShouldReturnNonNullValue()
     {
         string? first = null;
-        string second = "abc";
+        var second = "abc";
 
         Assert.AreEqual("abc", ComparableHelper.Max(first, second, StringComparer.Ordinal));
         Assert.AreEqual("abc", ComparableHelper.Max(second, first, StringComparer.Ordinal));
@@ -69,7 +69,7 @@ public partial class ComparableHelperTests
     [TestMethod]
     public void Max_WhenComparerIsNull_ShouldThrowExactly()
     {
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = ComparableHelper.Max(1, 2, (IComparer<int>)null!);
         });

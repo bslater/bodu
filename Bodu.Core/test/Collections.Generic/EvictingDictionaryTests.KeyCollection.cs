@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.KeyCollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("A", 1);
 
-        var keys = dictionary.Keys;
+        ICollection<string> keys = dictionary.Keys;
         Assert.IsTrue(keys.Contains("A"));
         Assert.IsFalse(keys.Contains("Z"));
     }
@@ -98,7 +98,7 @@ public partial class EvictingDictionaryTests
 
         IEnumerable keys = dictionary.Keys;
         var observed = new List<string>();
-        foreach (object key in keys)
+        foreach (var key in keys)
             observed.Add((string)key);
 
         CollectionAssert.AreEquivalent(new[] { "A", "B", "C" }, observed);

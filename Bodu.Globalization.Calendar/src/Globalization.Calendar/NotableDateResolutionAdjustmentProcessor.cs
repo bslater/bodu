@@ -22,7 +22,8 @@ namespace Bodu.Globalization.Calendar;
 /// caller.
 /// </para>
 /// </remarks>
-internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateResolutionAdjustmentProcessor
+internal sealed class NotableDateResolutionAdjustmentProcessor
+    : INotableDateResolutionAdjustmentProcessor
 {
     private readonly CalendarWeekendDefinition _weekendDefinition;
     private readonly IWeekendDefinitionProvider? _weekendProvider;
@@ -258,8 +259,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateRes
 
                 return window.IsNonWorkingDay(date, territoryCode, calendarType, IsWeekend);
             },
-            _weekendDefinition,
-            _weekendProvider,
+            _weekendDefinition.ToWeekPattern(_weekendProvider),
             _handlerRegistry,
             (ruleName, year, territoryCode, calendarType) => window.ResolveByName(ruleName, year, territoryCode, calendarType));
 

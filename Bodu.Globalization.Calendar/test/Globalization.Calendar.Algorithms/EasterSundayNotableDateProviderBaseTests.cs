@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EasterSundayNotableDateProviderBaseTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -112,7 +112,8 @@ public sealed class EasterSundayNotableDateProviderBaseTests
 	/// <summary>
 	/// Test double that lets every calendar through and uses a fixed date for calculation.
 	/// </summary>
-	private sealed class DefaultTestProvider : EasterSundayNotableDateProviderBase
+	private sealed class DefaultTestProvider
+		: EasterSundayNotableDateProviderBase
 	{
 		public override int MinSupportedYear => 1;
 
@@ -131,7 +132,8 @@ public sealed class EasterSundayNotableDateProviderBaseTests
 	/// <summary>
 	/// Test double exercising the overridable metadata hooks.
 	/// </summary>
-	private sealed class CustomMetadataTestProvider : EasterSundayNotableDateProviderBase
+	private sealed class CustomMetadataTestProvider
+		: EasterSundayNotableDateProviderBase
 	{
 		public override int MinSupportedYear => 1;
 
@@ -158,7 +160,8 @@ public sealed class EasterSundayNotableDateProviderBaseTests
 	/// Test double that rejects every non-null calendar and counts calls into
 	/// <c>CalculateDate</c> so tests can confirm short-circuit behaviour.
 	/// </summary>
-	private sealed class RejectingTestProvider : EasterSundayNotableDateProviderBase
+	private sealed class RejectingTestProvider
+		: EasterSundayNotableDateProviderBase
 	{
 		public override int MinSupportedYear => 1;
 
@@ -185,7 +188,8 @@ public sealed class EasterSundayNotableDateProviderBaseTests
 	/// Test double that counts invocations of <c>CalculateDate</c> so tests can confirm the
 	/// base-class cache is being used.
 	/// </summary>
-	private sealed class CountingTestProvider : EasterSundayNotableDateProviderBase
+	private sealed class CountingTestProvider
+		: EasterSundayNotableDateProviderBase
 	{
 		public override int MinSupportedYear => 1;
 

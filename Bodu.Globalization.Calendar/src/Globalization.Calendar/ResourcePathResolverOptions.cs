@@ -22,6 +22,6 @@ public sealed class ResourcePathResolverOptions
     public IReadOnlySet<string> FullyQualifiedResourcePrefixes { get; init; }
         = new HashSet<string>(StringComparer.Ordinal)
         {
-            "Bodu.Globalization.Calendar.Resources."
+            "Bodu.Globalization.Calendar.Resources.",
         };
 }

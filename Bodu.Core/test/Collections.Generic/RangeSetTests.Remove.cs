@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.Remove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -71,7 +71,7 @@ public partial class RangeSetTests
     {
         var sut = new RangeSet<int>();
 
-        bool changed = sut.Remove(0, 10);
+        var changed = sut.Remove(0, 10);
 
         Assert.IsFalse(changed);
         Assert.AreEqual(0, sut.Count);
@@ -86,7 +86,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((10, 20));
 
-        bool changed = sut.Remove(0, 10);
+        var changed = sut.Remove(0, 10);
 
         Assert.IsFalse(changed);
         AssertContents(sut, (10, 20));
@@ -104,7 +104,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((0, 10));
 
-        bool changed = sut.Remove(0, 10);
+        var changed = sut.Remove(0, 10);
 
         Assert.IsTrue(changed);
         Assert.AreEqual(0, sut.Count);
@@ -118,7 +118,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((5, 10));
 
-        bool changed = sut.Remove(0, 20);
+        var changed = sut.Remove(0, 20);
 
         Assert.IsTrue(changed);
         Assert.AreEqual(0, sut.Count);
@@ -132,7 +132,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((5, 15));
 
-        bool changed = sut.Remove(0, 10);
+        var changed = sut.Remove(0, 10);
 
         Assert.IsTrue(changed);
         AssertContents(sut, (10, 15));
@@ -146,7 +146,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((5, 15));
 
-        bool changed = sut.Remove(10, 20);
+        var changed = sut.Remove(10, 20);
 
         Assert.IsTrue(changed);
         AssertContents(sut, (5, 10));
@@ -160,7 +160,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((0, 20));
 
-        bool changed = sut.Remove(8, 12);
+        var changed = sut.Remove(8, 12);
 
         Assert.IsTrue(changed);
         AssertContents(sut, (0, 8), (12, 20));
@@ -174,7 +174,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((0, 5), (10, 15), (20, 25));
 
-        bool changed = sut.Remove(3, 22);
+        var changed = sut.Remove(3, 22);
 
         Assert.IsTrue(changed);
         AssertContents(sut, (0, 3), (22, 25));
@@ -189,7 +189,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((0, 5));
 
-        bool changed = sut.Remove(5, 10);
+        var changed = sut.Remove(5, 10);
 
         Assert.IsFalse(changed);
         AssertContents(sut, (0, 5));
@@ -208,7 +208,7 @@ public partial class RangeSetTests
     {
         RangeSet<int> sut = CreateSet((0, 10));
 
-        bool changed = sut.Remove(new Range<int>(0, 10));
+        var changed = sut.Remove(new Range<int>(0, 10));
 
         Assert.IsTrue(changed);
         Assert.AreEqual(0, sut.Count);

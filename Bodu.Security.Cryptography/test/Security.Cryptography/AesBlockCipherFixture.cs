@@ -19,10 +19,11 @@ namespace Bodu.Security.Cryptography;
 /// by <see cref="IBlockCipher" /> and delegates all key scheduling to the BCL. Dispose the
 /// fixture after each test to release the underlying <see cref="Aes" /> instance.
 /// </remarks>
-internal sealed class AesBlockCipherFixture : IBlockCipher, IDisposable
+internal sealed class AesBlockCipherFixture
+    : IBlockCipher, IDisposable
 {
-    private readonly Aes aes;
-    private bool disposed;
+    private readonly Aes _aes;
+    private bool _disposed;
 
     /// <summary>
     /// Initialises a new instance using <paramref name="key" /> as the AES key.
@@ -33,35 +34,35 @@ internal sealed class AesBlockCipherFixture : IBlockCipher, IDisposable
     public AesBlockCipherFixture(byte[] key)
     {
         if (key is null) throw new ArgumentNullException(nameof(key));
-        aes = Aes.Create();
-        aes.Key = key;
+        _aes = Aes.Create();
+        _aes.Key = key;
     }
 
     /// <inheritdoc />
     /// <value>Length of the AES block is 128 bits (16 bytes).</value>
-    public int BlockSize => aes.BlockSize;
+    public int BlockSize => _aes.BlockSize;
 
     /// <inheritdoc />
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ObjectDisposedException.ThrowIf(disposed, this);
-        aes.EncryptEcb(input, output, PaddingMode.None);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _aes.EncryptEcb(input, output, PaddingMode.None);
     }
 
     /// <inheritdoc />
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
-        ObjectDisposedException.ThrowIf(disposed, this);
-        aes.DecryptEcb(input, output, PaddingMode.None);
+        ObjectDisposedException.ThrowIf(_disposed, this);
+        _aes.DecryptEcb(input, output, PaddingMode.None);
     }
 
     /// <inheritdoc />
     public void Dispose()
     {
-        if (!disposed)
+        if (!_disposed)
         {
-            aes.Dispose();
-            disposed = true;
+            _aes.Dispose();
+            _disposed = true;
         }
     }
 }

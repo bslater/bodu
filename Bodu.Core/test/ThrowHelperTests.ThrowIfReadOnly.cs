@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfReadOnly.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,17 +22,20 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfReadOnlyContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfReadOnlyContractData))]
     public void ThrowIfReadOnly_WhenInvokedWithVariousCollections_ShouldFollowContract(
         string testName, ICollection<int>? collection, Type? expectedExceptionType, string? expectedParamName)
     {
-        AssertGuard(testName, () => ThrowHelper.ThrowIfReadOnly(collection!, "collection"), expectedExceptionType, expectedParamName);
+        AssertGuard(testName, () =>
+        {
+            ThrowHelper.ThrowIfReadOnly(collection!, nameof(collection));
+        }, expectedExceptionType, expectedParamName);
     }
 
     private static IEnumerable<object?[]> ThrowIfReadOnlyContractData()
     {
         yield return new object?[] { "null → ArgumentNullException", null, typeof(ArgumentNullException), "collection" };
-        yield return new object?[] { "ReadOnlyCollection → ArgumentException", new ReadOnlyCollection<int>(new[] { 1, 2 }), typeof(ArgumentException), "collection" };
+        yield return new object?[] { "ReadOnlyCollection → ArgumentException", new ReadOnlyCollection<int>([1, 2]), typeof(ArgumentException), "collection" };
         yield return new object?[] { "array (read-only ICollection view) → ArgumentException", new[] { 1, 2, 3 }, typeof(ArgumentException), "collection" };
         yield return new object?[] { "writable List<int> → no throw", new List<int> { 1, 2, 3 }, null, null };
         yield return new object?[] { "empty writable List<int> → no throw", new List<int>(), null, null };

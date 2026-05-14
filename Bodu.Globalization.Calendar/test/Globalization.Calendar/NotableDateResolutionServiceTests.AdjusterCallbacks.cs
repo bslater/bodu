@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceTests.AdjusterCallbacks.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -107,7 +107,8 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
 		Assert.IsFalse(resolved[0].WasAdjusted);
 	}
 
-	private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+	private sealed class InMemoryRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly IReadOnlyList<NotableDateRule> _rules;
 

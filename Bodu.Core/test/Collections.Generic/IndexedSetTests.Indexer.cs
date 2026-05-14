@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.Indexer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class IndexedSetTests
     [DataRow(int.MinValue)]
     public void Indexer_Get_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -39,7 +39,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Indexer_Get_WhenSetPopulated_ShouldReturnElementInInsertionOrder()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
 
         Assert.AreEqual(10, sut[0]);
         Assert.AreEqual(20, sut[1]);
@@ -60,7 +60,7 @@ public partial class IndexedSetTests
     [DataRow(int.MaxValue)]
     public void Indexer_Set_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -75,7 +75,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Indexer_Set_WhenValueIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<string> sut = CreateSet(new[] { "a", "b" });
+        IndexedSet<string> sut = CreateSet(["a", "b"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -89,7 +89,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Indexer_Set_WhenValueExistsAtAnotherIndex_ShouldThrowArgumentException()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -108,7 +108,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Indexer_Set_WhenValueIsNew_ShouldReplaceAtPositionAndUpdateLookup()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut[1] = 99;
 
@@ -124,7 +124,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Indexer_Set_WhenValueIsAlreadyAtIndex_ShouldBeNoOp()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut[1] = 2;
 

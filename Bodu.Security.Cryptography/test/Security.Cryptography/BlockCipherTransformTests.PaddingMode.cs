@@ -49,7 +49,8 @@ public sealed class BlockCipherTransformPaddingModeTests
     /// Minimal <see cref="BlockCipherTransform" /> subclass that forwards through the
     /// framework <see cref="PaddingMode" /> overload of the protected constructor.
     /// </summary>
-    private sealed class FrameworkPaddingTransform : BlockCipherTransform
+    private sealed class FrameworkPaddingTransform
+        : BlockCipherTransform
     {
         public FrameworkPaddingTransform(IBlockCipher cipher, CipherModeKind mode, PaddingMode padding, byte[]? iv, bool encrypt)
             : base(cipher, mode, padding, iv, encrypt)

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -142,23 +142,23 @@ public partial class MultiValueDictionaryTests
     public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
     {
         var mvd = new MultiValueDictionary<int, int>();
-        int keyCount = 200;
-        int valuesPerKey = 10;
+        var keyCount = 200;
+        var valuesPerKey = 10;
 
-        for (int k = 0; k < keyCount; k++)
+        for (var k = 0; k < keyCount; k++)
         {
-            for (int v = 0; v < valuesPerKey; v++)
+            for (var v = 0; v < valuesPerKey; v++)
                 mvd.Add(k, v);
         }
 
         Assert.AreEqual(keyCount * valuesPerKey, mvd.Count);
         Assert.AreEqual(keyCount, mvd.KeyCount);
 
-        for (int k = 0; k < keyCount; k++)
+        for (var k = 0; k < keyCount; k++)
         {
             IReadOnlyList<int> values = mvd[k];
             Assert.AreEqual(valuesPerKey, values.Count);
-            for (int v = 0; v < valuesPerKey; v++)
+            for (var v = 0; v < valuesPerKey; v++)
                 Assert.AreEqual(v, values[v]);
         }
     }

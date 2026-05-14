@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfDestinationTooSmall.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,13 +31,13 @@ public partial class ThrowHelperTests
     public void ThrowIfDestinationTooSmall_Array_WhenInvokedWithVariousInputs_ShouldFollowContract(
         string testName, int sourceLength, int destinationLength, string expectedExceptionTypeName, string expectedParamName)
     {
-        int[]? source = sourceLength < 0 ? null : new int[sourceLength];
-        byte[]? destination = destinationLength < 0 ? null : new byte[destinationLength];
+        var source = sourceLength < 0 ? null : new int[sourceLength];
+        var destination = destinationLength < 0 ? null : new byte[destinationLength];
         Type? expected = expectedExceptionTypeName.Length == 0
             ? null
             : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
                 ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+        var param = expectedParamName.Length == 0 ? null : expectedParamName;
 
         AssertGuard(
             testName,

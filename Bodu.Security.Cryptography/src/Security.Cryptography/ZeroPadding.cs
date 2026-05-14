@@ -35,7 +35,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
 /// </code>
 /// </example>
-public sealed class ZeroPadding : IPaddingStrategy
+public sealed class ZeroPadding
+    : IPaddingStrategy
 {
     /// <inheritdoc />
     public bool StripsPaddingOnUnpad => false;

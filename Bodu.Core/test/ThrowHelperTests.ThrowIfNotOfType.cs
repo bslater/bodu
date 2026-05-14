@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfNotOfType.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,9 +27,9 @@ public partial class ThrowHelperTests
         string testName, object value, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
-        AssertGuard(testName, () => ThrowHelper.ThrowIfNotOfType<int>(value, "value"), expected, expectedParam);
+        AssertGuard(testName, () => ThrowHelper.ThrowIfNotOfType<int>(value, nameof(value)), expected, expectedParam);
     }
 
     /// <summary>

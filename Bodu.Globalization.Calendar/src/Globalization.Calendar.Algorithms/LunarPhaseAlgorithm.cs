@@ -23,7 +23,7 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 internal static class LunarPhaseAlgorithm
 {
     /// <summary>The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00, kind unspecified), equal to JDE 2451545.0.</summary>
-    private static readonly DateTime J2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
+    private static readonly DateTime s_j2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
     /// <summary>The mean synodic month length in days (IAU value), used to advance the lunation index between search attempts.</summary>
     private const double SynodicMonth = 29.530588861;
@@ -204,7 +204,7 @@ internal static class LunarPhaseAlgorithm
     /// <returns>The corresponding day-only <see cref="DateTime" /> with <see cref="DateTime.Kind" /> set to <see cref="DateTimeKind.Unspecified" />.</returns>
     private static DateTime JdeToDate(double jde)
     {
-        DateTime raw = J2000Epoch.AddDays(jde - 2451545.0);
+        DateTime raw = s_j2000Epoch.AddDays(jde - 2451545.0);
         return DateTime.SpecifyKind(raw.Date, DateTimeKind.Unspecified);
     }
 

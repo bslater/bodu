@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfSpanLengthOutOfRange.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,9 +30,9 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthOutOfRange_WhenInvokedWithVariousLengths_ShouldFollowContract(
         string testName, int spanLength, int minLength, int maxLength, bool expectsException)
     {
-        int[] buffer = new int[spanLength];
+        var buffer = new int[spanLength];
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "span" : null;
+        var expectedParam = expectsException ? "span" : null;
 
         AssertGuard(
             $"Span<T>: {testName}",

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.Capacity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,7 +37,7 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
 
-        int reported = sut.EnsureCapacity(128);
+        var reported = sut.EnsureCapacity(128);
 
         Assert.IsTrue(reported >= 128);
         Assert.IsTrue(sut.Capacity >= 128);
@@ -52,9 +52,9 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
         sut.EnsureCapacity(64);
-        int capacityBefore = sut.Capacity;
+        var capacityBefore = sut.Capacity;
 
-        int reported = sut.EnsureCapacity(4);
+        var reported = sut.EnsureCapacity(4);
 
         Assert.AreEqual(capacityBefore, sut.Capacity);
         Assert.AreEqual(capacityBefore, reported);
@@ -82,11 +82,11 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
 
-        for (int i = 0; i < 500; i++)
+        for (var i = 0; i < 500; i++)
             sut.Add(i * 10, (i * 10) + 5, "v" + i);
 
         Assert.AreEqual(500, sut.Count);
-        for (int i = 0; i < 500; i++)
+        for (var i = 0; i < 500; i++)
         {
             ValueRange<int, string> entry = sut.GetEntryAt(i);
             Assert.AreEqual(i * 10, entry.StartInclusive);

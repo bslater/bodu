@@ -1,5 +1,7 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateCacheKey.cs" company="PlaceholderCompany." />
+// <copyright file="NotableDateCacheKey.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Globalization.Calendar.RangeResolution;

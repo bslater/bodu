@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.IsInWorkingWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsInWorkingWeek_WhenDayInPattern_ShouldReturnTrue()
     {
-        DateTime monday = new DateTime(2026, 5, 11);
+        var monday = new DateTime(2026, 5, 11);
 
         Assert.IsTrue(monday.IsInWorkingWeek(WeekPattern.Weekdays));
     }
@@ -30,7 +30,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsInWorkingWeek_WhenDayNotInPattern_ShouldReturnFalse()
     {
-        DateTime saturday = new DateTime(2026, 5, 16);
+        var saturday = new DateTime(2026, 5, 16);
 
         Assert.IsFalse(saturday.IsInWorkingWeek(WeekPattern.Weekdays));
     }
@@ -42,7 +42,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsInWorkingWeek_WhenUsingWorkingDaysOfWeekSugar_ShouldMatchWeekPatternOverload()
     {
-        DateTime friday = new DateTime(2026, 5, 15);
+        var friday = new DateTime(2026, 5, 15);
 
         Assert.IsFalse(friday.IsInWorkingWeek(WorkingDaysOfWeek.SundayToThursday));
         Assert.IsTrue(friday.IsInWorkingWeek(WorkingDaysOfWeek.MondayToFriday));
@@ -55,7 +55,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void IsInWorkingWeek_WhenWorkingDaysOfWeekIsCustom_ShouldThrowExactly()
     {
-        DateTime date = new DateTime(2026, 5, 11);
+        var date = new DateTime(2026, 5, 11);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

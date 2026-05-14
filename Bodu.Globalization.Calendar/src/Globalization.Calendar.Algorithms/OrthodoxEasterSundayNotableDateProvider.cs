@@ -25,7 +25,7 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
     public override int MinSupportedYear => 1;
 
     /// <summary>A shared <see cref="SysGlobal.JulianCalendar" /> instance used to project Julian Easter dates to Gregorian equivalents.</summary>
-    private static readonly SysGlobal.JulianCalendar JulianCalendar = new();
+    private static readonly SysGlobal.JulianCalendar s_julianCalendar = new();
 
     /// <inheritdoc />
     protected override string Name => "Orthodox Easter Sunday";
@@ -64,6 +64,6 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
         var month = f / 31;
         var day = (f % 31) + 1;
 
-        return JulianCalendar.ToDateTime(year, month, day, 0, 0, 0, 0);
+        return s_julianCalendar.ToDateTime(year, month, day, 0, 0, 0, 0);
     }
 }

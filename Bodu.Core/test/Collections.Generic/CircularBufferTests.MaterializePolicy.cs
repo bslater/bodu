@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.MaterializePolicy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenSourceExactlyEqualsCapacity_ShouldPreserveAllItems()
     {
-        var buffer = new CircularBuffer<int>(new[] { 1, 2, 3 }, capacity: 3);
+        var buffer = new CircularBuffer<int>([1, 2, 3], capacity: 3);
 
         Assert.AreEqual(3, buffer.Count);
         Assert.AreEqual(3, buffer.Capacity);
@@ -72,7 +72,7 @@ public partial class CircularBufferTests
 
     private static IEnumerable<int> YieldMaterializeSequence(int start, int count)
     {
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
             yield return start + i;
     }
 }

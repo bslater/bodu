@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -135,7 +135,7 @@ public partial class OrderedSetTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new OrderedSet<string>(new[] { "a", null!, "b" });
+            _ = new OrderedSet<string>(["a", null!, "b"]);
         });
     }
 
@@ -145,7 +145,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionContainsDuplicates_ShouldPreserveFirstOccurrenceOrder()
     {
-        var sut = new OrderedSet<int>(new[] { 1, 2, 2, 3, 1, 4 });
+        var sut = new OrderedSet<int>([1, 2, 2, 3, 1, 4]);
 
         Assert.AreEqual(4, sut.Count);
         Assert.AreEqual(1, sut[0]);
@@ -172,7 +172,7 @@ public partial class OrderedSetTests
     public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
     {
         var sut = new OrderedSet<string>(
-            new[] { "A", "a", "B", "b" },
+            ["A", "a", "B", "b"],
             StringComparer.OrdinalIgnoreCase);
 
         Assert.AreEqual(2, sut.Count);

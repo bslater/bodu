@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmHelperTests.Body.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -133,7 +133,8 @@ public sealed class HashAlgorithmHelperBodyTests
     /// <see cref="HashAlgorithm.TryHashFinal" />. The mismatch forces the helper through the trim
     /// branch when computing a hash via the span overload.
     /// </summary>
-    private sealed class ShortHashAlgorithm : HashAlgorithm
+    private sealed class ShortHashAlgorithm
+        : HashAlgorithm
     {
         public const int ActualBytes = 8;
 
@@ -170,7 +171,8 @@ public sealed class HashAlgorithmHelperBodyTests
     /// <see cref="HashAlgorithm.TryComputeHash(ReadOnlySpan{byte}, Span{byte}, out int)" />, and the helper
     /// propagates that exception unchanged.
     /// </summary>
-    private sealed class RefusingHashAlgorithm : HashAlgorithm
+    private sealed class RefusingHashAlgorithm
+        : HashAlgorithm
     {
         public RefusingHashAlgorithm()
         {

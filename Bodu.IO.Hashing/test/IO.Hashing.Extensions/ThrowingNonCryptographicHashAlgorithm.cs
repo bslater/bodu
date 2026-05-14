@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowingNonCryptographicHashAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,8 @@ namespace Bodu.IO.Hashing.Extensions;
 /// is consistently <see cref="Append(ReadOnlySpan{byte})" />, which is the first call sites that operate on user
 /// input.
 /// </remarks>
-public sealed class ThrowingNonCryptographicHashAlgorithm : NonCryptographicHashAlgorithm
+public sealed class ThrowingNonCryptographicHashAlgorithm
+    : NonCryptographicHashAlgorithm
 {
     /// <summary>
     /// Initialises a new instance of <see cref="ThrowingNonCryptographicHashAlgorithm" /> with a 4-byte output

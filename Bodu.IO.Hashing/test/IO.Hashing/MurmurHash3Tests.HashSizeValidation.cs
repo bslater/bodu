@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MurmurHash3Tests.HashSizeValidation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -73,7 +73,8 @@ public sealed class MurmurHash3HashSizeValidationTests
     /// arbitrary hash sizes. The parameterless public constructor satisfies the CRTP <c>new()</c> constraint and
     /// is never invoked directly by tests.
     /// </summary>
-    private sealed class TestMurmurHash3 : MurmurHash3<TestMurmurHash3>
+    private sealed class TestMurmurHash3
+        : MurmurHash3<TestMurmurHash3>
     {
         public TestMurmurHash3()
             : base(32)

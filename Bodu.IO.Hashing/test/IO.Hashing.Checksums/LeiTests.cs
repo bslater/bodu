@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LeiTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Contains unit tests for the <see cref="Lei" /> check-code algorithm.
 /// </summary>
 [TestClass]
-public sealed class LeiTests : MultiCharCheckDigitAlgorithmTests<LeiTests, Lei>
+public sealed class LeiTests
+    : MultiCharCheckDigitAlgorithmTests<LeiTests, Lei>
 {
     /// <inheritdoc />
     protected override MultiCharCheckDigitAlgorithmSpecification GetSpecification() => new()

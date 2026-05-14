@@ -16,22 +16,30 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <see cref="NotableDatePluginAttribute" />, and <see cref="PluginActivationException" /> when the declared plugin type fails
 /// to instantiate.
 /// </remarks>
-public class NotableDatePluginException : Exception
+public class NotableDatePluginException
+    : Exception
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDatePluginException" /> class with a message.
     /// </summary>
     /// <param name="message">The exception message.</param>
-    public NotableDatePluginException(string message) : base(message)
-    {
-    }
+    public NotableDatePluginException(string message)
+        : base(message)
+    { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDatePluginException" /> class with a message and an inner exception.
     /// </summary>
     /// <param name="message">The exception message.</param>
     /// <param name="innerException">The underlying cause.</param>
-    public NotableDatePluginException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
+    public NotableDatePluginException(string message, Exception innerException)
+        : base(message, innerException)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDatePluginException" /> class.
+    /// </summary>
+    public NotableDatePluginException()
+        : base()
+    { }
 }

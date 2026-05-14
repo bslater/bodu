@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfSpanLengthIsInsufficient.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,9 +29,9 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthIsInsufficient_TwoArg_WhenInvokedWithVariousInputs_ShouldFollowContract(
         string testName, int spanLength, int minimum, bool expectsException)
     {
-        int[] buffer = new int[spanLength];
+        var buffer = new int[spanLength];
         Type? expected = expectsException ? typeof(ArgumentException) : null;
-        string? expectedParam = expectsException ? "span" : null;
+        var expectedParam = expectsException ? "span" : null;
 
         AssertGuard(
             $"Span<T>: {testName}",

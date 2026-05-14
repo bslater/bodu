@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XtsModeTransformTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.Security.Cryptography;
 /// Tests for <see cref="XtsModeTransform" /> (IEEE Std 1619-2007 / NIST SP 800-38E).
 /// </summary>
 [TestClass]
-public sealed partial class XtsModeTransformTests : BlockCipherModeTests<XtsModeTransform>
+public sealed partial class XtsModeTransformTests
+    : BlockCipherModeTests<XtsModeTransform>
 {
     // XTS requires 16-byte blocks (AES) and uses a tweak (sector number) instead of an IV.
     protected override int ExpectedBlockSize => 16;

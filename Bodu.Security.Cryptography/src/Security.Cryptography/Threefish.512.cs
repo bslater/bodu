@@ -57,7 +57,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
-/// <seealso cref="Threefish{T}"/>
+/// <seealso cref="Threefish"/>
 /// <seealso cref="Threefish256"/>
 /// <seealso cref="Threefish1024"/>
 /// <seealso cref="Threefish512Cipher"/>

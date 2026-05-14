@@ -59,7 +59,8 @@ namespace Bodu.Globalization.Calendar;
 ///     new[] { typeof(MyDataPack).Assembly, typeof(NotableDateService).Assembly });
 /// </code>
 /// </example>
-public sealed class XmlResourceNotableDateRuleProvider : NotableDateRuleResourceProviderBase
+public sealed class XmlResourceNotableDateRuleProvider
+    : NotableDateRuleResourceProviderBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="XmlResourceNotableDateRuleProvider" /> class that resolves embedded resources

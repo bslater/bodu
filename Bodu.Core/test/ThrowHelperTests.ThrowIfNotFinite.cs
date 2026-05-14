@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfNotFinite.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,11 +32,11 @@ public partial class ThrowHelperTests
         string testName, double value, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfNotFinite(value, "value"),
+            () => ThrowHelper.ThrowIfNotFinite(value, nameof(value)),
             expected,
             expectedParam);
     }
@@ -60,11 +60,11 @@ public partial class ThrowHelperTests
         string testName, float value, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfNotFinite(value, "value"),
+            () => ThrowHelper.ThrowIfNotFinite(value, nameof(value)),
             expected,
             expectedParam);
     }
