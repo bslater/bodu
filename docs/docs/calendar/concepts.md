@@ -35,6 +35,8 @@ A rule produces zero, one, or many resolved dates per year, depending on its str
 
 ## Nominal date vs. observed date
 
+![Nominal date vs. observed date — Christmas Day 2027 worked example](../../images/diagrams/calendar-nominal-vs-observed.svg)
+
 The **nominal date** is what the resolution strategy computes from the rule before any adjustment runs — e.g. *25 December* for Christmas Day.
 
 The **observed date** is what the adjustment pipeline emits — e.g. *Monday 27 December 2027* when Christmas falls on a Saturday and a weekend-rollover adjustment relocates it.
@@ -75,6 +77,8 @@ A **collision** occurs when two rules resolve to the same date for the same terr
 See [Building and extending the service](../../guides/calendar/building-the-service.md) for the registry contract.
 
 ## Territory
+
+![TerritoryCode containment hierarchy](../../images/diagrams/calendar-territory-containment.svg)
 
 A <xref:Bodu.Globalization.Calendar.TerritoryCode> is an ISO 3166-1 alpha-2 country code with an optional ISO 3166-2 subdivision — `AU`, `AU-NSW`, `GB-ENG`, `US-CA`. Territory codes are **hierarchical**: a parent contains all of its subdivisions.
 

@@ -53,6 +53,8 @@ The library normalises whitespace and casing during parsing, so `"  au-nsw  "` a
 
 ## Containment
 
+![TerritoryCode containment hierarchy](../../images/diagrams/calendar-territory-containment.svg)
+
 `TerritoryCode.Contains(other)` returns `true` when `other` is within the scope of the current territory:
 
 | Receiver | Argument | `Contains` returns |

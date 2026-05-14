@@ -13,6 +13,8 @@ For where adjustments sit in the overall resolution process, see [The resolution
 
 ## Nominal date vs. observed date
 
+![Nominal date vs. observed date — Christmas Day 2027 worked example](../../images/diagrams/calendar-nominal-vs-observed.svg)
+
 Two terms appear throughout this page and the wider documentation:
 
 - **Nominal date** — what the rule's resolution strategy computes, before any adjustment runs. For Christmas Day this is *25 December*; for Easter Monday it is *Easter Sunday + 1 day*. The nominal date depends only on the rule and the year.
@@ -139,7 +141,7 @@ new ObservanceAdjustment
 
 ### `IfWeekend`
 
-Fires when the anchor falls on a weekend day as defined by the service's configured
+Fires when the nominal date falls on a weekend day as defined by the service's configured
 `CalendarWeekendDefinition`. For most territories this is Saturday or Sunday, but the
 weekend definition is configurable — Friday/Saturday for some Middle Eastern territories.
 
@@ -158,7 +160,7 @@ new ObservanceAdjustment
 
 ### `IfWeekday`
 
-Fires when the anchor falls on a weekday. Less common; useful for rules where the weekday
+Fires when the nominal date falls on a weekday. Less common; useful for rules where the weekday
 occurrence requires different handling than the weekend occurrence. Can also be used to
 schedule a secondary event on the working-day that precedes or follows a weekend date.
 
@@ -173,7 +175,7 @@ new ObservanceAdjustment
 
 ### `IfDayOfWeek`
 
-Fires when the anchor falls on the specific weekday identified by the `DayOfWeek` field.
+Fires when the nominal date falls on the specific weekday identified by the `DayOfWeek` field.
 Use this to model jurisdiction-specific rules, such as an observance that moves only when it
 falls on a Tuesday, or a date that absorbs a neighbouring holiday if it lands on a Monday.
 
@@ -197,7 +199,7 @@ new ObservanceAdjustment
 
 ### `IfNonWorkingDay`
 
-Fires when the anchor is already a non-working day — that is, either a weekend or a date
+Fires when the nominal date is already a non-working day — that is, either a weekend or a date
 marked `IsNonWorkingDay = true` by another rule that has already been resolved for the same
 year and territory. This trigger is evaluated using the live generation context, so it can
 see dates resolved earlier in the same pass.
@@ -248,7 +250,7 @@ new ObservanceAdjustment
 
 ### `IfNthOccurrenceInMonth`
 
-Fires when the anchor falls on the *n*th occurrence of the given weekday within its month.
+Fires when the nominal date falls on the *n*th occurrence of the given weekday within its month.
 Requires both `DayOfWeek` and `WeekOrdinal`.
 
 ```csharp
@@ -266,7 +268,7 @@ new ObservanceAdjustment
 
 ### `IfBeforeFixedDate` / `IfAfterFixedDate`
 
-Fire when the anchor falls before or after a specified calendar date. The comparison date is
+Fire when the nominal date falls before or after a specified calendar date. The comparison date is
 provided via `ComparisonDate`. Useful for rules that change behaviour around a known
 boundary, such as a legislative change that took effect on a specific date.
 
@@ -293,10 +295,11 @@ new ObservanceAdjustment
 
 ### `Custom`
 
-Delegates trigger evaluation and/or action to a registered `IAdjustmentHandler`. Use this
+Delegates trigger evaluation and / or action to a registered `IAdjustmentHandler`. Use this
 when the built-in triggers and actions cannot express the required logic. The handler receives
-a full `AdjustmentHandlerContext` including access to the generation context for non-working-
-day lookups and rule resolution. See [Custom IAdjustmentHandler](#custom-iadjustmenthandler) below.
+a full `AdjustmentHandlerContext` including access to the generation context for non-working-day
+lookups and rule resolution. The handler operates on the nominal date and returns the observed date.
+See [Custom IAdjustmentHandler](#custom-iadjustmenthandler) below.
 
 ```csharp
 new ObservanceAdjustment
@@ -324,13 +327,13 @@ new ObservanceAdjustment
 
 ### `None`
 
-Records that the trigger fired but takes no action. The anchor date is unchanged.
-`WasAdjusted` remains `false`. Useful for audit logging or when only the trigger-match fact
-matters.
+Records that the trigger fired but takes no action. The nominal date is preserved as the
+observed date. `WasAdjusted` remains `false`. Useful for audit logging or when only the
+trigger-match fact matters.
 
 ### `AddDays`
 
-Shifts the anchor by `OffsetDays` calendar days. Positive values move forward; negative
+Shifts the nominal date by `OffsetDays` calendar days. Positive values move forward; negative
 values move backward. No weekday or working-day semantics — the result may land on a weekend
 or another holiday.
 
@@ -346,9 +349,9 @@ new ObservanceAdjustment
 
 ### `MoveToNextWeekday`
 
-Advances the anchor to the next calendar day that is not a weekend (as defined by
-`CalendarWeekendDefinition`). If the anchor is already a weekday this action is a no-op —
-trigger conditions should ensure it only fires when the anchor is on a weekend.
+Advances the nominal date to the next calendar day that is not a weekend (as defined by
+`CalendarWeekendDefinition`). If the nominal date is already a weekday this action is a no-op —
+trigger conditions should ensure it only fires when the nominal date is on a weekend.
 
 Saturday advances to Monday; Sunday advances to Monday (unless Monday is also a weekend,
 which can occur for non-standard weekend definitions).
@@ -371,7 +374,7 @@ Monday (Christmas substitute) to land on Tuesday.
 
 ### `ReplaceWithNamedDate`
 
-Replaces the anchor with the resolved date of another rule identified by `TargetRuleName`.
+Replaces the nominal date with the resolved date of another rule identified by `TargetRuleName`.
 The named rule must have been resolved already (it must appear earlier in the effective rule
 list). Use this when one event is defined as "the same day as" another, rather than a fixed
 calendar date.
@@ -451,8 +454,8 @@ ImmutableArray.Create(
 
 ### MaxAdjustmentReachDays
 
-`MaxAdjustmentReachDays` caps how many days the anchor may be moved from its raw position.
-When set to a positive value, the adjustment is not applied if the resulting date would
+`MaxAdjustmentReachDays` caps how many days the observed date may be moved from the nominal
+date. When set to a positive value, the adjustment is not applied if the resulting date would
 exceed the cap. This prevents pathological cases near month or year boundaries where a
 `MoveToNextNonWorkingDay` action would skip into the wrong month.
 
@@ -587,8 +590,8 @@ For 2027 (Christmas on Saturday):
 
 | Date | Event | Adjustment |
 |---|---|---|
-| 25 Dec (Sat) | Christmas Day raw anchor | `IfWeekend → MoveToNextWeekday` → moves to Mon 27 Dec |
-| 26 Dec (Sun) | Boxing Day raw anchor | `IfNonWorkingDay → MoveToNextNonWorkingDay`: Sun is non-working → skip to Mon → Mon 27 is already non-working (Christmas substitute) → skip to Tue 28 Dec |
+| 25 Dec (Sat) | Christmas Day nominal date | `IfWeekend → MoveToNextWeekday` → observed Mon 27 Dec |
+| 26 Dec (Sun) | Boxing Day nominal date | `IfNonWorkingDay → MoveToNextNonWorkingDay`: Sun is non-working → skip to Mon → Mon 27 is already non-working (Christmas substitute) → observed Tue 28 Dec |
 
 ### Easter Monday collision with another holiday
 
@@ -623,7 +626,7 @@ public interface IAdjustmentHandler
 
 | Property | Type | Description |
 |---|---|---|
-| `CurrentDate` | `DateTime` | The anchor date to evaluate. |
+| `CurrentDate` | `DateTime` | The nominal date to evaluate (or the current candidate when chained handlers run). |
 | `Rule` | `NotableDateRule` | The rule being resolved. |
 | `Adjustment` | `ObservanceAdjustment` | The adjustment being evaluated. |
 | `TerritoryCode` | `TerritoryCode?` | The territory being resolved for. |

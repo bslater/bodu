@@ -6,7 +6,7 @@ title: Bodu.Globalization.Calendar guides
 
 Recipe-style walk-throughs for **Bodu.Globalization.Calendar**, organized by namespace.
 
-If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) and the [getting-started page](../../docs/calendar/getting-started.md). For the auto-generated API reference, see the [Bodu.Globalization.Calendar namespace page](../../apidoc/Bodu.Globalization.Calendar.md).
+If you are new to the library, start with the [introduction](../../docs/calendar/index.md), the [Core concepts](../../docs/calendar/concepts.md) glossary, and the [getting-started page](../../docs/calendar/getting-started.md). For the auto-generated API reference, see the [Bodu.Globalization.Calendar namespace page](../../apidoc/Bodu.Globalization.Calendar.md).
 
 ## How the library works
 
@@ -114,6 +114,7 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 
 ## Where to go next
 
-- [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) — namespaces, headline types, scenarios.
+- [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) — mental model, headline types, scenarios.
+- [Core concepts](../../docs/calendar/concepts.md) — vocabulary used throughout these guides.
 - [Bodu.Globalization.Calendar getting started](../../docs/calendar/getting-started.md) — install and minimal samples.
 - [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full namespace overview.
