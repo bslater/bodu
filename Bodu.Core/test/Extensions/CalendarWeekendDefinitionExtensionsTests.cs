@@ -103,4 +103,58 @@ public class CalendarWeekendDefinitionExtensionsTests
 
         Assert.AreEqual(CalendarWeekendDefinition.Custom, oddPattern.ToCalendarWeekendDefinition());
     }
+
+    /// <summary>
+    /// Verifies that the <see cref="IWeekendDefinitionProvider" /> overload of
+    /// <see cref="CalendarWeekendDefinitionExtensions.ToWeekPattern(IWeekendDefinitionProvider)" /> includes the
+    /// non-weekend days returned by the provider in the resulting <see cref="WeekPattern" /> — exercising both
+    /// the included and excluded branches of the inner loop.
+    /// </summary>
+    [TestMethod]
+    public void ToWeekPattern_WhenProviderReturnsMixedWeekendMask_ShouldIncludeNonWeekendDays()
+    {
+        // Provider treats Friday and Saturday as the weekend; all others are working days.
+        IWeekendDefinitionProvider provider = new TestWeekendProvider(DayOfWeek.Friday, DayOfWeek.Saturday);
+
+        WeekPattern pattern = provider.ToWeekPattern();
+
+        Assert.IsTrue(pattern.Contains(DayOfWeek.Sunday));
+        Assert.IsTrue(pattern.Contains(DayOfWeek.Monday));
+        Assert.IsTrue(pattern.Contains(DayOfWeek.Tuesday));
+        Assert.IsTrue(pattern.Contains(DayOfWeek.Wednesday));
+        Assert.IsTrue(pattern.Contains(DayOfWeek.Thursday));
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Saturday));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="IWeekendDefinitionProvider" /> overload throws
+    /// <see cref="ArgumentNullException" /> when the provider is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ToWeekPattern_WhenProviderIsNull_ShouldThrowArgumentNullException()
+    {
+        IWeekendDefinitionProvider? provider = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = CalendarWeekendDefinitionExtensions.ToWeekPattern(provider!);
+        });
+    }
+
+    /// <summary>
+    /// Lightweight test provider whose <see cref="IsWeekend(DayOfWeek)" /> simply consults a configured
+    /// <see cref="HashSet{T}" /> of weekend days.
+    /// </summary>
+    private sealed class TestWeekendProvider : IWeekendDefinitionProvider
+    {
+        private readonly HashSet<DayOfWeek> _weekendDays;
+
+        public TestWeekendProvider(params DayOfWeek[] weekendDays)
+        {
+            _weekendDays = new HashSet<DayOfWeek>(weekendDays);
+        }
+
+        public bool IsWeekend(DayOfWeek dayOfWeek) => _weekendDays.Contains(dayOfWeek);
+    }
 }
