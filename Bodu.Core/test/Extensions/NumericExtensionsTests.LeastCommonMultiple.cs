@@ -292,24 +292,67 @@ public partial class NumericExtensionsTests
         });
 
     /// <summary>
-    /// Verifies that the <see cref="short"/> array overload rejects a negative element.
+    /// Verifies that the <see cref="short"/> array overload rejects a negative element regardless of position.
     /// </summary>
-    [TestMethod]
-    public void LeastCommonMultiple_ShortArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    [DataTestMethod]
+    [DynamicData(nameof(LcmNegativeShortArrays))]
+    public void LeastCommonMultiple_ShortArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(short[] values) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = new short[] { 6, -2, 8 }.LeastCommonMultiple();
+            _ = values.LeastCommonMultiple();
         });
 
     /// <summary>
-    /// Verifies that the <see cref="long"/> array overload rejects a negative element.
+    /// Provides <see cref="short"/> arrays where the negative element appears at the first position and
+    /// at a subsequent position. Each variant exercises a distinct throw site in the implementation.
     /// </summary>
-    [TestMethod]
-    public void LeastCommonMultiple_LongArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException() =>
+    public static IEnumerable<object[]> LcmNegativeShortArrays =>
+    [
+        new object[] { new short[] { -1, 6, 8 } },
+        new object[] { new short[] { 6, -2, 8 } },
+    ];
+
+    /// <summary>
+    /// Verifies that the <see cref="int"/> array overload rejects a negative element regardless of position.
+    /// </summary>
+    [DataTestMethod]
+    [DynamicData(nameof(LcmNegativeIntArrays))]
+    public void LeastCommonMultiple_IntArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(int[] values) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = new long[] { 6L, -2L, 8L }.LeastCommonMultiple();
+            _ = values.LeastCommonMultiple();
         });
+
+    /// <summary>
+    /// Provides <see cref="int"/> arrays where the negative element appears at the first position and
+    /// at a subsequent position. Each variant exercises a distinct throw site in the implementation.
+    /// </summary>
+    public static IEnumerable<object[]> LcmNegativeIntArrays =>
+    [
+        new object[] { new int[] { -1, 6, 8 } },
+        new object[] { new int[] { 6, -2, 8 } },
+    ];
+
+    /// <summary>
+    /// Verifies that the <see cref="long"/> array overload rejects a negative element regardless of position.
+    /// </summary>
+    [DataTestMethod]
+    [DynamicData(nameof(LcmNegativeLongArrays))]
+    public void LeastCommonMultiple_LongArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(long[] values) =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = values.LeastCommonMultiple();
+        });
+
+    /// <summary>
+    /// Provides <see cref="long"/> arrays where the negative element appears at the first position and
+    /// at a subsequent position. Each variant exercises a distinct throw site in the implementation.
+    /// </summary>
+    public static IEnumerable<object[]> LcmNegativeLongArrays =>
+    [
+        new object[] { new long[] { -1L, 6L, 8L } },
+        new object[] { new long[] { 6L, -2L, 8L } },
+    ];
 
     /// <summary>
     /// Verifies that the <see cref="int"/> array overload returns the LCM of every element.

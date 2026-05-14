@@ -57,6 +57,13 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(value, value.ReverseDigits().ReverseDigits());
 
     /// <summary>
+    /// Verifies that <c>RotateDigitsLeft</c> on <see cref="ushort"/> with default count rotates one position to the left.
+    /// </summary>
+    [TestMethod]
+    public void RotateDigitsLeft_UShort_DefaultCount_ShouldRotateOneLeft() =>
+        Assert.AreEqual((ushort)23451, ((ushort)12345).RotateDigitsLeft());
+
+    /// <summary>
     /// Verifies that <c>RotateDigitsLeft</c> on <see cref="ushort"/> rotates the decimal digits.
     /// </summary>
     [DataTestMethod]
@@ -65,6 +72,13 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)12345, 5, (ushort)12345)]
     public void RotateDigitsLeft_UShort_ShouldReturnExpected(ushort input, int count, ushort expected) =>
         Assert.AreEqual(expected, input.RotateDigitsLeft(count));
+
+    /// <summary>
+    /// Verifies that <c>RotateDigitsLeft</c> on <see cref="uint"/> with default count rotates one position to the left.
+    /// </summary>
+    [TestMethod]
+    public void RotateDigitsLeft_UInt_DefaultCount_ShouldRotateOneLeft() =>
+        Assert.AreEqual(23451u, 12345u.RotateDigitsLeft());
 
     /// <summary>
     /// Verifies that <c>RotateDigitsLeft</c> on <see cref="uint"/> rotates the decimal digits.
@@ -107,6 +121,13 @@ public partial class NumericExtensionsTests
         });
 
     /// <summary>
+    /// Verifies that <c>RotateDigitsRight</c> on <see cref="ushort"/> with default count rotates one position to the right.
+    /// </summary>
+    [TestMethod]
+    public void RotateDigitsRight_UShort_DefaultCount_ShouldRotateOneRight() =>
+        Assert.AreEqual((ushort)51234, ((ushort)12345).RotateDigitsRight());
+
+    /// <summary>
     /// Verifies that <c>RotateDigitsRight</c> on <see cref="ushort"/> rotates the decimal digits.
     /// </summary>
     [DataTestMethod]
@@ -115,6 +136,13 @@ public partial class NumericExtensionsTests
     [DataRow((ushort)12345, 5, (ushort)12345)]
     public void RotateDigitsRight_UShort_ShouldReturnExpected(ushort input, int count, ushort expected) =>
         Assert.AreEqual(expected, input.RotateDigitsRight(count));
+
+    /// <summary>
+    /// Verifies that <c>RotateDigitsRight</c> on <see cref="uint"/> with default count rotates one position to the right.
+    /// </summary>
+    [TestMethod]
+    public void RotateDigitsRight_UInt_DefaultCount_ShouldRotateOneRight() =>
+        Assert.AreEqual(51234u, 12345u.RotateDigitsRight());
 
     /// <summary>
     /// Verifies that <c>RotateDigitsRight</c> on <see cref="uint"/> rotates the decimal digits.

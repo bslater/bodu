@@ -211,6 +211,25 @@ public sealed class IListExtensionsTests_LastIndexOf
     }
 
     /// <summary>
+    /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when the list is
+    /// empty and <paramref name="startIndex"/> is anything other than <c>-1</c>, exercising the empty-list
+    /// branch of the validator.
+    /// </summary>
+    [DataTestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(-2)]
+    public void LastIndexOf_WhenListIsEmptyAndStartIndexIsNotMinusOne_ShouldThrowArgumentOutOfRangeException(int startIndex)
+    {
+        IList<int> list = new List<int>();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.LastIndexOf(x => x == 1, startIndex);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <c>LastIndexOf</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
     /// </summary>
     [TestMethod]

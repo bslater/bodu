@@ -198,12 +198,28 @@ public partial class ArrayExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <c>ToMatrix</c> throws <see cref="ArgumentNullException"/> when any inner array is <see langword="null"/>.
+    /// Verifies that <c>ToMatrix</c> throws <see cref="ArgumentNullException"/> when a non-first inner
+    /// array is <see langword="null"/>.
     /// </summary>
     [TestMethod]
     public void ToMatrix_WhenInnerArrayIsNull_ShouldThrowArgumentNullException()
     {
         int[][] source = { new[] { 1, 2 }, null! };
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.ToMatrix(false);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>ToMatrix</c> throws <see cref="ArgumentNullException"/> when the first inner
+    /// array is <see langword="null"/>, exercising the index-0 null check separately from the loop.
+    /// </summary>
+    [TestMethod]
+    public void ToMatrix_WhenFirstInnerArrayIsNull_ShouldThrowArgumentNullException()
+    {
+        int[][] source = { null!, new[] { 1, 2 } };
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {

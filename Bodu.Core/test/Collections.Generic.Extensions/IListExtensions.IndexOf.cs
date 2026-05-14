@@ -256,6 +256,36 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
+    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException"/>
+    /// when <paramref name="index"/> is negative, exercising the index-validation branch of that overload.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_ThreeArg_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.IndexOf(x => x == 1, -1, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException"/>
+    /// when <paramref name="index"/> exceeds <see cref="ICollection{T}.Count"/>.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_ThreeArg_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.IndexOf(x => x == 1, 10, 0);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="count"/> is negative.
     /// </summary>
     [TestMethod]
