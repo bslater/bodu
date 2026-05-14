@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSet.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,8 +39,10 @@ public sealed partial class IndexedSet<T>
     : IList<T>, IReadOnlyList<T>
     where T : notnull
 {
+    /// <summary>The shared ordered-set storage engine that preserves insertion order and enforces uniqueness.</summary>
     private readonly OrderedSetStorage<T> _storage;
 
+    /// <summary>Gets the backing storage exposed to debugger proxy views.</summary>
     [DebuggerBrowsable(DebuggerBrowsableState.Never)]
     internal OrderedSetStorage<T> DebuggerStorage => _storage;
 

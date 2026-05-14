@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorage.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,11 +39,22 @@ internal sealed class OrderedSetStorage<T>
     private const int MaxLoadFactorNumerator = 3;
     private const int MaxLoadFactorDenominator = 4;
 
+    /// <summary>The equality comparer used for element identity and hash-table lookup.</summary>
     internal readonly IEqualityComparer<T> _comparer;
+
+    /// <summary>The one-based bucket heads used by the open-addressing hash table.</summary>
     internal int[] _buckets;
+
+    /// <summary>The one-based chain links for entries stored in each bucket.</summary>
     internal int[] _next;
+
+    /// <summary>The contiguous element storage that preserves insertion order.</summary>
     internal T[] _items;
+
+    /// <summary>The number of active elements stored in <see cref="_items" />.</summary>
     internal int _count;
+
+    /// <summary>The mutation version used to detect changes during enumeration.</summary>
     internal int _version;
 
     /// <summary>
