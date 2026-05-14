@@ -132,7 +132,7 @@ public sealed class NotableDateService : INotableDateService
     /// <param name="workingWeek">The working-week pattern used when classifying dates.</param>
     /// <remarks>
     /// Equivalent to the parameterless constructor but with a caller-supplied working week. Use the full
-    /// <see cref="NotableDateService(IEnumerable{INotableDateRuleProvider}, WeekPattern, IResourcePathResolver?, IEnumerable{INotableDateRuleOverrideProvider}?, INotableDateAlgorithmRegistry?, IAdjustmentHandlerRegistry?, INotableDateCollisionResolver?, INotableDateNameLocalizer?, IEnumerable{Plugins.INotableDatePlugin}?)" />
+    /// <see cref="NotableDateService(IEnumerable{INotableDateRuleProvider}, WeekPattern, NotableDateServiceOptions?)" />
     /// constructor when region-specific rule providers are required.
     /// </remarks>
     public NotableDateService(WeekPattern workingWeek)
@@ -240,7 +240,7 @@ public sealed class NotableDateService : INotableDateService
         WeekPattern workingWeek,
         NotableDateServiceOptions? options = null)
     {
-        if (ruleProviders is null) throw new ArgumentNullException(nameof(ruleProviders));
+        ThrowHelper.ThrowIfNull(ruleProviders);
 
         NotableDateServiceOptions opts = options ?? new NotableDateServiceOptions();
 
