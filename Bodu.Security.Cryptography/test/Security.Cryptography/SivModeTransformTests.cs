@@ -40,9 +40,9 @@ public sealed partial class SivModeTransformTests
     // that arises when a simple XOR cipher is used for both S2V (K1) and CTR (K2): with any
     // XOR cipher, tampering the SIV causes CTR to produce a new "plaintext" whose S2V equals
     // the tampered SIV, so FixedTimeEquals always passes and no CryptographicException is thrown.
-    private static readonly byte[] S2vTestKey =
+    private static readonly byte[] s_s2vTestKey =
         Convert.FromHexString("fffefdfcfbfaf9f8f7f6f5f4f3f2f1f0"); // K1 — matches RFC 5297 A.1
-    private static readonly byte[] CtrTestKey =
+    private static readonly byte[] s_ctrTestKey =
         Convert.FromHexString("f0f1f2f3f4f5f6f7f8f9fafbfcfdfeff"); // K2 — matches RFC 5297 A.1
 
     /// <summary>
@@ -53,7 +53,7 @@ public sealed partial class SivModeTransformTests
     /// </summary>
     protected override SivModeTransform CreateTransform(IBlockCipher cipher, byte[] iv)
         => new SivModeTransform(
-            s2vCipher: new AesBlockCipherFixture(S2vTestKey),
-            ctrCipher: new AesBlockCipherFixture(CtrTestKey),
+            s2vCipher: new AesBlockCipherFixture(s_s2vTestKey),
+            ctrCipher: new AesBlockCipherFixture(s_ctrTestKey),
             iv: iv);
 }
