@@ -86,6 +86,17 @@ public sealed class IbanTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Iban.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose country-code prefix
+    /// contains a non-alphanumeric character. Exercises the rearrangement loop's second pass when the prefix
+    /// positions fail <c>TryFold</c>.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenCountryCodePrefixContainsInvalidCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Iban.IsValid("@B82WEST12345698765432".AsSpan()));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Iban.Compute(ReadOnlySpan{char})" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the body contains a non-alphanumeric character.
     /// </summary>

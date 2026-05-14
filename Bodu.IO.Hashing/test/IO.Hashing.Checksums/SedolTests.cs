@@ -12,7 +12,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Contains unit tests for the <see cref="Sedol" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class SedolTests
+public sealed partial class SedolTests
     : AlphanumericCheckDigitAlgorithmTests<SedolTests, Sedol>
 {
     /// <inheritdoc />
