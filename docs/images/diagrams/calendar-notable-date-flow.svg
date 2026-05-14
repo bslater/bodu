@@ -1,0 +1,113 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="ndf-t ndf-d">
+  <title id="ndf-t">Notable date flow — from authored rule to consumer query</title>
+  <desc id="ndf-d">The seven-stage NotableDateService pipeline. A rule source supplies a NotableDateRule, the resolver dispatches it to a strategy (Fixed, DayOfWeekInMonth, OffsetFromAnchor, or Algorithm) that yields a nominal date, the adjustment pipeline applies ObservanceAdjustment rules to produce the observed date, the result is cached as a resolved NotableDate, and consumers query it through GetNotableDates, IsWorkingDay, and AddWorkingDays.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub   { fill: #CBD5E1; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 9.5px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .stage { fill: #94A3B8; font: 700 9px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; letter-spacing: 1px; }
+      .b1    { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .b2    { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .b3    { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .b4    { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .b5    { fill: #1F2937; stroke: #94A3B8; stroke-width: 1.5; }
+      .w     { stroke: #CBD5E1; stroke-width: 1.6; fill: none; }
+    </style>
+    <marker id="ndf-arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="280"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="260" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Notable date flow — from authored rule to consumer query</text>
+
+    <!-- ============ Stage 1: Rule source ============ -->
+    <g transform="translate(20 60)">
+      <text class="stage" x="60" y="0">STAGE 1</text>
+      <rect class="b1" width="120" height="44" y="8" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="60" y="34">Rule source</text>
+      <text class="sub" x="60" y="74">Loads recipes</text>
+      <text class="sub" x="60" y="88">from XML, JSON,</text>
+      <text class="sub" x="60" y="102">data packs,</text>
+      <text class="sub" x="60" y="116">or in-code.</text>
+    </g>
+
+    <!-- ============ Stage 2: NotableDateRule ============ -->
+    <g transform="translate(150 60)">
+      <text class="stage" x="60" y="0">STAGE 2</text>
+      <rect class="b2" width="120" height="44" y="8" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="60" y="34">NotableDateRule</text>
+      <text class="sub" x="60" y="74">Year-independent</text>
+      <text class="sub" x="60" y="88">authored recipe.</text>
+      <text class="sub" x="60" y="102">Immutable; carries</text>
+      <text class="sub" x="60" y="116">strategy + scope.</text>
+    </g>
+
+    <!-- ============ Stage 3: Resolution strategy ============ -->
+    <g transform="translate(280 60)">
+      <text class="stage" x="60" y="0">STAGE 3</text>
+      <rect class="b2" width="120" height="44" y="8" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="60" y="34">Resolution</text>
+      <text class="sub" x="60" y="74">Dispatched to</text>
+      <text class="sub" x="60" y="88">Fixed · DayOfWeek</text>
+      <text class="sub" x="60" y="102">Offset · Algorithm.</text>
+      <text class="mut" x="60" y="120">→ nominal date</text>
+    </g>
+
+    <!-- ============ Stage 4: Adjustment ============ -->
+    <g transform="translate(410 60)">
+      <text class="stage" x="60" y="0">STAGE 4</text>
+      <rect class="b3" width="120" height="44" y="8" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="60" y="34">Adjustment</text>
+      <text class="sub" x="60" y="74">ObservanceAdjust.</text>
+      <text class="sub" x="60" y="88">triggers fire; date</text>
+      <text class="sub" x="60" y="102">may shift forward.</text>
+      <text class="mut" x="60" y="120">→ observed date</text>
+    </g>
+
+    <!-- ============ Stage 5: Resolved NotableDate ============ -->
+    <g transform="translate(540 60)">
+      <text class="stage" x="60" y="0">STAGE 5</text>
+      <rect class="b4" width="120" height="44" y="8" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="60" y="34">NotableDate</text>
+      <text class="sub" x="60" y="74">Immutable result:</text>
+      <text class="sub" x="60" y="88">Date · Name ·</text>
+      <text class="sub" x="60" y="102">Category · Territory.</text>
+      <text class="mut" x="60" y="120">Cached per year.</text>
+    </g>
+
+    <!-- ============ Stage 6: Consumer query ============ -->
+    <g transform="translate(670 60)">
+      <text class="stage" x="60" y="0">STAGE 6</text>
+      <rect class="b5" width="120" height="44" y="8" rx="6"/>
+      <text class="lbl" fill="#CBD5E1" x="60" y="34">Consumer query</text>
+      <text class="sub" x="60" y="74">GetNotableDates,</text>
+      <text class="sub" x="60" y="88">IsWorkingDay,</text>
+      <text class="sub" x="60" y="102">AddWorkingDays,</text>
+      <text class="sub" x="60" y="116">filters · ranges.</text>
+    </g>
+
+    <!-- ============ Arrows between stages (at box vertical midpoint y=90) ============ -->
+    <line class="w" x1="142" y1="90" x2="148" y2="90" marker-end="url(#ndf-arr)"/>
+    <line class="w" x1="272" y1="90" x2="278" y2="90" marker-end="url(#ndf-arr)"/>
+    <line class="w" x1="402" y1="90" x2="408" y2="90" marker-end="url(#ndf-arr)"/>
+    <line class="w" x1="532" y1="90" x2="538" y2="90" marker-end="url(#ndf-arr)"/>
+    <line class="w" x1="662" y1="90" x2="668" y2="90" marker-end="url(#ndf-arr)"/>
+
+    <!-- Footer note -->
+    <text class="mut" x="400" y="200" text-anchor="middle" style="text-anchor: middle">When an adjustment fires, NotableDate.WasAdjusted = true and NotableDate.AdjustmentReason preserves the original nominal date, trigger, and action.</text>
+    <text class="mut" x="400" y="218" text-anchor="middle" style="text-anchor: middle">Rules are authored once. Resolution and adjustment run per year, per territory. Resolved NotableDates are cached and returned by GetNotableDates.</text>
+    <text class="mut" x="400" y="240" text-anchor="middle" style="text-anchor: middle; fill: #64748B">See NotableDateService for the orchestrator; INotableDateRuleProvider, ObservanceAdjustment, and NotableDateFilter for the moving parts.</text>
+  </g>
+</svg>

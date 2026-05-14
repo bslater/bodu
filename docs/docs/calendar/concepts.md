@@ -10,18 +10,9 @@ For the high-level shape of the library and the resolution pipeline diagram, sta
 
 ## The pipeline in one line
 
-```
-Rule source  →  NotableDateRule  →  Resolution strategy  →  Nominal date
-                                                                │
-                                                                ▼
-                                                          Adjustment pipeline
-                                                                │
-                                                                ▼
-                                                          Resolved NotableDate
-                                                                │
-                                                                ▼
-                                          Query / filter / working-day arithmetic
-```
+![Notable date flow — six stages from authored rule to consumer query](../../images/diagrams/calendar-notable-date-flow.svg)
+
+The pipeline reads left to right. A **rule source** loads authored recipes; each recipe is a **`NotableDateRule`**; the **resolution strategy** turns the rule into a *nominal date* for the requested year; the **adjustment pipeline** may shift it to an *observed date*; the result is cached as a **resolved `NotableDate`**; consumers query the cache via **`GetNotableDates`**, working-day arithmetic, and filters.
 
 Every term below corresponds to a stage or an input of that pipeline.
 
