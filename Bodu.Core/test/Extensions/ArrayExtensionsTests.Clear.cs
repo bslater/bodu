@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ArrayExtensionsTests.Clear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_Generic_WhenArrayIsNonEmpty_ShouldResetAllElements()
     {
-        int[] array = { 1, 2, 3, 4, 5 };
+        int[] array = [1, 2, 3, 4, 5];
         array.Clear();
         CollectionAssert.AreEqual(new[] { 0, 0, 0, 0, 0 }, array);
     }
@@ -28,7 +28,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_Generic_WhenArrayContainsReferenceTypes_ShouldResetAllElementsToNull()
     {
-        string?[] array = { "a", "b", "c" };
+        string?[] array = ["a", "b", "c"];
         array.Clear();
         CollectionAssert.AreEqual(new string?[] { null, null, null }, array);
     }
@@ -64,7 +64,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndex_WhenIndexIsInRange_ShouldClearTrailingRange()
     {
-        int[] array = { 1, 2, 3, 4, 5 };
+        int[] array = [1, 2, 3, 4, 5];
         array.Clear(2);
         CollectionAssert.AreEqual(new[] { 1, 2, 0, 0, 0 }, array);
     }
@@ -75,7 +75,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndex_WhenIndexIsZero_ShouldClearAllElements()
     {
-        int[] array = { 1, 2, 3 };
+        int[] array = [1, 2, 3];
         array.Clear(0);
         CollectionAssert.AreEqual(new[] { 0, 0, 0 }, array);
     }
@@ -87,7 +87,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndex_WhenIndexIsNegative_ShouldThrowExactly()
     {
-        int[] array = { 1, 2, 3 };
+        int[] array = [1, 2, 3];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             array.Clear(-1);
@@ -101,7 +101,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndex_WhenIndexIsBeyondArray_ShouldThrowExactly()
     {
-        int[] array = { 1, 2, 3 };
+        int[] array = [1, 2, 3];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             array.Clear(3);
@@ -129,7 +129,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndexAndCount_WhenRangeIsValid_ShouldClearSpecifiedSlice()
     {
-        int[] array = { 1, 2, 3, 4, 5 };
+        int[] array = [1, 2, 3, 4, 5];
         array.Clear(1, 3);
         CollectionAssert.AreEqual(new[] { 1, 0, 0, 0, 5 }, array);
     }
@@ -140,7 +140,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndexAndCount_WhenCountIsZero_ShouldLeaveArrayUnchanged()
     {
-        int[] array = { 1, 2, 3 };
+        int[] array = [1, 2, 3];
         array.Clear(1, 0);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, array);
     }
@@ -152,7 +152,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndexAndCount_WhenCountIsNegative_ShouldThrowExactly()
     {
-        int[] array = { 1, 2, 3 };
+        int[] array = [1, 2, 3];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             array.Clear(0, -1);
@@ -166,7 +166,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndexAndCount_WhenIndexPlusCountExceedsLength_ShouldThrowExactly()
     {
-        int[] array = { 1, 2, 3, 4, 5 };
+        int[] array = [1, 2, 3, 4, 5];
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             array.Clear(3, 5);
@@ -180,7 +180,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_GenericWithIndexAndCount_WhenIndexIsNegative_ShouldThrowExactly()
     {
-        int[] array = { 1, 2, 3 };
+        int[] array = [1, 2, 3];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             array.Clear(-1, 1);
@@ -248,7 +248,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_NonGeneric_WhenArrayIsNotZeroBased_ShouldThrowExactly()
     {
-        var array = Array.CreateInstance(typeof(int), new[] { 3 }, new[] { 5 });
+        var array = Array.CreateInstance(typeof(int), [3], [5]);
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             array.Clear();

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IListExtensions.TryMove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class IListExtensionsTests_TryMove
     /// </summary>
     public static IEnumerable<object[]> GetTryMoveTestCases() =>
     [
-        new object[] { new[] { "a", "b", "c", "d", "e" }, 3, 0, new[] { "d", "a", "b", "c", "e" } },
+        [new[] { "a", "b", "c", "d", "e" }, 3, 0, new[] { "d", "a", "b", "c", "e" }],
         [new[] { "a", "b", "c", "d", "e" }, 0, 4, new[] { "b", "c", "d", "a", "e" }],
         [new[] { "a", "b", "c", "d", "e" }, 0, 5, new[] { "b", "c", "d", "e", "a" }],
         [new[] { "a", "b", "c", "d", "e" }, 2, 2, new[] { "a", "b", "c", "d", "e" }],

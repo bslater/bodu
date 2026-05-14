@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.Internal.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionIsReadOnlyCollectionOnly_ShouldUseReadOnlyCountForCapacity()
     {
-        var source = new ReadOnlyCollectionOnly<int>(new[] { 10, 20, 30, 40 });
+        var source = new ReadOnlyCollectionOnly<int>([10, 20, 30, 40]);
 
         var sut = new OrderedSet<int>(source);
 
@@ -76,7 +76,7 @@ public partial class OrderedSetTests
     public void IsSubsetOf_WhenOtherIsReadOnlyCollectionOnly_ShouldUseProjectionWithReadOnlyHint()
     {
         OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
-        var other = new ReadOnlyCollectionOnly<int>(new[] { 1, 2, 3 });
+        var other = new ReadOnlyCollectionOnly<int>([1, 2, 3]);
 
         Assert.IsTrue(sut.IsSubsetOf(other));
     }

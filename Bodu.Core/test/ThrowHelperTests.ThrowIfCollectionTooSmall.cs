@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfCollectionTooSmall.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,9 +45,9 @@ public partial class ThrowHelperTests
         yield return new object?[] { "null collection → ANE on collection", null, 1, "ArgumentNullException", "collection" };
         yield return new object?[] { "empty vs minimum 1 → AE on collection", new List<int>(), 1, "ArgumentException", "collection" };
         yield return new object?[] { "one element vs minimum 2 → AE on collection", new List<int> { 1 }, 2, "ArgumentException", "collection" };
-        yield return new object?[] { "two-element array vs minimum 3 → AE on collection", (ICollection<int>)new int[] { 1, 2 }, 3, "ArgumentException", "collection" };
+        yield return new object?[] { "two-element array vs minimum 3 → AE on collection", (ICollection<int>)[1, 2], 3, "ArgumentException", "collection" };
         yield return new object?[] { "exactly minimum → pass", new List<int> { 1 }, 1, "", "" };
-        yield return new object?[] { "more than minimum → pass", (ICollection<int>)new int[] { 1, 2, 3 }, 2, "", "" };
+        yield return new object?[] { "more than minimum → pass", (ICollection<int>)[1, 2, 3], 2, "", "" };
         yield return new object?[] { "empty with minimum 0 → pass", new List<int>(), 0, "", "" };
     }
 

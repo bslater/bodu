@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IListExtensions.TrySwap.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class IListExtensionsTests_TrySwap
     /// </summary>
     public static IEnumerable<object[]> GetTrySwapTestCases() =>
     [
-        new object[] { new[] { 1, 2, 3, 4 }, 0, 1, new[] { 2, 1, 3, 4 } },
+        [new[] { 1, 2, 3, 4 }, 0, 1, new[] { 2, 1, 3, 4 }],
         [new[] { 1, 2, 3, 4 }, 1, 2, new[] { 1, 3, 2, 4 }],
         [new[] { 1, 2, 3, 4 }, 0, 3, new[] { 4, 2, 3, 1 }],
         [new[] { 1, 2, 3, 4 }, 2, 2, new[] { 1, 2, 3, 4 }],

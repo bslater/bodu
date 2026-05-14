@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.TryPeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -351,7 +351,7 @@ public partial class ConcurrentCircularBufferTests
             peekResult = buffer.TryPeek(out captured);
         });
 
-        var completed = Task.WaitAll(new[] { realignTask, peekTask }, TimeSpan.FromSeconds(10));
+        var completed = Task.WaitAll([realignTask, peekTask], TimeSpan.FromSeconds(10));
 
         Assert.IsTrue(completed,
             "TryPeek did not return after the slot sequence was restored — possible scheduling issue or missed realign.");

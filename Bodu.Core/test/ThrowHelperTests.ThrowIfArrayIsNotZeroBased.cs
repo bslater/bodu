@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayIsNotZeroBased.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -51,8 +51,8 @@ public partial class ThrowHelperTests
     private static IEnumerable<object?[]> ThrowIfArrayIsNotZeroBasedContractData()
     {
         yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
-        yield return new object?[] { "non-zero lower bound → ArgumentException", Array.CreateInstance(typeof(int), new[] { 3 }, new[] { 1 }), typeof(ArgumentException), "array" };
-        yield return new object?[] { "negative lower bound → ArgumentException", Array.CreateInstance(typeof(string), new[] { 3 }, new[] { -10 }), typeof(ArgumentException), "array" };
+        yield return new object?[] { "non-zero lower bound → ArgumentException", Array.CreateInstance(typeof(int), [3], [1]), typeof(ArgumentException), "array" };
+        yield return new object?[] { "negative lower bound → ArgumentException", Array.CreateInstance(typeof(string), [3], [-10]), typeof(ArgumentException), "array" };
         yield return new object?[] { "empty zero-based int array → no throw", Array.Empty<int>(), null, null };
         yield return new object?[] { "zero-based string array → no throw", new string[5], null, null };
     }

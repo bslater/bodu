@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Policy.MRU.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -138,12 +138,12 @@ public partial class EvictingDictionaryTests
         dictionary.Touch("a"); // a is now MRU
 
         // MRU enumerates from most-recent to least-recent: a, c, b.
-        KeyValuePair<string, int>[] expected = new[]
-        {
+        KeyValuePair<string, int>[] expected =
+        [
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("c", 3),
             new KeyValuePair<string, int>("b", 2),
-        };
+        ];
 
         CollectionAssert.AreEqual(expected, dictionary.ToArray());
     }

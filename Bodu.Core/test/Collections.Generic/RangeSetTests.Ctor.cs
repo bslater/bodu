@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -91,7 +91,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenCollectionContainsNonOverlappingRanges_ShouldStoreAll()
     {
-        Range<int>[] source = { new Range<int>(0, 5), new Range<int>(10, 15), new Range<int>(20, 25) };
+        Range<int>[] source = [new Range<int>(0, 5), new Range<int>(10, 15), new Range<int>(20, 25)];
 
         var sut = new RangeSet<int>(source);
 
@@ -105,7 +105,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenCollectionContainsOverlappingRanges_ShouldMergeOnInsertion()
     {
-        Range<int>[] source = { new Range<int>(0, 5), new Range<int>(3, 10), new Range<int>(8, 12) };
+        Range<int>[] source = [new Range<int>(0, 5), new Range<int>(3, 10), new Range<int>(8, 12)];
 
         var sut = new RangeSet<int>(source);
 
@@ -119,7 +119,7 @@ public partial class RangeSetTests
     [TestMethod]
     public void Ctor_WhenCollectionAndComparerProvided_ShouldUseBoth()
     {
-        Range<int>[] source = { new Range<int>(0, 5) };
+        Range<int>[] source = [new Range<int>(0, 5)];
 
         var sut = new RangeSet<int>(source, Comparer<int>.Default);
 

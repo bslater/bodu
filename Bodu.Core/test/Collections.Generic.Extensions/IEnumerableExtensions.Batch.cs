@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Batch.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,8 +11,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch : EnumerableTests
 {
     public static IEnumerable<object[]> GetBatchTestCases() =>
     [
-        new object[]
-        {
+        [
             new EnumerableTestPlan<int>(
                 name: "Batch - even split",
                 source: Enumerable.Range(1, 10),
@@ -26,7 +25,7 @@ public sealed partial class IEnumerableExtensionsTests_Batch : EnumerableTests
                     [9, 10]
                 }
             )
-        },
+        ],
         [
             new EnumerableTestPlan<int>(
                 name: "Batch - uneven split",
