@@ -60,7 +60,8 @@ namespace Bodu.Globalization.Calendar;
 /// service.Invalidate();
 /// </code>
 /// </example>
-public sealed class NotableDateService : INotableDateService
+public sealed class NotableDateService
+    : INotableDateService
 {
     /// <summary>The embedded resource path for the minimal default rule set used by the parameterless constructor.</summary>
     private const string DefaultResourceName = "Bodu/Globalization/Calendar/Resources/default-minimal.xml";
@@ -178,7 +179,7 @@ public sealed class NotableDateService : INotableDateService
     /// <para>
     /// For non-standard weekends, do <em>not</em> use this overload with <see cref="CalendarWeekendDefinition.Custom" />.
     /// Convert your weekend source (for example an <see cref="IWeekendDefinitionProvider" />) to a
-    /// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor:
+    /// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor.
     /// </para>
     /// <example>
     /// <code language="csharp">
@@ -215,7 +216,7 @@ public sealed class NotableDateService : INotableDateService
     /// <para>
     /// To use a custom weekend supplied by an <see cref="IWeekendDefinitionProvider" />, convert it to a
     /// <see cref="WeekPattern" /> first via
-    /// <see cref="Bodu.Extensions.CalendarWeekendDefinitionExtensions.ToWeekPattern(IWeekendDefinitionProvider)" />:
+    /// <see cref="Bodu.Extensions.CalendarWeekendDefinitionExtensions.ToWeekPattern(IWeekendDefinitionProvider)" />.
     /// </para>
     /// <example>
     /// <code language="csharp">
@@ -1046,7 +1047,8 @@ public sealed class NotableDateService : INotableDateService
     /// miss, <c>fallback</c> is consulted. Used to compose host-supplied algorithms with plugin-supplied ones so
     /// the host retains precedence on key collisions.
     /// </summary>
-    private sealed class CompositeAlgorithmRegistry : INotableDateAlgorithmRegistry
+    private sealed class CompositeAlgorithmRegistry
+        : INotableDateAlgorithmRegistry
     {
         /// <summary>The host-supplied registry consulted first; its registrations take precedence on key collisions.</summary>
         private readonly INotableDateAlgorithmRegistry _primary;

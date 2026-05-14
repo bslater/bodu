@@ -14,7 +14,7 @@ public sealed class SystemRandomAdapterTests
     /// instance is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenRandomIsNull_ShouldThrowExactly()
+    public void Ctor_WhenRandomIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -27,7 +27,7 @@ public sealed class SystemRandomAdapterTests
     /// sequence under a seeded random.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenRandomIsSeeded_ShouldProduceDeterministicSequence()
+    public void Ctor_WhenRandomIsSeeded_ShouldProduceDeterministicSequence()
     {
         var adapter1 = new SystemRandomAdapter(new Random(42));
         var adapter2 = new SystemRandomAdapter(new Random(42));
@@ -40,7 +40,7 @@ public sealed class SystemRandomAdapterTests
     /// Verifies that the parameterless <see cref="SystemRandomAdapter()" /> constructor produces values within the requested range.
     /// </summary>
     [TestMethod]
-    public void Constructor_Parameterless_ShouldProduceValuesWithinRange()
+    public void Ctor_Parameterless_ShouldProduceValuesWithinRange()
     {
         var adapter = new SystemRandomAdapter();
 

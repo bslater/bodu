@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashAlgorithmExtensionsTests.TryVerifyHashAsyncCatchPath.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -102,7 +102,8 @@ public partial class HashAlgorithmExtensionsTests
     /// A read-only stream whose asynchronous reads always throw <see cref="IOException" />, used to drive the catch
     /// path of the async <c>TryVerifyHashAsync</c> generated state machines.
     /// </summary>
-    private sealed class ThrowingAsyncStream : Stream
+    private sealed class ThrowingAsyncStream
+        : Stream
     {
         public override bool CanRead => true;
 

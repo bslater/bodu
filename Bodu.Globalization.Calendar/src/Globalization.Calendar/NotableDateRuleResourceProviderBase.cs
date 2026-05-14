@@ -33,7 +33,8 @@ namespace Bodu.Globalization.Calendar;
 /// <c>useFrom</c> an XML resource and vice versa, with no configuration required.
 /// </para>
 /// </remarks>
-public abstract class NotableDateRuleResourceProviderBase : INotableDateRuleProvider
+public abstract class NotableDateRuleResourceProviderBase
+    : INotableDateRuleProvider
 {
     /// <summary>The logical path of the root resource file that seeds the flatten pipeline.</summary>
     private readonly string _rootResourceName;

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ean13Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// Contains unit tests for the <see cref="Ean13" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class Ean13Tests : CheckDigitAlgorithmTests<Ean13Tests, Ean13>
+public sealed class Ean13Tests
+    : CheckDigitAlgorithmTests<Ean13Tests, Ean13>
 {
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()

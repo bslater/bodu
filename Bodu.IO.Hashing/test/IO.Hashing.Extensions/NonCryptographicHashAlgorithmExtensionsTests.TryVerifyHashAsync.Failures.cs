@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmExtensionsTests.TryVerifyHashAsync.Failures.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -237,7 +237,8 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// A readable async <see cref="Stream" /> whose every read raises <see cref="IOException" />, used to drive
     /// the exception-safe false-return branch of stream-based async <c>TryVerifyHashAsync</c> overloads.
     /// </summary>
-    private sealed class AsyncThrowingStream : Stream
+    private sealed class AsyncThrowingStream
+        : Stream
     {
         public override bool CanRead => true;
 

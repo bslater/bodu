@@ -16,7 +16,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// Typical usage pairs strong-name validation with byte-hash pinning, so a tampered-but-correctly-tokened assembly fails the
 /// hash check while an assembly with the right bytes but the wrong token fails the strong-name check.
 /// </remarks>
-public sealed class CompositePluginTrustPolicy : IPluginTrustPolicy
+public sealed class CompositePluginTrustPolicy
+    : IPluginTrustPolicy
 {
     /// <summary>The ordered list of child policies evaluated in sequence; the first rejection short-circuits the rest.</summary>
     private readonly ImmutableArray<IPluginTrustPolicy> _policies;

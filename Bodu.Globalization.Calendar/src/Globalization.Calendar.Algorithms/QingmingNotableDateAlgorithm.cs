@@ -39,7 +39,7 @@ public sealed class QingmingNotableDateAlgorithm
     private const double DegreesToDays15 = 15.0 * 365.2422 / 360.0;
 
     /// <summary>The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00 UT, kind unspecified), equal to JDE 2451545.0.</summary>
-    private static readonly DateTime J2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
+    private static readonly DateTime s_j2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
     /// <summary>
     /// Computes the date of the Qingming solar term for the specified year.
@@ -118,7 +118,7 @@ public sealed class QingmingNotableDateAlgorithm
     /// <param name="jde">The Julian Day Ephemeris in Terrestrial Dynamical Time.</param>
     /// <returns>The corresponding <see cref="DateTime" /> with <see cref="DateTime.Kind" /> set to <see cref="DateTimeKind.Unspecified" />.</returns>
     private static DateTime JdeToDateTime(double jde) =>
-        J2000Epoch.AddDays(jde - 2451545.0);
+        s_j2000Epoch.AddDays(jde - 2451545.0);
 
     /// <summary>
     /// Converts an angle expressed in degrees to radians.

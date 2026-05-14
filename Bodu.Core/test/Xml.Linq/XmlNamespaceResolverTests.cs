@@ -17,7 +17,7 @@ public sealed class XmlNamespaceResolverTests
     /// Verifies that the constructor extracts the namespace of the supplied root element.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenRootHasNamespace_ShouldCaptureNamespace()
+    public void Ctor_WhenRootHasNamespace_ShouldCaptureNamespace()
     {
         var root = new XElement(s_sampleNamespace + "root");
         var resolver = new XmlNamespaceResolver(root);
@@ -29,7 +29,7 @@ public sealed class XmlNamespaceResolverTests
     /// Verifies that the constructor throws <see cref="ArgumentNullException" /> when the root element is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenRootIsNull_ShouldThrowExactly()
+    public void Ctor_WhenRootIsNull_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -154,7 +154,7 @@ public sealed class XmlNamespaceResolverTests
     /// change to the resolver's null-handling contract is detected.
     /// </remarks>
     [TestMethod]
-    public void Constructor_WhenRootHasNoNamespace_ShouldCaptureXNamespaceNoneAndResolveLocalNames()
+    public void Ctor_WhenRootHasNoNamespace_ShouldCaptureXNamespaceNoneAndResolveLocalNames()
     {
         var root = new XElement("root",
             new XElement("child", "value"));

@@ -19,7 +19,8 @@ namespace Bodu.Globalization.Calendar;
 /// the caller's observed-date output.
 /// </para>
 /// </remarks>
-internal sealed class NotableDateResolutionEngine : INotableDateResolutionEngine
+internal sealed class NotableDateResolutionEngine
+    : INotableDateResolutionEngine
 {
     private const int AdjustmentMaterializationPaddingDays = 14;
 

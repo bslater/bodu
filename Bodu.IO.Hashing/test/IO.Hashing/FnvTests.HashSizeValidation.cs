@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FnvTests.HashSizeValidation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -62,7 +62,8 @@ public sealed class FnvHashSizeValidationTests
     /// hash sizes. The parameterless public constructor satisfies the CRTP <c>new()</c> constraint and is never
     /// invoked directly by tests.
     /// </summary>
-    private sealed class TestFnv : Fnv<TestFnv>
+    private sealed class TestFnv
+        : Fnv<TestFnv>
     {
         public TestFnv()
             : base(32, prime: 0x01000193UL, offsetBasis: 0x811C9DC5UL, useFnv1a: false)

@@ -128,13 +128,13 @@ public sealed record NotableDateRuleOverrideBody
     public int? Day { get; init; }
 
     /// <summary>
-    /// Gets the override for <see cref="NotableDateRule.SkipLeapMonth" />.
+    /// Gets a value indicating whether gets the override for <see cref="NotableDateRule.SkipLeapMonth" />.
     /// </summary>
     /// <returns><see langword="true" /> to advance past intercalary months when ordinal mapping; otherwise <see langword="false" />.</returns>
     public bool SkipLeapMonth { get; init; }
 
     /// <summary>
-    /// Gets the override for <see cref="NotableDateRule.SweepCalendarYears" />.
+    /// Gets a value indicating whether gets the override for <see cref="NotableDateRule.SweepCalendarYears" />.
     /// </summary>
     /// <returns><see langword="true" /> to evaluate both candidate calendar years; otherwise <see langword="false" />.</returns>
     public bool SweepCalendarYears { get; init; }

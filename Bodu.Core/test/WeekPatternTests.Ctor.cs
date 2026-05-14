@@ -12,7 +12,7 @@ public partial class WeekPatternTests
     /// Verifies that the default parameterless constructor produces an empty pattern with no days selected.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenNoDaysProvided_ShouldBeEmpty()
+    public void Ctor_WhenNoDaysProvided_ShouldBeEmpty()
     {
         var pattern = new WeekPattern();
         Assert.AreEqual(0, pattern.Count);
@@ -23,7 +23,7 @@ public partial class WeekPatternTests
     /// rather than throwing.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenNullArrayProvided_ShouldBeEmpty()
+    public void Ctor_WhenNullArrayProvided_ShouldBeEmpty()
     {
         var pattern = new WeekPattern((DayOfWeek[])null);
         Assert.AreEqual(0, pattern.Count);
@@ -33,7 +33,7 @@ public partial class WeekPatternTests
     /// Verifies that passing an empty array to the constructor produces an empty pattern.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenEmptyArrayProvided_ShouldBeEmpty()
+    public void Ctor_WhenEmptyArrayProvided_ShouldBeEmpty()
     {
         var pattern = new WeekPattern([]);
         Assert.AreEqual(0, pattern.Count);
@@ -44,7 +44,7 @@ public partial class WeekPatternTests
     /// <see langword="null" /> string is provided.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenNullStringProvided_ShouldThrowException()
+    public void Ctor_WhenNullStringProvided_ShouldThrowException()
     {
         string input = null;
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -59,7 +59,7 @@ public partial class WeekPatternTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetValidParseInputTestData), typeof(WeekPatternTests))]
-    public void Constructor_WhenValidStringProvided_ShouldReturnExpected(string input, string _, byte expected)
+    public void Ctor_WhenValidStringProvided_ShouldReturnExpected(string input, string _, byte expected)
     {
         var actual = new WeekPattern(input);
         Assert.AreEqual(expected, actual);
@@ -77,7 +77,7 @@ public partial class WeekPatternTests
     [DataRow(DayOfWeek.Thursday)]
     [DataRow(DayOfWeek.Friday)]
     [DataRow(DayOfWeek.Saturday)]
-    public void Constructor_WhenSingleDayProvided_ShouldContainDay(DayOfWeek day)
+    public void Ctor_WhenSingleDayProvided_ShouldContainDay(DayOfWeek day)
     {
         var pattern = new WeekPattern(day);
         Assert.IsTrue(pattern.Contains(day));
@@ -89,7 +89,7 @@ public partial class WeekPatternTests
     /// <see cref="DayOfWeek" /> values are provided.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenAllSevenDaysProvided_ShouldSelectAllDays()
+    public void Ctor_WhenAllSevenDaysProvided_ShouldSelectAllDays()
     {
         var pattern = new WeekPattern(
             DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday,
@@ -106,7 +106,7 @@ public partial class WeekPatternTests
     /// inflate <see cref="WeekPattern.Count" /> beyond the number of distinct days supplied.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenDuplicateDaysProvided_ShouldDeduplicateDays()
+    public void Ctor_WhenDuplicateDaysProvided_ShouldDeduplicateDays()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Monday, DayOfWeek.Wednesday);
 
@@ -123,7 +123,7 @@ public partial class WeekPatternTests
     [DataRow(-1)]
     [DataRow(7)]
     [DataRow(99)]
-    public void Constructor_WhenInvalidDayOfWeekProvided_ShouldThrowArgumentOutOfRangeException(int invalidDay)
+    public void Ctor_WhenInvalidDayOfWeekProvided_ShouldThrowArgumentOutOfRangeException(int invalidDay)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

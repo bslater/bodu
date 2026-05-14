@@ -15,7 +15,7 @@ public sealed class SegmentedBufferTests
     /// Verifies that the default constructor initialises an empty buffer.
     /// </summary>
     [TestMethod]
-    public void Constructor_Default_ShouldInitialiseEmptyBuffer()
+    public void Ctor_Default_ShouldInitialiseEmptyBuffer()
     {
         var buffer = new SegmentedBuffer<int>();
         Assert.AreEqual(0, buffer.Count);
@@ -25,7 +25,7 @@ public sealed class SegmentedBufferTests
     /// Verifies that the segment-size constructor initialises an empty buffer.
     /// </summary>
     [TestMethod]
-    public void Constructor_WithSegmentSize_ShouldInitialiseEmptyBuffer()
+    public void Ctor_WithSegmentSize_ShouldInitialiseEmptyBuffer()
     {
         var buffer = new SegmentedBuffer<int>(4);
         Assert.AreEqual(0, buffer.Count);
@@ -38,7 +38,7 @@ public sealed class SegmentedBufferTests
     [DataRow(0)]
     [DataRow(-1)]
     [DataRow(int.MinValue)]
-    public void Constructor_WhenSegmentSizeIsLessThanOne_ShouldThrowExactly(int segmentSize)
+    public void Ctor_WhenSegmentSizeIsLessThanOne_ShouldThrowExactly(int segmentSize)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

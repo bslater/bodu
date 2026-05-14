@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.TryCopyFrom.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -111,7 +111,8 @@ public partial class PooledBufferBuilderTests
     // ---------------------------------------------------------------------------
     // Helper: an IReadOnlyCollection<int> that does NOT implement ICollection<int>
     // ---------------------------------------------------------------------------
-    private sealed class NonCollectionReadOnlyCollection : System.Collections.Generic.IReadOnlyCollection<int>
+    private sealed class NonCollectionReadOnlyCollection
+        : System.Collections.Generic.IReadOnlyCollection<int>
     {
         private readonly int[] _items;
 

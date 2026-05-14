@@ -30,7 +30,7 @@ public partial class CubeHashTests
     /// <see cref="ArgumentOutOfRangeException"/> with the correct parameter name.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenHashSizeIsUnsupported_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenHashSizeIsUnsupported_ShouldThrowArgumentOutOfRangeException()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -44,7 +44,7 @@ public partial class CubeHashTests
     /// <see cref="ArgumentOutOfRangeException"/> with the correct parameter name.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenRoundsIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenRoundsIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -58,7 +58,7 @@ public partial class CubeHashTests
     /// <see cref="ArgumentOutOfRangeException"/> with the correct parameter name.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenTransformBlockSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenTransformBlockSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

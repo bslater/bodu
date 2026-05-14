@@ -19,7 +19,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -32,7 +32,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenBlockSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
         _ = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -44,7 +44,7 @@ public sealed class BufferedBlockHashAlgorithmTests
     /// Verifies that a valid block size is stored verbatim and a residual buffer of the same length is allocated.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenBlockSizeIsValid_ShouldStoreBlockSizeAndAllocateResidualBuffer()
+    public void Ctor_WhenBlockSizeIsValid_ShouldStoreBlockSizeAndAllocateResidualBuffer()
     {
         using var sut = new MonitoringBufferedBlockHashAlgorithm(16);
 

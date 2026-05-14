@@ -42,7 +42,8 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     /// A source whose <see cref="IEnumerable{T}.GetEnumerator" /> always throws <see cref="InvalidOperationException" />, counting the
     /// number of invocations so the test can assert that the failure is captured and re-used by the cache.
     /// </summary>
-    private sealed class ThrowingSource : IEnumerable<int>
+    private sealed class ThrowingSource
+        : IEnumerable<int>
     {
         public int GetEnumeratorCallCount { get; private set; }
 

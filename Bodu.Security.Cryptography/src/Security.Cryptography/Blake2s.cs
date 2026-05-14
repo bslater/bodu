@@ -63,7 +63,8 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Blake2b"/>
 /// <seealso cref="Blake3"/>
-public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
+public sealed class Blake2s
+    : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
 {
     /// <summary>
     /// The set of output sizes, in bits, accepted by this algorithm.

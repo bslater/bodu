@@ -667,7 +667,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// Static <see cref="INotableDateRuleOverrideProvider" /> backed by fixed addition and removal lists.
 	/// </summary>
-	private sealed class StaticOverrideProvider : INotableDateRuleOverrideProvider
+	private sealed class StaticOverrideProvider
+		: INotableDateRuleOverrideProvider
 	{
 		private readonly IReadOnlyList<NotableDateRule> _additions;
 		private readonly IReadOnlyList<RuleRemoval> _removals;

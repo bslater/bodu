@@ -63,7 +63,8 @@ namespace Bodu.Security.Cryptography;
 /// int written = cts.Transform(plaintext, ciphertext, encrypt: true);
 /// </code>
 /// </example>
-public sealed class CtsModeTransform : IBlockCipherModeTransform
+public sealed class CtsModeTransform
+    : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
     private readonly byte[] _iv;

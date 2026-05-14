@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateAlgorithmRegistryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed class NotableDateAlgorithmRegistryTests
 	/// Verifies that the parameterless constructor yields an empty, functional registry.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenParameterless_ShouldReturnEmptyRegistry()
+	public void Ctor_WhenParameterless_ShouldReturnEmptyRegistry()
 	{
 		var registry = new NotableDateAlgorithmRegistry();
 
@@ -32,7 +32,7 @@ public sealed class NotableDateAlgorithmRegistryTests
 	/// Verifies that the seeded constructor registers every supplied pair.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenSeeded_ShouldRegisterAllSuppliedAlgorithms()
+	public void Ctor_WhenSeeded_ShouldRegisterAllSuppliedAlgorithms()
 	{
 		var easter = new StaticAlgorithm(new DateTime(2026, 4, 5));
 		var lunar = new StaticAlgorithm(new DateTime(2026, 2, 17));
@@ -54,7 +54,7 @@ public sealed class NotableDateAlgorithmRegistryTests
 	/// <see cref="ArgumentNullException" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenAlgorithmsIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenAlgorithmsIsNull_ShouldThrowArgumentNullException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
@@ -172,7 +172,8 @@ public sealed class NotableDateAlgorithmRegistryTests
 	/// <summary>
 	/// Minimal <see cref="INotableDateAlgorithm" /> test double returning a fixed date.
 	/// </summary>
-	private sealed class StaticAlgorithm : INotableDateAlgorithm
+	private sealed class StaticAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly DateTime _date;
 

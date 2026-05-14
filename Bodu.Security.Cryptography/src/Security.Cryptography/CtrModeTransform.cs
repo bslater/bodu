@@ -64,7 +64,8 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/cipher-modes.html#ctr--parallel-seekable-stream-shaped">CTR walk-through in the cipher-modes guide</seealso>
-public sealed class CtrModeTransform : IBlockCipherModeTransform
+public sealed class CtrModeTransform
+    : IBlockCipherModeTransform
 {
     private readonly IBlockCipher _cipher;
     private readonly byte[] _initialCounter;

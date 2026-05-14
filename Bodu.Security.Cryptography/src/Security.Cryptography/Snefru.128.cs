@@ -43,7 +43,8 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="Snefru{T}"/>
 /// <seealso cref="Snefru256"/>
-public sealed class Snefru128 : Snefru<Snefru128>
+public sealed class Snefru128
+    : Snefru<Snefru128>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="Snefru128"/> class using a fixed 128-bit output size.

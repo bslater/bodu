@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.CustomProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class NotableDateServiceTests
 	/// resolved output.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenSingleCustomProviderSupplied_ShouldExposeItsRules()
+	public void Ctor_WhenSingleCustomProviderSupplied_ShouldExposeItsRules()
 	{
 		var provider = new InMemoryRuleProvider(
 			Fixed("Custom Holiday", 3, 15),
@@ -38,7 +38,7 @@ public sealed partial class NotableDateServiceTests
 	/// single resolved result set.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenMultipleCustomProvidersSupplied_ShouldAggregateRulesFromAllProviders()
+	public void Ctor_WhenMultipleCustomProvidersSupplied_ShouldAggregateRulesFromAllProviders()
 	{
 		var first = new InMemoryRuleProvider(Fixed("Holiday A", 1, 1));
 		var second = new InMemoryRuleProvider(
@@ -61,7 +61,7 @@ public sealed partial class NotableDateServiceTests
 	/// Verifies that an empty provider sequence is accepted and yields no notable dates for any queried year.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenProviderSequenceIsEmpty_ShouldYieldNoNotableDates()
+	public void Ctor_WhenProviderSequenceIsEmpty_ShouldYieldNoNotableDates()
 	{
 		var service = new NotableDateService(
 			Array.Empty<INotableDateRuleProvider>(),
@@ -76,7 +76,7 @@ public sealed partial class NotableDateServiceTests
 	/// Verifies that a custom provider returning an empty rule sequence is a benign no-op and produces no resolved dates.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenCustomProviderYieldsNoRules_ShouldYieldNoNotableDates()
+	public void Ctor_WhenCustomProviderYieldsNoRules_ShouldYieldNoNotableDates()
 	{
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
@@ -92,7 +92,7 @@ public sealed partial class NotableDateServiceTests
 	/// backing rule source cannot leak into resolved results.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenCustomProviderReturnsDeferredEnumerable_ShouldMaterialiseRulesImmediately()
+	public void Ctor_WhenCustomProviderReturnsDeferredEnumerable_ShouldMaterialiseRulesImmediately()
 	{
 		List<NotableDateRule> source = new() { Fixed("Initial", 1, 1) };
 		var provider = new DeferredRuleProvider(() => EnumerateRules(source));
@@ -114,7 +114,7 @@ public sealed partial class NotableDateServiceTests
 	/// constructor rather than being deferred until the first query.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenCustomProviderThrows_ShouldSurfaceExceptionFromConstructor()
+	public void Ctor_WhenCustomProviderThrows_ShouldSurfaceExceptionFromConstructor()
 	{
 		var provider = new ThrowingRuleProvider(new InvalidOperationException("broken"));
 
@@ -354,7 +354,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="INotableDateRuleProvider" /> that records the number of times <see cref="LoadRules" /> is invoked, enabling
 	/// tests to assert load-once semantics across multiple service queries and cache invalidations.
 	/// </summary>
-	private sealed class CountingRuleProvider : INotableDateRuleProvider
+	private sealed class CountingRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly IReadOnlyList<NotableDateRule> _rules;
 
@@ -382,7 +383,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="INotableDateRuleProvider" /> that always throws a supplied exception, used to verify that provider failures
 	/// surface from the service constructor rather than being silently absorbed.
 	/// </summary>
-	private sealed class ThrowingRuleProvider : INotableDateRuleProvider
+	private sealed class ThrowingRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly Exception _exception;
 
@@ -400,7 +402,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="INotableDateRuleProvider" /> whose rule production is deferred until <see cref="LoadRules" /> is invoked, so
 	/// tests can confirm that the service materialises provider output at construction time.
 	/// </summary>
-	private sealed class DeferredRuleProvider : INotableDateRuleProvider
+	private sealed class DeferredRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly Func<IEnumerable<NotableDateRule>> _factory;
 
@@ -431,7 +434,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="GetAdditions" /> are invoked, used to verify that the service materialises override-provider output once at
 	/// construction rather than re-enumerating on every query.
 	/// </summary>
-	private sealed class CountingOverrideProvider : INotableDateRuleOverrideProvider
+	private sealed class CountingOverrideProvider
+		: INotableDateRuleOverrideProvider
 	{
 		private readonly IReadOnlyList<RuleRemoval> _removals;
 		private readonly IReadOnlyList<NotableDateRule> _additions;

@@ -127,7 +127,7 @@ public sealed class ExternalPluginLoaderTests
 	/// <see cref="ExternalPluginLoader.Load" /> call.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenTrustPolicyIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenTrustPolicyIsNull_ShouldThrowArgumentNullException()
 	{
 		Assert.ThrowsExactly<ArgumentNullException>(() => _ = new ExternalPluginLoader(null!));
 	}

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="TrackingEnumerable.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.Infrastructure;
 /// A test utility that wraps an <see cref="IEnumerable{T}" /> and tracks enumeration behaviour.
 /// </summary>
 /// <typeparam name="T">The element type.</typeparam>
-public sealed class TrackingEnumerable<T> : IEnumerable<T>
+public sealed class TrackingEnumerable<T>
+    : IEnumerable<T>
 {
     private readonly IEnumerable<T> _source;
     private readonly Action _onEnumerate;

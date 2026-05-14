@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlResourceNotableDateRuleProviderTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -87,7 +87,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenXmlResourceNameIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenXmlResourceNameIsNull_ShouldThrowArgumentNullException()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -102,7 +102,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// than the currently-executing one.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenAssemblyOverrideSupplied_ShouldUseSuppliedAssembly()
+    public void Ctor_WhenAssemblyOverrideSupplied_ShouldUseSuppliedAssembly()
     {
         var provider = new XmlResourceNotableDateRuleProvider(
             CommonResource,
@@ -118,7 +118,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// Verifies that the multi-assembly constructor rejects a <see langword="null" /> chain.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenAssemblyChainIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenAssemblyChainIsNull_ShouldThrowArgumentNullException()
     {
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -132,7 +132,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// Verifies that the multi-assembly constructor rejects an empty chain with <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenAssemblyChainIsEmpty_ShouldThrowArgumentException()
+    public void Ctor_WhenAssemblyChainIsEmpty_ShouldThrowArgumentException()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -147,7 +147,7 @@ public sealed partial class XmlResourceNotableDateRuleProviderTests
     /// <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenAssemblyChainContainsNull_ShouldThrowArgumentException()
+    public void Ctor_WhenAssemblyChainContainsNull_ShouldThrowArgumentException()
     {
         var ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

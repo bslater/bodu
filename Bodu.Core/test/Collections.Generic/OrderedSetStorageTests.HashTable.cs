@@ -165,7 +165,8 @@ public partial class OrderedSetStorageTests
     /// An <see cref="IEqualityComparer{T}" /> for <see cref="string" /> that delegates equality to ordinal
     /// comparison but forces every hash code to zero in order to exercise collision handling.
     /// </summary>
-    private sealed class FixedHashStringComparer : IEqualityComparer<string>
+    private sealed class FixedHashStringComparer
+        : IEqualityComparer<string>
     {
         /// <inheritdoc />
         public bool Equals(string? x, string? y) => string.Equals(x, y, StringComparison.Ordinal);

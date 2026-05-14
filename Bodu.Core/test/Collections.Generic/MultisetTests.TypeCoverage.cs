@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultisetTests.TypeCoverage.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,7 +27,8 @@ public partial class MultisetTests
     }
 
     /// <summary>Equality comparer that considers two <see cref="Point"/> values equal when their X coordinates match.</summary>
-    private sealed class XOnlyComparer : IEqualityComparer<Point>
+    private sealed class XOnlyComparer
+        : IEqualityComparer<Point>
     {
         public bool Equals(Point x, Point y) => x.X == y.X;
 

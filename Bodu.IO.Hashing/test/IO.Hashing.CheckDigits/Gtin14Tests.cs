@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Gtin14Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// Contains unit tests for the <see cref="Gtin14" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class Gtin14Tests : CheckDigitAlgorithmTests<Gtin14Tests, Gtin14>
+public sealed class Gtin14Tests
+    : CheckDigitAlgorithmTests<Gtin14Tests, Gtin14>
 {
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()

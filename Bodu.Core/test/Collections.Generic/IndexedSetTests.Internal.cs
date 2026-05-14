@@ -72,7 +72,8 @@ public partial class IndexedSetTests
     /// implementing <see cref="ICollection{T}" /> so capacity-hint helpers see the read-only-collection branch.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
-    private sealed class ReadOnlyCollectionOnly<T> : IReadOnlyCollection<T>
+    private sealed class ReadOnlyCollectionOnly<T>
+        : IReadOnlyCollection<T>
     {
         private readonly T[] _items;
 

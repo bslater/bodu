@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,8 @@ public sealed partial class NotableDateServiceTests
 			TerritoryCode = territory,
 		};
 
-	private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+	private sealed class InMemoryRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly IEnumerable<NotableDateRule> _rules;
 
@@ -232,7 +233,7 @@ public sealed partial class NotableDateServiceTests
 	/// <see langword="null" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenRuleProvidersIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenRuleProvidersIsNull_ShouldThrowArgumentNullException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
@@ -252,7 +253,7 @@ public sealed partial class NotableDateServiceTests
 	[DataRow(-1)]
 	[DataRow(100)]
 	[TestMethod]
-	public void Constructor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeException(int undefined)
+	public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeException(int undefined)
 	{
 		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
@@ -268,7 +269,7 @@ public sealed partial class NotableDateServiceTests
 	/// callers must convert their <see cref="IWeekendDefinitionProvider" /> to a <see cref="WeekPattern" /> first.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenWeekendDefinitionIsCustom_ShouldThrow()
+	public void Ctor_WhenWeekendDefinitionIsCustom_ShouldThrow()
 	{
 		Assert.ThrowsExactly<ArgumentException>(() =>
 		{
@@ -283,7 +284,7 @@ public sealed partial class NotableDateServiceTests
 	/// single bundled rule (New Year's Day) for a common year.
 	/// </summary>
 	[TestMethod]
-    public void Constructor_WhenParameterless_ShouldLoadEmbeddedDefaultMinimalResource()
+    public void Ctor_WhenParameterless_ShouldLoadEmbeddedDefaultMinimalResource()
 	{
 		var service = new NotableDateService();
 
@@ -564,7 +565,8 @@ public sealed partial class NotableDateServiceTests
 		Assert.AreEqual(1, service.GetNotableDates(2026).Count);
 	}
 
-	private sealed class TestOverrideProvider : INotableDateRuleOverrideProvider
+	private sealed class TestOverrideProvider
+		: INotableDateRuleOverrideProvider
 	{
 		private readonly IEnumerable<RuleRemoval> _removals;
 		private readonly IEnumerable<NotableDateRule> _additions;
@@ -584,7 +586,8 @@ public sealed partial class NotableDateServiceTests
 	/// Minimal <see cref="INotableDateNameLocalizer" /> that delegates to a callback so tests
 	/// can control the localisation path.
 	/// </summary>
-	private sealed class DelegateLocaliser : INotableDateNameLocalizer
+	private sealed class DelegateLocaliser
+		: INotableDateNameLocalizer
 	{
 		private readonly Func<NotableDate, CultureInfo?, string> _callback;
 

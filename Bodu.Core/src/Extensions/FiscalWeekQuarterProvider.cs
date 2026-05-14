@@ -53,7 +53,8 @@ namespace Bodu.Extensions;
 /// from the input date itself.
 /// </para>
 /// </remarks>
-public sealed class FiscalWeekQuarterProvider : IQuarterDefinitionProvider
+public sealed class FiscalWeekQuarterProvider
+    : IQuarterDefinitionProvider
 {
     private readonly int _anchorMonth;
     private readonly DayOfWeek _anchorDayOfWeek;

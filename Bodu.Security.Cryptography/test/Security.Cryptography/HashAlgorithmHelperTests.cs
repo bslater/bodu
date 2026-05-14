@@ -167,7 +167,8 @@ public sealed class HashAlgorithmHelperTests
     /// is invoked. Used to verify <see cref="HashAlgorithmHelper" /> deterministically disposes
     /// instances it constructs.
     /// </summary>
-    private sealed class DisposalProbe : HashAlgorithm
+    private sealed class DisposalProbe
+        : HashAlgorithm
     {
         // HashSizeValue is in bits and must match the byte length returned by HashFinal —
         // the framework's TryHashFinal validates this and throws InvalidOperationException

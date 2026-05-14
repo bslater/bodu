@@ -15,7 +15,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// list and participate in the normal flatten pipeline. They are not granted any special precedence — locally declared rules in
 /// the host's own resources continue to win on composite (Name, Territory) collision.
 /// </remarks>
-public interface INotableDateRulePlugin : INotableDatePlugin
+public interface INotableDateRulePlugin
+    : INotableDatePlugin
 {
     /// <summary>
     /// Returns the rule providers this plugin contributes. The enumeration is consumed once during service construction; plugin

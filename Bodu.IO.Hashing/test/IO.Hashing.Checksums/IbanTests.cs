@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IbanTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Contains unit tests for the <see cref="Iban" /> check-code algorithm.
 /// </summary>
 [TestClass]
-public sealed class IbanTests : MultiCharCheckDigitAlgorithmTests<IbanTests, Iban>
+public sealed class IbanTests
+    : MultiCharCheckDigitAlgorithmTests<IbanTests, Iban>
 {
     /// <inheritdoc />
     protected override MultiCharCheckDigitAlgorithmSpecification GetSpecification() => new()

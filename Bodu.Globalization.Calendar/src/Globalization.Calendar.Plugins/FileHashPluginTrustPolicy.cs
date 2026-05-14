@@ -21,7 +21,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// roll with plugin versions — pinning a new hash when the plugin is updated is the consumer's responsibility.
 /// </para>
 /// </remarks>
-public sealed class FileHashPluginTrustPolicy : IPluginTrustPolicy
+public sealed class FileHashPluginTrustPolicy
+    : IPluginTrustPolicy
 {
     /// <summary>A normalized, case-insensitive map from assembly name to the pinned SHA-256 digest.</summary>
     private readonly IReadOnlyDictionary<string, byte[]> _allowedHashesByAssemblyName;

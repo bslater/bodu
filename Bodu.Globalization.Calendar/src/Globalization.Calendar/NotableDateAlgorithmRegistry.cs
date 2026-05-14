@@ -52,7 +52,8 @@ namespace Bodu.Globalization.Calendar;
 ///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 /// </code>
 /// </example>
-public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
+public sealed class NotableDateAlgorithmRegistry
+    : INotableDateAlgorithmRegistry
 {
     /// <summary>The case-insensitive key-to-algorithm mapping maintained by this registry.</summary>
     private readonly Dictionary<string, INotableDateAlgorithm> _algorithms = new(StringComparer.OrdinalIgnoreCase);
@@ -61,12 +62,12 @@ public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry
     private readonly object _gate = new();
 
     /// <summary>
-    /// Initializes a new, empty <see cref="NotableDateAlgorithmRegistry" />.
+    /// Initializes a new instance of the <see cref="NotableDateAlgorithmRegistry"/> class.
     /// </summary>
     public NotableDateAlgorithmRegistry() { }
 
     /// <summary>
-    /// Initializes a new <see cref="NotableDateAlgorithmRegistry" /> seeded with the supplied algorithms.
+    /// Initializes a new instance of the <see cref="NotableDateAlgorithmRegistry"/> class seeded with the supplied algorithms.
     /// </summary>
     /// <param name="algorithms">The key/algorithm pairs to seed into the registry. Must not be <see langword="null" />.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="algorithms" /> is <see langword="null" />.</exception>

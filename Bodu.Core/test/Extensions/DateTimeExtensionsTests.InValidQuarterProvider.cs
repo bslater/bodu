@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.InValidQuarterProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,7 +13,8 @@ public partial class DateTimeExtensionsTests
     /// numbers and throws from every date-returning overload. Drives the validation paths in the
     /// provider-backed quarter extensions.
     /// </summary>
-    public sealed class InValidQuarterProvider : IQuarterDefinitionProvider
+    public sealed class InValidQuarterProvider
+        : IQuarterDefinitionProvider
     {
         /// <summary>
         /// Always returns an invalid quarter number (outside the expected range of 1–4).

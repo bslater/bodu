@@ -7,7 +7,8 @@
 namespace Bodu.Collections.Generic.Extensions;
 
 [TestClass]
-public sealed partial class IEnumerableExtensionsTests_Batch : EnumerableTests
+public sealed partial class IEnumerableExtensionsTests_Batch
+    : EnumerableTests
 {
     public static IEnumerable<object[]> GetBatchTestCases() =>
     [

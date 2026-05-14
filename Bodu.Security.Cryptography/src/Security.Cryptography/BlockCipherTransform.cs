@@ -67,7 +67,8 @@ namespace Bodu.Security.Cryptography;
 /// <seealso cref="IBlockCipher"/>
 /// <seealso cref="IBlockCipherModeTransform"/>
 /// <seealso cref="IPaddingStrategy"/>
-public abstract class BlockCipherTransform : ICryptoTransform
+public abstract class BlockCipherTransform
+    : ICryptoTransform
 {
     /// <summary>
     /// The configured block cipher engine used by the mode transform.

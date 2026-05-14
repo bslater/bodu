@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IsinTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Contains unit tests for the <see cref="Isin" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class IsinTests : AlphanumericCheckDigitAlgorithmTests<IsinTests, Isin>
+public sealed class IsinTests
+    : AlphanumericCheckDigitAlgorithmTests<IsinTests, Isin>
 {
     /// <inheritdoc />
     protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()

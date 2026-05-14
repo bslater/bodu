@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipelineScenarioTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -821,7 +821,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 			$"{name} should be emitted on {expectedDate:yyyy-MM-dd} but was emitted on {match.Date:yyyy-MM-dd}.");
 	}
 
-	private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+	private sealed class InMemoryRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly IReadOnlyList<NotableDateRule> _rules;
 
@@ -836,7 +837,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// Anonymous Gregorian Easter Sunday algorithm (Meeus / Jones / Butcher).
 	/// </summary>
-	private sealed class GregorianEasterSundayAlgorithm : INotableDateAlgorithm
+	private sealed class GregorianEasterSundayAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
 		{

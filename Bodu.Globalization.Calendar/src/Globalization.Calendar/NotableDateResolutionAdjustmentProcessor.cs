@@ -22,7 +22,8 @@ namespace Bodu.Globalization.Calendar;
 /// caller.
 /// </para>
 /// </remarks>
-internal sealed class NotableDateResolutionAdjustmentProcessor : INotableDateResolutionAdjustmentProcessor
+internal sealed class NotableDateResolutionAdjustmentProcessor
+    : INotableDateResolutionAdjustmentProcessor
 {
     private readonly CalendarWeekendDefinition _weekendDefinition;
     private readonly IWeekendDefinitionProvider? _weekendProvider;

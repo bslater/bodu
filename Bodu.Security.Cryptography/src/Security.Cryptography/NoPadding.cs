@@ -37,7 +37,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] aligned = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes; throws if not aligned
 /// </code>
 /// </example>
-public sealed class NoPadding : IPaddingStrategy
+public sealed class NoPadding
+    : IPaddingStrategy
 {
     /// <inheritdoc />
     public bool StripsPaddingOnUnpad => false;

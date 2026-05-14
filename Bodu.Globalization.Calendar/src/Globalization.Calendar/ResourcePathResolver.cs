@@ -40,7 +40,8 @@ namespace Bodu.Globalization.Calendar;
 /// // abs: "/Bodu/Globalization/Calendar/Resources/global-public.xml"
 /// </code>
 /// </example>
-public sealed class ResourcePathResolver : IResourcePathResolver
+public sealed class ResourcePathResolver
+    : IResourcePathResolver
 {
     /// <inheritdoc />
     public string Resolve(string documentPath, string childPath)

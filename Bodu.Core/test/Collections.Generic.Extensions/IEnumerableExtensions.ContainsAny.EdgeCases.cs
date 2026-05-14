@@ -44,7 +44,9 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     /// array, leaving the <c>items is ICollection&lt;T&gt;</c> probe as <see langword="false" /> and producing a <see langword="null" />
     /// <c>itemsCount</c> in <c>ContainsAny</c>.
     /// </summary>
-    private sealed class LegacyEmptyCollection<T> : IEnumerable<T>, ICollection
+    private sealed class LegacyEmptyCollection<T>
+        : IEnumerable<T>
+        , ICollection
     {
         public int Count => 0;
 

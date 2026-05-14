@@ -37,7 +37,8 @@ namespace Bodu.Globalization.Calendar;
 /// NotableDateService service = new(new[] { provider });
 /// </code>
 /// </example>
-public sealed class InlineNotableDateRuleProvider : INotableDateRuleProvider
+public sealed class InlineNotableDateRuleProvider
+    : INotableDateRuleProvider
 {
     /// <summary>The pre-built rules supplied at construction and returned unchanged from <see cref="LoadRules" />.</summary>
     private readonly IReadOnlyList<NotableDateRule> _rules;

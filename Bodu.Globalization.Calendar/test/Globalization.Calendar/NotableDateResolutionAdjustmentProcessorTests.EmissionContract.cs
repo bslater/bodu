@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionAdjustmentProcessorTests.EmissionContract.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -160,7 +160,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
 	/// throws <see cref="ArgumentNullException" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenCustomWeekendDefinitionAndProviderIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenCustomWeekendDefinitionAndProviderIsNull_ShouldThrowArgumentNullException()
 	{
 		ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
