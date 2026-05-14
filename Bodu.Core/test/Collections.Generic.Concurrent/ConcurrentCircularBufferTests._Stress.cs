@@ -1078,12 +1078,19 @@ public partial class ConcurrentCircularBufferTests
     public void StressTest_WhenEventHandlersSubscribedAndUnsubscribedConcurrently_ShouldDeliverEventsConsistently()
     {
         const int capacity = 4;
+        const int writerCount = 2;
+        const int subscriberCount = 4;
+        const int workerCount = writerCount + subscriberCount;
         const int durationMs = 2_000;
+        const int startupTimeoutMs = 5_000;
         const int deadlockTimeoutMs = durationMs + 5_000;
 
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: true);
+
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
+        using var workersReady = new CountdownEvent(workerCount);
+        using var subscribersExercised = new CountdownEvent(subscriberCount);
 
         var faults = 0;
         var stableHandlerEvictions = 0;
@@ -1094,23 +1101,29 @@ public partial class ConcurrentCircularBufferTests
 
         Exception? firstException = null;
 
-        // Fill the buffer before the concurrent phase so every successful enqueue in overwrite
-        // mode has eviction pressure available immediately.
         for (var i = 0; i < capacity; i++)
+        {
             buffer.Enqueue(new TestItem(i));
+        }
 
-        // Keep one observer subscribed for the whole stress run. This avoids relying on narrow
-        // transient subscription windows to prove that event delivery continued during churn.
         Action<TestItem?> stableHandler = _ => Interlocked.Increment(ref stableHandlerEvictions);
         buffer.ItemEvicted += stableHandler;
 
         try
         {
-            // Writers keep the buffer over capacity, causing continuous evictions. Event delivery
-            // exceptions would surface through this enqueue path.
-            IEnumerable<Task> writers = Enumerable.Range(0, 4).Select(_ =>
-                Task.Run(() =>
+            Task CreateWorker(Action action)
+            {
+                return Task.Factory.StartNew(
+                    action,
+                    CancellationToken.None,
+                    TaskCreationOptions.LongRunning,
+                    TaskScheduler.Default);
+            }
+
+            Task[] writers = Enumerable.Range(0, writerCount)
+                .Select(_ => CreateWorker(() =>
                 {
+                    workersReady.Signal();
                     startGate.Wait();
 
                     var value = 0;
@@ -1129,18 +1142,18 @@ public partial class ConcurrentCircularBufferTests
                             cts.Cancel();
                         }
 
-                        Thread.SpinWait(50);
+                        Thread.Yield();
                     }
-                }));
+                }))
+                .ToArray();
 
-            // Transient subscribers repeatedly add and remove handlers while evictions are firing.
-            // The handler itself is deliberately simple so failures point at event lifecycle or
-            // invocation-list handling rather than test logic.
-            IEnumerable<Task> subscribers = Enumerable.Range(0, 4).Select(_ =>
-                Task.Run(() =>
+            Task[] subscribers = Enumerable.Range(0, subscriberCount)
+                .Select(_ => CreateWorker(() =>
                 {
+                    workersReady.Signal();
                     startGate.Wait();
 
+                    var signaledFirstSubscribe = false;
                     Action<TestItem?> transientHandler = _ => Interlocked.Increment(ref transientHandlerEvictions);
 
                     while (!cts.Token.IsCancellationRequested)
@@ -1151,9 +1164,16 @@ public partial class ConcurrentCircularBufferTests
                         {
                             buffer.ItemEvicted += transientHandler;
                             subscribed = true;
+
                             Interlocked.Increment(ref subscribeOperations);
 
-                            Thread.SpinWait(100);
+                            if (!signaledFirstSubscribe)
+                            {
+                                subscribersExercised.Signal();
+                                signaledFirstSubscribe = true;
+                            }
+
+                            Thread.Yield();
                         }
                         catch (Exception ex)
                         {
@@ -1179,15 +1199,40 @@ public partial class ConcurrentCircularBufferTests
                             }
                         }
 
-                        Thread.SpinWait(100);
+                        Thread.Yield();
                     }
-                }));
+                }))
+                .ToArray();
 
             Task[] allTasks = writers.Concat(subscribers).ToArray();
 
-            // Release writers and subscriber churn together so event invocation races with handler
-            // add/remove operations.
+            var allWorkersReachedStartGate = workersReady.Wait(startupTimeoutMs);
+
+            if (!allWorkersReachedStartGate)
+            {
+                cts.Cancel();
+                startGate.Set();
+                Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+                Assert.Fail(
+                    $"Not all stress workers reached the start gate within {startupTimeoutMs} ms. " +
+                    $"This indicates test scheduling starvation rather than event-handler failure.");
+            }
+
             startGate.Set();
+
+            var allSubscribersStarted = subscribersExercised.Wait(startupTimeoutMs);
+
+            if (!allSubscribersStarted)
+            {
+                cts.Cancel();
+                Task.WaitAll(allTasks, deadlockTimeoutMs);
+
+                Assert.Fail(
+                    $"Transient subscriber workers did not perform their first subscription within {startupTimeoutMs} ms. " +
+                    $"SubscribeOperations={subscribeOperations}, UnsubscribeOperations={unsubscribeOperations}, " +
+                    $"WriteAttempts={writeAttempts}, Faults={faults}, FirstException={firstException}");
+            }
 
             Thread.Sleep(durationMs);
             cts.Cancel();
