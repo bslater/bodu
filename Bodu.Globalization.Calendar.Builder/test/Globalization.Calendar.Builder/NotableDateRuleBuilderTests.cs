@@ -12,7 +12,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// Verifies the validation behaviour of <see cref="NotableDateRuleBuilder" />.
 /// </summary>
 [TestClass]
-public class NotableDateRuleBuilderTests
+public partial class NotableDateRuleBuilderTests
 {
     /// <summary>
     /// Verifies that <see cref="NotableDateRuleBuilder.Fixed(int, int, bool, bool)" /> throws
