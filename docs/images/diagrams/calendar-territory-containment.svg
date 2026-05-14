@@ -84,23 +84,17 @@
     </g>
 
     <!-- Query annotations -->
-    <g transform="translate(36 220)">
-      <text class="sub" x="0" y="0" text-anchor="start" font-weight="700" fill="#F8FAFC">Query semantics</text>
+    <g transform="translate(36 212)" style="text-anchor: start">
+      <text class="sub" x="0" y="0" style="text-anchor: start" font-weight="700" fill="#F8FAFC">Query semantics</text>
 
-      <text class="mut" x="0" y="20" text-anchor="start">
-        <tspan class="ok" font-weight="700">GetNotableDates(year, "AU")</tspan>
-        <tspan dx="6">→ rules at AU plus every AU-XX subdivision (national-level view)</tspan>
-      </text>
+      <text class="ok"  x="0"  y="18" style="text-anchor: start" font-weight="700">GetNotableDates(year, "AU")</text>
+      <text class="mut" x="20" y="32" style="text-anchor: start">→ rules at AU plus every AU-XX subdivision (national-level view)</text>
 
-      <text class="mut" x="0" y="38" text-anchor="start">
-        <tspan class="ok" font-weight="700">GetNotableDates(year, "AU-NSW")</tspan>
-        <tspan dx="6">→ rules at AU and at AU-NSW</tspan>
-        <tspan class="err" dx="6" font-weight="700">(no AU-VIC, AU-QLD, AU-WA, or AU-NT rules)</tspan>
-      </text>
+      <text class="ok"  x="0"   y="50" style="text-anchor: start" font-weight="700">GetNotableDates(year, "AU-NSW")</text>
+      <text class="mut" x="20"  y="64" style="text-anchor: start">→ rules at AU and at AU-NSW</text>
+      <text class="err" x="200" y="64" style="text-anchor: start" font-weight="700">(no AU-VIC, AU-QLD, AU-WA, or AU-NT rules)</text>
 
-      <text class="mut" x="0" y="56" text-anchor="start">
-        <tspan>Rules with no territory code apply globally — included in every query regardless of country or subdivision.</tspan>
-      </text>
+      <text class="mut" x="0" y="84" style="text-anchor: start">Rules with no territory code apply globally — included in every query regardless of country or subdivision.</text>
     </g>
   </g>
 </svg>

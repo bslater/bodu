@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="crc-title crc-desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 340" role="img" aria-labelledby="crc-title crc-desc">
   <title id="crc-title">Table-driven CRC pipeline</title>
   <desc id="crc-desc">A table-driven CRC pipeline: each message byte is XORed with the low byte of the accumulator, the resulting index looks up a precomputed word in the 256-entry table, the accumulator shifts right by eight, and the table word is XORed back in. After the final byte, the accumulator is XORed with XOR-out, reflected (if configured), and masked to the CRC width.</desc>
 
@@ -37,10 +37,10 @@
     </marker>
   </defs>
 
-  <rect class="bg" width="820" height="320"/>
+  <rect class="bg" width="820" height="340"/>
 
   <g transform="translate(10 10)">
-    <rect class="panel" width="800" height="300" rx="8"/>
+    <rect class="panel" width="800" height="320" rx="8"/>
     <rect class="header" width="800" height="30" rx="8"/>
     <rect class="header" y="22" width="800" height="8"/>
     <text class="title" x="16" y="20">Table-driven CRC — one byte per iteration</text>
@@ -91,7 +91,7 @@
       <rect class="cipher-e" x="-44" y="-14" width="88" height="28" rx="5"/>
       <text class="cipher-text" x="0" y="5">index &amp; 0xFF</text>
     </g>
-    <path class="wire-byte" d="M 230 104 L 230 150 L 316 150" marker-end="url(#arr-b)"/>
+    <path class="wire-byte" d="M 230 104 L 230 150 L 310 150" marker-end="url(#arr-b)"/>
 
     <!-- table -->
     <g transform="translate(560 170)">
@@ -127,7 +127,7 @@
     <text class="sub-muted" x="214" y="240" text-anchor="start">updated reg (loop for next byte)</text>
 
     <!-- Finalisation strip -->
-    <g transform="translate(40 262)">
+    <g transform="translate(40 300)">
       <rect class="tag" x="0" y="-14" width="720" height="28" rx="4" opacity="0.92"/>
       <text class="label" x="12" y="5" fill="#0F172A">Finalise:</text>
       <text class="sub" x="90" y="5" fill="#0F172A">reg ⊕= XOR-out &#160;·&#160; reflect-out if set &#160;·&#160; mask to width N (1 ≤ N ≤ 64) &#160;·&#160; emit as big-endian bytes</text>

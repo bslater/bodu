@@ -114,8 +114,7 @@
       <text class="pin-t" x="0" y="3" fill="#0F172A">Tail</text>
     </g>
     <line class="wy" x1="328" y1="248" x2="293" y2="252" marker-end="url(#cb-ay)"/>
-    <text class="mut" x="267" y="285">next free →</text>
-    <text class="mut" x="267" y="296">Enqueue writes here</text>
+    <text class="mut" x="267" y="290">next free — Enqueue writes here</text>
 
     <!-- direction-of-rotation arc -->
     <path class="arc-cw" d="M 200 145 A 40 40 0 0 1 240 185" marker-end="url(#cb-a)"/>

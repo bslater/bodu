@@ -89,13 +89,13 @@
     <!-- Legend at bottom -->
     <g transform="translate(40 210)">
       <rect class="nom" width="14" height="14" rx="2"/>
-      <text class="mut" x="22" y="11" text-anchor="start">nominal date (pre-adjustment)</text>
+      <text class="mut" x="22" y="11" style="text-anchor: start">nominal date (pre-adjustment)</text>
 
       <rect class="obs" x="240" width="14" height="14" rx="2"/>
-      <text class="mut" x="262" y="11" text-anchor="start">observed date (consumers see this)</text>
+      <text class="mut" x="262" y="11" style="text-anchor: start">observed date (consumers see this)</text>
 
       <rect class="we" x="500" width="14" height="14" rx="2"/>
-      <text class="mut" x="522" y="11" text-anchor="start">weekend</text>
+      <text class="mut" x="522" y="11" style="text-anchor: start">weekend</text>
     </g>
   </g>
 </svg>

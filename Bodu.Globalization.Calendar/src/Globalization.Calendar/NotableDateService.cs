@@ -19,6 +19,14 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
+/// This type is the orchestrator at the centre of the resolution pipeline. The pipeline reads
+/// <c>Rule source → NotableDateRule → Resolution strategy → Nominal date → Adjustment pipeline → Resolved NotableDate → Consumer query</c>;
+/// the documentation introduction (<c>docs/calendar/index.md</c>) and the concepts page
+/// (<c>docs/calendar/concepts.md</c>) render this flow as a diagram and provide the surrounding vocabulary, and the
+/// <c>guides/calendar/*</c> walk-throughs cover authoring rules, working-day arithmetic, observance adjustments, territories,
+/// and data packs.
+/// </para>
+/// <para>
 /// The service caches resolved notable dates per year. Years are generated lazily on first access and cleared via
 /// <see cref="Invalidate()" /> or <see cref="Invalidate(int)" />. The cache is thread-safe under concurrent reads and writes.
 /// </para>
@@ -35,6 +43,46 @@ namespace Bodu.Globalization.Calendar;
 /// base rule providers, weekend definitions, override providers, algorithm registries, custom adjustment handlers, collision
 /// resolvers, and name localizers, enabling complete control over the resolution pipeline.
 /// </para>
+/// <para>
+/// Pipeline stage cross-reference:
+/// </para>
+/// <list type="bullet">
+///   <item>
+///     <description>
+///       <b>Rule source</b> — supplied via the <c>ruleProviders</c> constructor parameter using
+///       <see cref="INotableDateRuleProvider" /> implementations such as <see cref="XmlResourceNotableDateRuleProvider" /> or
+///       <see cref="JsonResourceNotableDateRuleProvider" />, or via companion <c>Bodu.Globalization.Calendar.Data.*</c> packs.
+///     </description>
+///   </item>
+///   <item>
+///     <description>
+///       <b>NotableDateRule → Resolution strategy</b> — each <see cref="NotableDateRule" /> declares a
+///       <see cref="DateResolutionStrategy" /> (<c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, or
+///       <c>Algorithm</c>) that the resolver dispatches to per year, producing the <i>nominal</i> date.
+///     </description>
+///   </item>
+///   <item>
+///     <description>
+///       <b>Adjustment pipeline</b> — <see cref="ObservanceAdjustment" /> entries on the rule fire through registered
+///       <see cref="IAdjustmentHandler" /> instances (managed by <see cref="AdjustmentHandlerRegistry" />), yielding the
+///       <i>observed</i> date and populating <see cref="NotableDate.WasAdjusted" /> / <see cref="NotableDate.AdjustmentReason" />.
+///     </description>
+///   </item>
+///   <item>
+///     <description>
+///       <b>Resolved NotableDate</b> — an immutable <see cref="NotableDate" /> is cached per year. <see cref="Invalidate()" />
+///       drops all years; <see cref="Invalidate(int)" /> drops a single year.
+///     </description>
+///   </item>
+///   <item>
+///     <description>
+///       <b>Consumer query</b> — <c>GetNotableDates</c> and its overloads return the resolved set;
+///       <see cref="NotableDateFilter" /> composes territory / category / tag predicates;
+///       <c>Bodu.Extensions.NotableDateOnlyExtensions</c> and <c>NotableDateTimeExtensions</c> provide working-day arithmetic
+///       (<c>IsWorkingDay</c>, <c>AddWorkingDays</c>, <c>NextWorkingDay</c>, …).
+///     </description>
+///   </item>
+/// </list>
 /// </remarks>
 /// <example>
 /// <para>Construct with the built-in minimal rule set, then layer Australian public holidays from a companion data pack:</para>
@@ -60,6 +108,14 @@ namespace Bodu.Globalization.Calendar;
 /// service.Invalidate();
 /// </code>
 /// </example>
+/// <seealso cref="INotableDateService" />
+/// <seealso cref="NotableDateRule" />
+/// <seealso cref="NotableDate" />
+/// <seealso cref="NotableDateFilter" />
+/// <seealso cref="ObservanceAdjustment" />
+/// <seealso cref="INotableDateRuleProvider" />
+/// <seealso cref="INotableDateRuleOverrideProvider" />
+/// <seealso cref="NotableDateServiceOptions" />
 public sealed class NotableDateService
     : INotableDateService
 {

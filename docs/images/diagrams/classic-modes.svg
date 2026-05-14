@@ -78,7 +78,7 @@
         <rect class="cipher-out" x="-22" y="112" width="44" height="18" rx="3"/>
         <text class="label" x="0" y="125" text-anchor="middle" fill="#0F172A">C₃</text>
       </g>
-      <text class="sub" x="20" y="68">Blocks encrypt independently — identical Pᵢ ⇒ identical Cᵢ (structural leak).</text>
+      <text class="sub" x="20" y="34">Blocks encrypt independently — identical Pᵢ ⇒ identical Cᵢ (structural leak).</text>
     </g>
   </g>
 
@@ -267,7 +267,7 @@
       <!-- Feedback: E₁ output → E₂ input, E₂ output → E₃ input, routed above cells -->
       <path class="wire-feedback" d="M 250 27 L 266 27 L 266 -8 L 368 -8 L 368 27 L 370 27" marker-end="url(#arrv)"/>
       <path class="wire-feedback" d="M 430 27 L 446 27 L 446 -8 L 548 -8 L 548 27 L 550 27" marker-end="url(#arrv)"/>
-      <text class="sub" x="14" y="22">Keystream feeds forward (independent of plaintext) — encrypt = decrypt.</text>
+      <text class="sub" x="14" y="100">Keystream feeds forward (independent of plaintext) — encrypt = decrypt.</text>
     </g>
   </g>
 
@@ -330,7 +330,7 @@
         <rect class="cipher-out" x="-22" y="124" width="44" height="18" rx="3"/>
         <text class="label" x="0" y="137" text-anchor="middle" fill="#0F172A">C₃</text>
       </g>
-      <text class="sub" x="20" y="10">Counters are independent — trivially parallelisable and random-access seekable.</text>
+      <text class="sub" x="20" y="22">Counters are independent — trivially parallelisable and random-access seekable.</text>
     </g>
   </g>
 

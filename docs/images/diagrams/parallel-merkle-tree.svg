@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="pmerkle-title pmerkle-desc">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" role="img" aria-labelledby="pmerkle-title pmerkle-desc">
   <title id="pmerkle-title">ParallelMerkleTreeHash — concurrent level-worker pipeline</title>
   <desc id="pmerkle-desc">Swim-lane diagram showing the producer/dispatcher thread reading the input stream, slicing it into blocks, hashing leaves, and submitting them to level 0's channel; one dedicated worker task per tree level consumes from its own Channel&lt;byte[]&gt;, groups incoming nodes by fan-out F, hashes each full group, and submits the parent to the next level's channel. Adjacent lanes are active at the same wall-clock timestep, demonstrating parallelism across levels.</desc>
 
@@ -52,14 +52,14 @@
     </marker>
   </defs>
 
-  <rect class="bg" width="900" height="560"/>
+  <rect class="bg" width="900" height="600"/>
 
   <g transform="translate(10 10)">
-    <rect class="panel" width="880" height="540" rx="8"/>
-    <rect class="header" width="880" height="32" rx="8"/>
-    <rect class="header" y="24" width="880" height="8"/>
+    <rect class="panel" width="880" height="580" rx="8"/>
+    <rect class="header" width="880" height="48" rx="8"/>
+    <rect class="header" y="40" width="880" height="8"/>
     <text class="title" x="16" y="21">ParallelMerkleTreeHash — concurrent level-worker pipeline</text>
-    <text class="formula" x="880" y="21" text-anchor="end" dx="-16">one Channel&lt;byte[]&gt; + one worker Task per tree level · adjacent lanes run in parallel</text>
+    <text class="formula" x="864" y="40" text-anchor="end">one Channel&lt;byte[]&gt; + one worker Task per tree level · adjacent lanes run in parallel</text>
 
     <!-- ================================================================ -->
     <!-- Input stream across the top (one chunk per timestep)              -->
@@ -289,7 +289,7 @@
     <!-- ================================================================ -->
     <!-- Legend (bottom-right)                                             -->
     <!-- ================================================================ -->
-    <g transform="translate(16 516)">
+    <g transform="translate(16 556)">
       <rect class="ev-dispatch" x="0" y="-6" width="16" height="10" rx="2"/>
       <text class="sub" x="20" y="2">dispatcher (hash leaf)</text>
 
