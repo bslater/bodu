@@ -393,15 +393,21 @@ public partial class ConcurrentCircularBufferTests
     public void StressTest_WhenAllowOverwriteToggledConcurrently_ShouldNeverCorruptState()
     {
         const int capacity = 8;
+        const int writerCount = 4;
+        const int readerCount = 2;
+        const int togglerCount = 2;
+        const int workerCount = writerCount + readerCount + togglerCount;
         const int durationMs = 2_000;
+        const int startupTimeoutMs = 5_000;
         const int participationTimeoutMs = 5_000;
-        const int deadlockTimeoutMs = durationMs + participationTimeoutMs + 5_000;
+        const int deadlockTimeoutMs = durationMs + startupTimeoutMs + participationTimeoutMs + 5_000;
         const int minimumToggleOperations = 64;
 
         var buffer = new ConcurrentCircularBuffer<TestItem>(capacity, allowOverwrite: false);
         using var cts = new CancellationTokenSource();
         using var startGate = new ManualResetEventSlim(false);
         using var firstToggleObserved = new ManualResetEventSlim(false);
+        using var workersReady = new CountdownEvent(workerCount);
 
         var unexpectedFaults = 0;
         var expectedEnqueueFaults = 0;
@@ -437,11 +443,21 @@ public partial class ConcurrentCircularBufferTests
 
         buffer.AllowOverwrite = false;
 
+        // Dedicate a long-running thread to each worker so the CI thread pool cannot starve the
+        // toggler tasks of a timeslice before the start gate opens.
+        Task CreateWorker(Action action) =>
+            Task.Factory.StartNew(
+                action,
+                CancellationToken.None,
+                TaskCreationOptions.LongRunning,
+                TaskScheduler.Default);
+
         // Writers use Enqueue rather than TryEnqueue so the throwing path is exercised while
         // AllowOverwrite changes and readers concurrently alter fullness.
-        IEnumerable<Task> writers = Enumerable.Range(0, 4).Select(_ =>
-            Task.Run(() =>
+        Task[] writers = Enumerable.Range(0, writerCount)
+            .Select(_ => CreateWorker(() =>
             {
+                workersReady.Signal();
                 startGate.Wait();
 
                 var value = 0;
@@ -465,13 +481,15 @@ public partial class ConcurrentCircularBufferTests
                         cts.Cancel();
                     }
 
-                    Thread.SpinWait(50);
+                    Thread.Yield();
                 }
-            }));
+            }))
+            .ToArray();
 
-        IEnumerable<Task> readers = Enumerable.Range(0, 2).Select(_ =>
-            Task.Run(() =>
+        Task[] readers = Enumerable.Range(0, readerCount)
+            .Select(_ => CreateWorker(() =>
             {
+                workersReady.Signal();
                 startGate.Wait();
 
                 while (!cts.Token.IsCancellationRequested)
@@ -488,9 +506,10 @@ public partial class ConcurrentCircularBufferTests
                         cts.Cancel();
                     }
 
-                    Thread.SpinWait(100);
+                    Thread.Yield();
                 }
-            }));
+            }))
+            .ToArray();
 
         // Togglers alternate AllowOverwrite at high frequency, creating transitions that race
         // with throwing Enqueue and reader-driven fullness changes.
@@ -498,9 +517,10 @@ public partial class ConcurrentCircularBufferTests
         // The loop deliberately continues after cancellation until a minimum number of toggle
         // operations has been observed. This prevents the stress test from falsely failing when
         // the scheduler delays the toggler tasks until the rest of the workload is already stopping.
-        IEnumerable<Task> togglers = Enumerable.Range(0, 2).Select(_ =>
-            Task.Run(() =>
+        Task[] togglers = Enumerable.Range(0, togglerCount)
+            .Select(_ => CreateWorker(() =>
             {
+                workersReady.Signal();
                 startGate.Wait();
 
                 var value = 0;
@@ -524,11 +544,17 @@ public partial class ConcurrentCircularBufferTests
                         cts.Cancel();
                     }
 
-                    Thread.SpinWait(200);
+                    Thread.Yield();
                 }
-            }));
+            }))
+            .ToArray();
 
         Task[] allTasks = writers.Concat(readers).Concat(togglers).ToArray();
+
+        // Do not open the gate until every long-running worker is scheduled on a thread and
+        // parked at the gate. This guarantees that the stress window is dominated by concurrent
+        // work rather than by thread-pool startup latency on a busy CI runner.
+        var workersStarted = workersReady.Wait(startupTimeoutMs);
 
         // Release writers, readers, and togglers together so the throwing Enqueue path races
         // with AllowOverwrite transitions and capacity changes.
@@ -537,7 +563,7 @@ public partial class ConcurrentCircularBufferTests
         // Do not start the timed stress window until at least one toggle has actually occurred.
         // This keeps the test focused on concurrent AllowOverwrite transitions rather than on
         // whether the toggler tasks happened to receive a timeslice before cancellation.
-        var togglersStarted = firstToggleObserved.Wait(participationTimeoutMs);
+        var togglersStarted = workersStarted && firstToggleObserved.Wait(participationTimeoutMs);
 
         if (togglersStarted)
             Thread.Sleep(durationMs);
@@ -550,9 +576,10 @@ public partial class ConcurrentCircularBufferTests
             $"Count={buffer.Count}, Capacity={buffer.Capacity}, EnqueueAttempts={enqueueAttempts}, " +
             $"EnqueueSuccesses={enqueueSuccesses}, ExpectedEnqueueFaults={expectedEnqueueFaults}, " +
             $"ReadAttempts={readAttempts}, ToggleOperations={toggleOperations}, " +
-            $"MinimumToggleOperations={minimumToggleOperations}, TogglersStarted={togglersStarted}, " +
-            $"WarmupEnqueueSuccesses={warmupEnqueueSuccesses}, WarmupExpectedEnqueueFaults={warmupExpectedEnqueueFaults}, " +
-            $"UnexpectedFaults={unexpectedFaults}, Completed={completed}, FirstUnexpectedException={firstUnexpectedException}");
+            $"MinimumToggleOperations={minimumToggleOperations}, WorkersStarted={workersStarted}, " +
+            $"TogglersStarted={togglersStarted}, WarmupEnqueueSuccesses={warmupEnqueueSuccesses}, " +
+            $"WarmupExpectedEnqueueFaults={warmupExpectedEnqueueFaults}, UnexpectedFaults={unexpectedFaults}, " +
+            $"Completed={completed}, FirstUnexpectedException={firstUnexpectedException}");
 
         Assert.IsTrue(
             completed,
@@ -562,6 +589,10 @@ public partial class ConcurrentCircularBufferTests
             0,
             unexpectedFaults,
             $"Only InvalidOperationException is acceptable from Enqueue when AllowOverwrite is false. First unexpected exception: {firstUnexpectedException}");
+
+        Assert.IsTrue(
+            workersStarted,
+            $"All {workerCount} workers must reach the start gate within {startupTimeoutMs} ms before the stress window opens.");
 
         Assert.IsTrue(
             togglersStarted,
