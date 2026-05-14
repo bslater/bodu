@@ -44,6 +44,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </code>
 /// </example>
 /// </remarks>
+/// <seealso cref="Fletcher{T}"/>
+/// <seealso cref="Fletcher16"/>
+/// <seealso cref="Fletcher64"/>
 public sealed class Fletcher32
     : Fletcher<Fletcher32>
 {

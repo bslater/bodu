@@ -48,6 +48,10 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso cref="Threefish256Cipher"/>
+/// <seealso cref="Skein{T}"/>
+/// <seealso cref="Skein512"/>
+/// <seealso cref="Skein1024"/>
+/// <seealso cref="Threefish256"/>
 public sealed class Skein256
     : Skein<Skein256>
 {

@@ -56,6 +56,9 @@ namespace Bodu.IO.Hashing;
 /// </code>
 /// </example>
 /// </remarks>
+/// <seealso cref="CityHash{T}"/>
+/// <seealso cref="CityHash32"/>
+/// <seealso cref="CityHash64"/>
 public sealed class CityHash128
     : CityHash<CityHash128>
 {

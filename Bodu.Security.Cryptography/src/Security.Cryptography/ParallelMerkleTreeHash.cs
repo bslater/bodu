@@ -120,6 +120,7 @@ namespace Bodu.Security.Cryptography;
 /// </code>
 /// </example>
 /// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide</seealso>
+/// <seealso cref="MerkleTreeHash"/>
 public sealed class ParallelMerkleTreeHash : IDisposable
 {
     private readonly int _blockSize;

@@ -9,7 +9,7 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a 128-bit keyed hash using the <c>SipHash</c> algorithm by Aumasson and Bernstein. Produces a 16-byte authentication tag
+/// Computes a 128-bit keyed hash using the <see cref="SipHash{T}"/> algorithm by Aumasson and Bernstein. Produces a 16-byte authentication tag
 /// from a 128-bit key, offering increased collision resistance over <see cref="SipHash64"/>. This class cannot be inherited.
 /// </summary>
 /// <remarks>
@@ -42,6 +42,9 @@ namespace Bodu.Security.Cryptography;
 /// byte[] tag = sip.ComputeHash(message);
 /// </code>
 /// </example>
+/// <seealso cref="SipHash{T}"/>
+/// <seealso cref="SipHash64"/>
+/// <seealso href="../guides/cryptography/hashing.html#pattern-2--a-keyed-hash-siphash">Keyed-hash (SipHash) guide</seealso>
 public sealed class SipHash128
     : SipHash<SipHash128>
 {

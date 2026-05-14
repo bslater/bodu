@@ -27,7 +27,7 @@ namespace Bodu.Extensions;
 /// of API regardless of how the caller prefers to express the window.
 /// </para>
 /// <para>
-/// All methods validate their inputs through <c>ThrowHelper</c> and reject <see langword="null"/> arrays with
+/// All methods validate their inputs through <see cref="ThrowHelper"/> and reject <see langword="null"/> arrays with
 /// <see cref="ArgumentNullException"/>. Reversal is genuinely in-place; <c>Slice</c> and <c>Copy</c> always allocate.
 /// Operations are not thread-safe — callers are responsible for synchronizing access to a shared array.
 /// </para>

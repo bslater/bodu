@@ -58,6 +58,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] tag = sipHash.ComputeHash(message);
 /// </code>
 /// </example>
+/// <seealso cref="SipHash64"/>
+/// <seealso cref="SipHash128"/>
 public abstract class SipHash<T>
     : KeyedBlockHashAlgorithm<T>
     where T : SipHash<T>, new()

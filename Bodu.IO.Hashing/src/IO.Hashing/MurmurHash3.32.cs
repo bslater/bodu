@@ -58,6 +58,8 @@ namespace Bodu.IO.Hashing;
 /// </code>
 /// </example>
 /// </remarks>
+/// <seealso cref="MurmurHash3{T}"/>
+/// <seealso cref="MurmurHash3_128"/>
 public sealed class MurmurHash3_32
     : MurmurHash3<MurmurHash3_32>
 {

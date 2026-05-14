@@ -32,7 +32,7 @@ namespace Bodu.Collections.Generic.Extensions;
 /// <para>
 /// Where the contract is naturally lazy the implementation defers all work until enumeration begins; where it is naturally eager
 /// (the <c>Aggregate</c>, <c>ContainsAll</c>, and <c>ContainsAny</c> families) the source is enumerated exactly once. Argument
-/// validation runs eagerly via <c>ThrowHelper</c>, so callers see <see cref="ArgumentNullException"/> at the call site rather
+/// validation runs eagerly via <see cref="ThrowHelper"/>, so callers see <see cref="ArgumentNullException"/> at the call site rather
 /// than mid-iteration. Methods that accept an <see cref="IEqualityComparer{T}"/> default to
 /// <see cref="EqualityComparer{T}.Default"/> when one is not supplied.
 /// </para>
