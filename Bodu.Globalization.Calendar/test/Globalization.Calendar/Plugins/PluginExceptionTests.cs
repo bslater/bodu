@@ -126,4 +126,80 @@ public sealed class PluginExceptionTests
 
 		Assert.AreEqual("evaluator", ex.ParamName);
 	}
+
+	/// <summary>
+	/// Verifies that the parameterless constructor on <see cref="NotableDatePluginException" /> produces an
+	/// instance with the framework-default message and no inner exception.
+	/// </summary>
+	[TestMethod]
+	public void NotableDatePluginException_WhenConstructedWithoutArguments_ShouldExposeDefaultMessageAndNoInner()
+	{
+		var ex = new NotableDatePluginException();
+
+		Assert.IsFalse(string.IsNullOrEmpty(ex.Message));
+		Assert.IsNull(ex.InnerException);
+	}
+
+	/// <summary>
+	/// Verifies that the parameterless and single-string constructors on <see cref="PluginActivationException" />
+	/// produce instances with the expected message and no inner exception, and that the message+inner
+	/// constructor preserves both.
+	/// </summary>
+	[TestMethod]
+	public void PluginActivationException_BasicCtors_ShouldExposeMessageAndInner()
+	{
+		var parameterless = new PluginActivationException();
+		var messageOnly = new PluginActivationException("activation failed");
+		var inner = new InvalidOperationException("root");
+		var withInner = new PluginActivationException("wrapped", inner);
+
+		Assert.IsFalse(string.IsNullOrEmpty(parameterless.Message));
+		Assert.IsNull(parameterless.InnerException);
+		Assert.AreEqual("activation failed", messageOnly.Message);
+		Assert.IsNull(messageOnly.InnerException);
+		Assert.AreEqual("wrapped", withInner.Message);
+		Assert.AreSame(inner, withInner.InnerException);
+	}
+
+	/// <summary>
+	/// Verifies that the parameterless and single-string constructors on
+	/// <see cref="PluginMissingAttributeException" /> produce instances with the expected message and no inner
+	/// exception, and that the message+inner constructor preserves both.
+	/// </summary>
+	[TestMethod]
+	public void PluginMissingAttributeException_BasicCtors_ShouldExposeMessageAndInner()
+	{
+		var parameterless = new PluginMissingAttributeException();
+		var messageOnly = new PluginMissingAttributeException("attribute missing");
+		var inner = new InvalidOperationException("root");
+		var withInner = new PluginMissingAttributeException("wrapped", inner);
+
+		Assert.IsFalse(string.IsNullOrEmpty(parameterless.Message));
+		Assert.IsNull(parameterless.InnerException);
+		Assert.AreEqual("attribute missing", messageOnly.Message);
+		Assert.IsNull(messageOnly.InnerException);
+		Assert.AreEqual("wrapped", withInner.Message);
+		Assert.AreSame(inner, withInner.InnerException);
+	}
+
+	/// <summary>
+	/// Verifies that the parameterless and single-string constructors on
+	/// <see cref="PluginNotTrustedException" /> produce instances with the expected message and no inner
+	/// exception, and that the message+inner constructor preserves both.
+	/// </summary>
+	[TestMethod]
+	public void PluginNotTrustedException_BasicCtors_ShouldExposeMessageAndInner()
+	{
+		var parameterless = new PluginNotTrustedException();
+		var messageOnly = new PluginNotTrustedException("not trusted");
+		var inner = new InvalidOperationException("root");
+		var withInner = new PluginNotTrustedException("wrapped", inner);
+
+		Assert.IsFalse(string.IsNullOrEmpty(parameterless.Message));
+		Assert.IsNull(parameterless.InnerException);
+		Assert.AreEqual("not trusted", messageOnly.Message);
+		Assert.IsNull(messageOnly.InnerException);
+		Assert.AreEqual("wrapped", withInner.Message);
+		Assert.AreSame(inner, withInner.InnerException);
+	}
 }
