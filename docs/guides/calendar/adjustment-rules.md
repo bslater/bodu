@@ -4,25 +4,90 @@ title: Observance adjustment rules
 
 # Observance adjustment rules
 
-An `ObservanceAdjustment` shifts a resolved anchor date when a trigger condition fires. Most
-real-world public holiday systems require adjustments: Christmas moving to a Monday when it
-falls on a Saturday, ANZAC Day moving to the next weekday when it collides with a weekend, or
-a substitute Monday for any date that falls on a Sunday. This page covers the full trigger and
-action catalogues, how multiple adjustments chain together, how scoping restricts adjustments
-to specific territories or years, and how to implement a custom adjustment handler.
+An `ObservanceAdjustment` shifts a resolved *nominal* date — the date the resolution strategy computed — into an *observed* date when a trigger condition fires. Most real-world public holiday systems require adjustments: Christmas moving to a Monday when it falls on a Saturday, ANZAC Day moving to the next weekday when it collides with a weekend, or a substitute Monday for any date that falls on a Sunday. This page covers the full trigger and action catalogues, how multiple adjustments chain together, how scoping restricts adjustments to specific territories or years, and how to implement a custom adjustment handler.
 
 For the field-by-field reference, see [NotableDateRule and ObservanceAdjustment reference](rule-reference.md).
 For where adjustments sit in the overall resolution process, see [The resolution pipeline](resolution-pipeline.md).
 
 ---
 
+## Nominal date vs. observed date
+
+Two terms appear throughout this page and the wider documentation:
+
+- **Nominal date** — what the rule's resolution strategy computes, before any adjustment runs. For Christmas Day this is *25 December*; for Easter Monday it is *Easter Sunday + 1 day*. The nominal date depends only on the rule and the year.
+- **Observed date** — what the adjustment pipeline emits and what consumers actually see in `NotableDate.Date`. When the nominal date is acceptable (e.g. Christmas falls on a Thursday) the observed date equals the nominal. When an adjustment fires (e.g. Christmas falls on a Saturday and a weekend-rollover adjustment relocates it) the observed date is the *substitute*.
+
+A resolved `NotableDate` always carries the observed date. The nominal-and-trigger pair is preserved in `NotableDate.AdjustmentReason` whenever `WasAdjusted` is `true`. The reason values map back to the rule that fired:
+
+| `AdjustmentReason` value | Means |
+|---|---|
+| `None` | No adjustment fired; observed date equals nominal date. |
+| `Weekend` | Adjustment fired because the nominal date fell on a weekend. |
+| `DayOfWeek` | Adjustment fired because the nominal date matched a specific weekday trigger. |
+| `NonWorkingDay` | Adjustment fired because the nominal date was already a non-working day. |
+| `LeapYear` | Adjustment fired because the year was a leap year. |
+| `FixedDateRange` | Adjustment fired because the nominal date was before or after a configured comparison date. |
+| `Custom` | A custom `IAdjustmentHandler` produced the observed date. |
+
+Most consumer code only reads `NotableDate.Date` (the observed date). Audit-style code that needs the original nominal date — for example, "show me every holiday whose nominal date fell on a weekend in 2026" — reads `NotableDate.AdjustmentReason` to filter and then inspects `WasAdjusted` + the original date on the reason.
+
+## Adjust in place vs. emit an additional observed date
+
+Two jurisdictional styles dominate real-world public-holiday law, and `ObservanceAdjustment` supports both.
+
+**Adjust in place — the nominal date is gone.** The adjustment relocates the single occurrence to a new observed date. There is one `NotableDate` for the year; `Date` holds the observed date and `AdjustmentReason` records the original. Typical for Australian New Year's Day and most AU / NZ public holidays:
+
+```csharp
+// AU New Year's Day — when 1 Jan falls on a weekend, the single occurrence moves.
+Adjustments = ImmutableArray.Create(new ObservanceAdjustment
+{
+    Key     = "weekend-roll",
+    Trigger = AdjustmentTrigger.IfWeekend,
+    Action  = AdjustmentAction.MoveToNextWeekday,
+})
+```
+
+**Emit an additional observed date — keep the nominal *and* the substitute.** Author two rules: the nominal rule retains its date with no adjustment, and a companion "substitute holiday" rule fires only when the nominal date falls on a weekend (or another non-working day). The pipeline returns two `NotableDate` instances for the same year — one for the nominal, one for the substitute observed day. Typical for UK bank holidays:
+
+```csharp
+// UK Christmas Day — always observed on 25 December (cultural / religious).
+new NotableDateRule
+{
+    Name            = "Christmas Day",
+    Strategy        = DateResolutionStrategy.Fixed,
+    Month           = 12, Day = 25,
+    Category        = NotableDateCategory.Cultural,
+    IsNonWorkingDay = false,
+}
+
+// UK Christmas Day (substitute) — observed on the next weekday when 25 Dec is a weekend.
+new NotableDateRule
+{
+    Name            = "Christmas Day (substitute)",
+    Strategy        = DateResolutionStrategy.Fixed,
+    Month           = 12, Day = 25,
+    Category        = NotableDateCategory.Holiday,
+    IsNonWorkingDay = true,
+    Adjustments     = ImmutableArray.Create(new ObservanceAdjustment
+    {
+        Trigger = AdjustmentTrigger.IfWeekend,
+        Action  = AdjustmentAction.MoveToNextWeekday,
+    }),
+}
+```
+
+**When to use which.** Adjust in place when the law (or your authority) treats the holiday as moved — there is no separate observance on the nominal date. Emit an additional observed date when the nominal date retains its religious / cultural significance and the substitute is a working-day closure with its own legal weight (UK bank holidays). The data packs follow each jurisdiction's prevailing convention.
+
+---
+
 ## How adjustments sit in the pipeline
 
-After the anchor date is resolved (by `Fixed`, `DayOfWeekInMonth`, `OffsetFromAnchor`, or
+After the nominal date is resolved (by `Fixed`, `DayOfWeekInMonth`, `OffsetFromAnchor`, or
 `Algorithm` strategy), the adjustment chain runs:
 
 ```
-Anchor date resolved
+Nominal date resolved
     │
     ▼
 Adjustment 1 (lowest priority number)

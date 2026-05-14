@@ -4,6 +4,8 @@ title: Bodu.Globalization.Calendar — Getting started
 
 # Bodu.Globalization.Calendar — Getting started
 
+Unfamiliar with terms like *rule*, *nominal date*, *anchor*, or *territory*? Read [Core concepts](concepts.md) first.
+
 ## Install
 
 ```bash
@@ -121,7 +123,8 @@ Override providers can add new rules (via `INotableDateRuleProvider.LoadRules`),
 
 ## Where to go next
 
-- **[Bodu.Globalization.Calendar introduction](index.md)** — namespaces, headline types, scenarios.
-- **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — `NotableDateService` patterns, algorithms, rule authoring, data packs.
+- **[Bodu.Globalization.Calendar introduction](index.md)** — mental model, headline types, scenarios.
+- **[Core concepts](concepts.md)** — vocabulary used across the rest of the documentation.
+- **[Bodu.Globalization.Calendar guides](../../guides/calendar/index.md)** — `NotableDateService` patterns, algorithms, rule authoring, working-day arithmetic, territories, data packs.
 - **[Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md)** — full type-by-type docs.
 - **[Calendar data packs guide](../../guides/calendar/data-packs.md)** — composing `AmericasCalendarData` / `EuropeCalendarData` / `AsiaPacificCalendarData` providers.

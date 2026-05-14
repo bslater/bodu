@@ -347,6 +347,82 @@ The logical path `"MyApp/Calendar/Resources/my-rules.xml"` is mapped to the mani
 
 ---
 
+## XML vs. JSON parity
+
+`JsonResourceNotableDateRuleProvider` accepts the same document model as the XML provider — rule body, `use` directives, removals, override layering, and adjustments. The choice between formats is presentation-only; the same parser pipeline normalises both into `ParsedNotableDateDocument` before resolution. Mix the two freely in a single service — XML for one provider, JSON for another.
+
+The mapping is straightforward:
+
+| XML | JSON |
+|---|---|
+| `<NotableDates>` root | `{ "notableDates": [ ... ] }` |
+| `<NotableDate name="…">` | object with `"name"` |
+| `<Rule …>` | object inside `"rules"` |
+| `<Fixed month="…" day="…" />` | `"fixed": { "month": "…", "day": … }` |
+| `<DayOfWeekInMonth month="…" dayOfWeek="…" weekOrdinal="…" />` | `"dayOfWeekInMonth": { "month": "…", "dayOfWeek": "…", "weekOrdinal": "…" }` |
+| `<OffsetFromAnchor name="…" offset="…" />` | `"offsetFromAnchor": { "name": "…", "offset": … }` |
+| `<Algorithm key="…" />` | `"algorithm": { "key": "…" }` |
+| `<Tag>…</Tag>` | `"tags": [ "…" ]` |
+| `<Adjustment key="…" when="…" action="…" />` | object inside `"adjustments"` |
+| `<UseFrom resource="…">` + `<Use name="…" />` | `"useFrom": { "resource": "…", "uses": [ { "name": "…" } ] }` |
+
+### The same rule rendered in both formats
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<NotableDates xmlns="urn:bodu:globalization:calendar">
+  <NotableDate name="King's Birthday">
+    <Rule name="October Variant" category="Holiday" firstYear="2016">
+      <DayOfWeekInMonth month="October" dayOfWeek="Monday" weekOrdinal="First" />
+      <Tag>SourceOctober</Tag>
+    </Rule>
+  </NotableDate>
+</NotableDates>
+```
+
+```json
+{
+  "notableDates": [
+    {
+      "name": "King's Birthday",
+      "rules": [
+        {
+          "name": "October Variant",
+          "category": "Holiday",
+          "firstYear": 2016,
+          "dayOfWeekInMonth": {
+            "month": "October",
+            "dayOfWeek": "Monday",
+            "weekOrdinal": "First"
+          },
+          "tags": [ "SourceOctober" ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Loading a JSON provider
+
+`JsonResourceNotableDateRuleProvider` mirrors the XML provider's constructors — supply a logical resource path, a `ResourcePathResolver`, and (optionally) an assembly chain:
+
+```csharp
+using Bodu.Globalization.Calendar;
+
+var provider = new JsonResourceNotableDateRuleProvider(
+    "MyApp/Calendar/Resources/my-rules.json",
+    new ResourcePathResolver());
+
+var service = new NotableDateService(
+    ruleProviders:     new[] { provider },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+```
+
+Embed the JSON file the same way as XML — `<EmbeddedResource Include="…" />` in the `.csproj` — and the logical-to-manifest mapping rules in [Embedding as a resource](#embedding-as-a-resource) apply unchanged. Cross-format `useFrom` directives work too: a JSON rule file can reference an XML resource and vice versa, as long as the resolver finds them.
+
+---
+
 ## Approach 3 — Companion data assemblies
 
 Embedding rule XML in a separate assembly keeps rules and application code independently versioned. This is useful for distributing a rule library, loading market-specific calendars on demand, or shrinking the main assembly. Bodu ships official region packs that follow exactly this shape — see [Calendar data packs](data-packs.md) for the prebuilt Americas, Europe, and Asia-Pacific assemblies.

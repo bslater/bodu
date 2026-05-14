@@ -224,6 +224,55 @@ var service = new NotableDateService(
     algorithmRegistry: registry);
 ```
 
+## Algorithms as anchors
+
+Many holidays are not themselves algorithmic but are defined as a fixed offset from one. The Easter cluster is the canonical case — Good Friday, Easter Monday, Whit Monday, and Pentecost are all *Easter Sunday plus or minus N days* — and the library models this with the **algorithm-as-anchor** pattern:
+
+1. Define one rule whose strategy is `Algorithm` (or any other strategy that produces a useful base date). Give it a `Name`.
+2. Define each dependent rule with strategy `OffsetFromAnchor`, set `AnchorRuleName` to the algorithm rule's name, and set `OffsetDays` to the signed day-offset.
+
+The pipeline resolves the algorithm rule first, then feeds its resolved date into each offset rule. The algorithm runs only once per year per service, regardless of how many offset rules consume it.
+
+```csharp
+using Bodu.Globalization.Calendar;
+using Bodu.Globalization.Calendar.Algorithms;
+
+// Anchor — Easter Sunday, computed by the algorithm registry.
+NotableDateRule easterSunday = new NotableDateRule
+{
+    Name            = "Easter Sunday",
+    Strategy        = DateResolutionStrategy.Algorithm,
+    Category        = NotableDateCategory.Holiday,
+    AlgorithmKey    = "easter-sunday",
+    IsNonWorkingDay = true,
+};
+
+// Dependents — fixed offsets from the anchor.
+NotableDateRule goodFriday = new NotableDateRule
+{
+    Name            = "Good Friday",
+    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
+    Category        = NotableDateCategory.Holiday,
+    AnchorRuleName  = "Easter Sunday",
+    OffsetDays      = -2,
+    IsNonWorkingDay = true,
+};
+
+NotableDateRule whitMonday = new NotableDateRule
+{
+    Name            = "Whit Monday",
+    Strategy        = DateResolutionStrategy.OffsetFromAnchor,
+    Category        = NotableDateCategory.Holiday,
+    AnchorRuleName  = "Easter Sunday",
+    OffsetDays      = 50,
+    IsNonWorkingDay = true,
+};
+```
+
+Anchors are not limited to algorithms — any resolved rule with a `Name` can serve as one. Use this when a date naturally derives from another (e.g. a custom *Founders Week Friday* defined as *Founders Day + 2*) or when authoring tests that compose related dates from a single fixture rule.
+
+For the strategy contract see [NotableDateRule and ObservanceAdjustment reference](rule-reference.md); for resolution ordering and cycle detection see [The resolution pipeline](resolution-pipeline.md).
+
 ## Where to go next
 
 - [Using NotableDateService](notable-dates.md) — loading rules, override layers, and caching.
