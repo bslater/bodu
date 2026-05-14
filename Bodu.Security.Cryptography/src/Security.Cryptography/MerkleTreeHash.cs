@@ -288,7 +288,7 @@ public sealed class MerkleTreeHash
 
                 using var bufferBuilder = new PooledBufferBuilder<byte>(hashLength * groupSize);
                 for (var j = 0; j < groupSize; j++)
-                    bufferBuilder.AppendRange(this._currentLevel[i + j]);
+                    bufferBuilder.AppendRange(this._currentLevel[i + j].AsSpan());
 
                 nextLevel.Add(this.ComputeLeafHash(bufferBuilder.WrittenSpan));
             }

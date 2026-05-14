@@ -232,9 +232,9 @@ public abstract class BlockCipherTransform
         // call must return 0 rather than throw. CryptoStream and similar callers may invoke this
         // path with no buffered data after a flush. Divide BlockSize (bits) by 8 to obtain the
         // byte-length divisor expected by the span helper.
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(input, this._cipher.BlockSize / 8, throwIfZero: false);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(input, this._cipher.BlockSize / 8, throwIfZero: false);
         Span<byte> output = outputBuffer.AsSpan(outputOffset, inputCount);
-        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(output, this._cipher.BlockSize / 8, throwIfZero: false);
+        CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(output, this._cipher.BlockSize / 8, throwIfZero: false);
 
         if (this._encrypt)
             return this._mode.Transform(input, output, true);
@@ -328,7 +328,7 @@ public abstract class BlockCipherTransform
                 // as a CryptographicException with a recognizable message rather than crashing
                 // deeper in the mode transform.
                 var combined = Combine(this._deferredInput, input);
-                CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf(
+                CryptoHelpers.ThrowIfSpanLengthNotPositiveMultipleOf<byte>(
                     combined,
                     this._cipher.BlockSize / 8,
                     throwIfZero: false);

@@ -173,4 +173,68 @@ public sealed class AlphanumericTests
             _ = Alphanumeric.ExpandLetterDigit(invalid);
         });
     }
+
+    // ─── ExpandCusip ──────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that <see cref="Alphanumeric.ExpandCusip(char)" /> maps each decimal digit to its numeric value.
+    /// </summary>
+    [TestMethod]
+    public void ExpandCusip_WhenCharacterIsDigit_ShouldReturnDigitValue()
+    {
+        for (char c = '0'; c <= '9'; c++)
+        {
+            Assert.AreEqual(c - '0', Alphanumeric.ExpandCusip(c));
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Alphanumeric.ExpandCusip(char)" /> maps each uppercase Latin letter to the ISO
+    /// 7064 weighted value (<c>'A'</c>=10 … <c>'Z'</c>=35).
+    /// </summary>
+    [TestMethod]
+    public void ExpandCusip_WhenCharacterIsUppercaseLetter_ShouldReturnTenPlusOrdinal()
+    {
+        for (char c = 'A'; c <= 'Z'; c++)
+        {
+            Assert.AreEqual(c - 'A' + 10, Alphanumeric.ExpandCusip(c));
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Alphanumeric.ExpandCusip(char)" /> maps each CUSIP punctuation sentinel to its
+    /// specified numeric value (<c>'*'</c>=36, <c>'@'</c>=37, <c>'#'</c>=38).
+    /// </summary>
+    [DataRow('*', 36)]
+    [DataRow('@', 37)]
+    [DataRow('#', 38)]
+    [TestMethod]
+    public void ExpandCusip_WhenCharacterIsPunctuationSentinel_ShouldReturnAssignedValue(char sentinel, int expected)
+    {
+        Assert.AreEqual(expected, Alphanumeric.ExpandCusip(sentinel));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Alphanumeric.ExpandCusip(char)" /> throws <see cref="ArgumentOutOfRangeException" />
+    /// when the supplied character is outside the CUSIP alphabet.
+    /// </summary>
+    [DataRow(' ')]
+    [DataRow('-')]
+    [DataRow('a')]
+    [DataRow('z')]
+    [DataRow('!')]
+    [DataRow('$')]
+    [DataRow('/')]
+    [DataRow(':')]
+    [DataRow('`')]
+    [DataRow('{')]
+    [DataRow('é')]
+    [TestMethod]
+    public void ExpandCusip_WhenCharacterIsOutsideCusipAlphabet_ShouldThrowArgumentOutOfRangeException(char invalid)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Alphanumeric.ExpandCusip(invalid);
+        });
+    }
 }

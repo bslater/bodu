@@ -19,7 +19,7 @@ public partial class PooledBufferBuilderTests
         var source = new[] { 10, 20, 30 };
         using var builder = new PooledBufferBuilder<int>();
 
-        builder.AppendRange(source);
+        builder.AppendRange(source.AsSpan());
         System.ReadOnlySpan<int> span = builder.WrittenSpan;
         var array = builder.AsArray();
 

@@ -17,7 +17,7 @@ public partial class PooledBufferBuilderTests
     {
         int[] expected = [3, 6, 9];
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(expected);
+        builder.AppendRange(expected.AsSpan());
 
         System.ArraySegment<int> segment = builder.DangerousGetArray();
 
