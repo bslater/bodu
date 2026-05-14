@@ -83,8 +83,15 @@ article h4 {
     border-bottom: 2px solid var(--theme-underline);
 }
 
-.navbar-brand>img {
-    color: var(--theme-background);
+// Pin the navbar logo to a fixed height. The rule covers both the original
+// <img class="svg"> emitted by DocFX and the inline <svg> that docfx.js
+// substitutes at runtime — without an intrinsic size the post-swap SVG
+// collapses to 0x0 in a shrink-to-fit float parent.
+.navbar-brand>img,
+.navbar-brand>svg {
+    display: block;
+    height: 32px;
+    width: auto;
 }
 
 .subnav {
