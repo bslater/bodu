@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root Type="DevExpress.CodeAnalysis.Refactorings.NamespaceReferences.NamespaceReferencesOptions">
+  <Options Language="Neutral">
+    <PlaceSystemReferencesFirst>True</PlaceSystemReferencesFirst>
+  </Options>
+</Root>
