@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" role="img" aria-labelledby="no-t no-d">
+  <title id="no-t">Nominal date vs. observed date — Christmas Day 2027</title>
+  <desc id="no-d">In 2027 the nominal date for Christmas Day is Saturday 25 December — a weekend. The IfWeekend adjustment trigger fires and the MoveToNextWeekday action shifts the holiday to the observed date Monday 27 December. NotableDate.Date holds the observed date; the original nominal date is preserved in NotableDate.AdjustmentReason and NotableDate.WasAdjusted is true.</desc>
+
+  <defs>
+    <style>
+      .bg   { fill: #0F172A; }
+      .pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl  { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub  { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut  { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .day  { fill: #1E293B; stroke: #475569; stroke-width: 1; }
+      .we   { fill: #1A1F2E; stroke: #475569; stroke-width: 1; }
+      .nom  { fill: #2A1B54; stroke: #A78BFA; stroke-width: 2; }
+      .obs  { fill: #431407; stroke: #FBBF24; stroke-width: 2; }
+      .wp   { stroke: #A78BFA; stroke-width: 2; fill: none; }
+      .wf   { stroke: #FBBF24; stroke-width: 2; fill: none; }
+      .strike { stroke: #A78BFA; stroke-width: 2; }
+    </style>
+    <marker id="ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="260"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="240" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Nominal date vs. observed date — Christmas Day 2027</text>
+
+    <!-- Calendar strip header (weekend label) -->
+    <text class="mut" x="305" y="62" text-anchor="middle">— weekend —</text>
+
+    <!-- Day cells: Fri 24, Sat 25 (nominal), Sun 26, Mon 27 (observed), Tue 28 -->
+    <!-- Each day cell: 120w x 78h, x-spacing 130, starting at x=60, y=72 -->
+
+    <!-- Fri 24 -->
+    <g transform="translate(60 72)">
+      <rect class="day" width="120" height="78" rx="6"/>
+      <text class="sub" x="60" y="20">Friday</text>
+      <text class="lbl" x="60" y="44">24 Dec 2027</text>
+      <text class="mut" x="60" y="63">working day</text>
+    </g>
+
+    <!-- Sat 25 (nominal Christmas) -->
+    <g transform="translate(190 72)">
+      <rect class="we" width="120" height="78" rx="6"/>
+      <rect class="nom" x="6" y="6" width="108" height="66" rx="4"/>
+      <text class="sub" fill="#C4B5FD" x="60" y="22">Saturday</text>
+      <text class="lbl" fill="#C4B5FD" x="60" y="44">25 Dec 2027</text>
+      <text class="mut" fill="#C4B5FD" x="60" y="63">nominal date</text>
+      <!-- strike-through line on the date -->
+      <line class="strike" x1="20" y1="42" x2="100" y2="42"/>
+    </g>
+
+    <!-- Sun 26 -->
+    <g transform="translate(320 72)">
+      <rect class="we" width="120" height="78" rx="6"/>
+      <text class="sub" x="60" y="22">Sunday</text>
+      <text class="lbl" x="60" y="44">26 Dec 2027</text>
+      <text class="mut" x="60" y="63">weekend</text>
+    </g>
+
+    <!-- Mon 27 (observed Christmas) -->
+    <g transform="translate(450 72)">
+      <rect class="obs" x="0" y="0" width="120" height="78" rx="6"/>
+      <text class="sub" fill="#FBBF24" x="60" y="22">Monday</text>
+      <text class="lbl" fill="#FBBF24" x="60" y="44">27 Dec 2027</text>
+      <text class="mut" fill="#FBBF24" x="60" y="63">observed date</text>
+    </g>
+
+    <!-- Tue 28 -->
+    <g transform="translate(580 72)">
+      <rect class="day" width="120" height="78" rx="6"/>
+      <text class="sub" x="60" y="20">Tuesday</text>
+      <text class="lbl" x="60" y="44">28 Dec 2027</text>
+      <text class="mut" x="60" y="63">working day</text>
+    </g>
+
+    <!-- Adjustment arrow (curved) from nominal box (right edge) to observed box (left edge) -->
+    <path class="wp" d="M 310 111 C 360 150, 420 150, 450 111" marker-end="url(#ap)"/>
+    <text class="sub" fill="#C4B5FD" x="380" y="170" text-anchor="middle" font-weight="700">IfWeekend → MoveToNextWeekday</text>
+    <text class="mut" x="380" y="184" text-anchor="middle">ObservanceAdjustment fires; WasAdjusted = true; AdjustmentReason preserves 25 Dec</text>
+
+    <!-- Legend at bottom -->
+    <g transform="translate(40 210)">
+      <rect class="nom" width="14" height="14" rx="2"/>
+      <text class="mut" x="22" y="11" text-anchor="start">nominal date (pre-adjustment)</text>
+
+      <rect class="obs" x="240" width="14" height="14" rx="2"/>
+      <text class="mut" x="262" y="11" text-anchor="start">observed date (consumers see this)</text>
+
+      <rect class="we" x="500" width="14" height="14" rx="2"/>
+      <text class="mut" x="522" y="11" text-anchor="start">weekend</text>
+    </g>
+  </g>
+</svg>

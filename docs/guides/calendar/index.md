@@ -6,7 +6,7 @@ title: Bodu.Globalization.Calendar guides
 
 Recipe-style walk-throughs for **Bodu.Globalization.Calendar**, organized by namespace.
 
-If you have not yet installed the package or want the high-level shape of the library, start with the [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) and the [getting-started page](../../docs/calendar/getting-started.md). For the auto-generated API reference, see the [Bodu.Globalization.Calendar namespace page](../../apidoc/Bodu.Globalization.Calendar.md).
+If you are new to the library, start with the [introduction](../../docs/calendar/index.md), the [Core concepts](../../docs/calendar/concepts.md) glossary, and the [getting-started page](../../docs/calendar/getting-started.md). For the auto-generated API reference, see the [Bodu.Globalization.Calendar namespace page](../../apidoc/Bodu.Globalization.Calendar.md).
 
 ## How the library works
 
@@ -18,11 +18,11 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 
 | Namespace | What lives here | Guides |
 |---|---|---|
-| `Bodu.Globalization.Calendar` | Service, rules, results, providers, adjustments, registries, parsers — the resolution pipeline. | [Using NotableDateService](notable-dates.md) · [Authoring notable date rules](rule-authoring.md) |
+| `Bodu.Globalization.Calendar` | Service, rules, results, providers, adjustments, registries, parsers — the resolution pipeline. | [Using NotableDateService](notable-dates.md) · [Authoring notable date rules](rule-authoring.md) · [Territories and regional composition](territories.md) |
 | `Bodu.Globalization.Calendar.Algorithms` | Built-in date calculators — `EasterSundayNotableDateAlgorithm`, `HinduLunarNotableDateAlgorithm`, `LosarNotableDateAlgorithm`, `VesakNotableDateAlgorithm`, `AsalhaPujaNotableDateAlgorithm`, `QingmingNotableDateAlgorithm`. | [Date calculation algorithms](algorithms.md) |
 | `Bodu.Globalization.Calendar.Providers` | Bundled `EasterSundayNotableDateProviderBase` implementations — `GregorianEasterSundayNotableDateProvider`, `OrthodoxEasterSundayNotableDateProvider`. | [Date calculation algorithms](algorithms.md) |
-| `Bodu.Globalization.Calendar.Plugins` | Plugin host with trust policies for loading rules / algorithms from external assemblies — `ExternalPluginLoader`, `IPluginTrustPolicy`, and the deny-by-default trust policies. | (no dedicated guide yet — see API reference) |
-| `Bodu.Extensions` | Working-day arithmetic over `DateOnly` and `DateTime` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … (`NotableDateOnlyExtensions`, `NotableDateTimeExtensions`). | (covered in [Using NotableDateService](notable-dates.md)) |
+| `Bodu.Globalization.Calendar.Plugins` | Plugin host with trust policies for loading rules / algorithms from external assemblies — `ExternalPluginLoader`, `IPluginTrustPolicy`, and the deny-by-default trust policies. | [Building and extending the service — Plugin system](building-the-service.md#plugin-system) |
+| `Bodu.Extensions` | Working-day arithmetic over `DateOnly` and `DateTime` — `IsWorkingDay`, `NextWorkingDay`, `AddWorkingDays`, … (`NotableDateOnlyExtensions`, `NotableDateTimeExtensions`). | [Working-day arithmetic](working-days.md) |
 | `Bodu.Globalization.Calendar.Data.*` | Region-specific public-holiday rule providers shipped in `Bodu.Globalization.Calendar.Data.Americas`, `.Europe`, and `.AsiaPacific` companion packages. | [Calendar data packs](data-packs.md) |
 
 ## Guides
@@ -53,8 +53,13 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 </div>
 
 <div class="bodu-card">
+  <h3><a href="territories.md">Territories and regional composition</a></h3>
+  <p>How <code>TerritoryCode</code> works — ISO 3166 country / subdivision codes, parsing, containment semantics (<code>AU</code> ⊇ <code>AU-NSW</code>), authoring rules with territory scope, and avoiding duplicate regional rules.</p>
+</div>
+
+<div class="bodu-card">
   <h3><a href="adjustment-rules.md">Observance adjustment rules</a></h3>
-  <p>The full trigger and action catalogues — every <code>AdjustmentTrigger</code> and <code>AdjustmentAction</code> value with descriptions, companion fields, real-world patterns, and custom <code>IAdjustmentHandler</code> implementation.</p>
+  <p>Nominal date vs. observed date; the full trigger and action catalogues — every <code>AdjustmentTrigger</code> and <code>AdjustmentAction</code> value with descriptions, companion fields, real-world patterns, and custom <code>IAdjustmentHandler</code> implementation.</p>
 </div>
 
 <div class="bodu-card">
@@ -71,6 +76,11 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 <div class="bodu-card">
   <h3><a href="holiday-patterns.md">Holiday patterns and examples</a></h3>
   <p>End-to-end examples for fixed-date holidays, weekend substitution rules (AU/NZ, UK, US), floating weekday-of-month holidays, Easter clusters, lunar and algorithmic dates, multi-day events, and subdivision-level variants.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="working-days.md">Working-day arithmetic</a></h3>
+  <p>The <code>Bodu.Extensions</code> surface over <code>DateOnly</code> / <code>DateTime</code> — <code>IsWorkingDay</code>, <code>AddWorkingDays</code>, <code>WorkingDaysBetween</code>, <code>NextWorkingDay</code>, snap operations, and the ambient <code>NotableDateContext</code>.</p>
 </div>
 
 <div class="bodu-card">
@@ -104,6 +114,7 @@ A **`NotableDateRule`** is an authored recipe — strategy, category, territory,
 
 ## Where to go next
 
-- [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) — namespaces, headline types, scenarios.
+- [Bodu.Globalization.Calendar introduction](../../docs/calendar/index.md) — mental model, headline types, scenarios.
+- [Core concepts](../../docs/calendar/concepts.md) — vocabulary used throughout these guides.
 - [Bodu.Globalization.Calendar getting started](../../docs/calendar/getting-started.md) — install and minimal samples.
 - [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full namespace overview.

@@ -10,6 +10,8 @@
   items:
     - name: NotableDateRule and ObservanceAdjustment reference
       href: rule-reference.md
+    - name: Territories and regional composition
+      href: territories.md
     - name: Observance adjustment rules
       href: adjustment-rules.md
     - name: The resolution pipeline
@@ -18,6 +20,8 @@
   items:
     - name: Holiday patterns and examples
       href: holiday-patterns.md
+    - name: Working-day arithmetic
+      href: working-days.md
     - name: Building and extending the service
       href: building-the-service.md
 - name: Bodu.Globalization.Calendar.Algorithms

@@ -6,9 +6,10 @@ title: NotableDateRule and ObservanceAdjustment reference
 
 This page is the authoritative field-by-field reference for the two core rule-authoring types:
 `NotableDateRule` (the authored recipe that drives date resolution) and `ObservanceAdjustment`
-(the conditional shift applied after the anchor date is resolved). For loading mechanics, see
-[Authoring notable date rules](rule-authoring.md). For a step-by-step description of how the
-service processes these types, see [The resolution pipeline](resolution-pipeline.md).
+(the conditional shift that turns a *nominal* date into an *observed* date). For the underlying
+vocabulary, start with [Core concepts](../../docs/calendar/concepts.md). For loading mechanics,
+see [Authoring notable date rules](rule-authoring.md). For a step-by-step description of how
+the service processes these types, see [The resolution pipeline](resolution-pipeline.md).
 
 ---
 
