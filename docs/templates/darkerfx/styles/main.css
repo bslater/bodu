@@ -82,10 +82,17 @@ article h4 {
   border-bottom: 2px solid var(--theme-underline);
 }
 
-/* Pin the navbar logo to a fixed height. The rule covers both the original
-   <img class="svg"> emitted by DocFX and the inline <svg> that docfx.js
-   substitutes at runtime — without an intrinsic size the post-swap SVG
-   collapses to 0x0 in a shrink-to-fit float parent. */
+/* Vertically centre the logo against the nav links and search box. The
+   rule covers both the original <img class="svg"> emitted by DocFX and
+   the inline <svg> that docfx.js substitutes at runtime — without an
+   intrinsic size the post-swap SVG collapses to 0x0 in a shrink-to-fit
+   float parent, and without flex alignment it sits at the top of the
+   50px-tall .navbar-brand box rather than centred against the menu. */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+}
+
 .navbar-brand > img,
 .navbar-brand > svg {
   display: block;
