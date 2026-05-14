@@ -85,16 +85,6 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that an <see cref="INotableDateRuleOverrideProvider" /> emitting an unconditional <see cref="RuleRemoval" />
 	/// suppresses the named base rule across every year and territory.
 	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// Pending: the prototype range-resolution pipeline does not currently consult <see cref="RuleRemoval" /> entries supplied
-	/// by override providers. Override additions are honoured (they flow through <c>NotableDateService.ApplyOverrides</c> at
-	/// construction) but removals are applied per-(year, territory) by the legacy <c>NotableDateService.GenerateYear</c> path
-	/// via <c>IsRemovedByOverride</c>, which <see cref="NotableDateRangePipeline" /> does not invoke. Re-enable this test
-	/// after the pipeline is wired into the override-removal check.
-	/// </para>
-	/// </remarks>
-	[Ignore("Pending: range-resolution pipeline does not currently honour override RuleRemoval entries.")]
 	[TestMethod]
 	public void Override_WhenProviderRemovesRuleUnconditionally_ShouldNotEmit()
 	{
@@ -118,13 +108,6 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that a <see cref="RuleRemoval" /> scoped by year range only suppresses the rule inside the range — emissions
 	/// in years outside the range remain.
 	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// Pending: see <see cref="Override_WhenProviderRemovesRuleUnconditionally_ShouldNotEmit" /> — the range-resolution
-	/// pipeline does not currently honour <see cref="RuleRemoval" /> entries.
-	/// </para>
-	/// </remarks>
-	[Ignore("Pending: range-resolution pipeline does not currently honour override RuleRemoval entries.")]
 	[TestMethod]
 	[DataRow(2023, true)]   // before range
 	[DataRow(2024, false)]  // start of range
@@ -153,13 +136,6 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// Verifies that a <see cref="RuleRemoval" /> scoped by territory only suppresses the rule for the named territory while
 	/// other authored territories continue emitting.
 	/// </summary>
-	/// <remarks>
-	/// <para>
-	/// Pending: see <see cref="Override_WhenProviderRemovesRuleUnconditionally_ShouldNotEmit" /> — the range-resolution
-	/// pipeline does not currently honour <see cref="RuleRemoval" /> entries.
-	/// </para>
-	/// </remarks>
-	[Ignore("Pending: range-resolution pipeline does not currently honour override RuleRemoval entries.")]
 	[TestMethod]
 	public void Override_WhenRemovalScopedByTerritory_ShouldOnlySuppressForThatTerritory()
 	{
@@ -197,16 +173,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
 	/// <summary>
 	/// Verifies that an override provider can replace a base rule by emitting a removal alongside an addition with the same
-	/// name — the new rule takes effect from the year the removal applies.
+	/// name — the addition surfaces in place of the suppressed base rule.
 	/// </summary>
 	/// <remarks>
-	/// Disabled pending a design decision on combined add + remove semantics. Both the legacy <see cref="NotableDateService" />
-	/// generation path and the range-resolution pipeline currently treat <see cref="RuleRemoval" /> as a strict suppression
-	/// keyed on rule name — it does not exempt override additions that share the same name. Restoring "replacement" semantics
-	/// (where removals filter only the base rule set, leaving same-named additions to surface) is a wider service-surface
-	/// change that should be made consistently across both paths and is out of scope for this PR.
+	/// Replacement semantics: override additions are exempt from same-name <see cref="RuleRemoval" /> suppression, so a provider
+	/// that emits both a removal and an addition for the same rule name is interpreted as a replacement. Both
+	/// <see cref="NotableDateService" /> and <see cref="NotableDateRangePipeline" /> honour this contract.
 	/// </remarks>
-	[Ignore("Pending: removals suppress all rules with the matching name, including override additions. Replacement semantics not yet implemented in either NotableDateService or NotableDateRangePipeline.")]
 	[TestMethod]
 	public void Override_WhenProviderReplacesRule_ShouldUseAddedRuleInsteadOfBase()
 	{

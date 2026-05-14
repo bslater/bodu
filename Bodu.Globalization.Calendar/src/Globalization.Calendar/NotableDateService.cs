@@ -131,6 +131,13 @@ public sealed class NotableDateService
     /// <summary>Snapshot of all override removals, materialized once at construction to avoid re-querying providers per year.</summary>
     private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
 
+    /// <summary>
+    /// Identity-keyed set of every rule contributed by an <see cref="INotableDateRuleOverrideProvider" /> addition.
+    /// Used by <see cref="IsRemovedByOverride" /> to exempt override additions from same-name <see cref="RuleRemoval" />
+    /// suppression, so an addition can replace a removed base rule of the same name.
+    /// </summary>
+    private readonly HashSet<NotableDateRule> _overrideAdditions;
+
     /// <summary>The merged rule set after all overrides have been applied; drives every resolution pass.</summary>
     private readonly IReadOnlyList<NotableDateRule> _effectiveRules;
 
@@ -338,18 +345,26 @@ public sealed class NotableDateService
             .Where(r => r is not null)];
         _overrideProviders = opts.OverrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)[];
 
-        // Snapshot every override provider's removals at construction so that IsRemovedByOverride iterates a materialized list
-        // once per rule × year × territory rather than re-invoking GetRemovals on every check. This pins the cost of any
-        // non-trivial override provider (database-backed, configuration-bound, lazily-enumerated) to a single call per provider
-        // and removes a runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation.
+        // Snapshot every override provider's contributions at construction so that downstream lookups iterate a materialized
+        // list once per rule × year × territory rather than re-invoking GetRemovals / GetAdditions on every check. This pins
+        // the cost of any non-trivial override provider (database-backed, configuration-bound, lazily-enumerated) to a single
+        // call per provider and removes a runaway vector for providers that return fresh, infinite, or expensive enumerables
+        // on each invocation. Materialise additions once into a list so the same instances are reused by ApplyOverrides and
+        // by the addition-identity set below.
         _overrideRemovals = [.. _overrideProviders.SelectMany(p => p.GetRemovals())];
+        List<NotableDateRule> overrideAdditionList = [.. _overrideProviders.SelectMany(p => p.GetAdditions())];
+
+        // Track the addition instances by reference identity. NotableDateRule is a record with value equality, so a HashSet
+        // keyed on its default equality would treat two unrelated rules with identical property values as the same entry —
+        // ReferenceEqualityComparer ensures we only exempt the specific instances contributed by override providers.
+        _overrideAdditions = new HashSet<NotableDateRule>(overrideAdditionList, ReferenceEqualityComparer.Instance);
 
         WorkingWeek = workingWeek;
         _collisionResolver = opts.CollisionResolver ?? new DefaultNotableDateCollisionResolver();
         _nameLocalizer = opts.NameLocalizer;
         _resourcePathResolver = opts.ResourcePathResolver ?? new ResourcePathResolver();
 
-        _effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
+        _effectiveRules = ApplyOverrides(_baseRules, overrideAdditionList);
         _resolver = new NotableDateRuleResolver(_effectiveRules, effectiveRegistry);
         _adjustmentHandlers = opts.AdjustmentHandlers;
     }
@@ -665,7 +680,8 @@ public sealed class NotableDateService
             _resolver,
             WorkingWeek,
             _adjustmentHandlers,
-            _overrideRemovals);
+            _overrideRemovals,
+            _overrideAdditions);
     }
 
     // --------------------------------------------------------------------------------------
@@ -950,23 +966,24 @@ public sealed class NotableDateService
     // --------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Applies the configured override provider to the base rule set for the given year, using
-    /// the override's remove/add semantics.
+    /// Applies the pre-materialised list of override additions to the base rule set, producing the merged effective rule set.
     /// </summary>
     /// <param name="baseRules">The base set of rules to be overridden.</param>
-    /// <param name="overrideProviders">The sequence of override providers whose overrides should
-    /// be applied, in order.</param>
-    /// <returns>The rule list after all overrides have been applied.</returns>
+    /// <param name="overrideAdditions">The materialised list of additions contributed by every configured override provider.</param>
+    /// <returns>The rule list after all additions have been applied.</returns>
+    /// <remarks>
+    /// Additions are layered on top of the base rule set using a composite (name, territory) key so that regional variants of
+    /// the same notable date (for example, multiple Labour Day variants across Australian states) survive instead of collapsing
+    /// into a single entry. Removals are evaluated per (year, territory) downstream so they can be scoped to specific years and
+    /// territories.
+    /// </remarks>
     private static IReadOnlyList<NotableDateRule> ApplyOverrides(
         ImmutableArray<NotableDateRule> baseRules,
-        IReadOnlyList<INotableDateRuleOverrideProvider> overrideProviders)
+        IReadOnlyList<NotableDateRule> overrideAdditions)
     {
-        if (overrideProviders.Count == 0)
+        if (overrideAdditions.Count == 0)
             return baseRules.IsDefault ? (IReadOnlyList<NotableDateRule>)[] : baseRules;
 
-        // Apply additions by composite (name, territory) key so that regional variants of the same notable date (e.g. multiple
-        // Labour Day variants across Australian states) survive instead of collapsing into a single entry. Removals are evaluated
-        // per-year inside GenerateYear so they can be scoped to specific years and territories.
         IEnumerable<NotableDateRule> source = baseRules.IsDefault
             ? Enumerable.Empty<NotableDateRule>()
             : baseRules;
@@ -977,12 +994,9 @@ public sealed class NotableDateService
             byKey[CompositeKey(rule)] = rule;
         }
 
-        foreach (INotableDateRuleOverrideProvider provider in overrideProviders)
+        foreach (NotableDateRule addition in overrideAdditions)
         {
-            foreach (NotableDateRule addition in provider.GetAdditions())
-            {
-                byKey[CompositeKey(addition)] = addition;
-            }
+            byKey[CompositeKey(addition)] = addition;
         }
 
         return [.. byKey.Values];
@@ -999,8 +1013,15 @@ public sealed class NotableDateService
     /// <param name="year">The civil year under evaluation.</param>
     /// <param name="territory">The territory code, or <see langword="null" /> for territory-neutral.</param>
     /// <returns><see langword="true" /> if the rule is removed; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// Override additions are exempt from removal suppression: a provider that emits both a removal and an addition with the same
+    /// rule name is interpreted as a replacement, so the addition surfaces in place of the removed base rule.
+    /// </remarks>
     private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)
     {
+        if (_overrideAdditions.Contains(rule))
+            return false;
+
         foreach (RuleRemoval removal in _overrideRemovals)
         {
             if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))

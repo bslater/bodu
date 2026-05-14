@@ -13,9 +13,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// <summary>
 /// Probes the public surface of <see cref="NotableDateService.ResolveNotableDatesInRange" /> at points that look like they
 /// might break: malformed offset chains, algorithms that misbehave, anchors that disappear at runtime, contradictory
-/// territory / duration / handler configurations, and silently-surprising defaults. Each scenario either pins an expected
-/// graceful behaviour the pipeline already provides or surfaces a documented gap as an <c>[Ignore]</c>'d test that future
-/// pipeline work should remove.
+/// territory / duration / handler configurations, and silently-surprising defaults. Each scenario pins an expected graceful
+/// behaviour the pipeline provides — misbehaving inputs are absorbed silently rather than aborting resolution.
 /// </summary>
 public sealed partial class NotableDateRangePipelineScenarioTests
 {
@@ -594,16 +593,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	}
 
 	// =====================================================================================================================
-	// Documented limitations — currently throw / lose data; ignored until fixed
+	// Pipeline resilience — DateTime overflow during adjustment and arbitrary algorithm exceptions are absorbed silently
 	// =====================================================================================================================
 
 	/// <summary>
-	/// Documents a current pipeline gap: <see cref="AdjustmentAction.AddDays" /> with an offset that pushes the result past
-	/// <see cref="DateTime.MaxValue" /> propagates the underlying <see cref="ArgumentOutOfRangeException" /> instead of
-	/// silently skipping the adjustment. Re-enable this test when the pipeline catches the overflow during adjustment
-	/// evaluation in the same way it already does for offset-rule projection.
+	/// Verifies that an <see cref="AdjustmentAction.AddDays" /> offset which would push the result past
+	/// <see cref="DateTime.MaxValue" /> is silently skipped, leaving the base anchor visible and unmodified.
 	/// </summary>
-	[Ignore("Pending: pipeline does not currently catch ArgumentOutOfRangeException from DateTime.AddDays during adjustment evaluation.")]
 	[TestMethod]
 	public void Resolve_WhenAdjustmentAddDaysOverflowsMaxValue_ShouldSilentlySkip()
 	{
@@ -640,11 +636,9 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	}
 
 	/// <summary>
-	/// Documents a current pipeline gap: an <see cref="INotableDateAlgorithm" /> that throws an arbitrary exception (anything
-	/// other than <see cref="InvalidOperationException" />) propagates out of the resolver and aborts the entire request.
-	/// Re-enable this test when the pipeline catches algorithm exceptions and treats them as a missing date for the year.
+	/// Verifies that an <see cref="INotableDateAlgorithm" /> implementation throwing an arbitrary exception is treated as if it
+	/// returned <see langword="null" /> for the year, so a misbehaving algorithm does not abort resolution.
 	/// </summary>
-	[Ignore("Pending: pipeline does not currently catch arbitrary exceptions thrown by INotableDateAlgorithm implementations.")]
 	[TestMethod]
 	public void Resolve_WhenAlgorithmThrowsArbitraryException_ShouldSilentlySkipThatYear()
 	{
