@@ -48,6 +48,40 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string, System.IFormatProvider)" /> with a non-null format
+    /// provider produces the same output as the format-only overload — the provider is currently ignored, but the
+    /// call site must still execute.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenFormatProviderProvided_ShouldIgnoreProvider()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
+        Assert.AreEqual("M____SS", pattern.ToString("M", System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string, System.IFormatProvider)" /> treats a
+    /// <see langword="null" /> format string as the default Sunday-first specifier.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenFormatIsNull_ShouldDefaultToSundayFirstFormat()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday);
+        Assert.AreEqual(pattern.ToString("S"), pattern.ToString((string?)null, null));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> throws <see cref="ArgumentException" /> when the
+    /// two-character format specifier has an invalid first character (i.e. not <c>'S'</c> or <c>'M'</c>).
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenTwoCharFormatHasInvalidStartDay_ShouldThrowArgumentException()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday);
+        Assert.ThrowsExactly<ArgumentException>(() => pattern.ToString("XU"));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="WeekPattern.ToString(string, IFormatProvider)" /> produces the correct
     /// output when both format and provider are specified.
     /// </summary>

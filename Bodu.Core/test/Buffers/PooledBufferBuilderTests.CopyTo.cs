@@ -17,7 +17,7 @@ public partial class PooledBufferBuilderTests
     {
         int[] expected = [10, 20, 30, 40];
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(expected);
+        builder.AppendRange(expected.AsSpan());
 
         var destination = new int[expected.Length];
         builder.CopyTo(destination);
@@ -33,7 +33,7 @@ public partial class PooledBufferBuilderTests
     {
         int[] items = [1, 2, 3];
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(items);
+        builder.AppendRange(items.AsSpan());
 
         builder.CopyTo(new int[items.Length]);
 
@@ -95,7 +95,7 @@ public partial class PooledBufferBuilderTests
     {
         int[] expected = [1, 2, 3];
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(expected);
+        builder.AppendRange(expected.AsSpan());
 
         var destination = new int[10]; // larger than WrittenCount
         builder.CopyTo(destination);

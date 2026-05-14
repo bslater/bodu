@@ -122,7 +122,7 @@ public partial class PooledBufferBuilderTests
     {
         int[] expected = [10, 20, 30];
         using var builder = new PooledBufferBuilder<int>(4);
-        builder.AppendRange(expected);
+        builder.AppendRange(expected.AsSpan());
 
         builder.EnsureCapacity(512);
 

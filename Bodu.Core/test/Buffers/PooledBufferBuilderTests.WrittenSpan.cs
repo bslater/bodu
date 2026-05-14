@@ -29,7 +29,7 @@ public partial class PooledBufferBuilderTests
     {
         int[] expected = [10, 20, 30];
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(expected);
+        builder.AppendRange(expected.AsSpan());
 
         System.ReadOnlySpan<int> span = builder.WrittenSpan;
 

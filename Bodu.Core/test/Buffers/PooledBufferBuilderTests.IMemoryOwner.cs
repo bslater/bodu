@@ -32,7 +32,7 @@ public partial class PooledBufferBuilderTests
     {
         int[] expected = [1, 2, 3, 4, 5];
         using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange(expected);
+        builder.AppendRange(expected.AsSpan());
         IMemoryOwner<int> owner = builder;
 
         CollectionAssert.AreEqual(expected, owner.Memory.ToArray());

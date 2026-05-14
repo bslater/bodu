@@ -70,6 +70,6 @@ public partial class ThrowHelperTests
     {
         yield return new object[] { Array.Empty<int>() };
         yield return new object[] { new string[5] };
-        yield return new object[] { Array.CreateInstance(typeof(double), [4]) }; // Zero-based by default
+        yield return new object[] { Array.CreateInstance(typeof(double), new int[] { 4 }) }; // Zero-based by default
     }
 }
