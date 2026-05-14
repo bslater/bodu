@@ -41,8 +41,10 @@ public static partial class ComparableHelper
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="comparer"/> is <see langword="null"/>.</exception>
     /// <remarks>Use this overload to apply custom comparison logic, such as ordinal or case-insensitive string comparisons.</remarks>
-    public static T? Max<T>(T? first, T? second, IComparer<T> comparer) =>
-        comparer is null
-            ? throw new ArgumentNullException(nameof(comparer))
-            : (first is null ? second : (second is null ? first : (comparer.Compare(first, second) >= 0 ? first : second)));
+    public static T? Max<T>(T? first, T? second, IComparer<T> comparer)
+    {
+        ThrowHelper.ThrowIfNull(comparer);
+
+        return first is null ? second : (second is null ? first : (comparer.Compare(first, second) >= 0 ? first : second));
+    }
 }

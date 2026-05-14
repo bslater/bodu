@@ -62,11 +62,13 @@ public static partial class IComparableExtensions
     /// <para>The order of <paramref name="value1"/> and <paramref name="value2"/> does not matter.</para>
     /// </remarks>
     public static bool IsOutside<T>(this T value, T? value1, T? value2, IComparer<T> comparer)
-        where T : struct =>
-            comparer is null
-                ? throw new ArgumentNullException(nameof(comparer))
-                : value1 is null || value2 is null ? false
-                : comparer.Compare(value1.Value, value2.Value) > 0
-                    ? comparer.Compare(value, value2.Value) < 0 || comparer.Compare(value, value1.Value) > 0
-                    : comparer.Compare(value, value1.Value) < 0 || comparer.Compare(value, value2.Value) > 0;
+        where T : struct
+    {
+        ThrowHelper.ThrowIfNull(comparer);
+
+        return value1 is null || value2 is null ? false
+            : comparer.Compare(value1.Value, value2.Value) > 0
+                ? comparer.Compare(value, value2.Value) < 0 || comparer.Compare(value, value1.Value) > 0
+                : comparer.Compare(value, value1.Value) < 0 || comparer.Compare(value, value2.Value) > 0;
+    }
 }

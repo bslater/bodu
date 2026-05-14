@@ -106,13 +106,13 @@ public static partial class NumericExtensions
     public static short GreatestCommonDivisor(this short[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
         for (int i = 0; i < values.Length; i++)
         {
             short v = values[i];
-            if (v < 0) throw new ArgumentOutOfRangeException(nameof(values));
+            ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Gcd(acc, (ulong)v);
         }
 
@@ -133,13 +133,13 @@ public static partial class NumericExtensions
     public static int GreatestCommonDivisor(this int[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
         for (int i = 0; i < values.Length; i++)
         {
             int v = values[i];
-            if (v < 0) throw new ArgumentOutOfRangeException(nameof(values));
+            ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Gcd(acc, (ulong)v);
         }
 
@@ -160,13 +160,13 @@ public static partial class NumericExtensions
     public static long GreatestCommonDivisor(this long[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
         for (int i = 0; i < values.Length; i++)
         {
             long v = values[i];
-            if (v < 0) throw new ArgumentOutOfRangeException(nameof(values));
+            ThrowHelper.ThrowIfNegative(v, nameof(values));
             acc = Gcd(acc, (ulong)v);
         }
 
@@ -184,7 +184,7 @@ public static partial class NumericExtensions
     public static ushort GreatestCommonDivisor(this ushort[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
         for (int i = 0; i < values.Length; i++)
@@ -203,7 +203,7 @@ public static partial class NumericExtensions
     public static uint GreatestCommonDivisor(this uint[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
         for (int i = 0; i < values.Length; i++)
@@ -223,7 +223,7 @@ public static partial class NumericExtensions
     public static ulong GreatestCommonDivisor(this ulong[] values)
     {
         ThrowHelper.ThrowIfNull(values);
-        if (values.Length == 0) throw new ArgumentException(ResourceStrings.Arg_Invalid_CollectionIsEmpty, nameof(values));
+        ThrowHelper.ThrowIfArrayLengthIsZero(values);
 
         ulong acc = 0;
         for (int i = 0; i < values.Length; i++)

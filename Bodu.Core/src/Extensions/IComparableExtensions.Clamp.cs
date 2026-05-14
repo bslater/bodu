@@ -49,10 +49,12 @@ public static partial class IComparableExtensions
     /// Use this overload to apply custom comparison logic when clamping values.
     /// </remarks>
     public static T Clamp<T>(this T value, T? min, T? max, IComparer<T> comparer)
-        where T : struct =>
-            comparer is null
-                ? throw new ArgumentNullException(nameof(comparer))
-                : (min is not null && comparer.Compare(value, min.Value) < 0) ? min.Value
-                : (max is not null && comparer.Compare(value, max.Value) > 0) ? max.Value
-                : value;
+        where T : struct
+    {
+        ThrowHelper.ThrowIfNull(comparer);
+
+        return (min is not null && comparer.Compare(value, min.Value) < 0) ? min.Value
+            : (max is not null && comparer.Compare(value, max.Value) > 0) ? max.Value
+            : value;
+    }
 }

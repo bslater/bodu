@@ -31,9 +31,11 @@ public static partial class DateTimeExtensions
     /// <item><term><see cref="DateTimeResolution.Tick"/></term><description><c>2024-04-18T14:37:56.7891234</c> (unchanged)</description></item>
     /// </list>
     /// </remarks>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="resolution"/> is not a defined value of the <see cref="DateTimeResolution"/> enumeration.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="resolution"/> is not a defined value of the <see cref="DateTimeResolution"/> enumeration.</exception>
     public static DateTime Truncate(this DateTime dateTime, DateTimeResolution resolution)
     {
+        ThrowHelper.ThrowIfEnumValueIsUndefined(resolution);
+
         switch (resolution)
         {
             case DateTimeResolution.Year:
@@ -61,9 +63,9 @@ public static partial class DateTimeExtensions
                 return dateTime;
 
             default:
-                throw new ArgumentException(
-                    string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, resolution, nameof(DateTimeResolution)),
-                    nameof(resolution));
+                throw new ArgumentOutOfRangeException(
+                    nameof(resolution),
+                    string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, resolution, nameof(DateTimeResolution)));
         }
     }
 }

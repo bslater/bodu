@@ -29,8 +29,10 @@ public static partial class IComparableExtensions
     /// <see cref="string.Equals(string)"/> does not. For the default equality semantics of <typeparamref name="T"/>
     /// use <see cref="object.Equals(object)"/> or <see cref="IEquatable{T}.Equals(T)"/> directly.
     /// </remarks>
-    public static bool IsEqualTo<T>(this T value, T other, IComparer<T> comparer) =>
-        comparer is null
-            ? throw new ArgumentNullException(nameof(comparer))
-            : comparer.Compare(value, other) == 0;
+    public static bool IsEqualTo<T>(this T value, T other, IComparer<T> comparer)
+    {
+        ThrowHelper.ThrowIfNull(comparer);
+
+        return comparer.Compare(value, other) == 0;
+    }
 }

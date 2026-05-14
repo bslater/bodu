@@ -41,8 +41,10 @@ public static partial class IComparableExtensions
     /// </returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="comparer"/> is <see langword="null"/>.</exception>
     /// <remarks>This is a one-sided form of <see cref="Clamp{T}(T, T?, T?, IComparer{T})"/> for cases where only a ceiling is required.</remarks>
-    public static T AtMost<T>(this T value, T max, IComparer<T> comparer) =>
-        comparer is null
-            ? throw new ArgumentNullException(nameof(comparer))
-            : comparer.Compare(value, max) <= 0 ? value : max;
+    public static T AtMost<T>(this T value, T max, IComparer<T> comparer)
+    {
+        ThrowHelper.ThrowIfNull(comparer);
+
+        return comparer.Compare(value, max) <= 0 ? value : max;
+    }
 }
