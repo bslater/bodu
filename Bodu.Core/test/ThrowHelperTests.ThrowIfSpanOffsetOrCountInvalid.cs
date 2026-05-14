@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfSpanOffsetOrCountInvalid.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,8 +38,8 @@ public partial class ThrowHelperTests
             ? null
             : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
                 ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
-        int[] buffer = new int[bufferLength];
+        var param = expectedParamName.Length == 0 ? null : expectedParamName;
+        var buffer = new int[bufferLength];
 
         AssertGuard(
             $"Span<T>: {testName}",

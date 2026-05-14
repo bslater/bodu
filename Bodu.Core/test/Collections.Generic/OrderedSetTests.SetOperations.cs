@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.SetOperations.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,9 +37,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void UnionWith_WhenOtherHasNewItems_ShouldAppendInSourceOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
-        sut.UnionWith(new[] { 2, 3, 4 });
+        sut.UnionWith([2, 3, 4]);
 
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4 }, SnapshotByIndexer(sut));
     }
@@ -50,7 +50,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void UnionWith_WhenOtherIsEmpty_ShouldLeaveSetUnchanged()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.UnionWith(Array.Empty<int>());
 
@@ -64,7 +64,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void UnionWith_WhenOtherIsSelf_ShouldLeaveSetUnchanged()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.UnionWith(sut);
 
@@ -96,9 +96,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IntersectWith_WhenOtherHasOverlap_ShouldRetainOnlyCommonInOriginalOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3, 4 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3, 4]);
 
-        sut.IntersectWith(new[] { 4, 2, 5 });
+        sut.IntersectWith([4, 2, 5]);
 
         CollectionAssert.AreEqual(new[] { 2, 4 }, SnapshotByIndexer(sut));
     }
@@ -109,7 +109,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IntersectWith_WhenOtherIsEmpty_ShouldClearSet()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.IntersectWith(Array.Empty<int>());
 
@@ -124,7 +124,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        sut.IntersectWith(new[] { 1, 2, 3 });
+        sut.IntersectWith([1, 2, 3]);
 
         Assert.AreEqual(0, sut.Count);
     }
@@ -135,7 +135,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IntersectWith_WhenOtherIsSelf_ShouldLeaveSetUnchanged()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.IntersectWith(sut);
 
@@ -167,9 +167,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ExceptWith_WhenOtherHasItemsInCommon_ShouldRemoveThemInOriginalOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3, 4 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3, 4]);
 
-        sut.ExceptWith(new[] { 2, 4, 99 });
+        sut.ExceptWith([2, 4, 99]);
 
         CollectionAssert.AreEqual(new[] { 1, 3 }, SnapshotByIndexer(sut));
     }
@@ -180,7 +180,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ExceptWith_WhenOtherIsEmpty_ShouldLeaveSetUnchanged()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.ExceptWith(Array.Empty<int>());
 
@@ -193,7 +193,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ExceptWith_WhenOtherIsSelf_ShouldClearSet()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.ExceptWith(sut);
 
@@ -208,7 +208,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        sut.ExceptWith(new[] { 1, 2, 3 });
+        sut.ExceptWith([1, 2, 3]);
 
         Assert.AreEqual(0, sut.Count);
     }
@@ -238,9 +238,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenOtherOverlaps_ShouldKeepExclusiveElements()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        sut.SymmetricExceptWith(new[] { 2, 3, 4, 5 });
+        sut.SymmetricExceptWith([2, 3, 4, 5]);
 
         Assert.AreEqual(3, sut.Count);
         Assert.IsTrue(sut.Contains(1));
@@ -256,7 +256,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenOtherIsEmpty_ShouldLeaveSetUnchanged()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.SymmetricExceptWith(Array.Empty<int>());
 
@@ -270,7 +270,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenOtherIsSelf_ShouldClearSet()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.SymmetricExceptWith(sut);
 
@@ -283,9 +283,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SymmetricExceptWith_WhenOtherHasDuplicates_ShouldDeduplicateBeforeApplying()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
-        sut.SymmetricExceptWith(new[] { 2, 2, 3, 3 });
+        sut.SymmetricExceptWith([2, 2, 3, 3]);
 
         Assert.IsTrue(sut.Contains(1));
         Assert.IsFalse(sut.Contains(2));
@@ -303,9 +303,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SetOperations_WhenCustomComparerProvided_ShouldHonourComparer()
     {
-        OrderedSet<string> sut = CreateSet(new[] { "Alpha", "Beta" }, StringComparer.OrdinalIgnoreCase);
+        OrderedSet<string> sut = CreateSet(["Alpha", "Beta"], StringComparer.OrdinalIgnoreCase);
 
-        sut.UnionWith(new[] { "ALPHA", "Gamma" });
+        sut.UnionWith(["ALPHA", "Gamma"]);
 
         Assert.AreEqual(3, sut.Count);
         Assert.IsTrue(sut.Contains("alpha"));

@@ -16,7 +16,9 @@ namespace Bodu.Globalization.Calendar.Plugin1.TestAssembly;
 /// attribute, implements both <see cref="INotableDateRulePlugin" /> and <see cref="INotableDateAlgorithmPlugin" />, and
 /// returns deterministic fixtures for tests to assert against.
 /// </summary>
-public sealed class HarnessPlugin : INotableDateRulePlugin, INotableDateAlgorithmPlugin
+public sealed class HarnessPlugin
+	: INotableDateRulePlugin
+	, INotableDateAlgorithmPlugin
 {
 	public const string PluginName = "Bodu.Test.Harness.Plugin1";
 	public const string RuleName = "Harness Test Day";
@@ -37,7 +39,8 @@ public sealed class HarnessPlugin : INotableDateRulePlugin, INotableDateAlgorith
 		yield return new KeyValuePair<string, INotableDateAlgorithm>(AlgorithmKey, new StaticAlgorithm());
 	}
 
-	private sealed class StaticRuleProvider : INotableDateRuleProvider
+	private sealed class StaticRuleProvider
+		: INotableDateRuleProvider
 	{
 		public IEnumerable<NotableDateRule> LoadRules()
 		{
@@ -54,7 +57,8 @@ public sealed class HarnessPlugin : INotableDateRulePlugin, INotableDateAlgorith
 		}
 	}
 
-	private sealed class StaticAlgorithm : INotableDateAlgorithm
+	private sealed class StaticAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => FixedAlgorithmDate;
 	}

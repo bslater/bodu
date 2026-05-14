@@ -78,7 +78,7 @@ public sealed class NotableDateFilter
     private readonly Func<NotableDate, bool> _dateGate;
 
     /// <summary>
-    /// Initializes a new <see cref="NotableDateFilter" /> with explicit primary and secondary gate delegates.
+    /// Initializes a new instance of the <see cref="NotableDateFilter"/> class with explicit primary and secondary gate delegates.
     /// </summary>
     /// <param name="ruleGate">The primary gate predicate evaluated against each rule before date resolution.</param>
     /// <param name="dateGate">The secondary gate predicate evaluated against each materialized date.</param>

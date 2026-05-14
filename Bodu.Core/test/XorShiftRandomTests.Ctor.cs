@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XorShiftRandomTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public partial class XorShiftRandomTests
     [DataRow(int.MinValue)]
     [DataRow(0)]
     [DataRow(int.MaxValue)]
-    public void Constructor_WhenValidRange_ShouldCreateInstance(int seed)
+    public void Ctor_WhenValidRange_ShouldCreateInstance(int seed)
     {
         var rng = new XorShiftRandom(seed);
         Assert.IsNotNull(rng);
@@ -25,7 +25,7 @@ public partial class XorShiftRandomTests
     /// Verifies that <see cref="XorShiftRandom.Constructor" />, when CalledWithoutSeed, returns a non-null value.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenCalledWithoutSeed_ShouldCreateInstance()
+    public void Ctor_WhenCalledWithoutSeed_ShouldCreateInstance()
     {
         var rng = new XorShiftRandom();
         Assert.IsNotNull(rng);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.Constructor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,7 +13,7 @@ public partial class PooledBufferBuilderTests
     /// throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenInitialCapacityIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenInitialCapacityIsZero_ShouldThrowArgumentOutOfRangeException()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -28,7 +28,7 @@ public partial class PooledBufferBuilderTests
     /// throws <see cref="ArgumentOutOfRangeException"/>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenInitialCapacityIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenInitialCapacityIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -43,7 +43,7 @@ public partial class PooledBufferBuilderTests
     /// yields a builder with zero elements and a capacity at least as large as the requested value.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenInitialCapacityIsValid_ShouldInitialiseEmptyBuilderWithSufficientCapacity()
+    public void Ctor_WhenInitialCapacityIsValid_ShouldInitialiseEmptyBuilderWithSufficientCapacity()
     {
         using var builder = new PooledBufferBuilder<int>(16);
 
@@ -56,7 +56,7 @@ public partial class PooledBufferBuilderTests
     /// least 256 and an initial count of zero.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenUsingDefaultCapacity_ShouldInitialiseWithCapacityAtLeast256()
+    public void Ctor_WhenUsingDefaultCapacity_ShouldInitialiseWithCapacityAtLeast256()
     {
         using var builder = new PooledBufferBuilder<int>();
 
@@ -69,7 +69,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="System.Buffers.IBufferWriter{T}"/>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenConstructed_ShouldBeAssignableToIBufferWriter()
+    public void Ctor_WhenConstructed_ShouldBeAssignableToIBufferWriter()
     {
         using var builder = new PooledBufferBuilder<int>();
 
@@ -81,7 +81,7 @@ public partial class PooledBufferBuilderTests
     /// <see cref="System.Buffers.IMemoryOwner{T}"/>.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenConstructed_ShouldBeAssignableToIMemoryOwner()
+    public void Ctor_WhenConstructed_ShouldBeAssignableToIMemoryOwner()
     {
         using var builder = new PooledBufferBuilder<int>();
 

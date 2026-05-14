@@ -278,7 +278,7 @@ public partial class Blake2bTests
     /// Verifies that requesting an unsupported hash size throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenHashSizeIsUnsupported_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenHashSizeIsUnsupported_ShouldThrowArgumentOutOfRangeException()
     {
         var hashSize = 300;
 

@@ -22,7 +22,8 @@ namespace Bodu.Globalization.Calendar;
 /// callers only when a corresponding <see cref="NotableDateRule" /> is materialized into a <see cref="NotableDate" />.
 /// </para>
 /// </remarks>
-internal sealed class CachingCalculationAnchorResolver : ICalculationAnchorResolver
+internal sealed class CachingCalculationAnchorResolver
+    : ICalculationAnchorResolver
 {
     private readonly ConcurrentDictionary<CalculationAnchorCacheKey, Lazy<DateTime?>> _cache = new();
     private readonly NotableDateRuleResolver _ruleResolver;

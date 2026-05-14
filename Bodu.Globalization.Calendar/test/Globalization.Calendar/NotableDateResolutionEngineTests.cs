@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionEngineTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed class NotableDateResolutionEngineTests
     /// Verifies that construction rejects a null occurrence resolver.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenOccurrenceResolverIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenOccurrenceResolverIsNull_ShouldThrowArgumentNullException()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -243,7 +243,8 @@ public sealed class NotableDateResolutionEngineTests
             notable);
     }
 
-    private sealed class StubOccurrenceResolver : INotableDateRuleOccurrenceResolver
+    private sealed class StubOccurrenceResolver
+        : INotableDateRuleOccurrenceResolver
     {
         private readonly IReadOnlyList<ResolvedNotableDateOccurrence> occurrences;
 

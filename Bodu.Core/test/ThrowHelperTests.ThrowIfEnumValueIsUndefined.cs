@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfEnumValueIsUndefined.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,9 +27,9 @@ public partial class ThrowHelperTests
         string testName, TestEnum value, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
-        AssertGuard(testName, () => ThrowHelper.ThrowIfEnumValueIsUndefined(value, "value"), expected, expectedParam);
+        AssertGuard(testName, () => ThrowHelper.ThrowIfEnumValueIsUndefined(value, nameof(value)), expected, expectedParam);
     }
 
     /// <summary>

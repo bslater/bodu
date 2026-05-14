@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateAdjusterTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -425,7 +425,7 @@ public sealed partial class NotableDateAdjusterTests
 	/// required predicate is <see langword="null" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenIsWeekendIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenIsWeekendIsNull_ShouldThrowArgumentNullException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
@@ -443,7 +443,7 @@ public sealed partial class NotableDateAdjusterTests
 	/// <paramref name="isNonWorkingDay" /> is <see langword="null" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenIsNonWorkingDayIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenIsNonWorkingDayIsNull_ShouldThrowArgumentNullException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
@@ -906,19 +906,22 @@ public sealed partial class NotableDateAdjusterTests
 		Assert.IsFalse(NotableDateAdjuster.IsInScope(adjustment, 2025, "BAD!", null));
 	}
 
-	private sealed class ShiftByFiveDaysHandler : IAdjustmentHandler
+	private sealed class ShiftByFiveDaysHandler
+		: IAdjustmentHandler
 	{
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
 			new(true, context.Date.AddDays(5));
 	}
 
-	private sealed class DeclineHandler : IAdjustmentHandler
+	private sealed class DeclineHandler
+		: IAdjustmentHandler
 	{
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
 			new(false, context.Date);
 	}
 
-	private sealed class FlagNonWorkingHandler : IAdjustmentHandler
+	private sealed class FlagNonWorkingHandler
+		: IAdjustmentHandler
 	{
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
 			new(true, context.Date, IsNonWorkingOverride: true);

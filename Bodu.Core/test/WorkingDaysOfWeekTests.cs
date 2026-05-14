@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WorkingDaysOfWeekTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,10 +34,10 @@ public class WorkingDaysOfWeekTests
     /// <see cref="WeekPattern" /> that selects exactly the expected days.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetNamedPresetTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetNamedPresetTestData))]
     public void ToWeekPattern_WhenNamedPreset_ShouldSelectExpectedDays(WorkingDaysOfWeek value, DayOfWeek[] expectedDays)
     {
-        WeekPattern pattern = value.ToWeekPattern();
+        var pattern = value.ToWeekPattern();
 
         Assert.AreEqual(expectedDays.Length, pattern.Count);
         foreach (DayOfWeek day in expectedDays)
@@ -75,12 +75,12 @@ public class WorkingDaysOfWeekTests
     /// preset back to its original <see cref="WorkingDaysOfWeek" /> value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetNamedPresetTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetNamedPresetTestData))]
     public void ToWorkingDaysOfWeek_WhenRoundTripFromNamedPreset_ShouldReturnOriginal(WorkingDaysOfWeek value, DayOfWeek[] _)
     {
-        WeekPattern pattern = value.ToWeekPattern();
+        var pattern = value.ToWeekPattern();
 
-        WorkingDaysOfWeek roundTripped = pattern.ToWorkingDaysOfWeek();
+        var roundTripped = pattern.ToWorkingDaysOfWeek();
 
         Assert.AreEqual(value, roundTripped);
     }
@@ -92,9 +92,9 @@ public class WorkingDaysOfWeekTests
     [TestMethod]
     public void ToWorkingDaysOfWeek_WhenNotANamedPreset_ShouldReturnCustom()
     {
-        WeekPattern oddPattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        var oddPattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
 
-        WorkingDaysOfWeek value = oddPattern.ToWorkingDaysOfWeek();
+        var value = oddPattern.ToWorkingDaysOfWeek();
 
         Assert.AreEqual(WorkingDaysOfWeek.Custom, value);
     }
@@ -104,10 +104,10 @@ public class WorkingDaysOfWeekTests
     /// <see langword="true" /> and the expected value for every named preset.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetNamedPresetTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetNamedPresetTestData))]
     public void TryGetWorkingDaysOfWeek_WhenNamedPreset_ShouldReturnTrueAndExpectedValue(WorkingDaysOfWeek value, DayOfWeek[] _)
     {
-        WeekPattern pattern = value.ToWeekPattern();
+        var pattern = value.ToWeekPattern();
 
         var success = pattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek actual);
 
@@ -122,7 +122,7 @@ public class WorkingDaysOfWeekTests
     [TestMethod]
     public void TryGetWorkingDaysOfWeek_WhenNotANamedPreset_ShouldReturnFalseAndCustom()
     {
-        WeekPattern oddPattern = new WeekPattern(DayOfWeek.Tuesday, DayOfWeek.Thursday);
+        var oddPattern = new WeekPattern(DayOfWeek.Tuesday, DayOfWeek.Thursday);
 
         var success = oddPattern.TryGetWorkingDaysOfWeek(out WorkingDaysOfWeek value);
 

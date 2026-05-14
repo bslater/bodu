@@ -37,7 +37,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] recovered = padding.Unpad(padded, blockSize: 128);
 /// </code>
 /// </example>
-public sealed class Iso10126Padding : IPaddingStrategy
+public sealed class Iso10126Padding
+    : IPaddingStrategy
 {
     /// <inheritdoc />
     public bool StripsPaddingOnUnpad => true;

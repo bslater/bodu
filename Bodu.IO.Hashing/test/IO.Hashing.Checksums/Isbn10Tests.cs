@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Isbn10Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Contains unit tests for the <see cref="Isbn10" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class Isbn10Tests : AlphanumericCheckDigitAlgorithmTests<Isbn10Tests, Isbn10>
+public sealed class Isbn10Tests
+    : AlphanumericCheckDigitAlgorithmTests<Isbn10Tests, Isbn10>
 {
     /// <inheritdoc />
     protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()

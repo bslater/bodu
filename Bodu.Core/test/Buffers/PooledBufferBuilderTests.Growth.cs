@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.Growth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenExceeded_ShouldGrowAtLeastGeometrically()
     {
         using var builder = new PooledBufferBuilder<byte>(64);
-        int initial = builder.Capacity;
+        var initial = builder.Capacity;
 
         builder.EnsureCapacity(initial + 1);
 
@@ -34,8 +34,8 @@ public partial class PooledBufferBuilderTests
     public void EnsureCapacity_WhenMinimumExceedsDoubling_ShouldJumpToMinimum()
     {
         using var builder = new PooledBufferBuilder<byte>(64);
-        int initial = builder.Capacity;
-        int requested = initial * 10;
+        var initial = builder.Capacity;
+        var requested = initial * 10;
 
         builder.EnsureCapacity(requested);
 

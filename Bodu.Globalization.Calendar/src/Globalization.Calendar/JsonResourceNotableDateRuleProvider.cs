@@ -37,7 +37,8 @@ namespace Bodu.Globalization.Calendar;
 ///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
 /// </code>
 /// </example>
-public sealed class JsonResourceNotableDateRuleProvider : NotableDateRuleResourceProviderBase
+public sealed class JsonResourceNotableDateRuleProvider
+    : NotableDateRuleResourceProviderBase
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="JsonResourceNotableDateRuleProvider" /> class that resolves embedded

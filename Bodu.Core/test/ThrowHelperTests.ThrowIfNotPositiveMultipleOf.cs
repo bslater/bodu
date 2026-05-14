@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfNotPositiveMultipleOf.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,11 +30,11 @@ public partial class ThrowHelperTests
         string testName, int value, int divisor, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor, "value"),
+            () => ThrowHelper.ThrowIfNotPositiveMultipleOf(value, divisor, nameof(value)),
             expected,
             expectedParam);
     }

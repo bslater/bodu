@@ -20,7 +20,8 @@ namespace Bodu.Security.Cryptography;
 /// expose) live in partial files on this class.
 /// </remarks>
 [TestClass]
-public partial class MerkleTreeHashTests : MerkleTreeHashTestsBase<MerkleTreeHash>
+public partial class MerkleTreeHashTests
+    : MerkleTreeHashTestsBase<MerkleTreeHash>
 {
     // ─── Factory thunks — adapt the base class to MerkleTreeHash's concrete ctor/overloads ────
 

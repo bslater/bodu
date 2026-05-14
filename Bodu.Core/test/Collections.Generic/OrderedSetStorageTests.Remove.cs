@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.Remove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<string> sut = CreateStorage(new[] { "a" });
+        OrderedSetStorage<string> sut = CreateStorage(["a"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -39,10 +39,10 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Remove_WhenItemIsAbsent_ShouldReturnFalseAndNotBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int versionBefore = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var versionBefore = sut._version;
 
-        bool removed = sut.Remove(99);
+        var removed = sut.Remove(99);
 
         Assert.IsFalse(removed);
         Assert.AreEqual(versionBefore, sut._version);
@@ -55,7 +55,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Remove_WhenItemIsFirst_ShouldShiftRemainingLeft()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.IsTrue(sut.Remove(1));
 
@@ -68,7 +68,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Remove_WhenItemIsInterior_ShouldShiftRemainingLeft()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3, 4 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4]);
 
         Assert.IsTrue(sut.Remove(2));
 
@@ -81,7 +81,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Remove_WhenItemIsLast_ShouldTrimOrder()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.IsTrue(sut.Remove(3));
 
@@ -94,7 +94,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Remove_WhenCalled_ShouldEvictFromHashTable()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         sut.Remove(2);
 
@@ -108,7 +108,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Remove_WhenItemReAddedAfterRemoval_ShouldAppendAtEnd()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         sut.Remove(2);
         sut.Add(2);
@@ -130,7 +130,7 @@ public partial class OrderedSetStorageTests
     [DataRow(int.MinValue)]
     public void RemoveAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -163,7 +163,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveAt_WhenIndexIsZero_ShouldShiftRemainingLeft()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         sut.RemoveAt(0);
 
@@ -176,7 +176,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveAt_WhenIndexIsLast_ShouldTrimOrder()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         sut.RemoveAt(2);
 
@@ -193,7 +193,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveWhere_WhenMatchIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -212,9 +212,9 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveWhere_WhenSomeElementsMatch_ShouldRemoveMatchingAndKeepOrder()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3, 4, 5, 6 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4, 5, 6]);
 
-        int removed = sut.RemoveWhere(x => x % 2 == 0);
+        var removed = sut.RemoveWhere(x => x % 2 == 0);
 
         Assert.AreEqual(3, removed);
         CollectionAssert.AreEqual(new[] { 1, 3, 5 }, Snapshot(sut));
@@ -227,10 +227,10 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveWhere_WhenNothingMatches_ShouldReturnZeroAndNotBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int versionBefore = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var versionBefore = sut._version;
 
-        int removed = sut.RemoveWhere(_ => false);
+        var removed = sut.RemoveWhere(_ => false);
 
         Assert.AreEqual(0, removed);
         Assert.AreEqual(versionBefore, sut._version);
@@ -243,9 +243,9 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveWhere_WhenAllMatch_ShouldEmptyStorage()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
-        int removed = sut.RemoveWhere(_ => true);
+        var removed = sut.RemoveWhere(_ => true);
 
         Assert.AreEqual(3, removed);
         Assert.AreEqual(0, sut.Count);
@@ -258,7 +258,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveWhere_WhenSomeElementsMatch_ShouldRehashSurvivors()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3, 4 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4]);
 
         sut.RemoveWhere(x => x == 2);
 
@@ -281,8 +281,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Clear_WhenStorageHasItems_ShouldEmptyStorage()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int versionBefore = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var versionBefore = sut._version;
 
         sut.Clear();
 
@@ -298,7 +298,7 @@ public partial class OrderedSetStorageTests
     public void Clear_WhenStorageIsEmpty_ShouldBeNoOp()
     {
         var sut = new OrderedSetStorage<int>(0, null);
-        int versionBefore = sut._version;
+        var versionBefore = sut._version;
 
         sut.Clear();
 
@@ -312,7 +312,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Clear_WhenItemsReAddedAfterClear_ShouldTrackNewItems()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         sut.Clear();
         sut.Add(99);

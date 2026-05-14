@@ -19,7 +19,7 @@ public sealed class EasterSundayNotableDateAlgorithm
     : INotableDateAlgorithm
 {
     /// <summary>Shared per-process cache of computed Easter dates, keyed by year and calendar identity string.</summary>
-    private static readonly ConcurrentDictionary<(int year, string calendarId), DateTime> _easterCache = new();
+    private static readonly ConcurrentDictionary<(int year, string calendarId), DateTime> s_easterCache = new();
 
     /// <inheritdoc />
     public DateTime? GetDate(int year, System.Globalization.Calendar? calendar)
@@ -40,7 +40,7 @@ public sealed class EasterSundayNotableDateAlgorithm
         var calendarId = calendar?.GetType().FullName ?? "Gregorian";
         (int year, string calendarId) key = (year, calendarId);
 
-        return _easterCache.GetOrAdd(key, _ =>
+        return s_easterCache.GetOrAdd(key, _ =>
         {
             int month, day;
             if (year >= 1583 && calendar is not System.Globalization.JulianCalendar)

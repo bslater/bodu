@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfSpanLengthIsNotEqualTo.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,9 +28,9 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthIsNotEqualTo_WhenInvokedWithVariousLengths_ShouldFollowContract(
         string testName, int spanLength, int expectedLength, bool expectsException)
     {
-        int[] buffer = new int[spanLength];
+        var buffer = new int[spanLength];
         Type? expected = expectsException ? typeof(ArgumentException) : null;
-        string? expectedParam = expectsException ? "span" : null;
+        var expectedParam = expectsException ? "span" : null;
 
         AssertGuard(
             $"Span<T>: {testName}",

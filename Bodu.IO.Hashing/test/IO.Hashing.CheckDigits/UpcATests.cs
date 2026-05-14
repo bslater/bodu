@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="UpcATests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// Contains unit tests for the <see cref="UpcA" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed class UpcATests : CheckDigitAlgorithmTests<UpcATests, UpcA>
+public sealed class UpcATests
+    : CheckDigitAlgorithmTests<UpcATests, UpcA>
 {
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()

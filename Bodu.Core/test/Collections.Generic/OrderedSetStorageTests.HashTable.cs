@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.HashTable.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,11 +29,11 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        for (int i = 0; i < size; i++)
+        for (var i = 0; i < size; i++)
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(size, sut.Count);
-        for (int i = 0; i < size; i++)
+        for (var i = 0; i < size; i++)
         {
             Assert.AreEqual(i, sut.GetAt(i));
             Assert.AreEqual(i, sut.IndexOf(i));
@@ -50,16 +50,16 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
             sut.Add(i);
 
-        for (int i = 0; i < 1000; i += 2)
+        for (var i = 0; i < 1000; i += 2)
             Assert.IsTrue(sut.Remove(i));
 
         Assert.AreEqual(500, sut.Count);
-        for (int i = 0; i < sut.Count; i++)
+        for (var i = 0; i < sut.Count; i++)
         {
-            int item = sut.GetAt(i);
+            var item = sut.GetAt(i);
             Assert.AreEqual(i, sut.IndexOf(item));
             Assert.IsTrue(sut.Contains(item));
         }
@@ -78,13 +78,13 @@ public partial class OrderedSetStorageTests
         var sut = new OrderedSetStorage<HashCollider>(0, null);
         var items = new HashCollider[32];
 
-        for (int i = 0; i < items.Length; i++)
+        for (var i = 0; i < items.Length; i++)
         {
             items[i] = new HashCollider("c" + i);
             Assert.IsTrue(sut.Add(items[i]));
         }
 
-        for (int i = 0; i < items.Length; i++)
+        for (var i = 0; i < items.Length; i++)
         {
             Assert.IsTrue(sut.Contains(items[i]));
             Assert.AreEqual(i, sut.IndexOf(items[i]));
@@ -165,7 +165,8 @@ public partial class OrderedSetStorageTests
     /// An <see cref="IEqualityComparer{T}" /> for <see cref="string" /> that delegates equality to ordinal
     /// comparison but forces every hash code to zero in order to exercise collision handling.
     /// </summary>
-    private sealed class FixedHashStringComparer : IEqualityComparer<string>
+    private sealed class FixedHashStringComparer
+        : IEqualityComparer<string>
     {
         /// <inheritdoc />
         public bool Equals(string? x, string? y) => string.Equals(x, y, StringComparison.Ordinal);

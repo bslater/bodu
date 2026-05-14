@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayContainsNonNumeric.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,11 +22,14 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayContainsNonNumericContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfArrayContainsNonNumericContractData))]
     public void ThrowIfArrayContainsNonNumeric_WhenInvokedWithVariousArrays_ShouldFollowContract(
         string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
     {
-        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayContainsNonNumeric(array, "array"), expectedExceptionType, expectedParamName);
+        AssertGuard(testName, () =>
+        {
+            ThrowHelper.ThrowIfArrayContainsNonNumeric(array, nameof(array));
+        }, expectedExceptionType, expectedParamName);
     }
 
     private static IEnumerable<object?[]> ThrowIfArrayContainsNonNumericContractData()

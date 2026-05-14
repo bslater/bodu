@@ -198,7 +198,8 @@ public sealed class NotableDateServicePluginIntegrationTests
 		Assert.IsFalse(results.Any(r => r.Name == "Orphan Algorithm Rule"));
 	}
 
-	private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+	private sealed class InMemoryRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly NotableDateRule[] _rules;
 
@@ -207,7 +208,8 @@ public sealed class NotableDateServicePluginIntegrationTests
 		public IEnumerable<NotableDateRule> LoadRules() => _rules;
 	}
 
-	private sealed class HostOverrideAlgorithm : INotableDateAlgorithm
+	private sealed class HostOverrideAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly DateTime _date;
 

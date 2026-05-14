@@ -43,7 +43,8 @@ namespace Bodu.Globalization.Calendar;
 /// // resolved[1].Name == "Easter Sunday"
 /// </code>
 /// </example>
-public sealed class DefaultNotableDateCollisionResolver : INotableDateCollisionResolver
+public sealed class DefaultNotableDateCollisionResolver
+    : INotableDateCollisionResolver
 {
     /// <inheritdoc />
     public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping)

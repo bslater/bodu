@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfStringTooLong.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,11 +34,11 @@ public partial class ThrowHelperTests
             ? null
             : Type.GetType($"System.{expectedExceptionTypeName}, System.Private.CoreLib")
                 ?? throw new InvalidOperationException($"Unknown exception type '{expectedExceptionTypeName}'.");
-        string? param = expectedParamName.Length == 0 ? null : expectedParamName;
+        var param = expectedParamName.Length == 0 ? null : expectedParamName;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfStringTooLong(value!, maxLength, "value"),
+            () => ThrowHelper.ThrowIfStringTooLong(value!, maxLength, nameof(value)),
             expected,
             param);
     }

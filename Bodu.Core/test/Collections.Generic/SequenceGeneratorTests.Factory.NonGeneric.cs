@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGeneratorTests.Factory.NonGeneric.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,11 +18,11 @@ public partial class SequenceGeneratorTests
     [TestMethod]
     public void Factory_NonGenericGetEnumerator_ShouldYieldSameSequence()
     {
-        var sequence = SequenceGenerator.Factory(() => new List<int> { 10, 20, 30 }.GetEnumerator());
+        IEnumerable<int> sequence = SequenceGenerator.Factory(() => new List<int> { 10, 20, 30 }.GetEnumerator());
 
         IEnumerable nonGeneric = sequence;
         var observed = new List<int>();
-        foreach (object item in nonGeneric)
+        foreach (var item in nonGeneric)
             observed.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, observed);

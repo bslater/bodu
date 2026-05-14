@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.Remove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<string> sut = CreateSet(new[] { "a" });
+        IndexedSet<string> sut = CreateSet(["a"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -39,9 +39,9 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Remove_WhenItemIsAbsent_ShouldReturnFalseAndLeaveSetUnchanged()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
-        bool removed = sut.Remove(99);
+        var removed = sut.Remove(99);
 
         Assert.IsFalse(removed);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
@@ -56,9 +56,9 @@ public partial class IndexedSetTests
     [DataRow(3, new[] { 1, 2 })]
     public void Remove_WhenItemIsPresent_ShouldReturnTrueAndCompactOrder(int target, int[] expected)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
-        bool removed = sut.Remove(target);
+        var removed = sut.Remove(target);
 
         Assert.IsTrue(removed);
         CollectionAssert.AreEqual(expected, SnapshotByIndexer(sut));
@@ -78,7 +78,7 @@ public partial class IndexedSetTests
     [DataRow(int.MinValue)]
     public void RemoveAt_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -116,7 +116,7 @@ public partial class IndexedSetTests
     [DataRow(3, new[] { 10, 20, 30 })]
     public void RemoveAt_WhenIndexIsValid_ShouldRemoveElementAtPosition(int index, int[] expected)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30, 40 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30, 40]);
 
         sut.RemoveAt(index);
 
@@ -130,7 +130,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void RemoveAt_WhenItemRemoved_ShouldNoLongerBeContained()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.RemoveAt(1);
 
@@ -148,7 +148,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Clear_WhenCalled_ShouldRemoveAllElements()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.Clear();
 

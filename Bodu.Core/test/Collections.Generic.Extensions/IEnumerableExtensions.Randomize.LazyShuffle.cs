@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Randomize.LazyShuffle.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,9 +16,9 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     [TestMethod]
     public void Randomize_LazyShuffle_WhenCountIsZero_ShouldYieldEmptySequence()
     {
-        int[] source = Enumerable.Range(1, 10).ToArray();
+        var source = Enumerable.Range(1, 10).ToArray();
 
-        int[] result = source.Randomize(RandomizationMode.LazyShuffle, CreateSeededRng(), count: 0).ToArray();
+        var result = source.Randomize(RandomizationMode.LazyShuffle, CreateSeededRng(), count: 0).ToArray();
 
         Assert.AreEqual(0, result.Length);
     }

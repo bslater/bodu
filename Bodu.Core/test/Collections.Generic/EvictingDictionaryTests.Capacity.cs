@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Capacity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class EvictingDictionaryTests
     /// Verifies that the parameterless constructor sets the default capacity.
     /// </summary>
     [TestMethod]
-    public void Capacity_WhenUsingParameterlessConstructor_ShouldUseDefaultCapacity()
+    public void Capacity_WhenUsingParameterlessCtor_ShouldUseDefaultCapacity()
     {
         var dictionary = new EvictingDictionary<string, int>();
         Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, dictionary.Capacity);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRangePipelineTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -620,7 +620,8 @@ public sealed class NotableDateRangePipelineTests
 	/// <summary>
 	/// In-memory rule provider used by the integration tests.
 	/// </summary>
-	private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+	private sealed class InMemoryRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly IReadOnlyList<NotableDateRule> _rules;
 
@@ -635,7 +636,8 @@ public sealed class NotableDateRangePipelineTests
 	/// <summary>
 	/// Minimal Gregorian Easter Sunday algorithm (Anonymous Gregorian / Meeus / Jones / Butcher) used by the Lent integration test.
 	/// </summary>
-	private sealed class GregorianEasterSundayAlgorithm : INotableDateAlgorithm
+	private sealed class GregorianEasterSundayAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
 		{
@@ -662,7 +664,8 @@ public sealed class NotableDateRangePipelineTests
 	/// Custom <see cref="IAdjustmentHandler" /> used by the explicit-reach integration test. Shifts the supplied date by a fixed
 	/// number of days every time it is consulted.
 	/// </summary>
-	private sealed class ShiftByDaysHandler : IAdjustmentHandler
+	private sealed class ShiftByDaysHandler
+		: IAdjustmentHandler
 	{
 		private readonly int _shiftDays;
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests._Stress.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -1546,7 +1546,7 @@ public partial class ConcurrentCircularBufferTests
                     if (firstNonNull == snap.Length)
                         continue;
 
-                    var first = snap[firstNonNull]!;
+                    TestItem first = snap[firstNonNull]!;
                     var min = first.Value;
                     var max = first.Value;
                     var previous = first.Value;
@@ -1555,7 +1555,7 @@ public partial class ConcurrentCircularBufferTests
 
                     for (var i = firstNonNull + 1; i < snap.Length; i++)
                     {
-                        var item = snap[i];
+                        TestItem? item = snap[i];
 
                         if (item is null)
                             continue;

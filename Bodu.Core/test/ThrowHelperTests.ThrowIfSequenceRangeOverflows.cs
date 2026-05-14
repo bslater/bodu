@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfSequenceRangeOverflows.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,11 +37,11 @@ public partial class ThrowHelperTests
             : Type.GetType($"System.{expectExceptionType}, System.Private.CoreLib")
               ?? throw new InvalidOperationException($"Unknown exception type '{expectExceptionType}'.");
 
-        string? expectedParam = expected is null ? null : "count";
+        var expectedParam = expected is null ? null : "count";
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfSequenceRangeOverflows(start, count, "count"),
+            () => ThrowHelper.ThrowIfSequenceRangeOverflows(start, count, nameof(count)),
             expected,
             expectedParam);
     }

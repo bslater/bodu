@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Randomize.LazySource.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,14 +18,14 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     {
         var expected = Enumerable.Range(1, 8).ToArray();
 
-        int[] result = LazyYield(8).Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
+        var result = LazyYield(8).Randomize(RandomizationMode.BufferAll, CreateSeededRng()).ToArray();
 
         CollectionAssert.AreEquivalent(expected, result);
     }
 
     private static IEnumerable<int> LazyYield(int count)
     {
-        for (int i = 1; i <= count; i++)
+        for (var i = 1; i <= count; i++)
             yield return i;
     }
 }

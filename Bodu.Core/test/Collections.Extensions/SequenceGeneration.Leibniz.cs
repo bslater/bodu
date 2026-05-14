@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGeneration.Leibniz.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -75,9 +75,9 @@ public class LeibnizTests
         var actual = SequenceGenerator.Leibniz(min, max).Take(5).ToArray();
 
         Assert.AreEqual(5, actual.Length);
-        foreach (double term in actual)
+        foreach (var term in actual)
         {
-            double magnitude = Math.Abs(term);
+            var magnitude = Math.Abs(term);
             Assert.IsTrue(magnitude >= min, $"Magnitude {magnitude} fell below the inclusive lower bound {min}.");
             Assert.IsTrue(magnitude < max, $"Magnitude {magnitude} reached or exceeded the exclusive upper bound {max}.");
         }
@@ -90,10 +90,10 @@ public class LeibnizTests
     public void Leibniz_WhenSummingManyTerms_ShouldApproximatePiOverFour()
     {
         double partial = 0;
-        foreach (double term in SequenceGenerator.Leibniz(0.0, 2.0).Take(2000))
+        foreach (var term in SequenceGenerator.Leibniz(0.0, 2.0).Take(2000))
             partial += term;
 
-        double pi = partial * 4;
+        var pi = partial * 4;
         Assert.AreEqual(Math.PI, pi, 0.01);
     }
 

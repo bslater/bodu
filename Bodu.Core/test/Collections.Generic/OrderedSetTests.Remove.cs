@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.Remove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<string> sut = CreateSet(new[] { "a" });
+        OrderedSet<string> sut = CreateSet(["a"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -39,9 +39,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Remove_WhenItemIsAbsent_ShouldReturnFalseAndLeaveSetUnchanged()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        bool removed = sut.Remove(99);
+        var removed = sut.Remove(99);
 
         Assert.IsFalse(removed);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
@@ -56,9 +56,9 @@ public partial class OrderedSetTests
     [DataRow(3, new[] { 1, 2 })]
     public void Remove_WhenItemIsPresent_ShouldReturnTrueAndCompactOrder(int target, int[] expected)
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        bool removed = sut.Remove(target);
+        var removed = sut.Remove(target);
 
         Assert.IsTrue(removed);
         CollectionAssert.AreEqual(expected, SnapshotByIndexer(sut));
@@ -71,7 +71,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Remove_WhenItemRemoved_ShouldNoLongerBeReportedPresent()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.Remove(2);
 
@@ -85,7 +85,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Remove_WhenItemReAddedAfterRemoval_ShouldAppendAtEnd()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.Remove(2);
         sut.Add(2);
@@ -103,7 +103,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Clear_WhenCalled_ShouldRemoveAllElements()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.Clear();
 
@@ -132,7 +132,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Clear_WhenItemsReAddedAfterClear_ShouldTrackNewItems()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
         sut.Clear();
         sut.Add(99);

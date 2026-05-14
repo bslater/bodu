@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FiscalYearExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public class FiscalYearExtensionsTests
             dayOfWeek: DayOfWeek.Saturday,
             isFiscalYearEnd: true,
             useNearestDayOfWeek: true,
-            pattern: FiscalWeekPattern.FourFourFive);
+            pattern: FiscalWeekPattern.Weeks445);
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.FiscalYear" /> returns a consistent fiscal year for a date within a
@@ -32,7 +32,7 @@ public class FiscalYearExtensionsTests
         // Probe with the Q1 start of fiscal year 2026 — by definition, that date's fiscal year is 2026.
         DateOnly q1Start = DateOnlyExtensions.FirstDateOfFiscalYear(2026, provider);
 
-        int fy = q1Start.FiscalYear(provider);
+        var fy = q1Start.FiscalYear(provider);
 
         Assert.AreEqual(2026, fy);
     }
@@ -117,7 +117,7 @@ public class FiscalYearExtensionsTests
     [TestMethod]
     public void FiscalYear_WhenProviderIsNull_ShouldThrowExactly()
     {
-        DateOnly date = new DateOnly(2026, 5, 14);
+        var date = new DateOnly(2026, 5, 14);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -134,8 +134,8 @@ public class FiscalYearExtensionsTests
         FiscalWeekQuarterProvider provider = BuildProvider();
         DateOnly fy2026Start = DateOnlyExtensions.FirstDateOfFiscalYear(2026, provider);
 
-        int fromDateOnly = fy2026Start.FiscalYear(provider);
-        int fromDateTime = fy2026Start.ToDateTime(TimeOnly.MinValue).FiscalYear(provider);
+        var fromDateOnly = fy2026Start.FiscalYear(provider);
+        var fromDateTime = fy2026Start.ToDateTime(TimeOnly.MinValue).FiscalYear(provider);
 
         Assert.AreEqual(fromDateOnly, fromDateTime);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Cache.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ using System.Collections.ObjectModel;
 namespace Bodu.Collections.Generic.Extensions;
 
 [TestClass]
-public sealed partial class IEnumerableExtensionsTests_Cache : EnumerableTests
+public sealed partial class IEnumerableExtensionsTests_Cache
+    : EnumerableTests
 {
     /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> defers execution until the returned sequence is enumerated.

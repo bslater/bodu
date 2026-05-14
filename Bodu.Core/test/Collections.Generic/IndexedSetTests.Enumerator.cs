@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,10 +23,10 @@ public partial class IndexedSetTests
     [TestMethod]
     public void GetEnumerator_WhenSetPopulated_ShouldYieldAllItemsInOrder()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
         var seen = new List<int>();
 
-        foreach (int item in sut)
+        foreach (var item in sut)
             seen.Add(item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
@@ -52,7 +52,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Enumerator_WhenEndReached_ShouldReturnFalseFromMoveNext()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2 });
+        IndexedSet<int> sut = CreateSet([1, 2]);
 
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
@@ -67,7 +67,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Enumerator_WhenResetCalled_ShouldRestartIteration()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2 });
+        IndexedSet<int> sut = CreateSet([1, 2]);
 
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
@@ -90,7 +90,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowOnMoveNext()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
         sut.Add(99);
@@ -108,7 +108,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowOnReset()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
         sut.RemoveAt(1);
@@ -125,7 +125,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Enumerator_WhenMoveCalledAfterCreation_ShouldThrowOnMoveNext()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
         sut.Move(0, 2);
@@ -142,7 +142,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Enumerator_WhenIndexerSetterCalledAfterCreation_ShouldThrowOnMoveNext()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
         sut[0] = 99;
@@ -164,11 +164,11 @@ public partial class IndexedSetTests
     [TestMethod]
     public void IEnumerableT_WhenIterated_ShouldYieldAllItemsInOrder()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
         IEnumerable<int> typed = sut;
         var seen = new List<int>();
 
-        foreach (int item in typed)
+        foreach (var item in typed)
             seen.Add(item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
@@ -181,11 +181,11 @@ public partial class IndexedSetTests
     [TestMethod]
     public void IEnumerable_WhenIterated_ShouldYieldAllItemsInOrder()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
         IEnumerable untyped = sut;
         var seen = new List<int>();
 
-        foreach (object item in untyped)
+        foreach (var item in untyped)
             seen.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);

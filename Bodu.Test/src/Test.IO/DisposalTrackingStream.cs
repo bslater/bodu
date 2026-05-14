@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DisposalTrackingStream.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,7 +26,8 @@ namespace Bodu.Test.IO;
 /// verification contract concerns write and cleanup paths only.
 /// </para>
 /// </remarks>
-public sealed class DisposalTrackingStream : System.IO.Stream
+public sealed class DisposalTrackingStream
+    : System.IO.Stream
 {
     private readonly Stream _inner;
 

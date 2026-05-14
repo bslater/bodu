@@ -61,7 +61,8 @@ namespace Bodu.Security.Cryptography;
 /// </example>
 /// <seealso cref="AsconXof128"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
-public sealed class AsconCxof128 : AsconXof<AsconCxof128>
+public sealed class AsconCxof128
+    : AsconXof<AsconCxof128>
 {
     // Pre-computed initial state for Ascon-CXOF128 (NIST SP 800-232).
     // These five words are the result of applying Ascon-p12 to [raw_IV, 0, 0, 0, 0].

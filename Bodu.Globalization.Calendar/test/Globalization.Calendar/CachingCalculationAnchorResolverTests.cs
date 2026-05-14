@@ -195,7 +195,8 @@ public sealed class CachingCalculationAnchorResolverTests
     /// <summary>
     /// Test algorithm that returns a deterministic Easter-like date and records invocation count.
     /// </summary>
-    private sealed class CountingAlgorithm : INotableDateAlgorithm
+    private sealed class CountingAlgorithm
+        : INotableDateAlgorithm
     {
         public static int CallCount { get; private set; }
 
@@ -211,7 +212,8 @@ public sealed class CachingCalculationAnchorResolverTests
     /// <summary>
     /// Test algorithm that always returns <see langword="null" /> and records invocation count.
     /// </summary>
-    private sealed class NullReturningAlgorithm : INotableDateAlgorithm
+    private sealed class NullReturningAlgorithm
+        : INotableDateAlgorithm
     {
         public static int CallCount { get; private set; }
 
@@ -227,7 +229,8 @@ public sealed class CachingCalculationAnchorResolverTests
     /// <summary>
     /// Test algorithm that throws on the first invocation and succeeds on the second.
     /// </summary>
-    private sealed class ThrowOnceAlgorithm : INotableDateAlgorithm
+    private sealed class ThrowOnceAlgorithm
+        : INotableDateAlgorithm
     {
         public static int CallCount { get; private set; }
 

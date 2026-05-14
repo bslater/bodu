@@ -18,7 +18,8 @@ public static partial class SequenceGenerator
     /// </summary>
     /// <typeparam name="TResult">The type of elements returned by the enumerator.</typeparam>
     [DebuggerDisplay("AnonymousEnumerable<{typeof(TResult).Name}>")]
-    private sealed class AnonymousEnumerable<TResult> : IEnumerable<TResult>
+    private sealed class AnonymousEnumerable<TResult>
+        : IEnumerable<TResult>
     {
         private readonly Func<IEnumerator<TResult>> _createEnumerator;
 

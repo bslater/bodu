@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGeneration.LookAndSay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -51,7 +51,7 @@ public class LookAndSayTests
     public void LookAndSay_WhenEnumerated_ShouldProduceNonDecreasingLengths()
     {
         var actual = SequenceGenerator.LookAndSay(10).ToArray();
-        for (int i = 1; i < actual.Length; i++)
+        for (var i = 1; i < actual.Length; i++)
         {
             Assert.IsTrue(actual[i].Length >= actual[i - 1].Length,
                 $"Term at index {i} ({actual[i].Length}) is shorter than the previous term ({actual[i - 1].Length}).");
@@ -64,9 +64,9 @@ public class LookAndSayTests
     [TestMethod]
     public void LookAndSay_WhenEnumerated_ShouldYieldOnlyDigitCharacters()
     {
-        foreach (string term in SequenceGenerator.LookAndSay(8))
+        foreach (var term in SequenceGenerator.LookAndSay(8))
         {
-            foreach (char ch in term)
+            foreach (var ch in term)
                 Assert.IsTrue(ch >= '0' && ch <= '9', $"Term '{term}' contained a non-digit character '{ch}'.");
         }
     }

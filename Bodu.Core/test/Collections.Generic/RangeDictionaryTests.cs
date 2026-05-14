@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -56,7 +56,7 @@ public partial class RangeDictionaryTests
         params (int Start, int End, string Value)[] expected)
     {
         Assert.AreEqual(expected.Length, dict.Count);
-        for (int i = 0; i < expected.Length; i++)
+        for (var i = 0; i < expected.Length; i++)
         {
             ValueRange<int, string> actual = dict.GetEntryAt(i);
             Assert.AreEqual(expected[i].Start, actual.StartInclusive);

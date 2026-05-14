@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfLessThan.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,9 +29,9 @@ public partial class ThrowHelperTests
         string testName, int value, int min, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
-        AssertGuard(testName, () => ThrowHelper.ThrowIfLessThan(value, min, "value"), expected, expectedParam);
+        AssertGuard(testName, () => ThrowHelper.ThrowIfLessThan(value, min, nameof(value)), expected, expectedParam);
     }
 
     // Non-nullable overloads

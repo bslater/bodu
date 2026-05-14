@@ -39,7 +39,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Clear_Generic_WhenArrayIsEmpty_ShouldBeNoOp()
     {
-        int[] array = Array.Empty<int>();
+        var array = Array.Empty<int>();
         array.Clear();
         Assert.AreEqual(0, array.Length);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -128,7 +128,7 @@ public partial class IndexedSetTests
     {
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new IndexedSet<string>(new[] { "a", null!, "b" });
+            _ = new IndexedSet<string>(["a", null!, "b"]);
         });
     }
 
@@ -138,7 +138,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionContainsDuplicates_ShouldPreserveFirstOccurrenceOrder()
     {
-        var sut = new IndexedSet<int>(new[] { 1, 2, 2, 3, 1, 4 });
+        var sut = new IndexedSet<int>([1, 2, 2, 3, 1, 4]);
 
         Assert.AreEqual(4, sut.Count);
         Assert.AreEqual(1, sut[0]);
@@ -165,7 +165,7 @@ public partial class IndexedSetTests
     public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
     {
         var sut = new IndexedSet<string>(
-            new[] { "A", "a", "B", "b" },
+            ["A", "a", "B", "b"],
             StringComparer.OrdinalIgnoreCase);
 
         Assert.AreEqual(2, sut.Count);

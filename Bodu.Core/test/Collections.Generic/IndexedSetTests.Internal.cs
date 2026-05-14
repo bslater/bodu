@@ -19,7 +19,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void DebuggerStorage_WhenAccessed_ShouldReturnUnderlyingStorage()
     {
-        var sut = new IndexedSet<int>(new[] { 1, 2, 3 });
+        var sut = new IndexedSet<int>([1, 2, 3]);
 
         OrderedSetStorage<int> storage = sut.DebuggerStorage;
 
@@ -72,7 +72,8 @@ public partial class IndexedSetTests
     /// implementing <see cref="ICollection{T}" /> so capacity-hint helpers see the read-only-collection branch.
     /// </summary>
     /// <typeparam name="T">The element type.</typeparam>
-    private sealed class ReadOnlyCollectionOnly<T> : IReadOnlyCollection<T>
+    private sealed class ReadOnlyCollectionOnly<T>
+        : IReadOnlyCollection<T>
     {
         private readonly T[] _items;
 

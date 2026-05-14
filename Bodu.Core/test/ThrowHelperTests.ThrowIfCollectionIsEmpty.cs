@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfCollectionIsEmpty.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,11 +21,14 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfCollectionIsEmptyContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfCollectionIsEmptyContractData))]
     public void ThrowIfCollectionIsEmpty_WhenInvokedWithVariousCollections_ShouldFollowContract(
         string testName, ICollection<int>? collection, Type? expectedExceptionType, string? expectedParamName)
     {
-        AssertGuard(testName, () => ThrowHelper.ThrowIfCollectionIsEmpty(collection!, "collection"), expectedExceptionType, expectedParamName);
+        AssertGuard(testName, () =>
+        {
+            ThrowHelper.ThrowIfCollectionIsEmpty(collection!, nameof(collection));
+        }, expectedExceptionType, expectedParamName);
     }
 
     private static IEnumerable<object?[]> ThrowIfCollectionIsEmptyContractData()

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DammTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// Contains unit tests for the <see cref="Damm" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed partial class DammTests : CheckDigitAlgorithmTests<DammTests, Damm>
+public sealed partial class DammTests
+    : CheckDigitAlgorithmTests<DammTests, Damm>
 {
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()

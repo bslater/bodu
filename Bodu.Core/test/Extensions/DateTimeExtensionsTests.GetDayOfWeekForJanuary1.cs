@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.GetDayOfWeekForJanuary1.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,8 +22,8 @@ public partial class DateTimeExtensionsTests
     [DataRow(2026)]
     public void GetDayOfWeekForJanuary1_ShouldReturnDefinedAndStableDayOfWeek(int year)
     {
-        var first = DateTimeExtensions.GetDayOfWeekForJanuary1(year);
-        var second = DateTimeExtensions.GetDayOfWeekForJanuary1(year);
+        DayOfWeek first = DateTimeExtensions.GetDayOfWeekForJanuary1(year);
+        DayOfWeek second = DateTimeExtensions.GetDayOfWeekForJanuary1(year);
 
         Assert.IsTrue(Enum.IsDefined(typeof(DayOfWeek), first), $"Result {first} is not a defined DayOfWeek value.");
         Assert.AreEqual(first, second, "GetDayOfWeekForJanuary1 should be deterministic.");

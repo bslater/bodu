@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleResolverTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -232,7 +232,7 @@ public sealed class NotableDateRuleResolverTests
 	/// <paramref name="rules" /> is <see langword="null" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenRulesIsNull_ShouldThrowArgumentNullException()
+	public void Ctor_WhenRulesIsNull_ShouldThrowArgumentNullException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
 		{
@@ -464,7 +464,7 @@ public sealed class NotableDateRuleResolverTests
 	[DataRow("")]
 	[DataRow("   ")]
 	[TestMethod]
-	public void Constructor_WhenAnchorNameIsNullOrWhitespace_ShouldSkipFromNameIndex(string? anchorName)
+	public void Ctor_WhenAnchorNameIsNullOrWhitespace_ShouldSkipFromNameIndex(string? anchorName)
 	{
 		var unindexedAnchor = new NotableDateRule
 		{
@@ -1068,7 +1068,8 @@ public sealed class NotableDateRuleResolverTests
 		Assert.AreEqual(year, result.Value.Year);
 	}
 
-	private sealed class StaticAlgorithm : INotableDateAlgorithm
+	private sealed class StaticAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly DateTime _value;
 
@@ -1080,7 +1081,8 @@ public sealed class NotableDateRuleResolverTests
 	/// <summary>
 	/// Algorithm-type fallback double. Activator creates one via its parameterless ctor.
 	/// </summary>
-	public sealed class FixedJuneAlgorithm : INotableDateAlgorithm
+	public sealed class FixedJuneAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) =>
 			new DateTime(year, 6, 1);
@@ -1098,7 +1100,8 @@ public sealed class NotableDateRuleResolverTests
 	/// Algorithm-type fallback double exposing a <c>(MonthOfYear, int)</c> constructor; used to verify the resolver's
 	/// generic enum-month constructor selection logic.
 	/// </summary>
-	public sealed class EnumMonthAlgorithm : INotableDateAlgorithm
+	public sealed class EnumMonthAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly MonthOfYear _month;
 		private readonly int _day;
@@ -1117,7 +1120,8 @@ public sealed class NotableDateRuleResolverTests
 	/// Algorithm-type fallback double exposing an <c>(int, int)</c> constructor; used to verify integer-coerced month
 	/// constructor selection.
 	/// </summary>
-	public sealed class IntMonthAlgorithm : INotableDateAlgorithm
+	public sealed class IntMonthAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly int _month;
 		private readonly int _day;
@@ -1136,7 +1140,8 @@ public sealed class NotableDateRuleResolverTests
 	/// Algorithm-type fallback double exposing a <c>(string, int)</c> constructor; used to verify pass-through of the
 	/// raw month token. Captures the token in <see cref="LastMonthToken" /> so tests can assert no coercion occurred.
 	/// </summary>
-	public sealed class StringMonthAlgorithm : INotableDateAlgorithm
+	public sealed class StringMonthAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly int _day;
 

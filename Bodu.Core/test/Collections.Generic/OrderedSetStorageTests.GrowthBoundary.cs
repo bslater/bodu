@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.GrowthBoundary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,13 +19,13 @@ public partial class OrderedSetStorageTests
         var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
 
         // Force several growth cycles by adding well beyond the default 4-bucket capacity.
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
             sut.Add(i);
 
         Assert.AreEqual(50, sut.Count);
 
         // All inserted items must remain findable after every rehash that occurred during the run.
-        for (int i = 0; i < 50; i++)
+        for (var i = 0; i < 50; i++)
             Assert.IsTrue(sut.Contains(i), $"Storage lost item {i} during rehash.");
     }
 
@@ -39,7 +39,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(capacity: 4, comparer: null);
 
-        int reported = sut.EnsureCapacity(1024);
+        var reported = sut.EnsureCapacity(1024);
 
         Assert.IsTrue(reported >= 1024);
         Assert.IsTrue(sut.Capacity >= 1024);
@@ -55,7 +55,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
 
-        int reported = sut.EnsureCapacity(1);
+        var reported = sut.EnsureCapacity(1);
 
         Assert.IsTrue(reported >= 4, $"Expected at least DefaultCapacity (4), got {reported}.");
     }
@@ -69,9 +69,9 @@ public partial class OrderedSetStorageTests
     public void AddRange_WhenSourceIsEmpty_ShouldNotGrowStorage()
     {
         var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
-        int capacityBefore = sut.Capacity;
+        var capacityBefore = sut.Capacity;
 
-        int added = sut.AddRange(System.Array.Empty<int>());
+        var added = sut.AddRange(System.Array.Empty<int>());
 
         Assert.AreEqual(0, added);
         Assert.AreEqual(capacityBefore, sut.Capacity);

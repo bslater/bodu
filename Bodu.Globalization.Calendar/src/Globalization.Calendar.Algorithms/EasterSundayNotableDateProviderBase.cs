@@ -20,7 +20,8 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// properties. Results are cached per year in a thread-safe <see cref="ConcurrentDictionary{TKey,TValue}" />.
 /// </para>
 /// </remarks>
-public abstract class EasterSundayNotableDateProviderBase : INotableDateProvider
+public abstract class EasterSundayNotableDateProviderBase
+    : INotableDateProvider
 {
     /// <summary>Thread-safe per-year cache of computed Easter Sunday dates for this provider.</summary>
     private readonly ConcurrentDictionary<int, DateTime> _dateCache = new();

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.ValidQuarterProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,8 @@ public partial class DateTimeExtensionsTests
     /// used by provider-overload tests in both <see cref="DateTimeExtensionsTests" /> and
     /// <see cref="DateOnlyExtensionsTests" />.
     /// </summary>
-    public sealed class ValidQuarterProvider : IQuarterDefinitionProvider
+    public sealed class ValidQuarterProvider
+        : IQuarterDefinitionProvider
     {
         public static IEnumerable<object[]> FirstDateOfQuarterTestData()
         {

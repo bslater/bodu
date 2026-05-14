@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Eviction.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -72,8 +72,8 @@ public partial class EvictingDictionaryTests
         dictionary.Add("C", 3);
 
         var beforeKeys = dictionary.Keys.ToArray();
-        long beforeTouches = dictionary.TotalTouches;
-        long beforeEvictions = dictionary.EvictionCount;
+        var beforeTouches = dictionary.TotalTouches;
+        var beforeEvictions = dictionary.EvictionCount;
 
         var candidate1 = dictionary.PeekEvictionCandidate();
         var candidate2 = dictionary.PeekEvictionCandidate();

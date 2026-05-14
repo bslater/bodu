@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.SetRelations.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public partial class OrderedSetTests
         var sut = new OrderedSet<int>();
 
         Assert.IsTrue(sut.IsSubsetOf(Array.Empty<int>()));
-        Assert.IsTrue(sut.IsSubsetOf(new[] { 1, 2, 3 }));
+        Assert.IsTrue(sut.IsSubsetOf([1, 2, 3]));
     }
 
     /// <summary>
@@ -47,12 +47,12 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsSubsetOf_WhenComparisonsVary_ShouldReturnExpected()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
-        Assert.IsTrue(sut.IsSubsetOf(new[] { 1, 2, 3 }));
-        Assert.IsTrue(sut.IsSubsetOf(new[] { 1, 2 }));
-        Assert.IsFalse(sut.IsSubsetOf(new[] { 1, 3 }));
-        Assert.IsFalse(sut.IsSubsetOf(new[] { 1 }));
+        Assert.IsTrue(sut.IsSubsetOf([1, 2, 3]));
+        Assert.IsTrue(sut.IsSubsetOf([1, 2]));
+        Assert.IsFalse(sut.IsSubsetOf([1, 3]));
+        Assert.IsFalse(sut.IsSubsetOf([1]));
         Assert.IsFalse(sut.IsSubsetOf(Array.Empty<int>()));
     }
 
@@ -81,7 +81,7 @@ public partial class OrderedSetTests
     public void IsSupersetOf_WhenOtherIsEmpty_ShouldReturnTrue()
     {
         var empty = new OrderedSet<int>();
-        OrderedSet<int> populated = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> populated = CreateSet([1, 2]);
 
         Assert.IsTrue(empty.IsSupersetOf(Array.Empty<int>()));
         Assert.IsTrue(populated.IsSupersetOf(Array.Empty<int>()));
@@ -93,12 +93,12 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsSupersetOf_WhenComparisonsVary_ShouldReturnExpected()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        Assert.IsTrue(sut.IsSupersetOf(new[] { 1, 2 }));
-        Assert.IsTrue(sut.IsSupersetOf(new[] { 1, 2, 3 }));
-        Assert.IsFalse(sut.IsSupersetOf(new[] { 1, 4 }));
-        Assert.IsFalse(sut.IsSupersetOf(new[] { 1, 2, 3, 4 }));
+        Assert.IsTrue(sut.IsSupersetOf([1, 2]));
+        Assert.IsTrue(sut.IsSupersetOf([1, 2, 3]));
+        Assert.IsFalse(sut.IsSupersetOf([1, 4]));
+        Assert.IsFalse(sut.IsSupersetOf([1, 2, 3, 4]));
     }
 
     // --------------------------------------------------------
@@ -125,11 +125,11 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsProperSubsetOf_WhenComparisonsVary_ShouldReturnExpected()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
-        Assert.IsTrue(sut.IsProperSubsetOf(new[] { 1, 2, 3 }));
-        Assert.IsFalse(sut.IsProperSubsetOf(new[] { 1, 2 }));
-        Assert.IsFalse(sut.IsProperSubsetOf(new[] { 1 }));
+        Assert.IsTrue(sut.IsProperSubsetOf([1, 2, 3]));
+        Assert.IsFalse(sut.IsProperSubsetOf([1, 2]));
+        Assert.IsFalse(sut.IsProperSubsetOf([1]));
     }
 
     /// <summary>
@@ -167,11 +167,11 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsProperSupersetOf_WhenComparisonsVary_ShouldReturnExpected()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        Assert.IsTrue(sut.IsProperSupersetOf(new[] { 1, 2 }));
-        Assert.IsFalse(sut.IsProperSupersetOf(new[] { 1, 2, 3 }));
-        Assert.IsFalse(sut.IsProperSupersetOf(new[] { 1, 2, 3, 4 }));
+        Assert.IsTrue(sut.IsProperSupersetOf([1, 2]));
+        Assert.IsFalse(sut.IsProperSupersetOf([1, 2, 3]));
+        Assert.IsFalse(sut.IsProperSupersetOf([1, 2, 3, 4]));
     }
 
     /// <summary>
@@ -180,7 +180,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IsProperSupersetOf_WhenOtherIsEmptyAndSetPopulated_ShouldReturnTrue()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1 });
+        OrderedSet<int> sut = CreateSet([1]);
 
         Assert.IsTrue(sut.IsProperSupersetOf(Array.Empty<int>()));
     }
@@ -211,7 +211,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        Assert.IsFalse(sut.Overlaps(new[] { 1, 2 }));
+        Assert.IsFalse(sut.Overlaps([1, 2]));
         Assert.IsFalse(sut.Overlaps(Array.Empty<int>()));
     }
 
@@ -221,11 +221,11 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Overlaps_WhenComparisonsVary_ShouldReturnExpected()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        Assert.IsTrue(sut.Overlaps(new[] { 3, 4 }));
-        Assert.IsTrue(sut.Overlaps(new[] { 1 }));
-        Assert.IsFalse(sut.Overlaps(new[] { 4, 5 }));
+        Assert.IsTrue(sut.Overlaps([3, 4]));
+        Assert.IsTrue(sut.Overlaps([1]));
+        Assert.IsFalse(sut.Overlaps([4, 5]));
         Assert.IsFalse(sut.Overlaps(Array.Empty<int>()));
     }
 
@@ -254,10 +254,10 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SetEquals_WhenSameElementsInDifferentOrder_ShouldReturnTrue()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        Assert.IsTrue(sut.SetEquals(new[] { 3, 2, 1 }));
-        Assert.IsTrue(sut.SetEquals(new[] { 1, 2, 3, 1, 2 }));
+        Assert.IsTrue(sut.SetEquals([3, 2, 1]));
+        Assert.IsTrue(sut.SetEquals([1, 2, 3, 1, 2]));
     }
 
     /// <summary>
@@ -266,11 +266,11 @@ public partial class OrderedSetTests
     [TestMethod]
     public void SetEquals_WhenContentsDiffer_ShouldReturnFalse()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        Assert.IsFalse(sut.SetEquals(new[] { 1, 2 }));
-        Assert.IsFalse(sut.SetEquals(new[] { 1, 2, 3, 4 }));
-        Assert.IsFalse(sut.SetEquals(new[] { 4, 5, 6 }));
+        Assert.IsFalse(sut.SetEquals([1, 2]));
+        Assert.IsFalse(sut.SetEquals([1, 2, 3, 4]));
+        Assert.IsFalse(sut.SetEquals([4, 5, 6]));
     }
 
     /// <summary>

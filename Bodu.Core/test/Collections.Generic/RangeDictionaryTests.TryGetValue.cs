@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.TryGetValue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,7 +39,7 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
 
-        bool found = sut.TryGetValue(5, out string value);
+        var found = sut.TryGetValue(5, out var value);
 
         Assert.IsFalse(found);
         Assert.IsNull(value);
@@ -54,10 +54,10 @@ public partial class RangeDictionaryTests
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "tier-A"), (20, 30, "tier-B"));
 
-        Assert.IsTrue(sut.TryGetValue(5, out string a));
+        Assert.IsTrue(sut.TryGetValue(5, out var a));
         Assert.AreEqual("tier-A", a);
 
-        Assert.IsTrue(sut.TryGetValue(25, out string b));
+        Assert.IsTrue(sut.TryGetValue(25, out var b));
         Assert.AreEqual("tier-B", b);
     }
 
@@ -70,7 +70,7 @@ public partial class RangeDictionaryTests
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
 
-        bool found = sut.TryGetValue(99, out string value);
+        var found = sut.TryGetValue(99, out var value);
 
         Assert.IsFalse(found);
         Assert.IsNull(value);
@@ -104,7 +104,7 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
 
-        bool found = sut.TryGetEntry(5, out ValueRange<int, string> entry);
+        var found = sut.TryGetEntry(5, out ValueRange<int, string> entry);
 
         Assert.IsFalse(found);
         Assert.AreEqual(default(ValueRange<int, string>).StartInclusive, entry.StartInclusive);
@@ -121,7 +121,7 @@ public partial class RangeDictionaryTests
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "tier-A"), (20, 30, "tier-B"));
 
-        bool found = sut.TryGetEntry(25, out ValueRange<int, string> entry);
+        var found = sut.TryGetEntry(25, out ValueRange<int, string> entry);
 
         Assert.IsTrue(found);
         Assert.AreEqual(20, entry.StartInclusive);
@@ -138,7 +138,7 @@ public partial class RangeDictionaryTests
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
 
-        bool found = sut.TryGetEntry(99, out ValueRange<int, string> entry);
+        var found = sut.TryGetEntry(99, out ValueRange<int, string> entry);
 
         Assert.IsFalse(found);
         Assert.IsNull(entry.Value);

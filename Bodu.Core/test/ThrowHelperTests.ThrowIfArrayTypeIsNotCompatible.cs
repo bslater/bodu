@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayTypeIsNotCompatible.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,13 +21,13 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayTypeIsNotCompatibleContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfArrayTypeIsNotCompatibleContractData))]
     public void ThrowIfArrayTypeIsNotCompatible_WhenInvokedWithVariousArrays_ShouldFollowContract(
         string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
     {
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array!, "array"),
+            () => ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array!, nameof(array)),
             expectedExceptionType,
             expectedParamName);
     }
@@ -71,7 +71,7 @@ public partial class ThrowHelperTests
 
     private static IEnumerable<object[]> GetCompatibleArrayTypeTestData()
     {
-        yield return new object[] { new int[0] };
+        yield return new object[] { Array.Empty<int>() };
         yield return new object[] { new int[10] };
         yield return new object[] { Array.CreateInstance(typeof(int), 5) };
     }

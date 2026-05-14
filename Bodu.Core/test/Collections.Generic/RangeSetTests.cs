@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -54,7 +54,7 @@ public partial class RangeSetTests
     private static (int Start, int End)[] Snapshot(RangeSet<int> set)
     {
         (int Start, int End)[] result = new (int, int)[set.Count];
-        for (int i = 0; i < set.Count; i++)
+        for (var i = 0; i < set.Count; i++)
             result[i] = (set[i].StartInclusive, set[i].EndExclusive);
 
         return result;
@@ -74,7 +74,8 @@ public partial class RangeSetTests
     /// A reverse-order comparer over <see cref="int" /> used to verify that a non-default comparer is honoured
     /// during validation. This comparer treats values that are numerically larger as logically smaller.
     /// </summary>
-    private sealed class ReverseIntComparer : IComparer<int>
+    private sealed class ReverseIntComparer
+        : IComparer<int>
     {
         /// <inheritdoc />
         public int Compare(int x, int y) => y.CompareTo(x);

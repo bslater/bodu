@@ -64,7 +64,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] longer = shake256.ComputeHash(message);
 /// </code>
 /// </example>
-public sealed class Shake : BufferedBlockHashAlgorithm<Shake>
+public sealed class Shake
+    : BufferedBlockHashAlgorithm<Shake>
 {
     private const int StateWords = 25;
     private const byte DomainSuffix = 0x1F;

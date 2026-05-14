@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ComparableHelperTests.SimpleTestObject.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,7 +11,8 @@ public partial class ComparableHelperTests
     /// <summary>
     /// A simple test object that implements <see cref="IComparable{T}" /> for use in comparison-based unit tests.
     /// </summary>
-    public sealed class SimpleTestObject : IComparable<SimpleTestObject>
+    public sealed class SimpleTestObject
+        : IComparable<SimpleTestObject>
     {
         /// <summary>
         /// Gets the integer value used for comparison.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekPatternTests.Enumeration.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -53,7 +53,7 @@ public partial class WeekPatternTests
     public void GetEnumerator_WhenPatternIsEmpty_ShouldYieldNothing()
     {
         var pattern = WeekPattern.FromByte(0);
-        using var enumerator = pattern.GetEnumerator();
+        using IEnumerator<DayOfWeek> enumerator = pattern.GetEnumerator();
         Assert.IsFalse(enumerator.MoveNext());
     }
 
@@ -68,7 +68,7 @@ public partial class WeekPatternTests
 
         IEnumerable nonGeneric = pattern;
         var observed = new List<DayOfWeek>();
-        foreach (object day in nonGeneric)
+        foreach (var day in nonGeneric)
             observed.Add((DayOfWeek)day);
 
         // 0b1010101 in Sunday-first order: Sun=1, Mon=0, Tue=1, Wed=0, Thu=1, Fri=0, Sat=1.

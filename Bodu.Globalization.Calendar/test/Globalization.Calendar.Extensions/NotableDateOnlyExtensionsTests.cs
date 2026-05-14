@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateOnlyExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -49,7 +49,8 @@ public partial class NotableDateOnlyExtensionsTests
     /// Provides an in-memory implementation of <see cref="INotableDateRuleProvider" /> for tests, returning a fixed array of rules
     /// without any persistence or resource loading.
     /// </summary>
-    private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+    private sealed class InMemoryRuleProvider
+        : INotableDateRuleProvider
     {
         /// <summary>The rules surfaced by <see cref="LoadRules" />.</summary>
         private readonly IEnumerable<NotableDateRule> _rules;

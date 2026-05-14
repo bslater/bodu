@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.CompositeAlgorithmRegistryContains.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -97,7 +97,8 @@ public sealed class NotableDateServiceCompositeAlgorithmRegistryContainsTests
 		return (INotableDateAlgorithmRegistry)instance;
 	}
 
-	private sealed class StubAlgorithm : INotableDateAlgorithm
+	private sealed class StubAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) =>
 			new(year, 1, 1);

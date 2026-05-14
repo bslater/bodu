@@ -18,7 +18,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         int[] source = [1, 2, 3];
         Func<int, int, int, int> nullFunc = null!;
 
-        var ex1 = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex1 = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(
                 0, 0, 0,
@@ -28,7 +28,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         });
         Assert.AreEqual("func1", ex1.ParamName);
 
-        var ex2 = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex2 = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(
                 0, 0, 0,
@@ -38,7 +38,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         });
         Assert.AreEqual("func2", ex2.ParamName);
 
-        var ex3 = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex3 = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(
                 0, 0, 0,
@@ -59,7 +59,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         int[] source = [1, 2, 3];
         Func<int, int, int, string> resultSelector = null!;
 
-        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = source.Aggregate(
                 0, 0, 0,
@@ -81,7 +81,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
         int[] source = [10, 20, 30, 40];
 
         // sumWithIndex = 10*0 + 20*1 + 30*2 + 40*3 = 0 + 20 + 60 + 120 = 200
-        (int weightedSum, int count, int lastIndex) = source.Aggregate(
+        (var weightedSum, var count, var lastIndex) = source.Aggregate(
             seed1: 0,
             seed2: 0,
             seed3: -1,
@@ -102,7 +102,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     {
         int[] source = [1, 2, 3];
 
-        string result = source.Aggregate(
+        var result = source.Aggregate(
             seed1: 0,
             seed2: 0,
             seed3: 0,
@@ -121,9 +121,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithIndex_ShouldReturnSeedsUnchanged()
     {
-        int[] source = Array.Empty<int>();
+        var source = Array.Empty<int>();
 
-        (int v1, int v2) = source.Aggregate(
+        (var v1, var v2) = source.Aggregate(
             seed1: 5,
             seed2: 9,
             func1: (a, _, _) => a + 1,
@@ -139,9 +139,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForThreeFuncWithIndex_ShouldReturnSeedsUnchanged()
     {
-        int[] source = Array.Empty<int>();
+        var source = Array.Empty<int>();
 
-        (int v1, int v2, int v3) = source.Aggregate(
+        (var v1, var v2, var v3) = source.Aggregate(
             seed1: 1, seed2: 2, seed3: 3,
             func1: (a, _, _) => a + 1,
             func2: (a, _, _) => a + 1,
@@ -158,9 +158,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithSelector_ShouldApplySelectorToSeeds()
     {
-        int[] source = Array.Empty<int>();
+        var source = Array.Empty<int>();
 
-        string result = source.Aggregate(
+        var result = source.Aggregate(
             seed1: 7,
             seed2: 11,
             func1: (a, x) => a + x,
@@ -177,9 +177,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithIndexAndSelector_ShouldApplySelectorToSeeds()
     {
-        int[] source = Array.Empty<int>();
+        var source = Array.Empty<int>();
 
-        string result = source.Aggregate(
+        var result = source.Aggregate(
             seed1: 7,
             seed2: 11,
             func1: (a, x, i) => a + x,
@@ -195,9 +195,9 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenSourceIsEmpty_ForThreeFuncWithSelector_ShouldApplySelectorToSeeds()
     {
-        int[] source = Array.Empty<int>();
+        var source = Array.Empty<int>();
 
-        string result = source.Aggregate(
+        var result = source.Aggregate(
             seed1: 2, seed2: 3, seed3: 5,
             func1: (a, x) => a + x,
             func2: (a, x) => a + x,

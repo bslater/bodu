@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.TryGetValues.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -103,7 +103,7 @@ public partial class MultiValueDictionaryTests
         var mvd = new MultiValueDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
         mvd.Add("Alpha", 1);
 
-        bool found = mvd.TryGetValues("alpha", out IReadOnlyList<int> values);
+        var found = mvd.TryGetValues("alpha", out IReadOnlyList<int> values);
 
         Assert.IsTrue(found);
         Assert.AreEqual(1, values.Count);

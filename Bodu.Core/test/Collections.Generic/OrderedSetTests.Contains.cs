@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.Contains.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,7 +48,7 @@ public partial class OrderedSetTests
     [DataRow(int.MaxValue, false)]
     public void Contains_WhenItemPresenceVaries_ShouldReturnExpected(int item, bool expected)
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.AreEqual(expected, sut.Contains(item));
     }
@@ -59,7 +59,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Contains_WhenCustomComparerProvided_ShouldUseComparerForEquality()
     {
-        OrderedSet<string> sut = CreateSet(new[] { "Hello" }, StringComparer.OrdinalIgnoreCase);
+        OrderedSet<string> sut = CreateSet(["Hello"], StringComparer.OrdinalIgnoreCase);
 
         Assert.IsTrue(sut.Contains("HELLO"));
         Assert.IsTrue(sut.Contains("hello"));

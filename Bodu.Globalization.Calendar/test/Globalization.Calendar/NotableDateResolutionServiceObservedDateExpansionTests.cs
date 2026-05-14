@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceObservedDateExpansionTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -140,15 +140,16 @@ public sealed class NotableDateResolutionServiceObservedDateExpansionTests
             Adjustments = ImmutableArray<ObservanceAdjustment>.Empty,
         };
 
-    private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+    private sealed class InMemoryRuleProvider
+        : INotableDateRuleProvider
     {
-        private readonly IReadOnlyList<NotableDateRule> rules;
+        private readonly IReadOnlyList<NotableDateRule> _rules;
 
         public InMemoryRuleProvider(IReadOnlyList<NotableDateRule> rules)
         {
-            this.rules = rules;
+            this._rules = rules;
         }
 
-        public IEnumerable<NotableDateRule> LoadRules() => rules;
+        public IEnumerable<NotableDateRule> LoadRules() => _rules;
     }
 }

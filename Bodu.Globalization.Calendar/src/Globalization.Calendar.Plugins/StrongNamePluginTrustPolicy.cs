@@ -21,7 +21,8 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// <see cref="FileHashPluginTrustPolicy" /> via <see cref="CompositePluginTrustPolicy" />.
 /// </para>
 /// </remarks>
-public sealed class StrongNamePluginTrustPolicy : IPluginTrustPolicy
+public sealed class StrongNamePluginTrustPolicy
+    : IPluginTrustPolicy
 {
     /// <summary>The set of normalized, lowercase-hex public-key tokens that are permitted to load.</summary>
     private readonly HashSet<string> _allowedTokens;

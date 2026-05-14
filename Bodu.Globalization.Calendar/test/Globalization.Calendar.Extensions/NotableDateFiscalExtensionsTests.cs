@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateFiscalExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public class NotableDateFiscalExtensionsTests
 			dayOfWeek: DayOfWeek.Saturday,
 			isFiscalYearEnd: true,
 			useNearestDayOfWeek: true,
-			pattern: FiscalWeekPattern.FourFourFive);
+			pattern: FiscalWeekPattern.Weeks445);
 
 	private static NotableDateService BuildService() => new();
 

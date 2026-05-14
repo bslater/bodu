@@ -820,7 +820,8 @@ public static class NotableDateRuleJsonParser
     }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]
-    private sealed class OverrideRuleDto : RuleDto;
+    private sealed class OverrideRuleDto
+        : RuleDto { }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]
     private sealed class FixedDto

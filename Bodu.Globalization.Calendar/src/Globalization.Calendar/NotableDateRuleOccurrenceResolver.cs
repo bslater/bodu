@@ -20,13 +20,14 @@ namespace Bodu.Globalization.Calendar;
 /// rule itself also falls inside the requested window.
 /// </para>
 /// </remarks>
-internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurrenceResolver
+internal sealed class NotableDateRuleOccurrenceResolver
+    : INotableDateRuleOccurrenceResolver
 {
-    private readonly IReadOnlyList<NotableDateRule> rules;
-    private readonly NotableDateRuleResolver ruleResolver;
-    private readonly ICalculationAnchorResolver calculationAnchors;
-    private readonly AnchorRelativeRuleIndex anchorRelativeRules;
-    private readonly IReadOnlyList<string> anchorRuleNames;
+    private readonly IReadOnlyList<NotableDateRule> _rules;
+    private readonly NotableDateRuleResolver _ruleResolver;
+    private readonly ICalculationAnchorResolver _calculationAnchors;
+    private readonly AnchorRelativeRuleIndex _anchorRelativeRules;
+    private readonly IReadOnlyList<string> _anchorRuleNames;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateRuleOccurrenceResolver" /> class.
@@ -50,11 +51,11 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         ArgumentNullException.ThrowIfNull(calculationAnchors);
         ArgumentNullException.ThrowIfNull(anchorRelativeRules);
 
-        this.rules = rules;
-        this.ruleResolver = ruleResolver;
-        this.calculationAnchors = calculationAnchors;
-        this.anchorRelativeRules = anchorRelativeRules;
-        this.anchorRuleNames = [.. rules
+        this._rules = rules;
+        this._ruleResolver = ruleResolver;
+        this._calculationAnchors = calculationAnchors;
+        this._anchorRelativeRules = anchorRelativeRules;
+        this._anchorRuleNames = [.. rules
             .Where(rule => rule.Strategy == DateResolutionStrategy.OffsetFromAnchor)
             .Select(rule => rule.AnchorRuleName)
             .Where(name => !string.IsNullOrWhiteSpace(name))
@@ -92,7 +93,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         List<ResolvedNotableDateOccurrence> occurrences,
         HashSet<OccurrenceKey> seen)
     {
-        foreach (NotableDateRule rule in rules)
+        foreach (NotableDateRule rule in _rules)
         {
             if (rule.Strategy == DateResolutionStrategy.OffsetFromAnchor)
                 continue;
@@ -123,10 +124,10 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         if (rule.Strategy == DateResolutionStrategy.Algorithm &&
             !string.IsNullOrWhiteSpace(rule.Name))
         {
-            return calculationAnchors.Resolve(rule.Name, year);
+            return _calculationAnchors.Resolve(rule.Name, year);
         }
 
-        return ruleResolver.ResolveAnchorDate(rule, year);
+        return _ruleResolver.ResolveAnchorDate(rule, year);
     }
 
     /// <summary>
@@ -140,11 +141,11 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
         List<ResolvedNotableDateOccurrence> occurrences,
         HashSet<OccurrenceKey> seen)
     {
-        foreach (var anchorRuleName in anchorRuleNames)
+        foreach (var anchorRuleName in _anchorRuleNames)
         {
             foreach (var year in GetCandidateYears(request))
             {
-                DateTime? anchorDate = calculationAnchors.Resolve(anchorRuleName, year);
+                DateTime? anchorDate = _calculationAnchors.Resolve(anchorRuleName, year);
 
                 if (anchorDate is null)
                     continue;
@@ -152,7 +153,7 @@ internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurr
                 var minOffsetDays = (request.StartDate - anchorDate.Value.Date).Days;
                 var maxOffsetDays = (request.EndDate - anchorDate.Value.Date).Days;
 
-                IReadOnlyList<NotableDateRule> matchingRules = anchorRelativeRules.FindRules(
+                IReadOnlyList<NotableDateRule> matchingRules = _anchorRelativeRules.FindRules(
                     anchorRuleName,
                     minOffsetDays,
                     maxOffsetDays);

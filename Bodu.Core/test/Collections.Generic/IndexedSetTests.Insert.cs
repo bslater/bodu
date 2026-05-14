@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.Insert.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void TryInsert_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<string> sut = CreateSet(new[] { "a", "b" });
+        IndexedSet<string> sut = CreateSet(["a", "b"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -39,7 +39,7 @@ public partial class IndexedSetTests
     [DataRow(int.MaxValue)]
     public void TryInsert_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2 });
+        IndexedSet<int> sut = CreateSet([1, 2]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -57,9 +57,9 @@ public partial class IndexedSetTests
     [TestMethod]
     public void TryInsert_WhenItemIsDuplicate_ShouldReturnFalseAndPreserveOrder()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
-        bool inserted = sut.TryInsert(0, 2);
+        var inserted = sut.TryInsert(0, 2);
 
         Assert.IsFalse(inserted);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
@@ -76,7 +76,7 @@ public partial class IndexedSetTests
     [DataRow(3, new[] { 1, 2, 3, 99 })]
     public void TryInsert_WhenIndexIsValid_ShouldPlaceItemAtPosition(int index, int[] expected)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.IsTrue(sut.TryInsert(index, 99));
 
@@ -89,7 +89,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void TryInsert_WhenItemInserted_ShouldUpdateIndexOf()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.TryInsert(1, 99);
 
@@ -108,7 +108,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Insert_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<string> sut = CreateSet(new[] { "a", "b" });
+        IndexedSet<string> sut = CreateSet(["a", "b"]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -125,7 +125,7 @@ public partial class IndexedSetTests
     [DataRow(int.MinValue)]
     public void Insert_WhenIndexIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int index)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2 });
+        IndexedSet<int> sut = CreateSet([1, 2]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -140,7 +140,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Insert_WhenItemIsDuplicate_ShouldThrowArgumentException()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -159,7 +159,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Insert_WhenItemAndIndexAreValid_ShouldPlaceItemAtPosition()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
 
         sut.Insert(1, 99);
 
@@ -174,7 +174,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void IListInsert_WhenCalledThroughInterface_ShouldDelegateToInsert()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
         System.Collections.Generic.IList<int> typed = sut;
 
         typed.Insert(0, 99);

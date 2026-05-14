@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.BatchPooled.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenEvenSplit_ShouldReturnExpectedBatches()
     {
-        var source = Enumerable.Range(1, 9);
+        IEnumerable<int> source = Enumerable.Range(1, 9);
 
         var batches = source.BatchPooled(3).Select(b => b.ToArray()).ToArray();
 
@@ -32,7 +32,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenUnevenSplit_ShouldYieldTrimmedFinalBatch()
     {
-        var source = Enumerable.Range(1, 10);
+        IEnumerable<int> source = Enumerable.Range(1, 10);
 
         var batches = source.BatchPooled(3).Select(b => b.ToArray()).ToArray();
 
@@ -49,7 +49,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenIndexedSelectorIsSupplied_ShouldApplyProjectionWithIndex()
     {
-        var source = Enumerable.Range(1, 5);
+        IEnumerable<int> source = Enumerable.Range(1, 5);
 
         var batches = source.BatchPooled(2, (x, i) => $"{i}:{x}").Select(b => b.ToArray()).ToArray();
 
@@ -65,7 +65,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenSourceIsEmpty_ShouldYieldNoBatches()
     {
-        var batches = Array.Empty<int>().BatchPooled(4).ToArray();
+        ReadOnlyMemory<int>[] batches = Array.Empty<int>().BatchPooled(4).ToArray();
         Assert.AreEqual(0, batches.Length);
     }
 
@@ -145,7 +145,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenCalled_ShouldDeferExecution()
     {
-        bool wasEnumerated = false;
+        var wasEnumerated = false;
         IEnumerable<int> Source()
         {
             wasEnumerated = true;
@@ -164,7 +164,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenCalled_ForProjectionOverload_ShouldDeferExecution()
     {
-        bool wasEnumerated = false;
+        var wasEnumerated = false;
         IEnumerable<int> Source()
         {
             wasEnumerated = true;
@@ -197,7 +197,7 @@ public sealed partial class IEnumerableExtensionsTests_BatchPooled
     [TestMethod]
     public void BatchPooled_WhenIndexedSelectorIsSupplied_ShouldPassMonotonicIndexAcrossBatches()
     {
-        var source = Enumerable.Range(0, 6);
+        IEnumerable<int> source = Enumerable.Range(0, 6);
         var capturedIndices = new List<int>();
 
         _ = source.BatchPooled(2, (x, i) => { capturedIndices.Add(i); return x; })

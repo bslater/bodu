@@ -26,7 +26,7 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="NullReferenceException" /> to the caller.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenRuleProviderLoadRulesReturnsNull_ShouldTreatNullAsEmptyAndYieldNoNotableDates()
+	public void Ctor_WhenRuleProviderLoadRulesReturnsNull_ShouldTreatNullAsEmptyAndYieldNoNotableDates()
 	{
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new NullReturningRuleProvider() },
@@ -47,7 +47,7 @@ public sealed partial class NotableDateServiceTests
 	/// and the valid rules are resolved normally, without surfacing a <see cref="NullReferenceException" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenRuleProviderYieldsNullRuleElement_ShouldSkipNullsAndNotThrow()
+	public void Ctor_WhenRuleProviderYieldsNullRuleElement_ShouldSkipNullsAndNotThrow()
 	{
 		NotableDateRule sanity = Fixed("Sanity Day", 6, 15);
 
@@ -383,7 +383,7 @@ public sealed partial class NotableDateServiceTests
 	/// fans plugin providers into the effective provider list.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenPluginGetRuleProvidersReturnsNull_ShouldTreatNullAsEmptyAndNotThrow()
+	public void Ctor_WhenPluginGetRuleProvidersReturnsNull_ShouldTreatNullAsEmptyAndNotThrow()
 	{
 		var service = new NotableDateService(
 			ruleProviders: Array.Empty<INotableDateRuleProvider>(),
@@ -400,7 +400,7 @@ public sealed partial class NotableDateServiceTests
 	/// fans plugin algorithms into the effective registry.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenPluginGetAlgorithmsReturnsNull_ShouldTreatNullAsEmptyAndNotThrow()
+	public void Ctor_WhenPluginGetAlgorithmsReturnsNull_ShouldTreatNullAsEmptyAndNotThrow()
 	{
 		var service = new NotableDateService(
 			ruleProviders: Array.Empty<INotableDateRuleProvider>(),
@@ -421,7 +421,7 @@ public sealed partial class NotableDateServiceTests
 	/// entering an inconsistent initialisation state.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenOverrideProviderGetRemovalsThrows_ShouldPropagateExceptionFromConstructor()
+	public void Ctor_WhenOverrideProviderGetRemovalsThrows_ShouldPropagateExceptionFromConstructor()
 	{
 		var overrideProvider = new ThrowingRemovalsProvider(
 			new InvalidOperationException("removal source unavailable"));
@@ -481,7 +481,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="LoadRules" />, simulating a provider that violates its contract by returning a null
 	/// sequence rather than an empty one.
 	/// </summary>
-	private sealed class NullReturningRuleProvider : INotableDateRuleProvider
+	private sealed class NullReturningRuleProvider
+		: INotableDateRuleProvider
 	{
 		/// <inheritdoc />
 		public IEnumerable<NotableDateRule> LoadRules() => null!;
@@ -491,7 +492,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="INotableDateRuleProvider" /> that yields a <see langword="null" /> element first, then
 	/// each supplied valid rule, simulating a partially corrupt enumerable.
 	/// </summary>
-	private sealed class NullElementRuleProvider : INotableDateRuleProvider
+	private sealed class NullElementRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly NotableDateRule[] _validRules;
 
@@ -512,7 +514,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="INotableDateCollisionResolver" /> that always returns <see langword="null" /> from
 	/// <see cref="Resolve" />, violating the interface contract that requires a non-null list.
 	/// </summary>
-	private sealed class NullReturningCollisionResolver : INotableDateCollisionResolver
+	private sealed class NullReturningCollisionResolver
+		: INotableDateCollisionResolver
 	{
 		/// <inheritdoc />
 		public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> overlapping) => null!;
@@ -523,7 +526,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see langword="null" /> from <see cref="TryGet" />, violating the contract that a true return implies
 	/// a non-null out value.
 	/// </summary>
-	private sealed class NullAlgorithmRegistry : INotableDateAlgorithmRegistry
+	private sealed class NullAlgorithmRegistry
+		: INotableDateAlgorithmRegistry
 	{
 		/// <inheritdoc />
 		public bool Contains(string key) => true;
@@ -540,7 +544,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="INotableDateAlgorithm" /> that always returns a date in the year immediately preceding
 	/// the requested year, exercising the path where an algorithm's result falls outside the queried year.
 	/// </summary>
-	private sealed class WrongYearAlgorithm : INotableDateAlgorithm
+	private sealed class WrongYearAlgorithm
+		: INotableDateAlgorithm
 	{
 		/// <inheritdoc />
 		public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null) =>
@@ -552,7 +557,8 @@ public sealed partial class NotableDateServiceTests
 	/// violating the handler contract by returning a null result rather than an
 	/// <see cref="AdjustmentHandlerResult" />.
 	/// </summary>
-	private sealed class NullResultHandler : IAdjustmentHandler
+	private sealed class NullResultHandler
+		: IAdjustmentHandler
 	{
 		/// <inheritdoc />
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) => null!;
@@ -563,7 +569,8 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="Apply" />, simulating a handler that fails with an unexpected exception type that is
 	/// not caught by the service's <see cref="InvalidOperationException" />-only rule boundary.
 	/// </summary>
-	private sealed class ThrowingHandler : IAdjustmentHandler
+	private sealed class ThrowingHandler
+		: IAdjustmentHandler
 	{
 		/// <inheritdoc />
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
@@ -574,7 +581,8 @@ public sealed partial class NotableDateServiceTests
 	/// Plugin implementing <see cref="INotableDateRulePlugin" /> whose <see cref="GetRuleProviders" />
 	/// returns <see langword="null" /> rather than an empty sequence.
 	/// </summary>
-	private sealed class NullProvidersRulePlugin : INotableDateRulePlugin
+	private sealed class NullProvidersRulePlugin
+		: INotableDateRulePlugin
 	{
 		/// <inheritdoc />
 		public string Name => "NullProviders";
@@ -590,7 +598,8 @@ public sealed partial class NotableDateServiceTests
 	/// Plugin implementing <see cref="INotableDateAlgorithmPlugin" /> whose <see cref="GetAlgorithms" />
 	/// returns <see langword="null" /> rather than an empty sequence.
 	/// </summary>
-	private sealed class NullAlgorithmsPlugin : INotableDateAlgorithmPlugin
+	private sealed class NullAlgorithmsPlugin
+		: INotableDateAlgorithmPlugin
 	{
 		/// <inheritdoc />
 		public string Name => "NullAlgorithms";
@@ -607,7 +616,8 @@ public sealed partial class NotableDateServiceTests
 	/// throws the supplied exception, verifying that override-provider failures surface from the service
 	/// constructor rather than being silently swallowed.
 	/// </summary>
-	private sealed class ThrowingRemovalsProvider : INotableDateRuleOverrideProvider
+	private sealed class ThrowingRemovalsProvider
+		: INotableDateRuleOverrideProvider
 	{
 		private readonly Exception _exception;
 

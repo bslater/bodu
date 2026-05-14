@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.ReferenceTypes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", l1);
         mvd.Add("k", l2);
 
-        bool removed = mvd.Remove("k", l1);
+        var removed = mvd.Remove("k", l1);
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, mvd.Count);

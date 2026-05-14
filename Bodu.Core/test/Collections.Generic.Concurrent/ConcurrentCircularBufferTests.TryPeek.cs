@@ -321,11 +321,11 @@ public partial class ConcurrentCircularBufferTests
 
         FieldInfo bufferField = typeof(ConcurrentCircularBuffer<TestItem>).GetField(
             "_buffer", BindingFlags.Instance | BindingFlags.NonPublic)!;
-        Array slotArray = (Array)bufferField.GetValue(buffer)!;
+        var slotArray = (Array)bufferField.GetValue(buffer)!;
 
         // Read the current head-slot Sequence and pre-bump it so the first iteration of TryPeek
         // observes diff > 0 (the "stale head read — another thread dequeued this slot" branch).
-        object slot0 = slotArray.GetValue(0)!;
+        var slot0 = slotArray.GetValue(0)!;
         FieldInfo sequenceField = slot0.GetType().GetField("Sequence", BindingFlags.Instance | BindingFlags.Public)!;
         var originalSequence = (int)sequenceField.GetValue(slot0)!;
 
@@ -336,17 +336,17 @@ public partial class ConcurrentCircularBufferTests
         // shortly after the peek begins. TryPeek has no retry budget on the diff > 0 branch, so
         // a missed realign would hang the test runner — Task.WaitAll's timeout below converts
         // that into a test failure instead.
-        Task realignTask = Task.Run(() =>
+        var realignTask = Task.Run(() =>
         {
             for (var i = 0; i < 16; i++) Thread.SpinWait(100);
-            object slot = slotArray.GetValue(0)!;
+            var slot = slotArray.GetValue(0)!;
             sequenceField.SetValue(slot, originalSequence);
             slotArray.SetValue(slot, 0);
         });
 
         TestItem? captured = null;
         var peekResult = false;
-        Task peekTask = Task.Run(() =>
+        var peekTask = Task.Run(() =>
         {
             peekResult = buffer.TryPeek(out captured);
         });

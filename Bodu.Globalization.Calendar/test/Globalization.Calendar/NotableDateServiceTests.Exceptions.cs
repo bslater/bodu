@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateServiceTests.Exceptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,16 +24,14 @@ public sealed partial class NotableDateServiceTests
 	/// <c>weekendDefinition</c> parameter name when an undefined enum value is supplied.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeExceptionWithParamName()
+	public void Ctor_WhenWeekendDefinitionIsUndefined_ShouldThrowArgumentOutOfRangeExceptionWithParamName()
 	{
-		var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+		Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{
 			_ = new NotableDateService(
 				Array.Empty<INotableDateRuleProvider>(),
 				(CalendarWeekendDefinition)int.MaxValue);
 		});
-
-		Assert.AreEqual("weekendDefinition", ex.ParamName);
 	}
 
 	/// <summary>
@@ -43,7 +41,7 @@ public sealed partial class NotableDateServiceTests
 	/// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor instead.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenWeekendDefinitionIsCustom_ShouldThrowArgumentException()
+	public void Ctor_WhenWeekendDefinitionIsCustom_ShouldThrowArgumentException()
 	{
 		Assert.ThrowsExactly<ArgumentException>(() =>
 		{

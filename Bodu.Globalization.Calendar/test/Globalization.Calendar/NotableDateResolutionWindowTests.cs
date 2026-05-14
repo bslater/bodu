@@ -18,7 +18,7 @@ public sealed class NotableDateResolutionWindowTests
     /// Verifies that the constructor rejects invalid ranges.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenEndDateIsEarlierThanStartDate_ShouldThrowArgumentException()
+    public void Ctor_WhenEndDateIsEarlierThanStartDate_ShouldThrowArgumentException()
     {
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

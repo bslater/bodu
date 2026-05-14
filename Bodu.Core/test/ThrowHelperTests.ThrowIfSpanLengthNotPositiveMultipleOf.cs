@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfSpanLengthNotPositiveMultipleOf.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,9 +29,9 @@ public partial class ThrowHelperTests
     public void ThrowIfSpanLengthNotPositiveMultipleOf_WhenInvokedWithVariousLengths_ShouldFollowContract(
         string testName, int length, int divisor, bool expectsException)
     {
-        int[] buffer = new int[length];
+        var buffer = new int[length];
         Type? expected = expectsException ? typeof(ArgumentException) : null;
-        string? expectedParam = expectsException ? "span" : null;
+        var expectedParam = expectsException ? "span" : null;
 
         AssertGuard(
             $"Span<T>: {testName}",

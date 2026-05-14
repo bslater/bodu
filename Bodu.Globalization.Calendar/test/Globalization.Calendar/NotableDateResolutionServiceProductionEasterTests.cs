@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateResolutionServiceProductionEasterTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -123,7 +123,8 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
             $"{name} should resolve to {expectedDate:yyyy-MM-dd} from the production GB XML.");
     }
 
-    private sealed class GregorianEasterSundayAlgorithmAdapter : INotableDateAlgorithm
+    private sealed class GregorianEasterSundayAlgorithmAdapter
+        : INotableDateAlgorithm
     {
         private readonly Bodu.Globalization.Calendar.Providers.GregorianEasterSundayNotableDateProvider provider = new();
 

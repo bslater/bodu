@@ -13,12 +13,13 @@ namespace Bodu.Security.Cryptography;
 /// A test-oriented hash algorithm that computes the sum of all input bytes as a 32-bit unsigned integer, while monitoring usage. This
 /// implementation is non-cryptographic and is designed for verifying calls to <see cref="HashAlgorithm" /> methods during testing.
 /// </summary>
-public class MonitoringHashAlgorithm : HashAlgorithm
+public class MonitoringHashAlgorithm
+    : HashAlgorithm
 {
-    private uint hashValue;
-    private bool disposed;
-    private long bytesProcessed;
-    private uint seedValue;
+    private uint _hashValue;
+    private bool _disposed;
+    private long _bytesProcessed;
+    private uint _seedValue;
 
     // Instrumentation counters and events
     public int InitializeCallCount { get; private set; }
@@ -59,14 +60,14 @@ public class MonitoringHashAlgorithm : HashAlgorithm
     public MonitoringHashAlgorithm()
     {
         HashSizeValue = sizeof(uint) * 8;
-        bytesProcessed = seedValue = hashValue = 0;
+        _bytesProcessed = _seedValue = _hashValue = 0;
         Initialize();
     }
 
     /// <summary>
     /// Gets the total number of bytes processed by the algorithm.
     /// </summary>
-    public long BytesProcessed => bytesProcessed;
+    public long BytesProcessed => _bytesProcessed;
 
     /// <inheritdoc />
     public override int HashSize
@@ -96,14 +97,14 @@ public class MonitoringHashAlgorithm : HashAlgorithm
         get
         {
             ThrowIfDisposed();
-            return seedValue;
+            return _seedValue;
         }
 
         set
         {
             ThrowIfDisposed();
             ThrowIfInvalidState();
-            seedValue = value;
+            _seedValue = value;
             Initialize();
         }
     }
@@ -118,8 +119,8 @@ public class MonitoringHashAlgorithm : HashAlgorithm
         this.State = 0;
         this.finalized = false;
 #endif
-        bytesProcessed = 0;
-        hashValue = seedValue;
+        _bytesProcessed = 0;
+        _hashValue = _seedValue;
         InitializeCallCount++;
         InitializeCalled?.Invoke(this, EventArgs.Empty);
     }
@@ -132,9 +133,9 @@ public class MonitoringHashAlgorithm : HashAlgorithm
         ThrowIfDisposed();
 
         for (var i = ibStart; i < ibStart + cbSize; i++)
-            hashValue += array[i];
+            _hashValue += array[i];
 
-        bytesProcessed += cbSize;
+        _bytesProcessed += cbSize;
         HashCoreCallCount++;
         HashCoreCalled?.Invoke(this, EventArgs.Empty);
     }
@@ -147,9 +148,9 @@ public class MonitoringHashAlgorithm : HashAlgorithm
         HashCoreSpanCalled?.Invoke(this, EventArgs.Empty);
 
         foreach (var b in source)
-            hashValue += b;
+            _hashValue += b;
 
-        bytesProcessed += source.Length;
+        _bytesProcessed += source.Length;
     }
 
     /// <summary>
@@ -160,7 +161,7 @@ public class MonitoringHashAlgorithm : HashAlgorithm
         ThrowIfDisposed();
         HashFinalCallCount++;
         HashFinalCalled?.Invoke(this, EventArgs.Empty);
-        return BitConverter.GetBytes(hashValue);
+        return BitConverter.GetBytes(_hashValue);
     }
 
     /// <inheritdoc />
@@ -171,7 +172,7 @@ public class MonitoringHashAlgorithm : HashAlgorithm
 
         if (destination.Length >= sizeof(uint))
         {
-            BitConverter.TryWriteBytes(destination, hashValue);
+            BitConverter.TryWriteBytes(destination, _hashValue);
             bytesWritten = sizeof(uint);
             return true;
         }
@@ -183,20 +184,20 @@ public class MonitoringHashAlgorithm : HashAlgorithm
     /// <inheritdoc />
     protected override void Dispose(bool disposing)
     {
-        if (disposed) return;
+        if (_disposed) return;
 
         if (disposing)
         {
             CryptographicOperations.ZeroMemory(HashValue);
             HashValue = null;
-            hashValue = 0;
+            _hashValue = 0;
             HashSizeValue = 0;
-            bytesProcessed = 0;
+            _bytesProcessed = 0;
             InitializeCallCount = HashCoreCallCount = HashAccessCount = HashCoreSpanCallCount =
                 HashFinalCallCount = HashSizeAccessCount = TryHashFinalCallCount = 0;
         }
 
-        disposed = true;
+        _disposed = true;
         DisposeCallCount++;
         DisposeCalled?.Invoke(this, EventArgs.Empty);
         base.Dispose(disposing);
@@ -213,7 +214,7 @@ public class MonitoringHashAlgorithm : HashAlgorithm
     private void ThrowIfDisposed()
     {
 #if NET8_0_OR_GREATER
-        ObjectDisposedException.ThrowIf(disposed, this);
+        ObjectDisposedException.ThrowIf(_disposed, this);
 #else
         if (this.disposed)
             throw new ObjectDisposedException(nameof(MonitoringHashAlgorithm));

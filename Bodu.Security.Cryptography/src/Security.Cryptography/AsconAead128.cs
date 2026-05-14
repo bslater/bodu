@@ -94,7 +94,8 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 /// <seealso cref="IAeadBlockCipherModeTransform"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
-public sealed class AsconAead128 : IAeadBlockCipherModeTransform, IDisposable
+public sealed class AsconAead128
+    : IAeadBlockCipherModeTransform, IDisposable
 {
     /// <summary>Length of the Ascon-AEAD128 key is 128 bits (16 bytes).</summary>
     public const int KeySize = 128;

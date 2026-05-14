@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.LastDateOfWeek.Overflow.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class DateOnlyExtensionsTests
     {
         // DateOnly.MaxValue (9999-12-31) is a Friday; an en-US culture treats Sunday as week start,
         // making Saturday the last day of the week. Projecting forward by one day overflows.
-        var date = DateOnly.MaxValue;
+        DateOnly date = DateOnly.MaxValue;
         var culture = CultureInfo.GetCultureInfo("en-US");
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -38,7 +38,7 @@ public partial class DateOnlyExtensionsTests
     {
         // With SaturdaySunday weekend, the week starts on Monday and ends on Sunday.
         // DateOnly.MaxValue is Friday, so end-of-week is Sunday — two days past MaxValue, which overflows.
-        var date = DateOnly.MaxValue;
+        DateOnly date = DateOnly.MaxValue;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

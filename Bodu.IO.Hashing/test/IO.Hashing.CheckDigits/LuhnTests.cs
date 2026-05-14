@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="LuhnTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// Contains unit tests for the <see cref="Luhn" /> check-digit algorithm.
 /// </summary>
 [TestClass]
-public sealed partial class LuhnTests : CheckDigitAlgorithmTests<LuhnTests, Luhn>
+public sealed partial class LuhnTests
+    : CheckDigitAlgorithmTests<LuhnTests, Luhn>
 {
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()

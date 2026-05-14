@@ -679,7 +679,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// An algorithm that always returns <see langword="null" />, simulating a calendar system that does not produce a date
 	/// for the requested year.
 	/// </summary>
-	private sealed class AlwaysNullAlgorithm : INotableDateAlgorithm
+	private sealed class AlwaysNullAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => null;
 	}
@@ -687,7 +688,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// An algorithm that always throws — used to document the pipeline's current behaviour when an algorithm misbehaves.
 	/// </summary>
-	private sealed class ThrowingAlgorithm : INotableDateAlgorithm
+	private sealed class ThrowingAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) =>
 			throw new InvalidCastException("Simulated algorithm failure.");
@@ -696,7 +698,8 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 	/// <summary>
 	/// A custom adjustment handler that always throws — used to verify the adjuster swallows handler exceptions.
 	/// </summary>
-	private sealed class ThrowingAdjustmentHandler : IAdjustmentHandler
+	private sealed class ThrowingAdjustmentHandler
+		: IAdjustmentHandler
 	{
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
 			throw new InvalidOperationException("Simulated handler failure.");

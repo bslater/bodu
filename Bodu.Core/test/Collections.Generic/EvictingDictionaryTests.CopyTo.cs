@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.CopyTo.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -47,7 +47,7 @@ public partial class EvictingDictionaryTests
     public void CopyTo_WhenDictionaryIsEmpty_ShouldNotCopyAnything()
     {
         var dictionary = new EvictingDictionary<string, int>(2);
-        var target = new KeyValuePair<string, int>[0];
+        var target = Array.Empty<KeyValuePair<string, int>>();
         dictionary.CopyTo(target, 0);
     }
 

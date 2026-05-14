@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.WeekOfMonth.NullCulture.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,11 +18,11 @@ public partial class DateTimeExtensionsTests
     public void WeekOfMonth_DateTime_WhenCultureIsNull_ShouldUseCurrentCulture()
     {
         var date = new DateTime(2024, 1, 8);
-        int expected = date.WeekOfMonth(
+        var expected = date.WeekOfMonth(
             Thread.CurrentThread.CurrentCulture.DateTimeFormat.CalendarWeekRule,
             Thread.CurrentThread.CurrentCulture.DateTimeFormat.FirstDayOfWeek);
 
-        int actual = date.WeekOfMonth((CultureInfo?)null);
+        var actual = date.WeekOfMonth((CultureInfo?)null);
 
         Assert.AreEqual(expected, actual);
     }

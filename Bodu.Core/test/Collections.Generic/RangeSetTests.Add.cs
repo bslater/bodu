@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -279,7 +279,7 @@ public partial class RangeSetTests
         sut.Add(insertStart, insertEnd);
 
         (int Start, int End)[] expected = new (int, int)[expectedFlat.Length / 2];
-        for (int i = 0; i < expected.Length; i++)
+        for (var i = 0; i < expected.Length; i++)
             expected[i] = (expectedFlat[i * 2], expectedFlat[(i * 2) + 1]);
 
         AssertContents(sut, expected);

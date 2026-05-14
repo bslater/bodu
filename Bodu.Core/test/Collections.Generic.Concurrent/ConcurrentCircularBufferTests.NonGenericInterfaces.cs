@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.NonGenericInterfaces.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -96,7 +96,7 @@ public partial class ConcurrentCircularBufferTests
 
         IEnumerable nonGeneric = buffer;
         var observed = new List<string>();
-        foreach (object item in nonGeneric)
+        foreach (var item in nonGeneric)
             observed.Add((string)item);
 
         CollectionAssert.AreEqual(new[] { "a", "b", "c" }, observed);

@@ -22,7 +22,7 @@ public partial class NumericExtensionsTests
     [DataRow(987.654, 2, 990.0)]
     public void RoundToSignificantDigits_Double_WhenPositive_ShouldReturnExpected(double value, int digits, double expected)
     {
-        double result = value.RoundToSignificantDigits(digits);
+        var result = value.RoundToSignificantDigits(digits);
         Assert.AreEqual(expected, result, Math.Abs(expected) * 1e-12 + 1e-12);
     }
 
@@ -32,7 +32,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     public void RoundToSignificantDigits_Double_WhenNegative_ShouldRoundSymmetrically()
     {
-        double result = (-12345.6789).RoundToSignificantDigits(3);
+        var result = (-12345.6789).RoundToSignificantDigits(3);
         Assert.AreEqual(-12300.0, result, 1e-9);
     }
 
@@ -72,8 +72,8 @@ public partial class NumericExtensionsTests
     [TestMethod]
     public void RoundToSignificantDigits_Double_WhenDigitsIsMaximumValid_ShouldRoundWithoutThrowing()
     {
-        double value = 1.234567890123456;
-        double result = value.RoundToSignificantDigits(15);
+        var value = 1.234567890123456;
+        var result = value.RoundToSignificantDigits(15);
 
         Assert.AreEqual(value, result, 1e-14);
     }
@@ -109,7 +109,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     public void RoundToSignificantDigits_Decimal_WhenPositive_ShouldReturnExpected()
     {
-        decimal result = 12345.6789m.RoundToSignificantDigits(3);
+        var result = 12345.6789m.RoundToSignificantDigits(3);
         Assert.AreEqual(12300m, result);
     }
 
@@ -119,7 +119,7 @@ public partial class NumericExtensionsTests
     [TestMethod]
     public void RoundToSignificantDigits_Decimal_WhenNegative_ShouldRoundSymmetrically()
     {
-        decimal result = (-12345.6789m).RoundToSignificantDigits(3);
+        var result = (-12345.6789m).RoundToSignificantDigits(3);
         Assert.AreEqual(-12300m, result);
     }
 
@@ -143,8 +143,8 @@ public partial class NumericExtensionsTests
     [TestMethod]
     public void RoundToSignificantDigits_Decimal_WhenDigitsIsMaximumValid_ShouldRoundWithoutThrowing()
     {
-        decimal value = 1.5m;
-        decimal result = value.RoundToSignificantDigits(28);
+        var value = 1.5m;
+        var result = value.RoundToSignificantDigits(28);
 
         Assert.AreEqual(value, result);
     }

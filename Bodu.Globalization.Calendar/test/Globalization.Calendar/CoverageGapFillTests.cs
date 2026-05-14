@@ -37,7 +37,8 @@ public sealed class CoverageGapFillTests
 			Adjustments = adjustments.IsDefault ? ImmutableArray<ObservanceAdjustment>.Empty : adjustments,
 		};
 
-	private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+	private sealed class InMemoryRuleProvider
+		: INotableDateRuleProvider
 	{
 		private readonly NotableDateRule[] _rules;
 
@@ -46,7 +47,8 @@ public sealed class CoverageGapFillTests
 		public IEnumerable<NotableDateRule> LoadRules() => _rules;
 	}
 
-	private sealed class OverrideProvider : INotableDateRuleOverrideProvider
+	private sealed class OverrideProvider
+		: INotableDateRuleOverrideProvider
 	{
 		public IEnumerable<RuleRemoval> Removals { get; init; } = Array.Empty<RuleRemoval>();
 
@@ -487,7 +489,9 @@ public sealed class CoverageGapFillTests
 	/// <see cref="INotableDateAlgorithmPlugin" />), used to force the service to build a
 	/// composite registry layered over the host registry.
 	/// </summary>
-	private sealed class StaticAlgorithmPlugin : INotableDatePlugin, INotableDateAlgorithmPlugin
+	private sealed class StaticAlgorithmPlugin
+		: INotableDatePlugin
+		, INotableDateAlgorithmPlugin
 	{
 		private readonly KeyValuePair<string, INotableDateAlgorithm>[] _algorithms;
 
@@ -501,7 +505,8 @@ public sealed class CoverageGapFillTests
 		public IEnumerable<KeyValuePair<string, INotableDateAlgorithm>> GetAlgorithms() => _algorithms;
 	}
 
-	private sealed class FixedAlgorithm : INotableDateAlgorithm
+	private sealed class FixedAlgorithm
+		: INotableDateAlgorithm
 	{
 		private readonly DateTime _date;
 
@@ -510,12 +515,14 @@ public sealed class CoverageGapFillTests
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => _date;
 	}
 
-	private sealed class NullAlgorithm : INotableDateAlgorithm
+	private sealed class NullAlgorithm
+		: INotableDateAlgorithm
 	{
 		public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null) => null;
 	}
 
-	private sealed class ShiftByOneWeekHandler : IAdjustmentHandler
+	private sealed class ShiftByOneWeekHandler
+		: IAdjustmentHandler
 	{
 		public AdjustmentHandlerResult Apply(AdjustmentHandlerContext context) =>
 			new(true, context.Date.AddDays(7));

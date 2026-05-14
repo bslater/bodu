@@ -93,7 +93,7 @@ public abstract class Threefish
     public CipherModeKind BlockMode { get; set; } = CipherModeKind.CBC;
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);
@@ -105,7 +105,7 @@ public abstract class Threefish
     }
 
     /// <inheritdoc />
-    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[] rgbIV, byte[] tweak)
+    public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak)
     {
         this.ThrowIfDisposed();
         CryptoHelpers.ThrowIfInvalidKeySize(rgbKey, this.KeySize, this.LegalKeySizes);

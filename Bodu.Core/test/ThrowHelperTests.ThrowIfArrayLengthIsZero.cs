@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayLengthIsZero.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
@@ -22,11 +22,14 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" /> if it must pass.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayLengthIsZeroContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfArrayLengthIsZeroContractData))]
     public void ThrowIfArrayLengthIsZero_WhenInvokedWithVariousArrays_ShouldFollowContract(
         string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
     {
-        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayLengthIsZero(array!, "array"), expectedExceptionType, expectedParamName);
+        AssertGuard(testName, () =>
+        {
+            ThrowHelper.ThrowIfArrayLengthIsZero(array!, nameof(array));
+        }, expectedExceptionType, expectedParamName);
     }
 
     /// <summary>

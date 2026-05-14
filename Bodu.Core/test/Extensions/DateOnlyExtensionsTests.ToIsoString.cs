@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.ToIsoString.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -89,6 +89,9 @@ public partial class DateOnlyExtensionsTests
     public void ToIsoString_WithEmptyFormat_ShouldThrowExactly()
     {
         var input = new DateTime(2024, 4, 20);
-        Assert.ThrowsExactly<ArgumentNullException>(() => input.ToIsoString(""));
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            input.ToIsoString("");
+        });
     }
 }

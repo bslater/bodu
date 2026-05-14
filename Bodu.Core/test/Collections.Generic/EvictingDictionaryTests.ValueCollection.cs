@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.ValueCollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -95,7 +95,7 @@ public partial class EvictingDictionaryTests
 
         IEnumerable values = dictionary.Values;
         var observed = new List<int>();
-        foreach (object value in values)
+        foreach (var value in values)
             observed.Add((int)value);
 
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, observed);
@@ -183,7 +183,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
 
-        var values = dictionary.Values;
+        ICollection<int> values = dictionary.Values;
         Assert.IsTrue(values.Contains(1));
         Assert.IsTrue(values.Contains(2));
         Assert.IsFalse(values.Contains(99));

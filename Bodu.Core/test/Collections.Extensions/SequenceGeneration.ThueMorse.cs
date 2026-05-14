@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGeneration.ThueMorse.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,7 +50,7 @@ public class ThueMorseTests
         const int count = 64;
         var actual = SequenceGenerator.ThueMorse(count).ToArray();
 
-        for (int i = 0; i < count; i++)
+        for (var i = 0; i < count; i++)
         {
             int parity = 0, n = i;
             while (n > 0) { parity ^= n & 1; n >>= 1; }
@@ -64,7 +64,7 @@ public class ThueMorseTests
     [TestMethod]
     public void ThueMorse_WhenEnumerated_ShouldYieldOnlyZeroOrOne()
     {
-        foreach (int v in SequenceGenerator.ThueMorse(32))
+        foreach (var v in SequenceGenerator.ThueMorse(32))
             Assert.IsTrue(v == 0 || v == 1, $"Expected 0 or 1, got {v}.");
     }
 }

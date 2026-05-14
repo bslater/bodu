@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfInvalidStringComparison.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public partial class ThrowHelperTests
         string testName, StringComparison comparison, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentException) : null;
-        string? expectedParam = expectsException ? "comparisonType" : null;
+        var expectedParam = expectsException ? "comparisonType" : null;
 
         AssertGuard(
             testName,

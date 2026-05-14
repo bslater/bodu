@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -43,7 +43,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        bool added = sut.Add(7);
+        var added = sut.Add(7);
 
         Assert.IsTrue(added);
         Assert.AreEqual(1, sut.Count);
@@ -57,9 +57,9 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenItemIsDuplicate_ShouldReturnFalseAndNotChangeOrder()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
-        bool added = sut.Add(2);
+        var added = sut.Add(2);
 
         Assert.IsFalse(added);
         Assert.AreEqual(3, sut.Count);
@@ -78,11 +78,11 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        for (int i = 10; i < 20; i++)
+        for (var i = 10; i < 20; i++)
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(10, sut.Count);
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < 10; i++)
             Assert.AreEqual(10 + i, sut.GetAt(i));
     }
 
@@ -94,7 +94,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(100, sut.Count);
@@ -170,7 +170,7 @@ public partial class OrderedSetStorageTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            sut.AddRange(new[] { "ok", null!, "later" });
+            sut.AddRange(["ok", null!, "later"]);
         });
     }
 
@@ -185,9 +185,9 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void AddRange_WhenCollectionContainsDuplicatesAndNewItems_ShouldReturnNewItemCount()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
-        int added = sut.AddRange(new[] { 2, 3, 4, 5, 5 });
+        var added = sut.AddRange([2, 3, 4, 5, 5]);
 
         Assert.AreEqual(2, added);
         Assert.AreEqual(5, sut.Count);
@@ -200,10 +200,10 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void AddRange_WhenCollectionIsEmpty_ShouldReturnZero()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
-        int versionBefore = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
+        var versionBefore = sut._version;
 
-        int added = sut.AddRange(Array.Empty<int>());
+        var added = sut.AddRange(Array.Empty<int>());
 
         Assert.AreEqual(0, added);
         Assert.AreEqual(versionBefore, sut._version);

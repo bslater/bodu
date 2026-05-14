@@ -280,7 +280,8 @@ public sealed partial class NotableDateServiceTests
 	/// bounded-walk fallback when the adjuster's <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> walk can never find a
 	/// working day.
 	/// </summary>
-	private sealed class AlwaysWeekendProvider : IWeekendDefinitionProvider
+	private sealed class AlwaysWeekendProvider
+		: IWeekendDefinitionProvider
 	{
 		/// <inheritdoc />
 		public bool IsWeekend(DayOfWeek dayOfWeek) => true;
@@ -291,7 +292,8 @@ public sealed partial class NotableDateServiceTests
 	/// need to observe how many year-generation passes the service runs, since GenerateYear iterates every rule and dispatches
 	/// Algorithm-strategy rules through the registry.
 	/// </summary>
-	private sealed class CountingAlgorithm : INotableDateAlgorithm
+	private sealed class CountingAlgorithm
+		: INotableDateAlgorithm
 	{
 		/// <summary>
 		/// Gets the number of times <see cref="GetDate" /> has been invoked since construction.

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.Nulls.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -65,7 +65,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("k", null);
         mvd.Add("k", "other");
 
-        bool removed = mvd.Remove("k", null);
+        var removed = mvd.Remove("k", null);
 
         Assert.IsTrue(removed);
         Assert.AreEqual(1, mvd.Count);

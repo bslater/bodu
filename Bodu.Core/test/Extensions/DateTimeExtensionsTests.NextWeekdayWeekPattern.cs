@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.NextWeekdayWeekPattern.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public partial class DateTimeExtensionsTests
     public void NextWeekday_WhenWeekPatternIsMondayToFriday_ShouldSkipWeekend()
     {
         // 2024-04-19 is a Friday.
-        DateTime friday = new DateTime(2024, 4, 19);
+        var friday = new DateTime(2024, 4, 19);
 
         DateTime actual = friday.NextWeekday(WeekPattern.MondayToFriday);
 
@@ -34,7 +34,7 @@ public partial class DateTimeExtensionsTests
     public void NextWeekday_WhenWeekPatternIsSundayToThursday_ShouldSkipFridayAndSaturday()
     {
         // 2024-04-18 is a Thursday.
-        DateTime thursday = new DateTime(2024, 4, 18);
+        var thursday = new DateTime(2024, 4, 18);
 
         DateTime actual = thursday.NextWeekday(WeekPattern.SundayToThursday);
 
@@ -48,7 +48,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void NextWeekday_WhenWeekPatternIsEmpty_ShouldThrowExactly()
     {
-        DateTime monday = new DateTime(2024, 4, 22);
+        var monday = new DateTime(2024, 4, 22);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -64,7 +64,7 @@ public partial class DateTimeExtensionsTests
     public void PreviousWeekday_WhenWeekPatternIsMondayToFriday_ShouldSkipWeekend()
     {
         // 2024-04-22 is a Monday.
-        DateTime monday = new DateTime(2024, 4, 22);
+        var monday = new DateTime(2024, 4, 22);
 
         DateTime actual = monday.PreviousWeekday(WeekPattern.MondayToFriday);
 
@@ -78,7 +78,7 @@ public partial class DateTimeExtensionsTests
     [TestMethod]
     public void PreviousWeekday_WhenWeekPatternIsEmpty_ShouldThrowExactly()
     {
-        DateTime monday = new DateTime(2024, 4, 22);
+        var monday = new DateTime(2024, 4, 22);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

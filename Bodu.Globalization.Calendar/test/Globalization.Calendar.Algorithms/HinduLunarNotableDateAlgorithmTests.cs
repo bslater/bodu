@@ -29,7 +29,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 	/// Verifies that an undefined <see cref="HinduLunarMonth" /> value throws <see cref="ArgumentException" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenMonthIsUndefined_ShouldThrowArgumentException()
+	public void Ctor_WhenMonthIsUndefined_ShouldThrowArgumentException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentException>(() =>
 		{
@@ -43,7 +43,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 	/// Verifies that an undefined <see cref="HinduPaksha" /> value throws <see cref="ArgumentException" />.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenPakshaIsUndefined_ShouldThrowArgumentException()
+	public void Ctor_WhenPakshaIsUndefined_ShouldThrowArgumentException()
 	{
 		var ex = Assert.ThrowsExactly<ArgumentException>(() =>
 		{
@@ -59,7 +59,7 @@ public sealed class HinduLunarNotableDateAlgorithmTests
 	[DataRow(0)]
 	[DataRow(16)]
 	[TestMethod]
-	public void Constructor_WhenTithiOutOfRange_ShouldThrowArgumentOutOfRangeException(int tithi)
+	public void Ctor_WhenTithiOutOfRange_ShouldThrowArgumentOutOfRangeException(int tithi)
 	{
 		var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
 		{

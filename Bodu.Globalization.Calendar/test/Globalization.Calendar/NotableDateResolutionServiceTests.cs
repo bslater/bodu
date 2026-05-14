@@ -20,7 +20,7 @@ public sealed class NotableDateResolutionServiceTests
     /// Verifies that construction rejects a null rule-provider sequence.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenRuleProvidersIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenRuleProvidersIsNull_ShouldThrowArgumentNullException()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -50,7 +50,7 @@ public sealed class NotableDateResolutionServiceTests
     /// Verifies that the service loads rules from its providers.
     /// </summary>
     [TestMethod]
-    public void Constructor_WhenRuleProvidersContainRules_ShouldExposeEffectiveRules()
+    public void Ctor_WhenRuleProvidersContainRules_ShouldExposeEffectiveRules()
     {
         NotableDateRule first = FixedRule("First", month: 1, day: 1);
         NotableDateRule second = FixedRule("Second", month: 1, day: 2);
@@ -279,19 +279,21 @@ public sealed class NotableDateResolutionServiceTests
             IsNonWorkingDay = false,
         };
 
-    private sealed class InMemoryRuleProvider : INotableDateRuleProvider
+    private sealed class InMemoryRuleProvider
+        : INotableDateRuleProvider
     {
-        private readonly IReadOnlyList<NotableDateRule> rules;
+        private readonly IReadOnlyList<NotableDateRule> _rules;
 
         public InMemoryRuleProvider(IReadOnlyList<NotableDateRule> rules)
         {
-            this.rules = rules;
+            this._rules = rules;
         }
 
-        public IEnumerable<NotableDateRule> LoadRules() => rules;
+        public IEnumerable<NotableDateRule> LoadRules() => _rules;
     }
 
-    private sealed class CountingEasterAlgorithm : INotableDateAlgorithm
+    private sealed class CountingEasterAlgorithm
+        : INotableDateAlgorithm
     {
         public static int CallCount { get; private set; }
 
@@ -311,7 +313,8 @@ public sealed class NotableDateResolutionServiceTests
         }
     }
 
-    private sealed class FirstByPriorityCollisionResolver : INotableDateCollisionResolver
+    private sealed class FirstByPriorityCollisionResolver
+        : INotableDateCollisionResolver
     {
         public IReadOnlyList<NotableDate> Resolve(DateTime date, IReadOnlyList<NotableDate> candidates) =>
             candidates

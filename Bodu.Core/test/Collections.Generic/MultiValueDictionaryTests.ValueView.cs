@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.ValueView.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -59,7 +59,7 @@ public partial class MultiValueDictionaryTests
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
 
-        bool found = mvd.TryGetValues("a", out IReadOnlyList<int> values);
+        var found = mvd.TryGetValues("a", out IReadOnlyList<int> values);
 
         Assert.IsTrue(found);
         AssertReadOnlyValueViewCannotBeMutated(values);
