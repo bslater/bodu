@@ -92,7 +92,7 @@ var service = new NotableDateService(
                            "MyApp/Calendar/Resources/rules.xml",
                            new ResourcePathResolver()) },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    algorithmRegistry: registry);
+    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
 Most built-in algorithm rules are already defined in the embedded global XML rule set and do not need to be registered manually when using the default `NotableDateService()` constructor.
@@ -221,7 +221,7 @@ NotableDateRule mothersDay = new NotableDateRule
 var service = new NotableDateService(
     ruleProviders:     new[] { new InMemoryRuleProvider(new[] { mothersDay }) },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    algorithmRegistry: registry);
+    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
 ## Where to go next

@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 260" role="img" aria-labelledby="ra-t ra-d">
   <title id="ra-t">Rule authoring — three provider approaches</title>
-  <desc id="ra-d">Three approaches supply rules to NotableDateService. In-Code Objects implement INotableDateRuleProvider directly. XML Resource Files use XmlResourceNotableDateRuleProvider with an embedded .xml file. Satellite Assemblies use the same provider but pass a separate assembly. All three are passed via the ruleProviders constructor parameter. Optional runtime overrides implement INotableDateRuleOverrideProvider and are passed via overrideProviders.</desc>
+  <desc id="ra-d">Three approaches supply rules to NotableDateService. In-Code Objects implement INotableDateRuleProvider directly. XML Resource Files use XmlResourceNotableDateRuleProvider with an embedded .xml file. Satellite Assemblies use the same provider but pass a separate assembly. All three are passed via the ruleProviders constructor parameter. Optional runtime overrides implement INotableDateRuleOverrideProvider and are passed via NotableDateServiceOptions.OverrideProviders.</desc>
 
   <defs>
     <style>
@@ -91,9 +91,9 @@
       <rect class="svc" width="288" height="100" rx="5"/>
       <text class="lbl" x="144" y="18">NotableDateService</text>
       <text class="sub" x="144" y="36">ruleProviders: INotableDateRuleProvider[]</text>
-      <text class="sub" x="144" y="51">weekendDefinition: CalendarWeekendDefinition</text>
-      <text class="sub" x="144" y="66">overrideProviders: INotableDateRuleOverrideProvider[]</text>
-      <text class="mut" x="144" y="82">algorithmRegistry · adjustmentHandlers · …</text>
+      <text class="sub" x="144" y="51">workingWeek: WeekPattern (or CalendarWeekendDefinition)</text>
+      <text class="sub" x="144" y="66">options: NotableDateServiceOptions { OverrideProviders, … }</text>
+      <text class="mut" x="144" y="82">AlgorithmRegistry · AdjustmentHandlers · Plugins · …</text>
       <text class="mut" x="144" y="95">per-year cache (ConcurrentDictionary)</text>
     </g>
 

@@ -611,9 +611,9 @@ AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
     .Register("next-working-day", new NextWorkingDayHandler());
 
 var service = new NotableDateService(
-    ruleProviders:      new[] { myProvider },
-    weekendDefinition:  CalendarWeekendDefinition.SaturdaySunday,
-    adjustmentHandlers: handlers);
+    ruleProviders:     new[] { myProvider },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 ```
 
 Wire the handler to an adjustment with `HandlerKey`:

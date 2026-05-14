@@ -169,7 +169,7 @@ INotableDateRuleOverrideProvider orgOverrides = new XmlResourceNotableDateRulePr
 var service = new NotableDateService(
     ruleProviders:     [baseProvider],
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    overrideProviders: [orgOverrides]);
+    options: new NotableDateServiceOptions { OverrideProviders = [orgOverrides] });
 ```
 
 ## Pattern 7 — cache invalidation
@@ -264,7 +264,10 @@ var provider = new XmlResourceNotableDateRuleProvider(
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    overrideProviders: new[] { new CompanyCalendarOverrides() });
+    options: new NotableDateServiceOptions
+    {
+        OverrideProviders = new[] { new CompanyCalendarOverrides() },
+    });
 ```
 
 ## Pattern 8 — cache invalidation
