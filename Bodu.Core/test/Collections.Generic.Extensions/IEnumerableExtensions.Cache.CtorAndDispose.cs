@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Cache.CtorAndDispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,13 +23,13 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         ConstructorInfo ctor = cacheEnumerableType.GetConstructor(
             BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
             binder: null,
-            types: new[] { typeof(IEnumerable<int>) },
+            types: [typeof(IEnumerable<int>)],
             modifiers: null)
             ?? throw new InvalidOperationException("CacheEnumerable<T> constructor not found.");
 
         TargetInvocationException ex = Assert.ThrowsExactly<TargetInvocationException>(() =>
         {
-            _ = ctor.Invoke(new object?[] { null });
+            _ = ctor.Invoke([null]);
         });
 
         Assert.IsInstanceOfType<ArgumentNullException>(ex.InnerException);

@@ -27,5 +27,7 @@
   items:
     - name: Introduction
       href: calendar/index.md
+    - name: Core concepts
+      href: calendar/concepts.md
     - name: Getting started
       href: calendar/getting-started.md

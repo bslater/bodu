@@ -16,6 +16,8 @@ Region-specific notable-date rules ship as separate **companion data assemblies*
 
 Each pack depends on `Bodu.Globalization.Calendar` and embeds only the `region-XX.xml` files for its countries. Cross-pack references are not used — every region XML cherry-picks its global anchors from the main library, which the provider's assembly chain resolves automatically.
 
+National rules are authored at the country level (`AU`, `US`, `GB`); state / province / region variants use the canonical ISO 3166-2 subdivision suffix (`AU-NSW`, `US-CA`, `GB-SCT`). See [Territories and regional composition](territories.md) for the parsing, containment, and composition rules that govern how these codes interact at query time.
+
 ## Install
 
 ```bash
@@ -134,4 +136,5 @@ The provider streams the first match it finds, so anything you place in the lead
 
 - [Using NotableDateService](notable-dates.md) — querying patterns, filters, range queries, and overrides.
 - [Authoring notable date rules](rule-authoring.md) — in-code, XML, and companion-assembly authoring patterns.
+- [Territories and regional composition](territories.md) — ISO 3166 codes, subdivision patterns, and the containment rules that drive cross-pack queries.
 - [Bodu.Globalization.Calendar API reference](../../apidoc/Bodu.Globalization.Calendar.md) — full type reference.

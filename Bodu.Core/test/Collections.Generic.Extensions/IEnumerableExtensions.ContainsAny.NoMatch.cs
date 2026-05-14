@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.ContainsAny.NoMatch.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     [TestMethod]
     public void ContainsAny_WhenSourceIsSmallerAndNoOverlap_ShouldReturnFalse()
     {
-        int[] source = { -1, -2 };                              // small ICollection<int>
+        int[] source = [-1, -2];                              // small ICollection<int>
         int[] items = Enumerable.Range(0, 50).ToArray();        // larger ICollection<int> with no overlap
 
         Assert.IsFalse(source.ContainsAny(items));
@@ -28,7 +28,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     [TestMethod]
     public void ContainsAny_WhenSourceIsLazyAndItemsHaveNoOverlap_ShouldReturnFalse()
     {
-        int[] items = { 1, 2, 3 };
+        int[] items = [1, 2, 3];
         IEnumerable<int> source = LazyYield(100, 5);            // 100..104, disjoint from items
 
         Assert.IsFalse(source.ContainsAny(items));

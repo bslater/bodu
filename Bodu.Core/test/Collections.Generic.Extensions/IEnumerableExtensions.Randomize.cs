@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Randomize.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     /// </summary>
     public static IEnumerable<object[]> GetModesRequiringCount() =>
     [
-        new object[] { RandomizationMode.ReservoirSample },
+        [RandomizationMode.ReservoirSample],
         [RandomizationMode.LazyShuffle],
     ];
 

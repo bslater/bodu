@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.ContainsAny.EdgeCases.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     [TestMethod]
     public void ContainsAny_WhenItemsIsLegacyCollectionEmptyButNotGenericCollection_ShouldReturnFalse()
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
         IEnumerable<int> items = new LegacyEmptyCollection<int>();
 
         Assert.IsFalse(source.ContainsAny(items));
@@ -31,7 +31,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     [TestMethod]
     public void ContainsAny_WhenItemsIsLegacyCollectionEmptyWithComparer_ShouldReturnFalse()
     {
-        string[] source = { "a", "b", "c" };
+        string[] source = ["a", "b", "c"];
         IEnumerable<string> items = new LegacyEmptyCollection<string>();
 
         Assert.IsFalse(source.ContainsAny(items, StringComparer.OrdinalIgnoreCase));

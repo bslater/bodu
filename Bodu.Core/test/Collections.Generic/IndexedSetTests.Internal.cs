@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.Internal.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,7 +35,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void Ctor_WhenCollectionIsReadOnlyCollectionOnly_ShouldUseReadOnlyCountForCapacity()
     {
-        var source = new ReadOnlyCollectionOnly<int>(new[] { 10, 20, 30, 40 });
+        var source = new ReadOnlyCollectionOnly<int>([10, 20, 30, 40]);
 
         var sut = new IndexedSet<int>(source);
 

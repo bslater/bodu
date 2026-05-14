@@ -120,6 +120,14 @@
           href: calendar/notable-dates.md
         - name: Authoring notable date rules
           href: calendar/rule-authoring.md
+    - name: Bodu.Globalization.Calendar — Reference
+      items:
+        - name: Territories and regional composition
+          href: calendar/territories.md
+    - name: Bodu.Globalization.Calendar — Patterns
+      items:
+        - name: Working-day arithmetic
+          href: calendar/working-days.md
     - name: Bodu.Globalization.Calendar.Algorithms
       items:
         - name: Date calculation algorithms

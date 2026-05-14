@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="cp-t cp-d">
   <title id="cp-t">NotableDateService — resolution pipeline</title>
-  <desc id="cp-d">Rule providers and optional override providers are merged into an effective rule set. The resolver dispatches each rule by strategy — Fixed, DayOfWeekInMonth, Algorithm, or OffsetFromAnchor — producing an anchor date. The adjuster evaluates ObservanceAdjustment rules. Resolved dates are stored in a thread-safe per-year cache and returned by GetNotableDates.</desc>
+  <desc id="cp-d">Rule providers and optional override providers are layered into an effective rule set. The resolver dispatches each rule by strategy — Fixed, DayOfWeekInMonth, Algorithm, or OffsetFromAnchor — producing a nominal date. The adjuster evaluates ObservanceAdjustment rules and yields the observed date. Resolved dates are stored in a thread-safe per-year cache and returned by GetNotableDates.</desc>
 
   <defs>
     <style>
@@ -71,8 +71,9 @@
       <text class="bdg-t" x="265" y="39">OffsetFromAnchor</text>
     </g>
 
-    <!-- Arrow: resolver → adjuster -->
+    <!-- Arrow: resolver → adjuster (labelled 'nominal date') -->
     <line class="w" x1="400" y1="124" x2="400" y2="144" marker-end="url(#a)"/>
+    <text class="mut" x="410" y="138" text-anchor="start">nominal date</text>
 
     <!-- ADJUSTER box -->
     <g transform="translate(240 144)">
@@ -81,8 +82,9 @@
       <text class="sub" x="160" y="36">ObservanceAdjustment rules (weekend roll, territory scope, …)</text>
     </g>
 
-    <!-- Arrow: adjuster → cache -->
+    <!-- Arrow: adjuster → cache (labelled 'observed date') -->
     <line class="w" x1="400" y1="192" x2="400" y2="210" marker-end="url(#a)"/>
+    <text class="mut" x="410" y="205" text-anchor="start">observed date</text>
 
     <!-- CACHE bar -->
     <g transform="translate(240 210)">

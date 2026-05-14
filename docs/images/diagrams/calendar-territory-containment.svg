@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="tc-t tc-d">
+  <title id="tc-t">TerritoryCode containment hierarchy</title>
+  <desc id="tc-d">Territory codes are hierarchical. A country code such as AU contains all of its ISO 3166-2 subdivisions (AU-NSW, AU-VIC, AU-QLD, AU-WA, AU-NT). A query for the country returns rules scoped to the country plus rules scoped to every subdivision. A query for a subdivision returns rules scoped to that subdivision plus rules scoped to the parent country, but not rules scoped to sibling subdivisions.</desc>
+
+  <defs>
+    <style>
+      .bg   { fill: #0F172A; }
+      .pan  { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr  { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl  { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl  { fill: #F8FAFC; font: 700 13px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub  { fill: #CBD5E1; font: 400 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut  { fill: #94A3B8; font: 400 10px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ok   { fill: #4ADE80; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .err  { fill: #EF4444; font: 400 11px/1 "Segoe UI",Arial,sans-serif; }
+      .cn   { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .sd   { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.2; }
+      .sd-h { fill: #1E3A5F; stroke: #FBBF24; stroke-width: 2; }
+      .w    { stroke: #CBD5E1; stroke-width: 1.5; fill: none; }
+      .wt   { stroke: #2DD4BF; stroke-width: 1.5; fill: none; }
+    </style>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#CBD5E1"/>
+    </marker>
+    <marker id="at" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="300" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">TerritoryCode containment hierarchy</text>
+
+    <!-- COUNTRY box (parent) -->
+    <g transform="translate(340 50)">
+      <rect class="cn" width="120" height="48" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="60" y="20">AU</text>
+      <text class="sub" x="60" y="36">country (ISO 3166-1)</text>
+    </g>
+    <text class="mut" x="400" y="116">contains</text>
+
+    <!-- Vertical connector country → branch -->
+    <line class="wt" x1="400" y1="98" x2="400" y2="130"/>
+
+    <!-- Horizontal branch line -->
+    <line class="wt" x1="100" y1="130" x2="700" y2="130"/>
+
+    <!-- Down lines to each subdivision -->
+    <line class="wt" x1="160"  y1="130" x2="160"  y2="148" marker-end="url(#at)"/>
+    <line class="wt" x1="280" y1="130" x2="280" y2="148" marker-end="url(#at)"/>
+    <line class="wt" x1="400" y1="130" x2="400" y2="148" marker-end="url(#at)"/>
+    <line class="wt" x1="520" y1="130" x2="520" y2="148" marker-end="url(#at)"/>
+    <line class="wt" x1="640" y1="130" x2="640" y2="148" marker-end="url(#at)"/>
+
+    <!-- SUBDIVISIONS (AU-NSW highlighted) -->
+    <g transform="translate(100 148)">
+      <rect class="sd-h" width="120" height="44" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="60" y="18">AU-NSW</text>
+      <text class="sub" x="60" y="34">New South Wales</text>
+    </g>
+    <g transform="translate(220 148)">
+      <rect class="sd" width="120" height="44" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="60" y="18">AU-VIC</text>
+      <text class="sub" x="60" y="34">Victoria</text>
+    </g>
+    <g transform="translate(340 148)">
+      <rect class="sd" width="120" height="44" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="60" y="18">AU-QLD</text>
+      <text class="sub" x="60" y="34">Queensland</text>
+    </g>
+    <g transform="translate(460 148)">
+      <rect class="sd" width="120" height="44" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="60" y="18">AU-WA</text>
+      <text class="sub" x="60" y="34">Western Australia</text>
+    </g>
+    <g transform="translate(580 148)">
+      <rect class="sd" width="120" height="44" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="60" y="18">AU-NT</text>
+      <text class="sub" x="60" y="34">Northern Territory</text>
+    </g>
+
+    <!-- Query annotations -->
+    <g transform="translate(36 220)">
+      <text class="sub" x="0" y="0" text-anchor="start" font-weight="700" fill="#F8FAFC">Query semantics</text>
+
+      <text class="mut" x="0" y="20" text-anchor="start">
+        <tspan class="ok" font-weight="700">GetNotableDates(year, "AU")</tspan>
+        <tspan dx="6">→ rules at AU plus every AU-XX subdivision (national-level view)</tspan>
+      </text>
+
+      <text class="mut" x="0" y="38" text-anchor="start">
+        <tspan class="ok" font-weight="700">GetNotableDates(year, "AU-NSW")</tspan>
+        <tspan dx="6">→ rules at AU and at AU-NSW</tspan>
+        <tspan class="err" dx="6" font-weight="700">(no AU-VIC, AU-QLD, AU-WA, or AU-NT rules)</tspan>
+      </text>
+
+      <text class="mut" x="0" y="56" text-anchor="start">
+        <tspan>Rules with no territory code apply globally — included in every query regardless of country or subdivision.</tspan>
+      </text>
+    </g>
+  </g>
+</svg>

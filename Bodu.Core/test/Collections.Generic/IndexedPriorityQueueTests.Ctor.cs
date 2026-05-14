@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedPriorityQueueTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -113,12 +113,12 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsProvided_ShouldPopulateQueue()
     {
-        KeyValuePair<string, int>[] items = new[]
-        {
+        KeyValuePair<string, int>[] items =
+        [
             new KeyValuePair<string, int>("c", 30),
             new KeyValuePair<string, int>("a", 10),
             new KeyValuePair<string, int>("b", 20),
-        };
+        ];
 
         var queue = new IndexedPriorityQueue<string, int>(items);
 
@@ -134,14 +134,14 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsProvided_ShouldDequeueInPriorityOrder()
     {
-        KeyValuePair<int, int>[] items = new[]
-        {
+        KeyValuePair<int, int>[] items =
+        [
             new KeyValuePair<int, int>(1, 50),
             new KeyValuePair<int, int>(2, 10),
             new KeyValuePair<int, int>(3, 40),
             new KeyValuePair<int, int>(4, 20),
             new KeyValuePair<int, int>(5, 30),
-        };
+        ];
 
         var queue = new IndexedPriorityQueue<int, int>(items);
         KeyValuePair<int, int>[] drained = DrainAll(queue);
@@ -156,11 +156,11 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsContainDuplicateKey_ShouldThrowExactly()
     {
-        KeyValuePair<string, int>[] items = new[]
-        {
+        KeyValuePair<string, int>[] items =
+        [
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("a", 2),
-        };
+        ];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -217,12 +217,12 @@ public partial class IndexedPriorityQueueTests
     public void Ctor_WhenItemsAndReverseComparer_ShouldHeapifyAsMaxHeap()
     {
         IComparer<int> reverse = Comparer<int>.Create((a, b) => b.CompareTo(a));
-        KeyValuePair<string, int>[] items = new[]
-        {
+        KeyValuePair<string, int>[] items =
+        [
             new KeyValuePair<string, int>("a", 10),
             new KeyValuePair<string, int>("b", 30),
             new KeyValuePair<string, int>("c", 20),
-        };
+        ];
 
         var queue = new IndexedPriorityQueue<string, int>(items, reverse, null);
 
@@ -235,11 +235,11 @@ public partial class IndexedPriorityQueueTests
     [TestMethod]
     public void Ctor_WhenItemsContainCaseDuplicateAndComparerIsCaseInsensitive_ShouldThrowExactly()
     {
-        KeyValuePair<string, int>[] items = new[]
-        {
+        KeyValuePair<string, int>[] items =
+        [
             new KeyValuePair<string, int>("alpha", 1),
             new KeyValuePair<string, int>("ALPHA", 2),
-        };
+        ];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

@@ -58,11 +58,11 @@ public partial class WeekPatternTests
     {
         var pattern = WeekPattern.FromByte(0b1111111);
         var days = pattern.ToList();
-        DayOfWeek[] expected = new[]
-        {
+        DayOfWeek[] expected =
+        [
             DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
             DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday
-        };
+        ];
 
         CollectionAssert.AreEqual(expected, days,
             "Days must be enumerated in Sunday-first (DayOfWeek enum) order.");
@@ -76,11 +76,11 @@ public partial class WeekPatternTests
     public void GetEnumerator_WhenWeekdays_ShouldYieldWeekdaysInOrder()
     {
         var days = WeekPattern.Weekdays.ToList();
-        DayOfWeek[] expected = new[]
-        {
+        DayOfWeek[] expected =
+        [
             DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
             DayOfWeek.Thursday, DayOfWeek.Friday
-        };
+        ];
 
         CollectionAssert.AreEqual(expected, days);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ArrayExtensionsTests.Copy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -84,12 +84,12 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void Copy_WhenCalled_ForCustomStructArray_ShouldReturnIndependentEqualArray()
     {
-        DateOnly[] source = new[]
-        {
+        DateOnly[] source =
+        [
             new DateOnly(2024, 1, 1),
             new DateOnly(2024, 6, 15),
             new DateOnly(2024, 12, 31),
-        };
+        ];
 
         DateOnly[] result = source.Copy()!;
 

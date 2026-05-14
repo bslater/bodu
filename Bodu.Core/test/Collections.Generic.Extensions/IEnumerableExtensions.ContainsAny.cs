@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.ContainsAny.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     /// </summary>
     public static IEnumerable<object[]> GetContainsAnyTestCases() =>
     [
-        new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 2 }, true },
+        [new[] { 1, 2, 3, 4, 5 }, new[] { 2 }, true],
         [new[] { 1, 2, 3, 4, 5 }, new[] { 6, 7, 8 }, false],
         [new[] { 1, 2, 3, 4, 5 }, new[] { 9, 3, 7 }, true],
         [new[] { 1, 2, 3, 4, 5 }, Array.Empty<int>(), false],

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.CtorFromIEnumerable.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenArraySourceLongerThanCapacity_ShouldRetainTrailingWindow()
     {
-        int[] source = { 1, 2, 3, 4, 5, 6, 7, 8 };
+        int[] source = [1, 2, 3, 4, 5, 6, 7, 8];
         var buffer = new CircularBuffer<int>(source, capacity: 3);
 
         Assert.AreEqual(3, buffer.Count);
@@ -30,7 +30,7 @@ public partial class CircularBufferTests
     [TestMethod]
     public void Ctor_WhenArraySourceFitsInCapacity_ShouldCopyAllElements()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         var buffer = new CircularBuffer<int>(source, capacity: 5);
 
         Assert.AreEqual(3, buffer.Count);

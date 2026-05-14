@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.CopyTo.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -101,7 +101,7 @@ public partial class OrderedSetTests
     public void CopyTo_WhenIndexIsNonZero_ShouldCopyAtCorrectPosition()
     {
         OrderedSet<int> sut = CreateSet(new[] { 10, 20 });
-        int[] target = new int[] { 99, 99, 99, 99 };
+        int[] target = [99, 99, 99, 99];
 
         sut.CopyTo(target, 1);
 
@@ -115,7 +115,7 @@ public partial class OrderedSetTests
     public void CopyTo_WhenSetIsEmpty_ShouldNotModifyArray()
     {
         var sut = new OrderedSet<int>();
-        int[] target = new int[] { 99, 88 };
+        int[] target = [99, 88];
 
         sut.CopyTo(target, 0);
 
