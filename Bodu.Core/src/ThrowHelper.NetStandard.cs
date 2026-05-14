@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 namespace Bodu;
@@ -123,7 +124,7 @@ public static partial class ThrowHelper
 
         if (array.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayLength, expectedLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayLength, expectedLength),
                 nameof(array));
     }
 
@@ -154,7 +155,7 @@ public static partial class ThrowHelper
 
         if (array.Length < minimumLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayTooShort, minimumLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayTooShort, minimumLength),
                 nameof(array));
     }
 
@@ -187,11 +188,11 @@ public static partial class ThrowHelper
         if (index < 0)
             throw new ArgumentOutOfRangeException(
                 nameof(index),
-                string.Format(ResourceStrings.Arg_OutOfRange_IndexValidRange, nameof(array)));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_IndexValidRange, nameof(array)));
 
         if (array.Length - index < requiredLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayTooShort, requiredLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayTooShort, requiredLength),
                 nameof(array));
     }
 
@@ -236,7 +237,7 @@ public static partial class ThrowHelper
 
         if (array.Length == 0 || array.Length % divisor != 0)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayLengthMultipleOf, divisor),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayLengthMultipleOf, divisor),
                 nameof(array));
     }
 
@@ -267,16 +268,16 @@ public static partial class ThrowHelper
         if (offset < 0 || offset > array.Length)
             throw new ArgumentOutOfRangeException(
                 nameof(offset),
-                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, nameof(offset)));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffset, nameof(offset)));
 
         if (count < 0 || count > array.Length)
             throw new ArgumentOutOfRangeException(
                 nameof(count),
-                string.Format(ResourceStrings.Arg_Invalid_ArrayOffset, nameof(count)));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffset, nameof(count)));
 
         if (count > array.Length - offset)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ArrayOffsetOrLength,
                     nameof(offset), nameof(count), nameof(array)));
     }
 
@@ -328,7 +329,7 @@ public static partial class ThrowHelper
 
         if (collection.Count < minCount)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_CollectionTooSmall, minCount),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_CollectionTooSmall, minCount),
                 nameof(collection));
     }
 
@@ -379,7 +380,7 @@ public static partial class ThrowHelper
         if (EqualityComparer<TCondition>.Default.Equals(conditionalParam, conditionalValue) && value is null)
         {
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Required_ParameterRequiredIf,
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Required_ParameterRequiredIf,
                     nameof(value), nameof(conditionalParam), nameof(conditionalValue)),
                 nameof(value));
         }
@@ -402,7 +403,7 @@ public static partial class ThrowHelper
         if (count < 0 || count > available)
             throw new ArgumentOutOfRangeException(
                 nameof(count),
-                string.Format(ResourceStrings.Arg_OutOfRange_CountExceedsAvailable, available));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_CountExceedsAvailable, available));
     }
 
     /// <summary>
@@ -434,7 +435,7 @@ public static partial class ThrowHelper
 
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_DestinationTooSmall, "array", destination.Length),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_DestinationTooSmall, "array", destination.Length),
                 nameof(destination));
     }
 
@@ -453,7 +454,7 @@ public static partial class ThrowHelper
         if (!Enum.IsDefined(typeof(TEnum), value))
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, typeof(TEnum).Name, value));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRangeException_EnumValue, typeof(TEnum).Name, value));
     }
 
     /// <summary>
@@ -473,7 +474,7 @@ public static partial class ThrowHelper
         if (value.CompareTo(max) > 0)
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_OutOfRange_RequireLessThanOrEqual, max));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireLessThanOrEqual, max));
     }
 
     /// <summary>
@@ -493,7 +494,7 @@ public static partial class ThrowHelper
         if (value.CompareTo(max) >= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_OutOfRange_RequireLessThan, max));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireLessThan, max));
     }
 
     /// <summary>
@@ -512,7 +513,7 @@ public static partial class ThrowHelper
     {
         if (value.CompareTo(other) >= 0)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_GreaterThanOrEqualOtherParameter, nameof(other)),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_GreaterThanOrEqualOtherParameter, nameof(other)),
                 nameof(value));
     }
 
@@ -532,7 +533,7 @@ public static partial class ThrowHelper
     {
         if (value.CompareTo(other) > 0)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_GreaterThanOtherParameter, nameof(other)),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_GreaterThanOtherParameter, nameof(other)),
                 nameof(value));
     }
 
@@ -557,7 +558,7 @@ public static partial class ThrowHelper
         if (index < 0 || index >= array.LongLength)
             throw new ArgumentOutOfRangeException(
                 nameof(index),
-                string.Format(ResourceStrings.Arg_OutOfRange_IndexValidRange, array.LongLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_IndexValidRange, array.LongLength));
     }
 
     /// <summary>
@@ -592,7 +593,7 @@ public static partial class ThrowHelper
         if (value.CompareTo(min) < 0)
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_OutOfRange_RequireGreaterThanOrEqual, min));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireGreaterThanOrEqual, min));
     }
 
     /// <summary>
@@ -627,7 +628,7 @@ public static partial class ThrowHelper
         {
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_OutOfRange_RequireGreaterThanOrEqual, min));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireGreaterThanOrEqual, min));
         }
     }
 
@@ -648,7 +649,7 @@ public static partial class ThrowHelper
         if (value.CompareTo(min) <= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_OutOfRange_RequireGreaterThan, min));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireGreaterThan, min));
     }
 
     /// <summary>
@@ -667,7 +668,7 @@ public static partial class ThrowHelper
     {
         if (value.CompareTo(other) <= 0)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_LessThanOrEqualOtherParameter, nameof(other)),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_LessThanOrEqualOtherParameter, nameof(other)),
                 nameof(value));
     }
 
@@ -687,7 +688,7 @@ public static partial class ThrowHelper
     {
         if (value.CompareTo(other) < 0)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_LessThanOtherParameter, nameof(other)),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_LessThanOtherParameter, nameof(other)),
                 nameof(value));
     }
 
@@ -729,13 +730,13 @@ public static partial class ThrowHelper
         {
             if (default(T) is not null)
                 throw new ArgumentException(
-                    string.Format(ResourceStrings.Arg_Invalid_MustBeOfType, typeof(T)),
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_MustBeOfType, typeof(T)),
                     nameof(value));
         }
         else if (value is not T)
         {
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_MustBeOfType, typeof(T)),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_MustBeOfType, typeof(T)),
                 nameof(value));
         }
     }
@@ -760,7 +761,7 @@ public static partial class ThrowHelper
         if (value <= 0 || value % divisor != 0)
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_Invalid_PositiveMultipleOf, divisor));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_PositiveMultipleOf, divisor));
     }
 
     /// <summary>
@@ -915,14 +916,14 @@ public static partial class ThrowHelper
             if (value.CompareTo(min) < 0 || value.CompareTo(max) > 0)
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    string.Format(ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, min, max));
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, min, max));
         }
         else
         {
             if (value.CompareTo(min) <= 0 || value.CompareTo(max) >= 0)
                 throw new ArgumentOutOfRangeException(
                     nameof(value),
-                    string.Format(ResourceStrings.Arg_OutOfRange_RequireBetweenExclusive, min, max));
+                    string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenExclusive, min, max));
         }
     }
 
@@ -958,7 +959,7 @@ public static partial class ThrowHelper
         if (count > 0 && start > int.MaxValue - (count - 1))
             throw new ArgumentOutOfRangeException(
                 nameof(start),
-                string.Format(ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow, nameof(Int32)));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow, nameof(Int32)));
     }
 
     /// <summary>
@@ -977,7 +978,7 @@ public static partial class ThrowHelper
         if (count > 0 && start > long.MaxValue - (count - 1))
             throw new ArgumentOutOfRangeException(
                 nameof(start),
-                string.Format(ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow, nameof(Int64)));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow, nameof(Int64)));
     }
 
     /// <summary>
@@ -1112,7 +1113,7 @@ public static partial class ThrowHelper
         if (value.Equals(other))
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_OutOfRange_ValuesEqual, other));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_ValuesEqual, other));
     }
 
     /// <summary>
@@ -1131,7 +1132,7 @@ public static partial class ThrowHelper
     {
         if (!value.Equals(other))
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_ValuesNotEqual, other),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_ValuesNotEqual, other),
                 nameof(value));
     }
 
@@ -1156,7 +1157,7 @@ public static partial class ThrowHelper
         if (value.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_Invalid_StringTooLong, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_StringTooLong, maxLength));
     }
 
     /// <summary>
@@ -1183,7 +1184,7 @@ public static partial class ThrowHelper
 
         if (value.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_StringLength, expectedLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_StringLength, expectedLength),
                 nameof(value));
     }
 
@@ -1210,7 +1211,7 @@ public static partial class ThrowHelper
         if (value.Length < minLength || value.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 nameof(value),
-                string.Format(ResourceStrings.Arg_Invalid_StringLengthRange, minLength, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_StringLengthRange, minLength, maxLength));
     }
 
     /// <summary>
@@ -1274,7 +1275,7 @@ public static partial class ThrowHelper
     {
         if (span.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanLength, expectedLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLength, expectedLength),
                 nameof(span));
     }
 
@@ -1301,7 +1302,7 @@ public static partial class ThrowHelper
     {
         if (span.Length < minimumLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanTooShort, minimumLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanTooShort, minimumLength),
                 nameof(span));
     }
 
@@ -1319,7 +1320,7 @@ public static partial class ThrowHelper
     {
         if (span.Length != expectedLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanLength, expectedLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLength, expectedLength),
                 nameof(span));
     }
 
@@ -1346,7 +1347,7 @@ public static partial class ThrowHelper
     {
         if (span.Length < minimumLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanTooShort, minimumLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanTooShort, minimumLength),
                 nameof(span));
     }
 
@@ -1369,7 +1370,7 @@ public static partial class ThrowHelper
     {
         if (destination.Length < source.Length)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_DestinationTooSmall, "span", destination.Length),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_DestinationTooSmall, "span", destination.Length),
                 nameof(destination));
     }
 
@@ -1389,7 +1390,7 @@ public static partial class ThrowHelper
     {
         if (span.Length - index < requiredLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanTooShort, requiredLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanTooShort, requiredLength),
                 nameof(span));
     }
 
@@ -1409,7 +1410,7 @@ public static partial class ThrowHelper
     {
         if (span.Length - index < requiredLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanTooShort, requiredLength),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanTooShort, requiredLength),
                 nameof(span));
     }
 
@@ -1436,7 +1437,7 @@ public static partial class ThrowHelper
 
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanLengthMultipleOf, divisor),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLengthMultipleOf, divisor),
                 nameof(span));
     }
 
@@ -1464,7 +1465,7 @@ public static partial class ThrowHelper
         if (array.Length < minLength || array.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 nameof(array),
-                string.Format(ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
     }
  
     /// <summary>
@@ -1489,7 +1490,7 @@ public static partial class ThrowHelper
         if (span.Length < minLength || span.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 nameof(span),
-                string.Format(ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
     }
  
     /// <summary>
@@ -1514,7 +1515,7 @@ public static partial class ThrowHelper
         if (span.Length < minLength || span.Length > maxLength)
             throw new ArgumentOutOfRangeException(
                 nameof(span),
-                string.Format(ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_RequireBetweenInclusive, minLength, maxLength));
     }
 
     /// <summary>
@@ -1540,7 +1541,7 @@ public static partial class ThrowHelper
 
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanLengthMultipleOf, divisor),
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_Invalid_SpanLengthMultipleOf, divisor),
                 nameof(span));
     }
 
@@ -1565,7 +1566,7 @@ public static partial class ThrowHelper
         if ((uint)index >= (uint)span.Length)
             throw new ArgumentOutOfRangeException(
                 nameof(index),
-                string.Format(ResourceStrings.Arg_OutOfRange_IndexValidRange, span.Length));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_IndexValidRange, span.Length));
     }
 
     /// <summary>
@@ -1589,7 +1590,7 @@ public static partial class ThrowHelper
         if ((uint)index >= (uint)span.Length)
             throw new ArgumentOutOfRangeException(
                 nameof(index),
-                string.Format(ResourceStrings.Arg_OutOfRange_IndexValidRange, span.Length));
+                string.Format(CultureInfo.CurrentCulture, ResourceStrings.Arg_OutOfRange_IndexValidRange, span.Length));
     }
 
 #endif
