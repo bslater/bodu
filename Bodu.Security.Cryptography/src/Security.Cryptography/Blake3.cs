@@ -65,6 +65,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] digest = blake3.ComputeHash(message);
 /// </code>
 /// </example>
+/// <seealso cref="Blake2b"/>
+/// <seealso cref="Blake2s"/>
 public sealed class Blake3
     : DeferredFinalBlockHashAlgorithm<Blake3>
 {

@@ -65,6 +65,7 @@ namespace Bodu.Security.Cryptography;
 /// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
+/// <seealso cref="SkipjackBlockCipher"/>
 public sealed class Skipjack
     : SymmetricAlgorithm
 {

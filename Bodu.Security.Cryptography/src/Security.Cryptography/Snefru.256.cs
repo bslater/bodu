@@ -41,6 +41,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] digest = snefru.ComputeHash(legacyMessage);
 /// </code>
 /// </example>
+/// <seealso cref="Snefru{T}"/>
+/// <seealso cref="Snefru128"/>
 public sealed class Snefru256
     : Snefru<Snefru256>
 {

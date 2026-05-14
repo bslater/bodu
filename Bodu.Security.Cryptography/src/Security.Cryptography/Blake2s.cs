@@ -61,6 +61,8 @@ namespace Bodu.Security.Cryptography;
 /// byte[] tag = mac.ComputeHash(message);
 /// </code>
 /// </example>
+/// <seealso cref="Blake2b"/>
+/// <seealso cref="Blake3"/>
 public sealed class Blake2s : KeyedDeferredFinalBlockHashAlgorithm<Blake2s>
 {
     /// <summary>

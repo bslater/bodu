@@ -42,6 +42,9 @@ namespace Bodu.Security.Cryptography;
 /// byte[] tag = sip.ComputeHash(message);
 /// </code>
 /// </example>
+/// <seealso cref="SipHash{T}"/>
+/// <seealso cref="SipHash64"/>
+/// <seealso href="../guides/cryptography/hashing.html#pattern-2--a-keyed-hash-siphash">Keyed-hash (SipHash) guide</seealso>
 public sealed class SipHash128
     : SipHash<SipHash128>
 {

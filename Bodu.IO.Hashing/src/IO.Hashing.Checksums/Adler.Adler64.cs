@@ -43,6 +43,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </code>
 /// </example>
 /// </remarks>
+/// <seealso cref="Adler{T}"/>
+/// <seealso cref="Adler32"/>
+/// <seealso cref="Adler32C"/>
 public sealed class Adler64
     : Adler64Base
 {
