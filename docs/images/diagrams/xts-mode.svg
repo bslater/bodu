@@ -35,10 +35,10 @@
 
   <g transform="translate(10 10)">
     <rect class="panel" width="800" height="320" rx="8"/>
-    <rect class="header" width="800" height="30" rx="8"/>
-    <rect class="header" y="22" width="800" height="8"/>
+    <rect class="header" width="800" height="46" rx="8"/>
+    <rect class="header" y="38" width="800" height="8"/>
     <text class="title" x="16" y="20">XTS — XEX-based Tweaked-Codebook with Ciphertext Stealing (IEEE 1619)</text>
-    <text class="formula" x="800" y="20" text-anchor="end" dx="-16">Cⱼ = E_K₁(Pⱼ ⊕ Tⱼ) ⊕ Tⱼ,    Tⱼ = αʲ · E_K₂(sector)</text>
+    <text class="formula" x="784" y="38" text-anchor="end">Cⱼ = E_K₁(Pⱼ ⊕ Tⱼ) ⊕ Tⱼ,    Tⱼ = αʲ · E_K₂(sector)</text>
 
     <!-- Tweak derivation column on the left -->
     <g transform="translate(70 70)">
