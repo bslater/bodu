@@ -37,22 +37,20 @@ public sealed partial class NotableDateServiceTests
 	}
 
 	/// <summary>
-	/// Verifies that the <see cref="NotableDateService" /> constructor surfaces the
-	/// <c>weekendProvider</c> parameter name when <see cref="CalendarWeekendDefinition.Custom" />
-	/// is requested without a provider.
+	/// Verifies that the <see cref="NotableDateService" /> constructor rejects
+	/// <see cref="CalendarWeekendDefinition.Custom" /> because it has no canonical
+	/// <see cref="WeekPattern" />; callers must convert their <see cref="IWeekendDefinitionProvider" /> to a
+	/// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor instead.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenWeekendDefinitionIsCustomAndProviderIsNull_ShouldThrowArgumentExceptionWithParamName()
+	public void Constructor_WhenWeekendDefinitionIsCustom_ShouldThrowArgumentException()
 	{
-		var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+		Assert.ThrowsExactly<ArgumentException>(() =>
 		{
 			_ = new NotableDateService(
 				Array.Empty<INotableDateRuleProvider>(),
-				CalendarWeekendDefinition.Custom,
-				weekendProvider: null);
+				CalendarWeekendDefinition.Custom);
 		});
-
-		Assert.AreEqual("weekendProvider", ex.ParamName);
 	}
 
 	// -----------------------------------------------------------------------------------------

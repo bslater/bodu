@@ -257,18 +257,18 @@ public sealed partial class NotableDateServiceTests
 	}
 
 	/// <summary>
-	/// Verifies that the <see cref="NotableDateService" /> constructor rejects a
-	/// <see cref="CalendarWeekendDefinition.Custom" /> value with no weekend provider.
+	/// Verifies that the <see cref="NotableDateService" /> constructor rejects
+	/// <see cref="CalendarWeekendDefinition.Custom" /> because it has no canonical <see cref="WeekPattern" />;
+	/// callers must convert their <see cref="IWeekendDefinitionProvider" /> to a <see cref="WeekPattern" /> first.
 	/// </summary>
 	[TestMethod]
-	public void Constructor_WhenWeekendDefinitionIsCustomAndProviderIsNull_ShouldThrow()
+	public void Constructor_WhenWeekendDefinitionIsCustom_ShouldThrow()
 	{
 		Assert.ThrowsExactly<ArgumentException>(() =>
 		{
 			_ = new NotableDateService(
 				Array.Empty<INotableDateRuleProvider>(),
-				CalendarWeekendDefinition.Custom,
-				weekendProvider: null);
+				CalendarWeekendDefinition.Custom);
 		});
 	}
 
