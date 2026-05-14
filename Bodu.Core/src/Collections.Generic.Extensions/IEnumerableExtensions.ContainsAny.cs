@@ -10,8 +10,6 @@ using Bodu.Collections.Generic.Internal;
 
 #endif
 
-using System;
-using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic.Extensions;
 

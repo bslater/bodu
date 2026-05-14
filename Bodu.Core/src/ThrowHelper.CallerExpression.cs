@@ -9,9 +9,8 @@
 #pragma warning disable IDE0011 // Add braces
 
 using Bodu.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
@@ -1486,7 +1485,10 @@ public static partial class ThrowHelper
     {
         if (span.Length - index < requiredLength)
             throw new ArgumentException(
-                string.Format(ResourceStrings.Arg_Invalid_SpanTooShort, requiredLength),
+                string.Format(
+                    CultureInfo.CurrentCulture,
+                    ResourceStrings.Arg_Invalid_SpanTooShort,
+                    requiredLength),
                 paramName);
     }
 

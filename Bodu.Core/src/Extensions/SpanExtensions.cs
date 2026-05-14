@@ -4,12 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Bodu.Extensions;
 /// <summary>
 /// Provides span-shaping helpers — read-only conversion and windowed reversal — for code that already operates on

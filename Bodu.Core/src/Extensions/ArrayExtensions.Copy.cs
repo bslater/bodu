@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Linq;
-
 namespace Bodu.Extensions;
 
 public static partial class ArrayExtensions

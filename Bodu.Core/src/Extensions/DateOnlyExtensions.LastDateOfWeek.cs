@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Globalization;
-using System.Threading;
 using Bodu.Globalization.Extensions;
 
 namespace Bodu.Extensions;

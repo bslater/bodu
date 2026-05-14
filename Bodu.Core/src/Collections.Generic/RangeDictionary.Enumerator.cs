@@ -1,12 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionary.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic;
 
@@ -38,7 +36,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
         private readonly RangeDictionary<TKey, TValue> _owner;
 
         /// <summary>
-        /// The version captured from <paramref name="owner" /> at construction.
+        /// The version captured from <c>owner</c> at construction.
         /// </summary>
         private readonly int _version;
 
@@ -65,7 +63,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
         }
 
         /// <inheritdoc />
-        public ValueRange<TKey, TValue> Current => _current;
+        public readonly ValueRange<TKey, TValue> Current => _current;
 
         /// <inheritdoc />
         object IEnumerator.Current => Current;

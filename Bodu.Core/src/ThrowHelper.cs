@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace Bodu;
 
 /// <summary>
@@ -36,6 +38,15 @@ namespace Bodu;
 /// target framework; the appropriate implementation is selected at compile time.
 /// </para>
 /// </remarks>
+[SuppressMessage(
+    "StyleCop.CSharp.LayoutRules",
+    "SA1519:Braces should not be omitted from multi-line child statement",
+    Justification = "ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.")]
+
+[SuppressMessage(
+    "Roslynator",
+    "RCS1001:Add braces (when expression spans over multiple lines)",
+    Justification = "ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.")]
 public static partial class ThrowHelper
 {
 }

@@ -10,9 +10,6 @@ using Bodu.Buffers;
 
 #endif
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Bodu.Collections.Generic.Extensions;
 

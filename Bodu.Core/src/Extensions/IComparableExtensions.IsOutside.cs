@@ -17,9 +17,6 @@ After:
 
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
 namespace Bodu.Extensions;
 
 public static partial class IComparableExtensions
