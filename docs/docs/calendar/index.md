@@ -14,18 +14,7 @@ Rules can be supplied from embedded XML / JSON resources, companion data packs, 
 
 A single notable date flows through the library in this order:
 
-```
-Rule source  →  NotableDateRule  →  Resolution strategy  →  Nominal date
-                                                                │
-                                                                ▼
-                                                          Adjustment pipeline
-                                                                │
-                                                                ▼
-                                                          Resolved NotableDate
-                                                                │
-                                                                ▼
-                                          Query / filter / working-day arithmetic
-```
+![Notable date flow — six stages from authored rule to consumer query](../../images/diagrams/calendar-notable-date-flow.svg)
 
 A **`NotableDateRule`** is an authored recipe — the *what* and *how* of a notable date, never the date itself. **`NotableDateService`** loads rules from one or more providers, layers optional override providers, resolves each rule for a requested year using the strategy on the rule (fixed date, *n*th weekday, offset from an anchor, or algorithm), runs the adjustment pipeline against the *nominal* date, and caches the resulting `NotableDate` set per year. Consumers then query that resolved set by territory, category, tag, or date range, or feed it into the working-day extensions.
 
