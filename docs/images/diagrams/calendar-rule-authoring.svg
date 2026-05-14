@@ -80,11 +80,11 @@
     </g>
     <text class="mut" x="123" y="248" text-anchor="middle">optional</text>
 
-    <!-- Arrows: sources → service (bend at x=248) -->
-    <path class="wt" d="M 230 70  L 248 70  L 248 105 L 270 105" marker-end="url(#at)"/>
-    <line class="wb" x1="230" y1="122" x2="270" y2="122"         marker-end="url(#ab)"/>
-    <path class="wp" d="M 230 174 L 248 174 L 248 141 L 270 141" marker-end="url(#ap)"/>
-    <path class="wd" d="M 230 223 L 248 223 L 248 162 L 270 162" marker-end="url(#ad)"/>
+    <!-- Arrows: sources → service (bend at x=248, gap to box at x=270) -->
+    <path class="wt" d="M 230 70  L 250 70  L 250 105 L 260 105" marker-end="url(#at)"/>
+    <line class="wb" x1="230" y1="122" x2="260" y2="122"         marker-end="url(#ab)"/>
+    <path class="wp" d="M 230 174 L 250 174 L 250 141 L 260 141" marker-end="url(#ap)"/>
+    <path class="wd" d="M 230 223 L 250 223 L 250 162 L 260 162" marker-end="url(#ad)"/>
 
     <!-- NotableDateService box -->
     <g transform="translate(270 78)">
