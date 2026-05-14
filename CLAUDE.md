@@ -60,6 +60,12 @@ See **Test Tiers** below for the category convention each runsettings file appli
 
 `test.runsettings` enables parallel execution (`MaxCpuCount=0`) and disables AppDomains.
 
+### SDK Bootstrap (Claude Code on the web)
+
+`.claude/hooks/session-start.sh` installs `dotnet-sdk-8.0` from `apt` on session start when running in the remote Claude Code on the web environment (`CLAUDE_CODE_REMOTE=true`). It is idempotent — when `dotnet` is already on `PATH` it exits immediately, so resume / clear / compact sessions pay no extra cost.
+
+Local developer machines are untouched (the hook short-circuits when `CLAUDE_CODE_REMOTE` is unset), and the hook is registered via `.claude/settings.json`.
+
 ## Branching and Commits
 
 - **One branch per session, by default.** Use the branch the harness designates at session start (typically `claude/<topic>-<id>`) and make multiple commits to it as the session progresses. Do not spin up additional branches for each edit, fix, or intermediate step within the same session.
