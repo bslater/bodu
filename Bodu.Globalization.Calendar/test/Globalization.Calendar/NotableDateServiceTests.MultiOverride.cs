@@ -28,10 +28,13 @@ public partial class NotableDateServiceTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new INotableDateRuleOverrideProvider[]
+			options: new NotableDateServiceOptions
 			{
-				new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: new[] { earlyRule }),
-				new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: new[] { lateRule }),
+				OverrideProviders = new INotableDateRuleOverrideProvider[]
+				{
+					new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: new[] { earlyRule }),
+					new TestOverrideProvider(removals: Array.Empty<RuleRemoval>(), additions: new[] { lateRule }),
+				},
 			});
 
 		IReadOnlyList<NotableDate> emitted = service.GetNotableDates(2026);

@@ -156,8 +156,7 @@ public sealed class NotableDateRangePipelineTestsOverrideRemoval
 		return new NotableDateRangePipeline(
 			analysis,
 			resolver,
-			CalendarWeekendDefinition.SaturdaySunday,
-			weekendProvider: null,
+			WeekPattern.Weekdays,
 			handlerRegistry: null,
 			overrideRemovals: removals);
 	}

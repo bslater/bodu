@@ -58,4 +58,33 @@ public static partial class DateTimeExtensions
 
         return new DateTime(ticks, dateTime.Kind);
     }
+
+    /// <summary>
+    /// Returns a new <see cref="DateTime" /> representing the next day after <paramref name="dateTime" /> whose
+    /// <see cref="DayOfWeek" /> is selected in the supplied <paramref name="workingWeek" />.
+    /// </summary>
+    /// <param name="dateTime">The starting date and time value from which to search forward.</param>
+    /// <param name="workingWeek">The working-week pattern that determines which days are considered working days.</param>
+    /// <returns>The first calendar day strictly after <paramref name="dateTime" /> whose day-of-week is selected in <paramref name="workingWeek" />, with the original time-of-day and <see cref="DateTime.Kind" /> preserved.</returns>
+    /// <remarks>
+    /// <para>
+    /// The walk is bounded by the seven distinct <see cref="DayOfWeek" /> values; when <paramref name="workingWeek" />
+    /// has no days selected (<see cref="WeekPattern.Empty" />) the method will overrun <see cref="DateTime.MaxValue" />
+    /// rather than loop indefinitely. Callers must ensure the supplied pattern selects at least one day.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="workingWeek" /> is <see cref="WeekPattern.Empty" />.</exception>
+    public static DateTime NextWeekday(this DateTime dateTime, WeekPattern workingWeek)
+    {
+        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), "The working week must select at least one day.");
+
+        var ticks = dateTime.Ticks;
+        do
+        {
+            ticks += TicksPerDay;
+        }
+        while (!workingWeek.Contains(GetDayOfWeekFromTicks(ticks)));
+
+        return new DateTime(ticks, dateTime.Kind);
+    }
 }

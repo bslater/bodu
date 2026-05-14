@@ -49,7 +49,7 @@ var provider = new XmlResourceNotableDateRuleProvider(
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    algorithmRegistry: registry);
+    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
 ---
@@ -130,7 +130,7 @@ NotableDateRule mothersDay = new NotableDateRule
 var service = new NotableDateService(
     ruleProviders:     new[] { new InMemoryRuleProvider(mothersDay) },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    algorithmRegistry: registry);
+    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
 ---
@@ -153,7 +153,7 @@ AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
 var service = new NotableDateService(
     ruleProviders:      new[] { provider },
     weekendDefinition:  CalendarWeekendDefinition.SaturdaySunday,
-    adjustmentHandlers: handlers);
+    options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 ```
 
 ### IAdjustmentHandler contract
@@ -347,7 +347,10 @@ public sealed class CompanyCalendarOverrides : INotableDateRuleOverrideProvider
 var service = new NotableDateService(
     ruleProviders:     new[] { baseProvider },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    overrideProviders: new[] { new CompanyCalendarOverrides() });
+    options: new NotableDateServiceOptions
+    {
+        OverrideProviders = new[] { new CompanyCalendarOverrides() },
+    });
 ```
 
 ### Cache invalidation after override state changes
@@ -404,8 +407,9 @@ var localizer = new ResourceFileNameLocalizer(
     new ResourceManager("MyApp.Resources.HolidayNames", typeof(Program).Assembly));
 
 var service = new NotableDateService(
-    ruleProviders:  new[] { provider },
-    nameLocalizer:  localizer);
+    ruleProviders:     new[] { provider },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    options: new NotableDateServiceOptions { NameLocalizer = localizer });
 ```
 
 When a caller requests `NotableDate.DisplayName`, the service invokes
@@ -464,7 +468,7 @@ public sealed class HighestPriorityCollisionResolver : INotableDateCollisionReso
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    collisionResolver: new HighestPriorityCollisionResolver());
+    options: new NotableDateServiceOptions { CollisionResolver = new HighestPriorityCollisionResolver() });
 ```
 
 ---
@@ -516,8 +520,9 @@ ExternalPluginLoader loader = new ExternalPluginLoader(trust);
 INotableDatePlugin plugin = loader.Load("/path/to/MyCalendarPlugin.dll");
 
 var service = new NotableDateService(
-    ruleProviders: new[] { baseProvider },
-    plugins:       new[] { plugin });
+    ruleProviders:     new[] { baseProvider },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    options: new NotableDateServiceOptions { Plugins = new[] { plugin } });
 ```
 
 ### Trust policies
@@ -598,13 +603,16 @@ HighestPriorityCollisionResolver collisionResolver = new HighestPriorityCollisio
 
 // 7. Assemble the service
 NotableDateService service = new NotableDateService(
-    ruleProviders:      new[] { globalRules, apacRules },
-    weekendDefinition:  CalendarWeekendDefinition.SaturdaySunday,
-    overrideProviders:  new[] { overrides },
-    algorithmRegistry:  algorithms,
-    adjustmentHandlers: adjustmentHandlers,
-    collisionResolver:  collisionResolver,
-    nameLocalizer:      localizer);
+    ruleProviders:     new[] { globalRules, apacRules },
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    options: new NotableDateServiceOptions
+    {
+        OverrideProviders  = new[] { overrides },
+        AlgorithmRegistry  = algorithms,
+        AdjustmentHandlers = adjustmentHandlers,
+        CollisionResolver  = collisionResolver,
+        NameLocalizer      = localizer,
+    });
 
 // 8. Query
 IReadOnlyList<NotableDate> dates = service.GetNotableDates(2026, "AU");

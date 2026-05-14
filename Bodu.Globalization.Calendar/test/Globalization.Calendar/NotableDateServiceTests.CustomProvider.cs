@@ -228,7 +228,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)baseProvider },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)overrideProvider });
+			new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)overrideProvider },
+			});
 
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -304,7 +307,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)baseProvider },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)override_ });
+			new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
+			});
 
 		_ = service.GetNotableDates(2024, territoryCode: "AU-NSW");
 		_ = service.GetNotableDates(2025, territoryCode: "AU-NSW");
@@ -331,7 +337,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)baseProvider },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)override_ });
+			new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
+			});
 
 		_ = service.GetNotableDates(2024);
 		_ = service.GetNotableDates(2025);

@@ -110,7 +110,7 @@ var registry = new NotableDateAlgorithmRegistry()
 var service = new NotableDateService(
     ruleProviders:     AsiaPacificCalendarData.CreateProviders(),
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    algorithmRegistry: registry);
+    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
 See [Date calculation algorithms](algorithms.md) for the full list of algorithm keys each pack expects.

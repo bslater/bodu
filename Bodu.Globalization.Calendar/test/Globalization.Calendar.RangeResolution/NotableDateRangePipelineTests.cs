@@ -55,8 +55,11 @@ public sealed class NotableDateRangePipelineTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(easter, lent, palmSunday) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: new NotableDateAlgorithmRegistry()
-				.Register("easter-sunday", new GregorianEasterSundayAlgorithm()));
+			options: new NotableDateServiceOptions
+			{
+				AlgorithmRegistry = new NotableDateAlgorithmRegistry()
+					.Register("easter-sunday", new GregorianEasterSundayAlgorithm()),
+			});
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
 			new DateTime(2026, 1, 1),
@@ -468,7 +471,7 @@ public sealed class NotableDateRangePipelineTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			adjustmentHandlers: handlers);
+			options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 
 		// Anchor 1 Nov 2025 + 90 days = 30 Jan 2026. Default ±31 fringe would not admit this; the explicit declaration must.
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(

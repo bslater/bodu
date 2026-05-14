@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using BoduExt = Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
@@ -33,8 +32,7 @@ internal sealed class NotableDateRangePipeline
     private readonly RuleStaticAnalysis _analysis;
     private readonly NotableDateRuleResolver _ruleResolver;
     private readonly NotableDateRangePlanner _planner;
-    private readonly BoduExt.CalendarWeekendDefinition _weekendDefinition;
-    private readonly BoduExt.IWeekendDefinitionProvider? _weekendProvider;
+    private readonly WeekPattern _workingWeek;
     private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
     private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
 
@@ -43,8 +41,7 @@ internal sealed class NotableDateRangePipeline
     /// </summary>
     /// <param name="analysis">The static rule analysis.</param>
     /// <param name="ruleResolver">The resolver used to compute fixed and algorithmic anchor dates.</param>
-    /// <param name="weekendDefinition">The weekend definition used during adjustment evaluation.</param>
-    /// <param name="weekendProvider">The optional custom weekend provider.</param>
+    /// <param name="workingWeek">The working-week pattern used during adjustment evaluation.</param>
     /// <param name="handlerRegistry">The optional custom adjustment handler registry.</param>
     /// <param name="overrideRemovals">The override removals consulted when materializing rules. Each entry suppresses a rule for matching years and territories.</param>
     /// <exception cref="ArgumentNullException">
@@ -53,16 +50,14 @@ internal sealed class NotableDateRangePipeline
     public NotableDateRangePipeline(
         RuleStaticAnalysis analysis,
         NotableDateRuleResolver ruleResolver,
-        BoduExt.CalendarWeekendDefinition weekendDefinition,
-        BoduExt.IWeekendDefinitionProvider? weekendProvider = null,
+        WeekPattern workingWeek,
         IAdjustmentHandlerRegistry? handlerRegistry = null,
         IReadOnlyList<RuleRemoval>? overrideRemovals = null)
     {
         _analysis = analysis ?? throw new ArgumentNullException(nameof(analysis));
         _ruleResolver = ruleResolver ?? throw new ArgumentNullException(nameof(ruleResolver));
         _planner = new NotableDateRangePlanner(analysis);
-        _weekendDefinition = weekendDefinition;
-        _weekendProvider = weekendProvider;
+        _workingWeek = workingWeek;
         _handlerRegistry = handlerRegistry;
         _overrideRemovals = overrideRemovals ?? [];
     }
@@ -400,8 +395,7 @@ internal sealed class NotableDateRangePipeline
         NotableDateAdjuster adjuster = new(
             IsWeekend,
             (date, territory, calendar) => IsNonWorkingDay(cache, date, territory, calendar),
-            _weekendDefinition,
-            _weekendProvider,
+            _workingWeek,
             _handlerRegistry,
             (name, year, territory, calendar) => cache.ResolveObservedByName(name, year, territory, calendar));
 
@@ -509,8 +503,7 @@ internal sealed class NotableDateRangePipeline
     /// </summary>
     /// <param name="date">The date to test.</param>
     /// <returns><see langword="true" /> when the date is a weekend; otherwise, <see langword="false" />.</returns>
-    private bool IsWeekend(DateTime date) =>
-        BoduExt.DateTimeExtensions.IsWeekend(date, _weekendDefinition, _weekendProvider);
+    private bool IsWeekend(DateTime date) => !_workingWeek.Contains(date.DayOfWeek);
 
     /// <summary>
     /// Constructs a <see cref="NotableDate" /> from a rule, its resolved date, and any observance-adjustment metadata.

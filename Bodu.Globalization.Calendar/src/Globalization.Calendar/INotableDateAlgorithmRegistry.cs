@@ -33,7 +33,7 @@ namespace Bodu.Globalization.Calendar;
 ///         "MyApp/Calendar/Resources/rules.xml",
 ///         new ResourcePathResolver()) },
 ///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-///     algorithmRegistry: registry);
+///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 /// </code>
 /// </example>
 public interface INotableDateAlgorithmRegistry

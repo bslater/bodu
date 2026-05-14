@@ -150,7 +150,7 @@ var provider = new InMemoryRuleProvider(easterSunday, goodFriday, easterMonday, 
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    algorithmRegistry: registry);
+    options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ```
 
 ---
@@ -524,7 +524,10 @@ Register override providers via the `overrideProviders` constructor parameter:
 var service = new NotableDateService(
     ruleProviders:     new[] { provider },
     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-    overrideProviders: new[] { new CompanyCalendarOverrides() });
+    options: new NotableDateServiceOptions
+    {
+        OverrideProviders = new[] { new CompanyCalendarOverrides() },
+    });
 ```
 
 After changing override state, call `Invalidate()` to clear the resolved cache:

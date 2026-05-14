@@ -33,11 +33,8 @@ internal sealed class NotableDateAdjuster
     /// <summary>Predicate for determining whether a given date is a non-working day in the specified territory and calendar context.</summary>
     private readonly Func<DateTime, string?, Type?, bool> _isNonWorkingDay;
 
-    /// <summary>The configured weekend definition, forwarded to shift actions that move dates to a weekday.</summary>
-    private readonly CalendarWeekendDefinition _weekendDefinition;
-
-    /// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="Bodu.Extensions.CalendarWeekendDefinition.Custom" />.</summary>
-    private readonly IWeekendDefinitionProvider? _weekendProvider;
+    /// <summary>The configured working-week pattern; the complement of the days treated as weekend / non-working.</summary>
+    private readonly WeekPattern _workingWeek;
 
     /// <summary>An optional registry of custom <see cref="IAdjustmentHandler" /> instances looked up by key.</summary>
     private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
@@ -50,23 +47,20 @@ internal sealed class NotableDateAdjuster
     /// </summary>
     /// <param name="isWeekend">A predicate for weekend evaluation.</param>
     /// <param name="isNonWorkingDay">A predicate for non-working-day evaluation, scoped by territory and calendar.</param>
-    /// <param name="weekendDefinition">The configured weekend definition.</param>
-    /// <param name="weekendProvider">An optional custom weekend provider.</param>
+    /// <param name="workingWeek">The working-week pattern used to drive shift-to-weekday actions.</param>
     /// <param name="handlerRegistry">An optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
     /// <param name="resolveByName">An optional callback used by <see cref="AdjustmentAction.ReplaceWithNamedDate" /> to look up another rule's resolved date for the same year.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="isWeekend" /> or <paramref name="isNonWorkingDay" /> is <see langword="null" />.</exception>
     public NotableDateAdjuster(
         Func<DateTime, bool> isWeekend,
         Func<DateTime, string?, Type?, bool> isNonWorkingDay,
-        CalendarWeekendDefinition weekendDefinition,
-        IWeekendDefinitionProvider? weekendProvider,
+        WeekPattern workingWeek,
         IAdjustmentHandlerRegistry? handlerRegistry = null,
         Func<string, int, string?, Type?, DateTime?>? resolveByName = null)
     {
         _isWeekend = isWeekend ?? throw new ArgumentNullException(nameof(isWeekend));
         _isNonWorkingDay = isNonWorkingDay ?? throw new ArgumentNullException(nameof(isNonWorkingDay));
-        _weekendDefinition = weekendDefinition;
-        _weekendProvider = weekendProvider;
+        _workingWeek = workingWeek;
         _handlerRegistry = handlerRegistry;
         _resolveByName = resolveByName;
     }
@@ -225,8 +219,8 @@ internal sealed class NotableDateAdjuster
             {
                 AdjustmentAction.None => original,
                 AdjustmentAction.AddDays => original.AddDays(adjustment.OffsetDays),
-                AdjustmentAction.MoveToNextWeekday => original.NextWeekday(_weekendDefinition, _weekendProvider),
-                AdjustmentAction.MoveToPreviousWeekday => original.PreviousWeekday(_weekendDefinition, _weekendProvider),
+                AdjustmentAction.MoveToNextWeekday => original.NextWeekday(_workingWeek),
+                AdjustmentAction.MoveToPreviousWeekday => original.PreviousWeekday(_workingWeek),
                 AdjustmentAction.MoveToNextNonWorkingDay => MoveToNextNonWorkingDay(original, territoryCode, calendarType),
                 AdjustmentAction.ReplaceWithNamedDate => ResolveReplacement(adjustment, original, territoryCode, calendarType),
                 AdjustmentAction.Custom => ApplyCustomHandler(adjustment, rule, original, territoryCode, calendarType).AdjustedDate,

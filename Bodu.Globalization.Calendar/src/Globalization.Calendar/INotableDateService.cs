@@ -45,6 +45,20 @@ namespace Bodu.Globalization.Calendar;
 public interface INotableDateService
 {
     /// <summary>
+    /// Gets the working-week pattern in effect for this service.
+    /// </summary>
+    /// <value>The <see cref="WeekPattern" /> whose selected days are treated as working days when classifying dates.</value>
+    /// <returns>The configured working-week <see cref="WeekPattern" />. The default-implemented value is <see cref="WeekPattern.Weekdays" /> (Monday through Friday) for implementations that do not override this property.</returns>
+    /// <remarks>
+    /// <para>
+    /// The default implementation returns <see cref="WeekPattern.Weekdays" /> so that pre-existing
+    /// <see cref="INotableDateService" /> implementors continue to compile and behave identically. Implementors that
+    /// support configurable working weeks should override this property to surface their effective pattern.
+    /// </para>
+    /// </remarks>
+    WeekPattern WorkingWeek => WeekPattern.Weekdays;
+
+    /// <summary>
     /// Determines whether the supplied date falls on a weekend under the configured weekend definition.
     /// </summary>
     /// <param name="date">The date to evaluate.</param>
@@ -59,6 +73,32 @@ public interface INotableDateService
     /// <param name="calendarType">Optional calendar scope (e.g. <see cref="SysGlobal.GregorianCalendar" />).</param>
     /// <returns><see langword="true" /> if the date is a non-working day; otherwise <see langword="false" />.</returns>
     bool IsNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null);
+
+    /// <summary>
+    /// Determines whether the supplied date is covered by a non-working notable date for the supplied territory and
+    /// calendar context, ignoring the working-week dimension.
+    /// </summary>
+    /// <param name="date">The date to evaluate.</param>
+    /// <param name="territoryCode">Optional territory scope (e.g. <c>"AU"</c>, <c>"AU-NSW"</c>).</param>
+    /// <param name="calendarType">Optional calendar scope (e.g. <see cref="SysGlobal.GregorianCalendar" />).</param>
+    /// <returns><see langword="true" /> if a non-working notable date covers <paramref name="date" />; otherwise <see langword="false" />.</returns>
+    /// <remarks>
+    /// <para>
+    /// This method answers only the holiday side of "is this a non-working day" so that callers can compose it with a
+    /// caller-supplied working-week pattern. The default implementation walks the result of
+    /// <see cref="GetNotableDates(DateTime, string?, Type?)" /> and returns <see langword="true" /> when any covering
+    /// notable date is flagged non-working. Concrete services may override this with a more efficient evaluation.
+    /// </para>
+    /// </remarks>
+    bool IsHolidayNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null)
+    {
+        foreach (NotableDate notable in GetNotableDates(date, territoryCode, calendarType))
+        {
+            if (notable.IsNonWorkingDay) return true;
+        }
+
+        return false;
+    }
 
     /// <summary>
     /// Retrieves every notable date occurring within the supplied year.

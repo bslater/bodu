@@ -49,7 +49,7 @@ namespace Bodu.Globalization.Calendar;
 /// NotableDateService service = new NotableDateService(
 ///     ruleProviders: new[] { new InMemoryRuleProvider(new[] { easterSunday }) },
 ///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-///     algorithmRegistry: registry);
+///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 /// </code>
 /// </example>
 public sealed class NotableDateAlgorithmRegistry : INotableDateAlgorithmRegistry

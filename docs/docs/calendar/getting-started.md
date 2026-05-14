@@ -115,8 +115,8 @@ INotableDateRuleOverrideProvider  overrides = new MyCorporateOverrideProvider();
 
 INotableDateService service = new NotableDateService(
     ruleProviders:     [ auRules ],
-    weekendDefinition:  CalendarWeekendDefinition.SaturdaySunday,
-    overrideProviders: [ overrides ]);
+    weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+    options: new NotableDateServiceOptions { OverrideProviders = [ overrides ] });
 ```
 
 Override providers can add new rules (via `INotableDateRuleProvider.LoadRules`), remove a base rule by name and territory (via `GetRemovals` returning `RuleRemoval` values), or layer adjustment overrides. Implement <xref:Bodu.Globalization.Calendar.INotableDateRuleOverrideProvider> directly, or store overrides in your own XML / JSON file and load them through <xref:Bodu.Globalization.Calendar.XmlResourceNotableDateRuleProvider> / <xref:Bodu.Globalization.Calendar.JsonResourceNotableDateRuleProvider>.

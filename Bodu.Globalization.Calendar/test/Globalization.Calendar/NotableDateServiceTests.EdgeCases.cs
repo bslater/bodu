@@ -202,10 +202,11 @@ public sealed partial class NotableDateServiceTests
 		};
 
 		// Every day is a weekend, so IsNonWorkingDay always returns true; the walk never finds a working day and falls back.
+		// Convert the IWeekendDefinitionProvider into the canonical WeekPattern (empty) and use the WeekPattern ctor.
+		WeekPattern workingWeek = new AlwaysWeekendProvider().ToWeekPattern();
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
-			CalendarWeekendDefinition.Custom,
-			weekendProvider: new AlwaysWeekendProvider());
+			workingWeek);
 
 		var results = service.GetNotableDates(2025)
 			.Where(r => r.Name == "Unreachable Shift")
@@ -259,7 +260,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(walkTrigger, probe) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: registry);
+			new NotableDateServiceOptions { AlgorithmRegistry = registry });
 
 		var walkResults = service.GetNotableDates(2025)
 			.Where(r => r.Name == "Walk Trigger")

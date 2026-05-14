@@ -177,5 +177,8 @@ public partial class NotableDateServiceTests
 		new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRules.ToArray()) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)new TestOverrideProvider(removals, additions) });
+			options: new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)new TestOverrideProvider(removals, additions) },
+			});
 }

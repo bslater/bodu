@@ -183,7 +183,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			adjustmentHandlers: handlerRegistry);
+			new NotableDateServiceOptions { AdjustmentHandlers = handlerRegistry });
 
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -221,7 +221,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule, sanity) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			adjustmentHandlers: handlerRegistry);
+			new NotableDateServiceOptions { AdjustmentHandlers = handlerRegistry });
 
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -255,7 +255,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(algorithmRule, sanity) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: new NullAlgorithmRegistry());
+			new NotableDateServiceOptions { AlgorithmRegistry = new NullAlgorithmRegistry() });
 
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -280,7 +280,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Any Holiday", 6, 15)) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			collisionResolver: new NullReturningCollisionResolver());
+			new NotableDateServiceOptions { CollisionResolver = new NullReturningCollisionResolver() });
 
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(new DateTime(2025, 6, 15));
 
@@ -306,7 +306,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			nameLocalizer: new DelegateLocaliser((_, _) => null!));
+			new NotableDateServiceOptions { NameLocalizer = new DelegateLocaliser((_, _) => null!) });
 
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -341,7 +341,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: registry);
+			new NotableDateServiceOptions { AlgorithmRegistry = registry });
 
 		IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -388,7 +388,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			ruleProviders: Array.Empty<INotableDateRuleProvider>(),
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			plugins: new[] { (INotableDatePlugin)new NullProvidersRulePlugin() });
+			options: new NotableDateServiceOptions { Plugins = new[] { (INotableDatePlugin)new NullProvidersRulePlugin() } });
 
 		Assert.AreEqual(0, service.GetNotableDates(2025).Count);
 	}
@@ -405,7 +405,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			ruleProviders: Array.Empty<INotableDateRuleProvider>(),
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			plugins: new[] { (INotableDatePlugin)new NullAlgorithmsPlugin() });
+			options: new NotableDateServiceOptions { Plugins = new[] { (INotableDatePlugin)new NullAlgorithmsPlugin() } });
 
 		Assert.AreEqual(0, service.GetNotableDates(2025).Count);
 	}
@@ -431,7 +431,10 @@ public sealed partial class NotableDateServiceTests
 			_ = new NotableDateService(
 				new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 1, 1)) },
 				CalendarWeekendDefinition.SaturdaySunday,
-				overrideProviders: new[] { (INotableDateRuleOverrideProvider)overrideProvider });
+				new NotableDateServiceOptions
+				{
+					OverrideProviders = new[] { (INotableDateRuleOverrideProvider)overrideProvider },
+				});
 		});
 
 		Assert.IsTrue(ex.Message.Contains("removal source unavailable", StringComparison.Ordinal));

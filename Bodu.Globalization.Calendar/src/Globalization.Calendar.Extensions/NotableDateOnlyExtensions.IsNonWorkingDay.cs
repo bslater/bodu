@@ -37,4 +37,32 @@ public static partial class NotableDateOnlyExtensions
 
         return service.IsNonWorkingDay(date.ToDateTime(TimeOnly.MinValue), territoryCode, calendarType);
     }
+
+    /// <summary>
+    /// Returns an indication whether the specified <see cref="DateOnly" /> is a non-working day under the supplied
+    /// <paramref name="workingWeek" />, composed with the holiday catalogue exposed by <paramref name="service" />.
+    /// </summary>
+    /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
+    /// <param name="service">The <see cref="INotableDateService" /> consulted for holiday classification. Must not be <see langword="null" />.</param>
+    /// <param name="workingWeek">The working-week pattern.</param>
+    /// <param name="territoryCode">An optional territory scope.</param>
+    /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
+    /// <returns><see langword="true" /> when <paramref name="date" />'s day-of-week is not selected in <paramref name="workingWeek" /> or a non-working notable date covers it; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
+    public static bool IsNonWorkingDay(this DateOnly date, INotableDateService service, WeekPattern workingWeek, string? territoryCode = null, Type? calendarType = null) =>
+        !IsWorkingDay(date, service, workingWeek, territoryCode, calendarType);
+
+    /// <summary>
+    /// Returns an indication whether the specified <see cref="DateOnly" /> is a non-working day under the supplied named
+    /// <paramref name="workingWeek" /> preset, composed with the holiday catalogue exposed by <paramref name="service" />.
+    /// </summary>
+    /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
+    /// <param name="service">The <see cref="INotableDateService" /> consulted for holiday classification. Must not be <see langword="null" />.</param>
+    /// <param name="workingWeek">The named working-week pattern.</param>
+    /// <param name="territoryCode">An optional territory scope.</param>
+    /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
+    /// <returns><see langword="true" /> when <paramref name="date" /> is not in the working week or is covered by a non-working notable date; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
+    public static bool IsNonWorkingDay(this DateOnly date, INotableDateService service, WorkingDaysOfWeek workingWeek, string? territoryCode = null, Type? calendarType = null) =>
+        IsNonWorkingDay(date, service, workingWeek.ToWeekPattern(), territoryCode, calendarType);
 }

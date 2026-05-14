@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IQuarterDefinitionProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -192,4 +192,46 @@ public interface IQuarterDefinitionProvider
     /// <param name="fiscalYear">The fiscal year to query.</param>
     /// <returns>53 in a 53-week fiscal year; otherwise, 52.</returns>
     int GetWeeksInFiscalYear(int fiscalYear);
+
+    /// <summary>
+    /// Returns the fiscal year that contains the supplied <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="dateTime">The date to identify.</param>
+    /// <returns>The fiscal year number under the provider's conventions.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="dateTime"/> cannot be mapped to any fiscal year known to the provider.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// The default implementation probes the calendar years <c>dateTime.Year - 1</c>, <c>dateTime.Year</c>, and
+    /// <c>dateTime.Year + 1</c>, returning the candidate whose Q1 start and Q4 end bracket <paramref name="dateTime"/>.
+    /// This works for any provider whose fiscal year is contiguous and at most one calendar year away from the
+    /// observed calendar year. Implementations may override with a more efficient or more precise computation.
+    /// </para>
+    /// </remarks>
+    int GetFiscalYear(DateTime dateTime)
+    {
+        var calendarYear = dateTime.Year;
+        for (var candidate = calendarYear - 1; candidate <= calendarYear + 1; candidate++)
+        {
+            DateTime q1Start = GetQuarterStart(1, candidate);
+            DateTime q4End = GetQuarterEnd(4, candidate);
+            if (dateTime >= q1Start && dateTime <= q4End)
+                return candidate;
+        }
+
+        throw new ArgumentOutOfRangeException(
+            nameof(dateTime),
+            $"Unable to determine the fiscal year for date '{dateTime:yyyy-MM-dd}'.");
+    }
+
+    /// <summary>
+    /// Returns the fiscal year that contains the supplied <see cref="DateOnly"/>.
+    /// </summary>
+    /// <param name="dateOnly">The date to identify.</param>
+    /// <returns>The fiscal year number under the provider's conventions.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="dateOnly"/> cannot be mapped to any fiscal year known to the provider.
+    /// </exception>
+    int GetFiscalYear(DateOnly dateOnly) => GetFiscalYear(dateOnly.ToDateTime(TimeOnly.MinValue));
 }
