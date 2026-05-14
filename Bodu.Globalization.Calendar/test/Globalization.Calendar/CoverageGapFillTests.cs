@@ -277,8 +277,7 @@ public sealed class CoverageGapFillTests
 		var adjuster = new NotableDateAdjuster(
 			isWeekend: _ => false,
 			isNonWorkingDay: (_, _, _) => false,
-			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			weekendProvider: null);
+			workingWeek: WeekPattern.Weekdays);
 		var adjustment = new ObservanceAdjustment
 		{
 			Key = "k",
@@ -306,8 +305,7 @@ public sealed class CoverageGapFillTests
 		var adjuster = new NotableDateAdjuster(
 			isWeekend: _ => false,
 			isNonWorkingDay: (_, _, _) => false,
-			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			weekendProvider: null);
+			workingWeek: WeekPattern.Weekdays);
 		var adjustment = new ObservanceAdjustment
 		{
 			Key = "k",
@@ -333,8 +331,7 @@ public sealed class CoverageGapFillTests
 		var adjuster = new NotableDateAdjuster(
 			isWeekend: _ => false,
 			isNonWorkingDay: (_, _, _) => false,
-			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			weekendProvider: null);
+			workingWeek: WeekPattern.Weekdays);
 		var adjustment = new ObservanceAdjustment
 		{
 			Key = "k",
@@ -363,8 +360,7 @@ public sealed class CoverageGapFillTests
 		var adjuster = new NotableDateAdjuster(
 			isWeekend: _ => false,
 			isNonWorkingDay: (_, _, _) => false,
-			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			weekendProvider: null,
+			workingWeek: WeekPattern.Weekdays,
 			handlerRegistry: registry);
 		var adjustment = new ObservanceAdjustment
 		{

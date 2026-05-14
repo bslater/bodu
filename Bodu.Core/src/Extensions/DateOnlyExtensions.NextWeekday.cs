@@ -58,4 +58,26 @@ public static partial class DateOnlyExtensions
 
         return DateOnly.FromDayNumber(dayNumber);
     }
+
+    /// <summary>
+    /// Returns a new <see cref="DateOnly" /> representing the next day after <paramref name="date" /> whose
+    /// <see cref="DayOfWeek" /> is selected in the supplied <paramref name="workingWeek" />.
+    /// </summary>
+    /// <param name="date">The starting date value from which to search forward.</param>
+    /// <param name="workingWeek">The working-week pattern that determines which days are considered working days.</param>
+    /// <returns>The first calendar day strictly after <paramref name="date" /> whose day-of-week is selected in <paramref name="workingWeek" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="workingWeek" /> is <see cref="WeekPattern.Empty" />.</exception>
+    public static DateOnly NextWeekday(this DateOnly date, WeekPattern workingWeek)
+    {
+        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), "The working week must select at least one day.");
+
+        var dayNumber = date.DayNumber;
+        do
+        {
+            dayNumber += 1;
+        }
+        while (!workingWeek.Contains(DateOnlyExtensions.GetDayOfWeekFromDayNumber(dayNumber)));
+
+        return DateOnly.FromDayNumber(dayNumber);
+    }
 }

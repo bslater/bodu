@@ -31,8 +31,7 @@ public sealed partial class NotableDateAdjusterTests
 		return new NotableDateAdjuster(
 			isWeekend ?? (d => d.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday),
 			isNonWorking ?? ((d, t, c) => false),
-			CalendarWeekendDefinition.SaturdaySunday,
-			weekendProvider: null,
+			WeekPattern.Weekdays,
 			handlerRegistry: handlers,
 			resolveByName: resolveByName);
 	}
@@ -433,8 +432,7 @@ public sealed partial class NotableDateAdjusterTests
 			_ = new NotableDateAdjuster(
 				isWeekend: null!,
 				isNonWorkingDay: (d, t, c) => false,
-				weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-				weekendProvider: null);
+				workingWeek: WeekPattern.Weekdays);
 		});
 
 		Assert.AreEqual("isWeekend", ex.ParamName);
@@ -452,8 +450,7 @@ public sealed partial class NotableDateAdjusterTests
 			_ = new NotableDateAdjuster(
 				isWeekend: _ => false,
 				isNonWorkingDay: null!,
-				weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-				weekendProvider: null);
+				workingWeek: WeekPattern.Weekdays);
 		});
 
 		Assert.AreEqual("isNonWorkingDay", ex.ParamName);

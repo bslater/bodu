@@ -58,4 +58,26 @@ public static partial class DateTimeExtensions
 
         return new DateTime(ticks, dateTime.Kind);
     }
+
+    /// <summary>
+    /// Returns a new <see cref="DateTime" /> representing the previous day before <paramref name="dateTime" /> whose
+    /// <see cref="DayOfWeek" /> is selected in the supplied <paramref name="workingWeek" />.
+    /// </summary>
+    /// <param name="dateTime">The starting date and time value from which to search backward.</param>
+    /// <param name="workingWeek">The working-week pattern that determines which days are considered working days.</param>
+    /// <returns>The first calendar day strictly before <paramref name="dateTime" /> whose day-of-week is selected in <paramref name="workingWeek" />, with the original time-of-day and <see cref="DateTime.Kind" /> preserved.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="workingWeek" /> is <see cref="WeekPattern.Empty" />.</exception>
+    public static DateTime PreviousWeekday(this DateTime dateTime, WeekPattern workingWeek)
+    {
+        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), "The working week must select at least one day.");
+
+        var ticks = dateTime.Ticks;
+        do
+        {
+            ticks -= TicksPerDay;
+        }
+        while (!workingWeek.Contains(GetDayOfWeekFromTicks(ticks)));
+
+        return new DateTime(ticks, dateTime.Kind);
+    }
 }

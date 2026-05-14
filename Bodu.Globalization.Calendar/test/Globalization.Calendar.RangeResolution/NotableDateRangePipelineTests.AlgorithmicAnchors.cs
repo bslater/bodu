@@ -296,7 +296,7 @@ public sealed class NotableDateRangePipelineAlgorithmicAnchorsTests
 		return new NotableDateRangePipeline(
 			analysis,
 			resolver,
-			CalendarWeekendDefinition.SaturdaySunday);
+			WeekPattern.Weekdays);
 	}
 
 	/// <summary>

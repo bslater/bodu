@@ -98,13 +98,7 @@ public sealed class NotableDateService : INotableDateService
     /// <summary>The optional localizer used to translate notable date names into the active culture.</summary>
     private readonly INotableDateNameLocalizer? _nameLocalizer;
 
-    /// <summary>The configured weekend definition used for weekend and non-working-day evaluation.</summary>
-    private readonly CalendarWeekendDefinition _weekendDefinition;
-
-    /// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="Bodu.Extensions.CalendarWeekendDefinition.Custom" />.</summary>
-    private readonly IWeekendDefinitionProvider? _weekendProvider;
-
-    /// <summary>The working-week pattern derived from the configured weekend definition; surfaced via <see cref="WorkingWeek" />.</summary>
+    /// <summary>The canonical working-week pattern; the complement of the days treated as weekend / non-working.</summary>
     private readonly WeekPattern _workingWeek;
 
     /// <summary>The resolver used to locate embedded XML resource files.</summary>
@@ -236,9 +230,7 @@ public sealed class NotableDateService : INotableDateService
         // and removes a runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation.
         _overrideRemovals = [.. _overrideProviders.SelectMany(p => p.GetRemovals())];
 
-        _weekendDefinition = weekendDefinition;
-        _weekendProvider = weekendProvider;
-        _workingWeek = WorkingWeekFromWeekend(weekendDefinition, weekendProvider);
+        _workingWeek = weekendDefinition.ToWeekPattern(weekendProvider);
         _collisionResolver = collisionResolver ?? new DefaultNotableDateCollisionResolver();
         _nameLocalizer = nameLocalizer;
         _resourcePathResolver = resourcePathResolver ?? new ResourcePathResolver();
@@ -340,7 +332,7 @@ public sealed class NotableDateService : INotableDateService
     public WeekPattern WorkingWeek => _workingWeek;
 
     /// <inheritdoc />
-    public bool IsWeekend(DateTime date) => date.IsWeekend(_weekendDefinition, _weekendProvider);
+    public bool IsWeekend(DateTime date) => !_workingWeek.Contains(date.DayOfWeek);
 
     /// <inheritdoc />
     public bool IsNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null)
@@ -610,8 +602,7 @@ public sealed class NotableDateService : INotableDateService
         return new RangeResolution.NotableDateRangePipeline(
             analysis,
             _resolver,
-            _weekendDefinition,
-            _weekendProvider,
+            _workingWeek,
             _adjustmentHandlers,
             _overrideRemovals);
     }
@@ -829,8 +820,7 @@ public sealed class NotableDateService : INotableDateService
             IsWeekend,
             (date, territoryCode, calendarType) =>
                 context.IsNonWorkingDay(date, territoryCode, calendarType, IsWeekend),
-            _weekendDefinition,
-            _weekendProvider,
+            _workingWeek,
             _adjustmentHandlers,
             (ruleName, year, territoryCode, calendarType) =>
                 context.ResolveByName(ruleName, year, territoryCode, calendarType));
@@ -1063,35 +1053,9 @@ public sealed class NotableDateService : INotableDateService
     }
 
     /// <summary>
-    /// Computes the canonical working-week <see cref="WeekPattern" /> implied by a legacy
-    /// <see cref="CalendarWeekendDefinition" /> plus optional <see cref="IWeekendDefinitionProvider" />.
-    /// </summary>
-    /// <param name="weekendDefinition">The configured weekend definition.</param>
-    /// <param name="weekendProvider">An optional custom weekend provider consulted when <paramref name="weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.</param>
-    /// <returns>The <see cref="WeekPattern" /> whose selected days are the complement of the configured weekend.</returns>
-    /// <remarks>
-    /// <para>
-    /// The helper iterates every <see cref="DayOfWeek" /> value and delegates each query to the existing
-    /// <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
-    /// helper so the conversion remains aligned with the legacy weekend evaluation.
-    /// </para>
-    /// </remarks>
-    private static WeekPattern WorkingWeekFromWeekend(CalendarWeekendDefinition weekendDefinition, IWeekendDefinitionProvider? weekendProvider)
-    {
-        WeekPattern pattern = WeekPattern.Empty;
-        for (var i = 0; i < 7; i++)
-        {
-            DayOfWeek day = (DayOfWeek)i;
-            if (!DateTimeExtensions.IsWeekend(day, weekendDefinition, weekendProvider))
-                pattern = pattern.With(day);
-        }
-
-        return pattern;
-    }
-
-    /// <summary>
     /// Adapts a <see cref="WeekPattern" /> to the legacy <see cref="IWeekendDefinitionProvider" /> contract so that the
-    /// existing weekend-aware extension methods route through the supplied working week.
+    /// <see cref="WeekPattern" />-accepting constructors can chain through the existing
+    /// <see cref="CalendarWeekendDefinition.Custom" /> path during initialization.
     /// </summary>
     /// <remarks>
     /// <para>
