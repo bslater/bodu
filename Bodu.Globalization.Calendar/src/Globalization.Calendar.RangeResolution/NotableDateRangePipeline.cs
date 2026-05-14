@@ -35,6 +35,7 @@ internal sealed class NotableDateRangePipeline
     private readonly WeekPattern _workingWeek;
     private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
     private readonly IReadOnlyList<RuleRemoval> _overrideRemovals;
+    private readonly IReadOnlySet<NotableDateRule> _overrideAdditions;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateRangePipeline" /> class.
@@ -44,6 +45,7 @@ internal sealed class NotableDateRangePipeline
     /// <param name="workingWeek">The working-week pattern used during adjustment evaluation.</param>
     /// <param name="handlerRegistry">The optional custom adjustment handler registry.</param>
     /// <param name="overrideRemovals">The override removals consulted when materializing rules. Each entry suppresses a rule for matching years and territories.</param>
+    /// <param name="overrideAdditions">The identity-keyed set of rules contributed by override-provider additions. Rules in this set are exempt from same-name <see cref="RuleRemoval" /> suppression so an addition can replace a removed base rule.</param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="analysis" /> or <paramref name="ruleResolver" /> is <see langword="null" />.
     /// </exception>
@@ -52,7 +54,8 @@ internal sealed class NotableDateRangePipeline
         NotableDateRuleResolver ruleResolver,
         WeekPattern workingWeek,
         IAdjustmentHandlerRegistry? handlerRegistry = null,
-        IReadOnlyList<RuleRemoval>? overrideRemovals = null)
+        IReadOnlyList<RuleRemoval>? overrideRemovals = null,
+        IReadOnlySet<NotableDateRule>? overrideAdditions = null)
     {
         _analysis = analysis ?? throw new ArgumentNullException(nameof(analysis));
         _ruleResolver = ruleResolver ?? throw new ArgumentNullException(nameof(ruleResolver));
@@ -60,6 +63,7 @@ internal sealed class NotableDateRangePipeline
         _workingWeek = workingWeek;
         _handlerRegistry = handlerRegistry;
         _overrideRemovals = overrideRemovals ?? [];
+        _overrideAdditions = overrideAdditions ?? new HashSet<NotableDateRule>(ReferenceEqualityComparer.Instance);
     }
 
     /// <summary>
@@ -282,6 +286,11 @@ internal sealed class NotableDateRangePipeline
     /// </summary>
     /// <param name="plan">The active resolution plan.</param>
     /// <param name="cache">The shared cache being populated.</param>
+    /// <remarks>
+    /// Algorithm dispatch crosses into user-supplied <see cref="INotableDateAlgorithm" /> code which may throw arbitrarily even
+    /// though the documented contract is to return <see langword="null" /> for unsupported years. Any exception thrown by the
+    /// resolver is treated as a missing date for the year so a single misbehaving algorithm cannot abort the entire request.
+    /// </remarks>
     private void ProcessAlgorithmicAnchors(NotableDateRangePlan plan, NotableDateRangeResolutionCache cache)
     {
         foreach (var anchorName in plan.RequiredAnchorNames())
@@ -300,7 +309,7 @@ internal sealed class NotableDateRangePipeline
                 {
                     anchor = _ruleResolver.ResolveAnchorDate(profile.Rule, year);
                 }
-                catch (InvalidOperationException)
+                catch (Exception)
                 {
                     continue;
                 }
@@ -583,8 +592,15 @@ internal sealed class NotableDateRangePipeline
     /// <param name="year">The civil year being materialized.</param>
     /// <param name="territory">The territory the entry would be tagged with, or <see langword="null" /> for territory-neutral.</param>
     /// <returns><see langword="true" /> when at least one configured removal matches; otherwise, <see langword="false" />.</returns>
+    /// <remarks>
+    /// Override additions are exempt from removal suppression: a provider that emits both a removal and an addition with the same
+    /// rule name is interpreted as a replacement, so the addition surfaces in place of the removed base rule.
+    /// </remarks>
     private bool IsRemovedByOverride(NotableDateRule rule, int year, string? territory)
     {
+        if (_overrideAdditions.Contains(rule))
+            return false;
+
         foreach (RuleRemoval removal in _overrideRemovals)
         {
             if (!string.Equals(removal.RuleName, rule.Name, StringComparison.OrdinalIgnoreCase))
