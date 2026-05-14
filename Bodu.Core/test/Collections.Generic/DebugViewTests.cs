@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DebugViewTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public sealed class DebugViewTests
         dictionary.Add("C", 3);
 
         var view = new EvictingDictionaryDebugView<string, int>(dictionary);
-        var items = view.Items;
+        KeyValuePair<string, int>[] items = view.Items;
 
         Assert.AreEqual(3, items.Length);
         CollectionAssert.AreEquivalent(
@@ -56,11 +56,11 @@ public sealed class DebugViewTests
         dictionary.Add("B", 3);
 
         var view = new MultiValueDictionaryDebugView<string, int>(dictionary);
-        var items = view.Items;
+        KeyValuePair<string, IReadOnlyList<int>>[] items = view.Items;
 
         Assert.AreEqual(2, items.Length);
 
-        var byKey = items.ToDictionary(e => e.Key, e => e.Value);
+        Dictionary<string, IReadOnlyList<int>> byKey = items.ToDictionary(e => e.Key, e => e.Value);
         CollectionAssert.AreEquivalent(new[] { 1, 2 }, byKey["A"].ToArray());
         CollectionAssert.AreEqual(new[] { 3 }, byKey["B"].ToArray());
     }
@@ -84,13 +84,13 @@ public sealed class DebugViewTests
     [TestMethod]
     public void MultisetDebugView_Frequencies_ShouldReturnElementCounts()
     {
-        var multiset = new Multiset<string>(new[] { "A", "B", "A", "C", "B", "A" });
+        var multiset = new Multiset<string>(["A", "B", "A", "C", "B", "A"]);
 
         var view = new MultisetDebugView<string>(multiset);
-        var frequencies = view.Frequencies;
+        KeyValuePair<string, int>[] frequencies = view.Frequencies;
 
         Assert.AreEqual(3, frequencies.Length);
-        var asDict = frequencies.ToDictionary(p => p.Key, p => p.Value);
+        Dictionary<string, int> asDict = frequencies.ToDictionary(p => p.Key, p => p.Value);
         Assert.AreEqual(3, asDict["A"]);
         Assert.AreEqual(2, asDict["B"]);
         Assert.AreEqual(1, asDict["C"]);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.Keys.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -103,7 +103,7 @@ public partial class MultiValueDictionaryTests
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            foreach (string _ in mvd.Keys)
+            foreach (var _ in mvd.Keys)
                 mvd.Add("c", 3);
         });
     }

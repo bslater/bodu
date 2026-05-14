@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlNamespaceResolverTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,7 +11,7 @@ namespace Bodu.Xml.Linq;
 [TestClass]
 public sealed class XmlNamespaceResolverTests
 {
-    private static readonly XNamespace SampleNamespace = "http://example.com/sample";
+    private static readonly XNamespace s_sampleNamespace = "http://example.com/sample";
 
     /// <summary>
     /// Verifies that the constructor extracts the namespace of the supplied root element.
@@ -19,10 +19,10 @@ public sealed class XmlNamespaceResolverTests
     [TestMethod]
     public void Constructor_WhenRootHasNamespace_ShouldCaptureNamespace()
     {
-        var root = new XElement(SampleNamespace + "root");
+        var root = new XElement(s_sampleNamespace + "root");
         var resolver = new XmlNamespaceResolver(root);
 
-        Assert.AreEqual(SampleNamespace + "child", resolver.Name("child"));
+        Assert.AreEqual(s_sampleNamespace + "child", resolver.Name("child"));
     }
 
     /// <summary>
@@ -43,12 +43,12 @@ public sealed class XmlNamespaceResolverTests
     [TestMethod]
     public void Name_WhenCalled_ShouldReturnNamespacedXName()
     {
-        var root = new XElement(SampleNamespace + "root");
+        var root = new XElement(s_sampleNamespace + "root");
         var resolver = new XmlNamespaceResolver(root);
 
-        var qualified = resolver.Name("widget");
+        XName qualified = resolver.Name("widget");
 
-        Assert.AreEqual(SampleNamespace, qualified.Namespace);
+        Assert.AreEqual(s_sampleNamespace, qualified.Namespace);
         Assert.AreEqual("widget", qualified.LocalName);
     }
 
@@ -58,11 +58,11 @@ public sealed class XmlNamespaceResolverTests
     [TestMethod]
     public void Element_WhenChildExists_ShouldReturnMatchingElement()
     {
-        var root = new XElement(SampleNamespace + "root",
-            new XElement(SampleNamespace + "child", "value"));
+        var root = new XElement(s_sampleNamespace + "root",
+            new XElement(s_sampleNamespace + "child", "value"));
         var resolver = new XmlNamespaceResolver(root);
 
-        var child = resolver.Element(root, "child");
+        XElement? child = resolver.Element(root, "child");
 
         Assert.IsNotNull(child);
         Assert.AreEqual("value", child!.Value);
@@ -74,7 +74,7 @@ public sealed class XmlNamespaceResolverTests
     [TestMethod]
     public void Element_WhenChildIsMissing_ShouldReturnNull()
     {
-        var root = new XElement(SampleNamespace + "root");
+        var root = new XElement(s_sampleNamespace + "root");
         var resolver = new XmlNamespaceResolver(root);
 
         Assert.IsNull(resolver.Element(root, "missing"));
@@ -87,7 +87,7 @@ public sealed class XmlNamespaceResolverTests
     [TestMethod]
     public void Element_WhenParentIsNull_ShouldThrowExactly()
     {
-        var root = new XElement(SampleNamespace + "root");
+        var root = new XElement(s_sampleNamespace + "root");
         var resolver = new XmlNamespaceResolver(root);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -102,11 +102,11 @@ public sealed class XmlNamespaceResolverTests
     [TestMethod]
     public void Elements_WhenChildrenExist_ShouldReturnAllMatchingElements()
     {
-        var root = new XElement(SampleNamespace + "root",
-            new XElement(SampleNamespace + "item", "one"),
-            new XElement(SampleNamespace + "item", "two"),
-            new XElement(SampleNamespace + "other", "three"),
-            new XElement(SampleNamespace + "item", "four"));
+        var root = new XElement(s_sampleNamespace + "root",
+            new XElement(s_sampleNamespace + "item", "one"),
+            new XElement(s_sampleNamespace + "item", "two"),
+            new XElement(s_sampleNamespace + "other", "three"),
+            new XElement(s_sampleNamespace + "item", "four"));
 
         var resolver = new XmlNamespaceResolver(root);
         var items = resolver.Elements(root, "item").Select(e => e.Value).ToArray();
@@ -120,12 +120,12 @@ public sealed class XmlNamespaceResolverTests
     [TestMethod]
     public void Elements_WhenChildrenAreMissing_ShouldReturnEmptySequence()
     {
-        var root = new XElement(SampleNamespace + "root");
+        var root = new XElement(s_sampleNamespace + "root");
         var resolver = new XmlNamespaceResolver(root);
 
-        var items = resolver.Elements(root, "missing").ToArray();
+        XElement[] items = [.. resolver.Elements(root, "missing")];
 
-        Assert.AreEqual(0, items.Length);
+        Assert.IsEmpty(items);
     }
 
     /// <summary>
@@ -135,7 +135,7 @@ public sealed class XmlNamespaceResolverTests
     [TestMethod]
     public void Elements_WhenParentIsNull_ShouldThrowExactly()
     {
-        var root = new XElement(SampleNamespace + "root");
+        var root = new XElement(s_sampleNamespace + "root");
         var resolver = new XmlNamespaceResolver(root);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>

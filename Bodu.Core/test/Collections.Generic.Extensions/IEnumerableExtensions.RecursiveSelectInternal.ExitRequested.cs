@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.RecursiveSelectInternal.ExitRequested.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,8 +27,8 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
     public void RecursiveSelectInternal_WhenStateExitsAfterChildYields_ShouldYieldBreakAtInnerCheck()
     {
         var state = new IEnumerableExtensions.RecursionState();
-        var root = new[]
-        {
+        Node[] root =
+        [
             new Node
             {
                 Name = "Root",
@@ -37,7 +37,7 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
                     new Node { Name = "Child" },
                 },
             },
-        };
+        ];
 
         IEnumerable<Node> ChildSelector(Node n) => n.Children;
         string Selector(Node n, int index, int depth) => n.Name;
@@ -72,12 +72,12 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
     public void RecursiveSelectInternal_WhenExitRequestedFires_ShouldStopBeforeNextSibling()
     {
         var state = new IEnumerableExtensions.RecursionState();
-        var roots = new[]
-        {
+        Node[] roots =
+        [
             new Node { Name = "A" },
             new Node { Name = "B" },
             new Node { Name = "C" },
-        };
+        ];
 
         IEnumerable<Node> ChildSelector(Node n) => n.Children;
         string Selector(Node n, int index, int depth) => n.Name;
@@ -100,8 +100,8 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
     [TestMethod]
     public void RecursiveSelectInternal_WhenStateIsNotSupplied_ShouldInitialiseFreshState()
     {
-        var root = new[]
-        {
+        Node[] root =
+        [
             new Node
             {
                 Name = "Root",
@@ -110,7 +110,7 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
                     new Node { Name = "Child" },
                 },
             },
-        };
+        ];
 
         var first = IEnumerableExtensions
             .RecursiveSelectInternal<Node, string>(

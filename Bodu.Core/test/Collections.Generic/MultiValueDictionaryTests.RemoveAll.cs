@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.RemoveAll.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -111,7 +111,7 @@ public partial class MultiValueDictionaryTests
         mvd.Add("Alpha", 1);
         mvd.Add("Beta", 2);
 
-        bool removed = mvd.RemoveAll("alpha");
+        var removed = mvd.RemoveAll("alpha");
 
         Assert.IsTrue(removed);
         Assert.IsFalse(mvd.ContainsKey("ALPHA"));

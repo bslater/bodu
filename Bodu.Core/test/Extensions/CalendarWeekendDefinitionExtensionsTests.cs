@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarWeekendDefinitionExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,10 +31,10 @@ public class CalendarWeekendDefinitionExtensionsTests
     /// definition to the expected working-week <see cref="WeekPattern" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetWeekendToWorkingWeekTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetWeekendToWorkingWeekTestData))]
     public void ToWeekPattern_WhenBuiltInWeekend_ShouldReturnExpectedPattern(CalendarWeekendDefinition weekend, WeekPattern expected)
     {
-        WeekPattern actual = weekend.ToWeekPattern();
+        var actual = weekend.ToWeekPattern();
 
         Assert.AreEqual(expected, actual);
     }
@@ -47,7 +47,7 @@ public class CalendarWeekendDefinitionExtensionsTests
     [TestMethod]
     public void ToWeekPattern_WhenNone_ShouldReturnAllDays()
     {
-        WeekPattern actual = CalendarWeekendDefinition.None.ToWeekPattern();
+        var actual = CalendarWeekendDefinition.None.ToWeekPattern();
 
         Assert.AreEqual(7, actual.Count);
     }
@@ -71,10 +71,10 @@ public class CalendarWeekendDefinitionExtensionsTests
     /// built-in mapping.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetWeekendToWorkingWeekTestData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(GetWeekendToWorkingWeekTestData))]
     public void ToCalendarWeekendDefinition_WhenRoundTripFromBuiltIn_ShouldReturnOriginal(CalendarWeekendDefinition weekend, WeekPattern workingWeek)
     {
-        CalendarWeekendDefinition roundTripped = workingWeek.ToCalendarWeekendDefinition();
+        var roundTripped = workingWeek.ToCalendarWeekendDefinition();
 
         Assert.AreEqual(weekend, roundTripped);
     }
@@ -99,7 +99,7 @@ public class CalendarWeekendDefinitionExtensionsTests
     [TestMethod]
     public void ToCalendarWeekendDefinition_WhenNonStandardPattern_ShouldReturnCustom()
     {
-        WeekPattern oddPattern = new WeekPattern(DayOfWeek.Tuesday, DayOfWeek.Thursday);
+        var oddPattern = new WeekPattern(DayOfWeek.Tuesday, DayOfWeek.Thursday);
 
         Assert.AreEqual(CalendarWeekendDefinition.Custom, oddPattern.ToCalendarWeekendDefinition());
     }

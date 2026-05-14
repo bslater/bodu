@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.Capacity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -76,7 +76,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        int newCapacity = sut.EnsureCapacity(128);
+        var newCapacity = sut.EnsureCapacity(128);
 
         Assert.IsTrue(newCapacity >= 128);
         Assert.IsTrue(sut.Capacity >= 128);
@@ -91,7 +91,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(16, null);
 
-        int newCapacity = sut.EnsureCapacity(4);
+        var newCapacity = sut.EnsureCapacity(4);
 
         Assert.AreEqual(16, sut.Capacity);
         Assert.AreEqual(16, newCapacity);
@@ -103,7 +103,7 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void EnsureCapacity_WhenGrown_ShouldPreserveContents()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
         sut.EnsureCapacity(128);
 
@@ -141,7 +141,7 @@ public partial class OrderedSetStorageTests
         sut.Add(1);
         sut.Add(2);
         sut.TrimExcess();
-        int capacityBefore = sut.Capacity;
+        var capacityBefore = sut.Capacity;
 
         sut.TrimExcess();
 

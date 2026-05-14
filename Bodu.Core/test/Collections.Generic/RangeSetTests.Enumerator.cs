@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -173,7 +173,7 @@ public partial class RangeSetTests
         IEnumerable untyped = sut;
         var seen = new List<Range<int>>();
 
-        foreach (object item in untyped)
+        foreach (var item in untyped)
             seen.Add((Range<int>)item);
 
         Assert.AreEqual(2, seen.Count);

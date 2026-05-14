@@ -21,11 +21,14 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" /> if it must pass.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayIsNotZeroBasedContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfArrayIsNotZeroBasedContractData))]
     public void ThrowIfArrayIsNotZeroBased_WhenInvokedWithVariousArrays_ShouldFollowContract(
         string testName, Array? array, Type? expectedExceptionType, string? expectedParamName)
     {
-        AssertGuard(testName, () => ThrowHelper.ThrowIfArrayIsNotZeroBased(array!, "array"), expectedExceptionType, expectedParamName);
+        AssertGuard(testName, () =>
+        {
+            ThrowHelper.ThrowIfArrayIsNotZeroBased(array!, nameof(array));
+        }, expectedExceptionType, expectedParamName);
     }
 
     /// <summary>

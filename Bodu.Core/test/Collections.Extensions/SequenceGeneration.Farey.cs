@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGeneration.Farey.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,7 @@ public class FareyTests
     [TestMethod]
     public void Farey_WhenOrderIsOne_ShouldReturnTrivialSequence()
     {
-        var actual = SequenceGenerator.Farey(1).ToArray();
+        (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(1).ToArray();
         CollectionAssert.AreEqual(new[] { (0, 1), (1, 1) }, actual);
     }
 
@@ -40,12 +40,12 @@ public class FareyTests
     [TestMethod]
     public void Farey_WhenOrderIsFive_ShouldReturnExpectedSequence()
     {
-        var actual = SequenceGenerator.Farey(5).ToArray();
-        var expected = new[]
-        {
+        (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(5).ToArray();
+        (int, int)[] expected =
+        [
             (0, 1), (1, 5), (1, 4), (1, 3), (2, 5), (1, 2),
             (3, 5), (2, 3), (3, 4), (4, 5), (1, 1)
-        };
+        ];
 
         CollectionAssert.AreEqual(expected, actual);
     }
@@ -58,7 +58,7 @@ public class FareyTests
     {
         const int order = 7;
 
-        foreach ((int num, int den) in SequenceGenerator.Farey(order))
+        foreach ((var num, var den) in SequenceGenerator.Farey(order))
         {
             Assert.AreEqual(1, Gcd(num, den), $"Fraction {num}/{den} is not in lowest terms.");
         }
@@ -72,11 +72,11 @@ public class FareyTests
     [TestMethod]
     public void Farey_WhenEnumerated_ShouldBeStrictlyAscending()
     {
-        var actual = SequenceGenerator.Farey(8).ToArray();
-        for (int i = 1; i < actual.Length; i++)
+        (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(8).ToArray();
+        for (var i = 1; i < actual.Length; i++)
         {
-            double previous = (double)actual[i - 1].Numerator / actual[i - 1].Denominator;
-            double current = (double)actual[i].Numerator / actual[i].Denominator;
+            var previous = (double)actual[i - 1].Numerator / actual[i - 1].Denominator;
+            var current = (double)actual[i].Numerator / actual[i].Denominator;
             Assert.IsTrue(current > previous, $"Sequence is not strictly ascending at index {i}: {previous} >= {current}.");
         }
     }
@@ -91,7 +91,7 @@ public class FareyTests
     [DataRow(12)]
     public void Farey_WhenEnumerated_ShouldStartAtZeroAndEndAtOne(int order)
     {
-        var actual = SequenceGenerator.Farey(order).ToArray();
+        (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(order).ToArray();
         Assert.AreEqual((0, 1), actual[0]);
         Assert.AreEqual((1, 1), actual[^1]);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.IndexOf.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -46,7 +46,7 @@ public partial class OrderedSetTests
     [DataRow(99, -1)]
     public void IndexOf_WhenSetPopulated_ShouldReturnExpectedIndex(int item, int expected)
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        OrderedSet<int> sut = CreateSet([10, 20, 30]);
 
         Assert.AreEqual(expected, sut.IndexOf(item));
     }
@@ -57,7 +57,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IndexOf_WhenCustomComparerProvided_ShouldUseComparerForEquality()
     {
-        OrderedSet<string> sut = CreateSet(new[] { "Alpha", "Beta" }, StringComparer.OrdinalIgnoreCase);
+        OrderedSet<string> sut = CreateSet(["Alpha", "Beta"], StringComparer.OrdinalIgnoreCase);
 
         Assert.AreEqual(0, sut.IndexOf("ALPHA"));
         Assert.AreEqual(1, sut.IndexOf("beta"));
@@ -69,7 +69,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IndexOf_WhenItemRemovedFromMiddle_ShouldUpdateLaterIndices()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30, 40 });
+        OrderedSet<int> sut = CreateSet([10, 20, 30, 40]);
 
         sut.Remove(20);
 

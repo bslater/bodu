@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,7 +26,7 @@ public partial class OrderedSetStorageTests
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        bool added = sut.Add(42);
+        var added = sut.Add(42);
 
         Assert.IsTrue(added);
         Assert.AreEqual(1, sut.Count);
@@ -58,7 +58,7 @@ public partial class OrderedSetStorageTests
         where T : notnull
     {
         var result = new T[storage.Count];
-        for (int i = 0; i < storage.Count; i++)
+        for (var i = 0; i < storage.Count; i++)
             result[i] = storage.GetAt(i);
 
         return result;

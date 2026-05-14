@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -42,7 +42,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        bool added = sut.Add(99);
+        var added = sut.Add(99);
 
         Assert.IsTrue(added);
         Assert.AreEqual(1, sut.Count);
@@ -55,9 +55,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Add_WhenItemIsDuplicate_ShouldReturnFalseAndPreserveOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
-        bool added = sut.Add(2);
+        var added = sut.Add(2);
 
         Assert.IsFalse(added);
         Assert.AreEqual(3, sut.Count);
@@ -72,11 +72,11 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
             Assert.IsTrue(sut.Add(i));
 
         Assert.AreEqual(1000, sut.Count);
-        for (int i = 0; i < 1000; i++)
+        for (var i = 0; i < 1000; i++)
             Assert.AreEqual(i, sut[i]);
     }
 
@@ -129,7 +129,7 @@ public partial class OrderedSetTests
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = sut.AddRange(new[] { "a", null!, "b" });
+            _ = sut.AddRange(["a", null!, "b"]);
         });
     }
 
@@ -144,9 +144,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void AddRange_WhenCollectionContainsDuplicatesAndNewItems_ShouldReturnNewItemCount()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
-        int added = sut.AddRange(new[] { 2, 3, 4, 4, 5 });
+        var added = sut.AddRange([2, 3, 4, 4, 5]);
 
         Assert.AreEqual(3, added);
         CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, SnapshotByIndexer(sut));
@@ -159,9 +159,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void AddRange_WhenCollectionIsEmpty_ShouldReturnZero()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
-        int added = sut.AddRange(Array.Empty<int>());
+        var added = sut.AddRange(Array.Empty<int>());
 
         Assert.AreEqual(0, added);
         CollectionAssert.AreEqual(new[] { 1, 2 }, SnapshotByIndexer(sut));

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfGreaterThanOther.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,11 +29,11 @@ public partial class ThrowHelperTests
         string testName, int value, int other, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfGreaterThanOther(value, other, "value", "other"),
+            () => ThrowHelper.ThrowIfGreaterThanOther(value, other, nameof(value), "other"),
             expected,
             expectedParam);
     }

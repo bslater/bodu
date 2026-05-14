@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayLengthNotPositiveMultipleOf.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,13 +22,13 @@ public partial class ThrowHelperTests
     /// <param name="expectedExceptionType">The exception type the guard must throw, or <see langword="null" />.</param>
     /// <param name="expectedParamName">The expected <see cref="ArgumentException.ParamName" />.</param>
     [TestMethod]
-    [DynamicData(nameof(ThrowIfArrayLengthNotPositiveMultipleOfContractData), DynamicDataSourceType.Method)]
+    [DynamicData(nameof(ThrowIfArrayLengthNotPositiveMultipleOfContractData))]
     public void ThrowIfArrayLengthNotPositiveMultipleOf_WhenInvokedWithVariousArrays_ShouldFollowContract(
         string testName, Array? array, int divisor, Type? expectedExceptionType, string? expectedParamName)
     {
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(array!, divisor, "array"),
+            () => ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(array!, divisor, nameof(array)),
             expectedExceptionType,
             expectedParamName);
     }
@@ -36,7 +36,7 @@ public partial class ThrowHelperTests
     private static IEnumerable<object?[]> ThrowIfArrayLengthNotPositiveMultipleOfContractData()
     {
         yield return new object?[] { "null array → ArgumentNullException", null, 4, typeof(ArgumentNullException), "array" };
-        yield return new object?[] { "zero-length array → ArgumentException", new int[0], 4, typeof(ArgumentException), "array" };
+        yield return new object?[] { "zero-length array → ArgumentException", Array.Empty<int>(), 4, typeof(ArgumentException), "array" };
         yield return new object?[] { "length not multiple of divisor → ArgumentException", new int[5], 2, typeof(ArgumentException), "array" };
         yield return new object?[] { "exact divisor length → no throw", new int[4], 4, null, null };
         yield return new object?[] { "valid multiple → no throw", new int[12], 4, null, null };

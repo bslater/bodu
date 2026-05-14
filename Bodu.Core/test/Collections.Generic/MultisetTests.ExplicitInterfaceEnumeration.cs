@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultisetTests.ExplicitInterfaceEnumeration.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,7 +23,7 @@ public partial class MultisetTests
 
         IEnumerable<int> generic = multiset;
         var observed = new List<int>();
-        foreach (int value in generic)
+        foreach (var value in generic)
             observed.Add(value);
 
         observed.Sort();
@@ -43,7 +43,7 @@ public partial class MultisetTests
 
         IEnumerable nonGeneric = multiset;
         var observed = new List<int>();
-        foreach (object item in nonGeneric)
+        foreach (var item in nonGeneric)
             observed.Add((int)item);
 
         observed.Sort();

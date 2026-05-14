@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfNotAsciiHexDigit.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -37,11 +37,11 @@ public partial class ThrowHelperTests
         string testName, char value, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfNotAsciiHexDigit(value, "value"),
+            () => ThrowHelper.ThrowIfNotAsciiHexDigit(value, nameof(value)),
             expected,
             expectedParam);
     }

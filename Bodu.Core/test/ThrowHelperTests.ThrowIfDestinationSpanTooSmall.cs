@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfDestinationSpanTooSmall.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,10 +27,10 @@ public partial class ThrowHelperTests
     public void ThrowIfDestinationSpanTooSmall_WhenInvokedWithVariousInputs_ShouldFollowContract(
         string testName, int sourceLength, int destinationLength, bool expectsException)
     {
-        byte[] source = new byte[sourceLength];
-        byte[] destination = new byte[destinationLength];
+        var source = new byte[sourceLength];
+        var destination = new byte[destinationLength];
         Type? expected = expectsException ? typeof(ArgumentException) : null;
-        string? expectedParam = expectsException ? "destination" : null;
+        var expectedParam = expectsException ? "destination" : null;
 
         AssertGuard(
             testName,

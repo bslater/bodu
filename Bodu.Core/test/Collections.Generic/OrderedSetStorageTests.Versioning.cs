@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.Versioning.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class OrderedSetStorageTests
     public void Add_WhenItemIsNew_ShouldBumpVersion()
     {
         var sut = new OrderedSetStorage<int>(0, null);
-        int before = sut._version;
+        var before = sut._version;
 
         sut.Add(1);
 
@@ -34,8 +34,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Add_WhenItemIsDuplicate_ShouldNotBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var before = sut._version;
 
         sut.Add(2);
 
@@ -48,8 +48,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Remove_WhenItemPresent_ShouldBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
+        var before = sut._version;
 
         sut.Remove(1);
 
@@ -62,8 +62,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void RemoveAt_WhenCalled_ShouldBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
+        var before = sut._version;
 
         sut.RemoveAt(0);
 
@@ -76,8 +76,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void TryInsert_WhenItemIsNew_ShouldBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2]);
+        var before = sut._version;
 
         sut.TryInsert(1, 99);
 
@@ -90,8 +90,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Move_WhenIndicesDiffer_ShouldBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var before = sut._version;
 
         sut.Move(0, 2);
 
@@ -105,8 +105,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ReplaceAt_WhenValueChanges_ShouldBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var before = sut._version;
 
         sut.ReplaceAt(0, 99);
 
@@ -123,8 +123,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void Contains_WhenCalled_ShouldNotBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var before = sut._version;
 
         _ = sut.Contains(2);
         _ = sut.Contains(99);
@@ -138,8 +138,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void IndexOf_WhenCalled_ShouldNotBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var before = sut._version;
 
         _ = sut.IndexOf(2);
         _ = sut.IndexOf(99);
@@ -153,8 +153,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void GetAt_WhenCalled_ShouldNotBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var before = sut._version;
 
         _ = sut.GetAt(0);
 
@@ -167,8 +167,8 @@ public partial class OrderedSetStorageTests
     [TestMethod]
     public void ToArray_WhenCalled_ShouldNotBumpVersion()
     {
-        OrderedSetStorage<int> sut = CreateStorage(new[] { 1, 2, 3 });
-        int before = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var before = sut._version;
 
         _ = sut.ToArray();
 

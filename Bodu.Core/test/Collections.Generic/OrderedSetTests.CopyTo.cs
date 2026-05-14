@@ -21,7 +21,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -37,7 +37,7 @@ public partial class OrderedSetTests
     [DataRow(int.MinValue)]
     public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException(int arrayIndex)
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -52,7 +52,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -67,7 +67,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -85,8 +85,8 @@ public partial class OrderedSetTests
     [TestMethod]
     public void CopyTo_WhenIndexIsZero_ShouldCopyInInsertionOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
-        int[] target = new int[3];
+        OrderedSet<int> sut = CreateSet([10, 20, 30]);
+        var target = new int[3];
 
         sut.CopyTo(target, 0);
 
@@ -100,7 +100,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void CopyTo_WhenIndexIsNonZero_ShouldCopyAtCorrectPosition()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20 });
+        OrderedSet<int> sut = CreateSet([10, 20]);
         int[] target = [99, 99, 99, 99];
 
         sut.CopyTo(target, 1);
@@ -134,7 +134,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        int[] array = sut.ToArray();
+        var array = sut.ToArray();
 
         Assert.AreEqual(0, array.Length);
     }
@@ -145,9 +145,9 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ToArray_WhenSetPopulated_ShouldReturnInsertionOrderedArray()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        OrderedSet<int> sut = CreateSet([10, 20, 30]);
 
-        int[] array = sut.ToArray();
+        var array = sut.ToArray();
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
     }
@@ -158,8 +158,8 @@ public partial class OrderedSetTests
     [TestMethod]
     public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
-        int[] snapshot = sut.ToArray();
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
+        var snapshot = sut.ToArray();
 
         sut.Add(4);
         sut.Remove(1);

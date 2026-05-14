@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.IsoWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -44,7 +44,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(2020, 1, 2019, 12, 30)] // ISO 2020-W01 begins Monday 2019-12-30
     public void GetFirstDateOfIsoWeek_ShouldReturnMondayThatAnchorsWeek(int isoYear, int isoWeek, int expY, int expM, int expD)
     {
-        var actual = DateTimeExtensions.GetFirstDateOfIsoWeek(isoYear, isoWeek);
+        DateTime actual = DateTimeExtensions.GetFirstDateOfIsoWeek(isoYear, isoWeek);
         Assert.AreEqual(new DateTime(expY, expM, expD), actual);
         Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
         Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
@@ -58,7 +58,7 @@ public partial class DateTimeExtensionsTests
     [DataRow(2020, 1, 2020, 1, 5)]    // ISO 2020-W01 ends Sunday 2020-01-05
     public void GetLastDateOfIsoWeek_ShouldReturnSundayThatEndsWeek(int isoYear, int isoWeek, int expY, int expM, int expD)
     {
-        var actual = DateTimeExtensions.GetLastDateOfIsoWeek(isoYear, isoWeek);
+        DateTime actual = DateTimeExtensions.GetLastDateOfIsoWeek(isoYear, isoWeek);
         Assert.AreEqual(new DateTime(expY, expM, expD), actual);
         Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
         Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);

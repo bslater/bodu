@@ -21,7 +21,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void CopyTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2 });
+        IndexedSet<int> sut = CreateSet([1, 2]);
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -37,7 +37,7 @@ public partial class IndexedSetTests
     [DataRow(int.MinValue)]
     public void CopyTo_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException(int arrayIndex)
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2 });
+        IndexedSet<int> sut = CreateSet([1, 2]);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -52,7 +52,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -67,7 +67,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
@@ -85,8 +85,8 @@ public partial class IndexedSetTests
     [TestMethod]
     public void CopyTo_WhenIndexIsZero_ShouldCopyInInsertionOrder()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
-        int[] target = new int[3];
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
+        var target = new int[3];
 
         sut.CopyTo(target, 0);
 
@@ -99,7 +99,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void CopyTo_WhenIndexIsNonZero_ShouldCopyAtCorrectPosition()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20 });
+        IndexedSet<int> sut = CreateSet([10, 20]);
         int[] target = [99, 99, 99, 99];
 
         sut.CopyTo(target, 1);
@@ -133,7 +133,7 @@ public partial class IndexedSetTests
     {
         var sut = new IndexedSet<int>();
 
-        int[] array = sut.ToArray();
+        var array = sut.ToArray();
 
         Assert.AreEqual(0, array.Length);
     }
@@ -144,9 +144,9 @@ public partial class IndexedSetTests
     [TestMethod]
     public void ToArray_WhenSetPopulated_ShouldReturnInsertionOrderedArray()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
 
-        int[] array = sut.ToArray();
+        var array = sut.ToArray();
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
     }
@@ -157,8 +157,8 @@ public partial class IndexedSetTests
     [TestMethod]
     public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
-        int[] snapshot = sut.ToArray();
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+        var snapshot = sut.ToArray();
 
         sut.Add(4);
         sut.Remove(1);

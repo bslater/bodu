@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.MergeCompaction.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public partial class RangeSetTests
         var sut = new RangeSet<int>();
         Assert.AreEqual(0, sut.Capacity);
 
-        int reported = sut.EnsureCapacity(1);
+        var reported = sut.EnsureCapacity(1);
 
         Assert.IsTrue(reported >= 4, $"Expected default capacity floor of 4 or more, got {reported}.");
         Assert.IsTrue(sut.Capacity >= 4);
@@ -80,7 +80,7 @@ public partial class RangeSetTests
         var sut = new RangeSet<int>();
         sut.EnsureCapacity(4); // initial small capacity
 
-        int reported = sut.EnsureCapacity(1024); // far exceeds 4*2 = 8
+        var reported = sut.EnsureCapacity(1024); // far exceeds 4*2 = 8
 
         Assert.IsTrue(reported >= 1024);
         Assert.IsTrue(sut.Capacity >= 1024);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.Remove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -71,7 +71,7 @@ public partial class RangeDictionaryTests
     {
         var sut = new RangeDictionary<int, string>();
 
-        bool removed = sut.Remove(0, 10);
+        var removed = sut.Remove(0, 10);
 
         Assert.IsFalse(removed);
     }
@@ -100,7 +100,7 @@ public partial class RangeDictionaryTests
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"), (20, 30, "B"));
 
-        bool removed = sut.Remove(0, 10);
+        var removed = sut.Remove(0, 10);
 
         Assert.IsTrue(removed);
         AssertContents(sut, (20, 30, "B"));

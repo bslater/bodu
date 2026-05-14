@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.Capacity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -40,7 +40,7 @@ public partial class OrderedSetTests
     {
         var sut = new OrderedSet<int>();
 
-        int reported = sut.EnsureCapacity(128);
+        var reported = sut.EnsureCapacity(128);
 
         Assert.IsTrue(reported >= 128);
         Assert.IsTrue(sut.Capacity >= 128);
@@ -54,9 +54,9 @@ public partial class OrderedSetTests
     public void EnsureCapacity_WhenSmallerCapacityRequested_ShouldNotShrink()
     {
         var sut = new OrderedSet<int>(64);
-        int capacityBefore = sut.Capacity;
+        var capacityBefore = sut.Capacity;
 
-        int reported = sut.EnsureCapacity(4);
+        var reported = sut.EnsureCapacity(4);
 
         Assert.AreEqual(capacityBefore, sut.Capacity);
         Assert.AreEqual(capacityBefore, reported);
@@ -68,7 +68,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void EnsureCapacity_WhenGrown_ShouldPreserveContents()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
 
         sut.EnsureCapacity(128);
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedSetTests.IList.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void IListT_WhenAssignedToInterface_ShouldExposeFullContract()
     {
-        IList<int> typed = CreateSet(new[] { 10, 20, 30 });
+        IList<int> typed = CreateSet([10, 20, 30]);
 
         Assert.AreEqual(3, typed.Count);
         Assert.AreEqual(10, typed[0]);
@@ -38,7 +38,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void IListT_Insert_WhenCalled_ShouldDelegateToInsert()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IList<int> typed = sut;
 
         typed.Insert(1, 99);
@@ -53,7 +53,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void IListT_RemoveAt_WhenCalled_ShouldDelegateToRemoveAt()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IList<int> typed = sut;
 
         typed.RemoveAt(0);
@@ -67,7 +67,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void IListT_Indexer_Set_WhenCalled_ShouldReplaceElement()
     {
-        IndexedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
         IList<int> typed = sut;
 
         typed[1] = 99;
@@ -82,7 +82,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void IReadOnlyListT_WhenAssignedToInterface_ShouldExposeReadSurface()
     {
-        IReadOnlyList<int> typed = CreateSet(new[] { 10, 20, 30 });
+        IReadOnlyList<int> typed = CreateSet([10, 20, 30]);
 
         Assert.AreEqual(3, typed.Count);
         Assert.AreEqual(10, typed[0]);

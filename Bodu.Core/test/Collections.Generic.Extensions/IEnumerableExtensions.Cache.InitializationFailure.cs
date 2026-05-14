@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Cache.InitializationFailure.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,11 +19,11 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     public void Cache_WhenSourceGetEnumeratorThrows_ShouldCaptureAndRethrowOnSubsequentEnumerations()
     {
         var source = new ThrowingSource();
-        var cached = source.Cache();
+        IEnumerable<int> cached = source.Cache();
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            using var first = cached.GetEnumerator();
+            using IEnumerator<int> first = cached.GetEnumerator();
             first.MoveNext();
         });
 
@@ -31,7 +31,7 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 
         Assert.ThrowsExactly<InvalidOperationException>(() =>
         {
-            using var second = cached.GetEnumerator();
+            using IEnumerator<int> second = cached.GetEnumerator();
             second.MoveNext();
         });
 

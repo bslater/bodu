@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfConditionallyRequiredParameterIsNull.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,11 +30,11 @@ public partial class ThrowHelperTests
         string testName, string? value, bool condition, bool matchValue, bool expectsException)
     {
         Type? expected = expectsException ? typeof(ArgumentException) : null;
-        string? expectedParam = expectsException ? "value" : null;
+        var expectedParam = expectsException ? "value" : null;
 
         AssertGuard(
             testName,
-            () => ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(value, condition, matchValue, "value", "condition"),
+            () => ThrowHelper.ThrowIfConditionallyRequiredParameterIsNull(value, condition, matchValue, nameof(value), "condition"),
             expected,
             expectedParam);
     }

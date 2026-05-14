@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DebugViewTests.OrderedSetStorage.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed class DebugViewTests_OrderedSetStorage
     [TestMethod]
     public void OrderedSetStorageDebugView_WhenConstructedFromOrderedSet_ShouldExposeItems()
     {
-        var set = new OrderedSet<int>(new[] { 10, 20, 30 });
+        var set = new OrderedSet<int>([10, 20, 30]);
 
         var view = new OrderedSetStorageDebugView<int>(set);
 
@@ -32,7 +32,7 @@ public sealed class DebugViewTests_OrderedSetStorage
     [TestMethod]
     public void OrderedSetStorageDebugView_WhenConstructedFromIndexedSet_ShouldExposeItems()
     {
-        var set = new IndexedSet<string>(new[] { "a", "b", "c" });
+        var set = new IndexedSet<string>(["a", "b", "c"]);
 
         var view = new OrderedSetStorageDebugView<string>(set);
 

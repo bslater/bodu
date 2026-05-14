@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Enumerator.VersionCheck.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class EvictingDictionaryTests
         dictionary.Add("B", 2);
         dictionary.Add("C", 3);
 
-        using var enumerator = dictionary.GetEnumerator();
+        using IEnumerator<KeyValuePair<string, int>> enumerator = dictionary.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
 
         // Mutate the dictionary while the enumerator is still in flight.

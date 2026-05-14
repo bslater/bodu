@@ -19,7 +19,7 @@ public partial class IndexedSetTests
     [TestMethod]
     public void DebuggerStorage_WhenAccessed_ShouldReturnUnderlyingStorage()
     {
-        var sut = new IndexedSet<int>(new[] { 1, 2, 3 });
+        var sut = new IndexedSet<int>([1, 2, 3]);
 
         OrderedSetStorage<int> storage = sut.DebuggerStorage;
 

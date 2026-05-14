@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.MessageText.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public partial class ThrowHelperTests
     public void ThrowIfArrayLengthIsInsufficient_WhenArrayIsBelowMinimum_ShouldIncludeMinimumLengthInMessage()
     {
         const int minimum = 16;
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfArrayLengthIsInsufficient(new int[3], minimum, "array");
         });
@@ -39,7 +39,7 @@ public partial class ThrowHelperTests
     public void ThrowIfArrayLengthNotPositiveMultipleOf_WhenLengthIsNotMultiple_ShouldIncludeDivisorInMessage()
     {
         const int divisor = 8;
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfArrayLengthNotPositiveMultipleOf(new int[5], divisor, "array");
         });
@@ -58,7 +58,7 @@ public partial class ThrowHelperTests
     public void ThrowIfCollectionTooSmall_WhenCollectionShorterThanRequired_ShouldIncludeMinimumCountInMessage()
     {
         const int requiredMin = 5;
-        var ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ThrowHelper.ThrowIfCollectionTooSmall(new List<int> { 1, 2 }, requiredMin, "collection");
         });
@@ -78,7 +78,7 @@ public partial class ThrowHelperTests
     public void ThrowIfEnumValueIsUndefined_WhenValueIsUndefined_ShouldIncludeValueAndTypeNameInMessage()
     {
         const TestEnum value = (TestEnum)99;
-        var ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             ThrowHelper.ThrowIfEnumValueIsUndefined(value, "value");
         });

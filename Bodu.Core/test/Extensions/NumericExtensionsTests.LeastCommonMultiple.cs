@@ -260,8 +260,8 @@ public partial class NumericExtensionsTests
     [DataRow(100L, 75L)]
     public void GcdAndLcm_ShouldSatisfyGcdTimesLcmEqualsProduct(long a, long b)
     {
-        long gcd = a.GreatestCommonDivisor(b);
-        long lcm = a.LeastCommonMultiple(b);
+        var gcd = a.GreatestCommonDivisor(b);
+        var lcm = a.LeastCommonMultiple(b);
         Assert.AreEqual(a * b, gcd * lcm);
     }
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetTests.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,10 +23,10 @@ public partial class OrderedSetTests
     [TestMethod]
     public void GetEnumerator_WhenSetPopulated_ShouldYieldAllItemsInOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        OrderedSet<int> sut = CreateSet([10, 20, 30]);
         var seen = new List<int>();
 
-        foreach (int item in sut)
+        foreach (var item in sut)
             seen.Add(item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
@@ -52,7 +52,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Enumerator_WhenEndReached_ShouldReturnFalseFromMoveNext()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
         OrderedSet<int>.Enumerator enumerator = sut.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
@@ -67,7 +67,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Enumerator_WhenResetCalled_ShouldRestartIteration()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2 });
+        OrderedSet<int> sut = CreateSet([1, 2]);
 
         OrderedSet<int>.Enumerator enumerator = sut.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
@@ -90,7 +90,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowOnMoveNext()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
         OrderedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
         sut.Add(99);
@@ -108,7 +108,7 @@ public partial class OrderedSetTests
     [TestMethod]
     public void Enumerator_WhenSetMutatedAfterCreation_ShouldThrowOnReset()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 1, 2, 3 });
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
         OrderedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
         sut.Remove(2);
@@ -130,11 +130,11 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IEnumerableT_WhenIterated_ShouldYieldAllItemsInOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        OrderedSet<int> sut = CreateSet([10, 20, 30]);
         IEnumerable<int> typed = sut;
         var seen = new List<int>();
 
-        foreach (int item in typed)
+        foreach (var item in typed)
             seen.Add(item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
@@ -147,11 +147,11 @@ public partial class OrderedSetTests
     [TestMethod]
     public void IEnumerable_WhenIterated_ShouldYieldAllItemsInOrder()
     {
-        OrderedSet<int> sut = CreateSet(new[] { 10, 20, 30 });
+        OrderedSet<int> sut = CreateSet([10, 20, 30]);
         IEnumerable untyped = sut;
         var seen = new List<int>();
 
-        foreach (object item in untyped)
+        foreach (var item in untyped)
             seen.Add((int)item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);

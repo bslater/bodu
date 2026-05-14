@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.BestEffortSnapshot.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -154,7 +154,7 @@ public partial class ConcurrentCircularBufferTests
             ?? throw new InvalidOperationException("_buffer field not found.");
 
         var slotArray = (Array)bufferField.GetValue(buffer)!;
-        object slot = slotArray.GetValue(slotIndex)!;
+        var slot = slotArray.GetValue(slotIndex)!;
         FieldInfo sequenceField = slot.GetType().GetField("Sequence", BindingFlags.Instance | BindingFlags.Public)
             ?? throw new InvalidOperationException("Slot.Sequence field not found.");
 

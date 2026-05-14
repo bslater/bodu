@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -175,7 +175,7 @@ public partial class RangeDictionaryTests
         IEnumerable untyped = sut;
         var seen = new List<string>();
 
-        foreach (object item in untyped)
+        foreach (var item in untyped)
             seen.Add(((ValueRange<int, string>)item).Value);
 
         CollectionAssert.AreEqual(new[] { "A", "B" }, seen);

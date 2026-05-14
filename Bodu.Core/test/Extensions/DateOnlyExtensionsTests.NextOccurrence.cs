@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.NextOccurrence.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class DateOnlyExtensionsTests
         var start = new DateOnly(2024, 1, 1);
         var after = new DateOnly(2024, 1, 12);
 
-        var next = start.NextOccurrence(intervalDays: 5, after);
+        DateOnly next = start.NextOccurrence(intervalDays: 5, after);
 
         Assert.AreEqual(new DateOnly(2024, 1, 16), next);
     }
@@ -33,7 +33,7 @@ public partial class DateOnlyExtensionsTests
         var start = new DateOnly(2024, 1, 10);
         var after = new DateOnly(2024, 1, 1);
 
-        var next = start.NextOccurrence(intervalDays: 3, after);
+        DateOnly next = start.NextOccurrence(intervalDays: 3, after);
 
         Assert.AreEqual(start, next);
     }
@@ -48,7 +48,7 @@ public partial class DateOnlyExtensionsTests
         var start = new DateOnly(2024, 1, 1);
         var after = new DateOnly(2024, 1, 8); // aligns with 7-day interval
 
-        var next = start.NextOccurrence(intervalDays: 7, after);
+        DateOnly next = start.NextOccurrence(intervalDays: 7, after);
 
         Assert.AreEqual(new DateOnly(2024, 1, 15), next);
     }

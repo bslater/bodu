@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfZeroOrPositive.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -34,7 +34,7 @@ public partial class ThrowHelperTests
     public void ThrowIfZeroOrPositive_WhenInvokedAcrossNumericTypes_ShouldFollowContract(string testName, string kind, int sign)
     {
         Type? expected = sign >= 0 ? typeof(ArgumentOutOfRangeException) : null;
-        string? expectedParam = sign >= 0 ? "value" : null;
+        var expectedParam = sign >= 0 ? "value" : null;
 
         Action act = kind switch
         {
