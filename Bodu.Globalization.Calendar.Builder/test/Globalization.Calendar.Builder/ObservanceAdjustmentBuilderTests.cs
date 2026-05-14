@@ -10,7 +10,7 @@ namespace Bodu.Globalization.Calendar.Builder;
 /// Verifies the validation behaviour of <see cref="ObservanceAdjustmentBuilder" />.
 /// </summary>
 [TestClass]
-public class ObservanceAdjustmentBuilderTests
+public partial class ObservanceAdjustmentBuilderTests
 {
     /// <summary>
     /// Verifies that <see cref="ObservanceAdjustmentBuilder.ComparisonDate" /> throws
