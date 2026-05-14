@@ -104,6 +104,9 @@ public sealed class NotableDateService : INotableDateService
     /// <summary>An optional custom weekend provider consulted when <see cref="_weekendDefinition" /> is <see cref="Bodu.Extensions.CalendarWeekendDefinition.Custom" />.</summary>
     private readonly IWeekendDefinitionProvider? _weekendProvider;
 
+    /// <summary>The working-week pattern derived from the configured weekend definition; surfaced via <see cref="WorkingWeek" />.</summary>
+    private readonly WeekPattern _workingWeek;
+
     /// <summary>The resolver used to locate embedded XML resource files.</summary>
     private readonly IResourcePathResolver _resourcePathResolver;
 
@@ -129,6 +132,35 @@ public sealed class NotableDateService : INotableDateService
             (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver())
         ],
         CalendarWeekendDefinition.SaturdaySunday)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default rule set and
+    /// the supplied <see cref="WeekPattern" /> working week.
+    /// </summary>
+    /// <param name="workingWeek">The working-week pattern used when classifying dates.</param>
+    /// <remarks>
+    /// Equivalent to the parameterless constructor but with a caller-supplied working week. Use the full
+    /// <see cref="NotableDateService(IEnumerable{INotableDateRuleProvider}, WeekPattern, IResourcePathResolver?, IEnumerable{INotableDateRuleOverrideProvider}?, INotableDateAlgorithmRegistry?, IAdjustmentHandlerRegistry?, INotableDateCollisionResolver?, INotableDateNameLocalizer?, IEnumerable{Plugins.INotableDatePlugin}?)" />
+    /// constructor when region-specific rule providers are required.
+    /// </remarks>
+    public NotableDateService(WeekPattern workingWeek)
+        : this(
+        [
+            (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver())
+        ],
+        workingWeek)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default rule set and
+    /// the supplied named <see cref="WorkingDaysOfWeek" /> working week.
+    /// </summary>
+    /// <param name="workingDaysOfWeek">The named working-week pattern used when classifying dates.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="workingDaysOfWeek" /> is not a defined member of the <see cref="WorkingDaysOfWeek" /> enumeration.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="workingDaysOfWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no canonical pattern.</exception>
+    public NotableDateService(WorkingDaysOfWeek workingDaysOfWeek)
+        : this(workingDaysOfWeek.ToWeekPattern())
     { }
 
     /// <summary>
@@ -206,6 +238,7 @@ public sealed class NotableDateService : INotableDateService
 
         _weekendDefinition = weekendDefinition;
         _weekendProvider = weekendProvider;
+        _workingWeek = WorkingWeekFromWeekend(weekendDefinition, weekendProvider);
         _collisionResolver = collisionResolver ?? new DefaultNotableDateCollisionResolver();
         _nameLocalizer = nameLocalizer;
         _resourcePathResolver = resourcePathResolver ?? new ResourcePathResolver();
@@ -215,9 +248,96 @@ public sealed class NotableDateService : INotableDateService
         _adjustmentHandlers = adjustmentHandlers;
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class using a caller-supplied
+    /// <see cref="WeekPattern" /> as the working week.
+    /// </summary>
+    /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
+    /// <param name="workingWeek">The working-week pattern used when classifying dates.</param>
+    /// <param name="resourcePathResolver">An optional resource path resolver. Defaults to <see cref="ResourcePathResolver" /> when <see langword="null" />.</param>
+    /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
+    /// <param name="algorithmRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>
+    /// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
+    /// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
+    /// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
+    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
+    /// <remarks>
+    /// <para>
+    /// Internally, the working week is bridged to the existing <see cref="CalendarWeekendDefinition" /> infrastructure
+    /// as <see cref="CalendarWeekendDefinition.Custom" /> with an <see cref="IWeekendDefinitionProvider" /> derived from
+    /// the supplied <see cref="WeekPattern" />. This preserves backwards compatibility with consumers that read the
+    /// legacy weekend definition while exposing the canonical <see cref="WorkingWeek" /> via the
+    /// <see cref="INotableDateService" /> contract.
+    /// </para>
+    /// </remarks>
+    public NotableDateService(
+        IEnumerable<INotableDateRuleProvider> ruleProviders,
+        WeekPattern workingWeek,
+        IResourcePathResolver? resourcePathResolver = null,
+        IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
+        INotableDateAlgorithmRegistry? algorithmRegistry = null,
+        IAdjustmentHandlerRegistry? adjustmentHandlers = null,
+        INotableDateCollisionResolver? collisionResolver = null,
+        INotableDateNameLocalizer? nameLocalizer = null,
+        IEnumerable<Plugins.INotableDatePlugin>? plugins = null)
+        : this(
+            ruleProviders,
+            CalendarWeekendDefinition.Custom,
+            resourcePathResolver,
+            new WeekPatternWeekendProvider(workingWeek),
+            overrideProviders,
+            algorithmRegistry,
+            adjustmentHandlers,
+            collisionResolver,
+            nameLocalizer,
+            plugins)
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotableDateService" /> class using a named
+    /// <see cref="WorkingDaysOfWeek" /> preset as the working week.
+    /// </summary>
+    /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
+    /// <param name="workingDaysOfWeek">The named working-week pattern used when classifying dates.</param>
+    /// <param name="resourcePathResolver">An optional resource path resolver. Defaults to <see cref="ResourcePathResolver" /> when <see langword="null" />.</param>
+    /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
+    /// <param name="algorithmRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>
+    /// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
+    /// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
+    /// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
+    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="workingDaysOfWeek" /> is not a defined member of the <see cref="WorkingDaysOfWeek" /> enumeration.</exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="workingDaysOfWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no canonical pattern.</exception>
+    public NotableDateService(
+        IEnumerable<INotableDateRuleProvider> ruleProviders,
+        WorkingDaysOfWeek workingDaysOfWeek,
+        IResourcePathResolver? resourcePathResolver = null,
+        IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
+        INotableDateAlgorithmRegistry? algorithmRegistry = null,
+        IAdjustmentHandlerRegistry? adjustmentHandlers = null,
+        INotableDateCollisionResolver? collisionResolver = null,
+        INotableDateNameLocalizer? nameLocalizer = null,
+        IEnumerable<Plugins.INotableDatePlugin>? plugins = null)
+        : this(
+            ruleProviders,
+            workingDaysOfWeek.ToWeekPattern(),
+            resourcePathResolver,
+            overrideProviders,
+            algorithmRegistry,
+            adjustmentHandlers,
+            collisionResolver,
+            nameLocalizer,
+            plugins)
+    { }
+
     // --------------------------------------------------------------------------------------
     // INotableDateService surface
     // --------------------------------------------------------------------------------------
+
+    /// <inheritdoc />
+    public WeekPattern WorkingWeek => _workingWeek;
 
     /// <inheritdoc />
     public bool IsWeekend(DateTime date) => date.IsWeekend(_weekendDefinition, _weekendProvider);
@@ -227,6 +347,12 @@ public sealed class NotableDateService : INotableDateService
     {
         if (IsWeekend(date)) return true;
 
+        return IsHolidayNonWorkingDay(date, territoryCode, calendarType);
+    }
+
+    /// <inheritdoc />
+    public bool IsHolidayNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null)
+    {
         IReadOnlyList<NotableDate> perYear = GetOrGenerateYear(date.Year);
         foreach (NotableDate notable in perYear)
         {
@@ -934,6 +1060,61 @@ public sealed class NotableDateService : INotableDateService
         }
 
         return null;
+    }
+
+    /// <summary>
+    /// Computes the canonical working-week <see cref="WeekPattern" /> implied by a legacy
+    /// <see cref="CalendarWeekendDefinition" /> plus optional <see cref="IWeekendDefinitionProvider" />.
+    /// </summary>
+    /// <param name="weekendDefinition">The configured weekend definition.</param>
+    /// <param name="weekendProvider">An optional custom weekend provider consulted when <paramref name="weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.</param>
+    /// <returns>The <see cref="WeekPattern" /> whose selected days are the complement of the configured weekend.</returns>
+    /// <remarks>
+    /// <para>
+    /// The helper iterates every <see cref="DayOfWeek" /> value and delegates each query to the existing
+    /// <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// helper so the conversion remains aligned with the legacy weekend evaluation.
+    /// </para>
+    /// </remarks>
+    private static WeekPattern WorkingWeekFromWeekend(CalendarWeekendDefinition weekendDefinition, IWeekendDefinitionProvider? weekendProvider)
+    {
+        WeekPattern pattern = WeekPattern.Empty;
+        for (var i = 0; i < 7; i++)
+        {
+            DayOfWeek day = (DayOfWeek)i;
+            if (!DateTimeExtensions.IsWeekend(day, weekendDefinition, weekendProvider))
+                pattern = pattern.With(day);
+        }
+
+        return pattern;
+    }
+
+    /// <summary>
+    /// Adapts a <see cref="WeekPattern" /> to the legacy <see cref="IWeekendDefinitionProvider" /> contract so that the
+    /// existing weekend-aware extension methods route through the supplied working week.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Instances of this class are passed alongside <see cref="CalendarWeekendDefinition.Custom" /> when constructing a
+    /// <see cref="NotableDateService" /> from a <see cref="WeekPattern" />.
+    /// </para>
+    /// </remarks>
+    private sealed class WeekPatternWeekendProvider : IWeekendDefinitionProvider
+    {
+        /// <summary>The working-week pattern whose unselected days are treated as weekend days.</summary>
+        private readonly WeekPattern _workingWeek;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WeekPatternWeekendProvider" /> class.
+        /// </summary>
+        /// <param name="workingWeek">The working-week pattern.</param>
+        public WeekPatternWeekendProvider(WeekPattern workingWeek)
+        {
+            _workingWeek = workingWeek;
+        }
+
+        /// <inheritdoc />
+        public bool IsWeekend(DayOfWeek dayOfWeek) => !_workingWeek.Contains(dayOfWeek);
     }
 
     /// <summary>
