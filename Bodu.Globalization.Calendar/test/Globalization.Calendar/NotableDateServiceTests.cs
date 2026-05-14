@@ -190,7 +190,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)override_ });
+			options: new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
+			});
 
 		Assert.AreEqual(0, service.GetNotableDates(2025).Count);
 		Assert.AreEqual(1, service.GetNotableDates(2026).Count);
@@ -210,7 +213,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 1, 1)) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)override_ });
+			options: new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
+			});
 
 		var results = service.GetNotableDates(2025);
 		Assert.IsTrue(results.Any(r => r.Name == "Royal Wedding"));
@@ -406,7 +412,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)provider });
+			options: new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+			});
 
 		int count = service.GetNotableDates(year).Count(r => r.Name == "Holiday");
 
@@ -433,7 +442,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)provider });
+			options: new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+			});
 
 		int count = service.GetNotableDates(2025, territoryCode: ruleTerritory).Count(r => r.Name == "Picnic");
 
@@ -455,7 +467,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)provider });
+			options: new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+			});
 
 		int count = service.GetNotableDates(2025).Count(r => r.Name == "Holiday");
 
@@ -476,7 +491,10 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[] { (INotableDateRuleOverrideProvider)provider });
+			options: new NotableDateServiceOptions
+			{
+				OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
+			});
 
 		IReadOnlyList<NotableDate> result = service.GetNotableDates(2025, territoryCode: "AU-NSW");
 
@@ -498,7 +516,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("New Year's Day", 1, 1)) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			nameLocalizer: localiser);
+			options: new NotableDateServiceOptions { NameLocalizer = localiser });
 
 		NotableDate result = service.GetNotableDates(2025)[0];
 
@@ -516,7 +534,7 @@ public sealed partial class NotableDateServiceTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("New Year's Day", 1, 1)) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			nameLocalizer: localiser);
+			options: new NotableDateServiceOptions { NameLocalizer = localiser });
 
 		NotableDate first = service.GetNotableDates(2025)[0];
 		NotableDate second = service.GetNotableDates(2025)[0];

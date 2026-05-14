@@ -308,7 +308,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(anchor, dependent) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: registry);
+			options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
 			new DateTime(2026, 1, 1),
@@ -336,7 +336,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: new NotableDateAlgorithmRegistry());
+			options: new NotableDateServiceOptions { AlgorithmRegistry = new NotableDateAlgorithmRegistry() });
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
 			new DateTime(2026, 1, 1),
@@ -501,7 +501,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			adjustmentHandlers: new AdjustmentHandlerRegistry());
+			options: new NotableDateServiceOptions { AdjustmentHandlers = new AdjustmentHandlerRegistry() });
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
 			new DateTime(2026, 7, 1),
@@ -545,7 +545,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			adjustmentHandlers: handlers);
+			options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
 			new DateTime(2026, 7, 1),
@@ -662,7 +662,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: registry);
+			options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
 			new DateTime(2026, 1, 1),

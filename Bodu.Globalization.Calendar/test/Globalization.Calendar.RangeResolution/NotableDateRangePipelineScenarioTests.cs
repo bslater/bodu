@@ -808,7 +808,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		return new NotableDateService(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: registry);
+			options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 	}
 
 	private static void AssertSingleEmittedOn(IReadOnlyList<NotableDate> resolved, string name, DateTime expectedDate)

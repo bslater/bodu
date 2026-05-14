@@ -59,10 +59,13 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		NotableDateService service = new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new INotableDateRuleOverrideProvider[]
+			options: new NotableDateServiceOptions
 			{
-				new StaticOverrideProvider(additions: new[] { addA }),
-				new StaticOverrideProvider(additions: new[] { addB }),
+				OverrideProviders = new INotableDateRuleOverrideProvider[]
+				{
+					new StaticOverrideProvider(additions: new[] { addA }),
+					new StaticOverrideProvider(additions: new[] { addB }),
+				},
 			});
 
 		IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -614,9 +617,12 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 		new(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRules.ToArray()) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new INotableDateRuleOverrideProvider[]
+			options: new NotableDateServiceOptions
 			{
-				new StaticOverrideProvider(additions, removals),
+				OverrideProviders = new INotableDateRuleOverrideProvider[]
+				{
+					new StaticOverrideProvider(additions, removals),
+				},
 			});
 
 	/// <summary>

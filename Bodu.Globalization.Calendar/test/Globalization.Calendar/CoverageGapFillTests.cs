@@ -128,7 +128,7 @@ public sealed class CoverageGapFillTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: nullAlgorithmRegistry);
+			new NotableDateServiceOptions { AlgorithmRegistry = nullAlgorithmRegistry });
 
 		IReadOnlyList<NotableDate> result = service.GetNotableDates(2025);
 
@@ -172,11 +172,14 @@ public sealed class CoverageGapFillTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Real", 1, 1)) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[]
+			new NotableDateServiceOptions
 			{
-				(INotableDateRuleOverrideProvider)new OverrideProvider
+				OverrideProviders = new[]
 				{
-					Removals = new[] { new RuleRemoval("Irrelevant") },
+					(INotableDateRuleOverrideProvider)new OverrideProvider
+					{
+						Removals = new[] { new RuleRemoval("Irrelevant") },
+					},
 				},
 			});
 
@@ -198,11 +201,14 @@ public sealed class CoverageGapFillTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Global", 1, 1)) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[]
+			new NotableDateServiceOptions
 			{
-				(INotableDateRuleOverrideProvider)new OverrideProvider
+				OverrideProviders = new[]
 				{
-					Removals = new[] { new RuleRemoval("Global", TerritoryCode: "AU") },
+					(INotableDateRuleOverrideProvider)new OverrideProvider
+					{
+						Removals = new[] { new RuleRemoval("Global", TerritoryCode: "AU") },
+					},
 				},
 			});
 
@@ -222,11 +228,14 @@ public sealed class CoverageGapFillTests
 		var service = new NotableDateService(
 			new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Picnic", 8, 4, territory: "AU-NSW")) },
 			CalendarWeekendDefinition.SaturdaySunday,
-			overrideProviders: new[]
+			new NotableDateServiceOptions
 			{
-				(INotableDateRuleOverrideProvider)new OverrideProvider
+				OverrideProviders = new[]
 				{
-					Removals = new[] { new RuleRemoval("Picnic", TerritoryCode: "MALFORMED!!") },
+					(INotableDateRuleOverrideProvider)new OverrideProvider
+					{
+						Removals = new[] { new RuleRemoval("Picnic", TerritoryCode: "MALFORMED!!") },
+					},
 				},
 			});
 
@@ -463,8 +472,11 @@ public sealed class CoverageGapFillTests
 		var service = new NotableDateService(
 			ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
 			weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-			algorithmRegistry: hostRegistry,
-			plugins: new[] { (INotableDatePlugin)plugin });
+			options: new NotableDateServiceOptions
+			{
+				AlgorithmRegistry = hostRegistry,
+				Plugins = new[] { (INotableDatePlugin)plugin },
+			});
 
 		NotableDate resolved = service.GetNotableDates(2030).Single();
 		Assert.AreEqual(new DateTime(2030, 7, 1), resolved.Date);

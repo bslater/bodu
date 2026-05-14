@@ -54,7 +54,7 @@ namespace Bodu.Globalization.Calendar;
 ///         "MyApp/Calendar/Resources/custom-rules.xml",
 ///         new ResourcePathResolver()) },
 ///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
-///     algorithmRegistry: registry);
+///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ///
 /// // Invalidate the cache when runtime overrides change:
 /// service.Invalidate();
@@ -163,13 +163,7 @@ public sealed class NotableDateService : INotableDateService
     /// </summary>
     /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
     /// <param name="weekendDefinition">A built-in weekend pattern. The working week is the complement of the configured weekend.</param>
-    /// <param name="resourcePathResolver">An optional resource path resolver. Defaults to <see cref="ResourcePathResolver" /> when <see langword="null" />.</param>
-    /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
-    /// <param name="algorithmRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>
-    /// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
-    /// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
-    /// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
-    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />.</param>
+    /// <param name="options">Optional service configuration. When <see langword="null" />, defaults apply.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="weekendDefinition" /> is not a defined value of the <see cref="CalendarWeekendDefinition" /> enumeration.</exception>
     /// <exception cref="ArgumentException">
@@ -179,14 +173,14 @@ public sealed class NotableDateService : INotableDateService
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This is a convenience overload for callers whose working week corresponds to one of the built-in
-    /// <see cref="CalendarWeekendDefinition" /> values. Internally it delegates to the canonical
-    /// <see cref="WeekPattern" /> constructor after calling
+    /// Convenience overload for callers whose working week corresponds to one of the built-in
+    /// <see cref="CalendarWeekendDefinition" /> values. Internally delegates to the canonical
+    /// <see cref="WeekPattern" /> constructor via
     /// <see cref="Bodu.Extensions.CalendarWeekendDefinitionExtensions.ToWeekPattern(CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />.
     /// </para>
     /// <para>
     /// For non-standard weekends, do <em>not</em> use this overload with <see cref="CalendarWeekendDefinition.Custom" />.
-    /// Instead, convert your weekend source (e.g. an <see cref="IWeekendDefinitionProvider" />) to a
+    /// Convert your weekend source (for example an <see cref="IWeekendDefinitionProvider" />) to a
     /// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor:
     /// </para>
     /// <example>
@@ -207,23 +201,8 @@ public sealed class NotableDateService : INotableDateService
     public NotableDateService(
         IEnumerable<INotableDateRuleProvider> ruleProviders,
         CalendarWeekendDefinition weekendDefinition,
-        IResourcePathResolver? resourcePathResolver = null,
-        IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
-        INotableDateAlgorithmRegistry? algorithmRegistry = null,
-        IAdjustmentHandlerRegistry? adjustmentHandlers = null,
-        INotableDateCollisionResolver? collisionResolver = null,
-        INotableDateNameLocalizer? nameLocalizer = null,
-        IEnumerable<Plugins.INotableDatePlugin>? plugins = null)
-        : this(
-            ruleProviders,
-            weekendDefinition.ToWeekPattern(),
-            resourcePathResolver,
-            overrideProviders,
-            algorithmRegistry,
-            adjustmentHandlers,
-            collisionResolver,
-            nameLocalizer,
-            plugins)
+        NotableDateServiceOptions? options = null)
+        : this(ruleProviders, weekendDefinition.ToWeekPattern(), options)
     { }
 
     /// <summary>
@@ -233,13 +212,7 @@ public sealed class NotableDateService : INotableDateService
     /// </summary>
     /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
     /// <param name="workingWeek">The working-week pattern used when classifying dates.</param>
-    /// <param name="resourcePathResolver">An optional resource path resolver. Defaults to <see cref="ResourcePathResolver" /> when <see langword="null" />.</param>
-    /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
-    /// <param name="algorithmRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>
-    /// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
-    /// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
-    /// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
-    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />. Rule providers exposed by plugins are appended to <paramref name="ruleProviders" /> and participate in the normal flatten pipeline; named algorithms are registered onto an internal algorithm registry that falls back to <paramref name="algorithmRegistry" /> when supplied (caller-supplied registrations win on key collision).</param>
+    /// <param name="options">Optional service configuration. When <see langword="null" />, defaults apply.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
     /// <remarks>
     /// <para>
@@ -253,6 +226,14 @@ public sealed class NotableDateService : INotableDateService
     /// IWeekendDefinitionProvider provider = new MyCustomWeekend();
     /// WeekPattern workingWeek = provider.ToWeekPattern();
     /// var service = new NotableDateService(ruleProviders, workingWeek);
+    ///
+    /// // With advanced configuration:
+    /// var options = new NotableDateServiceOptions
+    /// {
+    ///     OverrideProviders = new[] { myOverrideProvider },
+    ///     AlgorithmRegistry  = myAlgorithmRegistry,
+    /// };
+    /// var configured = new NotableDateService(ruleProviders, workingWeek, options);
     /// ]]>
     /// </code>
     /// </example>
@@ -260,27 +241,23 @@ public sealed class NotableDateService : INotableDateService
     public NotableDateService(
         IEnumerable<INotableDateRuleProvider> ruleProviders,
         WeekPattern workingWeek,
-        IResourcePathResolver? resourcePathResolver = null,
-        IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
-        INotableDateAlgorithmRegistry? algorithmRegistry = null,
-        IAdjustmentHandlerRegistry? adjustmentHandlers = null,
-        INotableDateCollisionResolver? collisionResolver = null,
-        INotableDateNameLocalizer? nameLocalizer = null,
-        IEnumerable<Plugins.INotableDatePlugin>? plugins = null)
+        NotableDateServiceOptions? options = null)
     {
         if (ruleProviders is null) throw new ArgumentNullException(nameof(ruleProviders));
+
+        NotableDateServiceOptions opts = options ?? new NotableDateServiceOptions();
 
         // Fan plugin contributions into the provider list and the algorithm registry. The merge order means host-level
         // rule providers are loaded first and therefore win composite-key collisions inside the flatten pipeline, and
         // host-supplied algorithm registrations take precedence over plugin-supplied ones with the same key.
         var effectiveProviders = ruleProviders.ToList();
-        INotableDateAlgorithmRegistry? effectiveRegistry = algorithmRegistry;
+        INotableDateAlgorithmRegistry? effectiveRegistry = opts.AlgorithmRegistry;
 
-        if (plugins is not null)
+        if (opts.Plugins is not null)
         {
             var pluginAlgorithms = new List<KeyValuePair<string, INotableDateAlgorithm>>();
 
-            foreach (INotableDatePlugin plugin in plugins)
+            foreach (INotableDatePlugin plugin in opts.Plugins)
             {
                 if (plugin is Plugins.INotableDateRulePlugin rulePlugin)
                 {
@@ -305,7 +282,7 @@ public sealed class NotableDateService : INotableDateService
         _baseRules = [.. effectiveProviders
             .SelectMany(p => p.LoadRules() ?? [])
             .Where(r => r is not null)];
-        _overrideProviders = overrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)[];
+        _overrideProviders = opts.OverrideProviders?.ToList() ?? (IReadOnlyList<INotableDateRuleOverrideProvider>)[];
 
         // Snapshot every override provider's removals at construction so that IsRemovedByOverride iterates a materialized list
         // once per rule × year × territory rather than re-invoking GetRemovals on every check. This pins the cost of any
@@ -314,13 +291,13 @@ public sealed class NotableDateService : INotableDateService
         _overrideRemovals = [.. _overrideProviders.SelectMany(p => p.GetRemovals())];
 
         _workingWeek = workingWeek;
-        _collisionResolver = collisionResolver ?? new DefaultNotableDateCollisionResolver();
-        _nameLocalizer = nameLocalizer;
-        _resourcePathResolver = resourcePathResolver ?? new ResourcePathResolver();
+        _collisionResolver = opts.CollisionResolver ?? new DefaultNotableDateCollisionResolver();
+        _nameLocalizer = opts.NameLocalizer;
+        _resourcePathResolver = opts.ResourcePathResolver ?? new ResourcePathResolver();
 
         _effectiveRules = ApplyOverrides(_baseRules, _overrideProviders);
         _resolver = new NotableDateRuleResolver(_effectiveRules, effectiveRegistry);
-        _adjustmentHandlers = adjustmentHandlers;
+        _adjustmentHandlers = opts.AdjustmentHandlers;
     }
 
     /// <summary>
@@ -329,36 +306,15 @@ public sealed class NotableDateService : INotableDateService
     /// </summary>
     /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
     /// <param name="workingDaysOfWeek">The named working-week pattern used when classifying dates.</param>
-    /// <param name="resourcePathResolver">An optional resource path resolver. Defaults to <see cref="ResourcePathResolver" /> when <see langword="null" />.</param>
-    /// <param name="overrideProviders">Optional layered override providers, applied after the base rules in registration order.</param>
-    /// <param name="algorithmRegistry">Optional registry used to resolve <see cref="DateResolutionStrategy.Algorithm" /> rules.</param>
-    /// <param name="adjustmentHandlers">Optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
-    /// <param name="collisionResolver">Optional collision resolver. Defaults to <see cref="DefaultNotableDateCollisionResolver" />.</param>
-    /// <param name="nameLocalizer">Optional localizer used to translate notable date names into the active culture.</param>
-    /// <param name="plugins">Optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />.</param>
+    /// <param name="options">Optional service configuration. When <see langword="null" />, defaults apply.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="workingDaysOfWeek" /> is not a defined member of the <see cref="WorkingDaysOfWeek" /> enumeration.</exception>
     /// <exception cref="ArgumentException">Thrown when <paramref name="workingDaysOfWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />, which has no canonical pattern.</exception>
     public NotableDateService(
         IEnumerable<INotableDateRuleProvider> ruleProviders,
         WorkingDaysOfWeek workingDaysOfWeek,
-        IResourcePathResolver? resourcePathResolver = null,
-        IEnumerable<INotableDateRuleOverrideProvider>? overrideProviders = null,
-        INotableDateAlgorithmRegistry? algorithmRegistry = null,
-        IAdjustmentHandlerRegistry? adjustmentHandlers = null,
-        INotableDateCollisionResolver? collisionResolver = null,
-        INotableDateNameLocalizer? nameLocalizer = null,
-        IEnumerable<Plugins.INotableDatePlugin>? plugins = null)
-        : this(
-            ruleProviders,
-            workingDaysOfWeek.ToWeekPattern(),
-            resourcePathResolver,
-            overrideProviders,
-            algorithmRegistry,
-            adjustmentHandlers,
-            collisionResolver,
-            nameLocalizer,
-            plugins)
+        NotableDateServiceOptions? options = null)
+        : this(ruleProviders, workingDaysOfWeek.ToWeekPattern(), options)
     { }
 
     // --------------------------------------------------------------------------------------
