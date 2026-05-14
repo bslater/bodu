@@ -1,35 +1,39 @@
 <Project>
 
   <!--
-    Centralised analyzer package references.  Directory.Build.targets is processed
-    after each project file, so $(IsTestProject) and $(GenerateDocumentationFile)
-    are both fully resolved by the time these ItemGroups are evaluated.
+    Centralised analyser package references. Directory.Build.targets is processed after each
+    project file, so $(IsTestProject), $(GenerateDocumentationFile), and any project-specific
+    opt-out properties are resolved by the time these ItemGroups are evaluated.
 
     Distribution:
-      Source projects (GenerateDocumentationFile=true, non-test)
-        AsyncFixer, Microsoft.CodeAnalysis.Analyzers, Microsoft.CodeAnalysis.NetAnalyzers,
-        Microsoft.VisualStudio.Threading.Analyzers, Roslynator.Analyzers, StyleCop.Analyzers
+      Source projects (BoduEnableFullAnalyzers=true)
+        AsyncFixer, Microsoft.VisualStudio.Threading.Analyzers, Roslynator.Analyzers,
+        StyleCop.Analyzers
       Test projects (IsTestProject=true)
         MSTest.Analyzers
       All projects
         Roslynator.Formatting.Analyzers
 
-    Plugin test assemblies and the docs project set GenerateDocumentationFile=false,
-    which excludes them from the full analyzer stack intentionally.
+    The .NET SDK analysers are enabled in Directory.Build.props through EnableNETAnalyzers and
+    AnalysisLevel. Microsoft.CodeAnalysis.NetAnalyzers is intentionally not referenced here so
+    the SDK owns CAxxxx rule delivery. Microsoft.CodeAnalysis.Analyzers is also intentionally
+    omitted because it targets Roslyn analyser/code-fix authors, not normal source projects.
   -->
 
-  <!-- Full analyzer stack for production source projects. -->
-  <ItemGroup Condition="'$(IsTestProject)' != 'true' and '$(GenerateDocumentationFile)' == 'true'">
+  <PropertyGroup>
+    <!--
+      Default full analyser coverage to documented, non-test source projects. Projects can opt
+      in or out explicitly by setting BoduEnableFullAnalyzers in the project file.
+    -->
+    <BoduEnableFullAnalyzers Condition="'$(BoduEnableFullAnalyzers)' == '' and '$(IsTestProject)' != 'true' and '$(GenerateDocumentationFile)' == 'true'">true</BoduEnableFullAnalyzers>
+    <BoduEnableFullAnalyzers Condition="'$(BoduEnableFullAnalyzers)' == ''">false</BoduEnableFullAnalyzers>
+  </PropertyGroup>
+
+  <!-- Full analyser stack for production source projects. -->
+  <ItemGroup Condition="'$(BoduEnableFullAnalyzers)' == 'true'">
     <PackageReference Include="AsyncFixer" Version="2.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.203">
-      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.14.15">
       <PrivateAssets>all</PrivateAssets>
@@ -45,15 +49,15 @@
     </PackageReference>
   </ItemGroup>
 
-  <!-- MSTest analyzers for test projects only. -->
+  <!-- MSTest analysers for test projects only. -->
   <ItemGroup Condition="'$(IsTestProject)' == 'true'">
-    <PackageReference Include="MSTest.Analyzers" Version="4.2.1">
+    <PackageReference Include="MSTest.Analyzers" Version="4.2.2">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
 
-  <!-- Formatting analyzers applied to all projects. -->
+  <!-- Formatting analysers applied to all projects. -->
   <ItemGroup>
     <PackageReference Include="Roslynator.Formatting.Analyzers" Version="4.15.0">
       <PrivateAssets>all</PrivateAssets>

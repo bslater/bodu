@@ -1,18 +1,40 @@
 <Project>
 
   <!--
-    Single import point for shared build metadata, WarningsAsErrors for XML-doc codes,
-    and other solution-wide properties defined in bld/Bodu.props.
+    Single import point for shared build metadata, XML-documentation warning policy,
+    SDK analyser settings, and other solution-wide properties defined in bld/Bodu.props.
     Projects no longer carry their own <Import> for this file.
   -->
   <Import Project="$(MSBuildThisFileDirectory)bld/Bodu.props" />
 
   <PropertyGroup>
     <!--
-      Enforce IDE-style code rules (IDExxxx diagnostics) at build time so that
-      formatting and code-style regressions surface in CI rather than only in the IDE.
+      Use the SDK-owned .NET/Roslyn analyser set as the primary baseline. This keeps the
+      repository aligned with current .NET SDK behaviour rather than legacy FxCop packages.
+    -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+
+    <!--
+      Keep analyser rule selection stable on the .NET 10 recommended wave. Change this to
+      latest-recommended if you intentionally want new SDK analyser waves as they appear.
+    -->
+    <AnalysisLevel>10-recommended</AnalysisLevel>
+
+    <!--
+      Enforce IDE-style code rules (IDExxxx diagnostics) at build time so that formatting
+      and code-style regressions surface in CI rather than only in the IDE.
     -->
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
+  <!--
+    Optional API/package validation. Leave disabled by default so normal inner-loop builds do
+    not gain a new packaging gate. Enable in CI, release builds, or selected packable projects
+    by setting <BoduEnablePackageValidation>true</BoduEnablePackageValidation>.
+  -->
+  <PropertyGroup Condition="'$(BoduEnablePackageValidation)' == 'true' and '$(IsPackable)' == 'true' and '$(IsTestProject)' != 'true'">
+    <EnablePackageValidation>true</EnablePackageValidation>
+    <ApiCompatStrictMode>true</ApiCompatStrictMode>
   </PropertyGroup>
 
 </Project>
