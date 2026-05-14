@@ -4,13 +4,13 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
+using Bodu.Extensions;
 
 using SysGlobal = System.Globalization;
 

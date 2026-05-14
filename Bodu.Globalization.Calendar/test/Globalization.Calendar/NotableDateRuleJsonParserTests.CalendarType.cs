@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleJsonParserTests.CalendarType.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,14 +19,14 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 public partial class NotableDateRuleJsonParserTests
 {
-	/// <summary>
-	/// Verifies that omitting <c>calendarType</c> on a Fixed rule leaves <see cref="NotableDateRule.CalendarType" />
-	/// at <see langword="null" /> — the optional-type absent path through <c>ParseOptionalType</c>.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenCalendarTypeIsMissing_ShouldLeaveCalendarTypeNull()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that omitting <c>calendarType</c> on a Fixed rule leaves <see cref="NotableDateRule.CalendarType" />
+    /// at <see langword="null" /> — the optional-type absent path through <c>ParseOptionalType</c>.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenCalendarTypeIsMissing_ShouldLeaveCalendarTypeNull()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""NoCalendar"", ""rules"": [ {
 					""name"": ""NoCalendarRule"",
@@ -36,19 +36,19 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
 
-		Assert.IsNull(rule.CalendarType);
-	}
+        Assert.IsNull(rule.CalendarType);
+    }
 
-	/// <summary>
-	/// Verifies that a valid <c>calendarType</c> string resolves to the matching <see cref="Calendar" />-derived
-	/// <see cref="Type" /> through the optional-type happy path.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenCalendarTypeIsValidTypeName_ShouldResolveCalendarType()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a valid <c>calendarType</c> string resolves to the matching <see cref="Calendar" />-derived
+    /// <see cref="Type" /> through the optional-type happy path.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenCalendarTypeIsValidTypeName_ShouldResolveCalendarType()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""HebrewCalendar"", ""rules"": [ {
 					""name"": ""HebrewCalendarRule"",
@@ -59,20 +59,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
 
-		Assert.AreEqual(typeof(HebrewCalendar), rule.CalendarType);
-	}
+        Assert.AreEqual(typeof(HebrewCalendar), rule.CalendarType);
+    }
 
-	/// <summary>
-	/// Verifies that a <c>calendarType</c> whose value matches the schema's <c>assemblyTypeName</c> pattern but does
-	/// not resolve to a real type leaves <see cref="NotableDateRule.CalendarType" /> at <see langword="null" /> —
-	/// the parser's <c>ParseOptionalType</c> uses <c>throwOnError: false</c> and silently drops unresolvable names.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenCalendarTypeIsUnknownTypeName_ShouldLeaveCalendarTypeNull()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a <c>calendarType</c> whose value matches the schema's <c>assemblyTypeName</c> pattern but does
+    /// not resolve to a real type leaves <see cref="NotableDateRule.CalendarType" /> at <see langword="null" /> —
+    /// the parser's <c>ParseOptionalType</c> uses <c>throwOnError: false</c> and silently drops unresolvable names.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenCalendarTypeIsUnknownTypeName_ShouldLeaveCalendarTypeNull()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""UnknownCalendar"", ""rules"": [ {
 					""name"": ""UnknownCalendarRule"",
@@ -83,20 +83,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
 
-		Assert.IsNull(rule.CalendarType);
-	}
+        Assert.IsNull(rule.CalendarType);
+    }
 
-	/// <summary>
-	/// Verifies that a <c>calendarType</c> whose value resolves to a real <see cref="Type" /> that is not assignable
-	/// to <see cref="Calendar" /> leaves <see cref="NotableDateRule.CalendarType" /> at <see langword="null" /> —
-	/// the parser's <c>ParseOptionalType&lt;Calendar&gt;</c> enforces the base-type constraint silently.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenCalendarTypeDoesNotDeriveFromCalendar_ShouldLeaveCalendarTypeNull()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a <c>calendarType</c> whose value resolves to a real <see cref="Type" /> that is not assignable
+    /// to <see cref="Calendar" /> leaves <see cref="NotableDateRule.CalendarType" /> at <see langword="null" /> —
+    /// the parser's <c>ParseOptionalType&lt;Calendar&gt;</c> enforces the base-type constraint silently.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenCalendarTypeDoesNotDeriveFromCalendar_ShouldLeaveCalendarTypeNull()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""WrongBase"", ""rules"": [ {
 					""name"": ""WrongBaseRule"",
@@ -107,20 +107,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
 
-		Assert.IsNull(rule.CalendarType);
-	}
+        Assert.IsNull(rule.CalendarType);
+    }
 
-	/// <summary>
-	/// Verifies that a <c>calendarType</c> string that violates the schema's <c>assemblyTypeName</c> pattern
-	/// (for example, containing whitespace at an illegal position) is rejected by schema validation as
-	/// <see cref="JsonException" /> before reaching the mapper.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenCalendarTypeViolatesSchemaPattern_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a <c>calendarType</c> string that violates the schema's <c>assemblyTypeName</c> pattern
+    /// (for example, containing whitespace at an illegal position) is rejected by schema validation as
+    /// <see cref="JsonException" /> before reaching the mapper.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenCalendarTypeViolatesSchemaPattern_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""BadCalendarType"", ""rules"": [ {
 					""name"": ""BadCalendarTypeRule"",
@@ -131,9 +131,9 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 }

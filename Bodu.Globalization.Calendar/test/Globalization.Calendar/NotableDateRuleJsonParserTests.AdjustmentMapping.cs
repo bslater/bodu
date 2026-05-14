@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Linq;
 using System.Text.Json;
+using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -17,14 +17,14 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 public partial class NotableDateRuleJsonParserTests
 {
-	/// <summary>
-	/// Verifies that an adjustment whose <c>key</c> is missing is rejected by schema validation as
-	/// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenAdjustmentKeyIsMissing_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an adjustment whose <c>key</c> is missing is rejected by schema validation as
+    /// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenAdjustmentKeyIsMissing_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Holiday"", ""rules"": [ {
 					""name"": ""Holiday Rule"",
@@ -37,20 +37,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that an adjustment whose <c>when</c> is missing is rejected by schema validation as
-	/// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenAdjustmentTriggerIsMissing_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an adjustment whose <c>when</c> is missing is rejected by schema validation as
+    /// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenAdjustmentTriggerIsMissing_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Holiday"", ""rules"": [ {
 					""name"": ""Holiday Rule"",
@@ -63,20 +63,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that an adjustment whose <c>when</c> is an unrecognised enum value is rejected by schema
-	/// validation as <see cref="JsonException" /> via the <c>adjustmentTrigger</c> enum constraint.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenAdjustmentTriggerIsUnknown_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an adjustment whose <c>when</c> is an unrecognised enum value is rejected by schema
+    /// validation as <see cref="JsonException" /> via the <c>adjustmentTrigger</c> enum constraint.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenAdjustmentTriggerIsUnknown_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Holiday"", ""rules"": [ {
 					""name"": ""Holiday Rule"",
@@ -89,20 +89,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that an adjustment whose <c>action</c> is missing is rejected by schema validation as
-	/// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenAdjustmentActionIsMissing_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an adjustment whose <c>action</c> is missing is rejected by schema validation as
+    /// <see cref="JsonException" /> via the <c>adjustment.required</c> clause.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenAdjustmentActionIsMissing_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Holiday"", ""rules"": [ {
 					""name"": ""Holiday Rule"",
@@ -115,20 +115,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that an adjustment whose <c>action</c> is an unrecognised enum value is rejected by schema
-	/// validation as <see cref="JsonException" /> via the <c>adjustmentAction</c> enum constraint.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenAdjustmentActionIsUnknown_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an adjustment whose <c>action</c> is an unrecognised enum value is rejected by schema
+    /// validation as <see cref="JsonException" /> via the <c>adjustmentAction</c> enum constraint.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenAdjustmentActionIsUnknown_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Holiday"", ""rules"": [ {
 					""name"": ""Holiday Rule"",
@@ -141,20 +141,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that an adjustment with the full scalar surface populates every corresponding field on the resulting
-	/// <see cref="ObservanceAdjustment" />.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenAdjustmentSuppliesFullScalarSurface_ShouldMapAllFields()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an adjustment with the full scalar surface populates every corresponding field on the resulting
+    /// <see cref="ObservanceAdjustment" />.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenAdjustmentSuppliesFullScalarSurface_ShouldMapAllFields()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Public Holiday"", ""rules"": [ {
 					""name"": ""Public Holiday Rule"",
@@ -182,35 +182,35 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
-		ObservanceAdjustment adjustment = rule.Adjustments.Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+        ObservanceAdjustment adjustment = rule.Adjustments.Single();
 
-		Assert.AreEqual("bk-day-roll", adjustment.Key);
-		Assert.AreEqual(AdjustmentTrigger.IfNthOccurrenceInMonth, adjustment.Trigger);
-		Assert.AreEqual(AdjustmentAction.AddDays, adjustment.Action);
-		Assert.AreEqual(DayOfWeek.Monday, adjustment.DayOfWeek);
-		Assert.AreEqual(WeekOfMonthOrdinal.Second, adjustment.WeekOrdinal);
-		Assert.AreEqual(2, adjustment.OffsetDays);
-		Assert.AreEqual(10, adjustment.Priority);
-		Assert.AreEqual(true, adjustment.IsNonWorkingDay);
-		Assert.AreEqual("AU", adjustment.TerritoryCode);
-		Assert.AreEqual(typeof(System.Globalization.GregorianCalendar), adjustment.CalendarType);
-		Assert.AreEqual(2000, adjustment.EffectiveFromYear);
-		Assert.AreEqual(2099, adjustment.EffectiveToYear);
-		Assert.AreEqual(12, adjustment.ComparisonDate!.Value.Month);
-		Assert.AreEqual(25, adjustment.ComparisonDate.Value.Day);
-		Assert.AreEqual("Christmas Day", adjustment.TargetRuleName);
-		Assert.AreEqual("bank-holiday", adjustment.HandlerKey);
-	}
+        Assert.AreEqual("bk-day-roll", adjustment.Key);
+        Assert.AreEqual(AdjustmentTrigger.IfNthOccurrenceInMonth, adjustment.Trigger);
+        Assert.AreEqual(AdjustmentAction.AddDays, adjustment.Action);
+        Assert.AreEqual(DayOfWeek.Monday, adjustment.DayOfWeek);
+        Assert.AreEqual(WeekOfMonthOrdinal.Second, adjustment.WeekOrdinal);
+        Assert.AreEqual(2, adjustment.OffsetDays);
+        Assert.AreEqual(10, adjustment.Priority);
+        Assert.AreEqual(true, adjustment.IsNonWorkingDay);
+        Assert.AreEqual("AU", adjustment.TerritoryCode);
+        Assert.AreEqual(typeof(System.Globalization.GregorianCalendar), adjustment.CalendarType);
+        Assert.AreEqual(2000, adjustment.EffectiveFromYear);
+        Assert.AreEqual(2099, adjustment.EffectiveToYear);
+        Assert.AreEqual(12, adjustment.ComparisonDate!.Value.Month);
+        Assert.AreEqual(25, adjustment.ComparisonDate.Value.Day);
+        Assert.AreEqual("Christmas Day", adjustment.TargetRuleName);
+        Assert.AreEqual("bank-holiday", adjustment.HandlerKey);
+    }
 
-	/// <summary>
-	/// Verifies that an adjustment omitting optional scalars yields the documented defaults — <c>days</c> defaults to 0,
-	/// <c>priority</c> defaults to 100, and the remaining nullable fields stay <see langword="null" />.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenAdjustmentOmitsOptionalScalars_ShouldUseDocumentedDefaults()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an adjustment omitting optional scalars yields the documented defaults — <c>days</c> defaults to 0,
+    /// <c>priority</c> defaults to 100, and the remaining nullable fields stay <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenAdjustmentOmitsOptionalScalars_ShouldUseDocumentedDefaults()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Holiday"", ""rules"": [ {
 					""name"": ""Holiday Rule"",
@@ -223,20 +223,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
-		ObservanceAdjustment adjustment = rule.Adjustments.Single();
+        NotableDateRule rule = NotableDateRuleJsonParser.ParseJson(json).Single();
+        ObservanceAdjustment adjustment = rule.Adjustments.Single();
 
-		Assert.AreEqual(0, adjustment.OffsetDays);
-		Assert.AreEqual(100, adjustment.Priority);
-		Assert.IsNull(adjustment.DayOfWeek);
-		Assert.IsNull(adjustment.WeekOrdinal);
-		Assert.IsNull(adjustment.IsNonWorkingDay);
-		Assert.IsNull(adjustment.TerritoryCode);
-		Assert.IsNull(adjustment.CalendarType);
-		Assert.IsNull(adjustment.EffectiveFromYear);
-		Assert.IsNull(adjustment.EffectiveToYear);
-		Assert.IsNull(adjustment.ComparisonDate);
-		Assert.IsNull(adjustment.TargetRuleName);
-		Assert.IsNull(adjustment.HandlerKey);
-	}
+        Assert.AreEqual(0, adjustment.OffsetDays);
+        Assert.AreEqual(100, adjustment.Priority);
+        Assert.IsNull(adjustment.DayOfWeek);
+        Assert.IsNull(adjustment.WeekOrdinal);
+        Assert.IsNull(adjustment.IsNonWorkingDay);
+        Assert.IsNull(adjustment.TerritoryCode);
+        Assert.IsNull(adjustment.CalendarType);
+        Assert.IsNull(adjustment.EffectiveFromYear);
+        Assert.IsNull(adjustment.EffectiveToYear);
+        Assert.IsNull(adjustment.ComparisonDate);
+        Assert.IsNull(adjustment.TargetRuleName);
+        Assert.IsNull(adjustment.HandlerKey);
+    }
 }

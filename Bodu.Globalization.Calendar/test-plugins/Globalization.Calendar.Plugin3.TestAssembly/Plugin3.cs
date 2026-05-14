@@ -17,18 +17,18 @@ namespace Bodu.Globalization.Calendar.Plugin3.TestAssembly;
 /// checks.
 /// </summary>
 public sealed class ThrowingConstructorPlugin
-	: INotableDatePlugin
+    : INotableDatePlugin
 {
-	/// <summary>
-	/// Always throws <see cref="InvalidOperationException" /> on construction so the loader
-	/// surfaces a <see cref="PluginActivationException" /> wrapping the cause.
-	/// </summary>
-	public ThrowingConstructorPlugin()
-	{
-		throw new InvalidOperationException("intentional failure from Plugin3 test fixture");
-	}
+    /// <summary>
+    /// Always throws <see cref="InvalidOperationException" /> on construction so the loader
+    /// surfaces a <see cref="PluginActivationException" /> wrapping the cause.
+    /// </summary>
+    public ThrowingConstructorPlugin()
+    {
+        throw new InvalidOperationException("intentional failure from Plugin3 test fixture");
+    }
 
-	public string Name => nameof(ThrowingConstructorPlugin);
+    public string Name => nameof(ThrowingConstructorPlugin);
 
-	public Version Version { get; } = new(1, 0, 0);
+    public Version Version { get; } = new(1, 0, 0);
 }

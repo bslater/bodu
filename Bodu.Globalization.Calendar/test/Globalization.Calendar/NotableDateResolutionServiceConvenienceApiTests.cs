@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Immutable;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Globalization.Calendar;
 

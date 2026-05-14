@@ -5,10 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using Bodu.Extensions;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Data.Americas.Tests;
 

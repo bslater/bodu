@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using System.Reflection;
@@ -311,7 +310,7 @@ public sealed partial class NotableDateServiceTests
     /// </summary>
     /// <param name="kat">The known-answer test case.</param>
     [TestMethod]
-    [DynamicData(nameof(ForwardSubstituteKats), DynamicDataDisplayName =nameof(GetForwardSubstituteDisplayName))]
+    [DynamicData(nameof(ForwardSubstituteKats), DynamicDataDisplayName = nameof(GetForwardSubstituteDisplayName))]
     public void GetNotableDates_WhenAdjacentFixedDateHolidaysShiftForward_ShouldAllocateDistinctSubstituteDays(
         ForwardSubstituteKat kat)
     {

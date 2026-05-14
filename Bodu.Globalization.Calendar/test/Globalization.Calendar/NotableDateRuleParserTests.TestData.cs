@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleParserTests.TestData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,7 +9,7 @@ namespace Bodu.Globalization.Calendar;
 
 public partial class NotableDateRuleParserTests
 {
-	public const string FixedRuleXml = @"
+    public const string FixedRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Fixed Rule Test"">
 				<Rule name=""Fixed Rule Test Rule""
@@ -31,7 +31,7 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 		</NotableDates>";
 
-	public const string DayOfWeekInMonthRuleXml = @"
+    public const string DayOfWeekInMonthRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Mother's Day Test"">
 				<Rule name=""Mother's Day Observance Rule"" category=""Observance"">
@@ -40,7 +40,7 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 		</NotableDates>";
 
-	public const string AlgorithmRuleXml = @"
+    public const string AlgorithmRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Easter Sunday Test"">
 				<Rule name=""Easter Sunday Algorithm Rule"" category=""Observance"" firstYear=""1583"">
@@ -49,7 +49,7 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 		</NotableDates>";
 
-	public const string OffsetFromAnchorRuleXml = @"
+    public const string OffsetFromAnchorRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Good Friday Test"">
 				<Rule name=""Good Friday Offset Rule"" category=""Holiday"">
@@ -58,7 +58,7 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 		</NotableDates>";
 
-	public const string MultiRuleXml = @"
+    public const string MultiRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""New Year's Day"">
 				<Rule name=""New Year's Day Rule"" category=""Holiday"" nonWorking=""true"">
@@ -83,7 +83,7 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 		</NotableDates>";
 
-	public const string CherryPickXml = @"
+    public const string CherryPickXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<UseFrom resource=""Bodu.Globalization.Calendar.Resources.Common.xml"">
 				<Use name=""New Year's Day"" territory=""US"" />
@@ -99,14 +99,14 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 		</NotableDates>";
 
-	public const string UseAllXml = @"
+    public const string UseAllXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<UseFrom resource=""Bodu.Globalization.Calendar.Resources.Common.xml"">
 				<UseAll />
 			</UseFrom>
 		</NotableDates>";
 
-	public const string ReligiousRuleXml = @"
+    public const string ReligiousRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Eid al-Fitr"">
 				<Rule name=""Eid al-Fitr Rule"" category=""Religious"">
@@ -115,7 +115,7 @@ public partial class NotableDateRuleParserTests
 			</NotableDate>
 		</NotableDates>";
 
-	public const string CivicRuleXml = @"
+    public const string CivicRuleXml = @"
 		<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 			<NotableDate name=""Constitution Day"">
 				<Rule name=""Constitution Day Rule"" category=""Civic"">

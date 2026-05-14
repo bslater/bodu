@@ -4,7 +4,6 @@
 // // </copyright>
 // // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
@@ -12,6 +11,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
+using Bodu.Extensions;
 
 namespace Bodu.Globalization.Calendar.Builder;
 

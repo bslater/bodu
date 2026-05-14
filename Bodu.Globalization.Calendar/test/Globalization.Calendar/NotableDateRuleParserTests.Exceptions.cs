@@ -17,55 +17,55 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 public partial class NotableDateRuleParserTests
 {
-	// -----------------------------------------------------------------------------------------
-	// ParseXml(string)
-	// -----------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+    // ParseXml(string)
+    // -----------------------------------------------------------------------------------------
 
-	/// <summary>
-	/// Verifies that <see cref="NotableDateRuleParser.ParseXml(string)" /> throws
-	/// <see cref="ArgumentNullException" /> for null, empty, or whitespace input and exposes the
-	/// <c>xml</c> parameter name on the exception.
-	/// </summary>
-	[DataRow(null!)]
-	[DataRow("")]
-	[DataRow(" ")]
-	[DataRow("\t\n  ")]
-	[TestMethod]
-	public void ParseXml_WhenInputIsNullOrWhitespace_ShouldThrowArgumentNullException(string? xml)
-	{
-		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-		{
-			_ = NotableDateRuleParser.ParseXml(xml!);
-		});
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleParser.ParseXml(string)" /> throws
+    /// <see cref="ArgumentNullException" /> for null, empty, or whitespace input and exposes the
+    /// <c>xml</c> parameter name on the exception.
+    /// </summary>
+    [DataRow(null!)]
+    [DataRow("")]
+    [DataRow(" ")]
+    [DataRow("\t\n  ")]
+    [TestMethod]
+    public void ParseXml_WhenInputIsNullOrWhitespace_ShouldThrowArgumentNullException(string? xml)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseXml(xml!);
+        });
 
-		Assert.AreEqual("xml", ex.ParamName);
-	}
+        Assert.AreEqual("xml", ex.ParamName);
+    }
 
-	/// <summary>
-	/// Verifies that <see cref="NotableDateRuleParser.ParseXml(XDocument)" /> rejects a
-	/// <see langword="null" /> document with <see cref="ArgumentNullException" /> and exposes the
-	/// <c>document</c> parameter name on the exception.
-	/// </summary>
-	[TestMethod]
-	public void ParseXml_WhenXDocumentIsNull_ShouldThrowArgumentNullException()
-	{
-		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-		{
-			_ = NotableDateRuleParser.ParseXml((XDocument)null!);
-		});
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleParser.ParseXml(XDocument)" /> rejects a
+    /// <see langword="null" /> document with <see cref="ArgumentNullException" /> and exposes the
+    /// <c>document</c> parameter name on the exception.
+    /// </summary>
+    [TestMethod]
+    public void ParseXml_WhenXDocumentIsNull_ShouldThrowArgumentNullException()
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseXml((XDocument)null!);
+        });
 
-		Assert.AreEqual("document", ex.ParamName);
-	}
+        Assert.AreEqual("document", ex.ParamName);
+    }
 
-	/// <summary>
-	/// Verifies that <see cref="NotableDateRuleParser.ParseXml(string)" /> surfaces schema
-	/// violations as <see cref="XmlSchemaValidationException" /> rather than a less specific
-	/// parser error.
-	/// </summary>
-	[TestMethod]
-	public void ParseXml_WhenInputViolatesSchema_ShouldThrowXmlSchemaValidationException()
-	{
-		const string invalidXml = @"
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleParser.ParseXml(string)" /> surfaces schema
+    /// violations as <see cref="XmlSchemaValidationException" /> rather than a less specific
+    /// parser error.
+    /// </summary>
+    [TestMethod]
+    public void ParseXml_WhenInputViolatesSchema_ShouldThrowXmlSchemaValidationException()
+    {
+        const string invalidXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 				<NotableDate name=""Bad"">
 					<Rule>
@@ -74,44 +74,44 @@ public partial class NotableDateRuleParserTests
 				</NotableDate>
 			</NotableDates>";
 
-		Assert.ThrowsExactly<XmlSchemaValidationException>(() =>
-		{
-			_ = NotableDateRuleParser.ParseXml(invalidXml);
-		});
-	}
+        Assert.ThrowsExactly<XmlSchemaValidationException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseXml(invalidXml);
+        });
+    }
 
-	// -----------------------------------------------------------------------------------------
-	// ParseDocument(string)
-	// -----------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+    // ParseDocument(string)
+    // -----------------------------------------------------------------------------------------
 
-	/// <summary>
-	/// Verifies that <see cref="NotableDateRuleParser.ParseDocument(string)" /> throws
-	/// <see cref="ArgumentNullException" /> for null, empty, or whitespace input and exposes the
-	/// <c>xml</c> parameter name on the exception.
-	/// </summary>
-	[DataRow(null!)]
-	[DataRow("")]
-	[DataRow(" ")]
-	[DataRow("\r\n\t")]
-	[TestMethod]
-	public void ParseDocument_WhenInputIsNullOrWhitespace_ShouldThrowArgumentNullException(string? xml)
-	{
-		var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-		{
-			_ = NotableDateRuleParser.ParseDocument(xml!);
-		});
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleParser.ParseDocument(string)" /> throws
+    /// <see cref="ArgumentNullException" /> for null, empty, or whitespace input and exposes the
+    /// <c>xml</c> parameter name on the exception.
+    /// </summary>
+    [DataRow(null!)]
+    [DataRow("")]
+    [DataRow(" ")]
+    [DataRow("\r\n\t")]
+    [TestMethod]
+    public void ParseDocument_WhenInputIsNullOrWhitespace_ShouldThrowArgumentNullException(string? xml)
+    {
+        var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseDocument(xml!);
+        });
 
-		Assert.AreEqual("xml", ex.ParamName);
-	}
+        Assert.AreEqual("xml", ex.ParamName);
+    }
 
-	/// <summary>
-	/// Verifies that <see cref="NotableDateRuleParser.ParseDocument(string)" /> surfaces schema
-	/// violations as <see cref="XmlSchemaValidationException" />.
-	/// </summary>
-	[TestMethod]
-	public void ParseDocument_WhenInputViolatesSchema_ShouldThrowXmlSchemaValidationException()
-	{
-		const string invalidXml = @"
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleParser.ParseDocument(string)" /> surfaces schema
+    /// violations as <see cref="XmlSchemaValidationException" />.
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenInputViolatesSchema_ShouldThrowXmlSchemaValidationException()
+    {
+        const string invalidXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 				<NotableDate>
 					<Rule>
@@ -120,25 +120,25 @@ public partial class NotableDateRuleParserTests
 				</NotableDate>
 			</NotableDates>";
 
-		Assert.ThrowsExactly<XmlSchemaValidationException>(() =>
-		{
-			_ = NotableDateRuleParser.ParseDocument(invalidXml);
-		});
-	}
+        Assert.ThrowsExactly<XmlSchemaValidationException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseDocument(invalidXml);
+        });
+    }
 
-	// -----------------------------------------------------------------------------------------
-	// ParseDocument(XDocument)
-	// -----------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+    // ParseDocument(XDocument)
+    // -----------------------------------------------------------------------------------------
 
-	/// <summary>
-	/// Verifies that <see cref="NotableDateRuleParser.ParseDocument(XDocument)" /> surfaces
-	/// schema violations as <see cref="XmlSchemaValidationException" /> when the document was
-	/// constructed in memory and bypasses the string-form validation pipeline.
-	/// </summary>
-	[TestMethod]
-	public void ParseDocument_WhenXDocumentViolatesSchema_ShouldThrowXmlSchemaValidationException()
-	{
-		const string invalidXml = @"
+    /// <summary>
+    /// Verifies that <see cref="NotableDateRuleParser.ParseDocument(XDocument)" /> surfaces
+    /// schema violations as <see cref="XmlSchemaValidationException" /> when the document was
+    /// constructed in memory and bypasses the string-form validation pipeline.
+    /// </summary>
+    [TestMethod]
+    public void ParseDocument_WhenXDocumentViolatesSchema_ShouldThrowXmlSchemaValidationException()
+    {
+        const string invalidXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 				<NotableDate name=""Bad"">
 					<Rule>
@@ -147,27 +147,27 @@ public partial class NotableDateRuleParserTests
 				</NotableDate>
 			</NotableDates>";
 
-		var document = XDocument.Parse(invalidXml);
+        var document = XDocument.Parse(invalidXml);
 
-		Assert.ThrowsExactly<XmlSchemaValidationException>(() =>
-		{
-			_ = NotableDateRuleParser.ParseDocument(document);
-		});
-	}
+        Assert.ThrowsExactly<XmlSchemaValidationException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseDocument(document);
+        });
+    }
 
-	// -----------------------------------------------------------------------------------------
-	// Per-element validation surfaced as InvalidOperationException
-	// -----------------------------------------------------------------------------------------
+    // -----------------------------------------------------------------------------------------
+    // Per-element validation surfaced as InvalidOperationException
+    // -----------------------------------------------------------------------------------------
 
-	/// <summary>
-	/// Verifies that authoring two adjustments with the same <c>key</c> on a single rule throws
-	/// <see cref="InvalidOperationException" />, matching the per-rule uniqueness invariant the
-	/// merge pipeline relies on.
-	/// </summary>
-	[TestMethod]
-	public void ParseXml_WhenRuleHasDuplicateAdjustmentKeys_ShouldThrowInvalidOperationException()
-	{
-		const string duplicateKeyXml = @"
+    /// <summary>
+    /// Verifies that authoring two adjustments with the same <c>key</c> on a single rule throws
+    /// <see cref="InvalidOperationException" />, matching the per-rule uniqueness invariant the
+    /// merge pipeline relies on.
+    /// </summary>
+    [TestMethod]
+    public void ParseXml_WhenRuleHasDuplicateAdjustmentKeys_ShouldThrowInvalidOperationException()
+    {
+        const string duplicateKeyXml = @"
 			<NotableDates xmlns=""urn:bodu:globalization:calendar"">
 				<NotableDate name=""Duplicate Key"">
 					<Rule name=""Duplicate Key Rule"" category=""Holiday"">
@@ -178,11 +178,11 @@ public partial class NotableDateRuleParserTests
 				</NotableDate>
 			</NotableDates>";
 
-		var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
-		{
-			_ = NotableDateRuleParser.ParseXml(duplicateKeyXml);
-		});
+        var ex = Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = NotableDateRuleParser.ParseXml(duplicateKeyXml);
+        });
 
-		Assert.IsTrue(ex.Message.Contains("roll", StringComparison.Ordinal));
-	}
+        Assert.IsTrue(ex.Message.Contains("roll", StringComparison.Ordinal));
+    }
 }

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-using Json.Schema;
 using System.Collections.Immutable;
 using System.Globalization;
 using System.Reflection;
@@ -13,6 +11,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
+using Bodu.Extensions;
+using Json.Schema;
 
 using SysGlobal = System.Globalization;
 
@@ -821,7 +821,8 @@ public static class NotableDateRuleJsonParser
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]
     private sealed class OverrideRuleDto
-        : RuleDto { }
+        : RuleDto
+    { }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1134:Attributes should not share line")]
     private sealed class FixedDto

@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SysGlobal = System.Globalization;
 
 namespace Bodu.Globalization.Calendar;

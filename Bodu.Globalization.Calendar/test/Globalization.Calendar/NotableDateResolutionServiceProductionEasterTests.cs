@@ -6,7 +6,6 @@
 
 using Bodu.Extensions;
 using Bodu.Globalization.Calendar.Data.Europe;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Globalization.Calendar;
 

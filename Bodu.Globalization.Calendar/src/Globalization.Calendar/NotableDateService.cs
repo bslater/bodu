@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
-using Bodu.Globalization.Calendar.Plugins;
 using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.Globalization;
+using Bodu.Extensions;
+using Bodu.Globalization.Calendar.Plugins;
 
 namespace Bodu.Globalization.Calendar;
 
@@ -118,6 +118,7 @@ namespace Bodu.Globalization.Calendar;
 /// <seealso cref="NotableDateServiceOptions" />
 public sealed class NotableDateService
     : INotableDateService
+    , IDisposable
 {
     /// <summary>The embedded resource path for the minimal default rule set used by the parameterless constructor.</summary>
     private const string DefaultResourceName = "Bodu/Globalization/Calendar/Resources/default-minimal.xml";
@@ -147,14 +148,8 @@ public sealed class NotableDateService
     /// <summary>The optional registry of custom adjustment handlers used during generation.</summary>
     private readonly IAdjustmentHandlerRegistry? _adjustmentHandlers;
 
-    /// <summary>The lazily constructed prototype range-resolution pipeline used by <see cref="ResolveNotableDatesInRange" />.</summary>
-    private RangeResolution.NotableDateRangePipeline? _rangePipeline;
-
     /// <summary>The chronological windows resolved by <see cref="ResolveNotableDatesInRange" /> since the last <see cref="Invalidate()" /> call.</summary>
     private readonly RangeResolution.ResolvedWindowSet _resolvedWindows = new();
-
-    /// <summary>Lock protecting concurrent updates to <see cref="_resolvedWindows" />.</summary>
-    private readonly object _resolvedWindowsGate = new();
 
     /// <summary>The resolver that arbitrates when multiple rules produce a date on the same day.</summary>
     private readonly INotableDateCollisionResolver _collisionResolver;
@@ -171,10 +166,16 @@ public sealed class NotableDateService
     /// <summary>Lock protecting write access to <see cref="_yearCache" /> during first-time year generation.</summary>
     private readonly object _gate = new();
 
+    /// <summary>Lock protecting concurrent updates to <see cref="_resolvedWindows" />.</summary>
+    private readonly object _resolvedWindowsGate = new();
+
     // Per-thread set of years currently being generated on this thread. Used by GetOrGenerateYear to short-circuit recursive
     // entry from within GenerateYear (for example, MoveToNextNonWorkingDay's walk calling back through IsNonWorkingDay) so that a
     // single rule cannot cause the generator to stack-overflow by consulting the very year it is in the middle of producing.
     private readonly ThreadLocal<HashSet<int>> _generatingYears = new(() => []);
+
+    /// <summary>The lazily constructed prototype range-resolution pipeline used by <see cref="ResolveNotableDatesInRange" />.</summary>
+    private RangeResolution.NotableDateRangePipeline? _rangePipeline;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class using the embedded minimal default rule set
@@ -184,7 +185,7 @@ public sealed class NotableDateService
     public NotableDateService()
         : this(
         [
-            (new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver()))
+            new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver())
         ],
         WeekPattern.MondayToFriday)
     { }
@@ -202,7 +203,7 @@ public sealed class NotableDateService
     public NotableDateService(WeekPattern workingWeek)
         : this(
         [
-            (new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver()))
+            new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver())
         ],
         workingWeek)
     { }
@@ -420,20 +421,6 @@ public sealed class NotableDateService
         }
     }
 
-    /// <summary>
-    /// Orders base occurrences for deterministic adjustment evaluation.
-    /// </summary>
-    /// <param name="occurrences">The base occurrences to order.</param>
-    /// <returns>The ordered occurrences.</returns>
-    private static IEnumerable<ResolvedNotableDateOccurrence> OrderForAdjustment(IEnumerable<ResolvedNotableDateOccurrence> occurrences)
-    {
-        return occurrences
-            .OrderBy(occurrence => occurrence.AnchorDate)
-            .ThenBy(occurrence => occurrence.Rule.Priority)
-            .ThenBy(occurrence => occurrence.Rule.Name, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase);
-    }
-
     /// <inheritdoc />
     public bool IsWeekend(DateTime date) => !WorkingWeek.Contains(date.DayOfWeek);
 
@@ -590,10 +577,6 @@ public sealed class NotableDateService
     /// <inheritdoc />
     public void Invalidate(int year) => _yearCache.TryRemove(year, out _);
 
-    // --------------------------------------------------------------------------------------
-    // Prototype range-resolution pipeline
-    // --------------------------------------------------------------------------------------
-
     /// <summary>
     /// Resolves notable dates whose observed date intersects the supplied chronological window using the prototype range-resolution
     /// pipeline. Collateral dates that originate outside the requested range are admitted when an observance adjustment rolls them
@@ -667,6 +650,15 @@ public sealed class NotableDateService
     }
 
     /// <summary>
+    /// Releases resources owned by the service.
+    /// </summary>
+    public void Dispose()
+    {
+        _generatingYears.Dispose();
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
     /// Constructs the prototype range-resolution pipeline using the service's effective rule set, resolver, and weekend / handler
     /// configuration.
     /// </summary>
@@ -684,9 +676,19 @@ public sealed class NotableDateService
             _overrideAdditions);
     }
 
-    // --------------------------------------------------------------------------------------
-    // Generation pipeline
-    // --------------------------------------------------------------------------------------
+    /// <summary>
+    /// Orders base occurrences for deterministic adjustment evaluation.
+    /// </summary>
+    /// <param name="occurrences">The base occurrences to order.</param>
+    /// <returns>The ordered occurrences.</returns>
+    private static IEnumerable<ResolvedNotableDateOccurrence> OrderForAdjustment(IEnumerable<ResolvedNotableDateOccurrence> occurrences)
+    {
+        return occurrences
+            .OrderBy(occurrence => occurrence.AnchorDate)
+            .ThenBy(occurrence => occurrence.Rule.Priority)
+            .ThenBy(occurrence => occurrence.Rule.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase);
+    }
 
     /// <summary>
     /// Returns the cached per-year notable-date list for <paramref name="year" />, generating
@@ -923,6 +925,58 @@ public sealed class NotableDateService
     }
 
     /// <summary>
+    /// Applies the pre-materialised list of override additions to the base rule set, producing the merged effective rule set.
+    /// </summary>
+    /// <param name="baseRules">The base set of rules to be overridden.</param>
+    /// <param name="overrideAdditions">The materialised list of additions contributed by every configured override provider.</param>
+    /// <returns>The rule list after all additions have been applied.</returns>
+    /// <remarks>
+    /// Additions are layered on top of the base rule set using a composite (name, territory) key so that regional variants of
+    /// the same notable date (for example, multiple Labour Day variants across Australian states) survive instead of collapsing
+    /// into a single entry. Removals are evaluated per (year, territory) downstream so they can be scoped to specific years and
+    /// territories.
+    /// </remarks>
+    private static ImmutableArray<NotableDateRule> ApplyOverrides(
+        ImmutableArray<NotableDateRule> baseRules,
+        List<NotableDateRule> overrideAdditions)
+    {
+        if (overrideAdditions.Count == 0)
+            return baseRules.IsDefault ? [] : baseRules;
+
+        IEnumerable<NotableDateRule> source = baseRules.IsDefault
+            ? Enumerable.Empty<NotableDateRule>()
+            : baseRules;
+
+        var byKey = new Dictionary<(string Name, string Territory), NotableDateRule>();
+        foreach (NotableDateRule rule in source)
+        {
+            byKey[CompositeKey(rule)] = rule;
+        }
+
+        foreach (NotableDateRule addition in overrideAdditions)
+        {
+            byKey[CompositeKey(addition)] = addition;
+        }
+
+        return [.. byKey.Values];
+    }
+
+    /// <summary>
+    /// Creates the composite rule identity used when merging base rules with override additions.
+    /// </summary>
+    /// <param name="rule">The notable-date rule whose identity should be calculated.</param>
+    /// <returns>
+    /// A tuple containing the normalized rule name and territory code used as the dictionary key.
+    /// </returns>
+    /// <remarks>
+    /// Rules are keyed by both name and territory so that regional variants of the same named date
+    /// remain distinct during override application. A <see langword="null" /> name or territory is
+    /// normalized to <see cref="string.Empty" /> so the key can be used directly in dictionaries.
+    /// </remarks>
+    private static (string Name, string Territory) CompositeKey(NotableDateRule rule) =>
+        (rule.Name ?? string.Empty, rule.TerritoryCode ?? string.Empty);
+
+    /// <summary>
     /// If a name-localizer is configured, replaces the name on <paramref name="notable" /> with
     /// its localized form; otherwise returns <paramref name="notable" /> unchanged.
     /// </summary>
@@ -960,50 +1014,6 @@ public sealed class NotableDateService
             .OrderBy(n => n.Date)
             .ThenBy(n => n.Name, StringComparer.OrdinalIgnoreCase)];
     }
-
-    // --------------------------------------------------------------------------------------
-    // Override / scope helpers
-    // --------------------------------------------------------------------------------------
-
-    /// <summary>
-    /// Applies the pre-materialised list of override additions to the base rule set, producing the merged effective rule set.
-    /// </summary>
-    /// <param name="baseRules">The base set of rules to be overridden.</param>
-    /// <param name="overrideAdditions">The materialised list of additions contributed by every configured override provider.</param>
-    /// <returns>The rule list after all additions have been applied.</returns>
-    /// <remarks>
-    /// Additions are layered on top of the base rule set using a composite (name, territory) key so that regional variants of
-    /// the same notable date (for example, multiple Labour Day variants across Australian states) survive instead of collapsing
-    /// into a single entry. Removals are evaluated per (year, territory) downstream so they can be scoped to specific years and
-    /// territories.
-    /// </remarks>
-    private static IReadOnlyList<NotableDateRule> ApplyOverrides(
-        ImmutableArray<NotableDateRule> baseRules,
-        IReadOnlyList<NotableDateRule> overrideAdditions)
-    {
-        if (overrideAdditions.Count == 0)
-            return baseRules.IsDefault ? (IReadOnlyList<NotableDateRule>)[] : baseRules;
-
-        IEnumerable<NotableDateRule> source = baseRules.IsDefault
-            ? Enumerable.Empty<NotableDateRule>()
-            : baseRules;
-
-        var byKey = new Dictionary<(string Name, string Territory), NotableDateRule>();
-        foreach (NotableDateRule rule in source)
-        {
-            byKey[CompositeKey(rule)] = rule;
-        }
-
-        foreach (NotableDateRule addition in overrideAdditions)
-        {
-            byKey[CompositeKey(addition)] = addition;
-        }
-
-        return [.. byKey.Values];
-    }
-
-    private static (string Name, string Territory) CompositeKey(NotableDateRule rule) =>
-        (rule.Name ?? string.Empty, rule.TerritoryCode ?? string.Empty);
 
     /// <summary>
     /// Returns <see langword="true" /> if <paramref name="rule" /> has been suppressed for the

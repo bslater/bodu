@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleJsonParserTests.SchemaValidation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,70 +16,70 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 public partial class NotableDateRuleJsonParserTests
 {
-	/// <summary>
-	/// Verifies that an unknown property at the document root is rejected by schema validation
-	/// (root <c>additionalProperties: false</c>).
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenRootDeclaresUnknownProperty_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an unknown property at the document root is rejected by schema validation
+    /// (root <c>additionalProperties: false</c>).
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenRootDeclaresUnknownProperty_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""nonsense"": ""value"",
 			""notableDates"": []
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that <c>useAll: false</c> is rejected by schema validation, since the schema models
-	/// <c>useAll</c> as a presence flag (<c>const: true</c>) — false is not meaningful.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenUseAllIsFalse_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that <c>useAll: false</c> is rejected by schema validation, since the schema models
+    /// <c>useAll</c> as a presence flag (<c>const: true</c>) — false is not meaningful.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenUseAllIsFalse_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""useFrom"": [
 				{ ""resource"": ""some.resource"", ""useAll"": false }
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that a <c>useFrom</c> entry with neither <c>useAll</c> nor <c>uses</c> is rejected by
-	/// schema validation (the <c>anyOf</c> clause requires at least one of them).
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenUseFromHasNoDirective_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a <c>useFrom</c> entry with neither <c>useAll</c> nor <c>uses</c> is rejected by
+    /// schema validation (the <c>anyOf</c> clause requires at least one of them).
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenUseFromHasNoDirective_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""useFrom"": [
 				{ ""resource"": ""some.resource"" }
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that a Fixed strategy with <c>day: 32</c> is rejected by schema validation
-	/// (the <c>day</c> simple type maxes at 31).
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenFixedDayExceedsMaximum_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a Fixed strategy with <c>day: 32</c> is rejected by schema validation
+    /// (the <c>day</c> simple type maxes at 31).
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenFixedDayExceedsMaximum_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Out Of Range"", ""rules"": [ {
 					""name"": ""Bad"",
@@ -89,20 +89,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that an adjustment trigger outside the enumerated set is rejected by schema
-	/// validation (<c>adjustmentTrigger</c> enum constraint).
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenAdjustmentTriggerIsUnknownEnum_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that an adjustment trigger outside the enumerated set is rejected by schema
+    /// validation (<c>adjustmentTrigger</c> enum constraint).
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenAdjustmentTriggerIsUnknownEnum_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Bad Trigger"", ""rules"": [ {
 					""name"": ""Bad"",
@@ -115,20 +115,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that a territory code that does not match the ISO-3166 pattern is rejected by
-	/// schema validation (<c>territory</c> pattern constraint).
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenTerritoryViolatesPattern_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a territory code that does not match the ISO-3166 pattern is rejected by
+    /// schema validation (<c>territory</c> pattern constraint).
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenTerritoryViolatesPattern_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Bad Territory"", ""rules"": [ {
 					""name"": ""Bad"",
@@ -139,40 +139,40 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that a notable date with an empty <c>rules</c> array is rejected by schema
-	/// validation (<c>minItems: 1</c> on the rules array).
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenNotableDateHasEmptyRules_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a notable date with an empty <c>rules</c> array is rejected by schema
+    /// validation (<c>minItems: 1</c> on the rules array).
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenNotableDateHasEmptyRules_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Empty"", ""rules"": [] }
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that a <c>useFrom</c> directive's override-body (the nested <c>rule</c>) is rejected by
-	/// schema validation when it omits the required <c>name</c> attribute — matching the XSD's literal
-	/// <c>OverrideRule</c> requirement.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenOverrideRuleOmitsName_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a <c>useFrom</c> directive's override-body (the nested <c>rule</c>) is rejected by
+    /// schema validation when it omits the required <c>name</c> attribute — matching the XSD's literal
+    /// <c>OverrideRule</c> requirement.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenOverrideRuleOmitsName_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""useFrom"": [
 				{
 					""resource"": ""some.resource"",
@@ -186,21 +186,21 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that a <c>useFrom</c> directive's override-body is rejected by schema validation when
-	/// it omits the required <c>category</c> attribute — matching the XSD's literal <c>OverrideRule</c>
-	/// requirement.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenOverrideRuleOmitsCategory_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a <c>useFrom</c> directive's override-body is rejected by schema validation when
+    /// it omits the required <c>category</c> attribute — matching the XSD's literal <c>OverrideRule</c>
+    /// requirement.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenOverrideRuleOmitsCategory_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""useFrom"": [
 				{
 					""resource"": ""some.resource"",
@@ -214,20 +214,20 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that a numeric Fixed-strategy month outside the <c>1..13</c> calendar-month range is
-	/// rejected by schema validation (<c>monthOrNumber</c> integer branch range).
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenFixedNumericMonthExceedsMaximum_ShouldThrowJsonException()
-	{
-		const string json = @"{
+    /// <summary>
+    /// Verifies that a numeric Fixed-strategy month outside the <c>1..13</c> calendar-month range is
+    /// rejected by schema validation (<c>monthOrNumber</c> integer branch range).
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenFixedNumericMonthExceedsMaximum_ShouldThrowJsonException()
+    {
+        const string json = @"{
 			""notableDates"": [
 				{ ""name"": ""Bad Numeric Month"", ""rules"": [ {
 					""name"": ""Bad"",
@@ -237,21 +237,21 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-		Assert.ThrowsExactly<JsonException>(() =>
-		{
-			_ = NotableDateRuleJsonParser.ParseJson(json);
-		});
-	}
+        Assert.ThrowsExactly<JsonException>(() =>
+        {
+            _ = NotableDateRuleJsonParser.ParseJson(json);
+        });
+    }
 
-	/// <summary>
-	/// Verifies that a fully-populated valid document round-trips through parse without throwing,
-	/// confirming the schema's positive path admits the canonical authoring shape.
-	/// </summary>
-	[TestMethod]
-	public void ParseJson_WhenDocumentIsValid_ShouldRoundTripThroughSchema()
-	{
-		var rules = NotableDateRuleJsonParser.ParseJson(MultiRuleJson);
+    /// <summary>
+    /// Verifies that a fully-populated valid document round-trips through parse without throwing,
+    /// confirming the schema's positive path admits the canonical authoring shape.
+    /// </summary>
+    [TestMethod]
+    public void ParseJson_WhenDocumentIsValid_ShouldRoundTripThroughSchema()
+    {
+        var rules = NotableDateRuleJsonParser.ParseJson(MultiRuleJson);
 
-		Assert.AreEqual(4, rules.Count);
-	}
+        Assert.AreEqual(4, rules.Count);
+    }
 }

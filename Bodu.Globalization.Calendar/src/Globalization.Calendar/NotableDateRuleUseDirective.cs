@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Immutable;
-
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>

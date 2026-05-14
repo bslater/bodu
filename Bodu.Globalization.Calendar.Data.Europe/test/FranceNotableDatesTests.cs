@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FranceNotableDatesTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Linq;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Data.Europe.Tests;
 

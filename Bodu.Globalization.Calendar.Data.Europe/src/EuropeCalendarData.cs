@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EuropeCalendarData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Reflection;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Data.Europe;
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AmericasCalendarDataTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -6,7 +6,6 @@
 
 using System;
 using System.Linq;
-using Bodu.Globalization.Calendar;
 
 namespace Bodu.Globalization.Calendar.Data.Americas.Tests;
 

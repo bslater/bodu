@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
 using System.Reflection;
 using SysGlob = System.Globalization;
 

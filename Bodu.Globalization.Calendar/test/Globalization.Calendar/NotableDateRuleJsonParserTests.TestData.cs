@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NotableDateRuleJsonParserTests.TestData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,7 +8,7 @@ namespace Bodu.Globalization.Calendar;
 
 public partial class NotableDateRuleJsonParserTests
 {
-	public const string FixedRuleJson = @"
+    public const string FixedRuleJson = @"
 		{
 			""notableDates"": [
 				{
@@ -37,7 +37,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-	public const string DayOfWeekInMonthRuleJson = @"
+    public const string DayOfWeekInMonthRuleJson = @"
 		{
 			""notableDates"": [
 				{
@@ -53,7 +53,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-	public const string AlgorithmRuleJson = @"
+    public const string AlgorithmRuleJson = @"
 		{
 			""notableDates"": [
 				{
@@ -70,7 +70,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-	public const string OffsetFromAnchorRuleJson = @"
+    public const string OffsetFromAnchorRuleJson = @"
 		{
 			""notableDates"": [
 				{
@@ -86,7 +86,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-	public const string MultiRuleJson = @"
+    public const string MultiRuleJson = @"
 		{
 			""notableDates"": [
 				{
@@ -136,7 +136,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-	public const string CherryPickJson = @"
+    public const string CherryPickJson = @"
 		{
 			""useFrom"": [
 				{
@@ -163,14 +163,14 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-	public const string UseAllJson = @"
+    public const string UseAllJson = @"
 		{
 			""useFrom"": [
 				{ ""resource"": ""Bodu.Globalization.Calendar.Resources.Common.xml"", ""useAll"": true }
 			]
 		}";
 
-	public const string ReligiousRuleJson = @"
+    public const string ReligiousRuleJson = @"
 		{
 			""notableDates"": [
 				{
@@ -182,7 +182,7 @@ public partial class NotableDateRuleJsonParserTests
 			]
 		}";
 
-	public const string CivicRuleJson = @"
+    public const string CivicRuleJson = @"
 		{
 			""notableDates"": [
 				{
