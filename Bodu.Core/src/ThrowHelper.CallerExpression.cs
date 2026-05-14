@@ -1771,6 +1771,10 @@ public static partial class ThrowHelper
     /// <exception cref="ObjectDisposedException">
     /// Thrown when <paramref name="disposed"/> is <see langword="true"/>.
     /// </exception>
+    [SuppressMessage(
+        "Microsoft.CodeAnalysis.NetAnalyzers",
+        "CA1513:Use ObjectDisposedException throw helper",
+        Justification = "ObjectDisposedException.ThrowIf requires an object or Type instance; this helper accepts a string objectName captured via CallerArgumentExpressionAttribute, which the BCL helper does not support.")]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfDisposed(
         bool disposed,
