@@ -1,8 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateService.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateService.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Extensions;
 using Bodu.Globalization.Calendar.Plugins;
@@ -98,9 +98,6 @@ public sealed class NotableDateService : INotableDateService
     /// <summary>The optional localizer used to translate notable date names into the active culture.</summary>
     private readonly INotableDateNameLocalizer? _nameLocalizer;
 
-    /// <summary>The canonical working-week pattern; the complement of the days treated as weekend / non-working.</summary>
-    private readonly WeekPattern _workingWeek;
-
     /// <summary>The resolver used to locate embedded XML resource files.</summary>
     private readonly IResourcePathResolver _resourcePathResolver;
 
@@ -123,7 +120,7 @@ public sealed class NotableDateService : INotableDateService
     public NotableDateService()
         : this(
         [
-            (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver())
+            (new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver()))
         ],
         CalendarWeekendDefinition.SaturdaySunday)
     { }
@@ -141,7 +138,7 @@ public sealed class NotableDateService : INotableDateService
     public NotableDateService(WeekPattern workingWeek)
         : this(
         [
-            (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver())
+            (new XmlResourceNotableDateRuleProvider(DefaultResourceName, new ResourcePathResolver()))
         ],
         workingWeek)
     { }
@@ -230,7 +227,7 @@ public sealed class NotableDateService : INotableDateService
         // and removes a runaway vector for providers that return fresh, infinite, or expensive enumerables on each invocation.
         _overrideRemovals = [.. _overrideProviders.SelectMany(p => p.GetRemovals())];
 
-        _workingWeek = weekendDefinition.ToWeekPattern(weekendProvider);
+        this.WorkingWeek = weekendDefinition.ToWeekPattern(weekendProvider);
         _collisionResolver = collisionResolver ?? new DefaultNotableDateCollisionResolver();
         _nameLocalizer = nameLocalizer;
         _resourcePathResolver = resourcePathResolver ?? new ResourcePathResolver();
@@ -329,10 +326,51 @@ public sealed class NotableDateService : INotableDateService
     // --------------------------------------------------------------------------------------
 
     /// <inheritdoc />
-    public WeekPattern WorkingWeek => _workingWeek;
+    public WeekPattern WorkingWeek { get; }
+
+    /// <summary>
+    /// Gets the chronological windows that have been resolved by <see cref="ResolveNotableDatesInRange" /> since the service was
+    /// constructed or <see cref="Invalidate()" /> was last called. The list is sorted ascending by start date and contains the
+    /// minimum number of disjoint intervals describing the same coverage.
+    /// </summary>
+    /// <returns>
+    /// A snapshot of the disjoint <see cref="DateRange" /> instances representing the union of every requested window. An empty
+    /// list indicates that no range request has been served yet.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// The property reflects the windows the consumer has <em>asked about</em>, not the rule-set's effective range. Adjacent or
+    /// overlapping requests are merged. The returned list is a snapshot; subsequent calls to
+    /// <see cref="ResolveNotableDatesInRange" /> may extend it.
+    /// </para>
+    /// </remarks>
+    public IReadOnlyList<DateRange> ResolvedWindows
+    {
+        get
+        {
+            lock (_resolvedWindowsGate)
+            {
+                return [.. _resolvedWindows.Ranges];
+            }
+        }
+    }
+
+    /// <summary>
+    /// Orders base occurrences for deterministic adjustment evaluation.
+    /// </summary>
+    /// <param name="occurrences">The base occurrences to order.</param>
+    /// <returns>The ordered occurrences.</returns>
+    private static IEnumerable<ResolvedNotableDateOccurrence> OrderForAdjustment(IEnumerable<ResolvedNotableDateOccurrence> occurrences)
+    {
+        return occurrences
+            .OrderBy(occurrence => occurrence.AnchorDate)
+            .ThenBy(occurrence => occurrence.Rule.Priority)
+            .ThenBy(occurrence => occurrence.Rule.Name, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase);
+    }
 
     /// <inheritdoc />
-    public bool IsWeekend(DateTime date) => !_workingWeek.Contains(date.DayOfWeek);
+    public bool IsWeekend(DateTime date) => !WorkingWeek.Contains(date.DayOfWeek);
 
     /// <inheritdoc />
     public bool IsNonWorkingDay(DateTime date, string? territoryCode = null, Type? calendarType = null)
@@ -547,33 +585,6 @@ public sealed class NotableDateService : INotableDateService
     }
 
     /// <summary>
-    /// Gets the chronological windows that have been resolved by <see cref="ResolveNotableDatesInRange" /> since the service was
-    /// constructed or <see cref="Invalidate()" /> was last called. The list is sorted ascending by start date and contains the
-    /// minimum number of disjoint intervals describing the same coverage.
-    /// </summary>
-    /// <returns>
-    /// A snapshot of the disjoint <see cref="DateRange" /> instances representing the union of every requested window. An empty
-    /// list indicates that no range request has been served yet.
-    /// </returns>
-    /// <remarks>
-    /// <para>
-    /// The property reflects the windows the consumer has <em>asked about</em>, not the rule-set's effective range. Adjacent or
-    /// overlapping requests are merged. The returned list is a snapshot; subsequent calls to
-    /// <see cref="ResolveNotableDatesInRange" /> may extend it.
-    /// </para>
-    /// </remarks>
-    public IReadOnlyList<DateRange> ResolvedWindows
-    {
-        get
-        {
-            lock (_resolvedWindowsGate)
-            {
-                return [.. _resolvedWindows.Ranges];
-            }
-        }
-    }
-
-    /// <summary>
     /// Determines whether the supplied chronological range has already been resolved in its entirety by a previous call to
     /// <see cref="ResolveNotableDatesInRange" />.
     /// </summary>
@@ -602,7 +613,7 @@ public sealed class NotableDateService : INotableDateService
         return new RangeResolution.NotableDateRangePipeline(
             analysis,
             _resolver,
-            _workingWeek,
+            WorkingWeek,
             _adjustmentHandlers,
             _overrideRemovals);
     }
@@ -795,21 +806,6 @@ public sealed class NotableDateService : INotableDateService
     }
 
     /// <summary>
-    /// Orders base occurrences for deterministic adjustment evaluation.
-    /// </summary>
-    /// <param name="occurrences">The base occurrences to order.</param>
-    /// <returns>The ordered occurrences.</returns>
-    private static IEnumerable<ResolvedNotableDateOccurrence> OrderForAdjustment(IEnumerable<ResolvedNotableDateOccurrence> occurrences)
-    {
-        return occurrences
-            .OrderBy(occurrence => occurrence.AnchorDate)
-            .ThenBy(occurrence => occurrence.Rule.Priority)
-            .ThenBy(occurrence => occurrence.Rule.Name, StringComparer.OrdinalIgnoreCase)
-            .ThenBy(occurrence => occurrence.TerritoryCode, StringComparer.OrdinalIgnoreCase);
-    }
-
-
-    /// <summary>
     /// Creates an adjustment evaluator bound to the supplied generation context.
     /// </summary>
     /// <param name="context">The generation context.</param>
@@ -820,7 +816,7 @@ public sealed class NotableDateService : INotableDateService
             IsWeekend,
             (date, territoryCode, calendarType) =>
                 context.IsNonWorkingDay(date, territoryCode, calendarType, IsWeekend),
-            _workingWeek,
+            WorkingWeek,
             _adjustmentHandlers,
             (ruleName, year, territoryCode, calendarType) =>
                 context.ResolveByName(ruleName, year, territoryCode, calendarType));

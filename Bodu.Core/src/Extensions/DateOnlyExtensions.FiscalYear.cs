@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensions.FiscalYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -96,15 +96,15 @@ public static partial class DateOnlyExtensions
 
         if (count == 0) return date;
 
-        int fy = provider.GetFiscalYear(date);
+        var fy = provider.GetFiscalYear(date);
         DateOnly fyStart = FirstDateOfFiscalYear(fy, provider);
-        int dayIndex = date.DayNumber - fyStart.DayNumber;
+        var dayIndex = date.DayNumber - fyStart.DayNumber;
 
-        int target = fy + count;
+        var target = fy + count;
         DateOnly targetStart = FirstDateOfFiscalYear(target, provider);
         DateOnly targetEnd = LastDateOfFiscalYear(target, provider);
 
-        int candidate = targetStart.DayNumber + dayIndex;
+        var candidate = targetStart.DayNumber + dayIndex;
         if (candidate > targetEnd.DayNumber) candidate = targetEnd.DayNumber;
         return DateOnly.FromDayNumber(candidate);
     }
