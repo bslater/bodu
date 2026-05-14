@@ -139,10 +139,7 @@ public partial class FiscalWeekQuarterProviderTests
     /// <summary>
     /// Verifies that the last day of Q4 in fiscal year <c>y</c> maps back to quarter 4, and that the
     /// first day of Q1 in fiscal year <c>y + 1</c> maps to quarter 1, exercising the
-    /// <see cref="FiscalWeekQuarterProvider.GetQuarter(DateTime)" /> boundary handoff. Uses a
-    /// provider configured with <c>isFiscalYearEnd: false</c> so the fiscal year start day and the
-    /// first day of each fiscal week are identical, avoiding the 1-day offset that arises under
-    /// <c>isFiscalYearEnd: true</c>.
+    /// <see cref="FiscalWeekQuarterProvider.GetQuarter(DateTime)" /> boundary handoff.
     /// </summary>
     [TestMethod]
     public void GetQuarter_AtFiscalYearBoundary_ShouldHandoffCorrectly()
