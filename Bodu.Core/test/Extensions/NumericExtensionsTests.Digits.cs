@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumericExtensionsTests.Digits.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,7 +13,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>ReverseDigits</c> on <see cref="ushort"/> reverses the decimal digits.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((ushort)0, (ushort)0)]
     [DataRow((ushort)7, (ushort)7)]
     [DataRow((ushort)10, (ushort)1)]
@@ -24,7 +24,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>ReverseDigits</c> on <see cref="uint"/> reverses the decimal digits.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0u, 0u)]
     [DataRow(7u, 7u)]
     [DataRow(10u, 1u)]
@@ -36,7 +36,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>ReverseDigits</c> reverses the decimal digits of a <see cref="ulong"/>.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0UL, 0UL)]
     [DataRow(1UL, 1UL)]
     [DataRow(10UL, 1UL)]
@@ -48,7 +48,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that applying <c>ReverseDigits</c> twice to a value without trailing zeros returns the original.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(7UL)]
     [DataRow(123UL)]
     [DataRow(98765UL)]
@@ -66,7 +66,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RotateDigitsLeft</c> on <see cref="ushort"/> rotates the decimal digits.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((ushort)12345, 0, (ushort)12345)]
     [DataRow((ushort)12345, 1, (ushort)23451)]
     [DataRow((ushort)12345, 5, (ushort)12345)]
@@ -83,7 +83,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RotateDigitsLeft</c> on <see cref="uint"/> rotates the decimal digits.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12345u, 0, 12345u)]
     [DataRow(12345u, 1, 23451u)]
     [DataRow(12345u, 2, 34512u)]
@@ -101,7 +101,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RotateDigitsLeft</c> with an explicit count rotates by that amount.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12345UL, 0, 12345UL)]
     [DataRow(12345UL, 1, 23451UL)]
     [DataRow(12345UL, 2, 34512UL)]
@@ -130,7 +130,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RotateDigitsRight</c> on <see cref="ushort"/> rotates the decimal digits.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((ushort)12345, 0, (ushort)12345)]
     [DataRow((ushort)12345, 1, (ushort)51234)]
     [DataRow((ushort)12345, 5, (ushort)12345)]
@@ -147,7 +147,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RotateDigitsRight</c> on <see cref="uint"/> rotates the decimal digits.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12345u, 0, 12345u)]
     [DataRow(12345u, 1, 51234u)]
     [DataRow(12345u, 2, 45123u)]
@@ -165,7 +165,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RotateDigitsRight</c> with an explicit count rotates by that amount.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12345UL, 0, 12345UL)]
     [DataRow(12345UL, 1, 51234UL)]
     [DataRow(12345UL, 2, 45123UL)]
@@ -198,7 +198,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RotateDigitsLeft</c> and <c>RotateDigitsRight</c> are inverse operations.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12345UL, 0)]
     [DataRow(12345UL, 1)]
     [DataRow(12345UL, 3)]
@@ -212,7 +212,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that rotating a value by its digit length returns the value unchanged.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12345UL, 5)]
     [DataRow(7UL, 1)]
     [DataRow(987_654_321UL, 9)]

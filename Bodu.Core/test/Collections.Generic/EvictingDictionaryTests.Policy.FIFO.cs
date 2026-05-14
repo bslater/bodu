@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Policy.FIFO.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -106,12 +106,12 @@ public partial class EvictingDictionaryTests
         dictionary.Add("b", 2);
         dictionary.Add("c", 3);
 
-        KeyValuePair<string, int>[] expected = new[]
-        {
+        KeyValuePair<string, int>[] expected =
+        [
             new KeyValuePair<string, int>("a", 1),
             new KeyValuePair<string, int>("b", 2),
             new KeyValuePair<string, int>("c", 3)
-        };
+        ];
 
         CollectionAssert.AreEqual(expected, new List<KeyValuePair<string, int>>(dictionary));
     }

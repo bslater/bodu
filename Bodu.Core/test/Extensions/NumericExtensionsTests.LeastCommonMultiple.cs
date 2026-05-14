@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumericExtensionsTests.LeastCommonMultiple.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,11 +16,11 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> LcmArrayNullActions =>
     [
-        new object[] { (Action)(() => { _ = ((short[])null!).LeastCommonMultiple(); }) },
-        new object[] { (Action)(() => { _ = ((long[])null!).LeastCommonMultiple(); }) },
-        new object[] { (Action)(() => { _ = ((ushort[])null!).LeastCommonMultiple(); }) },
-        new object[] { (Action)(() => { _ = ((uint[])null!).LeastCommonMultiple(); }) },
-        new object[] { (Action)(() => { _ = ((ulong[])null!).LeastCommonMultiple(); }) },
+        [(Action)(() => { _ = ((short[])null!).LeastCommonMultiple(); })],
+        [(Action)(() => { _ = ((long[])null!).LeastCommonMultiple(); })],
+        [(Action)(() => { _ = ((ushort[])null!).LeastCommonMultiple(); })],
+        [(Action)(() => { _ = ((uint[])null!).LeastCommonMultiple(); })],
+        [(Action)(() => { _ = ((ulong[])null!).LeastCommonMultiple(); })],
     ];
 
     /// <summary>
@@ -29,17 +29,17 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> LcmArrayEmptyActions =>
     [
-        new object[] { (Action)(() => { _ = Array.Empty<short>().LeastCommonMultiple(); }) },
-        new object[] { (Action)(() => { _ = Array.Empty<long>().LeastCommonMultiple(); }) },
-        new object[] { (Action)(() => { _ = Array.Empty<ushort>().LeastCommonMultiple(); }) },
-        new object[] { (Action)(() => { _ = Array.Empty<uint>().LeastCommonMultiple(); }) },
-        new object[] { (Action)(() => { _ = Array.Empty<ulong>().LeastCommonMultiple(); }) },
+        [(Action)(() => { _ = Array.Empty<short>().LeastCommonMultiple(); })],
+        [(Action)(() => { _ = Array.Empty<long>().LeastCommonMultiple(); })],
+        [(Action)(() => { _ = Array.Empty<ushort>().LeastCommonMultiple(); })],
+        [(Action)(() => { _ = Array.Empty<uint>().LeastCommonMultiple(); })],
+        [(Action)(() => { _ = Array.Empty<ulong>().LeastCommonMultiple(); })],
     ];
 
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> for <see cref="short"/> returns the expected value.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((short)0, (short)0, (short)0)]
     [DataRow((short)4, (short)6, (short)12)]
     [DataRow((short)21, (short)6, (short)42)]
@@ -50,7 +50,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> for <see cref="short"/> throws when an argument is negative.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((short)-1, (short)10)]
     [DataRow((short)10, (short)-1)]
     public void LeastCommonMultiple_Short_WhenNegative_ShouldThrowArgumentOutOfRangeException(short a, short b) =>
@@ -72,7 +72,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> returns the correct LCM for representative pairs of <see cref="int"/>.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, 0, 0)]
     [DataRow(12, 0, 0)]
     [DataRow(0, 18, 0)]
@@ -117,7 +117,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> for <see cref="long"/> returns the expected value.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0L, 0L, 0L)]
     [DataRow(4L, 6L, 12L)]
     [DataRow(21L, 6L, 42L)]
@@ -128,7 +128,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> for <see cref="long"/> throws when an argument is negative.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(-1L, 10L)]
     [DataRow(10L, -1L)]
     public void LeastCommonMultiple_Long_WhenNegative_ShouldThrowArgumentOutOfRangeException(long a, long b) =>
@@ -150,7 +150,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> for <see cref="ushort"/> returns the expected value.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((ushort)0, (ushort)0, (ushort)0)]
     [DataRow((ushort)4, (ushort)6, (ushort)12)]
     [DataRow((ushort)21, (ushort)6, (ushort)42)]
@@ -170,7 +170,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> for <see cref="uint"/> returns the expected value.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0u, 0u, 0u)]
     [DataRow(4u, 6u, 12u)]
     [DataRow(1_000_000u, 1_500_000u, 3_000_000u)]
@@ -190,7 +190,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> for <see cref="ulong"/> returns the expected value.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0ul, 0ul, 0ul)]
     [DataRow(4ul, 6ul, 12ul)]
     [DataRow(1_000_000_000_000ul, 1_500_000_000_000ul, 3_000_000_000_000ul)]
@@ -217,7 +217,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple(value, value)</c> equals <c>value</c>.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1)]
     [DataRow(7)]
     [DataRow(12)]
@@ -227,7 +227,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple(value, 1)</c> always equals <c>value</c> for positive inputs.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1)]
     [DataRow(7)]
     [DataRow(48)]
@@ -241,7 +241,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>LeastCommonMultiple</c> is commutative.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, 0)]
     [DataRow(4, 6)]
     [DataRow(21, 6)]
@@ -252,7 +252,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies the identity <c>gcd(a, b) * lcm(a, b) == a * b</c> for representative positive pairs.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12L, 18L)]
     [DataRow(15L, 25L)]
     [DataRow(7L, 13L)]
@@ -294,7 +294,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that the <see cref="short"/> array overload rejects a negative element regardless of position.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(LcmNegativeShortArrays))]
     public void LeastCommonMultiple_ShortArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(short[] values) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -308,14 +308,14 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> LcmNegativeShortArrays =>
     [
-        new object[] { new short[] { -1, 6, 8 } },
-        new object[] { new short[] { 6, -2, 8 } },
+        [new short[] { -1, 6, 8 }],
+        [new short[] { 6, -2, 8 }],
     ];
 
     /// <summary>
     /// Verifies that the <see cref="int"/> array overload rejects a negative element regardless of position.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(LcmNegativeIntArrays))]
     public void LeastCommonMultiple_IntArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(int[] values) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -329,14 +329,14 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> LcmNegativeIntArrays =>
     [
-        new object[] { new int[] { -1, 6, 8 } },
-        new object[] { new int[] { 6, -2, 8 } },
+        [new int[] { -1, 6, 8 }],
+        [new int[] { 6, -2, 8 }],
     ];
 
     /// <summary>
     /// Verifies that the <see cref="long"/> array overload rejects a negative element regardless of position.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(LcmNegativeLongArrays))]
     public void LeastCommonMultiple_LongArray_WhenAnyValueIsNegative_ShouldThrowArgumentOutOfRangeException(long[] values) =>
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
@@ -350,8 +350,8 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> LcmNegativeLongArrays =>
     [
-        new object[] { new long[] { -1L, 6L, 8L } },
-        new object[] { new long[] { 6L, -2L, 8L } },
+        [new long[] { -1L, 6L, 8L }],
+        [new long[] { 6L, -2L, 8L }],
     ];
 
     /// <summary>

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumericExtensionsTests.IsPrime.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,7 +11,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>IsPrime</c> on <see cref="short"/> returns the expected result.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((short)-7, false)]
     [DataRow((short)0, false)]
     [DataRow((short)1, false)]
@@ -39,7 +39,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>IsPrime</c> returns <see langword="true"/> for known small primes and <see langword="false"/> otherwise.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, false)]
     [DataRow(1, false)]
     [DataRow(2, true)]
@@ -76,7 +76,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>IsPrime</c> on <see cref="long"/> returns the expected result.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(-7L, false)]
     [DataRow(0L, false)]
     [DataRow(1L, false)]
@@ -97,7 +97,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>IsPrime</c> on <see cref="ushort"/> returns the expected result.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((ushort)0, false)]
     [DataRow((ushort)1, false)]
     [DataRow((ushort)2, true)]
@@ -118,7 +118,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>IsPrime</c> on <see cref="uint"/> returns the expected result.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0u, false)]
     [DataRow(1u, false)]
     [DataRow(2u, true)]
@@ -131,7 +131,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>IsPrime</c> on <see cref="ulong"/> returns the expected result for boundary values.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0ul, false)]
     [DataRow(1ul, false)]
     [DataRow(2ul, true)]

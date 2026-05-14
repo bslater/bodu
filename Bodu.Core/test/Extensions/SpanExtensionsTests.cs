@@ -71,7 +71,7 @@ public partial class SpanExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> FullReverseIntData =>
         [
-            new object[] { new[] { 1, 2, 3, 4, 5 }, new[] { 5, 4, 3, 2, 1 } }, // odd length
+            [new[] { 1, 2, 3, 4, 5 }, new[] { 5, 4, 3, 2, 1 }], // odd length
             [new[] { 1, 2, 3, 4 },    new[] { 4, 3, 2, 1 }], // even length
             [new[] { 42 },             new[] { 42 }], // single element
             [Array.Empty<int>(),       Array.Empty<int>()], // empty
@@ -87,7 +87,7 @@ public partial class SpanExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> PartialReverseIntData =>
         [
-            new object[] { 1, 3, new[] { 1, 4, 3, 2, 5 } }, // middle section
+            [1, 3, new[] { 1, 4, 3, 2, 5 }], // middle section
             [0, 3, new[] { 3, 2, 1, 4, 5 }], // first section
             [2, 3, new[] { 1, 2, 5, 4, 3 }], // last section
             [0, 5, new[] { 5, 4, 3, 2, 1 }], // full span
@@ -99,7 +99,7 @@ public partial class SpanExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> DegenerateCountData =>
         [
-            new object[] { 0, 0 }, // count zero at start
+            [0, 0], // count zero at start
             [2, 0], // count zero at middle
             [0, 1], // count one at start
             [2, 1], // count one at middle
@@ -119,7 +119,7 @@ public partial class SpanExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> ReverseIntRangeData =>
         [
-        new object[] { 1, 4, false, false, new[] { 1, 4, 3, 2, 5 } }, // 1..4   start-relative, middle
+        [1, 4, false, false, new[] { 1, 4, 3, 2, 5 }], // 1..4   start-relative, middle
         [4, 1, true,  true,  new[] { 1, 4, 3, 2, 5 }], // ^4..^1 end-relative, equivalent
         [0, 0, false, true,  new[] { 5, 4, 3, 2, 1 }], // 0..^0  full array
         [0, 3, false, false, new[] { 3, 2, 1, 4, 5 }], // 0..3   first section

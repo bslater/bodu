@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Policy.LRU.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -276,12 +276,12 @@ public partial class EvictingDictionaryTests
         dictionary.Touch("a");
 
         KeyValuePair<string, int>[] actual = dictionary.ToArray(); // Iteration order reflects recency
-        KeyValuePair<string, int>[] expected = new[]
-        {
+        KeyValuePair<string, int>[] expected =
+        [
             new KeyValuePair<string, int>("b", 2),
             new KeyValuePair<string, int>("c", 3),
             new KeyValuePair<string, int>("a", 1),
-        };
+        ];
 
         CollectionAssert.AreEqual(expected, actual);
     }

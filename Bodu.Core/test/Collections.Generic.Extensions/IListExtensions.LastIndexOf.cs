@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IListExtensions.LastIndexOf.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,10 +18,10 @@ public sealed class IListExtensionsTests_LastIndexOf
     /// </summary>
     public static IEnumerable<object[]> LastMatchData =>
     [
-        new object[] { new[] { 5, 1, 5, 5, 5 }, 4 },
-        new object[] { new[] { 5, 5, 5, 5, 1 }, 3 },
-        new object[] { new[] { 5, 1, 1, 1, 1 }, 0 },
-        new object[] { new[] { 5, 5 },          1 },
+        [new[] { 5, 1, 5, 5, 5 }, 4],
+        [new[] { 5, 5, 5, 5, 1 }, 3],
+        [new[] { 5, 1, 1, 1, 1 }, 0],
+        [new[] { 5, 5 },          1],
     ];
 
     /// <summary>
@@ -215,7 +215,7 @@ public sealed class IListExtensionsTests_LastIndexOf
     /// empty and <paramref name="startIndex"/> is anything other than <c>-1</c>, exercising the empty-list
     /// branch of the validator.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(1)]
     [DataRow(-2)]

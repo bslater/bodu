@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumericExtensionsTests.GreatestCommonDivisor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,11 +16,11 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> GcdArrayNullActions =>
     [
-        new object[] { (Action)(() => { _ = ((short[])null!).GreatestCommonDivisor(); }) },
-        new object[] { (Action)(() => { _ = ((long[])null!).GreatestCommonDivisor(); }) },
-        new object[] { (Action)(() => { _ = ((ushort[])null!).GreatestCommonDivisor(); }) },
-        new object[] { (Action)(() => { _ = ((uint[])null!).GreatestCommonDivisor(); }) },
-        new object[] { (Action)(() => { _ = ((ulong[])null!).GreatestCommonDivisor(); }) },
+        [(Action)(() => { _ = ((short[])null!).GreatestCommonDivisor(); })],
+        [(Action)(() => { _ = ((long[])null!).GreatestCommonDivisor(); })],
+        [(Action)(() => { _ = ((ushort[])null!).GreatestCommonDivisor(); })],
+        [(Action)(() => { _ = ((uint[])null!).GreatestCommonDivisor(); })],
+        [(Action)(() => { _ = ((ulong[])null!).GreatestCommonDivisor(); })],
     ];
 
     /// <summary>
@@ -29,18 +29,18 @@ public partial class NumericExtensionsTests
     /// </summary>
     public static IEnumerable<object[]> GcdArrayEmptyActions =>
     [
-        new object[] { (Action)(() => { _ = Array.Empty<short>().GreatestCommonDivisor(); }) },
-        new object[] { (Action)(() => { _ = Array.Empty<long>().GreatestCommonDivisor(); }) },
-        new object[] { (Action)(() => { _ = Array.Empty<ushort>().GreatestCommonDivisor(); }) },
-        new object[] { (Action)(() => { _ = Array.Empty<uint>().GreatestCommonDivisor(); }) },
-        new object[] { (Action)(() => { _ = Array.Empty<ulong>().GreatestCommonDivisor(); }) },
+        [(Action)(() => { _ = Array.Empty<short>().GreatestCommonDivisor(); })],
+        [(Action)(() => { _ = Array.Empty<long>().GreatestCommonDivisor(); })],
+        [(Action)(() => { _ = Array.Empty<ushort>().GreatestCommonDivisor(); })],
+        [(Action)(() => { _ = Array.Empty<uint>().GreatestCommonDivisor(); })],
+        [(Action)(() => { _ = Array.Empty<ulong>().GreatestCommonDivisor(); })],
     ];
 
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> for <see cref="short"/> returns the expected value for
     /// non-negative inputs.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((short)0, (short)0, (short)0)]
     [DataRow((short)12, (short)18, (short)6)]
     [DataRow((short)100, (short)75, (short)25)]
@@ -51,7 +51,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> for <see cref="short"/> throws when an argument is negative.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((short)-1, (short)10)]
     [DataRow((short)10, (short)-1)]
     [DataRow(short.MinValue, (short)10)]
@@ -64,7 +64,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> returns the correct GCD for representative pairs of <see cref="int"/>.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, 0, 0)]
     [DataRow(12, 0, 12)]
     [DataRow(0, 18, 18)]
@@ -99,7 +99,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>GreatestCommonDivisor</c> for <see cref="long"/> returns the expected value for
     /// non-negative inputs.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0L, 0L, 0L)]
     [DataRow(12L, 18L, 6L)]
     [DataRow(1_000_000_000L, 750_000_000L, 250_000_000L)]
@@ -110,7 +110,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> for <see cref="long"/> throws when an argument is negative.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(-1L, 10L)]
     [DataRow(10L, -1L)]
     [DataRow(long.MinValue, 10L)]
@@ -123,7 +123,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> for <see cref="ushort"/> returns the expected value.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow((ushort)0, (ushort)0, (ushort)0)]
     [DataRow((ushort)12, (ushort)18, (ushort)6)]
     [DataRow((ushort)1024, (ushort)512, (ushort)512)]
@@ -133,7 +133,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> for <see cref="uint"/> returns the expected value.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0u, 0u, 0u)]
     [DataRow(48u, 18u, 6u)]
     [DataRow(1_000_000_000u, 750_000_000u, 250_000_000u)]
@@ -143,7 +143,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> for <see cref="ulong"/> returns the expected value.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0ul, 0ul, 0ul)]
     [DataRow(48ul, 18ul, 6ul)]
     [DataRow(1_000_000_007ul, 1_000_000_009ul, 1ul)]
@@ -175,7 +175,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor(value, value)</c> equals <c>value</c>.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1)]
     [DataRow(7)]
     [DataRow(12)]
@@ -186,7 +186,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor(value, 1)</c> always returns <c>1</c>.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1)]
     [DataRow(7)]
     [DataRow(48)]
@@ -197,7 +197,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> is commutative for <see cref="int"/> inputs.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0, 0)]
     [DataRow(12, 18)]
     [DataRow(7, 13)]
@@ -208,7 +208,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> is commutative for <see cref="long"/> inputs.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12L, 18L)]
     [DataRow(1_000_000_000L, 750_000_000L)]
     public void GreatestCommonDivisor_Long_ShouldBeCommutative(long a, long b) =>
@@ -217,15 +217,15 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>GreatestCommonDivisor</c> is associative for <see cref="int"/> inputs.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12, 18, 24)]
     [DataRow(7, 11, 13)]
     [DataRow(48, 18, 36)]
     [DataRow(100, 75, 50)]
     public void GreatestCommonDivisor_Int_ShouldBeAssociative(int a, int b, int c)
     {
-        int leftGroup = a.GreatestCommonDivisor(b).GreatestCommonDivisor(c);
-        int rightGroup = a.GreatestCommonDivisor(b.GreatestCommonDivisor(c));
+        var leftGroup = a.GreatestCommonDivisor(b).GreatestCommonDivisor(c);
+        var rightGroup = a.GreatestCommonDivisor(b.GreatestCommonDivisor(c));
         Assert.AreEqual(leftGroup, rightGroup);
     }
 

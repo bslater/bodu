@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.Copy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -101,7 +101,7 @@ public partial class OrderedSetStorageTests
     public void CopyTo_WhenIndexIsNonZero_ShouldCopyStartingAtOffset()
     {
         OrderedSetStorage<int> sut = CreateStorage(new[] { 10, 20 });
-        int[] target = new int[] { 99, 99, 99, 99 };
+        int[] target = [99, 99, 99, 99];
 
         sut.CopyTo(target, 1);
 
@@ -115,7 +115,7 @@ public partial class OrderedSetStorageTests
     public void CopyTo_WhenStorageIsEmpty_ShouldNotModifyArray()
     {
         var sut = new OrderedSetStorage<int>(0, null);
-        int[] target = new int[] { 99, 88 };
+        int[] target = [99, 88];
 
         sut.CopyTo(target, 0);
 

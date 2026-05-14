@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IListExtensions.IndexOf.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,10 +18,10 @@ public sealed class IListExtensionsTests_IndexOf
     /// </summary>
     public static IEnumerable<object[]> FirstMatchData =>
     [
-        new object[] { new[] { 5, 1, 5, 5, 5 }, 0 },
-        new object[] { new[] { 1, 5, 5, 5, 5 }, 1 },
-        new object[] { new[] { 1, 1, 1, 1, 5 }, 4 },
-        new object[] { new[] { 5, 5 },          0 },
+        [new[] { 5, 1, 5, 5, 5 }, 0],
+        [new[] { 1, 5, 5, 5, 5 }, 1],
+        [new[] { 1, 1, 1, 1, 5 }, 4],
+        [new[] { 5, 5 },          0],
     ];
 
     /// <summary>

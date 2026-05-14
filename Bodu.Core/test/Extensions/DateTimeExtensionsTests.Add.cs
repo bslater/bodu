@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,7 +24,7 @@ public partial class DateTimeExtensionsTests
     public static IEnumerable<object[]> GetAddTestCases() =>
     [
         // Basic date increments
-        new object[] { new DateTime(2024, 01, 01), 1, 0, 0, new DateTime(2025, 01, 01) },
+        [new DateTime(2024, 01, 01), 1, 0, 0, new DateTime(2025, 01, 01)],
         [new DateTime(2024, 01, 01), 0, 1, 0, new DateTime(2024, 02, 01)],
         [new DateTime(2024, 01, 01), 0, 0, 1, new DateTime(2024, 01, 02)],
 

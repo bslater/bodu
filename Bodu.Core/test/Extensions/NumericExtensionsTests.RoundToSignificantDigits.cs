@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NumericExtensionsTests.RoundToSignificantDigits.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,7 +13,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RoundToSignificantDigits</c> rounds positive doubles to the requested significant digit count.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(12345.6789, 3, 12300.0)]
     [DataRow(12345.6789, 5, 12346.0)]
     [DataRow(0.0012345, 2, 0.0012)]
@@ -81,7 +81,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that <c>RoundToSignificantDigits</c> throws when the requested digit count is out of range.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(-1)]
     [DataRow(16)]
@@ -95,7 +95,7 @@ public partial class NumericExtensionsTests
     /// Verifies that <c>RoundToSignificantDigits</c> for <see cref="double"/> rounds values midway between
     /// representable significant points away from zero.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(1.5, 1, 2.0)]
     [DataRow(2.5, 1, 3.0)]
     [DataRow(-1.5, 1, -2.0)]
@@ -152,7 +152,7 @@ public partial class NumericExtensionsTests
     /// <summary>
     /// Verifies that the decimal overload throws when the requested digit count is out of range.
     /// </summary>
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(0)]
     [DataRow(29)]
     public void RoundToSignificantDigits_Decimal_WhenDigitsOutOfRange_ShouldThrowArgumentOutOfRangeException(int digits) =>

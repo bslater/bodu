@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ArrayExtensionsTests.Pad.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadLeft_WhenTotalLengthExceedsSource_ShouldRightAlignWithPadding()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         int[] result = source.PadLeft(6, 9);
 
@@ -30,7 +30,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadLeft_WhenTotalLengthEqualsSource_ShouldReturnFreshCopyWithNoPadding()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         int[] result = source.PadLeft(3, 9);
 
@@ -58,7 +58,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadLeft_WhenPadValueIsDefault_ShouldZeroFillPrefix()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         int[] result = source.PadLeft(6, 0);
 
@@ -71,7 +71,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadLeft_WhenArrayIsReferenceType_ShouldRightAlignWithPadding()
     {
-        string?[] source = { "a", "b" };
+        string?[] source = ["a", "b"];
 
         string?[] result = source.PadLeft(4, "x");
 
@@ -99,7 +99,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadLeft_WhenTotalLengthIsLessThanSourceLength_ShouldThrowArgumentOutOfRangeException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -113,7 +113,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadRight_WhenTotalLengthExceedsSource_ShouldLeftAlignWithPadding()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         int[] result = source.PadRight(6, 9);
 
@@ -127,7 +127,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadRight_WhenTotalLengthEqualsSource_ShouldReturnFreshCopyWithNoPadding()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         int[] result = source.PadRight(3, 9);
 
@@ -155,7 +155,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadRight_WhenPadValueIsDefault_ShouldZeroFillSuffix()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         int[] result = source.PadRight(6, 0);
 
@@ -169,7 +169,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadRight_WhenArrayIsReferenceType_ShouldLeftAlignWithPadding()
     {
-        string?[] source = { "a", "b" };
+        string?[] source = ["a", "b"];
 
         string?[] result = source.PadRight(4, "x");
 
@@ -197,7 +197,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadRight_WhenTotalLengthIsLessThanSourceLength_ShouldThrowArgumentOutOfRangeException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -212,7 +212,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void PadLeftAndRight_WhenPadValueIsNull_ShouldFillWithNullReferences()
     {
-        string?[] source = { "a" };
+        string?[] source = ["a"];
 
         string?[] leftResult = source.PadLeft(3, null);
         string?[] rightResult = source.PadRight(3, null);

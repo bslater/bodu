@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ArrayExtensionsTests.ToMatrix.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,10 +17,10 @@ public partial class ArrayExtensionsTests
     public void ToMatrix_WithoutTranspose_ShouldProduceRowsByColsLayout()
     {
         int[][] source =
-        {
-            new[] { 1, 2, 3 },
-            new[] { 4, 5, 6 },
-        };
+        [
+            [1, 2, 3],
+            [4, 5, 6],
+        ];
 
         int[,] result = source.ToMatrix(transpose: false);
 
@@ -41,10 +41,10 @@ public partial class ArrayExtensionsTests
     public void ToMatrix_WithTranspose_ShouldProduceColsByRowsLayout()
     {
         int[][] source =
-        {
-            new[] { 1, 2, 3 },
-            new[] { 4, 5, 6 },
-        };
+        [
+            [1, 2, 3],
+            [4, 5, 6],
+        ];
 
         int[,] result = source.ToMatrix(transpose: true);
 
@@ -64,7 +64,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WithSingleRow_ShouldProduceOneRowMatrix()
     {
-        int[][] source = { new[] { 1, 2, 3 } };
+        int[][] source = [[1, 2, 3]];
 
         int[,] result = source.ToMatrix(transpose: false);
 
@@ -81,7 +81,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WithSingleRowTransposed_ShouldProduceOneColumnMatrix()
     {
-        int[][] source = { new[] { 1, 2, 3 } };
+        int[][] source = [[1, 2, 3]];
 
         int[,] result = source.ToMatrix(transpose: true);
 
@@ -99,11 +99,11 @@ public partial class ArrayExtensionsTests
     public void ToMatrix_WithSingleColumn_ShouldProduceOneColumnMatrix()
     {
         int[][] source =
-        {
-            new[] { 1 },
-            new[] { 2 },
-            new[] { 3 },
-        };
+        [
+            [1],
+            [2],
+            [3],
+        ];
 
         int[,] result = source.ToMatrix(transpose: false);
 
@@ -120,7 +120,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WithSingleElement_ShouldProduceOneByOneMatrix()
     {
-        int[][] source = { new[] { 42 } };
+        int[][] source = [[42]];
 
         int[,] result = source.ToMatrix(transpose: false);
 
@@ -135,7 +135,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WhenInnerArraysAreEmpty_ShouldProduceZeroColumnMatrix()
     {
-        int[][] source = { Array.Empty<int>(), Array.Empty<int>() };
+        int[][] source = [Array.Empty<int>(), Array.Empty<int>()];
 
         int[,] result = source.ToMatrix(transpose: false);
 
@@ -150,7 +150,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WhenInnerArraysAreEmptyAndTransposed_ShouldProduceZeroRowMatrix()
     {
-        int[][] source = { Array.Empty<int>(), Array.Empty<int>() };
+        int[][] source = [Array.Empty<int>(), Array.Empty<int>()];
 
         int[,] result = source.ToMatrix(transpose: true);
 
@@ -170,10 +170,10 @@ public partial class ArrayExtensionsTests
         var d = new object();
 
         object[][] source =
-        {
-            new[] { a, b },
-            new[] { c, d },
-        };
+        [
+            [a, b],
+            [c, d],
+        ];
 
         object[,] result = source.ToMatrix(transpose: false);
 
@@ -204,7 +204,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WhenInnerArrayIsNull_ShouldThrowArgumentNullException()
     {
-        int[][] source = { new[] { 1, 2 }, null! };
+        int[][] source = [[1, 2], null!];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -219,7 +219,7 @@ public partial class ArrayExtensionsTests
     [TestMethod]
     public void ToMatrix_WhenFirstInnerArrayIsNull_ShouldThrowArgumentNullException()
     {
-        int[][] source = { null!, new[] { 1, 2 } };
+        int[][] source = [null!, [1, 2]];
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -234,10 +234,10 @@ public partial class ArrayExtensionsTests
     public void ToMatrix_WhenInnerArraysHaveDifferentLengths_ShouldThrowArgumentException()
     {
         int[][] source =
-        {
-            new[] { 1, 2, 3 },
-            new[] { 4, 5 },
-        };
+        [
+            [1, 2, 3],
+            [4, 5],
+        ];
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {

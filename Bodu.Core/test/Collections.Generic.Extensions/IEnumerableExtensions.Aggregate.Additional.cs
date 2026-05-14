@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.Aggregate.Additional.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenFuncIsNull_ForThreeFuncWithIndex_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, int, int> nullFunc = null!;
 
         var ex1 = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -56,7 +56,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithIndexAndSelector_ShouldThrowArgumentNullException()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         Func<int, int, int, string> resultSelector = null!;
 
         var ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -78,7 +78,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncWithIndex_ShouldReturnAllThreeFinalValues()
     {
-        int[] source = { 10, 20, 30, 40 };
+        int[] source = [10, 20, 30, 40];
 
         // sumWithIndex = 10*0 + 20*1 + 30*2 + 40*3 = 0 + 20 + 60 + 120 = 200
         (int weightedSum, int count, int lastIndex) = source.Aggregate(
@@ -100,7 +100,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncWithIndexAndSelector_ShouldTransformTuple()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
 
         string result = source.Aggregate(
             seed1: 0,
@@ -213,7 +213,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForThreeFuncNoIndex_ShouldInvokeAccumulatorsInOrder()
     {
-        int[] source = { 1, 2, 3 };
+        int[] source = [1, 2, 3];
         var calls = new List<string>();
 
         _ = source.Aggregate(
@@ -233,7 +233,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     [TestMethod]
     public void Aggregate_WhenInvoked_ForTwoFuncNoIndex_ShouldInvokeAccumulatorsInOrder()
     {
-        int[] source = { 1, 2 };
+        int[] source = [1, 2];
         var calls = new List<string>();
 
         _ = source.Aggregate(

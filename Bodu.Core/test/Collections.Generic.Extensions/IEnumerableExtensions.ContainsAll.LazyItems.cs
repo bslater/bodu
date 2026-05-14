@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensions.ContainsAll.LazyItems.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,7 +15,7 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
     [TestMethod]
     public void ContainsAll_WhenItemsIsLazyIterator_ShouldReturnExpectedResult()
     {
-        int[] source = { 1, 2, 3, 4, 5 };
+        int[] source = [1, 2, 3, 4, 5];
 
         Assert.IsTrue(source.ContainsAll(LazyYield(2, 3))); // 2,3,4 all present
         Assert.IsFalse(source.ContainsAll(LazyYield(4, 4))); // 4,5,6,7 -> 6 missing
