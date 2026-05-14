@@ -11,8 +11,19 @@ using System.Collections.ObjectModel;
 namespace Bodu.Collections.Generic.Extensions;
 
 [TestClass]
-public sealed partial class IListExtensionsTests_IndexOf
+public sealed class IListExtensionsTests_IndexOf
 {
+    /// <summary>
+    /// Provides multi-match scenarios for verifying that <c>IndexOf</c> always returns the first matching index.
+    /// </summary>
+    public static IEnumerable<object[]> FirstMatchData =>
+    [
+        new object[] { new[] { 5, 1, 5, 5, 5 }, 0 },
+        new object[] { new[] { 1, 5, 5, 5, 5 }, 1 },
+        new object[] { new[] { 1, 1, 1, 1, 5 }, 4 },
+        new object[] { new[] { 5, 5 },          0 },
+    ];
+
     /// <summary>
     /// Verifies that <c>IndexOf</c> returns the zero-based index of the first matching element when one exists.
     /// </summary>
@@ -24,6 +35,20 @@ public sealed partial class IListExtensionsTests_IndexOf
         int index = list.IndexOf(x => x == 2);
 
         Assert.AreEqual(1, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> returns the first matching index when multiple elements satisfy the predicate.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstMatchData))]
+    public void IndexOf_WhenMultipleMatches_ShouldReturnFirstMatchingIndex(int[] data, int expected)
+    {
+        IList<int> list = new List<int>(data);
+
+        int index = list.IndexOf(x => x == 5);
+
+        Assert.AreEqual(expected, index);
     }
 
     /// <summary>
@@ -50,6 +75,17 @@ public sealed partial class IListExtensionsTests_IndexOf
         int index = list.IndexOf(_ => true);
 
         Assert.AreEqual(-1, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> with reference-type elements behaves identically to the value-type case.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WithReferenceTypes_ShouldReturnFirstMatchingIndex()
+    {
+        IList<string?> list = new List<string?> { "a", null, "b", null };
+
+        Assert.AreEqual(1, list.IndexOf(x => x is null));
     }
 
     /// <summary>
@@ -90,6 +126,75 @@ public sealed partial class IListExtensionsTests_IndexOf
         int index = list.IndexOf(x => x == 1, 1, 3);
 
         Assert.AreEqual(2, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> with a ranged search returns the first matching index inside the window
+    /// when the prefix also contains matches.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WithRange_WhenPrefixContainsMatches_ShouldReturnFirstMatchInsideWindow()
+    {
+        IList<int> list = new List<int> { 5, 5, 5, 5, 5 };
+
+        int index = list.IndexOf(x => x == 5, 2, 2);
+
+        Assert.AreEqual(2, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> can locate a match at the exact first slot of the search window.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WithRange_WhenMatchIsAtFirstSlotOfWindow_ShouldReturnWindowStart()
+    {
+        IList<int> list = new List<int> { 0, 5, 5, 0 };
+
+        int index = list.IndexOf(x => x == 5, 1, 2);
+
+        Assert.AreEqual(1, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> can locate a match at the exact last slot of the search window.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WithRange_WhenMatchIsAtLastSlotOfWindow_ShouldReturnWindowEnd()
+    {
+        IList<int> list = new List<int> { 0, 0, 5, 0 };
+
+        int index = list.IndexOf(x => x == 5, 0, 3);
+
+        Assert.AreEqual(2, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> with <paramref name="count"/> equal to <c>0</c> on a non-empty list
+    /// returns <c>-1</c> without invoking the predicate.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WithRange_WhenCountIsZeroOnNonEmptyList_ShouldReturnMinusOne()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+        int predicateCalls = 0;
+
+        int index = list.IndexOf(_ => { predicateCalls++; return true; }, 1, 0);
+
+        Assert.AreEqual(-1, index);
+        Assert.AreEqual(0, predicateCalls);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> accepts <c>index == Count</c> (yielding an empty search) without throwing.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenIndexEqualsCount_ShouldReturnMinusOne()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        int index = list.IndexOf(x => x == 1, list.Count);
+
+        Assert.AreEqual(-1, index);
     }
 
     /// <summary>
@@ -148,19 +253,6 @@ public sealed partial class IListExtensionsTests_IndexOf
         {
             _ = list.IndexOf(x => x == 1, 4);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <c>IndexOf</c> accepts <c>index == Count</c> (yielding an empty search) without throwing.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WhenIndexEqualsCount_ShouldReturnMinusOne()
-    {
-        IList<int> list = new List<int> { 1, 2, 3 };
-
-        int index = list.IndexOf(x => x == 1, list.Count);
-
-        Assert.AreEqual(-1, index);
     }
 
     /// <summary>
