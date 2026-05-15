@@ -99,6 +99,97 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     protected TAlgorithm CreateAlgorithm() => CreateAlgorithm(DefaultVariant);
 
     /// <summary>
+    /// Gets the field names excluded from disposal validation tests. Override in a derived class to suppress
+    /// fields that are intentionally retained after disposal.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedFieldNames => [];
+
+    /// <summary>
+    /// Gets the readable property names excluded from disposal validation tests. Override in a derived class to
+    /// suppress properties that are intentionally accessible after disposal.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedReadablePropertyNames => [];
+
+    /// <summary>
+    /// Gets the writable property names excluded from disposal validation tests. Override in a derived class to
+    /// suppress properties that are intentionally assignable after disposal.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedWritablePropertyNames => [];
+
+    /// <summary>
+    /// Returns the merged set of field names excluded from the disposal field-zero test. Combines
+    /// <see cref="ExcludedFieldNames" /> with the disposal-state flags shared across Bodu and BCL hashing types.
+    /// </summary>
+    /// <returns>A distinct, materialised collection of field names to exclude.</returns>
+    private IReadOnlyCollection<string> GetExcludedFieldNames() =>
+        ExcludedFieldNames
+            .Concat([
+                // Disposal-state flags are intentionally non-default after Dispose; exclude them from the
+                // field-zero test so subclasses don't need to know about them.
+                "disposed",
+                "_disposed"
+            ])
+            .Distinct()
+            .ToArray();
+
+    /// <summary>
+    /// Returns the merged set of readable property names excluded from the disposal property-read test. Combines
+    /// <see cref="ExcludedReadablePropertyNames" /> with inherited properties on
+    /// <see cref="NonCryptographicHashAlgorithm" /> that are not expected to throw after disposal.
+    /// </summary>
+    /// <returns>A distinct, materialised collection of property names to exclude.</returns>
+    private IReadOnlyCollection<string> GetExcludedReadablePropertyNames() =>
+        ExcludedReadablePropertyNames
+            .Concat([
+                // HashLengthInBytes is exposed by the BCL NonCryptographicHashAlgorithm base class and does not
+                // observe disposal state.
+                nameof(NonCryptographicHashAlgorithm.HashLengthInBytes),
+            ])
+            .Distinct()
+            .ToArray();
+
+    /// <summary>
+    /// Returns the merged set of writable property names excluded from the disposal property-write test.
+    /// Currently a pass-through of <see cref="ExcludedWritablePropertyNames" />; preserved as a hook for future
+    /// inherited write-protected members.
+    /// </summary>
+    /// <returns>A distinct, materialised collection of property names to exclude.</returns>
+    private IReadOnlyCollection<string> GetExcludedWritablePropertyNames() =>
+        ExcludedWritablePropertyNames
+            .Distinct()
+            .ToArray();
+
+    /// <summary>
+    /// Enumerates the writable instance fields on <typeparamref name="TAlgorithm" /> that the disposal field-zero
+    /// test should validate. Excludes read-only fields, auto-property backing fields, and disposal-state flags.
+    /// </summary>
+    /// <returns>A sequence of single-element <see cref="object" /> arrays each containing one <see cref="FieldInfo" />.</returns>
+    public static IEnumerable<object[]> GetAlgorithmFields() =>
+        TestHelpers.GetFieldInfoForType<TAlgorithm>(
+            excludeReadOnly: true,
+            excludeFields: new TTest().GetExcludedFieldNames()?.ToArray() ?? []);
+
+    /// <summary>
+    /// Enumerates the readable public properties on <typeparamref name="TAlgorithm" /> that the disposal
+    /// property-read test should validate.
+    /// </summary>
+    /// <returns>A sequence of single-element <see cref="object" /> arrays each containing one <see cref="PropertyInfo" />.</returns>
+    public static IEnumerable<object[]> GetAlgorithmReadableProperties() =>
+        TestHelpers.GetPropertyInfoForType<TAlgorithm>(
+            TestHelpers.PropertyAccessMode.Read,
+            excludeProperties: new TTest().GetExcludedReadablePropertyNames()?.ToArray() ?? []);
+
+    /// <summary>
+    /// Enumerates the writable public properties on <typeparamref name="TAlgorithm" /> that the disposal
+    /// property-write test should validate.
+    /// </summary>
+    /// <returns>A sequence of single-element <see cref="object" /> arrays each containing one <see cref="PropertyInfo" />.</returns>
+    public static IEnumerable<object[]> GetAlgorithmWritableProperties() =>
+        TestHelpers.GetPropertyInfoForType<TAlgorithm>(
+            TestHelpers.PropertyAccessMode.Write,
+            excludeProperties: new TTest().GetExcludedWritablePropertyNames()?.ToArray() ?? []);
+
+    /// <summary>
     /// Creates a new instance of the algorithm for the specified <paramref name="variant" />.
     /// </summary>
     /// <param name="variant">The variant to instantiate.</param>

@@ -52,11 +52,12 @@ namespace Bodu.IO.Hashing;
 /// </example>
 /// </remarks>
 public sealed class SuperFastHash
-    : NonCryptographicHashAlgorithm
+    : NonCryptographicHashAlgorithm, IDisposable
 {
     private const int HashLength = 4;
 
     private readonly MemoryStream _buffer = new MemoryStream();
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SuperFastHash" /> class.
@@ -66,17 +67,42 @@ public sealed class SuperFastHash
     {
     }
 
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<byte> source) =>
-        this._buffer.Write(source);
+    /// <summary>
+    /// Releases the unmanaged resources used by the <see cref="SuperFastHash" /> instance and clears its buffered
+    /// input state.
+    /// </summary>
+    /// <remarks>
+    /// Subsequent calls to <see cref="Append(ReadOnlySpan{byte})" />, <see cref="Reset" />, or
+    /// <see cref="GetCurrentHashCore(Span{byte})" /> throw <see cref="ObjectDisposedException" />. Calling
+    /// <see cref="Dispose" /> multiple times is safe and has no effect after the first invocation.
+    /// </remarks>
+    public void Dispose()
+    {
+        if (this._disposed)
+            return;
+
+        this._buffer.Dispose();
+        this._disposed = true;
+    }
 
     /// <inheritdoc />
-    public override void Reset() =>
+    public override void Append(ReadOnlySpan<byte> source)
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this._buffer.Write(source);
+    }
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         this._buffer.SetLength(0);
+    }
 
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         ReadOnlySpan<byte> data = this._buffer.GetBuffer().AsSpan(0, (int)this._buffer.Length);
         BinaryPrimitives.WriteUInt32LittleEndian(destination, Compute(data));
     }

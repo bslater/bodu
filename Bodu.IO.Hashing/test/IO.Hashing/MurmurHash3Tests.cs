@@ -18,4 +18,12 @@ public abstract partial class MurmurHash3Tests<TTest, TAlgorithm>
 {
     /// <inheritdoc />
     protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
+
+    /// <inheritdoc />
+    /// <remarks>
+    /// <see cref="MurmurHash3{T}.Seed" /> is an immutable construction parameter exposed by a get-only
+    /// auto-property and intentionally remains readable after disposal.
+    /// </remarks>
+    protected override IReadOnlyCollection<string> ExcludedReadablePropertyNames =>
+        [nameof(MurmurHash3<TAlgorithm>.Seed)];
 }
