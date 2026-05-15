@@ -92,6 +92,145 @@ public static partial class Base32
     }
 
     /// <summary>
+    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using the Standard
+    /// variant with default formatting.
+    /// </summary>
+    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
+    /// <returns>The number of characters the encoder will produce.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="byteCount" /> is negative.
+    /// </exception>
+    public static int GetEncodedLength(int byteCount) =>
+        GetEncodedLength(byteCount, Base32Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using
+    /// <paramref name="variant" /> with default formatting.
+    /// </summary>
+    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
+    /// <param name="variant">The Base32 variant.</param>
+    /// <returns>The number of characters the encoder will produce.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="byteCount" /> is negative or <paramref name="variant" /> is undefined.
+    /// </exception>
+    public static int GetEncodedLength(int byteCount, Base32Variant variant) =>
+        GetEncodedLength(byteCount, variant, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Computes the exact number of bytes that decoding <paramref name="source" /> would produce after applying
+    /// <paramref name="styles" /> and stripping padding for the supplied <paramref name="variant" />.
+    /// </summary>
+    /// <param name="source">The input characters.</param>
+    /// <param name="variant">The Base32 variant.</param>
+    /// <param name="styles">The parsing styles.</param>
+    /// <returns>The exact decoded byte count.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input contains characters outside the variant alphabet, or when the digit count is invalid
+    /// after stripping decorations.
+    /// </exception>
+    public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
+            throw new FormatException("Input contains characters outside the Base32 variant alphabet.");
+
+        return (symbolCount * 5) / 8;
+    }
+
+    /// <summary>
+    /// Attempts to compute the exact number of decoded bytes for <paramref name="source" />.
+    /// </summary>
+    /// <param name="source">The input characters.</param>
+    /// <param name="byteCount">When this method returns, contains the decoded byte count, or <c>0</c> on failure.</param>
+    /// <param name="variant">The Base32 variant.</param>
+    /// <param name="styles">The parsing styles.</param>
+    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
+        {
+            byteCount = 0;
+            return false;
+        }
+
+        byteCount = (symbolCount * 5) / 8;
+        return true;
+    }
+
+    /// <summary>
+    /// Indicates whether <paramref name="source" /> is a valid Base32 input under the supplied variant and parsing
+    /// styles.
+    /// </summary>
+    /// <param name="source">The input characters.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">The parsing styles.</param>
+    /// <returns><see langword="true" /> when the input is valid; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool IsValid(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
+        TryCountSymbols(source, variant, styles, out _);
+
+    /// <summary>
+    /// Indicates whether <paramref name="value" /> is a valid symbol for the supplied Base32 variant. Padding
+    /// (<c>=</c>) is not considered a symbol.
+    /// </summary>
+    /// <param name="value">The character to test.</param>
+    /// <param name="variant">The variant.</param>
+    /// <returns><see langword="true" /> when the character maps to a value within the variant's alphabet.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool IsBase32Digit(char value, Base32Variant variant = Base32Variant.Standard)
+    {
+        (_, sbyte[] lookup) = GetVariantConfig(variant);
+        return value < lookup.Length && lookup[value] >= 0;
+    }
+
+    /// <summary>
+    /// Walks <paramref name="source" />, validating each non-decoration character against the variant alphabet, and
+    /// reports the number of data symbols (excluding padding).
+    /// </summary>
+    /// <param name="source">The input characters.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">The parsing styles.</param>
+    /// <param name="symbolCount">When this method returns, contains the number of data symbols.</param>
+    /// <returns><see langword="true" /> when every character is valid; otherwise <see langword="false" />.</returns>
+    private static bool TryCountSymbols(ReadOnlySpan<char> source, Base32Variant variant, BaseFormatStyles styles, out int symbolCount)
+    {
+        (_, sbyte[] lookup) = GetVariantConfig(variant);
+        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+
+        symbolCount = 0;
+        int paddingSeen = 0;
+
+        foreach (char c in source)
+        {
+            if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
+                continue;
+
+            if (c == PaddingChar)
+            {
+                paddingSeen++;
+                continue;
+            }
+
+            if (paddingSeen > 0)
+            {
+                symbolCount = 0;
+                return false;
+            }
+
+            if (c >= lookup.Length || lookup[c] < 0)
+            {
+                symbolCount = 0;
+                return false;
+            }
+
+            symbolCount++;
+        }
+
+        return true;
+    }
+
+    /// <summary>
     /// Returns the alphabet and the matching lookup table for the requested variant.
     /// </summary>
     /// <param name="variant">The variant to resolve.</param>

@@ -85,6 +85,160 @@ public static partial class Base64
     }
 
     /// <summary>
+    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using the Standard
+    /// variant with default formatting.
+    /// </summary>
+    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
+    /// <returns>The number of characters the encoder will produce.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="byteCount" /> is negative.
+    /// </exception>
+    public static int GetEncodedLength(int byteCount) =>
+        GetEncodedLength(byteCount, Base64Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using
+    /// <paramref name="variant" /> with default formatting.
+    /// </summary>
+    /// <param name="byteCount">The input byte count.</param>
+    /// <param name="variant">The Base64 variant.</param>
+    /// <returns>The number of characters the encoder will produce.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="byteCount" /> is negative or <paramref name="variant" /> is undefined.
+    /// </exception>
+    public static int GetEncodedLength(int byteCount, Base64Variant variant) =>
+        GetEncodedLength(byteCount, variant, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Computes the exact number of bytes that decoding <paramref name="source" /> would produce after applying
+    /// <paramref name="styles" /> and stripping padding for the supplied <paramref name="variant" />.
+    /// </summary>
+    /// <param name="source">The Base64 character span.</param>
+    /// <param name="variant">The Base64 variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <returns>The exact decoded byte count.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input contains invalid characters or the digit count is not a valid Base64 length.
+    /// </exception>
+    public static int GetDecodedLength(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
+            throw new FormatException("Input contains characters outside the Base64 variant alphabet.");
+
+        return (symbolCount * 3) / 4;
+    }
+
+    /// <summary>
+    /// Attempts to compute the exact decoded byte count for <paramref name="source" />.
+    /// </summary>
+    /// <param name="source">The Base64 character span.</param>
+    /// <param name="byteCount">When this method returns, contains the decoded byte count, or <c>0</c> on failure.</param>
+    /// <param name="variant">The Base64 variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
+        {
+            byteCount = 0;
+            return false;
+        }
+
+        byteCount = (symbolCount * 3) / 4;
+        return true;
+    }
+
+    /// <summary>
+    /// Indicates whether <paramref name="source" /> is a valid Base64 input under the supplied variant and styles.
+    /// </summary>
+    /// <param name="source">The character span.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool IsValid(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
+        TryCountSymbols(source, variant, styles, out _);
+
+    /// <summary>
+    /// Indicates whether <paramref name="value" /> is a valid Base64 alphabet character for the supplied variant.
+    /// Padding (<c>=</c>) is not considered a digit.
+    /// </summary>
+    /// <param name="value">The character to test.</param>
+    /// <param name="variant">The variant.</param>
+    /// <returns><see langword="true" /> when the character belongs to the variant alphabet.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool IsBase64Digit(char value, Base64Variant variant = Base64Variant.Standard)
+    {
+        EnsureValidVariant(variant);
+        return IsAlphabetCharacter(value, variant);
+    }
+
+    /// <summary>
+    /// Walks <paramref name="source" />, validating each non-decoration character, and reports the data symbol count.
+    /// </summary>
+    /// <param name="source">The input characters.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <param name="symbolCount">When this method returns, contains the number of data symbols (excluding padding).</param>
+    /// <returns><see langword="true" /> when every character is valid for the variant.</returns>
+    private static bool TryCountSymbols(ReadOnlySpan<char> source, Base64Variant variant, BaseFormatStyles styles, out int symbolCount)
+    {
+        EnsureValidVariant(variant);
+
+        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;
+        symbolCount = 0;
+        int paddingSeen = 0;
+
+        foreach (char c in source)
+        {
+            if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
+                continue;
+
+            if (c == PaddingChar)
+            {
+                paddingSeen++;
+                continue;
+            }
+
+            if (paddingSeen > 0)
+            {
+                symbolCount = 0;
+                return false;
+            }
+
+            if (!IsAlphabetCharacter(c, variant))
+            {
+                symbolCount = 0;
+                return false;
+            }
+
+            symbolCount++;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// Indicates whether <paramref name="value" /> is part of the supplied Base64 variant's alphabet.
+    /// </summary>
+    /// <param name="value">The character to test.</param>
+    /// <param name="variant">The variant.</param>
+    /// <returns><see langword="true" /> when the character is a valid data symbol.</returns>
+    private static bool IsAlphabetCharacter(char value, Base64Variant variant)
+    {
+        bool isLetter = value is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z');
+        bool isDigit = value is >= '0' and <= '9';
+        if (isLetter || isDigit)
+            return true;
+
+        return variant == Base64Variant.UrlSafe
+            ? value is '-' or '_'
+            : value is '+' or '/';
+    }
+
+    /// <summary>
     /// Validates that <paramref name="variant" /> is a defined enum value.
     /// </summary>
     /// <param name="variant">The variant to validate.</param>
