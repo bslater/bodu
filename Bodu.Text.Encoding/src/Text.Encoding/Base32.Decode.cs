@@ -73,10 +73,11 @@ public static partial class Base32
         (_, sbyte[] lookup) = GetVariantConfig(variant);
         bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
         bool padIsRequired = ShouldRequireExactPadding(variant, style);
+        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
 
         byte[] buffer = new byte[GetMaxDecodedLength(chars.Length)];
 
-        if (!DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, buffer, out int written, out string? error))
+        if (!DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, buffer, out int written, out string? error))
             throw new FormatException(error);
 
         if (written == buffer.Length)
@@ -109,8 +110,9 @@ public static partial class Base32
         (_, sbyte[] lookup) = GetVariantConfig(variant);
         bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
         bool padIsRequired = ShouldRequireExactPadding(variant, style);
+        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
 
-        return DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, destination, out bytesWritten, out _);
+        return DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, destination, out bytesWritten, out _);
     }
 
     /// <summary>
@@ -143,13 +145,16 @@ public static partial class Base32
     /// <param name="ignoreWhitespace">Whether to skip ASCII whitespace.</param>
     /// <param name="requireExactPadding">Whether the input must be a multiple of eight non-whitespace characters
     /// (including <c>=</c>).</param>
+    /// <param name="strictQuantum">Whether the input must match an RFC 4648 §6 terminal-quantum length (2, 4, 5, 7,
+    /// or 8 data characters). Only the Standard and HexExtended variants enforce this; Crockford and Z-Base32 omit
+    /// the check.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> on
     /// failure.</param>
     /// <param name="error">When this method returns <see langword="false" />, contains the failure reason, or
     /// <see langword="null" /> on success.</param>
     /// <returns><see langword="true" /> on success; <see langword="false" /> on any validation failure.</returns>
-    private static bool DecodeCore(ReadOnlySpan<char> chars, sbyte[] lookup, bool ignoreWhitespace, bool requireExactPadding, Span<byte> destination, out int bytesWritten, out string? error)
+    private static bool DecodeCore(ReadOnlySpan<char> chars, sbyte[] lookup, bool ignoreWhitespace, bool requireExactPadding, bool strictQuantum, Span<byte> destination, out int bytesWritten, out string? error)
     {
         bytesWritten = 0;
         error = null;
@@ -228,10 +233,11 @@ public static partial class Base32
             }
         }
 
+        // Per RFC 4648 §6 the valid terminal-quantum data character counts are 2, 4, 5, 7, or 8. Crockford and
+        // Z-Base32 do not impose this rule, so the check is gated by the strictQuantum flag.
         int dataMod = symbolsConsumed % 8;
-        if (dataMod is 1 or 3 or 6)
+        if (strictQuantum && dataMod is 1 or 3 or 6)
         {
-            // Per RFC 4648 §6 the valid number of data characters per terminal quantum is 2, 4, 5, 7, or 8.
             error = "Base32 input has an invalid number of data characters for the final quantum.";
             bytesWritten = 0;
             return false;

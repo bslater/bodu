@@ -208,4 +208,32 @@ public sealed partial class Base85Tests
         Assert.IsTrue(ok);
         Assert.AreEqual(expectedCharCount, charsWritten);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Encode(ReadOnlySpan{byte}, Base85Variant)" /> reproduces every Adobe Ascii85
+    /// Known Answer Test vector, including the <c>z</c> shortcut for all-zero groups.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForAscii85KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
+    {
+        string actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Ascii85);
+
+        Assert.AreEqual(vector.Encoded, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Encode(ReadOnlySpan{byte}, Base85Variant)" /> reproduces every Z85 Known
+    /// Answer Test vector, including the RFC 32 reference <c>HelloWorld</c> example.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForZ85KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
+    {
+        string actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Z85);
+
+        Assert.AreEqual(vector.Encoded, actual);
+    }
 }

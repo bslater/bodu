@@ -161,4 +161,80 @@ public sealed partial class Base85Tests
             _ = Base85.Decode("9jqo>", (Base85Variant)99);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Decode(string, Base85Variant, BaseFormatStyles)" /> recovers the bytes for
+    /// every Adobe Ascii85 Known Answer Test vector.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForAscii85KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
+    {
+        byte[] actual = Base85.Decode(vector.Encoded, Base85Variant.Ascii85);
+
+        CollectionAssert.AreEqual(vector.DecodedBytes, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Decode(string, Base85Variant, BaseFormatStyles)" /> recovers the bytes for
+    /// every Z85 Known Answer Test vector.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Z85Vectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForZ85KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
+    {
+        byte[] actual = Base85.Decode(vector.Encoded, Base85Variant.Z85);
+
+        CollectionAssert.AreEqual(vector.DecodedBytes, actual);
+    }
+
+    /// <summary>
+    /// Verifies that strict Ascii85 decoding rejects every malformed input in
+    /// <see cref="Base85KnownAnswerVectors.Ascii85NegativeVectors" /> with the expected exception type.
+    /// </summary>
+    /// <param name="vector">A negative KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Ascii85NegativeVectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForAscii85KnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    {
+        Exception? actual = null;
+        try
+        {
+            _ = Base85.Decode(vector.MalformedInput, Base85Variant.Ascii85);
+        }
+        catch (Exception ex)
+        {
+            actual = ex;
+        }
+
+        Assert.IsNotNull(actual, $"No exception thrown for: {vector}");
+        Assert.AreEqual(vector.ExpectedExceptionType, actual.GetType(),
+            $"Wrong exception type for: {vector}; actual was {actual.GetType().Name}.");
+    }
+
+    /// <summary>
+    /// Verifies that strict Z85 decoding rejects every malformed input in
+    /// <see cref="Base85KnownAnswerVectors.Z85NegativeVectors" /> with the expected exception type.
+    /// </summary>
+    /// <param name="vector">A negative KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base85KnownAnswerVectors.Z85NegativeVectors), typeof(Base85KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForZ85KnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    {
+        Exception? actual = null;
+        try
+        {
+            _ = Base85.Decode(vector.MalformedInput, Base85Variant.Z85);
+        }
+        catch (Exception ex)
+        {
+            actual = ex;
+        }
+
+        Assert.IsNotNull(actual, $"No exception thrown for: {vector}");
+        Assert.AreEqual(vector.ExpectedExceptionType, actual.GetType(),
+            $"Wrong exception type for: {vector}; actual was {actual.GetType().Name}.");
+    }
 }

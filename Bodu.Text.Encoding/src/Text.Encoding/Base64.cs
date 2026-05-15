@@ -177,12 +177,15 @@ public static partial class Base64
 
     /// <summary>
     /// Walks <paramref name="source" />, validating each non-decoration character, and reports the data symbol count.
+    /// Also enforces RFC 4648 §4 structural constraints (terminal-quantum length and padding alignment) so that
+    /// <see cref="IsValid" /> matches the strict decoder.
     /// </summary>
     /// <param name="source">The input characters.</param>
     /// <param name="variant">The variant.</param>
     /// <param name="styles">Parsing styles.</param>
     /// <param name="symbolCount">When this method returns, contains the number of data symbols (excluding padding).</param>
-    /// <returns><see langword="true" /> when every character is valid for the variant.</returns>
+    /// <returns><see langword="true" /> when every character is valid AND the data quantum is structurally
+    /// well-formed; otherwise <see langword="false" />.</returns>
     private static bool TryCountSymbols(ReadOnlySpan<char> source, Base64Variant variant, BaseFormatStyles styles, out int symbolCount)
     {
         EnsureValidVariant(variant);
@@ -215,6 +218,36 @@ public static partial class Base64
             }
 
             symbolCount++;
+        }
+
+        // Terminal-quantum data character count must be in {0, 2, 3, 4} per RFC 4648 §4.
+        int dataMod = symbolCount % 4;
+        if (dataMod == 1)
+        {
+            symbolCount = 0;
+            return false;
+        }
+
+        // Padding alignment: Standard and Mime require canonical padding by default. UrlSafe and AllowMissingPadding
+        // bypass that requirement.
+        bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding)
+            && variant != Base64Variant.UrlSafe;
+
+        if (padIsRequired)
+        {
+            int totalSymbols = symbolCount + paddingSeen;
+            if ((totalSymbols % 4) != 0)
+            {
+                symbolCount = 0;
+                return false;
+            }
+
+            int expectedPadding = (4 - dataMod) % 4;
+            if (paddingSeen != expectedPadding)
+            {
+                symbolCount = 0;
+                return false;
+            }
         }
 
         return true;

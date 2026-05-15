@@ -121,4 +121,32 @@ public sealed partial class Base64Tests
 
         Assert.AreEqual("Zm9vYmFy", actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.Encode(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" /> with the
+    /// Standard variant reproduces every RFC 4648 §10 Known Answer Test vector.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForStandardRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
+    {
+        string actual = Base64.Encode(vector.DecodedBytes, Base64Variant.Standard);
+
+        Assert.AreEqual(vector.Encoded, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.Encode(ReadOnlySpan{byte}, Base64Variant, BaseFormattingOptions)" /> with the
+    /// URL-safe variant produces the URL-safe alphabet form (and omits padding by default).
+    /// </summary>
+    /// <param name="vector">A URL-safe KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForUrlSafeKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
+    {
+        string actual = Base64.Encode(vector.DecodedBytes, Base64Variant.UrlSafe);
+
+        Assert.AreEqual(vector.Encoded, actual);
+    }
 }

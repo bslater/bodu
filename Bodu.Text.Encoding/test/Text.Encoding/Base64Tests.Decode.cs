@@ -178,4 +178,80 @@ public sealed partial class Base64Tests
             _ = Base64.Decode("====");
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> with the Standard variant
+    /// recovers the bytes for every RFC 4648 §10 Known Answer Test vector.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForStandardRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
+    {
+        byte[] actual = Base64.Decode(vector.Encoded, Base64Variant.Standard);
+
+        CollectionAssert.AreEqual(vector.DecodedBytes, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> with the URL-safe variant
+    /// recovers the bytes for every URL-safe Known Answer Test vector.
+    /// </summary>
+    /// <param name="vector">A URL-safe KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForUrlSafeKnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
+    {
+        byte[] actual = Base64.Decode(vector.Encoded, Base64Variant.UrlSafe);
+
+        CollectionAssert.AreEqual(vector.DecodedBytes, actual);
+    }
+
+    /// <summary>
+    /// Verifies that strict Standard Base64 decoding rejects every malformed input in
+    /// <see cref="Base64KnownAnswerVectors.StandardNegativeVectors" /> with the expected exception type.
+    /// </summary>
+    /// <param name="vector">A negative KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.StandardNegativeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForStandardKnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    {
+        Exception? actual = null;
+        try
+        {
+            _ = Base64.Decode(vector.MalformedInput, Base64Variant.Standard);
+        }
+        catch (Exception ex)
+        {
+            actual = ex;
+        }
+
+        Assert.IsNotNull(actual, $"No exception thrown for: {vector}");
+        Assert.AreEqual(vector.ExpectedExceptionType, actual.GetType(),
+            $"Wrong exception type for: {vector}; actual was {actual.GetType().Name}.");
+    }
+
+    /// <summary>
+    /// Verifies that strict URL-safe Base64 decoding rejects every malformed input in
+    /// <see cref="Base64KnownAnswerVectors.UrlSafeNegativeVectors" /> with the expected exception type.
+    /// </summary>
+    /// <param name="vector">A negative KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base64KnownAnswerVectors.UrlSafeNegativeVectors), typeof(Base64KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForUrlSafeKnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    {
+        Exception? actual = null;
+        try
+        {
+            _ = Base64.Decode(vector.MalformedInput, Base64Variant.UrlSafe);
+        }
+        catch (Exception ex)
+        {
+            actual = ex;
+        }
+
+        Assert.IsNotNull(actual, $"No exception thrown for: {vector}");
+        Assert.AreEqual(vector.ExpectedExceptionType, actual.GetType(),
+            $"Wrong exception type for: {vector}; actual was {actual.GetType().Name}.");
+    }
 }

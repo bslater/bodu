@@ -229,26 +229,31 @@ public sealed partial class Base16Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base16.Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> reproduces the published
-    /// hex form for a curated set of one-byte values across the full <c>0x00</c>-<c>0xFF</c> range.
+    /// Verifies that <see cref="Base16.Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> reproduces every
+    /// RFC 4648 §10 Known Answer Test vector when invoked with
+    /// <see cref="BaseFormattingOptions.UpperCase" />. The reference outputs are in upper case per RFC 4648 §8.
     /// </summary>
-    /// <param name="byteValue">The byte value under test.</param>
-    /// <param name="expected">The expected lower-case hex form.</param>
-    [TestMethod]
-    [DataRow((byte)0x00, "00")]
-    [DataRow((byte)0x01, "01")]
-    [DataRow((byte)0x0F, "0f")]
-    [DataRow((byte)0x10, "10")]
-    [DataRow((byte)0x7F, "7f")]
-    [DataRow((byte)0x80, "80")]
-    [DataRow((byte)0xAA, "aa")]
-    [DataRow((byte)0xCD, "cd")]
-    [DataRow((byte)0xFE, "fe")]
-    [DataRow((byte)0xFF, "ff")]
-    public void Encode_WhenSingleByteAcrossFullRange_ShouldMatchPublishedHexForm(byte byteValue, string expected)
+    /// <param name="vector">A KAT vector sourced from <see cref="Base16KnownAnswerVectors" />.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForRfc4648KnownAnswerVector_WithUpperCaseFlag_ShouldMatch(EncodingKnownAnswerVector vector)
     {
-        string actual = Base16.Encode(new[] { byteValue });
+        string actual = Base16.Encode(vector.DecodedBytes, BaseFormattingOptions.UpperCase);
 
-        Assert.AreEqual(expected, actual);
+        Assert.AreEqual(vector.Encoded, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> with the default
+    /// (lower case) output matches the lower-case form of every RFC 4648 §10 Known Answer Test vector.
+    /// </summary>
+    /// <param name="vector">A KAT vector sourced from <see cref="Base16KnownAnswerVectors" />.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForRfc4648KnownAnswerVector_DefaultLowerCase_ShouldMatchLowerCase(EncodingKnownAnswerVector vector)
+    {
+        string actual = Base16.Encode(vector.DecodedBytes);
+
+        Assert.AreEqual(vector.Encoded.ToLowerInvariant(), actual);
     }
 }

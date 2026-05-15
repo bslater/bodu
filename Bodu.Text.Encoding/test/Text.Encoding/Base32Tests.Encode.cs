@@ -173,4 +173,32 @@ public sealed partial class Base32Tests
             _ = Base32.Encode(new byte[4], -1, 1);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.Encode(ReadOnlySpan{byte}, Base32Variant, BaseFormattingOptions)" /> with the
+    /// Standard variant reproduces every RFC 4648 §10 Known Answer Test vector.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base32KnownAnswerVectors.StandardRfc4648Vectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForStandardRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
+    {
+        string actual = Base32.Encode(vector.DecodedBytes, Base32Variant.Standard);
+
+        Assert.AreEqual(vector.Encoded, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.Encode(ReadOnlySpan{byte}, Base32Variant, BaseFormattingOptions)" /> with the
+    /// HexExtended variant reproduces every RFC 4648 §10 base32hex vector.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base32KnownAnswerVectors.HexExtendedRfc4648Vectors), typeof(Base32KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForHexExtendedRfc4648KnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
+    {
+        string actual = Base32.Encode(vector.DecodedBytes, Base32Variant.HexExtended);
+
+        Assert.AreEqual(vector.Encoded, actual);
+    }
 }

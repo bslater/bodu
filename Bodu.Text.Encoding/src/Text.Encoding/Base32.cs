@@ -227,6 +227,39 @@ public static partial class Base32
             symbolCount++;
         }
 
+        // Terminal-quantum data character count must be one of {0, 2, 4, 5, 7, 8} per RFC 4648 §6. Crockford and
+        // Z-Base32 do not impose a fixed terminal-quantum rule (the spec defines five bits per character with no
+        // alignment restriction) so the check is gated by variant.
+        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        int dataMod = symbolCount % 8;
+        if (strictQuantum && dataMod is 1 or 3 or 6)
+        {
+            symbolCount = 0;
+            return false;
+        }
+
+        // Padding alignment: Standard / HexExtended require canonical padding by default. AllowMissingPadding
+        // bypasses this requirement; Crockford / Z-Base32 ignore padding entirely.
+        bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding)
+            && variant is Base32Variant.Standard or Base32Variant.HexExtended;
+
+        if (padIsRequired)
+        {
+            int totalSymbols = symbolCount + paddingSeen;
+            if ((totalSymbols % 8) != 0)
+            {
+                symbolCount = 0;
+                return false;
+            }
+
+            int expectedPadding = (8 - dataMod) % 8;
+            if (paddingSeen != expectedPadding)
+            {
+                symbolCount = 0;
+                return false;
+            }
+        }
+
         return true;
     }
 

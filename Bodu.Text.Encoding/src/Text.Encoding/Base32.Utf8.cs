@@ -287,10 +287,12 @@ public static partial class Base32
                 return OperationStatus.InvalidData;
         }
 
+        // RFC 4648 §6 — terminal quantum data character count must be 2, 4, 5, 7, or 8. Crockford and Z-Base32 do
+        // not impose this rule, so the check is gated by variant.
+        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
         int dataMod = symbolsConsumed % 8;
-        if (dataMod is 1 or 3 or 6)
+        if (strictQuantum && dataMod is 1 or 3 or 6)
         {
-            // RFC 4648 §6 — terminal quantum data character count must be 2, 4, 5, 7, or 8.
             return OperationStatus.InvalidData;
         }
 

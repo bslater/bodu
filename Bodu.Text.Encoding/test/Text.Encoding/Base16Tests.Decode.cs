@@ -254,22 +254,53 @@ public sealed partial class Base16Tests
     }
 
     /// <summary>
-    /// Verifies that the decoder accepts every valid two-character mixed-case hex pair.
+    /// Verifies that <see cref="Base16.Decode(string, BaseFormatStyles)" /> recovers the original bytes for every
+    /// RFC 4648 §10 Known Answer Test vector.
     /// </summary>
-    /// <param name="input">The hex pair under test.</param>
-    /// <param name="expected">The expected decoded byte.</param>
-    [TestMethod]
-    [DataRow("aA", (byte)0xAA)]
-    [DataRow("Aa", (byte)0xAA)]
-    [DataRow("Bf", (byte)0xBF)]
-    [DataRow("0F", (byte)0x0F)]
-    [DataRow("f0", (byte)0xF0)]
-    [DataRow("eD", (byte)0xED)]
-    public void Decode_WhenInputIsMixedCaseHexPair_ShouldReturnExpectedByte(string input, byte expected)
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.Rfc4648Vectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForRfc4648KnownAnswerVector_ShouldRecoverBytes(EncodingKnownAnswerVector vector)
     {
-        byte[] actual = Base16.Decode(input);
+        byte[] actual = Base16.Decode(vector.Encoded);
 
-        Assert.AreEqual(1, actual.Length);
-        Assert.AreEqual(expected, actual[0]);
+        CollectionAssert.AreEqual(vector.DecodedBytes, actual);
+    }
+
+    /// <summary>
+    /// Verifies that strict-mode <see cref="Base16.Decode(string, BaseFormatStyles)" /> rejects every malformed input
+    /// in <see cref="Base16KnownAnswerVectors.NegativeVectors" /> with the expected exception type.
+    /// </summary>
+    /// <param name="vector">A negative KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForKnownMalformedInput_ShouldThrowExpectedException(EncodingNegativeDecodeVector vector)
+    {
+        Exception? actual = null;
+        try
+        {
+            _ = Base16.Decode(vector.MalformedInput);
+        }
+        catch (Exception ex)
+        {
+            actual = ex;
+        }
+
+        Assert.IsNotNull(actual, $"No exception thrown for: {vector}");
+        Assert.AreEqual(vector.ExpectedExceptionType, actual.GetType(),
+            $"Wrong exception type for: {vector}; actual was {actual.GetType().Name}.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.IsValid(ReadOnlySpan{char}, BaseFormatStyles)" /> returns
+    /// <see langword="false" /> for every malformed input in <see cref="Base16KnownAnswerVectors.NegativeVectors" />.
+    /// </summary>
+    /// <param name="vector">A negative KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base16KnownAnswerVectors.NegativeVectors), typeof(Base16KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void IsValid_ForKnownMalformedInput_ShouldReturnFalse(EncodingNegativeDecodeVector vector)
+    {
+        Assert.IsFalse(Base16.IsValid(vector.MalformedInput.AsSpan()),
+            $"IsValid should return false for: {vector}");
     }
 }

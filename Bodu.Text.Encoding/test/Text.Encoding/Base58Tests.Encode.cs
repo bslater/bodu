@@ -130,4 +130,18 @@ public sealed partial class Base58Tests
 
         Assert.AreEqual(fromArray, fromSpan);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.Encode(ReadOnlySpan{byte}, Base58Variant)" /> reproduces every Bitcoin Core
+    /// Known Answer Test vector for the Bitcoin/Flickr alphabet.
+    /// </summary>
+    /// <param name="vector">A KAT vector.</param>
+    [DataTestMethod]
+    [DynamicData(nameof(Base58KnownAnswerVectors.BitcoinFlickrVectors), typeof(Base58KnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForBitcoinFlickrKnownAnswerVector_ShouldMatch(EncodingKnownAnswerVector vector)
+    {
+        string actual = Base58.Encode(vector.DecodedBytes, Base58Variant.BitcoinFlickr);
+
+        Assert.AreEqual(vector.Encoded, actual);
+    }
 }
