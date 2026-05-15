@@ -4,10 +4,59 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Text;
+
 namespace Bodu.Text.Formats;
 
 public static partial class Ini
 {
+
+    private static readonly CompositeFormat s_iniDuplicateKey =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_DuplicateKey);
+
+    private static readonly CompositeFormat s_iniDuplicateSection =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_DuplicateSection);
+
+    private static readonly CompositeFormat s_iniGlobalKeyDisallowed =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_GlobalKeyDisallowed);
+
+    private static readonly CompositeFormat s_iniMalformedSectionHeader =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_MalformedSectionHeader);
+
+    private static readonly CompositeFormat s_iniMissingKey =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_MissingKey);
+
+    /// <summary>Throws an <see cref="IniFormatException" /> for a duplicate key.</summary>
+    [DoesNotReturn]
+    private static void ThrowDuplicateKey(string key, int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniDuplicateKey, key, lineNumber), lineNumber);
+
+    /// <summary>Throws an <see cref="IniFormatException" /> for a duplicate section name.</summary>
+    [DoesNotReturn]
+    private static void ThrowDuplicateSection(string name, int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniDuplicateSection, name, lineNumber), lineNumber);
+
+    /// <summary>Throws an <see cref="IniFormatException" /> when a key appears before the first section header and global entries are disallowed.</summary>
+    [DoesNotReturn]
+    private static void ThrowGlobalKeyDisallowed(int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniGlobalKeyDisallowed, lineNumber), lineNumber);
+
+    /// <summary>Throws an <see cref="IniFormatException" /> for a malformed section header.</summary>
+    [DoesNotReturn]
+    private static void ThrowMalformedSectionHeader(int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniMalformedSectionHeader, lineNumber), lineNumber);
+
+    /// <summary>Throws an <see cref="IniFormatException" /> for a property line with an empty key.</summary>
+    [DoesNotReturn]
+    private static void ThrowMissingKey(int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniMissingKey, lineNumber), lineNumber);
 
     /// <summary>
     /// Provides line-by-line INI parsing over a <see cref="ReadOnlySpan{T}" /> of characters.
@@ -70,19 +119,19 @@ public static partial class Ini
                     int closeBracket = line.IndexOf(']');
 
                     if (closeBracket < 0)
-                        ThrowHelper.ThrowIniFormatException_MalformedSectionHeader(_lineNumber);
+                        Ini.ThrowMalformedSectionHeader(_lineNumber);
 
                     ReadOnlySpan<char> nameSpan = line[1..closeBracket].Trim();
 
                     if (nameSpan.IsEmpty)
-                        ThrowHelper.ThrowIniFormatException_MalformedSectionHeader(_lineNumber);
+                        Ini.ThrowMalformedSectionHeader(_lineNumber);
 
                     string sectionName = nameSpan.ToString();
 
                     if (namedIndexByName.TryGetValue(sectionName, out int existingIdx))
                     {
                         if (_options.DuplicateSectionBehavior == IniDuplicateSectionBehavior.Disallowed)
-                            ThrowHelper.ThrowIniFormatException_DuplicateSection(sectionName, _lineNumber);
+                            Ini.ThrowDuplicateSection(sectionName, _lineNumber);
 
                         // Merge: redirect current state to the existing section's builders.
                         (_, currentEntries, currentLookup) = namedData[existingIdx];
@@ -100,7 +149,7 @@ public static partial class Ini
                 else
                 {
                     if (inGlobal && !_options.AllowGlobalSection)
-                        ThrowHelper.ThrowIniFormatException_GlobalKeyDisallowed(_lineNumber);
+                        Ini.ThrowGlobalKeyDisallowed(_lineNumber);
 
                     AddEntry(line, currentEntries, currentLookup);
                 }
@@ -160,14 +209,14 @@ public static partial class Ini
             }
 
             if (key.Length == 0)
-                ThrowHelper.ThrowIniFormatException_MissingKey(_lineNumber);
+                Ini.ThrowMissingKey(_lineNumber);
 
             if (lookup.TryGetValue(key, out IniEntry? existing))
             {
                 switch (_options.DuplicateKeyBehavior)
                 {
                     case IniDuplicateKeyBehavior.Disallowed:
-                        ThrowHelper.ThrowIniFormatException_DuplicateKey(key, _lineNumber);
+                        Ini.ThrowDuplicateKey(key, _lineNumber);
                         return;
 
                     case IniDuplicateKeyBehavior.FirstWins:

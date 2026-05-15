@@ -6,6 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Text;
 
 namespace Bodu.Text.Formats;
 
@@ -15,6 +16,9 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public sealed class DelimitedRow
 {
+
+    private static readonly CompositeFormat s_headerNotFound =
+        CompositeFormat.Parse(FormatsResourceStrings.DelimitedDocument_HeaderNotFound);
 
     private readonly IReadOnlyList<string> _fields;
 
@@ -91,12 +95,12 @@ public sealed class DelimitedRow
         get
         {
             if (_headerIndex is null)
-                ThrowHelper.ThrowInvalidOperationException_NoDelimitedHeaders();
+                ThrowNoHeaders();
 
             ThrowHelper.ThrowIfNull(header);
 
             if (!_headerIndex.TryGetValue(header, out int index))
-                ThrowHelper.ThrowKeyNotFoundException_DelimitedDocument(header);
+                ThrowHeaderNotFound(header);
 
             return index < _fields.Count ? _fields[index] : string.Empty;
         }
@@ -202,5 +206,16 @@ public sealed class DelimitedRow
         string field = index < _fields.Count ? _fields[index] : string.Empty;
         return T.TryParse(field.AsSpan(), CultureInfo.InvariantCulture, out value);
     }
+
+    /// <summary>Throws an <see cref="InvalidOperationException" /> indicating that no header row was parsed.</summary>
+    [DoesNotReturn]
+    private static void ThrowNoHeaders() =>
+        throw new InvalidOperationException(FormatsResourceStrings.DelimitedRow_NoHeaders);
+
+    /// <summary>Throws a <see cref="KeyNotFoundException" /> for an absent column header.</summary>
+    [DoesNotReturn]
+    private static void ThrowHeaderNotFound(string header) =>
+        throw new KeyNotFoundException(
+            string.Format(CultureInfo.InvariantCulture, s_headerNotFound, header));
 
 }

@@ -4,12 +4,23 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 
 namespace Bodu.Text.Formats;
 
 public static partial class Delimited
 {
+
+    private static readonly CompositeFormat s_unterminatedQuotedField =
+        CompositeFormat.Parse(FormatsResourceStrings.DelimitedFormatException_UnterminatedQuotedField);
+
+    /// <summary>Throws a <see cref="DelimitedFormatException" /> for an unterminated quoted field.</summary>
+    [DoesNotReturn]
+    private static void ThrowUnterminatedQuotedField(int lineNumber) =>
+        throw new DelimitedFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_unterminatedQuotedField, lineNumber), lineNumber);
 
     /// <summary>
     /// Provides RFC 4180-style character-by-character parsing over a <see cref="ReadOnlySpan{T}" /> of
@@ -165,7 +176,7 @@ public static partial class Delimited
             while (true)
             {
                 if (IsEmpty)
-                    ThrowHelper.ThrowDelimitedFormatException_UnterminatedQuotedField(startLine);
+                    Delimited.ThrowUnterminatedQuotedField(startLine);
 
                 char c = Current;
 

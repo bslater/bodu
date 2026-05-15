@@ -4,12 +4,59 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Text;
 
 namespace Bodu.Text.Formats;
 
 public static partial class DotEnv
 {
+
+    private static readonly CompositeFormat s_duplicateKey =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_DuplicateKey);
+
+    private static readonly CompositeFormat s_invalidKey =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_InvalidKey);
+
+    private static readonly CompositeFormat s_malformedEntry =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_MalformedEntry);
+
+    private static readonly CompositeFormat s_unterminatedDoubleQuote =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_UnterminatedDoubleQuote);
+
+    private static readonly CompositeFormat s_unterminatedSingleQuote =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_UnterminatedSingleQuote);
+
+    /// <summary>Throws a <see cref="DotEnvFormatException" /> for a duplicate key.</summary>
+    [DoesNotReturn]
+    private static void ThrowDuplicateKey(string key, int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_duplicateKey, key, lineNumber), lineNumber);
+
+    /// <summary>Throws a <see cref="DotEnvFormatException" /> for an invalid key name.</summary>
+    [DoesNotReturn]
+    private static void ThrowInvalidKey(string key, int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_invalidKey, key, lineNumber), lineNumber);
+
+    /// <summary>Throws a <see cref="DotEnvFormatException" /> for a malformed entry line.</summary>
+    [DoesNotReturn]
+    private static void ThrowMalformedEntry(int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_malformedEntry, lineNumber), lineNumber);
+
+    /// <summary>Throws a <see cref="DotEnvFormatException" /> for an unterminated double-quoted string.</summary>
+    [DoesNotReturn]
+    private static void ThrowUnterminatedDoubleQuote(int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_unterminatedDoubleQuote, lineNumber), lineNumber);
+
+    /// <summary>Throws a <see cref="DotEnvFormatException" /> for an unterminated single-quoted string.</summary>
+    [DoesNotReturn]
+    private static void ThrowUnterminatedSingleQuote(int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_unterminatedSingleQuote, lineNumber), lineNumber);
 
     /// <summary>
     /// Provides character-by-character DotEnv parsing over a <see cref="ReadOnlySpan{T}" /> of characters.
@@ -87,7 +134,7 @@ public static partial class DotEnv
                 if (IsEmpty || !IsKeyStart(Current))
                 {
                     string badToken = IsEmpty ? string.Empty : Current.ToString();
-                    ThrowHelper.ThrowDotEnvFormatException_InvalidKey(badToken, entryLineNumber);
+                    DotEnv.ThrowInvalidKey(badToken, entryLineNumber);
                 }
 
                 int keyLen = 1;
@@ -99,7 +146,7 @@ public static partial class DotEnv
 
                 // Expect '='
                 if (IsEmpty || Current != '=')
-                    ThrowHelper.ThrowDotEnvFormatException_MalformedEntry(entryLineNumber);
+                    DotEnv.ThrowMalformedEntry(entryLineNumber);
 
                 _remaining = _remaining[1..];
 
@@ -119,7 +166,7 @@ public static partial class DotEnv
                     switch (_options.DuplicateKeyBehavior)
                     {
                         case DotEnvDuplicateKeyBehavior.Disallowed:
-                            ThrowHelper.ThrowDotEnvFormatException_DuplicateKey(key, entryLineNumber);
+                            DotEnv.ThrowDuplicateKey(key, entryLineNumber);
                             return default!;
 
                         case DotEnvDuplicateKeyBehavior.FirstWins:
@@ -162,7 +209,7 @@ public static partial class DotEnv
             while (true)
             {
                 if (IsEmpty)
-                    ThrowHelper.ThrowDotEnvFormatException_UnterminatedDoubleQuote(startLineNumber);
+                    DotEnv.ThrowUnterminatedDoubleQuote(startLineNumber);
 
                 char c = Current;
 
@@ -177,7 +224,7 @@ public static partial class DotEnv
                     Advance(); // consume '\'
 
                     if (IsEmpty)
-                        ThrowHelper.ThrowDotEnvFormatException_UnterminatedDoubleQuote(startLineNumber);
+                        DotEnv.ThrowUnterminatedDoubleQuote(startLineNumber);
 
                     char esc = Current;
                     Advance(); // consume escape char (may be '\n', incrementing _lineNumber)
@@ -234,10 +281,10 @@ public static partial class DotEnv
                 }
 
                 if (c == '\n' || c == '\r')
-                    ThrowHelper.ThrowDotEnvFormatException_UnterminatedSingleQuote(startLineNumber);
+                    DotEnv.ThrowUnterminatedSingleQuote(startLineNumber);
             }
 
-            ThrowHelper.ThrowDotEnvFormatException_UnterminatedSingleQuote(startLineNumber);
+            DotEnv.ThrowUnterminatedSingleQuote(startLineNumber);
             return default!;
         }
 
