@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Bodu.Text.Formats.Ini;
 
 namespace Bodu.Text.Formats;
 
@@ -17,6 +18,26 @@ internal static partial class ThrowHelper
     /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.BencodeFormatException_UnexpectedToken" />.</summary>
     private static readonly CompositeFormat s_unexpectedToken =
         CompositeFormat.Parse(FormatsResourceStrings.BencodeFormatException_UnexpectedToken);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.IniFormatException_DuplicateKey" />.</summary>
+    private static readonly CompositeFormat s_iniDuplicateKey =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_DuplicateKey);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.IniFormatException_DuplicateSection" />.</summary>
+    private static readonly CompositeFormat s_iniDuplicateSection =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_DuplicateSection);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.IniFormatException_GlobalKeyDisallowed" />.</summary>
+    private static readonly CompositeFormat s_iniGlobalKeyDisallowed =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_GlobalKeyDisallowed);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.IniFormatException_MalformedSectionHeader" />.</summary>
+    private static readonly CompositeFormat s_iniMalformedSectionHeader =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_MalformedSectionHeader);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.IniFormatException_MissingKey" />.</summary>
+    private static readonly CompositeFormat s_iniMissingKey =
+        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_MissingKey);
 
     /// <summary>
     /// Throws an <see cref="ArgumentException" /> indicating that a dictionary literal contained the same key
@@ -309,5 +330,66 @@ internal static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowInvalidOperationException_StringLengthFormatFailed() =>
         throw new InvalidOperationException(FormatsResourceStrings.InvalidOperationException_StringLengthFormatFailed);
+
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> indicating that the same key appeared more than once in a
+    /// section where duplicate keys are not permitted.
+    /// </summary>
+    /// <param name="key">The duplicate key name.</param>
+    /// <param name="lineNumber">The 1-based line number on which the duplicate was encountered.</param>
+    /// <exception cref="IniFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIniFormatException_DuplicateKey(string key, int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniDuplicateKey, key, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> indicating that the same section name appeared more than once
+    /// when duplicate sections are not permitted.
+    /// </summary>
+    /// <param name="name">The duplicate section name.</param>
+    /// <param name="lineNumber">The 1-based line number on which the duplicate was encountered.</param>
+    /// <exception cref="IniFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIniFormatException_DuplicateSection(string name, int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniDuplicateSection, name, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> indicating that a key was encountered before the first section
+    /// header when global entries are not permitted.
+    /// </summary>
+    /// <param name="lineNumber">The 1-based line number on which the key was encountered.</param>
+    /// <exception cref="IniFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIniFormatException_GlobalKeyDisallowed(int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniGlobalKeyDisallowed, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> indicating that a section header was malformed — either missing
+    /// the closing bracket or containing an empty name.
+    /// </summary>
+    /// <param name="lineNumber">The 1-based line number of the malformed header.</param>
+    /// <exception cref="IniFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIniFormatException_MalformedSectionHeader(int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniMalformedSectionHeader, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws an <see cref="IniFormatException" /> indicating that a key name was empty on a property line.
+    /// </summary>
+    /// <param name="lineNumber">The 1-based line number of the offending entry.</param>
+    /// <exception cref="IniFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowIniFormatException_MissingKey(int lineNumber) =>
+        throw new IniFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_iniMissingKey, lineNumber), lineNumber);
 
 }

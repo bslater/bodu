@@ -189,6 +189,24 @@
   <data name="BencodeFormatException_UnterminatedList" xml:space="preserve">
     <value>Unterminated bencoded list.</value>
   </data>
+  <data name="IniFormatException_DuplicateKey" xml:space="preserve">
+    <value>Duplicate key '{0}' on line {1}.</value>
+  </data>
+  <data name="IniFormatException_DuplicateSection" xml:space="preserve">
+    <value>Duplicate section '{0}' on line {1}.</value>
+  </data>
+  <data name="IniFormatException_GlobalKeyDisallowed" xml:space="preserve">
+    <value>Keys are not permitted before the first section header (line {0}).</value>
+  </data>
+  <data name="IniFormatException_MalformedSectionHeader" xml:space="preserve">
+    <value>Malformed section header on line {0}.</value>
+  </data>
+  <data name="IniFormatException_MissingKey" xml:space="preserve">
+    <value>Expected a key name on line {0}.</value>
+  </data>
+  <data name="IniSection_KeyNotFound" xml:space="preserve">
+    <value>The key '{0}' was not found in the section.</value>
+  </data>
   <data name="InvalidOperationException_IntegerFormatFailed" xml:space="preserve">
     <value>The integer value could not be formatted.</value>
   </data>

@@ -277,6 +277,60 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Duplicate key '{0}' on line {1}..
+        /// </summary>
+        internal static string IniFormatException_DuplicateKey {
+            get {
+                return ResourceManager.GetString("IniFormatException_DuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate section '{0}' on line {1}..
+        /// </summary>
+        internal static string IniFormatException_DuplicateSection {
+            get {
+                return ResourceManager.GetString("IniFormatException_DuplicateSection", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Keys are not permitted before the first section header (line {0})..
+        /// </summary>
+        internal static string IniFormatException_GlobalKeyDisallowed {
+            get {
+                return ResourceManager.GetString("IniFormatException_GlobalKeyDisallowed", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Malformed section header on line {0}..
+        /// </summary>
+        internal static string IniFormatException_MalformedSectionHeader {
+            get {
+                return ResourceManager.GetString("IniFormatException_MalformedSectionHeader", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Expected a key name on line {0}..
+        /// </summary>
+        internal static string IniFormatException_MissingKey {
+            get {
+                return ResourceManager.GetString("IniFormatException_MissingKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key '{0}' was not found in the section..
+        /// </summary>
+        internal static string IniSection_KeyNotFound {
+            get {
+                return ResourceManager.GetString("IniSection_KeyNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The integer value could not be formatted..
         /// </summary>
         internal static string InvalidOperationException_IntegerFormatFailed {

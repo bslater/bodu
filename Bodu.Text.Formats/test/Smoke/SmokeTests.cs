@@ -5,6 +5,8 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test;
+using Bodu.Text.Formats.Ini;
+using IniParser = Bodu.Text.Formats.Ini.Ini;
 
 namespace Bodu.Text.Formats;
 
@@ -109,6 +111,27 @@ public sealed class SmokeTests
         BencodedString b = new(new byte[] { 0xAA, 0xBB });
 
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Ini.Parse(ReadOnlySpan{char})" /> and <see cref="Ini.Format(IniDocument)" />
+    /// round-trip a simple INI document — all sections, keys, and values survive unchanged.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void Ini_ParseFormat_ShouldRoundTripSimpleDocument()
+    {
+        const string source = "global=g\n[server]\nhost=localhost\nport=8080";
+
+        IniDocument original = IniParser.Parse(source);
+        string formatted = IniParser.Format(original);
+        IniDocument roundTripped = IniParser.Parse(formatted);
+
+        Assert.AreEqual("g", roundTripped.GlobalSection["global"]);
+        IniSection? server = roundTripped.GetSection("server");
+        Assert.IsNotNull(server);
+        Assert.AreEqual("localhost", server["host"]);
+        Assert.AreEqual("8080", server["port"]);
     }
 
 }
