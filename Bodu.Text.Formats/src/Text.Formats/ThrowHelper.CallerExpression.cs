@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Bodu.Text.Formats.DotEnv;
 using Bodu.Text.Formats.Ini;
 
 namespace Bodu.Text.Formats;
@@ -18,6 +19,30 @@ internal static partial class ThrowHelper
     /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.BencodeFormatException_UnexpectedToken" />.</summary>
     private static readonly CompositeFormat s_unexpectedToken =
         CompositeFormat.Parse(FormatsResourceStrings.BencodeFormatException_UnexpectedToken);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DotEnvDocument_KeyNotFound" />.</summary>
+    private static readonly CompositeFormat s_dotEnvDocumentKeyNotFound =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvDocument_KeyNotFound);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DotEnvFormatException_DuplicateKey" />.</summary>
+    private static readonly CompositeFormat s_dotEnvDuplicateKey =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_DuplicateKey);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DotEnvFormatException_InvalidKey" />.</summary>
+    private static readonly CompositeFormat s_dotEnvInvalidKey =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_InvalidKey);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DotEnvFormatException_MalformedEntry" />.</summary>
+    private static readonly CompositeFormat s_dotEnvMalformedEntry =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_MalformedEntry);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DotEnvFormatException_UnterminatedDoubleQuote" />.</summary>
+    private static readonly CompositeFormat s_dotEnvUnterminatedDoubleQuote =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_UnterminatedDoubleQuote);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DotEnvFormatException_UnterminatedSingleQuote" />.</summary>
+    private static readonly CompositeFormat s_dotEnvUnterminatedSingleQuote =
+        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_UnterminatedSingleQuote);
 
     /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.IniFormatException_DuplicateKey" />.</summary>
     private static readonly CompositeFormat s_iniDuplicateKey =
@@ -330,6 +355,80 @@ internal static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowInvalidOperationException_StringLengthFormatFailed() =>
         throw new InvalidOperationException(FormatsResourceStrings.InvalidOperationException_StringLengthFormatFailed);
+
+    /// <summary>
+    /// Throws a <see cref="KeyNotFoundException" /> indicating that the specified key is absent from a
+    /// <see cref="DotEnvDocument" />.
+    /// </summary>
+    /// <param name="key">The key that was not found.</param>
+    /// <exception cref="KeyNotFoundException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowKeyNotFoundException_DotEnvDocument(string key) =>
+        throw new KeyNotFoundException(
+            string.Format(CultureInfo.InvariantCulture, s_dotEnvDocumentKeyNotFound, key));
+
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> indicating that the same key appeared more than once when
+    /// duplicate keys are not permitted.
+    /// </summary>
+    /// <param name="key">The duplicate key name.</param>
+    /// <param name="lineNumber">The 1-based line number on which the duplicate was encountered.</param>
+    /// <exception cref="DotEnvFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowDotEnvFormatException_DuplicateKey(string key, int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_dotEnvDuplicateKey, key, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> indicating that a key name did not satisfy the required
+    /// <c>[A-Za-z_][A-Za-z0-9_]*</c> pattern.
+    /// </summary>
+    /// <param name="key">The invalid key text that was encountered.</param>
+    /// <param name="lineNumber">The 1-based line number on which the invalid key was encountered.</param>
+    /// <exception cref="DotEnvFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowDotEnvFormatException_InvalidKey(string key, int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_dotEnvInvalidKey, key, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> indicating that a line could not be parsed as a valid
+    /// <c>KEY=VALUE</c> assignment.
+    /// </summary>
+    /// <param name="lineNumber">The 1-based line number of the malformed entry.</param>
+    /// <exception cref="DotEnvFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowDotEnvFormatException_MalformedEntry(int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_dotEnvMalformedEntry, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> indicating that a double-quoted string was not closed before
+    /// the end of the source.
+    /// </summary>
+    /// <param name="lineNumber">The 1-based line number on which the double-quoted string opened.</param>
+    /// <exception cref="DotEnvFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowDotEnvFormatException_UnterminatedDoubleQuote(int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_dotEnvUnterminatedDoubleQuote, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws a <see cref="DotEnvFormatException" /> indicating that a single-quoted string was not closed before
+    /// the end of the line.
+    /// </summary>
+    /// <param name="lineNumber">The 1-based line number on which the single-quoted string opened.</param>
+    /// <exception cref="DotEnvFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowDotEnvFormatException_UnterminatedSingleQuote(int lineNumber) =>
+        throw new DotEnvFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_dotEnvUnterminatedSingleQuote, lineNumber), lineNumber);
 
     /// <summary>
     /// Throws an <see cref="IniFormatException" /> indicating that the same key appeared more than once in a

@@ -277,6 +277,60 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The key '{0}' was not found..
+        /// </summary>
+        internal static string DotEnvDocument_KeyNotFound {
+            get {
+                return ResourceManager.GetString("DotEnvDocument_KeyNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Duplicate key '{0}' on line {1}..
+        /// </summary>
+        internal static string DotEnvFormatException_DuplicateKey {
+            get {
+                return ResourceManager.GetString("DotEnvFormatException_DuplicateKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid key '{0}' on line {1}. Keys must start with a letter or underscore and contain only letters, digits, and underscores..
+        /// </summary>
+        internal static string DotEnvFormatException_InvalidKey {
+            get {
+                return ResourceManager.GetString("DotEnvFormatException_InvalidKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Malformed entry on line {0}..
+        /// </summary>
+        internal static string DotEnvFormatException_MalformedEntry {
+            get {
+                return ResourceManager.GetString("DotEnvFormatException_MalformedEntry", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unterminated double-quoted string starting on line {0}..
+        /// </summary>
+        internal static string DotEnvFormatException_UnterminatedDoubleQuote {
+            get {
+                return ResourceManager.GetString("DotEnvFormatException_UnterminatedDoubleQuote", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unterminated single-quoted string on line {0}..
+        /// </summary>
+        internal static string DotEnvFormatException_UnterminatedSingleQuote {
+            get {
+                return ResourceManager.GetString("DotEnvFormatException_UnterminatedSingleQuote", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Duplicate key '{0}' on line {1}..
         /// </summary>
         internal static string IniFormatException_DuplicateKey {

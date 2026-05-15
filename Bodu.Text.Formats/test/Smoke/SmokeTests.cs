@@ -6,6 +6,7 @@
 
 using Bodu.Test;
 using Bodu.Text.Formats.Ini;
+using DotEnvParser = Bodu.Text.Formats.DotEnv.DotEnv;
 using IniParser = Bodu.Text.Formats.Ini.Ini;
 
 namespace Bodu.Text.Formats;
@@ -111,6 +112,26 @@ public sealed class SmokeTests
         BencodedString b = new(new byte[] { 0xAA, 0xBB });
 
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnv.Parse(ReadOnlySpan{char})" /> and
+    /// <see cref="DotEnv.Format(DotEnvDocument)" /> round-trip a simple DotEnv document — all keys and values
+    /// survive unchanged.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void DotEnv_ParseFormat_ShouldRoundTripSimpleDocument()
+    {
+        const string source = "HOST=localhost\nPORT=8080\nDEBUG=True";
+
+        Bodu.Text.Formats.DotEnv.DotEnvDocument original = DotEnvParser.Parse(source);
+        string formatted = DotEnvParser.Format(original);
+        Bodu.Text.Formats.DotEnv.DotEnvDocument roundTripped = DotEnvParser.Parse(formatted);
+
+        Assert.AreEqual("localhost", roundTripped["HOST"]);
+        Assert.AreEqual("8080", roundTripped["PORT"]);
+        Assert.AreEqual("True", roundTripped["DEBUG"]);
     }
 
     /// <summary>
