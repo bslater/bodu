@@ -186,4 +186,110 @@ public sealed class BufferWriterTests
         Assert.IsTrue(expected.StartsWith("<~", StringComparison.Ordinal));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> writes
+    /// the same UTF-8 bytes as the byte-array EncodeToUtf8.
+    /// </summary>
+    [TestMethod]
+    public void Base58_EncodeToUtf8_IntoBufferWriter_ShouldMatchArrayOutput()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base58.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base58.EncodeToUtf8(Payload);
+
+        Assert.AreEqual(expected.Length, written);
+        CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> writes
+    /// zero bytes and does not advance the writer when the source is empty.
+    /// </summary>
+    [TestMethod]
+    public void Base58_EncodeToUtf8_IntoBufferWriterWithEmptyPayload_ShouldWriteZeroBytes()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base58.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer);
+
+        Assert.AreEqual(0, written);
+        Assert.AreEqual(0, writer.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> with a
+    /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Base58_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Base58.EncodeToUtf8(Payload, (IBufferWriter<byte>)null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base85Variant)" /> writes
+    /// the same UTF-8 bytes as the byte-array EncodeToUtf8 for the default Ascii85 variant.
+    /// </summary>
+    [TestMethod]
+    public void Base85_EncodeToUtf8_IntoBufferWriter_ShouldMatchArrayOutput()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base85.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base85.EncodeToUtf8(Payload);
+
+        Assert.AreEqual(expected.Length, written);
+        CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base85Variant)" /> writes
+    /// zero bytes and does not advance the writer when the source is empty.
+    /// </summary>
+    [TestMethod]
+    public void Base85_EncodeToUtf8_IntoBufferWriterWithEmptyPayload_ShouldWriteZeroBytes()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base85.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer);
+
+        Assert.AreEqual(0, written);
+        Assert.AreEqual(0, writer.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base85Variant)" /> with a
+    /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Base85_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Base85.EncodeToUtf8(Payload, (IBufferWriter<byte>)null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base85Variant)" /> emits
+    /// the Z85 variant output when that variant is selected (4-byte aligned input).
+    /// </summary>
+    [TestMethod]
+    public void Base85_EncodeToUtf8_WithZ85Variant_ShouldMatchArrayOutput()
+    {
+        // Z85 requires 4-byte aligned input.
+        byte[] aligned = new byte[] { 0x86, 0x4F, 0xD2, 0x6F, 0xB5, 0x59, 0xF7, 0x5B };
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base85.EncodeToUtf8(aligned, writer, Base85Variant.Z85);
+        byte[] expected = Base85.EncodeToUtf8(aligned, Base85Variant.Z85);
+
+        Assert.AreEqual(expected.Length, written);
+        CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
+    }
+
 }
