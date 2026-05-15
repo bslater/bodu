@@ -70,4 +70,58 @@ public sealed partial class Base58Tests
 
         CollectionAssert.AreEqual(Ascii("Hello"), actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> rejects each character
+    /// that the Bitcoin/Flickr alphabet intentionally omits.
+    /// </summary>
+    /// <param name="excluded">The excluded character.</param>
+    [TestMethod]
+    [DataRow('0')]
+    [DataRow('O')]
+    [DataRow('I')]
+    [DataRow('l')]
+    [DataRow('!')]
+    [DataRow('@')]
+    [DataRow(' ')]  // strict mode rejects whitespace
+    public void Decode_WhenInputContainsExcludedCharacter_ShouldThrowFormatException(char excluded)
+    {
+        string input = "2" + excluded + "2";
+
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base58.Decode(input);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> with
+    /// <see cref="BaseFormatStyles.IgnoreWhitespace" /> handles every individual ASCII whitespace pattern.
+    /// </summary>
+    /// <param name="decoratedInput">The decorated input.</param>
+    [TestMethod]
+    [DataRow("9 Aj dv zr")]
+    [DataRow("9\tAj\tdv\tzr")]
+    [DataRow("9\nAj\ndv\nzr")]
+    [DataRow("9\rAj\rdv\rzr")]
+    [DataRow("  9Ajdvzr  ")]
+    public void Decode_WhenIgnoreWhitespaceAndVariousWhitespacePatterns_ShouldStripAndDecodeHello(string decoratedInput)
+    {
+        byte[] actual = Base58.Decode(decoratedInput, Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace);
+
+        CollectionAssert.AreEqual(Ascii("Hello"), actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> rejects an undefined
+    /// variant.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Base58.Decode("9Ajdvzr", (Base58Variant)99);
+        });
+    }
 }

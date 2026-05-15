@@ -39,4 +39,38 @@ public sealed partial class Base32Tests
 
         Assert.AreEqual(0, actual.Length);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.TryEncode" /> with an empty source returns <see langword="true" /> and writes
+    /// zero characters regardless of the destination span size.
+    /// </summary>
+    [TestMethod]
+    public void TryEncode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroCharsRegardlessOfDestination()
+    {
+        Assert.IsTrue(Base32.TryEncode(ReadOnlySpan<byte>.Empty, new char[1], out int t1));
+        Assert.AreEqual(0, t1);
+
+        Assert.IsTrue(Base32.TryEncode(ReadOnlySpan<byte>.Empty, Array.Empty<char>(), out int t2));
+        Assert.AreEqual(0, t2);
+
+        Assert.IsTrue(Base32.TryEncode(ReadOnlySpan<byte>.Empty, new char[100], out int t3));
+        Assert.AreEqual(0, t3);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.TryDecode" /> with an empty source returns <see langword="true" /> and writes
+    /// zero bytes regardless of the destination span size.
+    /// </summary>
+    [TestMethod]
+    public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
+    {
+        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, new byte[1], out int t1));
+        Assert.AreEqual(0, t1);
+
+        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, Array.Empty<byte>(), out int t2));
+        Assert.AreEqual(0, t2);
+
+        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, new byte[100], out int t3));
+        Assert.AreEqual(0, t3);
+    }
 }

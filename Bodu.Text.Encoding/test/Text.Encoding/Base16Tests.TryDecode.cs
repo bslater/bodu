@@ -158,4 +158,67 @@ public sealed partial class Base16Tests
         Assert.AreEqual(byteCount, bytesWritten);
         CollectionAssert.AreEqual(bytes, destination);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryDecode" /> succeeds when the destination is exactly the required size.
+    /// </summary>
+    /// <param name="charCount">The input char count.</param>
+    [TestMethod]
+    [DataRow(2)]
+    [DataRow(4)]
+    [DataRow(14)]
+    [DataRow(128)]
+    [DataRow(2048)]
+    public void TryDecode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int charCount)
+    {
+        string input = new string('a', charCount);
+        byte[] destination = new byte[charCount / 2];
+
+        bool ok = Base16.TryDecode(input.AsSpan(), destination, out int bytesWritten);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(charCount / 2, bytesWritten);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryDecode" /> returns <see langword="false" /> when the destination is exactly
+    /// one byte short of the required size.
+    /// </summary>
+    /// <param name="charCount">The input char count.</param>
+    [TestMethod]
+    [DataRow(2)]
+    [DataRow(4)]
+    [DataRow(14)]
+    [DataRow(128)]
+    public void TryDecode_WhenDestinationOneByteShort_ShouldReturnFalseAndZeroBytesWritten(int charCount)
+    {
+        string input = new string('a', charCount);
+        byte[] destination = new byte[(charCount / 2) - 1];
+
+        bool ok = Base16.TryDecode(input.AsSpan(), destination, out int bytesWritten);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, bytesWritten);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryDecode" /> rejects various malformed inputs without throwing.
+    /// </summary>
+    /// <param name="malformedInput">The malformed input.</param>
+    [TestMethod]
+    [DataRow("g0")]
+    [DataRow("0g")]
+    [DataRow("a")]      // odd length
+    [DataRow("abc")]    // odd length
+    [DataRow("ab/cd")]  // invalid separator
+    [DataRow(" ab")]    // whitespace in strict mode
+    public void TryDecode_WhenStrictAndMalformedInput_ShouldReturnFalse(string malformedInput)
+    {
+        byte[] destination = new byte[16];
+
+        bool ok = Base16.TryDecode(malformedInput.AsSpan(), destination, out int bytesWritten);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, bytesWritten);
+    }
 }

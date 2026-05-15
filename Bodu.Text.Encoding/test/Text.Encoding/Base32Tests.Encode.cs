@@ -133,4 +133,44 @@ public sealed partial class Base32Tests
             _ = Base32.Encode(Ascii("foo"), (Base32Variant)99);
         });
     }
+
+    /// <summary>
+    /// Verifies that the byte-array and span overloads of <see cref="Base32.Encode(byte[], Base32Variant, BaseFormattingOptions)" />
+    /// and <see cref="Base32.Encode(ReadOnlySpan{byte}, Base32Variant, BaseFormattingOptions)" /> produce identical
+    /// output across a range of sizes.
+    /// </summary>
+    /// <param name="size">The size of the test input.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(5)]
+    [DataRow(16)]
+    [DataRow(100)]
+    public void Encode_ByteArrayAndSpanOverloads_ShouldProduceIdenticalOutput(int size)
+    {
+        byte[] bytes = new byte[size];
+        for (int i = 0; i < size; i++)
+        {
+            bytes[i] = (byte)((i * 17) ^ 0x55);
+        }
+
+        string fromArray = Base32.Encode(bytes);
+        string fromSpan = Base32.Encode(bytes.AsSpan());
+
+        Assert.AreEqual(fromArray, fromSpan);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.Encode(byte[], int, int, Base32Variant, BaseFormattingOptions)" /> rejects a
+    /// negative offset.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenNegativeOffset_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Base32.Encode(new byte[4], -1, 1);
+        });
+    }
 }

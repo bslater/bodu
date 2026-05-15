@@ -196,4 +196,72 @@ public sealed partial class Base16Tests
         Assert.AreEqual(OperationStatus.Done, status);
         CollectionAssert.AreEqual(CanonicalBytes, destination);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryEncodeToUtf8" /> succeeds when the destination is exactly the required
+    /// size.
+    /// </summary>
+    [TestMethod]
+    public void TryEncodeToUtf8_WhenDestinationExactlyRequiredSize_ShouldFillAndReportCount()
+    {
+        byte[] bytes = new byte[4];
+        byte[] destination = new byte[8];
+
+        bool ok = Base16.TryEncodeToUtf8(bytes.AsSpan(), destination, out int bytesWritten);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(8, bytesWritten);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryEncodeToUtf8" /> returns <see langword="false" /> when the destination is
+    /// exactly one byte short of the required size.
+    /// </summary>
+    [TestMethod]
+    public void TryEncodeToUtf8_WhenDestinationOneByteShort_ShouldReturnFalse()
+    {
+        byte[] bytes = new byte[4];
+        byte[] destination = new byte[7];
+
+        bool ok = Base16.TryEncodeToUtf8(bytes.AsSpan(), destination, out int bytesWritten);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, bytesWritten);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.DecodeFromUtf8" /> in non-final-block mode reports the partial-pair byte
+    /// boundary correctly across input lengths.
+    /// </summary>
+    /// <param name="inputLength">The UTF-8 source length under test.</param>
+    /// <param name="expectedBytesConsumed">The expected <c>bytesConsumed</c> count.</param>
+    /// <param name="expectedBytesWritten">The expected <c>bytesWritten</c> count.</param>
+    [TestMethod]
+    [DataRow(0, 0, 0)]
+    [DataRow(1, 0, 0)]
+    [DataRow(2, 2, 1)]
+    [DataRow(3, 2, 1)]
+    [DataRow(4, 4, 2)]
+    [DataRow(5, 4, 2)]
+    [DataRow(8, 8, 4)]
+    [DataRow(9, 8, 4)]
+    public void DecodeFromUtf8_WhenNonFinalBlock_ShouldReportPairBoundary(int inputLength, int expectedBytesConsumed, int expectedBytesWritten)
+    {
+        byte[] utf8 = new byte[inputLength];
+        for (int i = 0; i < inputLength; i++)
+        {
+            utf8[i] = (byte)'a'; // 'a' is a valid hex digit
+        }
+
+        byte[] destination = new byte[8];
+        OperationStatus status = Base16.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten, isFinalBlock: false);
+
+        Assert.AreEqual(expectedBytesConsumed, bytesConsumed);
+        Assert.AreEqual(expectedBytesWritten, bytesWritten);
+
+        OperationStatus expectedStatus = (inputLength & 1) == 0
+            ? OperationStatus.Done
+            : OperationStatus.NeedMoreData;
+        Assert.AreEqual(expectedStatus, status);
+    }
 }

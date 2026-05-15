@@ -114,4 +114,68 @@ public sealed partial class Base64Tests
 
         CollectionAssert.AreEqual(Ascii("foobar"), actual);
     }
+
+    /// <summary>
+    /// Verifies that the Standard Base64 decoder rejects URL-safe alphabet characters that are absent from the
+    /// Standard alphabet.
+    /// </summary>
+    /// <param name="excluded">A URL-safe-only character.</param>
+    [TestMethod]
+    [DataRow('-')]
+    [DataRow('_')]
+    public void Decode_WhenStandardVariantWithUrlSafeChar_ShouldThrowFormatException(char excluded)
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.Decode("Zm" + excluded + "v");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the URL-safe Base64 decoder rejects Standard alphabet characters that are absent from the URL-
+    /// safe alphabet.
+    /// </summary>
+    /// <param name="excluded">A Standard-only character.</param>
+    [TestMethod]
+    [DataRow('+')]
+    [DataRow('/')]
+    public void Decode_WhenUrlSafeVariantWithStandardChar_ShouldThrowFormatException(char excluded)
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.Decode("Zm" + excluded + "v", Base64Variant.UrlSafe);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the Standard Base64 decoder handles every individual ASCII whitespace pattern via
+    /// <see cref="BaseFormatStyles.IgnoreWhitespace" />.
+    /// </summary>
+    /// <param name="decoratedInput">The decorated input.</param>
+    [TestMethod]
+    [DataRow("Zm 9v Ym Fy")]
+    [DataRow("Zm\t9v\tYm\tFy")]
+    [DataRow("Zm\n9v\nYm\nFy")]
+    [DataRow("Zm\r\n9v\r\nYm\r\nFy")]
+    [DataRow("  Zm9vYmFy  ")]
+    [DataRow("Zm9vYmFy\n")]
+    [DataRow("\nZm9vYmFy")]
+    public void Decode_WhenIgnoreWhitespaceAndVariousWhitespacePatterns_ShouldDecodeFoobar(string decoratedInput)
+    {
+        byte[] actual = Base64.Decode(decoratedInput, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
+
+        CollectionAssert.AreEqual(Ascii("foobar"), actual);
+    }
+
+    /// <summary>
+    /// Verifies that the decoder rejects an input containing only padding characters.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenOnlyPaddingCharacters_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base64.Decode("====");
+        });
+    }
 }

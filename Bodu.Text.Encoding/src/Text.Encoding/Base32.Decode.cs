@@ -228,6 +228,15 @@ public static partial class Base32
             }
         }
 
+        int dataMod = symbolsConsumed % 8;
+        if (dataMod is 1 or 3 or 6)
+        {
+            // Per RFC 4648 §6 the valid number of data characters per terminal quantum is 2, 4, 5, 7, or 8.
+            error = "Base32 input has an invalid number of data characters for the final quantum.";
+            bytesWritten = 0;
+            return false;
+        }
+
         return true;
     }
 }

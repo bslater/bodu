@@ -31,4 +31,18 @@ public sealed partial class Base85Tests
     {
         Assert.AreEqual(0, Base85.Decode(string.Empty, variant).Length);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.TryEncode" /> and <see cref="Base85.TryDecode" /> with empty source return
+    /// <see langword="true" /> with zero counts written.
+    /// </summary>
+    [TestMethod]
+    public void TryEncodeAndTryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroWritten()
+    {
+        Assert.IsTrue(Base85.TryEncode(ReadOnlySpan<byte>.Empty, new char[8], out int charsWritten));
+        Assert.AreEqual(0, charsWritten);
+
+        Assert.IsTrue(Base85.TryDecode(ReadOnlySpan<char>.Empty, new byte[8], out int bytesWritten));
+        Assert.AreEqual(0, bytesWritten);
+    }
 }

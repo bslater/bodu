@@ -214,4 +214,62 @@ public sealed partial class Base16Tests
             _ = Base16.Decode("0x ABC", BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
         });
     }
+
+    /// <summary>
+    /// Verifies that the string and span overloads of <see cref="Base16.Decode(string, BaseFormatStyles)" /> and
+    /// <see cref="Base16.Decode(ReadOnlySpan{char}, BaseFormatStyles)" /> produce identical output.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void Decode_StringAndSpanOverloads_ShouldProduceIdenticalOutput()
+    {
+        string encoded = "deadbeefcafebabe";
+
+        byte[] fromString = Base16.Decode(encoded);
+        byte[] fromSpan = Base16.Decode(encoded.AsSpan());
+
+        CollectionAssert.AreEqual(fromString, fromSpan);
+    }
+
+    /// <summary>
+    /// Verifies that the decoder rejects characters that are common look-alikes but not valid hex digits.
+    /// </summary>
+    /// <param name="invalidInput">The malformed input under test.</param>
+    [TestMethod]
+    [DataRow("g0")]
+    [DataRow("G0")]
+    [DataRow("h0")]
+    [DataRow("ab/cd")]
+    [DataRow("ab.cd")]
+    [DataRow("ab-cd")]
+    [DataRow("ab_cd")]
+    [DataRow("ab cd")]
+    [DataRow("«cd")] // non-ASCII letter outside the alphabet
+    public void Decode_WhenInputContainsInvalidCharacters_ShouldThrowFormatException(string invalidInput)
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base16.Decode(invalidInput);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the decoder accepts every valid two-character mixed-case hex pair.
+    /// </summary>
+    /// <param name="input">The hex pair under test.</param>
+    /// <param name="expected">The expected decoded byte.</param>
+    [TestMethod]
+    [DataRow("aA", (byte)0xAA)]
+    [DataRow("Aa", (byte)0xAA)]
+    [DataRow("Bf", (byte)0xBF)]
+    [DataRow("0F", (byte)0x0F)]
+    [DataRow("f0", (byte)0xF0)]
+    [DataRow("eD", (byte)0xED)]
+    public void Decode_WhenInputIsMixedCaseHexPair_ShouldReturnExpectedByte(string input, byte expected)
+    {
+        byte[] actual = Base16.Decode(input);
+
+        Assert.AreEqual(1, actual.Length);
+        Assert.AreEqual(expected, actual[0]);
+    }
 }

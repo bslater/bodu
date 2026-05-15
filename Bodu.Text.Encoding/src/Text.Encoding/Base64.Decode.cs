@@ -154,25 +154,41 @@ public static partial class Base64
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 
-            char mapped = c;
-            if (urlSafe)
-            {
-                if (mapped == '-')
-                    mapped = '+';
-                else if (mapped == '_')
-                    mapped = '/';
-            }
-
-            if (mapped == PaddingChar)
+            if (c == PaddingChar)
             {
                 paddingSeen = true;
-                scratch[j++] = mapped;
+                scratch[j++] = c;
                 continue;
             }
 
             if (paddingSeen)
             {
                 return -1;
+            }
+
+            // Per RFC 4648 §4 and §5 the alphabets are disjoint with respect to '+/' and '-_'. Reject characters that
+            // belong to the opposite variant before forwarding the normalised scratch buffer to the BCL decoder.
+            bool isLetterOrDigit = c is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z') or (>= '0' and <= '9');
+            char mapped;
+            if (urlSafe)
+            {
+                if (c == '-')
+                    mapped = '+';
+                else if (c == '_')
+                    mapped = '/';
+                else if (isLetterOrDigit)
+                    mapped = c;
+                else
+                    return -1;
+            }
+            else
+            {
+                if (c is '+' or '/')
+                    mapped = c;
+                else if (isLetterOrDigit)
+                    mapped = c;
+                else
+                    return -1;
             }
 
             scratch[j++] = mapped;

@@ -133,4 +133,66 @@ public sealed partial class Base32Tests
             _ = Base32.Decode("MZXW6YTBOI======", (Base32Variant)99);
         });
     }
+
+    /// <summary>
+    /// Verifies that the Standard Base32 decoder rejects each character that is excluded from the RFC 4648 §6
+    /// alphabet (digits 0, 1, 8, 9 are intentionally absent).
+    /// </summary>
+    /// <param name="excluded">An excluded character.</param>
+    [TestMethod]
+    [DataRow('0')]
+    [DataRow('1')]
+    [DataRow('8')]
+    [DataRow('9')]
+    [DataRow('!')]
+    [DataRow('@')]
+    [DataRow('#')]
+    [DataRow('-')]
+    [DataRow('_')]
+    public void Decode_WhenStandardAlphabetExcludedCharacter_ShouldThrowFormatException(char excluded)
+    {
+        string input = "MZ" + excluded + "W6YTB";
+
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base32.Decode(input);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the Standard Base32 decoder accepts the same alphabet characters in both upper and lower case
+    /// across the full alphabet range.
+    /// </summary>
+    /// <param name="input">Mixed-case input.</param>
+    /// <param name="expectedAscii">The expected decoded ASCII string.</param>
+    [TestMethod]
+    [DataRow("MZXW6YTBOI======", "foobar")]
+    [DataRow("mzxw6ytboi======", "foobar")]
+    [DataRow("MzXw6YtBoI======", "foobar")]
+    [DataRow("mZxW6yTbOi======", "foobar")]
+    public void Decode_WhenMixedCaseInput_ShouldDecodeCaseInsensitively(string input, string expectedAscii)
+    {
+        byte[] actual = Base32.Decode(input);
+
+        CollectionAssert.AreEqual(Ascii(expectedAscii), actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.Decode(string, Base32Variant, BaseFormatStyles)" /> with
+    /// <see cref="BaseFormatStyles.IgnoreWhitespace" /> handles every individual ASCII whitespace character.
+    /// </summary>
+    /// <param name="decoratedInput">The decorated input.</param>
+    [TestMethod]
+    [DataRow("MZ XW 6Y TB OI ======")]
+    [DataRow("MZ\tXW\t6Y\tTB\tOI\t======")]
+    [DataRow("MZ\nXW\n6Y\nTB\nOI\n======")]
+    [DataRow("MZ\rXW\r6Y\rTB\rOI\r======")]
+    [DataRow("  MZXW6YTBOI======  ")]
+    [DataRow("\r\nMZXW6YTBOI======\r\n")]
+    public void Decode_WhenIgnoreWhitespaceAndVariousWhitespacePatterns_ShouldDecodeFoobar(string decoratedInput)
+    {
+        byte[] actual = Base32.Decode(decoratedInput, Base32Variant.Standard, BaseFormatStyles.IgnoreWhitespace);
+
+        CollectionAssert.AreEqual(Ascii("foobar"), actual);
+    }
 }

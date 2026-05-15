@@ -35,4 +35,18 @@ public sealed partial class Base58Tests
 
         Assert.AreEqual(0, actual.Length);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.TryEncode" /> and <see cref="Base58.TryDecode" /> with empty source return
+    /// <see langword="true" /> with zero counts written.
+    /// </summary>
+    [TestMethod]
+    public void TryEncodeAndTryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroWritten()
+    {
+        Assert.IsTrue(Base58.TryEncode(ReadOnlySpan<byte>.Empty, new char[8], out int charsWritten));
+        Assert.AreEqual(0, charsWritten);
+
+        Assert.IsTrue(Base58.TryDecode(ReadOnlySpan<char>.Empty, new byte[8], out int bytesWritten));
+        Assert.AreEqual(0, bytesWritten);
+    }
 }

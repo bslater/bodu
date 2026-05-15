@@ -184,4 +184,71 @@ public sealed partial class Base16Tests
 
         Assert.AreEqual(string.Empty, actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.Encode(ReadOnlySpan{byte}, Span{char}, BaseFormattingOptions)" /> throws
+    /// <see cref="ArgumentException" /> when the destination is exactly one character short of the required size.
+    /// </summary>
+    [TestMethod]
+    public void Encode_SpanDestination_WhenOneCharShort_ShouldThrowArgumentException()
+    {
+        byte[] bytes = new byte[4];
+        char[] destination = new char[7];
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Base16.Encode(bytes.AsSpan(), destination);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="Base16.Encode(byte[], BaseFormattingOptions)" /> and
+    /// <see cref="Base16.Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> overloads produce identical output
+    /// for the same input across a range of sizes.
+    /// </summary>
+    /// <param name="size">The size of the test input.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(16)]
+    [DataRow(256)]
+    public void Encode_ByteArrayAndSpanOverloads_ShouldProduceIdenticalOutput(int size)
+    {
+        byte[] bytes = new byte[size];
+        for (int i = 0; i < size; i++)
+        {
+            bytes[i] = (byte)((i * 31) ^ 0xAA);
+        }
+
+        string fromArray = Base16.Encode(bytes);
+        string fromSpan = Base16.Encode(bytes.AsSpan());
+
+        Assert.AreEqual(fromArray, fromSpan);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.Encode(ReadOnlySpan{byte}, BaseFormattingOptions)" /> reproduces the published
+    /// hex form for a curated set of one-byte values across the full <c>0x00</c>-<c>0xFF</c> range.
+    /// </summary>
+    /// <param name="byteValue">The byte value under test.</param>
+    /// <param name="expected">The expected lower-case hex form.</param>
+    [TestMethod]
+    [DataRow((byte)0x00, "00")]
+    [DataRow((byte)0x01, "01")]
+    [DataRow((byte)0x0F, "0f")]
+    [DataRow((byte)0x10, "10")]
+    [DataRow((byte)0x7F, "7f")]
+    [DataRow((byte)0x80, "80")]
+    [DataRow((byte)0xAA, "aa")]
+    [DataRow((byte)0xCD, "cd")]
+    [DataRow((byte)0xFE, "fe")]
+    [DataRow((byte)0xFF, "ff")]
+    public void Encode_WhenSingleByteAcrossFullRange_ShouldMatchPublishedHexForm(byte byteValue, string expected)
+    {
+        string actual = Base16.Encode(new[] { byteValue });
+
+        Assert.AreEqual(expected, actual);
+    }
 }

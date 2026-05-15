@@ -287,6 +287,13 @@ public static partial class Base32
                 return OperationStatus.InvalidData;
         }
 
+        int dataMod = symbolsConsumed % 8;
+        if (dataMod is 1 or 3 or 6)
+        {
+            // RFC 4648 §6 — terminal quantum data character count must be 2, 4, 5, 7, or 8.
+            return OperationStatus.InvalidData;
+        }
+
         return OperationStatus.Done;
     }
 

@@ -52,4 +52,46 @@ public sealed partial class Base16Tests
 
         Assert.AreEqual(0, actual.Length);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryEncode" /> with an empty source returns <see langword="true" /> and writes
+    /// zero characters regardless of the destination span size.
+    /// </summary>
+    [TestMethod]
+    public void TryEncode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroCharsRegardlessOfDestination()
+    {
+        char[] tiny = new char[1];
+        char[] zero = Array.Empty<char>();
+        char[] huge = new char[1000];
+
+        Assert.IsTrue(Base16.TryEncode(ReadOnlySpan<byte>.Empty, tiny, out int charsTiny));
+        Assert.AreEqual(0, charsTiny);
+
+        Assert.IsTrue(Base16.TryEncode(ReadOnlySpan<byte>.Empty, zero, out int charsZero));
+        Assert.AreEqual(0, charsZero);
+
+        Assert.IsTrue(Base16.TryEncode(ReadOnlySpan<byte>.Empty, huge, out int charsHuge));
+        Assert.AreEqual(0, charsHuge);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryDecode" /> with an empty source returns <see langword="true" /> and writes
+    /// zero bytes regardless of the destination span size.
+    /// </summary>
+    [TestMethod]
+    public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
+    {
+        byte[] tiny = new byte[1];
+        byte[] zero = Array.Empty<byte>();
+        byte[] huge = new byte[1000];
+
+        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, tiny, out int bytesTiny));
+        Assert.AreEqual(0, bytesTiny);
+
+        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, zero, out int bytesZero));
+        Assert.AreEqual(0, bytesZero);
+
+        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, huge, out int bytesHuge));
+        Assert.AreEqual(0, bytesHuge);
+    }
 }

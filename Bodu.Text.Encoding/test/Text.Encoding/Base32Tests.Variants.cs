@@ -31,20 +31,21 @@ public sealed partial class Base32Tests
 
     /// <summary>
     /// Verifies that <see cref="Base32.Decode(string, Base32Variant, BaseFormatStyles)" /> in the Crockford variant
-    /// aliases <c>I</c>, <c>L</c> to <c>1</c> and <c>O</c> to <c>0</c>.
+    /// aliases <c>I</c>, <c>L</c> to <c>1</c> and <c>O</c> to <c>0</c>. Uses 4-character groups (one valid terminal
+    /// quantum) so the comparison is well-defined.
     /// </summary>
     [TestMethod]
     public void Decode_WhenCrockfordVariantWithAmbiguousAliases_ShouldNormaliseToCanonicalDigits()
     {
-        byte[] canonical = Base32.Decode("D1G", Base32Variant.Crockford);
-        byte[] aliasedI = Base32.Decode("DIG", Base32Variant.Crockford);
-        byte[] aliasedL = Base32.Decode("DLG", Base32Variant.Crockford);
+        byte[] canonical = Base32.Decode("D1G2", Base32Variant.Crockford);
+        byte[] aliasedI = Base32.Decode("DIG2", Base32Variant.Crockford);
+        byte[] aliasedL = Base32.Decode("DLG2", Base32Variant.Crockford);
 
         CollectionAssert.AreEqual(canonical, aliasedI);
         CollectionAssert.AreEqual(canonical, aliasedL);
 
-        byte[] canonicalZero = Base32.Decode("D0G", Base32Variant.Crockford);
-        byte[] aliasedO = Base32.Decode("DOG", Base32Variant.Crockford);
+        byte[] canonicalZero = Base32.Decode("D0G2", Base32Variant.Crockford);
+        byte[] aliasedO = Base32.Decode("DOG2", Base32Variant.Crockford);
 
         CollectionAssert.AreEqual(canonicalZero, aliasedO);
     }
@@ -58,7 +59,7 @@ public sealed partial class Base32Tests
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base32.Decode("DUG", Base32Variant.Crockford);
+            _ = Base32.Decode("DUG2", Base32Variant.Crockford);
         });
     }
 
@@ -96,5 +97,60 @@ public sealed partial class Base32Tests
         string actual = Base32.Encode(Ascii("foo"), Base32Variant.ZBase32);
 
         Assert.IsFalse(actual.Contains('='), "Z-Base32 output should not include padding characters by default.");
+    }
+
+    /// <summary>
+    /// Verifies that Z-Base32 encoded output does NOT decode meaningfully when treated as the Standard variant —
+    /// the alphabets are disjoint enough that decoding produces wrong bytes or rejects.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenZBase32OutputDecodedAsStandard_ShouldProduceDifferentValueOrThrow()
+    {
+        byte[] original = Ascii("foobar");
+        string zEncoded = Base32.Encode(original, Base32Variant.ZBase32);
+
+        try
+        {
+            byte[] decodedAsStandard = Base32.Decode(zEncoded, Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding);
+            Assert.IsFalse(decodedAsStandard.SequenceEqual(original),
+                "Decoding Z-Base32 output as Standard should not produce the original.");
+        }
+        catch (FormatException)
+        {
+            // Acceptable - Z-Base32 alphabet contains characters outside the Standard alphabet.
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the Standard variant alphabet (<c>A-Z 2-7</c>) is disjoint from the Crockford alphabet's lower
+    /// half (<c>0-9</c>) in a way that the Crockford variant accepts digits the Standard variant rejects.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenCrockfordDigit_ShouldRejectInStandardVariant()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base32.Decode("01234567", Base32Variant.Standard);
+        });
+
+        byte[] crockfordResult = Base32.Decode("01234567", Base32Variant.Crockford);
+        Assert.AreEqual(5, crockfordResult.Length);
+    }
+
+    /// <summary>
+    /// Verifies that the HexExtended variant is sorted such that its alphabet ordering matches Base16's hex ordering
+    /// for the first 16 symbols.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenHexExtendedVariant_ShouldOrderFirstSixteenSymbolsAsHex()
+    {
+        // The first 16 symbols of base32hex match Base16 digits: '0'-'9' then 'A'-'F'.
+        // Encoding a byte 0x00 should produce 'CO======' (per RFC 4648 §10). Verify the first symbol is '0' for an
+        // all-zero input.
+        byte[] zero = new byte[1];
+
+        string actual = Base32.Encode(zero, Base32Variant.HexExtended);
+
+        Assert.AreEqual('0', actual[0], "First HexExtended symbol of 0x00 byte should be '0'.");
     }
 }

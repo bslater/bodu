@@ -92,4 +92,61 @@ public sealed partial class Base85Tests
         Assert.AreEqual(original.Length, bytesWritten);
         CollectionAssert.AreEqual(original, byteBuffer.AsSpan(0, bytesWritten).ToArray());
     }
+
+    /// <summary>
+    /// Verifies that every single byte value round-trips through Ascii85. Tagged Regression because of the
+    /// exhaustive 256-value sweep.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    public void RoundTrip_ForEverySingleByteValueAscii85_ShouldRecover()
+    {
+        for (int value = 0; value <= 255; value++)
+        {
+            byte[] original = new byte[] { (byte)value };
+
+            string encoded = Base85.Encode(original);
+            byte[] decoded = Base85.Decode(encoded);
+
+            CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that an 8 KiB random buffer round-trips through both variants. Tagged Regression because of the
+    /// 8 KiB sweep.
+    /// </summary>
+    /// <param name="variant">The variant.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(Base85Variant.Ascii85)]
+    [DataRow(Base85Variant.Z85)]
+    public void RoundTrip_ForLargeRandomInput_ShouldRecover(Base85Variant variant)
+    {
+        int size = 8192;
+        byte[] original = new byte[size];
+        new Random(0xBEEF).NextBytes(original);
+
+        string encoded = Base85.Encode(original, variant);
+        byte[] decoded = Base85.Decode(encoded, variant);
+
+        CollectionAssert.AreEqual(original, decoded);
+    }
+
+    /// <summary>
+    /// Verifies that round-trip preserves the maximum 32-bit value group (four 0xFF bytes) for Ascii85, decoded
+    /// without triggering the <c>z</c> shortcut.
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_WhenAllOnesGroupForAscii85_ShouldRecover()
+    {
+        byte[] original = new byte[] { 0xFF, 0xFF, 0xFF, 0xFF };
+
+        string encoded = Base85.Encode(original);
+        byte[] decoded = Base85.Decode(encoded);
+
+        Assert.AreEqual(5, encoded.Length);
+        Assert.AreNotEqual("z", encoded); // 0xFFFFFFFF is not the all-zero shortcut
+        CollectionAssert.AreEqual(original, decoded);
+    }
 }

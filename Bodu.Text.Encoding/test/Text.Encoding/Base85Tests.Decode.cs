@@ -90,4 +90,75 @@ public sealed partial class Base85Tests
 
         CollectionAssert.AreEqual(original, decoded);
     }
+
+    /// <summary>
+    /// Verifies that the Ascii85 decoder rejects a single trailing character because two characters are the smallest
+    /// valid Base85 final group.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAscii85TrailingSingleChar_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base85.Decode("9");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the Ascii85 decoder rejects an input that contains a six-character sequence (a complete 5-char
+    /// group plus a single trailing character — invalid).
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAscii85SixCharSequenceWithTrailingSingleChar_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base85.Decode("uuuuuu");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the Ascii85 decoder rejects characters above ASCII <c>'u'</c> (i.e. outside the alphabet upper
+    /// bound).
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAscii85CharAboveAlphabetRange_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base85.Decode("9jqov"); // 'v' is ASCII 118, just above the 33-117 Ascii85 range
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the Z85 decoder rejects each non-Z85 character.
+    /// </summary>
+    /// <param name="excluded">A character outside the Z85 alphabet.</param>
+    [TestMethod]
+    [DataRow('"')]
+    [DataRow('\'')]
+    [DataRow('\\')]
+    [DataRow(';')]
+    public void Decode_WhenZ85AlphabetExcludedCharacter_ShouldThrowFormatException(char excluded)
+    {
+        string input = "abcd" + excluded;
+
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base85.Decode(input, Base85Variant.Z85);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Decode(string, Base85Variant, BaseFormatStyles)" /> rejects an undefined
+    /// variant.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenUndefinedVariant_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Base85.Decode("9jqo>", (Base85Variant)99);
+        });
+    }
 }

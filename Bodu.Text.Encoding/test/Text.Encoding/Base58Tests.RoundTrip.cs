@@ -69,4 +69,47 @@ public sealed partial class Base58Tests
         Assert.AreEqual(original.Length, bytesWritten);
         CollectionAssert.AreEqual(original, byteBuffer.AsSpan(0, bytesWritten).ToArray());
     }
+
+    /// <summary>
+    /// Verifies that every single byte value round-trips through both variants. Tagged Regression because of the
+    /// 256 * 2 exhaustive sweep.
+    /// </summary>
+    /// <param name="variant">The variant.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(Base58Variant.BitcoinFlickr)]
+    [DataRow(Base58Variant.Ripple)]
+    public void RoundTrip_ForEverySingleByteValueAndVariant_ShouldRecover(Base58Variant variant)
+    {
+        for (int value = 0; value <= 255; value++)
+        {
+            byte[] original = new byte[] { (byte)value };
+
+            string encoded = Base58.Encode(original, variant);
+            byte[] decoded = Base58.Decode(encoded, variant);
+
+            CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}, variant={variant}.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a typical Bitcoin address-length payload (25 bytes) round-trips correctly. The leading
+    /// version byte 0x00 (mainnet P2PKH) ensures leading-zero handling is exercised.
+    /// </summary>
+    [TestMethod]
+    public void RoundTrip_WhenBitcoinAddressLengthInput_ShouldRecover()
+    {
+        byte[] original = new byte[25];
+        original[0] = 0x00; // Bitcoin mainnet P2PKH version byte
+        for (int i = 1; i < 25; i++)
+        {
+            original[i] = (byte)((i * 17) ^ 0xC3);
+        }
+
+        string encoded = Base58.Encode(original);
+        byte[] decoded = Base58.Decode(encoded);
+
+        CollectionAssert.AreEqual(original, decoded);
+        Assert.IsTrue(encoded.StartsWith('1'), "P2PKH address starts with a leading '1' for the 0x00 version byte.");
+    }
 }

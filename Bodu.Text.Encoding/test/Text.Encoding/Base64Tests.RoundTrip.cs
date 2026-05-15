@@ -69,4 +69,48 @@ public sealed partial class Base64Tests
         Assert.AreEqual(original.Length, bytesWritten);
         CollectionAssert.AreEqual(original, byteBuffer);
     }
+
+    /// <summary>
+    /// Verifies that every single byte value round-trips through all three variants. Tagged Regression because the
+    /// 256 * 3 sweep is exhaustive.
+    /// </summary>
+    /// <param name="variant">The Base64 variant.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(Base64Variant.Standard)]
+    [DataRow(Base64Variant.UrlSafe)]
+    [DataRow(Base64Variant.Mime)]
+    public void RoundTrip_ForEverySingleByteValueAndVariant_ShouldRecover(Base64Variant variant)
+    {
+        for (int value = 0; value <= 255; value++)
+        {
+            byte[] original = new byte[] { (byte)value };
+
+            string encoded = Base64.Encode(original, variant);
+            byte[] decoded = Base64.Decode(encoded, variant);
+
+            CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}, variant={variant}.");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that an 8 KiB random buffer round-trips through every variant. Tagged Regression because of the
+    /// per-variant 8 KiB sweep.
+    /// </summary>
+    /// <param name="variant">The variant.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(Base64Variant.Standard)]
+    [DataRow(Base64Variant.UrlSafe)]
+    [DataRow(Base64Variant.Mime)]
+    public void RoundTrip_ForLargeRandomInput_ShouldRecover(Base64Variant variant)
+    {
+        byte[] original = new byte[8192];
+        new Random(0x42).NextBytes(original);
+
+        string encoded = Base64.Encode(original, variant);
+        byte[] decoded = Base64.Decode(encoded, variant);
+
+        CollectionAssert.AreEqual(original, decoded);
+    }
 }

@@ -83,4 +83,74 @@ public sealed partial class Base16Tests
             _ = Base16.TryEncode(CanonicalBytes.AsSpan(), destination, out _, BaseFormattingOptions.IncludePrefix);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryEncode" /> succeeds when the destination is exactly the required size.
+    /// </summary>
+    /// <param name="byteCount">The input byte count.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(7)]
+    [DataRow(64)]
+    [DataRow(1024)]
+    public void TryEncode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int byteCount)
+    {
+        byte[] bytes = new byte[byteCount];
+        for (int i = 0; i < byteCount; i++)
+        {
+            bytes[i] = (byte)i;
+        }
+
+        char[] destination = new char[byteCount * 2];
+
+        bool ok = Base16.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(byteCount * 2, charsWritten);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryEncode" /> returns <see langword="false" /> when the destination is exactly
+    /// one character short of the required size.
+    /// </summary>
+    /// <param name="byteCount">The input byte count.</param>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(7)]
+    [DataRow(64)]
+    public void TryEncode_WhenDestinationOneCharShort_ShouldReturnFalseAndZeroCharsWritten(int byteCount)
+    {
+        byte[] bytes = new byte[byteCount];
+        char[] destination = new char[(byteCount * 2) - 1];
+
+        bool ok = Base16.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, charsWritten);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryEncode" /> with a destination significantly larger than required still
+    /// returns the exact char count and writes only into the leading prefix of the destination.
+    /// </summary>
+    [TestMethod]
+    public void TryEncode_WhenDestinationOversized_ShouldReturnExactCharCount()
+    {
+        byte[] bytes = new byte[8];
+        char[] destination = new char[100];
+
+        bool ok = Base16.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(16, charsWritten);
+
+        // Trailing positions beyond charsWritten must not be touched.
+        for (int i = charsWritten; i < destination.Length; i++)
+        {
+            Assert.AreEqual('\0', destination[i],
+                $"Position {i} beyond charsWritten should remain untouched.");
+        }
+    }
 }

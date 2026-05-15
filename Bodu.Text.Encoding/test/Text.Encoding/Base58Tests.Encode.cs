@@ -68,4 +68,66 @@ public sealed partial class Base58Tests
 
         Assert.AreEqual("9Ajdvzr", new string(destination, 0, charsWritten));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.Encode(byte[], int, int, Base58Variant)" /> rejects a negative offset.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenNegativeOffset_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Base58.Encode(new byte[4], -1, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.Encode(byte[], int, int, Base58Variant)" /> rejects an out-of-range count.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenCountExceedsArrayLength_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Base58.Encode(new byte[4], 0, 100);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.Encode(byte[], int, int, Base58Variant)" /> rejects a slice that overflows
+    /// the array bounds with <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenOffsetPlusCountOverflows_ShouldThrowArgumentException()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = Base58.Encode(new byte[4], 2, 4);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the byte-array and span overloads produce identical output across various input sizes.
+    /// </summary>
+    /// <param name="size">The input size.</param>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(8)]
+    [DataRow(32)]
+    [DataRow(64)]
+    public void Encode_ByteArrayAndSpanOverloads_ShouldProduceIdenticalOutput(int size)
+    {
+        byte[] bytes = new byte[size];
+        for (int i = 0; i < size; i++)
+        {
+            bytes[i] = (byte)((i * 19) ^ 0x3C);
+        }
+
+        string fromArray = Base58.Encode(bytes);
+        string fromSpan = Base58.Encode(bytes.AsSpan());
+
+        Assert.AreEqual(fromArray, fromSpan);
+    }
 }
