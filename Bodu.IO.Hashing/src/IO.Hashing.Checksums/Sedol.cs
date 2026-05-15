@@ -63,19 +63,19 @@ public sealed class Sedol
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int sum = this._sum;
-        int count = this._count;
+        var sum = this._sum;
+        var count = this._count;
 
-        for (int i = 0; i < body.Length; i++)
+        for (var i = 0; i < body.Length; i++)
         {
-            char ch = body[i];
+            var ch = body[i];
             if (Alphanumeric.IsVowel(ch) || ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u))
                 throw new ArgumentOutOfRangeException(
                     nameof(body),
                     ch,
                     $"Character '{ch}' (U+{(int)ch:X4}) is not a valid SEDOL character ('0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted).");
 
-            int weight = count < s_weights.Length ? s_weights[count] : 1;
+            var weight = count < s_weights.Length ? s_weights[count] : 1;
             sum += Alphanumeric.ExpandLetterDigit(ch) * weight;
             count++;
         }
@@ -107,10 +107,10 @@ public sealed class Sedol
     {
         Alphanumeric.ValidateSedol(body, nameof(body));
 
-        int sum = 0;
-        for (int i = 0; i < body.Length; i++)
+        var sum = 0;
+        for (var i = 0; i < body.Length; i++)
         {
-            int weight = i < s_weights.Length ? s_weights[i] : 1;
+            var weight = i < s_weights.Length ? s_weights[i] : 1;
             sum += Alphanumeric.ExpandLetterDigit(body[i]) * weight;
         }
 
@@ -132,10 +132,10 @@ public sealed class Sedol
         if (valueIncludingCheck.IsEmpty) return true;
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
-        int sum = 0;
-        for (int i = 0; i < BodyLength; i++)
+        var sum = 0;
+        for (var i = 0; i < BodyLength; i++)
         {
-            char ch = valueIncludingCheck[i];
+            var ch = valueIncludingCheck[i];
             if (Alphanumeric.IsVowel(ch)) return false;
             int v;
             if ((uint)(ch - '0') <= 9u) v = ch - '0';
@@ -145,7 +145,7 @@ public sealed class Sedol
             sum += v * s_weights[i];
         }
 
-        char checkChar = valueIncludingCheck[BodyLength];
+        var checkChar = valueIncludingCheck[BodyLength];
         if ((uint)(checkChar - '0') > 9u) return false;
         sum += checkChar - '0';
 

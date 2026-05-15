@@ -58,11 +58,11 @@ public sealed class Isbn10
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int sum = this._sum;
-        int count = this._count;
-        for (int i = 0; i < body.Length; i++)
+        var sum = this._sum;
+        var count = this._count;
+        for (var i = 0; i < body.Length; i++)
         {
-            char ch = body[i];
+            var ch = body[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
@@ -88,7 +88,7 @@ public sealed class Isbn10
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int check = (11 - (((_sum % 11) + 11) % 11)) % 11;
+        var check = (11 - (((_sum % 11) + 11) % 11)) % 11;
         return check == 10 ? 'X' : (char)('0' + check);
     }
 
@@ -108,17 +108,17 @@ public sealed class Isbn10
     /// </remarks>
     public static char Compute(ReadOnlySpan<char> digits)
     {
-        int sum = 0;
-        for (int i = 0; i < digits.Length; i++)
+        var sum = 0;
+        for (var i = 0; i < digits.Length; i++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
             sum += (10 - i) * (ch - '0');
         }
 
-        int check = (11 - (((sum % 11) + 11) % 11)) % 11;
+        var check = (11 - (((sum % 11) + 11) % 11)) % 11;
         return check == 10 ? 'X' : (char)('0' + check);
     }
 
@@ -137,10 +137,10 @@ public sealed class Isbn10
         if (valueIncludingCheck.IsEmpty) return true;
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
-        int sum = 0;
-        for (int i = 0; i < SequenceLength; i++)
+        var sum = 0;
+        for (var i = 0; i < SequenceLength; i++)
         {
-            char ch = valueIncludingCheck[i];
+            var ch = valueIncludingCheck[i];
             int value;
             if ((uint)(ch - '0') <= 9u)
             {

@@ -62,11 +62,11 @@ public static class CrcLookupTableBuilder
         ThrowHelper.ThrowIfOutOfRange(size, 1, 64);
 
         // Determine number of bits to process per lookup (typically 8 for byte-wise processing)
-        int bitsPerTableEntry = size < 8 ? 1 : 8;
-        int tableSize = 1 << bitsPerTableEntry;
+        var bitsPerTableEntry = size < 8 ? 1 : 8;
+        var tableSize = 1 << bitsPerTableEntry;
 
         var table = new ulong[tableSize];
-        ulong significantBitMask = 1UL << (size - 1);
+        var significantBitMask = 1UL << (size - 1);
 
         for (uint i = 0; i < tableSize; i++)
         {
@@ -81,9 +81,9 @@ public static class CrcLookupTableBuilder
             value <<= size - bitsPerTableEntry;
 
             // Apply the polynomial for each bit in the byte
-            for (int bit = 0; bit < bitsPerTableEntry; bit++)
+            for (var bit = 0; bit < bitsPerTableEntry; bit++)
             {
-                bool msbSet = (value & significantBitMask) != 0;
+                var msbSet = (value & significantBitMask) != 0;
                 value = msbSet ? (value << 1) ^ polynomial : value << 1;
             }
 

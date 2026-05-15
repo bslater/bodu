@@ -85,7 +85,7 @@ public class CrcLookupTableCache
     {
         ThrowHelper.ThrowIfOutOfRange(size, CrcStandard.MinSize, CrcStandard.MaxSize);
 
-        string cacheKey = $"{size}_{polynomial}_{reflectIn}";
+        var cacheKey = $"{size}_{polynomial}_{reflectIn}";
         return this._localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
     }
 }

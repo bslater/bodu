@@ -212,7 +212,7 @@ public sealed class Crc
     /// </remarks>
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        ulong folded = this.FoldOutputState(this._workingHash);
+        var folded = this.FoldOutputState(this._workingHash);
         WriteHashBytes(folded, this.HashLengthInBytes, destination);
     }
 
@@ -226,8 +226,8 @@ public sealed class Crc
         this.Reset();
         this.ProcessBlocks(data);
 
-        byte[] buffer = new byte[this.HashLengthInBytes];
-        ulong folded = this.FoldOutputState(this._workingHash);
+        var buffer = new byte[this.HashLengthInBytes];
+        var folded = this.FoldOutputState(this._workingHash);
         WriteHashBytes(folded, this.HashLengthInBytes, buffer);
         return buffer;
     }
@@ -266,7 +266,7 @@ public sealed class Crc
     /// </remarks>
     public byte[] ComputeHashFrom(ReadOnlySpan<byte> previousHash, ReadOnlySpan<byte> newData)
     {
-        byte[] buffer = new byte[this.HashLengthInBytes];
+        var buffer = new byte[this.HashLengthInBytes];
         this.TryComputeHashFrom(previousHash, newData, buffer, out _);
         return buffer;
     }
@@ -310,7 +310,7 @@ public sealed class Crc
             return false;
         }
 
-        ulong folded = this.FoldOutputState(this._workingHash);
+        var folded = this.FoldOutputState(this._workingHash);
         WriteHashBytes(folded, this.HashLengthInBytes, destination);
         bytesWritten = this.HashLengthInBytes;
         return true;
@@ -361,12 +361,12 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBitwiseNormal(ReadOnlySpan<byte> data, ulong crc, ulong[] table, int shift)
     {
-        foreach (byte b in data)
+        foreach (var b in data)
         {
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
-                ulong inputBit = (ulong)((b >> (7 - i)) & 1);
-                ulong crcBit = (crc >> shift) & 1;
+                var inputBit = (ulong)((b >> (7 - i)) & 1);
+                var crcBit = (crc >> shift) & 1;
                 crc = (crc << 1) ^ table[inputBit ^ crcBit];
             }
         }
@@ -384,12 +384,12 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBitwiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
     {
-        foreach (byte b in data)
+        foreach (var b in data)
         {
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
-                ulong inputBit = (ulong)((b >> i) & 1);
-                ulong crcBit = crc & 1;
+                var inputBit = (ulong)((b >> i) & 1);
+                var crcBit = crc & 1;
                 crc = (crc >> 1) ^ table[inputBit ^ crcBit];
             }
         }
@@ -408,7 +408,7 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBytewiseNormal(ReadOnlySpan<byte> data, ulong crc, ulong[] table, int shift)
     {
-        foreach (byte b in data)
+        foreach (var b in data)
         {
             crc = (crc << 8) ^ table[(byte)((crc >> shift) ^ b)];
         }
@@ -426,7 +426,7 @@ public sealed class Crc
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong ProcessBytewiseReflected(ReadOnlySpan<byte> data, ulong crc, ulong[] table)
     {
-        foreach (byte b in data)
+        foreach (var b in data)
         {
             crc = (crc >> 8) ^ table[(byte)(crc ^ b)];
         }

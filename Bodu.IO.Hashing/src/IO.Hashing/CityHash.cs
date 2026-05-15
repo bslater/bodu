@@ -187,8 +187,8 @@ public abstract class CityHash<T>
 
         // CityHash is a one-shot algorithm; finalization re-runs over the accumulated buffer so that
         // GetCurrentHash remains non-destructive and may be invoked multiple times.
-        byte[] data = this._inputBuffer.ToArray();
-        byte[] digest = this.ComputeHashCore(data);
+        var data = this._inputBuffer.ToArray();
+        var digest = this.ComputeHashCore(data);
         digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
 
@@ -249,7 +249,7 @@ public abstract class CityHash<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static void Permute3(ref uint a, ref uint b, ref uint c)
     {
-        uint t = a;
+        var t = a;
         a = c;
         c = b;
         b = t;
@@ -283,10 +283,10 @@ public abstract class CityHash<T>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static ulong HashLen16(ulong u, ulong v, ulong mul)
     {
-        ulong a = (u ^ v) * mul;
+        var a = (u ^ v) * mul;
         a ^= a >> 47;
 
-        ulong b = (v ^ a) * mul;
+        var b = (v ^ a) * mul;
         b ^= b >> 47;
 
         return b * mul;
@@ -312,7 +312,7 @@ public abstract class CityHash<T>
         a += w;
         b = (b + a + z).RotateBitsRightUnchecked(21);
 
-        ulong c = a;
+        var c = a;
         a += x;
         a += y;
         b += a.RotateBitsRightUnchecked(44);
@@ -353,32 +353,32 @@ public abstract class CityHash<T>
     /// </remarks>
     protected static ulong Hash64Len0to16(ReadOnlySpan<byte> s)
     {
-        int len = s.Length;
+        var len = s.Length;
 
         if (len >= 8)
         {
-            ulong mul = K2 + (ulong)(len * 2);
-            ulong a = BinaryPrimitives.ReadUInt64LittleEndian(s) + K2;
-            ulong b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
-            ulong c = (b.RotateBitsRightUnchecked(37) * mul) + a;
-            ulong d = (a.RotateBitsRightUnchecked(25) + b) * mul;
+            var mul = K2 + (ulong)(len * 2);
+            var a = BinaryPrimitives.ReadUInt64LittleEndian(s) + K2;
+            var b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
+            var c = (b.RotateBitsRightUnchecked(37) * mul) + a;
+            var d = (a.RotateBitsRightUnchecked(25) + b) * mul;
             return HashLen16(c, d, mul);
         }
 
         if (len >= 4)
         {
-            ulong mul = K2 + (ulong)(len * 2);
+            var mul = K2 + (ulong)(len * 2);
             ulong a = BinaryPrimitives.ReadUInt32LittleEndian(s);
             return HashLen16((ulong)len + (a << 3), BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4)), mul);
         }
 
         if (len > 0)
         {
-            byte a = s[0];
-            byte b = s[len >> 1];
-            byte c = s[len - 1];
-            uint y = a + ((uint)b << 8);
-            uint z = (uint)len + ((uint)c << 2);
+            var a = s[0];
+            var b = s[len >> 1];
+            var c = s[len - 1];
+            var y = a + ((uint)b << 8);
+            var z = (uint)len + ((uint)c << 2);
             return ShiftMix(y * K2 ^ z * K0) * K2;
         }
 

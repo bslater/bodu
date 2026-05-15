@@ -63,14 +63,14 @@ public sealed class Cusip
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int sum = this._sum;
-        int count = this._count;
+        var sum = this._sum;
+        var count = this._count;
 
-        for (int i = 0; i < body.Length; i++)
+        for (var i = 0; i < body.Length; i++)
         {
-            int value = Alphanumeric.ExpandCusip(body[i]);
-            int weight = (count & 1) == 0 ? 1 : 2;
-            int product = value * weight;
+            var value = Alphanumeric.ExpandCusip(body[i]);
+            var weight = (count & 1) == 0 ? 1 : 2;
+            var product = value * weight;
             sum += (product / 10) + (product % 10);
             count++;
         }
@@ -100,12 +100,12 @@ public sealed class Cusip
     /// </exception>
     public static char Compute(ReadOnlySpan<char> body)
     {
-        int sum = 0;
-        for (int i = 0; i < body.Length; i++)
+        var sum = 0;
+        for (var i = 0; i < body.Length; i++)
         {
-            int value = Alphanumeric.ExpandCusip(body[i]);
-            int weight = (i & 1) == 0 ? 1 : 2;
-            int product = value * weight;
+            var value = Alphanumeric.ExpandCusip(body[i]);
+            var weight = (i & 1) == 0 ? 1 : 2;
+            var product = value * weight;
             sum += (product / 10) + (product % 10);
         }
 
@@ -127,10 +127,10 @@ public sealed class Cusip
         if (valueIncludingCheck.IsEmpty) return true;
         if (valueIncludingCheck.Length != SequenceLength) return false;
 
-        int sum = 0;
-        for (int i = 0; i < BodyLength; i++)
+        var sum = 0;
+        for (var i = 0; i < BodyLength; i++)
         {
-            char ch = valueIncludingCheck[i];
+            var ch = valueIncludingCheck[i];
             int value;
             if ((uint)(ch - '0') <= 9u) value = ch - '0';
             else if ((uint)(ch - 'A') <= 25u) value = ch - 'A' + 10;
@@ -139,12 +139,12 @@ public sealed class Cusip
             else if (ch == '#') value = 38;
             else return false;
 
-            int weight = (i & 1) == 0 ? 1 : 2;
-            int product = value * weight;
+            var weight = (i & 1) == 0 ? 1 : 2;
+            var product = value * weight;
             sum += (product / 10) + (product % 10);
         }
 
-        char checkChar = valueIncludingCheck[BodyLength];
+        var checkChar = valueIncludingCheck[BodyLength];
         if ((uint)(checkChar - '0') > 9u) return false;
         sum += checkChar - '0';
 

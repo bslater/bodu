@@ -56,14 +56,14 @@ public sealed partial class Verhoeff
     public override void Append(ReadOnlySpan<char> digits)
     {
         Span<byte> next = stackalloc byte[8];
-        for (int i = 0; i < digits.Length; i++)
+        for (var i = 0; i < digits.Length; i++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            int v = ch - '0';
-            for (int k = 0; k < 8; k++)
+            var v = ch - '0';
+            for (var k = 0; k < 8; k++)
                 next[k] = s_d[s_p[k, v], this._c[(k + 1) & 7]];
 
             next.CopyTo(this._c);
@@ -92,7 +92,7 @@ public sealed partial class Verhoeff
         byte c = 0;
         for (int i = digits.Length - 1, j = 1; i >= 0; i--, j++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
@@ -117,7 +117,7 @@ public sealed partial class Verhoeff
         byte c = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 0; i >= 0; i--, j++)
         {
-            char ch = digitsIncludingCheck[i];
+            var ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
             c = s_d[c, s_p[j & 7, ch - '0']];

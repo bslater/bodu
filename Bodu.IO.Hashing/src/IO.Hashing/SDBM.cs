@@ -63,8 +63,8 @@ public sealed class SDBM
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
-        uint v = this._workingHash;
-        foreach (byte b in source)
+        var v = this._workingHash;
+        foreach (var b in source)
         {
             v = b + (v << 6) + (v << 16) - v;
         }

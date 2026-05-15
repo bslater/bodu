@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Luhn.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -54,18 +54,18 @@ public sealed class Luhn
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        int sumEven = this._sumEvenHypothesis;
-        int sumOdd = this._sumOddHypothesis;
-        int count = this._count;
+        var sumEven = this._sumEvenHypothesis;
+        var sumOdd = this._sumOddHypothesis;
+        var count = this._count;
 
-        for (int i = 0; i < digits.Length; i++)
+        for (var i = 0; i < digits.Length; i++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            int v = ch - '0';
-            int doubled = v * 2;
+            var v = ch - '0';
+            var doubled = v * 2;
             if (doubled > 9) doubled -= 9;
 
             // _sumEvenHypothesis (body length N will be even): body[i] is doubled iff i is odd.
@@ -101,7 +101,7 @@ public sealed class Luhn
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int sum = (this._count & 1) == 0 ? this._sumEvenHypothesis : this._sumOddHypothesis;
+        var sum = (this._count & 1) == 0 ? this._sumEvenHypothesis : this._sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 
@@ -116,14 +116,14 @@ public sealed class Luhn
     /// </exception>
     public static char Compute(ReadOnlySpan<char> digits)
     {
-        int sum = 0;
+        var sum = 0;
         for (int i = digits.Length - 1, j = 2; i >= 0; i--, j++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            int v = ch - '0';
+            var v = ch - '0';
             if ((j & 1) == 0)
             {
                 v *= 2;
@@ -148,13 +148,13 @@ public sealed class Luhn
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
     {
-        int sum = 0;
+        var sum = 0;
         for (int i = digitsIncludingCheck.Length - 1, j = 1; i >= 0; i--, j++)
         {
-            char ch = digitsIncludingCheck[i];
+            var ch = digitsIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
-            int v = ch - '0';
+            var v = ch - '0';
             if ((j & 1) == 0)
             {
                 v *= 2;

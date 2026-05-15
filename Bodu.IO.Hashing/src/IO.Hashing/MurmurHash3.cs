@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
 
@@ -73,6 +72,7 @@ public abstract class MurmurHash3<T>
     : NonCryptographicHashAlgorithm, IDisposable
     where T : MurmurHash3<T>, new()
 {
+
     private static readonly int[] s_validHashSizes = { 32, 128 };
 
     private readonly MemoryStream _inputBuffer = new MemoryStream();
@@ -164,13 +164,6 @@ public abstract class MurmurHash3<T>
     }
 
     /// <summary>
-    /// Performs the full hash computation over the complete accumulated input in a single pass.
-    /// </summary>
-    /// <param name="source">The complete input bytes to hash.</param>
-    /// <returns>A byte array containing the final hash output.</returns>
-    protected abstract byte[] ComputeHashCore(ReadOnlySpan<byte> source);
-
-    /// <summary>
     /// Applies the MurmurHash3 32-bit finalization mix to thoroughly diffuse the bits of a 32-bit value.
     /// </summary>
     /// <param name="h">The 32-bit value to mix.</param>
@@ -200,6 +193,21 @@ public abstract class MurmurHash3<T>
         k = unchecked(k * 0xC4CEB9FE1A85EC53uL);
         k ^= k >> 33;
         return k;
+    }
+
+    /// <summary>
+    /// Performs the full hash computation over the complete accumulated input in a single pass.
+    /// </summary>
+    /// <param name="source">The complete input bytes to hash.</param>
+    /// <returns>A byte array containing the final hash output.</returns>
+    protected abstract byte[] ComputeHashCore(ReadOnlySpan<byte> source);
+
+    /// <inheritdoc />
+    protected override void GetCurrentHashCore(Span<byte> destination)
+    {
+        var data = this._inputBuffer.ToArray();
+        var digest = this.ComputeHashCore(data);
+        digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
 
     private static int ValidateHashSize(int hashSize)

@@ -54,10 +54,10 @@ public sealed class Iso7064Mod11_2
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> body)
     {
-        int p = this._p;
-        for (int i = 0; i < body.Length; i++)
+        var p = this._p;
+        for (var i = 0; i < body.Length; i++)
         {
-            char ch = body[i];
+            var ch = body[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
 
@@ -74,7 +74,7 @@ public sealed class Iso7064Mod11_2
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int c = (12 - _p) % 11;
+        var c = (12 - _p) % 11;
         return c == 10 ? 'X' : (char)('0' + c);
     }
 
@@ -89,17 +89,17 @@ public sealed class Iso7064Mod11_2
     /// </exception>
     public static char Compute(ReadOnlySpan<char> digits)
     {
-        int p = 0;
-        for (int i = 0; i < digits.Length; i++)
+        var p = 0;
+        for (var i = 0; i < digits.Length; i++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
             p = ((p + (ch - '0')) * 2) % 11;
         }
 
-        int c = (12 - p) % 11;
+        var c = (12 - p) % 11;
         return c == 10 ? 'X' : (char)('0' + c);
     }
 
@@ -117,17 +117,17 @@ public sealed class Iso7064Mod11_2
     {
         if (valueIncludingCheck.IsEmpty) return true;
 
-        int last = valueIncludingCheck.Length - 1;
-        int p = 0;
-        for (int i = 0; i < last; i++)
+        var last = valueIncludingCheck.Length - 1;
+        var p = 0;
+        for (var i = 0; i < last; i++)
         {
-            char ch = valueIncludingCheck[i];
+            var ch = valueIncludingCheck[i];
             if ((uint)(ch - '0') > 9u) return false;
 
             p = ((p + (ch - '0')) * 2) % 11;
         }
 
-        char checkChar = valueIncludingCheck[last];
+        var checkChar = valueIncludingCheck[last];
         int checkValue;
         if ((uint)(checkChar - '0') <= 9u) checkValue = checkChar - '0';
         else if (checkChar == 'X') checkValue = 10;

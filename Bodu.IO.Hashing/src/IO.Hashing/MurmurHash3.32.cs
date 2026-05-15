@@ -63,6 +63,7 @@ namespace Bodu.IO.Hashing;
 public sealed class MurmurHash3_32
     : MurmurHash3<MurmurHash3_32>
 {
+
     private const uint C1 = 0xCC9E2D51u;
     private const uint C2 = 0x1B873593u;
 
@@ -143,4 +144,5 @@ public sealed class MurmurHash3_32
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint RotateLeft(uint value, int bits) =>
         (value << bits) | (value >> (32 - bits));
+
 }

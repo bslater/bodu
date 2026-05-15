@@ -147,7 +147,7 @@ public sealed partial class CrcStandard
     {
         ThrowHelper.ThrowIfNull(info);
 
-        string? serializedName = info.GetString(nameof(this.Name));
+        var serializedName = info.GetString(nameof(this.Name));
         this.Name = serializedName!;
         this.Size = info.GetInt32(nameof(this.Size));
         this.Polynomial = info.GetUInt64(nameof(this.Polynomial));

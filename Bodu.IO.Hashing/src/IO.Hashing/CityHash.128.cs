@@ -79,9 +79,9 @@ public sealed class CityHash128
     /// <returns>A 16-byte array containing the little-endian encoded 128-bit hash value.</returns>
     protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source)
     {
-        (ulong first, ulong second) = CityHash128Core(source);
+        (var first, var second) = CityHash128Core(source);
 
-        byte[] buffer = new byte[16];
+        var buffer = new byte[16];
         BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan(0, 8), first);
         BinaryPrimitives.WriteUInt64LittleEndian(buffer.AsSpan(8, 8), second);
         return buffer;
@@ -98,8 +98,8 @@ public sealed class CityHash128
     {
         if (s.Length >= 16)
         {
-            ulong low = BinaryPrimitives.ReadUInt64LittleEndian(s);
-            ulong high = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8)) + K0;
+            var low = BinaryPrimitives.ReadUInt64LittleEndian(s);
+            var high = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8)) + K0;
 
             return CityHash128WithSeed(s.Slice(16), low, high);
         }
@@ -123,17 +123,17 @@ public sealed class CityHash128
             return CityMurmur(source, seedLow, seedHigh);
 
         // Keep 56 bytes of running state across the main loop.
-        ulong x = seedLow;
-        ulong y = seedHigh;
-        ulong z = (ulong)source.Length * K1;
+        var x = seedLow;
+        var y = seedHigh;
+        var z = (ulong)source.Length * K1;
 
-        ulong v0 = ((y ^ K1).RotateBitsRightUnchecked(49) * K1) + BinaryPrimitives.ReadUInt64LittleEndian(source);
-        ulong v1 = (v0.RotateBitsRightUnchecked(42) * K1) + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(8));
-        ulong w0 = ((y + z).RotateBitsRightUnchecked(35) * K1) + x;
-        ulong w1 = (x + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(88))).RotateBitsRightUnchecked(53) * K1;
+        var v0 = ((y ^ K1).RotateBitsRightUnchecked(49) * K1) + BinaryPrimitives.ReadUInt64LittleEndian(source);
+        var v1 = (v0.RotateBitsRightUnchecked(42) * K1) + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(8));
+        var w0 = ((y + z).RotateBitsRightUnchecked(35) * K1) + x;
+        var w1 = (x + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(88))).RotateBitsRightUnchecked(53) * K1;
 
-        int offset = 0;
-        int remaining = source.Length;
+        var offset = 0;
+        var remaining = source.Length;
 
         do
         {
@@ -169,9 +169,9 @@ public sealed class CityHash128
         v0 *= K0;
 
         // Tail: hash up to four 32-byte chunks taken from the end of the input.
-        int tailOffset = offset;
-        int tailEnd = offset + remaining;
-        for (int tailDone = 0; tailDone < remaining;)
+        var tailOffset = offset;
+        var tailEnd = offset + remaining;
+        for (var tailDone = 0; tailDone < remaining;)
         {
             tailDone += 32;
             y = ((x + y).RotateBitsRightUnchecked(42) * K0) + v1;
@@ -200,12 +200,12 @@ public sealed class CityHash128
     private static (ulong First, ulong Second) CityMurmur(
         ReadOnlySpan<byte> source, ulong seedLow, ulong seedHigh)
     {
-        ulong a = seedLow;
-        ulong b = seedHigh;
-        ulong c = 0UL;
-        ulong d = 0UL;
-        int len = source.Length;
-        int l = len - 16;
+        var a = seedLow;
+        var b = seedHigh;
+        var c = 0UL;
+        var d = 0UL;
+        var len = source.Length;
+        var l = len - 16;
 
         if (l <= 0)
         {
@@ -219,7 +219,7 @@ public sealed class CityHash128
             d = HashLen16(b + (ulong)len, c + BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(len - 16)));
             a += d;
 
-            int offset = 0;
+            var offset = 0;
             while (l > 0)
             {
                 a ^= ShiftMix(BinaryPrimitives.ReadUInt64LittleEndian(source.Slice(offset)) * K1) * K1;

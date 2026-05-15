@@ -169,7 +169,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
 
         if (snapshot.ShouldPadFinalBlock())
         {
-            byte[] finalBlock = snapshot.PadBlock(
+            var finalBlock = snapshot.PadBlock(
                 new ReadOnlySpan<byte>(snapshot._residualByteBuffer, 0, snapshot._residualBytes),
                 snapshot._totalLength);
 
@@ -179,7 +179,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
             }
             else
             {
-                for (int i = 0; i < finalBlock.Length; i += snapshot.BlockSizeBytes)
+                for (var i = 0; i < finalBlock.Length; i += snapshot.BlockSizeBytes)
                     snapshot.ProcessBlock(finalBlock.AsSpan(i, snapshot.BlockSizeBytes));
             }
         }
@@ -188,7 +188,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
             snapshot.ProcessBlock(new ReadOnlySpan<byte>(snapshot._residualByteBuffer, 0, snapshot._residualBytes));
         }
 
-        byte[] digest = snapshot.ProcessFinalBlock();
+        var digest = snapshot.ProcessFinalBlock();
         digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
 
@@ -275,14 +275,14 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// <param name="buffer">The input bytes to feed into the hash.</param>
     private void ProcessBlocks(ReadOnlySpan<byte> buffer)
     {
-        int pos = 0;
+        var pos = 0;
         this._totalLength += (ulong)buffer.Length;
 
         Span<byte> residualSpan = this._residualByteBuffer;
 
         if (this._residualBytes > 0)
         {
-            int remaining = this.BlockSizeBytes - this._residualBytes;
+            var remaining = this.BlockSizeBytes - this._residualBytes;
 
             if (buffer.Length >= remaining)
             {

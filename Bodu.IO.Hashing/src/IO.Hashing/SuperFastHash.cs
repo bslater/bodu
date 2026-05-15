@@ -124,18 +124,18 @@ public sealed class SuperFastHash
         if (data.IsEmpty)
             return 0;
 
-        uint hash = (uint)data.Length;
-        int rem = data.Length & 3;
-        int blocks = data.Length >> 2;
-        int i = 0;
+        var hash = (uint)data.Length;
+        var rem = data.Length & 3;
+        var blocks = data.Length >> 2;
+        var i = 0;
 
-        for (int b = 0; b < blocks; b++)
+        for (var b = 0; b < blocks; b++)
         {
-            ushort w0 = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(i, 2));
-            ushort w1 = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(i + 2, 2));
+            var w0 = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(i, 2));
+            var w1 = BinaryPrimitives.ReadUInt16LittleEndian(data.Slice(i + 2, 2));
 
             hash += w0;
-            uint tmp = ((uint)w1 << 11) ^ hash;
+            var tmp = ((uint)w1 << 11) ^ hash;
             hash = (hash << 16) ^ tmp;
             hash += hash >> 11;
 

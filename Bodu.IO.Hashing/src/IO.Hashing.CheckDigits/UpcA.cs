@@ -51,18 +51,18 @@ public sealed class UpcA
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
     {
-        int sumEven = _sumEvenHypothesis;
-        int sumOdd = _sumOddHypothesis;
-        int count = this._count;
+        var sumEven = _sumEvenHypothesis;
+        var sumOdd = _sumOddHypothesis;
+        var count = this._count;
 
-        for (int i = 0; i < digits.Length; i++)
+        for (var i = 0; i < digits.Length; i++)
         {
-            char ch = digits[i];
+            var ch = digits[i];
             if ((uint)(ch - '0') > 9u)
                 ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
 
-            int v = ch - '0';
-            int tripled = v * 3;
+            var v = ch - '0';
+            var tripled = v * 3;
 
             if ((count & 1) == 0)
             {
@@ -94,7 +94,7 @@ public sealed class UpcA
     /// <inheritdoc />
     public override char GetCurrentCheckDigit()
     {
-        int sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
         return (char)('0' + ((10 - (sum % 10)) % 10));
     }
 
