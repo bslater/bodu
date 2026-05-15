@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedDictionaryTests.Nulls.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,26 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodedDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that the constructor rejects duplicate keys with <see cref="ArgumentException" /> carrying the
+    /// resx-backed message.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenDuplicateKeys_ShouldThrowArgumentException()
+    {
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new BencodedDictionary(new[]
+            {
+                new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("k"), new BencodedInteger(1)),
+                new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("k"), new BencodedInteger(2)),
+            });
+        });
+
+        Assert.AreEqual("items", ex.ParamName);
+        StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_DuplicateDictionaryKey);
+    }
     /// <summary>
     /// Verifies that the constructor rejects a <see langword="null" /> items enumerable.
     /// </summary>
@@ -60,23 +80,4 @@ public sealed partial class BencodedDictionaryTests
         StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_NullDictionaryValue);
     }
 
-    /// <summary>
-    /// Verifies that the constructor rejects duplicate keys with <see cref="ArgumentException" /> carrying the
-    /// resx-backed message.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenDuplicateKeys_ShouldThrowArgumentException()
-    {
-        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = new BencodedDictionary(new[]
-            {
-                new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("k"), new BencodedInteger(1)),
-                new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("k"), new BencodedInteger(2)),
-            });
-        });
-
-        Assert.AreEqual("items", ex.ParamName);
-        StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_DuplicateDictionaryKey);
-    }
 }

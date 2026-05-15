@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedStringTests.Equality.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,17 +8,18 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodedStringTests
 {
+
     /// <summary>
-    /// Verifies that two <see cref="BencodedString" /> instances with identical byte content compare equal via the
-    /// typed <see cref="IEquatable{T}.Equals" /> overload.
+    /// Verifies that <see cref="object.GetHashCode" /> is consistent with the equality contract: equal byte
+    /// content yields equal hashes.
     /// </summary>
     [TestMethod]
-    public void TypedEquals_WhenSameBytes_ShouldReturnTrue()
+    public void GetHashCode_WhenSameBytes_ShouldReturnSameHash()
     {
         BencodedString a = new(new byte[] { 0xDE, 0xAD });
         BencodedString b = new(new byte[] { 0xDE, 0xAD });
 
-        Assert.IsTrue(a.Equals(b));
+        Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
     }
 
     /// <summary>
@@ -44,17 +45,17 @@ public sealed partial class BencodedStringTests
 
         Assert.IsFalse(a.Equals((BencodedString?)null));
     }
-
     /// <summary>
-    /// Verifies that <see cref="object.GetHashCode" /> is consistent with the equality contract: equal byte
-    /// content yields equal hashes.
+    /// Verifies that two <see cref="BencodedString" /> instances with identical byte content compare equal via the
+    /// typed <see cref="IEquatable{T}.Equals" /> overload.
     /// </summary>
     [TestMethod]
-    public void GetHashCode_WhenSameBytes_ShouldReturnSameHash()
+    public void TypedEquals_WhenSameBytes_ShouldReturnTrue()
     {
         BencodedString a = new(new byte[] { 0xDE, 0xAD });
         BencodedString b = new(new byte[] { 0xDE, 0xAD });
 
-        Assert.AreEqual(a.GetHashCode(), b.GetHashCode());
+        Assert.IsTrue(a.Equals(b));
     }
+
 }

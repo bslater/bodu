@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedDictionaryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,16 +12,6 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed partial class BencodedDictionaryTests
 {
-    /// <summary>
-    /// Returns two sample pairs used across happy-path tests: <c>cow:moo</c> and <c>spam:eggs</c>.
-    /// </summary>
-    /// <returns>An enumerable of two pairs.</returns>
-    private static IEnumerable<KeyValuePair<BencodedString, BencodedValue>> CowMooSpamEggs() =>
-        new[]
-        {
-            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
-            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
-        };
 
     /// <summary>
     /// Verifies that the constructor stores the supplied pairs and exposes them via
@@ -56,4 +46,15 @@ public sealed partial class BencodedDictionaryTests
 
         Assert.AreEqual(BencodedValueKind.Dictionary, dict.Kind);
     }
+    /// <summary>
+    /// Returns two sample pairs used across happy-path tests: <c>cow:moo</c> and <c>spam:eggs</c>.
+    /// </summary>
+    /// <returns>An enumerable of two pairs.</returns>
+    private static IEnumerable<KeyValuePair<BencodedString, BencodedValue>> CowMooSpamEggs() =>
+        new[]
+        {
+            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
+            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
+        };
+
 }

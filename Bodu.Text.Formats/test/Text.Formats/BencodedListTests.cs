@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedListTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,6 +12,18 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed partial class BencodedListTests
 {
+
+    /// <summary>
+    /// Verifies that the constructor accepts an empty enumerable and produces an empty list with
+    /// <see cref="BencodedList.Count" /> equal to zero.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenEnumerableIsEmpty_ShouldProduceEmptyList()
+    {
+        BencodedList list = new(Array.Empty<BencodedValue>());
+
+        Assert.AreEqual(0, list.Count);
+    }
     /// <summary>
     /// Verifies that the constructor accepts a non-empty enumerable and exposes the items via
     /// <see cref="BencodedList.Items" />.
@@ -28,18 +40,6 @@ public sealed partial class BencodedListTests
         Assert.AreEqual(2, list.Count);
         Assert.IsInstanceOfType<BencodedString>(list.Items[0]);
         Assert.IsInstanceOfType<BencodedInteger>(list.Items[1]);
-    }
-
-    /// <summary>
-    /// Verifies that the constructor accepts an empty enumerable and produces an empty list with
-    /// <see cref="BencodedList.Count" /> equal to zero.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenEnumerableIsEmpty_ShouldProduceEmptyList()
-    {
-        BencodedList list = new(Array.Empty<BencodedValue>());
-
-        Assert.AreEqual(0, list.Count);
     }
 
     /// <summary>
@@ -66,4 +66,5 @@ public sealed partial class BencodedListTests
 
         Assert.AreEqual(BencodedValueKind.List, list.Kind);
     }
+
 }

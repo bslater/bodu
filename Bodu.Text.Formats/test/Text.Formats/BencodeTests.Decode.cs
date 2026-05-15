@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.Decode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,17 +8,20 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> decodes the canonical BEP 3 string example
-    /// <c>4:spam</c> into a <see cref="BencodedString" /> whose UTF-8 text is <c>"spam"</c>.
+    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> on empty input throws
+    /// <see cref="BencodeFormatException" /> with the unexpected-end-of-data message.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenSpanForCanonicalString_ShouldReturnBencodedString()
+    public void Decode_WhenEmptyInput_ShouldThrowUnexpectedEndOfData()
     {
-        BencodedValue value = Bencode.Decode(CanonicalSpamBytes);
+        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = Bencode.Decode(ReadOnlySpan<byte>.Empty);
+        });
 
-        Assert.IsInstanceOfType<BencodedString>(value);
-        Assert.AreEqual("spam", ((BencodedString)value).GetUtf8String());
+        Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_UnexpectedEndOfData, ex.Message);
     }
 
     /// <summary>
@@ -33,18 +36,17 @@ public sealed partial class BencodeTests
         Assert.IsInstanceOfType<BencodedInteger>(value);
         Assert.AreEqual(42, ((BencodedInteger)value).Value);
     }
-
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> decodes <c>le</c> into an empty
-    /// <see cref="BencodedList" />.
+    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> decodes the canonical BEP 3 string example
+    /// <c>4:spam</c> into a <see cref="BencodedString" /> whose UTF-8 text is <c>"spam"</c>.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenSpanForEmptyList_ShouldReturnEmptyBencodedList()
+    public void Decode_WhenSpanForCanonicalString_ShouldReturnBencodedString()
     {
-        BencodedValue value = Bencode.Decode(CanonicalEmptyListBytes);
+        BencodedValue value = Bencode.Decode(CanonicalSpamBytes);
 
-        Assert.IsInstanceOfType<BencodedList>(value);
-        Assert.AreEqual(0, ((BencodedList)value).Count);
+        Assert.IsInstanceOfType<BencodedString>(value);
+        Assert.AreEqual("spam", ((BencodedString)value).GetUtf8String());
     }
 
     /// <summary>
@@ -58,6 +60,19 @@ public sealed partial class BencodeTests
 
         Assert.IsInstanceOfType<BencodedDictionary>(value);
         Assert.AreEqual(0, ((BencodedDictionary)value).Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> decodes <c>le</c> into an empty
+    /// <see cref="BencodedList" />.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenSpanForEmptyList_ShouldReturnEmptyBencodedList()
+    {
+        BencodedValue value = Bencode.Decode(CanonicalEmptyListBytes);
+
+        Assert.IsInstanceOfType<BencodedList>(value);
+        Assert.AreEqual(0, ((BencodedList)value).Count);
     }
 
     /// <summary>
@@ -90,18 +105,4 @@ public sealed partial class BencodeTests
         Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_TrailingData, ex.Message);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> on empty input throws
-    /// <see cref="BencodeFormatException" /> with the unexpected-end-of-data message.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenEmptyInput_ShouldThrowUnexpectedEndOfData()
-    {
-        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
-        {
-            _ = Bencode.Decode(ReadOnlySpan<byte>.Empty);
-        });
-
-        Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_UnexpectedEndOfData, ex.Message);
-    }
 }

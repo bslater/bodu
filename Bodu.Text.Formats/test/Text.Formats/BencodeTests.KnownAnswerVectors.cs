@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.KnownAnswerVectors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> reproduces the canonical value for every
     /// BEP 3 Known Answer Test vector.
@@ -19,6 +20,37 @@ public sealed partial class BencodeTests
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(BencodeKnownAnswerVectors.Bep3PositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Decode_ForBep3KnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
+    {
+        BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
+
+        AssertValuesEqual(vector.DecodedValue, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> reproduces the canonical value for every
+    /// curated edge-case KAT vector (Int64 boundaries, nested containers, raw byte payloads).
+    /// </summary>
+    /// <param name="vector">A KAT vector sourced from
+    /// <see cref="BencodeKnownAnswerVectors.EdgeCasePositiveVectors" />.</param>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForEdgeCaseKnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
+    {
+        BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
+
+        AssertValuesEqual(vector.DecodedValue, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> reproduces the canonical value for every
+    /// Wikipedia Bencode KAT vector.
+    /// </summary>
+    /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.WikipediaVectors" />.</param>
+    [TestMethod]
+    [TestCategory(TestCategories.Regression)]
+    [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Decode_ForWikipediaKnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
     {
         BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
 
@@ -41,18 +73,19 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> reproduces the canonical value for every
-    /// Wikipedia Bencode KAT vector.
+    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> reproduces the canonical bytes for every curated
+    /// edge-case KAT vector.
     /// </summary>
-    /// <param name="vector">A KAT vector sourced from <see cref="BencodeKnownAnswerVectors.WikipediaVectors" />.</param>
+    /// <param name="vector">A KAT vector sourced from
+    /// <see cref="BencodeKnownAnswerVectors.EdgeCasePositiveVectors" />.</param>
     [TestMethod]
     [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForWikipediaKnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
+    [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
+    public void Encode_ForEdgeCaseKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
-        BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
+        byte[] actual = Bencode.Encode(vector.DecodedValue);
 
-        AssertValuesEqual(vector.DecodedValue, actual);
+        CollectionAssert.AreEqual(vector.EncodedBytes, actual);
     }
 
     /// <summary>
@@ -64,38 +97,6 @@ public sealed partial class BencodeTests
     [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(BencodeKnownAnswerVectors.WikipediaVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Encode_ForWikipediaKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
-    {
-        byte[] actual = Bencode.Encode(vector.DecodedValue);
-
-        CollectionAssert.AreEqual(vector.EncodedBytes, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> reproduces the canonical value for every
-    /// curated edge-case KAT vector (Int64 boundaries, nested containers, raw byte payloads).
-    /// </summary>
-    /// <param name="vector">A KAT vector sourced from
-    /// <see cref="BencodeKnownAnswerVectors.EdgeCasePositiveVectors" />.</param>
-    [TestMethod]
-    [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Decode_ForEdgeCaseKnownAnswerVector_ShouldReturnExpectedValue(BencodeKnownAnswerVector vector)
-    {
-        BencodedValue actual = Bencode.Decode(vector.EncodedBytes);
-
-        AssertValuesEqual(vector.DecodedValue, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> reproduces the canonical bytes for every curated
-    /// edge-case KAT vector.
-    /// </summary>
-    /// <param name="vector">A KAT vector sourced from
-    /// <see cref="BencodeKnownAnswerVectors.EdgeCasePositiveVectors" />.</param>
-    [TestMethod]
-    [TestCategory(TestCategories.Regression)]
-    [DynamicData(nameof(BencodeKnownAnswerVectors.EdgeCasePositiveVectors), typeof(BencodeKnownAnswerVectors), DynamicDataSourceType.Method)]
-    public void Encode_ForEdgeCaseKnownAnswerVector_ShouldProduceExpectedBytes(BencodeKnownAnswerVector vector)
     {
         byte[] actual = Bencode.Encode(vector.DecodedValue);
 
@@ -152,4 +153,5 @@ public sealed partial class BencodeTests
                 return;
         }
     }
+
 }

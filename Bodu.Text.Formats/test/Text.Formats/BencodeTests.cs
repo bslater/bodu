@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,15 +13,11 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed partial class BencodeTests
 {
-    /// <summary>
-    /// Canonical encoded form of <c>4:spam</c> — the BEP 3 example string used across happy-path tests.
-    /// </summary>
-    private static readonly byte[] CanonicalSpamBytes = System.Text.Encoding.ASCII.GetBytes("4:spam");
 
     /// <summary>
-    /// Canonical encoded form of <c>i42e</c>.
+    /// Canonical encoded form of an empty dictionary (<c>de</c>).
     /// </summary>
-    private static readonly byte[] CanonicalIntegerBytes = System.Text.Encoding.ASCII.GetBytes("i42e");
+    private static readonly byte[] CanonicalEmptyDictBytes = System.Text.Encoding.ASCII.GetBytes("de");
 
     /// <summary>
     /// Canonical encoded form of an empty list (<c>le</c>).
@@ -29,9 +25,13 @@ public sealed partial class BencodeTests
     private static readonly byte[] CanonicalEmptyListBytes = System.Text.Encoding.ASCII.GetBytes("le");
 
     /// <summary>
-    /// Canonical encoded form of an empty dictionary (<c>de</c>).
+    /// Canonical encoded form of <c>i42e</c>.
     /// </summary>
-    private static readonly byte[] CanonicalEmptyDictBytes = System.Text.Encoding.ASCII.GetBytes("de");
+    private static readonly byte[] CanonicalIntegerBytes = System.Text.Encoding.ASCII.GetBytes("i42e");
+    /// <summary>
+    /// Canonical encoded form of <c>4:spam</c> — the BEP 3 example string used across happy-path tests.
+    /// </summary>
+    private static readonly byte[] CanonicalSpamBytes = System.Text.Encoding.ASCII.GetBytes("4:spam");
 
     /// <summary>
     /// Converts an ASCII string to its byte representation, a common convenience across the test partials.
@@ -40,4 +40,5 @@ public sealed partial class BencodeTests
     /// <returns>The ASCII byte representation.</returns>
     private static byte[] Bytes(string ascii) =>
         System.Text.Encoding.ASCII.GetBytes(ascii);
+
 }

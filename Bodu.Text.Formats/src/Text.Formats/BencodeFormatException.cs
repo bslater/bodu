@@ -12,6 +12,7 @@ namespace Bodu.Text.Formats;
 public sealed class BencodeFormatException
     : FormatException
 {
+
     /// <summary>
     /// Initializes a new instance of the <see cref="BencodeFormatException" /> class.
     /// </summary>
@@ -37,4 +38,5 @@ public sealed class BencodeFormatException
         : base(message, innerException)
     {
     }
+
 }

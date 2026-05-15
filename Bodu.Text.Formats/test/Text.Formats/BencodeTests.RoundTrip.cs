@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.RoundTrip.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
+
     /// <summary>
     /// Verifies that for every positive KAT vector, decoding the canonical bytes and re-encoding the result
     /// reproduces the original bytes exactly.
@@ -92,4 +93,5 @@ public sealed partial class BencodeTests
             CollectionAssert.AreEqual(Bencode.Encode(pair.Value), Bencode.Encode(decodedValue));
         }
     }
+
 }

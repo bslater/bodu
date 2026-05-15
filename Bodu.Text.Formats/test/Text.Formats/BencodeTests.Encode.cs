@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.Encode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> produces the canonical encoded form of an
     /// integer value.
@@ -33,14 +34,22 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> emits <c>le</c> for an empty list.
+    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> emits dictionary keys in canonical raw byte
+    /// order regardless of the order in which the keys were supplied to the constructor.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenEmptyBencodedList_ShouldReturnEmptyListEncoding()
+    public void Encode_WhenDictionaryWithUnsortedKeysOnConstruction_ShouldEmitSortedKeys()
     {
-        byte[] actual = Bencode.Encode(new BencodedList(Array.Empty<BencodedValue>()));
+        // Construct with "spam" before "cow" — the dictionary stores keys sorted, so encode order is canonical.
+        BencodedDictionary dict = new(new[]
+        {
+            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
+            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
+        });
 
-        CollectionAssert.AreEqual(CanonicalEmptyListBytes, actual);
+        byte[] actual = Bencode.Encode(dict);
+
+        CollectionAssert.AreEqual(Bytes("d3:cow3:moo4:spam4:eggse"), actual);
     }
 
     /// <summary>
@@ -52,6 +61,17 @@ public sealed partial class BencodeTests
         byte[] actual = Bencode.Encode(new BencodedDictionary(Array.Empty<KeyValuePair<BencodedString, BencodedValue>>()));
 
         CollectionAssert.AreEqual(CanonicalEmptyDictBytes, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> emits <c>le</c> for an empty list.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenEmptyBencodedList_ShouldReturnEmptyListEncoding()
+    {
+        byte[] actual = Bencode.Encode(new BencodedList(Array.Empty<BencodedValue>()));
+
+        CollectionAssert.AreEqual(CanonicalEmptyListBytes, actual);
     }
 
     /// <summary>
@@ -72,22 +92,4 @@ public sealed partial class BencodeTests
         CollectionAssert.AreEqual(Bytes("l4:spami42ee"), actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> emits dictionary keys in canonical raw byte
-    /// order regardless of the order in which the keys were supplied to the constructor.
-    /// </summary>
-    [TestMethod]
-    public void Encode_WhenDictionaryWithUnsortedKeysOnConstruction_ShouldEmitSortedKeys()
-    {
-        // Construct with "spam" before "cow" — the dictionary stores keys sorted, so encode order is canonical.
-        BencodedDictionary dict = new(new[]
-        {
-            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("spam"), BencodedString.FromUtf8("eggs")),
-            new KeyValuePair<BencodedString, BencodedValue>(BencodedString.FromUtf8("cow"), BencodedString.FromUtf8("moo")),
-        });
-
-        byte[] actual = Bencode.Encode(dict);
-
-        CollectionAssert.AreEqual(Bytes("d3:cow3:moo4:spam4:eggse"), actual);
-    }
 }

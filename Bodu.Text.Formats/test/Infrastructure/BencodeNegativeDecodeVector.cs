@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeNegativeDecodeVector.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,6 +28,7 @@ public sealed record BencodeNegativeDecodeVector(
     string? ExpectedResourceKey = null,
     string? Source = null)
 {
+
     /// <summary>
     /// Builds a negative vector from an ASCII string input expected to fail with
     /// <see cref="BencodeFormatException" />.
@@ -59,4 +60,5 @@ public sealed record BencodeNegativeDecodeVector(
     /// <returns>The description, optionally suffixed with the citation in square brackets.</returns>
     public override string ToString() =>
         Source is null ? Description : $"{Description} [{Source}]";
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedStringComparerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,15 +13,6 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed class BencodedStringComparerTests
 {
-    /// <summary>
-    /// Verifies that <see cref="BencodedStringComparer.Ordinal" /> returns the same singleton instance on
-    /// repeated access.
-    /// </summary>
-    [TestMethod]
-    public void Ordinal_ShouldReturnSingletonInstance()
-    {
-        Assert.AreSame(BencodedStringComparer.Ordinal, BencodedStringComparer.Ordinal);
-    }
 
     /// <summary>
     /// Verifies that <see cref="BencodedStringComparer.Compare" /> returns zero when both arguments are
@@ -34,27 +25,15 @@ public sealed class BencodedStringComparerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodedStringComparer.Compare" /> orders a <see langword="null" /> argument
-    /// before any non-null argument.
+    /// Verifies that <see cref="BencodedStringComparer.Compare" /> orders by the first differing byte.
     /// </summary>
     [TestMethod]
-    public void Compare_WhenXIsNull_ShouldReturnNegative()
+    public void Compare_WhenDifferingBytes_ShouldOrderByFirstDifference()
     {
-        int result = BencodedStringComparer.Ordinal.Compare(null, new BencodedString(new byte[] { 0x01 }));
+        BencodedString a = new(new byte[] { 0xAA, 0x00 });
+        BencodedString b = new(new byte[] { 0xAA, 0x01 });
 
-        Assert.IsTrue(result < 0);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedStringComparer.Compare" /> orders any non-null argument after a
-    /// <see langword="null" /> argument.
-    /// </summary>
-    [TestMethod]
-    public void Compare_WhenYIsNull_ShouldReturnPositive()
-    {
-        int result = BencodedStringComparer.Ordinal.Compare(new BencodedString(new byte[] { 0x01 }), null);
-
-        Assert.IsTrue(result > 0);
+        Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
     }
 
     /// <summary>
@@ -83,15 +62,27 @@ public sealed class BencodedStringComparerTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodedStringComparer.Compare" /> orders by the first differing byte.
+    /// Verifies that <see cref="BencodedStringComparer.Compare" /> orders a <see langword="null" /> argument
+    /// before any non-null argument.
     /// </summary>
     [TestMethod]
-    public void Compare_WhenDifferingBytes_ShouldOrderByFirstDifference()
+    public void Compare_WhenXIsNull_ShouldReturnNegative()
     {
-        BencodedString a = new(new byte[] { 0xAA, 0x00 });
-        BencodedString b = new(new byte[] { 0xAA, 0x01 });
+        int result = BencodedStringComparer.Ordinal.Compare(null, new BencodedString(new byte[] { 0x01 }));
 
-        Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
+        Assert.IsTrue(result < 0);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodedStringComparer.Compare" /> orders any non-null argument after a
+    /// <see langword="null" /> argument.
+    /// </summary>
+    [TestMethod]
+    public void Compare_WhenYIsNull_ShouldReturnPositive()
+    {
+        int result = BencodedStringComparer.Ordinal.Compare(new BencodedString(new byte[] { 0x01 }), null);
+
+        Assert.IsTrue(result > 0);
     }
 
     /// <summary>
@@ -132,4 +123,14 @@ public sealed class BencodedStringComparerTests
 
         Assert.AreEqual(BencodedStringComparer.Ordinal.GetHashCode(a), BencodedStringComparer.Ordinal.GetHashCode(b));
     }
+    /// <summary>
+    /// Verifies that <see cref="BencodedStringComparer.Ordinal" /> returns the same singleton instance on
+    /// repeated access.
+    /// </summary>
+    [TestMethod]
+    public void Ordinal_ShouldReturnSingletonInstance()
+    {
+        Assert.AreSame(BencodedStringComparer.Ordinal, BencodedStringComparer.Ordinal);
+    }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Bencode.Stream.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Formats;
 
 public static partial class Bencode
 {
+
     /// <summary>
     /// Decodes a complete bencoded document from the supplied byte array.
     /// </summary>
@@ -179,4 +180,5 @@ public static partial class Bencode
             ArrayPool<byte>.Shared.Return(rented);
         }
     }
+
 }

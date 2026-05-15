@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.TryDecode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,35 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, out BencodedValue, out int)" /> on empty
+    /// input returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public void TryDecode_WhenEmptyInput_ShouldReturnFalse()
+    {
+        bool result = Bencode.TryDecode(ReadOnlySpan<byte>.Empty, out BencodedValue? value, out int consumed);
+
+        Assert.IsFalse(result);
+        Assert.IsNull(value);
+        Assert.AreEqual(0, consumed);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, out BencodedValue, out int)" /> returns
+    /// <see langword="false" /> for a malformed input and leaves <c>value</c> at <see langword="null" /> and
+    /// <c>bytesConsumed</c> at zero.
+    /// </summary>
+    [TestMethod]
+    public void TryDecode_WhenMalformedInput_ShouldReturnFalseWithDefaults()
+    {
+        bool result = Bencode.TryDecode(Bytes("i03e"), out BencodedValue? value, out int consumed);
+
+        Assert.IsFalse(result);
+        Assert.IsNull(value);
+        Assert.AreEqual(0, consumed);
+    }
     /// <summary>
     /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, out BencodedValue, out int)" /> returns
     /// <see langword="true" /> for a well-formed input, exposes the decoded value, and reports the number of
@@ -38,32 +67,4 @@ public sealed partial class BencodeTests
         Assert.AreEqual(3, consumed);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, out BencodedValue, out int)" /> returns
-    /// <see langword="false" /> for a malformed input and leaves <c>value</c> at <see langword="null" /> and
-    /// <c>bytesConsumed</c> at zero.
-    /// </summary>
-    [TestMethod]
-    public void TryDecode_WhenMalformedInput_ShouldReturnFalseWithDefaults()
-    {
-        bool result = Bencode.TryDecode(Bytes("i03e"), out BencodedValue? value, out int consumed);
-
-        Assert.IsFalse(result);
-        Assert.IsNull(value);
-        Assert.AreEqual(0, consumed);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Bencode.TryDecode(ReadOnlySpan{byte}, out BencodedValue, out int)" /> on empty
-    /// input returns <see langword="false" />.
-    /// </summary>
-    [TestMethod]
-    public void TryDecode_WhenEmptyInput_ShouldReturnFalse()
-    {
-        bool result = Bencode.TryDecode(ReadOnlySpan<byte>.Empty, out BencodedValue? value, out int consumed);
-
-        Assert.IsFalse(result);
-        Assert.IsNull(value);
-        Assert.AreEqual(0, consumed);
-    }
 }

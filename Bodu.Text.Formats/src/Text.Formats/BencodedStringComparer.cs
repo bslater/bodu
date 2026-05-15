@@ -13,14 +13,15 @@ public sealed class BencodedStringComparer
     : IComparer<BencodedString>
     , IEqualityComparer<BencodedString>
 {
-    /// <summary>
-    /// Gets the singleton ordinal byte comparer.
-    /// </summary>
-    public static BencodedStringComparer Ordinal { get; } = new();
 
     private BencodedStringComparer()
     {
     }
+
+    /// <summary>
+    /// Gets the singleton ordinal byte comparer.
+    /// </summary>
+    public static BencodedStringComparer Ordinal { get; } = new();
 
     /// <inheritdoc />
     public int Compare(BencodedString? x, BencodedString? y)
@@ -70,4 +71,5 @@ public sealed class BencodedStringComparer
 
         return x.Length.CompareTo(y.Length);
     }
+
 }

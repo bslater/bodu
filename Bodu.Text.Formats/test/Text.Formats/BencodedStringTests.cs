@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedStringTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,34 +12,6 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed partial class BencodedStringTests
 {
-    /// <summary>
-    /// Verifies that the span constructor copies the supplied bytes into the new instance and exposes them via
-    /// <see cref="BencodedString.Bytes" />.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenSpanProvided_ShouldStoreCopyOfBytes()
-    {
-        ReadOnlySpan<byte> source = stackalloc byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
-
-        BencodedString value = new(source);
-
-        CollectionAssert.AreEqual(source.ToArray(), value.Bytes.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that the byte-array constructor stores a defensive copy of the supplied array.
-    /// </summary>
-    [TestMethod]
-    public void Constructor_WhenByteArrayProvided_ShouldStoreCopy()
-    {
-        byte[] source = { 0xDE, 0xAD, 0xBE, 0xEF };
-
-        BencodedString value = new(source);
-
-        source[0] = 0x00;
-
-        Assert.AreEqual(0xDE, value.Bytes.Span[0]);
-    }
 
     /// <summary>
     /// Verifies that the byte-array constructor rejects a <see langword="null" /> argument with
@@ -57,15 +29,31 @@ public sealed partial class BencodedStringTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodedString.Length" /> reports the byte count exposed by
+    /// Verifies that the byte-array constructor stores a defensive copy of the supplied array.
+    /// </summary>
+    [TestMethod]
+    public void Constructor_WhenByteArrayProvided_ShouldStoreCopy()
+    {
+        byte[] source = { 0xDE, 0xAD, 0xBE, 0xEF };
+
+        BencodedString value = new(source);
+
+        source[0] = 0x00;
+
+        Assert.AreEqual(0xDE, value.Bytes.Span[0]);
+    }
+    /// <summary>
+    /// Verifies that the span constructor copies the supplied bytes into the new instance and exposes them via
     /// <see cref="BencodedString.Bytes" />.
     /// </summary>
     [TestMethod]
-    public void Length_WhenBytesProvided_ShouldReturnByteCount()
+    public void Constructor_WhenSpanProvided_ShouldStoreCopyOfBytes()
     {
-        BencodedString value = new(new byte[] { 1, 2, 3, 4, 5 });
+        ReadOnlySpan<byte> source = stackalloc byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
-        Assert.AreEqual(5, value.Length);
+        BencodedString value = new(source);
+
+        CollectionAssert.AreEqual(source.ToArray(), value.Bytes.ToArray());
     }
 
     /// <summary>
@@ -78,4 +66,17 @@ public sealed partial class BencodedStringTests
 
         Assert.AreEqual(BencodedValueKind.String, value.Kind);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodedString.Length" /> reports the byte count exposed by
+    /// <see cref="BencodedString.Bytes" />.
+    /// </summary>
+    [TestMethod]
+    public void Length_WhenBytesProvided_ShouldReturnByteCount()
+    {
+        BencodedString value = new(new byte[] { 1, 2, 3, 4, 5 });
+
+        Assert.AreEqual(5, value.Length);
+    }
+
 }

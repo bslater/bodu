@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.Streams.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,19 +10,6 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
-    /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(Stream)" /> decodes a value from a seekable
-    /// <see cref="MemoryStream" />.
-    /// </summary>
-    [TestMethod]
-    public void DecodeStream_WhenSeekableMemoryStream_ShouldReturnDecodedValue()
-    {
-        using MemoryStream stream = new(CanonicalIntegerBytes);
-
-        BencodedValue value = Bencode.Decode(stream);
-
-        Assert.AreEqual(42, ((BencodedInteger)value).Value);
-    }
 
     /// <summary>
     /// Verifies that <see cref="Bencode.Decode(Stream)" /> handles non-seekable streams by buffering reads
@@ -37,23 +24,6 @@ public sealed partial class BencodeTests
         BencodedValue value = Bencode.Decode(stream);
 
         Assert.AreEqual("spam", ((BencodedString)value).GetUtf8String());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(Stream)" /> handles a source that returns small fixed-size chunks
-    /// (e.g. a slow network read), using <see cref="FixedChunkStream" /> with a 2-byte chunk size.
-    /// </summary>
-    [TestMethod]
-    public void DecodeStream_WhenSourceReturnsSmallChunks_ShouldReturnDecodedValue()
-    {
-        using FixedChunkStream stream = new(Bytes("l4:spami42ee"), chunkSize: 2);
-
-        BencodedValue value = Bencode.Decode(stream);
-
-        BencodedList list = (BencodedList)value;
-        Assert.AreEqual(2, list.Count);
-        Assert.AreEqual("spam", ((BencodedString)list[0]).GetUtf8String());
-        Assert.AreEqual(42, ((BencodedInteger)list[1]).Value);
     }
 
     /// <summary>
@@ -88,19 +58,35 @@ public sealed partial class BencodeTests
 
         Assert.AreEqual("source", ex.ParamName);
     }
-
     /// <summary>
-    /// Verifies that <see cref="Bencode.Encode(BencodedValue, Stream)" /> writes the canonical bytes into a
+    /// Verifies that <see cref="Bencode.Decode(Stream)" /> decodes a value from a seekable
     /// <see cref="MemoryStream" />.
     /// </summary>
     [TestMethod]
-    public void EncodeStream_WhenWritingToMemoryStream_ShouldWriteCanonicalBytes()
+    public void DecodeStream_WhenSeekableMemoryStream_ShouldReturnDecodedValue()
     {
-        using MemoryStream stream = new();
+        using MemoryStream stream = new(CanonicalIntegerBytes);
 
-        Bencode.Encode(new BencodedInteger(42), stream);
+        BencodedValue value = Bencode.Decode(stream);
 
-        CollectionAssert.AreEqual(CanonicalIntegerBytes, stream.ToArray());
+        Assert.AreEqual(42, ((BencodedInteger)value).Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.Decode(Stream)" /> handles a source that returns small fixed-size chunks
+    /// (e.g. a slow network read), using <see cref="FixedChunkStream" /> with a 2-byte chunk size.
+    /// </summary>
+    [TestMethod]
+    public void DecodeStream_WhenSourceReturnsSmallChunks_ShouldReturnDecodedValue()
+    {
+        using FixedChunkStream stream = new(Bytes("l4:spami42ee"), chunkSize: 2);
+
+        BencodedValue value = Bencode.Decode(stream);
+
+        BencodedList list = (BencodedList)value;
+        Assert.AreEqual(2, list.Count);
+        Assert.AreEqual("spam", ((BencodedString)list[0]).GetUtf8String());
+        Assert.AreEqual(42, ((BencodedInteger)list[1]).Value);
     }
 
     /// <summary>
@@ -152,4 +138,19 @@ public sealed partial class BencodeTests
 
         Assert.AreEqual("value", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.Encode(BencodedValue, Stream)" /> writes the canonical bytes into a
+    /// <see cref="MemoryStream" />.
+    /// </summary>
+    [TestMethod]
+    public void EncodeStream_WhenWritingToMemoryStream_ShouldWriteCanonicalBytes()
+    {
+        using MemoryStream stream = new();
+
+        Bencode.Encode(new BencodedInteger(42), stream);
+
+        CollectionAssert.AreEqual(CanonicalIntegerBytes, stream.ToArray());
+    }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.TryEncode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,21 +8,6 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
-    /// <summary>
-    /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> succeeds when the
-    /// destination is sized exactly to the encoded length and reports the same length via <c>bytesWritten</c>.
-    /// </summary>
-    [TestMethod]
-    public void TryEncode_WhenDestinationSizedExactly_ShouldReturnTrueAndWriteExactBytes()
-    {
-        byte[] destination = new byte[CanonicalIntegerBytes.Length];
-
-        bool result = Bencode.TryEncode(new BencodedInteger(42), destination, out int bytesWritten);
-
-        Assert.IsTrue(result);
-        Assert.AreEqual(CanonicalIntegerBytes.Length, bytesWritten);
-        CollectionAssert.AreEqual(CanonicalIntegerBytes, destination);
-    }
 
     /// <summary>
     /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> writes only the required
@@ -41,6 +26,21 @@ public sealed partial class BencodeTests
         for (int i = 0; i < CanonicalIntegerBytes.Length; i++)
             Assert.AreEqual(CanonicalIntegerBytes[i], destination[i]);
     }
+    /// <summary>
+    /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> succeeds when the
+    /// destination is sized exactly to the encoded length and reports the same length via <c>bytesWritten</c>.
+    /// </summary>
+    [TestMethod]
+    public void TryEncode_WhenDestinationSizedExactly_ShouldReturnTrueAndWriteExactBytes()
+    {
+        byte[] destination = new byte[CanonicalIntegerBytes.Length];
+
+        bool result = Bencode.TryEncode(new BencodedInteger(42), destination, out int bytesWritten);
+
+        Assert.IsTrue(result);
+        Assert.AreEqual(CanonicalIntegerBytes.Length, bytesWritten);
+        CollectionAssert.AreEqual(CanonicalIntegerBytes, destination);
+    }
 
     /// <summary>
     /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> returns
@@ -56,4 +56,5 @@ public sealed partial class BencodeTests
         Assert.IsFalse(result);
         Assert.AreEqual(0, bytesWritten);
     }
+
 }

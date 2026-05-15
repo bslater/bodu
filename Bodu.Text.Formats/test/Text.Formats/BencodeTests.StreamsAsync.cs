@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.StreamsAsync.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,19 +10,24 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="Bencode.DecodeAsync(Stream, CancellationToken)" /> reads asynchronously and
-    /// decodes correctly from a seekable <see cref="MemoryStream" />.
+    /// Verifies that <see cref="Bencode.DecodeAsync(Stream, CancellationToken)" /> propagates cancellation when
+    /// the supplied token transitions to cancelled before the read completes.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
-    public async Task DecodeAsync_WhenSeekableMemoryStream_ShouldReturnDecodedValue()
+    public async Task DecodeAsync_WhenCancellationTokenSignalled_ShouldThrowOperationCanceledException()
     {
+        using CancellationTokenSource cts = new();
+        cts.Cancel();
+
         using MemoryStream stream = new(CanonicalSpamBytes);
 
-        BencodedValue value = await Bencode.DecodeAsync(stream);
-
-        Assert.AreEqual("spam", ((BencodedString)value).GetUtf8String());
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
+        {
+            _ = await Bencode.DecodeAsync(stream, cts.Token);
+        });
     }
 
     /// <summary>
@@ -58,39 +63,19 @@ public sealed partial class BencodeTests
 
         Assert.AreEqual("source", ex.ParamName);
     }
-
     /// <summary>
-    /// Verifies that <see cref="Bencode.DecodeAsync(Stream, CancellationToken)" /> propagates cancellation when
-    /// the supplied token transitions to cancelled before the read completes.
+    /// Verifies that <see cref="Bencode.DecodeAsync(Stream, CancellationToken)" /> reads asynchronously and
+    /// decodes correctly from a seekable <see cref="MemoryStream" />.
     /// </summary>
     /// <returns>A task representing the asynchronous test.</returns>
     [TestMethod]
-    public async Task DecodeAsync_WhenCancellationTokenSignalled_ShouldThrowOperationCanceledException()
+    public async Task DecodeAsync_WhenSeekableMemoryStream_ShouldReturnDecodedValue()
     {
-        using CancellationTokenSource cts = new();
-        cts.Cancel();
-
         using MemoryStream stream = new(CanonicalSpamBytes);
 
-        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
-        {
-            _ = await Bencode.DecodeAsync(stream, cts.Token);
-        });
-    }
+        BencodedValue value = await Bencode.DecodeAsync(stream);
 
-    /// <summary>
-    /// Verifies that <see cref="Bencode.EncodeAsync(BencodedValue, Stream, CancellationToken)" /> writes the
-    /// canonical bytes into a <see cref="MemoryStream" />.
-    /// </summary>
-    /// <returns>A task representing the asynchronous test.</returns>
-    [TestMethod]
-    public async Task EncodeAsync_WhenWritingToMemoryStream_ShouldWriteCanonicalBytes()
-    {
-        using MemoryStream stream = new();
-
-        await Bencode.EncodeAsync(new BencodedInteger(42), stream);
-
-        CollectionAssert.AreEqual(CanonicalIntegerBytes, stream.ToArray());
+        Assert.AreEqual("spam", ((BencodedString)value).GetUtf8String());
     }
 
     /// <summary>
@@ -110,4 +95,20 @@ public sealed partial class BencodeTests
 
         Assert.AreEqual("destination", ex.ParamName);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.EncodeAsync(BencodedValue, Stream, CancellationToken)" /> writes the
+    /// canonical bytes into a <see cref="MemoryStream" />.
+    /// </summary>
+    /// <returns>A task representing the asynchronous test.</returns>
+    [TestMethod]
+    public async Task EncodeAsync_WhenWritingToMemoryStream_ShouldWriteCanonicalBytes()
+    {
+        using MemoryStream stream = new();
+
+        await Bencode.EncodeAsync(new BencodedInteger(42), stream);
+
+        CollectionAssert.AreEqual(CanonicalIntegerBytes, stream.ToArray());
+    }
+
 }

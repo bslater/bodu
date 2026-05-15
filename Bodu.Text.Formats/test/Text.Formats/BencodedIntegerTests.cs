@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedIntegerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,6 +12,7 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed partial class BencodedIntegerTests
 {
+
     /// <summary>
     /// Verifies that the constructor stores the supplied value and exposes <see cref="BencodedValueKind.Integer" />
     /// via <see cref="BencodedValue.Kind" />.
@@ -55,4 +56,5 @@ public sealed partial class BencodedIntegerTests
             System.Globalization.CultureInfo.CurrentCulture = previous;
         }
     }
+
 }

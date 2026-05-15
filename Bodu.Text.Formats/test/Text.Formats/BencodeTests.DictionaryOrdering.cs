@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.DictionaryOrdering.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,20 +8,6 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
-    /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> rejects a dictionary whose encoded keys
-    /// are not sorted in raw byte order. The input here lists <c>b</c> before <c>a</c>.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenDictionaryKeysOutOfOrder_ShouldThrowBencodeFormatException()
-    {
-        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
-        {
-            _ = Bencode.Decode(Bytes("d1:b0:1:a0:e"));
-        });
-
-        Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_UnorderedDictionaryKeys, ex.Message);
-    }
 
     /// <summary>
     /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> rejects a dictionary that lists the same
@@ -37,6 +23,20 @@ public sealed partial class BencodeTests
 
         // The encoded duplicate-key case fails the "strictly greater than previous" sort-order check, so the
         // decoder reports the unordered-keys message rather than a separate duplicate-key error.
+        Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_UnorderedDictionaryKeys, ex.Message);
+    }
+    /// <summary>
+    /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> rejects a dictionary whose encoded keys
+    /// are not sorted in raw byte order. The input here lists <c>b</c> before <c>a</c>.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenDictionaryKeysOutOfOrder_ShouldThrowBencodeFormatException()
+    {
+        BencodeFormatException ex = Assert.ThrowsExactly<BencodeFormatException>(() =>
+        {
+            _ = Bencode.Decode(Bytes("d1:b0:1:a0:e"));
+        });
+
         Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_UnorderedDictionaryKeys, ex.Message);
     }
 
@@ -59,4 +59,5 @@ public sealed partial class BencodeTests
 
         CollectionAssert.AreEqual(Bytes("d5:alphai2e5:mangoi3e5:zebrai1ee"), encoded);
     }
+
 }

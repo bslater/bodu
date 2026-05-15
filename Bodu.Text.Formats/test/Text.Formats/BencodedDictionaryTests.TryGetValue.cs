@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedDictionaryTests.TryGetValue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodedDictionaryTests
 {
+
     /// <summary>
     /// Verifies that <see cref="BencodedDictionary.TryGetValue(BencodedString, out BencodedValue)" /> returns
     /// <see langword="true" /> for an existing key and outputs the associated value.
@@ -21,20 +22,6 @@ public sealed partial class BencodedDictionaryTests
 
         Assert.IsTrue(found);
         Assert.AreEqual("moo", ((BencodedString)value).GetUtf8String());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedDictionary.TryGetValue(BencodedString, out BencodedValue)" /> returns
-    /// <see langword="false" /> when the key is absent.
-    /// </summary>
-    [TestMethod]
-    public void TryGetValue_WhenKeyMissing_ForBencodedStringKey_ShouldReturnFalse()
-    {
-        BencodedDictionary dict = new(CowMooSpamEggs());
-
-        bool found = dict.TryGetValue(BencodedString.FromUtf8("missing"), out _);
-
-        Assert.IsFalse(found);
     }
 
     /// <summary>
@@ -53,6 +40,20 @@ public sealed partial class BencodedDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="BencodedDictionary.TryGetValue(BencodedString, out BencodedValue)" /> returns
+    /// <see langword="false" /> when the key is absent.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValue_WhenKeyMissing_ForBencodedStringKey_ShouldReturnFalse()
+    {
+        BencodedDictionary dict = new(CowMooSpamEggs());
+
+        bool found = dict.TryGetValue(BencodedString.FromUtf8("missing"), out _);
+
+        Assert.IsFalse(found);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="BencodedDictionary.TryGetValue(string, out BencodedValue)" /> rejects a
     /// <see langword="null" /> key with <see cref="ArgumentNullException" />.
     /// </summary>
@@ -68,4 +69,5 @@ public sealed partial class BencodedDictionaryTests
 
         Assert.AreEqual("key", ex.ParamName);
     }
+
 }

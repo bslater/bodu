@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.Nulls.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,20 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="Bencode.Decode(byte[])" /> rejects a <see langword="null" /> source array.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenNullByteArraySource_ShouldThrowArgumentNullException()
+    {
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Bencode.Decode((byte[])null!);
+        });
+
+        Assert.AreEqual("source", ex.ParamName);
+    }
     /// <summary>
     /// Verifies that <see cref="Bencode.Encode(BencodedValue)" /> rejects a <see langword="null" /> value with
     /// <see cref="ArgumentNullException" />.
@@ -18,21 +32,6 @@ public sealed partial class BencodeTests
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = Bencode.Encode((BencodedValue)null!);
-        });
-
-        Assert.AreEqual("value", ex.ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> rejects a
-    /// <see langword="null" /> value with <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void TryEncode_WhenNullValue_ShouldThrowArgumentNullException()
-    {
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = Bencode.TryEncode(null!, new byte[16], out _);
         });
 
         Assert.AreEqual("value", ex.ParamName);
@@ -54,16 +53,18 @@ public sealed partial class BencodeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Bencode.Decode(byte[])" /> rejects a <see langword="null" /> source array.
+    /// Verifies that <see cref="Bencode.TryEncode(BencodedValue, Span{byte}, out int)" /> rejects a
+    /// <see langword="null" /> value with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenNullByteArraySource_ShouldThrowArgumentNullException()
+    public void TryEncode_WhenNullValue_ShouldThrowArgumentNullException()
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = Bencode.Decode((byte[])null!);
+            _ = Bencode.TryEncode(null!, new byte[16], out _);
         });
 
-        Assert.AreEqual("source", ex.ParamName);
+        Assert.AreEqual("value", ex.ParamName);
     }
+
 }

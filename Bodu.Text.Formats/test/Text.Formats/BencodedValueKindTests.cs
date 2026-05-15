@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedValueKindTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,6 +13,7 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed class BencodedValueKindTests
 {
+
     /// <summary>
     /// Verifies that <see cref="BencodedValueKind" /> defines exactly four members covering the four Bencode
     /// productions.
@@ -46,4 +47,5 @@ public sealed class BencodedValueKindTests
         Assert.AreEqual(2, (int)BencodedValueKind.List);
         Assert.AreEqual(3, (int)BencodedValueKind.Dictionary);
     }
+
 }

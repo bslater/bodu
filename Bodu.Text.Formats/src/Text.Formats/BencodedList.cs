@@ -12,6 +12,7 @@ namespace Bodu.Text.Formats;
 public sealed class BencodedList
     : BencodedValue
 {
+
     private readonly BencodedValue[] items;
 
     /// <summary>
@@ -34,18 +35,18 @@ public sealed class BencodedList
             ThrowHelper.ThrowArgumentException_NullListElement(nameof(items));
     }
 
-    /// <inheritdoc />
-    public override BencodedValueKind Kind => BencodedValueKind.List;
+    /// <summary>
+    /// Gets the number of items in the list.
+    /// </summary>
+    public int Count => items.Length;
 
     /// <summary>
     /// Gets the list items.
     /// </summary>
     public IReadOnlyList<BencodedValue> Items => items;
 
-    /// <summary>
-    /// Gets the number of items in the list.
-    /// </summary>
-    public int Count => items.Length;
+    /// <inheritdoc />
+    public override BencodedValueKind Kind => BencodedValueKind.List;
 
     /// <summary>
     /// Gets the item at the specified index.
@@ -53,4 +54,5 @@ public sealed class BencodedList
     /// <param name="index">The zero-based item index.</param>
     /// <returns>The item at the specified index.</returns>
     public BencodedValue this[int index] => items[index];
+
 }

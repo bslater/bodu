@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeFormatExceptionTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,28 +12,6 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed class BencodeFormatExceptionTests
 {
-    /// <summary>
-    /// Verifies that the parameterless constructor creates an instance that derives from
-    /// <see cref="FormatException" />.
-    /// </summary>
-    [TestMethod]
-    public void ParameterlessConstructor_ShouldProduceFormatExceptionSubclass()
-    {
-        BencodeFormatException ex = new();
-
-        Assert.IsInstanceOfType<FormatException>(ex);
-    }
-
-    /// <summary>
-    /// Verifies that the message-only constructor preserves the supplied message.
-    /// </summary>
-    [TestMethod]
-    public void MessageConstructor_ShouldPreserveMessage()
-    {
-        BencodeFormatException ex = new("custom message");
-
-        Assert.AreEqual("custom message", ex.Message);
-    }
 
     /// <summary>
     /// Verifies that the message+inner constructor preserves both the message and the inner exception.
@@ -48,4 +26,27 @@ public sealed class BencodeFormatExceptionTests
         Assert.AreEqual("outer", ex.Message);
         Assert.AreSame(inner, ex.InnerException);
     }
+
+    /// <summary>
+    /// Verifies that the message-only constructor preserves the supplied message.
+    /// </summary>
+    [TestMethod]
+    public void MessageConstructor_ShouldPreserveMessage()
+    {
+        BencodeFormatException ex = new("custom message");
+
+        Assert.AreEqual("custom message", ex.Message);
+    }
+    /// <summary>
+    /// Verifies that the parameterless constructor creates an instance that derives from
+    /// <see cref="FormatException" />.
+    /// </summary>
+    [TestMethod]
+    public void ParameterlessConstructor_ShouldProduceFormatExceptionSubclass()
+    {
+        BencodeFormatException ex = new();
+
+        Assert.IsInstanceOfType<FormatException>(ex);
+    }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeKnownAnswerVector.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,25 +23,17 @@ public sealed record BencodeKnownAnswerVector(
     BencodedValue DecodedValue,
     string? Source = null)
 {
-    /// <summary>
-    /// Builds a vector for an integer value, e.g. <c>i42e</c>.
-    /// </summary>
-    /// <param name="value">The decoded integer.</param>
-    /// <param name="encoded">The canonical encoded ASCII form, e.g. <c>"i42e"</c>.</param>
-    /// <param name="source">The citation.</param>
-    /// <returns>A KAT vector with <paramref name="encoded" /> resolved to its ASCII byte representation.</returns>
-    public static BencodeKnownAnswerVector Integer(long value, string encoded, string source) =>
-        new($"Integer {value.ToString(System.Globalization.CultureInfo.InvariantCulture)}", System.Text.Encoding.ASCII.GetBytes(encoded), new BencodedInteger(value), source);
 
     /// <summary>
-    /// Builds a vector for a UTF-8 string value, e.g. <c>4:spam</c>.
+    /// Builds a vector for a dictionary value.
     /// </summary>
-    /// <param name="text">The decoded text.</param>
-    /// <param name="encoded">The canonical encoded ASCII form, e.g. <c>"4:spam"</c>.</param>
+    /// <param name="description">A short label.</param>
+    /// <param name="encoded">The canonical encoded ASCII form.</param>
+    /// <param name="value">The decoded dictionary.</param>
     /// <param name="source">The citation.</param>
-    /// <returns>A KAT vector with <paramref name="text" /> resolved to its UTF-8 byte content.</returns>
-    public static BencodeKnownAnswerVector Utf8String(string text, string encoded, string source) =>
-        new($"String \"{text}\"", System.Text.Encoding.ASCII.GetBytes(encoded), BencodedString.FromUtf8(text), source);
+    /// <returns>A KAT vector with <paramref name="encoded" /> resolved to its ASCII byte representation.</returns>
+    public static BencodeKnownAnswerVector Dictionary(string description, string encoded, BencodedValue value, string source) =>
+        new(description, System.Text.Encoding.ASCII.GetBytes(encoded), value, source);
 
     /// <summary>
     /// Builds a vector from hex-encoded bytes, useful when the encoded form contains non-printable bytes that are
@@ -56,6 +48,15 @@ public sealed record BencodeKnownAnswerVector(
     /// <returns>A KAT vector with <paramref name="encodedHex" /> resolved to its byte representation.</returns>
     public static BencodeKnownAnswerVector FromHex(string description, string encodedHex, BencodedValue value, string source) =>
         new(description, Base16.Decode(encodedHex), value, source);
+    /// <summary>
+    /// Builds a vector for an integer value, e.g. <c>i42e</c>.
+    /// </summary>
+    /// <param name="value">The decoded integer.</param>
+    /// <param name="encoded">The canonical encoded ASCII form, e.g. <c>"i42e"</c>.</param>
+    /// <param name="source">The citation.</param>
+    /// <returns>A KAT vector with <paramref name="encoded" /> resolved to its ASCII byte representation.</returns>
+    public static BencodeKnownAnswerVector Integer(long value, string encoded, string source) =>
+        new($"Integer {value.ToString(System.Globalization.CultureInfo.InvariantCulture)}", System.Text.Encoding.ASCII.GetBytes(encoded), new BencodedInteger(value), source);
 
     /// <summary>
     /// Builds a vector for a list value.
@@ -69,15 +70,14 @@ public sealed record BencodeKnownAnswerVector(
         new(description, System.Text.Encoding.ASCII.GetBytes(encoded), value, source);
 
     /// <summary>
-    /// Builds a vector for a dictionary value.
+    /// Builds a vector for a UTF-8 string value, e.g. <c>4:spam</c>.
     /// </summary>
-    /// <param name="description">A short label.</param>
-    /// <param name="encoded">The canonical encoded ASCII form.</param>
-    /// <param name="value">The decoded dictionary.</param>
+    /// <param name="text">The decoded text.</param>
+    /// <param name="encoded">The canonical encoded ASCII form, e.g. <c>"4:spam"</c>.</param>
     /// <param name="source">The citation.</param>
-    /// <returns>A KAT vector with <paramref name="encoded" /> resolved to its ASCII byte representation.</returns>
-    public static BencodeKnownAnswerVector Dictionary(string description, string encoded, BencodedValue value, string source) =>
-        new(description, System.Text.Encoding.ASCII.GetBytes(encoded), value, source);
+    /// <returns>A KAT vector with <paramref name="text" /> resolved to its UTF-8 byte content.</returns>
+    public static BencodeKnownAnswerVector Utf8String(string text, string encoded, string source) =>
+        new($"String \"{text}\"", System.Text.Encoding.ASCII.GetBytes(encoded), BencodedString.FromUtf8(text), source);
 
     /// <summary>
     /// Returns the human-readable label, used by MSTest's <c>[DynamicData]</c> infrastructure when generating test
@@ -86,4 +86,5 @@ public sealed record BencodeKnownAnswerVector(
     /// <returns>The description, optionally suffixed with the citation in square brackets.</returns>
     public override string ToString() =>
         Source is null ? Description : $"{Description} [{Source}]";
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,6 +15,7 @@ namespace Bodu.Text.Formats;
 [TestClass]
 public sealed class SmokeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> and
     /// <see cref="Bencode.Encode(BencodedValue)" /> round-trip the canonical BEP 3 string example.
@@ -30,50 +31,6 @@ public sealed class SmokeTests
 
         Assert.AreEqual("spam", ((BencodedString)decoded).GetUtf8String());
         CollectionAssert.AreEqual(encoded, reencoded);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedInteger" /> constructs successfully and exposes the supplied value with
-    /// <see cref="BencodedValueKind.Integer" />.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void BencodedInteger_Construct_ShouldExposeValueAndKind()
-    {
-        BencodedInteger integer = new(42);
-
-        Assert.AreEqual(42, integer.Value);
-        Assert.AreEqual(BencodedValueKind.Integer, integer.Kind);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedString.FromUtf8(string)" /> followed by
-    /// <see cref="BencodedString.GetUtf8String" /> round-trips text content.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void BencodedString_FromUtf8_ShouldRoundTripText()
-    {
-        BencodedString value = BencodedString.FromUtf8("hello");
-
-        Assert.AreEqual("hello", value.GetUtf8String());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BencodedList" /> constructs with two values and exposes
-    /// <see cref="BencodedList.Count" /> equal to two.
-    /// </summary>
-    [TestMethod]
-    [TestCategory(TestCategories.Smoke)]
-    public void BencodedList_Construct_ShouldExposeItems()
-    {
-        BencodedList list = new(new BencodedValue[]
-        {
-            BencodedString.FromUtf8("spam"),
-            new BencodedInteger(42),
-        });
-
-        Assert.AreEqual(2, list.Count);
     }
 
     /// <summary>
@@ -98,6 +55,50 @@ public sealed class SmokeTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="BencodedInteger" /> constructs successfully and exposes the supplied value with
+    /// <see cref="BencodedValueKind.Integer" />.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void BencodedInteger_Construct_ShouldExposeValueAndKind()
+    {
+        BencodedInteger integer = new(42);
+
+        Assert.AreEqual(42, integer.Value);
+        Assert.AreEqual(BencodedValueKind.Integer, integer.Kind);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodedList" /> constructs with two values and exposes
+    /// <see cref="BencodedList.Count" /> equal to two.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void BencodedList_Construct_ShouldExposeItems()
+    {
+        BencodedList list = new(new BencodedValue[]
+        {
+            BencodedString.FromUtf8("spam"),
+            new BencodedInteger(42),
+        });
+
+        Assert.AreEqual(2, list.Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BencodedString.FromUtf8(string)" /> followed by
+    /// <see cref="BencodedString.GetUtf8String" /> round-trips text content.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void BencodedString_FromUtf8_ShouldRoundTripText()
+    {
+        BencodedString value = BencodedString.FromUtf8("hello");
+
+        Assert.AreEqual("hello", value.GetUtf8String());
+    }
+
+    /// <summary>
     /// Verifies that <see cref="BencodedStringComparer.Ordinal" /> compares byte sequences by raw byte order.
     /// </summary>
     [TestMethod]
@@ -109,4 +110,5 @@ public sealed class SmokeTests
 
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
     }
+
 }

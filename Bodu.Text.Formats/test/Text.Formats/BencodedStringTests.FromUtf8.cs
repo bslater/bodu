@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodedStringTests.FromUtf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,18 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodedStringTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="BencodedString.FromUtf8(string)" /> emits multi-byte UTF-8 sequences for accented
+    /// characters (here U+00E9 -&gt; 0xC3 0xA9).
+    /// </summary>
+    [TestMethod]
+    public void FromUtf8_WhenAccentedCharacter_ShouldEmitMultiByteSequence()
+    {
+        BencodedString value = BencodedString.FromUtf8("é");
+
+        CollectionAssert.AreEqual(new byte[] { 0xC3, 0xA9 }, value.Bytes.ToArray());
+    }
     /// <summary>
     /// Verifies that <see cref="BencodedString.FromUtf8(string)" /> encodes ASCII text exactly as the UTF-8
     /// equivalent.
@@ -33,15 +45,18 @@ public sealed partial class BencodedStringTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BencodedString.FromUtf8(string)" /> emits multi-byte UTF-8 sequences for accented
-    /// characters (here U+00E9 -&gt; 0xC3 0xA9).
+    /// Verifies that <see cref="BencodedString.FromUtf8(string)" /> rejects a <see langword="null" /> argument
+    /// with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void FromUtf8_WhenAccentedCharacter_ShouldEmitMultiByteSequence()
+    public void FromUtf8_WhenNull_ShouldThrowArgumentNullException()
     {
-        BencodedString value = BencodedString.FromUtf8("é");
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = BencodedString.FromUtf8(null!);
+        });
 
-        CollectionAssert.AreEqual(new byte[] { 0xC3, 0xA9 }, value.Bytes.ToArray());
+        Assert.AreEqual("value", ex.ParamName);
     }
 
     /// <summary>
@@ -56,18 +71,4 @@ public sealed partial class BencodedStringTests
         CollectionAssert.AreEqual(new byte[] { 0xF0, 0x9F, 0x98, 0x80 }, value.Bytes.ToArray());
     }
 
-    /// <summary>
-    /// Verifies that <see cref="BencodedString.FromUtf8(string)" /> rejects a <see langword="null" /> argument
-    /// with <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void FromUtf8_WhenNull_ShouldThrowArgumentNullException()
-    {
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = BencodedString.FromUtf8(null!);
-        });
-
-        Assert.AreEqual("value", ex.ParamName);
-    }
 }

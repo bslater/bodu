@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BencodeTests.NegativeVectors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Formats;
 
 public sealed partial class BencodeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> throws the expected exception type for
     /// every malformed-input vector and, where the vector identifies a resource key, that the exception message
@@ -69,4 +70,5 @@ public sealed partial class BencodeTests
         Assert.IsNull(value);
         Assert.AreEqual(0, consumed);
     }
+
 }

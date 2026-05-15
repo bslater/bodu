@@ -12,6 +12,7 @@ namespace Bodu.Text.Formats;
 public sealed class BencodedDictionary
     : BencodedValue
 {
+
     private readonly SortedDictionary<BencodedString, BencodedValue> items;
 
     /// <summary>
@@ -43,18 +44,18 @@ public sealed class BencodedDictionary
         }
     }
 
-    /// <inheritdoc />
-    public override BencodedValueKind Kind => BencodedValueKind.Dictionary;
+    /// <summary>
+    /// Gets the number of key-value pairs in the dictionary.
+    /// </summary>
+    public int Count => items.Count;
 
     /// <summary>
     /// Gets the dictionary items sorted by raw byte-string key order.
     /// </summary>
     public IReadOnlyDictionary<BencodedString, BencodedValue> Items => items;
 
-    /// <summary>
-    /// Gets the number of key-value pairs in the dictionary.
-    /// </summary>
-    public int Count => items.Count;
+    /// <inheritdoc />
+    public override BencodedValueKind Kind => BencodedValueKind.Dictionary;
 
     /// <summary>
     /// Gets the value associated with the specified key.
@@ -94,4 +95,5 @@ public sealed class BencodedDictionary
 
         return items.TryGetValue(BencodedString.FromUtf8(key), out value!);
     }
+
 }

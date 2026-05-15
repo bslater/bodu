@@ -17,6 +17,7 @@ public sealed class BencodedString
     : BencodedValue
     , IEquatable<BencodedString>
 {
+
     private readonly byte[] bytes;
 
     /// <summary>
@@ -42,13 +43,13 @@ public sealed class BencodedString
         this.bytes = bytes.ToArray();
     }
 
-    /// <inheritdoc />
-    public override BencodedValueKind Kind => BencodedValueKind.String;
-
     /// <summary>
     /// Gets the raw byte content.
     /// </summary>
     public ReadOnlyMemory<byte> Bytes => bytes;
+
+    /// <inheritdoc />
+    public override BencodedValueKind Kind => BencodedValueKind.String;
 
     /// <summary>
     /// Gets the number of bytes in the string.
@@ -71,13 +72,6 @@ public sealed class BencodedString
     }
 
     /// <summary>
-    /// Decodes the raw byte content as UTF-8 text.
-    /// </summary>
-    /// <returns>The decoded UTF-8 string.</returns>
-    public string GetUtf8String() =>
-        System.Text.Encoding.UTF8.GetString(bytes);
-
-    /// <summary>
     /// Determines whether this instance and another <see cref="BencodedString" /> contain the same bytes.
     /// </summary>
     /// <param name="other">The value to compare with this instance.</param>
@@ -93,7 +87,15 @@ public sealed class BencodedString
     public override int GetHashCode() =>
         BencodedStringComparer.Ordinal.GetHashCode(this);
 
+    /// <summary>
+    /// Decodes the raw byte content as UTF-8 text.
+    /// </summary>
+    /// <returns>The decoded UTF-8 string.</returns>
+    public string GetUtf8String() =>
+        System.Text.Encoding.UTF8.GetString(bytes);
+
     /// <inheritdoc />
     public override string ToString() =>
         GetUtf8String();
+
 }
