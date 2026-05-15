@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DequeTests.TrimExcess.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class DequeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Deque{T}"/> can grow again after <see cref="Deque{T}.TrimExcess"/> has
     /// shrunk it. This is unique to <see cref="Deque{T}"/> because growable collections must remain
@@ -25,4 +26,5 @@ public partial class DequeTests
         Assert.AreEqual(2, deque.Count);
         Assert.IsTrue(deque.Capacity >= 2);
     }
+
 }

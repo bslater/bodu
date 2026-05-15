@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.Indexer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,36 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
+
+    /// <summary>
+    /// Verifies that the indexer throws when given an index at or above <see cref="GetCount(TCollection)"/>.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenIndexAtOrAboveCount_ShouldThrowExactly()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = GetAt(collection, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the indexer throws when given a negative index.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenIndexIsNegative_ShouldThrowExactly()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = GetAt(collection, -1);
+        });
+    }
     /// <summary>
     /// Verifies that the indexer returns elements in head-to-tail order for sequential tail-side adds.
     /// </summary>
@@ -49,33 +79,4 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
             Assert.AreEqual(i + 1, GetAt(collection, i));
     }
 
-    /// <summary>
-    /// Verifies that the indexer throws when given a negative index.
-    /// </summary>
-    [TestMethod]
-    public void Indexer_WhenIndexIsNegative_ShouldThrowExactly()
-    {
-        TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = GetAt(collection, -1);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the indexer throws when given an index at or above <see cref="GetCount(TCollection)"/>.
-    /// </summary>
-    [TestMethod]
-    public void Indexer_WhenIndexAtOrAboveCount_ShouldThrowExactly()
-    {
-        TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = GetAt(collection, 1);
-        });
-    }
 }

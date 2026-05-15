@@ -5,26 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetStorageTests
 {
-    // --------------------------------------------------------
-    // Count
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.Count" /> is zero immediately after construction.
-    /// </summary>
-    [TestMethod]
-    public void Count_WhenStorageIsNewlyConstructed_ShouldBeZero()
-    {
-        var sut = new OrderedSetStorage<int>(0, null);
-
-        Assert.AreEqual(0, sut.Count);
-    }
 
     /// <summary>
     /// Verifies that <see cref="OrderedSetStorage{T}.Count" /> reflects the number of currently-stored
@@ -41,6 +26,20 @@ public partial class OrderedSetStorageTests
         sut.Remove(2);
 
         Assert.AreEqual(2, sut.Count);
+    }
+    // --------------------------------------------------------
+    // Count
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Count" /> is zero immediately after construction.
+    /// </summary>
+    [TestMethod]
+    public void Count_WhenStorageIsNewlyConstructed_ShouldBeZero()
+    {
+        var sut = new OrderedSetStorage<int>(0, null);
+
+        Assert.AreEqual(0, sut.Count);
     }
 
     // --------------------------------------------------------
@@ -63,6 +62,35 @@ public partial class OrderedSetStorageTests
         });
     }
 
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.EnsureCapacity(int)" /> preserves existing elements.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenGrown_ShouldPreserveContents()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+
+        sut.EnsureCapacity(128);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, Snapshot(sut));
+        Assert.IsTrue(sut.Capacity >= 128);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.EnsureCapacity(int)" /> is a no-op when the requested
+    /// capacity does not exceed the current capacity.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenRequestedCapacityDoesNotExceedCurrent_ShouldNotShrink()
+    {
+        var sut = new OrderedSetStorage<int>(16, null);
+
+        var newCapacity = sut.EnsureCapacity(4);
+
+        Assert.AreEqual(16, sut.Capacity);
+        Assert.AreEqual(16, newCapacity);
+    }
+
     // --------------------------------------------------------
     // EnsureCapacity — growth behaviour
     // --------------------------------------------------------
@@ -83,51 +111,21 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.EnsureCapacity(int)" /> is a no-op when the requested
-    /// capacity does not exceed the current capacity.
+    /// Verifies that elements remain findable through the hash table after <see cref="OrderedSetStorage{T}.TrimExcess" />.
     /// </summary>
     [TestMethod]
-    public void EnsureCapacity_WhenRequestedCapacityDoesNotExceedCurrent_ShouldNotShrink()
+    public void TrimExcess_WhenCalled_ShouldKeepItemsFindable()
     {
-        var sut = new OrderedSetStorage<int>(16, null);
-
-        var newCapacity = sut.EnsureCapacity(4);
-
-        Assert.AreEqual(16, sut.Capacity);
-        Assert.AreEqual(16, newCapacity);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.EnsureCapacity(int)" /> preserves existing elements.
-    /// </summary>
-    [TestMethod]
-    public void EnsureCapacity_WhenGrown_ShouldPreserveContents()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-
-        sut.EnsureCapacity(128);
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, Snapshot(sut));
-        Assert.IsTrue(sut.Capacity >= 128);
-    }
-
-    // --------------------------------------------------------
-    // TrimExcess
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.TrimExcess" /> on an empty storage resets internal
-    /// arrays to length zero.
-    /// </summary>
-    [TestMethod]
-    public void TrimExcess_WhenStorageIsEmpty_ShouldResetCapacityToZero()
-    {
-        var sut = new OrderedSetStorage<int>(16, null);
+        var sut = new OrderedSetStorage<int>(128, null);
+        sut.Add(10);
+        sut.Add(20);
+        sut.Add(30);
 
         sut.TrimExcess();
 
-        Assert.AreEqual(0, sut.Capacity);
-        Assert.AreEqual(0, sut.Count);
+        Assert.IsTrue(sut.Contains(10));
+        Assert.AreEqual(1, sut.IndexOf(20));
+        Assert.AreEqual(2, sut.IndexOf(30));
     }
 
     /// <summary>
@@ -167,21 +165,23 @@ public partial class OrderedSetStorageTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, Snapshot(sut));
     }
 
+    // --------------------------------------------------------
+    // TrimExcess
+    // --------------------------------------------------------
+
     /// <summary>
-    /// Verifies that elements remain findable through the hash table after <see cref="OrderedSetStorage{T}.TrimExcess" />.
+    /// Verifies that <see cref="OrderedSetStorage{T}.TrimExcess" /> on an empty storage resets internal
+    /// arrays to length zero.
     /// </summary>
     [TestMethod]
-    public void TrimExcess_WhenCalled_ShouldKeepItemsFindable()
+    public void TrimExcess_WhenStorageIsEmpty_ShouldResetCapacityToZero()
     {
-        var sut = new OrderedSetStorage<int>(128, null);
-        sut.Add(10);
-        sut.Add(20);
-        sut.Add(30);
+        var sut = new OrderedSetStorage<int>(16, null);
 
         sut.TrimExcess();
 
-        Assert.IsTrue(sut.Contains(10));
-        Assert.AreEqual(1, sut.IndexOf(20));
-        Assert.AreEqual(2, sut.IndexOf(30));
+        Assert.AreEqual(0, sut.Capacity);
+        Assert.AreEqual(0, sut.Count);
     }
+
 }

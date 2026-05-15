@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultisetTests.DataDriven.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -36,52 +34,56 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Remove — decrements from various initial counts
+    // CopyTo — parameterised array size and offset
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Remove"/> decrements the occurrence count by exactly one,
-    /// across a range of initial counts.
+    /// Verifies that <see cref="Multiset{T}.CopyTo"/> fills the destination array starting at the
+    /// specified index, leaving preceding slots untouched, for a range of offsets.
     /// </summary>
     [TestMethod]
-    [DataRow(1, 0)]
-    [DataRow(2, 1)]
-    [DataRow(5, 4)]
-    [DataRow(10, 9)]
-    public void Remove_WhenElementHasMultipleOccurrences_ShouldDecrementCountOf(int initialCount, int expectedAfter)
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(3)]
+    [DataRow(5)]
+    public void CopyTo_WhenOffsetVaries_ShouldFillFromOffsetOnly(int offset)
     {
         var mvd = new Multiset<int>();
-        mvd.Add(42, initialCount);
+        mvd.Add(7, 2);
+        var dest = new int[offset + 2];
 
-        mvd.Remove(42);
+        mvd.CopyTo(dest, offset);
 
-        Assert.AreEqual(expectedAfter, mvd.CountOf(42));
-        Assert.AreEqual(expectedAfter, mvd.Count);
+        for (var i = 0; i < offset; i++)
+            Assert.AreEqual(0, dest[i], $"Slot {i} before offset should be untouched.");
+
+        Assert.AreEqual(7, dest[offset]);
+        Assert.AreEqual(7, dest[offset + 1]);
     }
 
     // --------------------------------------------------------
-    // Union — various left/right count combinations
+    // Except — various left/right count combinations
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Union"/> returns the maximum of the two operand counts for a
-    /// single shared element, across a range of count combinations.
+    /// Verifies that <see cref="Multiset{T}.Except"/> returns max(0, left − right) for a single element,
+    /// across a range of count combinations.
     /// </summary>
     [TestMethod]
-    [DataRow(3, 1, 3)]
-    [DataRow(1, 3, 3)]
-    [DataRow(2, 2, 2)]
-    [DataRow(0, 5, 5)]
+    [DataRow(3, 1, 2)]
+    [DataRow(1, 3, 0)]
+    [DataRow(2, 2, 0)]
     [DataRow(5, 0, 5)]
-    [DataRow(4, 4, 4)]
-    public void Union_WhenCountsVary_ShouldReturnMaxCount(int leftCount, int rightCount, int expectedCount)
+    [DataRow(0, 5, 0)]
+    [DataRow(3, 3, 0)]
+    public void Except_WhenCountsVary_ShouldReturnClampedDifference(int leftCount, int rightCount, int expectedCount)
     {
         var a = new Multiset<int>();
         var b = new Multiset<int>();
         if (leftCount > 0) a.Add(1, leftCount);
         if (rightCount > 0) b.Add(1, rightCount);
 
-        Multiset<int> result = a.Union(b);
+        Multiset<int> result = a.Except(b);
 
         Assert.AreEqual(expectedCount, result.CountOf(1));
     }
@@ -113,30 +115,27 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // Except — various left/right count combinations
+    // Remove — decrements from various initial counts
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Except"/> returns max(0, left − right) for a single element,
-    /// across a range of count combinations.
+    /// Verifies that <see cref="Multiset{T}.Remove"/> decrements the occurrence count by exactly one,
+    /// across a range of initial counts.
     /// </summary>
     [TestMethod]
-    [DataRow(3, 1, 2)]
-    [DataRow(1, 3, 0)]
-    [DataRow(2, 2, 0)]
-    [DataRow(5, 0, 5)]
-    [DataRow(0, 5, 0)]
-    [DataRow(3, 3, 0)]
-    public void Except_WhenCountsVary_ShouldReturnClampedDifference(int leftCount, int rightCount, int expectedCount)
+    [DataRow(1, 0)]
+    [DataRow(2, 1)]
+    [DataRow(5, 4)]
+    [DataRow(10, 9)]
+    public void Remove_WhenElementHasMultipleOccurrences_ShouldDecrementCountOf(int initialCount, int expectedAfter)
     {
-        var a = new Multiset<int>();
-        var b = new Multiset<int>();
-        if (leftCount > 0) a.Add(1, leftCount);
-        if (rightCount > 0) b.Add(1, rightCount);
+        var mvd = new Multiset<int>();
+        mvd.Add(42, initialCount);
 
-        Multiset<int> result = a.Except(b);
+        mvd.Remove(42);
 
-        Assert.AreEqual(expectedCount, result.CountOf(1));
+        Assert.AreEqual(expectedAfter, mvd.CountOf(42));
+        Assert.AreEqual(expectedAfter, mvd.Count);
     }
 
     // --------------------------------------------------------
@@ -167,30 +166,30 @@ public partial class MultisetTests
     }
 
     // --------------------------------------------------------
-    // CopyTo — parameterised array size and offset
+    // Union — various left/right count combinations
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Multiset{T}.CopyTo"/> fills the destination array starting at the
-    /// specified index, leaving preceding slots untouched, for a range of offsets.
+    /// Verifies that <see cref="Multiset{T}.Union"/> returns the maximum of the two operand counts for a
+    /// single shared element, across a range of count combinations.
     /// </summary>
     [TestMethod]
-    [DataRow(0)]
-    [DataRow(1)]
-    [DataRow(3)]
-    [DataRow(5)]
-    public void CopyTo_WhenOffsetVaries_ShouldFillFromOffsetOnly(int offset)
+    [DataRow(3, 1, 3)]
+    [DataRow(1, 3, 3)]
+    [DataRow(2, 2, 2)]
+    [DataRow(0, 5, 5)]
+    [DataRow(5, 0, 5)]
+    [DataRow(4, 4, 4)]
+    public void Union_WhenCountsVary_ShouldReturnMaxCount(int leftCount, int rightCount, int expectedCount)
     {
-        var mvd = new Multiset<int>();
-        mvd.Add(7, 2);
-        var dest = new int[offset + 2];
+        var a = new Multiset<int>();
+        var b = new Multiset<int>();
+        if (leftCount > 0) a.Add(1, leftCount);
+        if (rightCount > 0) b.Add(1, rightCount);
 
-        mvd.CopyTo(dest, offset);
+        Multiset<int> result = a.Union(b);
 
-        for (var i = 0; i < offset; i++)
-            Assert.AreEqual(0, dest[i], $"Slot {i} before offset should be untouched.");
-
-        Assert.AreEqual(7, dest[offset]);
-        Assert.AreEqual(7, dest[offset + 1]);
+        Assert.AreEqual(expectedCount, result.CountOf(1));
     }
+
 }

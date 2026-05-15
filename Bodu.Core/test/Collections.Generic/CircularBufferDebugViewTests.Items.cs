@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferDebugViewTests.Items.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferDebugViewTests
 {
+
     /// <summary>
     /// Verifies that DebugView returns an empty array when the buffer is empty.
     /// </summary>
@@ -69,4 +70,5 @@ public partial class CircularBufferDebugViewTests
 
         CollectionAssert.AreEqual(new[] { 1, 2 }, view.Items);
     }
+
 }

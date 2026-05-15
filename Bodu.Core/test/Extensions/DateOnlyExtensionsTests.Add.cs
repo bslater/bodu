@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,16 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
+    public static IEnumerable<object[]> GetAddExceptionCases()
+    {
+        yield return new object[] { DateOnly.MaxValue.ToString("yyyy-MM-dd"), 1, 0, 0 };
+        yield return new object[] { DateOnly.MaxValue.ToString("yyyy-MM-dd"), 0, 1, 0 };
+        yield return new object[] { DateOnly.MaxValue.ToString("yyyy-MM-dd"), 0, 0, 1 };
+        yield return new object[] { DateOnly.MinValue.ToString("yyyy-MM-dd"), -1, 0, 0 };
+        yield return new object[] { DateOnly.MinValue.ToString("yyyy-MM-dd"), 0, -1, 0 };
+        yield return new object[] { DateOnly.MinValue.ToString("yyyy-MM-dd"), 0, 0, -1 };
+    }
     public static IEnumerable<object[]> GetAddTestCases()
     {
         yield return new object[] { new DateOnly(2024, 01, 01), 1, 0, 0, new DateOnly(2025, 01, 01) };
@@ -27,26 +37,25 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Add" />, when ValidInputsProvided, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.Add" />, when AddingToFeb28InLeapYear, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.GetAddTestCases), typeof(DateTimeExtensionsTests))]
-    public void Add_WhenValidInputsProvided_ShouldReturnExpectedResult(DateTime inputDateTime, int years, int months, double days, DateTime expectedDateTime)
+    public void Add_WhenAddingToFeb28InLeapYear_ShouldReturnFeb29()
     {
-        var input = DateOnly.FromDateTime(inputDateTime);
-        var expected = DateOnly.FromDateTime(expectedDateTime);
-        DateOnly actual = input.Add(years, months, (int)days);
-        Assert.AreEqual(expected, actual);
+        var input = new DateOnly(2024, 2, 28);
+        DateOnly actual = input.Add(0, 0, 1);
+        Assert.AreEqual(new DateOnly(2024, 2, 29), actual);
     }
 
-    public static IEnumerable<object[]> GetAddExceptionCases()
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Add" />, when AllParametersZero, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenAllParametersZero_ShouldReturnSameDate()
     {
-        yield return new object[] { DateOnly.MaxValue.ToString("yyyy-MM-dd"), 1, 0, 0 };
-        yield return new object[] { DateOnly.MaxValue.ToString("yyyy-MM-dd"), 0, 1, 0 };
-        yield return new object[] { DateOnly.MaxValue.ToString("yyyy-MM-dd"), 0, 0, 1 };
-        yield return new object[] { DateOnly.MinValue.ToString("yyyy-MM-dd"), -1, 0, 0 };
-        yield return new object[] { DateOnly.MinValue.ToString("yyyy-MM-dd"), 0, -1, 0 };
-        yield return new object[] { DateOnly.MinValue.ToString("yyyy-MM-dd"), 0, 0, -1 };
+        var input = new DateOnly(2024, 1, 1);
+        DateOnly actual = input.Add(0, 0, 0);
+        Assert.AreEqual(input, actual);
     }
 
     /// <summary>
@@ -64,24 +73,16 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Add" />, when AllParametersZero, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.Add" />, when ValidInputsProvided, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void Add_WhenAllParametersZero_ShouldReturnSameDate()
+    [DynamicData(nameof(DateTimeExtensionsTests.GetAddTestCases), typeof(DateTimeExtensionsTests))]
+    public void Add_WhenValidInputsProvided_ShouldReturnExpectedResult(DateTime inputDateTime, int years, int months, double days, DateTime expectedDateTime)
     {
-        var input = new DateOnly(2024, 1, 1);
-        DateOnly actual = input.Add(0, 0, 0);
-        Assert.AreEqual(input, actual);
+        var input = DateOnly.FromDateTime(inputDateTime);
+        var expected = DateOnly.FromDateTime(expectedDateTime);
+        DateOnly actual = input.Add(years, months, (int)days);
+        Assert.AreEqual(expected, actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Add" />, when AddingToFeb28InLeapYear, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenAddingToFeb28InLeapYear_ShouldReturnFeb29()
-    {
-        var input = new DateOnly(2024, 2, 28);
-        DateOnly actual = input.Add(0, 0, 1);
-        Assert.AreEqual(new DateOnly(2024, 2, 29), actual);
-    }
 }

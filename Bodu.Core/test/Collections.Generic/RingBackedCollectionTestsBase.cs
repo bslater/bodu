@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic;
 
@@ -40,6 +39,7 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     where TTest : RingBackedCollectionTestsBase<TTest, TCollection>, new()
     where TCollection : class, IEnumerable<int>, ICollection
 {
+
     /// <summary>The default capacity used when concrete tests do not specify a different one.</summary>
     protected const int DefaultTestCapacity = 16;
 
@@ -58,46 +58,37 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     /// <returns><see langword="true"/> when capacity is exactly preserved.</returns>
     protected virtual bool ReportsExactCapacity => IsFixedCapacity;
 
-    /// <summary>Creates a new collection instance with the specified initial capacity.</summary>
-    /// <param name="capacity">The capacity (or capacity hint, for growable types) to use.</param>
-    /// <returns>A freshly constructed empty collection.</returns>
-    protected abstract TCollection CreateCollection(int capacity);
-
     /// <summary>Adds an item at the tail end of the collection.</summary>
     /// <param name="collection">The collection to mutate.</param>
     /// <param name="item">The item to append.</param>
     protected abstract void AddToTail(TCollection collection, int item);
 
-    /// <summary>
-    /// Attempts to add an item at the tail end. Should return <see langword="false"/> for fixed-capacity
-    /// collections when full, or always succeed for growable types.
-    /// </summary>
+    /// <summary>Removes all elements.</summary>
     /// <param name="collection">The collection to mutate.</param>
-    /// <param name="item">The item to append.</param>
-    /// <returns><see langword="true"/> if the item was added.</returns>
-    protected abstract bool TryAddToTail(TCollection collection, int item);
+    protected abstract void Clear(TCollection collection);
 
-    /// <summary>Removes and returns the head element. Throws when empty.</summary>
-    /// <param name="collection">The collection to mutate.</param>
-    /// <returns>The removed head element.</returns>
-    protected abstract int RemoveFromHead(TCollection collection);
+    /// <summary>Determines whether <paramref name="item"/> is present.</summary>
+    /// <param name="collection">The collection to search.</param>
+    /// <param name="item">The item to find.</param>
+    /// <returns><see langword="true"/> if found.</returns>
+    protected abstract bool Contains(TCollection collection, int item);
 
-    /// <summary>Attempts to remove and return the head element without throwing when empty.</summary>
-    /// <param name="collection">The collection to mutate.</param>
-    /// <param name="item">When this method returns, contains the removed item if successful.</param>
-    /// <returns><see langword="true"/> if an element was removed.</returns>
-    protected abstract bool TryRemoveFromHead(TCollection collection, out int item);
+    /// <summary>Copies elements to <paramref name="array"/> starting at <paramref name="index"/> using the strongly-typed CopyTo overload.</summary>
+    /// <param name="collection">The source collection.</param>
+    /// <param name="array">The destination array.</param>
+    /// <param name="index">The zero-based starting index in <paramref name="array"/>.</param>
+    protected abstract void CopyTo(TCollection collection, int[] array, int index);
 
-    /// <summary>Returns the head element without removing it. Throws when empty.</summary>
-    /// <param name="collection">The collection to inspect.</param>
-    /// <returns>The current head element.</returns>
-    protected abstract int PeekHead(TCollection collection);
+    /// <summary>Creates a new collection instance with the specified initial capacity.</summary>
+    /// <param name="capacity">The capacity (or capacity hint, for growable types) to use.</param>
+    /// <returns>A freshly constructed empty collection.</returns>
+    protected abstract TCollection CreateCollection(int capacity);
 
-    /// <summary>Attempts to read the head element without throwing when empty.</summary>
-    /// <param name="collection">The collection to inspect.</param>
-    /// <param name="item">When this method returns, contains the head element if available.</param>
-    /// <returns><see langword="true"/> if the head was read.</returns>
-    protected abstract bool TryPeekHead(TCollection collection, out int item);
+    /// <summary>Reads the element at the specified zero-based logical index (head-relative).</summary>
+    /// <param name="collection">The source collection.</param>
+    /// <param name="index">The zero-based logical index.</param>
+    /// <returns>The element at that index.</returns>
+    protected abstract int GetAt(TCollection collection, int index);
 
     /// <summary>Returns the current capacity (length of the backing array).</summary>
     /// <param name="collection">The collection to inspect.</param>
@@ -122,34 +113,44 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     protected virtual bool GetIsEmpty(TCollection collection) =>
         GetCount(collection) == 0;
 
-    /// <summary>Removes all elements.</summary>
+    /// <summary>Returns the head element without removing it. Throws when empty.</summary>
+    /// <param name="collection">The collection to inspect.</param>
+    /// <returns>The current head element.</returns>
+    protected abstract int PeekHead(TCollection collection);
+
+    /// <summary>Removes and returns the head element. Throws when empty.</summary>
     /// <param name="collection">The collection to mutate.</param>
-    protected abstract void Clear(TCollection collection);
-
-    /// <summary>Determines whether <paramref name="item"/> is present.</summary>
-    /// <param name="collection">The collection to search.</param>
-    /// <param name="item">The item to find.</param>
-    /// <returns><see langword="true"/> if found.</returns>
-    protected abstract bool Contains(TCollection collection, int item);
-
-    /// <summary>Copies elements to <paramref name="array"/> starting at <paramref name="index"/> using the strongly-typed CopyTo overload.</summary>
-    /// <param name="collection">The source collection.</param>
-    /// <param name="array">The destination array.</param>
-    /// <param name="index">The zero-based starting index in <paramref name="array"/>.</param>
-    protected abstract void CopyTo(TCollection collection, int[] array, int index);
+    /// <returns>The removed head element.</returns>
+    protected abstract int RemoveFromHead(TCollection collection);
 
     /// <summary>Returns the elements as a freshly allocated array in head-to-tail order.</summary>
     /// <param name="collection">The source collection.</param>
     /// <returns>A new array.</returns>
     protected abstract int[] ToArray(TCollection collection);
 
-    /// <summary>Reads the element at the specified zero-based logical index (head-relative).</summary>
-    /// <param name="collection">The source collection.</param>
-    /// <param name="index">The zero-based logical index.</param>
-    /// <returns>The element at that index.</returns>
-    protected abstract int GetAt(TCollection collection, int index);
-
     /// <summary>Reduces the backing-array capacity to match the current count.</summary>
     /// <param name="collection">The collection to trim.</param>
     protected abstract void TrimExcess(TCollection collection);
+
+    /// <summary>
+    /// Attempts to add an item at the tail end. Should return <see langword="false"/> for fixed-capacity
+    /// collections when full, or always succeed for growable types.
+    /// </summary>
+    /// <param name="collection">The collection to mutate.</param>
+    /// <param name="item">The item to append.</param>
+    /// <returns><see langword="true"/> if the item was added.</returns>
+    protected abstract bool TryAddToTail(TCollection collection, int item);
+
+    /// <summary>Attempts to read the head element without throwing when empty.</summary>
+    /// <param name="collection">The collection to inspect.</param>
+    /// <param name="item">When this method returns, contains the head element if available.</param>
+    /// <returns><see langword="true"/> if the head was read.</returns>
+    protected abstract bool TryPeekHead(TCollection collection, out int item);
+
+    /// <summary>Attempts to remove and return the head element without throwing when empty.</summary>
+    /// <param name="collection">The collection to mutate.</param>
+    /// <param name="item">When this method returns, contains the removed item if successful.</param>
+    /// <returns><see langword="true"/> if an element was removed.</returns>
+    protected abstract bool TryRemoveFromHead(TCollection collection, out int item);
+
 }

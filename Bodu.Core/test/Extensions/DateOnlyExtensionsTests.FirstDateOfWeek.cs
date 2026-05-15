@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.FirstDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,39 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 using System.Globalization;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
-    /// <summary>
-    /// Verifies that the parameterless <see cref="DateOnlyExtensions.FirstDateOfWeek(DateOnly)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
-    public void FirstDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
-    {
-        var originalCulture = CultureInfo.CurrentCulture;
-
-        try
-        {
-            CultureInfo.CurrentCulture = culture;
-            DateOnly input = DateOnly.FromDateTime(inputDateTime);
-            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
-
-            DateOnly actual = input.FirstDateOfWeek();
-
-            Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
-        }
-        finally
-        {
-            CultureInfo.CurrentCulture = originalCulture;
-        }
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek(DateOnly, CultureInfo)" /> returns the expected week start for the supplied culture's first-day-of-week.
@@ -81,6 +54,42 @@ public partial class DateOnlyExtensionsTests
             CultureInfo.CurrentCulture = originalCulture; // Always restore
         }
     }
+    /// <summary>
+    /// Verifies that the parameterless <see cref="DateOnlyExtensions.FirstDateOfWeek(DateOnly)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekCultureInfoTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    public void FirstDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime inputDateTime, CultureInfo culture, DateTime expectedDateTime)
+    {
+        var originalCulture = CultureInfo.CurrentCulture;
+
+        try
+        {
+            CultureInfo.CurrentCulture = culture;
+            DateOnly input = DateOnly.FromDateTime(inputDateTime);
+            DateOnly expected = DateOnly.FromDateTime(expectedDateTime);
+
+            DateOnly actual = input.FirstDateOfWeek();
+
+            Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnly.MaxValue" /> returns a valid week start that is on or before the input.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeek_WhenMaxValue_ShouldReturnStartOfWeek()
+    {
+        DateOnly max = DateOnly.MaxValue;
+        DateOnly actual = max.FirstDateOfWeek(new CultureInfo("en-US"));
+
+        Assert.IsTrue(actual <= max);
+    }
 
     /// <summary>
     /// Verifies that <see cref="DateOnly.MinValue" /> with a Monday-start culture returns <see cref="DateOnly.MinValue" /> (which is itself a Monday).
@@ -110,15 +119,31 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnly.MaxValue" /> returns a valid week start that is on or before the input.
+    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> works near <see cref="DateOnly.MinValue"/> without throwing.
     /// </summary>
     [TestMethod]
-    public void FirstDateOfWeek_WhenMaxValue_ShouldReturnStartOfWeek()
+    public void FirstDateOfWeek_WhenNearMinValue_ShouldReturnValidResult()
     {
-        DateOnly max = DateOnly.MaxValue;
-        DateOnly actual = max.FirstDateOfWeek(new CultureInfo("en-US"));
+        var date = DateOnly.MinValue.AddDays(6); // 0001-01-07
+        var actual = date.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
 
-        Assert.IsTrue(actual <= max);
+        Assert.IsTrue(actual >= DateOnly.MinValue);
+        Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> throws if the calculated actual underflows <see cref="DateOnly.MinValue"/>.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeek_WhenResultUnderflowsMinValue_ShouldThrowException()
+    {
+        var nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
+        var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = nearMin.FirstDateOfWeek(weekend);
+        });
     }
 
     /// <summary>
@@ -151,31 +176,4 @@ public partial class DateOnlyExtensionsTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> throws if the calculated actual underflows <see cref="DateOnly.MinValue"/>.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeek_WhenResultUnderflowsMinValue_ShouldThrowException()
-    {
-        var nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
-        var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = nearMin.FirstDateOfWeek(weekend);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> works near <see cref="DateOnly.MinValue"/> without throwing.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeek_WhenNearMinValue_ShouldReturnValidResult()
-    {
-        var date = DateOnly.MinValue.AddDays(6); // 0001-01-07
-        var actual = date.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
-
-        Assert.IsTrue(actual >= DateOnly.MinValue);
-        Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
-    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,10 +12,12 @@ namespace Bodu.Collections.Generic.Concurrent;
 [TestClass]
 public partial class ConcurrentCircularBufferTests
 {
-    public TestContext TestContext { get; set; }
+
+    private const int DefaultCapacity = 16;
 
     private const int MinCapacity = 2;
-    private const int DefaultCapacity = 16;
+
+    public TestContext TestContext { get; set; }
 
     private static void AssertBufferContainsExactlyValues(
         ConcurrentCircularBuffer<TestItem> buffer,
@@ -59,4 +61,5 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(item2);
         return (new WeakReference(item1), new WeakReference(item2));
     }
+
 }

@@ -1,42 +1,27 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.Indexer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeDictionaryTests
 {
-    /// <summary>
-    /// Verifies that the key indexer rejects a <see langword="null" /> key.
-    /// </summary>
-    [TestMethod]
-    public void Indexer_WhenKeyIsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new RangeDictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = sut[null!];
-        });
-    }
 
     /// <summary>
-    /// Verifies that the key indexer throws <see cref="KeyNotFoundException" /> when no range contains the key.
+    /// Verifies that an exclusive endpoint (immediately past the range) is treated as outside.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenKeyIsNotContained_ShouldThrowKeyNotFoundException()
+    public void Indexer_WhenKeyEqualsExclusiveEnd_ShouldThrowKeyNotFoundException()
     {
         RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
 
         Assert.ThrowsExactly<KeyNotFoundException>(() =>
         {
-            _ = sut[99];
+            _ = sut[10];
         });
     }
 
@@ -56,6 +41,33 @@ public partial class RangeDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that the key indexer throws <see cref="KeyNotFoundException" /> when no range contains the key.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenKeyIsNotContained_ShouldThrowKeyNotFoundException()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
+
+        Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = sut[99];
+        });
+    }
+    /// <summary>
+    /// Verifies that the key indexer rejects a <see langword="null" /> key.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    {
+        var sut = new RangeDictionary<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut[null!];
+        });
+    }
+
+    /// <summary>
     /// Verifies the value returned through the indexer when multiple disjoint ranges are present.
     /// </summary>
     [TestMethod]
@@ -70,17 +82,4 @@ public partial class RangeDictionaryTests
         Assert.AreEqual(expected, sut[key]);
     }
 
-    /// <summary>
-    /// Verifies that an exclusive endpoint (immediately past the range) is treated as outside.
-    /// </summary>
-    [TestMethod]
-    public void Indexer_WhenKeyEqualsExclusiveEnd_ShouldThrowKeyNotFoundException()
-    {
-        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
-
-        Assert.ThrowsExactly<KeyNotFoundException>(() =>
-        {
-            _ = sut[10];
-        });
-    }
 }

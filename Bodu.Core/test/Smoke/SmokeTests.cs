@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using Bodu.Collections.Generic;
 
 namespace Bodu.Smoke;
@@ -18,6 +17,7 @@ namespace Bodu.Smoke;
 [TestClass]
 public sealed class SmokeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="CircularBuffer{T}.Enqueue" /> and <see cref="CircularBuffer{T}.Dequeue" /> round-trip a
     /// single value.
@@ -49,21 +49,6 @@ public sealed class SmokeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}" /> stores and retrieves a key-value pair under
-    /// the default LRU policy.
-    /// </summary>
-    [TestMethod]
-    public void EvictingDictionary_AddIndexer_ShouldRoundTripValue()
-    {
-        EvictingDictionary<string, int> dictionary = new(capacity: 4);
-        dictionary.Add("alpha", 1);
-
-        var actual = dictionary["alpha"];
-
-        Assert.AreEqual(1, actual);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}" /> evicts the least-recently-used entry once
     /// capacity is exceeded.
     /// </summary>
@@ -78,4 +63,20 @@ public sealed class SmokeTests
         Assert.AreEqual(2, dictionary.Count);
         Assert.IsFalse(dictionary.ContainsKey("a"));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}" /> stores and retrieves a key-value pair under
+    /// the default LRU policy.
+    /// </summary>
+    [TestMethod]
+    public void EvictingDictionary_AddIndexer_ShouldRoundTripValue()
+    {
+        EvictingDictionary<string, int> dictionary = new(capacity: 4);
+        dictionary.Add("alpha", 1);
+
+        var actual = dictionary["alpha"];
+
+        Assert.AreEqual(1, actual);
+    }
+
 }

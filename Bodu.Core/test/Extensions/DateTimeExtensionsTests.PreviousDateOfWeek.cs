@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.PreviousDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,9 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
@@ -66,22 +63,11 @@ public partial class DateTimeExtensionsTests
     public void PreviousDateOfWeek_WhenTimeIsSet_ShouldPreserveTimed()
     {
         var time = new TimeSpan(0, 12, 32, 55, 34, 903);
-        var input =new DateTime(2024, 4, 18).Add(time);
+        var input = new DateTime(2024, 4, 18).Add(time);
 
         var actual = input.PreviousDateOfWeek(DayOfWeek.Monday).TimeOfDay;
 
-        Assert.AreEqual(time , actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTime.MinValue" /> + 7 days returning the prior Monday yields a result on or after <see cref="DateTime.MinValue" />.
-    /// </summary>
-    [TestMethod]
-    public void PreviousDateOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
-    {
-        var actual = DateTime.MinValue.AddDays(7).PreviousDateOfWeek(DayOfWeek.Monday);
-
-        Assert.IsTrue(actual >= DateTime.MinValue);
+        Assert.AreEqual(time, actual);
     }
 
     /// <summary>
@@ -95,4 +81,16 @@ public partial class DateTimeExtensionsTests
 
         Assert.IsTrue(actual <= DateTime.MaxValue);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTime.MinValue" /> + 7 days returning the prior Monday yields a result on or after <see cref="DateTime.MinValue" />.
+    /// </summary>
+    [TestMethod]
+    public void PreviousDateOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
+    {
+        var actual = DateTime.MinValue.AddDays(7).PreviousDateOfWeek(DayOfWeek.Monday);
+
+        Assert.IsTrue(actual >= DateTime.MinValue);
+    }
+
 }

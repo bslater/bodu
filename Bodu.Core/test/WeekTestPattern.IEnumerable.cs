@@ -8,15 +8,6 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
-    /// <summary>
-    /// Verifies that enumerating <see cref="WeekPattern.Empty" /> yields no elements.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenEmpty_ShouldYieldNoDays()
-    {
-        var days = WeekPattern.Empty.ToList();
-        Assert.AreEqual(0, days.Count);
-    }
 
     /// <summary>
     /// Verifies that enumerating a fully-populated <see cref="WeekPattern" /> yields all seven days of
@@ -27,62 +18,6 @@ public partial class WeekPatternTests
     {
         var days = WeekPattern.FromByte(0b1111111).ToList();
         Assert.AreEqual(7, days.Count);
-    }
-
-    /// <summary>
-    /// Verifies that enumerating a partial <see cref="WeekPattern" /> yields only the selected days and
-    /// no others.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenPartialSelection_ShouldYieldOnlySelectedDays()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        var days = pattern.ToList();
-
-        Assert.AreEqual(3, days.Count);
-        CollectionAssert.Contains(days, DayOfWeek.Monday);
-        CollectionAssert.Contains(days, DayOfWeek.Wednesday);
-        CollectionAssert.Contains(days, DayOfWeek.Friday);
-        CollectionAssert.DoesNotContain(days, DayOfWeek.Sunday);
-        CollectionAssert.DoesNotContain(days, DayOfWeek.Tuesday);
-        CollectionAssert.DoesNotContain(days, DayOfWeek.Thursday);
-        CollectionAssert.DoesNotContain(days, DayOfWeek.Saturday);
-    }
-
-    /// <summary>
-    /// Verifies that enumeration yields days in Sunday-first order, consistent with the
-    /// <see cref="DayOfWeek" /> enum and the default string representation.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenCalled_ShouldYieldDaysInSundayFirstOrder()
-    {
-        var pattern = WeekPattern.FromByte(0b1111111);
-        var days = pattern.ToList();
-        DayOfWeek[] expected =
-        [
-            DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
-            DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday
-        ];
-
-        CollectionAssert.AreEqual(expected, days,
-            "Days must be enumerated in Sunday-first (DayOfWeek enum) order.");
-    }
-
-    /// <summary>
-    /// Verifies that enumerating <see cref="WeekPattern.Weekdays" /> yields exactly Monday through Friday
-    /// in the correct order.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenWeekdays_ShouldYieldWeekdaysInOrder()
-    {
-        var days = WeekPattern.Weekdays.ToList();
-        DayOfWeek[] expected =
-        [
-            DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
-            DayOfWeek.Thursday, DayOfWeek.Friday
-        ];
-
-        CollectionAssert.AreEqual(expected, days);
     }
 
     /// <summary>
@@ -108,6 +43,25 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
+    /// Verifies that enumeration yields days in Sunday-first order, consistent with the
+    /// <see cref="DayOfWeek" /> enum and the default string representation.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenCalled_ShouldYieldDaysInSundayFirstOrder()
+    {
+        var pattern = WeekPattern.FromByte(0b1111111);
+        var days = pattern.ToList();
+        DayOfWeek[] expected =
+        [
+            DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+            DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday
+        ];
+
+        CollectionAssert.AreEqual(expected, days,
+            "Days must be enumerated in Sunday-first (DayOfWeek enum) order.");
+    }
+
+    /// <summary>
     /// Verifies that the number of elements yielded by the enumerator equals
     /// <see cref="WeekPattern.Count" /> for every valid bitmask.
     /// </summary>
@@ -121,4 +75,51 @@ public partial class WeekPatternTests
                 $"Enumerated element count must equal Count for mask {mask}.");
         }
     }
+    /// <summary>
+    /// Verifies that enumerating <see cref="WeekPattern.Empty" /> yields no elements.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenEmpty_ShouldYieldNoDays()
+    {
+        var days = WeekPattern.Empty.ToList();
+        Assert.AreEqual(0, days.Count);
+    }
+
+    /// <summary>
+    /// Verifies that enumerating a partial <see cref="WeekPattern" /> yields only the selected days and
+    /// no others.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenPartialSelection_ShouldYieldOnlySelectedDays()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        var days = pattern.ToList();
+
+        Assert.AreEqual(3, days.Count);
+        CollectionAssert.Contains(days, DayOfWeek.Monday);
+        CollectionAssert.Contains(days, DayOfWeek.Wednesday);
+        CollectionAssert.Contains(days, DayOfWeek.Friday);
+        CollectionAssert.DoesNotContain(days, DayOfWeek.Sunday);
+        CollectionAssert.DoesNotContain(days, DayOfWeek.Tuesday);
+        CollectionAssert.DoesNotContain(days, DayOfWeek.Thursday);
+        CollectionAssert.DoesNotContain(days, DayOfWeek.Saturday);
+    }
+
+    /// <summary>
+    /// Verifies that enumerating <see cref="WeekPattern.Weekdays" /> yields exactly Monday through Friday
+    /// in the correct order.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenWeekdays_ShouldYieldWeekdaysInOrder()
+    {
+        var days = WeekPattern.Weekdays.ToList();
+        DayOfWeek[] expected =
+        [
+            DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday,
+            DayOfWeek.Thursday, DayOfWeek.Friday
+        ];
+
+        CollectionAssert.AreEqual(expected, days);
+    }
+
 }

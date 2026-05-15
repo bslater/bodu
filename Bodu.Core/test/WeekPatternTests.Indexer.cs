@@ -8,6 +8,16 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
+
+    /// <summary>
+    /// Verifies that the indexer getter returns <see langword="false" /> for days that were not selected.
+    /// </summary>
+    [TestMethod]
+    public void IndexerGet_WhenDayIsNotSelected_ShouldReturnFalse()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday);
+        Assert.IsFalse(pattern[DayOfWeek.Tuesday]);
+    }
     /// <summary>
     /// Verifies that the indexer getter returns <see langword="true" /> for every day that was selected
     /// at construction.
@@ -18,16 +28,6 @@ public partial class WeekPatternTests
     {
         var pattern = new WeekPattern(day);
         Assert.IsTrue(pattern[day]);
-    }
-
-    /// <summary>
-    /// Verifies that the indexer getter returns <see langword="false" /> for days that were not selected.
-    /// </summary>
-    [TestMethod]
-    public void IndexerGet_WhenDayIsNotSelected_ShouldReturnFalse()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday);
-        Assert.IsFalse(pattern[DayOfWeek.Tuesday]);
     }
 
     /// <summary>
@@ -52,4 +52,5 @@ public partial class WeekPatternTests
         foreach (DayOfWeek day in Enum.GetValues(typeof(DayOfWeek)))
             yield return new object[] { day };
     }
+
 }

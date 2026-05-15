@@ -8,6 +8,16 @@ namespace Bodu;
 
 public partial class XorShiftRandomTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.Constructor" />, when CalledWithoutSeed, returns a non-null value.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCalledWithoutSeed_ShouldCreateInstance()
+    {
+        var rng = new XorShiftRandom();
+        Assert.IsNotNull(rng);
+    }
     /// <summary>
     /// Verifies that <see cref="XorShiftRandom.Constructor" />, when ValidRange, returns a non-null value.
     /// </summary>
@@ -21,13 +31,4 @@ public partial class XorShiftRandomTests
         Assert.IsNotNull(rng);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="XorShiftRandom.Constructor" />, when CalledWithoutSeed, returns a non-null value.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCalledWithoutSeed_ShouldCreateInstance()
-    {
-        var rng = new XorShiftRandom();
-        Assert.IsNotNull(rng);
-    }
 }

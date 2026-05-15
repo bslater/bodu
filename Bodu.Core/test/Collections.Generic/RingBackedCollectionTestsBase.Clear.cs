@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.Clear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,19 +8,17 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
+
     /// <summary>
-    /// Verifies that <see cref="Clear(TCollection)"/> resets <see cref="GetCount(TCollection)"/> to zero.
+    /// Verifies that <see cref="Clear(TCollection)"/> on an already-empty collection is a no-op.
     /// </summary>
     [TestMethod]
-    public void Clear_WhenCollectionHasItems_ShouldResetCount()
+    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
     {
         TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
         Clear(collection);
 
         Assert.AreEqual(0, GetCount(collection));
-        Assert.IsTrue(GetIsEmpty(collection));
     }
 
     /// <summary>
@@ -36,16 +34,19 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
         Assert.AreEqual(99, PeekHead(collection));
     }
-
     /// <summary>
-    /// Verifies that <see cref="Clear(TCollection)"/> on an already-empty collection is a no-op.
+    /// Verifies that <see cref="Clear(TCollection)"/> resets <see cref="GetCount(TCollection)"/> to zero.
     /// </summary>
     [TestMethod]
-    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
+    public void Clear_WhenCollectionHasItems_ShouldResetCount()
     {
         TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
         Clear(collection);
 
         Assert.AreEqual(0, GetCount(collection));
+        Assert.IsTrue(GetIsEmpty(collection));
     }
+
 }

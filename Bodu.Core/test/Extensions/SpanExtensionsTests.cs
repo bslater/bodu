@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
@@ -18,48 +16,19 @@ namespace Bodu.Extensions;
 [TestClass]
 public partial class SpanExtensionsTests
 {
-    // -------------------------------------------------------------------------
-    // Shared type fixtures
-    // -------------------------------------------------------------------------
 
     /// <summary>
-    /// A struct containing a reference field. Used to verify that
-    /// <see cref="System.Runtime.CompilerServices.RuntimeHelpers.IsReferenceOrContainsReferences{T}"/>
-    /// correctly routes to the safe <c>new T[]</c> allocation path.
+    /// Provides (index, count) pairs where count is zero or one, confirming the
+    /// operation produces a straight copy with no reversal performed.
     /// </summary>
-    protected readonly record struct Wrapper(string Value);
-
-    // -------------------------------------------------------------------------
-    // Shared test data
-    // -------------------------------------------------------------------------
-
-    /// <summary>
-    /// An odd-length unmanaged integer array. Exercises the
-    /// <see cref="GC.AllocateUninitializedArray{T}"/> allocation path.
-    /// </summary>
-    protected static int[] Ints => [1, 2, 3, 4, 5];
-
-    /// <summary>An even-length unmanaged integer array.</summary>
-    protected static int[] TwoInts => [1, 2];
-
-    /// <summary>A single-element unmanaged integer array.</summary>
-    protected static int[] OneInt => [42];
-
-    /// <summary>An empty unmanaged integer array.</summary>
-    protected static int[] NoInts => [];
-
-    /// <summary>
-    /// An odd-length reference-type array. Exercises the safe <c>new T[]</c>
-    /// allocation path.
-    /// </summary>
-    protected static string?[] Strings => ["a", "b", "c", "d", "e"];
-
-    /// <summary>
-    /// An odd-length array of <see cref="Wrapper"/> structs. Exercises the safe
-    /// allocation path for structs that contain reference fields.
-    /// </summary>
-    protected static Wrapper[] Wrappers =>
-        [new Wrapper("a"), new Wrapper("b"), new Wrapper("c")];
+    public static IEnumerable<object[]> DegenerateCountData =>
+        [
+            [0, 0], // count zero at start
+            [2, 0], // count zero at middle
+            [0, 1], // count one at start
+            [2, 1], // count one at middle
+            [4, 1], // count one at last element
+        ];
 
     // -------------------------------------------------------------------------
     // Data sources — full reverse, varying lengths
@@ -93,19 +62,6 @@ public partial class SpanExtensionsTests
             [0, 5, new[] { 5, 4, 3, 2, 1 }], // full span
         ];
 
-    /// <summary>
-    /// Provides (index, count) pairs where count is zero or one, confirming the
-    /// operation produces a straight copy with no reversal performed.
-    /// </summary>
-    public static IEnumerable<object[]> DegenerateCountData =>
-        [
-            [0, 0], // count zero at start
-            [2, 0], // count zero at middle
-            [0, 1], // count one at start
-            [2, 1], // count one at middle
-            [4, 1], // count one at last element
-        ];
-
     // -------------------------------------------------------------------------
     // Data sources — Range expressions
     // Note: Range is not a valid [DataRow] argument; [DynamicData] is required
@@ -127,6 +83,38 @@ public partial class SpanExtensionsTests
         [2, 2, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..2   empty range — straight copy
         [2, 3, false, false, new[] { 1, 2, 3, 4, 5 }], // 2..3   single element — straight copy
         ];
+
+    // -------------------------------------------------------------------------
+    // Shared test data
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// An odd-length unmanaged integer array. Exercises the
+    /// <see cref="GC.AllocateUninitializedArray{T}"/> allocation path.
+    /// </summary>
+    protected static int[] Ints => [1, 2, 3, 4, 5];
+
+    /// <summary>An empty unmanaged integer array.</summary>
+    protected static int[] NoInts => [];
+
+    /// <summary>A single-element unmanaged integer array.</summary>
+    protected static int[] OneInt => [42];
+
+    /// <summary>
+    /// An odd-length reference-type array. Exercises the safe <c>new T[]</c>
+    /// allocation path.
+    /// </summary>
+    protected static string?[] Strings => ["a", "b", "c", "d", "e"];
+
+    /// <summary>An even-length unmanaged integer array.</summary>
+    protected static int[] TwoInts => [1, 2];
+
+    /// <summary>
+    /// An odd-length array of <see cref="Wrapper"/> structs. Exercises the safe
+    /// allocation path for structs that contain reference fields.
+    /// </summary>
+    protected static Wrapper[] Wrappers =>
+        [new Wrapper("a"), new Wrapper("b"), new Wrapper("c")];
 
     // -------------------------------------------------------------------------
     // Shared assertion helpers
@@ -153,4 +141,15 @@ public partial class SpanExtensionsTests
             source,
             result,
             "Operation returned the original instance rather than a new allocation.");
+    // -------------------------------------------------------------------------
+    // Shared type fixtures
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// A struct containing a reference field. Used to verify that
+    /// <see cref="System.Runtime.CompilerServices.RuntimeHelpers.IsReferenceOrContainsReferences{T}"/>
+    /// correctly routes to the safe <c>new T[]</c> allocation path.
+    /// </summary>
+    protected readonly record struct Wrapper(string Value);
+
 }

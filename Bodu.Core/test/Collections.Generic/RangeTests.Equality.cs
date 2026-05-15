@@ -1,15 +1,25 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeTests.Equality.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Collections.Generic;
 
 public partial class RangeTests
 {
+
+    /// <summary>
+    /// Verifies that ranges with differing end endpoints compare not equal.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenEndDiffers_ShouldReturnFalse()
+    {
+        var left = new Range<int>(0, 10);
+        var right = new Range<int>(0, 11);
+
+        Assert.IsFalse(left.Equals(right));
+    }
     // --------------------------------------------------------
     // Equals(Range<T>)
     // --------------------------------------------------------
@@ -39,18 +49,6 @@ public partial class RangeTests
         Assert.IsFalse(left.Equals(right));
     }
 
-    /// <summary>
-    /// Verifies that ranges with differing end endpoints compare not equal.
-    /// </summary>
-    [TestMethod]
-    public void Equals_WhenEndDiffers_ShouldReturnFalse()
-    {
-        var left = new Range<int>(0, 10);
-        var right = new Range<int>(0, 11);
-
-        Assert.IsFalse(left.Equals(right));
-    }
-
     // --------------------------------------------------------
     // Equals(object)
     // --------------------------------------------------------
@@ -66,6 +64,19 @@ public partial class RangeTests
         object right = new Range<int>(0, 10);
 
         Assert.IsTrue(left.Equals(right));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Range{T}.Equals(object)" /> returns <see langword="false" /> when the boxed
+    /// generic argument differs (e.g. <see cref="Range{T}" /> with different <c>T</c>).
+    /// </summary>
+    [TestMethod]
+    public void EqualsObject_WhenGenericArgumentDiffers_ShouldReturnFalse()
+    {
+        var sut = new Range<int>(0, 10);
+        object stringRange = new Range<string>("a", "z");
+
+        Assert.IsFalse(sut.Equals(stringRange));
     }
 
     /// <summary>
@@ -90,19 +101,6 @@ public partial class RangeTests
         var sut = new Range<int>(0, 10);
 
         Assert.IsFalse(sut.Equals("not-a-range"));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Range{T}.Equals(object)" /> returns <see langword="false" /> when the boxed
-    /// generic argument differs (e.g. <see cref="Range{T}" /> with different <c>T</c>).
-    /// </summary>
-    [TestMethod]
-    public void EqualsObject_WhenGenericArgumentDiffers_ShouldReturnFalse()
-    {
-        var sut = new Range<int>(0, 10);
-        object stringRange = new Range<string>("a", "z");
-
-        Assert.IsFalse(sut.Equals(stringRange));
     }
 
     // --------------------------------------------------------
@@ -150,4 +148,5 @@ public partial class RangeTests
         Assert.IsFalse(left == right);
         Assert.IsTrue(left != right);
     }
+
 }

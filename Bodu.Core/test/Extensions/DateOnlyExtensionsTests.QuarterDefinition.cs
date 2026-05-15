@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.QuarterDefinition.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)" /> throws
     /// <see cref="InvalidOperationException" /> when the supplied <see cref="CalendarQuarterDefinition.Custom" /> definition requires a
@@ -34,4 +35,5 @@ public partial class DateOnlyExtensionsTests
             _ = DateOnlyExtensions.GetLastDateOfQuarter(2024, 1, CalendarQuarterDefinition.Custom);
         });
     }
+
 }

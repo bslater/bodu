@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultisetTests.Remove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -75,6 +73,22 @@ public partial class MultisetTests
         Assert.AreEqual(4, mvd.Count);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.RemoveAll"/> does not affect other elements.
+    /// </summary>
+    [TestMethod]
+    public void RemoveAll_WhenCalled_ShouldNotAffectOtherElements()
+    {
+        var mvd = new Multiset<int>();
+        mvd.Add(1, 5);
+        mvd.Add(2, 3);
+
+        mvd.RemoveAll(1);
+
+        Assert.AreEqual(3, mvd.CountOf(2));
+        Assert.AreEqual(3, mvd.Count);
+    }
+
     // --------------------------------------------------------
     // RemoveAll(T item)
     // --------------------------------------------------------
@@ -109,19 +123,4 @@ public partial class MultisetTests
         Assert.AreEqual(1, mvd.DistinctCount);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Multiset{T}.RemoveAll"/> does not affect other elements.
-    /// </summary>
-    [TestMethod]
-    public void RemoveAll_WhenCalled_ShouldNotAffectOtherElements()
-    {
-        var mvd = new Multiset<int>();
-        mvd.Add(1, 5);
-        mvd.Add(2, 3);
-
-        mvd.RemoveAll(1);
-
-        Assert.AreEqual(3, mvd.CountOf(2));
-        Assert.AreEqual(3, mvd.Count);
-    }
 }

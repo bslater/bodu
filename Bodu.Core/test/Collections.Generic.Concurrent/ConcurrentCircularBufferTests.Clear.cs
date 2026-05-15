@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Clear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Clear" /> empties a buffer containing <see langword="null" /> items without throwing.
     /// </summary>
@@ -124,6 +125,29 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that enqueuing items after clearing a previously full buffer behaves correctly
+    /// and maintains FIFO order.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenBufferWasFullAndNewItemsEnqueued_ShouldMaintainFifoOrder()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3, allowOverwrite: true);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
+
+        Assert.AreEqual(3, buffer.Count);
+        buffer.Clear();
+        Assert.AreEqual(0, buffer.Count);
+
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
+        buffer.Enqueue(new TestItem(30));
+
+        CollectionAssert.AreEqual(new[] { new TestItem(10), new TestItem(20), new TestItem(30) }, buffer.ToArray());
+    }
+
+    /// <summary>
     /// Verifies idempotency of Clear under mixed activity.
     /// </summary>
     [TestMethod]
@@ -157,6 +181,30 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsFalse(failed, "Repeated Clear caused buffer state inconsistency.");
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that draining all items via TryDequeue and then refilling the buffer preserves
+    /// FIFO order across the cycle.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenDrainedViaTryDequeueAndRefilled_ShouldPreserveFifoOrder()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
+
+        buffer.TryDequeue(out _);
+        buffer.TryDequeue(out _);
+        buffer.TryDequeue(out _);
+
+        Assert.AreEqual(0, buffer.Count);
+
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
+
+        CollectionAssert.AreEqual(new[] { new TestItem(10), new TestItem(20) }, buffer.ToArray());
     }
 
     /// <summary>
@@ -438,50 +486,4 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(indexerRaceCount >= 0);
     }
 
-    /// <summary>
-    /// Verifies that enqueuing items after clearing a previously full buffer behaves correctly
-    /// and maintains FIFO order.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenBufferWasFullAndNewItemsEnqueued_ShouldMaintainFifoOrder()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3, allowOverwrite: true);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        buffer.Enqueue(new TestItem(3));
-
-        Assert.AreEqual(3, buffer.Count);
-        buffer.Clear();
-        Assert.AreEqual(0, buffer.Count);
-
-        buffer.Enqueue(new TestItem(10));
-        buffer.Enqueue(new TestItem(20));
-        buffer.Enqueue(new TestItem(30));
-
-        CollectionAssert.AreEqual(new[] { new TestItem(10), new TestItem(20), new TestItem(30) }, buffer.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that draining all items via TryDequeue and then refilling the buffer preserves
-    /// FIFO order across the cycle.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenDrainedViaTryDequeueAndRefilled_ShouldPreserveFifoOrder()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        buffer.Enqueue(new TestItem(3));
-
-        buffer.TryDequeue(out _);
-        buffer.TryDequeue(out _);
-        buffer.TryDequeue(out _);
-
-        Assert.AreEqual(0, buffer.Count);
-
-        buffer.Enqueue(new TestItem(10));
-        buffer.Enqueue(new TestItem(20));
-
-        CollectionAssert.AreEqual(new[] { new TestItem(10), new TestItem(20) }, buffer.ToArray());
-    }
 }

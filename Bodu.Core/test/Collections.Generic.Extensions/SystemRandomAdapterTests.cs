@@ -9,6 +9,21 @@ namespace Bodu.Collections.Generic.Extensions;
 [TestClass]
 public sealed class SystemRandomAdapterTests
 {
+
+    /// <summary>
+    /// Verifies that the parameterless <see cref="SystemRandomAdapter()" /> constructor produces values within the requested range.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_Parameterless_ShouldProduceValuesWithinRange()
+    {
+        var adapter = new SystemRandomAdapter();
+
+        for (var i = 0; i < 100; i++)
+        {
+            var value = adapter.Next(10);
+            Assert.IsTrue(value >= 0 && value < 10, $"Value {value} is outside [0, 10).");
+        }
+    }
     /// <summary>
     /// Verifies that <see cref="SystemRandomAdapter(Random)" /> throws <see cref="ArgumentNullException" /> when the wrapped random
     /// instance is <see langword="null" />.
@@ -36,18 +51,4 @@ public sealed class SystemRandomAdapterTests
             Assert.AreEqual(adapter1.Next(100), adapter2.Next(100));
     }
 
-    /// <summary>
-    /// Verifies that the parameterless <see cref="SystemRandomAdapter()" /> constructor produces values within the requested range.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_Parameterless_ShouldProduceValuesWithinRange()
-    {
-        var adapter = new SystemRandomAdapter();
-
-        for (var i = 0; i < 100; i++)
-        {
-            var value = adapter.Next(10);
-            Assert.IsTrue(value >= 0 && value < 10, $"Value {value} is outside [0, 10).");
-        }
-    }
 }

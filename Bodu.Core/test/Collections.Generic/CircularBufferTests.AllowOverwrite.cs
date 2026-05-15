@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.AllowOverwrite.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,35 +8,6 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
-    /// <summary>
-    /// Verifies that AllowOverwrite reflects the value set in the constructor and can be
-    /// updated at runtime.
-    /// </summary>
-    [TestMethod]
-    public void AllowOverwrite_WhenToggled_ShouldReflectUpdatedValue()
-    {
-        var buffer = new CircularBuffer<int>(3, false);
-        Assert.IsFalse(buffer.AllowOverwrite);
-
-        buffer.AllowOverwrite = true;
-        Assert.IsTrue(buffer.AllowOverwrite);
-    }
-
-    /// <summary>
-    /// Verifies that toggling AllowOverwrite does not affect the current contents of the buffer.
-    /// </summary>
-    [TestMethod]
-    public void AllowOverwrite_WhenToggled_ShouldNotAffectContents()
-    {
-        var buffer = new CircularBuffer<string>(3, allowOverwrite: false);
-        buffer.Enqueue("X");
-        buffer.Enqueue("Y");
-
-        buffer.AllowOverwrite = true;
-        buffer.Enqueue("Z");
-
-        CollectionAssert.AreEqual(new[] { "X", "Y", "Z" }, buffer.ToArray());
-    }
 
     /// <summary>
     /// Verifies that <see cref="CircularBuffer{T}.AllowOverwrite" /> controls overwriting behaviour when toggled at runtime.
@@ -73,4 +44,34 @@ public partial class CircularBufferTests
 
         CollectionAssert.AreEqual(new[] { 2, 3, 4 }, buffer.ToArray());
     }
+
+    /// <summary>
+    /// Verifies that toggling AllowOverwrite does not affect the current contents of the buffer.
+    /// </summary>
+    [TestMethod]
+    public void AllowOverwrite_WhenToggled_ShouldNotAffectContents()
+    {
+        var buffer = new CircularBuffer<string>(3, allowOverwrite: false);
+        buffer.Enqueue("X");
+        buffer.Enqueue("Y");
+
+        buffer.AllowOverwrite = true;
+        buffer.Enqueue("Z");
+
+        CollectionAssert.AreEqual(new[] { "X", "Y", "Z" }, buffer.ToArray());
+    }
+    /// <summary>
+    /// Verifies that AllowOverwrite reflects the value set in the constructor and can be
+    /// updated at runtime.
+    /// </summary>
+    [TestMethod]
+    public void AllowOverwrite_WhenToggled_ShouldReflectUpdatedValue()
+    {
+        var buffer = new CircularBuffer<int>(3, false);
+        Assert.IsFalse(buffer.AllowOverwrite);
+
+        buffer.AllowOverwrite = true;
+        Assert.IsTrue(buffer.AllowOverwrite);
+    }
+
 }

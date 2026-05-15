@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="StructuralAssertions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu;
 
 public static class StructuralAssertions
 {
+
     /// <summary>
     /// Verifies that all specified instance fields in the target type are declared readonly.
     /// </summary>
@@ -44,4 +45,5 @@ public static class StructuralAssertions
             Assert.Fail($"Expected readonly field(s) but found mutable: {string.Join(", ", mutableFields)}");
         }
     }
+
 }

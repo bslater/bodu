@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.Dispose.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
     /// <summary>
     /// Verifies that calling <see cref="PooledBufferBuilder{T}.Dispose"/> prevents all subsequent read and write
     /// operations by throwing <see cref="ObjectDisposedException"/>.
@@ -56,4 +57,5 @@ public partial class PooledBufferBuilderTests
         builder.Dispose();
         builder.Dispose(); // no exception expected
     }
+
 }

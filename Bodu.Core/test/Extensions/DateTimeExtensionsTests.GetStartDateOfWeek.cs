@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.GetStartDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -28,6 +26,46 @@ public partial class DateTimeExtensionsTests
         new object[] { 2015, 53, new DateTime(2015, 12, 28) }, // 2015 has 53 ISO weeks; Jan 1 is Thursday
         new object[] { 2026, 1,  new DateTime(2025, 12, 29) }, // ISO week 1 of 2026 starts in Dec 2025
     };
+
+    /// <summary>
+    /// Verifies that the current culture is used when the culture argument is null.
+    /// </summary>
+    [TestMethod]
+    public void GetStartDateOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
+    {
+        var knownCulture = new CultureInfo("en-GB"); // Week starts on Monday, FirstFourDayWeek
+        var year = 2024;
+        var week = 1;
+
+        var originalCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = knownCulture;
+            var resultWithNull = DateTimeExtensions.GetStartDateOfWeek(year, week, null);
+            var resultWithExplicit = DateTimeExtensions.GetStartDateOfWeek(year, week, knownCulture);
+
+            // Assert
+            Assert.AreEqual(resultWithExplicit, resultWithNull, "The method should default to CultureInfo.CurrentCulture when null is passed.");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with CultureAndInvalidYear, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)] //DateTime.MinValue.Year-1
+    [DataRow(10000)] //DateTime.MaxValue.Year+1
+    public void GetStartDateOfWeek_WithCultureAndInvalidYear_ShouldThrowExactly(int year)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            DateTimeExtensions.GetStartDateOfWeek(year, 1, CultureInfo.CurrentCulture);
+        });
+    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with CultureInfo, returns the expected value.
@@ -71,43 +109,4 @@ public partial class DateTimeExtensionsTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetStartDateOfWeek" />, with CultureAndInvalidYear, throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0)] //DateTime.MinValue.Year-1
-    [DataRow(10000)] //DateTime.MaxValue.Year+1
-    public void GetStartDateOfWeek_WithCultureAndInvalidYear_ShouldThrowExactly(int year)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            DateTimeExtensions.GetStartDateOfWeek(year, 1, CultureInfo.CurrentCulture);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the current culture is used when the culture argument is null.
-    /// </summary>
-    [TestMethod]
-    public void GetStartDateOfWeek_WhenCultureIsNull_ShouldUseCurrentCulture()
-    {
-        var knownCulture = new CultureInfo("en-GB"); // Week starts on Monday, FirstFourDayWeek
-        var year = 2024;
-        var week = 1;
-
-        var originalCulture = CultureInfo.CurrentCulture;
-        try
-        {
-            CultureInfo.CurrentCulture = knownCulture;
-            var resultWithNull = DateTimeExtensions.GetStartDateOfWeek(year, week, null);
-            var resultWithExplicit = DateTimeExtensions.GetStartDateOfWeek(year, week, knownCulture);
-
-            // Assert
-            Assert.AreEqual(resultWithExplicit, resultWithNull, "The method should default to CultureInfo.CurrentCulture when null is passed.");
-        }
-        finally
-        {
-            CultureInfo.CurrentCulture = originalCulture;
-        }
-    }
 }

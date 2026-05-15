@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.Truncate.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,13 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     private static readonly DateTime Sample = new DateTime(2024, 4, 18, 14, 37, 56, 789).AddTicks(1234); // 7891234 ticks
 
     /// <summary>
@@ -40,17 +39,17 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when ResolutionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when InputIsMaxValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void Truncate_WhenResolutionIsInvalid_ShouldThrowExactly()
+    public void Truncate_WhenInputIsMaxValue_ShouldNotThrow()
     {
-        DateTimeResolution invalid = (DateTimeResolution)999;
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        foreach (DateTimeResolution res in Enum.GetValues(typeof(DateTimeResolution)))
         {
-            _ = Sample.Truncate(invalid);
-        });
+            DateTime actual = DateTime.MaxValue.Truncate(res);
+
+            Assert.IsTrue(actual <= DateTime.MaxValue, $"Failed at {res}");
+        }
     }
 
     /// <summary>
@@ -64,20 +63,6 @@ public partial class DateTimeExtensionsTests
             DateTime actual = DateTime.MinValue.Truncate(res);
 
             Assert.IsTrue(actual <= DateTime.MinValue.AddDays(1), $"Failed at {res}");
-        }
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when InputIsMaxValue, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void Truncate_WhenInputIsMaxValue_ShouldNotThrow()
-    {
-        foreach (DateTimeResolution res in Enum.GetValues(typeof(DateTimeResolution)))
-        {
-            DateTime actual = DateTime.MaxValue.Truncate(res);
-
-            Assert.IsTrue(actual <= DateTime.MaxValue, $"Failed at {res}");
         }
     }
 
@@ -96,4 +81,19 @@ public partial class DateTimeExtensionsTests
             Assert.AreEqual(kind, actual.Kind);
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Truncate" />, when ResolutionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void Truncate_WhenResolutionIsInvalid_ShouldThrowExactly()
+    {
+        DateTimeResolution invalid = (DateTimeResolution)999;
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Sample.Truncate(invalid);
+        });
+    }
+
 }

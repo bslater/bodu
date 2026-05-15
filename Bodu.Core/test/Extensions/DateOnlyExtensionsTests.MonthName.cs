@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.MonthName.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,10 +9,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bodu.Extensions;
 
@@ -20,24 +17,10 @@ public partial class DateOnlyExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.MonthName" />, with Culture, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests. MonthNameTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
-    public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
-    {
-        DateOnly input = new DateOnly(year, month, 1);
-
-        string actual = input.MonthName(culture);
-
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.MonthName" />, when CultureIsNull, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.MonthNameFrenchTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.MonthNameFrenchTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
     public void MonthName_WhenCultureIsNull_ShouldFallbackToCurrentCulture(int year, int month, string expected)
     {
         var original = CultureInfo.CurrentCulture;
@@ -57,6 +40,18 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.MonthName" />, when UsingMaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void MonthName_WhenUsingMaxValue_ShouldReturnExpected()
+    {
+        DateOnly input = DateOnly.MaxValue; // 9999-12-31
+        string actual = input.MonthName(new CultureInfo("en-US"));
+
+        Assert.AreEqual("December", actual);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.MonthName" />, when UsingMinValue, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -69,14 +64,17 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.MonthName" />, when UsingMaxValue, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.MonthName" />, with Culture, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void MonthName_WhenUsingMaxValue_ShouldReturnExpected()
+    [DynamicData(nameof(DateTimeExtensionsTests.MonthNameTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
+    public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
     {
-        DateOnly input = DateOnly.MaxValue; // 9999-12-31
-        string actual = input.MonthName(new CultureInfo("en-US"));
+        DateOnly input = new DateOnly(year, month, 1);
 
-        Assert.AreEqual("December", actual);
+        string actual = input.MonthName(culture);
+
+        Assert.AreEqual(expected, actual);
     }
+
 }

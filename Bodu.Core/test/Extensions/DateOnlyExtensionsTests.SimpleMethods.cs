@@ -10,6 +10,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.Age(DateOnly)" /> returns a non-negative integer for any reference date.
     /// </summary>
@@ -19,6 +20,18 @@ public partial class DateOnlyExtensionsTests
         var birth = new DateOnly(2000, 1, 1);
         var age = birth.Age();
         Assert.IsTrue(age >= 0);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Age(DateOnly, DateOnly)" /> handles the February-29 birthday on a non-leap year by
+    /// shifting to February 28 for the comparison.
+    /// </summary>
+    [TestMethod]
+    public void Age_WhenBirthIsFeb29AndAsAtIsNonLeapYear_ShouldShiftToFeb28()
+    {
+        var birth = new DateOnly(2000, 2, 29);
+        var asAt = new DateOnly(2023, 2, 28);
+        Assert.AreEqual(23, birth.Age(asAt));
     }
 
     /// <summary>
@@ -36,18 +49,6 @@ public partial class DateOnlyExtensionsTests
         var birth = new DateOnly(by, bm, bd);
         var asAt = new DateOnly(ay, am, ad);
         Assert.AreEqual(expected, birth.Age(asAt));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Age(DateOnly, DateOnly)" /> handles the February-29 birthday on a non-leap year by
-    /// shifting to February 28 for the comparison.
-    /// </summary>
-    [TestMethod]
-    public void Age_WhenBirthIsFeb29AndAsAtIsNonLeapYear_ShouldShiftToFeb28()
-    {
-        var birth = new DateOnly(2000, 2, 29);
-        var asAt = new DateOnly(2023, 2, 28);
-        Assert.AreEqual(23, birth.Age(asAt));
     }
 
     /// <summary>
@@ -75,28 +76,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.MonthName(DateOnly)" /> returns the localised month name for the date's month using
-    /// the current culture.
-    /// </summary>
-    [TestMethod]
-    public void MonthName_NoCulture_ShouldReturnCurrentCultureMonthName()
-    {
-        var date = new DateOnly(2024, 4, 15);
-        Assert.AreEqual(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(4), date.MonthName());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.MonthName(DateOnly, CultureInfo)" /> respects the supplied culture.
-    /// </summary>
-    [TestMethod]
-    public void MonthName_WithCulture_ShouldReturnCultureSpecificName()
-    {
-        var date = new DateOnly(2024, 4, 15);
-        var fr = CultureInfo.GetCultureInfo("fr-FR");
-        Assert.AreEqual(fr.DateTimeFormat.GetMonthName(4), date.MonthName(fr));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly)" /> returns the Gregorian day count for the date's month.
     /// </summary>
     [TestMethod]
@@ -108,38 +87,6 @@ public partial class DateOnlyExtensionsTests
     {
         var date = new DateOnly(year, month, 1);
         Assert.AreEqual(expected, date.DaysInMonth());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, CultureInfo)" /> returns the day count computed using the
-    /// supplied culture's calendar.
-    /// </summary>
-    [TestMethod]
-    public void DaysInMonth_WithCulture_ShouldReturnCalendarSpecificCount()
-    {
-        var date = new DateOnly(2024, 2, 1);
-        Assert.AreEqual(29, date.DaysInMonth(CultureInfo.InvariantCulture));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, CultureInfo)" /> falls back to
-    /// <see cref="CultureInfo.CurrentCulture" /> when the supplied culture is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void DaysInMonth_WithCulture_WhenCultureIsNull_ShouldFallBackToCurrentCulture()
-    {
-        CultureInfo originalCulture = CultureInfo.CurrentCulture;
-        try
-        {
-            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
-            var date = new DateOnly(2023, 2, 15);
-
-            Assert.AreEqual(28, date.DaysInMonth((CultureInfo?)null));
-        }
-        finally
-        {
-            CultureInfo.CurrentCulture = originalCulture;
-        }
     }
 
     /// <summary>
@@ -175,39 +122,35 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.NextOccurrence(DateOnly, int, DateOnly)" /> returns the next aligned occurrence,
-    /// returns the start when the reference is earlier than the start, and throws for non-positive intervals.
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, CultureInfo)" /> returns the day count computed using the
+    /// supplied culture's calendar.
     /// </summary>
     [TestMethod]
-    public void NextOccurrence_SmokeTest_ShouldExerciseAllBranches()
+    public void DaysInMonth_WithCulture_ShouldReturnCalendarSpecificCount()
     {
-        var start = new DateOnly(2024, 1, 1);
-
-        Assert.AreEqual(new DateOnly(2024, 1, 16), start.NextOccurrence(intervalDays: 5, new DateOnly(2024, 1, 12)));
-        Assert.AreEqual(start, start.NextOccurrence(intervalDays: 3, new DateOnly(2024, 1, 1).AddDays(-5)));
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = start.NextOccurrence(intervalDays: 0, new DateOnly(2024, 1, 10));
-        });
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = start.NextOccurrence(intervalDays: -1, new DateOnly(2024, 1, 10));
-        });
+        var date = new DateOnly(2024, 2, 1);
+        Assert.AreEqual(29, date.DaysInMonth(CultureInfo.InvariantCulture));
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.IsLeapYear(DateOnly)" /> returns the Gregorian leap-year result for the date's year.
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInMonth(DateOnly, CultureInfo)" /> falls back to
+    /// <see cref="CultureInfo.CurrentCulture" /> when the supplied culture is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    [DataRow(2024, true)]
-    [DataRow(2023, false)]
-    [DataRow(2000, true)]
-    [DataRow(1900, false)]
-    [DataRow(2100, false)]
-    public void IsLeapYear_ShouldReturnGregorianLeapYearResult(int year, bool expected)
+    public void DaysInMonth_WithCulture_WhenCultureIsNull_ShouldFallBackToCurrentCulture()
     {
-        var date = new DateOnly(year, 1, 1);
-        Assert.AreEqual(expected, date.IsLeapYear());
+        CultureInfo originalCulture = CultureInfo.CurrentCulture;
+        try
+        {
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo("en-US");
+            var date = new DateOnly(2023, 2, 15);
+
+            Assert.AreEqual(28, date.DaysInMonth((CultureInfo?)null));
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
     }
 
     /// <summary>
@@ -224,6 +167,21 @@ public partial class DateOnlyExtensionsTests
     {
         var date = new DateOnly(year, month, day);
         Assert.AreEqual(expected, date.IsLastDateOfMonth());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsLeapYear(DateOnly)" /> returns the Gregorian leap-year result for the date's year.
+    /// </summary>
+    [TestMethod]
+    [DataRow(2024, true)]
+    [DataRow(2023, false)]
+    [DataRow(2000, true)]
+    [DataRow(1900, false)]
+    [DataRow(2100, false)]
+    public void IsLeapYear_ShouldReturnGregorianLeapYearResult(int year, bool expected)
+    {
+        var date = new DateOnly(year, 1, 1);
+        Assert.AreEqual(expected, date.IsLeapYear());
     }
 
     /// <summary>
@@ -288,4 +246,48 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(result >= monday);
         Assert.IsTrue((result.DayNumber - monday.DayNumber) <= 6);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.MonthName(DateOnly)" /> returns the localised month name for the date's month using
+    /// the current culture.
+    /// </summary>
+    [TestMethod]
+    public void MonthName_NoCulture_ShouldReturnCurrentCultureMonthName()
+    {
+        var date = new DateOnly(2024, 4, 15);
+        Assert.AreEqual(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(4), date.MonthName());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.MonthName(DateOnly, CultureInfo)" /> respects the supplied culture.
+    /// </summary>
+    [TestMethod]
+    public void MonthName_WithCulture_ShouldReturnCultureSpecificName()
+    {
+        var date = new DateOnly(2024, 4, 15);
+        var fr = CultureInfo.GetCultureInfo("fr-FR");
+        Assert.AreEqual(fr.DateTimeFormat.GetMonthName(4), date.MonthName(fr));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextOccurrence(DateOnly, int, DateOnly)" /> returns the next aligned occurrence,
+    /// returns the start when the reference is earlier than the start, and throws for non-positive intervals.
+    /// </summary>
+    [TestMethod]
+    public void NextOccurrence_SmokeTest_ShouldExerciseAllBranches()
+    {
+        var start = new DateOnly(2024, 1, 1);
+
+        Assert.AreEqual(new DateOnly(2024, 1, 16), start.NextOccurrence(intervalDays: 5, new DateOnly(2024, 1, 12)));
+        Assert.AreEqual(start, start.NextOccurrence(intervalDays: 3, new DateOnly(2024, 1, 1).AddDays(-5)));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = start.NextOccurrence(intervalDays: 0, new DateOnly(2024, 1, 10));
+        });
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = start.NextOccurrence(intervalDays: -1, new DateOnly(2024, 1, 10));
+        });
+    }
+
 }

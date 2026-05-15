@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.Midday.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -34,19 +32,6 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(expected, actual);
         Assert.AreEqual(input.Kind, actual.Kind);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when KindIsUtc, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Midday_WhenKindIsUtc_ShouldPreserveKind()
-    {
-        DateTime input = new DateTime(2024, 4, 18, 5, 0, 0, DateTimeKind.Utc);
-        DateTime actual = input.Midday();
-
-        Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
-        Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Utc), actual);
     }
 
     /// <summary>
@@ -76,15 +61,16 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when UsingMinDate, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when KindIsUtc, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
+    public void Midday_WhenKindIsUtc_ShouldPreserveKind()
     {
-        DateTime input = DateTime.MinValue.Date;
+        DateTime input = new DateTime(2024, 4, 18, 5, 0, 0, DateTimeKind.Utc);
         DateTime actual = input.Midday();
 
-        Assert.AreEqual(new DateTime(1, 1, 1, 12, 0, 0), actual);
+        Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
+        Assert.AreEqual(new DateTime(2024, 4, 18, 12, 0, 0, DateTimeKind.Utc), actual);
     }
 
     /// <summary>
@@ -98,4 +84,17 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(new DateTime(9999, 12, 31, 12, 0, 0), actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Midday" />, when UsingMinDate, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midday_WhenUsingMinDate_ShouldReturnNoonOnThatDay()
+    {
+        DateTime input = DateTime.MinValue.Date;
+        DateTime actual = input.Midday();
+
+        Assert.AreEqual(new DateTime(1, 1, 1, 12, 0, 0), actual);
+    }
+
 }

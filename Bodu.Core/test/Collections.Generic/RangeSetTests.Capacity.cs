@@ -5,12 +5,27 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
+
+    /// <summary>
+    /// Verifies that adding many non-overlapping ranges grows storage automatically while preserving order.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenManyNonOverlappingRangesAdded_ShouldGrowAndPreserveOrder()
+    {
+        var sut = new RangeSet<int>();
+
+        for (var i = 0; i < 500; i++)
+            sut.Add(i * 10, (i * 10) + 5);
+
+        Assert.AreEqual(500, sut.Count);
+        for (var i = 0; i < 500; i++)
+            Assert.AreEqual(new Range<int>(i * 10, (i * 10) + 5), sut[i]);
+    }
     /// <summary>
     /// Verifies that <see cref="RangeSet{T}.EnsureCapacity(int)" /> rejects a negative capacity.
     /// </summary>
@@ -25,6 +40,19 @@ public partial class RangeSetTests
         {
             _ = sut.EnsureCapacity(capacity);
         });
+    }
+
+    /// <summary>
+    /// Verifies that the stored contents survive an <see cref="RangeSet{T}.EnsureCapacity(int)" /> growth.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenGrown_ShouldPreserveContents()
+    {
+        RangeSet<int> sut = CreateSet((0, 5), (10, 15));
+
+        sut.EnsureCapacity(128);
+
+        AssertContents(sut, (0, 5), (10, 15));
     }
 
     /// <summary>
@@ -58,32 +86,4 @@ public partial class RangeSetTests
         Assert.AreEqual(capacityBefore, reported);
     }
 
-    /// <summary>
-    /// Verifies that the stored contents survive an <see cref="RangeSet{T}.EnsureCapacity(int)" /> growth.
-    /// </summary>
-    [TestMethod]
-    public void EnsureCapacity_WhenGrown_ShouldPreserveContents()
-    {
-        RangeSet<int> sut = CreateSet((0, 5), (10, 15));
-
-        sut.EnsureCapacity(128);
-
-        AssertContents(sut, (0, 5), (10, 15));
-    }
-
-    /// <summary>
-    /// Verifies that adding many non-overlapping ranges grows storage automatically while preserving order.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenManyNonOverlappingRangesAdded_ShouldGrowAndPreserveOrder()
-    {
-        var sut = new RangeSet<int>();
-
-        for (var i = 0; i < 500; i++)
-            sut.Add(i * 10, (i * 10) + 5);
-
-        Assert.AreEqual(500, sut.Count);
-        for (var i = 0; i < 500; i++)
-            Assert.AreEqual(new Range<int>(i * 10, (i * 10) + 5), sut[i]);
-    }
 }

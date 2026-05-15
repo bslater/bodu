@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfEqual.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfEqual{T}" /> throws <see cref="ArgumentOutOfRangeException" />
     /// when the two integer values are equal.
@@ -26,6 +27,17 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfEqual{T}" /> does not throw when the two integer values
+    /// are different.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 1)]
+    [DataRow(1, 2)]
+    [DataRow(-1, 0)]
+    [DataRow(int.MinValue, int.MaxValue)]
+    public void ThrowIfEqual_WhenIntValuesAreNotEqual_ShouldNotThrow(int value, int other) => ThrowHelper.ThrowIfEqual(value, other);
+
+    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfEqual{T}" /> throws <see cref="ArgumentOutOfRangeException" />
     /// when two string values are equal.
     /// </summary>
@@ -37,17 +49,6 @@ public partial class ThrowHelperTests
             ThrowHelper.ThrowIfEqual("hello", "hello");
         });
     }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfEqual{T}" /> does not throw when the two integer values
-    /// are different.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0, 1)]
-    [DataRow(1, 2)]
-    [DataRow(-1, 0)]
-    [DataRow(int.MinValue, int.MaxValue)]
-    public void ThrowIfEqual_WhenIntValuesAreNotEqual_ShouldNotThrow(int value, int other) => ThrowHelper.ThrowIfEqual(value, other);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfEqual{T}" /> does not throw when two string values
@@ -71,4 +72,5 @@ public partial class ThrowHelperTests
 
         Assert.AreEqual("value", ex.ParamName);
     }
+
 }

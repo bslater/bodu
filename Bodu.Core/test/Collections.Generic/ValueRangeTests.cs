@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ValueRangeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -14,6 +12,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class ValueRangeTests
 {
+
     /// <summary>
     /// Verifies the happy-path smoke check: constructing a value range exposes the supplied endpoints and
     /// associated value.
@@ -27,4 +26,5 @@ public partial class ValueRangeTests
         Assert.AreEqual(10, sut.EndExclusive);
         Assert.AreEqual("hello", sut.Value);
     }
+
 }

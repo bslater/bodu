@@ -11,6 +11,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public sealed partial class IEnumerableExtensionsTests_Cache
 {
+
     /// <summary>
     /// Verifies that the private <c>CacheEnumerable&lt;T&gt;</c> constructor throws <see cref="ArgumentNullException" /> with the
     /// expected parameter name when the source argument is <see langword="null" />, exercising the constructor's null guard
@@ -34,59 +35,6 @@ public sealed partial class IEnumerableExtensionsTests_Cache
 
         Assert.IsInstanceOfType<ArgumentNullException>(ex.InnerException);
         Assert.AreEqual("source", ((ArgumentNullException)ex.InnerException!).ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that disposing a cached sequence before any element has been requested releases the wrapper's state without
-    /// throwing — the constructor-only state must be safe to release even when initialisation has not begun.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenCalledBeforeEnumeration_ShouldNotThrow()
-    {
-        IEnumerable<int> cached = new TrackingEnumerable<int>(YieldingSequence()).Cache();
-        Assert.IsInstanceOfType<IDisposable>(cached, "Lazy cached sequence must be disposable.");
-
-        ((IDisposable)cached).Dispose();
-    }
-
-    /// <summary>
-    /// Verifies that calling <see cref="IDisposable.Dispose" /> twice on a cached sequence is idempotent and never throws.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenCalledMultipleTimes_ShouldBeIdempotent()
-    {
-        var tracker = new TrackingEnumerable<int>(YieldingSequence());
-        IEnumerable<int> cached = tracker.Cache();
-        Assert.IsInstanceOfType<IDisposable>(cached);
-
-        _ = cached.ToList();
-
-        var disposable = (IDisposable)cached;
-        disposable.Dispose();
-        disposable.Dispose();
-    }
-
-    /// <summary>
-    /// Verifies that disposing the cached sequence while an active enumerator is still in progress causes the next
-    /// <c>MoveNext</c> on that enumerator to throw <see cref="ObjectDisposedException" />, confirming that the dispose
-    /// path zeroes the cache field that <c>Enumerator.MoveNext</c> dereferences on every call.
-    /// </summary>
-    [TestMethod]
-    public void Dispose_WhenCalledMidEnumeration_ShouldCauseLiveEnumeratorMoveNextToThrowObjectDisposed()
-    {
-        IEnumerable<int> cached = new TrackingEnumerable<int>(YieldingSequence()).Cache();
-        Assert.IsInstanceOfType<IDisposable>(cached);
-
-        IEnumerator<int> active = cached.GetEnumerator();
-        Assert.IsTrue(active.MoveNext());
-        Assert.IsTrue(active.MoveNext());
-
-        ((IDisposable)cached).Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            active.MoveNext();
-        });
     }
 
     /// <summary>
@@ -120,6 +68,59 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     }
 
     /// <summary>
+    /// Verifies that disposing a cached sequence before any element has been requested releases the wrapper's state without
+    /// throwing — the constructor-only state must be safe to release even when initialisation has not begun.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledBeforeEnumeration_ShouldNotThrow()
+    {
+        IEnumerable<int> cached = new TrackingEnumerable<int>(YieldingSequence()).Cache();
+        Assert.IsInstanceOfType<IDisposable>(cached, "Lazy cached sequence must be disposable.");
+
+        ((IDisposable)cached).Dispose();
+    }
+
+    /// <summary>
+    /// Verifies that disposing the cached sequence while an active enumerator is still in progress causes the next
+    /// <c>MoveNext</c> on that enumerator to throw <see cref="ObjectDisposedException" />, confirming that the dispose
+    /// path zeroes the cache field that <c>Enumerator.MoveNext</c> dereferences on every call.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledMidEnumeration_ShouldCauseLiveEnumeratorMoveNextToThrowObjectDisposed()
+    {
+        IEnumerable<int> cached = new TrackingEnumerable<int>(YieldingSequence()).Cache();
+        Assert.IsInstanceOfType<IDisposable>(cached);
+
+        IEnumerator<int> active = cached.GetEnumerator();
+        Assert.IsTrue(active.MoveNext());
+        Assert.IsTrue(active.MoveNext());
+
+        ((IDisposable)cached).Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            active.MoveNext();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="IDisposable.Dispose" /> twice on a cached sequence is idempotent and never throws.
+    /// </summary>
+    [TestMethod]
+    public void Dispose_WhenCalledMultipleTimes_ShouldBeIdempotent()
+    {
+        var tracker = new TrackingEnumerable<int>(YieldingSequence());
+        IEnumerable<int> cached = tracker.Cache();
+        Assert.IsInstanceOfType<IDisposable>(cached);
+
+        _ = cached.ToList();
+
+        var disposable = (IDisposable)cached;
+        disposable.Dispose();
+        disposable.Dispose();
+    }
+
+    /// <summary>
     /// Resolves the closed generic <c>CacheEnumerable&lt;T&gt;</c> nested type defined by
     /// <see cref="IEnumerableExtensions" /> so test code can construct it directly without going through the public factory.
     /// </summary>
@@ -132,4 +133,5 @@ public sealed partial class IEnumerableExtensionsTests_Cache
             ?? throw new InvalidOperationException("CacheEnumerable<T> nested type not found.");
         return openGeneric.MakeGenericType(typeof(T));
     }
+
 }

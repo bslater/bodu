@@ -1,18 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that the enumerator yields <see langword="null" /> and non-null items in their correct FIFO order.
     /// </summary>
@@ -29,35 +27,6 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that the enumerator yields no items when the buffer is empty.
-    /// </summary>
-    [TestMethod]
-    public void Enumerator_WhenBufferIsEmpty_ShouldYieldNoItems()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        var items = buffer.ToList();
-        Assert.AreEqual(0, items.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <c>foreach</c> iteration visits every item in FIFO order.
-    /// </summary>
-    [TestMethod]
-    public void Enumerator_WhenIteratedViaForeach_ShouldVisitAllItemsInFifoOrder()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-        buffer.Enqueue(new TestItem(10));
-        buffer.Enqueue(new TestItem(20));
-        buffer.Enqueue(new TestItem(30));
-
-        var values = new List<int>();
-        foreach (TestItem item in buffer)
-            values.Add(item.Value);
-
-        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, values);
-    }
-
-    /// <summary>
     /// Verifies that <c>foreach</c> iteration over an empty buffer performs no iterations.
     /// </summary>
     [TestMethod]
@@ -67,6 +36,17 @@ public partial class ConcurrentCircularBufferTests
         var count = 0;
         foreach (TestItem _ in buffer) count++;
         Assert.AreEqual(0, count);
+    }
+
+    /// <summary>
+    /// Verifies that the enumerator yields no items when the buffer is empty.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenBufferIsEmpty_ShouldYieldNoItems()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+        var items = buffer.ToList();
+        Assert.AreEqual(0, items.Count);
     }
 
     /// <summary>
@@ -121,6 +101,87 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that accessing <see cref="ConcurrentCircularBuffer{T}.Enumerator.Current"/> after the enumerator has been
+    /// fully exhausted returns the default value for the element type.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldReturnDefault()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
+
+        ConcurrentCircularBuffer<TestItem>.Enumerator enumerator = buffer.GetEnumerator();
+        while (enumerator.MoveNext())
+        {
+            // Consume all items.
+        }
+
+        Assert.AreEqual(default(TestItem), enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that accessing <see cref="ConcurrentCircularBuffer{T}.Enumerator.Current"/> before the first call to
+    /// <see cref="ConcurrentCircularBuffer{T}.Enumerator.MoveNext"/> returns the default value for the element type.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldReturnDefault()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
+
+        ConcurrentCircularBuffer<TestItem>.Enumerator enumerator = buffer.GetEnumerator();
+        Assert.AreEqual(default(TestItem), enumerator.Current);
+    }
+
+    /// <summary>
+    /// Verifies that <c>foreach</c> iteration visits every item in FIFO order.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenIteratedViaForeach_ShouldVisitAllItemsInFifoOrder()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
+        buffer.Enqueue(new TestItem(30));
+
+        var values = new List<int>();
+        foreach (TestItem item in buffer)
+            values.Add(item.Value);
+
+        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, values);
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="ConcurrentCircularBuffer{T}.Enumerator.Reset"/> after full enumeration allows the
+    /// enumerator to iterate over the same snapshot again, yielding identical items in the same order.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenResetCalled_ShouldRestartIteration()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(100));
+        buffer.Enqueue(new TestItem(200));
+        buffer.Enqueue(new TestItem(300));
+
+        ConcurrentCircularBuffer<TestItem>.Enumerator enumerator = buffer.GetEnumerator();
+
+        var firstPass = new List<TestItem>();
+        while (enumerator.MoveNext())
+            firstPass.Add(enumerator.Current);
+
+        enumerator.Reset();
+
+        var secondPass = new List<TestItem>();
+        while (enumerator.MoveNext())
+            secondPass.Add(enumerator.Current);
+
+        CollectionAssert.AreEqual(firstPass, secondPass);
+    }
+
+    /// <summary>
     /// Verifies that enumerating the buffer while a concurrent enqueuer runs does not throw and yields only non-null seeded items.
     /// </summary>
     [TestMethod]
@@ -163,66 +224,4 @@ public partial class ConcurrentCircularBufferTests
         CollectionAssert.AreEqual(new[] { 2, 3, 4 }, result);
     }
 
-    /// <summary>
-    /// Verifies that accessing <see cref="ConcurrentCircularBuffer{T}.Enumerator.Current"/> before the first call to
-    /// <see cref="ConcurrentCircularBuffer{T}.Enumerator.MoveNext"/> returns the default value for the element type.
-    /// </summary>
-    [TestMethod]
-    public void Enumerator_WhenCurrentAccessedBeforeMoveNext_ShouldReturnDefault()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-        buffer.Enqueue(new TestItem(10));
-        buffer.Enqueue(new TestItem(20));
-
-        ConcurrentCircularBuffer<TestItem>.Enumerator enumerator = buffer.GetEnumerator();
-        Assert.AreEqual(default(TestItem), enumerator.Current);
-    }
-
-    /// <summary>
-    /// Verifies that accessing <see cref="ConcurrentCircularBuffer{T}.Enumerator.Current"/> after the enumerator has been
-    /// fully exhausted returns the default value for the element type.
-    /// </summary>
-    [TestMethod]
-    public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldReturnDefault()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        buffer.Enqueue(new TestItem(3));
-
-        ConcurrentCircularBuffer<TestItem>.Enumerator enumerator = buffer.GetEnumerator();
-        while (enumerator.MoveNext())
-        {
-            // Consume all items.
-        }
-
-        Assert.AreEqual(default(TestItem), enumerator.Current);
-    }
-
-    /// <summary>
-    /// Verifies that calling <see cref="ConcurrentCircularBuffer{T}.Enumerator.Reset"/> after full enumeration allows the
-    /// enumerator to iterate over the same snapshot again, yielding identical items in the same order.
-    /// </summary>
-    [TestMethod]
-    public void Enumerator_WhenResetCalled_ShouldRestartIteration()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-        buffer.Enqueue(new TestItem(100));
-        buffer.Enqueue(new TestItem(200));
-        buffer.Enqueue(new TestItem(300));
-
-        ConcurrentCircularBuffer<TestItem>.Enumerator enumerator = buffer.GetEnumerator();
-
-        var firstPass = new List<TestItem>();
-        while (enumerator.MoveNext())
-            firstPass.Add(enumerator.Current);
-
-        enumerator.Reset();
-
-        var secondPass = new List<TestItem>();
-        while (enumerator.MoveNext())
-            secondPass.Add(enumerator.Current);
-
-        CollectionAssert.AreEqual(firstPass, secondPass);
-    }
 }

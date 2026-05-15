@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.LastDateOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,12 +9,10 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
-public partial class DateTimeExtensionsTests    
+public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
@@ -60,6 +58,17 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInMonth" />, when MaxValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfWeekInMonth_WhenMaxValue_ShouldReturnValidResult()
+    {
+        DateTime actual = DateTime.MaxValue.LastDateOfWeekInMonth(DayOfWeek.Friday);
+
+        Assert.IsTrue(actual <= DateTime.MaxValue);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInMonth" />, when MinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
@@ -70,14 +79,4 @@ public partial class DateTimeExtensionsTests
         Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInMonth" />, when MaxValue, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void LastDateOfWeekInMonth_WhenMaxValue_ShouldReturnValidResult()
-    {
-        DateTime actual = DateTime.MaxValue.LastDateOfWeekInMonth(DayOfWeek.Friday);
-
-        Assert.IsTrue(actual <= DateTime.MaxValue);
-    }
 }

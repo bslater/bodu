@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BufferConverterTests.ToArray.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,36 @@ namespace Bodu.Extensions;
 
 public partial class BufferConverterTests
 {
+
+    /// <summary>
+    /// Verifies that negative or overflowing source index or count values throw <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1, 1, DisplayName = "Negative source index")]
+    [DataRow(0, -1, DisplayName = "Negative count")]
+    [DataRow(0, 17, DisplayName = "Count exceeds source length")]
+    public void ToArray_WhenArgumentsAreInvalid_ForByteArray_ShouldThrowArgumentOutOfRangeException(int sourceIndex, int count)
+    {
+        var source = AscendingBytes;
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = source.ToArray<byte>(sourceIndex, count);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the result is a fresh heap allocation independent of the source buffer.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCalled_ForByteArray_ShouldReturnNewAllocation()
+    {
+        var source = AscendingBytes;
+
+        var result = source.ToArray<byte>(0, source.Length);
+
+        Assert.IsFalse(ReferenceEquals(source, result));
+    }
     // =========================================================================
     // ToArray<T>(byte[], int, int)
     // =========================================================================
@@ -30,88 +60,17 @@ public partial class BufferConverterTests
     }
 
     /// <summary>
-    /// Verifies that converting a byte array with a non-zero source index returns the expected slice.
+    /// Verifies that the span ToArray result is a fresh heap allocation independent of the source data.
     /// </summary>
     [TestMethod]
-    public void ToArray_WhenSourceIndexIsNonZero_ForByteArrayToByteArray_ShouldReturnExpectedElements()
+    public void ToArray_WhenCalled_ForReadOnlySpan_ShouldReturnNewAllocation()
     {
-        var source = AscendingBytes;
+        var data = AscendingBytes;
 
-        var result = source.ToArray<byte>(8, 4);
+        ReadOnlySpan<byte> source = data;
+        var result = source.ToArray<byte>(data.Length);
 
-        CollectionAssert.AreEqual(new byte[] { 0x08, 0x09, 0x0A, 0x0B }, result);
-    }
-
-    /// <summary>
-    /// Verifies that a count of zero returns an empty array.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCountIsZero_ForByteArray_ShouldReturnEmptyArray()
-    {
-        var source = AscendingBytes;
-
-        var result = source.ToArray<byte>(0, 0);
-
-        Assert.AreEqual(0, result.Length);
-    }
-
-    /// <summary>
-    /// Verifies that the result is a fresh heap allocation independent of the source buffer.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCalled_ForByteArray_ShouldReturnNewAllocation()
-    {
-        var source = AscendingBytes;
-
-        var result = source.ToArray<byte>(0, source.Length);
-
-        Assert.IsFalse(ReferenceEquals(source, result));
-    }
-
-    /// <summary>
-    /// Verifies that a null source byte array throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenSourceIsNull_ForByteArray_ShouldThrowArgumentNullException()
-    {
-        byte[]? source = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source!.ToArray<byte>(0, 1);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that negative or overflowing source index or count values throw <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(-1, 1, DisplayName = "Negative source index")]
-    [DataRow(0, -1, DisplayName = "Negative count")]
-    [DataRow(0, 17, DisplayName = "Count exceeds source length")]
-    public void ToArray_WhenArgumentsAreInvalid_ForByteArray_ShouldThrowArgumentOutOfRangeException(int sourceIndex, int count)
-    {
-        var source = AscendingBytes;
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = source.ToArray<byte>(sourceIndex, count);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a valid <c>sourceIndex</c> combined with a <c>count</c> that extends past the end of the source
-    /// throws <see cref="ArgumentException" /> from the combination-violation branch of <c>ThrowIfArrayOffsetOrCountInvalid</c>.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenSourceIndexPlusCountExceedsSourceLength_ForByteArray_ShouldThrowArgumentException()
-    {
-        var source = AscendingBytes;
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = source.ToArray<byte>(14, 4);
-        });
+        Assert.IsFalse(ReferenceEquals(data, result));
     }
 
     // =========================================================================
@@ -151,34 +110,6 @@ public partial class BufferConverterTests
     }
 
     /// <summary>
-    /// Verifies that a count of zero on a byte span returns an empty array.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCountIsZero_ForReadOnlySpan_ShouldReturnEmptyArray()
-    {
-        var data = AscendingBytes;
-
-        ReadOnlySpan<byte> source = data;
-        var result = source.ToArray<int>(0);
-
-        Assert.AreEqual(0, result.Length);
-    }
-
-    /// <summary>
-    /// Verifies that the span ToArray result is a fresh heap allocation independent of the source data.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCalled_ForReadOnlySpan_ShouldReturnNewAllocation()
-    {
-        var data = AscendingBytes;
-
-        ReadOnlySpan<byte> source = data;
-        var result = source.ToArray<byte>(data.Length);
-
-        Assert.IsFalse(ReferenceEquals(data, result));
-    }
-
-    /// <summary>
     /// Verifies that a count exceeding the available bytes in the span throws <see cref="ArgumentException" />
     /// from the span-length-insufficient guard.
     /// </summary>
@@ -193,4 +124,74 @@ public partial class BufferConverterTests
             _ = source.ToArray<int>(3);
         });
     }
+
+    /// <summary>
+    /// Verifies that a count of zero returns an empty array.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCountIsZero_ForByteArray_ShouldReturnEmptyArray()
+    {
+        var source = AscendingBytes;
+
+        var result = source.ToArray<byte>(0, 0);
+
+        Assert.AreEqual(0, result.Length);
+    }
+
+    /// <summary>
+    /// Verifies that a count of zero on a byte span returns an empty array.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCountIsZero_ForReadOnlySpan_ShouldReturnEmptyArray()
+    {
+        var data = AscendingBytes;
+
+        ReadOnlySpan<byte> source = data;
+        var result = source.ToArray<int>(0);
+
+        Assert.AreEqual(0, result.Length);
+    }
+
+    /// <summary>
+    /// Verifies that converting a byte array with a non-zero source index returns the expected slice.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenSourceIndexIsNonZero_ForByteArrayToByteArray_ShouldReturnExpectedElements()
+    {
+        var source = AscendingBytes;
+
+        var result = source.ToArray<byte>(8, 4);
+
+        CollectionAssert.AreEqual(new byte[] { 0x08, 0x09, 0x0A, 0x0B }, result);
+    }
+
+    /// <summary>
+    /// Verifies that a valid <c>sourceIndex</c> combined with a <c>count</c> that extends past the end of the source
+    /// throws <see cref="ArgumentException" /> from the combination-violation branch of <c>ThrowIfArrayOffsetOrCountInvalid</c>.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenSourceIndexPlusCountExceedsSourceLength_ForByteArray_ShouldThrowArgumentException()
+    {
+        var source = AscendingBytes;
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = source.ToArray<byte>(14, 4);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a null source byte array throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenSourceIsNull_ForByteArray_ShouldThrowArgumentNullException()
+    {
+        byte[]? source = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source!.ToArray<byte>(0, 1);
+        });
+    }
+
 }

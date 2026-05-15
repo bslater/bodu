@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.FirstDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,39 +9,13 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
-using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-
-    /// <summary>
-    /// Verifies that the parameterless <see cref="DateTimeExtensions.FirstDateOfWeek(DateTime)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekCultureInfoTestData))]
-    public void FirstDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
-    {
-        var originalCulture = CultureInfo.CurrentCulture;
-
-        try
-        {
-            CultureInfo.CurrentCulture = culture;
-
-            DateTime actual = input.FirstDateOfWeek();
-
-            Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
-        }
-        finally
-        {
-            CultureInfo.CurrentCulture = originalCulture;
-        }
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek(DateTime, CultureInfo)" /> returns the expected week start for the supplied culture's first-day-of-week.
@@ -80,17 +54,54 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the parameterless overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+    /// Verifies that the parameterless <see cref="DateTimeExtensions.FirstDateOfWeek(DateTime)" /> overload uses <see cref="CultureInfo.CurrentCulture" /> to determine the week start.
     /// </summary>
     [TestMethod]
-    [DataRow(DateTimeKind.Unspecified)]
-    [DataRow(DateTimeKind.Utc)]
-    [DataRow(DateTimeKind.Local)]
-    public void FirstDateOfWeek_WhenUsingDefaultOverload_ShouldPreserveDateTimeKind(DateTimeKind kind)
+    [DynamicData(nameof(FirstDateOfWeekCultureInfoTestData))]
+    public void FirstDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
     {
-        var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
-        var actual = original.FirstDateOfWeek();
-        Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDateOfWeek with {kind}");
+        var originalCulture = CultureInfo.CurrentCulture;
+
+        try
+        {
+            CultureInfo.CurrentCulture = culture;
+
+            DateTime actual = input.FirstDateOfWeek();
+
+            Assert.AreEqual(expected, actual, $"Failed for culture: {culture.Name}");
+        }
+        finally
+        {
+            CultureInfo.CurrentCulture = originalCulture;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek"/> works near <see cref="DateTime.MinValue"/> without throwing.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeek_WhenNearMinValue_ShouldReturnExpectedStart()
+    {
+        var date = DateTime.MinValue.AddDays(6); // 0001-01-07
+        var actual = date.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
+
+        Assert.IsTrue(actual >= DateTime.MinValue);
+        Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek"/> throws if the calculated actual underflows <see cref="DateTime.MinValue"/>.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeek_WhenResultWouldUnderflowMinValue_ShouldThrowExactly()
+    {
+        var nearMin = DateTime.MinValue.AddDays(1); // e.g., Jan 2, 0001
+        var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = nearMin.FirstDateOfWeek(weekend);
+        });
     }
 
     /// <summary>
@@ -106,6 +117,32 @@ public partial class DateTimeExtensionsTests
         var actual = original.FirstDateOfWeek(CultureInfo.CurrentCulture);
 
         Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDateOfWeek with {kind}");
+    }
+
+    /// <summary>
+    /// Verifies that the parameterless overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void FirstDateOfWeek_WhenUsingDefaultOverload_ShouldPreserveDateTimeKind(DateTimeKind kind)
+    {
+        var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
+        var actual = original.FirstDateOfWeek();
+        Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDateOfWeek with {kind}");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTime.MaxValue" /> returns a valid week start that is on or before the input.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeek_WhenUsingMaxValue_ShouldReturnValidStart()
+    {
+        DateTime max = DateTime.MaxValue.Date;
+        DateTime actual = max.FirstDateOfWeek(new CultureInfo("en-US"));
+
+        Assert.IsTrue(actual <= max);
     }
 
     /// <summary>
@@ -136,15 +173,17 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTime.MaxValue" /> returns a valid week start that is on or before the input.
+    /// Verifies that the actual of <see cref="DateTimeExtensions.FirstDateOfWeek"/> preserves the <see cref="DateTime.Kind" />.
     /// </summary>
     [TestMethod]
-    public void FirstDateOfWeek_WhenUsingMaxValue_ShouldReturnValidStart()
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void FirstDateOfWeek_WhenUsingSaturdaySunday_ShouldPreserveDateTimeKind(DateTimeKind kind)
     {
-        DateTime max = DateTime.MaxValue.Date;
-        DateTime actual = max.FirstDateOfWeek(new CultureInfo("en-US"));
-
-        Assert.IsTrue(actual <= max);
+        var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
+        var actual = original.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
+        Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDateOfWeek with {kind}");
     }
 
     /// <summary>
@@ -157,6 +196,20 @@ public partial class DateTimeExtensionsTests
         var actual = input.FirstDateOfWeek(weekend);
 
         Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that the weekend-definition overload preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData))]
+    public void FirstDateOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(CalendarWeekendDefinition definition, DateTimeKind kind)
+    {
+        DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+        DateTime actual = input.FirstDateOfWeek(definition);
+
+        Assert.AreEqual(kind, actual.Kind);
+
     }
 
     /// <summary>
@@ -174,59 +227,4 @@ public partial class DateTimeExtensionsTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek"/> throws if the calculated actual underflows <see cref="DateTime.MinValue"/>.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeek_WhenResultWouldUnderflowMinValue_ShouldThrowExactly()
-    {
-        var nearMin = DateTime.MinValue.AddDays(1); // e.g., Jan 2, 0001
-        var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = nearMin.FirstDateOfWeek(weekend);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the actual of <see cref="DateTimeExtensions.FirstDateOfWeek"/> preserves the <see cref="DateTime.Kind" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(DateTimeKind.Unspecified)]
-    [DataRow(DateTimeKind.Utc)]
-    [DataRow(DateTimeKind.Local)]
-    public void FirstDateOfWeek_WhenUsingSaturdaySunday_ShouldPreserveDateTimeKind(DateTimeKind kind)
-    {
-        var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
-        var actual = original.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
-        Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDateOfWeek with {kind}");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek"/> works near <see cref="DateTime.MinValue"/> without throwing.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeek_WhenNearMinValue_ShouldReturnExpectedStart()
-    {
-        var date = DateTime.MinValue.AddDays(6); // 0001-01-07
-        var actual = date.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
-
-        Assert.IsTrue(actual >= DateTime.MinValue);
-        Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
-    }
-
-    /// <summary>
-    /// Verifies that the weekend-definition overload preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData))]
-    public void FirstDateOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(CalendarWeekendDefinition definition, DateTimeKind kind)
-    {
-        DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-        DateTime actual = input.FirstDateOfWeek(definition);
-
-        Assert.AreEqual(kind, actual.Kind);
-
-    }
 }

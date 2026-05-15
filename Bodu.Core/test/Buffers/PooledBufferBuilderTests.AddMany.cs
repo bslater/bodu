@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.AddMany.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.AddMany"/> appends the specified number of copies of
     /// the value to the buffer.
@@ -21,21 +22,6 @@ public partial class PooledBufferBuilderTests
 
         Assert.AreEqual(5, builder.WrittenCount);
         CollectionAssert.AreEqual(new[] { 7, 7, 7, 7, 7 }, builder.WrittenSpan.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.AddMany"/> with a count of zero does not change the
-    /// builder's state.
-    /// </summary>
-    [TestMethod]
-    public void AddMany_WhenCountIsZero_ShouldNotChangeWrittenCount()
-    {
-        using var builder = new PooledBufferBuilder<int>();
-        builder.Append(1);
-
-        builder.AddMany(99, 0);
-
-        Assert.AreEqual(1, builder.WrittenCount);
     }
 
     /// <summary>
@@ -68,6 +54,36 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AddMany"/> with a count of one appends exactly a single
+    /// copy of the value.
+    /// </summary>
+    [TestMethod]
+    public void AddMany_WhenCountIsOne_ShouldAppendExactlySingleCopy()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        builder.AddMany(99, 1);
+
+        Assert.AreEqual(1, builder.WrittenCount);
+        Assert.AreEqual(99, builder.WrittenSpan[0]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AddMany"/> with a count of zero does not change the
+    /// builder's state.
+    /// </summary>
+    [TestMethod]
+    public void AddMany_WhenCountIsZero_ShouldNotChangeWrittenCount()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.Append(1);
+
+        builder.AddMany(99, 0);
+
+        Assert.AreEqual(1, builder.WrittenCount);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.AddMany"/> throws <see cref="ObjectDisposedException"/>
     /// after the builder has been disposed.
     /// </summary>
@@ -81,21 +97,6 @@ public partial class PooledBufferBuilderTests
         {
             builder.AddMany(1, 3);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.AddMany"/> with a count of one appends exactly a single
-    /// copy of the value.
-    /// </summary>
-    [TestMethod]
-    public void AddMany_WhenCountIsOne_ShouldAppendExactlySingleCopy()
-    {
-        using var builder = new PooledBufferBuilder<int>();
-
-        builder.AddMany(99, 1);
-
-        Assert.AreEqual(1, builder.WrittenCount);
-        Assert.AreEqual(99, builder.WrittenSpan[0]);
     }
 
     /// <summary>
@@ -113,4 +114,5 @@ public partial class PooledBufferBuilderTests
         Assert.AreEqual(4, builder.WrittenCount);
         Assert.IsTrue(builder.WrittenSpan.ToArray().All(v => ReferenceEquals(v, value)));
     }
+
 }

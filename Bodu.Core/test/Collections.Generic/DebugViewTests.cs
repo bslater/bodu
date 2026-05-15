@@ -9,6 +9,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public sealed class DebugViewTests
 {
+
     /// <summary>
     /// Verifies that <see cref="EvictingDictionaryDebugView{TKey, TValue}.Items" /> returns the underlying dictionary's key-value pairs
     /// in current eviction order.
@@ -40,6 +41,37 @@ public sealed class DebugViewTests
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = new EvictingDictionaryDebugView<string, int>(null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultisetDebugView{T}.Frequencies" /> returns each distinct element alongside its multiplicity.
+    /// </summary>
+    [TestMethod]
+    public void MultisetDebugView_Frequencies_ShouldReturnElementCounts()
+    {
+        var multiset = new Multiset<string>(["A", "B", "A", "C", "B", "A"]);
+
+        var view = new MultisetDebugView<string>(multiset);
+        KeyValuePair<string, int>[] frequencies = view.Frequencies;
+
+        Assert.AreEqual(3, frequencies.Length);
+        Dictionary<string, int> asDict = frequencies.ToDictionary(p => p.Key, p => p.Value);
+        Assert.AreEqual(3, asDict["A"]);
+        Assert.AreEqual(2, asDict["B"]);
+        Assert.AreEqual(1, asDict["C"]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultisetDebugView{T}" /> throws <see cref="ArgumentNullException" /> when the multiset is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void MultisetDebugView_WhenMultisetIsNull_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new MultisetDebugView<string>(null!);
         });
     }
 
@@ -78,34 +110,4 @@ public sealed class DebugViewTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="MultisetDebugView{T}.Frequencies" /> returns each distinct element alongside its multiplicity.
-    /// </summary>
-    [TestMethod]
-    public void MultisetDebugView_Frequencies_ShouldReturnElementCounts()
-    {
-        var multiset = new Multiset<string>(["A", "B", "A", "C", "B", "A"]);
-
-        var view = new MultisetDebugView<string>(multiset);
-        KeyValuePair<string, int>[] frequencies = view.Frequencies;
-
-        Assert.AreEqual(3, frequencies.Length);
-        Dictionary<string, int> asDict = frequencies.ToDictionary(p => p.Key, p => p.Value);
-        Assert.AreEqual(3, asDict["A"]);
-        Assert.AreEqual(2, asDict["B"]);
-        Assert.AreEqual(1, asDict["C"]);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultisetDebugView{T}" /> throws <see cref="ArgumentNullException" /> when the multiset is
-    /// <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void MultisetDebugView_WhenMultisetIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new MultisetDebugView<string>(null!);
-        });
-    }
 }

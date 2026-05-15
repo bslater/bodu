@@ -1,17 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.KeyCount.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
     /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.KeyCount"/> reflects only the number of distinct keys.
     /// </summary>
@@ -39,4 +38,5 @@ public partial class MultiValueDictionaryTests
 
         Assert.AreEqual(0, mvd.KeyCount);
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.!TestData.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     public static IEnumerable<object[]> AgeTestData()
     {
         yield return new object[] { new DateTime(2000, 01, 01), new DateTime(2024, 04, 18), 24 };                           // Birthday passed this year
@@ -2713,4 +2714,5 @@ public partial class DateTimeExtensionsTests
         yield return new object[] { new DateTime(2024, 12, 29), CultureInfo.CreateSpecificCulture("he-IL"), 53 };
         yield return new object[] { new DateTime(2024, 12, 31), CultureInfo.CreateSpecificCulture("he-IL"), 53 }; // FirstDay+Sunday stays in week 53
     }
+
 }

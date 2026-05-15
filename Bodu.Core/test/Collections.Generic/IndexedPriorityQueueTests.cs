@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedPriorityQueueTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,20 +9,6 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class IndexedPriorityQueueTests
 {
-    /// <summary>
-    /// Drains the queue and returns every element-priority pair in dequeue order.
-    /// </summary>
-    /// <param name="queue">The queue to drain.</param>
-    /// <returns>An array of pairs ordered by ascending priority.</returns>
-    private static KeyValuePair<TElement, TPriority>[] DrainAll<TElement, TPriority>(
-        IndexedPriorityQueue<TElement, TPriority> queue)
-        where TElement : notnull
-    {
-        var list = new List<KeyValuePair<TElement, TPriority>>(queue.Count);
-        while (queue.Count > 0)
-            list.Add(queue.Dequeue());
-        return list.ToArray();
-    }
 
     /// <summary>
     /// Asserts that the priorities of <paramref name="pairs"/> are non-decreasing under
@@ -38,4 +24,19 @@ public partial class IndexedPriorityQueueTests
                 comparer.Compare(pairs[i - 1].Value, pairs[i].Value) <= 0,
                 $"Priorities not non-decreasing at index {i}: {pairs[i - 1].Value} > {pairs[i].Value}");
     }
+    /// <summary>
+    /// Drains the queue and returns every element-priority pair in dequeue order.
+    /// </summary>
+    /// <param name="queue">The queue to drain.</param>
+    /// <returns>An array of pairs ordered by ascending priority.</returns>
+    private static KeyValuePair<TElement, TPriority>[] DrainAll<TElement, TPriority>(
+        IndexedPriorityQueue<TElement, TPriority> queue)
+        where TElement : notnull
+    {
+        var list = new List<KeyValuePair<TElement, TPriority>>(queue.Count);
+        while (queue.Count > 0)
+            list.Add(queue.Dequeue());
+        return list.ToArray();
+    }
+
 }

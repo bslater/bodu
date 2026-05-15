@@ -5,12 +5,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsInsufficient" /> embeds the formatted minimum
     /// length in the thrown <see cref="ArgumentException" />'s message. The message is resource-backed via
@@ -90,4 +90,5 @@ public partial class ThrowHelperTests
             ex.Message.Contains(nameof(TestEnum), StringComparison.Ordinal),
             $"Exception message did not include the enum type name '{nameof(TestEnum)}'. Actual message: {ex.Message}");
     }
+
 }

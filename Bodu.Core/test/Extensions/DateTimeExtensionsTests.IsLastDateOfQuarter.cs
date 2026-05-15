@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.IsLastDateOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsLastDateOfQuarter(DateTime, CalendarQuarterDefinition)" /> returns <c>false</c>
     /// when the input date is not the first day of the quarter.
@@ -87,4 +88,5 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(expected, actual);
     }
+
 }

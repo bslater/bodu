@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -30,6 +29,21 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.CopyTo(T[], int)" /> throws <see cref="ArgumentException" />
+    /// when the array is too small to hold the storage.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.CopyTo(new int[2], 0);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="OrderedSetStorage{T}.CopyTo(T[], int)" /> rejects a negative offset.
     /// </summary>
     [TestMethod]
@@ -46,33 +60,18 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.CopyTo(T[], int)" /> throws <see cref="ArgumentException" />
-    /// when the array is too small to hold the storage.
+    /// Verifies that <see cref="OrderedSetStorage{T}.CopyTo(T[], int)" /> copies the elements starting at the
+    /// specified offset, leaving earlier slots untouched.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    public void CopyTo_WhenIndexIsNonZero_ShouldCopyStartingAtOffset()
     {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        OrderedSetStorage<int> sut = CreateStorage([10, 20]);
+        int[] target = [99, 99, 99, 99];
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.CopyTo(new int[2], 0);
-        });
-    }
+        sut.CopyTo(target, 1);
 
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.CopyTo(T[], int)" /> throws <see cref="ArgumentException" />
-    /// when there is insufficient space after the supplied offset.
-    /// </summary>
-    [TestMethod]
-    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.CopyTo(new int[5], 3);
-        });
+        CollectionAssert.AreEqual(new[] { 99, 10, 20, 99 }, target);
     }
 
     // --------------------------------------------------------
@@ -94,18 +93,18 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.CopyTo(T[], int)" /> copies the elements starting at the
-    /// specified offset, leaving earlier slots untouched.
+    /// Verifies that <see cref="OrderedSetStorage{T}.CopyTo(T[], int)" /> throws <see cref="ArgumentException" />
+    /// when there is insufficient space after the supplied offset.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenIndexIsNonZero_ShouldCopyStartingAtOffset()
+    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
     {
-        OrderedSetStorage<int> sut = CreateStorage([10, 20]);
-        int[] target = [99, 99, 99, 99];
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
-        sut.CopyTo(target, 1);
-
-        CollectionAssert.AreEqual(new[] { 99, 10, 20, 99 }, target);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.CopyTo(new int[5], 3);
+        });
     }
 
     /// <summary>
@@ -120,6 +119,22 @@ public partial class OrderedSetStorageTests
         sut.CopyTo(target, 0);
 
         CollectionAssert.AreEqual(new[] { 99, 88 }, target);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.ToArray" /> returns a fresh array that is independent of
+    /// subsequent storage mutations.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var snapshot = sut.ToArray();
+
+        sut.Add(4);
+
+        Assert.AreEqual(3, snapshot.Length);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, snapshot);
     }
 
     // --------------------------------------------------------
@@ -154,19 +169,4 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(sut.Count, array.Length);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.ToArray" /> returns a fresh array that is independent of
-    /// subsequent storage mutations.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var snapshot = sut.ToArray();
-
-        sut.Add(4);
-
-        Assert.AreEqual(3, snapshot.Length);
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, snapshot);
-    }
 }

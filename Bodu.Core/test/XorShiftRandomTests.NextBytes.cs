@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XorShiftRandomTests.NextBytes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu;
 
 public partial class XorShiftRandomTests
 {
+
     /// <summary>
     /// Verifies that <see cref="XorShiftRandom.NextBytes" /> fills the provided buffer completely with random bytes.
     /// </summary>
@@ -46,4 +47,5 @@ public partial class XorShiftRandomTests
         var rng = new XorShiftRandom();
         Assert.ThrowsExactly<ArgumentNullException>(() => rng.NextBytes(null!));
     }
+
 }

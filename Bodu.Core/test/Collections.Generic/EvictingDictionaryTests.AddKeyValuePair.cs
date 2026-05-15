@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.AddKeyValuePair.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add(KeyValuePair{TKey, TValue})" /> adds the entry to the dictionary.
     /// </summary>
@@ -39,4 +40,5 @@ public partial class EvictingDictionaryTests
         Assert.IsTrue(dictionary.ContainsKey("B"));
         Assert.IsTrue(dictionary.ContainsKey("C"));
     }
+
 }

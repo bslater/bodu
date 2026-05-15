@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Indexer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that accessing a key via indexer updates recency and avoids its eviction.
     /// </summary>
@@ -157,4 +158,5 @@ public partial class EvictingDictionaryTests
         Assert.IsTrue(dictionary.ContainsKey("A"));
         Assert.AreEqual(100, dictionary["A"]);
     }
+
 }

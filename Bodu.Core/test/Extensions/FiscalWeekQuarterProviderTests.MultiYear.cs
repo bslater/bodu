@@ -1,64 +1,53 @@
-// --------------------------------------------------------------------------------------------------------------- //
+﻿// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="FiscalWeekQuarterProviderTests.MultiYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class FiscalWeekQuarterProviderTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear(int)" /> returns the
-    /// expected result for multiple fiscal years under a single provider instance, confirming that
-    /// the provider is stateless with respect to any single year and computes values on demand.
+    /// Verifies that the <see cref="DateOnly" /> overloads of every quarter-computation method return
+    /// results identical to their <see cref="DateTime" /> counterparts for the same input date.
     /// </summary>
-    /// <remarks>
-    /// Under a Saturday-aligned, nearest-day, fiscal-year-end-January rule, the 53-week fiscal years
-    /// between 2000 and 2030 are 2000, 2005, 2011, 2016, 2022, and 2028 — each has a span of 371 days
-    /// between the nearest-Saturday alignments of consecutive 1 February anchors.
-    /// </remarks>
     [TestMethod]
-    [DataRow(2005, true)]
-    [DataRow(2011, true)]
-    [DataRow(2016, true)]
-    [DataRow(2022, true)]
-    [DataRow(2028, true)]
-    [DataRow(2020, false)]
-    [DataRow(2024, false)]
-    [DataRow(2025, false)]
-    public void Is53WeekFiscalYear_WhenInvokedForMultipleYearsUnderSameRule_ShouldReturnExpected(int fiscalYear, bool expected)
+    public void DateOnlyOverloads_ShouldProduceSameResultsAsDateTimeOverloads()
     {
         var provider = new FiscalWeekQuarterProvider(
             month: 1,
             dayOfWeek: DayOfWeek.Saturday,
             isFiscalYearEnd: true);
 
-        Assert.AreEqual(expected, provider.Is53WeekFiscalYear(fiscalYear));
+        var dateTime = new DateTime(2024, 6, 15);
+        var dateOnly = DateOnly.FromDateTime(dateTime);
+
+        Assert.AreEqual(provider.GetQuarter(dateTime), provider.GetQuarter(dateOnly));
+        Assert.AreEqual(
+            DateOnly.FromDateTime(provider.GetQuarterStart(dateTime)),
+            provider.GetQuarterStartDate(dateOnly));
+        Assert.AreEqual(
+            DateOnly.FromDateTime(provider.GetQuarterEnd(dateTime)),
+            provider.GetQuarterEndDate(dateOnly));
     }
 
     /// <summary>
-    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetWeeksInFiscalYear(int)" /> returns
-    /// either 52 or 53 consistent with <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear(int)" />
-    /// across a range of fiscal years.
+    /// Verifies that the last day of Q4 in fiscal year <c>y</c> maps back to quarter 4, and that the
+    /// first day of Q1 in fiscal year <c>y + 1</c> maps to quarter 1, exercising the
+    /// <see cref="FiscalWeekQuarterProvider.GetQuarter(DateTime)" /> boundary handoff.
     /// </summary>
     [TestMethod]
-    public void GetWeeksInFiscalYear_AcrossMultipleYears_ShouldBeConsistentWithIs53WeekFiscalYear()
+    public void GetQuarter_AtFiscalYearBoundary_ShouldHandoffCorrectly()
     {
-        var provider = new FiscalWeekQuarterProvider(
-            month: 1,
-            dayOfWeek: DayOfWeek.Saturday,
-            isFiscalYearEnd: true);
+        DateTime q4End = s_sunday52.GetQuarterEnd(4, Sunday52FiscalYear);
+        Assert.AreEqual(4, s_sunday52.GetQuarter(q4End));
 
-        for (var year = 2000; year <= 2040; year++)
-        {
-            var expected = provider.Is53WeekFiscalYear(year) ? 53 : 52;
-            Assert.AreEqual(expected, provider.GetWeeksInFiscalYear(year),
-                $"GetWeeksInFiscalYear({year}) must agree with Is53WeekFiscalYear({year}).");
-        }
+        DateTime q1NextStart = s_sunday52.GetQuarterStart(1, Sunday52FiscalYear + 1);
+        Assert.AreEqual(1, s_sunday52.GetQuarter(q1NextStart));
     }
 
     /// <summary>
@@ -137,42 +126,52 @@ public partial class FiscalWeekQuarterProviderTests
     }
 
     /// <summary>
-    /// Verifies that the last day of Q4 in fiscal year <c>y</c> maps back to quarter 4, and that the
-    /// first day of Q1 in fiscal year <c>y + 1</c> maps to quarter 1, exercising the
-    /// <see cref="FiscalWeekQuarterProvider.GetQuarter(DateTime)" /> boundary handoff.
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetWeeksInFiscalYear(int)" /> returns
+    /// either 52 or 53 consistent with <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear(int)" />
+    /// across a range of fiscal years.
     /// </summary>
     [TestMethod]
-    public void GetQuarter_AtFiscalYearBoundary_ShouldHandoffCorrectly()
-    {
-        DateTime q4End = s_sunday52.GetQuarterEnd(4, Sunday52FiscalYear);
-        Assert.AreEqual(4, s_sunday52.GetQuarter(q4End));
-
-        DateTime q1NextStart = s_sunday52.GetQuarterStart(1, Sunday52FiscalYear + 1);
-        Assert.AreEqual(1, s_sunday52.GetQuarter(q1NextStart));
-    }
-
-    /// <summary>
-    /// Verifies that the <see cref="DateOnly" /> overloads of every quarter-computation method return
-    /// results identical to their <see cref="DateTime" /> counterparts for the same input date.
-    /// </summary>
-    [TestMethod]
-    public void DateOnlyOverloads_ShouldProduceSameResultsAsDateTimeOverloads()
+    public void GetWeeksInFiscalYear_AcrossMultipleYears_ShouldBeConsistentWithIs53WeekFiscalYear()
     {
         var provider = new FiscalWeekQuarterProvider(
             month: 1,
             dayOfWeek: DayOfWeek.Saturday,
             isFiscalYearEnd: true);
 
-        var dateTime = new DateTime(2024, 6, 15);
-        var dateOnly = DateOnly.FromDateTime(dateTime);
+        for (var year = 2000; year <= 2040; year++)
+        {
+            var expected = provider.Is53WeekFiscalYear(year) ? 53 : 52;
+            Assert.AreEqual(expected, provider.GetWeeksInFiscalYear(year),
+                $"GetWeeksInFiscalYear({year}) must agree with Is53WeekFiscalYear({year}).");
+        }
+    }
+    /// <summary>
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.Is53WeekFiscalYear(int)" /> returns the
+    /// expected result for multiple fiscal years under a single provider instance, confirming that
+    /// the provider is stateless with respect to any single year and computes values on demand.
+    /// </summary>
+    /// <remarks>
+    /// Under a Saturday-aligned, nearest-day, fiscal-year-end-January rule, the 53-week fiscal years
+    /// between 2000 and 2030 are 2000, 2005, 2011, 2016, 2022, and 2028 — each has a span of 371 days
+    /// between the nearest-Saturday alignments of consecutive 1 February anchors.
+    /// </remarks>
+    [TestMethod]
+    [DataRow(2005, true)]
+    [DataRow(2011, true)]
+    [DataRow(2016, true)]
+    [DataRow(2022, true)]
+    [DataRow(2028, true)]
+    [DataRow(2020, false)]
+    [DataRow(2024, false)]
+    [DataRow(2025, false)]
+    public void Is53WeekFiscalYear_WhenInvokedForMultipleYearsUnderSameRule_ShouldReturnExpected(int fiscalYear, bool expected)
+    {
+        var provider = new FiscalWeekQuarterProvider(
+            month: 1,
+            dayOfWeek: DayOfWeek.Saturday,
+            isFiscalYearEnd: true);
 
-        Assert.AreEqual(provider.GetQuarter(dateTime), provider.GetQuarter(dateOnly));
-        Assert.AreEqual(
-            DateOnly.FromDateTime(provider.GetQuarterStart(dateTime)),
-            provider.GetQuarterStartDate(dateOnly));
-        Assert.AreEqual(
-            DateOnly.FromDateTime(provider.GetQuarterEnd(dateTime)),
-            provider.GetQuarterEndDate(dateOnly));
+        Assert.AreEqual(expected, provider.Is53WeekFiscalYear(fiscalYear));
     }
 
     private static int FindFirst53WeekYear(FiscalWeekQuarterProvider provider, int fromYear, int toYear)
@@ -186,4 +185,5 @@ public partial class FiscalWeekQuarterProviderTests
         throw new InvalidOperationException(
             $"No 53-week fiscal year found in the range {fromYear}–{toYear}.");
     }
+
 }

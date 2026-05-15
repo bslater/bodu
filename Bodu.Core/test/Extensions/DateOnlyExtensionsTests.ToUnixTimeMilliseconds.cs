@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.ToUnixTimeMilliseconds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,13 +9,25 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, RoundTripWithFromUnixTimeMilliseconds, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
+    {
+        DateOnly input = new DateOnly(2024, 4, 18);
+        long millis = input.ToUnixTimeMilliseconds();
+
+        DateOnly roundTrip = DateOnlyExtensions.FromUnixTimeMilliseconds(millis);
+
+        Assert.AreEqual(input, roundTrip);
+    }
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, when CalledWithUtc, returns the expected value.
@@ -36,17 +48,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, when UsingMinValue, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
-    {
-        long actual = DateOnly.MinValue.ToUnixTimeMilliseconds();
-
-        Assert.IsTrue(actual < 0);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, when UsingMaxValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
@@ -58,16 +59,14 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, RoundTripWithFromUnixTimeMilliseconds, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.ToUnixTimeMilliseconds" />, when UsingMinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
+    public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
     {
-        DateOnly input = new DateOnly(2024, 4, 18);
-        long millis = input.ToUnixTimeMilliseconds();
+        long actual = DateOnly.MinValue.ToUnixTimeMilliseconds();
 
-        DateOnly roundTrip = DateOnlyExtensions.FromUnixTimeMilliseconds(millis);
-
-        Assert.AreEqual(input, roundTrip);
+        Assert.IsTrue(actual < 0);
     }
+
 }

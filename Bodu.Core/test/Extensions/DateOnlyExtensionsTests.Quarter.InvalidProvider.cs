@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.Quarter(DateOnly, IQuarterDefinitionProvider)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the supplied provider returns a quarter number outside [1, 4].
@@ -31,6 +32,7 @@ public partial class DateOnlyExtensionsTests
     private sealed class InvalidQuarterProvider
         : IQuarterDefinitionProvider
     {
+
         public int GetQuarter(DateTime dateTime) => 99;
 
         public int GetQuarter(DateOnly dateOnly) => 99;
@@ -59,8 +61,10 @@ public partial class DateOnlyExtensionsTests
 
         public DateOnly GetQuarterStartDate(int quarter, int fiscalYear) => throw new NotImplementedException();
 
+        public int GetWeeksInFiscalYear(int fiscalYear) => throw new NotImplementedException();
+
         public bool Is53WeekFiscalYear(int fiscalYear) => throw new NotImplementedException();
 
-        public int GetWeeksInFiscalYear(int fiscalYear) => throw new NotImplementedException();
     }
+
 }

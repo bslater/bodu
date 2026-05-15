@@ -8,25 +8,6 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
-    /// <summary>
-    /// Verifies that the Capacity property matches the value passed to the constructor.
-    /// </summary>
-    [TestMethod]
-    public void Capacity_WhenConstructedWithExplicitValue_ShouldMatchConstructorParameter()
-    {
-        var dictionary = new EvictingDictionary<string, int>(42);
-        Assert.AreEqual(42, dictionary.Capacity);
-    }
-
-    /// <summary>
-    /// Verifies that the parameterless constructor sets the default capacity.
-    /// </summary>
-    [TestMethod]
-    public void Capacity_WhenUsingParameterlessCtor_ShouldUseDefaultCapacity()
-    {
-        var dictionary = new EvictingDictionary<string, int>();
-        Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, dictionary.Capacity);
-    }
 
     /// <summary>
     /// Verifies that constructing from a Dictionary uses the default capacity.
@@ -77,4 +58,24 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(source, EvictingDictionaryPolicy.LeastFrequentlyUsed);
         Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, dictionary.Capacity);
     }
+    /// <summary>
+    /// Verifies that the Capacity property matches the value passed to the constructor.
+    /// </summary>
+    [TestMethod]
+    public void Capacity_WhenConstructedWithExplicitValue_ShouldMatchConstructorParameter()
+    {
+        var dictionary = new EvictingDictionary<string, int>(42);
+        Assert.AreEqual(42, dictionary.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that the parameterless constructor sets the default capacity.
+    /// </summary>
+    [TestMethod]
+    public void Capacity_WhenUsingParameterlessCtor_ShouldUseDefaultCapacity()
+    {
+        var dictionary = new EvictingDictionary<string, int>();
+        Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, dictionary.Capacity);
+    }
+
 }

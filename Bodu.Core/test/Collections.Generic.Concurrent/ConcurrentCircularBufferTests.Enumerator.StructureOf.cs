@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Enumerator.StructureOf.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that the ConcurrentCircularBuffer enumerator is defined as a value type (struct).
     /// </summary>
@@ -37,4 +38,5 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(0, mutableProperties.Count,
             $"Enumerator exposes mutable public properties: {string.Join(", ", mutableProperties.Select(p => p.Name))}");
     }
+
 }

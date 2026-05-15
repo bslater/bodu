@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.AllowOverwrite.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> returns the default (<see langword="true" />) for ctors that omit it and the explicitly supplied value otherwise.
     /// </summary>
@@ -279,4 +280,5 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(exceptions.Count > 0, "Some enqueues should fail when overwrite is disabled.");
         Assert.IsTrue(exceptions.All(e => e is InvalidOperationException), "Failures should be InvalidOperationException only.");
     }
+
 }

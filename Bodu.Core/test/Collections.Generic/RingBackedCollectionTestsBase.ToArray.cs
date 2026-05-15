@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.ToArray.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,21 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
+
+    /// <summary>
+    /// Verifies that subsequent mutations do not affect the previously returned array.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCalled_ShouldReturnIndependentCopy()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+
+        var copy = ToArray(collection);
+        AddToTail(collection, 2);
+
+        Assert.AreEqual(1, copy.Length);
+    }
     /// <summary>
     /// Verifies that <see cref="ToArray(TCollection)"/> returns a new array of the correct length.
     /// </summary>
@@ -19,17 +34,6 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         AddToTail(collection, 2);
 
         Assert.AreEqual(2, ToArray(collection).Length);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ToArray(TCollection)"/> returns an empty array when the collection is empty.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCollectionIsEmpty_ShouldReturnEmptyArray()
-    {
-        TCollection collection = CreateCollection(3);
-
-        Assert.AreEqual(0, ToArray(collection).Length);
     }
 
     /// <summary>
@@ -47,17 +51,14 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     }
 
     /// <summary>
-    /// Verifies that subsequent mutations do not affect the previously returned array.
+    /// Verifies that <see cref="ToArray(TCollection)"/> returns an empty array when the collection is empty.
     /// </summary>
     [TestMethod]
-    public void ToArray_WhenCalled_ShouldReturnIndependentCopy()
+    public void ToArray_WhenCollectionIsEmpty_ShouldReturnEmptyArray()
     {
         TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
 
-        var copy = ToArray(collection);
-        AddToTail(collection, 2);
-
-        Assert.AreEqual(1, copy.Length);
+        Assert.AreEqual(0, ToArray(collection).Length);
     }
+
 }

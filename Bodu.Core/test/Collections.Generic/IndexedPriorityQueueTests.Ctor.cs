@@ -8,32 +8,6 @@ namespace Bodu.Collections.Generic;
 
 public partial class IndexedPriorityQueueTests
 {
-    /// <summary>
-    /// Verifies that the parameterless constructor produces an empty queue with zero capacity.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenDefaultUsed_ShouldCreateEmptyQueue()
-    {
-        var queue = new IndexedPriorityQueue<string, int>();
-
-        Assert.AreEqual(0, queue.Count);
-        Assert.AreEqual(0, queue.Capacity);
-    }
-
-    /// <summary>
-    /// Verifies that supplying a positive capacity allocates the backing array up-front.
-    /// </summary>
-    [TestMethod]
-    [DataRow(1)]
-    [DataRow(8)]
-    [DataRow(1024)]
-    public void Ctor_WhenCapacityProvided_ShouldSetCapacity(int capacity)
-    {
-        var queue = new IndexedPriorityQueue<string, int>(capacity);
-
-        Assert.AreEqual(capacity, queue.Capacity);
-        Assert.AreEqual(0, queue.Count);
-    }
 
     /// <summary>
     /// Verifies that supplying a negative capacity throws <see cref="ArgumentOutOfRangeException" />.
@@ -50,26 +24,29 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
-    /// Verifies that a null priority comparer falls back to <see cref="Comparer{T}.Default" />.
+    /// Verifies that supplying a positive capacity allocates the backing array up-front.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenPriorityComparerIsNull_ShouldUseDefaultComparer()
+    [DataRow(1)]
+    [DataRow(8)]
+    [DataRow(1024)]
+    public void Ctor_WhenCapacityProvided_ShouldSetCapacity(int capacity)
     {
-        var queue = new IndexedPriorityQueue<string, int>((IComparer<int>?)null);
+        var queue = new IndexedPriorityQueue<string, int>(capacity);
 
-        Assert.AreSame(Comparer<int>.Default, queue.Comparer);
+        Assert.AreEqual(capacity, queue.Capacity);
+        Assert.AreEqual(0, queue.Count);
     }
-
     /// <summary>
-    /// Verifies that a custom priority comparer is exposed via <see cref="IndexedPriorityQueue{TElement, TPriority}.Comparer" />.
+    /// Verifies that the parameterless constructor produces an empty queue with zero capacity.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenPriorityComparerProvided_ShouldExposeComparer()
+    public void Ctor_WhenDefaultUsed_ShouldCreateEmptyQueue()
     {
-        IComparer<int> reverse = Comparer<int>.Create((a, b) => b.CompareTo(a));
-        var queue = new IndexedPriorityQueue<string, int>(0, reverse);
+        var queue = new IndexedPriorityQueue<string, int>();
 
-        Assert.AreSame(reverse, queue.Comparer);
+        Assert.AreEqual(0, queue.Count);
+        Assert.AreEqual(0, queue.Capacity);
     }
 
     /// <summary>
@@ -96,6 +73,38 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
+    /// Verifies that supplying a reverse comparer to the items constructor produces a max-heap upon
+    /// <see cref="IndexedPriorityQueue{TElement, TPriority}.Dequeue" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsAndReverseComparer_ShouldHeapifyAsMaxHeap()
+    {
+        IComparer<int> reverse = Comparer<int>.Create((a, b) => b.CompareTo(a));
+        KeyValuePair<string, int>[] items =
+        [
+            new KeyValuePair<string, int>("a", 10),
+            new KeyValuePair<string, int>("b", 30),
+            new KeyValuePair<string, int>("c", 20),
+        ];
+
+        var queue = new IndexedPriorityQueue<string, int>(items, reverse, null);
+
+        Assert.AreEqual("b", queue.Peek().Key);
+    }
+
+    /// <summary>
+    /// Verifies that the items constructor accepts an empty <see cref="ICollection{T}" /> and produces an empty queue.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsCollectionIsEmpty_ShouldCreateEmptyQueue()
+    {
+        var queue = new IndexedPriorityQueue<string, int>([]);
+
+        Assert.AreEqual(0, queue.Count);
+        Assert.AreEqual(0, queue.Capacity);
+    }
+
+    /// <summary>
     /// Verifies that a null source enumerable throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
@@ -108,24 +117,73 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
-    /// Verifies that the items constructor populates the queue with all supplied pairs.
+    /// Verifies that the items constructor uses the supplied element comparer when detecting duplicates.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenItemsProvided_ShouldPopulateQueue()
+    public void Ctor_WhenItemsContainCaseDuplicateAndComparerIsCaseInsensitive_ShouldThrowExactly()
     {
         KeyValuePair<string, int>[] items =
         [
-            new KeyValuePair<string, int>("c", 30),
-            new KeyValuePair<string, int>("a", 10),
-            new KeyValuePair<string, int>("b", 20),
+            new KeyValuePair<string, int>("alpha", 1),
+            new KeyValuePair<string, int>("ALPHA", 2),
         ];
 
-        var queue = new IndexedPriorityQueue<string, int>(items);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new IndexedPriorityQueue<string, int>(items, null, StringComparer.OrdinalIgnoreCase);
+        });
+    }
 
-        Assert.AreEqual(3, queue.Count);
-        Assert.IsTrue(queue.Contains("a"));
-        Assert.IsTrue(queue.Contains("b"));
-        Assert.IsTrue(queue.Contains("c"));
+    /// <summary>
+    /// Verifies that a duplicate element key in the source enumerable throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsContainDuplicateKey_ShouldThrowExactly()
+    {
+        KeyValuePair<string, int>[] items =
+        [
+            new KeyValuePair<string, int>("a", 1),
+            new KeyValuePair<string, int>("a", 2),
+        ];
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = new IndexedPriorityQueue<string, int>(items);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the items constructor accepts an empty non-collection <see cref="IEnumerable{T}" /> and
+    /// produces an empty queue.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsEnumerableIsEmpty_ShouldCreateEmptyQueue()
+    {
+        IEnumerable<KeyValuePair<string, int>> source = [];
+
+        var queue = new IndexedPriorityQueue<string, int>(source);
+
+        Assert.AreEqual(0, queue.Count);
+    }
+
+    /// <summary>
+    /// Verifies that the items constructor produces a heap whose drained order is non-decreasing for a
+    /// large input that exercises the bottom-up <c>Heapify</c> path.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenItemsLarge_ShouldHeapifyToNonDecreasingDequeueOrder()
+    {
+        var rng = new Random(54321);
+        KeyValuePair<int, int>[] items = Enumerable
+            .Range(0, 256)
+            .Select(i => new KeyValuePair<int, int>(i, rng.Next(0, 1_000_000)))
+            .ToArray();
+
+        var queue = new IndexedPriorityQueue<int, int>(items);
+        KeyValuePair<int, int>[] drained = DrainAll(queue);
+
+        AssertNonDecreasing(drained);
+        Assert.AreEqual(256, drained.Length);
     }
 
     /// <summary>
@@ -151,21 +209,24 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
-    /// Verifies that a duplicate element key in the source enumerable throws <see cref="ArgumentException" />.
+    /// Verifies that the items constructor populates the queue with all supplied pairs.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenItemsContainDuplicateKey_ShouldThrowExactly()
+    public void Ctor_WhenItemsProvided_ShouldPopulateQueue()
     {
         KeyValuePair<string, int>[] items =
         [
-            new KeyValuePair<string, int>("a", 1),
-            new KeyValuePair<string, int>("a", 2),
+            new KeyValuePair<string, int>("c", 30),
+            new KeyValuePair<string, int>("a", 10),
+            new KeyValuePair<string, int>("b", 20),
         ];
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = new IndexedPriorityQueue<string, int>(items);
-        });
+        var queue = new IndexedPriorityQueue<string, int>(items);
+
+        Assert.AreEqual(3, queue.Count);
+        Assert.IsTrue(queue.Contains("a"));
+        Assert.IsTrue(queue.Contains("b"));
+        Assert.IsTrue(queue.Contains("c"));
     }
 
     /// <summary>
@@ -184,86 +245,26 @@ public partial class IndexedPriorityQueueTests
     }
 
     /// <summary>
-    /// Verifies that the items constructor accepts an empty <see cref="ICollection{T}" /> and produces an empty queue.
+    /// Verifies that a null priority comparer falls back to <see cref="Comparer{T}.Default" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenItemsCollectionIsEmpty_ShouldCreateEmptyQueue()
+    public void Ctor_WhenPriorityComparerIsNull_ShouldUseDefaultComparer()
     {
-        var queue = new IndexedPriorityQueue<string, int>([]);
+        var queue = new IndexedPriorityQueue<string, int>((IComparer<int>?)null);
 
-        Assert.AreEqual(0, queue.Count);
-        Assert.AreEqual(0, queue.Capacity);
+        Assert.AreSame(Comparer<int>.Default, queue.Comparer);
     }
 
     /// <summary>
-    /// Verifies that the items constructor accepts an empty non-collection <see cref="IEnumerable{T}" /> and
-    /// produces an empty queue.
+    /// Verifies that a custom priority comparer is exposed via <see cref="IndexedPriorityQueue{TElement, TPriority}.Comparer" />.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenItemsEnumerableIsEmpty_ShouldCreateEmptyQueue()
-    {
-        IEnumerable<KeyValuePair<string, int>> source = [];
-
-        var queue = new IndexedPriorityQueue<string, int>(source);
-
-        Assert.AreEqual(0, queue.Count);
-    }
-
-    /// <summary>
-    /// Verifies that supplying a reverse comparer to the items constructor produces a max-heap upon
-    /// <see cref="IndexedPriorityQueue{TElement, TPriority}.Dequeue" />.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenItemsAndReverseComparer_ShouldHeapifyAsMaxHeap()
+    public void Ctor_WhenPriorityComparerProvided_ShouldExposeComparer()
     {
         IComparer<int> reverse = Comparer<int>.Create((a, b) => b.CompareTo(a));
-        KeyValuePair<string, int>[] items =
-        [
-            new KeyValuePair<string, int>("a", 10),
-            new KeyValuePair<string, int>("b", 30),
-            new KeyValuePair<string, int>("c", 20),
-        ];
+        var queue = new IndexedPriorityQueue<string, int>(0, reverse);
 
-        var queue = new IndexedPriorityQueue<string, int>(items, reverse, null);
-
-        Assert.AreEqual("b", queue.Peek().Key);
+        Assert.AreSame(reverse, queue.Comparer);
     }
 
-    /// <summary>
-    /// Verifies that the items constructor uses the supplied element comparer when detecting duplicates.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenItemsContainCaseDuplicateAndComparerIsCaseInsensitive_ShouldThrowExactly()
-    {
-        KeyValuePair<string, int>[] items =
-        [
-            new KeyValuePair<string, int>("alpha", 1),
-            new KeyValuePair<string, int>("ALPHA", 2),
-        ];
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = new IndexedPriorityQueue<string, int>(items, null, StringComparer.OrdinalIgnoreCase);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the items constructor produces a heap whose drained order is non-decreasing for a
-    /// large input that exercises the bottom-up <c>Heapify</c> path.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenItemsLarge_ShouldHeapifyToNonDecreasingDequeueOrder()
-    {
-        var rng = new Random(54321);
-        KeyValuePair<int, int>[] items = Enumerable
-            .Range(0, 256)
-            .Select(i => new KeyValuePair<int, int>(i, rng.Next(0, 1_000_000)))
-            .ToArray();
-
-        var queue = new IndexedPriorityQueue<int, int>(items);
-        KeyValuePair<int, int>[] drained = DrainAll(queue);
-
-        AssertNonDecreasing(drained);
-        Assert.AreEqual(256, drained.Length);
-    }
 }

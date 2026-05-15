@@ -1,16 +1,31 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IComparableExtensionsTests.Min.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
 public partial class IComparableExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException"/>.
+    /// </summary>
+    [TestMethod]
+    public void Min_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    {
+        IComparer<int>? comparer = null;
+
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = 5.Min(1, comparer!);
+        });
+
+        Assert.AreEqual("comparer", ex.ParamName);
+    }
     // =========================================================================
     // Min<T>(T, T)
     // =========================================================================
@@ -51,19 +66,4 @@ public partial class IComparableExtensionsTests
         Assert.AreEqual(5, 5.Min(5, comparer));
     }
 
-    /// <summary>
-    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException"/>.
-    /// </summary>
-    [TestMethod]
-    public void Min_WhenComparerIsNull_ShouldThrowArgumentNullException()
-    {
-        IComparer<int>? comparer = null;
-
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = 5.Min(1, comparer!);
-        });
-
-        Assert.AreEqual("comparer", ex.ParamName);
-    }
 }

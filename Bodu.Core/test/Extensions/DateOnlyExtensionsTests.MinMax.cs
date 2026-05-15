@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.MinMax.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,20 +8,6 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Max(DateOnly, DateOnly)" /> returns the later date for non-equal inputs and
-    /// <paramref name="first" /> when both dates are equal.
-    /// </summary>
-    [TestMethod]
-    public void Max_WhenComparingTwoDates_ShouldReturnLater()
-    {
-        var earlier = new DateOnly(2024, 1, 1);
-        var later = new DateOnly(2024, 12, 31);
-
-        Assert.AreEqual(later, DateOnlyExtensions.Max(earlier, later));
-        Assert.AreEqual(later, DateOnlyExtensions.Max(later, earlier));
-        Assert.AreEqual(earlier, DateOnlyExtensions.Max(earlier, earlier));
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.Max(DateOnly?, DateOnly?)" /> returns the later non-null value and falls back to the
@@ -39,20 +25,19 @@ public partial class DateOnlyExtensionsTests
         Assert.AreEqual(earlier, DateOnlyExtensions.Max((DateOnly?)null, earlier));
         Assert.IsNull(DateOnlyExtensions.Max((DateOnly?)null, (DateOnly?)null));
     }
-
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Min(DateOnly, DateOnly)" /> returns the earlier date for non-equal inputs and
+    /// Verifies that <see cref="DateOnlyExtensions.Max(DateOnly, DateOnly)" /> returns the later date for non-equal inputs and
     /// <paramref name="first" /> when both dates are equal.
     /// </summary>
     [TestMethod]
-    public void Min_WhenComparingTwoDates_ShouldReturnEarlier()
+    public void Max_WhenComparingTwoDates_ShouldReturnLater()
     {
         var earlier = new DateOnly(2024, 1, 1);
         var later = new DateOnly(2024, 12, 31);
 
-        Assert.AreEqual(earlier, DateOnlyExtensions.Min(earlier, later));
-        Assert.AreEqual(earlier, DateOnlyExtensions.Min(later, earlier));
-        Assert.AreEqual(later, DateOnlyExtensions.Min(later, later));
+        Assert.AreEqual(later, DateOnlyExtensions.Max(earlier, later));
+        Assert.AreEqual(later, DateOnlyExtensions.Max(later, earlier));
+        Assert.AreEqual(earlier, DateOnlyExtensions.Max(earlier, earlier));
     }
 
     /// <summary>
@@ -71,4 +56,20 @@ public partial class DateOnlyExtensionsTests
         Assert.AreEqual(earlier, DateOnlyExtensions.Min((DateOnly?)null, earlier));
         Assert.IsNull(DateOnlyExtensions.Min((DateOnly?)null, (DateOnly?)null));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Min(DateOnly, DateOnly)" /> returns the earlier date for non-equal inputs and
+    /// <paramref name="first" /> when both dates are equal.
+    /// </summary>
+    [TestMethod]
+    public void Min_WhenComparingTwoDates_ShouldReturnEarlier()
+    {
+        var earlier = new DateOnly(2024, 1, 1);
+        var later = new DateOnly(2024, 12, 31);
+
+        Assert.AreEqual(earlier, DateOnlyExtensions.Min(earlier, later));
+        Assert.AreEqual(earlier, DateOnlyExtensions.Min(later, earlier));
+        Assert.AreEqual(later, DateOnlyExtensions.Min(later, later));
+    }
+
 }

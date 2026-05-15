@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.FirstDateOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,119 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfQuarter(DateTime, CalendarQuarterDefinition)" /> returns the expected quarter-start date for each supported <see cref="CalendarQuarterDefinition" /> boundary.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfQuarterDateTimeTestData))]
-    public void FirstDateOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition, DateTime expected)
-    {
-        var actual = input.FirstDateOfQuarter(definition);
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that the parameterless <see cref="DateTimeExtensions.FirstDateOfQuarter(DateTime)" /> overload returns the January-to-December quarter start for the given input.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfQuarterDateTimeJanuaryDecemberTestData))]
-    public void FirstDateOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input,DateTime expected)
-    {
-        var actual = input.FirstDateOfQuarter();
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)" /> computes the expected quarter-start date for each <c>(year, quarter, definition)</c> triple.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfQuarterTestData))]
-    public void FirstDateOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DateTime expected)
-    {
-        var actual = DateTimeExtensions.GetFirstDateOfQuarter(year, quarter, definition);
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter-start for each <c>(year, quarter)</c> pair.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfQuarterYearQuarterJanuaryDecemberTestData))]
-    public void FirstDateOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expected)
-    {
-        var actual = DateTimeExtensions.GetFirstDateOfQuarter(year, quarter);
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that a custom <c>IQuarterProvider</c> returning out-of-range month values causes <see cref="DateTimeExtensions.FirstDateOfQuarter{T}" /> to throw <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
-    {
-        var input = new DateTime(2024, 4, 20);
-        var provider = new InValidQuarterProvider();
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = input.FirstDateOfQuarter(provider);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
-    {
-        var input = new DateTime(2024, 4, 20);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = input.FirstDateOfQuarter(CalendarQuarterDefinition.Custom);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfQuarter" /> returns the correct date using a valid quarter provider.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider),DynamicDataSourceType.Method)]
-    public void FirstDateOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DateTime expected)
-    {
-        var provider = new ValidQuarterProvider();
-        var actual = input.FirstDateOfQuarter(provider);
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTime.MinValue" /> yields <c>0001-01-01</c> for the January-to-December quarter start.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
-    {
-        var actual = DateTime.MinValue.FirstDateOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
-        Assert.AreEqual(new DateTime(1, 1, 1), actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTime.MaxValue" /> yields <c>9999-10-01</c> (Q4 of year 9999) for the January-to-December quarter start.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfQuarter_WhenInputIsMaxValue_ShouldReturnExpectedDate()
-    {
-        var actual = DateTime.MaxValue.FirstDateOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
-        Assert.AreEqual(new DateTime(9999, 10, 1), actual); // Q4 of 9999
-    }
 
     /// <summary>
     /// Verifies that an undefined <see cref="CalendarQuarterDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
@@ -153,33 +45,23 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a quarter index outside <c>1..4</c> throws <see cref="ArgumentOutOfRangeException" /> when an otherwise-valid definition is supplied.
+    /// Verifies that <see cref="DateTime.MaxValue" /> yields <c>9999-10-01</c> (Q4 of year 9999) for the January-to-December quarter start.
     /// </summary>
     [TestMethod]
-    [DataRow(-1)]
-    [DataRow(0)]
-    [DataRow(5)]
-    public void FirstDateOfQuarter_WhenQuarterIsOutOfRangeAndDefinitionIsValid_ShouldThrowExactly(int quarter)
+    public void FirstDateOfQuarter_WhenInputIsMaxValue_ShouldReturnExpectedDate()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateTimeExtensions.GetFirstDateOfQuarter(2025, quarter, CalendarQuarterDefinition.JanuaryToDecember);
-        });
+        var actual = DateTime.MaxValue.FirstDateOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
+        Assert.AreEqual(new DateTime(9999, 10, 1), actual); // Q4 of 9999
     }
 
     /// <summary>
-    /// Verifies that the default January-to-December overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+    /// Verifies that <see cref="DateTime.MinValue" /> yields <c>0001-01-01</c> for the January-to-December quarter start.
     /// </summary>
     [TestMethod]
-    [DataRow(-1)]
-    [DataRow(0)]
-    [DataRow(5)]
-    public void FirstDateOfQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
+    public void FirstDateOfQuarter_WhenInputIsMinValue_ShouldReturnExpectedDate()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateTimeExtensions.GetFirstDateOfQuarter(2025, quarter);
-        });
+        var actual = DateTime.MinValue.FirstDateOfQuarter(CalendarQuarterDefinition.JanuaryToDecember);
+        Assert.AreEqual(new DateTime(1, 1, 1), actual);
     }
 
     /// <summary>
@@ -211,18 +93,118 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+    /// Verifies that the default January-to-December overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
     /// </summary>
     [TestMethod]
     [DataRow(-1)]
     [DataRow(0)]
-    [DataRow(10_000)]
-    public void GetFirstDateOfQuarter_WhenYearIsOutOfRange_WithDefinition_ShouldThrowExactly(int year)
+    [DataRow(5)]
+    public void FirstDateOfQuarter_WhenQuarterIsOutOfRange_ShouldThrowExactly(int quarter)
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetFirstDateOfQuarter(year, 1, CalendarQuarterDefinition.JanuaryToDecember);
+            _ = DateTimeExtensions.GetFirstDateOfQuarter(2025, quarter);
         });
+    }
+
+    /// <summary>
+    /// Verifies that a quarter index outside <c>1..4</c> throws <see cref="ArgumentOutOfRangeException" /> when an otherwise-valid definition is supplied.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(5)]
+    public void FirstDateOfQuarter_WhenQuarterIsOutOfRangeAndDefinitionIsValid_ShouldThrowExactly(int quarter)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTimeExtensions.GetFirstDateOfQuarter(2025, quarter, CalendarQuarterDefinition.JanuaryToDecember);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that passing <see cref="CalendarQuarterDefinition.Custom" /> without supplying a provider throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowInvalidOperation()
+    {
+        var input = new DateTime(2024, 4, 20);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = input.FirstDateOfQuarter(CalendarQuarterDefinition.Custom);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the parameterless <see cref="DateTimeExtensions.FirstDateOfQuarter(DateTime)" /> overload returns the January-to-December quarter start for the given input.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDateOfQuarterDateTimeJanuaryDecemberTestData))]
+    public void FirstDateOfQuarter_WhenUsingDateOnly_ShouldReturnExpectedStartOfCalendarQuarter(DateTime input, DateTime expected)
+    {
+        var actual = input.FirstDateOfQuarter();
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that a custom <c>IQuarterProvider</c> returning out-of-range month values causes <see cref="DateTimeExtensions.FirstDateOfQuarter{T}" /> to throw <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfQuarter_WhenUsingInvalidProvider_ShouldThrowArgumentOutOfRange()
+    {
+        var input = new DateTime(2024, 4, 20);
+        var provider = new InValidQuarterProvider();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.FirstDateOfQuarter(provider);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfQuarter(int, int)" /> with the default January-to-December definition returns the expected quarter-start for each <c>(year, quarter)</c> pair.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDateOfQuarterYearQuarterJanuaryDecemberTestData))]
+    public void FirstDateOfQuarter_WhenUsingQuarterAndCalendarDefinition_ShouldReturnExpectedDate(int year, int quarter, DateTime expected)
+    {
+        var actual = DateTimeExtensions.GetFirstDateOfQuarter(year, quarter);
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)" /> computes the expected quarter-start date for each <c>(year, quarter, definition)</c> triple.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDateOfQuarterTestData))]
+    public void FirstDateOfQuarter_WhenUsingQuarterAndDefinition_ShouldReturnExpectedDate(int year, int quarter, CalendarQuarterDefinition definition, DateTime expected)
+    {
+        var actual = DateTimeExtensions.GetFirstDateOfQuarter(year, quarter, definition);
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfQuarter(DateTime, CalendarQuarterDefinition)" /> returns the expected quarter-start date for each supported <see cref="CalendarQuarterDefinition" /> boundary.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDateOfQuarterDateTimeTestData))]
+    public void FirstDateOfQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedDate(DateTime input, CalendarQuarterDefinition definition, DateTime expected)
+    {
+        var actual = input.FirstDateOfQuarter(definition);
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfQuarter" /> returns the correct date using a valid quarter provider.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.ValidQuarterProvider.FirstDateOfQuarterTestData), typeof(DateTimeExtensionsTests.ValidQuarterProvider), DynamicDataSourceType.Method)]
+    public void FirstDateOfQuarter_WhenUsingValidQuarterProvider_ShouldReturnExpectedDate(DateTime input, DateTime expected)
+    {
+        var provider = new ValidQuarterProvider();
+        var actual = input.FirstDateOfQuarter(provider);
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -237,6 +219,21 @@ public partial class DateTimeExtensionsTests
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
             _ = DateTimeExtensions.GetFirstDateOfQuarter(year, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfQuarter(int, int, CalendarQuarterDefinition)" /> throws <see cref="ArgumentOutOfRangeException" /> for year values outside <c>1..9999</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(10_000)]
+    public void GetFirstDateOfQuarter_WhenYearIsOutOfRange_WithDefinition_ShouldThrowExactly(int year)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTimeExtensions.GetFirstDateOfQuarter(year, 1, CalendarQuarterDefinition.JanuaryToDecember);
         });
     }
 

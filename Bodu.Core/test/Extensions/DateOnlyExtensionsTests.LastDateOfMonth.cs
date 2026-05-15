@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.LastDateOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -32,17 +30,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfMonth" />, when MinValue, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void LastDateOfMonth_WhenMinValue_ShouldReturnExpectedDay()
-    {
-        DateOnly actual = DateOnly.MinValue.LastDateOfMonth();
-
-        Assert.AreEqual(new DateOnly(1, 1, 31), actual);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfMonth" />, when MaxValue, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -53,4 +40,16 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(new DateOnly(9999, 12, 31), actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfMonth" />, when MinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfMonth_WhenMinValue_ShouldReturnExpectedDay()
+    {
+        DateOnly actual = DateOnly.MinValue.LastDateOfMonth();
+
+        Assert.AreEqual(new DateOnly(1, 1, 31), actual);
+    }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.Capacity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
+
     /// <summary>
     /// Verifies that <see cref="GetCapacity(TCollection)"/> is at least the requested initial capacity, across
     /// a range of sizes. Fixed-capacity types report exactly the requested value; growable types may report more.
@@ -31,6 +32,20 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     }
 
     /// <summary>
+    /// Verifies that <see cref="GetCapacity(TCollection)"/> is at least <see cref="GetCount(TCollection)"/>
+    /// after a series of inserts.
+    /// </summary>
+    [TestMethod]
+    public void Capacity_WhenItemsAdded_ShouldBeAtLeastCount()
+    {
+        TCollection collection = CreateCollection(4);
+        for (var i = 0; i < 4; i++)
+            AddToTail(collection, i);
+
+        Assert.IsTrue(GetCapacity(collection) >= GetCount(collection));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="GetCapacity(TCollection)"/> remains stable across adds and removes that do
     /// not exceed the initial capacity.
     /// </summary>
@@ -47,17 +62,4 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         Assert.AreEqual(capacityBefore, GetCapacity(collection));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="GetCapacity(TCollection)"/> is at least <see cref="GetCount(TCollection)"/>
-    /// after a series of inserts.
-    /// </summary>
-    [TestMethod]
-    public void Capacity_WhenItemsAdded_ShouldBeAtLeastCount()
-    {
-        TCollection collection = CreateCollection(4);
-        for (var i = 0; i < 4; i++)
-            AddToTail(collection, i);
-
-        Assert.IsTrue(GetCapacity(collection) >= GetCount(collection));
-    }
 }

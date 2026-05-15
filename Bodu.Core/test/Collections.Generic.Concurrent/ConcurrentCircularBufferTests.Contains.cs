@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Contains.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> returns <see langword="false" /> for items that were present before <see cref="ConcurrentCircularBuffer{T}.Clear" /> was called.
     /// </summary>
@@ -265,24 +266,6 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that Contains returns true for a different instance that has the same value as an enqueued element,
-    /// because TestItem overrides Equals to compare by value and EqualityComparer{T}.Default delegates to Equals.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenReferenceTypeOverridesEquals_ShouldUseValueEquality()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-
-        var differentInstanceSameValue = new TestItem(1);
-
-        Assert.IsTrue(buffer.Contains(differentInstanceSameValue),
-            "Contains should return true for a different instance with the same value because TestItem.Equals " +
-            "compares by value and EqualityComparer<T>.Default delegates to Equals.");
-    }
-
-    /// <summary>
     /// Verifies that Contains uses reference equality for types that do not override Equals, meaning two distinct
     /// instances with equivalent state are not considered equal.
     /// </summary>
@@ -302,6 +285,39 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(buffer.Contains(enqueued),
             "Contains should return true for the exact same instance that was enqueued.");
+    }
+
+    /// <summary>
+    /// Verifies that Contains returns true for a different instance that has the same value as an enqueued element,
+    /// because TestItem overrides Equals to compare by value and EqualityComparer{T}.Default delegates to Equals.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenReferenceTypeOverridesEquals_ShouldUseValueEquality()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+
+        var differentInstanceSameValue = new TestItem(1);
+
+        Assert.IsTrue(buffer.Contains(differentInstanceSameValue),
+            "Contains should return true for a different instance with the same value because TestItem.Equals " +
+            "compares by value and EqualityComparer<T>.Default delegates to Equals.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> uses the default equality comparer for value types.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenUsingValueTypes_ShouldUseDefaultEquality()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(20));
+        buffer.Enqueue(new TestItem(30));
+
+        Assert.IsTrue(buffer.Contains(new TestItem(20)));
+        Assert.IsFalse(buffer.Contains(new TestItem(99)));
     }
 
     /// <summary>
@@ -330,18 +346,4 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(buffer.Contains(a)); // was dequeued
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Contains" /> uses the default equality comparer for value types.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenUsingValueTypes_ShouldUseDefaultEquality()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(5);
-        buffer.Enqueue(new TestItem(10));
-        buffer.Enqueue(new TestItem(20));
-        buffer.Enqueue(new TestItem(30));
-
-        Assert.IsTrue(buffer.Contains(new TestItem(20)));
-        Assert.IsFalse(buffer.Contains(new TestItem(99)));
-    }
 }

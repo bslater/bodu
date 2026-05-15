@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Bodu.Collections.Generic.Extensions;
@@ -13,6 +12,7 @@ namespace Bodu.Collections.Generic.Extensions;
 [TestClass]
 public sealed partial class IListExtensionsTests_TrySwap
 {
+
     /// <summary>
     /// Provides valid <c>TrySwap</c> scenarios covering adjacent, non-adjacent, endpoint, and
     /// same-index no-op swaps.
@@ -46,20 +46,6 @@ public sealed partial class IListExtensionsTests_TrySwap
     }
 
     /// <summary>
-    /// Verifies that <c>TrySwap</c> with equal indices returns <see langword="true" /> and leaves the list untouched.
-    /// </summary>
-    [TestMethod]
-    public void TrySwap_WhenIndicesAreEqual_ShouldReturnTrueWithoutMutating()
-    {
-        var list = new List<string> { "a", "b", "c" };
-
-        var result = list.TrySwap(1, 1);
-
-        Assert.IsTrue(result);
-        CollectionAssert.AreEqual(new[] { "a", "b", "c" }, list);
-    }
-
-    /// <summary>
     /// Verifies that <c>TrySwap</c> returns <see langword="false" /> without mutating the list when either index is out of range.
     /// </summary>
     [TestMethod]
@@ -79,17 +65,29 @@ public sealed partial class IListExtensionsTests_TrySwap
     }
 
     /// <summary>
-    /// Verifies that <c>TrySwap</c> throws <see cref="ArgumentNullException" /> when the list is <see langword="null" />.
+    /// Verifies that <c>TrySwap</c> with equal indices returns <see langword="true" /> and leaves the list untouched.
     /// </summary>
     [TestMethod]
-    public void TrySwap_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void TrySwap_WhenIndicesAreEqual_ShouldReturnTrueWithoutMutating()
     {
-        IList<int>? list = null;
+        var list = new List<string> { "a", "b", "c" };
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = list!.TrySwap(0, 1);
-        });
+        var result = list.TrySwap(1, 1);
+
+        Assert.IsTrue(result);
+        CollectionAssert.AreEqual(new[] { "a", "b", "c" }, list);
+    }
+
+    /// <summary>
+    /// Verifies that <c>TrySwap</c> on an empty list always returns <see langword="false" /> and does not mutate the list.
+    /// </summary>
+    [TestMethod]
+    public void TrySwap_WhenListIsEmpty_ShouldReturnFalse()
+    {
+        var list = new List<int>();
+
+        Assert.IsFalse(list.TrySwap(0, 0));
+        Assert.AreEqual(0, list.Count);
     }
 
     /// <summary>
@@ -108,14 +106,17 @@ public sealed partial class IListExtensionsTests_TrySwap
     }
 
     /// <summary>
-    /// Verifies that <c>TrySwap</c> on an empty list always returns <see langword="false" /> and does not mutate the list.
+    /// Verifies that <c>TrySwap</c> throws <see cref="ArgumentNullException" /> when the list is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TrySwap_WhenListIsEmpty_ShouldReturnFalse()
+    public void TrySwap_WhenListIsNull_ShouldThrowArgumentNullException()
     {
-        var list = new List<int>();
+        IList<int>? list = null;
 
-        Assert.IsFalse(list.TrySwap(0, 0));
-        Assert.AreEqual(0, list.Count);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = list!.TrySwap(0, 1);
+        });
     }
+
 }

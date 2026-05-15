@@ -8,19 +8,19 @@ namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="RangeSet{T}.Add(T, T)" /> compacts storage when the added range merges
-    /// across multiple existing ranges at the tail of the set, exercising the internal <c>RemoveRange</c>
-    /// helper's <c>moveCount == 0</c> branch (no trailing entries to shift).
+    /// Verifies that <see cref="RangeSet{T}.Add(T, T)" /> handles a merge that spans every existing range,
+    /// leaving the set with a single coalesced range.
     /// </summary>
     [TestMethod]
-    public void Add_WhenMergeAbsorbsTailRanges_ShouldCompactStorageWithoutTrailingShift()
+    public void Add_WhenMergeAbsorbsAllExistingRanges_ShouldYieldSingleCoalescedRange()
     {
         RangeSet<int> sut = CreateSet((0, 5), (10, 15), (20, 25));
 
-        sut.Add(3, 30);
+        sut.Add(-5, 100);
 
-        AssertContents(sut, (0, 30));
+        AssertContents(sut, (-5, 100));
     }
 
     /// <summary>
@@ -37,19 +37,19 @@ public partial class RangeSetTests
 
         AssertContents(sut, (0, 30), (40, 50));
     }
-
     /// <summary>
-    /// Verifies that <see cref="RangeSet{T}.Add(T, T)" /> handles a merge that spans every existing range,
-    /// leaving the set with a single coalesced range.
+    /// Verifies that <see cref="RangeSet{T}.Add(T, T)" /> compacts storage when the added range merges
+    /// across multiple existing ranges at the tail of the set, exercising the internal <c>RemoveRange</c>
+    /// helper's <c>moveCount == 0</c> branch (no trailing entries to shift).
     /// </summary>
     [TestMethod]
-    public void Add_WhenMergeAbsorbsAllExistingRanges_ShouldYieldSingleCoalescedRange()
+    public void Add_WhenMergeAbsorbsTailRanges_ShouldCompactStorageWithoutTrailingShift()
     {
         RangeSet<int> sut = CreateSet((0, 5), (10, 15), (20, 25));
 
-        sut.Add(-5, 100);
+        sut.Add(3, 30);
 
-        AssertContents(sut, (-5, 100));
+        AssertContents(sut, (0, 30));
     }
 
     /// <summary>
@@ -85,4 +85,5 @@ public partial class RangeSetTests
         Assert.IsTrue(reported >= 1024);
         Assert.IsTrue(sut.Capacity >= 1024);
     }
+
 }

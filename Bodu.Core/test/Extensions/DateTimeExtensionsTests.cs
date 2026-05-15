@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,6 +14,7 @@ namespace Bodu.Extensions;
 [TestClass]
 public partial class DateTimeExtensionsTests
 {
+
     public static readonly FirstAndLastDateData[] FirstAndLastDayOfWeekTestData =
     [
         // === Saturday–Sunday weekend => week starts Monday (2024-01-01), ends Sunday (2024-01-07)
@@ -132,4 +133,5 @@ public partial class DateTimeExtensionsTests
             return customCulture;
         }
     }
+
 }

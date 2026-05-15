@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.LastDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -18,17 +16,10 @@ namespace Bodu.Extensions;
 public partial class DateTimeExtensionsTests
 {
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek(DateTime, CultureInfo)" /> returns the expected week end for the supplied culture's first-day-of-week.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(LastDateOfWeekCultureInfoTestData))]
-    public void LastDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
-    {
-        DateTime actual = input.LastDateOfWeek(culture);
-
-        Assert.AreEqual(expected, actual);
-    }
+    public static IEnumerable<object[]> GetLastDateOfWeekWithDefinitionTestData() =>
+        FirstAndLastDayOfWeekTestData
+            .Where(e => e.Weekend.HasValue)
+            .Select(e => new object[] { e.Input, e.Weekend.Value, e.ExpectedLast });
 
     /// <summary>
     /// Verifies that passing a <see langword="null" /> <see cref="CultureInfo" /> falls back to <see cref="CultureInfo.CurrentCulture" />.
@@ -53,44 +44,15 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the parameterless <see cref="DateTimeExtensions.LastDateOfWeek(DateTime)" /> overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek(DateTime, CultureInfo)" /> returns the expected week end for the supplied culture's first-day-of-week.
     /// </summary>
     [TestMethod]
-    [DataRow(DateTimeKind.Unspecified)]
-    [DataRow(DateTimeKind.Utc)]
-    [DataRow(DateTimeKind.Local)]
-    public void LastDateOfWeek_WhenUsingDefaultOverload_ShouldPreserveDateTimeKind(DateTimeKind kind)
+    [DynamicData(nameof(LastDateOfWeekCultureInfoTestData))]
+    public void LastDateOfWeek_WhenCurrentCultureSet_ShouldReturnExpectedStart(DateTime input, CultureInfo culture, DateTime expected)
     {
-        var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
-        var actual = original.LastDateOfWeek();
-        Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for LastDateOfWeek with {kind}");
-    }
+        DateTime actual = input.LastDateOfWeek(culture);
 
-    /// <summary>
-    /// Verifies that the culture-taking <see cref="DateTimeExtensions.LastDateOfWeek(DateTime, CultureInfo)" /> overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
-    /// </summary>
-    [TestMethod]
-    [DataRow(DateTimeKind.Unspecified)]
-    [DataRow(DateTimeKind.Utc)]
-    [DataRow(DateTimeKind.Local)]
-    public void LastDateOfWeek_WhenUsingCulture_ShouldPreserveDateTimeKind(DateTimeKind kind)
-    {
-        var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
-        var actual = original.LastDateOfWeek(CultureInfo.CurrentCulture);
-        Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for LastDateOfWeek with {kind}");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTime.MinValue" /> with the invariant culture returns a date that is on or after <see cref="DateTime.MinValue" /> with <see cref="DateTimeKind.Unspecified" />.
-    /// </summary>
-    [TestMethod]
-    public void LastDateOfWeek_WhenUsingMinValue_ShouldReturnValidResult()
-    {
-        DateTime input = DateTime.MinValue;
-        DateTime actual = input.LastDateOfWeek(CultureInfo.InvariantCulture);
-
-        Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
-        Assert.IsTrue(actual >= DateTime.MinValue);
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -109,46 +71,16 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTime.MaxValue" /> with a Friday-end culture returns <c>MaxValue.Date</c> (which is itself the configured last day of the week).
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek"/> works near <see cref="DateTime.MaxValue"/> without throwing.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeek_WhenUsingMaxValue_ShouldReturnValidResult()
+    public void LastDateOfWeek_WhenNearMaxValue_ShouldReturnExpectedEnd()
     {
-        DateTime max = DateTime.MaxValue;
-        var actual = max.LastDateOfWeek(new CultureInfo("fa-IR")); // Friday is last day of week
+        var date = DateTime.MaxValue.AddDays(-6); // 9999-12-25
+        var actual = date.LastDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
 
-        Assert.AreEqual(max.Date, actual);
-    }
-
-    public static IEnumerable<object[]> GetLastDateOfWeekWithDefinitionTestData() =>
-        FirstAndLastDayOfWeekTestData
-            .Where(e => e.Weekend.HasValue)
-            .Select(e => new object[] { e.Input, e.Weekend.Value, e.ExpectedLast });
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek"/> returns the expected actual based on the specified weekend definition.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetLastDateOfWeekWithDefinitionTestData))]
-    public void LastDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedEnd(DateTime input, CalendarWeekendDefinition weekend, DateTime expected)
-    {
-        var actual = input.LastDateOfWeek(weekend);
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
-    /// </summary>
-    [TestMethod]
-    public void LastDateOfWeek_WhenWeekendIsUndefined_ShouldThrowExactly()
-    {
-        var date = new DateTime(2024, 1, 1);
-        var invalidWeekend = (CalendarWeekendDefinition)(-5);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = date.LastDateOfWeek(invalidWeekend);
-        });
+        Assert.IsTrue(actual <= DateTime.MaxValue);
+        Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
     }
 
     /// <summary>
@@ -167,6 +99,59 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that the culture-taking <see cref="DateTimeExtensions.LastDateOfWeek(DateTime, CultureInfo)" /> overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void LastDateOfWeek_WhenUsingCulture_ShouldPreserveDateTimeKind(DateTimeKind kind)
+    {
+        var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
+        var actual = original.LastDateOfWeek(CultureInfo.CurrentCulture);
+        Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for LastDateOfWeek with {kind}");
+    }
+
+    /// <summary>
+    /// Verifies that the parameterless <see cref="DateTimeExtensions.LastDateOfWeek(DateTime)" /> overload preserves the input's <see cref="DateTime.Kind" /> across all <see cref="DateTimeKind" /> values.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void LastDateOfWeek_WhenUsingDefaultOverload_ShouldPreserveDateTimeKind(DateTimeKind kind)
+    {
+        var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
+        var actual = original.LastDateOfWeek();
+        Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for LastDateOfWeek with {kind}");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTime.MaxValue" /> with a Friday-end culture returns <c>MaxValue.Date</c> (which is itself the configured last day of the week).
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfWeek_WhenUsingMaxValue_ShouldReturnValidResult()
+    {
+        DateTime max = DateTime.MaxValue;
+        var actual = max.LastDateOfWeek(new CultureInfo("fa-IR")); // Friday is last day of week
+
+        Assert.AreEqual(max.Date, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTime.MinValue" /> with the invariant culture returns a date that is on or after <see cref="DateTime.MinValue" /> with <see cref="DateTimeKind.Unspecified" />.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfWeek_WhenUsingMinValue_ShouldReturnValidResult()
+    {
+        DateTime input = DateTime.MinValue;
+        DateTime actual = input.LastDateOfWeek(CultureInfo.InvariantCulture);
+
+        Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
+        Assert.IsTrue(actual >= DateTime.MinValue);
+    }
+
+    /// <summary>
     /// Verifies that the actual of <see cref="DateTimeExtensions.LastDateOfWeek"/> preserves the <see cref="DateTime.Kind" />.
     /// </summary>
     [TestMethod]
@@ -181,16 +166,14 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek"/> works near <see cref="DateTime.MaxValue"/> without throwing.
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek"/> returns the expected actual based on the specified weekend definition.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeek_WhenNearMaxValue_ShouldReturnExpectedEnd()
+    [DynamicData(nameof(GetLastDateOfWeekWithDefinitionTestData))]
+    public void LastDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedEnd(DateTime input, CalendarWeekendDefinition weekend, DateTime expected)
     {
-        var date = DateTime.MaxValue.AddDays(-6); // 9999-12-25
-        var actual = date.LastDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
-
-        Assert.IsTrue(actual <= DateTime.MaxValue);
-        Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
+        var actual = input.LastDateOfWeek(weekend);
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -205,6 +188,21 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(kind, actual.Kind);
 
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfWeek_WhenWeekendIsUndefined_ShouldThrowExactly()
+    {
+        var date = new DateTime(2024, 1, 1);
+        var invalidWeekend = (CalendarWeekendDefinition)(-5);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = date.LastDateOfWeek(invalidWeekend);
+        });
     }
 
 }

@@ -6,8 +6,6 @@
 
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -28,20 +26,29 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.ToIsoString" />, with IncludeFractionalSeconds, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.ToIsoString" />, with CustomFormat, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DataRow("2024-04-20T15:30:45", false, "2024-04-20T15:30:45")]
-    [DataRow("2024-04-20T15:30:45.1234567", true, null)] // Validate that it returns a valid round-trip
-    public void ToIsoString_WithIncludeFractionalSeconds_ShouldRespectOption(string dateTimeStr, bool includeFraction, string? expected)
+    [DataRow("2024-04-20T15:30:45", "yyyy-MM-dd", "2024-04-20")]
+    [DataRow("2024-04-20T15:30:45", "HH:mm:ss", "15:30:45")]
+    public void ToIsoString_WithCustomFormat_ShouldReturnExpected(string inputStr, string format, string expected)
     {
-        var input = DateTime.Parse(dateTimeStr, CultureInfo.InvariantCulture);
-        var actual = input.ToIsoString(includeFraction);
+        var input = DateTime.Parse(inputStr, CultureInfo.InvariantCulture);
+        var actual = input.ToIsoString(format);
+        Assert.AreEqual(expected, actual);
+    }
 
-        if (expected != null)
-            Assert.AreEqual(expected, actual);
-        else
-            Assert.IsTrue(actual.StartsWith("2024-04-20T15:30:45."));
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.ToIsoString" />, with EmptyFormat, throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void ToIsoString_WithEmptyFormat_ShouldThrowExactly()
+    {
+        var input = new DateTime(2024, 4, 20);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            input.ToIsoString(string.Empty);
+        });
     }
 
     /// <summary>
@@ -70,28 +77,20 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.ToIsoString" />, with CustomFormat, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.ToIsoString" />, with IncludeFractionalSeconds, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DataRow("2024-04-20T15:30:45", "yyyy-MM-dd", "2024-04-20")]
-    [DataRow("2024-04-20T15:30:45", "HH:mm:ss", "15:30:45")]
-    public void ToIsoString_WithCustomFormat_ShouldReturnExpected(string inputStr, string format, string expected)
+    [DataRow("2024-04-20T15:30:45", false, "2024-04-20T15:30:45")]
+    [DataRow("2024-04-20T15:30:45.1234567", true, null)] // Validate that it returns a valid round-trip
+    public void ToIsoString_WithIncludeFractionalSeconds_ShouldRespectOption(string dateTimeStr, bool includeFraction, string? expected)
     {
-        var input = DateTime.Parse(inputStr, CultureInfo.InvariantCulture);
-        var actual = input.ToIsoString(format);
-        Assert.AreEqual(expected, actual);
+        var input = DateTime.Parse(dateTimeStr, CultureInfo.InvariantCulture);
+        var actual = input.ToIsoString(includeFraction);
+
+        if (expected != null)
+            Assert.AreEqual(expected, actual);
+        else
+            Assert.IsTrue(actual.StartsWith("2024-04-20T15:30:45."));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.ToIsoString" />, with EmptyFormat, throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void ToIsoString_WithEmptyFormat_ShouldThrowExactly()
-    {
-        var input = new DateTime(2024, 4, 20);
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            input.ToIsoString("");
-        });
-    }
 }

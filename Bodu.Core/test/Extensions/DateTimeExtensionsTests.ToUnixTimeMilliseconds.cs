@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.ToUnixTimeMilliseconds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,13 +9,25 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, RoundTripWithFromUnixTimeMilliseconds, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
+    {
+        DateTime input = new DateTime(2024, 4, 18, 14, 0, 0, DateTimeKind.Utc);
+        long millis = input.ToUnixTimeMilliseconds();
+
+        DateTime roundTrip = DateTimeExtensions.FromUnixTimeMilliseconds(millis);
+
+        Assert.AreEqual(input, roundTrip);
+    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when CalledWithUtc, returns the expected value.
@@ -27,18 +39,6 @@ public partial class DateTimeExtensionsTests
         long actual = input.ToUnixTimeMilliseconds();
 
         Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when KindIsUtc, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void ToUnixTimeMilliseconds_WhenKindIsUtc_ShouldReturnCorrectMilliseconds()
-    {
-        DateTime input = new DateTime(1970, 1, 1, 0, 0, 1, DateTimeKind.Utc); // +1 sec
-        long actual = input.ToUnixTimeMilliseconds();
-
-        Assert.AreEqual(1000, actual);
     }
 
     /// <summary>
@@ -73,14 +73,15 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when UsingMinValue, returns <see langword="true" />.
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when KindIsUtc, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
+    public void ToUnixTimeMilliseconds_WhenKindIsUtc_ShouldReturnCorrectMilliseconds()
     {
-        long actual = DateTime.MinValue.ToUnixTimeMilliseconds();
+        DateTime input = new DateTime(1970, 1, 1, 0, 0, 1, DateTimeKind.Utc); // +1 sec
+        long actual = input.ToUnixTimeMilliseconds();
 
-        Assert.IsTrue(actual < 0);
+        Assert.AreEqual(1000, actual);
     }
 
     /// <summary>
@@ -95,16 +96,14 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, RoundTripWithFromUnixTimeMilliseconds, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeMilliseconds" />, when UsingMinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void ToUnixTimeMilliseconds_RoundTripWithFromUnixTimeMilliseconds_ShouldMatchUtc()
+    public void ToUnixTimeMilliseconds_WhenUsingMinValue_ShouldBeNegativeLarge()
     {
-        DateTime input = new DateTime(2024, 4, 18, 14, 0, 0, DateTimeKind.Utc);
-        long millis = input.ToUnixTimeMilliseconds();
+        long actual = DateTime.MinValue.ToUnixTimeMilliseconds();
 
-        DateTime roundTrip = DateTimeExtensions.FromUnixTimeMilliseconds(millis);
-
-        Assert.AreEqual(input, roundTrip);
+        Assert.IsTrue(actual < 0);
     }
+
 }

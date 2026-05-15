@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.ItemEvicted.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that the ItemEvicted event is not triggered when capacity is not exceeded.
     /// </summary>
@@ -118,4 +119,5 @@ public partial class EvictingDictionaryTests
         dictionary.Clear();
         Assert.IsFalse(eventFired);
     }
+
 }

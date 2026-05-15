@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.FirstDateOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,25 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfMonth" />, when Called, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfMonthDataTestData))]
-    public void FirstDateOfMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DateTime expected)
-    {
-        DateTime actual = input.FirstDateOfMonth();
-
-        Assert.AreEqual(expected, actual);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfMonth" /> returns the expected value.
@@ -43,4 +29,17 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(kind, actual.Kind);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfMonth" />, when Called, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDateOfMonthDataTestData))]
+    public void FirstDateOfMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DateTime expected)
+    {
+        DateTime actual = input.FirstDateOfMonth();
+
+        Assert.AreEqual(expected, actual);
+    }
+
 }

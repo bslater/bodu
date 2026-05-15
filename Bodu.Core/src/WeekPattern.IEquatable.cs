@@ -10,6 +10,7 @@ public partial struct WeekPattern :
     System.IEquatable<WeekPattern>,
     System.IEquatable<byte>
 {
+
     /// <summary>
     /// Determines whether the specified object is equal to the current <see cref="WeekPattern"/>.
     /// </summary>
@@ -48,4 +49,5 @@ public partial struct WeekPattern :
     /// </summary>
     /// <returns>An <see cref="int"/> hash code consistent with <see cref="Equals(WeekPattern)"/>.</returns>
     public override int GetHashCode() => _selectedDays.GetHashCode();
+
 }

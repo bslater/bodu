@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.FirstDateOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,13 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInMonth" />, when Called, returns the expected value.
     /// </summary>
@@ -47,6 +46,17 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInMonth" />, when UsingMaxValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
+    {
+        DateOnly actual = DateOnly.MaxValue.FirstDateOfWeekInMonth(DayOfWeek.Friday);
+
+        Assert.IsTrue(actual <= DateOnly.MaxValue);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInMonth" />, when UsingMinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
@@ -57,14 +67,4 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(actual >= DateOnly.MinValue && actual <= DateOnly.MinValue.AddMonths(1).AddDays(-1));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInMonth" />, when UsingMaxValue, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeekInMonth_WhenUsingMaxValue_ShouldReturnValidResult()
-    {
-        DateOnly actual = DateOnly.MaxValue.FirstDateOfWeekInMonth(DayOfWeek.Friday);
-
-        Assert.IsTrue(actual <= DateOnly.MaxValue);
-    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.AsArray.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.AsArray"/> returns the underlying array whose first
     /// <see cref="PooledBufferBuilder{T}.WrittenCount"/> elements match those visible via
@@ -24,6 +25,22 @@ public partial class PooledBufferBuilderTests
         var array = builder.AsArray();
 
         CollectionAssert.AreEqual(span.ToArray(), array.Take(span.Length).ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="PooledBufferBuilder{T}.AsArray"/> after disposal throws
+    /// <see cref="ObjectDisposedException"/>.
+    /// </summary>
+    [TestMethod]
+    public void AsArray_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var builder = new PooledBufferBuilder<int>();
+        builder.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = builder.AsArray();
+        });
     }
 
     /// <summary>
@@ -55,19 +72,4 @@ public partial class PooledBufferBuilderTests
         Assert.AreEqual(99, builder.WrittenSpan[0]);
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="PooledBufferBuilder{T}.AsArray"/> after disposal throws
-    /// <see cref="ObjectDisposedException"/>.
-    /// </summary>
-    [TestMethod]
-    public void AsArray_WhenDisposed_ShouldThrowObjectDisposedException()
-    {
-        var builder = new PooledBufferBuilder<int>();
-        builder.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = builder.AsArray();
-        });
-    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IndexedPriorityQueueDebugViewTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,6 +9,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public class IndexedPriorityQueueDebugViewTests
 {
+
     /// <summary>
     /// Verifies that the debug view constructor throws <see cref="ArgumentNullException" /> when given a null queue.
     /// </summary>
@@ -19,6 +20,24 @@ public class IndexedPriorityQueueDebugViewTests
         {
             _ = new IndexedPriorityQueueDebugView<string, int>(null!);
         });
+    }
+
+    /// <summary>
+    /// Verifies that the debug view does not mutate the queue.
+    /// </summary>
+    [TestMethod]
+    public void Items_WhenAccessed_ShouldNotMutateQueue()
+    {
+        var queue = new IndexedPriorityQueue<string, int>();
+        queue.Enqueue("a", 1);
+        queue.Enqueue("b", 2);
+
+        var view = new IndexedPriorityQueueDebugView<string, int>(queue);
+        _ = view.Items;
+
+        Assert.AreEqual(2, queue.Count);
+        Assert.IsTrue(queue.Contains("a"));
+        Assert.IsTrue(queue.Contains("b"));
     }
 
     /// <summary>
@@ -53,21 +72,4 @@ public class IndexedPriorityQueueDebugViewTests
         Assert.AreEqual(0, view.Items.Length);
     }
 
-    /// <summary>
-    /// Verifies that the debug view does not mutate the queue.
-    /// </summary>
-    [TestMethod]
-    public void Items_WhenAccessed_ShouldNotMutateQueue()
-    {
-        var queue = new IndexedPriorityQueue<string, int>();
-        queue.Enqueue("a", 1);
-        queue.Enqueue("b", 2);
-
-        var view = new IndexedPriorityQueueDebugView<string, int>(queue);
-        _ = view.Items;
-
-        Assert.AreEqual(2, queue.Count);
-        Assert.IsTrue(queue.Contains("a"));
-        Assert.IsTrue(queue.Contains("b"));
-    }
 }

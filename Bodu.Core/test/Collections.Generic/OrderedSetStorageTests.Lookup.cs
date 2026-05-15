@@ -5,12 +5,88 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetStorageTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="false" /> for an
+    /// absent element.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenItemIsAbsent_ShouldReturnFalse()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+
+        Assert.IsFalse(sut.Contains(99));
+    }
+
+    // --------------------------------------------------------
+    // Contains — argument validation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> rejects a <see langword="null" /> item.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenItemIsNull_ShouldThrowArgumentNullException()
+    {
+        OrderedSetStorage<string> sut = CreateStorage(["a"]);
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.Contains(null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="true" /> for a
+    /// present element.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenItemIsPresent_ShouldReturnTrue()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+
+        Assert.IsTrue(sut.Contains(2));
+    }
+
+    /// <summary>
+    /// Verifies that hash collisions still resolve to the correct membership answer.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenItemsHashCollide_ShouldResolveCorrectly()
+    {
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var a = new HashCollider("a");
+        var b = new HashCollider("b");
+        var c = new HashCollider("c");
+
+        sut.Add(a);
+        sut.Add(b);
+
+        Assert.IsTrue(sut.Contains(a));
+        Assert.IsTrue(sut.Contains(b));
+        Assert.IsFalse(sut.Contains(c));
+    }
+
+    // --------------------------------------------------------
+    // Contains — basic behaviour
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="false" /> on an
+    /// empty storage.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenStorageIsEmpty_ShouldReturnFalse()
+    {
+        var sut = new OrderedSetStorage<int>(0, null);
+
+        Assert.IsFalse(sut.Contains(99));
+    }
     // --------------------------------------------------------
     // GetAt
     // --------------------------------------------------------
@@ -34,21 +110,6 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.GetAt(int)" /> on an empty storage with index zero
-    /// throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void GetAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
-    {
-        var sut = new OrderedSetStorage<int>(0, null);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = sut.GetAt(0);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="OrderedSetStorage{T}.GetAt(int)" /> returns the element at the requested
     /// insertion-order index.
     /// </summary>
@@ -63,81 +124,19 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(expected, sut.GetAt(index));
     }
 
-    // --------------------------------------------------------
-    // Contains — argument validation
-    // --------------------------------------------------------
-
     /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> rejects a <see langword="null" /> item.
+    /// Verifies that <see cref="OrderedSetStorage{T}.GetAt(int)" /> on an empty storage with index zero
+    /// throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenItemIsNull_ShouldThrowArgumentNullException()
-    {
-        OrderedSetStorage<string> sut = CreateStorage(["a"]);
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = sut.Contains(null!);
-        });
-    }
-
-    // --------------------------------------------------------
-    // Contains — basic behaviour
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="false" /> on an
-    /// empty storage.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenStorageIsEmpty_ShouldReturnFalse()
+    public void GetAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
     {
         var sut = new OrderedSetStorage<int>(0, null);
 
-        Assert.IsFalse(sut.Contains(99));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="true" /> for a
-    /// present element.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenItemIsPresent_ShouldReturnTrue()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-
-        Assert.IsTrue(sut.Contains(2));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.Contains(T)" /> returns <see langword="false" /> for an
-    /// absent element.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenItemIsAbsent_ShouldReturnFalse()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-
-        Assert.IsFalse(sut.Contains(99));
-    }
-
-    /// <summary>
-    /// Verifies that hash collisions still resolve to the correct membership answer.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenItemsHashCollide_ShouldResolveCorrectly()
-    {
-        var sut = new OrderedSetStorage<HashCollider>(0, null);
-        var a = new HashCollider("a");
-        var b = new HashCollider("b");
-        var c = new HashCollider("c");
-
-        sut.Add(a);
-        sut.Add(b);
-
-        Assert.IsTrue(sut.Contains(a));
-        Assert.IsTrue(sut.Contains(b));
-        Assert.IsFalse(sut.Contains(c));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = sut.GetAt(0);
+        });
     }
 
     // --------------------------------------------------------
@@ -156,6 +155,27 @@ public partial class OrderedSetStorageTests
         {
             _ = sut.IndexOf(null!);
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.IndexOf(T)" /> correctly resolves indices for
+    /// hash-colliding items.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenItemsHashCollide_ShouldReturnCorrectIndex()
+    {
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var a = new HashCollider("a");
+        var b = new HashCollider("b");
+        var c = new HashCollider("c");
+
+        sut.Add(a);
+        sut.Add(b);
+        sut.Add(c);
+
+        Assert.AreEqual(0, sut.IndexOf(a));
+        Assert.AreEqual(1, sut.IndexOf(b));
+        Assert.AreEqual(2, sut.IndexOf(c));
     }
 
     // --------------------------------------------------------
@@ -189,24 +209,4 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(expected, sut.IndexOf(item));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.IndexOf(T)" /> correctly resolves indices for
-    /// hash-colliding items.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WhenItemsHashCollide_ShouldReturnCorrectIndex()
-    {
-        var sut = new OrderedSetStorage<HashCollider>(0, null);
-        var a = new HashCollider("a");
-        var b = new HashCollider("b");
-        var c = new HashCollider("c");
-
-        sut.Add(a);
-        sut.Add(b);
-        sut.Add(c);
-
-        Assert.AreEqual(0, sut.IndexOf(a));
-        Assert.AreEqual(1, sut.IndexOf(b));
-        Assert.AreEqual(2, sut.IndexOf(c));
-    }
 }

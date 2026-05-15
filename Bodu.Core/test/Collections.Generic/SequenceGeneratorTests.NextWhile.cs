@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGeneratorTests.NextWhile.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,44 @@ namespace Bodu.Collections.Generic;
 
 public partial class SequenceGeneratorTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.NextWhile" /> returns an empty sequence if the condition fails immediately.
+    /// </summary>
+    [TestMethod]
+    public void NextWhile_WhenInitialConditionIsFalse_ShouldReturnEmptySequence()
+    {
+        var actual = SequenceGenerator.NextWhile(
+            5,
+            x => false,
+            x => x + 1).ToArray();
+
+        Assert.AreEqual(0, actual.Length);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.NextWhile" /> throws when the iterate function is null for a stateful generator.
+    /// </summary>
+    [TestMethod]
+    public void NextWhile_WhenIterateFunctionIsNull_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            SequenceGenerator.NextWhile(new { X = 0 }, x => true, null!, x => x.X).ToArray();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.NextWhile" /> throws when the actual selector is null.
+    /// </summary>
+    [TestMethod]
+    public void NextWhile_WhenResultSelectorIsNull_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            SequenceGenerator.NextWhile(0, x => true, (Func<int, int>)null!).ToArray();
+        });
+    }
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.NextWhile" /> applies indexed transformations until the condition fails.
     /// </summary>
@@ -51,41 +89,4 @@ public partial class SequenceGeneratorTests
         CollectionAssert.AreEqual(new[] { 1, 1, 2, 3 }, actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.NextWhile" /> throws when the actual selector is null.
-    /// </summary>
-    [TestMethod]
-    public void NextWhile_WhenResultSelectorIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            SequenceGenerator.NextWhile(0, x => true, (Func<int, int>)null!).ToArray();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.NextWhile" /> returns an empty sequence if the condition fails immediately.
-    /// </summary>
-    [TestMethod]
-    public void NextWhile_WhenInitialConditionIsFalse_ShouldReturnEmptySequence()
-    {
-        var actual = SequenceGenerator.NextWhile(
-            5,
-            x => false,
-            x => x + 1).ToArray();
-
-        Assert.AreEqual(0, actual.Length);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.NextWhile" /> throws when the iterate function is null for a stateful generator.
-    /// </summary>
-    [TestMethod]
-    public void NextWhile_WhenIterateFunctionIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            SequenceGenerator.NextWhile(new { X = 0 }, x => true, null!, x => x.X).ToArray();
-        });
-    }
 }

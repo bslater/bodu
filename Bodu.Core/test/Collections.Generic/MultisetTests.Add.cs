@@ -1,80 +1,30 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultisetTests.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultisetTests
 {
-    // --------------------------------------------------------
-    // Add(T item)
-    // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Add(T)"/> increments <see cref="Multiset{T}.Count"/> by one.
+    /// Verifies that <see cref="Multiset{T}.Add(T, int)"/> accumulates counts when called multiple times for the same element.
     /// </summary>
     [TestMethod]
-    public void Add_WhenItemAdded_ShouldIncrementCount()
-    {
-        var mvd = new Multiset<int>();
-
-        mvd.Add(1);
-
-        Assert.AreEqual(1, mvd.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Add(T)"/> increments the multiplicity of an existing element.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenSameItemAddedTwice_ShouldIncrementCountOf()
-    {
-        var mvd = new Multiset<int>();
-
-        mvd.Add(7);
-        mvd.Add(7);
-
-        Assert.AreEqual(2, mvd.CountOf(7));
-        Assert.AreEqual(2, mvd.Count);
-        Assert.AreEqual(1, mvd.DistinctCount);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Add(T)"/> increases <see cref="Multiset{T}.DistinctCount"/> only for new elements.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenDistinctItemsAdded_ShouldIncrementDistinctCount()
+    public void Add_WhenCalledMultipleTimesForSameElement_ShouldAccumulateCounts()
     {
         var mvd = new Multiset<string>();
 
-        mvd.Add("a");
-        mvd.Add("b");
-        mvd.Add("a");
+        mvd.Add("x", 3);
+        mvd.Add("x", 4);
 
-        Assert.AreEqual(2, mvd.DistinctCount);
-    }
-
-    // --------------------------------------------------------
-    // Add(T item, int count)
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Add(T, int)"/> throws <see cref="ArgumentOutOfRangeException"/> when count is zero.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenCountIsZero_ShouldThrowArgumentOutOfRangeException()
-    {
-        var mvd = new Multiset<int>();
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            mvd.Add(1, 0);
-        });
+        Assert.AreEqual(7, mvd.CountOf("x"));
+        Assert.AreEqual(7, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
     }
 
     /// <summary>
@@ -105,20 +55,53 @@ public partial class MultisetTests
         Assert.AreEqual(5, mvd.Count);
     }
 
+    // --------------------------------------------------------
+    // Add(T item, int count)
+    // --------------------------------------------------------
+
     /// <summary>
-    /// Verifies that <see cref="Multiset{T}.Add(T, int)"/> accumulates counts when called multiple times for the same element.
+    /// Verifies that <see cref="Multiset{T}.Add(T, int)"/> throws <see cref="ArgumentOutOfRangeException"/> when count is zero.
     /// </summary>
     [TestMethod]
-    public void Add_WhenCalledMultipleTimesForSameElement_ShouldAccumulateCounts()
+    public void Add_WhenCountIsZero_ShouldThrowArgumentOutOfRangeException()
+    {
+        var mvd = new Multiset<int>();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            mvd.Add(1, 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Add(T)"/> increases <see cref="Multiset{T}.DistinctCount"/> only for new elements.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenDistinctItemsAdded_ShouldIncrementDistinctCount()
     {
         var mvd = new Multiset<string>();
 
-        mvd.Add("x", 3);
-        mvd.Add("x", 4);
+        mvd.Add("a");
+        mvd.Add("b");
+        mvd.Add("a");
 
-        Assert.AreEqual(7, mvd.CountOf("x"));
-        Assert.AreEqual(7, mvd.Count);
-        Assert.AreEqual(1, mvd.DistinctCount);
+        Assert.AreEqual(2, mvd.DistinctCount);
+    }
+    // --------------------------------------------------------
+    // Add(T item)
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Add(T)"/> increments <see cref="Multiset{T}.Count"/> by one.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenItemAdded_ShouldIncrementCount()
+    {
+        var mvd = new Multiset<int>();
+
+        mvd.Add(1);
+
+        Assert.AreEqual(1, mvd.Count);
     }
 
     /// <summary>
@@ -143,4 +126,21 @@ public partial class MultisetTests
         for (var i = 0; i < 1000; i++)
             Assert.AreEqual((i % 5) + 1, mvd.CountOf(i));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Multiset{T}.Add(T)"/> increments the multiplicity of an existing element.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenSameItemAddedTwice_ShouldIncrementCountOf()
+    {
+        var mvd = new Multiset<int>();
+
+        mvd.Add(7);
+        mvd.Add(7);
+
+        Assert.AreEqual(2, mvd.CountOf(7));
+        Assert.AreEqual(2, mvd.Count);
+        Assert.AreEqual(1, mvd.DistinctCount);
+    }
+
 }

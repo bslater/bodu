@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.MonthName.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,28 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 using System.Globalization;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.MonthName" />, with Culture, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(MonthNameTestData))]
-    public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
-    {
-        DateTime input = new DateTime(year, month, 1);
-
-        string actual = input.MonthName(culture);
-
-        Assert.AreEqual(expected, actual);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when CultureIsNull, returns the expected value.
@@ -56,6 +40,18 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when UsingMaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void MonthName_WhenUsingMaxValue_ShouldReturnExpected()
+    {
+        DateTime input = DateTime.MaxValue; // 9999-12-31
+        string actual = input.MonthName(new CultureInfo("en-US"));
+
+        Assert.AreEqual("December", actual);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when UsingMinValue, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -68,14 +64,17 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.MonthName" />, when UsingMaxValue, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.MonthName" />, with Culture, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void MonthName_WhenUsingMaxValue_ShouldReturnExpected()
+    [DynamicData(nameof(MonthNameTestData))]
+    public void MonthName_WithCulture_ShouldReturnLocalizedName(int year, int month, CultureInfo culture, string expected)
     {
-        DateTime input = DateTime.MaxValue; // 9999-12-31
-        string actual = input.MonthName(new CultureInfo("en-US"));
+        DateTime input = new DateTime(year, month, 1);
 
-        Assert.AreEqual("December", actual);
+        string actual = input.MonthName(culture);
+
+        Assert.AreEqual(expected, actual);
     }
+
 }

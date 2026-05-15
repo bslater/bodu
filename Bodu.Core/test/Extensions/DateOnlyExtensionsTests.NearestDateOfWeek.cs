@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.NearestDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
@@ -45,18 +44,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
-    /// </summary>
-    [TestMethod]
-    public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
-    {
-        // Wednesday 17 April 2024, target Sunday: Sun 14 (3 days back) vs Sun 21 (4 days fwd) — back wins.
-        var date = new DateOnly(2024, 4, 17);
-        DateOnly actual = date.NearestDateOfWeek(DayOfWeek.Sunday);
-        Assert.AreEqual(new DateOnly(2024, 4, 14), actual);
-    }
-
-    /// <summary>
     /// Verifies that an undefined <see cref="DayOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
@@ -68,6 +55,18 @@ public partial class DateOnlyExtensionsTests
         {
             _ = date.NearestDateOfWeek((DayOfWeek)999);
         });
+    }
+
+    /// <summary>
+    /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
+    /// </summary>
+    [TestMethod]
+    public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
+    {
+        // Wednesday 17 April 2024, target Sunday: Sun 14 (3 days back) vs Sun 21 (4 days fwd) — back wins.
+        var date = new DateOnly(2024, 4, 17);
+        DateOnly actual = date.NearestDateOfWeek(DayOfWeek.Sunday);
+        Assert.AreEqual(new DateOnly(2024, 4, 14), actual);
     }
 
     // =========================================================================
@@ -96,4 +95,5 @@ public partial class DateOnlyExtensionsTests
             _ = DateOnlyExtensions.GetNearestDateOfWeek(2024, 4, 17, (DayOfWeek)99);
         });
     }
+
 }

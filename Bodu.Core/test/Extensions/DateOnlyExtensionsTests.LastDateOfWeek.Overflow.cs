@@ -10,6 +10,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeek(DateOnly, CultureInfo)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when projecting the date forward to the end of its week would exceed
@@ -45,4 +46,5 @@ public partial class DateOnlyExtensionsTests
             _ = date.LastDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
         });
     }
+
 }

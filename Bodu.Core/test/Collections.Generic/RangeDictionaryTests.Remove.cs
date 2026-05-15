@@ -5,58 +5,56 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeDictionaryTests
 {
-    // --------------------------------------------------------
-    // Remove — argument validation
-    // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that removing with a <see langword="null" /> start is rejected.
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Clear" /> on an empty dictionary remains empty.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenStartIsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new RangeDictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = sut.Remove(null!, "z");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that removing with a <see langword="null" /> end is rejected.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenEndIsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new RangeDictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = sut.Remove("a", null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that removing a degenerate range is rejected.
-    /// </summary>
-    [TestMethod]
-    [DataRow(5, 5)]
-    [DataRow(10, 5)]
-    public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
+    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
     {
         var sut = new RangeDictionary<int, string>();
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = sut.Remove(start, end);
-        });
+        sut.Clear();
+
+        Assert.AreEqual(0, sut.Count);
+    }
+
+    // --------------------------------------------------------
+    // Clear
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Clear" /> empties the dictionary.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenDictionaryHasEntries_ShouldRemoveAllEntries()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"), (20, 30, "B"));
+
+        sut.Clear();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.IsFalse(sut.ContainsKey(5));
+    }
+
+    /// <summary>
+    /// Verifies that entries added after <see cref="RangeDictionary{TKey, TValue}.Clear" /> are tracked
+    /// normally and do not conflict with previously stored ranges.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenEntriesReAddedAfterClear_ShouldTrackNewEntries()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"), (20, 30, "B"));
+
+        sut.Clear();
+        sut.Add(0, 100, "new");
+
+        AssertContents(sut, (0, 100, "new"));
     }
 
     // --------------------------------------------------------
@@ -74,6 +72,47 @@ public partial class RangeDictionaryTests
         var removed = sut.Remove(0, 10);
 
         Assert.IsFalse(removed);
+    }
+
+    /// <summary>
+    /// Verifies that removing with a <see langword="null" /> end is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenEndIsNull_ShouldThrowArgumentNullException()
+    {
+        var sut = new RangeDictionary<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.Remove("a", null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a removed entry is no longer reachable through lookups.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenEntryRemoved_ShouldNotBeReachable()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"), (20, 30, "B"));
+
+        sut.Remove(0, 10);
+
+        Assert.IsFalse(sut.ContainsKey(5));
+        Assert.IsFalse(sut.TryGetValue(5, out _));
+    }
+
+    /// <summary>
+    /// Verifies that removing a middle entry preserves the order of the remaining entries.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenMiddleEntryRemoved_ShouldPreserveOrder()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"), (10, 15, "B"), (20, 25, "C"));
+
+        Assert.IsTrue(sut.Remove(10, 15));
+
+        AssertContents(sut, (0, 5, "A"), (20, 25, "C"));
     }
 
     /// <summary>
@@ -107,75 +146,36 @@ public partial class RangeDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that removing a middle entry preserves the order of the remaining entries.
+    /// Verifies that removing a degenerate range is rejected.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenMiddleEntryRemoved_ShouldPreserveOrder()
-    {
-        RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"), (10, 15, "B"), (20, 25, "C"));
-
-        Assert.IsTrue(sut.Remove(10, 15));
-
-        AssertContents(sut, (0, 5, "A"), (20, 25, "C"));
-    }
-
-    /// <summary>
-    /// Verifies that a removed entry is no longer reachable through lookups.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenEntryRemoved_ShouldNotBeReachable()
-    {
-        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"), (20, 30, "B"));
-
-        sut.Remove(0, 10);
-
-        Assert.IsFalse(sut.ContainsKey(5));
-        Assert.IsFalse(sut.TryGetValue(5, out _));
-    }
-
-    // --------------------------------------------------------
-    // Clear
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Clear" /> empties the dictionary.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenDictionaryHasEntries_ShouldRemoveAllEntries()
-    {
-        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"), (20, 30, "B"));
-
-        sut.Clear();
-
-        Assert.AreEqual(0, sut.Count);
-        Assert.IsFalse(sut.ContainsKey(5));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Clear" /> on an empty dictionary remains empty.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
+    [DataRow(5, 5)]
+    [DataRow(10, 5)]
+    public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
     {
         var sut = new RangeDictionary<int, string>();
 
-        sut.Clear();
-
-        Assert.AreEqual(0, sut.Count);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = sut.Remove(start, end);
+        });
     }
+    // --------------------------------------------------------
+    // Remove — argument validation
+    // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that entries added after <see cref="RangeDictionary{TKey, TValue}.Clear" /> are tracked
-    /// normally and do not conflict with previously stored ranges.
+    /// Verifies that removing with a <see langword="null" /> start is rejected.
     /// </summary>
     [TestMethod]
-    public void Clear_WhenEntriesReAddedAfterClear_ShouldTrackNewEntries()
+    public void Remove_WhenStartIsNull_ShouldThrowArgumentNullException()
     {
-        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"), (20, 30, "B"));
+        var sut = new RangeDictionary<string, int>();
 
-        sut.Clear();
-        sut.Add(0, 100, "new");
-
-        AssertContents(sut, (0, 100, "new"));
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.Remove(null!, "z");
+        });
     }
+
 }

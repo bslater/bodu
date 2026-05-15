@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public sealed partial class IEnumerableExtensionsTests_ContainsAll
 {
+
     /// <summary>
     /// Verifies that <c>ContainsAll</c> returns the correct result when <paramref name="items" /> is a lazy iterator (not an
     /// <see cref="ICollection{T}" />), exercising the branch where the empty-collection fast path is skipped.
@@ -26,4 +27,5 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
                 yield return start + i;
         }
     }
+
 }

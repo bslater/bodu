@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ShuffleHelpersTests.ShuffleAndYieldInternal.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class ShuffleHelpersTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYieldInternal{T}(T[], IRandomGenerator, int)" /> yields every element of
     /// the supplied buffer exactly once when <c>count</c> equals the buffer length, exercising the iterator's loop body, and that
@@ -22,20 +23,6 @@ public partial class ShuffleHelpersTests
         Assert.AreEqual(5, actual.Length);
         CollectionAssert.AreEquivalent(new[] { 1, 2, 3, 4, 5 }, actual);
         CollectionAssert.AllItemsAreUnique(actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYieldInternal{T}(T[], IRandomGenerator, int)" /> yields nothing when the
-    /// requested <c>count</c> is zero, exercising the loop's immediate-exit branch.
-    /// </summary>
-    [TestMethod]
-    public void ShuffleAndYieldInternal_WhenCountIsZero_ShouldYieldNoElements()
-    {
-        var buffer = new[] { 1, 2, 3 };
-
-        var actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(7), 0).ToArray();
-
-        Assert.AreEqual(0, actual.Length);
     }
 
     /// <summary>
@@ -54,4 +41,19 @@ public partial class ShuffleHelpersTests
         foreach (var value in actual)
             Assert.IsTrue(value is 10 or 20 or 30 or 40 or 50);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ShuffleHelpers.ShuffleAndYieldInternal{T}(T[], IRandomGenerator, int)" /> yields nothing when the
+    /// requested <c>count</c> is zero, exercising the loop's immediate-exit branch.
+    /// </summary>
+    [TestMethod]
+    public void ShuffleAndYieldInternal_WhenCountIsZero_ShouldYieldNoElements()
+    {
+        var buffer = new[] { 1, 2, 3 };
+
+        var actual = ShuffleHelpers.ShuffleAndYieldInternal(buffer, new XorShiftRandom(7), 0).ToArray();
+
+        Assert.AreEqual(0, actual.Length);
+    }
+
 }

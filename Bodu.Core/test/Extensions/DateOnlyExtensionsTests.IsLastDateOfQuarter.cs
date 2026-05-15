@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.IsLastDateOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,19 +8,6 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.IsFirstDateOfQuarter(DateOnly)" /> returns <c>true</c> only when the date is the
-    /// first day of a quarter based on the <see cref="CalendarQuarterDefinition.JanuaryToDecember" /> structure.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.IsLastDateOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests))]
-    public void IsLastDateOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime inputDateTime, bool expected)
-    {
-        var input = DateOnly.FromDateTime(inputDateTime);
-        var actual = input.IsLastDateOfQuarter();
-
-        Assert.AreEqual(expected, actual);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.IsLastDateOfQuarter(DateOnly, CalendarQuarterDefinition)" /> returns <c>true</c> only
@@ -48,20 +35,18 @@ public partial class DateOnlyExtensionsTests
         var actual = input.IsLastDateOfQuarter(definition);
         Assert.IsFalse(actual);
     }
-
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.IsLastDateOfQuarter" />, when DefinitionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that <see cref="DateOnlyExtensions.IsFirstDateOfQuarter(DateOnly)" /> returns <c>true</c> only when the date is the
+    /// first day of a quarter based on the <see cref="CalendarQuarterDefinition.JanuaryToDecember" /> structure.
     /// </summary>
     [TestMethod]
-    public void IsLastDateOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
+    [DynamicData(nameof(DateTimeExtensionsTests.IsLastDateOfQuarterJanuaryDecemberTestData), typeof(DateTimeExtensionsTests))]
+    public void IsLastDateOfQuarter_WhenDateIsQuarterStartAndDefaultDefinition_ShouldReturnTrue(DateTime inputDateTime, bool expected)
     {
-        var input = new DateOnly(2024, 4, 20);
-        var definition = (CalendarQuarterDefinition)999;
+        var input = DateOnly.FromDateTime(inputDateTime);
+        var actual = input.IsLastDateOfQuarter();
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = input.IsLastDateOfQuarter(definition);
-        });
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -79,6 +64,21 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsLastDateOfQuarter" />, when DefinitionIsInvalid, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void IsLastDateOfQuarter_WhenDefinitionIsInvalid_ShouldThrowExactly()
+    {
+        var input = new DateOnly(2024, 4, 20);
+        var definition = (CalendarQuarterDefinition)999;
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.IsLastDateOfQuarter(definition);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.IsLastDateOfQuarter" />, when UsingValidQuarterProvider, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -92,4 +92,5 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(expected, actual);
     }
+
 }

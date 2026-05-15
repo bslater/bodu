@@ -1,29 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ShuffleHelpersTests.ShuffleAndYield.NoCount.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Collections.Generic.Extensions;
-
 namespace Bodu.Collections.Generic;
 
 public partial class ShuffleHelpersTests
 {
-    /// <summary>
-    /// Verifies that the count-less <see cref="ShuffleHelpers.ShuffleAndYield{T}(IEnumerable{T}, IRandomGenerator)" /> overload returns
-    /// every element of the source sequence in a shuffled order.
-    /// </summary>
-    [TestMethod]
-    public void ShuffleAndYield_IEnumerable_NoCount_ShouldReturnAllElements()
-    {
-        var source = Enumerable.Range(1, 10).ToList();
-        var actual = ShuffleHelpers.ShuffleAndYield(source.AsEnumerable(), new XorShiftRandom(7)).ToArray();
-
-        Assert.AreEqual(source.Count, actual.Length);
-        CollectionAssert.AreEquivalent(source, actual);
-        CollectionAssert.AllItemsAreUnique(actual);
-    }
 
     /// <summary>
     /// Verifies that the count-less <see cref="ShuffleHelpers.ShuffleAndYield{T}(T[], IRandomGenerator)" /> overload returns every
@@ -41,20 +25,6 @@ public partial class ShuffleHelpersTests
     }
 
     /// <summary>
-    /// Verifies that the count-less <see cref="ShuffleHelpers.ShuffleAndYield{T}(IEnumerable{T}, IRandomGenerator)" /> overload throws
-    /// <see cref="ArgumentNullException" /> when the source is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void ShuffleAndYield_IEnumerable_NoCount_WhenSourceIsNull_ShouldThrowExactly()
-    {
-        IEnumerable<int> source = null!;
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom()).ToArray();
-        });
-    }
-
-    /// <summary>
     /// Verifies that the count-less <see cref="ShuffleHelpers.ShuffleAndYield{T}(T[], IRandomGenerator)" /> overload throws
     /// <see cref="ArgumentNullException" /> when the array is <see langword="null" />.
     /// </summary>
@@ -65,6 +35,34 @@ public partial class ShuffleHelpersTests
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             _ = ShuffleHelpers.ShuffleAndYield(array, new XorShiftRandom()).ToArray();
+        });
+    }
+    /// <summary>
+    /// Verifies that the count-less <see cref="ShuffleHelpers.ShuffleAndYield{T}(IEnumerable{T}, IRandomGenerator)" /> overload returns
+    /// every element of the source sequence in a shuffled order.
+    /// </summary>
+    [TestMethod]
+    public void ShuffleAndYield_IEnumerable_NoCount_ShouldReturnAllElements()
+    {
+        var source = Enumerable.Range(1, 10).ToList();
+        var actual = ShuffleHelpers.ShuffleAndYield(source.AsEnumerable(), new XorShiftRandom(7)).ToArray();
+
+        Assert.AreEqual(source.Count, actual.Length);
+        CollectionAssert.AreEquivalent(source, actual);
+        CollectionAssert.AllItemsAreUnique(actual);
+    }
+
+    /// <summary>
+    /// Verifies that the count-less <see cref="ShuffleHelpers.ShuffleAndYield{T}(IEnumerable{T}, IRandomGenerator)" /> overload throws
+    /// <see cref="ArgumentNullException" /> when the source is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ShuffleAndYield_IEnumerable_NoCount_WhenSourceIsNull_ShouldThrowExactly()
+    {
+        IEnumerable<int> source = null!;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = ShuffleHelpers.ShuffleAndYield(source, new XorShiftRandom()).ToArray();
         });
     }
 
@@ -103,4 +101,5 @@ public partial class ShuffleHelpersTests
     }
 
 #endif
+
 }

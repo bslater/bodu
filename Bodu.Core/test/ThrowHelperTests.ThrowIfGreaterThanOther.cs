@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfGreaterThanOther{T}" /> contract matrix with explicit
     /// ParamName disambiguation: when the guard fails, ParamName must be the name of the <c>value</c>
@@ -63,4 +64,5 @@ public partial class ThrowHelperTests
     [DataRow(-1, 0)]
     [DataRow(int.MinValue, int.MaxValue)]
     public void ThrowIfGreaterThanOther_WhenValueIsLessThanOrEqualToOther_ShouldNotThrow(int value, int other) => ThrowHelper.ThrowIfGreaterThanOther(value, other);
+
 }

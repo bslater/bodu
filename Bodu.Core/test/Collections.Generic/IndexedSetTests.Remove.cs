@@ -5,28 +5,41 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class IndexedSetTests
 {
+
+    /// <summary>
+    /// Verifies that calling <see cref="IndexedSet{T}.Clear" /> on an already-empty set leaves it empty.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
+    {
+        var sut = new IndexedSet<int>();
+
+        sut.Clear();
+
+        Assert.AreEqual(0, sut.Count);
+    }
+
     // --------------------------------------------------------
-    // Remove — argument validation
+    // Clear
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.Remove(T)" /> rejects a <see langword="null" /> item.
+    /// Verifies that <see cref="IndexedSet{T}.Clear" /> empties the set.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Clear_WhenCalled_ShouldRemoveAllElements()
     {
-        IndexedSet<string> sut = CreateSet(["a"]);
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = sut.Remove(null!);
-        });
+        sut.Clear();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.IsFalse(sut.Contains(1));
     }
 
     // --------------------------------------------------------
@@ -45,6 +58,23 @@ public partial class IndexedSetTests
 
         Assert.IsFalse(removed);
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
+    }
+    // --------------------------------------------------------
+    // Remove — argument validation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedSet{T}.Remove(T)" /> rejects a <see langword="null" /> item.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
+    {
+        IndexedSet<string> sut = CreateSet(["a"]);
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.Remove(null!);
+        });
     }
 
     /// <summary>
@@ -86,21 +116,6 @@ public partial class IndexedSetTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.RemoveAt(int)" /> on an empty set throws
-    /// <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void RemoveAt_WhenSetIsEmpty_ShouldThrowArgumentOutOfRangeException()
-    {
-        var sut = new IndexedSet<int>();
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            sut.RemoveAt(0);
-        });
-    }
-
     // --------------------------------------------------------
     // RemoveAt — behaviour
     // --------------------------------------------------------
@@ -138,34 +153,19 @@ public partial class IndexedSetTests
         Assert.AreEqual(-1, sut.IndexOf(2));
     }
 
-    // --------------------------------------------------------
-    // Clear
-    // --------------------------------------------------------
-
     /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.Clear" /> empties the set.
+    /// Verifies that <see cref="IndexedSet{T}.RemoveAt(int)" /> on an empty set throws
+    /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void Clear_WhenCalled_ShouldRemoveAllElements()
-    {
-        IndexedSet<int> sut = CreateSet([1, 2, 3]);
-
-        sut.Clear();
-
-        Assert.AreEqual(0, sut.Count);
-        Assert.IsFalse(sut.Contains(1));
-    }
-
-    /// <summary>
-    /// Verifies that calling <see cref="IndexedSet{T}.Clear" /> on an already-empty set leaves it empty.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
+    public void RemoveAt_WhenSetIsEmpty_ShouldThrowArgumentOutOfRangeException()
     {
         var sut = new IndexedSet<int>();
 
-        sut.Clear();
-
-        Assert.AreEqual(0, sut.Count);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            sut.RemoveAt(0);
+        });
     }
+
 }

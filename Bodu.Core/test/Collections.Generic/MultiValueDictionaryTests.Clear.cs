@@ -1,17 +1,44 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.Clear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that clearing an already-empty dictionary is a no-op and does not invalidate an active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenAlreadyEmpty_ShouldNotInvalidateActiveEnumerator()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+
+        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
+
+        mvd.Clear();
+
+        Assert.IsFalse(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="MultiValueDictionary{TKey,TValue}.Clear"/> on an already-empty dictionary leaves it in a valid empty state.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+
+        mvd.Clear();
+
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.KeyCount);
+    }
     /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Clear"/> removes all entries.
     /// </summary>
@@ -27,20 +54,6 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(0, mvd.Count);
         Assert.AreEqual(0, mvd.KeyCount);
         Assert.IsFalse(mvd.ContainsKey("a"));
-    }
-
-    /// <summary>
-    /// Verifies that calling <see cref="MultiValueDictionary{TKey,TValue}.Clear"/> on an already-empty dictionary leaves it in a valid empty state.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenAlreadyEmpty_ShouldRemainEmpty()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-
-        mvd.Clear();
-
-        Assert.AreEqual(0, mvd.Count);
-        Assert.AreEqual(0, mvd.KeyCount);
     }
 
     /// <summary>
@@ -62,18 +75,4 @@ public partial class MultiValueDictionaryTests
         Assert.IsTrue(mvd.ContainsKey("new"));
     }
 
-    /// <summary>
-    /// Verifies that clearing an already-empty dictionary is a no-op and does not invalidate an active enumerator.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenAlreadyEmpty_ShouldNotInvalidateActiveEnumerator()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-
-        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
-
-        mvd.Clear();
-
-        Assert.IsFalse(enumerator.MoveNext());
-    }
 }

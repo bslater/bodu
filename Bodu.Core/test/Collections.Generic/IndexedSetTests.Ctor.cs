@@ -5,54 +5,21 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class IndexedSetTests
 {
-    // --------------------------------------------------------
-    // Default constructor
-    // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the default constructor creates an empty set with the default comparer.
+    /// Verifies that the capacity-and-comparer constructor combines both arguments.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
+    public void Ctor_WhenCapacityAndComparerProvided_ShouldUseBoth()
     {
-        var sut = new IndexedSet<int>();
+        var sut = new IndexedSet<string>(8, StringComparer.OrdinalIgnoreCase);
 
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.Capacity);
-        Assert.AreSame(EqualityComparer<int>.Default, sut.Comparer);
-    }
-
-    // --------------------------------------------------------
-    // Comparer-only constructor
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the comparer-only constructor defaults to the default comparer when supplied
-    /// <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
-    {
-        var sut = new IndexedSet<string>((IEqualityComparer<string>?)null);
-
-        Assert.AreSame(EqualityComparer<string>.Default, sut.Comparer);
-    }
-
-    /// <summary>
-    /// Verifies that the comparer-only constructor stores and uses the supplied comparer.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
-    {
-        var sut = new IndexedSet<string>(StringComparer.OrdinalIgnoreCase);
-
+        Assert.AreEqual(8, sut.Capacity);
         Assert.AreSame(StringComparer.OrdinalIgnoreCase, sut.Comparer);
     }
 
@@ -93,43 +60,18 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
-    /// Verifies that the capacity-and-comparer constructor combines both arguments.
+    /// Verifies that the collection-and-comparer constructor uses the supplied comparer for deduplication.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCapacityAndComparerProvided_ShouldUseBoth()
+    public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
     {
-        var sut = new IndexedSet<string>(8, StringComparer.OrdinalIgnoreCase);
+        var sut = new IndexedSet<string>(
+            ["A", "a", "B", "b"],
+            StringComparer.OrdinalIgnoreCase);
 
-        Assert.AreEqual(8, sut.Capacity);
-        Assert.AreSame(StringComparer.OrdinalIgnoreCase, sut.Comparer);
-    }
-
-    // --------------------------------------------------------
-    // Collection constructor
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the collection constructor rejects a <see langword="null" /> source.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new IndexedSet<int>((IEnumerable<int>)null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the collection constructor rejects a source that yields a <see langword="null" /> element.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new IndexedSet<string>(["a", null!, "b"]);
-        });
+        Assert.AreEqual(2, sut.Count);
+        Assert.AreEqual("A", sut[0]);
+        Assert.AreEqual("B", sut[1]);
     }
 
     /// <summary>
@@ -148,29 +90,15 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
-    /// Verifies that an empty source collection produces an empty set.
+    /// Verifies that the collection constructor rejects a source that yields a <see langword="null" /> element.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
+    public void Ctor_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
     {
-        var sut = new IndexedSet<int>(Array.Empty<int>());
-
-        Assert.AreEqual(0, sut.Count);
-    }
-
-    /// <summary>
-    /// Verifies that the collection-and-comparer constructor uses the supplied comparer for deduplication.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
-    {
-        var sut = new IndexedSet<string>(
-            ["A", "a", "B", "b"],
-            StringComparer.OrdinalIgnoreCase);
-
-        Assert.AreEqual(2, sut.Count);
-        Assert.AreEqual("A", sut[0]);
-        Assert.AreEqual("B", sut[1]);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new IndexedSet<string>(["a", null!, "b"]);
+        });
     }
 
     /// <summary>
@@ -188,6 +116,76 @@ public partial class IndexedSetTests
         Assert.IsTrue(sut.Capacity >= 5);
     }
 
+    /// <summary>
+    /// Verifies that an empty source collection produces an empty set.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
+    {
+        var sut = new IndexedSet<int>(Array.Empty<int>());
+
+        Assert.AreEqual(0, sut.Count);
+    }
+
+    // --------------------------------------------------------
+    // Collection constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the collection constructor rejects a <see langword="null" /> source.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new IndexedSet<int>((IEnumerable<int>)null!);
+        });
+    }
+
+    // --------------------------------------------------------
+    // Comparer-only constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the comparer-only constructor defaults to the default comparer when supplied
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
+    {
+        var sut = new IndexedSet<string>((IEqualityComparer<string>?)null);
+
+        Assert.AreSame(EqualityComparer<string>.Default, sut.Comparer);
+    }
+
+    /// <summary>
+    /// Verifies that the comparer-only constructor stores and uses the supplied comparer.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
+    {
+        var sut = new IndexedSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        Assert.AreSame(StringComparer.OrdinalIgnoreCase, sut.Comparer);
+    }
+    // --------------------------------------------------------
+    // Default constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the default constructor creates an empty set with the default comparer.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
+    {
+        var sut = new IndexedSet<int>();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(0, sut.Capacity);
+        Assert.AreSame(EqualityComparer<int>.Default, sut.Comparer);
+    }
+
     // --------------------------------------------------------
     // IsReadOnly
     // --------------------------------------------------------
@@ -202,4 +200,5 @@ public partial class IndexedSetTests
 
         Assert.IsFalse(sut.IsReadOnly);
     }
+
 }

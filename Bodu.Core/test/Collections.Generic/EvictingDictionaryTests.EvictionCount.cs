@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.EvictionCount.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,14 +8,22 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> is zero for a newly constructed dictionary before any evictions.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> increments each time an item is evicted due to exceeding capacity.
     /// </summary>
     [TestMethod]
-    public void EvictionCount_WhenNoEvictions_ShouldBeZero()
+    public void EvictionCount_WhenCapacityExceededMultipleTimes_ShouldIncrementWithEachEviction()
     {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        Assert.AreEqual(0, dictionary.EvictionCount);
+        var dictionary = new EvictingDictionary<string, int>(2);
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
+        dictionary.Add("c", 3); // eviction
+
+        Assert.AreEqual(1, dictionary.EvictionCount);
+
+        dictionary.Add("d", 4); // another eviction
+        Assert.AreEqual(2, dictionary.EvictionCount);
     }
 
     /// <summary>
@@ -37,20 +45,27 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> increments each time an item is evicted due to exceeding capacity.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> tracks the correct number of evictions over many additions.
     /// </summary>
     [TestMethod]
-    public void EvictionCount_WhenCapacityExceededMultipleTimes_ShouldIncrementWithEachEviction()
+    public void EvictionCount_WhenManyEvictionsOccur_ShouldReflectCorrectEvictionTotal()
     {
-        var dictionary = new EvictingDictionary<string, int>(2);
-        dictionary.Add("a", 1);
-        dictionary.Add("b", 2);
-        dictionary.Add("c", 3); // eviction
+        var dictionary = new EvictingDictionary<int, int>(1);
+        for (var i = 0; i < 10; i++)
+        {
+            dictionary.Add(i, i);
+        }
 
-        Assert.AreEqual(1, dictionary.EvictionCount);
-
-        dictionary.Add("d", 4); // another eviction
-        Assert.AreEqual(2, dictionary.EvictionCount);
+        Assert.AreEqual(9, dictionary.EvictionCount);
+    }
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> is zero for a newly constructed dictionary before any evictions.
+    /// </summary>
+    [TestMethod]
+    public void EvictionCount_WhenNoEvictions_ShouldBeZero()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        Assert.AreEqual(0, dictionary.EvictionCount);
     }
 
     /// <summary>
@@ -67,18 +82,4 @@ public partial class EvictingDictionaryTests
         Assert.AreEqual(0, dictionary.EvictionCount);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.EvictionCount" /> tracks the correct number of evictions over many additions.
-    /// </summary>
-    [TestMethod]
-    public void EvictionCount_WhenManyEvictionsOccur_ShouldReflectCorrectEvictionTotal()
-    {
-        var dictionary = new EvictingDictionary<int, int>(1);
-        for (var i = 0; i < 10; i++)
-        {
-            dictionary.Add(i, i);
-        }
-
-        Assert.AreEqual(9, dictionary.EvictionCount);
-    }
 }

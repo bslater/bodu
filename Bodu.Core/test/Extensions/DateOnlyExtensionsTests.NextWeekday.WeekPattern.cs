@@ -1,37 +1,15 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.NextWeekday.WeekPattern.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
-    // =========================================================================
-    // NextWeekday(this DateOnly, WeekPattern)
-    // =========================================================================
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, WeekPattern)" /> returns the next day
-    /// whose <see cref="DayOfWeek" /> is selected by the supplied <see cref="WeekPattern" /> pattern, when the
-    /// pattern matches the standard Monday-through-Friday working week.
-    /// </summary>
-    [TestMethod]
-    public void NextWeekday_WhenWorkingWeekIsMondayThroughFriday_ShouldSkipSaturdayAndSunday()
-    {
-        WeekPattern pattern = WeekPattern.MondayToFriday;
-
-        // Fri 19 Apr 2024 → next selected day skips Sat/Sun → Mon 22 Apr.
-        Assert.AreEqual(new DateOnly(2024, 4, 22), new DateOnly(2024, 4, 19).NextWeekday(pattern));
-        // Sat 20 Apr 2024 → Mon 22 Apr.
-        Assert.AreEqual(new DateOnly(2024, 4, 22), new DateOnly(2024, 4, 20).NextWeekday(pattern));
-        // Mon 22 Apr 2024 → Tue 23 Apr.
-        Assert.AreEqual(new DateOnly(2024, 4, 23), new DateOnly(2024, 4, 22).NextWeekday(pattern));
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, WeekPattern)" /> returns the next selected
@@ -62,4 +40,26 @@ public partial class DateOnlyExtensionsTests
             _ = input.NextWeekday(WeekPattern.Empty);
         });
     }
+    // =========================================================================
+    // NextWeekday(this DateOnly, WeekPattern)
+    // =========================================================================
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, WeekPattern)" /> returns the next day
+    /// whose <see cref="DayOfWeek" /> is selected by the supplied <see cref="WeekPattern" /> pattern, when the
+    /// pattern matches the standard Monday-through-Friday working week.
+    /// </summary>
+    [TestMethod]
+    public void NextWeekday_WhenWorkingWeekIsMondayThroughFriday_ShouldSkipSaturdayAndSunday()
+    {
+        WeekPattern pattern = WeekPattern.MondayToFriday;
+
+        // Fri 19 Apr 2024 → next selected day skips Sat/Sun → Mon 22 Apr.
+        Assert.AreEqual(new DateOnly(2024, 4, 22), new DateOnly(2024, 4, 19).NextWeekday(pattern));
+        // Sat 20 Apr 2024 → Mon 22 Apr.
+        Assert.AreEqual(new DateOnly(2024, 4, 22), new DateOnly(2024, 4, 20).NextWeekday(pattern));
+        // Mon 22 Apr 2024 → Tue 23 Apr.
+        Assert.AreEqual(new DateOnly(2024, 4, 23), new DateOnly(2024, 4, 22).NextWeekday(pattern));
+    }
+
 }

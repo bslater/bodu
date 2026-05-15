@@ -1,33 +1,13 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.Enumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-
 namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
-    /// <summary>
-    /// Verifies that the generic <see cref="IEnumerator{T}"/> iterates elements in head-to-tail order.
-    /// </summary>
-    [TestMethod]
-    public void Enumerator_WhenCollectionHasItems_ShouldIterateInHeadToTailOrder()
-    {
-        TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-        AddToTail(collection, 3);
-
-        IEnumerator<int> enumerator = collection.GetEnumerator();
-        var collected = new List<int>();
-        while (enumerator.MoveNext())
-            collected.Add(enumerator.Current);
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, collected);
-    }
 
     /// <summary>
     /// Verifies that <see cref="AddToTail(TCollection, int)"/> during iteration invalidates the enumerator.
@@ -42,24 +22,6 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         IEnumerator<int> enumerator = collection.GetEnumerator();
         Assert.IsTrue(enumerator.MoveNext());
         AddToTail(collection, 3);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RemoveFromHead(TCollection)"/> during iteration invalidates the enumerator.
-    /// </summary>
-    [TestMethod]
-    public void Enumerator_WhenRemoveFromHeadCalledDuringIteration_ShouldThrowOnMoveNext()
-    {
-        TCollection collection = CreateCollection(5);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-        AddToTail(collection, 3);
-
-        IEnumerator<int> enumerator = collection.GetEnumerator();
-        Assert.IsTrue(enumerator.MoveNext());
-        _ = RemoveFromHead(collection);
 
         Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
     }
@@ -80,20 +42,38 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
         Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
     }
-
     /// <summary>
-    /// Verifies that the enumerator throws on <c>Reset</c> after mutation.
+    /// Verifies that the generic <see cref="IEnumerator{T}"/> iterates elements in head-to-tail order.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenMutatedThenReset_ShouldThrowOnReset()
+    public void Enumerator_WhenCollectionHasItems_ShouldIterateInHeadToTailOrder()
     {
         TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        AddToTail(collection, 3);
 
         IEnumerator<int> enumerator = collection.GetEnumerator();
-        AddToTail(collection, 2);
+        var collected = new List<int>();
+        while (enumerator.MoveNext())
+            collected.Add(enumerator.Current);
 
-        Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.Reset());
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, collected);
+    }
+
+    /// <summary>
+    /// Verifies that <c>Current</c> throws after iteration is exhausted.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldThrowExactly()
+    {
+        TCollection collection = CreateCollection(2);
+        AddToTail(collection, 1);
+
+        IEnumerator<int> enumerator = collection.GetEnumerator();
+        while (enumerator.MoveNext()) { }
+
+        Assert.ThrowsExactly<InvalidOperationException>(() => { _ = enumerator.Current; });
     }
 
     /// <summary>
@@ -111,18 +91,36 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
     }
 
     /// <summary>
-    /// Verifies that <c>Current</c> throws after iteration is exhausted.
+    /// Verifies that the enumerator throws on <c>Reset</c> after mutation.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenCurrentAccessedAfterExhaustion_ShouldThrowExactly()
+    public void Enumerator_WhenMutatedThenReset_ShouldThrowOnReset()
     {
-        TCollection collection = CreateCollection(2);
+        TCollection collection = CreateCollection(3);
         AddToTail(collection, 1);
 
         IEnumerator<int> enumerator = collection.GetEnumerator();
-        while (enumerator.MoveNext()) { }
+        AddToTail(collection, 2);
 
-        Assert.ThrowsExactly<InvalidOperationException>(() => { _ = enumerator.Current; });
+        Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.Reset());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RemoveFromHead(TCollection)"/> during iteration invalidates the enumerator.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenRemoveFromHeadCalledDuringIteration_ShouldThrowOnMoveNext()
+    {
+        TCollection collection = CreateCollection(5);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        AddToTail(collection, 3);
+
+        IEnumerator<int> enumerator = collection.GetEnumerator();
+        Assert.IsTrue(enumerator.MoveNext());
+        _ = RemoveFromHead(collection);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
     }
 
     /// <summary>
@@ -150,4 +148,5 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, firstPass);
         CollectionAssert.AreEqual(firstPass, secondPass);
     }
+
 }

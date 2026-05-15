@@ -8,6 +8,7 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
+
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Weekdays" /> contains exactly Monday through Friday, with
     /// Saturday and Sunday unselected, and reports a count of five.
@@ -33,4 +34,5 @@ public partial class WeekPatternTests
     /// </summary>
     [TestMethod]
     public void Weekdays_WhenAccessedMultipleTimes_ShouldReturnConsistentValue() => Assert.AreEqual(WeekPattern.Weekdays, WeekPattern.Weekdays);
+
 }

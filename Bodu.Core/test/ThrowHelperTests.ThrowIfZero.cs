@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the <see cref="ThrowHelper.ThrowIfZero{T}(T, string)" /> contract across <see cref="int" />,
     /// <see cref="long" />, <see cref="double" />, and <see cref="decimal" />: zero throws; non-zero values
@@ -49,6 +50,16 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfZero" />, when ValueIsNonZero, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(-1)]
+    [DataRow(int.MinValue)]
+    [DataRow(int.MaxValue)]
+    public void ThrowIfZero_WhenValueIsNonZero_ShouldNotThrow(int value) => ThrowHelper.ThrowIfZero(value);
+
+    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfZero" />, when ValueIsZero, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
@@ -61,13 +72,4 @@ public partial class ThrowHelperTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfZero" />, when ValueIsNonZero, NotThrow.
-    /// </summary>
-    [TestMethod]
-    [DataRow(1)]
-    [DataRow(-1)]
-    [DataRow(int.MinValue)]
-    [DataRow(int.MaxValue)]
-    public void ThrowIfZero_WhenValueIsNonZero_ShouldNotThrow(int value) => ThrowHelper.ThrowIfZero(value);
 }

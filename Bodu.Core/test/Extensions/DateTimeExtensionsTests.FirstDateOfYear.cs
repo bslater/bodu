@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.FirstDateOfYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,24 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfYear" />, when Called, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfYearTestData))]
-    public void FirstDateOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime input, DateTime expected)
-    {
-        DateTime actual = input.FirstDateOfYear();
-
-        Assert.AreEqual(expected, actual);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfYear" /> returns the expected value.
@@ -42,17 +29,16 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(kind, actual.Kind);
     }
-
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfYear" />, when MinValue, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void FirstDateOfYear_WhenMinValue_ShouldReturnExpected()
+    [DynamicData(nameof(FirstDateOfYearTestData))]
+    public void FirstDateOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime input, DateTime expected)
     {
-        DateTime min = DateTime.MinValue; // 0001-01-01
-        DateTime actual = min.FirstDateOfYear();
+        DateTime actual = input.FirstDateOfYear();
 
-        Assert.AreEqual(new DateTime(1, 1, 1), actual);
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -66,4 +52,17 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(new DateTime(9999, 1, 1), actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfYear" />, when MinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfYear_WhenMinValue_ShouldReturnExpected()
+    {
+        DateTime min = DateTime.MinValue; // 0001-01-01
+        DateTime actual = min.FirstDateOfYear();
+
+        Assert.AreEqual(new DateTime(1, 1, 1), actual);
+    }
+
 }

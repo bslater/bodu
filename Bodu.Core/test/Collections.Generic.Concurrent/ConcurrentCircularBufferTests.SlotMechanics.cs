@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.SlotMechanics.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,6 +11,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that the non-generic <see cref="ICollection.Count" /> property reports the same logical count as the strongly-typed
     /// <see cref="ConcurrentCircularBuffer{T}.Count" /> after the buffer's head and tail have wrapped past the underlying array
@@ -34,64 +35,6 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.AreEqual(4, buffer.Count);
         Assert.AreEqual(4, ((ICollection)buffer).Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryDequeue(out T)" /> on an empty buffer takes the empty branch and reports
-    /// failure via <c>InternalDequeue</c>'s <c>throwIfEmpty == false</c> path.
-    /// </summary>
-    [TestMethod]
-    public void InternalDequeue_WhenBufferIsEmptyAndThrowOnEmptyFalse_ShouldReturnFalse()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-
-        var success = buffer.TryDequeue(out TestItem? item);
-
-        Assert.IsFalse(success);
-        Assert.IsNull(item);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Dequeue" /> on an empty buffer takes the empty branch and routes through
-    /// <c>InternalDequeue</c>'s <c>throwIfEmpty == true</c> path to surface <see cref="InvalidOperationException" />.
-    /// </summary>
-    [TestMethod]
-    public void InternalDequeue_WhenBufferIsEmptyAndThrowOnEmptyTrue_ShouldThrowInvalidOperationException()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            buffer.Dequeue();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the indexer returns a stable value for every reachable position after the buffer has wrapped. Indirectly
-    /// exercises <c>TryReadStableSlot</c>'s success path on slots that have been re-published (their sequence reflects a later
-    /// generation than the original initialisation value).
-    /// </summary>
-    [TestMethod]
-    public void Indexer_WhenSlotsHaveBeenRepublishedAfterWrap_ShouldReturnStableValuesForEachPosition()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-
-        // Initial generation.
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        buffer.Enqueue(new TestItem(3));
-
-        // Re-publish slots: drain three, fill three — each underlying slot now carries a higher Sequence value.
-        buffer.TryDequeue(out _);
-        buffer.TryDequeue(out _);
-        buffer.TryDequeue(out _);
-        buffer.Enqueue(new TestItem(10));
-        buffer.Enqueue(new TestItem(11));
-        buffer.Enqueue(new TestItem(12));
-
-        Assert.AreEqual(10, buffer[0].Value);
-        Assert.AreEqual(11, buffer[1].Value);
-        Assert.AreEqual(12, buffer[2].Value);
     }
 
     /// <summary>
@@ -153,4 +96,63 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.AreEqual(0, errors.Count, "Indexer threw an unexpected exception during concurrent slot rotation.");
     }
+
+    /// <summary>
+    /// Verifies that the indexer returns a stable value for every reachable position after the buffer has wrapped. Indirectly
+    /// exercises <c>TryReadStableSlot</c>'s success path on slots that have been re-published (their sequence reflects a later
+    /// generation than the original initialisation value).
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenSlotsHaveBeenRepublishedAfterWrap_ShouldReturnStableValuesForEachPosition()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+
+        // Initial generation.
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
+
+        // Re-publish slots: drain three, fill three — each underlying slot now carries a higher Sequence value.
+        buffer.TryDequeue(out _);
+        buffer.TryDequeue(out _);
+        buffer.TryDequeue(out _);
+        buffer.Enqueue(new TestItem(10));
+        buffer.Enqueue(new TestItem(11));
+        buffer.Enqueue(new TestItem(12));
+
+        Assert.AreEqual(10, buffer[0].Value);
+        Assert.AreEqual(11, buffer[1].Value);
+        Assert.AreEqual(12, buffer[2].Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryDequeue(out T)" /> on an empty buffer takes the empty branch and reports
+    /// failure via <c>InternalDequeue</c>'s <c>throwIfEmpty == false</c> path.
+    /// </summary>
+    [TestMethod]
+    public void InternalDequeue_WhenBufferIsEmptyAndThrowOnEmptyFalse_ShouldReturnFalse()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+
+        var success = buffer.TryDequeue(out TestItem? item);
+
+        Assert.IsFalse(success);
+        Assert.IsNull(item);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Dequeue" /> on an empty buffer takes the empty branch and routes through
+    /// <c>InternalDequeue</c>'s <c>throwIfEmpty == true</c> path to surface <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void InternalDequeue_WhenBufferIsEmptyAndThrowOnEmptyTrue_ShouldThrowInvalidOperationException()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            buffer.Dequeue();
+        });
+    }
+
 }

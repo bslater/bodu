@@ -9,16 +9,16 @@ namespace Bodu.Collections.Extensions;
 [TestClass]
 public class LeibnizTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentOutOfRangeException" /> when min is negative.
+    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> stops yielding once a term's magnitude reaches the exclusive upper bound.
     /// </summary>
     [TestMethod]
-    public void Leibniz_WhenMinIsNegative_ShouldThrowExactly()
+    public void Leibniz_WhenFirstTermExceedsMax_ShouldReturnEmptySequence()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = SequenceGenerator.Leibniz(-0.1, 1.0).ToList();
-        });
+        var actual = SequenceGenerator.Leibniz(0.0, 0.9).Take(1).ToArray();
+
+        Assert.AreEqual(0, actual.Length);
     }
 
     /// <summary>
@@ -43,6 +43,31 @@ public class LeibnizTests
         {
             _ = SequenceGenerator.Leibniz(0.9, 0.1).ToList();
         });
+    }
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> throws <see cref="ArgumentOutOfRangeException" /> when min is negative.
+    /// </summary>
+    [TestMethod]
+    public void Leibniz_WhenMinIsNegative_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = SequenceGenerator.Leibniz(-0.1, 1.0).ToList();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that approximating π using the Leibniz partial sums converges to the expected approximate value.
+    /// </summary>
+    [TestMethod]
+    public void Leibniz_WhenSummingManyTerms_ShouldApproximatePiOverFour()
+    {
+        double partial = 0;
+        foreach (var term in SequenceGenerator.Leibniz(0.0, 2.0).Take(2000))
+            partial += term;
+
+        var pi = partial * 4;
+        Assert.AreEqual(Math.PI, pi, 0.01);
     }
 
     /// <summary>
@@ -83,28 +108,4 @@ public class LeibnizTests
         }
     }
 
-    /// <summary>
-    /// Verifies that approximating π using the Leibniz partial sums converges to the expected approximate value.
-    /// </summary>
-    [TestMethod]
-    public void Leibniz_WhenSummingManyTerms_ShouldApproximatePiOverFour()
-    {
-        double partial = 0;
-        foreach (var term in SequenceGenerator.Leibniz(0.0, 2.0).Take(2000))
-            partial += term;
-
-        var pi = partial * 4;
-        Assert.AreEqual(Math.PI, pi, 0.01);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Leibniz" /> stops yielding once a term's magnitude reaches the exclusive upper bound.
-    /// </summary>
-    [TestMethod]
-    public void Leibniz_WhenFirstTermExceedsMax_ShouldReturnEmptySequence()
-    {
-        var actual = SequenceGenerator.Leibniz(0.0, 0.9).Take(1).ToArray();
-
-        Assert.AreEqual(0, actual.Length);
-    }
 }

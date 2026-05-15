@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Peek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that a failed enqueue on a full buffer with overwriting disabled does not change the item returned by <see cref="ConcurrentCircularBuffer{T}.Peek" />.
     /// </summary>
@@ -319,4 +320,5 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(peekedItems.All(x => x != null),
             "Peek returned null for a non-null item during concurrent enqueue.");
     }
+
 }

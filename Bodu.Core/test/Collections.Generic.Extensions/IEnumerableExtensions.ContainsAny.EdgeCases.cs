@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public sealed partial class IEnumerableExtensionsTests_ContainsAny
 {
+
     /// <summary>
     /// Verifies the empty-itemSet guard branch: when <paramref name="items" /> implements legacy <see cref="ICollection" /> but not
     /// generic <see cref="ICollection{T}" />, <c>TryGetNonEnumeratedCount</c> succeeds so <c>EnsureMaterialized</c> returns the sequence
@@ -48,11 +49,14 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
         : IEnumerable<T>
         , ICollection
     {
+
         public int Count => 0;
 
         public bool IsSynchronized => false;
 
         public object SyncRoot => this;
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public void CopyTo(Array array, int index)
         {
@@ -61,6 +65,6 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
 
         public IEnumerator<T> GetEnumerator() => System.Linq.Enumerable.Empty<T>().GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+
 }

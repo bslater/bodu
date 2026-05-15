@@ -1,16 +1,31 @@
-// --------------------------------------------------------------------------------------------------------------- //
+﻿// --------------------------------------------------------------------------------------------------------------- //
 // <copyright file="FiscalWeekQuarterProviderTests.GetQuarterStart.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class FiscalWeekQuarterProviderTests
 {
+
+    // -----------------------------------------------------------------------
+    // GetQuarterStart(int) — obsolete single-arg overload
+    // -----------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the obsolete single-argument
+    /// <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int)" /> overload throws
+    /// <see cref="NotSupportedException" />, because the provider no longer tracks a single fiscal
+    /// year.
+    /// </summary>
+    [TestMethod]
+#pragma warning disable CS0618 // intentional: we verify the obsolete overload still throws
+    public void GetQuarterStart_ObsoleteSingleArgOverload_ShouldThrowNotSupportedException() => Assert.ThrowsExactly<NotSupportedException>(() => s_sunday52.GetQuarterStart(1));
+#pragma warning restore CS0618
+
     // -----------------------------------------------------------------------
     // GetQuarterStart(int, int)
     // -----------------------------------------------------------------------
@@ -51,46 +66,35 @@ public partial class FiscalWeekQuarterProviderTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int, int)" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when <c>quarter</c> is less than 1.
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> resolves a
+    /// date after the anchor fiscal year into the following fiscal year and returns that year's
+    /// Q1 start date.
     /// </summary>
     [TestMethod]
-    [DataRow(0)]
-    [DataRow(-1)]
-    public void GetQuarterStart_WhenQuarterIsBelowValidRange_ShouldThrowArgumentOutOfRangeException(int quarter)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            s_sunday52.GetQuarterStart(quarter, Sunday52FiscalYear));
-    }
+    public void GetQuarterStart_WhenDateTimeIsAfterAnchorFiscalYear_ShouldResolveToNextFiscalYear() =>
+        // Dec 31, 2023 = the first day of FY 2024 under Sunday52 (nearest Sunday to Jan 1, 2024).
+        Assert.AreEqual(new DateTime(2023, 12, 31), s_sunday52.GetQuarterStart(new DateTime(2023, 12, 31)));
 
     /// <summary>
-    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int, int)" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when <c>quarter</c> is greater than 4.
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> resolves a
+    /// date prior to the anchor fiscal year into the preceding fiscal year and returns that year's
+    /// Q4 start date.
     /// </summary>
     [TestMethod]
-    [DataRow(5)]
-    [DataRow(100)]
-    public void GetQuarterStart_WhenQuarterIsAboveValidRange_ShouldThrowArgumentOutOfRangeException(int quarter)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-            s_sunday52.GetQuarterStart(quarter, Sunday52FiscalYear));
-    }
-
-    // -----------------------------------------------------------------------
-    // GetQuarterStart(int) — obsolete single-arg overload
-    // -----------------------------------------------------------------------
+    public void GetQuarterStart_WhenDateTimeIsBeforeAnchorFiscalYear_ShouldResolveToPriorFiscalYear() =>
+        // Dec 31, 2022 resolves into FY 2022 (starts Jan 2, 2022) at its Q4 boundary.
+        // FY 2022 Q4 starts Jan 2 + 273 days = Oct 2, 2022.
+        Assert.AreEqual(new DateTime(2022, 10, 2), s_sunday52.GetQuarterStart(new DateTime(2022, 12, 31)));
 
     /// <summary>
-    /// Verifies that the obsolete single-argument
-    /// <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int)" /> overload throws
-    /// <see cref="NotSupportedException" />, because the provider no longer tracks a single fiscal
-    /// year.
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> resolves a
+    /// date prior to the April-anchored fiscal year into the preceding fiscal year.
     /// </summary>
     [TestMethod]
-#pragma warning disable CS0618 // intentional: we verify the obsolete overload still throws
-    public void GetQuarterStart_ObsoleteSingleArgOverload_ShouldThrowNotSupportedException() => Assert.ThrowsExactly<NotSupportedException>(() => s_sunday52.GetQuarterStart(1));
-#pragma warning restore CS0618
-
+    public void GetQuarterStart_WhenDateTimeIsBeforeAprilAnchorFiscalYear_ShouldResolveToPriorFiscalYear() =>
+        // Mar 31, 2023 = Friday. FY 2022 under Saturday52 starts Apr 2, 2022, 52 weeks; Q4 starts
+        // Apr 2 + 273 days = Dec 31, 2022.
+        Assert.AreEqual(new DateTime(2022, 12, 31), s_saturday52.GetQuarterStart(new DateTime(2023, 3, 31)));
     // -----------------------------------------------------------------------
     // GetQuarterStart(DateTime)
     // -----------------------------------------------------------------------
@@ -107,6 +111,14 @@ public partial class FiscalWeekQuarterProviderTests
         int __,
         DateTime expectedStart,
         DateTime ___) => Assert.AreEqual(expectedStart, provider.GetQuarterStart(expectedStart));
+
+    /// <summary>
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> returns the
+    /// Q4 start date for a date in the 53rd week of the <see cref="s_sunday53" /> fiscal year.
+    /// 28 December 2020 is the first day of week 53.
+    /// </summary>
+    [TestMethod]
+    public void GetQuarterStart_WhenDateTimeIsInThe53rdWeek_ShouldReturnQ4StartDate() => Assert.AreEqual(new DateTime(2020, 9, 27), s_sunday53.GetQuarterStart(new DateTime(2020, 12, 28)));
 
     /// <summary>
     /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> returns the
@@ -131,41 +143,29 @@ public partial class FiscalWeekQuarterProviderTests
     public void GetQuarterStart_WhenDateTimeIsLeapDayInQ1_ShouldReturnQ1StartDate() => Assert.AreEqual(new DateTime(2019, 12, 29), s_sunday53.GetQuarterStart(new DateTime(2020, 2, 29)));
 
     /// <summary>
-    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> returns the
-    /// Q4 start date for a date in the 53rd week of the <see cref="s_sunday53" /> fiscal year.
-    /// 28 December 2020 is the first day of week 53.
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int, int)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when <c>quarter</c> is greater than 4.
     /// </summary>
     [TestMethod]
-    public void GetQuarterStart_WhenDateTimeIsInThe53rdWeek_ShouldReturnQ4StartDate() => Assert.AreEqual(new DateTime(2020, 9, 27), s_sunday53.GetQuarterStart(new DateTime(2020, 12, 28)));
+    [DataRow(5)]
+    [DataRow(100)]
+    public void GetQuarterStart_WhenQuarterIsAboveValidRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            s_sunday52.GetQuarterStart(quarter, Sunday52FiscalYear));
+    }
 
     /// <summary>
-    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> resolves a
-    /// date prior to the anchor fiscal year into the preceding fiscal year and returns that year's
-    /// Q4 start date.
+    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int, int)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when <c>quarter</c> is less than 1.
     /// </summary>
     [TestMethod]
-    public void GetQuarterStart_WhenDateTimeIsBeforeAnchorFiscalYear_ShouldResolveToPriorFiscalYear() =>
-        // Dec 31, 2022 resolves into FY 2022 (starts Jan 2, 2022) at its Q4 boundary.
-        // FY 2022 Q4 starts Jan 2 + 273 days = Oct 2, 2022.
-        Assert.AreEqual(new DateTime(2022, 10, 2), s_sunday52.GetQuarterStart(new DateTime(2022, 12, 31)));
+    [DataRow(0)]
+    [DataRow(-1)]
+    public void GetQuarterStart_WhenQuarterIsBelowValidRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            s_sunday52.GetQuarterStart(quarter, Sunday52FiscalYear));
+    }
 
-    /// <summary>
-    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> resolves a
-    /// date after the anchor fiscal year into the following fiscal year and returns that year's
-    /// Q1 start date.
-    /// </summary>
-    [TestMethod]
-    public void GetQuarterStart_WhenDateTimeIsAfterAnchorFiscalYear_ShouldResolveToNextFiscalYear() =>
-        // Dec 31, 2023 = the first day of FY 2024 under Sunday52 (nearest Sunday to Jan 1, 2024).
-        Assert.AreEqual(new DateTime(2023, 12, 31), s_sunday52.GetQuarterStart(new DateTime(2023, 12, 31)));
-
-    /// <summary>
-    /// Verifies that <see cref="FiscalWeekQuarterProvider.GetQuarterStart(DateTime)" /> resolves a
-    /// date prior to the April-anchored fiscal year into the preceding fiscal year.
-    /// </summary>
-    [TestMethod]
-    public void GetQuarterStart_WhenDateTimeIsBeforeAprilAnchorFiscalYear_ShouldResolveToPriorFiscalYear() =>
-        // Mar 31, 2023 = Friday. FY 2022 under Saturday52 starts Apr 2, 2022, 52 weeks; Q4 starts
-        // Apr 2 + 273 days = Dec 31, 2022.
-        Assert.AreEqual(new DateTime(2022, 12, 31), s_saturday52.GetQuarterStart(new DateTime(2023, 3, 31)));
 }

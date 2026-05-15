@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the <see cref="ThrowHelper.ThrowIfNotZero{T}(T, string)" /> contract across <see cref="int" />,
     /// <see cref="long" />, <see cref="double" />, and <see cref="decimal" />: any non-zero value throws;
@@ -70,4 +71,5 @@ public partial class ThrowHelperTests
     [TestMethod]
     [DataRow(0)]
     public void ThrowIfNotZero_WhenValueIsZero_ShouldNotThrow(int value) => ThrowHelper.ThrowIfNotZero(value);
+
 }

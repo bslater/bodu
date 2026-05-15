@@ -10,34 +10,6 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
-    /// <summary>
-    /// Verifies the full <see cref="ThrowHelper.ThrowIfOutOfRange{T}(T, T, T, bool, string)" /> contract
-    /// matrix with explicit ParamName assertions: in-range values pass; out-of-range values throw
-    /// <see cref="ArgumentOutOfRangeException" /> with ParamName "value". Covers inclusive / exclusive
-    /// bounds and boundary equality.
-    /// </summary>
-    /// <param name="testName">The data-row label.</param>
-    /// <param name="value">The value compared against the bounds.</param>
-    /// <param name="min">The inclusive/exclusive minimum.</param>
-    /// <param name="max">The inclusive/exclusive maximum.</param>
-    /// <param name="inclusive">Whether the bounds are inclusive.</param>
-    /// <param name="expectsException">Whether the guard must throw.</param>
-    [TestMethod]
-    [DataRow("inclusive: equal lower → pass", 6, 6, 10, true, false)]
-    [DataRow("inclusive: equal upper → pass", 10, 6, 10, true, false)]
-    [DataRow("inclusive: below lower → throw", 5, 6, 10, true, true)]
-    [DataRow("inclusive: above upper → throw", 11, 6, 10, true, true)]
-    [DataRow("exclusive: equal lower → throw", 6, 6, 10, false, true)]
-    [DataRow("exclusive: equal upper → throw", 10, 6, 10, false, true)]
-    [DataRow("exclusive: strictly between → pass", 7, 6, 10, false, false)]
-    public void ThrowIfOutOfRange_WhenInvokedWithVariousBounds_ShouldFollowContract(
-        string testName, int value, int min, int max, bool inclusive, bool expectsException)
-    {
-        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
-        var expectedParam = expectsException ? "value" : null;
-
-        AssertGuard(testName, () => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive, nameof(value)), expected, expectedParam);
-    }
 
     /// <summary>
     /// Provides test cases for values that should not throw in <see cref="ThrowHelper.ThrowIfOutOfRange{T}" />.
@@ -128,6 +100,34 @@ public partial class ThrowHelperTests
             ThrowHelper.ThrowIfOutOfRange(value, min, max);
         });
     }
+    /// <summary>
+    /// Verifies the full <see cref="ThrowHelper.ThrowIfOutOfRange{T}(T, T, T, bool, string)" /> contract
+    /// matrix with explicit ParamName assertions: in-range values pass; out-of-range values throw
+    /// <see cref="ArgumentOutOfRangeException" /> with ParamName "value". Covers inclusive / exclusive
+    /// bounds and boundary equality.
+    /// </summary>
+    /// <param name="testName">The data-row label.</param>
+    /// <param name="value">The value compared against the bounds.</param>
+    /// <param name="min">The inclusive/exclusive minimum.</param>
+    /// <param name="max">The inclusive/exclusive maximum.</param>
+    /// <param name="inclusive">Whether the bounds are inclusive.</param>
+    /// <param name="expectsException">Whether the guard must throw.</param>
+    [TestMethod]
+    [DataRow("inclusive: equal lower → pass", 6, 6, 10, true, false)]
+    [DataRow("inclusive: equal upper → pass", 10, 6, 10, true, false)]
+    [DataRow("inclusive: below lower → throw", 5, 6, 10, true, true)]
+    [DataRow("inclusive: above upper → throw", 11, 6, 10, true, true)]
+    [DataRow("exclusive: equal lower → throw", 6, 6, 10, false, true)]
+    [DataRow("exclusive: equal upper → throw", 10, 6, 10, false, true)]
+    [DataRow("exclusive: strictly between → pass", 7, 6, 10, false, false)]
+    public void ThrowIfOutOfRange_WhenInvokedWithVariousBounds_ShouldFollowContract(
+        string testName, int value, int min, int max, bool inclusive, bool expectsException)
+    {
+        Type? expected = expectsException ? typeof(ArgumentOutOfRangeException) : null;
+        var expectedParam = expectsException ? "value" : null;
+
+        AssertGuard(testName, () => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive, nameof(value)), expected, expectedParam);
+    }
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfOutOfRange{T}" /> throws for values outside the specified range.
@@ -150,4 +150,5 @@ public partial class ThrowHelperTests
     [DynamicData(nameof(GetInRangeTestData))]
     public void ThrowIfOutOfRange_WhenValueWithinRange_ShouldNotThrow<T>(T value, T min, T max, bool inclusive)
         where T : IComparable<T> => ThrowHelper.ThrowIfOutOfRange(value, min, max, inclusive);
+
 }

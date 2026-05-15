@@ -1,15 +1,29 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.ToArray.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="RangeSet{T}.ToArray" /> returns a fresh array disconnected from subsequent
+    /// mutations.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
+    {
+        RangeSet<int> sut = CreateSet((0, 5));
+        Range<int>[] snapshot = sut.ToArray();
+
+        sut.Add(10, 15);
+
+        Assert.AreEqual(1, snapshot.Length);
+        Assert.AreEqual(new Range<int>(0, 5), snapshot[0]);
+    }
     /// <summary>
     /// Verifies that <see cref="RangeSet{T}.ToArray" /> on an empty set returns an empty array.
     /// </summary>
@@ -39,19 +53,4 @@ public partial class RangeSetTests
         Assert.AreEqual(new Range<int>(20, 25), array[2]);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="RangeSet{T}.ToArray" /> returns a fresh array disconnected from subsequent
-    /// mutations.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
-    {
-        RangeSet<int> sut = CreateSet((0, 5));
-        Range<int>[] snapshot = sut.ToArray();
-
-        sut.Add(10, 15);
-
-        Assert.AreEqual(1, snapshot.Length);
-        Assert.AreEqual(new Range<int>(0, 5), snapshot[0]);
-    }
 }

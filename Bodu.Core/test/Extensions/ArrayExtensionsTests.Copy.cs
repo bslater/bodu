@@ -5,12 +5,30 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class ArrayExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that copying a value-type array of a custom struct produces an independent array preserving element equality.
+    /// </summary>
+    [TestMethod]
+    public void Copy_WhenCalled_ForCustomStructArray_ShouldReturnIndependentEqualArray()
+    {
+        DateOnly[] source =
+        [
+            new DateOnly(2024, 1, 1),
+            new DateOnly(2024, 6, 15),
+            new DateOnly(2024, 12, 31),
+        ];
+
+        DateOnly[] result = source.Copy()!;
+
+        CollectionAssert.AreEqual(source, result);
+        Assert.IsFalse(ReferenceEquals(source, result));
+    }
     /// <summary>
     /// Verifies that copying a value-type array returns an array with the same elements in the same order.
     /// </summary>
@@ -78,22 +96,4 @@ public partial class ArrayExtensionsTests
         Assert.IsNull(result);
     }
 
-    /// <summary>
-    /// Verifies that copying a value-type array of a custom struct produces an independent array preserving element equality.
-    /// </summary>
-    [TestMethod]
-    public void Copy_WhenCalled_ForCustomStructArray_ShouldReturnIndependentEqualArray()
-    {
-        DateOnly[] source =
-        [
-            new DateOnly(2024, 1, 1),
-            new DateOnly(2024, 6, 15),
-            new DateOnly(2024, 12, 31),
-        ];
-
-        DateOnly[] result = source.Copy()!;
-
-        CollectionAssert.AreEqual(source, result);
-        Assert.IsFalse(ReferenceEquals(source, result));
-    }
 }

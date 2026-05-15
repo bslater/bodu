@@ -5,24 +5,45 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> throws <see cref="ArgumentNullException"/> for a null key.
+    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.Remove" /> uses the configured key comparer.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void Remove_WhenCustomComparerUsed_ShouldRemoveFromEquivalentKey()
+    {
+        var mvd = new MultiValueDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        mvd.Add("Alpha", 1);
+        mvd.Add("Alpha", 2);
+
+        var removed = mvd.Remove("alpha", 1);
+
+        Assert.IsTrue(removed);
+        Assert.AreEqual(1, mvd.Count);
+        CollectionAssert.AreEqual(new[] { 2 }, mvd["ALPHA"].ToList());
+    }
+
+    /// <summary>
+    /// Verifies that removing a missing key is a no-op and does not invalidate an active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenKeyAbsent_ShouldNotInvalidateActiveEnumerator()
     {
         var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = mvd.Remove(null!, 1);
-        });
+        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
+
+        Assert.IsFalse(mvd.Remove("missing", 1));
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual("a", enumerator.Current.Key);
+        Assert.IsFalse(enumerator.MoveNext());
     }
 
     /// <summary>
@@ -37,39 +58,18 @@ public partial class MultiValueDictionaryTests
 
         Assert.IsFalse(result);
     }
-
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> returns <see langword="false"/> when the value is absent for an existing key.
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> throws <see cref="ArgumentNullException"/> for a null key.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenValueAbsentForExistingKey_ShouldReturnFalse()
+    public void Remove_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
         var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("k", 1);
 
-        var result = mvd.Remove("k", 99);
-
-        Assert.IsFalse(result);
-        Assert.AreEqual(1, mvd.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes one value and returns <see langword="true"/>.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenValuePresent_ShouldReturnTrueAndDecrementCount()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("k", 1);
-        mvd.Add("k", 2);
-        mvd.Add("k", 3);
-
-        var result = mvd.Remove("k", 2);
-
-        Assert.IsTrue(result);
-        Assert.AreEqual(2, mvd.Count);
-        Assert.AreEqual(1, mvd.KeyCount);
-        CollectionAssert.AreEqual(new[] { 1, 3 }, mvd["k"].ToList());
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = mvd.Remove(null!, 1);
+        });
     }
 
     /// <summary>
@@ -89,39 +89,36 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes the first occurrence and preserves remaining values when the value appears at the first position.
+    /// Verifies that removing a missing value from an existing key is a no-op and does not invalidate an active enumerator.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenValueIsFirstInList_ShouldPreserveRemaining()
+    public void Remove_WhenValueAbsentForExistingKey_ShouldNotInvalidateActiveEnumerator()
     {
         var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("k", 10);
-        mvd.Add("k", 20);
-        mvd.Add("k", 30);
+        mvd.Add("a", 1);
 
-        var result = mvd.Remove("k", 10);
+        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
 
-        Assert.IsTrue(result);
-        Assert.AreEqual(2, mvd.Count);
-        CollectionAssert.AreEqual(new[] { 20, 30 }, mvd["k"].ToList());
+        Assert.IsFalse(mvd.Remove("a", 99));
+
+        Assert.IsTrue(enumerator.MoveNext());
+        Assert.AreEqual("a", enumerator.Current.Key);
+        Assert.IsFalse(enumerator.MoveNext());
     }
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes the value and preserves remaining when the value appears at the last position.
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> returns <see langword="false"/> when the value is absent for an existing key.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenValueIsLastInList_ShouldPreserveRemaining()
+    public void Remove_WhenValueAbsentForExistingKey_ShouldReturnFalse()
     {
         var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("k", 10);
-        mvd.Add("k", 20);
-        mvd.Add("k", 30);
+        mvd.Add("k", 1);
 
-        var result = mvd.Remove("k", 30);
+        var result = mvd.Remove("k", 99);
 
-        Assert.IsTrue(result);
-        Assert.AreEqual(2, mvd.Count);
-        CollectionAssert.AreEqual(new[] { 10, 20 }, mvd["k"].ToList());
+        Assert.IsFalse(result);
+        Assert.AreEqual(1, mvd.Count);
     }
 
     /// <summary>
@@ -167,55 +164,58 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that removing a missing key is a no-op and does not invalidate an active enumerator.
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes the first occurrence and preserves remaining values when the value appears at the first position.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenKeyAbsent_ShouldNotInvalidateActiveEnumerator()
+    public void Remove_WhenValueIsFirstInList_ShouldPreserveRemaining()
     {
         var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
+        mvd.Add("k", 10);
+        mvd.Add("k", 20);
+        mvd.Add("k", 30);
 
-        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
+        var result = mvd.Remove("k", 10);
 
-        Assert.IsFalse(mvd.Remove("missing", 1));
-
-        Assert.IsTrue(enumerator.MoveNext());
-        Assert.AreEqual("a", enumerator.Current.Key);
-        Assert.IsFalse(enumerator.MoveNext());
+        Assert.IsTrue(result);
+        Assert.AreEqual(2, mvd.Count);
+        CollectionAssert.AreEqual(new[] { 20, 30 }, mvd["k"].ToList());
     }
 
     /// <summary>
-    /// Verifies that removing a missing value from an existing key is a no-op and does not invalidate an active enumerator.
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes the value and preserves remaining when the value appears at the last position.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenValueAbsentForExistingKey_ShouldNotInvalidateActiveEnumerator()
+    public void Remove_WhenValueIsLastInList_ShouldPreserveRemaining()
     {
         var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
+        mvd.Add("k", 10);
+        mvd.Add("k", 20);
+        mvd.Add("k", 30);
 
-        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
+        var result = mvd.Remove("k", 30);
 
-        Assert.IsFalse(mvd.Remove("a", 99));
-
-        Assert.IsTrue(enumerator.MoveNext());
-        Assert.AreEqual("a", enumerator.Current.Key);
-        Assert.IsFalse(enumerator.MoveNext());
+        Assert.IsTrue(result);
+        Assert.AreEqual(2, mvd.Count);
+        CollectionAssert.AreEqual(new[] { 10, 20 }, mvd["k"].ToList());
     }
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.Remove" /> uses the configured key comparer.
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Remove(TKey,TValue)"/> removes one value and returns <see langword="true"/>.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenCustomComparerUsed_ShouldRemoveFromEquivalentKey()
+    public void Remove_WhenValuePresent_ShouldReturnTrueAndDecrementCount()
     {
-        var mvd = new MultiValueDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        mvd.Add("Alpha", 1);
-        mvd.Add("Alpha", 2);
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("k", 1);
+        mvd.Add("k", 2);
+        mvd.Add("k", 3);
 
-        var removed = mvd.Remove("alpha", 1);
+        var result = mvd.Remove("k", 2);
 
-        Assert.IsTrue(removed);
-        Assert.AreEqual(1, mvd.Count);
-        CollectionAssert.AreEqual(new[] { 2 }, mvd["ALPHA"].ToList());
+        Assert.IsTrue(result);
+        Assert.AreEqual(2, mvd.Count);
+        Assert.AreEqual(1, mvd.KeyCount);
+        CollectionAssert.AreEqual(new[] { 1, 3 }, mvd["k"].ToList());
     }
+
 }

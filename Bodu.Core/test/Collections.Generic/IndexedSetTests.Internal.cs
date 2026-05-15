@@ -6,42 +6,11 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic;
 
 public partial class IndexedSetTests
 {
-    /// <summary>
-    /// Verifies that the internal <see cref="IndexedSet{T}.DebuggerStorage" /> property exposes the same
-    /// underlying storage instance used by the public surface so the DebuggerTypeProxy can walk it.
-    /// </summary>
-    [TestMethod]
-    public void DebuggerStorage_WhenAccessed_ShouldReturnUnderlyingStorage()
-    {
-        var sut = new IndexedSet<int>([1, 2, 3]);
-
-        OrderedSetStorage<int> storage = sut.DebuggerStorage;
-
-        Assert.IsNotNull(storage);
-        Assert.AreEqual(sut.Count, storage.Count);
-    }
-
-    /// <summary>
-    /// Verifies that the collection constructor uses the <see cref="IReadOnlyCollection{T}.Count" /> fast path
-    /// when the source implements <see cref="IReadOnlyCollection{T}" /> but not <see cref="ICollection{T}" />.
-    /// Exercises the second branch of the internal capacity hint.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionIsReadOnlyCollectionOnly_ShouldUseReadOnlyCountForCapacity()
-    {
-        var source = new ReadOnlyCollectionOnly<int>([10, 20, 30, 40]);
-
-        var sut = new IndexedSet<int>(source);
-
-        Assert.AreEqual(4, sut.Count);
-        Assert.IsTrue(sut.Capacity >= 4);
-    }
 
     /// <summary>
     /// Verifies that the collection constructor falls through to the zero-capacity branch when the source is a
@@ -68,6 +37,36 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
+    /// Verifies that the collection constructor uses the <see cref="IReadOnlyCollection{T}.Count" /> fast path
+    /// when the source implements <see cref="IReadOnlyCollection{T}" /> but not <see cref="ICollection{T}" />.
+    /// Exercises the second branch of the internal capacity hint.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionIsReadOnlyCollectionOnly_ShouldUseReadOnlyCountForCapacity()
+    {
+        var source = new ReadOnlyCollectionOnly<int>([10, 20, 30, 40]);
+
+        var sut = new IndexedSet<int>(source);
+
+        Assert.AreEqual(4, sut.Count);
+        Assert.IsTrue(sut.Capacity >= 4);
+    }
+    /// <summary>
+    /// Verifies that the internal <see cref="IndexedSet{T}.DebuggerStorage" /> property exposes the same
+    /// underlying storage instance used by the public surface so the DebuggerTypeProxy can walk it.
+    /// </summary>
+    [TestMethod]
+    public void DebuggerStorage_WhenAccessed_ShouldReturnUnderlyingStorage()
+    {
+        var sut = new IndexedSet<int>([1, 2, 3]);
+
+        OrderedSetStorage<int> storage = sut.DebuggerStorage;
+
+        Assert.IsNotNull(storage);
+        Assert.AreEqual(sut.Count, storage.Count);
+    }
+
+    /// <summary>
     /// Wraps an <see cref="IEnumerable{T}" /> as <see cref="IReadOnlyCollection{T}" /> only — deliberately not
     /// implementing <see cref="ICollection{T}" /> so capacity-hint helpers see the read-only-collection branch.
     /// </summary>
@@ -75,6 +74,7 @@ public partial class IndexedSetTests
     private sealed class ReadOnlyCollectionOnly<T>
         : IReadOnlyCollection<T>
     {
+
         private readonly T[] _items;
 
         /// <summary>
@@ -91,13 +91,15 @@ public partial class IndexedSetTests
         public int Count => _items.Length;
 
         /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             foreach (T item in _items)
                 yield return item;
         }
 
-        /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+
 }

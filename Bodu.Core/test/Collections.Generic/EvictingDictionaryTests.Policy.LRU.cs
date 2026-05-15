@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that Add evicts the least recently used item when capacity is exceeded using
     /// LeastRecentlyUsed policy.
@@ -27,58 +28,6 @@ public partial class EvictingDictionaryTests
             "'two' should have been evicted as it was the least recently used entry at the time capacity was exceeded.");
         Assert.IsTrue(dictionary.ContainsKey("three"),
             "'three' should be present as it was the item that triggered eviction and must be successfully added.");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates recency in an LeastRecentlyUsed dictionary.
-    /// </summary>
-    [TestMethod]
-    public void Touch_WhenPolicyIsLRUAndKeyTouched_ShouldUpdateRecency()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        dictionary.Add("a", 1);
-        dictionary.Add("b", 2);
-        dictionary.Add("c", 3);
-
-        dictionary.Touch("a");
-        dictionary.Add("d", 4); // "b" should be evicted
-
-        var expected = new Dictionary<string, int>
-        {
-            ["c"] = 3,
-            ["a"] = 1,
-            ["d"] = 4
-        };
-
-        CollectionAssert.AreEquivalent(expected, dictionary.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> returns true when key exists in an LeastRecentlyUsed dictionary.
-    /// </summary>
-    [TestMethod]
-    public void Touch_WhenPolicyIsLRUAndKeyExists_ShouldReturnTrue()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        dictionary.Add("a", 1);
-
-        var actual = dictionary.Touch("a");
-
-        Assert.IsTrue(actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> updates recency when the key exists in an LeastRecentlyUsed dictionary.
-    /// </summary>
-    [TestMethod]
-    public void TouchOrThrow_WhenPolicyIsLRUAndKeyExists_ShouldUpdateRecency()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        dictionary.Add("item", 42);
-
-        dictionary.TouchOrThrow("item");
-
-        Assert.IsTrue(dictionary.ContainsKey("item"));
     }
 
     /// <summary>
@@ -102,20 +51,43 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the least recently used item is evicted when using LeastRecentlyUsed policy.
+    /// Verifies that eviction does not throw when candidate was removed.
     /// </summary>
     [TestMethod]
-    public void ItemEvicted_WhenPolicyIsLRUAndEvictionOccurs_ShouldEvictLeastRecentlyUsed()
+    public void EvictionEvents_WhenPolicyIsLRUAndCandidateMissing_ShouldNotThrow()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        var evicted = new List<string>();
-        dictionary.ItemEvicted += (key, _) => evicted.Add(key);
-
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
+        dictionary.Remove("A");
+
         dictionary.Add("C", 3);
 
-        CollectionAssert.Contains(evicted, "A");
+        Assert.IsTrue(dictionary.ContainsKey("B"));
+        Assert.IsTrue(dictionary.ContainsKey("C"));
+    }
+
+    /// <summary>
+    /// Verifies that iteration respects insertion and access order under LeastRecentlyUsed policy.
+    /// </summary>
+    [TestMethod]
+    public void IEnumerable_GetEnumerator_WhenPolicyIsLRU_ShouldRespectRecencyOrder()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
+        dictionary.Add("c", 3);
+        dictionary.Touch("a");
+
+        KeyValuePair<string, int>[] actual = dictionary.ToArray(); // Iteration order reflects recency
+        KeyValuePair<string, int>[] expected =
+        [
+            new KeyValuePair<string, int>("b", 2),
+            new KeyValuePair<string, int>("c", 3),
+            new KeyValuePair<string, int>("a", 1),
+        ];
+
+        CollectionAssert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -138,35 +110,40 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that eviction does not throw when candidate was removed.
+    /// Verifies that the least recently used item is evicted when using LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    public void EvictionEvents_WhenPolicyIsLRUAndCandidateMissing_ShouldNotThrow()
+    public void ItemEvicted_WhenPolicyIsLRUAndEvictionOccurs_ShouldEvictLeastRecentlyUsed()
     {
         var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        var evicted = new List<string>();
+        dictionary.ItemEvicted += (key, _) => evicted.Add(key);
+
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
-        dictionary.Remove("A");
-
         dictionary.Add("C", 3);
 
-        Assert.IsTrue(dictionary.ContainsKey("B"));
-        Assert.IsTrue(dictionary.ContainsKey("C"));
+        CollectionAssert.Contains(evicted, "A");
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the least recently used key using LeastRecentlyUsed.
+    /// Verifies that ItemEvicting is fired before ItemEvicted when eviction occurs using
+    /// LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    public void PeekEvictionCandidate_WhenPolicyIsLRU_ShouldReturnLeastRecentlyUsedKey()
+    public void ItemEvicted_WhenPolicyIsLRUAndEvictionOccurs_ShouldFireAfterItemEvicting()
     {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        dictionary.Add("a", 1);
-        dictionary.Add("b", 2);
-        dictionary.Add("c", 3);
-        dictionary.Touch("a");
+        var sequence = new List<string>();
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
 
-        Assert.AreEqual("b", dictionary.PeekEvictionCandidate());
+        dictionary.ItemEvicting += (key, value) => sequence.Add($"Evicting:{key}:{value}");
+        dictionary.ItemEvicted += (key, value) => sequence.Add($"Evicted:{key}:{value}");
+
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Add("C", 3); // Eviction occurs
+
+        CollectionAssert.AreEqual(new[] { "Evicting:A:1", "Evicted:A:1" }, sequence);
     }
 
     /// <summary>
@@ -207,26 +184,6 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that ItemEvicting is fired before ItemEvicted when eviction occurs using
-    /// LeastRecentlyUsed policy.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenPolicyIsLRUAndEvictionOccurs_ShouldFireAfterItemEvicting()
-    {
-        var sequence = new List<string>();
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
-
-        dictionary.ItemEvicting += (key, value) => sequence.Add($"Evicting:{key}:{value}");
-        dictionary.ItemEvicted += (key, value) => sequence.Add($"Evicted:{key}:{value}");
-
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Add("C", 3); // Eviction occurs
-
-        CollectionAssert.AreEqual(new[] { "Evicting:A:1", "Evicted:A:1" }, sequence);
-    }
-
-    /// <summary>
     /// Verifies that ItemEvicting is triggered with the correct key and value before eviction
     /// using LeastRecentlyUsed policy.
     /// </summary>
@@ -264,29 +221,6 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that iteration respects insertion and access order under LeastRecentlyUsed policy.
-    /// </summary>
-    [TestMethod]
-    public void IEnumerable_GetEnumerator_WhenPolicyIsLRU_ShouldRespectRecencyOrder()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        dictionary.Add("a", 1);
-        dictionary.Add("b", 2);
-        dictionary.Add("c", 3);
-        dictionary.Touch("a");
-
-        KeyValuePair<string, int>[] actual = dictionary.ToArray(); // Iteration order reflects recency
-        KeyValuePair<string, int>[] expected =
-        [
-            new KeyValuePair<string, int>("b", 2),
-            new KeyValuePair<string, int>("c", 3),
-            new KeyValuePair<string, int>("a", 1),
-        ];
-
-        CollectionAssert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> are returned in recency order under LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
@@ -301,4 +235,72 @@ public partial class EvictingDictionaryTests
         var expected = new[] { "b", "c", "a" };
         CollectionAssert.AreEqual(expected, dictionary.Keys.ToList());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the least recently used key using LeastRecentlyUsed.
+    /// </summary>
+    [TestMethod]
+    public void PeekEvictionCandidate_WhenPolicyIsLRU_ShouldReturnLeastRecentlyUsedKey()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
+        dictionary.Add("c", 3);
+        dictionary.Touch("a");
+
+        Assert.AreEqual("b", dictionary.PeekEvictionCandidate());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> returns true when key exists in an LeastRecentlyUsed dictionary.
+    /// </summary>
+    [TestMethod]
+    public void Touch_WhenPolicyIsLRUAndKeyExists_ShouldReturnTrue()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        dictionary.Add("a", 1);
+
+        var actual = dictionary.Touch("a");
+
+        Assert.IsTrue(actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates recency in an LeastRecentlyUsed dictionary.
+    /// </summary>
+    [TestMethod]
+    public void Touch_WhenPolicyIsLRUAndKeyTouched_ShouldUpdateRecency()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
+        dictionary.Add("c", 3);
+
+        dictionary.Touch("a");
+        dictionary.Add("d", 4); // "b" should be evicted
+
+        var expected = new Dictionary<string, int>
+        {
+            ["c"] = 3,
+            ["a"] = 1,
+            ["d"] = 4
+        };
+
+        CollectionAssert.AreEquivalent(expected, dictionary.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> updates recency when the key exists in an LeastRecentlyUsed dictionary.
+    /// </summary>
+    [TestMethod]
+    public void TouchOrThrow_WhenPolicyIsLRUAndKeyExists_ShouldUpdateRecency()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        dictionary.Add("item", 42);
+
+        dictionary.TouchOrThrow("item");
+
+        Assert.IsTrue(dictionary.ContainsKey("item"));
+    }
+
 }

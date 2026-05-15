@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DoubleEndedRingCollectionTestsBase.AddToHead.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollection>
 {
+
     /// <summary>
     /// Verifies that <see cref="AddToHead(TCollection, int)"/> places the new item at the head.
     /// </summary>
@@ -19,6 +20,21 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
 
         Assert.AreEqual(1, GetCount(collection));
         Assert.AreEqual(42, PeekHead(collection));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="AddToHead(TCollection, int)"/> increments <see cref="GetCount(TCollection)"/>
+    /// by one for each call.
+    /// </summary>
+    [TestMethod]
+    public void AddToHead_WhenItemsAdded_ShouldIncrementCount()
+    {
+        TCollection collection = CreateCollection(5);
+        for (var i = 0; i < 5; i++)
+        {
+            AddToHead(collection, i);
+            Assert.AreEqual(i + 1, GetCount(collection));
+        }
     }
 
     /// <summary>
@@ -36,18 +52,4 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
         CollectionAssert.AreEqual(new[] { 3, 2, 1 }, ToArray(collection));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="AddToHead(TCollection, int)"/> increments <see cref="GetCount(TCollection)"/>
-    /// by one for each call.
-    /// </summary>
-    [TestMethod]
-    public void AddToHead_WhenItemsAdded_ShouldIncrementCount()
-    {
-        TCollection collection = CreateCollection(5);
-        for (var i = 0; i < 5; i++)
-        {
-            AddToHead(collection, i);
-            Assert.AreEqual(i + 1, GetCount(collection));
-        }
-    }
 }

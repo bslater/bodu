@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.DebugView.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,6 +13,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that the <see cref="DebuggerTypeProxyAttribute"/> attached to <see cref="ConcurrentCircularBuffer{T}"/>
     /// references a proxy whose constructor accepts a <see cref="ConcurrentCircularBuffer{T}"/> and that the proxy
@@ -44,6 +45,19 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that constructing the debug view with a <see langword="null"/> buffer throws
+    /// <see cref="ArgumentNullException"/>.
+    /// </summary>
+    [TestMethod]
+    public void DebugView_WhenBufferIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new ConcurrentCircularBufferDebugView<TestItem>(null!);
+        });
+    }
+
+    /// <summary>
     /// Verifies that the debug view's <c>Items</c> property returns a snapshot whose contents match the buffer.
     /// </summary>
     [TestMethod]
@@ -63,16 +77,4 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(30, items[2].Value);
     }
 
-    /// <summary>
-    /// Verifies that constructing the debug view with a <see langword="null"/> buffer throws
-    /// <see cref="ArgumentNullException"/>.
-    /// </summary>
-    [TestMethod]
-    public void DebugView_WhenBufferIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new ConcurrentCircularBufferDebugView<TestItem>(null!);
-        });
-    }
 }

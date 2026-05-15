@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DoubleEndedRingCollectionTestsBase.RemoveFromTail.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,22 +8,6 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollection>
 {
-    /// <summary>
-    /// Verifies that <see cref="RemoveFromTail(TCollection)"/> returns the most-recently-added element
-    /// (LIFO) when invoked after a series of tail-side adds.
-    /// </summary>
-    [TestMethod]
-    public void RemoveFromTail_WhenItemsPresent_ShouldReturnTailAndDecrementCount()
-    {
-        TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-        AddToTail(collection, 3);
-
-        Assert.AreEqual(3, RemoveFromTail(collection));
-        Assert.AreEqual(2, GetCount(collection));
-        Assert.AreEqual(2, PeekTail(collection));
-    }
 
     /// <summary>
     /// Verifies that <see cref="RemoveFromTail(TCollection)"/> drains the collection to empty when called
@@ -55,4 +39,21 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
             _ = RemoveFromTail(collection);
         });
     }
+    /// <summary>
+    /// Verifies that <see cref="RemoveFromTail(TCollection)"/> returns the most-recently-added element
+    /// (LIFO) when invoked after a series of tail-side adds.
+    /// </summary>
+    [TestMethod]
+    public void RemoveFromTail_WhenItemsPresent_ShouldReturnTailAndDecrementCount()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        AddToTail(collection, 3);
+
+        Assert.AreEqual(3, RemoveFromTail(collection));
+        Assert.AreEqual(2, GetCount(collection));
+        Assert.AreEqual(2, PeekTail(collection));
+    }
+
 }

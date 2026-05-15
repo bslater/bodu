@@ -9,6 +9,7 @@ namespace Bodu.Collections.Extensions;
 [TestClass]
 public class ThueMorseTests
 {
+
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.ThueMorse" /> throws <see cref="ArgumentOutOfRangeException" /> when count is negative.
     /// </summary>
@@ -22,16 +23,6 @@ public class ThueMorseTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.ThueMorse" /> returns an empty sequence when count is zero.
-    /// </summary>
-    [TestMethod]
-    public void ThueMorse_WhenCountIsZero_ShouldReturnEmptySequence()
-    {
-        var actual = SequenceGenerator.ThueMorse(0).ToArray();
-        Assert.AreEqual(0, actual.Length);
-    }
-
-    /// <summary>
     /// Verifies that the first sixteen terms of the Thue–Morse sequence match the canonical prefix.
     /// </summary>
     [TestMethod]
@@ -39,6 +30,16 @@ public class ThueMorseTests
     {
         var actual = SequenceGenerator.ThueMorse(16).ToArray();
         CollectionAssert.AreEqual(new[] { 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0 }, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.ThueMorse" /> returns an empty sequence when count is zero.
+    /// </summary>
+    [TestMethod]
+    public void ThueMorse_WhenCountIsZero_ShouldReturnEmptySequence()
+    {
+        var actual = SequenceGenerator.ThueMorse(0).ToArray();
+        Assert.AreEqual(0, actual.Length);
     }
 
     /// <summary>
@@ -67,4 +68,5 @@ public class ThueMorseTests
         foreach (var v in SequenceGenerator.ThueMorse(32))
             Assert.IsTrue(v == 0 || v == 1, $"Expected 0 or 1, got {v}.");
     }
+
 }

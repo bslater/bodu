@@ -1,16 +1,31 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IComparableExtensionsTests.IsLessThanOrEqual.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
 public partial class IComparableExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException"/>.
+    /// </summary>
+    [TestMethod]
+    public void IsLessThanOrEqual_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    {
+        IComparer<int>? comparer = null;
+
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = 5.IsLessThanOrEqual(10, comparer!);
+        });
+
+        Assert.AreEqual("comparer", ex.ParamName);
+    }
     // =========================================================================
     // IsLessThanOrEqual<T>(T, T?)
     // =========================================================================
@@ -33,6 +48,17 @@ public partial class IComparableExtensionsTests
     [DataRow("apple", "apple", true, DisplayName = "String equal to reference returns true")]
     [DataRow("banana", "apple", false, DisplayName = "String after reference returns false")]
     public void IsLessThanOrEqual_WhenEvaluatingStringValues_ShouldReturnExpectedResult(string value, string other, bool expected) => Assert.AreEqual(expected, value.IsLessThanOrEqual(other));
+
+    /// <summary>
+    /// Verifies that the comparer overload returns <see langword="false"/> when the reference value is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void IsLessThanOrEqual_WhenOtherIsNull_ForComparerOverload_ShouldReturnFalse()
+    {
+        IComparer<int> comparer = Comparer<int>.Default;
+
+        Assert.IsFalse(5.IsLessThanOrEqual(null, comparer));
+    }
 
     /// <summary>
     /// Verifies that <c>IsLessThanOrEqual</c> returns <see langword="false"/> when the reference value is <see langword="null"/>.
@@ -63,30 +89,4 @@ public partial class IComparableExtensionsTests
         Assert.IsFalse(1.IsLessThanOrEqual(5, comparer));
     }
 
-    /// <summary>
-    /// Verifies that the comparer overload returns <see langword="false"/> when the reference value is <see langword="null"/>.
-    /// </summary>
-    [TestMethod]
-    public void IsLessThanOrEqual_WhenOtherIsNull_ForComparerOverload_ShouldReturnFalse()
-    {
-        IComparer<int> comparer = Comparer<int>.Default;
-
-        Assert.IsFalse(5.IsLessThanOrEqual(null, comparer));
-    }
-
-    /// <summary>
-    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException"/>.
-    /// </summary>
-    [TestMethod]
-    public void IsLessThanOrEqual_WhenComparerIsNull_ShouldThrowArgumentNullException()
-    {
-        IComparer<int>? comparer = null;
-
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = 5.IsLessThanOrEqual(10, comparer!);
-        });
-
-        Assert.AreEqual("comparer", ex.ParamName);
-    }
 }

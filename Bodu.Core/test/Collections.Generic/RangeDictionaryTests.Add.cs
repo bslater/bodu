@@ -1,63 +1,15 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.Add.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeDictionaryTests
 {
-    // --------------------------------------------------------
-    // Add(TKey, TKey, TValue) — argument validation
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that adding with a <see langword="null" /> start is rejected.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenStartIsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new RangeDictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.Add(null!, "z", 42);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that adding with a <see langword="null" /> end is rejected.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenEndIsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new RangeDictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.Add("a", null!, 42);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that adding a degenerate range (<c>start &gt;= end</c>) is rejected.
-    /// </summary>
-    [TestMethod]
-    [DataRow(5, 5)]
-    [DataRow(10, 5)]
-    public void Add_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
-    {
-        var sut = new RangeDictionary<int, string>();
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.Add(start, end, "x");
-        });
-    }
 
     // --------------------------------------------------------
     // Add — happy path
@@ -77,46 +29,78 @@ public partial class RangeDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that non-overlapping ranges added out of order produce a sorted result.
+    /// Verifies that adding with a <see langword="null" /> end is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangesAreNonOverlappingOutOfOrder_ShouldKeepSortedOrder()
+    public void Add_WhenEndIsNull_ShouldThrowArgumentNullException()
     {
-        var sut = new RangeDictionary<int, string>();
+        var sut = new RangeDictionary<string, int>();
 
-        sut.Add(20, 30, "C");
-        sut.Add(0, 5, "A");
-        sut.Add(10, 15, "B");
-
-        AssertContents(sut, (0, 5, "A"), (10, 15, "B"), (20, 30, "C"));
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            sut.Add("a", null!, 42);
+        });
     }
 
     /// <summary>
-    /// Verifies that adjacent ranges (sharing an endpoint) are allowed and stored as separate entries.
+    /// Verifies that a failed overlap-rejecting add does not partially mutate the dictionary.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangesAreAdjacent_ShouldKeepAsSeparateEntries()
+    public void Add_WhenOverlapRejected_ShouldNotMutateDictionary()
     {
-        var sut = new RangeDictionary<int, string>();
+        RangeDictionary<int, string> sut = CreateDictionary((10, 20, "A"));
 
-        sut.Add(0, 10, "A");
-        sut.Add(10, 20, "B");
+        try
+        {
+            sut.Add(5, 15, "B");
+        }
+        catch (ArgumentException)
+        {
+        }
 
-        AssertContents(sut, (0, 10, "A"), (10, 20, "B"));
+        AssertContents(sut, (10, 20, "A"));
     }
 
     /// <summary>
-    /// Verifies that <see langword="null" /> values are accepted.
+    /// Verifies that adding a range that engulfs an existing range is rejected.
     /// </summary>
     [TestMethod]
-    public void Add_WhenValueIsNull_ShouldStoreNullValue()
+    public void Add_WhenRangeEngulfsExisting_ShouldThrowArgumentException()
     {
-        var sut = new RangeDictionary<int, string?>();
+        RangeDictionary<int, string> sut = CreateDictionary((10, 20, "A"));
 
-        sut.Add(0, 10, null);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.Add(0, 30, "B");
+        });
+    }
 
-        Assert.AreEqual(1, sut.Count);
-        Assert.IsNull(sut[5]);
+    /// <summary>
+    /// Verifies that adding a range fully contained within an existing range is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangeIsContainedByExisting_ShouldThrowArgumentException()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 100, "A"));
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.Add(10, 20, "B");
+        });
+    }
+
+    /// <summary>
+    /// Verifies that adding an identical range is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangeMatchesExisting_ShouldThrowArgumentException()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.Add(0, 10, "B");
+        });
     }
 
     // --------------------------------------------------------
@@ -152,64 +136,79 @@ public partial class RangeDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that adding a range fully contained within an existing range is rejected.
+    /// Verifies that adjacent ranges (sharing an endpoint) are allowed and stored as separate entries.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeIsContainedByExisting_ShouldThrowArgumentException()
+    public void Add_WhenRangesAreAdjacent_ShouldKeepAsSeparateEntries()
     {
-        RangeDictionary<int, string> sut = CreateDictionary((0, 100, "A"));
+        var sut = new RangeDictionary<int, string>();
+
+        sut.Add(0, 10, "A");
+        sut.Add(10, 20, "B");
+
+        AssertContents(sut, (0, 10, "A"), (10, 20, "B"));
+    }
+
+    /// <summary>
+    /// Verifies that non-overlapping ranges added out of order produce a sorted result.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangesAreNonOverlappingOutOfOrder_ShouldKeepSortedOrder()
+    {
+        var sut = new RangeDictionary<int, string>();
+
+        sut.Add(20, 30, "C");
+        sut.Add(0, 5, "A");
+        sut.Add(10, 15, "B");
+
+        AssertContents(sut, (0, 5, "A"), (10, 15, "B"), (20, 30, "C"));
+    }
+
+    /// <summary>
+    /// Verifies that adding a degenerate range (<c>start &gt;= end</c>) is rejected.
+    /// </summary>
+    [TestMethod]
+    [DataRow(5, 5)]
+    [DataRow(10, 5)]
+    public void Add_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
+    {
+        var sut = new RangeDictionary<int, string>();
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            sut.Add(10, 20, "B");
+            sut.Add(start, end, "x");
+        });
+    }
+    // --------------------------------------------------------
+    // Add(TKey, TKey, TValue) — argument validation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that adding with a <see langword="null" /> start is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenStartIsNull_ShouldThrowArgumentNullException()
+    {
+        var sut = new RangeDictionary<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            sut.Add(null!, "z", 42);
         });
     }
 
     /// <summary>
-    /// Verifies that adding a range that engulfs an existing range is rejected.
+    /// Verifies that <see langword="null" /> values are accepted.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeEngulfsExisting_ShouldThrowArgumentException()
+    public void Add_WhenValueIsNull_ShouldStoreNullValue()
     {
-        RangeDictionary<int, string> sut = CreateDictionary((10, 20, "A"));
+        var sut = new RangeDictionary<int, string?>();
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.Add(0, 30, "B");
-        });
-    }
+        sut.Add(0, 10, null);
 
-    /// <summary>
-    /// Verifies that adding an identical range is rejected.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenRangeMatchesExisting_ShouldThrowArgumentException()
-    {
-        RangeDictionary<int, string> sut = CreateDictionary((0, 10, "A"));
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.Add(0, 10, "B");
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a failed overlap-rejecting add does not partially mutate the dictionary.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenOverlapRejected_ShouldNotMutateDictionary()
-    {
-        RangeDictionary<int, string> sut = CreateDictionary((10, 20, "A"));
-
-        try
-        {
-            sut.Add(5, 15, "B");
-        }
-        catch (ArgumentException)
-        {
-        }
-
-        AssertContents(sut, (10, 20, "A"));
+        Assert.AreEqual(1, sut.Count);
+        Assert.IsNull(sut[5]);
     }
 
     // --------------------------------------------------------
@@ -229,4 +228,5 @@ public partial class RangeDictionaryTests
 
         AssertContents(sut, (0, 10, "x"));
     }
+
 }

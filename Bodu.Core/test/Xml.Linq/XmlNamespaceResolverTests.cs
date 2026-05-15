@@ -11,6 +11,7 @@ namespace Bodu.Xml.Linq;
 [TestClass]
 public sealed class XmlNamespaceResolverTests
 {
+
     private static readonly XNamespace s_sampleNamespace = "http://example.com/sample";
 
     /// <summary>
@@ -26,6 +27,32 @@ public sealed class XmlNamespaceResolverTests
     }
 
     /// <summary>
+    /// Verifies that the constructor captures <see cref="XNamespace.None" /> when the root element has no explicit namespace, and that
+    /// the resolver subsequently produces unqualified <see cref="XName" /> values that match the source document.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="XName.Namespace" /> is contractually never <see langword="null" /> in <c>System.Xml.Linq</c> — unqualified names
+    /// carry <see cref="XNamespace.None" /> rather than a missing namespace. This test exercises that boundary so that any future
+    /// change to the resolver's null-handling contract is detected.
+    /// </remarks>
+    [TestMethod]
+    public void Ctor_WhenRootHasNoNamespace_ShouldCaptureXNamespaceNoneAndResolveLocalNames()
+    {
+        var root = new XElement("root",
+            new XElement("child", "value"));
+
+        var resolver = new XmlNamespaceResolver(root);
+
+        XName qualified = resolver.Name("child");
+        Assert.AreEqual(XNamespace.None, qualified.Namespace);
+        Assert.AreEqual("child", qualified.LocalName);
+
+        XElement? child = resolver.Element(root, "child");
+        Assert.IsNotNull(child);
+        Assert.AreEqual("value", child!.Value);
+    }
+
+    /// <summary>
     /// Verifies that the constructor throws <see cref="ArgumentNullException" /> when the root element is <see langword="null" />.
     /// </summary>
     [TestMethod]
@@ -35,21 +62,6 @@ public sealed class XmlNamespaceResolverTests
         {
             _ = new XmlNamespaceResolver(null!);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="XmlNamespaceResolver.Name" /> qualifies a local name with the captured namespace.
-    /// </summary>
-    [TestMethod]
-    public void Name_WhenCalled_ShouldReturnNamespacedXName()
-    {
-        var root = new XElement(s_sampleNamespace + "root");
-        var resolver = new XmlNamespaceResolver(root);
-
-        XName qualified = resolver.Name("widget");
-
-        Assert.AreEqual(s_sampleNamespace, qualified.Namespace);
-        Assert.AreEqual("widget", qualified.LocalName);
     }
 
     /// <summary>
@@ -97,6 +109,20 @@ public sealed class XmlNamespaceResolverTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="XmlNamespaceResolver.Elements" /> returns an empty sequence when no matching child exists.
+    /// </summary>
+    [TestMethod]
+    public void Elements_WhenChildrenAreMissing_ShouldReturnEmptySequence()
+    {
+        var root = new XElement(s_sampleNamespace + "root");
+        var resolver = new XmlNamespaceResolver(root);
+
+        XElement[] items = [.. resolver.Elements(root, "missing")];
+
+        Assert.IsEmpty(items);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="XmlNamespaceResolver.Elements" /> returns every matching child element in document order.
     /// </summary>
     [TestMethod]
@@ -112,20 +138,6 @@ public sealed class XmlNamespaceResolverTests
         var items = resolver.Elements(root, "item").Select(e => e.Value).ToArray();
 
         CollectionAssert.AreEqual(new[] { "one", "two", "four" }, items);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="XmlNamespaceResolver.Elements" /> returns an empty sequence when no matching child exists.
-    /// </summary>
-    [TestMethod]
-    public void Elements_WhenChildrenAreMissing_ShouldReturnEmptySequence()
-    {
-        var root = new XElement(s_sampleNamespace + "root");
-        var resolver = new XmlNamespaceResolver(root);
-
-        XElement[] items = [.. resolver.Elements(root, "missing")];
-
-        Assert.IsEmpty(items);
     }
 
     /// <summary>
@@ -145,32 +157,6 @@ public sealed class XmlNamespaceResolverTests
     }
 
     /// <summary>
-    /// Verifies that the constructor captures <see cref="XNamespace.None" /> when the root element has no explicit namespace, and that
-    /// the resolver subsequently produces unqualified <see cref="XName" /> values that match the source document.
-    /// </summary>
-    /// <remarks>
-    /// <see cref="XName.Namespace" /> is contractually never <see langword="null" /> in <c>System.Xml.Linq</c> — unqualified names
-    /// carry <see cref="XNamespace.None" /> rather than a missing namespace. This test exercises that boundary so that any future
-    /// change to the resolver's null-handling contract is detected.
-    /// </remarks>
-    [TestMethod]
-    public void Ctor_WhenRootHasNoNamespace_ShouldCaptureXNamespaceNoneAndResolveLocalNames()
-    {
-        var root = new XElement("root",
-            new XElement("child", "value"));
-
-        var resolver = new XmlNamespaceResolver(root);
-
-        XName qualified = resolver.Name("child");
-        Assert.AreEqual(XNamespace.None, qualified.Namespace);
-        Assert.AreEqual("child", qualified.LocalName);
-
-        XElement? child = resolver.Element(root, "child");
-        Assert.IsNotNull(child);
-        Assert.AreEqual("value", child!.Value);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="XmlNamespaceResolver.Elements" /> returns every matching unqualified child when the resolver was
     /// constructed from a namespace-less root, confirming that the resolver does not silently filter to a non-default namespace.
     /// </summary>
@@ -187,4 +173,20 @@ public sealed class XmlNamespaceResolverTests
 
         CollectionAssert.AreEqual(new[] { "one", "two", "three" }, items);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="XmlNamespaceResolver.Name" /> qualifies a local name with the captured namespace.
+    /// </summary>
+    [TestMethod]
+    public void Name_WhenCalled_ShouldReturnNamespacedXName()
+    {
+        var root = new XElement(s_sampleNamespace + "root");
+        var resolver = new XmlNamespaceResolver(root);
+
+        XName qualified = resolver.Name("widget");
+
+        Assert.AreEqual(s_sampleNamespace, qualified.Namespace);
+        Assert.AreEqual("widget", qualified.LocalName);
+    }
+
 }

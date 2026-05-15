@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
@@ -56,14 +54,6 @@ namespace Bodu.Extensions;
 [TestClass]
 public partial class FiscalWeekQuarterProviderTests
 {
-    // FY 2023 — Jan 1, 2023 = Sunday — alignment is exact; no ambiguity.
-    // FY 2023: 2023-01-01 – 2023-12-30 | 52 weeks | Weeks544
-    // Q1: 2023-01-01 – 2023-04-01  Q2: 2023-04-02 – 2023-07-01
-    // Q3: 2023-07-02 – 2023-09-30  Q4: 2023-10-01 – 2023-12-30
-    private const int Sunday52FiscalYear = 2023;
-
-    private static readonly FiscalWeekQuarterProvider s_sunday52 =
-        new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks544);
 
     // FY 2024 — Jan 1, 2024 = Monday — alignment is exact; no ambiguity.
     // 2024 is a leap year (contains Feb 29). FY 2024: 2024-01-01 – 2024-12-29 | 52 weeks | Weeks445
@@ -71,8 +61,16 @@ public partial class FiscalWeekQuarterProviderTests
     // Q3: 2024-07-01 – 2024-09-29  Q4: 2024-09-30 – 2024-12-29
     private const int Monday52LeapFiscalYear = 2024;
 
-    private static readonly FiscalWeekQuarterProvider s_monday52Leap =
-        new FiscalWeekQuarterProvider(1, DayOfWeek.Monday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
+    // FY 2023 — Apr 1, 2023 = Saturday — alignment is exact; no ambiguity.
+    // Straddles calendar year; Q4 falls in a leap year (2024). FY 2023: 2023-04-01 – 2024-03-29 | 52 weeks | Weeks454
+    // Q1: 2023-04-01 – 2023-06-30  Q2: 2023-07-01 – 2023-09-29
+    // Q3: 2023-09-30 – 2023-12-29  Q4: 2023-12-30 – 2024-03-29
+    private const int Saturday52FiscalYear = 2023;
+    // FY 2023 — Jan 1, 2023 = Sunday — alignment is exact; no ambiguity.
+    // FY 2023: 2023-01-01 – 2023-12-30 | 52 weeks | Weeks544
+    // Q1: 2023-01-01 – 2023-04-01  Q2: 2023-04-02 – 2023-07-01
+    // Q3: 2023-07-02 – 2023-09-30  Q4: 2023-10-01 – 2023-12-30
+    private const int Sunday52FiscalYear = 2023;
 
     // FY 2020 — Jan 1, 2020 = Wednesday — nearest Sunday is Dec 29, 2019 (3 days earlier).
     // 2020 is a leap year. FY 2020: 2019-12-29 – 2021-01-02 | 53 weeks | Weeks445
@@ -80,17 +78,54 @@ public partial class FiscalWeekQuarterProviderTests
     // Q3: 2020-06-28 – 2020-09-26  Q4: 2020-09-27 – 2021-01-02  (14 weeks)
     private const int Sunday53FiscalYear = 2020;
 
-    private static readonly FiscalWeekQuarterProvider s_sunday53 =
-        new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
-
-    // FY 2023 — Apr 1, 2023 = Saturday — alignment is exact; no ambiguity.
-    // Straddles calendar year; Q4 falls in a leap year (2024). FY 2023: 2023-04-01 – 2024-03-29 | 52 weeks | Weeks454
-    // Q1: 2023-04-01 – 2023-06-30  Q2: 2023-07-01 – 2023-09-29
-    // Q3: 2023-09-30 – 2023-12-29  Q4: 2023-12-30 – 2024-03-29
-    private const int Saturday52FiscalYear = 2023;
+    private static readonly FiscalWeekQuarterProvider s_monday52Leap =
+        new FiscalWeekQuarterProvider(1, DayOfWeek.Monday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
 
     private static readonly FiscalWeekQuarterProvider s_saturday52 =
         new FiscalWeekQuarterProvider(4, DayOfWeek.Saturday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks454);
+
+    private static readonly FiscalWeekQuarterProvider s_sunday52 =
+        new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks544);
+
+    private static readonly FiscalWeekQuarterProvider s_sunday53 =
+        new FiscalWeekQuarterProvider(1, DayOfWeek.Sunday, isFiscalYearEnd: false, pattern: FiscalWeekPattern.Weeks445);
+
+    /// <summary>
+    /// Provides quarter boundary test cases: (provider, quarter, fiscalYear, expectedStart, expectedEnd).
+    /// </summary>
+    /// <remarks>
+    /// Each row covers one quarter of one provider within a specific fiscal year. The
+    /// <c>expectedStart</c> and <c>expectedEnd</c> values are the dates returned by
+    /// <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int, int)" /> and
+    /// <see cref="FiscalWeekQuarterProvider.GetQuarterEnd(int, int)" /> respectively — both purely
+    /// arithmetic and both <see cref="DateTimeKind.Unspecified" />.
+    /// </remarks>
+    public static IEnumerable<object[]> GetQuarterBoundaryTestData()
+    {
+        // Sunday52, FY 2023 (2023-01-01 – 2023-12-30)
+        yield return new object[] { s_sunday52, 1, Sunday52FiscalYear, new DateTime(2023, 1, 1), new DateTime(2023, 4, 1) };
+        yield return new object[] { s_sunday52, 2, Sunday52FiscalYear, new DateTime(2023, 4, 2), new DateTime(2023, 7, 1) };
+        yield return new object[] { s_sunday52, 3, Sunday52FiscalYear, new DateTime(2023, 7, 2), new DateTime(2023, 9, 30) };
+        yield return new object[] { s_sunday52, 4, Sunday52FiscalYear, new DateTime(2023, 10, 1), new DateTime(2023, 12, 30) };
+
+        // Monday52Leap, FY 2024 (2024-01-01 – 2024-12-29) — leap year
+        yield return new object[] { s_monday52Leap, 1, Monday52LeapFiscalYear, new DateTime(2024, 1, 1), new DateTime(2024, 3, 31) };
+        yield return new object[] { s_monday52Leap, 2, Monday52LeapFiscalYear, new DateTime(2024, 4, 1), new DateTime(2024, 6, 30) };
+        yield return new object[] { s_monday52Leap, 3, Monday52LeapFiscalYear, new DateTime(2024, 7, 1), new DateTime(2024, 9, 29) };
+        yield return new object[] { s_monday52Leap, 4, Monday52LeapFiscalYear, new DateTime(2024, 9, 30), new DateTime(2024, 12, 29) };
+
+        // Sunday53, FY 2020 (2019-12-29 – 2021-01-02) — 53-week year; Q4 spans 14 weeks
+        yield return new object[] { s_sunday53, 1, Sunday53FiscalYear, new DateTime(2019, 12, 29), new DateTime(2020, 3, 28) };
+        yield return new object[] { s_sunday53, 2, Sunday53FiscalYear, new DateTime(2020, 3, 29), new DateTime(2020, 6, 27) };
+        yield return new object[] { s_sunday53, 3, Sunday53FiscalYear, new DateTime(2020, 6, 28), new DateTime(2020, 9, 26) };
+        yield return new object[] { s_sunday53, 4, Sunday53FiscalYear, new DateTime(2020, 9, 27), new DateTime(2021, 1, 2) };
+
+        // Saturday52, FY 2023 (2023-04-01 – 2024-03-29) — straddles calendar year; Q4 within leap year
+        yield return new object[] { s_saturday52, 1, Saturday52FiscalYear, new DateTime(2023, 4, 1), new DateTime(2023, 6, 30) };
+        yield return new object[] { s_saturday52, 2, Saturday52FiscalYear, new DateTime(2023, 7, 1), new DateTime(2023, 9, 29) };
+        yield return new object[] { s_saturday52, 3, Saturday52FiscalYear, new DateTime(2023, 9, 30), new DateTime(2023, 12, 29) };
+        yield return new object[] { s_saturday52, 4, Saturday52FiscalYear, new DateTime(2023, 12, 30), new DateTime(2024, 3, 29) };
+    }
 
     /// <summary>
     /// Provides quarter number test cases: (provider, date, expectedQuarter).
@@ -162,40 +197,4 @@ public partial class FiscalWeekQuarterProviderTests
         yield return new object[] { s_saturday52, new DateTime(2024, 3, 29), 4 }; // Q4 last day (Friday)
     }
 
-    /// <summary>
-    /// Provides quarter boundary test cases: (provider, quarter, fiscalYear, expectedStart, expectedEnd).
-    /// </summary>
-    /// <remarks>
-    /// Each row covers one quarter of one provider within a specific fiscal year. The
-    /// <c>expectedStart</c> and <c>expectedEnd</c> values are the dates returned by
-    /// <see cref="FiscalWeekQuarterProvider.GetQuarterStart(int, int)" /> and
-    /// <see cref="FiscalWeekQuarterProvider.GetQuarterEnd(int, int)" /> respectively — both purely
-    /// arithmetic and both <see cref="DateTimeKind.Unspecified" />.
-    /// </remarks>
-    public static IEnumerable<object[]> GetQuarterBoundaryTestData()
-    {
-        // Sunday52, FY 2023 (2023-01-01 – 2023-12-30)
-        yield return new object[] { s_sunday52, 1, Sunday52FiscalYear, new DateTime(2023, 1, 1), new DateTime(2023, 4, 1) };
-        yield return new object[] { s_sunday52, 2, Sunday52FiscalYear, new DateTime(2023, 4, 2), new DateTime(2023, 7, 1) };
-        yield return new object[] { s_sunday52, 3, Sunday52FiscalYear, new DateTime(2023, 7, 2), new DateTime(2023, 9, 30) };
-        yield return new object[] { s_sunday52, 4, Sunday52FiscalYear, new DateTime(2023, 10, 1), new DateTime(2023, 12, 30) };
-
-        // Monday52Leap, FY 2024 (2024-01-01 – 2024-12-29) — leap year
-        yield return new object[] { s_monday52Leap, 1, Monday52LeapFiscalYear, new DateTime(2024, 1, 1), new DateTime(2024, 3, 31) };
-        yield return new object[] { s_monday52Leap, 2, Monday52LeapFiscalYear, new DateTime(2024, 4, 1), new DateTime(2024, 6, 30) };
-        yield return new object[] { s_monday52Leap, 3, Monday52LeapFiscalYear, new DateTime(2024, 7, 1), new DateTime(2024, 9, 29) };
-        yield return new object[] { s_monday52Leap, 4, Monday52LeapFiscalYear, new DateTime(2024, 9, 30), new DateTime(2024, 12, 29) };
-
-        // Sunday53, FY 2020 (2019-12-29 – 2021-01-02) — 53-week year; Q4 spans 14 weeks
-        yield return new object[] { s_sunday53, 1, Sunday53FiscalYear, new DateTime(2019, 12, 29), new DateTime(2020, 3, 28) };
-        yield return new object[] { s_sunday53, 2, Sunday53FiscalYear, new DateTime(2020, 3, 29), new DateTime(2020, 6, 27) };
-        yield return new object[] { s_sunday53, 3, Sunday53FiscalYear, new DateTime(2020, 6, 28), new DateTime(2020, 9, 26) };
-        yield return new object[] { s_sunday53, 4, Sunday53FiscalYear, new DateTime(2020, 9, 27), new DateTime(2021, 1, 2) };
-
-        // Saturday52, FY 2023 (2023-04-01 – 2024-03-29) — straddles calendar year; Q4 within leap year
-        yield return new object[] { s_saturday52, 1, Saturday52FiscalYear, new DateTime(2023, 4, 1), new DateTime(2023, 6, 30) };
-        yield return new object[] { s_saturday52, 2, Saturday52FiscalYear, new DateTime(2023, 7, 1), new DateTime(2023, 9, 29) };
-        yield return new object[] { s_saturday52, 3, Saturday52FiscalYear, new DateTime(2023, 9, 30), new DateTime(2023, 12, 29) };
-        yield return new object[] { s_saturday52, 4, Saturday52FiscalYear, new DateTime(2023, 12, 30), new DateTime(2024, 3, 29) };
-    }
 }

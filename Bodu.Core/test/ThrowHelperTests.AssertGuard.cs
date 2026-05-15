@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.AssertGuard.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Asserts the standard <see cref="ThrowHelper" /> contract for a single guard invocation: the action either
     /// completes silently (when <paramref name="expectedExceptionType" /> is <see langword="null" />) or throws
@@ -68,4 +69,5 @@ public partial class ThrowHelperTests
                 $"{testName}: wrong ParamName.");
         }
     }
+
 }

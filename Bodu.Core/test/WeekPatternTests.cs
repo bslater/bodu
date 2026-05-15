@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekPatternTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,6 +9,7 @@ namespace Bodu;
 [TestClass]
 public partial class WeekPatternTests
 {
+
     public TestContext TestContext { get; set; }
 
     /// <summary>
@@ -45,7 +46,7 @@ public partial class WeekPatternTests
         yield return new object[] { "SMTWTFS", "SZ" };
         yield return new object[] { "SMTWTFS", "sz" };
         yield return new object[] { "SMTWTFS", "Invalid" };
-        yield return new object[] { "SMTWTFS", "" };
+        yield return new object[] { "SMTWTFS", string.Empty };
         yield return new object[] { "SMTWTFS", "123" };
         yield return new object[] { "SMTWTFS", "SUU" };
         yield return new object[] { "1010101", "S" };
@@ -68,7 +69,7 @@ public partial class WeekPatternTests
     public static IEnumerable<object[]> GetInvalidParseInputTestData()
     {
         // Wrong length
-        yield return new object[] { "", null };
+        yield return new object[] { string.Empty, null };
         yield return new object[] { "SMTWTF", null };
         yield return new object[] { "SMTWTFSS", null };
 
@@ -122,7 +123,7 @@ public partial class WeekPatternTests
 
         // Bad format strings
         yield return new object[] { "SMTWTFS", "Invalid" };
-        yield return new object[] { "SMTWTFS", "" };
+        yield return new object[] { "SMTWTFS", string.Empty };
         yield return new object[] { "SMTWTFS", "123" };
         yield return new object[] { "SMTWTFS", "SUU" };
     }
@@ -253,4 +254,5 @@ public partial class WeekPatternTests
             yield return new object[] { (byte)mask, new string(symbolBuilder), new string(binaryBuilder) };
         }
     }
+
 }

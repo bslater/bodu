@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.Enumerator.StructureOf.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
+
     /// <summary>
     /// Verifies that the CircularBuffer enumerator is defined as a value type (struct).
     /// </summary>
@@ -36,4 +37,5 @@ public partial class CircularBufferTests
         Assert.AreEqual(0, mutableProperties.Count,
             $"Enumerator exposes mutable public properties: {string.Join(", ", mutableProperties.Select(p => p.Name))}");
     }
+
 }

@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public sealed partial class IEnumerableExtensionsTests_Randomize
 {
+
     /// <summary>
     /// Verifies that <see cref="RandomizationMode.StreamWindowed" /> yields every source element when the source is exactly the
     /// internal window size (64 elements), so the streaming-replacement loop body is never entered and only the final flush
@@ -25,6 +26,24 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         Assert.AreEqual(windowSize, result.Length, "All source elements must be yielded when source == window size.");
         CollectionAssert.AreEquivalent(source, result);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RandomizationMode.StreamWindowed" /> applied to a source larger than the window size produces a
+    /// permutation that genuinely differs from the input order — confirming the streaming-replacement loop actually permutes the
+    /// sequence rather than yielding the input verbatim.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_StreamWindowed_WhenSourceExceedsWindowSize_ShouldNotYieldSourceInExactlyOriginalOrder()
+    {
+        var source = Enumerable.Range(1, 200).ToArray();
+
+        var result = source
+            .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
+            .ToArray();
+
+        Assert.IsFalse(source.SequenceEqual(result),
+            "Stream-windowed shuffle of 200 items must permute the input rather than yield it in original order.");
     }
 
     /// <summary>
@@ -49,24 +68,6 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that <see cref="RandomizationMode.StreamWindowed" /> applied to a source larger than the window size produces a
-    /// permutation that genuinely differs from the input order — confirming the streaming-replacement loop actually permutes the
-    /// sequence rather than yielding the input verbatim.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_StreamWindowed_WhenSourceExceedsWindowSize_ShouldNotYieldSourceInExactlyOriginalOrder()
-    {
-        var source = Enumerable.Range(1, 200).ToArray();
-
-        var result = source
-            .Randomize(RandomizationMode.StreamWindowed, CreateSeededRng())
-            .ToArray();
-
-        Assert.IsFalse(source.SequenceEqual(result),
-            "Stream-windowed shuffle of 200 items must permute the input rather than yield it in original order.");
-    }
-
-    /// <summary>
     /// Verifies that <see cref="RandomizationMode.StreamWindowed" /> with an empty source yields no items and never enters the
     /// streaming-replacement loop.
     /// </summary>
@@ -81,4 +82,5 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         Assert.AreEqual(0, result.Length);
     }
+
 }

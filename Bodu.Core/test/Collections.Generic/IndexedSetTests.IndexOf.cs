@@ -5,12 +5,23 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class IndexedSetTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedSet{T}.IndexOf(T)" /> uses the configured comparer when locating items.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenCustomComparerProvided_ShouldUseComparerForEquality()
+    {
+        IndexedSet<string> sut = CreateSet(["Alpha", "Beta"], StringComparer.OrdinalIgnoreCase);
+
+        Assert.AreEqual(0, sut.IndexOf("ALPHA"));
+        Assert.AreEqual(1, sut.IndexOf("beta"));
+    }
     /// <summary>
     /// Verifies that <see cref="IndexedSet{T}.IndexOf(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
@@ -23,6 +34,21 @@ public partial class IndexedSetTests
         {
             _ = sut.IndexOf(null!);
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedSet{T}.IndexOf(T)" /> reflects index shifts after a removal.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenItemRemovedFromMiddle_ShouldUpdateLaterIndices()
+    {
+        IndexedSet<int> sut = CreateSet([10, 20, 30, 40]);
+
+        sut.Remove(20);
+
+        Assert.AreEqual(0, sut.IndexOf(10));
+        Assert.AreEqual(1, sut.IndexOf(30));
+        Assert.AreEqual(2, sut.IndexOf(40));
     }
 
     /// <summary>
@@ -51,30 +77,4 @@ public partial class IndexedSetTests
         Assert.AreEqual(expected, sut.IndexOf(item));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.IndexOf(T)" /> uses the configured comparer when locating items.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WhenCustomComparerProvided_ShouldUseComparerForEquality()
-    {
-        IndexedSet<string> sut = CreateSet(["Alpha", "Beta"], StringComparer.OrdinalIgnoreCase);
-
-        Assert.AreEqual(0, sut.IndexOf("ALPHA"));
-        Assert.AreEqual(1, sut.IndexOf("beta"));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.IndexOf(T)" /> reflects index shifts after a removal.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WhenItemRemovedFromMiddle_ShouldUpdateLaterIndices()
-    {
-        IndexedSet<int> sut = CreateSet([10, 20, 30, 40]);
-
-        sut.Remove(20);
-
-        Assert.AreEqual(0, sut.IndexOf(10));
-        Assert.AreEqual(1, sut.IndexOf(30));
-        Assert.AreEqual(2, sut.IndexOf(40));
-    }
 }

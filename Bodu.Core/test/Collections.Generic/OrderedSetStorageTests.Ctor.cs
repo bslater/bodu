@@ -1,12 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="OrderedSetStorageTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -31,22 +29,6 @@ public partial class OrderedSetStorageTests
         });
     }
 
-    // --------------------------------------------------------
-    // Constructor — capacity handling
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that a zero capacity initialises empty backing arrays.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCapacityIsZero_ShouldHaveZeroCapacity()
-    {
-        var sut = new OrderedSetStorage<int>(0, null);
-
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.Capacity);
-    }
-
     /// <summary>
     /// Verifies that a positive capacity is preserved on the underlying element array.
     /// </summary>
@@ -61,6 +43,22 @@ public partial class OrderedSetStorageTests
 
         Assert.AreEqual(0, sut.Count);
         Assert.AreEqual(capacity, sut.Capacity);
+    }
+
+    // --------------------------------------------------------
+    // Constructor — capacity handling
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that a zero capacity initialises empty backing arrays.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityIsZero_ShouldHaveZeroCapacity()
+    {
+        var sut = new OrderedSetStorage<int>(0, null);
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(0, sut.Capacity);
     }
 
     // --------------------------------------------------------
@@ -79,19 +77,6 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
-    /// Verifies that a non-<see langword="null" /> comparer is stored verbatim.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
-    {
-        IEqualityComparer<string> comparer = StringComparer.OrdinalIgnoreCase;
-
-        var sut = new OrderedSetStorage<string>(0, comparer);
-
-        Assert.AreSame(comparer, sut.Comparer);
-    }
-
-    /// <summary>
     /// Verifies that the provided comparer is used to determine element equality during subsequent operations.
     /// </summary>
     [TestMethod]
@@ -104,4 +89,18 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(1, sut.Count);
         Assert.IsTrue(sut.Contains("Hello"));
     }
+
+    /// <summary>
+    /// Verifies that a non-<see langword="null" /> comparer is stored verbatim.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
+    {
+        IEqualityComparer<string> comparer = StringComparer.OrdinalIgnoreCase;
+
+        var sut = new OrderedSetStorage<string>(0, comparer);
+
+        Assert.AreSame(comparer, sut.Comparer);
+    }
+
 }

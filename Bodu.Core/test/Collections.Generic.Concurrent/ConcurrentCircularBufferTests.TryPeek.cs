@@ -5,17 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> returns <see langword="false" /> on a buffer that has just been cleared.
     /// </summary>
@@ -289,24 +286,6 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that after a wraparound, <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> returns the logical oldest item.
-    /// </summary>
-    [TestMethod]
-    public void TryPeek_WhenWraparoundOccurred_ShouldReturnOldest()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        buffer.Enqueue(new TestItem(3));
-        buffer.Dequeue();               // remove 1
-        buffer.Enqueue(new TestItem(4)); // wrap
-
-        Assert.IsTrue(buffer.TryPeek(out TestItem? item));
-        Assert.IsNotNull(item);
-        Assert.AreEqual(2, item!.Value);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> retries — rather than returning a stale value — when the
     /// slot's coordination sequence is observed to be greater than the publication mark, which models the
     /// "another thread dequeued this slot" race window in the consumer protocol. Once the sequence is corrected back into the
@@ -359,4 +338,23 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsNotNull(captured);
         Assert.AreEqual(1, captured!.Value);
     }
+
+    /// <summary>
+    /// Verifies that after a wraparound, <see cref="ConcurrentCircularBuffer{T}.TryPeek" /> returns the logical oldest item.
+    /// </summary>
+    [TestMethod]
+    public void TryPeek_WhenWraparoundOccurred_ShouldReturnOldest()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
+        buffer.Dequeue();               // remove 1
+        buffer.Enqueue(new TestItem(4)); // wrap
+
+        Assert.IsTrue(buffer.TryPeek(out TestItem? item));
+        Assert.IsNotNull(item);
+        Assert.AreEqual(2, item!.Value);
+    }
+
 }

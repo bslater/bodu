@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ShuffleHelpersTests.Shuffle.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,17 +10,18 @@ namespace Bodu.Collections.Generic;
 
 public partial class ShuffleHelpersTests
 {
+
     /// <summary>
-    /// Asserts that two arrays differ in order, indicating successful shuffling.
+    /// Verifies that shuffling a single-element array does not change its contents.
     /// </summary>
-    /// <typeparam name="T">The element type.</typeparam>
-    /// <param name="buffer">The shuffled buffer.</param>
-    /// <param name="original">The original buffer before shuffling.</param>
-    /// <param name="message">The assertion message to display on failure.</param>
-    private static void AssertOrderChanged<T>(T[] buffer, T[] original, string message)
+    [TestMethod]
+    public void Shuffle_WhenArrayHasOneItem_ShouldReturnSameItem()
     {
-        var changed = !buffer.SequenceEqual(original);
-        Assert.IsTrue(changed, message);
+        int[] buffer = [42];
+        var original = buffer.ToArray();
+
+        ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
+        CollectionAssert.AreEqual(original, buffer);
     }
 
     /// <summary>
@@ -36,6 +37,58 @@ public partial class ShuffleHelpersTests
     }
 
     /// <summary>
+    /// Verifies that shuffling a multi-item array retains all elements.
+    /// </summary>
+    [TestMethod]
+    public void Shuffle_WhenCalled_ShouldContainSameElements_UsingArray()
+    {
+        var buffer = Enumerable.Range(1, 50).ToArray();
+        var original = buffer.ToArray();
+
+        ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
+        CollectionAssert.AreEquivalent(original, buffer);
+    }
+
+    /// <summary>
+    /// Verifies that shuffling a multi-item array changes the original order.
+    /// </summary>
+    [TestMethod]
+    public void Shuffle_WhenCalled_ShouldMutateOriginalOrder_UsingArray()
+    {
+        var buffer = Enumerable.Range(1, 20).ToArray();
+        var original = buffer.ToArray();
+
+        ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
+        AssertOrderChanged(buffer, original, "Array shuffle did not alter order.");
+    }
+
+    /// <summary>
+    /// Runs 20,000 in-place shuffles of a 10-element array to validate statistical uniformity of output positions. Uses a fixed-seed
+    /// <see cref="XorShiftRandom" /> to ensure deterministic, reproducible results. Each value should appear roughly equally in each
+    /// position, with no more than 2 statistically significant outliers.
+    /// </summary>
+    [TestMethod]
+    public void Shuffle_WhenRepeated_ShouldDistributeItemsStatistically()
+    {
+        const int runs = 20000;
+        const int size = 10;
+        var tracker = new int[size, size];
+        var original = Enumerable.Range(0, size).ToArray();
+        var rng = new XorShiftRandom(12345);
+
+        for (var r = 0; r < runs; r++)
+        {
+            var buffer = original.ToArray();
+            ShuffleHelpers.Shuffle(buffer, rng);
+
+            for (var i = 0; i < size; i++)
+                tracker[i, buffer[i]]++;
+        }
+
+        AssertStatisticalUniformity(tracker, size, label: nameof(ShuffleHelpers.Shuffle));
+    }
+
+    /// <summary>
     /// Verifies that passing a null RNG to Shuffle (array) throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
@@ -45,6 +98,34 @@ public partial class ShuffleHelpersTests
         {
             ShuffleHelpers.Shuffle(new[] { 1, 2, 3 }, null!);
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ShuffleHelpers.Shuffle" /> produces the same permutation when called with an identically seeded
+    /// <see cref="XorShiftRandom" />, confirming deterministic behaviour.
+    /// </summary>
+    [TestMethod]
+    public void Shuffle_WithFixedSeed_ShouldProduceDeterministicOutput()
+    {
+        var buffer1 = Enumerable.Range(1, 10).ToArray();
+        var buffer2 = Enumerable.Range(1, 10).ToArray();
+
+        ShuffleHelpers.Shuffle(buffer1, new XorShiftRandom(42));
+        ShuffleHelpers.Shuffle(buffer2, new XorShiftRandom(42));
+
+        CollectionAssert.AreEqual(buffer1, buffer2);
+    }
+    /// <summary>
+    /// Asserts that two arrays differ in order, indicating successful shuffling.
+    /// </summary>
+    /// <typeparam name="T">The element type.</typeparam>
+    /// <param name="buffer">The shuffled buffer.</param>
+    /// <param name="original">The original buffer before shuffling.</param>
+    /// <param name="message">The assertion message to display on failure.</param>
+    private static void AssertOrderChanged<T>(T[] buffer, T[] original, string message)
+    {
+        var changed = !buffer.SequenceEqual(original);
+        Assert.IsTrue(changed, message);
     }
 
 #if !NETSTANDARD2_0
@@ -164,84 +245,5 @@ public partial class ShuffleHelpersTests
     }
 #endif
 
-    /// <summary>
-    /// Verifies that shuffling a single-element array does not change its contents.
-    /// </summary>
-    [TestMethod]
-    public void Shuffle_WhenArrayHasOneItem_ShouldReturnSameItem()
-    {
-        int[] buffer = [42];
-        var original = buffer.ToArray();
 
-        ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
-        CollectionAssert.AreEqual(original, buffer);
-    }
-
-    /// <summary>
-    /// Verifies that shuffling a multi-item array changes the original order.
-    /// </summary>
-    [TestMethod]
-    public void Shuffle_WhenCalled_ShouldMutateOriginalOrder_UsingArray()
-    {
-        var buffer = Enumerable.Range(1, 20).ToArray();
-        var original = buffer.ToArray();
-
-        ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
-        AssertOrderChanged(buffer, original, "Array shuffle did not alter order.");
-    }
-
-    /// <summary>
-    /// Verifies that shuffling a multi-item array retains all elements.
-    /// </summary>
-    [TestMethod]
-    public void Shuffle_WhenCalled_ShouldContainSameElements_UsingArray()
-    {
-        var buffer = Enumerable.Range(1, 50).ToArray();
-        var original = buffer.ToArray();
-
-        ShuffleHelpers.Shuffle(buffer, new SystemRandomAdapter());
-        CollectionAssert.AreEquivalent(original, buffer);
-    }
-
-    /// <summary>
-    /// Runs 20,000 in-place shuffles of a 10-element array to validate statistical uniformity of output positions. Uses a fixed-seed
-    /// <see cref="XorShiftRandom" /> to ensure deterministic, reproducible results. Each value should appear roughly equally in each
-    /// position, with no more than 2 statistically significant outliers.
-    /// </summary>
-    [TestMethod]
-    public void Shuffle_WhenRepeated_ShouldDistributeItemsStatistically()
-    {
-        const int runs = 20000;
-        const int size = 10;
-        var tracker = new int[size, size];
-        var original = Enumerable.Range(0, size).ToArray();
-        var rng = new XorShiftRandom(12345);
-
-        for (var r = 0; r < runs; r++)
-        {
-            var buffer = original.ToArray();
-            ShuffleHelpers.Shuffle(buffer, rng);
-
-            for (var i = 0; i < size; i++)
-                tracker[i, buffer[i]]++;
-        }
-
-        AssertStatisticalUniformity(tracker, size, label: nameof(ShuffleHelpers.Shuffle));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ShuffleHelpers.Shuffle" /> produces the same permutation when called with an identically seeded
-    /// <see cref="XorShiftRandom" />, confirming deterministic behaviour.
-    /// </summary>
-    [TestMethod]
-    public void Shuffle_WithFixedSeed_ShouldProduceDeterministicOutput()
-    {
-        var buffer1 = Enumerable.Range(1, 10).ToArray();
-        var buffer2 = Enumerable.Range(1, 10).ToArray();
-
-        ShuffleHelpers.Shuffle(buffer1, new XorShiftRandom(42));
-        ShuffleHelpers.Shuffle(buffer2, new XorShiftRandom(42));
-
-        CollectionAssert.AreEqual(buffer1, buffer2);
-    }
 }

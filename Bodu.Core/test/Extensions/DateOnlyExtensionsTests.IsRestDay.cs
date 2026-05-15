@@ -5,12 +5,23 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.IsRestDay(DateOnly, WeekPattern)" /> returns
+    /// <see langword="false" /> when the date's day-of-week is selected in the supplied pattern.
+    /// </summary>
+    [TestMethod]
+    public void IsRestDay_WhenDayInPattern_ShouldReturnFalse()
+    {
+        var monday = new DateOnly(2026, 5, 11);
+
+        Assert.IsFalse(monday.IsRestDay(WeekPattern.Weekdays));
+    }
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.IsRestDay(DateOnly, WeekPattern)" /> returns
     /// <see langword="true" /> when the date's day-of-week is not selected in the supplied pattern.
@@ -25,18 +36,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.IsRestDay(DateOnly, WeekPattern)" /> returns
-    /// <see langword="false" /> when the date's day-of-week is selected in the supplied pattern.
-    /// </summary>
-    [TestMethod]
-    public void IsRestDay_WhenDayInPattern_ShouldReturnFalse()
-    {
-        var monday = new DateOnly(2026, 5, 11);
-
-        Assert.IsFalse(monday.IsRestDay(WeekPattern.Weekdays));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.IsRestDay(DateOnly, WorkingDaysOfWeek)" /> agrees with the
     /// <see cref="WeekPattern" /> overload for a named preset.
     /// </summary>
@@ -48,4 +47,5 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(friday.IsRestDay(WorkingDaysOfWeek.SundayToThursday));
         Assert.IsFalse(friday.IsRestDay(WorkingDaysOfWeek.MondayToFriday));
     }
+
 }

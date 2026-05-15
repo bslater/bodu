@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.Midday.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -21,7 +19,7 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.Midday" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(MiddayTestData) )]
+    [DynamicData(nameof(MiddayTestData))]
     public void Midday_WhenCalled_ShouldSetTimeToNoon(DateTime input, DateTime expected)
     {
         var actual = input.Midday();
@@ -45,6 +43,18 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMaxDate, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()
+    {
+        var input = DateTime.MaxValue.Date;
+        var actual = input.Midday();
+
+        Assert.AreEqual(new DateTime(9999, 12, 31, 12, 0, 0), actual);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMinDate, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -56,15 +66,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(new DateTime(1, 1, 1, 12, 0, 0), actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Midday" />, when UsingMaxDate, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Midday_WhenUsingMaxDate_ShouldReturnNoonOnThatDay()
-    {
-        var input = DateTime.MaxValue.Date;
-        var actual = input.Midday();
-
-        Assert.AreEqual(new DateTime(9999, 12, 31, 12, 0, 0), actual);
-    }
 }

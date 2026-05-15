@@ -8,6 +8,56 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> writes items into the array in LeastRecentlyUsed order when space is sufficient.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayHasEnoughSpace_ShouldCopyItemsInLRUOrder()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Touch("A"); // Access A last; order becomes B, A
+
+        var array = new KeyValuePair<string, int>[2];
+        dictionary.CopyTo(array, 0);
+
+        Assert.AreEqual("B", array[0].Key);
+        Assert.AreEqual(2, array[0].Value);
+        Assert.AreEqual("A", array[1].Key);
+        Assert.AreEqual(1, array[1].Value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the array has a non-zero lower bound.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayHasNonZeroLowerBound_ShouldThrowExactly()
+    {
+        var dictionary = new EvictingDictionary<string, int>(1);
+        var array = Array.CreateInstance(typeof(KeyValuePair<string, int>), [1], [1]);
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            ((System.Collections.ICollection)dictionary).CopyTo(array, 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the destination array is multidimensional.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayIsMultidimensional_ShouldThrowExactly()
+    {
+        var dictionary = new EvictingDictionary<string, int>(1);
+        var array = new KeyValuePair<string, int>[1, 1];
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            ((System.Collections.ICollection)dictionary).CopyTo(array, 0);
+        });
+    }
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentNullException when the destination array is null.
     /// </summary>
@@ -20,6 +70,24 @@ public partial class EvictingDictionaryTests
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
             dictionary.CopyTo(null, 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the destination array is too small.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+
+        var array = new KeyValuePair<string, int>[1];
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            dictionary.CopyTo(array, 0);
         });
     }
 
@@ -52,36 +120,6 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the destination array is multidimensional.
-    /// </summary>
-    [TestMethod]
-    public void CopyTo_WhenArrayIsMultidimensional_ShouldThrowExactly()
-    {
-        var dictionary = new EvictingDictionary<string, int>(1);
-        var array = new KeyValuePair<string, int>[1, 1];
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            ((System.Collections.ICollection)dictionary).CopyTo(array, 0);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the array has a non-zero lower bound.
-    /// </summary>
-    [TestMethod]
-    public void CopyTo_WhenArrayHasNonZeroLowerBound_ShouldThrowExactly()
-    {
-        var dictionary = new EvictingDictionary<string, int>(1);
-        var array = Array.CreateInstance(typeof(KeyValuePair<string, int>), [1], [1]);
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            ((System.Collections.ICollection)dictionary).CopyTo(array, 0);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentOutOfRangeException when the specified index is negative.
     /// </summary>
     [TestMethod]
@@ -94,44 +132,6 @@ public partial class EvictingDictionaryTests
         {
             dictionary.CopyTo(array, -1);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> throws ArgumentException when the destination array is too small.
-    /// </summary>
-    [TestMethod]
-    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowExactly()
-    {
-        var dictionary = new EvictingDictionary<string, int>(2);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-
-        var array = new KeyValuePair<string, int>[1];
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            dictionary.CopyTo(array, 0);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.CopyTo" /> writes items into the array in LeastRecentlyUsed order when space is sufficient.
-    /// </summary>
-    [TestMethod]
-    public void CopyTo_WhenArrayHasEnoughSpace_ShouldCopyItemsInLRUOrder()
-    {
-        var dictionary = new EvictingDictionary<string, int>(2);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Touch("A"); // Access A last; order becomes B, A
-
-        var array = new KeyValuePair<string, int>[2];
-        dictionary.CopyTo(array, 0);
-
-        Assert.AreEqual("B", array[0].Key);
-        Assert.AreEqual(2, array[0].Value);
-        Assert.AreEqual("A", array[1].Key);
-        Assert.AreEqual(1, array[1].Value);
     }
 
     /// <summary>
@@ -152,4 +152,5 @@ public partial class EvictingDictionaryTests
         Assert.AreEqual("Z", array[1].Key);
         Assert.AreEqual(42, array[1].Value);
     }
+
 }

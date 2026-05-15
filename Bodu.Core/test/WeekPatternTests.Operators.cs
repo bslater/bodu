@@ -8,6 +8,151 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
+
+    /// <summary>
+    /// Verifies that applying the <c>&amp;</c> operator with <see cref="WeekPattern.Empty" /> returns
+    /// an empty pattern.
+    /// </summary>
+    [TestMethod]
+    public void AndOperator_WhenCombinedWithEmpty_ShouldReturnEmpty()
+    {
+        var original = new WeekPattern(DayOfWeek.Monday);
+        Assert.AreEqual(WeekPattern.Empty, original & WeekPattern.Empty);
+    }
+
+    /// <summary>
+    /// Verifies that applying the <c>&amp;</c> operator with itself returns a pattern equal to the original.
+    /// </summary>
+    [TestMethod]
+    public void AndOperator_WhenCombinedWithItself_ShouldReturnSame()
+    {
+        var original = new WeekPattern(DayOfWeek.Wednesday);
+        Assert.AreEqual(original, original & original);
+    }
+
+    /// <summary>
+    /// Verifies that the bitwise AND of <see cref="WeekPattern.Weekdays" /> and
+    /// <see cref="WeekPattern.Weekend" /> returns an empty pattern, confirming the two are disjoint.
+    /// </summary>
+    [TestMethod]
+    public void AndOperator_WhenWeekdaysIntersectedWithWeekend_ShouldReturnEmpty() => Assert.AreEqual(WeekPattern.Empty, WeekPattern.Weekdays & WeekPattern.Weekend);
+
+    /// <summary>
+    /// Verifies that applying the <c>~</c> operator to <see cref="WeekPattern.Empty" /> produces a
+    /// fully-populated seven-day pattern.
+    /// </summary>
+    [TestMethod]
+    public void ComplementOperator_WhenAppliedToEmpty_ShouldReturnFullSet() => Assert.AreEqual(WeekPattern.FromByte(0b1111111), ~WeekPattern.Empty);
+
+    /// <summary>
+    /// Verifies that applying the <c>~</c> operator to a fully-populated pattern returns an empty pattern.
+    /// </summary>
+    [TestMethod]
+    public void ComplementOperator_WhenAppliedToFullSet_ShouldReturnEmpty() => Assert.AreEqual(WeekPattern.Empty, ~WeekPattern.FromByte(0b1111111));
+
+    /// <summary>
+    /// Verifies that the complement of <see cref="WeekPattern.Weekdays" /> equals
+    /// <see cref="WeekPattern.Weekend" />.
+    /// </summary>
+    [TestMethod]
+    public void ComplementOperator_WhenAppliedToWeekdays_ShouldReturnWeekend() => Assert.AreEqual(WeekPattern.Weekend, ~WeekPattern.Weekdays);
+
+    /// <summary>
+    /// Verifies that the complement of <see cref="WeekPattern.Weekend" /> equals
+    /// <see cref="WeekPattern.Weekdays" />.
+    /// </summary>
+    [TestMethod]
+    public void ComplementOperator_WhenAppliedToWeekend_ShouldReturnWeekdays() => Assert.AreEqual(WeekPattern.Weekdays, ~WeekPattern.Weekend);
+
+    /// <summary>
+    /// Verifies that applying the <c>~</c> operator twice returns the original pattern, confirming the
+    /// double-complement identity.
+    /// </summary>
+    [TestMethod]
+    public void ComplementOperator_WhenAppliedTwice_ShouldReturnOriginal()
+    {
+        var original = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Thursday);
+        Assert.AreEqual(original, ~~original);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>==</c> operator returns <see langword="false" /> for two instances with
+    /// different selected days.
+    /// </summary>
+    [TestMethod]
+    public void EqualityOperator_WhenDifferentDays_ShouldReturnFalse() => Assert.IsFalse(new WeekPattern(DayOfWeek.Monday) == new WeekPattern(DayOfWeek.Tuesday));
+
+    // --------------------------------------------------------------------
+    // Equality operators
+    // --------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the <c>==</c> operator returns <see langword="true" /> for two instances with
+    /// identical selected days.
+    /// </summary>
+    [TestMethod]
+    public void EqualityOperator_WhenSameDays_ShouldReturnTrue()
+    {
+        var a = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Friday);
+        var b = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Friday);
+        Assert.IsTrue(a == b);
+    }
+
+    // --------------------------------------------------------------------
+    // Implicit byte conversion
+    // --------------------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the implicit conversion to <see cref="byte" /> preserves the underlying bitmask
+    /// value across a round-trip.
+    /// </summary>
+    [TestMethod]
+    [DataRow((byte)0)]
+    [DataRow((byte)1)]
+    [DataRow((byte)5)]
+    [DataRow((byte)127)]
+    public void ImplicitConversionToByte_WhenRoundTripped_ShouldMatchOriginal(byte original)
+    {
+        var pattern = WeekPattern.FromByte(original);
+        byte converted = pattern;
+        Assert.AreEqual(original, converted);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>!=</c> operator returns <see langword="true" /> for two instances with
+    /// different selected days.
+    /// </summary>
+    [TestMethod]
+    public void InequalityOperator_WhenDifferentDays_ShouldReturnTrue() => Assert.IsTrue(new WeekPattern(DayOfWeek.Monday) != new WeekPattern(DayOfWeek.Tuesday));
+
+    /// <summary>
+    /// Verifies that the <c>!=</c> operator returns <see langword="false" /> for two instances with
+    /// identical selected days.
+    /// </summary>
+    [TestMethod]
+    public void InequalityOperator_WhenSameDays_ShouldReturnFalse()
+    {
+        var a = new WeekPattern(DayOfWeek.Wednesday);
+        var b = new WeekPattern(DayOfWeek.Wednesday);
+        Assert.IsFalse(a != b);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToByte" />, <see cref="WeekPattern.ToInt32" />, and the
+    /// implicit <see cref="byte" /> conversion all return consistent values for the same instance.
+    /// </summary>
+    [TestMethod]
+    public void NumericConversions_WhenCalledOnSameInstance_ShouldProduceConsistentValues()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+
+        var viaToByte = pattern.ToByte();
+        var viaToInt32 = pattern.ToInt32();
+        byte viaImplicitByte = pattern;
+
+        Assert.AreEqual(viaToByte, (byte)viaToInt32, "ToByte and ToInt32 should agree.");
+        Assert.AreEqual(viaToByte, viaImplicitByte, "ToByte and implicit byte should agree.");
+    }
     // --------------------------------------------------------------------
     // Bitwise operators
     // --------------------------------------------------------------------
@@ -61,33 +206,28 @@ public partial class WeekPatternTests
         Assert.AreEqual(WeekPattern.FromByte(0b1111111), full);
     }
 
-    /// <summary>
-    /// Verifies that applying the <c>&amp;</c> operator with <see cref="WeekPattern.Empty" /> returns
-    /// an empty pattern.
-    /// </summary>
-    [TestMethod]
-    public void AndOperator_WhenCombinedWithEmpty_ShouldReturnEmpty()
-    {
-        var original = new WeekPattern(DayOfWeek.Monday);
-        Assert.AreEqual(WeekPattern.Empty, original & WeekPattern.Empty);
-    }
+    // --------------------------------------------------------------------
+    // Numeric conversion methods
+    // --------------------------------------------------------------------
 
     /// <summary>
-    /// Verifies that applying the <c>&amp;</c> operator with itself returns a pattern equal to the original.
+    /// Verifies that <see cref="WeekPattern.ToByte" /> returns the underlying bitmask value.
     /// </summary>
     [TestMethod]
-    public void AndOperator_WhenCombinedWithItself_ShouldReturnSame()
-    {
-        var original = new WeekPattern(DayOfWeek.Wednesday);
-        Assert.AreEqual(original, original & original);
-    }
+    [DataRow((byte)0)]
+    [DataRow((byte)1)]
+    [DataRow((byte)127)]
+    public void ToByte_WhenCalled_ShouldReturnUnderlyingBitmask(byte value) => Assert.AreEqual(value, WeekPattern.FromByte(value).ToByte());
 
     /// <summary>
-    /// Verifies that the bitwise AND of <see cref="WeekPattern.Weekdays" /> and
-    /// <see cref="WeekPattern.Weekend" /> returns an empty pattern, confirming the two are disjoint.
+    /// Verifies that <see cref="WeekPattern.ToInt32" /> returns the underlying bitmask value as an
+    /// <see cref="int" />.
     /// </summary>
     [TestMethod]
-    public void AndOperator_WhenWeekdaysIntersectedWithWeekend_ShouldReturnEmpty() => Assert.AreEqual(WeekPattern.Empty, WeekPattern.Weekdays & WeekPattern.Weekend);
+    [DataRow((byte)0)]
+    [DataRow((byte)1)]
+    [DataRow((byte)127)]
+    public void ToInt32_WhenCalled_ShouldReturnUnderlyingBitmaskAsInt(byte value) => Assert.AreEqual((int)value, WeekPattern.FromByte(value).ToInt32());
 
     /// <summary>
     /// Verifies that applying the <c>^</c> operator with <see cref="WeekPattern.Empty" /> returns a
@@ -126,143 +266,4 @@ public partial class WeekPatternTests
         Assert.IsTrue(result.Contains(DayOfWeek.Friday), "Friday appears only in b — should be retained.");
     }
 
-    /// <summary>
-    /// Verifies that applying the <c>~</c> operator to <see cref="WeekPattern.Empty" /> produces a
-    /// fully-populated seven-day pattern.
-    /// </summary>
-    [TestMethod]
-    public void ComplementOperator_WhenAppliedToEmpty_ShouldReturnFullSet() => Assert.AreEqual(WeekPattern.FromByte(0b1111111), ~WeekPattern.Empty);
-
-    /// <summary>
-    /// Verifies that applying the <c>~</c> operator to a fully-populated pattern returns an empty pattern.
-    /// </summary>
-    [TestMethod]
-    public void ComplementOperator_WhenAppliedToFullSet_ShouldReturnEmpty() => Assert.AreEqual(WeekPattern.Empty, ~WeekPattern.FromByte(0b1111111));
-
-    /// <summary>
-    /// Verifies that the complement of <see cref="WeekPattern.Weekdays" /> equals
-    /// <see cref="WeekPattern.Weekend" />.
-    /// </summary>
-    [TestMethod]
-    public void ComplementOperator_WhenAppliedToWeekdays_ShouldReturnWeekend() => Assert.AreEqual(WeekPattern.Weekend, ~WeekPattern.Weekdays);
-
-    /// <summary>
-    /// Verifies that the complement of <see cref="WeekPattern.Weekend" /> equals
-    /// <see cref="WeekPattern.Weekdays" />.
-    /// </summary>
-    [TestMethod]
-    public void ComplementOperator_WhenAppliedToWeekend_ShouldReturnWeekdays() => Assert.AreEqual(WeekPattern.Weekdays, ~WeekPattern.Weekend);
-
-    /// <summary>
-    /// Verifies that applying the <c>~</c> operator twice returns the original pattern, confirming the
-    /// double-complement identity.
-    /// </summary>
-    [TestMethod]
-    public void ComplementOperator_WhenAppliedTwice_ShouldReturnOriginal()
-    {
-        var original = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Thursday);
-        Assert.AreEqual(original, ~~original);
-    }
-
-    // --------------------------------------------------------------------
-    // Equality operators
-    // --------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the <c>==</c> operator returns <see langword="true" /> for two instances with
-    /// identical selected days.
-    /// </summary>
-    [TestMethod]
-    public void EqualityOperator_WhenSameDays_ShouldReturnTrue()
-    {
-        var a = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Friday);
-        var b = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Friday);
-        Assert.IsTrue(a == b);
-    }
-
-    /// <summary>
-    /// Verifies that the <c>==</c> operator returns <see langword="false" /> for two instances with
-    /// different selected days.
-    /// </summary>
-    [TestMethod]
-    public void EqualityOperator_WhenDifferentDays_ShouldReturnFalse() => Assert.IsFalse(new WeekPattern(DayOfWeek.Monday) == new WeekPattern(DayOfWeek.Tuesday));
-
-    /// <summary>
-    /// Verifies that the <c>!=</c> operator returns <see langword="true" /> for two instances with
-    /// different selected days.
-    /// </summary>
-    [TestMethod]
-    public void InequalityOperator_WhenDifferentDays_ShouldReturnTrue() => Assert.IsTrue(new WeekPattern(DayOfWeek.Monday) != new WeekPattern(DayOfWeek.Tuesday));
-
-    /// <summary>
-    /// Verifies that the <c>!=</c> operator returns <see langword="false" /> for two instances with
-    /// identical selected days.
-    /// </summary>
-    [TestMethod]
-    public void InequalityOperator_WhenSameDays_ShouldReturnFalse()
-    {
-        var a = new WeekPattern(DayOfWeek.Wednesday);
-        var b = new WeekPattern(DayOfWeek.Wednesday);
-        Assert.IsFalse(a != b);
-    }
-
-    // --------------------------------------------------------------------
-    // Implicit byte conversion
-    // --------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the implicit conversion to <see cref="byte" /> preserves the underlying bitmask
-    /// value across a round-trip.
-    /// </summary>
-    [TestMethod]
-    [DataRow((byte)0)]
-    [DataRow((byte)1)]
-    [DataRow((byte)5)]
-    [DataRow((byte)127)]
-    public void ImplicitConversionToByte_WhenRoundTripped_ShouldMatchOriginal(byte original)
-    {
-        var pattern = WeekPattern.FromByte(original);
-        byte converted = pattern;
-        Assert.AreEqual(original, converted);
-    }
-
-    // --------------------------------------------------------------------
-    // Numeric conversion methods
-    // --------------------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToByte" /> returns the underlying bitmask value.
-    /// </summary>
-    [TestMethod]
-    [DataRow((byte)0)]
-    [DataRow((byte)1)]
-    [DataRow((byte)127)]
-    public void ToByte_WhenCalled_ShouldReturnUnderlyingBitmask(byte value) => Assert.AreEqual(value, WeekPattern.FromByte(value).ToByte());
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToInt32" /> returns the underlying bitmask value as an
-    /// <see cref="int" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow((byte)0)]
-    [DataRow((byte)1)]
-    [DataRow((byte)127)]
-    public void ToInt32_WhenCalled_ShouldReturnUnderlyingBitmaskAsInt(byte value) => Assert.AreEqual((int)value, WeekPattern.FromByte(value).ToInt32());
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToByte" />, <see cref="WeekPattern.ToInt32" />, and the
-    /// implicit <see cref="byte" /> conversion all return consistent values for the same instance.
-    /// </summary>
-    [TestMethod]
-    public void NumericConversions_WhenCalledOnSameInstance_ShouldProduceConsistentValues()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-
-        var viaToByte = pattern.ToByte();
-        var viaToInt32 = pattern.ToInt32();
-        byte viaImplicitByte = pattern;
-
-        Assert.AreEqual(viaToByte, (byte)viaToInt32, "ToByte and ToInt32 should agree.");
-        Assert.AreEqual(viaToByte, viaImplicitByte, "ToByte and implicit byte should agree.");
-    }
 }

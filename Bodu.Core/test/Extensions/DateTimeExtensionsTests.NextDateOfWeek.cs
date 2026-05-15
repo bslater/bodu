@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.NextDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,14 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.NextDateOfWeek(DateTime, DayOfWeek)" /> returns the next occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
     /// </summary>
@@ -24,21 +22,9 @@ public partial class DateTimeExtensionsTests
     [DynamicData(nameof(NextDateOfWeekTestData))]
     public void NextDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek targetDay, DateTime expected)
     {
-            var actual = input.NextDateOfWeek(targetDay);
+        var actual = input.NextDateOfWeek(targetDay);
 
-            Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that targeting the input's own <see cref="DateTime.DayOfWeek" /> advances by exactly one week and preserves the input's <see cref="DateTime.TimeOfDay" />.
-    /// </summary>
-    [TestMethod]
-    public void NextDateOfWeek_WhenTimeIsSet_ShouldPreserveTime()
-    {
-        var input = DateTime.Now;
-        var actual = input.NextDateOfWeek(input.DayOfWeek); // Move one week
-
-        Assert.AreEqual(input.TimeOfDay, actual.TimeOfDay);
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -71,6 +57,18 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that targeting the input's own <see cref="DateTime.DayOfWeek" /> advances by exactly one week and preserves the input's <see cref="DateTime.TimeOfDay" />.
+    /// </summary>
+    [TestMethod]
+    public void NextDateOfWeek_WhenTimeIsSet_ShouldPreserveTime()
+    {
+        var input = DateTime.Now;
+        var actual = input.NextDateOfWeek(input.DayOfWeek); // Move one week
+
+        Assert.AreEqual(input.TimeOfDay, actual.TimeOfDay);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.NextDateOfWeek(DateTime, DayOfWeek)" /> preserves a sub-second-precision <see cref="DateTime.TimeOfDay" /> on the resulting date.
     /// </summary>
     [TestMethod]
@@ -85,17 +83,6 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTime.MinValue" /> returns a date on or after <see cref="DateTime.MinValue" /> (does not underflow).
-    /// </summary>
-    [TestMethod]
-    public void NextDateOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
-    {
-        DateTime actual = DateTime.MinValue.NextDateOfWeek(DayOfWeek.Friday);
-
-        Assert.IsTrue(actual >= DateTime.MinValue);
-    }
-
-    /// <summary>
     /// Verifies that an input one week before <see cref="DateTime.MaxValue" /> targeting its own <see cref="DateTime.DayOfWeek" /> stays within the valid range.
     /// </summary>
     [TestMethod]
@@ -106,4 +93,16 @@ public partial class DateTimeExtensionsTests
 
         Assert.IsTrue(actual <= DateTime.MaxValue);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTime.MinValue" /> returns a date on or after <see cref="DateTime.MinValue" /> (does not underflow).
+    /// </summary>
+    [TestMethod]
+    public void NextDateOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
+    {
+        DateTime actual = DateTime.MinValue.NextDateOfWeek(DayOfWeek.Friday);
+
+        Assert.IsTrue(actual >= DateTime.MinValue);
+    }
+
 }

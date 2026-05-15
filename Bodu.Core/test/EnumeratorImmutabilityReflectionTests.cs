@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumeratorImmutabilityReflectionTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,6 +12,7 @@ namespace Bodu;
 [TestClass]
 public sealed class EnumeratorImmutabilityReflectionTests
 {
+
     private static readonly string[] s_requiredReadOnlyProperties =
     [
         nameof(IEnumerator.Current)
@@ -56,4 +57,5 @@ public sealed class EnumeratorImmutabilityReflectionTests
             Assert.Fail($"Type '{enumeratorType.FullName}' has mutable interface properties: {string.Join(", ", violatingProps)}");
         }
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.LastDateOfWeekInYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,13 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeekInYear" />, when Called, returns the expected value.
     /// </summary>
@@ -47,6 +46,18 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeekInYear" />, when UsingMaxValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
+    {
+        var input = DateOnly.MaxValue;
+        var actual = input.LastDateOfWeekInYear(DayOfWeek.Friday);
+
+        Assert.IsTrue(actual <= DateOnly.MaxValue);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeekInYear" />, when UsingMinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
@@ -59,15 +70,4 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(actual <= new DateOnly(1, 12, 31));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeekInYear" />, when UsingMaxValue, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void LastDateOfWeekInYear_WhenUsingMaxValue_ShouldReturnValidDate()
-    {
-        var input = DateOnly.MaxValue;
-        var actual = input.LastDateOfWeekInYear(DayOfWeek.Friday);
-
-        Assert.IsTrue(actual <= DateOnly.MaxValue);
-    }
 }

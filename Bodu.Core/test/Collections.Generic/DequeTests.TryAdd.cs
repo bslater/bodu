@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DequeTests.TryAdd.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class DequeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Deque{T}.TryAddFirst(T)" /> auto-grows the deque when it is full and <c>AllowGrow</c> is
     /// <see langword="true" />, and reports success.
@@ -71,4 +72,5 @@ public partial class DequeTests
         Assert.AreEqual(2, deque.PeekLast());
         Assert.AreEqual(2, deque.Count);
     }
+
 }

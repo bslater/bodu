@@ -1,16 +1,27 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.ContainsKey.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.ContainsKey(TKey)" /> on an empty dictionary
+    /// returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public void ContainsKey_WhenDictionaryIsEmpty_ShouldReturnFalse()
+    {
+        var sut = new RangeDictionary<int, string>();
+
+        Assert.IsFalse(sut.ContainsKey(5));
+    }
     /// <summary>
     /// Verifies that <see cref="RangeDictionary{TKey, TValue}.ContainsKey(TKey)" /> rejects a <see langword="null" /> key.
     /// </summary>
@@ -23,18 +34,6 @@ public partial class RangeDictionaryTests
         {
             _ = sut.ContainsKey(null!);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.ContainsKey(TKey)" /> on an empty dictionary
-    /// returns <see langword="false" />.
-    /// </summary>
-    [TestMethod]
-    public void ContainsKey_WhenDictionaryIsEmpty_ShouldReturnFalse()
-    {
-        var sut = new RangeDictionary<int, string>();
-
-        Assert.IsFalse(sut.ContainsKey(5));
     }
 
     /// <summary>
@@ -56,4 +55,5 @@ public partial class RangeDictionaryTests
 
         Assert.AreEqual(expected, sut.ContainsKey(key));
     }
+
 }

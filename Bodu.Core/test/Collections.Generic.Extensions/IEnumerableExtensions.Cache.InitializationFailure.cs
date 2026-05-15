@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public sealed partial class IEnumerableExtensionsTests_Cache
 {
+
     /// <summary>
     /// Verifies that the cached sequence captures and re-throws an exception thrown by the source's
     /// <see cref="IEnumerable{T}.GetEnumerator" /> on first enumeration, then re-throws the same captured exception on subsequent
@@ -45,7 +46,10 @@ public sealed partial class IEnumerableExtensionsTests_Cache
     private sealed class ThrowingSource
         : IEnumerable<int>
     {
+
         public int GetEnumeratorCallCount { get; private set; }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public IEnumerator<int> GetEnumerator()
         {
@@ -53,6 +57,6 @@ public sealed partial class IEnumerableExtensionsTests_Cache
             throw new InvalidOperationException("source enumerator factory failed");
         }
 
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+
 }

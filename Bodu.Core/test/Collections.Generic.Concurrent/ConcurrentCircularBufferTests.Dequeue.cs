@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Dequeue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that when overwriting is disabled and the buffer is full, a failed enqueue leaves the existing FIFO sequence intact for later dequeue.
     /// </summary>
@@ -89,34 +90,6 @@ public partial class ConcurrentCircularBufferTests
         Task.WaitAll(clearer, consumer);
         Assert.AreEqual(0, exceptions.Count, "Unexpected exception during Dequeue/Clear interleaving.");
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
-    }
-
-    // Issue 5 — the original test asserted CollectionAssert.AreEqual (exact order) on items
-    // dequeued by a concurrent consumer. Because the producer and consumer run concurrently with
-    // different SpinWait ratios, the dequeue order depends on thread scheduling and is not
-    // guaranteed to be strictly sequential, making the test timing-sensitive and fragile.
-    //
-    // This file now contains two tests:
-    //   - a strict sequential FIFO test (single-threaded, deterministic)
-    //   - a concurrent test that correctly uses AreEquivalent (same elements, any order)
-
-    /// <summary>
-    /// Verifies that single-threaded enqueue followed by full drain returns items in strict FIFO order.
-    /// </summary>
-    [TestMethod]
-    public void Dequeue_WhenSingleThreaded_ShouldReturnItemsInFifoOrder()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(100);
-
-        for (var i = 0; i < 100; i++)
-            buffer.Enqueue(new TestItem(i));
-
-        var result = new int[100];
-        for (var i = 0; i < 100; i++)
-            result[i] = buffer.Dequeue().Value;
-
-        CollectionAssert.AreEqual(Enumerable.Range(0, 100).ToArray(), result,
-            "Single-threaded dequeue must return items in strict FIFO order.");
     }
 
     /// <summary>
@@ -242,6 +215,34 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(4, buffer.Dequeue().Value);
     }
 
+    // Issue 5 — the original test asserted CollectionAssert.AreEqual (exact order) on items
+    // dequeued by a concurrent consumer. Because the producer and consumer run concurrently with
+    // different SpinWait ratios, the dequeue order depends on thread scheduling and is not
+    // guaranteed to be strictly sequential, making the test timing-sensitive and fragile.
+    //
+    // This file now contains two tests:
+    //   - a strict sequential FIFO test (single-threaded, deterministic)
+    //   - a concurrent test that correctly uses AreEquivalent (same elements, any order)
+
+    /// <summary>
+    /// Verifies that single-threaded enqueue followed by full drain returns items in strict FIFO order.
+    /// </summary>
+    [TestMethod]
+    public void Dequeue_WhenSingleThreaded_ShouldReturnItemsInFifoOrder()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(100);
+
+        for (var i = 0; i < 100; i++)
+            buffer.Enqueue(new TestItem(i));
+
+        var result = new int[100];
+        for (var i = 0; i < 100; i++)
+            result[i] = buffer.Dequeue().Value;
+
+        CollectionAssert.AreEqual(Enumerable.Range(0, 100).ToArray(), result,
+            "Single-threaded dequeue must return items in strict FIFO order.");
+    }
+
     /// <summary>
     /// Verifies that slots reused after a wraparound are still dequeued in FIFO order.
     /// </summary>
@@ -316,4 +317,5 @@ public partial class ConcurrentCircularBufferTests
             source.Select(i => i.Value).ToArray(),
             dequeued.Select(i => i.Value).ToArray());
     }
+
 }

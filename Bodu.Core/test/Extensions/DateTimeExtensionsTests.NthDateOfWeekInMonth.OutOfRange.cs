@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.NthDateOfWeekInMonth.OutOfRange.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetNthDateOfWeekInMonth(int, int, DayOfWeek, WeekOfMonthOrdinal)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the requested ordinal does not exist in the supplied month.
@@ -21,4 +22,5 @@ public partial class DateTimeExtensionsTests
             _ = DateTimeExtensions.GetNthDateOfWeekInMonth(2023, 2, DayOfWeek.Monday, WeekOfMonthOrdinal.Fifth);
         });
     }
+
 }

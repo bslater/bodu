@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Policy.RND.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that Add randomly evicts an item when capacity is exceeded using
     /// RandomReplacement policy.
@@ -25,6 +26,41 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that RandomReplacement actually selects different victims across many independent runs,
+    /// rather than deterministically evicting the same key each time.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenPolicyIsRandomAndCapacityExceededAcrossManyRuns_ShouldEvictDifferentKeysOverTime()
+    {
+        const int trials = 200;
+        var evictedKeys = new HashSet<string>();
+
+        for (var i = 0; i < trials; i++)
+        {
+            var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
+            dictionary.Add("A", 1);
+            dictionary.Add("B", 2);
+            dictionary.Add("C", 3);
+
+            string? evicted = null;
+            dictionary.ItemEvicted += (key, _) => evicted = key;
+
+            dictionary.Add("D", 4);
+
+            Assert.IsNotNull(evicted);
+            evictedKeys.Add(evicted!);
+
+            // Once we have observed at least two distinct victims we are confident the selection is non-deterministic.
+            if (evictedKeys.Count >= 2)
+                return;
+        }
+
+        Assert.Fail(
+            $"RandomReplacement evicted the same key in all {trials} trials (observed: {string.Join(',', evictedKeys)}); " +
+            "expected non-deterministic victim selection.");
+    }
+
+    /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> removes all items in a RandomReplacement dictionary.
     /// </summary>
     [TestMethod]
@@ -36,23 +72,6 @@ public partial class EvictingDictionaryTests
         dictionary.Clear();
 
         Assert.AreEqual(0, dictionary.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is triggered when eviction occurs using RandomReplacement policy.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenPolicyIsRandom_ShouldBeTriggeredOnEviction()
-    {
-        var evicted = new List<string>();
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.RandomReplacement);
-        dictionary.ItemEvicted += (key, _) => evicted.Add(key);
-
-        dictionary.Add("X", 1);
-        dictionary.Add("Y", 2);
-        dictionary.Add("Z", 3);
-
-        Assert.IsTrue(evicted.Count > 0);
     }
 
     /// <summary>
@@ -73,17 +92,20 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns a valid key when using RandomReplacement.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is triggered when eviction occurs using RandomReplacement policy.
     /// </summary>
     [TestMethod]
-    public void PeekEvictionCandidate_WhenPolicyIsRandom_ShouldReturnSomeKey()
+    public void ItemEvicted_WhenPolicyIsRandom_ShouldBeTriggeredOnEviction()
     {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
-        dictionary.Add("alpha", 1);
-        dictionary.Add("beta", 2);
+        var evicted = new List<string>();
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.RandomReplacement);
+        dictionary.ItemEvicted += (key, _) => evicted.Add(key);
 
-        var candidate = dictionary.PeekEvictionCandidate();
-        Assert.IsTrue(dictionary.ContainsKey(candidate));
+        dictionary.Add("X", 1);
+        dictionary.Add("Y", 2);
+        dictionary.Add("Z", 3);
+
+        Assert.IsTrue(evicted.Count > 0);
     }
 
     /// <summary>
@@ -123,37 +145,17 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that RandomReplacement actually selects different victims across many independent runs,
-    /// rather than deterministically evicting the same key each time.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns a valid key when using RandomReplacement.
     /// </summary>
     [TestMethod]
-    public void Add_WhenPolicyIsRandomAndCapacityExceededAcrossManyRuns_ShouldEvictDifferentKeysOverTime()
+    public void PeekEvictionCandidate_WhenPolicyIsRandom_ShouldReturnSomeKey()
     {
-        const int trials = 200;
-        var evictedKeys = new HashSet<string>();
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
+        dictionary.Add("alpha", 1);
+        dictionary.Add("beta", 2);
 
-        for (var i = 0; i < trials; i++)
-        {
-            var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.RandomReplacement);
-            dictionary.Add("A", 1);
-            dictionary.Add("B", 2);
-            dictionary.Add("C", 3);
-
-            string? evicted = null;
-            dictionary.ItemEvicted += (key, _) => evicted = key;
-
-            dictionary.Add("D", 4);
-
-            Assert.IsNotNull(evicted);
-            evictedKeys.Add(evicted!);
-
-            // Once we have observed at least two distinct victims we are confident the selection is non-deterministic.
-            if (evictedKeys.Count >= 2)
-                return;
-        }
-
-        Assert.Fail(
-            $"RandomReplacement evicted the same key in all {trials} trials (observed: {string.Join(',', evictedKeys)}); " +
-            "expected non-deterministic victim selection.");
+        var candidate = dictionary.PeekEvictionCandidate();
+        Assert.IsTrue(dictionary.ContainsKey(candidate));
     }
+
 }

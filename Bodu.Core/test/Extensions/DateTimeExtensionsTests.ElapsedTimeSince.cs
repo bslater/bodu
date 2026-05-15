@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.ElapsedTimeSince.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,33 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ElapsedTimeSince" />, when PastTime, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(-5, DateTimeKind.Utc)]
-    [DataRow(-10, DateTimeKind.Local)]
-    public void ElapsedTimeSince_WhenPastTime_ShouldReturnPositiveTimeSpan(int minutesOffset, DateTimeKind kind)
-    {
-        DateTime past = kind == DateTimeKind.Utc
-            ? DateTime.UtcNow.AddMinutes(minutesOffset)
-            : DateTime.Now.AddMinutes(minutesOffset);
-
-        past = DateTime.SpecifyKind(past, kind);
-
-        TimeSpan elapsed = past.ElapsedTimeSince();
-
-        Assert.IsTrue(elapsed.TotalMinutes >= Math.Abs(minutesOffset) - 0.01,
-            $"Expected at least {Math.Abs(minutesOffset)} minutes elapsed, got {elapsed.TotalMinutes:F2}");
-        Assert.IsTrue(elapsed.TotalMilliseconds > 0, "Elapsed should be positive for past dates.");
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.ElapsedTimeSince" />, when FutureTime, returns <see langword="true" />.
@@ -94,4 +72,25 @@ public partial class DateTimeExtensionsTests
         Assert.IsTrue(elapsed.TotalMilliseconds < 50,
             $"Elapsed was {elapsed.TotalMilliseconds:F3}ms, expected < 50ms.");
     }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ElapsedTimeSince" />, when PastTime, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(-5, DateTimeKind.Utc)]
+    [DataRow(-10, DateTimeKind.Local)]
+    public void ElapsedTimeSince_WhenPastTime_ShouldReturnPositiveTimeSpan(int minutesOffset, DateTimeKind kind)
+    {
+        DateTime past = kind == DateTimeKind.Utc
+            ? DateTime.UtcNow.AddMinutes(minutesOffset)
+            : DateTime.Now.AddMinutes(minutesOffset);
+
+        past = DateTime.SpecifyKind(past, kind);
+
+        TimeSpan elapsed = past.ElapsedTimeSince();
+
+        Assert.IsTrue(elapsed.TotalMinutes >= Math.Abs(minutesOffset) - 0.01,
+            $"Expected at least {Math.Abs(minutesOffset)} minutes elapsed, got {elapsed.TotalMinutes:F2}");
+        Assert.IsTrue(elapsed.TotalMilliseconds > 0, "Elapsed should be positive for past dates.");
+    }
+
 }

@@ -11,6 +11,34 @@ namespace Bodu.Collections.Generic.Extensions;
 [TestClass]
 public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
 {
+
+    /// <summary>
+    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> short-circuits at the top of the
+    /// outer foreach via the line-279 check when <c>state.ExitRequested</c> is set before evaluation reaches the next sibling element.
+    /// </summary>
+    [TestMethod]
+    public void RecursiveSelectInternal_WhenExitRequestedFires_ShouldStopBeforeNextSibling()
+    {
+        var state = new IEnumerableExtensions.RecursionState();
+        Node[] roots =
+        [
+            new Node { Name = "A" },
+            new Node { Name = "B" },
+            new Node { Name = "C" },
+        ];
+
+        IEnumerable<Node> ChildSelector(Node n) => n.Children;
+        string Selector(Node n, int index, int depth) => n.Name;
+
+        RecursiveSelectControl RecursionControl(Node n)
+            => n.Name == "A" ? RecursiveSelectControl.YieldAndExit : RecursiveSelectControl.YieldAndRecurse;
+
+        var actual = IEnumerableExtensions
+            .RecursiveSelectInternal<Node, string>(roots, ChildSelector, Selector, RecursionControl, 0, state)
+            .ToList();
+
+        CollectionAssert.AreEqual(new[] { "A" }, actual);
+    }
     /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> short-circuits inside the inner
     /// recursive consumption loop via the <c>state.ExitRequested</c> check (line 315-316) when the flag is flipped to <see langword="true" />
@@ -65,34 +93,6 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
     }
 
     /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> short-circuits at the top of the
-    /// outer foreach via the line-279 check when <c>state.ExitRequested</c> is set before evaluation reaches the next sibling element.
-    /// </summary>
-    [TestMethod]
-    public void RecursiveSelectInternal_WhenExitRequestedFires_ShouldStopBeforeNextSibling()
-    {
-        var state = new IEnumerableExtensions.RecursionState();
-        Node[] roots =
-        [
-            new Node { Name = "A" },
-            new Node { Name = "B" },
-            new Node { Name = "C" },
-        ];
-
-        IEnumerable<Node> ChildSelector(Node n) => n.Children;
-        string Selector(Node n, int index, int depth) => n.Name;
-
-        RecursiveSelectControl RecursionControl(Node n)
-            => n.Name == "A" ? RecursiveSelectControl.YieldAndExit : RecursiveSelectControl.YieldAndRecurse;
-
-        var actual = IEnumerableExtensions
-            .RecursiveSelectInternal<Node, string>(roots, ChildSelector, Selector, RecursionControl, 0, state)
-            .ToList();
-
-        CollectionAssert.AreEqual(new[] { "A" }, actual);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelectInternal{TSource,TResult}" /> initialises a fresh
     /// <see cref="IEnumerableExtensions.RecursionState" /> when one is not supplied, so two independent enumerations of the same source
     /// produce identical output.
@@ -132,4 +132,5 @@ public sealed partial class IEnumerableExtensionsTests_RecursiveSelectInternal
 
         CollectionAssert.AreEqual(first, second);
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.Midnight.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,13 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when Called, returns the expected value.
     /// </summary>
@@ -33,19 +32,6 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(expected, actual);
         Assert.AreEqual(input.Kind, actual.Kind);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUtc, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Midnight_WhenKindIsUtc_ShouldPreserveKind()
-    {
-        DateTime input = new DateTime(2024, 4, 18, 9, 30, 0, DateTimeKind.Utc);
-        DateTime actual = input.Midnight();
-
-        Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
-        Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Utc), actual);
     }
 
     /// <summary>
@@ -75,15 +61,16 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMinValue, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when KindIsUtc, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
+    public void Midnight_WhenKindIsUtc_ShouldPreserveKind()
     {
-        DateTime input = DateTime.MinValue.Date;
+        DateTime input = new DateTime(2024, 4, 18, 9, 30, 0, DateTimeKind.Utc);
         DateTime actual = input.Midnight();
 
-        Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
+        Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
+        Assert.AreEqual(new DateTime(2024, 4, 18, 0, 0, 0, DateTimeKind.Utc), actual);
     }
 
     /// <summary>
@@ -97,4 +84,17 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.Midnight" />, when UsingMinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midnight_WhenUsingMinValue_ShouldReturnMidnight()
+    {
+        DateTime input = DateTime.MinValue.Date;
+        DateTime actual = input.Midnight();
+
+        Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
+    }
+
 }

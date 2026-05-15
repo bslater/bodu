@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Clear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Clear" /> removes all key-value pairs and resets Count to zero.
     /// </summary>
@@ -23,6 +24,24 @@ public partial class EvictingDictionaryTests
         Assert.AreEqual(0, dictionary.Count);
         Assert.IsFalse(dictionary.ContainsKey("A"));
         Assert.IsFalse(dictionary.ContainsKey("B"));
+    }
+
+    /// <summary>
+    /// Verifies that EvictionCount is reset to zero after Clear is called.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenCalled_ShouldResetEvictionCountToZero()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Add("C", 3); // triggers eviction
+
+        Assert.IsTrue(dictionary.EvictionCount > 0);
+
+        dictionary.Clear();
+
+        Assert.AreEqual(0, dictionary.EvictionCount);
     }
 
     /// <summary>
@@ -59,24 +78,6 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that EvictionCount is reset to zero after Clear is called.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenCalled_ShouldResetEvictionCountToZero()
-    {
-        var dictionary = new EvictingDictionary<string, int>(2);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Add("C", 3); // triggers eviction
-
-        Assert.IsTrue(dictionary.EvictionCount > 0);
-
-        dictionary.Clear();
-
-        Assert.AreEqual(0, dictionary.EvictionCount);
-    }
-
-    /// <summary>
     /// Verifies that items can be added again after Clear without corrupting eviction order.
     /// </summary>
     [TestMethod]
@@ -97,4 +98,5 @@ public partial class EvictingDictionaryTests
         Assert.IsTrue(dictionary.ContainsKey("D"));
         Assert.IsTrue(dictionary.ContainsKey("E"));
     }
+
 }

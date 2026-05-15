@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.StartOfDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -45,6 +43,19 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.StartOfDay" />, when UsingMaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void StartOfDay_WhenUsingMaxValue_ShouldReturnSameDateAtMidnight()
+    {
+        DateTime input = DateTime.MaxValue.Date;
+        DateTime actual = input.StartOfDay();
+
+        Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
+        Assert.AreEqual(input.Kind, actual.Kind);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.StartOfDay" />, when UsingMinValue, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -57,16 +68,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(input.Kind, actual.Kind);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.StartOfDay" />, when UsingMaxValue, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void StartOfDay_WhenUsingMaxValue_ShouldReturnSameDateAtMidnight()
-    {
-        DateTime input = DateTime.MaxValue.Date;
-        DateTime actual = input.StartOfDay();
-
-        Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
-        Assert.AreEqual(input.Kind, actual.Kind);
-    }
 }

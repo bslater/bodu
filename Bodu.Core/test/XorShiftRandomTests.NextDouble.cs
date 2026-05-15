@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XorShiftRandomTests.NextDouble.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu;
 
 public partial class XorShiftRandomTests
 {
+
     /// <summary>
     /// Verifies that <see cref="XorShiftRandom.NextDouble" /> returns values in the expected range [0.0, 1.0).
     /// </summary>
@@ -35,4 +36,5 @@ public partial class XorShiftRandomTests
             Assert.IsTrue(value >= 0.0 && value <= 1.0);
         }
     }
+
 }

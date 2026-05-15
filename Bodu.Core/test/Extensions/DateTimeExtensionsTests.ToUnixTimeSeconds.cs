@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.ToUnixTimeSeconds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -18,27 +16,17 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UtcInput, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, RoundTripWithFromUnixTimeSeconds, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FromUnixTimeSecondsTestData), DynamicDataSourceType.Property)]
-    public void ToUnixTimeSeconds_WhenUtcInput_ShouldReturnExpected(long expected, DateTime input)
+    public void ToUnixTimeSeconds_RoundTripWithFromUnixTimeSeconds_ShouldMatchUtc()
     {
-        long actual = input.ToUnixTimeSeconds();
+        DateTime input = new DateTime(2024, 4, 18, 14, 30, 0, DateTimeKind.Utc);
+        long seconds = input.ToUnixTimeSeconds();
 
-        Assert.AreEqual(expected, actual);
-    }
+        DateTime roundTrip = DateTimeExtensions.FromUnixTimeSeconds(seconds);
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when KindIsUtc, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void ToUnixTimeSeconds_WhenKindIsUtc_ShouldReturnUtcSeconds()
-    {
-        DateTime input = new DateTime(1970, 1, 1, 0, 0, 5, DateTimeKind.Utc);
-        long actual = input.ToUnixTimeSeconds();
-
-        Assert.AreEqual(5, actual);
+        Assert.AreEqual(input, roundTrip);
     }
 
     /// <summary>
@@ -72,14 +60,15 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UsingMinValue, returns <see langword="true" />.
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when KindIsUtc, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void ToUnixTimeSeconds_WhenUsingMinValue_ShouldBeNegativeLarge()
+    public void ToUnixTimeSeconds_WhenKindIsUtc_ShouldReturnUtcSeconds()
     {
-        long actual = DateTime.MinValue.ToUnixTimeSeconds();
+        DateTime input = new DateTime(1970, 1, 1, 0, 0, 5, DateTimeKind.Utc);
+        long actual = input.ToUnixTimeSeconds();
 
-        Assert.IsTrue(actual < 0);
+        Assert.AreEqual(5, actual);
     }
 
     /// <summary>
@@ -94,16 +83,26 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, RoundTripWithFromUnixTimeSeconds, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UsingMinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void ToUnixTimeSeconds_RoundTripWithFromUnixTimeSeconds_ShouldMatchUtc()
+    public void ToUnixTimeSeconds_WhenUsingMinValue_ShouldBeNegativeLarge()
     {
-        DateTime input = new DateTime(2024, 4, 18, 14, 30, 0, DateTimeKind.Utc);
-        long seconds = input.ToUnixTimeSeconds();
+        long actual = DateTime.MinValue.ToUnixTimeSeconds();
 
-        DateTime roundTrip = DateTimeExtensions.FromUnixTimeSeconds(seconds);
-
-        Assert.AreEqual(input, roundTrip);
+        Assert.IsTrue(actual < 0);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToUnixTimeSeconds" />, when UtcInput, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FromUnixTimeSecondsTestData), DynamicDataSourceType.Property)]
+    public void ToUnixTimeSeconds_WhenUtcInput_ShouldReturnExpected(long expected, DateTime input)
+    {
+        long actual = input.ToUnixTimeSeconds();
+
+        Assert.AreEqual(expected, actual);
+    }
+
 }

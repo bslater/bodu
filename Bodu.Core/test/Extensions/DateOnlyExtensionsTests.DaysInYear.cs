@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.DaysInYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when Called, returns the expected value.
     /// </summary>
@@ -21,30 +22,6 @@ public partial class DateOnlyExtensionsTests
         var actual = input.DaysInYear();
         Assert.AreEqual(expected, actual);
     }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingCustomCalendar, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.DaysInYearTestData), typeof(DateTimeExtensionsTests))]
-    public void DaysInYear_WhenUsingCustomCalendar_ShouldMatchExpected(int year, Calendar calendar, int expectedDays)
-    {
-        var input = new DateOnly(year, 1, 1);
-        var actual = input.DaysInYear(calendar);
-        Assert.AreEqual(expectedDays, actual, $"{calendar.GetType().Name} returned {actual} days for year {year}.");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMinValue, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void DaysInYear_WhenUsingMinValue_ShouldNotThrow() => Assert.IsTrue(DateOnly.MinValue.DaysInYear() > 0);
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMaxValue, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow() => Assert.IsTrue(DateOnly.MaxValue.DaysInYear() > 0);
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when NoCalendarProvided, returns the expected value.
@@ -71,4 +48,29 @@ public partial class DateOnlyExtensionsTests
             CultureInfo.CurrentCulture = previousCulture;
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingCustomCalendar, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DateTimeExtensionsTests.DaysInYearTestData), typeof(DateTimeExtensionsTests))]
+    public void DaysInYear_WhenUsingCustomCalendar_ShouldMatchExpected(int year, Calendar calendar, int expectedDays)
+    {
+        var input = new DateOnly(year, 1, 1);
+        var actual = input.DaysInYear(calendar);
+        Assert.AreEqual(expectedDays, actual, $"{calendar.GetType().Name} returned {actual} days for year {year}.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMaxValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInYear_WhenUsingMaxValue_ShouldNotThrow() => Assert.IsTrue(DateOnly.MaxValue.DaysInYear() > 0);
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.DaysInYear" />, when UsingMinValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void DaysInYear_WhenUsingMinValue_ShouldNotThrow() => Assert.IsTrue(DateOnly.MinValue.DaysInYear() > 0);
+
 }

@@ -5,28 +5,75 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetStorageTests
 {
+
+    /// <summary>
+    /// Verifies that items re-added after <see cref="OrderedSetStorage{T}.Clear" /> are tracked correctly.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenItemsReAddedAfterClear_ShouldTrackNewItems()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+
+        sut.Clear();
+        sut.Add(99);
+
+        Assert.AreEqual(1, sut.Count);
+        Assert.AreEqual(99, sut.GetAt(0));
+        Assert.IsTrue(sut.Contains(99));
+    }
+
     // --------------------------------------------------------
-    // Remove — argument validation
+    // Clear
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.Remove(T)" /> rejects a <see langword="null" /> item.
+    /// Verifies that <see cref="OrderedSetStorage{T}.Clear" /> empties the storage and bumps the version.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
+    public void Clear_WhenStorageHasItems_ShouldEmptyStorage()
     {
-        OrderedSetStorage<string> sut = CreateStorage(["a"]);
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        var versionBefore = sut._version;
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.Remove(null!);
-        });
+        sut.Clear();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreNotEqual(versionBefore, sut._version);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.Clear" /> on an already-empty storage is a no-op and
+    /// does not bump the version.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenStorageIsEmpty_ShouldBeNoOp()
+    {
+        var sut = new OrderedSetStorage<int>(0, null);
+        var versionBefore = sut._version;
+
+        sut.Clear();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(versionBefore, sut._version);
+    }
+
+    /// <summary>
+    /// Verifies that removing an item also clears it from the hash table.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenCalled_ShouldEvictFromHashTable()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+
+        sut.Remove(2);
+
+        Assert.IsFalse(sut.Contains(2));
+        Assert.AreEqual(-1, sut.IndexOf(2));
     }
 
     // --------------------------------------------------------
@@ -87,19 +134,22 @@ public partial class OrderedSetStorageTests
 
         CollectionAssert.AreEqual(new[] { 1, 2 }, Snapshot(sut));
     }
+    // --------------------------------------------------------
+    // Remove — argument validation
+    // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that removing an item also clears it from the hash table.
+    /// Verifies that <see cref="OrderedSetStorage{T}.Remove(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenCalled_ShouldEvictFromHashTable()
+    public void Remove_WhenItemIsNull_ShouldThrowArgumentNullException()
     {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+        OrderedSetStorage<string> sut = CreateStorage(["a"]);
 
-        sut.Remove(2);
-
-        Assert.IsFalse(sut.Contains(2));
-        Assert.AreEqual(-1, sut.IndexOf(2));
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            sut.Remove(null!);
+        });
     }
 
     /// <summary>
@@ -114,6 +164,19 @@ public partial class OrderedSetStorageTests
         sut.Add(2);
 
         CollectionAssert.AreEqual(new[] { 1, 3, 2 }, Snapshot(sut));
+    }
+
+    /// <summary>
+    /// Verifies that removing at the last index trims the order.
+    /// </summary>
+    [TestMethod]
+    public void RemoveAt_WhenIndexIsLast_ShouldTrimOrder()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+
+        sut.RemoveAt(2);
+
+        CollectionAssert.AreEqual(new[] { 1, 2 }, Snapshot(sut));
     }
 
     // --------------------------------------------------------
@@ -138,21 +201,6 @@ public partial class OrderedSetStorageTests
         });
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="OrderedSetStorage{T}.RemoveAt" /> on an empty storage with index zero
-    /// throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void RemoveAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
-    {
-        var sut = new OrderedSetStorage<int>(0, null);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            sut.RemoveAt(0);
-        });
-    }
-
     // --------------------------------------------------------
     // RemoveAt — positional behaviour
     // --------------------------------------------------------
@@ -171,16 +219,32 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
-    /// Verifies that removing at the last index trims the order.
+    /// Verifies that calling <see cref="OrderedSetStorage{T}.RemoveAt" /> on an empty storage with index zero
+    /// throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void RemoveAt_WhenIndexIsLast_ShouldTrimOrder()
+    public void RemoveAt_WhenStorageIsEmpty_ShouldThrowArgumentOutOfRangeException()
+    {
+        var sut = new OrderedSetStorage<int>(0, null);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            sut.RemoveAt(0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that when every element matches, the storage is emptied.
+    /// </summary>
+    [TestMethod]
+    public void RemoveWhere_WhenAllMatch_ShouldEmptyStorage()
     {
         OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
 
-        sut.RemoveAt(2);
+        var removed = sut.RemoveWhere(_ => true);
 
-        CollectionAssert.AreEqual(new[] { 1, 2 }, Snapshot(sut));
+        Assert.AreEqual(3, removed);
+        Assert.AreEqual(0, sut.Count);
     }
 
     // --------------------------------------------------------
@@ -201,25 +265,6 @@ public partial class OrderedSetStorageTests
         });
     }
 
-    // --------------------------------------------------------
-    // RemoveWhere — predicate behaviour
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.RemoveWhere(System.Predicate{T})" /> returns the number
-    /// of removed elements and compacts the remainder in original order.
-    /// </summary>
-    [TestMethod]
-    public void RemoveWhere_WhenSomeElementsMatch_ShouldRemoveMatchingAndKeepOrder()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4, 5, 6]);
-
-        var removed = sut.RemoveWhere(x => x % 2 == 0);
-
-        Assert.AreEqual(3, removed);
-        CollectionAssert.AreEqual(new[] { 1, 3, 5 }, Snapshot(sut));
-    }
-
     /// <summary>
     /// Verifies that when no element matches, <see cref="OrderedSetStorage{T}.RemoveWhere(System.Predicate{T})" />
     /// returns zero and does not bump the version.
@@ -235,20 +280,6 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(0, removed);
         Assert.AreEqual(versionBefore, sut._version);
         Assert.AreEqual(3, sut.Count);
-    }
-
-    /// <summary>
-    /// Verifies that when every element matches, the storage is emptied.
-    /// </summary>
-    [TestMethod]
-    public void RemoveWhere_WhenAllMatch_ShouldEmptyStorage()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-
-        var removed = sut.RemoveWhere(_ => true);
-
-        Assert.AreEqual(3, removed);
-        Assert.AreEqual(0, sut.Count);
     }
 
     /// <summary>
@@ -272,53 +303,22 @@ public partial class OrderedSetStorageTests
     }
 
     // --------------------------------------------------------
-    // Clear
+    // RemoveWhere — predicate behaviour
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.Clear" /> empties the storage and bumps the version.
+    /// Verifies that <see cref="OrderedSetStorage{T}.RemoveWhere(System.Predicate{T})" /> returns the number
+    /// of removed elements and compacts the remainder in original order.
     /// </summary>
     [TestMethod]
-    public void Clear_WhenStorageHasItems_ShouldEmptyStorage()
+    public void RemoveWhere_WhenSomeElementsMatch_ShouldRemoveMatchingAndKeepOrder()
     {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-        var versionBefore = sut._version;
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3, 4, 5, 6]);
 
-        sut.Clear();
+        var removed = sut.RemoveWhere(x => x % 2 == 0);
 
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreNotEqual(versionBefore, sut._version);
+        Assert.AreEqual(3, removed);
+        CollectionAssert.AreEqual(new[] { 1, 3, 5 }, Snapshot(sut));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.Clear" /> on an already-empty storage is a no-op and
-    /// does not bump the version.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenStorageIsEmpty_ShouldBeNoOp()
-    {
-        var sut = new OrderedSetStorage<int>(0, null);
-        var versionBefore = sut._version;
-
-        sut.Clear();
-
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(versionBefore, sut._version);
-    }
-
-    /// <summary>
-    /// Verifies that items re-added after <see cref="OrderedSetStorage{T}.Clear" /> are tracked correctly.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenItemsReAddedAfterClear_ShouldTrackNewItems()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-
-        sut.Clear();
-        sut.Add(99);
-
-        Assert.AreEqual(1, sut.Count);
-        Assert.AreEqual(99, sut.GetAt(0));
-        Assert.IsTrue(sut.Contains(99));
-    }
 }

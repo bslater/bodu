@@ -4,12 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
     /// <summary>
     /// Verifies that two distinct <see cref="Label" /> instances with the same text are stored as separate
     /// values, because <see cref="Label" /> uses reference identity rather than structural equality.
@@ -66,4 +65,5 @@ public partial class MultiValueDictionaryTests
         Assert.IsTrue(mvd.ContainsValue("k", l2));
         Assert.IsFalse(mvd.ContainsValue("k", l1));
     }
+
 }

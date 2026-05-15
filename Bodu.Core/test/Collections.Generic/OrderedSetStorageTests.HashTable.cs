@@ -5,41 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetStorageTests
 {
-    // --------------------------------------------------------
-    // Rehashing
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that filling the storage past the configured load factor triggers a rehash while preserving
-    /// every element's index.
-    /// </summary>
-    [TestMethod]
-    [DataRow(8)]
-    [DataRow(64)]
-    [DataRow(512)]
-    [DataRow(4096)]
-    public void HashTable_WhenLoadFactorExceeded_ShouldRehashAndPreserveOrder(int size)
-    {
-        var sut = new OrderedSetStorage<int>(0, null);
-
-        for (var i = 0; i < size; i++)
-            Assert.IsTrue(sut.Add(i));
-
-        Assert.AreEqual(size, sut.Count);
-        for (var i = 0; i < size; i++)
-        {
-            Assert.AreEqual(i, sut.GetAt(i));
-            Assert.AreEqual(i, sut.IndexOf(i));
-            Assert.IsTrue(sut.Contains(i));
-        }
-    }
 
     /// <summary>
     /// Verifies that interleaved add/remove operations leave the hash table in a consistent state where every
@@ -62,32 +32,6 @@ public partial class OrderedSetStorageTests
             var item = sut.GetAt(i);
             Assert.AreEqual(i, sut.IndexOf(item));
             Assert.IsTrue(sut.Contains(item));
-        }
-    }
-
-    // --------------------------------------------------------
-    // Collision handling
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that a long chain of hash-colliding items is fully traversed by lookups.
-    /// </summary>
-    [TestMethod]
-    public void HashTable_WhenManyItemsCollide_ShouldResolveEachThroughChain()
-    {
-        var sut = new OrderedSetStorage<HashCollider>(0, null);
-        var items = new HashCollider[32];
-
-        for (var i = 0; i < items.Length; i++)
-        {
-            items[i] = new HashCollider("c" + i);
-            Assert.IsTrue(sut.Add(items[i]));
-        }
-
-        for (var i = 0; i < items.Length; i++)
-        {
-            Assert.IsTrue(sut.Contains(items[i]));
-            Assert.AreEqual(i, sut.IndexOf(items[i]));
         }
     }
 
@@ -119,6 +63,25 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(1, sut.IndexOf(d));
     }
 
+    /// <summary>
+    /// Verifies that supplying a comparer with consistent <see cref="IEqualityComparer{T}.GetHashCode" /> and
+    /// <see cref="IEqualityComparer{T}.Equals" /> is respected even when many items share the same hash.
+    /// </summary>
+    [TestMethod]
+    public void HashTable_WhenComparerForcesIdenticalHashes_ShouldStillDistinguishByEquals()
+    {
+        var sut = new OrderedSetStorage<string>(0, new FixedHashStringComparer());
+
+        Assert.IsTrue(sut.Add("alpha"));
+        Assert.IsTrue(sut.Add("beta"));
+        Assert.IsTrue(sut.Add("gamma"));
+        Assert.IsFalse(sut.Add("alpha"));
+
+        Assert.AreEqual(3, sut.Count);
+        Assert.IsTrue(sut.Contains("beta"));
+        Assert.AreEqual(1, sut.IndexOf("beta"));
+    }
+
     // --------------------------------------------------------
     // Comparer interaction
     // --------------------------------------------------------
@@ -141,24 +104,59 @@ public partial class OrderedSetStorageTests
         Assert.IsFalse(sut.Contains("alpha"));
         Assert.AreEqual(1, sut.Count);
     }
+    // --------------------------------------------------------
+    // Rehashing
+    // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that supplying a comparer with consistent <see cref="IEqualityComparer{T}.GetHashCode" /> and
-    /// <see cref="IEqualityComparer{T}.Equals" /> is respected even when many items share the same hash.
+    /// Verifies that filling the storage past the configured load factor triggers a rehash while preserving
+    /// every element's index.
     /// </summary>
     [TestMethod]
-    public void HashTable_WhenComparerForcesIdenticalHashes_ShouldStillDistinguishByEquals()
+    [DataRow(8)]
+    [DataRow(64)]
+    [DataRow(512)]
+    [DataRow(4096)]
+    public void HashTable_WhenLoadFactorExceeded_ShouldRehashAndPreserveOrder(int size)
     {
-        var sut = new OrderedSetStorage<string>(0, new FixedHashStringComparer());
+        var sut = new OrderedSetStorage<int>(0, null);
 
-        Assert.IsTrue(sut.Add("alpha"));
-        Assert.IsTrue(sut.Add("beta"));
-        Assert.IsTrue(sut.Add("gamma"));
-        Assert.IsFalse(sut.Add("alpha"));
+        for (var i = 0; i < size; i++)
+            Assert.IsTrue(sut.Add(i));
 
-        Assert.AreEqual(3, sut.Count);
-        Assert.IsTrue(sut.Contains("beta"));
-        Assert.AreEqual(1, sut.IndexOf("beta"));
+        Assert.AreEqual(size, sut.Count);
+        for (var i = 0; i < size; i++)
+        {
+            Assert.AreEqual(i, sut.GetAt(i));
+            Assert.AreEqual(i, sut.IndexOf(i));
+            Assert.IsTrue(sut.Contains(i));
+        }
+    }
+
+    // --------------------------------------------------------
+    // Collision handling
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that a long chain of hash-colliding items is fully traversed by lookups.
+    /// </summary>
+    [TestMethod]
+    public void HashTable_WhenManyItemsCollide_ShouldResolveEachThroughChain()
+    {
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var items = new HashCollider[32];
+
+        for (var i = 0; i < items.Length; i++)
+        {
+            items[i] = new HashCollider("c" + i);
+            Assert.IsTrue(sut.Add(items[i]));
+        }
+
+        for (var i = 0; i < items.Length; i++)
+        {
+            Assert.IsTrue(sut.Contains(items[i]));
+            Assert.AreEqual(i, sut.IndexOf(items[i]));
+        }
     }
 
     /// <summary>
@@ -168,10 +166,13 @@ public partial class OrderedSetStorageTests
     private sealed class FixedHashStringComparer
         : IEqualityComparer<string>
     {
+
         /// <inheritdoc />
         public bool Equals(string? x, string? y) => string.Equals(x, y, StringComparison.Ordinal);
 
         /// <inheritdoc />
         public int GetHashCode(string obj) => 0;
+
     }
+
 }

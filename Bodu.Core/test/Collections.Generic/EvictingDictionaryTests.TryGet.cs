@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.TryGet.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,19 +8,34 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> returns true and the correct value when the key exists.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> returns the default value for a reference type when the key is absent.
     /// </summary>
     [TestMethod]
-    public void TryGetValue_WhenKeyExists_ShouldReturnTrueAndCorrectValue()
+    public void TryGetValue_WhenKeyDoesNotExist_ForReferenceTypeValue_ShouldSetValueToNull()
+    {
+        var dictionary = new EvictingDictionary<string, string>(3);
+        dictionary.Add("present", "here");
+
+        var result = dictionary.TryGetValue("absent", out var value);
+
+        Assert.IsFalse(result);
+        Assert.IsNull(value);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> does not increment TotalTouches when the key is not found.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValue_WhenKeyDoesNotExist_ShouldNotIncrementTotalTouches()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
-        dictionary.Add("A", 42);
+        var before = dictionary.TotalTouches;
 
-        var result = dictionary.TryGetValue("A", out var value);
+        dictionary.TryGetValue("missing", out _);
 
-        Assert.IsTrue(result);
-        Assert.AreEqual(42, value);
+        Assert.AreEqual(before, dictionary.TotalTouches);
     }
 
     /// <summary>
@@ -40,41 +55,32 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> updates recency for LeastRecentlyUsed, preventing eviction of the accessed key.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> increments TotalTouches when the key is found.
     /// </summary>
     [TestMethod]
-    public void TryGetValue_WhenPolicyIsLRUAndKeyAccessed_ShouldUpdateRecencyAndPreventEviction()
+    public void TryGetValue_WhenKeyExists_ShouldIncrementTotalTouches()
     {
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
+        var dictionary = new EvictingDictionary<string, int>(3);
+        dictionary.Add("x", 99);
+        var before = dictionary.TotalTouches;
 
-        _ = dictionary.TryGetValue("A", out _); // accesses A, making B the LRU
+        dictionary.TryGetValue("x", out _);
 
-        dictionary.Add("C", 3); // should evict B
-
-        Assert.IsTrue(dictionary.ContainsKey("A"));
-        Assert.IsFalse(dictionary.ContainsKey("B"));
-        Assert.IsTrue(dictionary.ContainsKey("C"));
+        Assert.AreEqual(before + 1, dictionary.TotalTouches);
     }
-
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> updates access frequency for LeastFrequentlyUsed, preventing eviction of the accessed key.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> returns true and the correct value when the key exists.
     /// </summary>
     [TestMethod]
-    public void TryGetValue_WhenPolicyIsLFUAndKeyAccessed_ShouldUpdateFrequencyAndPreventEviction()
+    public void TryGetValue_WhenKeyExists_ShouldReturnTrueAndCorrectValue()
     {
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
+        var dictionary = new EvictingDictionary<string, int>(3);
+        dictionary.Add("A", 42);
 
-        _ = dictionary.TryGetValue("A", out _); // A now has frequency 2, B remains at 1
+        var result = dictionary.TryGetValue("A", out var value);
 
-        dictionary.Add("C", 3); // should evict B (lower frequency)
-
-        Assert.IsTrue(dictionary.ContainsKey("A"));
-        Assert.IsFalse(dictionary.ContainsKey("B"));
-        Assert.IsTrue(dictionary.ContainsKey("C"));
+        Assert.IsTrue(result);
+        Assert.AreEqual(42, value);
     }
 
     /// <summary>
@@ -99,47 +105,41 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> increments TotalTouches when the key is found.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> updates access frequency for LeastFrequentlyUsed, preventing eviction of the accessed key.
     /// </summary>
     [TestMethod]
-    public void TryGetValue_WhenKeyExists_ShouldIncrementTotalTouches()
+    public void TryGetValue_WhenPolicyIsLFUAndKeyAccessed_ShouldUpdateFrequencyAndPreventEviction()
     {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        dictionary.Add("x", 99);
-        var before = dictionary.TotalTouches;
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastFrequentlyUsed);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
 
-        dictionary.TryGetValue("x", out _);
+        _ = dictionary.TryGetValue("A", out _); // A now has frequency 2, B remains at 1
 
-        Assert.AreEqual(before + 1, dictionary.TotalTouches);
+        dictionary.Add("C", 3); // should evict B (lower frequency)
+
+        Assert.IsTrue(dictionary.ContainsKey("A"));
+        Assert.IsFalse(dictionary.ContainsKey("B"));
+        Assert.IsTrue(dictionary.ContainsKey("C"));
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> does not increment TotalTouches when the key is not found.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> updates recency for LeastRecentlyUsed, preventing eviction of the accessed key.
     /// </summary>
     [TestMethod]
-    public void TryGetValue_WhenKeyDoesNotExist_ShouldNotIncrementTotalTouches()
+    public void TryGetValue_WhenPolicyIsLRUAndKeyAccessed_ShouldUpdateRecencyAndPreventEviction()
     {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        var before = dictionary.TotalTouches;
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
 
-        dictionary.TryGetValue("missing", out _);
+        _ = dictionary.TryGetValue("A", out _); // accesses A, making B the LRU
 
-        Assert.AreEqual(before, dictionary.TotalTouches);
-    }
+        dictionary.Add("C", 3); // should evict B
 
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TryGetValue" /> returns the default value for a reference type when the key is absent.
-    /// </summary>
-    [TestMethod]
-    public void TryGetValue_WhenKeyDoesNotExist_ForReferenceTypeValue_ShouldSetValueToNull()
-    {
-        var dictionary = new EvictingDictionary<string, string>(3);
-        dictionary.Add("present", "here");
-
-        var result = dictionary.TryGetValue("absent", out var value);
-
-        Assert.IsFalse(result);
-        Assert.IsNull(value);
+        Assert.IsTrue(dictionary.ContainsKey("A"));
+        Assert.IsFalse(dictionary.ContainsKey("B"));
+        Assert.IsTrue(dictionary.ContainsKey("C"));
     }
 
     /// <summary>
@@ -183,4 +183,5 @@ public partial class EvictingDictionaryTests
         Assert.IsFalse(dictionary.ContainsKey("B"));
         Assert.IsTrue(dictionary.ContainsKey("C"));
     }
+
 }

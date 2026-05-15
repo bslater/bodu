@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.NextWeekday.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
@@ -30,58 +29,6 @@ public partial class DateOnlyExtensionsTests
         yield return new object[] { new DateOnly(2024, 4, 22), new DateOnly(2024, 4, 23) };
         // Wed 17 Apr 2024 → Thu 18 Apr.
         yield return new object[] { new DateOnly(2024, 4, 17), new DateOnly(2024, 4, 18) };
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, CalendarWeekendDefinition)" /> returns the next non-weekend date when Saturday and Sunday are defined as the weekend.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(NextWeekdaySaturdaySundayTestData))]
-    public void NextWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateOnly date, DateOnly expected)
-    {
-        DateOnly actual = date.NextWeekday(CalendarWeekendDefinition.SaturdaySunday);
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that with a Friday/Saturday weekend, <see cref="DateOnlyExtensions.NextWeekday(DateOnly, CalendarWeekendDefinition)" /> skips both weekend days and returns the following Sunday.
-    /// </summary>
-    [TestMethod]
-    public void NextWeekday_WhenWeekendIsFridaySaturday_ShouldSkipFridayAndSaturday()
-    {
-        // Thu 18 Apr 2024 → skip Fri/Sat → Sun 21 Apr.
-        var input = new DateOnly(2024, 4, 18);
-        DateOnly actual = input.NextWeekday(CalendarWeekendDefinition.FridaySaturday);
-        Assert.AreEqual(new DateOnly(2024, 4, 21), actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, CalendarWeekendDefinition)" />, when called with
-    /// <see cref="CalendarWeekendDefinition.None" />, advances by exactly one day. Because <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
-    /// classifies every day as a weekday under <c>None</c>, the search loop's first iteration moves the cursor forward one day and exits.
-    /// </summary>
-    [TestMethod]
-    public void NextWeekday_WhenWeekendIsNone_ShouldAdvanceOneDay()
-    {
-        var input = new DateOnly(2024, 4, 20);
-
-        DateOnly actual = input.NextWeekday(CalendarWeekendDefinition.None);
-
-        Assert.AreEqual(input.AddDays(1), actual);
-    }
-
-    /// <summary>
-    /// Verifies that an undefined <see cref="CalendarWeekendDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void NextWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
-    {
-        var input = new DateOnly(2024, 4, 20);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = input.NextWeekday((CalendarWeekendDefinition)999);
-        });
     }
 
     // =========================================================================
@@ -112,4 +59,57 @@ public partial class DateOnlyExtensionsTests
             _ = input.NextWeekday((CalendarWeekendDefinition)999, provider: null);
         });
     }
+
+    /// <summary>
+    /// Verifies that with a Friday/Saturday weekend, <see cref="DateOnlyExtensions.NextWeekday(DateOnly, CalendarWeekendDefinition)" /> skips both weekend days and returns the following Sunday.
+    /// </summary>
+    [TestMethod]
+    public void NextWeekday_WhenWeekendIsFridaySaturday_ShouldSkipFridayAndSaturday()
+    {
+        // Thu 18 Apr 2024 → skip Fri/Sat → Sun 21 Apr.
+        var input = new DateOnly(2024, 4, 18);
+        DateOnly actual = input.NextWeekday(CalendarWeekendDefinition.FridaySaturday);
+        Assert.AreEqual(new DateOnly(2024, 4, 21), actual);
+    }
+
+    /// <summary>
+    /// Verifies that an undefined <see cref="CalendarWeekendDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void NextWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
+    {
+        var input = new DateOnly(2024, 4, 20);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.NextWeekday((CalendarWeekendDefinition)999);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, CalendarWeekendDefinition)" />, when called with
+    /// <see cref="CalendarWeekendDefinition.None" />, advances by exactly one day. Because <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// classifies every day as a weekday under <c>None</c>, the search loop's first iteration moves the cursor forward one day and exits.
+    /// </summary>
+    [TestMethod]
+    public void NextWeekday_WhenWeekendIsNone_ShouldAdvanceOneDay()
+    {
+        var input = new DateOnly(2024, 4, 20);
+
+        DateOnly actual = input.NextWeekday(CalendarWeekendDefinition.None);
+
+        Assert.AreEqual(input.AddDays(1), actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextWeekday(DateOnly, CalendarWeekendDefinition)" /> returns the next non-weekend date when Saturday and Sunday are defined as the weekend.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(NextWeekdaySaturdaySundayTestData))]
+    public void NextWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateOnly date, DateOnly expected)
+    {
+        DateOnly actual = date.NextWeekday(CalendarWeekendDefinition.SaturdaySunday);
+        Assert.AreEqual(expected, actual);
+    }
+
 }

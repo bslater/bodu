@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.LastDateOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -48,6 +46,17 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeekInMonth" />, when MaxValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfWeekInMonth_WhenMaxValue_ShouldReturnValidResult()
+    {
+        var actual = DateOnly.MaxValue.LastDateOfWeekInMonth(DayOfWeek.Friday);
+
+        Assert.IsTrue(actual <= DateOnly.MaxValue);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeekInMonth" />, when MinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
@@ -58,14 +67,4 @@ public partial class DateOnlyExtensionsTests
         Assert.IsTrue(actual >= DateOnly.MinValue && actual <= DateOnly.MinValue.AddMonths(1).AddDays(-1));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeekInMonth" />, when MaxValue, returns <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void LastDateOfWeekInMonth_WhenMaxValue_ShouldReturnValidResult()
-    {
-        var actual = DateOnly.MaxValue.LastDateOfWeekInMonth(DayOfWeek.Friday);
-
-        Assert.IsTrue(actual <= DateOnly.MaxValue);
-    }
 }

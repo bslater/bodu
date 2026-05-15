@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeekPatternTests.Presets.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
+
     /// <summary>
     /// Verifies that <see cref="WeekPattern.MondayToFriday" /> is equal to <see cref="WeekPattern.Weekdays" />.
     /// </summary>
@@ -124,4 +125,5 @@ public partial class WeekPatternTests
         Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
         Assert.IsFalse(pattern.Contains(DayOfWeek.Saturday));
     }
+
 }

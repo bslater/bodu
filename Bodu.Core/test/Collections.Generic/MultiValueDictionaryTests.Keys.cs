@@ -5,39 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Keys"/> contains all distinct keys.
-    /// </summary>
-    [TestMethod]
-    public void Keys_WhenItemsAdded_ShouldContainAllDistinctKeys()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("x", 1);
-        mvd.Add("y", 2);
-        mvd.Add("x", 3);
-
-        CollectionAssert.Contains(mvd.Keys.ToList(), "x");
-        CollectionAssert.Contains(mvd.Keys.ToList(), "y");
-        Assert.AreEqual(2, mvd.Keys.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Keys"/> is empty when the dictionary contains no entries.
-    /// </summary>
-    [TestMethod]
-    public void Keys_WhenEmpty_ShouldBeEmpty()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-
-        Assert.AreEqual(0, mvd.Keys.Count);
-    }
 
     /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Keys"/> no longer contains a key after all its values are removed via <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/>.
@@ -53,23 +25,6 @@ public partial class MultiValueDictionaryTests
 
         CollectionAssert.DoesNotContain(mvd.Keys.ToList(), "x");
         CollectionAssert.Contains(mvd.Keys.ToList(), "y");
-    }
-
-    /// <summary>
-    /// Verifies that the keys view reflects subsequent additions and removals.
-    /// </summary>
-    [TestMethod]
-    public void Keys_WhenDictionaryMutatedAfterViewCaptured_ShouldReflectCurrentKeys()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
-
-        IReadOnlyCollection<string> keys = mvd.Keys;
-
-        mvd.Add("b", 2);
-        mvd.RemoveAll("a");
-
-        CollectionAssert.AreEqual(new[] { "b" }, keys.ToList());
     }
 
     /// <summary>
@@ -107,4 +62,48 @@ public partial class MultiValueDictionaryTests
                 mvd.Add("c", 3);
         });
     }
+
+    /// <summary>
+    /// Verifies that the keys view reflects subsequent additions and removals.
+    /// </summary>
+    [TestMethod]
+    public void Keys_WhenDictionaryMutatedAfterViewCaptured_ShouldReflectCurrentKeys()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        IReadOnlyCollection<string> keys = mvd.Keys;
+
+        mvd.Add("b", 2);
+        mvd.RemoveAll("a");
+
+        CollectionAssert.AreEqual(new[] { "b" }, keys.ToList());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Keys"/> is empty when the dictionary contains no entries.
+    /// </summary>
+    [TestMethod]
+    public void Keys_WhenEmpty_ShouldBeEmpty()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+
+        Assert.AreEqual(0, mvd.Keys.Count);
+    }
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Keys"/> contains all distinct keys.
+    /// </summary>
+    [TestMethod]
+    public void Keys_WhenItemsAdded_ShouldContainAllDistinctKeys()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("x", 1);
+        mvd.Add("y", 2);
+        mvd.Add("x", 3);
+
+        CollectionAssert.Contains(mvd.Keys.ToList(), "x");
+        CollectionAssert.Contains(mvd.Keys.ToList(), "y");
+        Assert.AreEqual(2, mvd.Keys.Count);
+    }
+
 }

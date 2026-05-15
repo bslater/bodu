@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Bodu.Collections.Generic.Extensions;
@@ -13,6 +12,7 @@ namespace Bodu.Collections.Generic.Extensions;
 [TestClass]
 public sealed class IListExtensionsTests_IndexOf
 {
+
     /// <summary>
     /// Provides multi-match scenarios for verifying that <c>IndexOf</c> always returns the first matching index.
     /// </summary>
@@ -23,6 +23,147 @@ public sealed class IListExtensionsTests_IndexOf
         [new[] { 1, 1, 1, 1, 5 }, 4],
         [new[] { 5, 5 },          0],
     ];
+
+    /// <summary>
+    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException"/>
+    /// when <paramref name="index"/> exceeds <see cref="ICollection{T}.Count"/>.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_ThreeArg_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.IndexOf(x => x == 1, 10, 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException"/>
+    /// when <paramref name="index"/> is negative, exercising the index-validation branch of that overload.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_ThreeArg_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.IndexOf(x => x == 1, -1, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="count"/> is negative.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.IndexOf(x => x == 1, 0, -1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> accepts <c>index == Count</c> (yielding an empty search) without throwing.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenIndexEqualsCount_ShouldReturnMinusOne()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        var index = list.IndexOf(x => x == 1, list.Count);
+
+        Assert.AreEqual(-1, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="index"/>
+    /// exceeds <see cref="ICollection{T}.Count"/>.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.IndexOf(x => x == 1, 4);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when the start index is negative.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.IndexOf(x => x == 1, -1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when
+    /// <c>index + count</c> exceeds the list size.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenIndexPlusCountExceedsCount_ShouldThrowArgumentOutOfRangeException()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = list.IndexOf(x => x == 1, 1, 5);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> returns <c>-1</c> on an empty list rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenListIsEmpty_ShouldReturnMinusOne()
+    {
+        IList<int> list = new List<int>();
+
+        var index = list.IndexOf(_ => true);
+
+        Assert.AreEqual(-1, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> works against an <see cref="IList{T}"/> implementation that is not <see cref="List{T}"/>.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenListIsNotSystemList_ShouldReturnIndex()
+    {
+        IList<string> list = new Collection<string> { "a", "b", "c" };
+
+        var index = list.IndexOf(x => x == "b");
+
+        Assert.AreEqual(1, index);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WhenListIsNull_ShouldThrowArgumentNullException()
+    {
+        IList<int>? list = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = list!.IndexOf(x => x == 0);
+        });
+    }
 
     /// <summary>
     /// Verifies that <c>IndexOf</c> returns the zero-based index of the first matching element when one exists.
@@ -65,81 +206,34 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> returns <c>-1</c> on an empty list rather than throwing.
+    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenListIsEmpty_ShouldReturnMinusOne()
+    public void IndexOf_WhenPredicateIsNull_ShouldThrowArgumentNullException()
     {
-        IList<int> list = new List<int>();
+        IList<int> list = new List<int> { 1 };
+        Func<int, bool>? predicate = null;
 
-        var index = list.IndexOf(_ => true);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = list.IndexOf(predicate!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>IndexOf</c> with <paramref name="count"/> equal to <c>0</c> on a non-empty list
+    /// returns <c>-1</c> without invoking the predicate.
+    /// </summary>
+    [TestMethod]
+    public void IndexOf_WithRange_WhenCountIsZeroOnNonEmptyList_ShouldReturnMinusOne()
+    {
+        IList<int> list = new List<int> { 1, 2, 3 };
+        var predicateCalls = 0;
+
+        var index = list.IndexOf(_ => { predicateCalls++; return true; }, 1, 0);
 
         Assert.AreEqual(-1, index);
-    }
-
-    /// <summary>
-    /// Verifies that <c>IndexOf</c> with reference-type elements behaves identically to the value-type case.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WithReferenceTypes_ShouldReturnFirstMatchingIndex()
-    {
-        IList<string?> list = new List<string?> { "a", null, "b", null };
-
-        Assert.AreEqual(1, list.IndexOf(x => x is null));
-    }
-
-    /// <summary>
-    /// Verifies that the indexed overload of <c>IndexOf</c> begins the search at the specified index.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WithStartIndex_WhenIndexExcludesEarlyMatch_ShouldReturnFirstMatchInRange()
-    {
-        IList<int> list = new List<int> { 2, 0, 0, 2, 0, 2 };
-
-        var index = list.IndexOf(x => x == 2, 1);
-
-        Assert.AreEqual(3, index);
-    }
-
-    /// <summary>
-    /// Verifies that the ranged overload of <c>IndexOf</c> honours <paramref name="count"/> by ignoring
-    /// matches outside the window.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WithRange_WhenMatchIsOutsideWindow_ShouldReturnMinusOne()
-    {
-        IList<int> list = new List<int> { 0, 0, 1, 0, 0 };
-
-        var index = list.IndexOf(x => x == 1, 0, 2);
-
-        Assert.AreEqual(-1, index);
-    }
-
-    /// <summary>
-    /// Verifies that the ranged overload of <c>IndexOf</c> returns the match when it lies inside the window.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WithRange_WhenMatchIsInsideWindow_ShouldReturnIndex()
-    {
-        IList<int> list = new List<int> { 0, 0, 1, 0, 0 };
-
-        var index = list.IndexOf(x => x == 1, 1, 3);
-
-        Assert.AreEqual(2, index);
-    }
-
-    /// <summary>
-    /// Verifies that <c>IndexOf</c> with a ranged search returns the first matching index inside the window
-    /// when the prefix also contains matches.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WithRange_WhenPrefixContainsMatches_ShouldReturnFirstMatchInsideWindow()
-    {
-        IList<int> list = new List<int> { 5, 5, 5, 5, 5 };
-
-        var index = list.IndexOf(x => x == 5, 2, 2);
-
-        Assert.AreEqual(2, index);
+        Assert.AreEqual(0, predicateCalls);
     }
 
     /// <summary>
@@ -169,161 +263,68 @@ public sealed class IListExtensionsTests_IndexOf
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> with <paramref name="count"/> equal to <c>0</c> on a non-empty list
-    /// returns <c>-1</c> without invoking the predicate.
+    /// Verifies that the ranged overload of <c>IndexOf</c> returns the match when it lies inside the window.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WithRange_WhenCountIsZeroOnNonEmptyList_ShouldReturnMinusOne()
+    public void IndexOf_WithRange_WhenMatchIsInsideWindow_ShouldReturnIndex()
     {
-        IList<int> list = new List<int> { 1, 2, 3 };
-        var predicateCalls = 0;
+        IList<int> list = new List<int> { 0, 0, 1, 0, 0 };
 
-        var index = list.IndexOf(_ => { predicateCalls++; return true; }, 1, 0);
+        var index = list.IndexOf(x => x == 1, 1, 3);
 
-        Assert.AreEqual(-1, index);
-        Assert.AreEqual(0, predicateCalls);
+        Assert.AreEqual(2, index);
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> accepts <c>index == Count</c> (yielding an empty search) without throwing.
+    /// Verifies that the ranged overload of <c>IndexOf</c> honours <paramref name="count"/> by ignoring
+    /// matches outside the window.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenIndexEqualsCount_ShouldReturnMinusOne()
+    public void IndexOf_WithRange_WhenMatchIsOutsideWindow_ShouldReturnMinusOne()
     {
-        IList<int> list = new List<int> { 1, 2, 3 };
+        IList<int> list = new List<int> { 0, 0, 1, 0, 0 };
 
-        var index = list.IndexOf(x => x == 1, list.Count);
+        var index = list.IndexOf(x => x == 1, 0, 2);
 
         Assert.AreEqual(-1, index);
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// Verifies that <c>IndexOf</c> with a ranged search returns the first matching index inside the window
+    /// when the prefix also contains matches.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void IndexOf_WithRange_WhenPrefixContainsMatches_ShouldReturnFirstMatchInsideWindow()
     {
-        IList<int>? list = null;
+        IList<int> list = new List<int> { 5, 5, 5, 5, 5 };
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = list!.IndexOf(x => x == 0);
-        });
+        var index = list.IndexOf(x => x == 5, 2, 2);
+
+        Assert.AreEqual(2, index);
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
+    /// Verifies that <c>IndexOf</c> with reference-type elements behaves identically to the value-type case.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenPredicateIsNull_ShouldThrowArgumentNullException()
+    public void IndexOf_WithReferenceTypes_ShouldReturnFirstMatchingIndex()
     {
-        IList<int> list = new List<int> { 1 };
-        Func<int, bool>? predicate = null;
+        IList<string?> list = new List<string?> { "a", null, "b", null };
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = list.IndexOf(predicate!);
-        });
+        Assert.AreEqual(1, list.IndexOf(x => x is null));
     }
 
     /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when the start index is negative.
+    /// Verifies that the indexed overload of <c>IndexOf</c> begins the search at the specified index.
     /// </summary>
     [TestMethod]
-    public void IndexOf_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
+    public void IndexOf_WithStartIndex_WhenIndexExcludesEarlyMatch_ShouldReturnFirstMatchInRange()
     {
-        IList<int> list = new List<int> { 1, 2, 3 };
+        IList<int> list = new List<int> { 2, 0, 0, 2, 0, 2 };
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = list.IndexOf(x => x == 1, -1);
-        });
+        var index = list.IndexOf(x => x == 2, 1);
+
+        Assert.AreEqual(3, index);
     }
 
-    /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="index"/>
-    /// exceeds <see cref="ICollection{T}.Count"/>.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
-    {
-        IList<int> list = new List<int> { 1, 2, 3 };
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = list.IndexOf(x => x == 1, 4);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException"/>
-    /// when <paramref name="index"/> is negative, exercising the index-validation branch of that overload.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_ThreeArg_WhenIndexIsNegative_ShouldThrowArgumentOutOfRangeException()
-    {
-        IList<int> list = new List<int> { 1, 2, 3 };
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = list.IndexOf(x => x == 1, -1, 1);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the 3-argument <c>IndexOf</c> overload throws <see cref="ArgumentOutOfRangeException"/>
-    /// when <paramref name="index"/> exceeds <see cref="ICollection{T}.Count"/>.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_ThreeArg_WhenIndexExceedsCount_ShouldThrowArgumentOutOfRangeException()
-    {
-        IList<int> list = new List<int> { 1, 2, 3 };
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = list.IndexOf(x => x == 1, 10, 0);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when <paramref name="count"/> is negative.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
-    {
-        IList<int> list = new List<int> { 1, 2, 3 };
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = list.IndexOf(x => x == 1, 0, -1);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <c>IndexOf</c> throws <see cref="ArgumentOutOfRangeException"/> when
-    /// <c>index + count</c> exceeds the list size.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WhenIndexPlusCountExceedsCount_ShouldThrowArgumentOutOfRangeException()
-    {
-        IList<int> list = new List<int> { 1, 2, 3 };
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = list.IndexOf(x => x == 1, 1, 5);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <c>IndexOf</c> works against an <see cref="IList{T}"/> implementation that is not <see cref="List{T}"/>.
-    /// </summary>
-    [TestMethod]
-    public void IndexOf_WhenListIsNotSystemList_ShouldReturnIndex()
-    {
-        IList<string> list = new Collection<string> { "a", "b", "c" };
-
-        var index = list.IndexOf(x => x == "b");
-
-        Assert.AreEqual(1, index);
-    }
 }

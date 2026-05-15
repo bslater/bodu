@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfStringLengthOutOfRange" /> contract with explicit
     /// ParamName assertions: null → <see cref="ArgumentNullException" /> on "value"; below-min or above-max
@@ -49,14 +50,17 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthOutOfRange" /> throws
-    /// <see cref="ArgumentNullException" /> when the string value is <see langword="null" />.
+    /// <see cref="ArgumentOutOfRangeException" /> when the string length exceeds the maximum.
     /// </summary>
     [TestMethod]
-    public void ThrowIfStringLengthOutOfRange_WhenValueIsNull_ShouldThrowArgumentNullException()
+    [DataRow("abcdef", 1, 5)]   // length 6 > max 5
+    [DataRow("hello!", 2, 5)]   // length 6 > max 5
+    [DataRow("abcde", 1, 4)]    // length 5 > max 4
+    public void ThrowIfStringLengthOutOfRange_WhenLengthExceedsMaximum_ShouldThrowArgumentOutOfRangeException(string value, int minLength, int maxLength)
     {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            ThrowHelper.ThrowIfStringLengthOutOfRange(null!, 2, 10);
+            ThrowHelper.ThrowIfStringLengthOutOfRange(value, minLength, maxLength);
         });
     }
 
@@ -77,22 +81,6 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthOutOfRange" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when the string length exceeds the maximum.
-    /// </summary>
-    [TestMethod]
-    [DataRow("abcdef", 1, 5)]   // length 6 > max 5
-    [DataRow("hello!", 2, 5)]   // length 6 > max 5
-    [DataRow("abcde", 1, 4)]    // length 5 > max 4
-    public void ThrowIfStringLengthOutOfRange_WhenLengthExceedsMaximum_ShouldThrowArgumentOutOfRangeException(string value, int minLength, int maxLength)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            ThrowHelper.ThrowIfStringLengthOutOfRange(value, minLength, maxLength);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthOutOfRange" /> does not throw when the string
     /// length is within the specified range (inclusive on both boundaries).
     /// </summary>
@@ -103,4 +91,18 @@ public partial class ThrowHelperTests
     [DataRow("", 0, 5)]         // min = 0, empty string valid
     [DataRow("x", 1, 1)]        // min == max == length
     public void ThrowIfStringLengthOutOfRange_WhenLengthIsWithinRange_ShouldNotThrow(string value, int minLength, int maxLength) => ThrowHelper.ThrowIfStringLengthOutOfRange(value, minLength, maxLength);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthOutOfRange" /> throws
+    /// <see cref="ArgumentNullException" /> when the string value is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfStringLengthOutOfRange_WhenValueIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfStringLengthOutOfRange(null!, 2, 10);
+        });
+    }
+
 }

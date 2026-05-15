@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.EndOfDay.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -30,18 +28,6 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when MaxDateTime, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void EndOfDay_WhenMaxDateTime_ShouldReturnMaxValue()
-    {
-        var maxDate = DateTime.MaxValue.Date;
-        var actual = maxDate.EndOfDay();
-
-        Assert.AreEqual(DateTime.MaxValue, actual);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when KindIsSet, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -55,4 +41,17 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(kind, actual.Kind);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.EndOfDay" />, when MaxDateTime, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void EndOfDay_WhenMaxDateTime_ShouldReturnMaxValue()
+    {
+        var maxDate = DateTime.MaxValue.Date;
+        var actual = maxDate.EndOfDay();
+
+        Assert.AreEqual(DateTime.MaxValue, actual);
+    }
+
 }

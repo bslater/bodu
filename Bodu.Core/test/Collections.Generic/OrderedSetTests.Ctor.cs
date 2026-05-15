@@ -5,58 +5,26 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetTests
 {
-    // --------------------------------------------------------
-    // Default constructor
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the default constructor creates an empty set with the default comparer.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
-    {
-        var sut = new OrderedSet<int>();
-
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.Capacity);
-        Assert.AreSame(EqualityComparer<int>.Default, sut.Comparer);
-    }
 
     // --------------------------------------------------------
-    // Comparer-only constructor
+    // Capacity + comparer constructor
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the comparer-only constructor defaults to the default comparer when supplied
-    /// <see langword="null" />.
+    /// Verifies that the capacity-and-comparer constructor combines both arguments correctly.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
+    public void Ctor_WhenCapacityAndComparerProvided_ShouldUseBoth()
     {
-        var sut = new OrderedSet<string>((IEqualityComparer<string>?)null);
+        var sut = new OrderedSet<string>(8, StringComparer.OrdinalIgnoreCase);
 
-        Assert.AreSame(EqualityComparer<string>.Default, sut.Comparer);
-    }
-
-    /// <summary>
-    /// Verifies that the comparer-only constructor stores and uses the supplied comparer.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
-    {
-        var sut = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
-
+        Assert.AreEqual(8, sut.Capacity);
         Assert.AreSame(StringComparer.OrdinalIgnoreCase, sut.Comparer);
-
-        sut.Add("alpha");
-        Assert.IsTrue(sut.Contains("ALPHA"));
     }
 
     // --------------------------------------------------------
@@ -95,48 +63,19 @@ public partial class OrderedSetTests
         Assert.AreEqual(capacity, sut.Capacity);
     }
 
-    // --------------------------------------------------------
-    // Capacity + comparer constructor
-    // --------------------------------------------------------
-
     /// <summary>
-    /// Verifies that the capacity-and-comparer constructor combines both arguments correctly.
+    /// Verifies that the collection-and-comparer constructor uses the supplied comparer for deduplication.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCapacityAndComparerProvided_ShouldUseBoth()
+    public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
     {
-        var sut = new OrderedSet<string>(8, StringComparer.OrdinalIgnoreCase);
+        var sut = new OrderedSet<string>(
+            ["A", "a", "B", "b"],
+            StringComparer.OrdinalIgnoreCase);
 
-        Assert.AreEqual(8, sut.Capacity);
-        Assert.AreSame(StringComparer.OrdinalIgnoreCase, sut.Comparer);
-    }
-
-    // --------------------------------------------------------
-    // Collection constructor
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the collection constructor rejects a <see langword="null" /> source.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new OrderedSet<int>((IEnumerable<int>)null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the collection constructor rejects a source that yields a <see langword="null" /> element.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new OrderedSet<string>(["a", null!, "b"]);
-        });
+        Assert.AreEqual(2, sut.Count);
+        Assert.AreEqual("A", sut[0]);
+        Assert.AreEqual("B", sut[1]);
     }
 
     /// <summary>
@@ -155,29 +94,15 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
-    /// Verifies that an empty source collection produces an empty set.
+    /// Verifies that the collection constructor rejects a source that yields a <see langword="null" /> element.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
+    public void Ctor_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
     {
-        var sut = new OrderedSet<int>(Array.Empty<int>());
-
-        Assert.AreEqual(0, sut.Count);
-    }
-
-    /// <summary>
-    /// Verifies that the collection-and-comparer constructor uses the supplied comparer for deduplication.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionAndComparerProvided_ShouldUseSpecifiedComparer()
-    {
-        var sut = new OrderedSet<string>(
-            ["A", "a", "B", "b"],
-            StringComparer.OrdinalIgnoreCase);
-
-        Assert.AreEqual(2, sut.Count);
-        Assert.AreEqual("A", sut[0]);
-        Assert.AreEqual("B", sut[1]);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new OrderedSet<string>(["a", null!, "b"]);
+        });
     }
 
     /// <summary>
@@ -195,6 +120,79 @@ public partial class OrderedSetTests
         Assert.IsTrue(sut.Capacity >= 5);
     }
 
+    /// <summary>
+    /// Verifies that an empty source collection produces an empty set.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
+    {
+        var sut = new OrderedSet<int>(Array.Empty<int>());
+
+        Assert.AreEqual(0, sut.Count);
+    }
+
+    // --------------------------------------------------------
+    // Collection constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the collection constructor rejects a <see langword="null" /> source.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new OrderedSet<int>((IEnumerable<int>)null!);
+        });
+    }
+
+    // --------------------------------------------------------
+    // Comparer-only constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the comparer-only constructor defaults to the default comparer when supplied
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
+    {
+        var sut = new OrderedSet<string>((IEqualityComparer<string>?)null);
+
+        Assert.AreSame(EqualityComparer<string>.Default, sut.Comparer);
+    }
+
+    /// <summary>
+    /// Verifies that the comparer-only constructor stores and uses the supplied comparer.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
+    {
+        var sut = new OrderedSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        Assert.AreSame(StringComparer.OrdinalIgnoreCase, sut.Comparer);
+
+        sut.Add("alpha");
+        Assert.IsTrue(sut.Contains("ALPHA"));
+    }
+    // --------------------------------------------------------
+    // Default constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the default constructor creates an empty set with the default comparer.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
+    {
+        var sut = new OrderedSet<int>();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(0, sut.Capacity);
+        Assert.AreSame(EqualityComparer<int>.Default, sut.Comparer);
+    }
+
     // --------------------------------------------------------
     // IsReadOnly
     // --------------------------------------------------------
@@ -209,4 +207,5 @@ public partial class OrderedSetTests
 
         Assert.IsFalse(sut.IsReadOnly);
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.TrimExcess.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
+
     /// <summary>
     /// Verifies that <see cref="TrimExcess(TCollection)"/> reduces capacity to match
     /// <see cref="GetCount(TCollection)"/> when the collection contains items.
@@ -58,4 +59,5 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
         CollectionAssert.AreEqual(new[] { 3, 4, 5, 6 }, ToArray(collection));
     }
+
 }

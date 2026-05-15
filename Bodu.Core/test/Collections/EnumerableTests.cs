@@ -1,16 +1,17 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EnumerableTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
 using System.Collections;
+using Bodu.Infrastructure;
 
 namespace Bodu.Collections;
 
 public abstract partial class EnumerableTests
 {
+
     /// <summary>
     /// Asserts that the extension method defers execution and does not begin enumeration when invoked.
     /// </summary>
@@ -97,4 +98,5 @@ public abstract partial class EnumerableTests
 
         CollectionAssert.AreEqual(expectedList, actual);
     }
+
 }

@@ -8,6 +8,20 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
+
+    /// <summary>
+    /// Verifies that the array-source branch of <see cref="RingBackedCollection{T}" />'s
+    /// <c>(IEnumerable&lt;T&gt;, int)</c> constructor copies the entire source when it fits within capacity.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenArraySourceFitsInCapacity_ShouldCopyAllElements()
+    {
+        int[] source = [1, 2, 3];
+        var buffer = new CircularBuffer<int>(source, capacity: 5);
+
+        Assert.AreEqual(3, buffer.Count);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, buffer.ToArray());
+    }
     /// <summary>
     /// Verifies that the array-source branch of <see cref="RingBackedCollection{T}" />'s
     /// <c>(IEnumerable&lt;T&gt;, int)</c> constructor retains the trailing window when the source array is longer than the
@@ -24,13 +38,13 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that the array-source branch of <see cref="RingBackedCollection{T}" />'s
+    /// Verifies that the non-array source branch of <see cref="RingBackedCollection{T}" />'s
     /// <c>(IEnumerable&lt;T&gt;, int)</c> constructor copies the entire source when it fits within capacity.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenArraySourceFitsInCapacity_ShouldCopyAllElements()
+    public void Ctor_WhenNonArraySourceFitsInCapacity_ShouldCopyAllElements()
     {
-        int[] source = [1, 2, 3];
+        IEnumerable<int> source = YieldRange(1, 3);
         var buffer = new CircularBuffer<int>(source, capacity: 5);
 
         Assert.AreEqual(3, buffer.Count);
@@ -52,23 +66,10 @@ public partial class CircularBufferTests
         CollectionAssert.AreEqual(new[] { 6, 7, 8 }, buffer.ToArray());
     }
 
-    /// <summary>
-    /// Verifies that the non-array source branch of <see cref="RingBackedCollection{T}" />'s
-    /// <c>(IEnumerable&lt;T&gt;, int)</c> constructor copies the entire source when it fits within capacity.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenNonArraySourceFitsInCapacity_ShouldCopyAllElements()
-    {
-        IEnumerable<int> source = YieldRange(1, 3);
-        var buffer = new CircularBuffer<int>(source, capacity: 5);
-
-        Assert.AreEqual(3, buffer.Count);
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, buffer.ToArray());
-    }
-
     private static IEnumerable<int> YieldRange(int start, int count)
     {
         for (var i = 0; i < count; i++)
             yield return start + i;
     }
+
 }

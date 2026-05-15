@@ -1,16 +1,27 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.Overlaps.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Overlaps(TKey, TKey)" /> on an empty dictionary
+    /// returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public void Overlaps_WhenDictionaryIsEmpty_ShouldReturnFalse()
+    {
+        var sut = new RangeDictionary<int, string>();
+
+        Assert.IsFalse(sut.Overlaps(0, 10));
+    }
     /// <summary>
     /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Overlaps(TKey, TKey)" /> rejects
     /// <see langword="null" /> endpoints.
@@ -29,33 +40,6 @@ public partial class RangeDictionaryTests
         {
             _ = sut.Overlaps("a", null!);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Overlaps(TKey, TKey)" /> rejects degenerate
-    /// ranges.
-    /// </summary>
-    [TestMethod]
-    public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
-    {
-        var sut = new RangeDictionary<int, string>();
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = sut.Overlaps(5, 5);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Overlaps(TKey, TKey)" /> on an empty dictionary
-    /// returns <see langword="false" />.
-    /// </summary>
-    [TestMethod]
-    public void Overlaps_WhenDictionaryIsEmpty_ShouldReturnFalse()
-    {
-        var sut = new RangeDictionary<int, string>();
-
-        Assert.IsFalse(sut.Overlaps(0, 10));
     }
 
     /// <summary>
@@ -78,4 +62,20 @@ public partial class RangeDictionaryTests
 
         Assert.AreEqual(expected, sut.Overlaps(start, end));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.Overlaps(TKey, TKey)" /> rejects degenerate
+    /// ranges.
+    /// </summary>
+    [TestMethod]
+    public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
+    {
+        var sut = new RangeDictionary<int, string>();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = sut.Overlaps(5, 5);
+        });
+    }
+
 }

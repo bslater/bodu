@@ -10,15 +10,13 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Add" />, when ValidInputsProvided, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetAddTestCases))]
-    public void Add_WhenValidInputsProvided_ShouldReturnExpectedResult(DateTime input, int years, int months, double days, DateTime expected)
+
+    public static IEnumerable<object[]> GetAddExceptionCases()
     {
-        DateTime actual = input.Add(years, months, days);
-        Assert.AreEqual(expected, actual);
+        yield return new object[] { DateTime.MaxValue.AddDays(-1), 0, 0, 2 };
+        yield return new object[] { DateTime.MaxValue, 1, 0, 0 };
+        yield return new object[] { DateTime.MaxValue, 0, 1, 0 };
+        yield return new object[] { DateTime.MinValue, -1, 0, 0 };
     }
 
     public static IEnumerable<object[]> GetAddTestCases() =>
@@ -55,24 +53,25 @@ public partial class DateTimeExtensionsTests
     ];
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Add" />, when OutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that <see cref="DateTimeExtensions.Add" />, when AddingNegativeFractionalDay, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetAddExceptionCases))]
-    public void Add_WhenOutOfRange_ShouldThrowArgumentOutOfRangeException(DateTime input, int years, int months, double days)
+    public void Add_WhenAddingNegativeFractionalDay_ShouldSubtractAccurately()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            input.Add(years, months, days);
-        });
+        DateTime input = new(2024, 1, 2, 12, 0, 0);
+        DateTime expected = new(2024, 1, 2, 6, 0, 0);
+        Assert.AreEqual(expected, input.Add(0, 0, -0.25));
     }
 
-    public static IEnumerable<object[]> GetAddExceptionCases()
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Add" />, when AddingToFeb28LeapYear, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenAddingToFeb28LeapYear_ShouldIncludeFeb29()
     {
-        yield return new object[] { DateTime.MaxValue.AddDays(-1), 0, 0, 2 };
-        yield return new object[] { DateTime.MaxValue, 1, 0, 0 };
-        yield return new object[] { DateTime.MaxValue, 0, 1, 0 };
-        yield return new object[] { DateTime.MinValue, -1, 0, 0 };
+        DateTime input = new(2024, 2, 28);
+        DateTime actual = input.Add(0, 0, 1);
+        Assert.AreEqual(new DateTime(2024, 2, 29), actual);
     }
 
     /// <summary>
@@ -86,17 +85,6 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Add" />, when AddingNegativeFractionalDay, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenAddingNegativeFractionalDay_ShouldSubtractAccurately()
-    {
-        DateTime input = new(2024, 1, 2, 12, 0, 0);
-        DateTime expected = new(2024, 1, 2, 6, 0, 0);
-        Assert.AreEqual(expected, input.Add(0, 0, -0.25));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.Add" />, when DaysIsLessThanEpsilon, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -105,17 +93,6 @@ public partial class DateTimeExtensionsTests
         DateTime input = new(2024, 1, 1, 0, 0, 0);
         DateTime actual = input.Add(0, 0, 1e-12); // Below epsilon
         Assert.AreEqual(input, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Add" />, when AddingToFeb28LeapYear, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenAddingToFeb28LeapYear_ShouldIncludeFeb29()
-    {
-        DateTime input = new(2024, 2, 28);
-        DateTime actual = input.Add(0, 0, 1);
-        Assert.AreEqual(new DateTime(2024, 2, 29), actual);
     }
 
     /// <summary>
@@ -137,4 +114,28 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(expected, resultLocal);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Add" />, when OutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetAddExceptionCases))]
+    public void Add_WhenOutOfRange_ShouldThrowArgumentOutOfRangeException(DateTime input, int years, int months, double days)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            input.Add(years, months, days);
+        });
+    }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Add" />, when ValidInputsProvided, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetAddTestCases))]
+    public void Add_WhenValidInputsProvided_ShouldReturnExpectedResult(DateTime input, int years, int months, double days, DateTime expected)
+    {
+        DateTime actual = input.Add(years, months, days);
+        Assert.AreEqual(expected, actual);
+    }
+
 }

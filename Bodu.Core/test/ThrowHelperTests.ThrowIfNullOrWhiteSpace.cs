@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> contract with explicit ParamName
     /// assertions: null → <see cref="ArgumentNullException" /> on "value"; empty or whitespace-only →
@@ -45,20 +46,6 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> throws <see cref="ArgumentNullException" />
-    /// when the value is <see langword="null" />.
-    /// </summary>
-    [DataRow(null)]
-    [TestMethod]
-    public void ThrowIfNullOrWhiteSpace_WhenValueIsNull_ShouldThrowArgumentNullException(string? value)
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ThrowHelper.ThrowIfNullOrWhiteSpace(value!);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> throws <see cref="ArgumentException" />
     /// when the value is empty or contains only whitespace characters.
     /// </summary>
@@ -76,6 +63,20 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> throws <see cref="ArgumentNullException" />
+    /// when the value is <see langword="null" />.
+    /// </summary>
+    [DataRow(null)]
+    [TestMethod]
+    public void ThrowIfNullOrWhiteSpace_WhenValueIsNull_ShouldThrowArgumentNullException(string? value)
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfNullOrWhiteSpace(value!);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrWhiteSpace" /> does not throw when the value contains
     /// at least one non-whitespace character.
     /// </summary>
@@ -85,4 +86,5 @@ public partial class ThrowHelperTests
     [DataRow("middle space")]
     [TestMethod]
     public void ThrowIfNullOrWhiteSpace_WhenValueIsValid_ShouldNotThrow(string value) => ThrowHelper.ThrowIfNullOrWhiteSpace(value);
+
 }

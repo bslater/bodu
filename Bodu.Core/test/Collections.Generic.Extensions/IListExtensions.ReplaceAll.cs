@@ -5,13 +5,83 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic.Extensions;
 
 [TestClass]
 public sealed class IListExtensionsTests_ReplaceAll
 {
+
+    /// <summary>
+    /// Verifies that <c>ReplaceAll</c> on a single-element list works for the match and non-match cases.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceAll_WhenListHasSingleElement_ShouldHandleMatchAndNonMatch()
+    {
+        var list = new List<int> { 7 };
+
+        Assert.AreEqual(1, list.ReplaceAll(7, 9));
+        CollectionAssert.AreEqual(new[] { 9 }, list);
+
+        Assert.AreEqual(0, list.ReplaceAll(7, 9));
+        CollectionAssert.AreEqual(new[] { 9 }, list);
+    }
+
+    /// <summary>
+    /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> on an empty list returns <c>0</c> without throwing.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceAll_WhenListIsEmpty_ShouldReturnZero()
+    {
+        var list = new List<int>();
+
+        var replaced = list.ReplaceAll(1, 2);
+
+        Assert.AreEqual(0, replaced);
+    }
+
+    /// <summary>
+    /// Verifies that the <c>IEqualityComparer&lt;T&gt;</c> overload throws <see cref="ArgumentNullException"/>
+    /// when the list is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceAll_WithComparer_WhenListIsNull_ShouldThrowArgumentNullException()
+    {
+        IList<string>? list = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = list!.ReplaceAll("a", "b", StringComparer.Ordinal);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>ReplaceAll(oldItem, newItem, comparer)</c> uses the supplied comparer.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceAll_WithCustomComparer_ShouldUseComparerForMatching()
+    {
+        var list = new List<string> { "abc", "ABC", "xyz" };
+
+        var replaced = list.ReplaceAll("abc", "ZZZ", StringComparer.OrdinalIgnoreCase);
+
+        Assert.AreEqual(2, replaced);
+        CollectionAssert.AreEqual(new[] { "ZZZ", "ZZZ", "xyz" }, list);
+    }
+
+    /// <summary>
+    /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceAll_WithDefaultEquality_WhenListIsNull_ShouldThrowArgumentNullException()
+    {
+        IList<int>? list = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = list!.ReplaceAll(1, 2);
+        });
+    }
     /// <summary>
     /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> replaces every matching slot and returns the count.
     /// </summary>
@@ -41,34 +111,6 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> on an empty list returns <c>0</c> without throwing.
-    /// </summary>
-    [TestMethod]
-    public void ReplaceAll_WhenListIsEmpty_ShouldReturnZero()
-    {
-        var list = new List<int>();
-
-        var replaced = list.ReplaceAll(1, 2);
-
-        Assert.AreEqual(0, replaced);
-    }
-
-    /// <summary>
-    /// Verifies that <c>ReplaceAll</c> on a single-element list works for the match and non-match cases.
-    /// </summary>
-    [TestMethod]
-    public void ReplaceAll_WhenListHasSingleElement_ShouldHandleMatchAndNonMatch()
-    {
-        var list = new List<int> { 7 };
-
-        Assert.AreEqual(1, list.ReplaceAll(7, 9));
-        CollectionAssert.AreEqual(new[] { 9 }, list);
-
-        Assert.AreEqual(0, list.ReplaceAll(7, 9));
-        CollectionAssert.AreEqual(new[] { 9 }, list);
-    }
-
-    /// <summary>
     /// Verifies that <c>ReplaceAll</c> treats <see langword="null"/> equality consistently when the element type is a reference type.
     /// </summary>
     [TestMethod]
@@ -80,34 +122,6 @@ public sealed class IListExtensionsTests_ReplaceAll
 
         Assert.AreEqual(2, replaced);
         CollectionAssert.AreEqual(new[] { "a", "z", "b", "z" }, list);
-    }
-
-    /// <summary>
-    /// Verifies that <c>ReplaceAll</c> with reference-type elements replaces matching non-null values.
-    /// </summary>
-    [TestMethod]
-    public void ReplaceAll_WithReferenceTypes_ShouldReplaceMatches()
-    {
-        var list = new List<string> { "a", "b", "a", "c", "a" };
-
-        var replaced = list.ReplaceAll("a", "z");
-
-        Assert.AreEqual(3, replaced);
-        CollectionAssert.AreEqual(new[] { "z", "b", "z", "c", "z" }, list);
-    }
-
-    /// <summary>
-    /// Verifies that <c>ReplaceAll(oldItem, newItem, comparer)</c> uses the supplied comparer.
-    /// </summary>
-    [TestMethod]
-    public void ReplaceAll_WithCustomComparer_ShouldUseComparerForMatching()
-    {
-        var list = new List<string> { "abc", "ABC", "xyz" };
-
-        var replaced = list.ReplaceAll("abc", "ZZZ", StringComparer.OrdinalIgnoreCase);
-
-        Assert.AreEqual(2, replaced);
-        CollectionAssert.AreEqual(new[] { "ZZZ", "ZZZ", "xyz" }, list);
     }
 
     /// <summary>
@@ -125,6 +139,20 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
+    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceAll_WithPredicate_WhenListIsNull_ShouldThrowArgumentNullException()
+    {
+        IList<int>? list = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = list!.ReplaceAll(0, x => true);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <c>ReplaceAll(newItem, predicate)</c> replaces every predicate match.
     /// </summary>
     [TestMethod]
@@ -136,6 +164,21 @@ public sealed class IListExtensionsTests_ReplaceAll
 
         Assert.AreEqual(2, replaced);
         CollectionAssert.AreEqual(new[] { 1, 0, 5, 0, 9 }, list);
+    }
+
+    /// <summary>
+    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
+    /// </summary>
+    [TestMethod]
+    public void ReplaceAll_WithPredicate_WhenPredicateIsNull_ShouldThrowArgumentNullException()
+    {
+        IList<int> list = new List<int> { 1 };
+        Func<int, bool>? predicate = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = list.ReplaceAll(0, predicate!);
+        });
     }
 
     /// <summary>
@@ -154,60 +197,17 @@ public sealed class IListExtensionsTests_ReplaceAll
     }
 
     /// <summary>
-    /// Verifies that <c>ReplaceAll(oldItem, newItem)</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
+    /// Verifies that <c>ReplaceAll</c> with reference-type elements replaces matching non-null values.
     /// </summary>
     [TestMethod]
-    public void ReplaceAll_WithDefaultEquality_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void ReplaceAll_WithReferenceTypes_ShouldReplaceMatches()
     {
-        IList<int>? list = null;
+        var list = new List<string> { "a", "b", "a", "c", "a" };
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = list!.ReplaceAll(1, 2);
-        });
+        var replaced = list.ReplaceAll("a", "z");
+
+        Assert.AreEqual(3, replaced);
+        CollectionAssert.AreEqual(new[] { "z", "b", "z", "c", "z" }, list);
     }
 
-    /// <summary>
-    /// Verifies that the <c>IEqualityComparer&lt;T&gt;</c> overload throws <see cref="ArgumentNullException"/>
-    /// when the list is <see langword="null"/>.
-    /// </summary>
-    [TestMethod]
-    public void ReplaceAll_WithComparer_WhenListIsNull_ShouldThrowArgumentNullException()
-    {
-        IList<string>? list = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = list!.ReplaceAll("a", "b", StringComparer.Ordinal);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException"/> when the list is <see langword="null"/>.
-    /// </summary>
-    [TestMethod]
-    public void ReplaceAll_WithPredicate_WhenListIsNull_ShouldThrowArgumentNullException()
-    {
-        IList<int>? list = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = list!.ReplaceAll(0, x => true);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <c>ReplaceAll(newItem, predicate)</c> throws <see cref="ArgumentNullException"/> when the predicate is <see langword="null"/>.
-    /// </summary>
-    [TestMethod]
-    public void ReplaceAll_WithPredicate_WhenPredicateIsNull_ShouldThrowArgumentNullException()
-    {
-        IList<int> list = new List<int> { 1 };
-        Func<int, bool>? predicate = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = list.ReplaceAll(0, predicate!);
-        });
-    }
 }

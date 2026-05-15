@@ -1,15 +1,55 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.Sort.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-
 namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort()"/> on an empty builder completes without throwing.
+    /// </summary>
+    [TestMethod]
+    public void Sort_WhenBuilderIsEmpty_ShouldSucceedWithoutError()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        builder.Sort(); // should not throw
+        Assert.AreEqual(0, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort()"/> does not affect elements beyond
+    /// <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
+    /// </summary>
+    [TestMethod]
+    public void Sort_WhenCalled_ShouldNotChangeWrittenCount()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange([3, 1, 2]);
+
+        builder.Sort();
+
+        Assert.AreEqual(3, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort(Comparison{T})"/> sorts the written elements using
+    /// the supplied comparison delegate.
+    /// </summary>
+    [TestMethod]
+    public void Sort_WhenCalledWithComparison_ShouldSortUsingThatComparison()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange([3, 1, 4, 1, 5]);
+
+        builder.Sort((a, b) => a.CompareTo(b));
+
+        CollectionAssert.AreEqual(new[] { 1, 1, 3, 4, 5 }, builder.WrittenSpan.ToArray());
+    }
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.Sort()"/> sorts the written elements in ascending order
     /// using the default comparer.
@@ -41,21 +81,6 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort(Comparison{T})"/> sorts the written elements using
-    /// the supplied comparison delegate.
-    /// </summary>
-    [TestMethod]
-    public void Sort_WhenCalledWithComparison_ShouldSortUsingThatComparison()
-    {
-        using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange([3, 1, 4, 1, 5]);
-
-        builder.Sort((a, b) => a.CompareTo(b));
-
-        CollectionAssert.AreEqual(new[] { 1, 1, 3, 4, 5 }, builder.WrittenSpan.ToArray());
-    }
-
-    /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.Sort(Comparison{T})"/> with a <see langword="null"/>
     /// comparison throws <see cref="ArgumentNullException"/>.
     /// </summary>
@@ -69,21 +94,6 @@ public partial class PooledBufferBuilderTests
         {
             builder.Sort((Comparison<int>)null!);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort()"/> does not affect elements beyond
-    /// <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
-    /// </summary>
-    [TestMethod]
-    public void Sort_WhenCalled_ShouldNotChangeWrittenCount()
-    {
-        using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange([3, 1, 2]);
-
-        builder.Sort();
-
-        Assert.AreEqual(3, builder.WrittenCount);
     }
 
     /// <summary>
@@ -119,15 +129,18 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort()"/> on an empty builder completes without throwing.
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort(IComparer{T})"/> with a <see langword="null"/> comparer
+    /// argument uses the default comparer and sorts correctly.
     /// </summary>
     [TestMethod]
-    public void Sort_WhenBuilderIsEmpty_ShouldSucceedWithoutError()
+    public void Sort_WhenExplicitComparerIsNull_ShouldUseDefaultComparerAndSortAscending()
     {
         using var builder = new PooledBufferBuilder<int>();
+        builder.AppendRange([3, 1, 2]);
 
-        builder.Sort(); // should not throw
-        Assert.AreEqual(0, builder.WrittenCount);
+        builder.Sort((Comparer<int>?)null);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, builder.WrittenSpan.ToArray());
     }
 
     /// <summary>
@@ -146,18 +159,4 @@ public partial class PooledBufferBuilderTests
         Assert.AreEqual(42, builder.WrittenSpan[0]);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.Sort(IComparer{T})"/> with a <see langword="null"/> comparer
-    /// argument uses the default comparer and sorts correctly.
-    /// </summary>
-    [TestMethod]
-    public void Sort_WhenExplicitComparerIsNull_ShouldUseDefaultComparerAndSortAscending()
-    {
-        using var builder = new PooledBufferBuilder<int>();
-        builder.AppendRange([3, 1, 2]);
-
-        builder.Sort((Comparer<int>?)null);
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, builder.WrittenSpan.ToArray());
-    }
 }

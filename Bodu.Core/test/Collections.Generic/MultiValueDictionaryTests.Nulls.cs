@@ -4,13 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
     /// <summary>
     /// Verifies that a <see langword="null" /> value can be stored and retrieved under a key.
     /// </summary>
@@ -71,4 +69,5 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(1, mvd.Count);
         CollectionAssert.AreEqual(new[] { "other" }, mvd["k"].ToList());
     }
+
 }

@@ -1,18 +1,32 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IComparableExtensionsTests.IsBetween.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 
 namespace Bodu.Extensions;
 
 public partial class IComparableExtensionsTests
 {
+
+
+    /// <summary>
+    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void IsBetween_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    {
+        IComparer<int>? comparer = null;
+
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = 5.IsBetween(1, 10, comparer!);
+        });
+
+        Assert.AreEqual("comparer", ex.ParamName);
+    }
     // =========================================================================
     // IsBetween<T>(T?, T?, T?)
     // =========================================================================
@@ -78,20 +92,4 @@ public partial class IComparableExtensionsTests
         Assert.IsFalse(11.IsBetween(1, 10, comparer));
     }
 
-
-    /// <summary>
-    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void IsBetween_WhenComparerIsNull_ShouldThrowArgumentNullException()
-    {
-        IComparer<int>? comparer = null;
-
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = 5.IsBetween(1, 10, comparer!);
-        });
-
-        Assert.AreEqual("comparer", ex.ParamName);
-    }
 }

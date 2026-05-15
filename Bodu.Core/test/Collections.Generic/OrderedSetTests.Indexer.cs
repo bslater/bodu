@@ -5,12 +5,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetTests
 {
+
     /// <summary>
     /// Verifies that the indexer rejects out-of-range indices.
     /// </summary>
@@ -27,6 +27,22 @@ public partial class OrderedSetTests
         {
             _ = sut[index];
         });
+    }
+
+    /// <summary>
+    /// Verifies that the indexer reflects removals — every surviving element shifts to the slot it would
+    /// occupy in a newly-built set with the same insertion sequence.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_WhenItemRemoved_ShouldReflectShiftedIndices()
+    {
+        OrderedSet<int> sut = CreateSet([10, 20, 30, 40]);
+
+        sut.Remove(20);
+
+        Assert.AreEqual(10, sut[0]);
+        Assert.AreEqual(30, sut[1]);
+        Assert.AreEqual(40, sut[2]);
     }
 
     /// <summary>
@@ -56,19 +72,4 @@ public partial class OrderedSetTests
         Assert.AreEqual(30, sut[2]);
     }
 
-    /// <summary>
-    /// Verifies that the indexer reflects removals — every surviving element shifts to the slot it would
-    /// occupy in a newly-built set with the same insertion sequence.
-    /// </summary>
-    [TestMethod]
-    public void Indexer_WhenItemRemoved_ShouldReflectShiftedIndices()
-    {
-        OrderedSet<int> sut = CreateSet([10, 20, 30, 40]);
-
-        sut.Remove(20);
-
-        Assert.AreEqual(10, sut[0]);
-        Assert.AreEqual(30, sut[1]);
-        Assert.AreEqual(40, sut[2]);
-    }
 }

@@ -4,12 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Test-only <see cref="IQuarterDefinitionProvider" /> implementing a shifted 3-month quarter grid
     /// (Q1 = Dec–Feb, Q2 = Mar–May, Q3 = Jun–Aug, Q4 = Sep–Nov). Exposes public <c>DynamicData</c> sources
@@ -19,6 +18,7 @@ public partial class DateTimeExtensionsTests
     public sealed class ValidQuarterProvider
         : IQuarterDefinitionProvider
     {
+
         public static IEnumerable<object[]> FirstDateOfQuarterTestData()
         {
             yield return new object[] { new DateTime(2024, 01, 01), new DateTime(2023, 12, 01) };
@@ -165,6 +165,9 @@ public partial class DateTimeExtensionsTests
 
         public DateOnly GetQuarterStartDate(int quarter) => GetQuarterStartDate(GetQuarterStart(quarter).ToDateOnly());
 
+        public int GetWeeksInFiscalYear(int fiscalYear) => 52;
+        public bool Is53WeekFiscalYear(int fiscalYear) => false;
+
 #pragma warning disable CS0618 // intentional: delegate the fiscal-year overloads to the existing fixed-year implementations
         public DateTime GetQuarterStart(int quarter, int fiscalYear) => GetQuarterStart(quarter);
 
@@ -175,8 +178,7 @@ public partial class DateTimeExtensionsTests
         public DateOnly GetQuarterEndDate(int quarter, int fiscalYear) => GetQuarterEndDate(quarter);
 #pragma warning restore CS0618
 
-        public bool Is53WeekFiscalYear(int fiscalYear) => false;
 
-        public int GetWeeksInFiscalYear(int fiscalYear) => 52;
     }
+
 }

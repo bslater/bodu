@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.IsoYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -6,12 +6,12 @@
 
 using System;
 using System.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Provides dates that fall at ISO year boundaries to exercise cases where the ISO year
     /// differs from the calendar year.
@@ -39,9 +39,10 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.IsoYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetIsoYearTestData))]
-    public void IsoYear_WhenCalled_ShouldReturnExpectedYear(DateTime input, int expected)
+    public void IsoYear_WhenCalled_ShouldMatchIsoWeekCalculator()
     {
+        var input = new DateTime(2024, 12, 31);
+        var expected = ISOWeek.GetYear(input);
         var actual = input.IsoYear();
         Assert.AreEqual(expected, actual);
     }
@@ -50,10 +51,9 @@ public partial class DateTimeExtensionsTests
     /// Verifies that <see cref="DateTimeExtensions.IsoYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void IsoYear_WhenCalled_ShouldMatchIsoWeekCalculator()
+    [DynamicData(nameof(GetIsoYearTestData))]
+    public void IsoYear_WhenCalled_ShouldReturnExpectedYear(DateTime input, int expected)
     {
-        var input = new DateTime(2024, 12, 31);
-        var expected = ISOWeek.GetYear(input);
         var actual = input.IsoYear();
         Assert.AreEqual(expected, actual);
     }
@@ -68,4 +68,5 @@ public partial class DateTimeExtensionsTests
         var evening = new DateTime(2024, 12, 31, 23, 59, 59);
         Assert.AreEqual(morning.IsoYear(), evening.IsoYear());
     }
+
 }

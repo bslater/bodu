@@ -8,6 +8,7 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.EnsureCapacity" /> grows geometrically (at least
     /// <c>current * 2</c>), aligning with the pool's power-of-two bucket round-up so each grow lands on the next
@@ -42,4 +43,5 @@ public partial class PooledBufferBuilderTests
         Assert.IsTrue(builder.Capacity >= requested,
             $"Expected at least {requested}, got {builder.Capacity}.");
     }
+
 }

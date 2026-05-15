@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.ItemEvicted.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> is not raised when overwriting is disabled and TryEnqueue fails on a full buffer.
     /// </summary>
@@ -66,6 +67,23 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that exceptions thrown from a single <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handler are swallowed by <see cref="ConcurrentCircularBuffer{T}.Enqueue" />.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenHandlerThrows_ShouldNotPropagateException()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+
+        // Handler throws; Enqueue must NOT propagate
+        buffer.ItemEvicted += _ => throw new InvalidOperationException("Simulated error");
+
+        // Should NOT throw even though handler does
+        buffer.Enqueue(new TestItem(3));
+    }
+
+    /// <summary>
     /// Verifies that a handler unsubscribed from <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> receives no further eviction callbacks.
     /// </summary>
     [TestMethod]
@@ -90,43 +108,6 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that when a <see langword="null" /> item is evicted, <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> fires with a <see langword="null" /> argument.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenNullItemIsEvicted_ShouldReceiveNullArgument()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem?>(2, allowOverwrite: true);
-        buffer.Enqueue(null);
-        buffer.Enqueue(new TestItem(1));
-
-        var received = new TestItem(-1); // sentinel to distinguish from default(null)
-        var fired = false;
-        buffer.ItemEvicted += x => { received = x; fired = true; };
-
-        buffer.Enqueue(new TestItem(2)); // should evict null
-
-        Assert.IsTrue(fired, "ItemEvicted should fire when a null item is overwritten.");
-        Assert.IsNull(received, "ItemEvicted argument should be null when the evicted item was null.");
-    }
-
-    /// <summary>
-    /// Verifies that exceptions thrown from a single <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> handler are swallowed by <see cref="ConcurrentCircularBuffer{T}.Enqueue" />.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenHandlerThrows_ShouldNotPropagateException()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-
-        // Handler throws; Enqueue must NOT propagate
-        buffer.ItemEvicted += _ => throw new InvalidOperationException("Simulated error");
-
-        // Should NOT throw even though handler does
-        buffer.Enqueue(new TestItem(3));
-    }
-
-    /// <summary>
     /// Verifies that all handlers registered on <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> are invoked on a single eviction.
     /// </summary>
     [TestMethod]
@@ -145,6 +126,26 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.AreEqual(1, count1, "First handler should be invoked once.");
         Assert.AreEqual(1, count2, "Second handler should be invoked once.");
+    }
+
+    /// <summary>
+    /// Verifies that when a <see langword="null" /> item is evicted, <see cref="ConcurrentCircularBuffer{T}.ItemEvicted" /> fires with a <see langword="null" /> argument.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenNullItemIsEvicted_ShouldReceiveNullArgument()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem?>(2, allowOverwrite: true);
+        buffer.Enqueue(null);
+        buffer.Enqueue(new TestItem(1));
+
+        var received = new TestItem(-1); // sentinel to distinguish from default(null)
+        var fired = false;
+        buffer.ItemEvicted += x => { received = x; fired = true; };
+
+        buffer.Enqueue(new TestItem(2)); // should evict null
+
+        Assert.IsTrue(fired, "ItemEvicted should fire when a null item is overwritten.");
+        Assert.IsNull(received, "ItemEvicted argument should be null when the evicted item was null.");
     }
 
     /// <summary>
@@ -207,4 +208,5 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(evicted.All(x => x != null));
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
     }
+
 }

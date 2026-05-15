@@ -8,16 +8,13 @@ namespace Bodu.Extensions;
 
 public partial class ComparableHelperTests
 {
+
     /// <summary>
     /// A simple test object that implements <see cref="IComparable{T}" /> for use in comparison-based unit tests.
     /// </summary>
     public sealed class SimpleTestObject
         : IComparable<SimpleTestObject>
     {
-        /// <summary>
-        /// Gets the integer value used for comparison.
-        /// </summary>
-        public int Value { get; }
 
         /// <summary>
         /// Initialises a new instance of the <see cref="SimpleTestObject" /> class.
@@ -27,6 +24,11 @@ public partial class ComparableHelperTests
         {
             Value = value;
         }
+
+        /// <summary>
+        /// Gets the integer value used for comparison.
+        /// </summary>
+        public int Value { get; }
 
         /// <inheritdoc />
         public int CompareTo(SimpleTestObject? other)
@@ -44,5 +46,7 @@ public partial class ComparableHelperTests
 
         /// <inheritdoc />
         public override string ToString() => $"SimpleTestObject({Value})";
+
     }
+
 }

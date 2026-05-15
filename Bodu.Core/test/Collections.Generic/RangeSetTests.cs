@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -16,6 +14,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class RangeSetTests
 {
+
     /// <summary>
     /// Verifies the happy-path smoke check: adding a single range exposes it via Count, the indexer, and
     /// the enumerator.
@@ -29,6 +28,16 @@ public partial class RangeSetTests
 
         Assert.AreEqual(1, sut.Count);
         Assert.AreEqual(new Range<int>(0, 10), sut[0]);
+    }
+
+    /// <summary>
+    /// Asserts that the contents of <paramref name="set" /> match the specified expected ranges.
+    /// </summary>
+    /// <param name="set">The set under test.</param>
+    /// <param name="expected">The expected ordered list of half-open ranges.</param>
+    private static void AssertContents(RangeSet<int> set, params (int Start, int End)[] expected)
+    {
+        CollectionAssert.AreEqual(expected, Snapshot(set));
     }
 
     /// <summary>
@@ -61,23 +70,16 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Asserts that the contents of <paramref name="set" /> match the specified expected ranges.
-    /// </summary>
-    /// <param name="set">The set under test.</param>
-    /// <param name="expected">The expected ordered list of half-open ranges.</param>
-    private static void AssertContents(RangeSet<int> set, params (int Start, int End)[] expected)
-    {
-        CollectionAssert.AreEqual(expected, Snapshot(set));
-    }
-
-    /// <summary>
     /// A reverse-order comparer over <see cref="int" /> used to verify that a non-default comparer is honoured
     /// during validation. This comparer treats values that are numerically larger as logically smaller.
     /// </summary>
     private sealed class ReverseIntComparer
         : IComparer<int>
     {
+
         /// <inheritdoc />
         public int Compare(int x, int y) => y.CompareTo(x);
+
     }
+
 }

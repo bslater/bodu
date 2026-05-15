@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfEnumValueIsUndefined{TEnum}" /> contract matrix with
     /// explicit ParamName assertions: undefined enum values throw <see cref="ArgumentOutOfRangeException" />
@@ -33,6 +34,14 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfEnumValueIsUndefined" />, when ValueIsDefined, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(TestEnum.A)]
+    [DataRow(TestEnum.B)]
+    public void ThrowIfEnumValueIsUndefined_WhenValueIsDefined_ShouldNotThrow(TestEnum value) => ThrowHelper.ThrowIfEnumValueIsUndefined(value);
+
+    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfEnumValueIsUndefined" />, when ValueIsUndefined, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
@@ -46,11 +55,4 @@ public partial class ThrowHelperTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfEnumValueIsUndefined" />, when ValueIsDefined, NotThrow.
-    /// </summary>
-    [TestMethod]
-    [DataRow(TestEnum.A)]
-    [DataRow(TestEnum.B)]
-    public void ThrowIfEnumValueIsUndefined_WhenValueIsDefined_ShouldNotThrow(TestEnum value) => ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 }

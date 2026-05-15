@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the <see cref="ThrowHelper.ThrowIfGreaterThanOrEqual{T}" /> contract with ParamName
     /// assertions: <c>value &gt;= max</c> throws <see cref="ArgumentOutOfRangeException" /> with ParamName
@@ -63,4 +64,5 @@ public partial class ThrowHelperTests
     [DataRow(4, 5)]
     [DataRow(int.MinValue, int.MaxValue)]
     public void ThrowIfGreaterThanOrEqual_WhenValueIsLessThanMax_ShouldNotThrow(int value, int max) => ThrowHelper.ThrowIfGreaterThanOrEqual(value, max);
+
 }

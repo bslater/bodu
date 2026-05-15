@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.ToArray.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that after many overwriting enqueues, <see cref="ConcurrentCircularBuffer{T}.ToArray" /> returns only the last <c>Capacity</c> items in FIFO order.
     /// </summary>
@@ -251,4 +252,5 @@ public partial class ConcurrentCircularBufferTests
         var result = buffer.ToArray().Select(x => x.Value).ToArray();
         CollectionAssert.AreEqual(new[] { 2, 3, 4 }, result);
     }
+
 }

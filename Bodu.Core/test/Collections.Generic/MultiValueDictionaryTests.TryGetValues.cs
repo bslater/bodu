@@ -5,25 +5,45 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.TryGetValues"/> throws <see cref="ArgumentNullException"/> for a null key.
+    /// Verifies that a value view becomes empty when the dictionary is cleared.
     /// </summary>
     [TestMethod]
-    public void TryGetValues_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void TryGetValues_WhenClearAfterViewReturned_ShouldBecomeEmpty()
     {
         var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("a", 2);
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = mvd.TryGetValues(null!, out _);
-        });
+        Assert.IsTrue(mvd.TryGetValues("a", out IReadOnlyList<int> values));
+
+        mvd.Clear();
+
+        Assert.AreEqual(0, values.Count);
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.KeyCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.TryGetValues" /> uses the configured key comparer.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValues_WhenCustomComparerUsed_ShouldResolveEquivalentKey()
+    {
+        var mvd = new MultiValueDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+        mvd.Add("Alpha", 1);
+
+        var found = mvd.TryGetValues("alpha", out IReadOnlyList<int> values);
+
+        Assert.IsTrue(found);
+        Assert.AreEqual(1, values.Count);
+        Assert.AreEqual(1, values[0]);
     }
 
     /// <summary>
@@ -39,6 +59,19 @@ public partial class MultiValueDictionaryTests
         Assert.IsFalse(found);
         Assert.IsNotNull(values);
         Assert.AreEqual(0, values.Count);
+    }
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.TryGetValues"/> throws <see cref="ArgumentNullException"/> for a null key.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValues_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = mvd.TryGetValues(null!, out _);
+        });
     }
 
     /// <summary>
@@ -75,38 +108,4 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(20, view[1]);
     }
 
-    /// <summary>
-    /// Verifies that a value view becomes empty when the dictionary is cleared.
-    /// </summary>
-    [TestMethod]
-    public void TryGetValues_WhenClearAfterViewReturned_ShouldBecomeEmpty()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
-        mvd.Add("a", 2);
-
-        Assert.IsTrue(mvd.TryGetValues("a", out IReadOnlyList<int> values));
-
-        mvd.Clear();
-
-        Assert.AreEqual(0, values.Count);
-        Assert.AreEqual(0, mvd.Count);
-        Assert.AreEqual(0, mvd.KeyCount);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.TryGetValues" /> uses the configured key comparer.
-    /// </summary>
-    [TestMethod]
-    public void TryGetValues_WhenCustomComparerUsed_ShouldResolveEquivalentKey()
-    {
-        var mvd = new MultiValueDictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        mvd.Add("Alpha", 1);
-
-        var found = mvd.TryGetValues("alpha", out IReadOnlyList<int> values);
-
-        Assert.IsTrue(found);
-        Assert.AreEqual(1, values.Count);
-        Assert.AreEqual(1, values[0]);
-    }
 }

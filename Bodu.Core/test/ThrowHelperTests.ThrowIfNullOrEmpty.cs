@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> contract with explicit ParamName
     /// assertions: null → <see cref="ArgumentNullException" /> on "value"; empty →
@@ -43,20 +44,6 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> throws <see cref="ArgumentNullException" />
-    /// when the value is <see langword="null" />.
-    /// </summary>
-    [DataRow(null)]
-    [TestMethod]
-    public void ThrowIfNullOrEmpty_WhenValueIsNull_ShouldThrowArgumentNullException(string? value)
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ThrowHelper.ThrowIfNullOrEmpty(value!);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> throws <see cref="ArgumentException" />
     /// when the value is an empty string.
     /// </summary>
@@ -82,4 +69,19 @@ public partial class ThrowHelperTests
     [DataRow("\n")]
     [TestMethod]
     public void ThrowIfNullOrEmpty_WhenValueIsNonEmpty_ShouldNotThrow(string value) => ThrowHelper.ThrowIfNullOrEmpty(value);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNullOrEmpty" /> throws <see cref="ArgumentNullException" />
+    /// when the value is <see langword="null" />.
+    /// </summary>
+    [DataRow(null)]
+    [TestMethod]
+    public void ThrowIfNullOrEmpty_WhenValueIsNull_ShouldThrowArgumentNullException(string? value)
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfNullOrEmpty(value!);
+        });
+    }
+
 }

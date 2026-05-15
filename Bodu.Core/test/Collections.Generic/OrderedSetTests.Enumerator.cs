@@ -6,44 +6,11 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetTests
 {
-    // --------------------------------------------------------
-    // GetEnumerator — typed struct
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the public <see cref="OrderedSet{T}.GetEnumerator" /> yields all elements in insertion order.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenSetPopulated_ShouldYieldAllItemsInOrder()
-    {
-        OrderedSet<int> sut = CreateSet([10, 20, 30]);
-        var seen = new List<int>();
-
-        foreach (var item in sut)
-            seen.Add(item);
-
-        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
-    }
-
-    /// <summary>
-    /// Verifies that the enumerator on an empty set yields no elements.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenSetIsEmpty_ShouldYieldNoElements()
-    {
-        var sut = new OrderedSet<int>();
-
-        OrderedSet<int>.Enumerator enumerator = sut.GetEnumerator();
-
-        Assert.IsFalse(enumerator.MoveNext());
-    }
 
     /// <summary>
     /// Verifies that <see cref="OrderedSet{T}.Enumerator.MoveNext" /> returns <see langword="false" /> once
@@ -119,22 +86,32 @@ public partial class OrderedSetTests
         });
     }
 
+    /// <summary>
+    /// Verifies that the enumerator on an empty set yields no elements.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenSetIsEmpty_ShouldYieldNoElements()
+    {
+        var sut = new OrderedSet<int>();
+
+        OrderedSet<int>.Enumerator enumerator = sut.GetEnumerator();
+
+        Assert.IsFalse(enumerator.MoveNext());
+    }
     // --------------------------------------------------------
-    // Explicit interface implementations
+    // GetEnumerator — typed struct
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the explicit <see cref="IEnumerable{T}.GetEnumerator" /> implementation yields elements
-    /// in insertion order.
+    /// Verifies that the public <see cref="OrderedSet{T}.GetEnumerator" /> yields all elements in insertion order.
     /// </summary>
     [TestMethod]
-    public void IEnumerableT_WhenIterated_ShouldYieldAllItemsInOrder()
+    public void GetEnumerator_WhenSetPopulated_ShouldYieldAllItemsInOrder()
     {
         OrderedSet<int> sut = CreateSet([10, 20, 30]);
-        IEnumerable<int> typed = sut;
         var seen = new List<int>();
 
-        foreach (var item in typed)
+        foreach (var item in sut)
             seen.Add(item);
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
@@ -156,4 +133,26 @@ public partial class OrderedSetTests
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
     }
+
+    // --------------------------------------------------------
+    // Explicit interface implementations
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the explicit <see cref="IEnumerable{T}.GetEnumerator" /> implementation yields elements
+    /// in insertion order.
+    /// </summary>
+    [TestMethod]
+    public void IEnumerableT_WhenIterated_ShouldYieldAllItemsInOrder()
+    {
+        OrderedSet<int> sut = CreateSet([10, 20, 30]);
+        IEnumerable<int> typed = sut;
+        var seen = new List<int>();
+
+        foreach (var item in typed)
+            seen.Add(item);
+
+        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
+    }
+
 }

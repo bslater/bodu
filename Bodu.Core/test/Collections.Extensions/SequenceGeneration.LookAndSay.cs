@@ -9,6 +9,7 @@ namespace Bodu.Collections.Extensions;
 [TestClass]
 public class LookAndSayTests
 {
+
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.LookAndSay" /> throws <see cref="ArgumentOutOfRangeException" /> when count is below 1.
     /// </summary>
@@ -25,16 +26,6 @@ public class LookAndSayTests
     }
 
     /// <summary>
-    /// Verifies that the canonical Conway Look-and-Say prefix is produced for a count of six terms.
-    /// </summary>
-    [TestMethod]
-    public void LookAndSay_WhenCountIsSix_ShouldReturnCanonicalPrefix()
-    {
-        var actual = SequenceGenerator.LookAndSay(6).ToArray();
-        CollectionAssert.AreEqual(new[] { "1", "11", "21", "1211", "111221", "312211" }, actual);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="SequenceGenerator.LookAndSay" /> with a count of one returns only the seed term.
     /// </summary>
     [TestMethod]
@@ -42,6 +33,16 @@ public class LookAndSayTests
     {
         var actual = SequenceGenerator.LookAndSay(1).ToArray();
         CollectionAssert.AreEqual(new[] { "1" }, actual);
+    }
+
+    /// <summary>
+    /// Verifies that the canonical Conway Look-and-Say prefix is produced for a count of six terms.
+    /// </summary>
+    [TestMethod]
+    public void LookAndSay_WhenCountIsSix_ShouldReturnCanonicalPrefix()
+    {
+        var actual = SequenceGenerator.LookAndSay(6).ToArray();
+        CollectionAssert.AreEqual(new[] { "1", "11", "21", "1211", "111221", "312211" }, actual);
     }
 
     /// <summary>
@@ -70,4 +71,5 @@ public class LookAndSayTests
                 Assert.IsTrue(ch >= '0' && ch <= '9', $"Term '{term}' contained a non-digit character '{ch}'.");
         }
     }
+
 }

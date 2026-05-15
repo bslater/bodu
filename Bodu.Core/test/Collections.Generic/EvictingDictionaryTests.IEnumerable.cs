@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.IEnumerable.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,70 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that mutating the dictionary via Clear during enumeration invalidates the active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowException()
+    {
+        var dictionary = new EvictingDictionary<int, int>(10);
+        for (var i = 0; i < 3; i++)
+            dictionary.Add(i, i);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (KeyValuePair<int, int> _ in dictionary)
+                dictionary.Clear();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that mutating the dictionary via Add during enumeration invalidates the active enumerator and
+    /// causes the next <c>MoveNext</c> to throw <see cref="InvalidOperationException"/>.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowException()
+    {
+        var dictionary = new EvictingDictionary<int, int>(10);
+        for (var i = 0; i < 5; i++)
+            dictionary.Add(i, i);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (KeyValuePair<int, int> kvp in dictionary)
+                dictionary.Add(kvp.Key + 100, kvp.Value);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that mutating the dictionary via Remove during enumeration invalidates the active enumerator.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowException()
+    {
+        var dictionary = new EvictingDictionary<int, int>(10);
+        for (var i = 0; i < 5; i++)
+            dictionary.Add(i, i);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            foreach (KeyValuePair<int, int> kvp in dictionary)
+                dictionary.Remove(kvp.Key);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that GetEnumerator returns an empty enumerator when the dictionary is empty.
+    /// </summary>
+    [TestMethod]
+    public void IEnumerable_GenericGetEnumerator_WhenDictionaryIsEmpty_ShouldReturnNoElements()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        IEnumerator<KeyValuePair<string, int>> enumerator = dictionary.GetEnumerator();
+
+        Assert.IsFalse(enumerator.MoveNext());
+    }
     /// <summary>
     /// Verifies that GetEnumerator supports foreach iteration over all entries.
     /// </summary>
@@ -52,67 +116,4 @@ public partial class EvictingDictionaryTests
         CollectionAssert.AreEqual(dictionary.ToArray(), actual);
     }
 
-    /// <summary>
-    /// Verifies that GetEnumerator returns an empty enumerator when the dictionary is empty.
-    /// </summary>
-    [TestMethod]
-    public void IEnumerable_GenericGetEnumerator_WhenDictionaryIsEmpty_ShouldReturnNoElements()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        IEnumerator<KeyValuePair<string, int>> enumerator = dictionary.GetEnumerator();
-
-        Assert.IsFalse(enumerator.MoveNext());
-    }
-
-    /// <summary>
-    /// Verifies that mutating the dictionary via Add during enumeration invalidates the active enumerator and
-    /// causes the next <c>MoveNext</c> to throw <see cref="InvalidOperationException"/>.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenDictionaryIsMutatedByAddDuringEnumeration_ShouldThrowException()
-    {
-        var dictionary = new EvictingDictionary<int, int>(10);
-        for (var i = 0; i < 5; i++)
-            dictionary.Add(i, i);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            foreach (KeyValuePair<int, int> kvp in dictionary)
-                dictionary.Add(kvp.Key + 100, kvp.Value);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that mutating the dictionary via Remove during enumeration invalidates the active enumerator.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenDictionaryIsMutatedByRemoveDuringEnumeration_ShouldThrowException()
-    {
-        var dictionary = new EvictingDictionary<int, int>(10);
-        for (var i = 0; i < 5; i++)
-            dictionary.Add(i, i);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            foreach (KeyValuePair<int, int> kvp in dictionary)
-                dictionary.Remove(kvp.Key);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that mutating the dictionary via Clear during enumeration invalidates the active enumerator.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenDictionaryIsClearedDuringEnumeration_ShouldThrowException()
-    {
-        var dictionary = new EvictingDictionary<int, int>(10);
-        for (var i = 0; i < 3; i++)
-            dictionary.Add(i, i);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            foreach (KeyValuePair<int, int> _ in dictionary)
-                dictionary.Clear();
-        });
-    }
 }

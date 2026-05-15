@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that mutating an <see cref="EvictingDictionary{TKey, TValue}" /> after starting enumeration causes the next
     /// <c>MoveNext</c> call to throw <see cref="InvalidOperationException" />, exercising the internal
@@ -32,4 +33,5 @@ public partial class EvictingDictionaryTests
             _ = enumerator.MoveNext();
         });
     }
+
 }

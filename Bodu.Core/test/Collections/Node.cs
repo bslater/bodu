@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Node.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,11 +13,12 @@ namespace Bodu.Collections;
 /// </summary>
 public class Node
 {
-    public string Name { get; set; } = string.Empty;
 
     public List<Node> Children { get; set; } = new();
+    public string Name { get; set; } = string.Empty;
 
     public bool Stop { get; set; } = false;
 
     public override string ToString() => Name;
+
 }

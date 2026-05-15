@@ -1,16 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.Indexer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
+
     /// <summary>
     /// Verifies that the indexer rejects out-of-range indices.
     /// </summary>
@@ -55,4 +55,5 @@ public partial class RangeSetTests
         Assert.AreEqual(new Range<int>(10, 15), sut[1]);
         Assert.AreEqual(new Range<int>(20, 25), sut[2]);
     }
+
 }

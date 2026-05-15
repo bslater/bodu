@@ -1,16 +1,43 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IComparableExtensionsTests.Clamp.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
 public partial class IComparableExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that the comparer overload treats a <see langword="null" /> min or max as an unbounded side.
+    /// </summary>
+    [TestMethod]
+    public void Clamp_WhenBoundIsNull_ForComparerOverload_ShouldTreatBoundAsUnbounded()
+    {
+        IComparer<int> comparer = Comparer<int>.Default;
+
+        Assert.AreEqual(50, 50.Clamp(1, null, comparer));
+        Assert.AreEqual(-5, (-5).Clamp(null, 10, comparer));
+    }
+
+    /// <summary>
+    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Clamp_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    {
+        IComparer<int>? comparer = null;
+
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = 5.Clamp(1, 10, comparer!);
+        });
+
+        Assert.AreEqual("comparer", ex.ParamName);
+    }
     // =========================================================================
     // Clamp<T>(T?, T?, T?)
     // =========================================================================
@@ -59,31 +86,4 @@ public partial class IComparableExtensionsTests
         Assert.AreEqual(5, 5.Clamp(10, 1, comparer));
     }
 
-    /// <summary>
-    /// Verifies that the comparer overload treats a <see langword="null" /> min or max as an unbounded side.
-    /// </summary>
-    [TestMethod]
-    public void Clamp_WhenBoundIsNull_ForComparerOverload_ShouldTreatBoundAsUnbounded()
-    {
-        IComparer<int> comparer = Comparer<int>.Default;
-
-        Assert.AreEqual(50, 50.Clamp(1, null, comparer));
-        Assert.AreEqual(-5, (-5).Clamp(null, 10, comparer));
-    }
-
-    /// <summary>
-    /// Verifies that a null comparer passed to the comparer overload throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void Clamp_WhenComparerIsNull_ShouldThrowArgumentNullException()
-    {
-        IComparer<int>? comparer = null;
-
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = 5.Clamp(1, 10, comparer!);
-        });
-
-        Assert.AreEqual("comparer", ex.ParamName);
-    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
+
     /// <summary>
     /// Verifies that specifying false for overwrite disables the overwrite functionality.
     /// </summary>
@@ -153,6 +154,23 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that constructing from a collection containing null elements retains nulls at the correct positions.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionContainsNulls_ShouldRetainNulls()
+    {
+        var source = new string?[] { "A", null, "B" };
+        var buffer = new CircularBuffer<string?>(source, 5);
+
+        Assert.AreEqual(3, buffer.Count);
+
+        var result = buffer.ToArray();
+        Assert.AreEqual("A", result[0]);
+        Assert.IsNull(result[1]);
+        Assert.AreEqual("B", result[2]);
+    }
+
+    /// <summary>
     /// Verifies that when a collection exceeds capacity, older elements are trimmed.
     /// </summary>
     [TestMethod]
@@ -264,6 +282,19 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that constructing from an empty collection with a valid capacity creates an empty buffer
+    /// with the specified capacity.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
+    {
+        var buffer = new CircularBuffer<int>([], 5);
+
+        Assert.AreEqual(0, buffer.Count);
+        Assert.AreEqual(5, buffer.Capacity);
+    }
+
+    /// <summary>
     /// Verifies that a negative capacity with overwrite for an empty collection throws an <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
@@ -287,33 +318,4 @@ public partial class CircularBufferTests
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, buffer.ToArray());
     }
 
-    /// <summary>
-    /// Verifies that constructing from a collection containing null elements retains nulls at the correct positions.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionContainsNulls_ShouldRetainNulls()
-    {
-        var source = new string?[] { "A", null, "B" };
-        var buffer = new CircularBuffer<string?>(source, 5);
-
-        Assert.AreEqual(3, buffer.Count);
-
-        var result = buffer.ToArray();
-        Assert.AreEqual("A", result[0]);
-        Assert.IsNull(result[1]);
-        Assert.AreEqual("B", result[2]);
-    }
-
-    /// <summary>
-    /// Verifies that constructing from an empty collection with a valid capacity creates an empty buffer
-    /// with the specified capacity.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
-    {
-        var buffer = new CircularBuffer<int>([], 5);
-
-        Assert.AreEqual(0, buffer.Count);
-        Assert.AreEqual(5, buffer.Capacity);
-    }
 }

@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfMonth(int, int)" /> returns the first day of the supplied month and year.
     /// </summary>
@@ -34,6 +35,49 @@ public partial class DateTimeExtensionsTests
         {
             _ = DateTimeExtensions.GetFirstDateOfMonth(2024, month);
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> returns the first occurrence of
+    /// the specified weekday in the given month and year.
+    /// </summary>
+    [TestMethod]
+    public void GetFirstDateOfWeekInMonth_ShouldReturnFirstOccurrenceOfWeekday()
+    {
+        // First Monday of April 2024 is April 1, 2024.
+        DateTime actual = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 4, DayOfWeek.Monday);
+        Assert.AreEqual(new DateTime(2024, 4, 1), actual);
+        Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
+        Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> throws when arguments are invalid.
+    /// </summary>
+    [TestMethod]
+    public void GetFirstDateOfWeekInMonth_WhenArgumentsInvalid_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 13, DayOfWeek.Monday);
+        });
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 1, (DayOfWeek)10);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> finds the first occurrence when the
+    /// month does not begin on the target weekday.
+    /// </summary>
+    [TestMethod]
+    public void GetFirstDateOfWeekInMonth_WhenMonthStartsDifferentDay_ShouldReturnFirstMatchingDay()
+    {
+        // First Saturday of April 2024 (which starts on a Monday) is April 6, 2024.
+        DateTime actual = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 4, DayOfWeek.Saturday);
+        Assert.AreEqual(new DateTime(2024, 4, 6), actual);
     }
 
     /// <summary>
@@ -68,49 +112,6 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> returns the first occurrence of
-    /// the specified weekday in the given month and year.
-    /// </summary>
-    [TestMethod]
-    public void GetFirstDateOfWeekInMonth_ShouldReturnFirstOccurrenceOfWeekday()
-    {
-        // First Monday of April 2024 is April 1, 2024.
-        DateTime actual = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 4, DayOfWeek.Monday);
-        Assert.AreEqual(new DateTime(2024, 4, 1), actual);
-        Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
-        Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> finds the first occurrence when the
-    /// month does not begin on the target weekday.
-    /// </summary>
-    [TestMethod]
-    public void GetFirstDateOfWeekInMonth_WhenMonthStartsDifferentDay_ShouldReturnFirstMatchingDay()
-    {
-        // First Saturday of April 2024 (which starts on a Monday) is April 6, 2024.
-        DateTime actual = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 4, DayOfWeek.Saturday);
-        Assert.AreEqual(new DateTime(2024, 4, 6), actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfWeekInMonth(int, int, DayOfWeek)" /> throws when arguments are invalid.
-    /// </summary>
-    [TestMethod]
-    public void GetFirstDateOfWeekInMonth_WhenArgumentsInvalid_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 13, DayOfWeek.Monday);
-        });
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateTimeExtensions.GetFirstDateOfWeekInMonth(2024, 1, (DayOfWeek)10);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfWeekInMonth(int, int, DayOfWeek)" /> returns the last occurrence of the
     /// specified weekday in the given month and year.
     /// </summary>
@@ -125,6 +126,18 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfWeekInMonth(int, int, DayOfWeek)" /> throws when arguments are invalid.
+    /// </summary>
+    [TestMethod]
+    public void GetLastDateOfWeekInMonth_WhenArgumentsInvalid_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTimeExtensions.GetLastDateOfWeekInMonth(2024, 0, DayOfWeek.Monday);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfWeekInMonth(int, int, DayOfWeek)" /> returns the last occurrence when
     /// the month ends on a weekday other than the target.
     /// </summary>
@@ -136,15 +149,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(new DateTime(2024, 4, 28), actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfWeekInMonth(int, int, DayOfWeek)" /> throws when arguments are invalid.
-    /// </summary>
-    [TestMethod]
-    public void GetLastDateOfWeekInMonth_WhenArgumentsInvalid_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateTimeExtensions.GetLastDateOfWeekInMonth(2024, 0, DayOfWeek.Monday);
-        });
-    }
 }

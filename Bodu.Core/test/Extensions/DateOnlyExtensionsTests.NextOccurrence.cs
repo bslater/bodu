@@ -8,20 +8,6 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.NextOccurrence(DateOnly, int, DateOnly)" /> returns the next aligned occurrence
-    /// strictly after the supplied reference date.
-    /// </summary>
-    [TestMethod]
-    public void NextOccurrence_WhenAfterIsLaterThanStart_ShouldReturnNextAlignedDate()
-    {
-        var start = new DateOnly(2024, 1, 1);
-        var after = new DateOnly(2024, 1, 12);
-
-        DateOnly next = start.NextOccurrence(intervalDays: 5, after);
-
-        Assert.AreEqual(new DateOnly(2024, 1, 16), next);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.NextOccurrence(DateOnly, int, DateOnly)" /> returns the start when <c>after</c> is
@@ -36,6 +22,20 @@ public partial class DateOnlyExtensionsTests
         DateOnly next = start.NextOccurrence(intervalDays: 3, after);
 
         Assert.AreEqual(start, next);
+    }
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.NextOccurrence(DateOnly, int, DateOnly)" /> returns the next aligned occurrence
+    /// strictly after the supplied reference date.
+    /// </summary>
+    [TestMethod]
+    public void NextOccurrence_WhenAfterIsLaterThanStart_ShouldReturnNextAlignedDate()
+    {
+        var start = new DateOnly(2024, 1, 1);
+        var after = new DateOnly(2024, 1, 12);
+
+        DateOnly next = start.NextOccurrence(intervalDays: 5, after);
+
+        Assert.AreEqual(new DateOnly(2024, 1, 16), next);
     }
 
     /// <summary>
@@ -70,4 +70,5 @@ public partial class DateOnlyExtensionsTests
             _ = start.NextOccurrence(intervalDays, after);
         });
     }
+
 }

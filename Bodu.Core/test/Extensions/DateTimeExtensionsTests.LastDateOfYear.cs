@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.LastDateOfYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -45,6 +43,18 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfYear" />, when MaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfYear_WhenMaxValue_ShouldReturnItself()
+    {
+        DateTime input = DateTime.MaxValue;
+        DateTime actual = input.LastDateOfYear();
+
+        Assert.AreEqual(DateTime.MaxValue.Date, actual);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfYear" />, when MinValue, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -56,15 +66,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(new DateTime(DateTime.MinValue.Year, 12, 31), actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfYear" />, when MaxValue, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void LastDateOfYear_WhenMaxValue_ShouldReturnItself()
-    {
-        DateTime input = DateTime.MaxValue;
-        DateTime actual = input.LastDateOfYear();
-
-        Assert.AreEqual(DateTime.MaxValue.Date, actual);
-    }
 }

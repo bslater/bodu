@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that the default constructor, when invoked concurrently, produces buffers that each carry the default capacity and overwrite flag.
     /// </summary>
@@ -82,27 +83,6 @@ public partial class ConcurrentCircularBufferTests
         });
     }
 
-    // Capacity = 2 is the minimum accepted value. Verify it constructs and behaves correctly.
-
-    /// <summary>
-    /// Verifies that the minimum-valid capacity of <c>2</c> constructs successfully and evicts in FIFO order when overfilled.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCapacityIsTwo_ShouldConstructSuccessfullyAndAcceptItems()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
-
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2)); // full
-        buffer.Enqueue(new TestItem(3)); // evicts 1 → [2, 3]
-        buffer.Enqueue(new TestItem(4)); // evicts 2 → [3, 4]
-
-        var arr = buffer.ToArray().Select(x => x.Value).ToArray();
-        CollectionAssert.AreEqual(new[] { 3, 4 }, arr);
-        Assert.AreEqual(2, buffer.Capacity);
-        Assert.AreEqual(2, buffer.Count);
-    }
-
     // The collection constructor delegates capacity validation to the two-parameter base constructor,
     // so any capacity < 2 must throw regardless of the source contents or allowOverwrite flag.
 
@@ -127,6 +107,27 @@ public partial class ConcurrentCircularBufferTests
         {
             _ = new ConcurrentCircularBuffer<TestItem>(empty, capacity, allowOverwrite);
         });
+    }
+
+    // Capacity = 2 is the minimum accepted value. Verify it constructs and behaves correctly.
+
+    /// <summary>
+    /// Verifies that the minimum-valid capacity of <c>2</c> constructs successfully and evicts in FIFO order when overfilled.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityIsTwo_ShouldConstructSuccessfullyAndAcceptItems()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(2, allowOverwrite: true);
+
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2)); // full
+        buffer.Enqueue(new TestItem(3)); // evicts 1 → [2, 3]
+        buffer.Enqueue(new TestItem(4)); // evicts 2 → [3, 4]
+
+        var arr = buffer.ToArray().Select(x => x.Value).ToArray();
+        CollectionAssert.AreEqual(new[] { 3, 4 }, arr);
+        Assert.AreEqual(2, buffer.Capacity);
+        Assert.AreEqual(2, buffer.Count);
     }
 
     /// <summary>
@@ -206,6 +207,32 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that constructing a <see cref="ConcurrentCircularBuffer{T}"/> with an empty collection and a negative
+    /// capacity throws <see cref="ArgumentOutOfRangeException"/>.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenEmptyCollectionAndInvalidCapacity_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new ConcurrentCircularBuffer<TestItem>([], -1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="ConcurrentCircularBuffer{T}"/> with an empty collection and a valid capacity
+    /// creates an empty buffer with the specified capacity.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>([], 5);
+
+        Assert.AreEqual(0, buffer.Count);
+        Assert.AreEqual(5, buffer.Capacity);
+    }
+
+    /// <summary>
     /// Verifies that passing a <see langword="null" /> source to the capacity-taking constructor throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
@@ -280,32 +307,6 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that constructing a <see cref="ConcurrentCircularBuffer{T}"/> with an empty collection and a negative
-    /// capacity throws <see cref="ArgumentOutOfRangeException"/>.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenEmptyCollectionAndInvalidCapacity_ShouldThrowArgumentOutOfRangeException()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = new ConcurrentCircularBuffer<TestItem>([], -1);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that constructing a <see cref="ConcurrentCircularBuffer{T}"/> with an empty collection and a valid capacity
-    /// creates an empty buffer with the specified capacity.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenEmptyCollectionAndValidCapacity_ShouldCreateEmptyBuffer()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>([], 5);
-
-        Assert.AreEqual(0, buffer.Count);
-        Assert.AreEqual(5, buffer.Capacity);
-    }
-
-    /// <summary>
     /// Verifies that a buffer constructed exactly at capacity from a source collection accepts subsequent
     /// producer-side eviction (when overwrite is enabled), confirming the per-slot publication state recorded
     /// by the construction-time fill is observable by the lock-free producer protocol.
@@ -342,4 +343,5 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(7, buffer.Dequeue().Value);
         Assert.AreEqual(0, buffer.Count);
     }
+
 }

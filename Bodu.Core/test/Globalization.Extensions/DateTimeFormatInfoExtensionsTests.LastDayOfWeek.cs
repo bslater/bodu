@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeFormatInfoExtensionsTests.LastDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -6,12 +6,12 @@
 
 using System;
 using System.Globalization;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Globalization.Extensions;
 
 public partial class DateTimeFormatInfoExtensionsTests
 {
+
     /// <summary>
     /// Provides (FirstDateOfWeek, expected LastDateOfWeek) pairs for the cyclic derivation
     /// <c>(FirstDateOfWeek + 6) mod 7</c>.
@@ -44,6 +44,20 @@ public partial class DateTimeFormatInfoExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when InfoIsNull, throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfWeek_WhenInfoIsNull_ShouldThrowArgumentNullException()
+    {
+        DateTimeFormatInfo? info = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = info!.LastDayOfWeek();
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when UsingEnGbCulture, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -69,17 +83,4 @@ public partial class DateTimeFormatInfoExtensionsTests
         Assert.AreEqual(DayOfWeek.Saturday, actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeFormatInfoExtensions.LastDateOfWeek" />, when InfoIsNull, throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void LastDateOfWeek_WhenInfoIsNull_ShouldThrowArgumentNullException()
-    {
-        DateTimeFormatInfo? info = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = info!.LastDayOfWeek();
-        });
-    }
 }

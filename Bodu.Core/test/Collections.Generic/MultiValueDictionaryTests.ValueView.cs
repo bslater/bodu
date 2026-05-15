@@ -5,23 +5,27 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
     /// <summary>
-    /// Verifies that the indexer does not expose a mutable backing list that can bypass dictionary accounting.
+    /// Verifies that the dictionary enumerator does not expose a mutable backing list through its
+    /// <see cref="MultiValueDictionary{TKey, TValue}.Enumerator.Current" /> value.
     /// </summary>
     [TestMethod]
-    public void Indexer_WhenValuesReturned_ShouldNotExposeMutableBackingList()
+    public void GetEnumerator_WhenCurrentValueReturned_ShouldNotExposeMutableBackingList()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
 
-        IReadOnlyList<int> values = mvd["a"];
+        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
+
+        Assert.IsTrue(enumerator.MoveNext());
+
+        IReadOnlyList<int> values = enumerator.Current.Value;
 
         AssertReadOnlyValueViewCannotBeMutated(values);
 
@@ -48,96 +52,22 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(1, mvd.GetValues("a").Count);
         Assert.AreEqual(1, mvd.GetValues("a")[0]);
     }
-
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.TryGetValues" /> does not expose a mutable
-    /// backing list that can bypass dictionary accounting.
+    /// Verifies that the indexer does not expose a mutable backing list that can bypass dictionary accounting.
     /// </summary>
     [TestMethod]
-    public void TryGetValues_WhenValuesReturned_ShouldNotExposeMutableBackingList()
+    public void Indexer_WhenValuesReturned_ShouldNotExposeMutableBackingList()
     {
         var mvd = new MultiValueDictionary<string, int>();
         mvd.Add("a", 1);
 
-        var found = mvd.TryGetValues("a", out IReadOnlyList<int> values);
-
-        Assert.IsTrue(found);
-        AssertReadOnlyValueViewCannotBeMutated(values);
-
-        Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd["a"].Count);
-        Assert.AreEqual(1, mvd["a"][0]);
-    }
-
-    /// <summary>
-    /// Verifies that the dictionary enumerator does not expose a mutable backing list through its
-    /// <see cref="MultiValueDictionary{TKey, TValue}.Enumerator.Current" /> value.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenCurrentValueReturned_ShouldNotExposeMutableBackingList()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
-
-        using MultiValueDictionary<string, int>.Enumerator enumerator = mvd.GetEnumerator();
-
-        Assert.IsTrue(enumerator.MoveNext());
-
-        IReadOnlyList<int> values = enumerator.Current.Value;
+        IReadOnlyList<int> values = mvd["a"];
 
         AssertReadOnlyValueViewCannotBeMutated(values);
 
         Assert.AreEqual(1, mvd.Count);
         Assert.AreEqual(1, mvd["a"].Count);
         Assert.AreEqual(1, mvd["a"][0]);
-    }
-
-    /// <summary>
-    /// Verifies that mutating a returned value view via <see cref="ICollection{T}.Add" /> cannot leave
-    /// <see cref="MultiValueDictionary{TKey, TValue}.Count" /> inconsistent with the stored values.
-    /// </summary>
-    [TestMethod]
-    public void ReturnedValueView_WhenMutationAttempted_ShouldNotBypassCountOrVersion()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
-
-        IReadOnlyList<int> values = mvd.GetValues("a");
-
-        if (values is ICollection<int> collection)
-        {
-            Assert.ThrowsExactly<NotSupportedException>(() =>
-            {
-                collection.Add(2);
-            });
-        }
-
-        Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd.GetValues("a").Count);
-    }
-
-    /// <summary>
-    /// Verifies that removing a value via <see cref="ICollection{T}.Remove" /> on a returned value view
-    /// throws <see cref="NotSupportedException" /> and does not affect dictionary state.
-    /// </summary>
-    [TestMethod]
-    public void ReturnedValueView_WhenItemRemovedViaICollection_ShouldThrowNotSupportedException()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
-
-        IReadOnlyList<int> view = mvd.GetValues("a");
-
-        if (view is ICollection<int> collection)
-        {
-            Assert.ThrowsExactly<NotSupportedException>(() =>
-            {
-                collection.Remove(1);
-            });
-        }
-
-        Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd.GetValues("a")[0]);
     }
 
     /// <summary>
@@ -235,4 +165,73 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(1, mvd.Count);
         Assert.AreEqual(1, mvd.GetValues("a")[0]);
     }
+
+    /// <summary>
+    /// Verifies that removing a value via <see cref="ICollection{T}.Remove" /> on a returned value view
+    /// throws <see cref="NotSupportedException" /> and does not affect dictionary state.
+    /// </summary>
+    [TestMethod]
+    public void ReturnedValueView_WhenItemRemovedViaICollection_ShouldThrowNotSupportedException()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        IReadOnlyList<int> view = mvd.GetValues("a");
+
+        if (view is ICollection<int> collection)
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() =>
+            {
+                collection.Remove(1);
+            });
+        }
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.GetValues("a")[0]);
+    }
+
+    /// <summary>
+    /// Verifies that mutating a returned value view via <see cref="ICollection{T}.Add" /> cannot leave
+    /// <see cref="MultiValueDictionary{TKey, TValue}.Count" /> inconsistent with the stored values.
+    /// </summary>
+    [TestMethod]
+    public void ReturnedValueView_WhenMutationAttempted_ShouldNotBypassCountOrVersion()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        IReadOnlyList<int> values = mvd.GetValues("a");
+
+        if (values is ICollection<int> collection)
+        {
+            Assert.ThrowsExactly<NotSupportedException>(() =>
+            {
+                collection.Add(2);
+            });
+        }
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.GetValues("a").Count);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey, TValue}.TryGetValues" /> does not expose a mutable
+    /// backing list that can bypass dictionary accounting.
+    /// </summary>
+    [TestMethod]
+    public void TryGetValues_WhenValuesReturned_ShouldNotExposeMutableBackingList()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+
+        var found = mvd.TryGetValues("a", out IReadOnlyList<int> values);
+
+        Assert.IsTrue(found);
+        AssertReadOnlyValueViewCannotBeMutated(values);
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd["a"].Count);
+        Assert.AreEqual(1, mvd["a"][0]);
+    }
+
 }

@@ -10,16 +10,6 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
-    /// <summary>
-    /// Verifies that the explicit <see cref="ICollection{T}.IsReadOnly" /> property on the values view reports <see langword="true" />.
-    /// </summary>
-    [TestMethod]
-    public void ValueCollection_IsReadOnly_ShouldReturnTrue()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        ICollection<int> values = dictionary.Values;
-        Assert.IsTrue(values.IsReadOnly);
-    }
 
     /// <summary>
     /// Verifies that the explicit <see cref="ICollection{T}.Add" /> implementation on the values view throws
@@ -46,59 +36,20 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the explicit <see cref="ICollection{T}.Remove" /> implementation on the values view throws
-    /// <see cref="NotSupportedException" />.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ValueCollection.Contains" /> returns <see langword="true" /> for values
+    /// present in the dictionary and <see langword="false" /> for absent values.
     /// </summary>
     [TestMethod]
-    public void ValueCollection_Remove_ShouldThrowExactly()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        dictionary.Add("A", 1);
-        ICollection<int> values = dictionary.Values;
-        Assert.ThrowsExactly<NotSupportedException>(() => values.Remove(1));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ICollection.IsSynchronized" /> on the values view reports <see langword="false" />.
-    /// </summary>
-    [TestMethod]
-    public void ValueCollection_IsSynchronized_ShouldReturnFalse()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        var values = (ICollection)dictionary.Values;
-        Assert.IsFalse(values.IsSynchronized);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ICollection.SyncRoot" /> on the values view returns the dictionary's sync root.
-    /// </summary>
-    [TestMethod]
-    public void ValueCollection_SyncRoot_ShouldReturnDictionarySyncRoot()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        var syncRoot = ((ICollection)dictionary.Values).SyncRoot;
-        Assert.IsNotNull(syncRoot);
-        Assert.AreSame(((ICollection)dictionary).SyncRoot, syncRoot);
-    }
-
-    /// <summary>
-    /// Verifies that the non-generic <see cref="IEnumerable.GetEnumerator" /> on the values view returns the same elements as the
-    /// generic enumerator.
-    /// </summary>
-    [TestMethod]
-    public void ValueCollection_NonGenericGetEnumerator_ShouldYieldSameElements()
+    public void ValueCollection_Contains_ShouldReflectMembership()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
-        dictionary.Add("C", 3);
 
-        IEnumerable values = dictionary.Values;
-        var observed = new List<int>();
-        foreach (var value in values)
-            observed.Add((int)value);
-
-        CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, observed);
+        ICollection<int> values = dictionary.Values;
+        Assert.IsTrue(values.Contains(1));
+        Assert.IsTrue(values.Contains(2));
+        Assert.IsFalse(values.Contains(99));
     }
 
     /// <summary>
@@ -123,22 +74,6 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ICollection.CopyTo(Array, int)" /> on the values view throws <see cref="ArgumentNullException" /> when
-    /// the destination array is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void ValueCollection_ICollectionCopyTo_WhenArrayIsNull_ShouldThrowExactly()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        dictionary.Add("A", 1);
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ((ICollection)dictionary.Values).CopyTo(null!, 0);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ICollection.CopyTo(Array, int)" /> on the values view throws <see cref="ArgumentException" /> when the
     /// destination array is multidimensional.
     /// </summary>
@@ -152,6 +87,22 @@ public partial class EvictingDictionaryTests
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
             ((ICollection)dictionary.Values).CopyTo(array, 0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICollection.CopyTo(Array, int)" /> on the values view throws <see cref="ArgumentNullException" /> when
+    /// the destination array is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ValueCollection_ICollectionCopyTo_WhenArrayIsNull_ShouldThrowExactly()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        dictionary.Add("A", 1);
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ((ICollection)dictionary.Values).CopyTo(null!, 0);
         });
     }
 
@@ -171,21 +122,71 @@ public partial class EvictingDictionaryTests
             ((ICollection)dictionary.Values).CopyTo(array, -1);
         });
     }
-
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ValueCollection.Contains" /> returns <see langword="true" /> for values
-    /// present in the dictionary and <see langword="false" /> for absent values.
+    /// Verifies that the explicit <see cref="ICollection{T}.IsReadOnly" /> property on the values view reports <see langword="true" />.
     /// </summary>
     [TestMethod]
-    public void ValueCollection_Contains_ShouldReflectMembership()
+    public void ValueCollection_IsReadOnly_ShouldReturnTrue()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        ICollection<int> values = dictionary.Values;
+        Assert.IsTrue(values.IsReadOnly);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICollection.IsSynchronized" /> on the values view reports <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public void ValueCollection_IsSynchronized_ShouldReturnFalse()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        var values = (ICollection)dictionary.Values;
+        Assert.IsFalse(values.IsSynchronized);
+    }
+
+    /// <summary>
+    /// Verifies that the non-generic <see cref="IEnumerable.GetEnumerator" /> on the values view returns the same elements as the
+    /// generic enumerator.
+    /// </summary>
+    [TestMethod]
+    public void ValueCollection_NonGenericGetEnumerator_ShouldYieldSameElements()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
+        dictionary.Add("C", 3);
 
-        ICollection<int> values = dictionary.Values;
-        Assert.IsTrue(values.Contains(1));
-        Assert.IsTrue(values.Contains(2));
-        Assert.IsFalse(values.Contains(99));
+        IEnumerable values = dictionary.Values;
+        var observed = new List<int>();
+        foreach (var value in values)
+            observed.Add((int)value);
+
+        CollectionAssert.AreEquivalent(new[] { 1, 2, 3 }, observed);
     }
+
+    /// <summary>
+    /// Verifies that the explicit <see cref="ICollection{T}.Remove" /> implementation on the values view throws
+    /// <see cref="NotSupportedException" />.
+    /// </summary>
+    [TestMethod]
+    public void ValueCollection_Remove_ShouldThrowExactly()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        dictionary.Add("A", 1);
+        ICollection<int> values = dictionary.Values;
+        Assert.ThrowsExactly<NotSupportedException>(() => values.Remove(1));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICollection.SyncRoot" /> on the values view returns the dictionary's sync root.
+    /// </summary>
+    [TestMethod]
+    public void ValueCollection_SyncRoot_ShouldReturnDictionarySyncRoot()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        var syncRoot = ((ICollection)dictionary.Values).SyncRoot;
+        Assert.IsNotNull(syncRoot);
+        Assert.AreSame(((ICollection)dictionary).SyncRoot, syncRoot);
+    }
+
 }

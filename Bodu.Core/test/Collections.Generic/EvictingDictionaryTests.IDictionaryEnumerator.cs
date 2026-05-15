@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.IDictionaryEnumerator.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,25 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that Entry returns a DictionaryEntry matching the current key-value pair.
+    /// </summary>
+    [TestMethod]
+    public void IDictionaryEnumerator_Entry_WhenAccessed_ShouldReturnMatchingKeyValue()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2);
+        dictionary.Add("x", 10);
+        dictionary.Add("y", 20);
+
+        IDictionaryEnumerator enumerator = ((IDictionary)dictionary).GetEnumerator();
+        enumerator.MoveNext();
+
+        DictionaryEntry entry = enumerator.Entry;
+
+        Assert.AreEqual(enumerator.Key, entry.Key);
+        Assert.AreEqual(enumerator.Value, entry.Value);
+    }
     /// <summary>
     /// Verifies that MoveNext iterates over all key-value pairs in insertion order.
     /// </summary>
@@ -30,25 +49,6 @@ public partial class EvictingDictionaryTests
         }
 
         CollectionAssert.AreEqual(new[] { "a:1", "b:2", "c:3" }, results);
-    }
-
-    /// <summary>
-    /// Verifies that Entry returns a DictionaryEntry matching the current key-value pair.
-    /// </summary>
-    [TestMethod]
-    public void IDictionaryEnumerator_Entry_WhenAccessed_ShouldReturnMatchingKeyValue()
-    {
-        var dictionary = new EvictingDictionary<string, int>(2);
-        dictionary.Add("x", 10);
-        dictionary.Add("y", 20);
-
-        IDictionaryEnumerator enumerator = ((IDictionary)dictionary).GetEnumerator();
-        enumerator.MoveNext();
-
-        DictionaryEntry entry = enumerator.Entry;
-
-        Assert.AreEqual(enumerator.Key, entry.Key);
-        Assert.AreEqual(enumerator.Value, entry.Value);
     }
 
     /// <summary>
@@ -73,4 +73,5 @@ public partial class EvictingDictionaryTests
 
         CollectionAssert.AreEqual(new[] { "a:1", "b:2" }, entries);
     }
+
 }

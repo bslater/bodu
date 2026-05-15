@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -69,21 +68,6 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
-    /// Verifies that assigning a <see langword="null" /> reference through the indexer throws
-    /// <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void Indexer_Set_WhenValueIsNull_ShouldThrowArgumentNullException()
-    {
-        IndexedSet<string> sut = CreateSet(["a", "b"]);
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut[0] = null!;
-        });
-    }
-
-    /// <summary>
     /// Verifies that assigning a value that already exists at a different index throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
@@ -95,6 +79,20 @@ public partial class IndexedSetTests
         {
             sut[0] = 3;
         });
+    }
+
+    /// <summary>
+    /// Verifies that assigning a value equal to the one already at that index is a no-op.
+    /// </summary>
+    [TestMethod]
+    public void Indexer_Set_WhenValueIsAlreadyAtIndex_ShouldBeNoOp()
+    {
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+
+        sut[1] = 2;
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
+        Assert.IsTrue(sut.Contains(2));
     }
 
     // --------------------------------------------------------
@@ -119,16 +117,18 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
-    /// Verifies that assigning a value equal to the one already at that index is a no-op.
+    /// Verifies that assigning a <see langword="null" /> reference through the indexer throws
+    /// <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Indexer_Set_WhenValueIsAlreadyAtIndex_ShouldBeNoOp()
+    public void Indexer_Set_WhenValueIsNull_ShouldThrowArgumentNullException()
     {
-        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+        IndexedSet<string> sut = CreateSet(["a", "b"]);
 
-        sut[1] = 2;
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
-        Assert.IsTrue(sut.Contains(2));
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            sut[0] = null!;
+        });
     }
+
 }

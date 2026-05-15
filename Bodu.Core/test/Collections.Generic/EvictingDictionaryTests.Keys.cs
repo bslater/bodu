@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Keys.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,33 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that mutating the dictionary through the Keys collection is not supported and throws.
+    /// </summary>
+    [TestMethod]
+    public void Keys_Add_ShouldThrowException()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        ICollection<string> keys = dictionary.Keys;
+
+        Assert.ThrowsExactly<NotSupportedException>(() => keys.Add("Z"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> returns an empty collection after the dictionary is cleared.
+    /// </summary>
+    [TestMethod]
+    public void Keys_Get_WhenDictionaryIsCleared_ShouldBeEmpty()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+
+        dictionary.Clear();
+
+        Assert.AreEqual(0, dictionary.Keys.Count);
+    }
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> returns an empty collection when the dictionary is empty.
     /// </summary>
@@ -17,41 +44,6 @@ public partial class EvictingDictionaryTests
         var dictionary = new EvictingDictionary<string, int>(3);
 
         Assert.AreEqual(0, dictionary.Keys.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> contains all inserted keys when the dictionary has not exceeded capacity.
-    /// </summary>
-    [TestMethod]
-    public void Keys_Get_WhenItemsAdded_ShouldContainAllInsertedKeys()
-    {
-        var dictionary = new EvictingDictionary<string, int>(5);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Add("C", 3);
-
-        ICollection<string> keys = dictionary.Keys;
-
-        Assert.AreEqual(3, keys.Count);
-        CollectionAssert.Contains(keys.ToList(), "A");
-        CollectionAssert.Contains(keys.ToList(), "B");
-        CollectionAssert.Contains(keys.ToList(), "C");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> does not contain a key that has been explicitly removed.
-    /// </summary>
-    [TestMethod]
-    public void Keys_Get_WhenItemIsRemoved_ShouldNotContainRemovedKey()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-
-        dictionary.Remove("A");
-
-        CollectionAssert.DoesNotContain(dictionary.Keys.ToList(), "A");
-        CollectionAssert.Contains(dictionary.Keys.ToList(), "B");
     }
 
     /// <summary>
@@ -71,18 +63,38 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> returns an empty collection after the dictionary is cleared.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> does not contain a key that has been explicitly removed.
     /// </summary>
     [TestMethod]
-    public void Keys_Get_WhenDictionaryIsCleared_ShouldBeEmpty()
+    public void Keys_Get_WhenItemIsRemoved_ShouldNotContainRemovedKey()
     {
         var dictionary = new EvictingDictionary<string, int>(3);
         dictionary.Add("A", 1);
         dictionary.Add("B", 2);
 
-        dictionary.Clear();
+        dictionary.Remove("A");
 
-        Assert.AreEqual(0, dictionary.Keys.Count);
+        CollectionAssert.DoesNotContain(dictionary.Keys.ToList(), "A");
+        CollectionAssert.Contains(dictionary.Keys.ToList(), "B");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> contains all inserted keys when the dictionary has not exceeded capacity.
+    /// </summary>
+    [TestMethod]
+    public void Keys_Get_WhenItemsAdded_ShouldContainAllInsertedKeys()
+    {
+        var dictionary = new EvictingDictionary<string, int>(5);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Add("C", 3);
+
+        ICollection<string> keys = dictionary.Keys;
+
+        Assert.AreEqual(3, keys.Count);
+        CollectionAssert.Contains(keys.ToList(), "A");
+        CollectionAssert.Contains(keys.ToList(), "B");
+        CollectionAssert.Contains(keys.ToList(), "C");
     }
 
     /// <summary>
@@ -130,15 +142,4 @@ public partial class EvictingDictionaryTests
         CollectionAssert.Contains(keys.ToList(), "B");
     }
 
-    /// <summary>
-    /// Verifies that mutating the dictionary through the Keys collection is not supported and throws.
-    /// </summary>
-    [TestMethod]
-    public void Keys_Add_ShouldThrowException()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3);
-        ICollection<string> keys = dictionary.Keys;
-
-        Assert.ThrowsExactly<NotSupportedException>(() => keys.Add("Z"));
-    }
 }

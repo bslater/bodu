@@ -6,12 +6,38 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsNonZero, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1)]
+    [DataRow(5)]
+    [DataRow(100)]
+    public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsNonZero_ShouldNotThrow(int length)
+    {
+        var array = new int[length];
+        ThrowHelper.ThrowIfArrayLengthIsZero(array);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsZero, throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsZero_ShouldThrowExactly(int length)
+    {
+        var array = new int[length];
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            ThrowHelper.ThrowIfArrayLengthIsZero(array);
+        });
+    }
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" /> contract matrix: null array →
     /// <see cref="ArgumentNullException" />, zero-length array → <see cref="ArgumentException" />, non-empty
@@ -32,33 +58,6 @@ public partial class ThrowHelperTests
         }, expectedExceptionType, expectedParamName);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsZero, throws <see cref="ArgumentException" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0)]
-    public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsZero_ShouldThrowExactly(int length)
-    {
-        var array = new int[length];
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            ThrowHelper.ThrowIfArrayLengthIsZero(array);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsZero" />, when ArrayLengthIsNonZero, NotThrow.
-    /// </summary>
-    [TestMethod]
-    [DataRow(1)]
-    [DataRow(5)]
-    [DataRow(100)]
-    public void ThrowIfArrayLengthIsZero_WhenArrayLengthIsNonZero_ShouldNotThrow(int length)
-    {
-        var array = new int[length];
-        ThrowHelper.ThrowIfArrayLengthIsZero(array);
-    }
-
     private static IEnumerable<object?[]> ThrowIfArrayLengthIsZeroContractData()
     {
         yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
@@ -66,4 +65,5 @@ public partial class ThrowHelperTests
         yield return new object?[] { "single-element array → no throw", new[] { 0 }, null, null };
         yield return new object?[] { "non-empty string array → no throw", new[] { "a", "b" }, null, null };
     }
+
 }

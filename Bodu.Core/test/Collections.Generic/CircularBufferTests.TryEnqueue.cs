@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.TryEnqueue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="CircularBuffer{T}.TryEnqueue"/> returns <see langword="false"/> when the
     /// buffer is full and overwriting is disabled.
@@ -66,4 +67,5 @@ public partial class CircularBufferTests
         CollectionAssert.AreEqual(new[] { "Evicting:A", "Evicted:A" }, events);
         CollectionAssert.AreEqual(new[] { "B", "C" }, buffer.ToArray());
     }
+
 }

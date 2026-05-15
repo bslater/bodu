@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public sealed partial class IEnumerableExtensionsTests_Randomize
 {
+
     /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator?, int?)" /> with
     /// <see cref="RandomizationMode.LazyShuffle" /> and a non-positive count yields an empty sequence (covers the early
@@ -22,4 +23,5 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
 
         Assert.AreEqual(0, result.Length);
     }
+
 }

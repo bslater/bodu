@@ -5,13 +5,27 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetStorageTests
 {
+
+    /// <summary>
+    /// Verifies that a duplicate add is a no-op that returns <see langword="false" /> and does not change
+    /// element ordering.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenItemIsDuplicate_ShouldReturnFalseAndNotChangeOrder()
+    {
+        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
+
+        var added = sut.Add(2);
+
+        Assert.IsFalse(added);
+        Assert.AreEqual(3, sut.Count);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, Snapshot(sut));
+    }
     // --------------------------------------------------------
     // Add — argument validation
     // --------------------------------------------------------
@@ -50,22 +64,6 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(7, sut.GetAt(0));
     }
 
-    /// <summary>
-    /// Verifies that a duplicate add is a no-op that returns <see langword="false" /> and does not change
-    /// element ordering.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenItemIsDuplicate_ShouldReturnFalseAndNotChangeOrder()
-    {
-        OrderedSetStorage<int> sut = CreateStorage([1, 2, 3]);
-
-        var added = sut.Add(2);
-
-        Assert.IsFalse(added);
-        Assert.AreEqual(3, sut.Count);
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, Snapshot(sut));
-    }
-
     // --------------------------------------------------------
     // Add — sequential behaviour
     // --------------------------------------------------------
@@ -84,6 +82,28 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(10, sut.Count);
         for (var i = 0; i < 10; i++)
             Assert.AreEqual(10 + i, sut.GetAt(i));
+    }
+
+    /// <summary>
+    /// Verifies that hash collisions are handled correctly when many items share the same bucket.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenItemsHashCollide_ShouldKeepUniqueByReferenceIdentity()
+    {
+        var sut = new OrderedSetStorage<HashCollider>(0, null);
+        var a = new HashCollider("a");
+        var b = new HashCollider("b");
+        var c = new HashCollider("c");
+
+        Assert.IsTrue(sut.Add(a));
+        Assert.IsTrue(sut.Add(b));
+        Assert.IsTrue(sut.Add(c));
+        Assert.IsFalse(sut.Add(a));
+        Assert.IsFalse(sut.Add(b));
+        Assert.IsFalse(sut.Add(c));
+
+        Assert.AreEqual(3, sut.Count);
+        CollectionAssert.AreEqual(new[] { a, b, c }, Snapshot(sut));
     }
 
     /// <summary>
@@ -119,61 +139,6 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(1, sut.Count);
     }
 
-    /// <summary>
-    /// Verifies that hash collisions are handled correctly when many items share the same bucket.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenItemsHashCollide_ShouldKeepUniqueByReferenceIdentity()
-    {
-        var sut = new OrderedSetStorage<HashCollider>(0, null);
-        var a = new HashCollider("a");
-        var b = new HashCollider("b");
-        var c = new HashCollider("c");
-
-        Assert.IsTrue(sut.Add(a));
-        Assert.IsTrue(sut.Add(b));
-        Assert.IsTrue(sut.Add(c));
-        Assert.IsFalse(sut.Add(a));
-        Assert.IsFalse(sut.Add(b));
-        Assert.IsFalse(sut.Add(c));
-
-        Assert.AreEqual(3, sut.Count);
-        CollectionAssert.AreEqual(new[] { a, b, c }, Snapshot(sut));
-    }
-
-    // --------------------------------------------------------
-    // AddRange — argument validation
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.AddRange(IEnumerable{T})" /> rejects a <see langword="null" /> collection.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenCollectionIsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new OrderedSetStorage<int>(0, null);
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.AddRange(null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.AddRange(IEnumerable{T})" /> rejects a collection
-    /// that yields a <see langword="null" /> element.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new OrderedSetStorage<string>(0, null);
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.AddRange(["ok", null!, "later"]);
-        });
-    }
-
     // --------------------------------------------------------
     // AddRange — counting behaviour
     // --------------------------------------------------------
@@ -195,6 +160,21 @@ public partial class OrderedSetStorageTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.AddRange(IEnumerable{T})" /> rejects a collection
+    /// that yields a <see langword="null" /> element.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenCollectionContainsNull_ShouldThrowArgumentNullException()
+    {
+        var sut = new OrderedSetStorage<string>(0, null);
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            sut.AddRange(["ok", null!, "later"]);
+        });
+    }
+
+    /// <summary>
     /// Verifies that an empty source collection results in zero additions and no version bump.
     /// </summary>
     [TestMethod]
@@ -209,4 +189,23 @@ public partial class OrderedSetStorageTests
         Assert.AreEqual(versionBefore, sut._version);
         Assert.AreEqual(2, sut.Count);
     }
+
+    // --------------------------------------------------------
+    // AddRange — argument validation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.AddRange(IEnumerable{T})" /> rejects a <see langword="null" /> collection.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    {
+        var sut = new OrderedSetStorage<int>(0, null);
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            sut.AddRange(null!);
+        });
+    }
+
 }

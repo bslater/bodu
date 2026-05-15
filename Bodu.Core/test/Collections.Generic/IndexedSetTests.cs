@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -16,6 +14,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class IndexedSetTests
 {
+
     /// <summary>
     /// Verifies the happy-path smoke check: items added in sequence are accessible at their insertion indices.
     /// </summary>
@@ -64,4 +63,5 @@ public partial class IndexedSetTests
 
         return result;
     }
+
 }

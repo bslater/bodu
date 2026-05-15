@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the oldest item when capacity is exceeded using FirstInFirstOut policy.
     /// </summary>
@@ -22,6 +23,80 @@ public partial class EvictingDictionaryTests
         Assert.IsFalse(dictionary.ContainsKey("one"));
         Assert.IsTrue(dictionary.ContainsKey("two"));
         Assert.IsTrue(dictionary.ContainsKey("three"));
+    }
+
+    /// <summary>
+    /// Verifies that the FirstInFirstOut insertion order is reset when Clear is called.
+    /// </summary>
+    [TestMethod]
+    public void Clear_WhenPolicyIsFIFOAndCalled_ShouldResetInsertionOrder()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+
+        dictionary.Clear();
+        dictionary.Add("C", 3);
+        dictionary.Add("D", 4);
+
+        var keys = dictionary.Keys.ToList();
+        CollectionAssert.DoesNotContain(keys, "A");
+        CollectionAssert.DoesNotContain(keys, "B");
+    }
+
+    /// <summary>
+    /// Verifies that entries are returned in insertion order when using FirstInFirstOut eviction policy.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenPolicyIsFIFO_ShouldReturnItemsInInsertionOrder()
+    {
+        var dictionary = new EvictingDictionary<string, int>(5, EvictingDictionaryPolicy.FirstInFirstOut);
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
+        dictionary.Add("c", 3);
+
+        KeyValuePair<string, int>[] expected =
+        [
+            new KeyValuePair<string, int>("a", 1),
+            new KeyValuePair<string, int>("b", 2),
+            new KeyValuePair<string, int>("c", 3)
+        ];
+
+        CollectionAssert.AreEqual(expected, new List<KeyValuePair<string, int>>(dictionary));
+    }
+
+    /// <summary>
+    /// Verifies that no exception is thrown when the FirstInFirstOut eviction candidate has already been removed.
+    /// </summary>
+    [TestMethod]
+    public void EvictionEvents_WhenPolicyIsFIFOAndCandidateMissing_ShouldNotThrow()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Remove("A");
+
+        dictionary.Add("C", 3); // candidate "A" was already removed
+
+        Assert.IsTrue(dictionary.ContainsKey("B"));
+        Assert.IsTrue(dictionary.ContainsKey("C"));
+    }
+
+    /// <summary>
+    /// Verifies that the oldest item is evicted when using FirstInFirstOut policy.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenPolicyIsFIFO_ShouldEvictOldestItem()
+    {
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
+        var evicted = new List<string>();
+        dictionary.ItemEvicted += (key, _) => evicted.Add(key);
+
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Add("C", 3);
+
+        CollectionAssert.Contains(evicted, "A");
     }
 
     /// <summary>
@@ -60,6 +135,23 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicting" /> is raised with the correct key and value before eviction occurs.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicting_WhenPolicyIsFIFOAndEvictionOccurs_ShouldBeCalledWithCorrectKeyValue()
+    {
+        var evictedItems = new List<string>();
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
+        dictionary.ItemEvicting += (key, value) => evictedItems.Add($"{key}:{value}");
+
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Add("C", 3);
+
+        CollectionAssert.AreEqual(new[] { "A:1" }, evictedItems);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicting" /> is raised before ItemEvicted when eviction occurs using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
@@ -79,44 +171,6 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicting" /> is raised with the correct key and value before eviction occurs.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicting_WhenPolicyIsFIFOAndEvictionOccurs_ShouldBeCalledWithCorrectKeyValue()
-    {
-        var evictedItems = new List<string>();
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
-        dictionary.ItemEvicting += (key, value) => evictedItems.Add($"{key}:{value}");
-
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Add("C", 3);
-
-        CollectionAssert.AreEqual(new[] { "A:1" }, evictedItems);
-    }
-
-    /// <summary>
-    /// Verifies that entries are returned in insertion order when using FirstInFirstOut eviction policy.
-    /// </summary>
-    [TestMethod]
-    public void Enumerator_WhenPolicyIsFIFO_ShouldReturnItemsInInsertionOrder()
-    {
-        var dictionary = new EvictingDictionary<string, int>(5, EvictingDictionaryPolicy.FirstInFirstOut);
-        dictionary.Add("a", 1);
-        dictionary.Add("b", 2);
-        dictionary.Add("c", 3);
-
-        KeyValuePair<string, int>[] expected =
-        [
-            new KeyValuePair<string, int>("a", 1),
-            new KeyValuePair<string, int>("b", 2),
-            new KeyValuePair<string, int>("c", 3)
-        ];
-
-        CollectionAssert.AreEqual(expected, new List<KeyValuePair<string, int>>(dictionary));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> are returned in insertion order when using FirstInFirstOut eviction policy.
     /// </summary>
     [TestMethod]
@@ -130,58 +184,6 @@ public partial class EvictingDictionaryTests
         };
 
         CollectionAssert.AreEqual(new[] { "one", "two", "three" }, dictionary.Keys.ToList());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> are returned in insertion order when using FirstInFirstOut eviction policy.
-    /// </summary>
-    [TestMethod]
-    public void Values_WhenPolicyIsFIFO_ShouldReturnValuesInInsertionOrder()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut)
-        {
-            ["a"] = 10,
-            ["b"] = 20,
-            ["c"] = 30
-        };
-
-        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, dictionary.Values.ToList());
-    }
-
-    /// <summary>
-    /// Verifies that the oldest item is evicted when using FirstInFirstOut policy.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenPolicyIsFIFO_ShouldEvictOldestItem()
-    {
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
-        var evicted = new List<string>();
-        dictionary.ItemEvicted += (key, _) => evicted.Add(key);
-
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Add("C", 3);
-
-        CollectionAssert.Contains(evicted, "A");
-    }
-
-    /// <summary>
-    /// Verifies that the FirstInFirstOut insertion order is reset when Clear is called.
-    /// </summary>
-    [TestMethod]
-    public void Clear_WhenPolicyIsFIFOAndCalled_ShouldResetInsertionOrder()
-    {
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-
-        dictionary.Clear();
-        dictionary.Add("C", 3);
-        dictionary.Add("D", 4);
-
-        var keys = dictionary.Keys.ToList();
-        CollectionAssert.DoesNotContain(keys, "A");
-        CollectionAssert.DoesNotContain(keys, "B");
     }
 
     /// <summary>
@@ -199,20 +201,18 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that no exception is thrown when the FirstInFirstOut eviction candidate has already been removed.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> increments TotalTouches when using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
-    public void EvictionEvents_WhenPolicyIsFIFOAndCandidateMissing_ShouldNotThrow()
+    public void Touch_WhenPolicyIsFIFO_ShouldIncrementTotalTouches()
     {
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.FirstInFirstOut);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Remove("A");
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);
+        dictionary.Add("a", 1);
+        var before = dictionary.TotalTouches;
 
-        dictionary.Add("C", 3); // candidate "A" was already removed
+        dictionary.Touch("a");
 
-        Assert.IsTrue(dictionary.ContainsKey("B"));
-        Assert.IsTrue(dictionary.ContainsKey("C"));
+        Assert.AreEqual(before + 1, dictionary.TotalTouches);
     }
 
     /// <summary>
@@ -237,21 +237,6 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> increments TotalTouches when using FirstInFirstOut policy.
-    /// </summary>
-    [TestMethod]
-    public void Touch_WhenPolicyIsFIFO_ShouldIncrementTotalTouches()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);
-        dictionary.Add("a", 1);
-        var before = dictionary.TotalTouches;
-
-        dictionary.Touch("a");
-
-        Assert.AreEqual(before + 1, dictionary.TotalTouches);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.TouchOrThrow" /> does not alter eviction order when using FirstInFirstOut policy.
     /// </summary>
     [TestMethod]
@@ -264,4 +249,21 @@ public partial class EvictingDictionaryTests
 
         Assert.IsTrue(dictionary.ContainsKey("item"));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Values" /> are returned in insertion order when using FirstInFirstOut eviction policy.
+    /// </summary>
+    [TestMethod]
+    public void Values_WhenPolicyIsFIFO_ShouldReturnValuesInInsertionOrder()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.FirstInFirstOut)
+        {
+            ["a"] = 10,
+            ["b"] = 20,
+            ["c"] = 30
+        };
+
+        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, dictionary.Values.ToList());
+    }
+
 }

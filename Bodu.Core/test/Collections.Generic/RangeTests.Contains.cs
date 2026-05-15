@@ -1,28 +1,54 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeTests.Contains.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="Range{T}.Contains(T)" /> rejects a <see langword="null" /> argument.
+    /// Verifies that a single-step range <c>[n, n+1)</c> contains exactly the value <c>n</c>.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenValueIsNull_ShouldThrowArgumentNullException()
+    public void Contains_WhenRangeIsSingleStep_ShouldContainStartOnly()
+    {
+        var sut = new Range<int>(5, 6);
+
+        Assert.IsTrue(sut.Contains(5));
+        Assert.IsFalse(sut.Contains(6));
+        Assert.IsFalse(sut.Contains(4));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Range{T}.Contains(T)" /> on a string-typed range uses ordinal comparison.
+    /// </summary>
+    [TestMethod]
+    [DataRow("a", true)]
+    [DataRow("alpha", true)]
+    [DataRow("z", false)]
+    [DataRow("", false)]
+    [DataRow("zzz", false)]
+    public void Contains_WhenStringValuesVary_ShouldReturnExpected(string value, bool expected)
     {
         var sut = new Range<string>("a", "z");
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = sut.Contains(null!);
-        });
+        Assert.AreEqual(expected, sut.Contains(value));
+    }
+
+    /// <summary>
+    /// Verifies that the exclusive end of the range is not contained.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenValueEqualsEndExclusive_ShouldReturnFalse()
+    {
+        var sut = new Range<int>(0, 10);
+
+        Assert.IsFalse(sut.Contains(10));
     }
 
     /// <summary>
@@ -35,16 +61,18 @@ public partial class RangeTests
 
         Assert.IsTrue(sut.Contains(0));
     }
-
     /// <summary>
-    /// Verifies that the exclusive end of the range is not contained.
+    /// Verifies that <see cref="Range{T}.Contains(T)" /> rejects a <see langword="null" /> argument.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenValueEqualsEndExclusive_ShouldReturnFalse()
+    public void Contains_WhenValueIsNull_ShouldThrowArgumentNullException()
     {
-        var sut = new Range<int>(0, 10);
+        var sut = new Range<string>("a", "z");
 
-        Assert.IsFalse(sut.Contains(10));
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.Contains(null!);
+        });
     }
 
     /// <summary>
@@ -68,32 +96,4 @@ public partial class RangeTests
         Assert.AreEqual(expected, sut.Contains(value));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Range{T}.Contains(T)" /> on a string-typed range uses ordinal comparison.
-    /// </summary>
-    [TestMethod]
-    [DataRow("a", true)]
-    [DataRow("alpha", true)]
-    [DataRow("z", false)]
-    [DataRow("", false)]
-    [DataRow("zzz", false)]
-    public void Contains_WhenStringValuesVary_ShouldReturnExpected(string value, bool expected)
-    {
-        var sut = new Range<string>("a", "z");
-
-        Assert.AreEqual(expected, sut.Contains(value));
-    }
-
-    /// <summary>
-    /// Verifies that a single-step range <c>[n, n+1)</c> contains exactly the value <c>n</c>.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenRangeIsSingleStep_ShouldContainStartOnly()
-    {
-        var sut = new Range<int>(5, 6);
-
-        Assert.IsTrue(sut.Contains(5));
-        Assert.IsFalse(sut.Contains(6));
-        Assert.IsFalse(sut.Contains(4));
-    }
 }

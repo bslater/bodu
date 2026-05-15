@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Policy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,17 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that the Policy property is read-only and cannot be set after construction.
+    /// </summary>
+    [TestMethod]
+    public void Policy_Property_ShouldBeReadOnly()
+    {
+        PropertyInfo? prop = typeof(EvictingDictionary<string, int>).GetProperty(nameof(EvictingDictionary<string, int>.Policy));
+        Assert.IsNotNull(prop);
+        Assert.IsFalse(prop!.CanWrite, "The Policy property should be read-only.");
+    }
     /// <summary>
     /// Verifies that the Policy property reflects the value set via the constructor.
     /// </summary>
@@ -21,14 +32,13 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the Policy property is read-only and cannot be set after construction.
+    /// Verifies that setting the <see cref="EvictingDictionary{TKey, TValue}.Policy" /> to FirstInFirstOut via constructor reflects the correct value.
     /// </summary>
     [TestMethod]
-    public void Policy_Property_ShouldBeReadOnly()
+    public void Policy_WhenConstructedWithFIFO_ShouldReflectFIFO()
     {
-        PropertyInfo? prop = typeof(EvictingDictionary<string, int>).GetProperty(nameof(EvictingDictionary<string, int>.Policy));
-        Assert.IsNotNull(prop);
-        Assert.IsFalse(prop!.CanWrite, "The Policy property should be read-only.");
+        var dictionary = new EvictingDictionary<int, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);
+        Assert.AreEqual(EvictingDictionaryPolicy.FirstInFirstOut, dictionary.Policy);
     }
 
     /// <summary>
@@ -42,13 +52,4 @@ public partial class EvictingDictionaryTests
         Assert.AreEqual(EvictingDictionaryPolicy.LeastFrequentlyUsed, dictionary.Policy);
     }
 
-    /// <summary>
-    /// Verifies that setting the <see cref="EvictingDictionary{TKey, TValue}.Policy" /> to FirstInFirstOut via constructor reflects the correct value.
-    /// </summary>
-    [TestMethod]
-    public void Policy_WhenConstructedWithFIFO_ShouldReflectFIFO()
-    {
-        var dictionary = new EvictingDictionary<int, int>(3, EvictingDictionaryPolicy.FirstInFirstOut);
-        Assert.AreEqual(EvictingDictionaryPolicy.FirstInFirstOut, dictionary.Policy);
-    }
 }

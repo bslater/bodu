@@ -8,33 +8,16 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNull{T}(T, string, string)" /> throws
-    /// <see cref="ArgumentNullException" /> with the supplied message and parameter name when the value is
-    /// <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void ThrowIfNullWithMessage_WhenValueIsNull_ShouldThrowExactlyWithMessage()
-    {
-        object value = null!;
-        var paramName = "myParam";
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ThrowHelper.ThrowIfNull(value, paramName);
-        });
-
-        Assert.AreEqual(paramName, ex.ParamName);
-    }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNull{T}(T, string, string)" /> does not throw when the supplied
-    /// value is non-<see langword="null" />.
+    /// Verifies that the three-argument <see cref="ThrowHelper.ThrowIfNull{T}(T, string, string)" /> overload
+    /// returns without throwing when the supplied value is non-<see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNullWithMessage_WhenValueIsNotNull_ShouldNotThrow()
+    public void ThrowIfNull_WithCustomMessage_WhenValueIsNotNull_ShouldNotThrow()
     {
         object value = new();
-        ThrowHelper.ThrowIfNull(value);
+        ThrowHelper.ThrowIfNull<object>(value, "unused message", "explicitParam");
     }
 
     /// <summary>
@@ -60,13 +43,31 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that the three-argument <see cref="ThrowHelper.ThrowIfNull{T}(T, string, string)" /> overload
-    /// returns without throwing when the supplied value is non-<see langword="null" />.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNull{T}(T, string, string)" /> does not throw when the supplied
+    /// value is non-<see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNull_WithCustomMessage_WhenValueIsNotNull_ShouldNotThrow()
+    public void ThrowIfNullWithMessage_WhenValueIsNotNull_ShouldNotThrow()
     {
         object value = new();
-        ThrowHelper.ThrowIfNull<object>(value, "unused message", "explicitParam");
+        ThrowHelper.ThrowIfNull(value);
     }
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNull{T}(T, string, string)" /> throws
+    /// <see cref="ArgumentNullException" /> with the supplied message and parameter name when the value is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfNullWithMessage_WhenValueIsNull_ShouldThrowExactlyWithMessage()
+    {
+        object value = null!;
+        var paramName = "myParam";
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfNull(value, paramName);
+        });
+
+        Assert.AreEqual(paramName, ex.ParamName);
+    }
+
 }

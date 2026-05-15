@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.NextOccurrence.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,9 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
@@ -44,6 +41,25 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextOccurrence" />, when InvalidTimeSpan, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(-1)]
+    public void NextOccurrence_WhenInvalidTimeSpan_ShouldThrowExactly(long ticks)
+    {
+        var start = new DateTime(2024, 4, 4);
+        var after = new DateTime(2024, 6, 4);
+        var interval = new TimeSpan(ticks);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = start.NextOccurrence(interval, after);
+        });
+
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.NextOccurrence(DateTime, TimeSpan, DateTime)"/> returns the expected actual
     /// for valid combinations of start, interval, and after values.
     /// </summary>
@@ -56,22 +72,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(expected, actual, $"Expected next occurrence from {start} every {interval} after {after} to be {expected}");
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.NextOccurrence" />, when InvalidTimeSpan, throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0)]
-    [DataRow(-1)]
-    public void NextOccurrence_WhenInvalidTimeSpan_ShouldThrowExactly(long  ticks)
-    {
-        var start = new DateTime(2024, 4, 4);
-        var after=new DateTime(2024, 6, 4);
-        var interval =new  TimeSpan(ticks);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = start.NextOccurrence(interval, after);
-        });
-
-    }
 }

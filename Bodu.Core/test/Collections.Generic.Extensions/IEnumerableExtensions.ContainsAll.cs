@@ -5,13 +5,13 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic.Extensions;
 
 [TestClass]
 public sealed partial class IEnumerableExtensionsTests_ContainsAll
 {
+
     /// <summary>
     /// Provides scenarios for <c>ContainsAll</c> covering full-membership, partial-membership,
     /// empty-items, empty-source, and duplicate-handling cases.
@@ -40,6 +40,35 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
         bool expected) => Assert.AreEqual(expected, source.ContainsAll(items));
 
     /// <summary>
+    /// Verifies that a null items sequence throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void ContainsAll_WhenItemsIsNull_ShouldThrowArgumentNullException()
+    {
+        int[] source = [1, 2, 3];
+        IEnumerable<int>? items = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.ContainsAll(items!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a null source sequence throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void ContainsAll_WhenSourceIsNull_ShouldThrowArgumentNullException()
+    {
+        IEnumerable<int>? source = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source!.ContainsAll([1]);
+        });
+    }
+
+    /// <summary>
     /// Verifies that a custom equality comparer (case-insensitive) is used to compare string elements.
     /// </summary>
     [TestMethod]
@@ -63,32 +92,4 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAll
         Assert.IsFalse(source.ContainsAll(items));
     }
 
-    /// <summary>
-    /// Verifies that a null source sequence throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void ContainsAll_WhenSourceIsNull_ShouldThrowArgumentNullException()
-    {
-        IEnumerable<int>? source = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source!.ContainsAll([1]);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null items sequence throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void ContainsAll_WhenItemsIsNull_ShouldThrowArgumentNullException()
-    {
-        int[] source = [1, 2, 3];
-        IEnumerable<int>? items = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.ContainsAll(items!);
-        });
-    }
 }

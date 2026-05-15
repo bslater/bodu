@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.DayOfWeekFromDayNumber.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.GetNextDayOfWeekFromDayNumber" /> returns the forward delta to reach the next
     /// occurrence of the requested <see cref="DayOfWeek" />.
@@ -35,4 +36,5 @@ public partial class DateOnlyExtensionsTests
         Assert.AreEqual(-7, DateOnlyExtensions.GetPreviousDayOfWeekFromDayNumber(wednesday.DayNumber, DayOfWeek.Wednesday));
         Assert.AreEqual(-3, DateOnlyExtensions.GetPreviousDayOfWeekFromDayNumber(wednesday.DayNumber, DayOfWeek.Sunday));
     }
+
 }

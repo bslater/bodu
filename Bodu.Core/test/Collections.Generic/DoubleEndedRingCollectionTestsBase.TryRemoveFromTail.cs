@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DoubleEndedRingCollectionTestsBase.TryRemoveFromTail.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,18 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollection>
 {
+
+    /// <summary>
+    /// Verifies that <see cref="TryRemoveFromTail(TCollection, out int)"/> returns <see langword="false"/>
+    /// and the default value when the collection is empty.
+    /// </summary>
+    [TestMethod]
+    public void TryRemoveFromTail_WhenEmpty_ShouldReturnFalseAndDefault()
+    {
+        TCollection collection = CreateCollection(3);
+        Assert.IsFalse(TryRemoveFromTail(collection, out var item));
+        Assert.AreEqual(default, item);
+    }
     /// <summary>
     /// Verifies that <see cref="TryRemoveFromTail(TCollection, out int)"/> returns the tail element and
     /// <see langword="true"/> when items are present.
@@ -23,15 +35,4 @@ public abstract partial class DoubleEndedRingCollectionTestsBase<TTest, TCollect
         Assert.IsTrue(GetIsEmpty(collection));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="TryRemoveFromTail(TCollection, out int)"/> returns <see langword="false"/>
-    /// and the default value when the collection is empty.
-    /// </summary>
-    [TestMethod]
-    public void TryRemoveFromTail_WhenEmpty_ShouldReturnFalseAndDefault()
-    {
-        TCollection collection = CreateCollection(3);
-        Assert.IsFalse(TryRemoveFromTail(collection, out var item));
-        Assert.AreEqual(default, item);
-    }
 }

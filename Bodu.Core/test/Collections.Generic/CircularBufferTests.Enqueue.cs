@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.Enqueue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="CircularBuffer{T}.Enqueue"/> replaces the single element when the buffer
     /// has capacity 1 and overwrite is enabled.
@@ -55,19 +56,17 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that head and tail wrap correctly when the buffer is full and overwrite is enabled.
+    /// Verifies that <see cref="CircularBuffer{T}.Enqueue"/> retains <see langword="null"/> values in order.
     /// </summary>
     [TestMethod]
-    public void Enqueue_WhenWraparoundOccursWithOverwrite_ShouldMaintainOrder()
+    public void Enqueue_WhenMultipleNullsProvided_ShouldRetainInOrder()
     {
-        var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
-        buffer.Enqueue(1);
-        buffer.Enqueue(2);
-        buffer.Enqueue(3);
-        buffer.Dequeue();
-        buffer.Enqueue(4); // wraps around
+        var buffer = new CircularBuffer<string?>(3);
+        buffer.Enqueue(null);
+        buffer.Enqueue("X");
+        buffer.Enqueue(null);
 
-        CollectionAssert.AreEqual(new[] { 2, 3, 4 }, buffer.ToArray());
+        CollectionAssert.AreEqual(new[] { null, "X", null }, buffer.ToArray());
     }
 
     /// <summary>
@@ -84,16 +83,19 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CircularBuffer{T}.Enqueue"/> retains <see langword="null"/> values in order.
+    /// Verifies that head and tail wrap correctly when the buffer is full and overwrite is enabled.
     /// </summary>
     [TestMethod]
-    public void Enqueue_WhenMultipleNullsProvided_ShouldRetainInOrder()
+    public void Enqueue_WhenWraparoundOccursWithOverwrite_ShouldMaintainOrder()
     {
-        var buffer = new CircularBuffer<string?>(3);
-        buffer.Enqueue(null);
-        buffer.Enqueue("X");
-        buffer.Enqueue(null);
+        var buffer = new CircularBuffer<int>(3, allowOverwrite: true);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
+        buffer.Dequeue();
+        buffer.Enqueue(4); // wraps around
 
-        CollectionAssert.AreEqual(new[] { null, "X", null }, buffer.ToArray());
+        CollectionAssert.AreEqual(new[] { 2, 3, 4 }, buffer.ToArray());
     }
+
 }

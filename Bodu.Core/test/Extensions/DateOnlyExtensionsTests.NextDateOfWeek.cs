@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.NextDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,19 +9,17 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.NextDateOfWeek(DateOnly, DayOfWeek)" /> returns the next occurrence of the requested <see cref="DayOfWeek" /> for each <c>(input, target)</c> pair.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests. NextDateOfWeekTestData),typeof(DateTimeExtensionsTests))]
+    [DynamicData(nameof(DateTimeExtensionsTests.NextDateOfWeekTestData), typeof(DateTimeExtensionsTests))]
     public void NextDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime inputDateTime, DayOfWeek targetDay, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -29,7 +27,7 @@ public partial class DateOnlyExtensionsTests
 
         var actual = input.NextDateOfWeek(targetDay);
 
-            Assert.AreEqual(expected, actual);
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -47,17 +45,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnly.MinValue" /> returns a date on or after <see cref="DateOnly.MinValue" /> (does not underflow).
-    /// </summary>
-    [TestMethod]
-    public void NextDateOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
-    {
-        var actual = DateOnly.MinValue.NextDateOfWeek(DayOfWeek.Friday);
-
-        Assert.IsTrue(actual >= DateOnly.MinValue);
-    }
-
-    /// <summary>
     /// Verifies that an input one week before <see cref="DateOnly.MaxValue" /> targeting its own <see cref="DateOnly.DayOfWeek" /> stays within the valid range.
     /// </summary>
     [TestMethod]
@@ -68,4 +55,16 @@ public partial class DateOnlyExtensionsTests
 
         Assert.IsTrue(actual <= DateOnly.MaxValue);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnly.MinValue" /> returns a date on or after <see cref="DateOnly.MinValue" /> (does not underflow).
+    /// </summary>
+    [TestMethod]
+    public void NextDateOfWeek_WhenUsingMinValue_ShouldReturnNextValidDate()
+    {
+        var actual = DateOnly.MinValue.NextDateOfWeek(DayOfWeek.Friday);
+
+        Assert.IsTrue(actual >= DateOnly.MinValue);
+    }
+
 }

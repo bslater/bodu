@@ -8,6 +8,22 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
+
+    /// <summary>
+    /// Verifies that the <c>(IEnumerable, capacity, allowOverwrite=false)</c> constructor copies all elements
+    /// when the non-array source fits within the supplied capacity, exercising the
+    /// <c>MaterializeWithOverflowPolicy</c> happy path on a deferred enumerable.
+    /// </summary>
+    [TestMethod]
+    public void CircularBufferMaterializeWithOverflowPolicy_WhenNonArraySourceFitsAndOverflowDisallowed_ShouldCopyAllElements()
+    {
+        IEnumerable<int> source = YieldMaterializeSequence(1, 3);
+
+        var buffer = new CircularBuffer<int>(source, capacity: 5, allowOverwrite: false);
+
+        Assert.AreEqual(3, buffer.Count);
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, buffer.ToArray());
+    }
     /// <summary>
     /// Verifies that the <c>(IEnumerable, capacity, allowOverwrite=true)</c> constructor retains only the newest
     /// elements when the non-array source is larger than capacity, exercising the
@@ -40,22 +56,6 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that the <c>(IEnumerable, capacity, allowOverwrite=false)</c> constructor copies all elements
-    /// when the non-array source fits within the supplied capacity, exercising the
-    /// <c>MaterializeWithOverflowPolicy</c> happy path on a deferred enumerable.
-    /// </summary>
-    [TestMethod]
-    public void CircularBufferMaterializeWithOverflowPolicy_WhenNonArraySourceFitsAndOverflowDisallowed_ShouldCopyAllElements()
-    {
-        IEnumerable<int> source = YieldMaterializeSequence(1, 3);
-
-        var buffer = new CircularBuffer<int>(source, capacity: 5, allowOverwrite: false);
-
-        Assert.AreEqual(3, buffer.Count);
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, buffer.ToArray());
-    }
-
-    /// <summary>
     /// Verifies that the constructor preserves every element when the source length exactly equals capacity,
     /// hitting the <c>items.Length == capacity</c> boundary inside the base
     /// <see cref="RingBackedCollection{T}" /> constructor.
@@ -75,4 +75,5 @@ public partial class CircularBufferTests
         for (var i = 0; i < count; i++)
             yield return start + i;
     }
+
 }

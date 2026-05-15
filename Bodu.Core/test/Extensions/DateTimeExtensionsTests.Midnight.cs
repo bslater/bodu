@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.Midnight.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,13 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when Called, returns the expected value.
     /// </summary>
@@ -44,6 +43,18 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when UsingMaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()
+    {
+        DateTime input = DateTime.MaxValue.Date;
+        DateTime actual = input.Midnight();
+
+        Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when UsingMinValue, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -55,15 +66,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(new DateTime(1, 1, 1, 0, 0, 0), actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.Midnight" />, when UsingMaxValue, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Midnight_WhenUsingMaxValue_ShouldReturnMidnight()
-    {
-        DateTime input = DateTime.MaxValue.Date;
-        DateTime actual = input.Midnight();
-
-        Assert.AreEqual(new DateTime(9999, 12, 31, 0, 0, 0), actual);
-    }
 }

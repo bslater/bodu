@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfStringTooLong" /> contract with explicit ParamName
     /// assertions: null → <see cref="ArgumentNullException" /> on "value"; length > max →
@@ -44,17 +45,13 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> throws <see cref="ArgumentNullException" />
-    /// when the string value is <see langword="null" />.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> does not throw when the string length
+    /// equals the maximum (boundary condition).
     /// </summary>
     [TestMethod]
-    public void ThrowIfStringTooLong_WhenValueIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ThrowHelper.ThrowIfStringTooLong(null!, 10);
-        });
-    }
+    [DataRow("abcde", 5)]  // exactly at max
+    [DataRow("", 0)]        // empty string at max 0
+    public void ThrowIfStringTooLong_WhenLengthEqualsMaximum_ShouldNotThrow(string value, int maxLength) => ThrowHelper.ThrowIfStringTooLong(value, maxLength);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> throws
@@ -74,15 +71,6 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> does not throw when the string length
-    /// equals the maximum (boundary condition).
-    /// </summary>
-    [TestMethod]
-    [DataRow("abcde", 5)]  // exactly at max
-    [DataRow("", 0)]        // empty string at max 0
-    public void ThrowIfStringTooLong_WhenLengthEqualsMaximum_ShouldNotThrow(string value, int maxLength) => ThrowHelper.ThrowIfStringTooLong(value, maxLength);
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> does not throw when the string length
     /// is strictly less than the maximum.
     /// </summary>
     [TestMethod]
@@ -90,4 +78,18 @@ public partial class ThrowHelperTests
     [DataRow("", 1)]
     [DataRow("hello world", 100)]
     public void ThrowIfStringTooLong_WhenLengthIsBelowMaximum_ShouldNotThrow(string value, int maxLength) => ThrowHelper.ThrowIfStringTooLong(value, maxLength);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringTooLong" /> throws <see cref="ArgumentNullException" />
+    /// when the string value is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfStringTooLong_WhenValueIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfStringTooLong(null!, 10);
+        });
+    }
+
 }

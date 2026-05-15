@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.Age.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that the <see cref="DateTimeExtensions.Age(DateTime, DateTime)" /> method returns the expected age in full calendar
     /// years for various date combinations.
@@ -36,6 +37,16 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that minimum and maximum supported dates do not throw.
+    /// </summary>
+    [TestMethod]
+    public void Age_WhenUsingMinAndMaxDateOnly_ShouldNotThrow()
+    {
+        var age = DateOnly.MinValue.Age(DateOnly.MaxValue);
+        Assert.IsTrue(age > 0);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="DateTimeKind" /> differences are ignored in age calculations.
     /// </summary>
     [TestMethod]
@@ -47,13 +58,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(24, birth.Age(atDate));
     }
 
-    /// <summary>
-    /// Verifies that minimum and maximum supported dates do not throw.
-    /// </summary>
-    [TestMethod]
-    public void Age_WhenUsingMinAndMaxDateOnly_ShouldNotThrow()
-    {
-        var age = DateOnly.MinValue.Age(DateOnly.MaxValue);
-        Assert.IsTrue(age > 0);
-    }
 }

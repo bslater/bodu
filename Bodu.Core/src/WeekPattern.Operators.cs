@@ -8,6 +8,7 @@ namespace Bodu;
 
 public partial struct WeekPattern
 {
+
     /// <summary>
     /// Implicitly converts a <see cref="WeekPattern"/> to its underlying <see cref="byte"/> bitmask.
     /// </summary>
@@ -26,23 +27,13 @@ public partial struct WeekPattern
         left._selectedDays == right._selectedDays;
 
     /// <summary>
-    /// Determines whether two <see cref="WeekPattern"/> instances have different selected days.
+    /// Returns a new <see cref="WeekPattern"/> with all seven days toggled — selected days become
+    /// unselected and vice versa.
     /// </summary>
-    /// <param name="left">The first operand.</param>
-    /// <param name="right">The second operand.</param>
-    /// <returns><see langword="true"/> if the instances differ; otherwise, <see langword="false"/>.</returns>
-    public static bool operator !=(WeekPattern left, WeekPattern right) =>
-        left._selectedDays != right._selectedDays;
-
-    /// <summary>
-    /// Returns a new <see cref="WeekPattern"/> containing only the days selected in both operands
-    /// (set intersection).
-    /// </summary>
-    /// <param name="left">The first operand.</param>
-    /// <param name="right">The second operand.</param>
-    /// <returns>A <see cref="WeekPattern"/> whose selected days are the intersection of the two operands.</returns>
-    public static WeekPattern operator &(WeekPattern left, WeekPattern right) =>
-        new WeekPattern(left._selectedDays & right._selectedDays);
+    /// <param name="pattern">The <see cref="WeekPattern"/> to complement.</param>
+    /// <returns>The bitwise complement of <paramref name="pattern"/>, masked to the valid seven-day range.</returns>
+    public static WeekPattern operator ~(WeekPattern pattern) =>
+        new WeekPattern(~pattern._selectedDays & MaxValue);
 
     /// <summary>
     /// Returns a new <see cref="WeekPattern"/> containing all days selected in either operand
@@ -65,11 +56,22 @@ public partial struct WeekPattern
         new WeekPattern(left._selectedDays ^ right._selectedDays);
 
     /// <summary>
-    /// Returns a new <see cref="WeekPattern"/> with all seven days toggled — selected days become
-    /// unselected and vice versa.
+    /// Returns a new <see cref="WeekPattern"/> containing only the days selected in both operands
+    /// (set intersection).
     /// </summary>
-    /// <param name="pattern">The <see cref="WeekPattern"/> to complement.</param>
-    /// <returns>The bitwise complement of <paramref name="pattern"/>, masked to the valid seven-day range.</returns>
-    public static WeekPattern operator ~(WeekPattern pattern) =>
-        new WeekPattern(~pattern._selectedDays & MaxValue);
+    /// <param name="left">The first operand.</param>
+    /// <param name="right">The second operand.</param>
+    /// <returns>A <see cref="WeekPattern"/> whose selected days are the intersection of the two operands.</returns>
+    public static WeekPattern operator &(WeekPattern left, WeekPattern right) =>
+        new WeekPattern(left._selectedDays & right._selectedDays);
+
+    /// <summary>
+    /// Determines whether two <see cref="WeekPattern"/> instances have different selected days.
+    /// </summary>
+    /// <param name="left">The first operand.</param>
+    /// <param name="right">The second operand.</param>
+    /// <returns><see langword="true"/> if the instances differ; otherwise, <see langword="false"/>.</returns>
+    public static bool operator !=(WeekPattern left, WeekPattern right) =>
+        left._selectedDays != right._selectedDays;
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests._EnqueueDequeue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,35 +10,6 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
-    /// <summary>
-    /// Verifies that at the minimum capacity, sustained concurrent TryEnqueue/TryDequeue churn never throws and keeps the count within bounds.
-    /// </summary>
-    [TestMethod]
-    public void EnqueueAndDequeue_WhenCapacityIsMin_ShouldBehaveConsistently()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
-        var errors = new ConcurrentBag<Exception>();
-        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-
-        Task[] tasks = Enumerable.Range(0, Environment.ProcessorCount * 2).Select(_ => Task.Run(() =>
-        {
-            while (!cts.IsCancellationRequested)
-            {
-                try
-                {
-                    buffer.TryEnqueue(new TestItem(0));
-                    buffer.TryDequeue(out TestItem? @out);
-                    Thread.SpinWait(20);
-                }
-                catch (Exception ex) { errors.Add(ex); }
-            }
-        })).ToArray();
-
-        Task.WaitAll(tasks);
-
-        Assert.AreEqual(0, errors.Count, "No exceptions expected under capacity-1 churn.");
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 1);
-    }
 
     /// <summary>
     /// Verifies that with overwriting disabled, items only leave the buffer via <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> so <c>enqueued == dequeued + count</c>.
@@ -100,6 +71,35 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.AreEqual(0, exceptions.Count, "Enqueue should not throw in overwrite mode.");
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= buffer.Capacity);
+    }
+    /// <summary>
+    /// Verifies that at the minimum capacity, sustained concurrent TryEnqueue/TryDequeue churn never throws and keeps the count within bounds.
+    /// </summary>
+    [TestMethod]
+    public void EnqueueAndDequeue_WhenCapacityIsMin_ShouldBehaveConsistently()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
+        var errors = new ConcurrentBag<Exception>();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(3));
+
+        Task[] tasks = Enumerable.Range(0, Environment.ProcessorCount * 2).Select(_ => Task.Run(() =>
+        {
+            while (!cts.IsCancellationRequested)
+            {
+                try
+                {
+                    buffer.TryEnqueue(new TestItem(0));
+                    buffer.TryDequeue(out TestItem? @out);
+                    Thread.SpinWait(20);
+                }
+                catch (Exception ex) { errors.Add(ex); }
+            }
+        })).ToArray();
+
+        Task.WaitAll(tasks);
+
+        Assert.AreEqual(0, errors.Count, "No exceptions expected under capacity-1 churn.");
+        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 1);
     }
 
     //[TestMethod]
@@ -275,4 +275,5 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= 3);
     }
+
 }

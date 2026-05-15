@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.FreeCapacity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,43 +8,21 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> equals
-    /// <see cref="PooledBufferBuilder{T}.Capacity"/> minus <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
-    /// </summary>
-    [TestMethod]
-    public void FreeCapacity_WhenItemsBuffered_ShouldEqualCapacityMinusWrittenCount()
-    {
-        using var builder = new PooledBufferBuilder<int>(32);
-        builder.AppendRange([1, 2, 3, 4]);
-
-        Assert.AreEqual(builder.Capacity - builder.WrittenCount, builder.FreeCapacity);
-    }
 
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> equals <see cref="PooledBufferBuilder{T}.Capacity"/>
-    /// when the builder is empty.
+    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> is reduced by the amount passed to
+    /// <see cref="PooledBufferBuilder{T}.Advance"/>.
     /// </summary>
     [TestMethod]
-    public void FreeCapacity_WhenEmpty_ShouldEqualCapacity()
+    public void FreeCapacity_WhenAdvanceCalled_ShouldDecreaseByAdvanceAmount()
     {
         using var builder = new PooledBufferBuilder<int>(16);
+        var freeCapacityBefore = builder.FreeCapacity;
+        _ = builder.GetSpan(4);
 
-        Assert.AreEqual(builder.Capacity, builder.FreeCapacity);
-    }
+        builder.Advance(4);
 
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> is restored to
-    /// <see cref="PooledBufferBuilder{T}.Capacity"/> after <see cref="PooledBufferBuilder{T}.Reset"/>.
-    /// </summary>
-    [TestMethod]
-    public void FreeCapacity_WhenResetCalled_ShouldEqualCapacity()
-    {
-        using var builder = new PooledBufferBuilder<int>(16);
-        builder.AppendRange(Enumerable.Range(1, 8));
-        builder.Reset();
-
-        Assert.AreEqual(builder.Capacity, builder.FreeCapacity);
+        Assert.AreEqual(freeCapacityBefore - 4, builder.FreeCapacity);
     }
 
     /// <summary>
@@ -64,6 +42,18 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> equals <see cref="PooledBufferBuilder{T}.Capacity"/>
+    /// when the builder is empty.
+    /// </summary>
+    [TestMethod]
+    public void FreeCapacity_WhenEmpty_ShouldEqualCapacity()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+
+        Assert.AreEqual(builder.Capacity, builder.FreeCapacity);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> is not changed by calling
     /// <see cref="PooledBufferBuilder{T}.GetSpan"/> without a subsequent <see cref="PooledBufferBuilder{T}.Advance"/>.
     /// </summary>
@@ -78,20 +68,31 @@ public partial class PooledBufferBuilderTests
 
         Assert.AreEqual(freeCapacityBefore, builder.FreeCapacity);
     }
-
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> is reduced by the amount passed to
-    /// <see cref="PooledBufferBuilder{T}.Advance"/>.
+    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> equals
+    /// <see cref="PooledBufferBuilder{T}.Capacity"/> minus <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
     /// </summary>
     [TestMethod]
-    public void FreeCapacity_WhenAdvanceCalled_ShouldDecreaseByAdvanceAmount()
+    public void FreeCapacity_WhenItemsBuffered_ShouldEqualCapacityMinusWrittenCount()
+    {
+        using var builder = new PooledBufferBuilder<int>(32);
+        builder.AppendRange([1, 2, 3, 4]);
+
+        Assert.AreEqual(builder.Capacity - builder.WrittenCount, builder.FreeCapacity);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.FreeCapacity"/> is restored to
+    /// <see cref="PooledBufferBuilder{T}.Capacity"/> after <see cref="PooledBufferBuilder{T}.Reset"/>.
+    /// </summary>
+    [TestMethod]
+    public void FreeCapacity_WhenResetCalled_ShouldEqualCapacity()
     {
         using var builder = new PooledBufferBuilder<int>(16);
-        var freeCapacityBefore = builder.FreeCapacity;
-        _ = builder.GetSpan(4);
+        builder.AppendRange(Enumerable.Range(1, 8));
+        builder.Reset();
 
-        builder.Advance(4);
-
-        Assert.AreEqual(freeCapacityBefore - 4, builder.FreeCapacity);
+        Assert.AreEqual(builder.Capacity, builder.FreeCapacity);
     }
+
 }

@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> contract for the <see cref="int" />
     /// instantiation with explicit ParamName assertions: zero, negative, and positive non-power-of-two
@@ -44,16 +45,26 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when the value is zero.
+    /// <see cref="ArgumentOutOfRangeException" /> for a <see cref="long" /> value that is not a power of two,
+    /// exercising the generic <c>IBinaryInteger&lt;T&gt;</c> constraint.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotPowerOfTwo_WhenValueIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotPowerOfTwo_WhenLongValueIsNotPowerOfTwo_ShouldThrowArgumentOutOfRangeException()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            ThrowHelper.ThrowIfNotPowerOfTwo(0);
+            ThrowHelper.ThrowIfNotPowerOfTwo(4294967297L); // 2^32 + 1
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> works correctly with <see cref="long" />
+    /// arguments, exercising the generic <c>IBinaryInteger&lt;T&gt;</c> constraint.
+    /// </summary>
+    [TestMethod]
+    [DataRow(4294967296L)]  // 2^32 — valid power of two, exceeds int range
+    [DataRow(1099511627776L)] // 2^40
+    public void ThrowIfNotPowerOfTwo_WhenValueIsLongPowerOfTwo_ShouldNotThrow(long value) => ThrowHelper.ThrowIfNotPowerOfTwo(value);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> throws
@@ -109,25 +120,16 @@ public partial class ThrowHelperTests
     public void ThrowIfNotPowerOfTwo_WhenValueIsPowerOfTwo_ShouldNotThrow(int value) => ThrowHelper.ThrowIfNotPowerOfTwo(value);
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> works correctly with <see cref="long" />
-    /// arguments, exercising the generic <c>IBinaryInteger&lt;T&gt;</c> constraint.
-    /// </summary>
-    [TestMethod]
-    [DataRow(4294967296L)]  // 2^32 — valid power of two, exceeds int range
-    [DataRow(1099511627776L)] // 2^40
-    public void ThrowIfNotPowerOfTwo_WhenValueIsLongPowerOfTwo_ShouldNotThrow(long value) => ThrowHelper.ThrowIfNotPowerOfTwo(value);
-
-    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfNotPowerOfTwo{T}" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> for a <see cref="long" /> value that is not a power of two,
-    /// exercising the generic <c>IBinaryInteger&lt;T&gt;</c> constraint.
+    /// <see cref="ArgumentOutOfRangeException" /> when the value is zero.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotPowerOfTwo_WhenLongValueIsNotPowerOfTwo_ShouldThrowArgumentOutOfRangeException()
+    public void ThrowIfNotPowerOfTwo_WhenValueIsZero_ShouldThrowArgumentOutOfRangeException()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            ThrowHelper.ThrowIfNotPowerOfTwo(4294967297L); // 2^32 + 1
+            ThrowHelper.ThrowIfNotPowerOfTwo(0);
         });
     }
+
 }

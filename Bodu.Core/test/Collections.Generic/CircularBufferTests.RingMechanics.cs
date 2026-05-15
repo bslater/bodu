@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.RingMechanics.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,22 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="RingBackedCollection{T}.Contains(T)" /> returns <see langword="false" /> when
+    /// the buffer is full and wrapped to <c>_head == _tail == 0</c> and the item is absent. Exercises the
+    /// short-circuit branch where the second-segment lookup is skipped because the tail offset is zero.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenBufferFullAndWrappedToZeroAndItemAbsent_ShouldReturnFalse()
+    {
+        var buffer = new CircularBuffer<int>(3);
+        buffer.Enqueue(1);
+        buffer.Enqueue(2);
+        buffer.Enqueue(3);
+
+        Assert.IsFalse(buffer.Contains(99));
+    }
     /// <summary>
     /// Verifies that the strongly-typed <see cref="RingBackedCollection{T}.GetEnumerator()" /> method returns an
     /// enumerator struct that walks the live region in head-to-tail order. Exercises the public typed overload
@@ -70,19 +86,4 @@ public partial class CircularBufferTests
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, buffer.ToArray());
     }
 
-    /// <summary>
-    /// Verifies that <see cref="RingBackedCollection{T}.Contains(T)" /> returns <see langword="false" /> when
-    /// the buffer is full and wrapped to <c>_head == _tail == 0</c> and the item is absent. Exercises the
-    /// short-circuit branch where the second-segment lookup is skipped because the tail offset is zero.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenBufferFullAndWrappedToZeroAndItemAbsent_ShouldReturnFalse()
-    {
-        var buffer = new CircularBuffer<int>(3);
-        buffer.Enqueue(1);
-        buffer.Enqueue(2);
-        buffer.Enqueue(3);
-
-        Assert.IsFalse(buffer.Contains(99));
-    }
 }

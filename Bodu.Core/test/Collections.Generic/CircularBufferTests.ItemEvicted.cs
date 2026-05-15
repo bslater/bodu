@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CircularBufferTests.ItemEvicted.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class CircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="CircularBuffer{T}.ItemEvicted" /> is not raised when the buffer has capacity available.
     /// </summary>
@@ -43,6 +44,30 @@ public partial class CircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that an unsubscribed ItemEvicted handler does not receive further eviction events.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenHandlerUnsubscribed_ShouldNotReceiveFurtherEvents()
+    {
+        var callCount = 0;
+        var buffer = new CircularBuffer<int>(1, allowOverwrite: true);
+
+        Action<int> handler = _ => callCount++;
+        buffer.ItemEvicted += handler;
+
+        buffer.Enqueue(1);
+        buffer.Enqueue(2); // evicts 1 — handler fires
+
+        Assert.AreEqual(1, callCount);
+
+        buffer.ItemEvicted -= handler;
+
+        buffer.Enqueue(3); // evicts 2 — handler should not fire
+
+        Assert.AreEqual(1, callCount);
+    }
+
+    /// <summary>
     /// Verifies that all registered ItemEvicted handlers are invoked.
     /// </summary>
     [TestMethod]
@@ -59,6 +84,29 @@ public partial class CircularBufferTests
         buffer.Enqueue("Z"); // Overwrite X
 
         CollectionAssert.AreEqual(new[] { "Handler1:X", "Handler2:X" }, log);
+    }
+
+    /// <summary>
+    /// Verifies that the ItemEvicted handler receives a null argument when a null item is evicted.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenNullItemIsEvicted_ShouldReceiveNullArgument()
+    {
+        var received = "sentinel";
+        var handlerCalled = false;
+
+        var buffer = new CircularBuffer<string?>(1, allowOverwrite: true);
+        buffer.ItemEvicted += item =>
+        {
+            received = item;
+            handlerCalled = true;
+        };
+
+        buffer.Enqueue(null);
+        buffer.Enqueue("X"); // evicts null
+
+        Assert.IsTrue(handlerCalled);
+        Assert.IsNull(received);
     }
 
     /// <summary>
@@ -96,50 +144,4 @@ public partial class CircularBufferTests
         CollectionAssert.AreEqual(new[] { "X" }, evictedItems);
     }
 
-    /// <summary>
-    /// Verifies that an unsubscribed ItemEvicted handler does not receive further eviction events.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenHandlerUnsubscribed_ShouldNotReceiveFurtherEvents()
-    {
-        var callCount = 0;
-        var buffer = new CircularBuffer<int>(1, allowOverwrite: true);
-
-        Action<int> handler = _ => callCount++;
-        buffer.ItemEvicted += handler;
-
-        buffer.Enqueue(1);
-        buffer.Enqueue(2); // evicts 1 — handler fires
-
-        Assert.AreEqual(1, callCount);
-
-        buffer.ItemEvicted -= handler;
-
-        buffer.Enqueue(3); // evicts 2 — handler should not fire
-
-        Assert.AreEqual(1, callCount);
-    }
-
-    /// <summary>
-    /// Verifies that the ItemEvicted handler receives a null argument when a null item is evicted.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenNullItemIsEvicted_ShouldReceiveNullArgument()
-    {
-        var received = "sentinel";
-        var handlerCalled = false;
-
-        var buffer = new CircularBuffer<string?>(1, allowOverwrite: true);
-        buffer.ItemEvicted += item =>
-        {
-            received = item;
-            handlerCalled = true;
-        };
-
-        buffer.Enqueue(null);
-        buffer.Enqueue("X"); // evicts null
-
-        Assert.IsTrue(handlerCalled);
-        Assert.IsNull(received);
-    }
 }

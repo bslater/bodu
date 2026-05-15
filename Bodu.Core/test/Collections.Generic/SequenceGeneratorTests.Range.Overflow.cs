@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SequenceGeneratorTests.Range.Overflow.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class SequenceGeneratorTests
 {
+
     /// <summary>
     /// Verifies that <see cref="SequenceGenerator.Range(int, int, int)" /> terminates cleanly when ascending iteration would overflow
     /// <see cref="int.MaxValue" />, yielding only the values that fit within the addressable range.
@@ -35,6 +36,16 @@ public partial class SequenceGeneratorTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.Range(long, int)" /> emitted at <see cref="long.MaxValue" /> with count zero produces an empty sequence.
+    /// </summary>
+    [TestMethod]
+    public void Range_WhenLongStartIsMaxAndCountIsZero_ShouldReturnEmptySequence()
+    {
+        var actual = SequenceGenerator.Range(long.MaxValue, 0).ToArray();
+        Assert.AreEqual(0, actual.Length);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="SequenceGenerator.Range(int, int, int)" /> with a positive step but a stop endpoint preceding the start returns
     /// an empty sequence.
     /// </summary>
@@ -45,13 +56,4 @@ public partial class SequenceGeneratorTests
         Assert.AreEqual(0, actual.Length);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Range(long, int)" /> emitted at <see cref="long.MaxValue" /> with count zero produces an empty sequence.
-    /// </summary>
-    [TestMethod]
-    public void Range_WhenLongStartIsMaxAndCountIsZero_ShouldReturnEmptySequence()
-    {
-        var actual = SequenceGenerator.Range(long.MaxValue, 0).ToArray();
-        Assert.AreEqual(0, actual.Length);
-    }
 }

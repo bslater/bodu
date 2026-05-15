@@ -15,32 +15,14 @@ namespace Bodu.Infrastructure;
 public sealed class TrackingEnumerable<T>
     : IEnumerable<T>
 {
-    private readonly IEnumerable<T> _source;
+
     private readonly Action _onEnumerate;
     private readonly Action<int>? _onItemAccess;
+    private readonly IEnumerable<T> _source;
+    private bool _enforceSingleEnumeration;
+    private bool _enumeratorCreated = false;
 
     private int _itemsEnumerated = 0;
-    private bool _enumeratorCreated = false;
-    private bool _enforceSingleEnumeration;
-
-    /// <summary>
-    /// Gets whether the enumerable has been enumerated at least once.
-    /// </summary>
-    public bool HasEnumerated => _enumeratorCreated;
-
-    /// <summary>
-    /// Gets the number of items enumerated (only tracked in first enumeration).
-    /// </summary>
-    public int ItemsEnumerated => _itemsEnumerated;
-
-    /// <summary>
-    /// Enables enforcement of one-time enumeration.
-    /// </summary>
-    public TrackingEnumerable<T> EnforceSingleEnumeration()
-    {
-        _enforceSingleEnumeration = true;
-        return this;
-    }
 
     /// <summary>
     /// Creates a new <see cref="TrackingEnumerable{T}" /> instance.
@@ -53,6 +35,27 @@ public sealed class TrackingEnumerable<T>
         this._source = source ?? throw new ArgumentNullException(nameof(source));
         this._onEnumerate = onEnumerate ?? (() => { });
         this._onItemAccess = onItemAccess;
+    }
+
+    /// <summary>
+    /// Gets whether the enumerable has been enumerated at least once.
+    /// </summary>
+    public bool HasEnumerated => _enumeratorCreated;
+
+    /// <summary>
+    /// Gets the number of items enumerated (only tracked in first enumeration).
+    /// </summary>
+    public int ItemsEnumerated => _itemsEnumerated;
+
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    /// <summary>
+    /// Enables enforcement of one-time enumeration.
+    /// </summary>
+    public TrackingEnumerable<T> EnforceSingleEnumeration()
+    {
+        _enforceSingleEnumeration = true;
+        return this;
     }
 
     public IEnumerator<T> GetEnumerator()
@@ -72,5 +75,4 @@ public sealed class TrackingEnumerable<T>
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

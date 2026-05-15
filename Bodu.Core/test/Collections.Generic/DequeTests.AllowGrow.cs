@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DequeTests.AllowGrow.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class DequeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Deque{T}.AllowGrow"/> defaults to <see langword="true"/> for the
     /// parameterless and capacity-only constructors.
@@ -32,6 +33,24 @@ public partial class DequeTests
     {
         var deque = new Deque<int>(8, allowGrow: allowGrow);
         Assert.AreEqual(allowGrow, deque.AllowGrow);
+    }
+
+    /// <summary>
+    /// Verifies that switching <see cref="Deque{T}.AllowGrow"/> off does not shrink the existing capacity —
+    /// any room already allocated remains available.
+    /// </summary>
+    [TestMethod]
+    public void AllowGrow_WhenToggledOff_ShouldNotShrinkCapacity()
+    {
+        var deque = new Deque<int>(4, allowGrow: true);
+        for (var i = 0; i < 100; i++)
+            deque.AddLast(i);
+
+        var capacityBefore = deque.Capacity;
+        deque.AllowGrow = false;
+
+        Assert.AreEqual(capacityBefore, deque.Capacity);
+        Assert.AreEqual(100, deque.Count);
     }
 
     /// <summary>
@@ -71,24 +90,6 @@ public partial class DequeTests
     }
 
     /// <summary>
-    /// Verifies that switching <see cref="Deque{T}.AllowGrow"/> off does not shrink the existing capacity —
-    /// any room already allocated remains available.
-    /// </summary>
-    [TestMethod]
-    public void AllowGrow_WhenToggledOff_ShouldNotShrinkCapacity()
-    {
-        var deque = new Deque<int>(4, allowGrow: true);
-        for (var i = 0; i < 100; i++)
-            deque.AddLast(i);
-
-        var capacityBefore = deque.Capacity;
-        deque.AllowGrow = false;
-
-        Assert.AreEqual(capacityBefore, deque.Capacity);
-        Assert.AreEqual(100, deque.Count);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Deque{T}.EnsureCapacity(int)"/> works regardless of <see cref="Deque{T}.AllowGrow"/>.
     /// It is the explicit pre-grow hatch even on fixed-capacity deques.
     /// </summary>
@@ -102,4 +103,5 @@ public partial class DequeTests
         Assert.IsTrue(deque.Capacity >= 50);
         Assert.IsFalse(deque.AllowGrow);
     }
+
 }

@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the <see cref="ThrowHelper.ThrowIfLessThanOrEqual{T}" /> contract with ParamName
     /// assertions: <c>value &lt;= min</c> throws <see cref="ArgumentOutOfRangeException" /> with ParamName
@@ -39,6 +40,15 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOrEqual" />, when ValueIsGreaterThanMin, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1, 0)]
+    [DataRow(6, 5)]
+    [DataRow(int.MaxValue, int.MinValue)]
+    public void ThrowIfLessThanOrEqual_WhenValueIsGreaterThanMin_ShouldNotThrow(int value, int min) => ThrowHelper.ThrowIfLessThanOrEqual(value, min);
+
+    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOrEqual" />, when ValueIsLessThanOrEqualToMin, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
@@ -54,12 +64,4 @@ public partial class ThrowHelperTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOrEqual" />, when ValueIsGreaterThanMin, NotThrow.
-    /// </summary>
-    [TestMethod]
-    [DataRow(1, 0)]
-    [DataRow(6, 5)]
-    [DataRow(int.MaxValue, int.MinValue)]
-    public void ThrowIfLessThanOrEqual_WhenValueIsGreaterThanMin_ShouldNotThrow(int value, int min) => ThrowHelper.ThrowIfLessThanOrEqual(value, min);
 }

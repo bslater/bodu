@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.FirstDateOfWeekInYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,24 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInYear" /> returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInYearTestData))]
-    public void FirstDateOfWeekInYear_ShouldReturnExpectedDay(DateTime input, DayOfWeek targetDay, DateTime expected)
-    {
-        DateTime actual = input.FirstDateOfWeekInYear(targetDay);
-
-        Assert.AreEqual(expected, actual);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInYear" /> returns the expected value.
@@ -41,6 +28,17 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(DateTimeKind.Utc, inputUtc.FirstDateOfWeekInYear(DayOfWeek.Monday).Kind);
         Assert.AreEqual(DateTimeKind.Local, inputLocal.FirstDateOfWeekInYear(DayOfWeek.Monday).Kind);
         Assert.AreEqual(DateTimeKind.Unspecified, inputUnspecified.FirstDateOfWeekInYear(DayOfWeek.Monday).Kind);
+    }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInYear" /> returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDateOfWeekInYearTestData))]
+    public void FirstDateOfWeekInYear_ShouldReturnExpectedDay(DateTime input, DayOfWeek targetDay, DateTime expected)
+    {
+        DateTime actual = input.FirstDateOfWeekInYear(targetDay);
+
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -59,17 +57,6 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInYear" />, when MinValue, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
-    {
-        DateTime actual = DateTime.MinValue.FirstDateOfWeekInYear(DayOfWeek.Monday);
-
-        Assert.AreEqual(new DateTime(1, 1, 1), actual); // 0001-01-01 is a Monday
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInYear" />, when MaxYear, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -80,4 +67,16 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(new DateTime(9999, 1, 2), actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInYear" />, when MinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
+    {
+        DateTime actual = DateTime.MinValue.FirstDateOfWeekInYear(DayOfWeek.Monday);
+
+        Assert.AreEqual(new DateTime(1, 1, 1), actual); // 0001-01-01 is a Monday
+    }
+
 }

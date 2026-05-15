@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.PreviousDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,9 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
@@ -48,17 +45,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnly.MinValue" /> + 7 days returning the prior Monday yields a result on or after <see cref="DateOnly.MinValue" />.
-    /// </summary>
-    [TestMethod]
-    public void PreviousDateOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
-    {
-        var actual = DateOnly.MinValue.AddDays(7).PreviousDateOfWeek(DayOfWeek.Monday);
-
-        Assert.IsTrue(actual >= DateOnly.MinValue);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateOnly.MaxValue" /> targeting Saturday returns a valid result on or before <see cref="DateOnly.MaxValue" />.
     /// </summary>
     [TestMethod]
@@ -69,4 +55,16 @@ public partial class DateOnlyExtensionsTests
 
         Assert.IsTrue(actual <= DateOnly.MaxValue);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnly.MinValue" /> + 7 days returning the prior Monday yields a result on or after <see cref="DateOnly.MinValue" />.
+    /// </summary>
+    [TestMethod]
+    public void PreviousDateOfWeek_WhenUsingMinValue_ShouldReturnSameOrGreater()
+    {
+        var actual = DateOnly.MinValue.AddDays(7).PreviousDateOfWeek(DayOfWeek.Monday);
+
+        Assert.IsTrue(actual >= DateOnly.MinValue);
+    }
+
 }

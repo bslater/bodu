@@ -6,42 +6,11 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetTests
 {
-    /// <summary>
-    /// Verifies that the internal <see cref="OrderedSet{T}.DebuggerStorage" /> property exposes the same
-    /// underlying storage instance used by the public surface so the DebuggerTypeProxy can walk it.
-    /// </summary>
-    [TestMethod]
-    public void DebuggerStorage_WhenAccessed_ShouldReturnUnderlyingStorage()
-    {
-        var sut = new OrderedSet<int>([1, 2, 3]);
-
-        OrderedSetStorage<int> storage = sut.DebuggerStorage;
-
-        Assert.IsNotNull(storage);
-        Assert.AreEqual(sut.Count, storage.Count);
-    }
-
-    /// <summary>
-    /// Verifies that the collection constructor uses the <see cref="IReadOnlyCollection{T}.Count" /> fast path
-    /// when the source implements <see cref="IReadOnlyCollection{T}" /> but not <see cref="ICollection{T}" />.
-    /// Exercises the second branch of the internal capacity hint.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionIsReadOnlyCollectionOnly_ShouldUseReadOnlyCountForCapacity()
-    {
-        var source = new ReadOnlyCollectionOnly<int>([10, 20, 30, 40]);
-
-        var sut = new OrderedSet<int>(source);
-
-        Assert.AreEqual(4, sut.Count);
-        Assert.IsTrue(sut.Capacity >= 4);
-    }
 
     /// <summary>
     /// Verifies that the collection constructor falls through to the zero-capacity branch when the source is a
@@ -68,37 +37,33 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="OrderedSet{T}.IsSubsetOf(System.Collections.Generic.IEnumerable{T})" /> uses
-    /// the <see cref="IReadOnlyCollection{T}" /> fast path inside the internal projection builder. Covers the
-    /// second branch of the capacity-hint expression in <c>BuildProjection</c>.
+    /// Verifies that the collection constructor uses the <see cref="IReadOnlyCollection{T}.Count" /> fast path
+    /// when the source implements <see cref="IReadOnlyCollection{T}" /> but not <see cref="ICollection{T}" />.
+    /// Exercises the second branch of the internal capacity hint.
     /// </summary>
     [TestMethod]
-    public void IsSubsetOf_WhenOtherIsReadOnlyCollectionOnly_ShouldUseProjectionWithReadOnlyHint()
+    public void Ctor_WhenCollectionIsReadOnlyCollectionOnly_ShouldUseReadOnlyCountForCapacity()
     {
-        OrderedSet<int> sut = CreateSet([1, 2]);
-        var other = new ReadOnlyCollectionOnly<int>([1, 2, 3]);
+        var source = new ReadOnlyCollectionOnly<int>([10, 20, 30, 40]);
 
-        Assert.IsTrue(sut.IsSubsetOf(other));
+        var sut = new OrderedSet<int>(source);
+
+        Assert.AreEqual(4, sut.Count);
+        Assert.IsTrue(sut.Capacity >= 4);
     }
-
     /// <summary>
-    /// Verifies that <see cref="OrderedSet{T}.IsSubsetOf(System.Collections.Generic.IEnumerable{T})" /> still
-    /// works when the source is a pure deferred enumerable with no count hint, exercising the else-branch
-    /// inside the internal projection builder.
+    /// Verifies that the internal <see cref="OrderedSet{T}.DebuggerStorage" /> property exposes the same
+    /// underlying storage instance used by the public surface so the DebuggerTypeProxy can walk it.
     /// </summary>
     [TestMethod]
-    public void IsSubsetOf_WhenOtherHasNoCountHint_ShouldStillEvaluateCorrectly()
+    public void DebuggerStorage_WhenAccessed_ShouldReturnUnderlyingStorage()
     {
-        OrderedSet<int> sut = CreateSet([1, 2]);
+        var sut = new OrderedSet<int>([1, 2, 3]);
 
-        Assert.IsTrue(sut.IsSubsetOf(YieldNumbers()));
+        OrderedSetStorage<int> storage = sut.DebuggerStorage;
 
-        static IEnumerable<int> YieldNumbers()
-        {
-            yield return 1;
-            yield return 2;
-            yield return 3;
-        }
+        Assert.IsNotNull(storage);
+        Assert.AreEqual(sut.Count, storage.Count);
     }
 
     /// <summary>
@@ -128,6 +93,40 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="OrderedSet{T}.IsSubsetOf(System.Collections.Generic.IEnumerable{T})" /> still
+    /// works when the source is a pure deferred enumerable with no count hint, exercising the else-branch
+    /// inside the internal projection builder.
+    /// </summary>
+    [TestMethod]
+    public void IsSubsetOf_WhenOtherHasNoCountHint_ShouldStillEvaluateCorrectly()
+    {
+        OrderedSet<int> sut = CreateSet([1, 2]);
+
+        Assert.IsTrue(sut.IsSubsetOf(YieldNumbers()));
+
+        static IEnumerable<int> YieldNumbers()
+        {
+            yield return 1;
+            yield return 2;
+            yield return 3;
+        }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSet{T}.IsSubsetOf(System.Collections.Generic.IEnumerable{T})" /> uses
+    /// the <see cref="IReadOnlyCollection{T}" /> fast path inside the internal projection builder. Covers the
+    /// second branch of the capacity-hint expression in <c>BuildProjection</c>.
+    /// </summary>
+    [TestMethod]
+    public void IsSubsetOf_WhenOtherIsReadOnlyCollectionOnly_ShouldUseProjectionWithReadOnlyHint()
+    {
+        OrderedSet<int> sut = CreateSet([1, 2]);
+        var other = new ReadOnlyCollectionOnly<int>([1, 2, 3]);
+
+        Assert.IsTrue(sut.IsSubsetOf(other));
+    }
+
+    /// <summary>
     /// Wraps an <see cref="IEnumerable{T}" /> as <see cref="IReadOnlyCollection{T}" /> only — deliberately not
     /// implementing <see cref="ICollection{T}" /> so capacity-hint helpers see the read-only-collection branch.
     /// </summary>
@@ -135,6 +134,7 @@ public partial class OrderedSetTests
     private sealed class ReadOnlyCollectionOnly<T>
         : IReadOnlyCollection<T>
     {
+
         private readonly T[] _items;
 
         /// <summary>
@@ -151,13 +151,15 @@ public partial class OrderedSetTests
         public int Count => _items.Length;
 
         /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
             foreach (T item in _items)
                 yield return item;
         }
 
-        /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
+
 }

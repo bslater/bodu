@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.IsInRange.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsInRange(DateTime, DateTime, DateTime)" /> correctly evaluates date range inclusion.
     /// </summary>
@@ -45,4 +46,5 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(expected, actual, $"Failed for inputDateTime={(inputDateTime.HasValue ? inputDateTime.Value.ToString("yyyy-MM-dd") : "null")}, start={start:yyyy-MM-dd}, end={end:yyyy-MM-dd}");
     }
+
 }

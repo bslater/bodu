@@ -5,12 +5,24 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSet{T}.Contains(T)" /> uses the configured comparer for equality.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenCustomComparerProvided_ShouldUseComparerForEquality()
+    {
+        OrderedSet<string> sut = CreateSet(["Hello"], StringComparer.OrdinalIgnoreCase);
+
+        Assert.IsTrue(sut.Contains("HELLO"));
+        Assert.IsTrue(sut.Contains("hello"));
+        Assert.IsFalse(sut.Contains("world"));
+    }
     /// <summary>
     /// Verifies that <see cref="OrderedSet{T}.Contains(T)" /> rejects a <see langword="null" /> item.
     /// </summary>
@@ -23,17 +35,6 @@ public partial class OrderedSetTests
         {
             _ = sut.Contains(null!);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSet{T}.Contains(T)" /> returns <see langword="false" /> on an empty set.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenSetIsEmpty_ShouldReturnFalse()
-    {
-        var sut = new OrderedSet<int>();
-
-        Assert.IsFalse(sut.Contains(99));
     }
 
     /// <summary>
@@ -54,15 +55,14 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="OrderedSet{T}.Contains(T)" /> uses the configured comparer for equality.
+    /// Verifies that <see cref="OrderedSet{T}.Contains(T)" /> returns <see langword="false" /> on an empty set.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenCustomComparerProvided_ShouldUseComparerForEquality()
+    public void Contains_WhenSetIsEmpty_ShouldReturnFalse()
     {
-        OrderedSet<string> sut = CreateSet(["Hello"], StringComparer.OrdinalIgnoreCase);
+        var sut = new OrderedSet<int>();
 
-        Assert.IsTrue(sut.Contains("HELLO"));
-        Assert.IsTrue(sut.Contains("hello"));
-        Assert.IsFalse(sut.Contains("world"));
+        Assert.IsFalse(sut.Contains(99));
     }
+
 }

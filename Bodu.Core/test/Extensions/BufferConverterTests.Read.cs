@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BufferConverterTests.Read.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,6 +39,23 @@ public partial class BufferConverterTests
         Assert.AreEqual(0x0F0E0D0C0B0A0908L, source.Read<long>(8));
     }
 
+    // =========================================================================
+    // Read<T>(ReadOnlySpan<byte>)
+    // =========================================================================
+
+    /// <summary>
+    /// Verifies that reading from a byte span returns the expected little-endian value.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenCalled_ForReadOnlySpanToInt32_ShouldReturnExpectedLittleEndianValue()
+    {
+        var data = AscendingBytes;
+
+        ReadOnlySpan<byte> source = data.AsSpan(4, 4);
+
+        Assert.AreEqual(0x07060504, source.Read<int>());
+    }
+
     /// <summary>
     /// Verifies that reading values from a byte array and writing them back using <c>CopyTo</c> preserves each value.
     /// </summary>
@@ -55,20 +72,6 @@ public partial class BufferConverterTests
         }
 
         CollectionAssert.AreEqual(source, destination);
-    }
-
-    /// <summary>
-    /// Verifies that reading from a null byte array throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void Read_WhenSourceIsNull_ForByteArray_ShouldThrowArgumentNullException()
-    {
-        byte[]? source = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source!.Read<int>(0);
-        });
     }
 
     /// <summary>
@@ -102,21 +105,31 @@ public partial class BufferConverterTests
         });
     }
 
-    // =========================================================================
-    // Read<T>(ReadOnlySpan<byte>)
-    // =========================================================================
-
     /// <summary>
-    /// Verifies that reading from a byte span returns the expected little-endian value.
+    /// Verifies that reading from a null byte array throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void Read_WhenCalled_ForReadOnlySpanToInt32_ShouldReturnExpectedLittleEndianValue()
+    public void Read_WhenSourceIsNull_ForByteArray_ShouldThrowArgumentNullException()
     {
-        var data = AscendingBytes;
+        byte[]? source = null;
 
-        ReadOnlySpan<byte> source = data.AsSpan(4, 4);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source!.Read<int>(0);
+        });
+    }
 
-        Assert.AreEqual(0x07060504, source.Read<int>());
+    /// <summary>
+    /// Verifies that reading from an empty span throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void Read_WhenSpanIsEmpty_ForReadOnlySpan_ShouldThrowArgumentException()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            ReadOnlySpan<byte> source = [];
+            _ = source.Read<int>();
+        });
     }
 
     /// <summary>
@@ -134,16 +147,4 @@ public partial class BufferConverterTests
         });
     }
 
-    /// <summary>
-    /// Verifies that reading from an empty span throws <see cref="ArgumentException" />.
-    /// </summary>
-    [TestMethod]
-    public void Read_WhenSpanIsEmpty_ForReadOnlySpan_ShouldThrowArgumentException()
-    {
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            ReadOnlySpan<byte> source = [];
-            _ = source.Read<int>();
-        });
-    }
 }

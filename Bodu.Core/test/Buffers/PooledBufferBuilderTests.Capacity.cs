@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.Capacity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,17 +8,6 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.Capacity"/> is at least as large as the
-    /// <c>initialCapacity</c> supplied to the constructor.
-    /// </summary>
-    [TestMethod]
-    public void Capacity_WhenConstructed_ShouldBeAtLeastInitialCapacity()
-    {
-        using var builder = new PooledBufferBuilder<int>(32);
-
-        Assert.IsTrue(builder.Capacity >= 32);
-    }
 
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.Capacity"/> grows when elements are appended beyond the
@@ -42,20 +31,16 @@ public partial class PooledBufferBuilderTests
             builder.Capacity >= builder.WrittenCount,
             $"Expected capacity {builder.Capacity} to be at least written count {builder.WrittenCount}.");
     }
-
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.Capacity"/> is not reduced by <see cref="PooledBufferBuilder{T}.Reset"/>.
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Capacity"/> is at least as large as the
+    /// <c>initialCapacity</c> supplied to the constructor.
     /// </summary>
     [TestMethod]
-    public void Capacity_WhenResetCalled_ShouldBeUnchanged()
+    public void Capacity_WhenConstructed_ShouldBeAtLeastInitialCapacity()
     {
-        using var builder = new PooledBufferBuilder<int>(16);
-        builder.AppendRange(Enumerable.Range(1, 10));
-        var capacityBeforeReset = builder.Capacity;
+        using var builder = new PooledBufferBuilder<int>(32);
 
-        builder.Reset();
-
-        Assert.AreEqual(capacityBeforeReset, builder.Capacity);
+        Assert.IsTrue(builder.Capacity >= 32);
     }
 
     /// <summary>
@@ -73,4 +58,20 @@ public partial class PooledBufferBuilderTests
             _ = builder.Capacity;
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.Capacity"/> is not reduced by <see cref="PooledBufferBuilder{T}.Reset"/>.
+    /// </summary>
+    [TestMethod]
+    public void Capacity_WhenResetCalled_ShouldBeUnchanged()
+    {
+        using var builder = new PooledBufferBuilder<int>(16);
+        builder.AppendRange(Enumerable.Range(1, 10));
+        var capacityBeforeReset = builder.Capacity;
+
+        builder.Reset();
+
+        Assert.AreEqual(capacityBeforeReset, builder.Capacity);
+    }
+
 }

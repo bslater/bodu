@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.Count.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,14 +8,33 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
+
     /// <summary>
-    /// Verifies that <see cref="GetCount(TCollection)"/> is zero on a freshly constructed collection.
+    /// Verifies that <see cref="GetCount(TCollection)"/> resets to zero after <see cref="Clear(TCollection)"/>.
     /// </summary>
     [TestMethod]
-    public void Count_WhenNewlyConstructed_ShouldBeZero()
+    public void Count_AfterClear_ShouldBeZero()
     {
-        TCollection collection = CreateCollection(3);
+        TCollection collection = CreateCollection(5);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        Clear(collection);
+
         Assert.AreEqual(0, GetCount(collection));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ICollection.Count"/> on the non-generic interface matches
+    /// <see cref="GetCount(TCollection)"/>.
+    /// </summary>
+    [TestMethod]
+    public void Count_OnICollectionInterface_ShouldMatchTypedCount()
+    {
+        TCollection collection = CreateCollection(5);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+
+        Assert.AreEqual(GetCount(collection), collection.Count);
     }
 
     /// <summary>
@@ -46,32 +65,14 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
         Assert.AreEqual(2, GetCount(collection));
     }
-
     /// <summary>
-    /// Verifies that <see cref="GetCount(TCollection)"/> resets to zero after <see cref="Clear(TCollection)"/>.
+    /// Verifies that <see cref="GetCount(TCollection)"/> is zero on a freshly constructed collection.
     /// </summary>
     [TestMethod]
-    public void Count_AfterClear_ShouldBeZero()
+    public void Count_WhenNewlyConstructed_ShouldBeZero()
     {
-        TCollection collection = CreateCollection(5);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-        Clear(collection);
-
+        TCollection collection = CreateCollection(3);
         Assert.AreEqual(0, GetCount(collection));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ICollection.Count"/> on the non-generic interface matches
-    /// <see cref="GetCount(TCollection)"/>.
-    /// </summary>
-    [TestMethod]
-    public void Count_OnICollectionInterface_ShouldMatchTypedCount()
-    {
-        TCollection collection = CreateCollection(5);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-
-        Assert.AreEqual(GetCount(collection), collection.Count);
-    }
 }

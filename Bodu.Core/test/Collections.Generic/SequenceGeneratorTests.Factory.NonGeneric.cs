@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class SequenceGeneratorTests
 {
+
     /// <summary>
     /// Verifies that the non-generic <see cref="IEnumerable.GetEnumerator" /> on a sequence returned from
     /// <see cref="SequenceGenerator.Factory{TResult}(Func{IEnumerator{TResult}})" /> yields the same elements as the strongly typed
@@ -27,4 +28,5 @@ public partial class SequenceGeneratorTests
 
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, observed);
     }
+
 }

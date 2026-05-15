@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class BufferConverterTests
 {
+
     /// <summary>
     /// Verifies that <see cref="BufferConverter.SwapEndian(System.ReadOnlySpan{byte}, System.Span{byte}, int)" /> throws when the
     /// destination is shorter than the source — covering the conditional throw at line 143.
@@ -23,4 +24,5 @@ public partial class BufferConverterTests
             BufferConverter.SwapEndian(source, destination, 2);
         });
     }
+
 }

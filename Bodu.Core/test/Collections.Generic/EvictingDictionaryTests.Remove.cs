@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Remove.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,19 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> returns false when the key is not present.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenKeyDoesNotExist_ShouldReturnFalse()
+    {
+        var dictionary = new EvictingDictionary<string, int>(5);
+
+        var result = dictionary.Remove("missing");
+
+        Assert.IsFalse(result);
+    }
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> returns true and deletes the key when it exists.
     /// </summary>
@@ -25,16 +38,18 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> returns false when the key is not present.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" />(KeyValuePair) returns false if key exists but value does not match.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenKeyDoesNotExist_ShouldReturnFalse()
+    public void Remove_WhenKeyExistsButValueDoesNotMatch_ShouldNotRemove()
     {
         var dictionary = new EvictingDictionary<string, int>(5);
+        dictionary.Add("a", 1);
 
-        var result = dictionary.Remove("missing");
+        var result = dictionary.Remove(new KeyValuePair<string, int>("a", 2));
 
         Assert.IsFalse(result);
+        Assert.IsTrue(dictionary.ContainsKey("a"));
     }
 
     /// <summary>
@@ -74,35 +89,20 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" />(KeyValuePair) returns false if key exists but value does not match.
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> only deletes the specified key when multiple keys share the same value.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenKeyExistsButValueDoesNotMatch_ShouldNotRemove()
+    public void Remove_WhenMultipleKeysWithSameValue_ShouldOnlyRemoveMatchingKey()
     {
         var dictionary = new EvictingDictionary<string, int>(5);
-        dictionary.Add("a", 1);
+        dictionary.Add("a", 10);
+        dictionary.Add("b", 10);
 
-        var result = dictionary.Remove(new KeyValuePair<string, int>("a", 2));
-
-        Assert.IsFalse(result);
-        Assert.IsTrue(dictionary.ContainsKey("a"));
-    }
-
-    /// <summary>
-    /// Verifies that removing an item correctly updates the access order in LeastRecentlyUsed mode.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenPolicyIsLRUAndKeyRemoved_ShouldUpdateEvictionOrder()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
-        dictionary.Add("a", 1);
-        dictionary.Add("b", 2);
-
-        var result = dictionary.Remove("a");
+        var result = dictionary.Remove(new KeyValuePair<string, int>("a", 10));
 
         Assert.IsTrue(result);
         Assert.IsFalse(dictionary.ContainsKey("a"));
-        Assert.AreEqual(1, dictionary.Count);
+        Assert.IsTrue(dictionary.ContainsKey("b"));
     }
 
     /// <summary>
@@ -123,20 +123,42 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Remove" /> only deletes the specified key when multiple keys share the same value.
+    /// Verifies that removing an item correctly updates the access order in LeastRecentlyUsed mode.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenMultipleKeysWithSameValue_ShouldOnlyRemoveMatchingKey()
+    public void Remove_WhenPolicyIsLRUAndKeyRemoved_ShouldUpdateEvictionOrder()
     {
-        var dictionary = new EvictingDictionary<string, int>(5);
-        dictionary.Add("a", 10);
-        dictionary.Add("b", 10);
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.LeastRecentlyUsed);
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
 
-        var result = dictionary.Remove(new KeyValuePair<string, int>("a", 10));
+        var result = dictionary.Remove("a");
 
         Assert.IsTrue(result);
         Assert.IsFalse(dictionary.ContainsKey("a"));
-        Assert.IsTrue(dictionary.ContainsKey("b"));
+        Assert.AreEqual(1, dictionary.Count);
+    }
+
+    /// <summary>
+    /// Verifies that PeekEvictionCandidate returns a live key after the previous MRU key was removed
+    /// under MostRecentlyUsed policy.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenPolicyIsMRUAndMRUItemRemoved_ShouldProduceLivePeekCandidate()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Add("C", 3); // C is MRU
+
+        dictionary.Remove("C"); // before fix, C's orphaned node remained at _order.Last
+
+        var candidate = dictionary.PeekEvictionCandidate();
+
+        // The candidate must be a key that actually exists in the dictionary.
+        Assert.IsNotNull(candidate);
+        Assert.IsTrue(dictionary.ContainsKey(candidate!));
+        Assert.AreEqual("B", candidate); // B is now the MRU
     }
 
     /// <summary>
@@ -169,28 +191,6 @@ public partial class EvictingDictionaryTests
         Assert.AreEqual("C", evicted[0]);
         Assert.IsTrue(dictionary.ContainsKey("A"));
         Assert.IsTrue(dictionary.ContainsKey("D"));
-    }
-
-    /// <summary>
-    /// Verifies that PeekEvictionCandidate returns a live key after the previous MRU key was removed
-    /// under MostRecentlyUsed policy.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenPolicyIsMRUAndMRUItemRemoved_ShouldProduceLivePeekCandidate()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Add("C", 3); // C is MRU
-
-        dictionary.Remove("C"); // before fix, C's orphaned node remained at _order.Last
-
-        var candidate = dictionary.PeekEvictionCandidate();
-
-        // The candidate must be a key that actually exists in the dictionary.
-        Assert.IsNotNull(candidate);
-        Assert.IsTrue(dictionary.ContainsKey(candidate!));
-        Assert.AreEqual("B", candidate); // B is now the MRU
     }
 
     /// <summary>
@@ -231,4 +231,5 @@ public partial class EvictingDictionaryTests
         Assert.AreEqual(2, dictionary.Count);
         Assert.IsFalse(dictionary.ContainsKey("C"));
     }
+
 }

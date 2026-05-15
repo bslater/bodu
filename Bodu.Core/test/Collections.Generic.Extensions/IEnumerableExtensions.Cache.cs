@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Infrastructure;
 using System.Collections.ObjectModel;
+using Bodu.Infrastructure;
 
 namespace Bodu.Collections.Generic.Extensions;
 
@@ -13,6 +13,7 @@ namespace Bodu.Collections.Generic.Extensions;
 public sealed partial class IEnumerableExtensionsTests_Cache
     : EnumerableTests
 {
+
     /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.Cache{T}" /> defers execution until the returned sequence is enumerated.
     /// </summary>
@@ -279,4 +280,5 @@ public sealed partial class IEnumerableExtensionsTests_Cache
         yield return 4;
         yield return 5;
     }
+
 }

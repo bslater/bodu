@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.GetFirstDateOfMonth(int, int)" /> returns the first day of the supplied month and year.
     /// </summary>
@@ -64,4 +65,5 @@ public partial class DateOnlyExtensionsTests
             _ = DateOnlyExtensions.GetLastDateOfMonth(2024, month);
         });
     }
+
 }

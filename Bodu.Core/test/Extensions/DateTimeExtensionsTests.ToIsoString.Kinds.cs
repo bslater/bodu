@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.ToIsoString(DateTime)" /> uses the round-trip <c>"o"</c> format for a
     /// <see cref="DateTimeKind.Local" /> value, producing a string that round-trips back to <see cref="DateTimeKind.Local" />.
@@ -51,4 +52,5 @@ public partial class DateTimeExtensionsTests
             _ = input.ToIsoString((DateTimeKind)99);
         });
     }
+
 }

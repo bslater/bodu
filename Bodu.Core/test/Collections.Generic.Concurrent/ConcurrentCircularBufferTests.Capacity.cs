@@ -1,15 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Capacity.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
-
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that concurrent reads of <see cref="ConcurrentCircularBuffer{T}.Capacity" /> all return the same configured value.
     /// </summary>
@@ -145,4 +144,5 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(snap.Length <= buffer.Capacity, "Snapshot must never exceed Capacity.");
         Assert.AreEqual(7, buffer.Capacity);
     }
+
 }

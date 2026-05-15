@@ -5,29 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
-    // --------------------------------------------------------
-    // Add(T, T) — argument validation
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that adding a range with a <see langword="null" /> start is rejected.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenStartIsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new RangeSet<string>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.Add(null!, "z");
-        });
-    }
 
     /// <summary>
     /// Verifies that adding a range with a <see langword="null" /> end is rejected.
@@ -44,69 +26,30 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Verifies that adding a range with <c>start &gt;= end</c> is rejected.
+    /// Verifies that adding a range that touches multiple existing ranges only at the boundaries merges them.
     /// </summary>
     [TestMethod]
-    [DataRow(5, 5)]
-    [DataRow(10, 5)]
-    public void Add_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
+    public void Add_WhenRangeBridgesAdjacentExistingRanges_ShouldMergeIntoOne()
     {
-        var sut = new RangeSet<int>();
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.Add(start, end);
-        });
-    }
-
-    // --------------------------------------------------------
-    // Add(T, T) — empty set
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that adding a range to an empty set inserts it as the only entry.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenSetIsEmpty_ShouldInsertOnly()
-    {
-        var sut = new RangeSet<int>();
+        RangeSet<int> sut = CreateSet((0, 5), (10, 15));
 
         sut.Add(5, 10);
 
         Assert.AreEqual(1, sut.Count);
-        AssertContents(sut, (5, 10));
-    }
-
-    // --------------------------------------------------------
-    // Add(T, T) — non-overlapping ranges keep order
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that adding non-overlapping ranges in arbitrary order produces a sorted result.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenRangesAreNonOverlapping_ShouldKeepSortedOrder()
-    {
-        var sut = new RangeSet<int>();
-
-        sut.Add(20, 25);
-        sut.Add(0, 5);
-        sut.Add(10, 15);
-
-        AssertContents(sut, (0, 5), (10, 15), (20, 25));
+        AssertContents(sut, (0, 15));
     }
 
     /// <summary>
-    /// Verifies that adding a range that nests between two existing ranges places it between them.
+    /// Verifies that adding a range that engulfs an existing range replaces it with the larger range.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeNestsBetweenExisting_ShouldInsertInOrder()
+    public void Add_WhenRangeEngulfsExisting_ShouldReplaceWithLargerRange()
     {
-        RangeSet<int> sut = CreateSet((0, 5), (20, 25));
+        RangeSet<int> sut = CreateSet((3, 5));
 
-        sut.Add(10, 15);
+        sut.Add(0, 10);
 
-        AssertContents(sut, (0, 5), (10, 15), (20, 25));
+        AssertContents(sut, (0, 10));
     }
 
     // --------------------------------------------------------
@@ -142,32 +85,6 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Verifies that a range overlapping an existing range from the left expands it.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenRangeOverlapsLeftOfExisting_ShouldExpandLeft()
-    {
-        RangeSet<int> sut = CreateSet((5, 10));
-
-        sut.Add(0, 7);
-
-        AssertContents(sut, (0, 10));
-    }
-
-    /// <summary>
-    /// Verifies that a range overlapping an existing range from the right expands it.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenRangeOverlapsRightOfExisting_ShouldExpandRight()
-    {
-        RangeSet<int> sut = CreateSet((0, 5));
-
-        sut.Add(3, 10);
-
-        AssertContents(sut, (0, 10));
-    }
-
-    /// <summary>
     /// Verifies that a range fully contained within an existing range leaves the set unchanged.
     /// </summary>
     [TestMethod]
@@ -194,16 +111,61 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Verifies that adding a range that engulfs an existing range replaces it with the larger range.
+    /// Verifies that adding a range that nests between two existing ranges places it between them.
     /// </summary>
     [TestMethod]
-    public void Add_WhenRangeEngulfsExisting_ShouldReplaceWithLargerRange()
+    public void Add_WhenRangeNestsBetweenExisting_ShouldInsertInOrder()
     {
-        RangeSet<int> sut = CreateSet((3, 5));
+        RangeSet<int> sut = CreateSet((0, 5), (20, 25));
 
-        sut.Add(0, 10);
+        sut.Add(10, 15);
+
+        AssertContents(sut, (0, 5), (10, 15), (20, 25));
+    }
+
+    /// <summary>
+    /// Verifies that a range overlapping an existing range from the left expands it.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangeOverlapsLeftOfExisting_ShouldExpandLeft()
+    {
+        RangeSet<int> sut = CreateSet((5, 10));
+
+        sut.Add(0, 7);
 
         AssertContents(sut, (0, 10));
+    }
+
+    /// <summary>
+    /// Verifies that a range overlapping an existing range from the right expands it.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangeOverlapsRightOfExisting_ShouldExpandRight()
+    {
+        RangeSet<int> sut = CreateSet((0, 5));
+
+        sut.Add(3, 10);
+
+        AssertContents(sut, (0, 10));
+    }
+
+    // --------------------------------------------------------
+    // Add(T, T) — non-overlapping ranges keep order
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that adding non-overlapping ranges in arbitrary order produces a sorted result.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenRangesAreNonOverlapping_ShouldKeepSortedOrder()
+    {
+        var sut = new RangeSet<int>();
+
+        sut.Add(20, 25);
+        sut.Add(0, 5);
+        sut.Add(10, 15);
+
+        AssertContents(sut, (0, 5), (10, 15), (20, 25));
     }
 
     /// <summary>
@@ -218,20 +180,6 @@ public partial class RangeSetTests
 
         Assert.AreEqual(1, sut.Count);
         AssertContents(sut, (0, 25));
-    }
-
-    /// <summary>
-    /// Verifies that adding a range that touches multiple existing ranges only at the boundaries merges them.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenRangeBridgesAdjacentExistingRanges_ShouldMergeIntoOne()
-    {
-        RangeSet<int> sut = CreateSet((0, 5), (10, 15));
-
-        sut.Add(5, 10);
-
-        Assert.AreEqual(1, sut.Count);
-        AssertContents(sut, (0, 15));
     }
 
     // --------------------------------------------------------
@@ -284,4 +232,56 @@ public partial class RangeSetTests
 
         AssertContents(sut, expected);
     }
+
+    // --------------------------------------------------------
+    // Add(T, T) — empty set
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that adding a range to an empty set inserts it as the only entry.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenSetIsEmpty_ShouldInsertOnly()
+    {
+        var sut = new RangeSet<int>();
+
+        sut.Add(5, 10);
+
+        Assert.AreEqual(1, sut.Count);
+        AssertContents(sut, (5, 10));
+    }
+
+    /// <summary>
+    /// Verifies that adding a range with <c>start &gt;= end</c> is rejected.
+    /// </summary>
+    [TestMethod]
+    [DataRow(5, 5)]
+    [DataRow(10, 5)]
+    public void Add_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
+    {
+        var sut = new RangeSet<int>();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.Add(start, end);
+        });
+    }
+    // --------------------------------------------------------
+    // Add(T, T) — argument validation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that adding a range with a <see langword="null" /> start is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenStartIsNull_ShouldThrowArgumentNullException()
+    {
+        var sut = new RangeSet<string>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            sut.Add(null!, "z");
+        });
+    }
+
 }

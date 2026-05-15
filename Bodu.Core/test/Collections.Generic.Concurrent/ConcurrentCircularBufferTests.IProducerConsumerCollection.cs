@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.IProducerConsumerCollection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,19 +10,57 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="IProducerConsumerCollection{T}.TryAdd"/> forwards to <c>TryEnqueue</c> and
-    /// returns <see langword="true"/> when space is available.
+    /// Verifies that the buffer can be wrapped by <see cref="BlockingCollection{T}"/> and that round-trip
+    /// <c>Add</c>/<c>Take</c> operations work as expected.
     /// </summary>
     [TestMethod]
-    public void TryAdd_WhenSpaceAvailable_ShouldReturnTrue()
+    public void BlockingCollection_WhenWrappingBuffer_ShouldRoundTrip()
     {
-        IProducerConsumerCollection<TestItem> mvd =
-            new ConcurrentCircularBuffer<TestItem>(capacity: 4, allowOverwrite: false);
+        var underlying = new ConcurrentCircularBuffer<TestItem>(capacity: 4, allowOverwrite: false);
+        using var blocking = new BlockingCollection<TestItem>(underlying, boundedCapacity: 4);
 
-        Assert.IsTrue(mvd.TryAdd(new TestItem(1)));
-        Assert.IsTrue(mvd.TryAdd(new TestItem(2)));
-        Assert.AreEqual(2, mvd.Count);
+        blocking.Add(new TestItem(7));
+        blocking.Add(new TestItem(8));
+        blocking.CompleteAdding();
+
+        TestItem first = blocking.Take();
+        TestItem second = blocking.Take();
+
+        Assert.AreEqual(7, first.Value);
+        Assert.AreEqual(8, second.Value);
+        Assert.IsTrue(blocking.IsCompleted);
+    }
+
+    /// <summary>
+    /// Verifies that the explicit <c>ToArray</c> and <c>CopyTo</c> members of
+    /// <see cref="IProducerConsumerCollection{T}"/> agree with the public surface and reflect the buffer's
+    /// FIFO order.
+    /// </summary>
+    [TestMethod]
+    public void IProducerConsumerCollection_ToArrayAndCopyTo_ShouldMatchPublicSurface()
+    {
+        var concrete = new ConcurrentCircularBuffer<TestItem>(capacity: 4);
+        concrete.Enqueue(new TestItem(1));
+        concrete.Enqueue(new TestItem(2));
+        concrete.Enqueue(new TestItem(3));
+        IProducerConsumerCollection<TestItem> mvd = concrete;
+
+        TestItem[] viaInterface = mvd.ToArray();
+        TestItem[] viaConcrete = concrete.ToArray();
+
+        Assert.AreEqual(viaConcrete.Length, viaInterface.Length);
+        for (var i = 0; i < viaConcrete.Length; i++)
+            Assert.AreEqual(viaConcrete[i].Value, viaInterface[i].Value);
+
+        var copyTarget = new TestItem[5];
+        mvd.CopyTo(copyTarget, index: 1);
+        Assert.IsNull(copyTarget[0]);
+        Assert.AreEqual(1, copyTarget[1].Value);
+        Assert.AreEqual(2, copyTarget[2].Value);
+        Assert.AreEqual(3, copyTarget[3].Value);
+        Assert.IsNull(copyTarget[4]);
     }
 
     /// <summary>
@@ -59,6 +97,20 @@ public partial class ConcurrentCircularBufferTests
         Assert.AreEqual(2, snapshot.Length);
         Assert.AreEqual(2, snapshot[0].Value);
         Assert.AreEqual(3, snapshot[1].Value);
+    }
+    /// <summary>
+    /// Verifies that <see cref="IProducerConsumerCollection{T}.TryAdd"/> forwards to <c>TryEnqueue</c> and
+    /// returns <see langword="true"/> when space is available.
+    /// </summary>
+    [TestMethod]
+    public void TryAdd_WhenSpaceAvailable_ShouldReturnTrue()
+    {
+        IProducerConsumerCollection<TestItem> mvd =
+            new ConcurrentCircularBuffer<TestItem>(capacity: 4, allowOverwrite: false);
+
+        Assert.IsTrue(mvd.TryAdd(new TestItem(1)));
+        Assert.IsTrue(mvd.TryAdd(new TestItem(2)));
+        Assert.AreEqual(2, mvd.Count);
     }
 
     /// <summary>
@@ -100,55 +152,4 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(mvd.TryTake(out _));
     }
 
-    /// <summary>
-    /// Verifies that the explicit <c>ToArray</c> and <c>CopyTo</c> members of
-    /// <see cref="IProducerConsumerCollection{T}"/> agree with the public surface and reflect the buffer's
-    /// FIFO order.
-    /// </summary>
-    [TestMethod]
-    public void IProducerConsumerCollection_ToArrayAndCopyTo_ShouldMatchPublicSurface()
-    {
-        var concrete = new ConcurrentCircularBuffer<TestItem>(capacity: 4);
-        concrete.Enqueue(new TestItem(1));
-        concrete.Enqueue(new TestItem(2));
-        concrete.Enqueue(new TestItem(3));
-        IProducerConsumerCollection<TestItem> mvd = concrete;
-
-        TestItem[] viaInterface = mvd.ToArray();
-        TestItem[] viaConcrete = concrete.ToArray();
-
-        Assert.AreEqual(viaConcrete.Length, viaInterface.Length);
-        for (var i = 0; i < viaConcrete.Length; i++)
-            Assert.AreEqual(viaConcrete[i].Value, viaInterface[i].Value);
-
-        var copyTarget = new TestItem[5];
-        mvd.CopyTo(copyTarget, index: 1);
-        Assert.IsNull(copyTarget[0]);
-        Assert.AreEqual(1, copyTarget[1].Value);
-        Assert.AreEqual(2, copyTarget[2].Value);
-        Assert.AreEqual(3, copyTarget[3].Value);
-        Assert.IsNull(copyTarget[4]);
-    }
-
-    /// <summary>
-    /// Verifies that the buffer can be wrapped by <see cref="BlockingCollection{T}"/> and that round-trip
-    /// <c>Add</c>/<c>Take</c> operations work as expected.
-    /// </summary>
-    [TestMethod]
-    public void BlockingCollection_WhenWrappingBuffer_ShouldRoundTrip()
-    {
-        var underlying = new ConcurrentCircularBuffer<TestItem>(capacity: 4, allowOverwrite: false);
-        using var blocking = new BlockingCollection<TestItem>(underlying, boundedCapacity: 4);
-
-        blocking.Add(new TestItem(7));
-        blocking.Add(new TestItem(8));
-        blocking.CompleteAdding();
-
-        TestItem first = blocking.Take();
-        TestItem second = blocking.Take();
-
-        Assert.AreEqual(7, first.Value);
-        Assert.AreEqual(8, second.Value);
-        Assert.IsTrue(blocking.IsCompleted);
-    }
 }

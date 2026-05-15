@@ -1,39 +1,15 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.Ctors.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
-    /// <summary>
-    /// Verifies that the default constructor produces an empty dictionary with zero counts.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenDefault_ShouldBeEmpty()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-
-        Assert.AreEqual(0, mvd.Count);
-        Assert.AreEqual(0, mvd.KeyCount);
-    }
-
-    /// <summary>
-    /// Verifies that the default constructor uses the default equality comparer for keys.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenDefault_ShouldUseDefaultComparer()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-
-        Assert.AreEqual(EqualityComparer<string>.Default, mvd.Comparer);
-    }
 
     /// <summary>
     /// Verifies that passing a null comparer to the comparer constructor defaults to the default equality comparer.
@@ -62,4 +38,27 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(1, mvd.KeyCount);
         Assert.AreEqual(2, mvd.Count);
     }
+    /// <summary>
+    /// Verifies that the default constructor produces an empty dictionary with zero counts.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenDefault_ShouldBeEmpty()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+
+        Assert.AreEqual(0, mvd.Count);
+        Assert.AreEqual(0, mvd.KeyCount);
+    }
+
+    /// <summary>
+    /// Verifies that the default constructor uses the default equality comparer for keys.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenDefault_ShouldUseDefaultComparer()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+
+        Assert.AreEqual(EqualityComparer<string>.Default, mvd.Comparer);
+    }
+
 }

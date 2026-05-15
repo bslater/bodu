@@ -10,6 +10,7 @@ namespace Bodu;
 
 public sealed partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" /> contract matrix with
     /// explicit ParamName disambiguation across the array / offset / count parameters. The thrown
@@ -68,6 +69,21 @@ public sealed partial class ThrowHelperTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ParametersAreValid, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 5)]
+    [DataRow(1, 4)]
+    [DataRow(2, 3)]
+    [DataRow(3, 2)]
+    [DataRow(4, 1)]
+    public void ThrowIfArrayOffsetOrCountInvalid_WhenParametersAreValid_ShouldNotThrow(int offset, int count)
+    {
+        var array = new int[5];
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when SumExceedsLength, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
@@ -82,18 +98,4 @@ public sealed partial class ThrowHelperTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayOffsetOrCountInvalid" />, when ParametersAreValid, NotThrow.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0, 5)]
-    [DataRow(1, 4)]
-    [DataRow(2, 3)]
-    [DataRow(3, 2)]
-    [DataRow(4, 1)]
-    public void ThrowIfArrayOffsetOrCountInvalid_WhenParametersAreValid_ShouldNotThrow(int offset, int count)
-    {
-        var array = new int[5];
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(array, offset, count);
-    }
 }

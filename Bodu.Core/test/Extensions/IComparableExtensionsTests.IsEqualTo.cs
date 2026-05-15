@@ -1,16 +1,44 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IComparableExtensionsTests.IsEqualTo.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu.Extensions;
 
 public partial class IComparableExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that a null comparer throws <see cref="ArgumentNullException"/>.
+    /// </summary>
+    [TestMethod]
+    public void IsEqualTo_WhenComparerIsNull_ShouldThrowArgumentNullException()
+    {
+        IComparer<int>? comparer = null;
+
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = 5.IsEqualTo(5, comparer!);
+        });
+
+        Assert.AreEqual("comparer", ex.ParamName);
+    }
+
+    /// <summary>
+    /// Verifies that <c>IsEqualTo</c> treats values as equal when a case-insensitive <see cref="StringComparer"/>
+    /// reports zero, even though <see cref="string.Equals(string)"/> would not.
+    /// </summary>
+    [TestMethod]
+    public void IsEqualTo_WhenUsingCaseInsensitiveComparer_ShouldTreatDifferentCasingAsEqual()
+    {
+        IComparer<string> comparer = StringComparer.OrdinalIgnoreCase;
+
+        Assert.IsTrue("Hello".IsEqualTo("hello", comparer));
+        Assert.IsFalse("Hello".IsEqualTo("world", comparer));
+    }
     // =========================================================================
     // IsEqualTo<T>(T, T, IComparer<T>)
     // =========================================================================
@@ -28,32 +56,4 @@ public partial class IComparableExtensionsTests
         Assert.IsFalse(5.IsEqualTo(6, comparer));
     }
 
-    /// <summary>
-    /// Verifies that <c>IsEqualTo</c> treats values as equal when a case-insensitive <see cref="StringComparer"/>
-    /// reports zero, even though <see cref="string.Equals(string)"/> would not.
-    /// </summary>
-    [TestMethod]
-    public void IsEqualTo_WhenUsingCaseInsensitiveComparer_ShouldTreatDifferentCasingAsEqual()
-    {
-        IComparer<string> comparer = StringComparer.OrdinalIgnoreCase;
-
-        Assert.IsTrue("Hello".IsEqualTo("hello", comparer));
-        Assert.IsFalse("Hello".IsEqualTo("world", comparer));
-    }
-
-    /// <summary>
-    /// Verifies that a null comparer throws <see cref="ArgumentNullException"/>.
-    /// </summary>
-    [TestMethod]
-    public void IsEqualTo_WhenComparerIsNull_ShouldThrowArgumentNullException()
-    {
-        IComparer<int>? comparer = null;
-
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = 5.IsEqualTo(5, comparer!);
-        });
-
-        Assert.AreEqual("comparer", ex.ParamName);
-    }
 }

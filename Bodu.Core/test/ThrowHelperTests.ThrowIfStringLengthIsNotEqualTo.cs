@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> contract with explicit
     /// ParamName assertions: null → <see cref="ArgumentNullException" /> on "value"; length mismatch →
@@ -45,19 +46,6 @@ public partial class ThrowHelperTests
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> throws
-    /// <see cref="ArgumentNullException" /> when the string value is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void ThrowIfStringLengthIsNotEqualTo_WhenValueIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ThrowHelper.ThrowIfStringLengthIsNotEqualTo(null!, 5);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> throws
     /// <see cref="ArgumentException" /> when the string length does not equal the expected length.
     /// </summary>
     [TestMethod]
@@ -84,4 +72,18 @@ public partial class ThrowHelperTests
     [DataRow("US", 2)]          // typical country code length
     [DataRow("AAPLUSS00000", 12)] // ISIN-length string
     public void ThrowIfStringLengthIsNotEqualTo_WhenLengthMatches_ShouldNotThrow(string value, int expectedLength) => ThrowHelper.ThrowIfStringLengthIsNotEqualTo(value, expectedLength);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfStringLengthIsNotEqualTo" /> throws
+    /// <see cref="ArgumentNullException" /> when the string value is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfStringLengthIsNotEqualTo_WhenValueIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfStringLengthIsNotEqualTo(null!, 5);
+        });
+    }
+
 }

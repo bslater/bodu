@@ -5,40 +5,29 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Add(TKey,TValue)"/> throws <see cref="ArgumentNullException"/> for a null key.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenKeyIsNull_ShouldThrowArgumentNullException()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            mvd.Add(null!, 1);
-        });
-    }
 
     /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Add(TKey,TValue)"/> creates a new key entry when the key is new.
+    /// Verifies that a custom key comparer causes case-insensitively equal string keys to be merged into a
+    /// single entry, accumulating their values together.
     /// </summary>
     [TestMethod]
-    public void Add_WhenKeyIsNew_ShouldCreateEntryAndIncrementKeyCount()
+    public void Add_WhenCustomComparerUsed_ShouldMergeEquivalentKeys()
     {
-        var mvd = new MultiValueDictionary<string, int>();
+        var mvd =
+            new MultiValueDictionary<string, int>(System.StringComparer.OrdinalIgnoreCase);
 
-        mvd.Add("a", 1);
+        mvd.Add("Alpha", 1);
+        mvd.Add("ALPHA", 2);
+        mvd.Add("alpha", 3);
 
         Assert.AreEqual(1, mvd.KeyCount);
-        Assert.AreEqual(1, mvd.Count);
-        Assert.IsTrue(mvd.ContainsKey("a"));
+        Assert.AreEqual(3, mvd.Count);
+        Assert.AreEqual(3, mvd["Alpha"].Count);
     }
 
     /// <summary>
@@ -59,22 +48,59 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that values are stored in insertion order for each key.
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Add(TKey,TValue)"/> creates a new key entry when the key is new.
     /// </summary>
     [TestMethod]
-    public void Add_WhenValuesAddedForSameKey_ShouldPreserveInsertionOrder()
+    public void Add_WhenKeyIsNew_ShouldCreateEntryAndIncrementKeyCount()
     {
         var mvd = new MultiValueDictionary<string, int>();
 
-        mvd.Add("k", 30);
-        mvd.Add("k", 10);
-        mvd.Add("k", 20);
+        mvd.Add("a", 1);
 
-        IReadOnlyList<int> values = mvd["k"];
+        Assert.AreEqual(1, mvd.KeyCount);
+        Assert.AreEqual(1, mvd.Count);
+        Assert.IsTrue(mvd.ContainsKey("a"));
+    }
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Add(TKey,TValue)"/> throws <see cref="ArgumentNullException"/> for a null key.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
 
-        Assert.AreEqual(30, values[0]);
-        Assert.AreEqual(10, values[1]);
-        Assert.AreEqual(20, values[2]);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            mvd.Add(null!, 1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a large number of keys and values are stored and retrieved correctly.
+    /// </summary>
+    [TestMethod]
+    public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
+    {
+        var mvd = new MultiValueDictionary<int, int>();
+        var keyCount = 200;
+        var valuesPerKey = 10;
+
+        for (var k = 0; k < keyCount; k++)
+        {
+            for (var v = 0; v < valuesPerKey; v++)
+                mvd.Add(k, v);
+        }
+
+        Assert.AreEqual(keyCount * valuesPerKey, mvd.Count);
+        Assert.AreEqual(keyCount, mvd.KeyCount);
+
+        for (var k = 0; k < keyCount; k++)
+        {
+            IReadOnlyList<int> values = mvd[k];
+            Assert.AreEqual(valuesPerKey, values.Count);
+            for (var v = 0; v < valuesPerKey; v++)
+                Assert.AreEqual(v, values[v]);
+        }
     }
 
     /// <summary>
@@ -117,49 +143,22 @@ public partial class MultiValueDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that a custom key comparer causes case-insensitively equal string keys to be merged into a
-    /// single entry, accumulating their values together.
+    /// Verifies that values are stored in insertion order for each key.
     /// </summary>
     [TestMethod]
-    public void Add_WhenCustomComparerUsed_ShouldMergeEquivalentKeys()
+    public void Add_WhenValuesAddedForSameKey_ShouldPreserveInsertionOrder()
     {
-        var mvd =
-            new MultiValueDictionary<string, int>(System.StringComparer.OrdinalIgnoreCase);
+        var mvd = new MultiValueDictionary<string, int>();
 
-        mvd.Add("Alpha", 1);
-        mvd.Add("ALPHA", 2);
-        mvd.Add("alpha", 3);
+        mvd.Add("k", 30);
+        mvd.Add("k", 10);
+        mvd.Add("k", 20);
 
-        Assert.AreEqual(1, mvd.KeyCount);
-        Assert.AreEqual(3, mvd.Count);
-        Assert.AreEqual(3, mvd["Alpha"].Count);
+        IReadOnlyList<int> values = mvd["k"];
+
+        Assert.AreEqual(30, values[0]);
+        Assert.AreEqual(10, values[1]);
+        Assert.AreEqual(20, values[2]);
     }
 
-    /// <summary>
-    /// Verifies that a large number of keys and values are stored and retrieved correctly.
-    /// </summary>
-    [TestMethod]
-    public void Add_WhenManyKeysAndValuesAdded_ShouldRetrieveAllCorrectly()
-    {
-        var mvd = new MultiValueDictionary<int, int>();
-        var keyCount = 200;
-        var valuesPerKey = 10;
-
-        for (var k = 0; k < keyCount; k++)
-        {
-            for (var v = 0; v < valuesPerKey; v++)
-                mvd.Add(k, v);
-        }
-
-        Assert.AreEqual(keyCount * valuesPerKey, mvd.Count);
-        Assert.AreEqual(keyCount, mvd.KeyCount);
-
-        for (var k = 0; k < keyCount; k++)
-        {
-            IReadOnlyList<int> values = mvd[k];
-            Assert.AreEqual(valuesPerKey, values.Count);
-            for (var v = 0; v < valuesPerKey; v++)
-                Assert.AreEqual(v, values[v]);
-        }
-    }
 }

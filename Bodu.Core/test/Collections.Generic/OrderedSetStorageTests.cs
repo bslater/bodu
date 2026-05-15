@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -17,6 +15,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class OrderedSetStorageTests
 {
+
     /// <summary>
     /// Verifies the happy path for <see cref="OrderedSetStorage{T}.Add(T)" /> on an empty storage —
     /// the canonical smoke check for the engine.
@@ -70,6 +69,7 @@ public partial class OrderedSetStorageTests
     /// </summary>
     private sealed class HashCollider
     {
+
         /// <summary>
         /// Initializes a new instance of the <see cref="HashCollider" /> class with the specified label.
         /// </summary>
@@ -86,12 +86,14 @@ public partial class OrderedSetStorageTests
         public string Label { get; }
 
         /// <inheritdoc />
-        public override int GetHashCode() => 0;
-
-        /// <inheritdoc />
         public override bool Equals(object? obj) => ReferenceEquals(this, obj);
 
         /// <inheritdoc />
+        public override int GetHashCode() => 0;
+
+        /// <inheritdoc />
         public override string ToString() => this.Label;
+
     }
+
 }

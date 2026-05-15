@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.IsEmpty.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.IsEmpty"/> returns <see langword="true"/> on a
     /// newly constructed builder.
@@ -18,6 +19,22 @@ public partial class PooledBufferBuilderTests
         using var builder = new PooledBufferBuilder<int>();
 
         Assert.IsTrue(builder.IsEmpty);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.IsEmpty"/> throws <see cref="ObjectDisposedException"/>
+    /// after the builder has been disposed.
+    /// </summary>
+    [TestMethod]
+    public void IsEmpty_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var builder = new PooledBufferBuilder<int>();
+        builder.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = builder.IsEmpty;
+        });
     }
 
     /// <summary>
@@ -47,19 +64,4 @@ public partial class PooledBufferBuilderTests
         Assert.IsTrue(builder.IsEmpty);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.IsEmpty"/> throws <see cref="ObjectDisposedException"/>
-    /// after the builder has been disposed.
-    /// </summary>
-    [TestMethod]
-    public void IsEmpty_WhenDisposed_ShouldThrowObjectDisposedException()
-    {
-        var builder = new PooledBufferBuilder<int>();
-        builder.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = builder.IsEmpty;
-        });
-    }
 }

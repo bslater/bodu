@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.FromUnixTimeMilliseconds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,16 +9,13 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
 
-    public static IEnumerable<object[]> FromUnixTimeMillisecondsTestData => new[] 
+    public static IEnumerable<object[]> FromUnixTimeMillisecondsTestData => new[]
     {
         new object[] { 0L, new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc) },                        // Epoch
         new object[] { 1L, new DateTime(1970, 1, 1, 0, 0, 0, 1, DateTimeKind.Utc) },                        // +1 ms
@@ -37,22 +34,17 @@ public partial class DateTimeExtensionsTests
     };
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when ValidInput, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when AboveMaximum, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(FromUnixTimeMillisecondsTestData), DynamicDataSourceType.Property)]
-    public void FromUnixTimeMilliseconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expected)
+    public void FromUnixTimeMilliseconds_WhenAboveMaximum_ShouldThrowExactly()
     {
-        DateTime actual = DateTimeExtensions.FromUnixTimeMilliseconds(input);
+        long aboveMax = 253402300800000; // 1 ms after DateTime.MaxValue
 
-        Assert.AreEqual(expected, actual);
-    }
-
-    public void FromUnixTimeMilliseconds_WhenCalled_ShouldReturnUtcKind()
-    {
-        DateTime actual = DateTimeExtensions.FromUnixTimeMilliseconds(946684800000);
-
-        Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTimeExtensions.FromUnixTimeMilliseconds(aboveMax);
+        });
     }
 
     /// <summary>
@@ -69,17 +61,23 @@ public partial class DateTimeExtensionsTests
         });
     }
 
+    public void FromUnixTimeMilliseconds_WhenCalled_ShouldReturnUtcKind()
+    {
+        DateTime actual = DateTimeExtensions.FromUnixTimeMilliseconds(946684800000);
+
+        Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
+    }
+
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when AboveMaximum, throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that <see cref="DateTimeExtensions.FromUnixTimeMilliseconds" />, when ValidInput, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void FromUnixTimeMilliseconds_WhenAboveMaximum_ShouldThrowExactly()
+    [DynamicData(nameof(FromUnixTimeMillisecondsTestData), DynamicDataSourceType.Property)]
+    public void FromUnixTimeMilliseconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expected)
     {
-        long aboveMax = 253402300800000; // 1 ms after DateTime.MaxValue
+        DateTime actual = DateTimeExtensions.FromUnixTimeMilliseconds(input);
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateTimeExtensions.FromUnixTimeMilliseconds(aboveMax);
-        });
+        Assert.AreEqual(expected, actual);
     }
+
 }

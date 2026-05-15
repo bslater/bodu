@@ -1,17 +1,33 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.Count.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Count"/> is correctly decremented after <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/>.
+    /// </summary>
+    [TestMethod]
+    public void Count_AfterRemoveAll_ShouldReflectRemovedValues()
+    {
+        var mvd = new MultiValueDictionary<string, int>();
+        mvd.Add("a", 1);
+        mvd.Add("a", 2);
+        mvd.Add("a", 3);
+        mvd.Add("b", 4);
+
+        mvd.RemoveAll("a");
+
+        Assert.AreEqual(1, mvd.Count);
+        Assert.AreEqual(1, mvd.KeyCount);
+    }
     /// <summary>
     /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Count"/> reflects the total value entries.
     /// </summary>
@@ -40,21 +56,4 @@ public partial class MultiValueDictionaryTests
         Assert.AreEqual(0, mvd.Count);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="MultiValueDictionary{TKey,TValue}.Count"/> is correctly decremented after <see cref="MultiValueDictionary{TKey,TValue}.RemoveAll"/>.
-    /// </summary>
-    [TestMethod]
-    public void Count_AfterRemoveAll_ShouldReflectRemovedValues()
-    {
-        var mvd = new MultiValueDictionary<string, int>();
-        mvd.Add("a", 1);
-        mvd.Add("a", 2);
-        mvd.Add("a", 3);
-        mvd.Add("b", 4);
-
-        mvd.RemoveAll("a");
-
-        Assert.AreEqual(1, mvd.Count);
-        Assert.AreEqual(1, mvd.KeyCount);
-    }
 }

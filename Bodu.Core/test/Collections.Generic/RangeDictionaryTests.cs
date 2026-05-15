@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -16,6 +14,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class RangeDictionaryTests
 {
+
     /// <summary>
     /// Verifies the happy-path smoke check: adding a range and querying it through the indexer returns the
     /// associated value.
@@ -29,21 +28,6 @@ public partial class RangeDictionaryTests
 
         Assert.AreEqual(1, sut.Count);
         Assert.AreEqual("tier-A", sut[5]);
-    }
-
-    /// <summary>
-    /// Creates a <see cref="RangeDictionary{TKey, TValue}" /> seeded with the specified
-    /// <c>(start, end, value)</c> tuples.
-    /// </summary>
-    /// <param name="entries">The entries to seed in order.</param>
-    /// <returns>The populated dictionary.</returns>
-    private static RangeDictionary<int, string> CreateDictionary(params (int Start, int End, string Value)[] entries)
-    {
-        var dict = new RangeDictionary<int, string>();
-        foreach ((int Start, int End, string Value) entry in entries)
-            dict.Add(entry.Start, entry.End, entry.Value);
-
-        return dict;
     }
 
     /// <summary>
@@ -64,4 +48,20 @@ public partial class RangeDictionaryTests
             Assert.AreEqual(expected[i].Value, actual.Value);
         }
     }
+
+    /// <summary>
+    /// Creates a <see cref="RangeDictionary{TKey, TValue}" /> seeded with the specified
+    /// <c>(start, end, value)</c> tuples.
+    /// </summary>
+    /// <param name="entries">The entries to seed in order.</param>
+    /// <returns>The populated dictionary.</returns>
+    private static RangeDictionary<int, string> CreateDictionary(params (int Start, int End, string Value)[] entries)
+    {
+        var dict = new RangeDictionary<int, string>();
+        foreach ((int Start, int End, string Value) entry in entries)
+            dict.Add(entry.Start, entry.End, entry.Value);
+
+        return dict;
+    }
+
 }

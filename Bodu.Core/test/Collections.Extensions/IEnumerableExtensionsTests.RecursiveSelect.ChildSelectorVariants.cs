@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensionsTests.RecursiveSelect.ChildSelectorVariants.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Extensions;
 
 public partial class IEnumerableExtensionsTests_RecursiveSelect
 {
+
     /// <summary>
     /// Verifies that the non-generic <see cref="IEnumerableExtensions.RecursiveSelect(IEnumerable, Func{object, IEnumerable})" /> overload
     /// substitutes an empty children sequence when the child selector returns <see langword="null" />.
@@ -69,4 +70,5 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
             new[] { "Root", "A", "B", "B1", "B2", "C", "C1", "C1A", "C2", "C2A", "C2B", "C2C", "D", "E" },
             actual);
     }
+
 }

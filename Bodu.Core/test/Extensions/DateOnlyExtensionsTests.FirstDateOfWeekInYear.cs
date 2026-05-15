@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.FirstDateOfWeekInYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,18 +9,17 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInYear" /> returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests. FirstDateOfWeekInYearTestData),typeof(DateTimeExtensionsTests))]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekInYearTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfWeekInYear_ShouldReturnExpectedDay(DateTime inputDateTime, DayOfWeek targetDay, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -47,17 +46,6 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInYear" />, when MinValue, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
-    {
-        var actual = DateOnly.MinValue.FirstDateOfWeekInYear(DayOfWeek.Monday);
-
-        Assert.AreEqual(new DateOnly(1, 1, 1), actual); // 0001-01-01 is a Monday
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInYear" />, when MaxYear, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -68,4 +56,16 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(new DateOnly(9999, 1, 2), actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeekInYear" />, when MinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeekInYear_WhenMinValue_ShouldReturnValidDate()
+    {
+        var actual = DateOnly.MinValue.FirstDateOfWeekInYear(DayOfWeek.Monday);
+
+        Assert.AreEqual(new DateOnly(1, 1, 1), actual); // 0001-01-01 is a Monday
+    }
+
 }

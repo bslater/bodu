@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Bodu.Collections.Generic.Extensions;
@@ -13,12 +12,6 @@ namespace Bodu.Collections.Generic.Extensions;
 [TestClass]
 public sealed partial class IEnumerableExtensionsTests_Randomize
 {
-    /// <summary>
-    /// Builds a deterministic <see cref="IRandomGenerator"/> backed by a seeded <see cref="Random"/>
-    /// so tests produce reproducible permutations.
-    /// </summary>
-    private static IRandomGenerator CreateSeededRng(int seed = 12345) =>
-        new SystemRandomAdapter(new Random(seed));
 
     /// <summary>
     /// Provides <see cref="RandomizationMode"/> values that require a non-null count parameter.
@@ -48,18 +41,66 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that the parameterless <c>Randomize</c> overload throws <see cref="ArgumentNullException" />
-    /// when the source is <see langword="null" />.
+    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll" /> and a count that exceeds the
+    /// number of available elements throws <see cref="ArgumentException" /> via the
+    /// <c>ThrowIfGreaterThanOther</c> validation inside the buffered implementation.
     /// </summary>
     [TestMethod]
-    public void Randomize_WhenSourceIsNull_ForDefaultOverload_ShouldThrowArgumentNullException()
+    public void Randomize_WhenCountExceedsSourceLength_ForBufferAllMode_ShouldThrowArgumentException()
     {
-        IEnumerable<int>? source = null;
+        int[] source = [1, 2, 3];
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            _ = source!.Randomize().ToArray();
+            _ = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 10).ToArray();
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RandomizationMode.ReservoirSample" /> throws <see cref="ArgumentOutOfRangeException" />
+    /// when <c>count</c> exceeds the number of available elements, confirming the reservoir-fill contract.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_WhenCountExceedsSourceLength_ForReservoirSampleMode_ShouldThrowArgumentOutOfRangeException()
+    {
+        int[] source = [1, 2, 3];
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = source.Randomize(RandomizationMode.ReservoirSample, CreateSeededRng(), count: 10).ToArray();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a negative count throws <see cref="ArgumentOutOfRangeException" /> eagerly.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
+    {
+        int[] source = [1, 2, 3];
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: -1);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RandomizationMode.ReservoirSample" /> and <see cref="RandomizationMode.LazyShuffle" />
+    /// throw <see cref="ArgumentException" /> with parameter name <c>count</c> when count is null.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetModesRequiringCount))]
+    public void Randomize_WhenCountIsNullForCountRequiringMode_ShouldThrowArgumentException(RandomizationMode mode)
+    {
+        int[] source = [1, 2, 3];
+
+        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = source.Randomize(mode, CreateSeededRng(), count: null);
+        });
+
+        Assert.AreEqual("count", ex.ParamName);
     }
 
     // =========================================================================
@@ -97,143 +138,6 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
-    /// Verifies that each mode requiring a count returns exactly the requested number of elements,
-    /// all of which are members of the source sequence.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetModesRequiringCount))]
-    public void Randomize_WhenModeRequiresCount_ShouldReturnRequestedNumberOfElements(RandomizationMode mode)
-    {
-        var source = Enumerable.Range(1, 20).ToArray();
-
-        var result = source.Randomize(mode, CreateSeededRng(), count: 5).ToArray();
-
-        Assert.AreEqual(5, result.Length);
-        foreach (var value in result)
-            CollectionAssert.Contains(source, value);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RandomizationMode.StreamWindowed"/> yields every element of the source,
-    /// confirming the method does not drop elements when no count is specified.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenModeIsStreamWindowed_ShouldReturnPermutationOfSource()
-    {
-        var source = Enumerable.Range(1, 30).ToArray();
-
-        var result = source.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng()).ToArray();
-
-        CollectionAssert.AreEquivalent(source, result);
-    }
-
-    /// <summary>
-    /// Verifies that <c>Randomize</c> throws <see cref="ArgumentNullException" /> eagerly when the source is null.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenSourceIsNull_ForExplicitOverload_ShouldThrowArgumentNullException()
-    {
-        IEnumerable<int>? source = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source!.Randomize(RandomizationMode.BufferAll, CreateSeededRng());
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <c>Randomize</c> throws <see cref="ArgumentNullException" /> eagerly when the RNG is null.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenRngIsNull_ShouldThrowArgumentNullException()
-    {
-        int[] source = [1, 2, 3];
-        IRandomGenerator? rng = null;
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.Randomize(RandomizationMode.BufferAll, rng!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a negative count throws <see cref="ArgumentOutOfRangeException" /> eagerly.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenCountIsNegative_ShouldThrowArgumentOutOfRangeException()
-    {
-        int[] source = [1, 2, 3];
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: -1);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that an undefined <see cref="RandomizationMode" /> value throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenModeIsUndefined_ShouldThrowArgumentOutOfRangeException()
-    {
-        int[] source = [1, 2, 3];
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = source.Randomize((RandomizationMode)999, CreateSeededRng());
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RandomizationMode.ReservoirSample" /> and <see cref="RandomizationMode.LazyShuffle" />
-    /// throw <see cref="ArgumentException" /> with parameter name <c>count</c> when count is null.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetModesRequiringCount))]
-    public void Randomize_WhenCountIsNullForCountRequiringMode_ShouldThrowArgumentException(RandomizationMode mode)
-    {
-        int[] source = [1, 2, 3];
-
-        ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = source.Randomize(mode, CreateSeededRng(), count: null);
-        });
-
-        Assert.AreEqual("count", ex.ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that <c>Randomize</c> with <see cref="RandomizationMode.BufferAll" /> and a count that exceeds the
-    /// number of available elements throws <see cref="ArgumentException" /> via the
-    /// <c>ThrowIfGreaterThanOther</c> validation inside the buffered implementation.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenCountExceedsSourceLength_ForBufferAllMode_ShouldThrowArgumentException()
-    {
-        int[] source = [1, 2, 3];
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = source.Randomize(RandomizationMode.BufferAll, CreateSeededRng(), count: 10).ToArray();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RandomizationMode.ReservoirSample" /> throws <see cref="ArgumentOutOfRangeException" />
-    /// when <c>count</c> exceeds the number of available elements, confirming the reservoir-fill contract.
-    /// </summary>
-    [TestMethod]
-    public void Randomize_WhenCountExceedsSourceLength_ForReservoirSampleMode_ShouldThrowArgumentOutOfRangeException()
-    {
-        int[] source = [1, 2, 3];
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = source.Randomize(RandomizationMode.ReservoirSample, CreateSeededRng(), count: 10).ToArray();
-        });
-    }
-
-    /// <summary>
     /// Verifies that <c>Randomize</c> in <see cref="RandomizationMode.StreamWindowed" /> mode defers execution —
     /// the source is not enumerated until the returned sequence is consumed.
     /// </summary>
@@ -262,6 +166,66 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
     }
 
     /// <summary>
+    /// Verifies that <see cref="RandomizationMode.StreamWindowed"/> yields every element of the source,
+    /// confirming the method does not drop elements when no count is specified.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_WhenModeIsStreamWindowed_ShouldReturnPermutationOfSource()
+    {
+        var source = Enumerable.Range(1, 30).ToArray();
+
+        var result = source.Randomize(RandomizationMode.StreamWindowed, CreateSeededRng()).ToArray();
+
+        CollectionAssert.AreEquivalent(source, result);
+    }
+
+    /// <summary>
+    /// Verifies that an undefined <see cref="RandomizationMode" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_WhenModeIsUndefined_ShouldThrowArgumentOutOfRangeException()
+    {
+        int[] source = [1, 2, 3];
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = source.Randomize((RandomizationMode)999, CreateSeededRng());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that each mode requiring a count returns exactly the requested number of elements,
+    /// all of which are members of the source sequence.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetModesRequiringCount))]
+    public void Randomize_WhenModeRequiresCount_ShouldReturnRequestedNumberOfElements(RandomizationMode mode)
+    {
+        var source = Enumerable.Range(1, 20).ToArray();
+
+        var result = source.Randomize(mode, CreateSeededRng(), count: 5).ToArray();
+
+        Assert.AreEqual(5, result.Length);
+        foreach (var value in result)
+            CollectionAssert.Contains(source, value);
+    }
+
+    /// <summary>
+    /// Verifies that <c>Randomize</c> throws <see cref="ArgumentNullException" /> eagerly when the RNG is null.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_WhenRngIsNull_ShouldThrowArgumentNullException()
+    {
+        int[] source = [1, 2, 3];
+        IRandomGenerator? rng = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.Randomize(RandomizationMode.BufferAll, rng!);
+        });
+    }
+
+    /// <summary>
     /// Verifies that invoking <c>Randomize</c> with a null RNG throws immediately, before the sequence is enumerated,
     /// confirming the eager-validation contract.
     /// </summary>
@@ -285,4 +249,40 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
             yield return 1;
         }
     }
+
+    /// <summary>
+    /// Verifies that the parameterless <c>Randomize</c> overload throws <see cref="ArgumentNullException" />
+    /// when the source is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_WhenSourceIsNull_ForDefaultOverload_ShouldThrowArgumentNullException()
+    {
+        IEnumerable<int>? source = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source!.Randomize().ToArray();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>Randomize</c> throws <see cref="ArgumentNullException" /> eagerly when the source is null.
+    /// </summary>
+    [TestMethod]
+    public void Randomize_WhenSourceIsNull_ForExplicitOverload_ShouldThrowArgumentNullException()
+    {
+        IEnumerable<int>? source = null;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source!.Randomize(RandomizationMode.BufferAll, CreateSeededRng());
+        });
+    }
+    /// <summary>
+    /// Builds a deterministic <see cref="IRandomGenerator"/> backed by a seeded <see cref="Random"/>
+    /// so tests produce reproducible permutations.
+    /// </summary>
+    private static IRandomGenerator CreateSeededRng(int seed = 12345) =>
+        new SystemRandomAdapter(new Random(seed));
+
 }

@@ -10,6 +10,19 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfArrayLengthOutOfRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    {
+        Array? array = null;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfArrayLengthOutOfRange(array!, 1, 10);
+        });
+    }
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" /> contract with explicit
     /// ParamName assertions: null array → <see cref="ArgumentNullException" /> on the array parameter;
@@ -47,19 +60,6 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void ThrowIfArrayLengthOutOfRange_WhenArrayIsNull_ShouldThrowArgumentNullException()
-    {
-        Array? array = null;
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ThrowHelper.ThrowIfArrayLengthOutOfRange(array!, 1, 10);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthOutOfRange" />, when LengthIsOutOfRange, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
@@ -90,4 +90,5 @@ public partial class ThrowHelperTests
         Array array = new int[arrayLength];
         ThrowHelper.ThrowIfArrayLengthOutOfRange(array, minLength, maxLength);
     }
+
 }

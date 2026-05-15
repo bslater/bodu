@@ -10,6 +10,23 @@ namespace Bodu.Collections.Generic;
 
 public partial class MultisetTests
 {
+
+    /// <summary>
+    /// Verifies that the non-generic <see cref="IEnumerator.Current" /> on the <see cref="Multiset{T}.Enumerator" /> returns the same
+    /// value as the strongly typed <c>Current</c> after a successful <c>MoveNext</c>. Because <c>Enumerator</c> is a value type, the
+    /// boxed reference must be used for both <c>MoveNext</c> and <c>Current</c> so the same state is observed.
+    /// </summary>
+    [TestMethod]
+    public void EnumeratorNonGenericCurrent_AfterMoveNext_ShouldReturnSameAsTypedCurrent()
+    {
+        var multiset = new Multiset<int>();
+        multiset.Add(99);
+
+        IEnumerator legacy = ((IEnumerable<int>)multiset).GetEnumerator();
+
+        Assert.IsTrue(legacy.MoveNext());
+        Assert.AreEqual(99, legacy.Current);
+    }
     /// <summary>
     /// Verifies that the explicit <see cref="IEnumerable{T}.GetEnumerator" /> on a <see cref="Multiset{T}" /> yields elements with their
     /// respective multiplicity.
@@ -50,20 +67,4 @@ public partial class MultisetTests
         CollectionAssert.AreEqual(new[] { 7, 7, 8 }, observed);
     }
 
-    /// <summary>
-    /// Verifies that the non-generic <see cref="IEnumerator.Current" /> on the <see cref="Multiset{T}.Enumerator" /> returns the same
-    /// value as the strongly typed <c>Current</c> after a successful <c>MoveNext</c>. Because <c>Enumerator</c> is a value type, the
-    /// boxed reference must be used for both <c>MoveNext</c> and <c>Current</c> so the same state is observed.
-    /// </summary>
-    [TestMethod]
-    public void EnumeratorNonGenericCurrent_AfterMoveNext_ShouldReturnSameAsTypedCurrent()
-    {
-        var multiset = new Multiset<int>();
-        multiset.Add(99);
-
-        IEnumerator legacy = ((IEnumerable<int>)multiset).GetEnumerator();
-
-        Assert.IsTrue(legacy.MoveNext());
-        Assert.AreEqual(99, legacy.Current);
-    }
 }

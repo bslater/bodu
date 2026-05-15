@@ -10,34 +10,28 @@ namespace Bodu.Extensions;
 
 public partial class NumericExtensionsTests
 {
-    // --------------------------------------------------
-    // ushort
-    // --------------------------------------------------
 
     /// <summary>
-    /// Verifies that <see cref="NumericExtensions.ReverseBytes(ushort)" /> swaps the two bytes of the
-    /// input value, for a representative set of inputs.
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBytes(uint)" /> twice returns the original value.
     /// </summary>
     [TestMethod]
-    [DataRow((ushort)0x0000, (ushort)0x0000, "all bits zero — identity")]
-    [DataRow((ushort)0xFFFF, (ushort)0xFFFF, "all bits set — identity")]
-    [DataRow((ushort)0xAAAA, (ushort)0xAAAA, "byte-palindrome — identity")]
-    [DataRow((ushort)0x1234, (ushort)0x3412, "arbitrary non-palindromic value")]
-    [DataRow((ushort)0xABCD, (ushort)0xCDAB, "ABCD → CDAB")]
-    [DataRow((ushort)0x0102, (ushort)0x0201, "0102 → 0201")]
-    [DataRow((ushort)0x0100, (ushort)0x0001, "single bit in high byte → low byte")]
-    [DataRow((ushort)0x0001, (ushort)0x0100, "single bit in low byte → high byte")]
-    public void ReverseBytes_WhenValueIsUShort_ShouldSwapBytes(ushort value, ushort expected, string description)
-    {
-        var actual = value.ReverseBytes();
+    [DataRow(0x00000000U)]
+    [DataRow(0x00000001U)]
+    [DataRow(0x12345678U)]
+    [DataRow(0xFFFFFFFFU)]
+    public void ReverseBytes_WhenAppliedTwice_ForUInt_ShouldReturnOriginalValue(uint value) =>
+        Assert.AreEqual(value, value.ReverseBytes().ReverseBytes());
 
-        Trace.WriteLineIf(actual != expected, $"[{description}]");
-        Trace.WriteLineIf(actual != expected, $"value   : {value:X4}");
-        Trace.WriteLineIf(actual != expected, $"expected: {expected:X4}");
-        Trace.WriteLineIf(actual != expected, $"actual  : {actual:X4}");
-
-        Assert.AreEqual(expected, actual, description);
-    }
+    /// <summary>
+    /// Verifies that applying <see cref="NumericExtensions.ReverseBytes(ulong)" /> twice returns the original value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0x0000000000000000UL)]
+    [DataRow(0x0000000000000001UL)]
+    [DataRow(0x0102030405060708UL)]
+    [DataRow(0xFFFFFFFFFFFFFFFFUL)]
+    public void ReverseBytes_WhenAppliedTwice_ForULong_ShouldReturnOriginalValue(ulong value) =>
+        Assert.AreEqual(value, value.ReverseBytes().ReverseBytes());
 
     /// <summary>
     /// Verifies that applying <see cref="NumericExtensions.ReverseBytes(ushort)" /> twice returns the original value.
@@ -79,17 +73,6 @@ public partial class NumericExtensionsTests
         Assert.AreEqual(expected, actual, description);
     }
 
-    /// <summary>
-    /// Verifies that applying <see cref="NumericExtensions.ReverseBytes(uint)" /> twice returns the original value.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0x00000000U)]
-    [DataRow(0x00000001U)]
-    [DataRow(0x12345678U)]
-    [DataRow(0xFFFFFFFFU)]
-    public void ReverseBytes_WhenAppliedTwice_ForUInt_ShouldReturnOriginalValue(uint value) =>
-        Assert.AreEqual(value, value.ReverseBytes().ReverseBytes());
-
     // --------------------------------------------------
     // ulong
     // --------------------------------------------------
@@ -118,15 +101,33 @@ public partial class NumericExtensionsTests
 
         Assert.AreEqual(expected, actual, description);
     }
+    // --------------------------------------------------
+    // ushort
+    // --------------------------------------------------
 
     /// <summary>
-    /// Verifies that applying <see cref="NumericExtensions.ReverseBytes(ulong)" /> twice returns the original value.
+    /// Verifies that <see cref="NumericExtensions.ReverseBytes(ushort)" /> swaps the two bytes of the
+    /// input value, for a representative set of inputs.
     /// </summary>
     [TestMethod]
-    [DataRow(0x0000000000000000UL)]
-    [DataRow(0x0000000000000001UL)]
-    [DataRow(0x0102030405060708UL)]
-    [DataRow(0xFFFFFFFFFFFFFFFFUL)]
-    public void ReverseBytes_WhenAppliedTwice_ForULong_ShouldReturnOriginalValue(ulong value) =>
-        Assert.AreEqual(value, value.ReverseBytes().ReverseBytes());
+    [DataRow((ushort)0x0000, (ushort)0x0000, "all bits zero — identity")]
+    [DataRow((ushort)0xFFFF, (ushort)0xFFFF, "all bits set — identity")]
+    [DataRow((ushort)0xAAAA, (ushort)0xAAAA, "byte-palindrome — identity")]
+    [DataRow((ushort)0x1234, (ushort)0x3412, "arbitrary non-palindromic value")]
+    [DataRow((ushort)0xABCD, (ushort)0xCDAB, "ABCD → CDAB")]
+    [DataRow((ushort)0x0102, (ushort)0x0201, "0102 → 0201")]
+    [DataRow((ushort)0x0100, (ushort)0x0001, "single bit in high byte → low byte")]
+    [DataRow((ushort)0x0001, (ushort)0x0100, "single bit in low byte → high byte")]
+    public void ReverseBytes_WhenValueIsUShort_ShouldSwapBytes(ushort value, ushort expected, string description)
+    {
+        var actual = value.ReverseBytes();
+
+        Trace.WriteLineIf(actual != expected, $"[{description}]");
+        Trace.WriteLineIf(actual != expected, $"value   : {value:X4}");
+        Trace.WriteLineIf(actual != expected, $"expected: {expected:X4}");
+        Trace.WriteLineIf(actual != expected, $"actual  : {actual:X4}");
+
+        Assert.AreEqual(expected, actual, description);
+    }
+
 }

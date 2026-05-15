@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XorShiftRandomTests.Next.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,20 +8,6 @@ namespace Bodu;
 
 public partial class XorShiftRandomTests
 {
-    /// <summary>
-    /// Verifies that <see cref="XorShiftRandom.Next" />, when SeedIsNotSame, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void Next_WhenSeedIsNotSame_ShouldProduceDeterministicSequence()
-    {
-        var rng1 = new XorShiftRandom(42);
-        var rng2 = new XorShiftRandom(42);
-
-        var sequence1 = Enumerable.Range(0, 10).Select(_ => rng1.Next()).ToArray();
-        var sequence2 = Enumerable.Range(0, 10).Select(_ => rng2.Next()).ToArray();
-
-        CollectionAssert.AreEqual(sequence1, sequence2);
-    }
 
     /// <summary>
     /// Verifies that <see cref="XorShiftRandom.Next" />(min, max) returns values within the expected bounds.
@@ -144,6 +130,20 @@ public partial class XorShiftRandomTests
 
         Assert.IsTrue(actual >= 0 && actual < 100, $"Result {actual} is out of expected range.");
     }
+    /// <summary>
+    /// Verifies that <see cref="XorShiftRandom.Next" />, when SeedIsNotSame, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void Next_WhenSeedIsNotSame_ShouldProduceDeterministicSequence()
+    {
+        var rng1 = new XorShiftRandom(42);
+        var rng2 = new XorShiftRandom(42);
+
+        var sequence1 = Enumerable.Range(0, 10).Select(_ => rng1.Next()).ToArray();
+        var sequence2 = Enumerable.Range(0, 10).Select(_ => rng2.Next()).ToArray();
+
+        CollectionAssert.AreEqual(sequence1, sequence2);
+    }
 
     /// <summary>
     /// Verifies that two instances with different seeds produce different sequences.
@@ -236,4 +236,5 @@ public partial class XorShiftRandomTests
             Assert.AreEqual(rng1.Next(1000), rng2.Next(1000), $"Mismatch at iteration {i}");
         }
     }
+
 }

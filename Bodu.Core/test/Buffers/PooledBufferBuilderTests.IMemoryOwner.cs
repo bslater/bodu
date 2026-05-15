@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.IMemoryOwner.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,23 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
+    /// <summary>
+    /// Verifies that accessing <see cref="IMemoryOwner{T}.Memory"/> after disposal throws
+    /// <see cref="ObjectDisposedException"/>.
+    /// </summary>
+    [TestMethod]
+    public void IMemoryOwner_Memory_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var builder = new PooledBufferBuilder<int>();
+        builder.Dispose();
+        IMemoryOwner<int> owner = builder;
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = owner.Memory;
+        });
+    }
     /// <summary>
     /// Verifies that the <see cref="IMemoryOwner{T}.Memory"/> property returns an empty memory region when the
     /// builder has no written elements.
@@ -81,20 +98,4 @@ public partial class PooledBufferBuilderTests
         Assert.AreEqual(0, owner.Memory.Length);
     }
 
-    /// <summary>
-    /// Verifies that accessing <see cref="IMemoryOwner{T}.Memory"/> after disposal throws
-    /// <see cref="ObjectDisposedException"/>.
-    /// </summary>
-    [TestMethod]
-    public void IMemoryOwner_Memory_WhenDisposed_ShouldThrowObjectDisposedException()
-    {
-        var builder = new PooledBufferBuilder<int>();
-        builder.Dispose();
-        IMemoryOwner<int> owner = builder;
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = owner.Memory;
-        });
-    }
 }

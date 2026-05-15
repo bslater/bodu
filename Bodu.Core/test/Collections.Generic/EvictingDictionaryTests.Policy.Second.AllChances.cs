@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Policy.Second.AllChances.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that the Second-Chance algorithm falls back to evicting the first ordered item when every entry has been granted a
     /// second chance (each item's reference bit is cleared during the pass and the rotated head is returned).
@@ -77,4 +78,5 @@ public partial class EvictingDictionaryTests
         var candidate = dictionary.PeekEvictionCandidate();
         Assert.AreEqual("A", candidate);
     }
+
 }

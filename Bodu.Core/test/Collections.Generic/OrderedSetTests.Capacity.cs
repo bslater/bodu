@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -29,6 +28,19 @@ public partial class OrderedSetTests
         {
             _ = sut.EnsureCapacity(capacity);
         });
+    }
+
+    /// <summary>
+    /// Verifies that growth preserves the existing contents.
+    /// </summary>
+    [TestMethod]
+    public void EnsureCapacity_WhenGrown_ShouldPreserveContents()
+    {
+        OrderedSet<int> sut = CreateSet([1, 2, 3]);
+
+        sut.EnsureCapacity(128);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
 
     /// <summary>
@@ -63,33 +75,20 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
-    /// Verifies that growth preserves the existing contents.
+    /// Verifies that items remain locatable after <see cref="OrderedSet{T}.TrimExcess" />.
     /// </summary>
     [TestMethod]
-    public void EnsureCapacity_WhenGrown_ShouldPreserveContents()
+    public void TrimExcess_WhenCalled_ShouldKeepItemsLocatable()
     {
-        OrderedSet<int> sut = CreateSet([1, 2, 3]);
-
-        sut.EnsureCapacity(128);
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
-    }
-
-    // --------------------------------------------------------
-    // TrimExcess
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="OrderedSet{T}.TrimExcess" /> on an empty set releases the backing arrays.
-    /// </summary>
-    [TestMethod]
-    public void TrimExcess_WhenSetIsEmpty_ShouldResetCapacityToZero()
-    {
-        var sut = new OrderedSet<int>(16);
+        var sut = new OrderedSet<int>(128);
+        sut.Add(10);
+        sut.Add(20);
+        sut.Add(30);
 
         sut.TrimExcess();
 
-        Assert.AreEqual(0, sut.Capacity);
+        Assert.IsTrue(sut.Contains(20));
+        Assert.AreEqual(2, sut.IndexOf(30));
     }
 
     /// <summary>
@@ -110,20 +109,21 @@ public partial class OrderedSetTests
         CollectionAssert.AreEqual(new[] { 1, 2, 3 }, SnapshotByIndexer(sut));
     }
 
+    // --------------------------------------------------------
+    // TrimExcess
+    // --------------------------------------------------------
+
     /// <summary>
-    /// Verifies that items remain locatable after <see cref="OrderedSet{T}.TrimExcess" />.
+    /// Verifies that <see cref="OrderedSet{T}.TrimExcess" /> on an empty set releases the backing arrays.
     /// </summary>
     [TestMethod]
-    public void TrimExcess_WhenCalled_ShouldKeepItemsLocatable()
+    public void TrimExcess_WhenSetIsEmpty_ShouldResetCapacityToZero()
     {
-        var sut = new OrderedSet<int>(128);
-        sut.Add(10);
-        sut.Add(20);
-        sut.Add(30);
+        var sut = new OrderedSet<int>(16);
 
         sut.TrimExcess();
 
-        Assert.IsTrue(sut.Contains(20));
-        Assert.AreEqual(2, sut.IndexOf(30));
+        Assert.AreEqual(0, sut.Capacity);
     }
+
 }

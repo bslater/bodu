@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Bodu.Collections.Generic.Extensions;
@@ -13,6 +12,7 @@ namespace Bodu.Collections.Generic.Extensions;
 [TestClass]
 public sealed partial class IListExtensionsTests_TryMove
 {
+
     /// <summary>
     /// Provides valid <c>TryMove</c> scenarios covering left-moves, right-moves, move-to-end,
     /// and same-position no-ops.
@@ -48,36 +48,6 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> returns <see langword="true" /> without mutating the list when <paramref name="oldIndex"/>
-    /// equals <paramref name="newIndex"/>.
-    /// </summary>
-    [TestMethod]
-    public void TryMove_WhenOldIndexEqualsNewIndex_ShouldReturnTrueWithoutMutating()
-    {
-        var list = new List<int> { 10, 20, 30, 40 };
-
-        var result = list.TryMove(2, 2);
-
-        Assert.IsTrue(result);
-        CollectionAssert.AreEqual(new[] { 10, 20, 30, 40 }, list);
-    }
-
-    /// <summary>
-    /// Verifies that <c>TryMove</c> returns <see langword="true" /> without mutating when <paramref name="newIndex"/>
-    /// is one greater than <paramref name="oldIndex"/>, matching the method's documented no-op contract.
-    /// </summary>
-    [TestMethod]
-    public void TryMove_WhenNewIndexIsAdjacentToOldIndex_ShouldReturnTrueWithoutMutating()
-    {
-        var list = new List<int> { 10, 20, 30, 40 };
-
-        var result = list.TryMove(1, 2);
-
-        Assert.IsTrue(result);
-        CollectionAssert.AreEqual(new[] { 10, 20, 30, 40 }, list);
-    }
-
-    /// <summary>
     /// Verifies that <c>TryMove</c> returns <see langword="false" /> and leaves the list unmodified when an index is out of range.
     /// </summary>
     [TestMethod]
@@ -97,17 +67,19 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> throws <see cref="ArgumentNullException" /> when the list is <see langword="null" />.
+    /// Verifies that <c>TryMove</c> on a single-element list is a no-op and returns <see langword="true" />
+    /// when called with <c>(0, 0)</c> or <c>(0, 1)</c>, and returns <see langword="false" /> for invalid indices.
     /// </summary>
     [TestMethod]
-    public void TryMove_WhenListIsNull_ShouldThrowArgumentNullException()
+    public void TryMove_WhenListContainsOneElement_ShouldHandleAllValidPositions()
     {
-        IList<int>? list = null;
+        var list = new List<int> { 42 };
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = list!.TryMove(0, 1);
-        });
+        Assert.IsTrue(list.TryMove(0, 0));
+        Assert.IsTrue(list.TryMove(0, 1));
+        Assert.IsFalse(list.TryMove(1, 0));
+
+        CollectionAssert.AreEqual(new[] { 42 }, list);
     }
 
     /// <summary>
@@ -126,18 +98,47 @@ public sealed partial class IListExtensionsTests_TryMove
     }
 
     /// <summary>
-    /// Verifies that <c>TryMove</c> on a single-element list is a no-op and returns <see langword="true" />
-    /// when called with <c>(0, 0)</c> or <c>(0, 1)</c>, and returns <see langword="false" /> for invalid indices.
+    /// Verifies that <c>TryMove</c> throws <see cref="ArgumentNullException" /> when the list is <see langword="null" />.
     /// </summary>
     [TestMethod]
-    public void TryMove_WhenListContainsOneElement_ShouldHandleAllValidPositions()
+    public void TryMove_WhenListIsNull_ShouldThrowArgumentNullException()
     {
-        var list = new List<int> { 42 };
+        IList<int>? list = null;
 
-        Assert.IsTrue(list.TryMove(0, 0));
-        Assert.IsTrue(list.TryMove(0, 1));
-        Assert.IsFalse(list.TryMove(1, 0));
-
-        CollectionAssert.AreEqual(new[] { 42 }, list);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = list!.TryMove(0, 1);
+        });
     }
+
+    /// <summary>
+    /// Verifies that <c>TryMove</c> returns <see langword="true" /> without mutating when <paramref name="newIndex"/>
+    /// is one greater than <paramref name="oldIndex"/>, matching the method's documented no-op contract.
+    /// </summary>
+    [TestMethod]
+    public void TryMove_WhenNewIndexIsAdjacentToOldIndex_ShouldReturnTrueWithoutMutating()
+    {
+        var list = new List<int> { 10, 20, 30, 40 };
+
+        var result = list.TryMove(1, 2);
+
+        Assert.IsTrue(result);
+        CollectionAssert.AreEqual(new[] { 10, 20, 30, 40 }, list);
+    }
+
+    /// <summary>
+    /// Verifies that <c>TryMove</c> returns <see langword="true" /> without mutating the list when <paramref name="oldIndex"/>
+    /// equals <paramref name="newIndex"/>.
+    /// </summary>
+    [TestMethod]
+    public void TryMove_WhenOldIndexEqualsNewIndex_ShouldReturnTrueWithoutMutating()
+    {
+        var list = new List<int> { 10, 20, 30, 40 };
+
+        var result = list.TryMove(2, 2);
+
+        Assert.IsTrue(result);
+        CollectionAssert.AreEqual(new[] { 10, 20, 30, 40 }, list);
+    }
+
 }

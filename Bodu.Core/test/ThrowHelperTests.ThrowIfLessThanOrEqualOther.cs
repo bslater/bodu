@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfLessThanOrEqualOther{T}" /> contract matrix with
     /// explicit ParamName disambiguation: when the guard fails, ParamName must be the name of the
@@ -39,6 +40,15 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOrEqualOther" />, when ValueIsGreaterThanOther, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DataRow(1, 0)]
+    [DataRow(6, 5)]
+    [DataRow(int.MaxValue, int.MinValue)]
+    public void ThrowIfLessThanOrEqualOther_WhenValueIsGreaterThanOther_ShouldNotThrow(int value, int other) => ThrowHelper.ThrowIfLessThanOrEqualOther(value, other);
+
+    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOrEqualOther" />, when ValueIsLessThanOrEqualToOther, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
@@ -54,12 +64,4 @@ public partial class ThrowHelperTests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfLessThanOrEqualOther" />, when ValueIsGreaterThanOther, NotThrow.
-    /// </summary>
-    [TestMethod]
-    [DataRow(1, 0)]
-    [DataRow(6, 5)]
-    [DataRow(int.MaxValue, int.MinValue)]
-    public void ThrowIfLessThanOrEqualOther_WhenValueIsGreaterThanOther_ShouldNotThrow(int value, int other) => ThrowHelper.ThrowIfLessThanOrEqualOther(value, other);
 }

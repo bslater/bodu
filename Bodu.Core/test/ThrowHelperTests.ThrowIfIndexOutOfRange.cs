@@ -10,7 +10,48 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     private static readonly int[] s_testArray = [1, 2, 3, 4, 5];
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> throws
+    /// <see cref="ArgumentNullException" /> when the array is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfIndexOutOfRange_Array_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfIndexOutOfRange(0L, (Array)null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the index is out of bounds.
+    /// </summary>
+    [TestMethod]
+    [DataRow(5)]          // index == Length
+    [DataRow(6)]          // index > Length
+    [DataRow(int.MaxValue)]
+    [DataRow(-1)]         // negative index
+    public void ThrowIfIndexOutOfRange_Array_WhenIndexIsInvalid_ShouldThrowArgumentOutOfRangeException(int index)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            ThrowHelper.ThrowIfIndexOutOfRange(index, s_testArray);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> does not throw
+    /// when the index is within bounds.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(4)]
+    public void ThrowIfIndexOutOfRange_Array_WhenIndexIsWithinBounds_ShouldNotThrow(int index) => ThrowHelper.ThrowIfIndexOutOfRange(index, s_testArray);
 
     /// <summary>
     /// Verifies the multi-parameter contract for the <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" />
@@ -44,46 +85,6 @@ public partial class ThrowHelperTests
             expected,
             param);
     }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when the index is out of bounds.
-    /// </summary>
-    [TestMethod]
-    [DataRow(5)]          // index == Length
-    [DataRow(6)]          // index > Length
-    [DataRow(int.MaxValue)]
-    [DataRow(-1)]         // negative index
-    public void ThrowIfIndexOutOfRange_Array_WhenIndexIsInvalid_ShouldThrowArgumentOutOfRangeException(int index)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            ThrowHelper.ThrowIfIndexOutOfRange(index, s_testArray);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> throws
-    /// <see cref="ArgumentNullException" /> when the array is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void ThrowIfIndexOutOfRange_Array_WhenArrayIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ThrowHelper.ThrowIfIndexOutOfRange(0L, (Array)null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange(long, Array, string?)" /> does not throw
-    /// when the index is within bounds.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0)]
-    [DataRow(1)]
-    [DataRow(4)]
-    public void ThrowIfIndexOutOfRange_Array_WhenIndexIsWithinBounds_ShouldNotThrow(int index) => ThrowHelper.ThrowIfIndexOutOfRange(index, s_testArray);
 
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfIndexOutOfRange{T}(int, ReadOnlySpan{T}, string?)" /> throws
@@ -148,4 +149,5 @@ public partial class ThrowHelperTests
 
         ThrowHelper.ThrowIfIndexOutOfRange(index, span);
     }
+
 }

@@ -1,16 +1,16 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.Overlaps.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
+
     /// <summary>
     /// Verifies that <see cref="RangeSet{T}.Overlaps(T, T)" /> rejects <see langword="null" /> endpoints.
     /// </summary>
@@ -28,31 +28,6 @@ public partial class RangeSetTests
         {
             _ = sut.Overlaps("a", null!);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RangeSet{T}.Overlaps(T, T)" /> rejects degenerate ranges.
-    /// </summary>
-    [TestMethod]
-    public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
-    {
-        var sut = new RangeSet<int>();
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = sut.Overlaps(5, 5);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RangeSet{T}.Overlaps(T, T)" /> on an empty set returns <see langword="false" />.
-    /// </summary>
-    [TestMethod]
-    public void Overlaps_WhenSetIsEmpty_ShouldReturnFalse()
-    {
-        var sut = new RangeSet<int>();
-
-        Assert.IsFalse(sut.Overlaps(0, 10));
     }
 
     /// <summary>
@@ -75,4 +50,30 @@ public partial class RangeSetTests
 
         Assert.AreEqual(expected, sut.Overlaps(start, end));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeSet{T}.Overlaps(T, T)" /> on an empty set returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public void Overlaps_WhenSetIsEmpty_ShouldReturnFalse()
+    {
+        var sut = new RangeSet<int>();
+
+        Assert.IsFalse(sut.Overlaps(0, 10));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="RangeSet{T}.Overlaps(T, T)" /> rejects degenerate ranges.
+    /// </summary>
+    [TestMethod]
+    public void Overlaps_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
+    {
+        var sut = new RangeSet<int>();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = sut.Overlaps(5, 5);
+        });
+    }
+
 }

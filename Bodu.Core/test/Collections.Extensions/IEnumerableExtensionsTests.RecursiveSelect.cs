@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IEnumerableExtensionsTests.RecursiveSelect.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,8 +10,6 @@ namespace Bodu.Collections.Extensions;
 public partial class IEnumerableExtensionsTests_RecursiveSelect
     : Bodu.Collections.EnumerableTests
 {
-    public static IEnumerable<object[]> GetDeferredExecutionCases()
-        => GetCases().Select(tc => new object[] { tc });
 
     /// <summary>
     /// Provides extension method test cases that should exhibit deferred execution.
@@ -200,43 +198,29 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
             expectedResult: ["0:Root", "-0:A", "-1:B", "--0:B1", "--1:B2", "-2:C", "--0:C1", "---0:C1A", "--1:C2", "---0:C2A", "---2:C2C", "-3:D", "-4:E"]
         );
     }
+    public static IEnumerable<object[]> GetDeferredExecutionCases()
+        => GetCases().Select(tc => new object[] { tc });
+
+    /// <summary>
+    /// Verifies that RecursiveSelect works when some childSelector calls return null (graceful fallback).
+    /// </summary>
+    [TestMethod]
+    public void ChildSelector_ReturnsNull_ShouldSkipChildren()
+    {
+        var root = new Node { Name = "Root", Children = null! };
+        var actual = new object[] { root }.RecursiveSelect(n => (n as Node).Children).Cast<Node>().ToList();
+
+        Assert.HasCount(1, actual);
+        Assert.AreEqual("Root", actual[0].Name);
+    }
 
     /// <summary>
     /// Verifies that the method under test does not trigger enumeration until it is explicitly enumerated.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetDeferredExecutionCases))]
-    public void RecursiveSelect_WhenCalled_ShouldDeferExecution(EnumerableTestPlan<Node> testCase) => 
+    public void RecursiveSelect_WhenCalled_ShouldDeferExecution(EnumerableTestPlan<Node> testCase) =>
         AssertExecutionIsDeferred(testCase.Name, testCase.Invoke, testCase.Source);
-
-    /// <summary>
-    /// Verifies that the method under test triggers enumeration when explicitly iterated.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetDeferredExecutionCases))]
-    public void RecursiveSelect_WhenEnumerated_ShouldTriggerExecution(EnumerableTestPlan<Node> testCase) => 
-        AssertExecutionOccursOnEnumeration(testCase.Name, testCase.Invoke, testCase.Source);
-
-    /// <summary>
-    /// Verifies that the method under test triggers enumeration when explicitly iterated.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetDeferredExecutionCases))]
-    public void RecursiveSelect_WhenEnumerated_ShouldReturnExpectedResults(EnumerableTestPlan<Node> testCase) =>
-        //AssertExecutionReturnsExpectedResults(testCase.Name, testCase.Invoke, testCase.Source, testCase.ExpectedResult, testCase.Selector);
-        AssertExecutionReturnsExpectedResults(testCase.Name, testCase.Invoke, testCase.Source, testCase.ExpectedResult, testCase.ResultSelector);
-
-    /// <summary>
-    /// Verifies that calling RecursiveSelect throws <see cref="ArgumentNullException" /> when the source sequence is <c>null</c>.
-    /// </summary>
-    [TestMethod]
-    public void RecursiveSelect_WhenSourceIsNull_ShouldThrowExactly()
-    {
-        IEnumerable<object>? source = null!;
-        Assert.ThrowsExactly<ArgumentNullException>(
-            () => source.RecursiveSelect(_ => Enumerable.Empty<object>()).Cast<object>().ToList()
-        );
-    }
 
     /// <summary>
     /// Verifies that calling RecursiveSelect throws <see cref="ArgumentNullException" /> when the child selector delegate is <c>null</c>.
@@ -252,17 +236,56 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the element selector delegate is <c>null</c> in
-    /// the two-parameter overload.
+    /// Verifies that the method under test triggers enumeration when explicitly iterated.
     /// </summary>
     [TestMethod]
-    public void RecursiveSelect_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()
+    [DynamicData(nameof(GetDeferredExecutionCases))]
+    public void RecursiveSelect_WhenEnumerated_ShouldReturnExpectedResults(EnumerableTestPlan<Node> testCase) =>
+        //AssertExecutionReturnsExpectedResults(testCase.Name, testCase.Invoke, testCase.Source, testCase.ExpectedResult, testCase.Selector);
+        AssertExecutionReturnsExpectedResults(testCase.Name, testCase.Invoke, testCase.Source, testCase.ExpectedResult, testCase.ResultSelector);
+
+    /// <summary>
+    /// Verifies that the method under test triggers enumeration when explicitly iterated.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetDeferredExecutionCases))]
+    public void RecursiveSelect_WhenEnumerated_ShouldTriggerExecution(EnumerableTestPlan<Node> testCase) =>
+        AssertExecutionOccursOnEnumeration(testCase.Name, testCase.Invoke, testCase.Source);
+
+    /// <summary>
+    /// Verifies that calling RecursiveSelect throws <see cref="ArgumentNullException" /> when the source sequence is <c>null</c>.
+    /// </summary>
+    [TestMethod]
+    public void RecursiveSelect_WhenSourceIsNull_ShouldThrowExactly()
+    {
+        IEnumerable<object>? source = null!;
+        Assert.ThrowsExactly<ArgumentNullException>(
+            () => source.RecursiveSelect(_ => Enumerable.Empty<object>()).Cast<object>().ToList()
+        );
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelect" /> works with an empty source collection and produces no output.
+    /// </summary>
+    [TestMethod]
+    public void RecursiveSelect_WithEmptySource_ShouldReturnEmpty()
+    {
+        object[] source = [];
+        var actual = source.RecursiveSelect(n => Array.Empty<object>()).Cast<object>().ToList();
+        Assert.IsEmpty(actual);
+    }
+
+    /// <summary>
+    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the depth-aware selector delegate is <c>null</c>.
+    /// </summary>
+    [TestMethod]
+    public void RecursiveSelect_WithIndexAndDepthSelector_WhenSelectorIsNull_ShouldThrowExactly()
     {
         var source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
                 childSelector: _ => [],
-                selector: (Func<object, object>)null!
+                selector: (Func<object, int, int, object>)null!
             ).Cast<object>().ToList()
         );
     }
@@ -283,16 +306,17 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the depth-aware selector delegate is <c>null</c>.
+    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the recursion control delegate is <c>null</c>.
     /// </summary>
     [TestMethod]
-    public void RecursiveSelect_WithIndexAndDepthSelector_WhenSelectorIsNull_ShouldThrowExactly()
+    public void RecursiveSelect_WithRecursionControl_WhenRecursionControlIsNull_ShouldThrowExactly()
     {
         var source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
                 childSelector: _ => [],
-                selector: (Func<object, int, int, object>)null!
+                selector: (e, i, d) => e,
+                recursionControl: null!
             ).Cast<object>().ToList()
         );
     }
@@ -315,43 +339,19 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
     }
 
     /// <summary>
-    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the recursion control delegate is <c>null</c>.
+    /// Verifies that RecursiveSelect throws <see cref="ArgumentNullException" /> when the element selector delegate is <c>null</c> in
+    /// the two-parameter overload.
     /// </summary>
     [TestMethod]
-    public void RecursiveSelect_WithRecursionControl_WhenRecursionControlIsNull_ShouldThrowExactly()
+    public void RecursiveSelect_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()
     {
         var source = new[] { new object() };
         Assert.ThrowsExactly<ArgumentNullException>(
             () => source.RecursiveSelect(
                 childSelector: _ => [],
-                selector: (e, i, d) => e,
-                recursionControl: null!
+                selector: (Func<object, object>)null!
             ).Cast<object>().ToList()
         );
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="IEnumerableExtensions.RecursiveSelect" /> works with an empty source collection and produces no output.
-    /// </summary>
-    [TestMethod]
-    public void RecursiveSelect_WithEmptySource_ShouldReturnEmpty()
-    {
-        object[] source = [];
-        var actual = source.RecursiveSelect(n => Array.Empty<object>()).Cast<object>().ToList();
-        Assert.IsEmpty(actual);
-    }
-
-    /// <summary>
-    /// Verifies that RecursiveSelect works when some childSelector calls return null (graceful fallback).
-    /// </summary>
-    [TestMethod]
-    public void ChildSelector_ReturnsNull_ShouldSkipChildren()
-    {
-        var root = new Node { Name = "Root", Children = null! };
-        var actual = new object[] { root }.RecursiveSelect(n => (n as Node).Children).Cast<Node>().ToList();
-
-        Assert.HasCount(1, actual);
-        Assert.AreEqual("Root", actual[0].Name);
     }
 
     /// <summary>
@@ -370,4 +370,5 @@ public partial class IEnumerableExtensionsTests_RecursiveSelect
             ).Cast<Node>().ToList();
         });
     }
+
 }

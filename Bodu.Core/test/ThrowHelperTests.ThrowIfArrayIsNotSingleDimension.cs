@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelperTests.ThrowIfArrayIsNotSingleDimension.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayIsNotSingleDimension" />, when ArrayIsMultiDimensional, throws <see cref="ArgumentException" />.
     /// </summary>
@@ -41,4 +42,5 @@ public partial class ThrowHelperTests
         yield return new object[] { Array.Empty<double>() };
         yield return new object[] { new string[3] };
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DequeTests.AutoGrow.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,20 +8,6 @@ namespace Bodu.Collections.Generic;
 
 public partial class DequeTests
 {
-    /// <summary>
-    /// Verifies that filling beyond initial capacity preserves logical order from tail-side adds.
-    /// </summary>
-    [TestMethod]
-    public void AutoGrow_WhenAddLastBeyondCapacity_ShouldPreserveOrder()
-    {
-        var deque = new Deque<int>(2);
-        for (var i = 0; i < 50; i++)
-            deque.AddLast(i);
-
-        Assert.AreEqual(50, deque.Count);
-        for (var i = 0; i < 50; i++)
-            Assert.AreEqual(i, deque[i]);
-    }
 
     /// <summary>
     /// Verifies that filling beyond initial capacity preserves logical order from head-side adds.
@@ -36,6 +22,20 @@ public partial class DequeTests
         Assert.AreEqual(50, deque.Count);
         for (var i = 0; i < 50; i++)
             Assert.AreEqual(49 - i, deque[i]);
+    }
+    /// <summary>
+    /// Verifies that filling beyond initial capacity preserves logical order from tail-side adds.
+    /// </summary>
+    [TestMethod]
+    public void AutoGrow_WhenAddLastBeyondCapacity_ShouldPreserveOrder()
+    {
+        var deque = new Deque<int>(2);
+        for (var i = 0; i < 50; i++)
+            deque.AddLast(i);
+
+        Assert.AreEqual(50, deque.Count);
+        for (var i = 0; i < 50; i++)
+            Assert.AreEqual(i, deque[i]);
     }
 
     /// <summary>
@@ -57,4 +57,5 @@ public partial class DequeTests
 
         CollectionAssert.AreEqual(new[] { 2, 3, 4, 5, 6 }, deque.ToArray());
     }
+
 }

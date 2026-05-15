@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.FirstDateOfYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
@@ -21,7 +19,7 @@ public partial class DateOnlyExtensionsTests
     /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfYear" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests. FirstDateOfYearTestData), typeof(DateTimeExtensionsTests))]
+    [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfYearTestData), typeof(DateTimeExtensionsTests))]
     public void FirstDateOfYear_WhenCalled_ShouldReturnExpectedStartOfYear(DateTime inputDateTime, DateTime expectedDateTime)
     {
         DateOnly input = DateOnly.FromDateTime(inputDateTime);
@@ -30,6 +28,18 @@ public partial class DateOnlyExtensionsTests
         DateOnly actual = input.FirstDateOfYear();
 
         Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfYear" />, when MaxValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfYear_WhenMaxValue_ShouldReturnExpected()
+    {
+        DateOnly max = DateOnly.MaxValue; // 9999-12-31
+        DateOnly actual = max.FirstDateOfYear();
+
+        Assert.AreEqual(new DateOnly(9999, 1, 1), actual);
     }
 
     /// <summary>
@@ -44,15 +54,4 @@ public partial class DateOnlyExtensionsTests
         Assert.AreEqual(new DateOnly(1, 1, 1), actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfYear" />, when MaxValue, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfYear_WhenMaxValue_ShouldReturnExpected()
-    {
-        DateOnly max = DateOnly.MaxValue; // 9999-12-31
-        DateOnly actual = max.FirstDateOfYear();
-
-        Assert.AreEqual(new DateOnly(9999, 1, 1), actual);
-    }
 }

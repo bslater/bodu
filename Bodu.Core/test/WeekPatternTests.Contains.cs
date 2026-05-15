@@ -8,39 +8,6 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.Contains" /> returns <see langword="true" /> for every day
-    /// that was explicitly selected at construction.
-    /// </summary>
-    [TestMethod]
-    [DataRow(DayOfWeek.Sunday)]
-    [DataRow(DayOfWeek.Monday)]
-    [DataRow(DayOfWeek.Tuesday)]
-    [DataRow(DayOfWeek.Wednesday)]
-    [DataRow(DayOfWeek.Thursday)]
-    [DataRow(DayOfWeek.Friday)]
-    [DataRow(DayOfWeek.Saturday)]
-    public void Contains_WhenDayIsSelected_ShouldReturnTrue(DayOfWeek day)
-    {
-        var pattern = new WeekPattern(day);
-        Assert.IsTrue(pattern.Contains(day));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.Contains" /> returns <see langword="false" /> for days that
-    /// were not selected.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenDayIsNotSelected_ShouldReturnFalse()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
-
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Sunday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Tuesday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Thursday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
-        Assert.IsFalse(pattern.Contains(DayOfWeek.Saturday));
-    }
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Contains" /> returns <see langword="false" /> for every day
@@ -70,6 +37,39 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="WeekPattern.Contains" /> returns <see langword="false" /> for days that
+    /// were not selected.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenDayIsNotSelected_ShouldReturnFalse()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
+
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Sunday));
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Tuesday));
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Thursday));
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Saturday));
+    }
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.Contains" /> returns <see langword="true" /> for every day
+    /// that was explicitly selected at construction.
+    /// </summary>
+    [TestMethod]
+    [DataRow(DayOfWeek.Sunday)]
+    [DataRow(DayOfWeek.Monday)]
+    [DataRow(DayOfWeek.Tuesday)]
+    [DataRow(DayOfWeek.Wednesday)]
+    [DataRow(DayOfWeek.Thursday)]
+    [DataRow(DayOfWeek.Friday)]
+    [DataRow(DayOfWeek.Saturday)]
+    public void Contains_WhenDayIsSelected_ShouldReturnTrue(DayOfWeek day)
+    {
+        var pattern = new WeekPattern(day);
+        Assert.IsTrue(pattern.Contains(day));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="WeekPattern.Contains" /> throws <see cref="ArgumentOutOfRangeException" />
     /// when an invalid <see cref="DayOfWeek" /> value is supplied.
     /// </summary>
@@ -85,4 +85,5 @@ public partial class WeekPatternTests
             _ = pattern.Contains((DayOfWeek)invalidDay);
         });
     }
+
 }

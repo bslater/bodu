@@ -1,52 +1,15 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.IEnumerable.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
-    /// <summary>
-    /// Verifies that the collection supports iteration via a <see langword="foreach"/> loop in head-to-tail order.
-    /// </summary>
-    [TestMethod]
-    public void IEnumerable_WhenUsedInForeachLoop_ShouldEnumerateInHeadToTailOrder()
-    {
-        TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-        AddToTail(collection, 3);
-
-        var results = new List<int>();
-        foreach (var item in collection)
-            results.Add(item);
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, results);
-    }
-
-    /// <summary>
-    /// Verifies that the non-generic <see cref="IEnumerable.GetEnumerator"/> yields items as objects in
-    /// head-to-tail order.
-    /// </summary>
-    [TestMethod]
-    public void IEnumerable_WhenUsingNonGenericEnumerator_ShouldReturnItemsAsObjects()
-    {
-        TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-        AddToTail(collection, 3);
-
-        var actual = new List<int>();
-        foreach (var item in (IEnumerable)collection)
-            actual.Add((int)item);
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, actual);
-    }
 
     /// <summary>
     /// Verifies that enumerating an empty collection yields no results.
@@ -104,4 +67,41 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
         CollectionAssert.AreEqual(copyResult, enumResult);
     }
+    /// <summary>
+    /// Verifies that the collection supports iteration via a <see langword="foreach"/> loop in head-to-tail order.
+    /// </summary>
+    [TestMethod]
+    public void IEnumerable_WhenUsedInForeachLoop_ShouldEnumerateInHeadToTailOrder()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        AddToTail(collection, 3);
+
+        var results = new List<int>();
+        foreach (var item in collection)
+            results.Add(item);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, results);
+    }
+
+    /// <summary>
+    /// Verifies that the non-generic <see cref="IEnumerable.GetEnumerator"/> yields items as objects in
+    /// head-to-tail order.
+    /// </summary>
+    [TestMethod]
+    public void IEnumerable_WhenUsingNonGenericEnumerator_ShouldReturnItemsAsObjects()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        AddToTail(collection, 3);
+
+        var actual = new List<int>();
+        foreach (var item in (IEnumerable)collection)
+            actual.Add((int)item);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, actual);
+    }
+
 }

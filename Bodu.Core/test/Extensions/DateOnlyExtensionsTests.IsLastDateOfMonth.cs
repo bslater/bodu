@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.IsLastDateOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensionsTests.IsLastDateOfMonth(DateTime)" /> returns <c>true</c> when the date represents the
     /// last day of the month.
@@ -33,4 +34,5 @@ public partial class DateOnlyExtensionsTests
 
         Assert.IsFalse(actual);
     }
+
 }

@@ -5,23 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, WeekPattern)" /> returns
-    /// <see langword="true" /> when the date's day-of-week is not selected in the supplied pattern.
-    /// </summary>
-    [TestMethod]
-    public void IsRestDay_WhenDayNotInPattern_ShouldReturnTrue()
-    {
-        var saturday = new DateTime(2026, 5, 16);
-
-        Assert.IsTrue(saturday.IsRestDay(WeekPattern.Weekdays));
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, WeekPattern)" /> returns
@@ -33,6 +21,17 @@ public partial class DateTimeExtensionsTests
         var monday = new DateTime(2026, 5, 11);
 
         Assert.IsFalse(monday.IsRestDay(WeekPattern.Weekdays));
+    }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.IsRestDay(DateTime, WeekPattern)" /> returns
+    /// <see langword="true" /> when the date's day-of-week is not selected in the supplied pattern.
+    /// </summary>
+    [TestMethod]
+    public void IsRestDay_WhenDayNotInPattern_ShouldReturnTrue()
+    {
+        var saturday = new DateTime(2026, 5, 16);
+
+        Assert.IsTrue(saturday.IsRestDay(WeekPattern.Weekdays));
     }
 
     /// <summary>
@@ -47,4 +46,5 @@ public partial class DateTimeExtensionsTests
         Assert.IsTrue(friday.IsRestDay(WorkingDaysOfWeek.SundayToThursday));
         Assert.IsFalse(friday.IsRestDay(WorkingDaysOfWeek.MondayToFriday));
     }
+
 }

@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public sealed partial class IEnumerableExtensionsTests_Aggregate
 {
+
     /// <summary>
     /// Verifies that the 3-function with-index overload throws <see cref="ArgumentNullException" /> when any accumulator function is
     /// <see langword="null" />.
@@ -50,26 +51,23 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-index with-selector overload throws <see cref="ArgumentNullException" /> when the result selector
-    /// is <see langword="null" />.
+    /// Verifies that the 3-function no-index overload invokes its accumulator functions in declaration order for each element.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithIndexAndSelector_ShouldThrowArgumentNullException()
+    public void Aggregate_WhenInvoked_ForThreeFuncNoIndex_ShouldInvokeAccumulatorsInOrder()
     {
         int[] source = [1, 2, 3];
-        Func<int, int, int, string> resultSelector = null!;
+        var calls = new List<string>();
 
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.Aggregate(
-                0, 0, 0,
-                (a, x, i) => a + x,
-                (a, x, i) => a + x,
-                (a, x, i) => a + x,
-                resultSelector);
-        });
+        _ = source.Aggregate(
+            seed1: 0, seed2: 0, seed3: 0,
+            func1: (acc, x) => { calls.Add($"f1:{x}"); return acc; },
+            func2: (acc, x) => { calls.Add($"f2:{x}"); return acc; },
+            func3: (acc, x) => { calls.Add($"f3:{x}"); return acc; });
 
-        Assert.AreEqual("resultSelector", ex.ParamName);
+        CollectionAssert.AreEqual(
+            new[] { "f1:1", "f2:1", "f3:1", "f1:2", "f2:2", "f3:2", "f1:3", "f2:3", "f3:3" },
+            calls);
     }
 
     /// <summary>
@@ -116,21 +114,43 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the seeded with-index overload returns the seed unchanged and skips the accumulator when invoked on an empty source.
+    /// Verifies that the 2-function no-index overload invokes its accumulator functions in declaration order for each element.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithIndex_ShouldReturnSeedsUnchanged()
+    public void Aggregate_WhenInvoked_ForTwoFuncNoIndex_ShouldInvokeAccumulatorsInOrder()
     {
-        var source = Array.Empty<int>();
+        int[] source = [1, 2];
+        var calls = new List<string>();
 
-        (var v1, var v2) = source.Aggregate(
-            seed1: 5,
-            seed2: 9,
-            func1: (a, _, _) => a + 1,
-            func2: (a, _, _) => a + 1);
+        _ = source.Aggregate(
+            seed1: 0, seed2: 0,
+            func1: (acc, x) => { calls.Add($"f1:{x}"); return acc; },
+            func2: (acc, x) => { calls.Add($"f2:{x}"); return acc; });
 
-        Assert.AreEqual(5, v1);
-        Assert.AreEqual(9, v2);
+        CollectionAssert.AreEqual(new[] { "f1:1", "f2:1", "f1:2", "f2:2" }, calls);
+    }
+
+    /// <summary>
+    /// Verifies that the 3-function with-index with-selector overload throws <see cref="ArgumentNullException" /> when the result selector
+    /// is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Aggregate_WhenResultSelectorIsNull_ForThreeFuncWithIndexAndSelector_ShouldThrowArgumentNullException()
+    {
+        int[] source = [1, 2, 3];
+        Func<int, int, int, string> resultSelector = null!;
+
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.Aggregate(
+                0, 0, 0,
+                (a, x, i) => a + x,
+                (a, x, i) => a + x,
+                (a, x, i) => a + x,
+                resultSelector);
+        });
+
+        Assert.AreEqual("resultSelector", ex.ParamName);
     }
 
     /// <summary>
@@ -153,21 +173,39 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 2-function with-selector overload returns the projected result of the seeds when invoked on an empty source.
+    /// Verifies that the 3-function with-selector overload returns the projected result of the seeds when invoked on an empty source.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithSelector_ShouldApplySelectorToSeeds()
+    public void Aggregate_WhenSourceIsEmpty_ForThreeFuncWithSelector_ShouldApplySelectorToSeeds()
     {
         var source = Array.Empty<int>();
 
         var result = source.Aggregate(
-            seed1: 7,
-            seed2: 11,
+            seed1: 2, seed2: 3, seed3: 5,
             func1: (a, x) => a + x,
-            func2: (a, x) => a * x,
-            resultSelector: (a, b) => $"{a}|{b}");
+            func2: (a, x) => a + x,
+            func3: (a, x) => a + x,
+            resultSelector: (a, b, c) => $"{a},{b},{c}");
 
-        Assert.AreEqual("7|11", result);
+        Assert.AreEqual("2,3,5", result);
+    }
+
+    /// <summary>
+    /// Verifies that the seeded with-index overload returns the seed unchanged and skips the accumulator when invoked on an empty source.
+    /// </summary>
+    [TestMethod]
+    public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithIndex_ShouldReturnSeedsUnchanged()
+    {
+        var source = Array.Empty<int>();
+
+        (var v1, var v2) = source.Aggregate(
+            seed1: 5,
+            seed2: 9,
+            func1: (a, _, _) => a + 1,
+            func2: (a, _, _) => a + 1);
+
+        Assert.AreEqual(5, v1);
+        Assert.AreEqual(9, v2);
     }
 
     /// <summary>
@@ -190,57 +228,21 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
     }
 
     /// <summary>
-    /// Verifies that the 3-function with-selector overload returns the projected result of the seeds when invoked on an empty source.
+    /// Verifies that the 2-function with-selector overload returns the projected result of the seeds when invoked on an empty source.
     /// </summary>
     [TestMethod]
-    public void Aggregate_WhenSourceIsEmpty_ForThreeFuncWithSelector_ShouldApplySelectorToSeeds()
+    public void Aggregate_WhenSourceIsEmpty_ForTwoFuncWithSelector_ShouldApplySelectorToSeeds()
     {
         var source = Array.Empty<int>();
 
         var result = source.Aggregate(
-            seed1: 2, seed2: 3, seed3: 5,
+            seed1: 7,
+            seed2: 11,
             func1: (a, x) => a + x,
-            func2: (a, x) => a + x,
-            func3: (a, x) => a + x,
-            resultSelector: (a, b, c) => $"{a},{b},{c}");
+            func2: (a, x) => a * x,
+            resultSelector: (a, b) => $"{a}|{b}");
 
-        Assert.AreEqual("2,3,5", result);
+        Assert.AreEqual("7|11", result);
     }
 
-    /// <summary>
-    /// Verifies that the 3-function no-index overload invokes its accumulator functions in declaration order for each element.
-    /// </summary>
-    [TestMethod]
-    public void Aggregate_WhenInvoked_ForThreeFuncNoIndex_ShouldInvokeAccumulatorsInOrder()
-    {
-        int[] source = [1, 2, 3];
-        var calls = new List<string>();
-
-        _ = source.Aggregate(
-            seed1: 0, seed2: 0, seed3: 0,
-            func1: (acc, x) => { calls.Add($"f1:{x}"); return acc; },
-            func2: (acc, x) => { calls.Add($"f2:{x}"); return acc; },
-            func3: (acc, x) => { calls.Add($"f3:{x}"); return acc; });
-
-        CollectionAssert.AreEqual(
-            new[] { "f1:1", "f2:1", "f3:1", "f1:2", "f2:2", "f3:2", "f1:3", "f2:3", "f3:3" },
-            calls);
-    }
-
-    /// <summary>
-    /// Verifies that the 2-function no-index overload invokes its accumulator functions in declaration order for each element.
-    /// </summary>
-    [TestMethod]
-    public void Aggregate_WhenInvoked_ForTwoFuncNoIndex_ShouldInvokeAccumulatorsInOrder()
-    {
-        int[] source = [1, 2];
-        var calls = new List<string>();
-
-        _ = source.Aggregate(
-            seed1: 0, seed2: 0,
-            func1: (acc, x) => { calls.Add($"f1:{x}"); return acc; },
-            func2: (acc, x) => { calls.Add($"f2:{x}"); return acc; });
-
-        CollectionAssert.AreEqual(new[] { "f1:1", "f2:1", "f1:2", "f2:2" }, calls);
-    }
 }

@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Extensions;
 public sealed partial class IEnumerableExtensionsTests_Batch
     : EnumerableTests
 {
+
     public static IEnumerable<object[]> GetBatchTestCases() =>
     [
         [
@@ -81,13 +82,6 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     public void Batch_WhenCalled_ShouldDeferExecution(EnumerableTestPlan<int> testCase) => AssertExecutionIsDeferred(testCase.Name, testCase.Invoke, testCase.Source);
 
     /// <summary>
-    /// Verifies that enumerating a batched sequence triggers execution against its source.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetBatchTestCases))]
-    public void Batch_WhenEnumerated_ShouldTriggerExecution(EnumerableTestPlan<int> testCase) => AssertExecutionOccursOnEnumeration(testCase.Name, testCase.Invoke, testCase.Source);
-
-    /// <summary>
     /// Verifies that enumerating a batched sequence yields the expected groups for even/uneven splits and for projection overloads (selector and indexed selector).
     /// </summary>
     [TestMethod]
@@ -95,43 +89,11 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     public void Batch_WhenEnumerated_ShouldReturnExpectedResults(EnumerableTestPlan<int> testCase) => AssertExecutionReturnsExpectedResults(testCase.Name, testCase.Invoke, testCase.Source, testCase.ExpectedResult, testCase.ResultSelector);
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" />.
+    /// Verifies that enumerating a batched sequence triggers execution against its source.
     /// </summary>
     [TestMethod]
-    public void Batch_WhenSourceIsNull_ShouldThrowExactly()
-    {
-        IEnumerable<int>? source = null!;
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.Batch(2).ToList();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> projection selector throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void Batch_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()
-    {
-        var source = new[] { 1, 2, 3 };
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.Batch(2, selector: (Func<int, int>)null!).ToList();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> indexed projection selector throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void Batch_WithIndexSelector_WhenSelectorIsNull_ShouldThrowExactly()
-    {
-        var source = new[] { 1, 2, 3 };
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.Batch(2, selector: (Func<int, int, int>)null!).ToList();
-        });
-    }
+    [DynamicData(nameof(GetBatchTestCases))]
+    public void Batch_WhenEnumerated_ShouldTriggerExecution(EnumerableTestPlan<int> testCase) => AssertExecutionOccursOnEnumeration(testCase.Name, testCase.Invoke, testCase.Source);
 
     /// <summary>
     /// Verifies that a non-positive batch size throws <see cref="ArgumentOutOfRangeException" />.
@@ -149,6 +111,19 @@ public sealed partial class IEnumerableExtensionsTests_Batch
     }
 
     /// <summary>
+    /// Verifies that a <see langword="null" /> source throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Batch_WhenSourceIsNull_ShouldThrowExactly()
+    {
+        IEnumerable<int>? source = null!;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.Batch(2).ToList();
+        });
+    }
+
+    /// <summary>
     /// Verifies that batching an empty source produces an empty sequence with no batches.
     /// </summary>
     [TestMethod]
@@ -157,4 +132,31 @@ public sealed partial class IEnumerableExtensionsTests_Batch
         var actual = Array.Empty<int>().Batch(2).ToList();
         Assert.IsEmpty(actual);
     }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> indexed projection selector throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Batch_WithIndexSelector_WhenSelectorIsNull_ShouldThrowExactly()
+    {
+        var source = new[] { 1, 2, 3 };
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.Batch(2, selector: (Func<int, int, int>)null!).ToList();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> projection selector throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Batch_WithSelector_WhenSelectorIsNull_ShouldThrowExactly()
+    {
+        var source = new[] { 1, 2, 3 };
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.Batch(2, selector: (Func<int, int>)null!).ToList();
+        });
+    }
+
 }

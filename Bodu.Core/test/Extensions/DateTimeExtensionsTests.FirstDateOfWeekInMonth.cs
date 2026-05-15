@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.FirstDateOfWeekInMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,48 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInMonth" />, when Called, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInMonthTestData))]
-    public void FirstDateOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
-    {
-        DateTime actual = input.FirstDateOfWeekInMonth(dayOfWeek);
-
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
-    {
-        DateTime input = new DateTime(2024, 4, 1);
-        var invalidDay = (DayOfWeek)999;
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = input.FirstDateOfWeekInMonth(invalidDay);
-        });
-    }
-
-    public void FirstDateOfWeekInMonth_WhenCalled_ShouldTruncateTime()
-    {
-        DateTime input = new DateTime(2024, 7, 5, 10, 5, 0, DateTimeKind.Local);
-        DateTime actual = input.FirstDateOfWeekInMonth(DayOfWeek.Saturday);
-
-        Assert.AreEqual(TimeSpan.Zero, actual.TimeOfDay);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInMonth" />, when Called, returns the expected value.
@@ -68,14 +31,38 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInMonth" />, when UsingMinValue, returns <see langword="true" />.
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void FirstDateOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
+    [DynamicData(nameof(FirstDateOfWeekInMonthTestData))]
+    public void FirstDateOfWeekInMonth_WhenCalled_ShouldReturnExpectedDate(DateTime input, DayOfWeek dayOfWeek, DateTime expected)
     {
-        DateTime actual = DateTime.MinValue.FirstDateOfWeekInMonth(DayOfWeek.Monday);
+        DateTime actual = input.FirstDateOfWeekInMonth(dayOfWeek);
 
-        Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
+        Assert.AreEqual(expected, actual);
+    }
+
+    public void FirstDateOfWeekInMonth_WhenCalled_ShouldTruncateTime()
+    {
+        DateTime input = new DateTime(2024, 7, 5, 10, 5, 0, DateTimeKind.Local);
+        DateTime actual = input.FirstDateOfWeekInMonth(DayOfWeek.Saturday);
+
+        Assert.AreEqual(TimeSpan.Zero, actual.TimeOfDay);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInMonth" />, when InvalidDayOfWeek, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeekInMonth_WhenInvalidDayOfWeek_ShouldThrowExactly()
+    {
+        DateTime input = new DateTime(2024, 4, 1);
+        var invalidDay = (DayOfWeek)999;
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.FirstDateOfWeekInMonth(invalidDay);
+        });
     }
 
     /// <summary>
@@ -88,4 +75,16 @@ public partial class DateTimeExtensionsTests
 
         Assert.IsTrue(actual <= DateTime.MaxValue);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeekInMonth" />, when UsingMinValue, returns <see langword="true" />.
+    /// </summary>
+    [TestMethod]
+    public void FirstDateOfWeekInMonth_WhenUsingMinValue_ShouldReturnValidResult()
+    {
+        DateTime actual = DateTime.MinValue.FirstDateOfWeekInMonth(DayOfWeek.Monday);
+
+        Assert.IsTrue(actual >= DateTime.MinValue && actual <= DateTime.MinValue.AddMonths(1).AddDays(-1));
+    }
+
 }

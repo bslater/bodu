@@ -6,44 +6,11 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class IndexedSetTests
 {
-    // --------------------------------------------------------
-    // GetEnumerator — typed struct
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.GetEnumerator" /> yields elements in insertion order.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenSetPopulated_ShouldYieldAllItemsInOrder()
-    {
-        IndexedSet<int> sut = CreateSet([10, 20, 30]);
-        var seen = new List<int>();
-
-        foreach (var item in sut)
-            seen.Add(item);
-
-        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
-    }
-
-    /// <summary>
-    /// Verifies that the enumerator on an empty set yields no elements.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenSetIsEmpty_ShouldYieldNoElements()
-    {
-        var sut = new IndexedSet<int>();
-
-        IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
-
-        Assert.IsFalse(enumerator.MoveNext());
-    }
 
     /// <summary>
     /// Verifies that <see cref="IndexedSet{T}.Enumerator.MoveNext" /> returns <see langword="false" /> once
@@ -59,6 +26,40 @@ public partial class IndexedSetTests
         Assert.IsTrue(enumerator.MoveNext());
         Assert.IsFalse(enumerator.MoveNext());
         Assert.IsFalse(enumerator.MoveNext());
+    }
+
+    /// <summary>
+    /// Verifies that replacing an element via the indexer setter invalidates an enumerator.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenIndexerSetterCalledAfterCreation_ShouldThrowOnMoveNext()
+    {
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+        IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
+
+        sut[0] = 99;
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = enumerator.MoveNext();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that positional mutation (<see cref="IndexedSet{T}.Move(int, int)" />) invalidates an enumerator.
+    /// </summary>
+    [TestMethod]
+    public void Enumerator_WhenMoveCalledAfterCreation_ShouldThrowOnMoveNext()
+    {
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+        IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
+
+        sut.Move(0, 2);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = enumerator.MoveNext();
+        });
     }
 
     /// <summary>
@@ -120,37 +121,51 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
-    /// Verifies that positional mutation (<see cref="IndexedSet{T}.Move(int, int)" />) invalidates an enumerator.
+    /// Verifies that the enumerator on an empty set yields no elements.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenMoveCalledAfterCreation_ShouldThrowOnMoveNext()
+    public void GetEnumerator_WhenSetIsEmpty_ShouldYieldNoElements()
     {
-        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+        var sut = new IndexedSet<int>();
+
         IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
 
-        sut.Move(0, 2);
+        Assert.IsFalse(enumerator.MoveNext());
+    }
+    // --------------------------------------------------------
+    // GetEnumerator — typed struct
+    // --------------------------------------------------------
 
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = enumerator.MoveNext();
-        });
+    /// <summary>
+    /// Verifies that <see cref="IndexedSet{T}.GetEnumerator" /> yields elements in insertion order.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenSetPopulated_ShouldYieldAllItemsInOrder()
+    {
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
+        var seen = new List<int>();
+
+        foreach (var item in sut)
+            seen.Add(item);
+
+        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
     }
 
     /// <summary>
-    /// Verifies that replacing an element via the indexer setter invalidates an enumerator.
+    /// Verifies that the explicit non-generic <see cref="IEnumerable.GetEnumerator" /> implementation yields
+    /// elements in insertion order.
     /// </summary>
     [TestMethod]
-    public void Enumerator_WhenIndexerSetterCalledAfterCreation_ShouldThrowOnMoveNext()
+    public void IEnumerable_WhenIterated_ShouldYieldAllItemsInOrder()
     {
-        IndexedSet<int> sut = CreateSet([1, 2, 3]);
-        IndexedSet<int>.Enumerator enumerator = sut.GetEnumerator();
+        IndexedSet<int> sut = CreateSet([10, 20, 30]);
+        IEnumerable untyped = sut;
+        var seen = new List<int>();
 
-        sut[0] = 99;
+        foreach (var item in untyped)
+            seen.Add((int)item);
 
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = enumerator.MoveNext();
-        });
+        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
     }
 
     // --------------------------------------------------------
@@ -174,20 +189,4 @@ public partial class IndexedSetTests
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
     }
 
-    /// <summary>
-    /// Verifies that the explicit non-generic <see cref="IEnumerable.GetEnumerator" /> implementation yields
-    /// elements in insertion order.
-    /// </summary>
-    [TestMethod]
-    public void IEnumerable_WhenIterated_ShouldYieldAllItemsInOrder()
-    {
-        IndexedSet<int> sut = CreateSet([10, 20, 30]);
-        IEnumerable untyped = sut;
-        var seen = new List<int>();
-
-        foreach (var item in untyped)
-            seen.Add((int)item);
-
-        CollectionAssert.AreEqual(new[] { 10, 20, 30 }, seen);
-    }
 }

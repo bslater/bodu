@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.LastDateOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,26 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfMonth" />, when Called, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfMonthDataTestData))]
-    public void LastDateOfMonth_WhenCalled_ShouldReturnExpectedDay(DateTime input, DateTime expected)
-    {
-        DateTime actual = input.LastDateOfMonth();
-
-        Assert.AreEqual(expected, actual);
-        Assert.AreEqual(input.Kind, actual.Kind);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfMonth" />, , when KindIsSet, returns the expected value.
@@ -46,14 +31,16 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfMonth" />, when MinValue, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void LastDateOfMonth_WhenMinValue_ShouldReturnExpectedDay()
+    [DynamicData(nameof(DateTimeExtensionsTests.LastDateOfMonthDataTestData))]
+    public void LastDateOfMonth_WhenCalled_ShouldReturnExpectedDay(DateTime input, DateTime expected)
     {
-        DateTime actual = DateTime.MinValue.LastDateOfMonth();
+        DateTime actual = input.LastDateOfMonth();
 
-        Assert.AreEqual(new DateTime(1, 1, 31), actual);
+        Assert.AreEqual(expected, actual);
+        Assert.AreEqual(input.Kind, actual.Kind);
     }
 
     /// <summary>
@@ -67,4 +54,16 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(new DateTime(9999, 12, 31), actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfMonth" />, when MinValue, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    public void LastDateOfMonth_WhenMinValue_ShouldReturnExpectedDay()
+    {
+        DateTime actual = DateTime.MinValue.LastDateOfMonth();
+
+        Assert.AreEqual(new DateTime(1, 1, 31), actual);
+    }
+
 }

@@ -1,15 +1,29 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeDictionaryTests.ToArray.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Collections.Generic;
 
 public partial class RangeDictionaryTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.ToArray" /> returns a fresh array disconnected
+    /// from subsequent mutations.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
+    {
+        RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"));
+        ValueRange<int, string>[] snapshot = sut.ToArray();
+
+        sut.Add(10, 15, "B");
+
+        Assert.AreEqual(1, snapshot.Length);
+        Assert.AreEqual("A", snapshot[0].Value);
+    }
     /// <summary>
     /// Verifies that <see cref="RangeDictionary{TKey, TValue}.ToArray" /> on an empty dictionary returns an
     /// empty array.
@@ -47,19 +61,4 @@ public partial class RangeDictionaryTests
         Assert.AreEqual("C", array[2].Value);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="RangeDictionary{TKey, TValue}.ToArray" /> returns a fresh array disconnected
-    /// from subsequent mutations.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
-    {
-        RangeDictionary<int, string> sut = CreateDictionary((0, 5, "A"));
-        ValueRange<int, string>[] snapshot = sut.ToArray();
-
-        sut.Add(10, 15, "B");
-
-        Assert.AreEqual(1, snapshot.Length);
-        Assert.AreEqual("A", snapshot[0].Value);
-    }
 }

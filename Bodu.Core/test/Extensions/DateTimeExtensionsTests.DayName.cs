@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.DayName.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,27 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 using System.Globalization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.DayName" />, with Culture, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(DayNameTestData))]
-    public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime input, CultureInfo culture, string expected)
-    {
-        string actual = input.DayName(culture);
-
-        Assert.AreEqual(expected, actual);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.DayName" />, when CultureIsNull, returns the expected value.
@@ -52,4 +37,17 @@ public partial class DateTimeExtensionsTests
             CultureInfo.CurrentCulture = original;
         }
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.DayName" />, with Culture, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(DayNameTestData))]
+    public void DayName_WithCulture_ShouldReturnLocalizedName(DateTime input, CultureInfo culture, string expected)
+    {
+        string actual = input.DayName(culture);
+
+        Assert.AreEqual(expected, actual);
+    }
+
 }

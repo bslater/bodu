@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ShuffleHelpersTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic;
 public partial class ShuffleHelpersTests
     : EnumerableTests
 {
+
     public TestContext TestContext { get; set; }
 
     /// <summary>
@@ -63,4 +64,5 @@ public partial class ShuffleHelpersTests
         Assert.IsTrue(outliers <= maxOutliers,
             $"[{label}] Too many statistical outliers: {outliers} exceeded ±3σ (allowed: {maxOutliers}).");
     }
+
 }

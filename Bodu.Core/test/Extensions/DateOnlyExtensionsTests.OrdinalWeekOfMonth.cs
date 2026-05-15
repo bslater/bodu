@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.OrdinalWeekOfMonth.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,18 +9,17 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.DayOfWeekOccurrenceInMonth" />, when Called, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.DayOfWeekOccurrenceInMonthTestData), typeof(DateTimeExtensionsTests),DynamicDataSourceType.Method)]
+    [DynamicData(nameof(DateTimeExtensionsTests.DayOfWeekOccurrenceInMonthTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Method)]
     public void DayOfWeekOccurrenceInMonth_WhenCalled_ShouldReturnExpectedOrdinal(DateTime inputDateTime, WeekOfMonthOrdinal expected)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
@@ -41,4 +40,5 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(WeekOfMonthOrdinal.Fifth, actual); // 1st = 1st, 8th = 2nd, ..., 29th = 5th Thursday
     }
+
 }

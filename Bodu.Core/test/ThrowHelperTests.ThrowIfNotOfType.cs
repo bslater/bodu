@@ -10,6 +10,20 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when IntValueIsString, throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfNotOfType_WhenIntValueIsString_ShouldThrowException()
+    {
+        object value = 42;
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            ThrowHelper.ThrowIfNotOfType<string>(value);
+        });
+    }
     /// <summary>
     /// Verifies the <see cref="ThrowHelper.ThrowIfNotOfType{T}" /> contract for the <see cref="int" />
     /// instantiation with explicit ParamName assertions: a non-int instance or a <see langword="null" />
@@ -33,17 +47,17 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" /> on a <see langword="null" /> input bound to a
-    /// non-nullable target throws <see cref="ArgumentException" /> with ParamName "value".
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when NullValueAndTargetIsNonNullable, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotOfType_WhenValueIsNullAgainstNonNullableTarget_ShouldThrowWithParamName()
+    public void ThrowIfNotOfType_WhenNullValueAndTargetIsNonNullable_ShouldThrowException()
     {
-        AssertGuard(
-            "null against int → ArgumentException",
-            () => ThrowHelper.ThrowIfNotOfType<int>(null, "value"),
-            typeof(ArgumentException),
-            "value");
+        object? value = null;
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            ThrowHelper.ThrowIfNotOfType<int>(value);
+        });
     }
 
     /// <summary>
@@ -61,41 +75,27 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when NullValueAndTargetIsNonNullable, throws <see cref="ArgumentException" />.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" /> on a <see langword="null" /> input bound to a
+    /// non-nullable target throws <see cref="ArgumentException" /> with ParamName "value".
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotOfType_WhenNullValueAndTargetIsNonNullable_ShouldThrowException()
+    public void ThrowIfNotOfType_WhenValueIsNullAgainstNonNullableTarget_ShouldThrowWithParamName()
+    {
+        AssertGuard(
+            "null against int → ArgumentException",
+            () => ThrowHelper.ThrowIfNotOfType<int>(null, "value"),
+            typeof(ArgumentException),
+            "value");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when ValueIsNullNullableValueType, NotThrow.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfNotOfType_WhenValueIsNullNullableValueType_ShouldNotThrow()
     {
         object? value = null;
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            ThrowHelper.ThrowIfNotOfType<int>(value);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when IntValueIsString, throws <see cref="ArgumentException" />.
-    /// </summary>
-    [TestMethod]
-    public void ThrowIfNotOfType_WhenIntValueIsString_ShouldThrowException()
-    {
-        object value = 42;
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            ThrowHelper.ThrowIfNotOfType<string>(value);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when ValueIsOfExpectedType, NotThrow.
-    /// </summary>
-    [TestMethod]
-    public void ThrowIfNotOfType_WhenValueIsOfExpectedType_ShouldNotThrow()
-    {
-        object value = 42;
-        ThrowHelper.ThrowIfNotOfType<int>(value);
+        ThrowHelper.ThrowIfNotOfType<int?>(value);
     }
 
     /// <summary>
@@ -109,12 +109,13 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when ValueIsNullNullableValueType, NotThrow.
+    /// Verifies that <see cref="ThrowHelper.ThrowIfNotOfType" />, when ValueIsOfExpectedType, NotThrow.
     /// </summary>
     [TestMethod]
-    public void ThrowIfNotOfType_WhenValueIsNullNullableValueType_ShouldNotThrow()
+    public void ThrowIfNotOfType_WhenValueIsOfExpectedType_ShouldNotThrow()
     {
-        object? value = null;
-        ThrowHelper.ThrowIfNotOfType<int?>(value);
+        object value = 42;
+        ThrowHelper.ThrowIfNotOfType<int>(value);
     }
+
 }

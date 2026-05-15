@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.LastDateOfWeekInYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,13 +9,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInYear" />, when Called, returns the expected value.
     /// </summary>
@@ -44,16 +43,18 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInYear" />, when UsingMinValue, returns <see langword="true" />.
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInYear" />, when KindIsLocal, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void LastDateOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
+    [DataRow(DateTimeKind.Unspecified)]
+    [DataRow(DateTimeKind.Utc)]
+    [DataRow(DateTimeKind.Local)]
+    public void LastDateOfWeekInYear_WhenKindIsLocal_ShouldPreserveKind(DateTimeKind kind)
     {
-        DateTime input = DateTime.MinValue;
-        DateTime actual = input.LastDateOfWeekInYear(DayOfWeek.Monday);
+        DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
+        DateTime actual = input.LastDateOfWeekInYear(DayOfWeek.Saturday);
 
-        Assert.IsTrue(actual.Year == 1);
-        Assert.IsTrue(actual <= new DateTime(1, 12, 31));
+        Assert.AreEqual(kind, actual.Kind);
     }
 
     /// <summary>
@@ -69,18 +70,16 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInYear" />, when KindIsLocal, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.LastDateOfWeekInYear" />, when UsingMinValue, returns <see langword="true" />.
     /// </summary>
     [TestMethod]
-    [DataRow(DateTimeKind.Unspecified)]
-    [DataRow(DateTimeKind.Utc)]
-    [DataRow(DateTimeKind.Local)]
-    public void LastDateOfWeekInYear_WhenKindIsLocal_ShouldPreserveKind(DateTimeKind kind)
+    public void LastDateOfWeekInYear_WhenUsingMinValue_ShouldReturnInYear1()
     {
-        DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
-        DateTime actual = input.LastDateOfWeekInYear(DayOfWeek.Saturday);
+        DateTime input = DateTime.MinValue;
+        DateTime actual = input.LastDateOfWeekInYear(DayOfWeek.Monday);
 
-        Assert.AreEqual(kind, actual.Kind);
+        Assert.IsTrue(actual.Year == 1);
+        Assert.IsTrue(actual <= new DateTime(1, 12, 31));
     }
 
 }

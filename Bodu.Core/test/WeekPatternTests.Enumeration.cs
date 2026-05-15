@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
+
     /// <summary>
     /// Verifies that the generic <see cref="WeekPattern.GetEnumerator" /> yields each selected
     /// <see cref="System.DayOfWeek" /> in Sunday-first order for a known bitmask.
@@ -26,6 +27,17 @@ public partial class WeekPatternTests
         CollectionAssert.AreEqual(
             new[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday },
             days);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.GetEnumerator" /> yields no values when the pattern is empty.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenPatternIsEmpty_ShouldYieldNothing()
+    {
+        var pattern = WeekPattern.FromByte(0);
+        using IEnumerator<DayOfWeek> enumerator = pattern.GetEnumerator();
+        Assert.IsFalse(enumerator.MoveNext());
     }
 
     /// <summary>
@@ -47,17 +59,6 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern.GetEnumerator" /> yields no values when the pattern is empty.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenPatternIsEmpty_ShouldYieldNothing()
-    {
-        var pattern = WeekPattern.FromByte(0);
-        using IEnumerator<DayOfWeek> enumerator = pattern.GetEnumerator();
-        Assert.IsFalse(enumerator.MoveNext());
-    }
-
-    /// <summary>
     /// Verifies that the non-generic <see cref="IEnumerable.GetEnumerator" /> on a <see cref="WeekPattern" /> walks the same
     /// <see cref="DayOfWeek" /> values as the generic enumerator.
     /// </summary>
@@ -76,4 +77,5 @@ public partial class WeekPatternTests
             new[] { DayOfWeek.Sunday, DayOfWeek.Tuesday, DayOfWeek.Thursday, DayOfWeek.Saturday },
             observed);
     }
+
 }

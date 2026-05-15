@@ -5,29 +5,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
-    // --------------------------------------------------------
-    // Remove(T, T) — argument validation
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that removing a range with a <see langword="null" /> start is rejected.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenStartIsNull_ShouldThrowArgumentNullException()
-    {
-        var sut = new RangeSet<string>();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            sut.Remove(null!, "z");
-        });
-    }
 
     /// <summary>
     /// Verifies that removing a range with a <see langword="null" /> end is rejected.
@@ -44,40 +26,6 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Verifies that removing a range with <c>start &gt;= end</c> is rejected.
-    /// </summary>
-    [TestMethod]
-    [DataRow(5, 5)]
-    [DataRow(10, 5)]
-    public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
-    {
-        var sut = new RangeSet<int>();
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.Remove(start, end);
-        });
-    }
-
-    // --------------------------------------------------------
-    // Remove(T, T) — empty / non-overlapping
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that removing from an empty set returns <see langword="false" /> and leaves the set empty.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenSetIsEmpty_ShouldReturnFalse()
-    {
-        var sut = new RangeSet<int>();
-
-        var changed = sut.Remove(0, 10);
-
-        Assert.IsFalse(changed);
-        Assert.AreEqual(0, sut.Count);
-    }
-
-    /// <summary>
     /// Verifies that removing a range that does not overlap any existing range returns
     /// <see langword="false" /> and leaves the set unchanged.
     /// </summary>
@@ -90,6 +38,34 @@ public partial class RangeSetTests
 
         Assert.IsFalse(changed);
         AssertContents(sut, (10, 20));
+    }
+
+    /// <summary>
+    /// Verifies that removing a range that engulfs an existing range removes the entry.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenRangeEngulfsExisting_ShouldRemoveExisting()
+    {
+        RangeSet<int> sut = CreateSet((5, 10));
+
+        var changed = sut.Remove(0, 20);
+
+        Assert.IsTrue(changed);
+        Assert.AreEqual(0, sut.Count);
+    }
+
+    /// <summary>
+    /// Verifies that removing a range fully contained within an existing range splits it into two.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenRangeIsInteriorOfExisting_ShouldSplitIntoTwo()
+    {
+        RangeSet<int> sut = CreateSet((0, 20));
+
+        var changed = sut.Remove(8, 12);
+
+        Assert.IsTrue(changed);
+        AssertContents(sut, (0, 8), (12, 20));
     }
 
     // --------------------------------------------------------
@@ -111,17 +87,18 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Verifies that removing a range that engulfs an existing range removes the entry.
+    /// Verifies that touching ranges (where end == other.start) are not considered overlapping, so removal
+    /// of a touching boundary is a no-op.
     /// </summary>
     [TestMethod]
-    public void Remove_WhenRangeEngulfsExisting_ShouldRemoveExisting()
+    public void Remove_WhenRangeOnlyTouchesEndpoint_ShouldNotAffectSet()
     {
-        RangeSet<int> sut = CreateSet((5, 10));
+        RangeSet<int> sut = CreateSet((0, 5));
 
-        var changed = sut.Remove(0, 20);
+        var changed = sut.Remove(5, 10);
 
-        Assert.IsTrue(changed);
-        Assert.AreEqual(0, sut.Count);
+        Assert.IsFalse(changed);
+        AssertContents(sut, (0, 5));
     }
 
     /// <summary>
@@ -153,20 +130,6 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Verifies that removing a range fully contained within an existing range splits it into two.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenRangeIsInteriorOfExisting_ShouldSplitIntoTwo()
-    {
-        RangeSet<int> sut = CreateSet((0, 20));
-
-        var changed = sut.Remove(8, 12);
-
-        Assert.IsTrue(changed);
-        AssertContents(sut, (0, 8), (12, 20));
-    }
-
-    /// <summary>
     /// Verifies that removing a range that spans multiple existing ranges trims or removes each as needed.
     /// </summary>
     [TestMethod]
@@ -178,21 +141,6 @@ public partial class RangeSetTests
 
         Assert.IsTrue(changed);
         AssertContents(sut, (0, 3), (22, 25));
-    }
-
-    /// <summary>
-    /// Verifies that touching ranges (where end == other.start) are not considered overlapping, so removal
-    /// of a touching boundary is a no-op.
-    /// </summary>
-    [TestMethod]
-    public void Remove_WhenRangeOnlyTouchesEndpoint_ShouldNotAffectSet()
-    {
-        RangeSet<int> sut = CreateSet((0, 5));
-
-        var changed = sut.Remove(5, 10);
-
-        Assert.IsFalse(changed);
-        AssertContents(sut, (0, 5));
     }
 
     // --------------------------------------------------------
@@ -213,4 +161,56 @@ public partial class RangeSetTests
         Assert.IsTrue(changed);
         Assert.AreEqual(0, sut.Count);
     }
+
+    // --------------------------------------------------------
+    // Remove(T, T) — empty / non-overlapping
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that removing from an empty set returns <see langword="false" /> and leaves the set empty.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenSetIsEmpty_ShouldReturnFalse()
+    {
+        var sut = new RangeSet<int>();
+
+        var changed = sut.Remove(0, 10);
+
+        Assert.IsFalse(changed);
+        Assert.AreEqual(0, sut.Count);
+    }
+
+    /// <summary>
+    /// Verifies that removing a range with <c>start &gt;= end</c> is rejected.
+    /// </summary>
+    [TestMethod]
+    [DataRow(5, 5)]
+    [DataRow(10, 5)]
+    public void Remove_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException(int start, int end)
+    {
+        var sut = new RangeSet<int>();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.Remove(start, end);
+        });
+    }
+    // --------------------------------------------------------
+    // Remove(T, T) — argument validation
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that removing a range with a <see langword="null" /> start is rejected.
+    /// </summary>
+    [TestMethod]
+    public void Remove_WhenStartIsNull_ShouldThrowArgumentNullException()
+    {
+        var sut = new RangeSet<string>();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            sut.Remove(null!, "z");
+        });
+    }
+
 }

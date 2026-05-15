@@ -10,6 +10,7 @@ namespace Bodu.Extensions;
 
 public partial class DateOnlyExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateOnlyExtensions.WeekOfMonth(DateOnly, CultureInfo)" /> falls back to the current culture's
     /// <see cref="DateTimeFormatInfo" /> when <paramref name="culture" /> is <see langword="null" />.
@@ -26,4 +27,5 @@ public partial class DateOnlyExtensionsTests
 
         Assert.AreEqual(expected, actual);
     }
+
 }

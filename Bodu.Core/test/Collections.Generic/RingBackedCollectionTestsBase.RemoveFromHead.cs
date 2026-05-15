@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.RemoveFromHead.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,22 +8,6 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
-    /// <summary>
-    /// Verifies that <see cref="RemoveFromHead(TCollection)"/> returns the oldest element and decrements
-    /// <see cref="GetCount(TCollection)"/> by one.
-    /// </summary>
-    [TestMethod]
-    public void RemoveFromHead_WhenItemsPresent_ShouldReturnOldestAndDecrementCount()
-    {
-        TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-        AddToTail(collection, 3);
-
-        Assert.AreEqual(1, RemoveFromHead(collection));
-        Assert.AreEqual(2, GetCount(collection));
-        Assert.AreEqual(2, PeekHead(collection));
-    }
 
     /// <summary>
     /// Verifies that <see cref="RemoveFromHead(TCollection)"/> drains the collection to empty when called
@@ -75,4 +59,21 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
         CollectionAssert.AreEqual(new[] { 3, 4, 5 }, ToArray(collection));
     }
+    /// <summary>
+    /// Verifies that <see cref="RemoveFromHead(TCollection)"/> returns the oldest element and decrements
+    /// <see cref="GetCount(TCollection)"/> by one.
+    /// </summary>
+    [TestMethod]
+    public void RemoveFromHead_WhenItemsPresent_ShouldReturnOldestAndDecrementCount()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+        AddToTail(collection, 3);
+
+        Assert.AreEqual(1, RemoveFromHead(collection));
+        Assert.AreEqual(2, GetCount(collection));
+        Assert.AreEqual(2, PeekHead(collection));
+    }
+
 }

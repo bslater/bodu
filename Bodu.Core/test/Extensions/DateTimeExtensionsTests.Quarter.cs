@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.Quarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,25 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingQuarterDefinition, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(QuarterTestData))]
-    public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime input, CalendarQuarterDefinition definition, int expected)
-    {
-        int actual = input.Quarter(definition);
-
-        Assert.AreEqual(expected, actual);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when OnlyDateTime, returns the expected value.
@@ -37,6 +23,46 @@ public partial class DateTimeExtensionsTests
     public void GetQuarter_WhenOnlyDateTime_ShouldReturnExpectedQuarter(DateTime input, int expected)
     {
         int actual = input.Quarter();
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingCustomQuarterDefinitionWithoutProvider, throws <see cref="InvalidOperationException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
+    {
+        var input = new DateTime(2024, 4, 20);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = input.Quarter(CalendarQuarterDefinition.Custom);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingInvalidProvider, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void GetQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
+    {
+        var input = new DateTime(2024, 4, 20);
+        var provider = new DateTimeExtensionsTests.InValidQuarterProvider();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.Quarter(provider);
+        });
+    }
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingQuarterDefinition, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(QuarterTestData))]
+    public void GetQuarter_WhenUsingQuarterDefinition_ShouldReturnExpectedQuarter(DateTime input, CalendarQuarterDefinition definition, int expected)
+    {
+        int actual = input.Quarter(definition);
 
         Assert.AreEqual(expected, actual);
     }
@@ -54,32 +80,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(expected, actual);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingInvalidProvider, throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void GetQuarter_WhenUsingInvalidProvider_ShouldThrowExactly()
-    {
-        var input = new DateTime(2024, 4, 20);
-        var provider = new DateTimeExtensionsTests.InValidQuarterProvider();
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = input.Quarter(provider);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetQuarter" />, when UsingCustomQuarterDefinitionWithoutProvider, throws <see cref="InvalidOperationException" />.
-    /// </summary>
-    [TestMethod]
-    public void GetQuarter_WhenUsingCustomQuarterDefinitionWithoutProvider_ShouldThrowExactly()
-    {
-        var input = new DateTime(2024, 4, 20);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = input.Quarter(CalendarQuarterDefinition.Custom);
-        });
-    }
 }

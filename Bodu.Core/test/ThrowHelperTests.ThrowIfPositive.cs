@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the <see cref="ThrowHelper.ThrowIfPositive{T}(T, string)" /> contract across <see cref="int" />,
     /// <see cref="long" />, <see cref="double" />, and <see cref="decimal" />: positive values throw with the
@@ -71,4 +72,5 @@ public partial class ThrowHelperTests
     [DataRow(-1)]
     [DataRow(int.MinValue)]
     public void ThrowIfPositive_WhenValueIsZeroOrNegative_ShouldNotThrow(int value) => ThrowHelper.ThrowIfPositive(value);
+
 }

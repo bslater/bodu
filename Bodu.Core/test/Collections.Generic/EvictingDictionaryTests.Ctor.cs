@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EvictingDictionaryTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     private readonly Dictionary<string, int> _source = new()
     {
         ["a"] = 1,
@@ -16,6 +17,68 @@ public partial class EvictingDictionaryTests
         ["d"] = 4,
         ["e"] = 5,
     };
+
+    /// <summary>
+    /// Verifies that the constructor throws if capacity is negative.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityIsNegative_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new EvictingDictionary<string, int>(-5);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the constructor throws if capacity is zero.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCapacityIsZero_ShouldThrowExactly()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new EvictingDictionary<string, int>(0);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the constructor uses default equality comparer when null is passed.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
+    {
+        var dictionary = new EvictingDictionary<string, int>(5, comparer: null);
+        dictionary.Add("KEY", 123);
+
+        Assert.IsFalse(dictionary.ContainsKey("key")); // default is case-sensitive
+    }
+
+    /// <summary>
+    /// Verifies that the constructor uses the provided equality comparer.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsProvided_ShouldUseComparer()
+    {
+        var dictionary = new EvictingDictionary<string, int>(5, StringComparer.OrdinalIgnoreCase);
+        dictionary.Add("KEY", 123);
+
+        Assert.IsTrue(dictionary.ContainsKey("key"));
+    }
+
+    /// <summary>
+    /// Verifies that the constructor throws when capacity is negative and source is empty.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenEmptySourceAndNegativeCapacity_ShouldThrowExactly()
+    {
+        var empty = new Dictionary<string, int>();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new EvictingDictionary<string, int>(-1, empty);
+        });
+    }
 
     /// <summary>
     /// Verifies that the constructor sets the specified capacity and defaults to LeastRecentlyUsed policy.
@@ -54,15 +117,44 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the parameterless constructor uses default capacity and LeastRecentlyUsed policy.
+    /// Verifies that the constructor applies dictionary contents, capacity, and policy correctly.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenUsingDefaultCtor_ShouldUseDefaults()
+    public void Ctor_WhenGivenDictionaryCapacityAndPolicy_ShouldRespectAllParameters()
     {
-        var dictionary = new EvictingDictionary<string, int>();
-        Assert.AreEqual(16, dictionary.Capacity);
-        Assert.AreEqual(EvictingDictionaryPolicy.LeastRecentlyUsed, dictionary.Policy);
-        Assert.AreEqual(0, dictionary.Count);
+        var dictionary = new EvictingDictionary<string, int>(4, _source, EvictingDictionaryPolicy.FirstInFirstOut);
+        var expected = _source.Skip(1).ToDictionary(p => p.Key, p => p.Value);
+
+        Assert.AreEqual(4, dictionary.Capacity);
+        Assert.AreEqual(4, dictionary.Count);
+        CollectionAssert.AreEquivalent(expected, dictionary.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that the constructor adopts dictionary contents using default policy and capacity.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenGivenDictionaryOnly_ShouldUseDefaults()
+    {
+        var buffer = new EvictingDictionary<string, int>(_source);
+        CollectionAssert.AreEqual(_source, buffer.ToArray());
+        Assert.AreEqual(EvictingDictionaryPolicy.LeastRecentlyUsed, buffer.Policy);
+        Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, buffer.Capacity);
+    }
+
+    /// <summary>
+    /// Verifies that the constructor applies the specified policy and default capacity from IEnumerable.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenGivenSourceAndPolicy_ShouldApplyDefaultsAndPolicy()
+    {
+        IEnumerable<KeyValuePair<string, int>> source = Enumerable.Range(1, 20).Select(i => new KeyValuePair<string, int>($"Key{i}", i));
+        var expected = source.Skip(source.Count() - EvictingDictionaryTests.DefaultCapacity).ToDictionary(p => p.Key, p => p.Value);
+        var dictionary = new EvictingDictionary<string, int>(source, EvictingDictionaryPolicy.FirstInFirstOut);
+
+        Assert.AreEqual(EvictingDictionaryPolicy.FirstInFirstOut, dictionary.Policy);
+        Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, dictionary.Capacity);
+        CollectionAssert.AreEqual(expected, dictionary.ToArray());
     }
 
     /// <summary>
@@ -80,55 +172,18 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the constructor applies dictionary contents, capacity, and policy correctly.
+    /// Verifies that the constructor copies contents directly from an array.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenGivenDictionaryCapacityAndPolicy_ShouldRespectAllParameters()
+    public void Ctor_WhenSourceIsArray_ShouldUseDirectCopy()
     {
-        var dictionary = new EvictingDictionary<string, int>(4, _source, EvictingDictionaryPolicy.FirstInFirstOut);
-        var expected = _source.Skip(1).ToDictionary(p => p.Key, p => p.Value);
-
-        Assert.AreEqual(4, dictionary.Capacity);
-        Assert.AreEqual(4, dictionary.Count);
-        CollectionAssert.AreEquivalent(expected, dictionary.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that the constructor throws when a null source is provided.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenSourceIsNull_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new EvictingDictionary<string, int>(5, (IEnumerable<KeyValuePair<string, int>>)null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the constructor adopts dictionary contents using default policy and capacity.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenGivenDictionaryOnly_ShouldUseDefaults()
-    {
-        var buffer = new EvictingDictionary<string, int>(_source);
-        CollectionAssert.AreEqual(_source, buffer.ToArray());
-        Assert.AreEqual(EvictingDictionaryPolicy.LeastRecentlyUsed, buffer.Policy);
-        Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, buffer.Capacity);
-    }
-
-    /// <summary>
-    /// Verifies that the constructor throws when capacity is negative and source is empty.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenEmptySourceAndNegativeCapacity_ShouldThrowExactly()
-    {
-        var empty = new Dictionary<string, int>();
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = new EvictingDictionary<string, int>(-1, empty);
-        });
+        KeyValuePair<int, int>[] array =
+        [
+            new KeyValuePair<int, int>(1, 100),
+            new KeyValuePair<int, int>(2, 200),
+        ];
+        var dictionary = new EvictingDictionary<int, int>(5, array);
+        CollectionAssert.AreEqual(array, dictionary.ToArray());
     }
 
     /// <summary>
@@ -149,80 +204,27 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
-    /// Verifies that the constructor copies contents directly from an array.
+    /// Verifies that the constructor throws when a null source is provided.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenSourceIsArray_ShouldUseDirectCopy()
+    public void Ctor_WhenSourceIsNull_ShouldThrowExactly()
     {
-        KeyValuePair<int, int>[] array =
-        [
-            new KeyValuePair<int, int>(1, 100),
-            new KeyValuePair<int, int>(2, 200),
-        ];
-        var dictionary = new EvictingDictionary<int, int>(5, array);
-        CollectionAssert.AreEqual(array, dictionary.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that the constructor applies the specified policy and default capacity from IEnumerable.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenGivenSourceAndPolicy_ShouldApplyDefaultsAndPolicy()
-    {
-        IEnumerable<KeyValuePair<string, int>> source = Enumerable.Range(1, 20).Select(i => new KeyValuePair<string, int>($"Key{i}", i));
-        var expected = source.Skip(source.Count() - EvictingDictionaryTests.DefaultCapacity).ToDictionary(p => p.Key, p => p.Value);
-        var dictionary = new EvictingDictionary<string, int>(source, EvictingDictionaryPolicy.FirstInFirstOut);
-
-        Assert.AreEqual(EvictingDictionaryPolicy.FirstInFirstOut, dictionary.Policy);
-        Assert.AreEqual(EvictingDictionaryTests.DefaultCapacity, dictionary.Capacity);
-        CollectionAssert.AreEqual(expected, dictionary.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that the constructor uses the provided equality comparer.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenComparerIsProvided_ShouldUseComparer()
-    {
-        var dictionary = new EvictingDictionary<string, int>(5, StringComparer.OrdinalIgnoreCase);
-        dictionary.Add("KEY", 123);
-
-        Assert.IsTrue(dictionary.ContainsKey("key"));
-    }
-
-    /// <summary>
-    /// Verifies that the constructor uses default equality comparer when null is passed.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
-    {
-        var dictionary = new EvictingDictionary<string, int>(5, comparer: null);
-        dictionary.Add("KEY", 123);
-
-        Assert.IsFalse(dictionary.ContainsKey("key")); // default is case-sensitive
-    }
-
-    /// <summary>
-    /// Verifies that the constructor throws if capacity is zero.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCapacityIsZero_ShouldThrowExactly()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new EvictingDictionary<string, int>(0);
+            _ = new EvictingDictionary<string, int>(5, (IEnumerable<KeyValuePair<string, int>>)null!);
         });
     }
 
     /// <summary>
-    /// Verifies that the constructor throws if capacity is negative.
+    /// Verifies that the parameterless constructor uses default capacity and LeastRecentlyUsed policy.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCapacityIsNegative_ShouldThrowExactly()
+    public void Ctor_WhenUsingDefaultCtor_ShouldUseDefaults()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = new EvictingDictionary<string, int>(-5);
-        });
+        var dictionary = new EvictingDictionary<string, int>();
+        Assert.AreEqual(16, dictionary.Capacity);
+        Assert.AreEqual(EvictingDictionaryPolicy.LeastRecentlyUsed, dictionary.Policy);
+        Assert.AreEqual(0, dictionary.Count);
     }
+
 }

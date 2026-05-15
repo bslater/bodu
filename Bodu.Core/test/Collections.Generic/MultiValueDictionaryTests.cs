@@ -1,12 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiValueDictionaryTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -16,16 +14,6 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class MultiValueDictionaryTests
 {
-    /// <summary>Value-type key with structural (value-based) equality via record struct.</summary>
-    private readonly record struct Coord(int Row, int Col);
-
-    /// <summary>Reference-type value with no overridden equality — uses reference identity.</summary>
-    private sealed class Label
-    {
-        public string Text { get; }
-
-        public Label(string text) { Text = text; }
-    }
 
     /// <summary>
     /// Asserts that <paramref name="values"/> is not the mutable backing <see cref="List{T}"/> and that all
@@ -57,4 +45,18 @@ public partial class MultiValueDictionaryTests
 
         throw new InvalidOperationException("Simulated source enumeration failure.");
     }
+
+    /// <summary>Value-type key with structural (value-based) equality via record struct.</summary>
+    private readonly record struct Coord(int Row, int Col);
+
+    /// <summary>Reference-type value with no overridden equality — uses reference identity.</summary>
+    private sealed class Label
+    {
+
+        public Label(string text) { Text = text; }
+
+        public string Text { get; }
+
+    }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.ToDateTimeOffset.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,26 +9,11 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, when KindIsUtc, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    public void ToDateTimeOffset_WhenKindIsUtc_ShouldReturnZeroOffset()
-    {
-        DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, DateTimeKind.Utc);
-        DateTimeOffset actual = input.ToDateTimeOffset();
-
-        Assert.AreEqual(TimeSpan.Zero, actual.Offset);
-        Assert.AreEqual(input, actual.UtcDateTime);
-    }
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, when KindIsLocal, returns the expected value.
@@ -55,40 +40,16 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, with ValidOffset, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, when KindIsUtc, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DataRow(0, 0)]
-    [DataRow(2, 30)]
-    [DataRow(-3, 0)]
-    [DataRow(13, 45)]
-    [DataRow(-14, 0)]
-    public void ToDateTimeOffset_WithValidOffset_ShouldApplyOffset(int hours, int minutes)
+    public void ToDateTimeOffset_WhenKindIsUtc_ShouldReturnZeroOffset()
     {
-        var offset = new TimeSpan(hours, minutes, 0);
-        DateTime input = new DateTime(2024, 4, 18, 12, 0, 0);
-        DateTimeOffset actual = input.ToDateTimeOffset(offset);
+        DateTime input = new DateTime(2024, 4, 18, 10, 0, 0, DateTimeKind.Utc);
+        DateTimeOffset actual = input.ToDateTimeOffset();
 
-        Assert.AreEqual(offset, actual.Offset);
-        Assert.AreEqual(input, actual.DateTime);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, with OffsetOutsideRange, throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(15, 0)]
-    [DataRow(-15, 0)]
-    [DataRow(14, 1)]
-    public void ToDateTimeOffset_WithOffsetOutsideRange_ShouldThrowExactly(int hours, int minutes)
-    {
-        var offset = new TimeSpan(hours, minutes, 0);
-        DateTime input = new DateTime(2024, 4, 18, 12, 0, 0);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = input.ToDateTimeOffset(offset);
-        });
+        Assert.AreEqual(TimeSpan.Zero, actual.Offset);
+        Assert.AreEqual(input, actual.UtcDateTime);
     }
 
     /// <summary>
@@ -120,4 +81,42 @@ public partial class DateTimeExtensionsTests
             _ = input.ToDateTimeOffset(offset);
         });
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, with OffsetOutsideRange, throws <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    [DataRow(15, 0)]
+    [DataRow(-15, 0)]
+    [DataRow(14, 1)]
+    public void ToDateTimeOffset_WithOffsetOutsideRange_ShouldThrowExactly(int hours, int minutes)
+    {
+        var offset = new TimeSpan(hours, minutes, 0);
+        DateTime input = new DateTime(2024, 4, 18, 12, 0, 0);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = input.ToDateTimeOffset(offset);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.ToDateTimeOffset" />, with ValidOffset, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 0)]
+    [DataRow(2, 30)]
+    [DataRow(-3, 0)]
+    [DataRow(13, 45)]
+    [DataRow(-14, 0)]
+    public void ToDateTimeOffset_WithValidOffset_ShouldApplyOffset(int hours, int minutes)
+    {
+        var offset = new TimeSpan(hours, minutes, 0);
+        DateTime input = new DateTime(2024, 4, 18, 12, 0, 0);
+        DateTimeOffset actual = input.ToDateTimeOffset(offset);
+
+        Assert.AreEqual(offset, actual.Offset);
+        Assert.AreEqual(input, actual.DateTime);
+    }
+
 }

@@ -1,30 +1,28 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ValueRangeTests.Ctor.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class ValueRangeTests
 {
-    // --------------------------------------------------------
-    // Constructor — argument validation
-    // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that a <see langword="null" /> start endpoint is rejected with <see cref="ArgumentNullException" />.
+    /// Verifies that <see cref="ValueRange{TKey, TValue}" /> default-constructed via <c>default</c> exposes
+    /// default state, reflecting the readonly struct semantics.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenStartIsNull_ShouldThrowArgumentNullException()
+    public void Ctor_WhenDefaultStruct_ShouldExposeDefaultState()
     {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new ValueRange<string, int>(null!, "z", 42);
-        });
+        ValueRange<int, string> sut = default;
+
+        Assert.AreEqual(0, sut.StartInclusive);
+        Assert.AreEqual(0, sut.EndExclusive);
+        Assert.IsNull(sut.Value);
     }
 
     /// <summary>
@@ -37,6 +35,26 @@ public partial class ValueRangeTests
         {
             _ = new ValueRange<string, int>("a", null!, 42);
         });
+    }
+
+    // --------------------------------------------------------
+    // Constructor — happy path
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the constructor stores the supplied endpoints and value verbatim.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0, 1, "low")]
+    [DataRow(-10, 10, "mid")]
+    [DataRow(int.MinValue, int.MaxValue, "wide")]
+    public void Ctor_WhenEndpointsAndValueAreValid_ShouldStoreAll(int start, int end, string value)
+    {
+        var sut = new ValueRange<int, string>(start, end, value);
+
+        Assert.AreEqual(start, sut.StartInclusive);
+        Assert.AreEqual(end, sut.EndExclusive);
+        Assert.AreEqual(value, sut.Value);
     }
 
     /// <summary>
@@ -65,25 +83,20 @@ public partial class ValueRangeTests
             _ = new ValueRange<int, string>(start, end, "x");
         });
     }
-
     // --------------------------------------------------------
-    // Constructor — happy path
+    // Constructor — argument validation
     // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the constructor stores the supplied endpoints and value verbatim.
+    /// Verifies that a <see langword="null" /> start endpoint is rejected with <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    [DataRow(0, 1, "low")]
-    [DataRow(-10, 10, "mid")]
-    [DataRow(int.MinValue, int.MaxValue, "wide")]
-    public void Ctor_WhenEndpointsAndValueAreValid_ShouldStoreAll(int start, int end, string value)
+    public void Ctor_WhenStartIsNull_ShouldThrowArgumentNullException()
     {
-        var sut = new ValueRange<int, string>(start, end, value);
-
-        Assert.AreEqual(start, sut.StartInclusive);
-        Assert.AreEqual(end, sut.EndExclusive);
-        Assert.AreEqual(value, sut.Value);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new ValueRange<string, int>(null!, "z", 42);
+        });
     }
 
     /// <summary>
@@ -109,17 +122,4 @@ public partial class ValueRangeTests
         Assert.AreEqual(42, sut.Value);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ValueRange{TKey, TValue}" /> default-constructed via <c>default</c> exposes
-    /// default state, reflecting the readonly struct semantics.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenDefaultStruct_ShouldExposeDefaultState()
-    {
-        ValueRange<int, string> sut = default;
-
-        Assert.AreEqual(0, sut.StartInclusive);
-        Assert.AreEqual(0, sut.EndExclusive);
-        Assert.IsNull(sut.Value);
-    }
 }

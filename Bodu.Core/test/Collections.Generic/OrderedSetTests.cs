@@ -5,8 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -16,6 +14,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class OrderedSetTests
 {
+
     /// <summary>
     /// Verifies the happy-path smoke check: adding three unique items preserves insertion order and exposes
     /// them through the read-only list view.
@@ -52,6 +51,21 @@ public partial class OrderedSetTests
     }
 
     /// <summary>
+    /// Materialises the elements of <paramref name="set" /> using the public enumerator.
+    /// </summary>
+    /// <param name="set">The set to snapshot.</param>
+    /// <returns>A list containing the elements in enumeration order.</returns>
+    private static List<T> SnapshotByEnumerator<T>(OrderedSet<T> set)
+        where T : notnull
+    {
+        var result = new List<T>(set.Count);
+        foreach (T item in set)
+            result.Add(item);
+
+        return result;
+    }
+
+    /// <summary>
     /// Materialises the elements of <paramref name="set" /> using the public read-only list indexer.
     /// </summary>
     /// <param name="set">The set to snapshot.</param>
@@ -66,18 +80,4 @@ public partial class OrderedSetTests
         return result;
     }
 
-    /// <summary>
-    /// Materialises the elements of <paramref name="set" /> using the public enumerator.
-    /// </summary>
-    /// <param name="set">The set to snapshot.</param>
-    /// <returns>A list containing the elements in enumeration order.</returns>
-    private static List<T> SnapshotByEnumerator<T>(OrderedSet<T> set)
-        where T : notnull
-    {
-        var result = new List<T>(set.Count);
-        foreach (T item in set)
-            result.Add(item);
-
-        return result;
-    }
 }

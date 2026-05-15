@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.FirstDateOfWeekInQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
@@ -30,17 +29,6 @@ public partial class DateOnlyExtensionsTests
         // Q4 2024 starts Tue 1 Oct. First Monday = 7 Oct.
         yield return new object[] { new DateOnly(2024, 11, 5), DayOfWeek.Monday, new DateOnly(2024, 10, 7) };
         yield return new object[] { new DateOnly(2024, 11, 5), DayOfWeek.Tuesday, new DateOnly(2024, 10, 1) };
-    }
-
-    /// <summary>
-    /// Verifies that the instance overload returns the expected first occurrence of the requested <see cref="DayOfWeek" /> within the January-to-December quarter for the given input.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(FirstDateOfWeekInQuarterJanuaryDecemberTestData))]
-    public void FirstDateOfWeekInQuarter_WhenUsingJanuaryToDecember_ShouldReturnExpectedDate(DateOnly input, DayOfWeek dayOfWeek, DateOnly expected)
-    {
-        DateOnly actual = input.FirstDateOfWeekInQuarter(dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
-        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -82,6 +70,32 @@ public partial class DateOnlyExtensionsTests
         });
     }
 
+    /// <summary>
+    /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(5)]
+    [DataRow(-1)]
+    public void FirstDateOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateOnlyExtensions.GetFirstDateOfWeekInQuarter(2024, quarter, DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the instance overload returns the expected first occurrence of the requested <see cref="DayOfWeek" /> within the January-to-December quarter for the given input.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(FirstDateOfWeekInQuarterJanuaryDecemberTestData))]
+    public void FirstDateOfWeekInQuarter_WhenUsingJanuaryToDecember_ShouldReturnExpectedDate(DateOnly input, DayOfWeek dayOfWeek, DateOnly expected)
+    {
+        DateOnly actual = input.FirstDateOfWeekInQuarter(dayOfWeek, CalendarQuarterDefinition.JanuaryToDecember);
+        Assert.AreEqual(expected, actual);
+    }
+
     // =========================================================================
     // FirstDateOfWeekInQuarter(int year, int quarter, DayOfWeek, CalendarQuarterDefinition)
     // =========================================================================
@@ -102,17 +116,14 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for quarter values outside <c>1..4</c>.
+    /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
     /// </summary>
     [TestMethod]
-    [DataRow(0)]
-    [DataRow(5)]
-    [DataRow(-1)]
-    public void FirstDateOfWeekInQuarter_WhenQuarterIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int quarter)
+    public void FirstDateOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateOnlyExtensions.GetFirstDateOfWeekInQuarter(2024, quarter, DayOfWeek.Monday, CalendarQuarterDefinition.JanuaryToDecember);
+            _ = DateOnlyExtensions.GetFirstDateOfWeekInQuarter(2024, 1, (DayOfWeek)999, CalendarQuarterDefinition.JanuaryToDecember);
         });
     }
 
@@ -128,15 +139,4 @@ public partial class DateOnlyExtensionsTests
         });
     }
 
-    /// <summary>
-    /// Verifies that the static overload throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="DayOfWeek" /> value.
-    /// </summary>
-    [TestMethod]
-    public void FirstDateOfWeekInQuarter_WhenYearAndQuarterOverloadDayOfWeekIsInvalid_ShouldThrowArgumentOutOfRangeException()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateOnlyExtensions.GetFirstDateOfWeekInQuarter(2024, 1, (DayOfWeek)999, CalendarQuarterDefinition.JanuaryToDecember);
-        });
-    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.AppendRange.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,38 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})"/>
+    /// with an empty <see cref="System.Collections.Generic.List{T}"/> does not change
+    /// <see cref="PooledBufferBuilder{T}.WrittenCount"/> (ICollection fast-path with count zero).
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenCollectionIsEmpty_ShouldNotChangeWrittenCount_UsingICollectionFastPath()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+        builder.Append(7);
+
+        builder.AppendRange(new System.Collections.Generic.List<int>());
+
+        Assert.AreEqual(1, builder.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that calling <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> after
+    /// disposal throws <see cref="ObjectDisposedException"/>.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenDisposed_ShouldThrowObjectDisposedException_UsingReadOnlySpan()
+    {
+        var builder = new PooledBufferBuilder<int>();
+        builder.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            builder.AppendRange(new[] { 1, 2, 3 }.AsSpan());
+        });
+    }
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})"/>
     /// with an <see cref="System.Collections.Generic.IEnumerable{T}"/> source appends all items correctly.
@@ -56,81 +88,18 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})"/>
-    /// with a <see langword="null"/> source throws <see cref="ArgumentNullException"/>.
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlyMemory{T})"/> with an empty
+    /// memory region does not change <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
     /// </summary>
     [TestMethod]
-    public void AppendRange_WhenSourceIsNull_ShouldThrowArgumentNullException_UsingIEnumerable()
+    public void AppendRange_WhenMemoryIsEmpty_ShouldNotChangeWrittenCount_UsingReadOnlyMemory()
     {
         using var builder = new PooledBufferBuilder<int>();
+        builder.Append(3);
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            builder.AppendRange((System.Collections.Generic.IEnumerable<int>)null!);
-        });
-    }
+        builder.AppendRange(System.ReadOnlyMemory<int>.Empty);
 
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> appends all
-    /// elements from the span in order.
-    /// </summary>
-    [TestMethod]
-    public void AppendRange_WhenSpanProvided_ShouldAppendAllItemsInOrder_UsingReadOnlySpan()
-    {
-        int[] expected = [3, 6, 9, 12];
-        using var builder = new PooledBufferBuilder<int>(2);
-
-        builder.AppendRange(expected.AsSpan());
-
-        CollectionAssert.AreEqual(expected, builder.WrittenSpan.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> grows the buffer
-    /// when the span is larger than the remaining capacity.
-    /// </summary>
-    [TestMethod]
-    public void AppendRange_WhenSpanExceedsCapacity_ShouldGrowBufferAndRetainAllItems_UsingReadOnlySpan()
-    {
-        var expected = Enumerable.Range(0, 200).ToArray();
-        using var builder = new PooledBufferBuilder<int>(4);
-
-        builder.AppendRange(expected.AsSpan());
-
-        Assert.AreEqual(200, builder.WrittenCount);
-        CollectionAssert.AreEqual(expected, builder.WrittenSpan.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> appends to
-    /// existing elements rather than replacing them.
-    /// </summary>
-    [TestMethod]
-    public void AppendRange_WhenSpanAppendedAfterExistingItems_ShouldCombineAllItems_UsingReadOnlySpan()
-    {
-        using var builder = new PooledBufferBuilder<int>(8);
-        builder.Append(1);
-        builder.Append(2);
-
-        builder.AppendRange(new[] { 3, 4, 5 }.AsSpan());
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, builder.WrittenSpan.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that calling <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> after
-    /// disposal throws <see cref="ObjectDisposedException"/>.
-    /// </summary>
-    [TestMethod]
-    public void AppendRange_WhenDisposed_ShouldThrowObjectDisposedException_UsingReadOnlySpan()
-    {
-        var builder = new PooledBufferBuilder<int>();
-        builder.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            builder.AppendRange(new[] { 1, 2, 3 }.AsSpan());
-        });
+        Assert.AreEqual(1, builder.WrittenCount);
     }
 
     /// <summary>
@@ -164,19 +133,50 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})"/>
-    /// with an empty <see cref="System.Collections.Generic.List{T}"/> does not change
-    /// <see cref="PooledBufferBuilder{T}.WrittenCount"/> (ICollection fast-path with count zero).
+    /// Verifies that calling <see cref="PooledBufferBuilder{T}.AppendRange(System.Collections.Generic.IEnumerable{T})"/>
+    /// with a <see langword="null"/> source throws <see cref="ArgumentNullException"/>.
     /// </summary>
     [TestMethod]
-    public void AppendRange_WhenCollectionIsEmpty_ShouldNotChangeWrittenCount_UsingICollectionFastPath()
+    public void AppendRange_WhenSourceIsNull_ShouldThrowArgumentNullException_UsingIEnumerable()
     {
         using var builder = new PooledBufferBuilder<int>();
-        builder.Append(7);
 
-        builder.AppendRange(new System.Collections.Generic.List<int>());
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            builder.AppendRange((System.Collections.Generic.IEnumerable<int>)null!);
+        });
+    }
 
-        Assert.AreEqual(1, builder.WrittenCount);
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> appends to
+    /// existing elements rather than replacing them.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenSpanAppendedAfterExistingItems_ShouldCombineAllItems_UsingReadOnlySpan()
+    {
+        using var builder = new PooledBufferBuilder<int>(8);
+        builder.Append(1);
+        builder.Append(2);
+
+        builder.AppendRange(new[] { 3, 4, 5 }.AsSpan());
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3, 4, 5 }, builder.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> grows the buffer
+    /// when the span is larger than the remaining capacity.
+    /// </summary>
+    [TestMethod]
+    public void AppendRange_WhenSpanExceedsCapacity_ShouldGrowBufferAndRetainAllItems_UsingReadOnlySpan()
+    {
+        var expected = Enumerable.Range(0, 200).ToArray();
+        using var builder = new PooledBufferBuilder<int>(4);
+
+        builder.AppendRange(expected.AsSpan());
+
+        Assert.AreEqual(200, builder.WrittenCount);
+        CollectionAssert.AreEqual(expected, builder.WrittenSpan.ToArray());
     }
 
     /// <summary>
@@ -195,17 +195,18 @@ public partial class PooledBufferBuilderTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlyMemory{T})"/> with an empty
-    /// memory region does not change <see cref="PooledBufferBuilder{T}.WrittenCount"/>.
+    /// Verifies that <see cref="PooledBufferBuilder{T}.AppendRange(System.ReadOnlySpan{T})"/> appends all
+    /// elements from the span in order.
     /// </summary>
     [TestMethod]
-    public void AppendRange_WhenMemoryIsEmpty_ShouldNotChangeWrittenCount_UsingReadOnlyMemory()
+    public void AppendRange_WhenSpanProvided_ShouldAppendAllItemsInOrder_UsingReadOnlySpan()
     {
-        using var builder = new PooledBufferBuilder<int>();
-        builder.Append(3);
+        int[] expected = [3, 6, 9, 12];
+        using var builder = new PooledBufferBuilder<int>(2);
 
-        builder.AppendRange(System.ReadOnlyMemory<int>.Empty);
+        builder.AppendRange(expected.AsSpan());
 
-        Assert.AreEqual(1, builder.WrittenCount);
+        CollectionAssert.AreEqual(expected, builder.WrittenSpan.ToArray());
     }
+
 }

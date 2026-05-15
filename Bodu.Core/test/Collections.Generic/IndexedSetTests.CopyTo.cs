@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -30,6 +29,21 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="IndexedSet{T}.CopyTo(T[], int)" /> throws <see cref="ArgumentException" />
+    /// when the array is too small.
+    /// </summary>
+    [TestMethod]
+    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    {
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.CopyTo(new int[2], 0);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="IndexedSet{T}.CopyTo(T[], int)" /> rejects a negative offset.
     /// </summary>
     [TestMethod]
@@ -46,33 +60,17 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.CopyTo(T[], int)" /> throws <see cref="ArgumentException" />
-    /// when the array is too small.
+    /// Verifies that <see cref="IndexedSet{T}.CopyTo(T[], int)" /> starts copying at the supplied offset.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenArrayIsTooSmall_ShouldThrowArgumentException()
+    public void CopyTo_WhenIndexIsNonZero_ShouldCopyAtCorrectPosition()
     {
-        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+        IndexedSet<int> sut = CreateSet([10, 20]);
+        int[] target = [99, 99, 99, 99];
 
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.CopyTo(new int[2], 0);
-        });
-    }
+        sut.CopyTo(target, 1);
 
-    /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.CopyTo(T[], int)" /> throws <see cref="ArgumentException" />
-    /// when the remaining space after the offset is insufficient.
-    /// </summary>
-    [TestMethod]
-    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
-    {
-        IndexedSet<int> sut = CreateSet([1, 2, 3]);
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            sut.CopyTo(new int[5], 3);
-        });
+        CollectionAssert.AreEqual(new[] { 99, 10, 20, 99 }, target);
     }
 
     // --------------------------------------------------------
@@ -94,17 +92,18 @@ public partial class IndexedSetTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.CopyTo(T[], int)" /> starts copying at the supplied offset.
+    /// Verifies that <see cref="IndexedSet{T}.CopyTo(T[], int)" /> throws <see cref="ArgumentException" />
+    /// when the remaining space after the offset is insufficient.
     /// </summary>
     [TestMethod]
-    public void CopyTo_WhenIndexIsNonZero_ShouldCopyAtCorrectPosition()
+    public void CopyTo_WhenRemainingSpaceAfterOffsetIsInsufficient_ShouldThrowArgumentException()
     {
-        IndexedSet<int> sut = CreateSet([10, 20]);
-        int[] target = [99, 99, 99, 99];
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
 
-        sut.CopyTo(target, 1);
-
-        CollectionAssert.AreEqual(new[] { 99, 10, 20, 99 }, target);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            sut.CopyTo(new int[5], 3);
+        });
     }
 
     /// <summary>
@@ -119,6 +118,21 @@ public partial class IndexedSetTests
         sut.CopyTo(target, 0);
 
         CollectionAssert.AreEqual(new[] { 99, 88 }, target);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IndexedSet{T}.ToArray" /> returns a disconnected snapshot.
+    /// </summary>
+    [TestMethod]
+    public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
+    {
+        IndexedSet<int> sut = CreateSet([1, 2, 3]);
+        var snapshot = sut.ToArray();
+
+        sut.Add(4);
+        sut.Remove(1);
+
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, snapshot);
     }
 
     // --------------------------------------------------------
@@ -151,18 +165,4 @@ public partial class IndexedSetTests
         CollectionAssert.AreEqual(new[] { 10, 20, 30 }, array);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="IndexedSet{T}.ToArray" /> returns a disconnected snapshot.
-    /// </summary>
-    [TestMethod]
-    public void ToArray_WhenCalled_ShouldReturnDisconnectedSnapshot()
-    {
-        IndexedSet<int> sut = CreateSet([1, 2, 3]);
-        var snapshot = sut.ToArray();
-
-        sut.Add(4);
-        sut.Remove(1);
-
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, snapshot);
-    }
 }

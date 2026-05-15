@@ -5,83 +5,24 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
-    // --------------------------------------------------------
-    // Default constructor
-    // --------------------------------------------------------
 
     /// <summary>
-    /// Verifies that the default constructor produces an empty set using the default comparer.
+    /// Verifies that the collection-and-comparer constructor stores the supplied comparer alongside the source.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
+    public void Ctor_WhenCollectionAndComparerProvided_ShouldUseBoth()
     {
-        var sut = new RangeSet<int>();
+        Range<int>[] source = [new Range<int>(0, 5)];
 
-        Assert.AreEqual(0, sut.Count);
-        Assert.AreEqual(0, sut.Capacity);
-        Assert.AreSame(Comparer<int>.Default, sut.Comparer);
-    }
-
-    // --------------------------------------------------------
-    // Comparer-only constructor
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> comparer is replaced with <see cref="Comparer{T}.Default" />.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
-    {
-        var sut = new RangeSet<int>((IComparer<int>?)null);
+        var sut = new RangeSet<int>(source, Comparer<int>.Default);
 
         Assert.AreSame(Comparer<int>.Default, sut.Comparer);
-    }
-
-    /// <summary>
-    /// Verifies that a non-<see langword="null" /> comparer is stored verbatim.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
-    {
-        var comparer = new ReverseIntComparer();
-
-        var sut = new RangeSet<int>(comparer);
-
-        Assert.AreSame(comparer, sut.Comparer);
-    }
-
-    // --------------------------------------------------------
-    // Collection constructor
-    // --------------------------------------------------------
-
-    /// <summary>
-    /// Verifies that the collection constructor rejects a <see langword="null" /> source.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = new RangeSet<int>((IEnumerable<Range<int>>)null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that the collection constructor with an empty source produces an empty set.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
-    {
-        var sut = new RangeSet<int>(Array.Empty<Range<int>>());
-
-        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(1, sut.Count);
     }
 
     /// <summary>
@@ -114,16 +55,74 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Verifies that the collection-and-comparer constructor stores the supplied comparer alongside the source.
+    /// Verifies that the collection constructor with an empty source produces an empty set.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenCollectionAndComparerProvided_ShouldUseBoth()
+    public void Ctor_WhenCollectionIsEmpty_ShouldBeEmpty()
     {
-        Range<int>[] source = [new Range<int>(0, 5)];
+        var sut = new RangeSet<int>(Array.Empty<Range<int>>());
 
-        var sut = new RangeSet<int>(source, Comparer<int>.Default);
+        Assert.AreEqual(0, sut.Count);
+    }
+
+    // --------------------------------------------------------
+    // Collection constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the collection constructor rejects a <see langword="null" /> source.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenCollectionIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = new RangeSet<int>((IEnumerable<Range<int>>)null!);
+        });
+    }
+
+    // --------------------------------------------------------
+    // Comparer-only constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> comparer is replaced with <see cref="Comparer{T}.Default" />.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsNull_ShouldUseDefaultComparer()
+    {
+        var sut = new RangeSet<int>((IComparer<int>?)null);
 
         Assert.AreSame(Comparer<int>.Default, sut.Comparer);
-        Assert.AreEqual(1, sut.Count);
     }
+
+    /// <summary>
+    /// Verifies that a non-<see langword="null" /> comparer is stored verbatim.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenComparerIsProvided_ShouldUseSpecifiedComparer()
+    {
+        var comparer = new ReverseIntComparer();
+
+        var sut = new RangeSet<int>(comparer);
+
+        Assert.AreSame(comparer, sut.Comparer);
+    }
+    // --------------------------------------------------------
+    // Default constructor
+    // --------------------------------------------------------
+
+    /// <summary>
+    /// Verifies that the default constructor produces an empty set using the default comparer.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenDefault_ShouldBeEmptyWithDefaultComparer()
+    {
+        var sut = new RangeSet<int>();
+
+        Assert.AreEqual(0, sut.Count);
+        Assert.AreEqual(0, sut.Capacity);
+        Assert.AreSame(Comparer<int>.Default, sut.Comparer);
+    }
+
 }

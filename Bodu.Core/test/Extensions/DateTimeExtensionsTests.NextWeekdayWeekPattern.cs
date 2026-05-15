@@ -5,12 +5,26 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, WeekPattern)" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the supplied pattern is empty.
+    /// </summary>
+    [TestMethod]
+    public void NextWeekday_WhenWeekPatternIsEmpty_ShouldThrowExactly()
+    {
+        var monday = new DateTime(2024, 4, 22);
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = monday.NextWeekday(WeekPattern.Empty);
+        });
+    }
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, WeekPattern)" /> returns the first day after
     /// the input whose day-of-week is selected in the supplied pattern.
@@ -42,17 +56,17 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.NextWeekday(DateTime, WeekPattern)" /> throws
+    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, WeekPattern)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the supplied pattern is empty.
     /// </summary>
     [TestMethod]
-    public void NextWeekday_WhenWeekPatternIsEmpty_ShouldThrowExactly()
+    public void PreviousWeekday_WhenWeekPatternIsEmpty_ShouldThrowExactly()
     {
         var monday = new DateTime(2024, 4, 22);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = monday.NextWeekday(WeekPattern.Empty);
+            _ = monday.PreviousWeekday(WeekPattern.Empty);
         });
     }
 
@@ -71,18 +85,4 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(new DateTime(2024, 4, 19), actual); // Friday
     }
 
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, WeekPattern)" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when the supplied pattern is empty.
-    /// </summary>
-    [TestMethod]
-    public void PreviousWeekday_WhenWeekPatternIsEmpty_ShouldThrowExactly()
-    {
-        var monday = new DateTime(2024, 4, 22);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = monday.PreviousWeekday(WeekPattern.Empty);
-        });
-    }
 }

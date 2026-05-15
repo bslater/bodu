@@ -8,17 +8,17 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.Count" /> returns zero for an empty pattern.
-    /// </summary>
-    [TestMethod]
-    public void Count_WhenEmpty_ShouldBeZero() => Assert.AreEqual(0, WeekPattern.Empty.Count);
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Count" /> returns seven when all days are selected.
     /// </summary>
     [TestMethod]
     public void Count_WhenAllDaysSelected_ShouldBeSeven() => Assert.AreEqual(7, WeekPattern.FromByte(127).Count);
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.Count" /> returns zero for an empty pattern.
+    /// </summary>
+    [TestMethod]
+    public void Count_WhenEmpty_ShouldBeZero() => Assert.AreEqual(0, WeekPattern.Empty.Count);
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.Count" /> accurately reflects the number of days selected
@@ -30,4 +30,5 @@ public partial class WeekPatternTests
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
         Assert.AreEqual(2, pattern.Count);
     }
+
 }

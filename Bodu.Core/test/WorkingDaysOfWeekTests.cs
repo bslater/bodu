@@ -5,15 +5,14 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using Bodu.Extensions;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu;
 
 [TestClass]
 public class WorkingDaysOfWeekTests
 {
+
     /// <summary>
     /// Provides the canonical mapping between <see cref="WorkingDaysOfWeek" /> values and their
     /// expected selected <see cref="DayOfWeek" /> sets.
@@ -27,6 +26,19 @@ public class WorkingDaysOfWeekTests
         yield return new object[] { WorkingDaysOfWeek.SaturdayToWednesday, new[] { DayOfWeek.Saturday, DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday } };
         yield return new object[] { WorkingDaysOfWeek.SundayToFriday, new[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday } };
         yield return new object[] { WorkingDaysOfWeek.SundayToThursday, new[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday } };
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern" /> throws
+    /// <see cref="ArgumentException" /> when called with <see cref="WorkingDaysOfWeek.Custom" />.
+    /// </summary>
+    [TestMethod]
+    public void ToWeekPattern_WhenCustom_ShouldThrowExactlyArgumentException()
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = WorkingDaysOfWeek.Custom.ToWeekPattern();
+        });
     }
 
     /// <summary>
@@ -46,19 +58,6 @@ public class WorkingDaysOfWeekTests
 
     /// <summary>
     /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern" /> throws
-    /// <see cref="ArgumentException" /> when called with <see cref="WorkingDaysOfWeek.Custom" />.
-    /// </summary>
-    [TestMethod]
-    public void ToWeekPattern_WhenCustom_ShouldThrowExactlyArgumentException()
-    {
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = WorkingDaysOfWeek.Custom.ToWeekPattern();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when the enum value is not defined.
     /// </summary>
     [TestMethod]
@@ -68,6 +67,20 @@ public class WorkingDaysOfWeekTests
         {
             _ = ((WorkingDaysOfWeek)99).ToWeekPattern();
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek" /> returns
+    /// <see cref="WorkingDaysOfWeek.Custom" /> for a <see cref="WeekPattern" /> that does not match any named preset.
+    /// </summary>
+    [TestMethod]
+    public void ToWorkingDaysOfWeek_WhenNotANamedPreset_ShouldReturnCustom()
+    {
+        var oddPattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+
+        var value = oddPattern.ToWorkingDaysOfWeek();
+
+        Assert.AreEqual(WorkingDaysOfWeek.Custom, value);
     }
 
     /// <summary>
@@ -83,20 +96,6 @@ public class WorkingDaysOfWeekTests
         var roundTripped = pattern.ToWorkingDaysOfWeek();
 
         Assert.AreEqual(value, roundTripped);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWorkingDaysOfWeek" /> returns
-    /// <see cref="WorkingDaysOfWeek.Custom" /> for a <see cref="WeekPattern" /> that does not match any named preset.
-    /// </summary>
-    [TestMethod]
-    public void ToWorkingDaysOfWeek_WhenNotANamedPreset_ShouldReturnCustom()
-    {
-        var oddPattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-
-        var value = oddPattern.ToWorkingDaysOfWeek();
-
-        Assert.AreEqual(WorkingDaysOfWeek.Custom, value);
     }
 
     /// <summary>
@@ -129,4 +128,5 @@ public class WorkingDaysOfWeekTests
         Assert.IsFalse(success);
         Assert.AreEqual(WorkingDaysOfWeek.Custom, value);
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="PooledBufferBuilderTests.WrittenSpan.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,22 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
+    /// <summary>
+    /// Verifies that calling <see cref="PooledBufferBuilder{T}.WrittenSpan"/> after disposal throws
+    /// <see cref="ObjectDisposedException"/>.
+    /// </summary>
+    [TestMethod]
+    public void WrittenSpan_WhenDisposed_ShouldThrowObjectDisposedException()
+    {
+        var builder = new PooledBufferBuilder<int>();
+        builder.Dispose();
+
+        Assert.ThrowsExactly<ObjectDisposedException>(() =>
+        {
+            _ = builder.WrittenSpan;
+        });
+    }
     /// <summary>
     /// Verifies that <see cref="PooledBufferBuilder{T}.WrittenSpan"/> on an empty builder returns a span with
     /// length zero.
@@ -37,19 +53,4 @@ public partial class PooledBufferBuilderTests
         CollectionAssert.AreEqual(expected, span.ToArray());
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="PooledBufferBuilder{T}.WrittenSpan"/> after disposal throws
-    /// <see cref="ObjectDisposedException"/>.
-    /// </summary>
-    [TestMethod]
-    public void WrittenSpan_WhenDisposed_ShouldThrowObjectDisposedException()
-    {
-        var builder = new PooledBufferBuilder<int>();
-        builder.Dispose();
-
-        Assert.ThrowsExactly<ObjectDisposedException>(() =>
-        {
-            _ = builder.WrittenSpan;
-        });
-    }
 }

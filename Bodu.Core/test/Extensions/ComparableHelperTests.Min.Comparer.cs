@@ -8,6 +8,19 @@ namespace Bodu.Extensions;
 
 public partial class ComparableHelperTests
 {
+
+    /// <summary>
+    /// Verifies that the comparer overload of <see cref="ComparableHelper.Min{T}(T, T, IComparer{T})" /> returns <see langword="null" />
+    /// when both operands are <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Min_WhenBothArgumentsAreNullWithComparer_ShouldReturnNull()
+    {
+        string? first = null;
+        string? second = null;
+
+        Assert.IsNull(ComparableHelper.Min(first, second, StringComparer.Ordinal));
+    }
     /// <summary>
     /// Verifies that the comparer overload of <see cref="ComparableHelper.Min{T}(T, T, IComparer{T})" /> returns the smaller value
     /// according to the supplied comparer.
@@ -20,6 +33,21 @@ public partial class ComparableHelperTests
     {
         var actual = ComparableHelper.Min(first, second, Comparer<int>.Default);
         Assert.AreEqual(expected, actual);
+    }
+
+    /// <summary>
+    /// Verifies that the comparer overload of <see cref="ComparableHelper.Min{T}(T, T, IComparer{T})" /> throws
+    /// <see cref="ArgumentNullException" /> when the comparer is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Min_WhenComparerIsNull_ShouldThrowExactly()
+    {
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = ComparableHelper.Min(1, 2, (IComparer<int>)null!);
+        });
+
+        Assert.AreEqual("comparer", ex.ParamName);
     }
 
     /// <summary>
@@ -49,31 +77,4 @@ public partial class ComparableHelperTests
         Assert.AreEqual("abc", ComparableHelper.Min(second, first, StringComparer.Ordinal));
     }
 
-    /// <summary>
-    /// Verifies that the comparer overload of <see cref="ComparableHelper.Min{T}(T, T, IComparer{T})" /> returns <see langword="null" />
-    /// when both operands are <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Min_WhenBothArgumentsAreNullWithComparer_ShouldReturnNull()
-    {
-        string? first = null;
-        string? second = null;
-
-        Assert.IsNull(ComparableHelper.Min(first, second, StringComparer.Ordinal));
-    }
-
-    /// <summary>
-    /// Verifies that the comparer overload of <see cref="ComparableHelper.Min{T}(T, T, IComparer{T})" /> throws
-    /// <see cref="ArgumentNullException" /> when the comparer is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Min_WhenComparerIsNull_ShouldThrowExactly()
-    {
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = ComparableHelper.Min(1, 2, (IComparer<int>)null!);
-        });
-
-        Assert.AreEqual("comparer", ex.ParamName);
-    }
 }

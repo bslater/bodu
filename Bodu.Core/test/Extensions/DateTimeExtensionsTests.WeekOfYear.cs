@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.WeekOfYear.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,8 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
 using System.Globalization;
 
 namespace Bodu.Extensions;
@@ -19,25 +17,14 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.WeekOfYear" />, with Culture, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.WeekOfYear" />, DefaultOverload, returns the expected value.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(WeekOfYearCalendarWeekTestData))]
-    public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime input, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
+    public void WeekOfYear_DefaultOverload_ShouldDelegateToCurrentCulture()
     {
-        int actual = input.WeekOfYear(rule, firstDay);
-
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.WeekOfYear" />, with CalendarWeek, returns the expected value.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(WeekOfYearCultureTestData))]
-    public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime input, CultureInfo culture, int expected)
-    {
-        int actual = input.WeekOfYear(culture);
+        DateTime input = new DateTime(2024, 4, 18);
+        int expected = input.WeekOfYear(CultureInfo.CurrentCulture);
+        int actual = input.WeekOfYear();
 
         Assert.AreEqual(expected, actual);
     }
@@ -59,15 +46,27 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.WeekOfYear" />, DefaultOverload, returns the expected value.
+    /// Verifies that <see cref="DateTimeExtensions.WeekOfYear" />, with CalendarWeek, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void WeekOfYear_DefaultOverload_ShouldDelegateToCurrentCulture()
+    [DynamicData(nameof(WeekOfYearCultureTestData))]
+    public void WeekOfYear_WithCalendarWeek_ShouldReturnExpected(DateTime input, CultureInfo culture, int expected)
     {
-        DateTime input = new DateTime(2024, 4, 18);
-        int expected = input.WeekOfYear(CultureInfo.CurrentCulture);
-        int actual = input.WeekOfYear();
+        int actual = input.WeekOfYear(culture);
 
         Assert.AreEqual(expected, actual);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.WeekOfYear" />, with Culture, returns the expected value.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(WeekOfYearCalendarWeekTestData))]
+    public void WeekOfYear_WithCulture_ShouldReturnExpected(DateTime input, CalendarWeekRule rule, DayOfWeek firstDay, int expected)
+    {
+        int actual = input.WeekOfYear(rule, firstDay);
+
+        Assert.AreEqual(expected, actual);
+    }
+
 }

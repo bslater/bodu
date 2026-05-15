@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.PeekHead.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,19 +8,6 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
-    /// <summary>
-    /// Verifies that <see cref="PeekHead(TCollection)"/> returns the head element without modifying the count.
-    /// </summary>
-    [TestMethod]
-    public void PeekHead_WhenItemsPresent_ShouldReturnHeadWithoutRemoving()
-    {
-        TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-
-        Assert.AreEqual(1, PeekHead(collection));
-        Assert.AreEqual(2, GetCount(collection));
-    }
 
     /// <summary>
     /// Verifies that <see cref="PeekHead(TCollection)"/> reflects the new head after a previous head has
@@ -50,4 +37,18 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
             _ = PeekHead(collection);
         });
     }
+    /// <summary>
+    /// Verifies that <see cref="PeekHead(TCollection)"/> returns the head element without modifying the count.
+    /// </summary>
+    [TestMethod]
+    public void PeekHead_WhenItemsPresent_ShouldReturnHeadWithoutRemoving()
+    {
+        TCollection collection = CreateCollection(3);
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+
+        Assert.AreEqual(1, PeekHead(collection));
+        Assert.AreEqual(2, GetCount(collection));
+    }
+
 }

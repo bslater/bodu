@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class EvictingDictionaryTests
 {
+
     /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Add" /> evicts the most recently used item when capacity is exceeded using MostRecentlyUsed policy.
     /// </summary>
@@ -24,85 +25,6 @@ public partial class EvictingDictionaryTests
         Assert.IsTrue(dictionary.ContainsKey("one"));
         Assert.IsFalse(dictionary.ContainsKey("two"));
         Assert.IsTrue(dictionary.ContainsKey("three"));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates recency in a MostRecentlyUsed dictionary.
-    /// </summary>
-    [TestMethod]
-    public void Touch_WhenPolicyIsMRUAndKeyTouched_ShouldUpdateRecency()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
-        dictionary.Add("a", 1);
-        dictionary.Add("b", 2);
-        dictionary.Add("c", 3);
-
-        dictionary.Touch("c"); // c becomes MRU
-
-        dictionary.Add("d", 4); // "c" should be evicted
-
-        CollectionAssert.AreEquivalent(
-            new Dictionary<string, int> { ["a"] = 1, ["b"] = 2, ["d"] = 4 },
-            dictionary.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the most recently used key.
-    /// </summary>
-    [TestMethod]
-    public void PeekEvictionCandidate_WhenPolicyIsMRU_ShouldReturnMostRecentlyUsedKey()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
-        dictionary.Add("x", 1);
-        dictionary.Add("y", 2);
-        dictionary.Add("z", 3);
-        dictionary.Touch("y");
-
-        Assert.AreEqual("y", dictionary.PeekEvictionCandidate());
-    }
-
-    /// <summary>
-    /// Verifies that PeekEvictionCandidate returns a live key when the previously tracked MRU key
-    /// has been removed from the dictionary.
-    /// </summary>
-    /// <remarks>
-    /// Before the Remove fix, removing the MRU key left its node orphaned at the tail of the order
-    /// list, causing PeekEvictionCandidate to return the removed key.
-    /// </remarks>
-    [TestMethod]
-    public void PeekEvictionCandidate_WhenPolicyIsMRUAndCurrentMRUIsRemoved_ShouldReturnNextMRU()
-    {
-        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Add("C", 3); // C is MRU
-
-        dictionary.Remove("C"); // before fix: C's node remained at _order.Last
-
-        var candidate = dictionary.PeekEvictionCandidate();
-
-        Assert.IsNotNull(candidate);
-        Assert.IsTrue(dictionary.ContainsKey(candidate!),
-            $"PeekEvictionCandidate returned '{candidate}' which is not present in the dictionary.");
-        Assert.AreEqual("B", candidate); // B is now the MRU
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is raised with the correct key and value when an item is evicted using MostRecentlyUsed policy.
-    /// </summary>
-    [TestMethod]
-    public void ItemEvicted_WhenPolicyIsMRUAndItemEvicted_ShouldBeCalledWithCorrectKeyValue()
-    {
-        var evicted = new List<string>();
-        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.MostRecentlyUsed);
-        dictionary.ItemEvicted += (key, value) => evicted.Add($"{key}:{value}");
-
-        dictionary.Add("A", 1);
-        dictionary.Add("B", 2);
-        dictionary.Touch("B");
-        dictionary.Add("C", 3); // B should be evicted
-
-        CollectionAssert.AreEqual(new[] { "B:2" }, evicted);
     }
 
     /// <summary>
@@ -149,6 +71,24 @@ public partial class EvictingDictionaryTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.ItemEvicted" /> is raised with the correct key and value when an item is evicted using MostRecentlyUsed policy.
+    /// </summary>
+    [TestMethod]
+    public void ItemEvicted_WhenPolicyIsMRUAndItemEvicted_ShouldBeCalledWithCorrectKeyValue()
+    {
+        var evicted = new List<string>();
+        var dictionary = new EvictingDictionary<string, int>(2, EvictingDictionaryPolicy.MostRecentlyUsed);
+        dictionary.ItemEvicted += (key, value) => evicted.Add($"{key}:{value}");
+
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Touch("B");
+        dictionary.Add("C", 3); // B should be evicted
+
+        CollectionAssert.AreEqual(new[] { "B:2" }, evicted);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Keys" /> are returned in recency order under MostRecentlyUsed policy.
     /// </summary>
     [TestMethod]
@@ -162,4 +102,66 @@ public partial class EvictingDictionaryTests
 
         CollectionAssert.AreEqual(new[] { "2", "3", "1" }, dictionary.Keys.ToList());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.PeekEvictionCandidate" /> returns the most recently used key.
+    /// </summary>
+    [TestMethod]
+    public void PeekEvictionCandidate_WhenPolicyIsMRU_ShouldReturnMostRecentlyUsedKey()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
+        dictionary.Add("x", 1);
+        dictionary.Add("y", 2);
+        dictionary.Add("z", 3);
+        dictionary.Touch("y");
+
+        Assert.AreEqual("y", dictionary.PeekEvictionCandidate());
+    }
+
+    /// <summary>
+    /// Verifies that PeekEvictionCandidate returns a live key when the previously tracked MRU key
+    /// has been removed from the dictionary.
+    /// </summary>
+    /// <remarks>
+    /// Before the Remove fix, removing the MRU key left its node orphaned at the tail of the order
+    /// list, causing PeekEvictionCandidate to return the removed key.
+    /// </remarks>
+    [TestMethod]
+    public void PeekEvictionCandidate_WhenPolicyIsMRUAndCurrentMRUIsRemoved_ShouldReturnNextMRU()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
+        dictionary.Add("A", 1);
+        dictionary.Add("B", 2);
+        dictionary.Add("C", 3); // C is MRU
+
+        dictionary.Remove("C"); // before fix: C's node remained at _order.Last
+
+        var candidate = dictionary.PeekEvictionCandidate();
+
+        Assert.IsNotNull(candidate);
+        Assert.IsTrue(dictionary.ContainsKey(candidate!),
+            $"PeekEvictionCandidate returned '{candidate}' which is not present in the dictionary.");
+        Assert.AreEqual("B", candidate); // B is now the MRU
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="EvictingDictionary{TKey, TValue}.Touch" /> updates recency in a MostRecentlyUsed dictionary.
+    /// </summary>
+    [TestMethod]
+    public void Touch_WhenPolicyIsMRUAndKeyTouched_ShouldUpdateRecency()
+    {
+        var dictionary = new EvictingDictionary<string, int>(3, EvictingDictionaryPolicy.MostRecentlyUsed);
+        dictionary.Add("a", 1);
+        dictionary.Add("b", 2);
+        dictionary.Add("c", 3);
+
+        dictionary.Touch("c"); // c becomes MRU
+
+        dictionary.Add("d", 4); // "c" should be evicted
+
+        CollectionAssert.AreEquivalent(
+            new Dictionary<string, int> { ["a"] = 1, ["b"] = 2, ["d"] = 4 },
+            dictionary.ToArray());
+    }
+
 }

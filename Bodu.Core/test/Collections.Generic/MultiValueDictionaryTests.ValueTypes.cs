@@ -4,13 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Collections.Generic;
 
 public partial class MultiValueDictionaryTests
 {
+
     /// <summary>
     /// Verifies that a struct key with the same field values is treated as the same key regardless of
     /// which instance is used, confirming value-type equality semantics for dictionary lookup.
@@ -127,4 +125,5 @@ public partial class MultiValueDictionaryTests
         Assert.IsFalse(mvd.ContainsKey(new Coord(1, 2)));
         Assert.IsTrue(mvd.ContainsKey(new Coord(3, 4)));
     }
+
 }

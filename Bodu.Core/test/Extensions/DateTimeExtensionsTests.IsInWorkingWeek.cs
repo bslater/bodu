@@ -5,12 +5,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsInWorkingWeek(DateTime, WeekPattern)" /> returns
     /// <see langword="true" /> when the date's day-of-week is selected in the supplied pattern.
@@ -62,4 +62,5 @@ public partial class DateTimeExtensionsTests
             _ = date.IsInWorkingWeek(WorkingDaysOfWeek.Custom);
         });
     }
+
 }

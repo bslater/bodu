@@ -1,28 +1,25 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ValueRangeTests.Contains.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class ValueRangeTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="ValueRange{TKey, TValue}.Contains(TKey)" /> rejects a <see langword="null" /> argument.
+    /// Verifies that the exclusive end of the range is not contained.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenKeyIsNull_ShouldThrowArgumentNullException()
+    public void Contains_WhenKeyEqualsEndExclusive_ShouldReturnFalse()
     {
-        var sut = new ValueRange<string, int>("a", "z", 42);
+        var sut = new ValueRange<int, string>(0, 10, "x");
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = sut.Contains(null!);
-        });
+        Assert.IsFalse(sut.Contains(10));
     }
 
     /// <summary>
@@ -35,16 +32,18 @@ public partial class ValueRangeTests
 
         Assert.IsTrue(sut.Contains(0));
     }
-
     /// <summary>
-    /// Verifies that the exclusive end of the range is not contained.
+    /// Verifies that <see cref="ValueRange{TKey, TValue}.Contains(TKey)" /> rejects a <see langword="null" /> argument.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenKeyEqualsEndExclusive_ShouldReturnFalse()
+    public void Contains_WhenKeyIsNull_ShouldThrowArgumentNullException()
     {
-        var sut = new ValueRange<int, string>(0, 10, "x");
+        var sut = new ValueRange<string, int>("a", "z", 42);
 
-        Assert.IsFalse(sut.Contains(10));
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = sut.Contains(null!);
+        });
     }
 
     /// <summary>
@@ -63,4 +62,5 @@ public partial class ValueRangeTests
 
         Assert.AreEqual(expected, sut.Contains(key));
     }
+
 }

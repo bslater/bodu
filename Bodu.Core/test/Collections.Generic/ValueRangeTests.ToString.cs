@@ -1,15 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ValueRangeTests.ToString.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace Bodu.Collections.Generic;
 
 public partial class ValueRangeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ValueRange{TKey, TValue}.ToString" /> formats endpoints and value using the
     /// half-open assignment notation.
@@ -33,4 +32,5 @@ public partial class ValueRangeTests
 
         Assert.AreEqual("[0, 10) = 42", sut.ToString());
     }
+
 }

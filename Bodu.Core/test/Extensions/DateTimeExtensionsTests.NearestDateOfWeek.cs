@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.NearestDateOfWeek.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Extensions;
 
@@ -29,17 +28,6 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.NearestDateOfWeek(DateTime, DayOfWeek)" /> returns the closest occurrence of the requested <see cref="DayOfWeek" /> in either direction.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(NearestDateOfWeekDateTimeTestData))]
-    public void NearestDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime dateTime, DayOfWeek dayOfWeek, DateTime expected)
-    {
-        DateTime actual = dateTime.NearestDateOfWeek(dayOfWeek);
-        Assert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.NearestDateOfWeek(DateTime, DayOfWeek)" /> preserves the input's <see cref="DateTime.Kind" />.
     /// </summary>
     [TestMethod]
@@ -51,14 +39,14 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
+    /// Verifies that <see cref="DateTimeExtensions.NearestDateOfWeek(DateTime, DayOfWeek)" /> returns the closest occurrence of the requested <see cref="DayOfWeek" /> in either direction.
     /// </summary>
     [TestMethod]
-    public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
+    [DynamicData(nameof(NearestDateOfWeekDateTimeTestData))]
+    public void NearestDateOfWeek_WhenCalled_ShouldReturnExpectedDate(DateTime dateTime, DayOfWeek dayOfWeek, DateTime expected)
     {
-        var dateTime = new DateTime(2024, 4, 17);
-        DateTime actual = dateTime.NearestDateOfWeek(DayOfWeek.Sunday);
-        Assert.AreEqual(new DateTime(2024, 4, 14), actual);
+        DateTime actual = dateTime.NearestDateOfWeek(dayOfWeek);
+        Assert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -73,6 +61,17 @@ public partial class DateTimeExtensionsTests
         {
             _ = dateTime.NearestDateOfWeek((DayOfWeek)999);
         });
+    }
+
+    /// <summary>
+    /// Verifies that when the past and future occurrences are equidistant (3 days each), the earlier date is returned.
+    /// </summary>
+    [TestMethod]
+    public void NearestDateOfWeek_WhenTiedBetweenPastAndFuture_ShouldReturnEarlierDate()
+    {
+        var dateTime = new DateTime(2024, 4, 17);
+        DateTime actual = dateTime.NearestDateOfWeek(DayOfWeek.Sunday);
+        Assert.AreEqual(new DateTime(2024, 4, 14), actual);
     }
 
     // =========================================================================
@@ -110,4 +109,5 @@ public partial class DateTimeExtensionsTests
             _ = DateTimeExtensions.GetNearestDateOfWeek(2024, 4, 17, (DayOfWeek)99);
         });
     }
+
 }

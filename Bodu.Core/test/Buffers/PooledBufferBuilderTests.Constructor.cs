@@ -8,19 +8,29 @@ namespace Bodu.Buffers;
 
 public partial class PooledBufferBuilderTests
 {
+
     /// <summary>
-    /// Verifies that constructing a <see cref="PooledBufferBuilder{T}"/> with an <c>initialCapacity</c> of zero
-    /// throws <see cref="ArgumentOutOfRangeException"/>.
+    /// Verifies that a freshly constructed <see cref="PooledBufferBuilder{T}"/> is assignable to
+    /// <see cref="System.Buffers.IBufferWriter{T}"/>.
     /// </summary>
     [TestMethod]
-    public void Ctor_WhenInitialCapacityIsZero_ShouldThrowArgumentOutOfRangeException()
+    public void Ctor_WhenConstructed_ShouldBeAssignableToIBufferWriter()
     {
-        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = new PooledBufferBuilder<int>(0);
-        });
+        using var builder = new PooledBufferBuilder<int>();
 
-        Assert.AreEqual("initialCapacity", ex.ParamName);
+        Assert.IsInstanceOfType<System.Buffers.IBufferWriter<int>>(builder);
+    }
+
+    /// <summary>
+    /// Verifies that a freshly constructed <see cref="PooledBufferBuilder{T}"/> is assignable to
+    /// <see cref="System.Buffers.IMemoryOwner{T}"/>.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenConstructed_ShouldBeAssignableToIMemoryOwner()
+    {
+        using var builder = new PooledBufferBuilder<int>();
+
+        Assert.IsInstanceOfType<System.Buffers.IMemoryOwner<int>>(builder);
     }
 
     /// <summary>
@@ -50,6 +60,20 @@ public partial class PooledBufferBuilderTests
         Assert.AreEqual(0, builder.WrittenCount);
         Assert.IsTrue(builder.Capacity >= 16);
     }
+    /// <summary>
+    /// Verifies that constructing a <see cref="PooledBufferBuilder{T}"/> with an <c>initialCapacity</c> of zero
+    /// throws <see cref="ArgumentOutOfRangeException"/>.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenInitialCapacityIsZero_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = new PooledBufferBuilder<int>(0);
+        });
+
+        Assert.AreEqual("initialCapacity", ex.ParamName);
+    }
 
     /// <summary>
     /// Verifies that the default constructor (initialCapacity = 256) produces a builder with a capacity of at
@@ -64,27 +88,4 @@ public partial class PooledBufferBuilderTests
         Assert.IsTrue(builder.Capacity >= 256);
     }
 
-    /// <summary>
-    /// Verifies that a freshly constructed <see cref="PooledBufferBuilder{T}"/> is assignable to
-    /// <see cref="System.Buffers.IBufferWriter{T}"/>.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenConstructed_ShouldBeAssignableToIBufferWriter()
-    {
-        using var builder = new PooledBufferBuilder<int>();
-
-        Assert.IsInstanceOfType<System.Buffers.IBufferWriter<int>>(builder);
-    }
-
-    /// <summary>
-    /// Verifies that a freshly constructed <see cref="PooledBufferBuilder{T}"/> is assignable to
-    /// <see cref="System.Buffers.IMemoryOwner{T}"/>.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenConstructed_ShouldBeAssignableToIMemoryOwner()
-    {
-        using var builder = new PooledBufferBuilder<int>();
-
-        Assert.IsInstanceOfType<System.Buffers.IMemoryOwner<int>>(builder);
-    }
 }

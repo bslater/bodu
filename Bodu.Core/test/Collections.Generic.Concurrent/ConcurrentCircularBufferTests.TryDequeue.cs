@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.TryDequeue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that a heavily-overfilled buffer with overwriting enabled drains cleanly via <see cref="ConcurrentCircularBuffer{T}.TryDequeue" /> within the capacity bound.
     /// </summary>
@@ -233,4 +234,5 @@ public partial class ConcurrentCircularBufferTests
 
         CollectionAssert.AreEqual(new[] { 0, 1, 2 }, results.Select(r => r.Value).ToArray());
     }
+
 }

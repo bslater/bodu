@@ -8,6 +8,66 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
+
+    /// <summary>
+    /// Verifies that all recognised binary format specifiers (<c>'0'</c>, <c>'1'</c>, <c>'B'</c>,
+    /// <c>"01"</c>) return identical strings for the same instance.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenAllBinarySpecifiersUsedOnSameInstance_ShouldProduceIdenticalOutput()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+
+        var s0 = pattern.ToString("0");
+        var s1 = pattern.ToString("1");
+        var sB = pattern.ToString("B");
+        var s01 = pattern.ToString("01");
+
+        Assert.AreEqual(s0, s1, "Formats '0' and '1' should produce identical output.");
+        Assert.AreEqual(s0, sB, "Formats '0' and 'B' should produce identical output.");
+        Assert.AreEqual(s0, s01, "Formats '0' and \"01\" should produce identical output.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the binary format <c>'b'</c>
+    /// returns the expected binary string for every valid bitmask permutation.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetAllBitmaskPermutationTestData))]
+    public void ToString_WhenBinaryFormat_ShouldReturnExpectedBinaryString(byte value, string _, string expected) => Assert.AreEqual(expected, WeekPattern.FromByte(value).ToString("b"));
+
+    /// <summary>
+    /// Verifies that the default <see cref="WeekPattern.ToString()" /> overload returns the expected
+    /// symbol string for every valid bitmask permutation.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetAllBitmaskPermutationTestData))]
+    public void ToString_WhenCalled_ShouldReturnExpectedSymbolString(byte value, string expected, string _) => Assert.AreEqual(expected, WeekPattern.FromByte(value).ToString());
+
+    /// <summary>
+    /// Verifies that calling <see cref="IFormattable.ToString(string, IFormatProvider)" /> directly
+    /// produces the same result as the concrete <see cref="WeekPattern.ToString(string, IFormatProvider)" />
+    /// overload.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenCalledViaIFormattableInterface_ShouldMatchConcreteOverload()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        IFormattable formattable = pattern;
+
+        Assert.AreEqual(pattern.ToString("M", null), formattable.ToString("M", null));
+    }
+
+    /// <summary>
+    /// Verifies that the default <see cref="WeekPattern.ToString()" /> overload returns a Sunday-first
+    /// string with underscore for unselected days.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenCalledWithNoArguments_ShouldReturnSundayFirstWithUnderscores()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("_M_W_F_", pattern.ToString());
+    }
     /// <summary>
     /// Verifies that the default <see cref="WeekPattern.ToString()" /> overload returns a Sunday-first
     /// string with underscore for unselected days.
@@ -20,65 +80,16 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> produces the correct output for each
-    /// recognised format specifier.
+    /// Verifies that <see cref="WeekPattern" /> explicitly implements <see cref="IFormattable" />.
     /// </summary>
     [TestMethod]
-    [DataRow("S", "SM____S")] // Sunday-first
-    [DataRow("s", "SM____S")]
-    [DataRow("M", "M____SS")] // Monday-first
-    [DataRow("m", "M____SS")]
-    [DataRow("B", "1100001")] // Binary (Sunday + Monday + Saturday selected)
-    [DataRow("b", "1100001")]
-    public void ToString_WhenValidFormat_ShouldFormatCorrectly(string format, string expected)
-    {
-        var pattern = new WeekPattern(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
-        Assert.AreEqual(expected, pattern.ToString(format));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> throws <see cref="ArgumentException" />
-    /// when an unrecognised format specifier is provided.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenInvalidFormat_ShouldThrowException()
+    public void ToString_WhenCastToIFormattable_ShouldSucceed()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday);
-        Assert.ThrowsExactly<ArgumentException>(() => pattern.ToString("X"));
-    }
+        var formattable = pattern as IFormattable;
 
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string, System.IFormatProvider)" /> with a non-null format
-    /// provider produces the same output as the format-only overload — the provider is currently ignored, but the
-    /// call site must still execute.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenFormatProviderProvided_ShouldIgnoreProvider()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
-        Assert.AreEqual("M____SS", pattern.ToString("M", System.Globalization.CultureInfo.InvariantCulture));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string, System.IFormatProvider)" /> treats a
-    /// <see langword="null" /> format string as the default Sunday-first specifier.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenFormatIsNull_ShouldDefaultToSundayFirstFormat()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday);
-        Assert.AreEqual(pattern.ToString("S"), pattern.ToString((string?)null, null));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> throws <see cref="ArgumentException" /> when the
-    /// two-character format specifier has an invalid first character (i.e. not <c>'S'</c> or <c>'M'</c>).
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenTwoCharFormatHasInvalidStartDay_ShouldThrowArgumentException()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday);
-        Assert.ThrowsExactly<ArgumentException>(() => pattern.ToString("XU"));
+        Assert.IsNotNull(formattable,
+            "WeekPattern must implement IFormattable for composite formatting to work.");
     }
 
     /// <summary>
@@ -96,52 +107,55 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(IFormatProvider)" /> uses the default Sunday-first
-    /// format when only a provider is supplied.
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'0'</c> binary format
+    /// specifier returns the correct binary string. This is a regression test for a defect where the
+    /// documented <c>'0'</c> specifier was not recognised and caused an <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenOnlyProviderProvided_ShouldUseDefaultFormat()
+    public void ToString_WhenFormatIs0_ShouldReturnBinaryString()
     {
-        var pattern = new WeekPattern(DayOfWeek.Sunday, DayOfWeek.Monday);
-        Assert.AreEqual("SM_____", pattern.ToString(provider: null));
+        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("0101010", pattern.ToString("0"));
     }
 
     /// <summary>
-    /// Verifies that the default <see cref="WeekPattern.ToString()" /> overload returns the expected
-    /// symbol string for every valid bitmask permutation.
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>"01"</c> binary format
+    /// specifier returns the correct binary string.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(GetAllBitmaskPermutationTestData))]
-    public void ToString_WhenCalled_ShouldReturnExpectedSymbolString(byte value, string expected, string _) => Assert.AreEqual(expected, WeekPattern.FromByte(value).ToString());
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the binary format <c>'b'</c>
-    /// returns the expected binary string for every valid bitmask permutation.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetAllBitmaskPermutationTestData))]
-    public void ToString_WhenBinaryFormat_ShouldReturnExpectedBinaryString(byte value, string _, string expected) => Assert.AreEqual(expected, WeekPattern.FromByte(value).ToString("b"));
-
-    /// <summary>
-    /// Verifies that the default <see cref="WeekPattern.ToString()" /> overload returns a Sunday-first
-    /// string with underscore for unselected days.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenCalledWithNoArguments_ShouldReturnSundayFirstWithUnderscores()
+    public void ToString_WhenFormatIs01_ShouldReturnBinaryString()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("_M_W_F_", pattern.ToString());
+        Assert.AreEqual("0101010", pattern.ToString("01"));
     }
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'S'</c> format returns a
-    /// correct Sunday-first string.
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'0'</c> format and the
+    /// <see cref="WeekPattern.Weekdays" /> instance returns the correct binary string.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenFormatIsSundayFirst_ShouldReturnCorrectSundayFirstString()
+    public void ToString_WhenFormatIs0AndAllWeekdaysSelected_ShouldReturnCorrectBinaryString() => Assert.AreEqual("0111110", WeekPattern.Weekdays.ToString("0"));
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'1'</c> binary format
+    /// specifier returns the correct binary string.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenFormatIs1_ShouldReturnBinaryString()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("_M_W_F_", pattern.ToString("S"));
+        Assert.AreEqual("0101010", pattern.ToString("1"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'B'</c> binary format
+    /// specifier returns the correct binary string.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenFormatIsB_ShouldReturnBinaryString()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
+        Assert.AreEqual("0101010", pattern.ToString("B"));
     }
 
     /// <summary>
@@ -167,75 +181,26 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'0'</c> binary format
-    /// specifier returns the correct binary string. This is a regression test for a defect where the
-    /// documented <c>'0'</c> specifier was not recognised and caused an <see cref="ArgumentException" />.
+    /// Verifies that <see cref="WeekPattern.ToString(string, System.IFormatProvider)" /> treats a
+    /// <see langword="null" /> format string as the default Sunday-first specifier.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenFormatIs0_ShouldReturnBinaryString()
+    public void ToString_WhenFormatIsNull_ShouldDefaultToSundayFirstFormat()
     {
-        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("0101010", pattern.ToString("0"));
+        var pattern = new WeekPattern(DayOfWeek.Monday);
+        Assert.AreEqual(pattern.ToString("S"), pattern.ToString((string?)null, null));
     }
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'1'</c> binary format
-    /// specifier returns the correct binary string.
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'S'</c> format returns a
+    /// correct Sunday-first string.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenFormatIs1_ShouldReturnBinaryString()
+    public void ToString_WhenFormatIsSundayFirst_ShouldReturnCorrectSundayFirstString()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("0101010", pattern.ToString("1"));
+        Assert.AreEqual("_M_W_F_", pattern.ToString("S"));
     }
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'B'</c> binary format
-    /// specifier returns the correct binary string.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenFormatIsB_ShouldReturnBinaryString()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("0101010", pattern.ToString("B"));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>"01"</c> binary format
-    /// specifier returns the correct binary string.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenFormatIs01_ShouldReturnBinaryString()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        Assert.AreEqual("0101010", pattern.ToString("01"));
-    }
-
-    /// <summary>
-    /// Verifies that all recognised binary format specifiers (<c>'0'</c>, <c>'1'</c>, <c>'B'</c>,
-    /// <c>"01"</c>) return identical strings for the same instance.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenAllBinarySpecifiersUsedOnSameInstance_ShouldProduceIdenticalOutput()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-
-        var s0 = pattern.ToString("0");
-        var s1 = pattern.ToString("1");
-        var sB = pattern.ToString("B");
-        var s01 = pattern.ToString("01");
-
-        Assert.AreEqual(s0, s1, "Formats '0' and '1' should produce identical output.");
-        Assert.AreEqual(s0, sB, "Formats '0' and 'B' should produce identical output.");
-        Assert.AreEqual(s0, s01, "Formats '0' and \"01\" should produce identical output.");
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="WeekPattern.ToString(string)" /> with the <c>'0'</c> format and the
-    /// <see cref="WeekPattern.Weekdays" /> instance returns the correct binary string.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenFormatIs0AndAllWeekdaysSelected_ShouldReturnCorrectBinaryString() => Assert.AreEqual("0111110", WeekPattern.Weekdays.ToString("0"));
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.ToString(string)" /> throws <see cref="ArgumentException" />
@@ -248,6 +213,18 @@ public partial class WeekPatternTests
         {
             _ = new WeekPattern(DayOfWeek.Monday).ToString("Z");
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string, System.IFormatProvider)" /> with a non-null format
+    /// provider produces the same output as the format-only overload — the provider is currently ignored, but the
+    /// call site must still execute.
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenFormatProviderProvided_ShouldIgnoreProvider()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
+        Assert.AreEqual("M____SS", pattern.ToString("M", System.Globalization.CultureInfo.InvariantCulture));
     }
 
     /// <summary>
@@ -268,29 +245,53 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="WeekPattern" /> explicitly implements <see cref="IFormattable" />.
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> throws <see cref="ArgumentException" />
+    /// when an unrecognised format specifier is provided.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenCastToIFormattable_ShouldSucceed()
+    public void ToString_WhenInvalidFormat_ShouldThrowException()
     {
         var pattern = new WeekPattern(DayOfWeek.Monday);
-        var formattable = pattern as IFormattable;
-
-        Assert.IsNotNull(formattable,
-            "WeekPattern must implement IFormattable for composite formatting to work.");
+        Assert.ThrowsExactly<ArgumentException>(() => pattern.ToString("X"));
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="IFormattable.ToString(string, IFormatProvider)" /> directly
-    /// produces the same result as the concrete <see cref="WeekPattern.ToString(string, IFormatProvider)" />
-    /// overload.
+    /// Verifies that <see cref="WeekPattern.ToString(IFormatProvider)" /> uses the default Sunday-first
+    /// format when only a provider is supplied.
     /// </summary>
     [TestMethod]
-    public void ToString_WhenCalledViaIFormattableInterface_ShouldMatchConcreteOverload()
+    public void ToString_WhenOnlyProviderProvided_ShouldUseDefaultFormat()
     {
-        var pattern = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday, DayOfWeek.Friday);
-        IFormattable formattable = pattern;
-
-        Assert.AreEqual(pattern.ToString("M", null), formattable.ToString("M", null));
+        var pattern = new WeekPattern(DayOfWeek.Sunday, DayOfWeek.Monday);
+        Assert.AreEqual("SM_____", pattern.ToString(provider: null));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> throws <see cref="ArgumentException" /> when the
+    /// two-character format specifier has an invalid first character (i.e. not <c>'S'</c> or <c>'M'</c>).
+    /// </summary>
+    [TestMethod]
+    public void ToString_WhenTwoCharFormatHasInvalidStartDay_ShouldThrowArgumentException()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday);
+        Assert.ThrowsExactly<ArgumentException>(() => pattern.ToString("XU"));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WeekPattern.ToString(string)" /> produces the correct output for each
+    /// recognised format specifier.
+    /// </summary>
+    [TestMethod]
+    [DataRow("S", "SM____S")] // Sunday-first
+    [DataRow("s", "SM____S")]
+    [DataRow("M", "M____SS")] // Monday-first
+    [DataRow("m", "M____SS")]
+    [DataRow("B", "1100001")] // Binary (Sunday + Monday + Saturday selected)
+    [DataRow("b", "1100001")]
+    public void ToString_WhenValidFormat_ShouldFormatCorrectly(string format, string expected)
+    {
+        var pattern = new WeekPattern(DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Saturday);
+        Assert.AreEqual(expected, pattern.ToString(format));
+    }
+
 }

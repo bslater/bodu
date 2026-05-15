@@ -5,12 +5,31 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible" />, when ArrayTypeIsCorrect, NotThrow.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetCompatibleArrayTypeTestData))]
+    public void ThrowIfArrayTypeIsNotCompatible_WhenArrayTypeIsCorrect_ShouldNotThrow(Array array) => ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array);
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible" />, when ArrayTypeIsIncorrect, throws <see cref="ArgumentException" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(GetIncompatibleArrayTypeTestData))]
+    public void ThrowIfArrayTypeIsNotCompatible_WhenArrayTypeIsIncorrect_ShouldThrowArgumentException(Array array)
+    {
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array);
+        });
+    }
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible{T}" /> contract for the
     /// <c>int</c> instantiation: null array → <see cref="ArgumentNullException" />, compatible
@@ -32,6 +51,20 @@ public partial class ThrowHelperTests
             expectedParamName);
     }
 
+    private static IEnumerable<object[]> GetCompatibleArrayTypeTestData()
+    {
+        yield return new object[] { Array.Empty<int>() };
+        yield return new object[] { new int[10] };
+        yield return new object[] { Array.CreateInstance(typeof(int), 5) };
+    }
+
+    private static IEnumerable<object[]> GetIncompatibleArrayTypeTestData()
+    {
+        yield return new object[] { new string[5] };
+        yield return new object[] { new double[3] };
+        yield return new object[] { Array.CreateInstance(typeof(object), 2) };
+    }
+
     private static IEnumerable<object?[]> ThrowIfArrayTypeIsNotCompatibleContractData()
     {
         yield return new object?[] { "null array → ArgumentNullException", null, typeof(ArgumentNullException), "array" };
@@ -42,37 +75,4 @@ public partial class ThrowHelperTests
         yield return new object?[] { "empty int[] → no throw", Array.Empty<int>(), null, null };
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible" />, when ArrayTypeIsIncorrect, throws <see cref="ArgumentException" />.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetIncompatibleArrayTypeTestData))]
-    public void ThrowIfArrayTypeIsNotCompatible_WhenArrayTypeIsIncorrect_ShouldThrowArgumentException(Array array)
-    {
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayTypeIsNotCompatible" />, when ArrayTypeIsCorrect, NotThrow.
-    /// </summary>
-    [TestMethod]
-    [DynamicData(nameof(GetCompatibleArrayTypeTestData))]
-    public void ThrowIfArrayTypeIsNotCompatible_WhenArrayTypeIsCorrect_ShouldNotThrow(Array array) => ThrowHelper.ThrowIfArrayTypeIsNotCompatible<int>(array);
-
-    private static IEnumerable<object[]> GetIncompatibleArrayTypeTestData()
-    {
-        yield return new object[] { new string[5] };
-        yield return new object[] { new double[3] };
-        yield return new object[] { Array.CreateInstance(typeof(object), 2) };
-    }
-
-    private static IEnumerable<object[]> GetCompatibleArrayTypeTestData()
-    {
-        yield return new object[] { Array.Empty<int>() };
-        yield return new object[] { new int[10] };
-        yield return new object[] { Array.CreateInstance(typeof(int), 5) };
-    }
 }

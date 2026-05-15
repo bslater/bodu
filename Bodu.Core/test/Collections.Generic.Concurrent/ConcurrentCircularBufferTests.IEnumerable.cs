@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.IEnumerable.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -6,13 +6,12 @@
 
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that enumeration includes <see langword="null" /> entries among the buffer's items.
     /// </summary>
@@ -125,21 +124,6 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
-    /// Verifies that LINQ enumeration over the buffer yields items in FIFO order.
-    /// </summary>
-    [TestMethod]
-    public void GetEnumerator_WhenEnumerated_ShouldYieldAllItemsInFifoOrder()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        buffer.Enqueue(new TestItem(3));
-
-        var values = buffer.Select(x => x?.Value).ToArray();
-        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
-    }
-
-    /// <summary>
     /// Verifies that the enumerator output from <see cref="Enumerable.ToArray{TSource}"/> matches the output from
     /// <see cref="ConcurrentCircularBuffer{T}.CopyTo"/> when the buffer is in a contiguous (non-wrapped) state.
     /// </summary>
@@ -157,6 +141,21 @@ public partial class ConcurrentCircularBufferTests
         buffer.CopyTo(fromCopyTo, 0);
 
         CollectionAssert.AreEqual(fromToArray, fromCopyTo);
+    }
+
+    /// <summary>
+    /// Verifies that LINQ enumeration over the buffer yields items in FIFO order.
+    /// </summary>
+    [TestMethod]
+    public void GetEnumerator_WhenEnumerated_ShouldYieldAllItemsInFifoOrder()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(3);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        buffer.Enqueue(new TestItem(3));
+
+        var values = buffer.Select(x => x?.Value).ToArray();
+        CollectionAssert.AreEqual(new[] { 1, 2, 3 }, values);
     }
 
     /// <summary>
@@ -180,4 +179,5 @@ public partial class ConcurrentCircularBufferTests
 
         CollectionAssert.AreEqual(fromToArray, fromCopyTo);
     }
+
 }

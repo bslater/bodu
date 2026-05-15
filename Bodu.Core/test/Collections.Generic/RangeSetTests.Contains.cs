@@ -1,16 +1,26 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeSetTests.Contains.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
 public partial class RangeSetTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="RangeSet{T}.Contains(T)" /> on an empty set returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public void Contains_WhenSetIsEmpty_ShouldReturnFalse()
+    {
+        var sut = new RangeSet<int>();
+
+        Assert.IsFalse(sut.Contains(5));
+    }
     // --------------------------------------------------------
     // Contains(T) — value membership
     // --------------------------------------------------------
@@ -27,17 +37,6 @@ public partial class RangeSetTests
         {
             _ = sut.Contains((string)null!);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="RangeSet{T}.Contains(T)" /> on an empty set returns <see langword="false" />.
-    /// </summary>
-    [TestMethod]
-    public void Contains_WhenSetIsEmpty_ShouldReturnFalse()
-    {
-        var sut = new RangeSet<int>();
-
-        Assert.IsFalse(sut.Contains(5));
     }
 
     /// <summary>
@@ -84,20 +83,6 @@ public partial class RangeSetTests
     }
 
     /// <summary>
-    /// Verifies that the range-containment overload rejects degenerate ranges.
-    /// </summary>
-    [TestMethod]
-    public void ContainsRange_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
-    {
-        var sut = new RangeSet<int>();
-
-        Assert.ThrowsExactly<ArgumentException>(() =>
-        {
-            _ = sut.Contains(5, 5);
-        });
-    }
-
-    /// <summary>
     /// Verifies the range-containment outcome across representative combinations.
     /// </summary>
     [TestMethod]
@@ -124,4 +109,19 @@ public partial class RangeSetTests
 
         Assert.IsFalse(sut.Contains(0, 10));
     }
+
+    /// <summary>
+    /// Verifies that the range-containment overload rejects degenerate ranges.
+    /// </summary>
+    [TestMethod]
+    public void ContainsRange_WhenStartIsNotLessThanEnd_ShouldThrowArgumentException()
+    {
+        var sut = new RangeSet<int>();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            _ = sut.Contains(5, 5);
+        });
+    }
+
 }

@@ -9,62 +9,6 @@ namespace Bodu.Collections.Extensions;
 [TestClass]
 public class FareyTests
 {
-    /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Farey" /> throws <see cref="ArgumentOutOfRangeException" /> when the order is below the minimum of 1.
-    /// </summary>
-    [TestMethod]
-    [DataRow(0)]
-    [DataRow(-1)]
-    [DataRow(int.MinValue)]
-    public void Farey_WhenOrderIsLessThanOne_ShouldThrowExactly(int order)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = SequenceGenerator.Farey(order).ToList();
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Farey" /> with order 1 returns the trivial sequence (0/1, 1/1).
-    /// </summary>
-    [TestMethod]
-    public void Farey_WhenOrderIsOne_ShouldReturnTrivialSequence()
-    {
-        (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(1).ToArray();
-        CollectionAssert.AreEqual(new[] { (0, 1), (1, 1) }, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="SequenceGenerator.Farey" /> with order 5 returns the canonical Farey sequence F5.
-    /// </summary>
-    [TestMethod]
-    public void Farey_WhenOrderIsFive_ShouldReturnExpectedSequence()
-    {
-        (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(5).ToArray();
-        (int, int)[] expected =
-        [
-            (0, 1), (1, 5), (1, 4), (1, 3), (2, 5), (1, 2),
-            (3, 5), (2, 3), (3, 4), (4, 5), (1, 1)
-        ];
-
-        CollectionAssert.AreEqual(expected, actual);
-    }
-
-    /// <summary>
-    /// Verifies that every emitted fraction is in lowest terms (gcd(numerator, denominator) == 1).
-    /// </summary>
-    [TestMethod]
-    public void Farey_WhenEnumerated_ShouldYieldOnlyReducedFractions()
-    {
-        const int order = 7;
-
-        foreach ((var num, var den) in SequenceGenerator.Farey(order))
-        {
-            Assert.AreEqual(1, Gcd(num, den), $"Fraction {num}/{den} is not in lowest terms.");
-        }
-
-        static int Gcd(int a, int b) => b == 0 ? a : Gcd(b, a % b);
-    }
 
     /// <summary>
     /// Verifies that the emitted fractions are in strictly ascending rational order.
@@ -95,4 +39,61 @@ public class FareyTests
         Assert.AreEqual((0, 1), actual[0]);
         Assert.AreEqual((1, 1), actual[^1]);
     }
+
+    /// <summary>
+    /// Verifies that every emitted fraction is in lowest terms (gcd(numerator, denominator) == 1).
+    /// </summary>
+    [TestMethod]
+    public void Farey_WhenEnumerated_ShouldYieldOnlyReducedFractions()
+    {
+        const int order = 7;
+
+        foreach ((var num, var den) in SequenceGenerator.Farey(order))
+        {
+            Assert.AreEqual(1, Gcd(num, den), $"Fraction {num}/{den} is not in lowest terms.");
+        }
+
+        static int Gcd(int a, int b) => b == 0 ? a : Gcd(b, a % b);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.Farey" /> with order 5 returns the canonical Farey sequence F5.
+    /// </summary>
+    [TestMethod]
+    public void Farey_WhenOrderIsFive_ShouldReturnExpectedSequence()
+    {
+        (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(5).ToArray();
+        (int, int)[] expected =
+        [
+            (0, 1), (1, 5), (1, 4), (1, 3), (2, 5), (1, 2),
+            (3, 5), (2, 3), (3, 4), (4, 5), (1, 1)
+        ];
+
+        CollectionAssert.AreEqual(expected, actual);
+    }
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.Farey" /> throws <see cref="ArgumentOutOfRangeException" /> when the order is below the minimum of 1.
+    /// </summary>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(-1)]
+    [DataRow(int.MinValue)]
+    public void Farey_WhenOrderIsLessThanOne_ShouldThrowExactly(int order)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = SequenceGenerator.Farey(order).ToList();
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="SequenceGenerator.Farey" /> with order 1 returns the trivial sequence (0/1, 1/1).
+    /// </summary>
+    [TestMethod]
+    public void Farey_WhenOrderIsOne_ShouldReturnTrivialSequence()
+    {
+        (int Numerator, int Denominator)[] actual = SequenceGenerator.Farey(1).ToArray();
+        CollectionAssert.AreEqual(new[] { (0, 1), (1, 1) }, actual);
+    }
+
 }

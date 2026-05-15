@@ -1,15 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Count.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Collections.Concurrent;
-
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that once concurrent enqueue/dequeue activity has settled, <see cref="ConcurrentCircularBuffer{T}.Count" /> equals the length of the snapshot returned by <see cref="ConcurrentCircularBuffer{T}.ToArray" />.
     /// </summary>
@@ -189,6 +188,18 @@ public partial class ConcurrentCircularBufferTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Count" /> equals the number of items enqueued without any dequeues.
+    /// </summary>
+    [TestMethod]
+    public void Count_WhenItemsAreEnqueued_ShouldMatchItemCount()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
+        buffer.Enqueue(new TestItem(1));
+        buffer.Enqueue(new TestItem(2));
+        Assert.AreEqual(2, buffer.Count);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Count" /> reflects the net balance of enqueues minus dequeues after a sequence of operations.
     /// </summary>
     [TestMethod]
@@ -199,18 +210,6 @@ public partial class ConcurrentCircularBufferTests
         buffer.Enqueue(new TestItem(2));
         buffer.TryDequeue(out _);
         Assert.AreEqual(1, buffer.Count);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="ConcurrentCircularBuffer{T}.Count" /> equals the number of items enqueued without any dequeues.
-    /// </summary>
-    [TestMethod]
-    public void Count_WhenItemsAreEnqueued_ShouldMatchItemCount()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(4);
-        buffer.Enqueue(new TestItem(1));
-        buffer.Enqueue(new TestItem(2));
-        Assert.AreEqual(2, buffer.Count);
     }
 
     /// <summary>
@@ -275,4 +274,5 @@ public partial class ConcurrentCircularBufferTests
 
         Assert.AreEqual(3, buffer.Count);
     }
+
 }

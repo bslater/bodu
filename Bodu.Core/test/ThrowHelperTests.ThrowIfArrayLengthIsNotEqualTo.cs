@@ -10,6 +10,19 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void ThrowIfArrayLengthIsNotEqualTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
+    {
+        Array? array = null;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ThrowHelper.ThrowIfArrayLengthIsNotEqualTo(array, 4);
+        });
+    }
     /// <summary>
     /// Verifies the full <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" /> contract with explicit
     /// ParamName assertions: null array → <see cref="ArgumentNullException" /> on the array parameter;
@@ -44,19 +57,6 @@ public partial class ThrowHelperTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" />, when ArrayIsNull, throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void ThrowIfArrayLengthIsNotEqualTo_WhenArrayIsNull_ShouldThrowArgumentNullException()
-    {
-        Array? array = null;
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            ThrowHelper.ThrowIfArrayLengthIsNotEqualTo(array, 4);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="ThrowHelper.ThrowIfArrayLengthIsNotEqualTo" />, when LengthDiffers, throws <see cref="ArgumentException" />.
     /// </summary>
     [TestMethod]
@@ -86,4 +86,5 @@ public partial class ThrowHelperTests
         Array array = new int[arrayLength];
         ThrowHelper.ThrowIfArrayLengthIsNotEqualTo(array, expectedLength);
     }
+
 }

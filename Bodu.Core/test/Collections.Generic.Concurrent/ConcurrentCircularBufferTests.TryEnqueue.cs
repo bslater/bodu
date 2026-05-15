@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.TryEnqueue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -7,14 +7,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> reflects the current <see cref="ConcurrentCircularBuffer{T}.AllowOverwrite" /> value immediately after it is toggled.
     /// </summary>
@@ -32,20 +30,6 @@ public partial class ConcurrentCircularBufferTests
         buffer.AllowOverwrite = true;
         Assert.IsTrue(buffer.TryEnqueue(new TestItem(4)));
         CollectionAssert.AreEqual(new[] { 2, 4 }, buffer.ToArray().Select(x => x.Value).ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that at the minimum capacity with overwriting enabled, <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> always succeeds.
-    /// </summary>
-    [TestMethod]
-    public void TryEnqueue_WhenCapacityIsMinAndOverwriteEnabled_ShouldAlwaysReturnTrue()
-    {
-        var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
-
-        for (var i = 0; i < 1000; i++)
-            Assert.IsTrue(buffer.TryEnqueue(new TestItem(i)));
-
-        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= MinCapacity);
     }
 
     /// <summary>
@@ -67,6 +51,20 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsNotNull(evicted, "ItemEvicted should fire when the oldest item is displaced.");
         Assert.AreEqual(1, evicted!.Value);
         AssertBufferContainsExactlyValues(buffer, 2, 3);
+    }
+
+    /// <summary>
+    /// Verifies that at the minimum capacity with overwriting enabled, <see cref="ConcurrentCircularBuffer{T}.TryEnqueue" /> always succeeds.
+    /// </summary>
+    [TestMethod]
+    public void TryEnqueue_WhenCapacityIsMinAndOverwriteEnabled_ShouldAlwaysReturnTrue()
+    {
+        var buffer = new ConcurrentCircularBuffer<TestItem>(MinCapacity, allowOverwrite: true);
+
+        for (var i = 0; i < 1000; i++)
+            Assert.IsTrue(buffer.TryEnqueue(new TestItem(i)));
+
+        Assert.IsTrue(buffer.Count >= 0 && buffer.Count <= MinCapacity);
     }
 
     /// <summary>
@@ -215,4 +213,5 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsTrue(buffer.TryEnqueue(new TestItem(2)));
         Assert.AreEqual(2, buffer.Count);
     }
+
 }

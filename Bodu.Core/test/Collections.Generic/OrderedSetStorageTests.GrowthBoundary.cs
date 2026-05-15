@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic;
 
 public partial class OrderedSetStorageTests
 {
+
     /// <summary>
     /// Verifies that adding items past the 75% load factor on a freshly-constructed storage triggers the hash
     /// table to grow and keeps Contains working correctly after each rehash, exercising the
@@ -27,6 +28,24 @@ public partial class OrderedSetStorageTests
         // All inserted items must remain findable after every rehash that occurred during the run.
         for (var i = 0; i < 50; i++)
             Assert.IsTrue(sut.Contains(i), $"Storage lost item {i} during rehash.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="OrderedSetStorage{T}.AddRange(System.Collections.Generic.IEnumerable{T})" />
+    /// with an empty source does not allocate or grow the hash table, exercising the <c>itemCount == 0</c>
+    /// early return in <c>EnsureHashCapacity</c>.
+    /// </summary>
+    [TestMethod]
+    public void AddRange_WhenSourceIsEmpty_ShouldNotGrowStorage()
+    {
+        var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
+        var capacityBefore = sut.Capacity;
+
+        var added = sut.AddRange(System.Array.Empty<int>());
+
+        Assert.AreEqual(0, added);
+        Assert.AreEqual(capacityBefore, sut.Capacity);
+        Assert.AreEqual(0, sut.Count);
     }
 
     /// <summary>
@@ -60,21 +79,4 @@ public partial class OrderedSetStorageTests
         Assert.IsTrue(reported >= 4, $"Expected at least DefaultCapacity (4), got {reported}.");
     }
 
-    /// <summary>
-    /// Verifies that <see cref="OrderedSetStorage{T}.AddRange(System.Collections.Generic.IEnumerable{T})" />
-    /// with an empty source does not allocate or grow the hash table, exercising the <c>itemCount == 0</c>
-    /// early return in <c>EnsureHashCapacity</c>.
-    /// </summary>
-    [TestMethod]
-    public void AddRange_WhenSourceIsEmpty_ShouldNotGrowStorage()
-    {
-        var sut = new OrderedSetStorage<int>(capacity: 0, comparer: null);
-        var capacityBefore = sut.Capacity;
-
-        var added = sut.AddRange(System.Array.Empty<int>());
-
-        Assert.AreEqual(0, added);
-        Assert.AreEqual(capacityBefore, sut.Capacity);
-        Assert.AreEqual(0, sut.Count);
-    }
 }

@@ -10,6 +10,7 @@ namespace Bodu;
 
 public partial class ThrowHelperTests
 {
+
     /// <summary>
     /// Verifies the <see cref="ThrowHelper.ThrowIfInvalidStringComparison" /> contract with explicit ParamName
     /// assertions: undefined <see cref="StringComparison" /> values throw on "comparisonType"; the six
@@ -67,4 +68,5 @@ public partial class ThrowHelperTests
     [DataRow(StringComparison.Ordinal)]
     [DataRow(StringComparison.OrdinalIgnoreCase)]
     public void ThrowIfInvalidStringComparison_WhenValueIsValid_ShouldNotThrow(StringComparison stringComparison) => ThrowHelper.ThrowIfInvalidStringComparison(stringComparison);
+
 }

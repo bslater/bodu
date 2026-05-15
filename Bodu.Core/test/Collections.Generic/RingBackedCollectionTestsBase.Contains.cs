@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.Contains.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,17 +8,15 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
+
     /// <summary>
-    /// Verifies that <see cref="Contains(TCollection, int)"/> returns <see langword="true"/> when the item is present.
+    /// Verifies that <see cref="Contains(TCollection, int)"/> returns <see langword="false"/> for an empty collection.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenItemIsPresent_ShouldReturnTrue()
+    public void Contains_WhenCollectionIsEmpty_ShouldReturnFalse()
     {
         TCollection collection = CreateCollection(3);
-        AddToTail(collection, 1);
-        AddToTail(collection, 2);
-
-        Assert.IsTrue(Contains(collection, 2));
+        Assert.IsFalse(Contains(collection, 0));
     }
 
     /// <summary>
@@ -32,15 +30,17 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 
         Assert.IsFalse(Contains(collection, 99));
     }
-
     /// <summary>
-    /// Verifies that <see cref="Contains(TCollection, int)"/> returns <see langword="false"/> for an empty collection.
+    /// Verifies that <see cref="Contains(TCollection, int)"/> returns <see langword="true"/> when the item is present.
     /// </summary>
     [TestMethod]
-    public void Contains_WhenCollectionIsEmpty_ShouldReturnFalse()
+    public void Contains_WhenItemIsPresent_ShouldReturnTrue()
     {
         TCollection collection = CreateCollection(3);
-        Assert.IsFalse(Contains(collection, 0));
+        AddToTail(collection, 1);
+        AddToTail(collection, 2);
+
+        Assert.IsTrue(Contains(collection, 2));
     }
 
     /// <summary>
@@ -60,4 +60,5 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         Assert.IsTrue(Contains(collection, 2));
         Assert.IsFalse(Contains(collection, 1));
     }
+
 }

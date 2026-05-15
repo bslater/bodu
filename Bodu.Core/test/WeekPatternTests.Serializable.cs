@@ -13,6 +13,20 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="ISerializable.GetObjectData" /> throws <see cref="ArgumentNullException" />
+    /// when a <see langword="null" /> <see cref="SerializationInfo" /> is supplied.
+    /// </summary>
+    [TestMethod]
+    public void GetObjectData_WhenInfoIsNull_ShouldThrowException()
+    {
+        var pattern = new WeekPattern(DayOfWeek.Monday);
+        var context = new StreamingContext(StreamingContextStates.All);
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+            ((ISerializable)pattern).GetObjectData(null!, context));
+    }
     /// <summary>
     /// Verifies that a <see cref="WeekPattern" /> can be serialised and reconstructed via the private
     /// serialisation constructor, producing an instance equal to the original.
@@ -45,20 +59,6 @@ public partial class WeekPatternTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="ISerializable.GetObjectData" /> throws <see cref="ArgumentNullException" />
-    /// when a <see langword="null" /> <see cref="SerializationInfo" /> is supplied.
-    /// </summary>
-    [TestMethod]
-    public void GetObjectData_WhenInfoIsNull_ShouldThrowException()
-    {
-        var pattern = new WeekPattern(DayOfWeek.Monday);
-        var context = new StreamingContext(StreamingContextStates.All);
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-            ((ISerializable)pattern).GetObjectData(null!, context));
-    }
-
-    /// <summary>
     /// Verifies that the private serialisation constructor throws <see cref="SerializationException" />
     /// when the stored bitmask value exceeds the valid range of 0–127.
     /// </summary>
@@ -83,6 +83,7 @@ public partial class WeekPatternTests
 
         Assert.IsInstanceOfType<SerializationException>(ex.InnerException);
     }
+
 }
 
 #pragma warning restore SYSLIB0050

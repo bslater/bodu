@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Bodu.Collections.Generic.Extensions;
@@ -13,6 +12,7 @@ namespace Bodu.Collections.Generic.Extensions;
 [TestClass]
 public sealed partial class IEnumerableExtensionsTests_ContainsAny
 {
+
     /// <summary>
     /// Provides scenarios for <c>ContainsAny</c> covering partial overlap, no overlap,
     /// empty sequences, and duplicate-item handling.
@@ -40,20 +40,6 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
         bool expected) => Assert.AreEqual(expected, source.ContainsAny(items));
 
     /// <summary>
-    /// Verifies the smaller-source optimisation branch: when <paramref name="source"/> is a known
-    /// <see cref="ICollection{T}"/> with fewer elements than <paramref name="items"/>, the set is
-    /// built from the source and query items are probed against it.
-    /// </summary>
-    [TestMethod]
-    public void ContainsAny_WhenSourceIsSmallerThanItems_ShouldReturnExpectedResult()
-    {
-        int[] source = [42, 99];
-        var items = Enumerable.Range(0, 100).ToArray();
-
-        Assert.IsTrue(source.ContainsAny(items));
-    }
-
-    /// <summary>
     /// Verifies the items-built-set branch when item sequence size is unknown by supplying a non-<see cref="ICollection{T}"/>
     /// enumerable (a lazily-yielded sequence).
     /// </summary>
@@ -74,15 +60,18 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     }
 
     /// <summary>
-    /// Verifies that a custom case-insensitive comparer affects membership for string element sequences.
+    /// Verifies that a null items sequence throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void ContainsAny_WhenUsingCaseInsensitiveComparer_ShouldReturnTrue()
+    public void ContainsAny_WhenItemsIsNull_ShouldThrowArgumentNullException()
     {
-        string[] source = ["Apple", "Banana"];
-        string[] items = ["CHERRY", "BANANA"];
+        int[] source = [1, 2, 3];
+        IEnumerable<int>? items = null;
 
-        Assert.IsTrue(source.ContainsAny(items, StringComparer.OrdinalIgnoreCase));
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = source.ContainsAny(items!);
+        });
     }
 
     /// <summary>
@@ -100,17 +89,29 @@ public sealed partial class IEnumerableExtensionsTests_ContainsAny
     }
 
     /// <summary>
-    /// Verifies that a null items sequence throws <see cref="ArgumentNullException" />.
+    /// Verifies the smaller-source optimisation branch: when <paramref name="source"/> is a known
+    /// <see cref="ICollection{T}"/> with fewer elements than <paramref name="items"/>, the set is
+    /// built from the source and query items are probed against it.
     /// </summary>
     [TestMethod]
-    public void ContainsAny_WhenItemsIsNull_ShouldThrowArgumentNullException()
+    public void ContainsAny_WhenSourceIsSmallerThanItems_ShouldReturnExpectedResult()
     {
-        int[] source = [1, 2, 3];
-        IEnumerable<int>? items = null;
+        int[] source = [42, 99];
+        var items = Enumerable.Range(0, 100).ToArray();
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = source.ContainsAny(items!);
-        });
+        Assert.IsTrue(source.ContainsAny(items));
     }
+
+    /// <summary>
+    /// Verifies that a custom case-insensitive comparer affects membership for string element sequences.
+    /// </summary>
+    [TestMethod]
+    public void ContainsAny_WhenUsingCaseInsensitiveComparer_ShouldReturnTrue()
+    {
+        string[] source = ["Apple", "Banana"];
+        string[] items = ["CHERRY", "BANANA"];
+
+        Assert.IsTrue(source.ContainsAny(items, StringComparer.OrdinalIgnoreCase));
+    }
+
 }

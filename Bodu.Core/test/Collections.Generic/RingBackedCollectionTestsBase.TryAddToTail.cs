@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RingBackedCollectionTestsBase.TryAddToTail.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,18 @@ namespace Bodu.Collections.Generic;
 
 public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
 {
+
+    /// <summary>
+    /// Verifies that <see cref="TryAddToTail(TCollection, int)"/> always succeeds when the collection has
+    /// not yet reached its initial capacity, regardless of fixed-vs-growable semantics.
+    /// </summary>
+    [TestMethod]
+    public void TryAddToTail_WhenBelowInitialCapacity_ShouldReturnTrue()
+    {
+        TCollection collection = CreateCollection(5);
+        for (var i = 0; i < 5; i++)
+            Assert.IsTrue(TryAddToTail(collection, i));
+    }
     /// <summary>
     /// Verifies that <see cref="TryAddToTail(TCollection, int)"/> returns <see langword="true"/> and stores
     /// the element when capacity is available.
@@ -21,15 +33,4 @@ public abstract partial class RingBackedCollectionTestsBase<TTest, TCollection>
         Assert.AreEqual(1, GetCount(collection));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="TryAddToTail(TCollection, int)"/> always succeeds when the collection has
-    /// not yet reached its initial capacity, regardless of fixed-vs-growable semantics.
-    /// </summary>
-    [TestMethod]
-    public void TryAddToTail_WhenBelowInitialCapacity_ShouldReturnTrue()
-    {
-        TCollection collection = CreateCollection(5);
-        for (var i = 0; i < 5; i++)
-            Assert.IsTrue(TryAddToTail(collection, i));
-    }
 }

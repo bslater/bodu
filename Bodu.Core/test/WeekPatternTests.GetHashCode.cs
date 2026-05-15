@@ -8,29 +8,6 @@ namespace Bodu;
 
 public partial class WeekPatternTests
 {
-    /// <summary>
-    /// Verifies that two <see cref="WeekPattern" /> instances with identical selected days return the
-    /// same hash code.
-    /// </summary>
-    [TestMethod]
-    public void GetHashCode_WhenSameDays_ShouldReturnSameHash()
-    {
-        var p1 = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
-        var p2 = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
-        Assert.AreEqual(p1.GetHashCode(), p2.GetHashCode());
-    }
-
-    /// <summary>
-    /// Verifies that two <see cref="WeekPattern" /> instances with different selected days return
-    /// different hash codes.
-    /// </summary>
-    [TestMethod]
-    public void GetHashCode_WhenDifferentDays_ShouldReturnDifferentHash()
-    {
-        Assert.AreNotEqual(
-            new WeekPattern(DayOfWeek.Monday).GetHashCode(),
-            new WeekPattern(DayOfWeek.Tuesday).GetHashCode());
-    }
 
     /// <summary>
     /// Verifies that <see cref="WeekPattern.GetHashCode" /> returns the same value as the hash code of
@@ -46,4 +23,28 @@ public partial class WeekPatternTests
                 $"Hash mismatch for byte value {value}.");
         }
     }
+
+    /// <summary>
+    /// Verifies that two <see cref="WeekPattern" /> instances with different selected days return
+    /// different hash codes.
+    /// </summary>
+    [TestMethod]
+    public void GetHashCode_WhenDifferentDays_ShouldReturnDifferentHash()
+    {
+        Assert.AreNotEqual(
+            new WeekPattern(DayOfWeek.Monday).GetHashCode(),
+            new WeekPattern(DayOfWeek.Tuesday).GetHashCode());
+    }
+    /// <summary>
+    /// Verifies that two <see cref="WeekPattern" /> instances with identical selected days return the
+    /// same hash code.
+    /// </summary>
+    [TestMethod]
+    public void GetHashCode_WhenSameDays_ShouldReturnSameHash()
+    {
+        var p1 = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
+        var p2 = new WeekPattern(DayOfWeek.Monday, DayOfWeek.Wednesday);
+        Assert.AreEqual(p1.GetHashCode(), p2.GetHashCode());
+    }
+
 }

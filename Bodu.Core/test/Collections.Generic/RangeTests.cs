@@ -1,10 +1,8 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="RangeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
-
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Bodu.Collections.Generic;
 
@@ -14,6 +12,7 @@ namespace Bodu.Collections.Generic;
 [TestClass]
 public partial class RangeTests
 {
+
     /// <summary>
     /// Verifies the happy-path smoke check: constructing a range exposes the supplied endpoints and reports
     /// a contained value through <see cref="Range{T}.Contains(T)" />.
@@ -27,4 +26,5 @@ public partial class RangeTests
         Assert.AreEqual(10, sut.EndExclusive);
         Assert.IsTrue(sut.Contains(5));
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ConcurrentCircularBufferTests.Enqueue.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Collections.Generic.Concurrent;
 
 public partial class ConcurrentCircularBufferTests
 {
+
     /// <summary>
     /// Verifies that after <see cref="ConcurrentCircularBuffer{T}.Clear" />, subsequent enqueues start from an empty state and populate the buffer in FIFO order.
     /// </summary>
@@ -344,4 +345,5 @@ public partial class ConcurrentCircularBufferTests
         Assert.IsFalse(ok, "TryEnqueue should return false when full and overwriting is disabled.");
         AssertBufferContainsExactlyValues(buffer, 1, 2);
     }
+
 }

@@ -8,6 +8,7 @@ namespace Bodu.Collections.Generic.Extensions;
 
 public sealed partial class IEnumerableExtensionsTests_Randomize
 {
+
     /// <summary>
     /// Verifies that <see cref="IEnumerableExtensions.Randomize{T}(IEnumerable{T}, RandomizationMode, IRandomGenerator?, int?)" /> with
     /// <see cref="RandomizationMode.BufferAll" /> handles a lazy iterator that does not implement <see cref="IReadOnlyCollection{T}" />,
@@ -28,4 +29,5 @@ public sealed partial class IEnumerableExtensionsTests_Randomize
         for (var i = 1; i <= count; i++)
             yield return i;
     }
+
 }

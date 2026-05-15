@@ -8,6 +8,37 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfIsoWeek(int, int)" /> returns the Monday that anchors the requested
+    /// ISO week.
+    /// </summary>
+    [TestMethod]
+    [DataRow(2024, 1, 2024, 1, 1)]   // ISO 2024-W01 begins Monday 2024-01-01
+    [DataRow(2024, 10, 2024, 3, 4)]
+    [DataRow(2020, 1, 2019, 12, 30)] // ISO 2020-W01 begins Monday 2019-12-30
+    public void GetFirstDateOfIsoWeek_ShouldReturnMondayThatAnchorsWeek(int isoYear, int isoWeek, int expY, int expM, int expD)
+    {
+        DateTime actual = DateTimeExtensions.GetFirstDateOfIsoWeek(isoYear, isoWeek);
+        Assert.AreEqual(new DateTime(expY, expM, expD), actual);
+        Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
+        Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfIsoWeek(int, int)" /> throws when the ISO week is outside the valid
+    /// range for the year.
+    /// </summary>
+    [TestMethod]
+    [DataRow(2024, 0)]
+    [DataRow(2024, 53)]
+    public void GetFirstDateOfIsoWeek_WhenIsoWeekIsOutOfRange_ShouldThrowExactly(int isoYear, int isoWeek)
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTimeExtensions.GetFirstDateOfIsoWeek(isoYear, isoWeek);
+        });
+    }
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetIsoWeeksInYear(int)" /> returns 53 for years whose first day is Thursday and 52
     /// for ordinary years.
@@ -35,22 +66,6 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfIsoWeek(int, int)" /> returns the Monday that anchors the requested
-    /// ISO week.
-    /// </summary>
-    [TestMethod]
-    [DataRow(2024, 1, 2024, 1, 1)]   // ISO 2024-W01 begins Monday 2024-01-01
-    [DataRow(2024, 10, 2024, 3, 4)]
-    [DataRow(2020, 1, 2019, 12, 30)] // ISO 2020-W01 begins Monday 2019-12-30
-    public void GetFirstDateOfIsoWeek_ShouldReturnMondayThatAnchorsWeek(int isoYear, int isoWeek, int expY, int expM, int expD)
-    {
-        DateTime actual = DateTimeExtensions.GetFirstDateOfIsoWeek(isoYear, isoWeek);
-        Assert.AreEqual(new DateTime(expY, expM, expD), actual);
-        Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
-        Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetLastDateOfIsoWeek(int, int)" /> returns the Sunday that ends the requested ISO week.
     /// </summary>
     [TestMethod]
@@ -62,21 +77,6 @@ public partial class DateTimeExtensionsTests
         Assert.AreEqual(new DateTime(expY, expM, expD), actual);
         Assert.AreEqual(DayOfWeek.Sunday, actual.DayOfWeek);
         Assert.AreEqual(DateTimeKind.Unspecified, actual.Kind);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.GetFirstDateOfIsoWeek(int, int)" /> throws when the ISO week is outside the valid
-    /// range for the year.
-    /// </summary>
-    [TestMethod]
-    [DataRow(2024, 0)]
-    [DataRow(2024, 53)]
-    public void GetFirstDateOfIsoWeek_WhenIsoWeekIsOutOfRange_ShouldThrowExactly(int isoYear, int isoWeek)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateTimeExtensions.GetFirstDateOfIsoWeek(isoYear, isoWeek);
-        });
     }
 
     /// <summary>
@@ -93,4 +93,5 @@ public partial class DateTimeExtensionsTests
             _ = DateTimeExtensions.GetLastDateOfIsoWeek(isoYear, isoWeek);
         });
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateOnlyExtensionsTests.FromUnixTimeSeconds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,9 +9,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Bodu.Extensions;
-using System.Globalization;
 
 namespace Bodu.Extensions;
 
@@ -19,16 +16,17 @@ public partial class DateOnlyExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when ValidInput, returns the expected value.
+    /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when AboveMaximum, throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeSecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
-    public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expectedDateTime)
+    public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
     {
-        var expected = DateOnly.FromDateTime(expectedDateTime);
-        var actual = DateOnlyExtensions.FromUnixTimeSeconds(input);
+        long aboveMax = 253402300800; // 1 second after DateTime.MaxValue
 
-        Assert.AreEqual(expected, actual);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = DateTimeExtensions.FromUnixTimeSeconds(aboveMax);
+        });
     }
 
     /// <summary>
@@ -46,16 +44,16 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when AboveMaximum, throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that <see cref="DateOnlyExtensions.FromUnixTimeSeconds" />, when ValidInput, returns the expected value.
     /// </summary>
     [TestMethod]
-    public void FromUnixTimeSeconds_WhenAboveMaximum_ShouldThrowExactly()
+    [DynamicData(nameof(DateTimeExtensionsTests.FromUnixTimeSecondsTestData), typeof(DateTimeExtensionsTests), DynamicDataSourceType.Property)]
+    public void FromUnixTimeSeconds_WhenValidInput_ShouldReturnExpected(long input, DateTime expectedDateTime)
     {
-        long aboveMax = 253402300800; // 1 second after DateTime.MaxValue
+        var expected = DateOnly.FromDateTime(expectedDateTime);
+        var actual = DateOnlyExtensions.FromUnixTimeSeconds(input);
 
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = DateTimeExtensions.FromUnixTimeSeconds(aboveMax);
-        });
+        Assert.AreEqual(expected, actual);
     }
+
 }

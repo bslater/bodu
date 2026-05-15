@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensionsTests.IsFirstDateOfQuarter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,17 @@ namespace Bodu.Extensions;
 
 public partial class DateTimeExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when DateIsNotStartOfQuarterDefinition, returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    [DynamicData(nameof(IsNotFirstDateOfQuarterTestData))]
+    public void IsFirstDateOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime inputDate, CalendarQuarterDefinition definition)
+    {
+        var actual = inputDate.IsFirstDateOfQuarter(definition);
+        Assert.IsFalse(actual);
+    }
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when DateIsQuarterStartAndDefaultDefinition, returns <see langword="true" />.
     /// </summary>
@@ -33,14 +44,17 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when DateIsNotStartOfQuarterDefinition, returns <see langword="false" />.
+    /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when DefinitionIsCustom, throws <see cref="InvalidOperationException" />.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(IsNotFirstDateOfQuarterTestData))]
-    public void IsFirstDateOfQuarter_WhenDateIsNotStartOfQuarterDefinition_ShouldReturnFalse(DateTime inputDate, CalendarQuarterDefinition definition)
+    public void IsFirstDateOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
     {
-        var actual = inputDate.IsFirstDateOfQuarter(definition);
-        Assert.IsFalse(actual);
+        var input = new DateTime(2024, 4, 20);
+
+        Assert.ThrowsExactly<InvalidOperationException>(() =>
+        {
+            _ = input.IsFirstDateOfQuarter(CalendarQuarterDefinition.Custom);
+        });
     }
 
     /// <summary>
@@ -59,20 +73,6 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when DefinitionIsCustom, throws <see cref="InvalidOperationException" />.
-    /// </summary>
-    [TestMethod]
-    public void IsFirstDateOfQuarter_WhenDefinitionIsCustom_ShouldThrowExactly()
-    {
-        var input = new DateTime(2024, 4, 20);
-
-        Assert.ThrowsExactly<InvalidOperationException>(() =>
-        {
-            _ = input.IsFirstDateOfQuarter(CalendarQuarterDefinition.Custom);
-        });
-    }
-
-    /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.IsFirstDateOfQuarter" />, when UsingValidQuarterProvider, returns the expected value.
     /// </summary>
     [TestMethod]
@@ -85,4 +85,5 @@ public partial class DateTimeExtensionsTests
 
         Assert.AreEqual(expected, actual);
     }
+
 }
