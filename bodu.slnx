@@ -30,6 +30,10 @@
     <Project Path="Bodu.Security.Cryptography\src\Bodu.Security.Cryptography.csproj" />
     <Project Path="Bodu.Security.Cryptography\test\Bodu.Security.Cryptography.Test.csproj" />
   </Folder>
+  <Folder Name="/Bodu.Text.Encoding/">
+    <Project Path="Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
+    <Project Path="Bodu.Text.Encoding\test\Bodu.Text.Encoding.Test.csproj" />
+  </Folder>
   <Project Path="Bodu.Test\src\Bodu.Test.csproj" />
   <Project Path="bc-csharp\crypto\src\BouncyCastle.Crypto.csproj" />
   <Project Path="ConsoleApp2\ConsoleApp2.csproj" />
