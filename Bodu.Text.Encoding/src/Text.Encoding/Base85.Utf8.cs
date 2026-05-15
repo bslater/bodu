@@ -114,7 +114,7 @@ public static partial class Base85
             scratch[i] = (char)source[i];
 
         OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out int _, out bytesWritten, variant, styles);
-        if (status == OperationStatus.Done || status == OperationStatus.DestinationTooSmall)
+        if (status == OperationStatus.Done)
             bytesConsumed = source.Length;
 
         return status;

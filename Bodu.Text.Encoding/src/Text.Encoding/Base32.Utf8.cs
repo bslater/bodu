@@ -225,6 +225,13 @@ public static partial class Base32
         int symbolsConsumed = 0;
         int paddingSeen = 0;
 
+        // Quantum-boundary checkpoint: every 8 Base32 symbols (40 bits = 5 bytes) align the accumulator back to 0.
+        // On DestinationTooSmall / NeedMoreData / InvalidData we roll back to the last such boundary so partial-quantum
+        // work is not claimed as consumed. Bytes already written into the destination past checkpointWritten are
+        // abandoned and the caller treats them as garbage based on the returned bytesWritten.
+        int checkpointConsumed = 0;
+        int checkpointWritten = 0;
+
         for (int i = 0; i < length; i++)
         {
             int rawValue = isUtf8 ? utf8Source[i] : charSource[i];
@@ -239,14 +246,26 @@ public static partial class Base32
             }
 
             if (paddingSeen > 0)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
 
             if ((uint)rawValue >= (uint)lookup.Length)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
 
             int symbolValue = lookup[rawValue];
             if (symbolValue < 0)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
 
             accumulator = (accumulator << 5) | symbolValue;
             bitsAccumulated += 5;
@@ -256,9 +275,19 @@ public static partial class Base32
             {
                 bitsAccumulated -= 8;
                 if (written >= destination.Length)
+                {
+                    consumed = checkpointConsumed;
+                    written = checkpointWritten;
                     return OperationStatus.DestinationTooSmall;
+                }
 
                 destination[written++] = (byte)((accumulator >> bitsAccumulated) & 0xFF);
+            }
+
+            if (bitsAccumulated == 0)
+            {
+                checkpointConsumed = i + 1;
+                checkpointWritten = written;
             }
         }
 
@@ -268,9 +297,14 @@ public static partial class Base32
         if (!isFinalBlock)
         {
             // Streaming: if we ended mid-group with leftover bits OR saw a partial padding sequence, defer to next
-            // call by indicating more data is needed.
+            // call by indicating more data is needed. Roll back the counters to the last quantum boundary so the
+            // caller can re-feed the partial group cleanly.
             if (bitsAccumulated > 0 || (paddingSeen > 0 && paddingSeen < 8))
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.NeedMoreData;
+            }
 
             return OperationStatus.Done;
         }
@@ -280,11 +314,19 @@ public static partial class Base32
         {
             int totalSymbols = symbolsConsumed + paddingSeen;
             if ((totalSymbols % 8) != 0)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
 
             int expectedPadding = (8 - (symbolsConsumed % 8)) % 8;
             if (paddingSeen != expectedPadding)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
         }
 
         // RFC 4648 §6 — terminal quantum data character count must be 2, 4, 5, 7, or 8. Crockford and Z-Base32 do
@@ -293,6 +335,8 @@ public static partial class Base32
         int dataMod = symbolsConsumed % 8;
         if (strictQuantum && dataMod is 1 or 3 or 6)
         {
+            consumed = checkpointConsumed;
+            written = checkpointWritten;
             return OperationStatus.InvalidData;
         }
 

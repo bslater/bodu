@@ -264,6 +264,12 @@ public static partial class Base64
         int symbolsConsumed = 0;
         int paddingSeen = 0;
 
+        // Quantum-boundary checkpoint: every 4 Base64 symbols (24 bits = 3 bytes) align the accumulator back to 0.
+        // On DestinationTooSmall / NeedMoreData / InvalidData we roll back to the last such boundary so partial-quantum
+        // work is not claimed as consumed.
+        int checkpointConsumed = 0;
+        int checkpointWritten = 0;
+
         for (int i = 0; i < length; i++)
         {
             int rawValue = isUtf8 ? utf8Source[i] : charSource[i];
@@ -278,14 +284,26 @@ public static partial class Base64
             }
 
             if (paddingSeen > 0)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
 
             if ((uint)rawValue >= (uint)lookup.Length)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
 
             int symbolValue = lookup[rawValue];
             if (symbolValue < 0)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
 
             accumulator = (accumulator << 6) | symbolValue;
             bitsAccumulated += 6;
@@ -295,9 +313,19 @@ public static partial class Base64
             {
                 bitsAccumulated -= 8;
                 if (written >= destination.Length)
+                {
+                    consumed = checkpointConsumed;
+                    written = checkpointWritten;
                     return OperationStatus.DestinationTooSmall;
+                }
 
                 destination[written++] = (byte)((accumulator >> bitsAccumulated) & 0xFF);
+            }
+
+            if (bitsAccumulated == 0)
+            {
+                checkpointConsumed = i + 1;
+                checkpointWritten = written;
             }
         }
 
@@ -306,7 +334,11 @@ public static partial class Base64
         if (!isFinalBlock)
         {
             if (bitsAccumulated > 0 || (paddingSeen > 0 && paddingSeen < 4))
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.NeedMoreData;
+            }
 
             return OperationStatus.Done;
         }
@@ -315,11 +347,19 @@ public static partial class Base64
         {
             int totalSymbols = symbolsConsumed + paddingSeen;
             if ((totalSymbols % 4) != 0)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
 
             int expectedPadding = (4 - (symbolsConsumed % 4)) % 4;
             if (paddingSeen != expectedPadding)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
                 return OperationStatus.InvalidData;
+            }
         }
 
         return OperationStatus.Done;

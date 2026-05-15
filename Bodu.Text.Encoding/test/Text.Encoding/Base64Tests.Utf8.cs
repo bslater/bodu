@@ -185,4 +185,43 @@ public sealed partial class Base64Tests
         Assert.AreEqual(OperationStatus.Done, status);
         CollectionAssert.AreEqual(original, destination);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.DecodeFromUtf8" /> rolls back <c>bytesConsumed</c> and <c>bytesWritten</c> to
+    /// the last completed 4-symbol / 3-byte quantum boundary when the destination cannot accommodate the next quantum.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportLastQuantumBoundary()
+    {
+        // "Zm9vYmFy" decodes to "foobar" (6 bytes). A 3-byte destination fits only the first quantum.
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYmFy");
+        byte[] destination = new byte[3];
+
+        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
+
+        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+        Assert.AreEqual(4, bytesConsumed);
+        Assert.AreEqual(3, bytesWritten);
+
+        byte[] expected = Ascii("foo");
+        CollectionAssert.AreEqual(expected, destination);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.DecodeFromUtf8" /> reports <see cref="OperationStatus.NeedMoreData" /> with
+    /// quantum-aligned counters when the streaming input ends mid-quartet.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenNeedMoreData_ShouldReportLastQuantumBoundary()
+    {
+        // "Zm9vYg" is one full quartet ("Zm9v" = "foo") + 2 partial chars.
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zm9vYg");
+        byte[] destination = new byte[6];
+
+        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten, isFinalBlock: false);
+
+        Assert.AreEqual(OperationStatus.NeedMoreData, status);
+        Assert.AreEqual(4, bytesConsumed);
+        Assert.AreEqual(3, bytesWritten);
+    }
 }
