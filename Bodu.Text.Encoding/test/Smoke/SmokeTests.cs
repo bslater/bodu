@@ -49,4 +49,22 @@ public sealed class SmokeTests
         Assert.AreEqual("MZXW6YTBOI======", encoded);
         CollectionAssert.AreEqual(original, decoded);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.Encode(byte[], Base64Variant, BaseFormattingOptions)" /> followed by
+    /// <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> reproduces the RFC 4648 §10 reference
+    /// vector for the input <c>"foobar"</c>.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void Base64_EncodeDecode_ShouldMatchRfc4648ReferenceVector()
+    {
+        byte[] original = System.Text.Encoding.ASCII.GetBytes("foobar");
+
+        string encoded = Base64.Encode(original);
+        byte[] decoded = Base64.Decode(encoded);
+
+        Assert.AreEqual("Zm9vYmFy", encoded);
+        CollectionAssert.AreEqual(original, decoded);
+    }
 }
