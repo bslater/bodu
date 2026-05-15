@@ -20,10 +20,10 @@ _disableBreadcrumb: true
 
 <div class="bodu-hero">
   <h1>Bodu</h1>
-  <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, calendar computation, and binary-to-text encoding.</p>
+  <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, calendar computation, binary-to-text encoding, and self-framing binary formats.</p>
 </div>
 
-Five independent NuGet packages that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
+Six independent NuGet packages that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
 
 ## Libraries
 
@@ -82,6 +82,16 @@ Five independent NuGet packages that share a single solution, a single set of co
   </div>
 </div>
 
+<div class="bodu-card">
+  <img src="images/hero-formats.svg" alt="Bodu.Text.Formats" />
+  <h3>Bodu.Text.Formats</h3>
+  <p>Self-framing binary serialization formats with a strongly-typed value model and a span- and stream-friendly codec. The first format the package ships is <strong>Bencode</strong> (the BitTorrent serialization grammar from BEP 3) — <code>Bencode.Encode</code> / <code>Decode</code> / <code>TryEncode</code> / <code>TryDecode</code> / <code>GetEncodedLength</code> over <code>ReadOnlySpan&lt;byte&gt;</code>, <code>byte[]</code>, and <code>Stream</code>, an immutable <code>BencodedValue</code> tree (<code>Integer</code>, <code>String</code>, <code>List</code>, <code>Dictionary</code>), and full BEP 3 canonicality enforcement on both sides of the pipeline.</p>
+  <div class="bodu-card-links">
+    <a href="docs/formats/index.md">Introduction</a>
+    <a href="guides/formats/index.md">Guides</a>
+  </div>
+</div>
+
 </div>
 
 ## Install
@@ -94,6 +104,7 @@ dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Text.Encoding
+dotnet add package Bodu.Text.Formats
 
 # Optional region-specific calendar data packs:
 dotnet add package Bodu.Globalization.Calendar.Data.Americas

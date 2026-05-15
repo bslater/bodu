@@ -39,3 +39,11 @@
       href: text-encoding/concepts.md
     - name: Getting started
       href: text-encoding/getting-started.md
+- name: Bodu.Text.Formats
+  items:
+    - name: Introduction
+      href: formats/index.md
+    - name: Core concepts
+      href: formats/concepts.md
+    - name: Getting started
+      href: formats/getting-started.md
