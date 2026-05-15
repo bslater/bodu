@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.DotEnv;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Unit tests for <see cref="DotEnvEntry" />.

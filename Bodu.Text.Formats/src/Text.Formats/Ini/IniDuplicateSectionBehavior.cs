@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.Ini;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Defines how the INI parser resolves a section name that appears more than once in the source.

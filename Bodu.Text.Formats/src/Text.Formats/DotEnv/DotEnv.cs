@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace Bodu.Text.Formats.DotEnv;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Provides methods for parsing and formatting DotEnv-format configuration text.

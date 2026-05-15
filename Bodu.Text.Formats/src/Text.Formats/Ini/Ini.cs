@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace Bodu.Text.Formats.Ini;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Provides methods for parsing and formatting INI-format configuration text.

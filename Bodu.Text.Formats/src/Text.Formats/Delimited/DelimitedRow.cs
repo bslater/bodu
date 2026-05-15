@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-namespace Bodu.Text.Formats.Delimited;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Represents a single data record in a <see cref="DelimitedDocument" />, exposing its fields by index and —

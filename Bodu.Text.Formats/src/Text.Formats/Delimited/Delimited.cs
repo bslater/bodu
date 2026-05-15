@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace Bodu.Text.Formats.Delimited;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Provides methods for parsing and formatting delimited-text documents (CSV, TSV, and similar formats).

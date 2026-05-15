@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.Delimited;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Represents a parsed delimited-text document, providing access to the optional header row and the ordered data

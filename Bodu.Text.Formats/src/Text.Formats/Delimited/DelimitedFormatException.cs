@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.Delimited;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// The exception that is thrown when a delimited-text source contains a structural error that prevents it from

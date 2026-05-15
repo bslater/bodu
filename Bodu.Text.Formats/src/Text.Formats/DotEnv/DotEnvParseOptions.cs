@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.DotEnv;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Controls dialect-specific parsing behaviour for <see cref="DotEnv.Parse(ReadOnlySpan{char})" /> and related

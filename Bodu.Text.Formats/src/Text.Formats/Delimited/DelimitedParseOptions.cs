@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.Delimited;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Controls dialect-specific parsing and formatting behaviour for <see cref="Delimited.Parse(ReadOnlySpan{char})" />

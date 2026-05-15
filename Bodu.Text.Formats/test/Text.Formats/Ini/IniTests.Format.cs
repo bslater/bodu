@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.Ini;
+namespace Bodu.Text.Formats;
 
 public sealed partial class IniTests
 {

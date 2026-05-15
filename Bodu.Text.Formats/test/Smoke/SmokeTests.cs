@@ -5,10 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Test;
-using Bodu.Text.Formats.Ini;
-using DelimitedParser = Bodu.Text.Formats.Delimited.Delimited;
-using DotEnvParser = Bodu.Text.Formats.DotEnv.DotEnv;
-using IniParser = Bodu.Text.Formats.Ini.Ini;
 
 namespace Bodu.Text.Formats;
 
@@ -126,9 +122,9 @@ public sealed class SmokeTests
     {
         const string source = "name,age,city\nAlice,30,Paris\nBob,25,London";
 
-        Bodu.Text.Formats.Delimited.DelimitedDocument original = DelimitedParser.Parse(source);
-        string formatted = DelimitedParser.Format(original);
-        Bodu.Text.Formats.Delimited.DelimitedDocument roundTripped = DelimitedParser.Parse(formatted);
+        DelimitedDocument original = Delimited.Parse(source);
+        string formatted = Delimited.Format(original);
+        DelimitedDocument roundTripped = Delimited.Parse(formatted);
 
         Assert.AreEqual(2, roundTripped.Rows.Count);
         Assert.AreEqual("Alice", roundTripped.Rows[0]["name"]);
@@ -147,9 +143,9 @@ public sealed class SmokeTests
     {
         const string source = "HOST=localhost\nPORT=8080\nDEBUG=True";
 
-        Bodu.Text.Formats.DotEnv.DotEnvDocument original = DotEnvParser.Parse(source);
-        string formatted = DotEnvParser.Format(original);
-        Bodu.Text.Formats.DotEnv.DotEnvDocument roundTripped = DotEnvParser.Parse(formatted);
+        DotEnvDocument original = DotEnv.Parse(source);
+        string formatted = DotEnv.Format(original);
+        DotEnvDocument roundTripped = DotEnv.Parse(formatted);
 
         Assert.AreEqual("localhost", roundTripped["HOST"]);
         Assert.AreEqual("8080", roundTripped["PORT"]);
@@ -166,9 +162,9 @@ public sealed class SmokeTests
     {
         const string source = "global=g\n[server]\nhost=localhost\nport=8080";
 
-        IniDocument original = IniParser.Parse(source);
-        string formatted = IniParser.Format(original);
-        IniDocument roundTripped = IniParser.Parse(formatted);
+        IniDocument original = Ini.Parse(source);
+        string formatted = Ini.Format(original);
+        IniDocument roundTripped = Ini.Parse(formatted);
 
         Assert.AreEqual("g", roundTripped.GlobalSection["global"]);
         IniSection? server = roundTripped.GetSection("server");

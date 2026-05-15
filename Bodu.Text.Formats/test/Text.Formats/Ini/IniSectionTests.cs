@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.Ini;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Behavioural tests for <see cref="IniSection" />.

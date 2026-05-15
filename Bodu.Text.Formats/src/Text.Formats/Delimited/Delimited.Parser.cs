@@ -6,7 +6,7 @@
 
 using System.Text;
 
-namespace Bodu.Text.Formats.Delimited;
+namespace Bodu.Text.Formats;
 
 public static partial class Delimited
 {

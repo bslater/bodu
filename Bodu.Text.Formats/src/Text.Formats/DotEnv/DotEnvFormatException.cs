@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.DotEnv;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// The exception that is thrown when a DotEnv source document contains a structural error that prevents it from

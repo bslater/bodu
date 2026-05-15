@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
-namespace Bodu.Text.Formats.DotEnv;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Represents a parsed DotEnv document, providing ordered access to entries and O(1) key lookup.

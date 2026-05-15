@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Text;
 
-namespace Bodu.Text.Formats.Ini;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Represents a single <c>[section]</c> block in an INI document, exposing its ordered entries and providing

@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-namespace Bodu.Text.Formats.DotEnv;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Represents a single key/value assignment within a DotEnv document.

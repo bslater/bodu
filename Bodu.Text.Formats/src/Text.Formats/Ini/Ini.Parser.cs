@@ -4,7 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-namespace Bodu.Text.Formats.Ini;
+namespace Bodu.Text.Formats;
 
 public static partial class Ini
 {

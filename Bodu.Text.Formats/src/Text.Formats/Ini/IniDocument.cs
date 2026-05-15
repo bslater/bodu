@@ -6,7 +6,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-namespace Bodu.Text.Formats.Ini;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Represents a parsed INI document, providing access to the global section and all named sections.

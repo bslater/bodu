@@ -7,7 +7,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
-namespace Bodu.Text.Formats.Ini;
+namespace Bodu.Text.Formats;
 
 /// <summary>
 /// Represents a single key/value entry within an INI section.
