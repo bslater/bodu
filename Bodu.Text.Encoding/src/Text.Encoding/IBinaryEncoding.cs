@@ -94,5 +94,4 @@ public interface IBinaryEncoding
     /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
     /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
     bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten);
-
 }

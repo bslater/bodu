@@ -173,5 +173,4 @@ public static class BinaryEncodingExtensions
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The Ascii85 string.</returns>
     public static string ToBase85String(this ReadOnlySpan<byte> bytes) => Base85.ToBase85String(bytes);
-
 }

@@ -25,7 +25,6 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public static partial class Base32
 {
-
     private const string CrockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
     private const string HexExtendedAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
@@ -62,10 +61,9 @@ public static partial class Base32
     /// </exception>
     public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
-            throw new FormatException("Input contains characters outside the Base32 variant alphabet.");
-
-        return (symbolCount * 5) / 8;
+        return !TryCountSymbols(source, variant, styles, out var symbolCount)
+            ? throw new FormatException("Input contains characters outside the Base32 variant alphabet.")
+            : (symbolCount * 5) / 8;
     }
 
     /// <summary>
@@ -115,17 +113,17 @@ public static partial class Base32
         if (byteCount == 0)
             return 0;
 
-        bool padding = ShouldEmitPadding(variant, options);
+        var padding = ShouldEmitPadding(variant, options);
         checked
         {
-            int charsBeforeLineBreaks = padding
+            var charsBeforeLineBreaks = padding
                 ? ((byteCount + 4) / 5) * 8
                 : ((byteCount * 8) + 4) / 5;
 
             if (!options.HasFlag(BaseFormattingOptions.InsertLineBreaks) || charsBeforeLineBreaks <= LineBreakInterval)
                 return charsBeforeLineBreaks;
 
-            int breaks = (charsBeforeLineBreaks - 1) / LineBreakInterval;
+            var breaks = (charsBeforeLineBreaks - 1) / LineBreakInterval;
             return charsBeforeLineBreaks + (breaks * 2);
         }
     }
@@ -157,7 +155,7 @@ public static partial class Base32
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsBase32Digit(char value, Base32Variant variant = Base32Variant.Standard)
     {
-        (_, sbyte[] lookup) = GetVariantConfig(variant);
+        (_, var lookup) = GetVariantConfig(variant);
         return value < lookup.Length && lookup[value] >= 0;
     }
 
@@ -184,7 +182,7 @@ public static partial class Base32
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
+        if (!TryCountSymbols(source, variant, styles, out var symbolCount))
         {
             byteCount = 0;
             return false;
@@ -201,10 +199,10 @@ public static partial class Base32
     /// <returns>The Crockford lookup table.</returns>
     private static sbyte[] BuildCrockfordLookup()
     {
-        sbyte[] table = BuildLookup(CrockfordAlphabet);
+        var table = BuildLookup(CrockfordAlphabet);
 
-        sbyte one = (sbyte)CrockfordAlphabet.IndexOf('1');
-        sbyte zero = (sbyte)CrockfordAlphabet.IndexOf('0');
+        var one = (sbyte)CrockfordAlphabet.IndexOf('1');
+        var zero = (sbyte)CrockfordAlphabet.IndexOf('0');
 
         table['I'] = one;
         table['i'] = one;
@@ -224,18 +222,18 @@ public static partial class Base32
     /// <returns>A lookup table where valid characters map to their symbol value and others map to <c>-1</c>.</returns>
     private static sbyte[] BuildLookup(string alphabet)
     {
-        sbyte[] table = new sbyte[128];
+        var table = new sbyte[128];
         Array.Fill(table, (sbyte)-1);
 
-        for (int i = 0; i < alphabet.Length; i++)
+        for (var i = 0; i < alphabet.Length; i++)
         {
-            char c = alphabet[i];
+            var c = alphabet[i];
             table[c] = (sbyte)i;
 
             if (char.IsLetter(c))
             {
-                char lower = char.ToLowerInvariant(c);
-                char upper = char.ToUpperInvariant(c);
+                var lower = char.ToLowerInvariant(c);
+                var upper = char.ToUpperInvariant(c);
                 table[lower] = (sbyte)i;
                 table[upper] = (sbyte)i;
             }
@@ -268,20 +266,15 @@ public static partial class Base32
     /// <param name="variant">The variant in use.</param>
     /// <param name="options">The encoder options.</param>
     /// <returns><see langword="true" /> when padding should be appended; otherwise <see langword="false" />.</returns>
-    private static bool ShouldEmitPadding(Base32Variant variant, BaseFormattingOptions options)
-    {
-        if (options.HasFlag(BaseFormattingOptions.OmitPadding))
-            return false;
-
-        return variant switch
-        {
-            Base32Variant.Standard => true,
-            Base32Variant.HexExtended => true,
-            Base32Variant.Crockford => false,
-            Base32Variant.ZBase32 => false,
-            _ => false,
-        };
-    }
+    private static bool ShouldEmitPadding(Base32Variant variant, BaseFormattingOptions options) =>
+     !options.HasFlag(BaseFormattingOptions.OmitPadding) && variant switch
+     {
+         Base32Variant.Standard => true,
+         Base32Variant.HexExtended => true,
+         Base32Variant.Crockford => false,
+         Base32Variant.ZBase32 => false,
+         _ => false,
+     };
 
     /// <summary>
     /// Walks <paramref name="source" />, validating each non-decoration character against the variant alphabet, and
@@ -294,13 +287,13 @@ public static partial class Base32
     /// <returns><see langword="true" /> when every character is valid; otherwise <see langword="false" />.</returns>
     private static bool TryCountSymbols(ReadOnlySpan<char> source, Base32Variant variant, BaseFormatStyles styles, out int symbolCount)
     {
-        (_, sbyte[] lookup) = GetVariantConfig(variant);
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        (_, var lookup) = GetVariantConfig(variant);
+        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
         symbolCount = 0;
-        int paddingSeen = 0;
+        var paddingSeen = 0;
 
-        foreach (char c in source)
+        foreach (var c in source)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -329,8 +322,8 @@ public static partial class Base32
         // Terminal-quantum data character count must be one of {0, 2, 4, 5, 7, 8} per RFC 4648 §6. Crockford and
         // Z-Base32 do not impose a fixed terminal-quantum rule (the spec defines five bits per character with no
         // alignment restriction) so the check is gated by variant.
-        bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
-        int dataMod = symbolCount % 8;
+        var strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        var dataMod = symbolCount % 8;
         if (strictQuantum && dataMod is 1 or 3 or 6)
         {
             symbolCount = 0;
@@ -343,12 +336,12 @@ public static partial class Base32
         // padding ("MZXW6Y========" or "M=") is always rejected.
         if (variant is Base32Variant.Standard or Base32Variant.HexExtended)
         {
-            int expectedPadding = (8 - dataMod) % 8;
-            bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding);
+            var expectedPadding = (8 - dataMod) % 8;
+            var padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding);
 
             if (padIsRequired)
             {
-                int totalSymbols = symbolCount + paddingSeen;
+                var totalSymbols = symbolCount + paddingSeen;
                 if ((totalSymbols % 8) != 0)
                 {
                     symbolCount = 0;
@@ -377,5 +370,4 @@ public static partial class Base32
 
         return true;
     }
-
 }

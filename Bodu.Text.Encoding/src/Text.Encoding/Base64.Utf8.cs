@@ -44,7 +44,7 @@ public static partial class Base64
         if (source.IsEmpty)
             return OperationStatus.Done;
 
-        sbyte[] lookup = GetLookup(variant);
+        var lookup = GetLookup(variant);
         return DecodeBitStream<Utf8Source>(default, source, destination, lookup, styles, isFinalBlock, variant, ref bytesConsumed, ref bytesWritten);
     }
 
@@ -69,13 +69,13 @@ public static partial class Base64
         if (source.IsEmpty)
             return Array.Empty<byte>();
 
-        int required = GetEncodedLength(source.Length, variant, options);
-        byte[] result = new byte[required];
-        int written = EncodeIntoUtf8Span(source, result, variant, options);
+        var required = GetEncodedLength(source.Length, variant, options);
+        var result = new byte[required];
+        var written = EncodeIntoUtf8Span(source, result, variant, options);
         if (written == result.Length)
             return result;
 
-        byte[] trimmed = new byte[written];
+        var trimmed = new byte[written];
         Buffer.BlockCopy(result, 0, trimmed, 0, written);
         return trimmed;
     }
@@ -96,7 +96,7 @@ public static partial class Base64
         EnsureValidVariant(variant);
         EnsureUtf8EncodeOptionsSupported(options);
 
-        int required = GetEncodedLength(source.Length, variant, options);
+        var required = GetEncodedLength(source.Length, variant, options);
         if (destination.Length < required)
         {
             bytesWritten = 0;
@@ -121,12 +121,12 @@ public static partial class Base64
     /// <returns>A 128-entry lookup table.</returns>
     private static sbyte[] BuildLookup(string alphabet)
     {
-        sbyte[] table = new sbyte[128];
+        var table = new sbyte[128];
         Array.Fill(table, (sbyte)-1);
 
-        for (int i = 0; i < alphabet.Length; i++)
+        for (var i = 0; i < alphabet.Length; i++)
         {
-            char c = alphabet[i];
+            var c = alphabet[i];
             table[c] = (sbyte)i;
         }
 
@@ -159,23 +159,23 @@ public static partial class Base64
         ref int written)
         where TSource : struct
     {
-        bool isUtf8 = typeof(TSource) == typeof(Utf8Source);
-        int length = isUtf8 ? utf8Source.Length : charSource.Length;
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;
-        bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding) && variant != Base64Variant.UrlSafe;
+        var isUtf8 = typeof(TSource) == typeof(Utf8Source);
+        var length = isUtf8 ? utf8Source.Length : charSource.Length;
+        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;
+        var padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding) && variant != Base64Variant.UrlSafe;
 
-        int accumulator = 0;
-        int bitsAccumulated = 0;
-        int symbolsConsumed = 0;
-        int paddingSeen = 0;
+        var accumulator = 0;
+        var bitsAccumulated = 0;
+        var symbolsConsumed = 0;
+        var paddingSeen = 0;
 
         // Quantum-boundary checkpoint: every 4 Base64 symbols (24 bits = 3 bytes) align the accumulator back to 0.
         // On DestinationTooSmall / NeedMoreData / InvalidData we roll back to the last such boundary so partial-quantum
         // work is not claimed as consumed.
-        int checkpointConsumed = 0;
-        int checkpointWritten = 0;
+        var checkpointConsumed = 0;
+        var checkpointWritten = 0;
 
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
         {
             int rawValue = isUtf8 ? utf8Source[i] : charSource[i];
 
@@ -250,7 +250,7 @@ public static partial class Base64
 
         if (padIsRequired)
         {
-            int totalSymbols = symbolsConsumed + paddingSeen;
+            var totalSymbols = symbolsConsumed + paddingSeen;
             if ((totalSymbols % 4) != 0)
             {
                 consumed = checkpointConsumed;
@@ -258,7 +258,7 @@ public static partial class Base64
                 return OperationStatus.InvalidData;
             }
 
-            int expectedPadding = (4 - (symbolsConsumed % 4)) % 4;
+            var expectedPadding = (4 - (symbolsConsumed % 4)) % 4;
             if (paddingSeen != expectedPadding)
             {
                 consumed = checkpointConsumed;
@@ -271,7 +271,7 @@ public static partial class Base64
         // decoder accepts multiple distinct inputs that round-trip to the same byte sequence (RFC 4648 §3.5).
         if (styles.HasFlag(BaseFormatStyles.RequireCanonicalEncoding) && bitsAccumulated > 0)
         {
-            int leftoverMask = (1 << bitsAccumulated) - 1;
+            var leftoverMask = (1 << bitsAccumulated) - 1;
             if ((accumulator & leftoverMask) != 0)
             {
                 consumed = checkpointConsumed;
@@ -303,7 +303,7 @@ public static partial class Base64
         if (source.IsEmpty)
             return OperationStatus.Done;
 
-        sbyte[] lookup = GetLookup(variant);
+        var lookup = GetLookup(variant);
         return DecodeBitStream<CharSource>(source, default, destination, lookup, styles, isFinalBlock, variant, ref charsConsumed, ref bytesWritten);
     }
 
@@ -317,15 +317,15 @@ public static partial class Base64
     /// <returns>The number of UTF-8 bytes written.</returns>
     private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base64Variant variant, BaseFormattingOptions options)
     {
-        string alphabet = variant == Base64Variant.UrlSafe ? UrlSafeAlphabet : StandardAlphabet;
-        bool emitPadding = ShouldEmitPadding(variant, options);
+        var alphabet = variant == Base64Variant.UrlSafe ? UrlSafeAlphabet : StandardAlphabet;
+        var emitPadding = ShouldEmitPadding(variant, options);
 
-        int position = 0;
-        int dataChars = 0;
-        int accumulator = 0;
-        int bitsAccumulated = 0;
+        var position = 0;
+        var dataChars = 0;
+        var accumulator = 0;
+        var bitsAccumulated = 0;
 
-        foreach (byte b in source)
+        foreach (var b in source)
         {
             accumulator = (accumulator << 8) | b;
             bitsAccumulated += 8;
@@ -333,7 +333,7 @@ public static partial class Base64
             while (bitsAccumulated >= 6)
             {
                 bitsAccumulated -= 6;
-                int symbolIndex = (accumulator >> bitsAccumulated) & 0x3F;
+                var symbolIndex = (accumulator >> bitsAccumulated) & 0x3F;
                 destination[position++] = (byte)alphabet[symbolIndex];
                 dataChars++;
             }
@@ -341,15 +341,15 @@ public static partial class Base64
 
         if (bitsAccumulated > 0)
         {
-            int symbolIndex = (accumulator << (6 - bitsAccumulated)) & 0x3F;
+            var symbolIndex = (accumulator << (6 - bitsAccumulated)) & 0x3F;
             destination[position++] = (byte)alphabet[symbolIndex];
             dataChars++;
         }
 
         if (emitPadding)
         {
-            int paddingChars = (4 - (dataChars % 4)) % 4;
-            for (int i = 0; i < paddingChars; i++)
+            var paddingChars = (4 - (dataChars % 4)) % 4;
+            for (var i = 0; i < paddingChars; i++)
                 destination[position++] = (byte)PaddingChar;
         }
 
@@ -384,5 +384,4 @@ public static partial class Base64
 
     /// <summary>Marker struct used to select the UTF-8-source code path.</summary>
     private readonly struct Utf8Source { }
-
 }

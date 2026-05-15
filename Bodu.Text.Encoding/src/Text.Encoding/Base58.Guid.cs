@@ -20,10 +20,9 @@ public static partial class Base58
     public static Guid DecodeGuid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out int written, variant, styles) || written != 16)
-            throw new FormatException("Input does not decode to a 16-byte GUID.");
-
-        return new Guid(bytes);
+        return !TryDecode(source, bytes, out var written, variant, styles) || written != 16
+            ? throw new FormatException("Input does not decode to a 16-byte GUID.")
+            : new Guid(bytes);
     }
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a Base58 string. Typical output is 22
@@ -51,7 +50,7 @@ public static partial class Base58
     public static bool TryDecodeGuid(ReadOnlySpan<char> source, out Guid value, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out int written, variant, styles) || written != 16)
+        if (!TryDecode(source, bytes, out var written, variant, styles) || written != 16)
         {
             value = Guid.Empty;
             return false;
@@ -60,5 +59,4 @@ public static partial class Base58
         value = new Guid(bytes);
         return true;
     }
-
 }

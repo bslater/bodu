@@ -52,9 +52,9 @@ public static class Base64Url
         if (utf8Source.IsEmpty)
             return Array.Empty<byte>();
 
-        byte[] destination = new byte[Base64.GetMaxDecodedLength(utf8Source.Length)];
+        var destination = new byte[Base64.GetMaxDecodedLength(utf8Source.Length)];
         OperationStatus status = Base64.DecodeFromUtf8(
-            utf8Source, destination, out _, out int bytesWritten,
+            utf8Source, destination, out _, out var bytesWritten,
             Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding, isFinalBlock: true);
 
         if (status != OperationStatus.Done)
@@ -63,7 +63,7 @@ public static class Base64Url
         if (bytesWritten == destination.Length)
             return destination;
 
-        byte[] trimmed = new byte[bytesWritten];
+        var trimmed = new byte[bytesWritten];
         Buffer.BlockCopy(destination, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }
@@ -148,5 +148,4 @@ public static class Base64Url
     /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
     public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten) =>
         Base64.TryEncodeToUtf8(source, destination, out bytesWritten, Base64Variant.UrlSafe);
-
 }

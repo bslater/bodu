@@ -20,10 +20,9 @@ public static partial class Base64
     public static Guid DecodeGuid(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out int written, variant, styles) || written != 16)
-            throw new FormatException("Input does not decode to a 16-byte GUID.");
-
-        return new Guid(bytes);
+        return !TryDecode(source, bytes, out var written, variant, styles) || written != 16
+            ? throw new FormatException("Input does not decode to a 16-byte GUID.")
+            : new Guid(bytes);
     }
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a Base64 string. With RFC 4648 padding the
@@ -52,7 +51,7 @@ public static partial class Base64
     public static bool TryDecodeGuid(ReadOnlySpan<char> source, out Guid value, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out int written, variant, styles) || written != 16)
+        if (!TryDecode(source, bytes, out var written, variant, styles) || written != 16)
         {
             value = Guid.Empty;
             return false;
@@ -61,5 +60,4 @@ public static partial class Base64
         value = new Guid(bytes);
         return true;
     }
-
 }

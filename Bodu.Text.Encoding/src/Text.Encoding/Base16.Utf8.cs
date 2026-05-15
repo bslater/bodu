@@ -48,9 +48,9 @@ public static partial class Base16
             ? stackalloc int[source.Length]
             : new int[source.Length];
 
-        int kept = 0;
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        int start = 0;
+        var kept = 0;
+        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        var start = 0;
 
         if (styles.HasFlag(BaseFormatStyles.AllowPrefix) &&
             source.Length >= 2 &&
@@ -60,9 +60,9 @@ public static partial class Base16
             start = 2;
         }
 
-        for (int i = start; i < source.Length; i++)
+        for (var i = start; i < source.Length; i++)
         {
-            byte b = source[i];
+            var b = source[i];
             if (ignoreWhitespace && b is ((byte)' ') or ((byte)'\t') or ((byte)'\r') or ((byte)'\n'))
                 continue;
 
@@ -70,7 +70,7 @@ public static partial class Base16
             scratch[kept++] = (char)b;
         }
 
-        OperationStatus status = DecodeStrictWithStatus(scratch.Slice(0, kept), destination, out int charsConsumed, out bytesWritten, isFinalBlock);
+        OperationStatus status = DecodeStrictWithStatus(scratch.Slice(0, kept), destination, out var charsConsumed, out bytesWritten, isFinalBlock);
 
         bytesConsumed = status switch
         {
@@ -95,7 +95,7 @@ public static partial class Base16
         if (source.IsEmpty)
             return Array.Empty<byte>();
 
-        byte[] result = new byte[source.Length * 2];
+        var result = new byte[source.Length * 2];
         EncodeToUtf8Core(source, result, upperCase: false);
         return result;
     }
@@ -118,7 +118,7 @@ public static partial class Base16
     {
         EnsureSpanOutputOptionsSupported(options);
 
-        int required = source.Length * 2;
+        var required = source.Length * 2;
         if (destination.Length < required)
         {
             bytesWritten = 0;
@@ -145,11 +145,11 @@ public static partial class Base16
     /// <returns><see langword="true" /> when every UTF-8 byte is a valid hex digit; otherwise <see langword="false" />.</returns>
     private static bool DecodeHexPairsFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination)
     {
-        int bi = 0;
-        for (int i = 0; i < source.Length; i += 2)
+        var bi = 0;
+        for (var i = 0; i < source.Length; i += 2)
         {
-            int hi = NibbleFromByte(source[i]);
-            int lo = NibbleFromByte(source[i + 1]);
+            var hi = NibbleFromByte(source[i]);
+            var lo = NibbleFromByte(source[i + 1]);
             if ((hi | lo) < 0)
                 return false;
 
@@ -174,11 +174,11 @@ public static partial class Base16
         charsConsumed = 0;
         bytesWritten = 0;
 
-        int sourcePos = 0;
+        var sourcePos = 0;
         while (sourcePos + 1 < source.Length)
         {
-            int hi = NibbleFromChar(source[sourcePos]);
-            int lo = NibbleFromChar(source[sourcePos + 1]);
+            var hi = NibbleFromChar(source[sourcePos]);
+            var lo = NibbleFromChar(source[sourcePos + 1]);
             if ((hi | lo) < 0)
                 return OperationStatus.InvalidData;
 
@@ -194,10 +194,7 @@ public static partial class Base16
             return OperationStatus.Done;
 
         // One trailing character.
-        if (isFinalBlock)
-            return OperationStatus.InvalidData;
-
-        return OperationStatus.NeedMoreData;
+        return isFinalBlock ? OperationStatus.InvalidData : OperationStatus.NeedMoreData;
     }
 
     /// <summary>
@@ -214,11 +211,11 @@ public static partial class Base16
         bytesConsumed = 0;
         bytesWritten = 0;
 
-        int sourcePos = 0;
+        var sourcePos = 0;
         while (sourcePos + 1 < source.Length)
         {
-            int hi = NibbleFromByte(source[sourcePos]);
-            int lo = NibbleFromByte(source[sourcePos + 1]);
+            var hi = NibbleFromByte(source[sourcePos]);
+            var lo = NibbleFromByte(source[sourcePos + 1]);
             if ((hi | lo) < 0)
                 return OperationStatus.InvalidData;
 
@@ -233,10 +230,7 @@ public static partial class Base16
         if (sourcePos == source.Length)
             return OperationStatus.Done;
 
-        if (isFinalBlock)
-            return OperationStatus.InvalidData;
-
-        return OperationStatus.NeedMoreData;
+        return isFinalBlock ? OperationStatus.InvalidData : OperationStatus.NeedMoreData;
     }
 
     /// <summary>
@@ -248,10 +242,10 @@ public static partial class Base16
     /// <param name="upperCase">Whether to emit upper case digits.</param>
     private static void EncodeToUtf8Core(ReadOnlySpan<byte> source, Span<byte> destination, bool upperCase)
     {
-        string alphabet = upperCase ? HexUpperAlphabet : HexLowerAlphabet;
-        for (int i = 0; i < source.Length; i++)
+        var alphabet = upperCase ? HexUpperAlphabet : HexLowerAlphabet;
+        for (var i = 0; i < source.Length; i++)
         {
-            byte b = source[i];
+            var b = source[i];
             destination[i * 2] = (byte)alphabet[b >> 4];
             destination[(i * 2) + 1] = (byte)alphabet[b & 0x0F];
         }
@@ -282,5 +276,4 @@ public static partial class Base16
         >= 'a' and <= 'f' => c - 'a' + 10,
         _ => -1,
     };
-
 }

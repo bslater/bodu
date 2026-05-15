@@ -48,15 +48,15 @@ public static partial class Base64
         if (utf8Source.IsEmpty)
             return Array.Empty<byte>();
 
-        byte[] destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
-        OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out int bytesWritten, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace, isFinalBlock: true);
+        var destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
+        OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out var bytesWritten, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace, isFinalBlock: true);
         if (status != OperationStatus.Done)
             throw new FormatException("Input is not valid Standard Base64.");
 
         if (bytesWritten == destination.Length)
             return destination;
 
-        byte[] trimmed = new byte[bytesWritten];
+        var trimmed = new byte[bytesWritten];
         Buffer.BlockCopy(destination, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }
@@ -139,5 +139,4 @@ public static partial class Base64
     /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
     public static bool TryToBase64String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
         TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base64Variant.Standard, BaseFormattingOptions.None);
-
 }

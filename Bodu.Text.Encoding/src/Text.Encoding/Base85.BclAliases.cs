@@ -41,15 +41,15 @@ public static partial class Base85
         if (utf8Source.IsEmpty)
             return Array.Empty<byte>();
 
-        byte[] destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
-        OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out int bytesWritten);
+        var destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
+        OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out var bytesWritten);
         if (status != OperationStatus.Done)
             throw new FormatException("Input is not valid Ascii85.");
 
         if (bytesWritten == destination.Length)
             return destination;
 
-        byte[] trimmed = new byte[bytesWritten];
+        var trimmed = new byte[bytesWritten];
         Buffer.BlockCopy(destination, 0, trimmed, 0, bytesWritten);
         return trimmed;
     }
@@ -129,5 +129,4 @@ public static partial class Base85
     /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
     public static bool TryToBase85String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
         TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base85Variant.Ascii85);
-
 }

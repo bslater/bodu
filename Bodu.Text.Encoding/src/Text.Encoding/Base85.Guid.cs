@@ -20,10 +20,9 @@ public static partial class Base85
     public static Guid DecodeGuid(ReadOnlySpan<char> source, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out int written, variant, styles) || written != 16)
-            throw new FormatException("Input does not decode to a 16-byte GUID.");
-
-        return new Guid(bytes);
+        return !TryDecode(source, bytes, out var written, variant, styles) || written != 16
+            ? throw new FormatException("Input does not decode to a 16-byte GUID.")
+            : new Guid(bytes);
     }
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a Base85 string. 16 bytes encode to exactly
@@ -52,7 +51,7 @@ public static partial class Base85
     public static bool TryDecodeGuid(ReadOnlySpan<char> source, out Guid value, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out int written, variant, styles) || written != 16)
+        if (!TryDecode(source, bytes, out var written, variant, styles) || written != 16)
         {
             value = Guid.Empty;
             return false;
@@ -61,5 +60,4 @@ public static partial class Base85
         value = new Guid(bytes);
         return true;
     }
-
 }

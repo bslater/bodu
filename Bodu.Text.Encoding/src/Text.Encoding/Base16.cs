@@ -62,13 +62,10 @@ public static partial class Base16
     /// </exception>
     public static int GetDecodedLength(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        if (!TryCountHexDigits(source, styles, out int digits))
+        if (!TryCountHexDigits(source, styles, out var digits))
             throw new FormatException("Input contains non-hexadecimal characters after applying parsing styles.");
 
-        if ((digits & 1) != 0)
-            throw new FormatException("Hex digit count is not even after applying parsing styles.");
-
-        return digits / 2;
+        return (digits & 1) != 0 ? throw new FormatException("Hex digit count is not even after applying parsing styles.") : digits / 2;
     }
 
     /// <summary>
@@ -105,23 +102,23 @@ public static partial class Base16
         if (byteCount == 0)
             return options.HasFlag(BaseFormattingOptions.IncludePrefix) ? Prefix.Length : 0;
 
-        bool spacing = options.HasFlag(BaseFormattingOptions.InsertSpacing);
-        bool lineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
-        bool prefix = options.HasFlag(BaseFormattingOptions.IncludePrefix);
+        var spacing = options.HasFlag(BaseFormattingOptions.InsertSpacing);
+        var lineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
+        var prefix = options.HasFlag(BaseFormattingOptions.IncludePrefix);
 
         checked
         {
-            int chars = spacing ? (byteCount * 3) - 1 : byteCount * 2;
+            var chars = spacing ? (byteCount * 3) - 1 : byteCount * 2;
             if (prefix)
                 chars += Prefix.Length;
 
             if (lineBreaks)
             {
-                int encodedCharsInLine = prefix ? Prefix.Length : 0;
-                int breaks = 0;
+                var encodedCharsInLine = prefix ? Prefix.Length : 0;
+                var breaks = 0;
 
-                int column = encodedCharsInLine;
-                for (int i = 0; i < byteCount; i++)
+                var column = encodedCharsInLine;
+                for (var i = 0; i < byteCount; i++)
                 {
                     if (spacing && i > 0)
                         column++;
@@ -180,8 +177,8 @@ public static partial class Base16
     /// otherwise <see langword="false" />.</returns>
     public static bool IsValid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        int start = 0;
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        var start = 0;
+        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
         if (styles.HasFlag(BaseFormatStyles.AllowPrefix) &&
             source.Length >= Prefix.Length &&
@@ -190,10 +187,10 @@ public static partial class Base16
             start = Prefix.Length;
         }
 
-        int digits = 0;
-        for (int i = start; i < source.Length; i++)
+        var digits = 0;
+        for (var i = start; i < source.Length; i++)
         {
-            char c = source[i];
+            var c = source[i];
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 
@@ -216,7 +213,7 @@ public static partial class Base16
     /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        if (!TryCountHexDigits(source, styles, out int digits) || (digits & 1) != 0)
+        if (!TryCountHexDigits(source, styles, out var digits) || (digits & 1) != 0)
         {
             byteCount = 0;
             return false;
@@ -240,8 +237,8 @@ public static partial class Base16
     private static bool TryCountHexDigits(ReadOnlySpan<char> source, BaseFormatStyles styles, out int digitCount)
     {
         digitCount = 0;
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        int start = 0;
+        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        var start = 0;
 
         if (styles.HasFlag(BaseFormatStyles.AllowPrefix) &&
             source.Length >= Prefix.Length &&
@@ -250,10 +247,10 @@ public static partial class Base16
             start = Prefix.Length;
         }
 
-        int digits = 0;
-        for (int i = start; i < source.Length; i++)
+        var digits = 0;
+        for (var i = start; i < source.Length; i++)
         {
-            char c = source[i];
+            var c = source[i];
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 
@@ -266,5 +263,4 @@ public static partial class Base16
         digitCount = digits;
         return true;
     }
-
 }

@@ -47,18 +47,18 @@ public static class Base58Check
     /// </exception>
     public static byte[] Decode(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        byte[] decoded = Base58.Decode(source, variant, styles);
+        var decoded = Base58.Decode(source, variant, styles);
         if (decoded.Length < ChecksumLength)
             throw new FormatException("Base58Check input is shorter than the four-byte checksum suffix.");
 
-        int payloadLength = decoded.Length - ChecksumLength;
+        var payloadLength = decoded.Length - ChecksumLength;
         Span<byte> expectedChecksum = stackalloc byte[ChecksumLength];
         ComputeChecksum(decoded.AsSpan(0, payloadLength), expectedChecksum);
 
         if (!decoded.AsSpan(payloadLength, ChecksumLength).SequenceEqual(expectedChecksum))
             throw new FormatException("Base58Check checksum verification failed.");
 
-        byte[] payload = new byte[payloadLength];
+        var payload = new byte[payloadLength];
         Buffer.BlockCopy(decoded, 0, payload, 0, payloadLength);
         return payload;
     }
@@ -73,8 +73,8 @@ public static class Base58Check
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static string Encode(ReadOnlySpan<byte> payload, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
-        int totalLength = payload.Length + ChecksumLength;
-        byte[] rented = ArrayPool<byte>.Shared.Rent(totalLength);
+        var totalLength = payload.Length + ChecksumLength;
+        var rented = ArrayPool<byte>.Shared.Rent(totalLength);
         try
         {
             Span<byte> buffer = rented.AsSpan(0, totalLength);
@@ -99,7 +99,7 @@ public static class Base58Check
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
-        int maxDecoded = Base58.GetMaxDecodedLength(charCount);
+        var maxDecoded = Base58.GetMaxDecodedLength(charCount);
         return maxDecoded <= ChecksumLength ? 0 : maxDecoded - ChecksumLength;
     }
 
@@ -131,17 +131,17 @@ public static class Base58Check
         if (!Base58.IsValid(source, variant, styles))
             return false;
 
-        int upper = Base58.GetMaxDecodedLength(source.Length);
-        byte[] rented = ArrayPool<byte>.Shared.Rent(upper);
+        var upper = Base58.GetMaxDecodedLength(source.Length);
+        var rented = ArrayPool<byte>.Shared.Rent(upper);
         try
         {
-            if (!Base58.TryDecode(source, rented, out int decodedLength, variant, styles))
+            if (!Base58.TryDecode(source, rented, out var decodedLength, variant, styles))
                 return false;
 
             if (decodedLength < ChecksumLength)
                 return false;
 
-            int payloadLength = decodedLength - ChecksumLength;
+            var payloadLength = decodedLength - ChecksumLength;
             Span<byte> expectedChecksum = stackalloc byte[ChecksumLength];
             ComputeChecksum(rented.AsSpan(0, payloadLength), expectedChecksum);
 
@@ -167,17 +167,17 @@ public static class Base58Check
     public static bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         bytesWritten = 0;
-        int upper = Base58.GetMaxDecodedLength(source.Length);
-        byte[] rented = ArrayPool<byte>.Shared.Rent(upper);
+        var upper = Base58.GetMaxDecodedLength(source.Length);
+        var rented = ArrayPool<byte>.Shared.Rent(upper);
         try
         {
-            if (!Base58.TryDecode(source, rented, out int decodedLength, variant, styles))
+            if (!Base58.TryDecode(source, rented, out var decodedLength, variant, styles))
                 return false;
 
             if (decodedLength < ChecksumLength)
                 return false;
 
-            int payloadLength = decodedLength - ChecksumLength;
+            var payloadLength = decodedLength - ChecksumLength;
             Span<byte> expectedChecksum = stackalloc byte[ChecksumLength];
             ComputeChecksum(rented.AsSpan(0, payloadLength), expectedChecksum);
 
@@ -210,5 +210,4 @@ public static class Base58Check
         SHA256.HashData(firstHash, secondHash);
         secondHash.Slice(0, ChecksumLength).CopyTo(destination);
     }
-
 }

@@ -38,15 +38,12 @@ public static partial class Base58
     /// <exception cref="FormatException">Thrown when the input is not valid Base58.</exception>
     public static byte[] Decode(ReadOnlySpan<char> chars, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
-        sbyte[] lookup = GetLookup(variant);
+        var lookup = GetLookup(variant);
 
         if (chars.IsEmpty)
             return Array.Empty<byte>();
 
-        if (!TryDecodeCore(chars, lookup, style, out byte[]? result, out string? error))
-            throw new FormatException(error);
-
-        return result!;
+        return !TryDecodeCore(chars, lookup, style, out var result, out var error) ? throw new FormatException(error) : result!;
     }
 
     /// <summary>
@@ -88,13 +85,13 @@ public static partial class Base58
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryDecode(ReadOnlySpan<char> chars, Span<byte> destination, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
     {
-        sbyte[] lookup = GetLookup(variant);
+        var lookup = GetLookup(variant);
         bytesWritten = 0;
 
         if (chars.IsEmpty)
             return true;
 
-        if (!TryDecodeCore(chars, lookup, style, out byte[]? result, out _))
+        if (!TryDecodeCore(chars, lookup, style, out var result, out _))
             return false;
 
         if (destination.Length < result!.Length)
@@ -119,15 +116,15 @@ public static partial class Base58
         result = null;
         error = null;
 
-        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
 
-        int leadingZeros = 0;
+        var leadingZeros = 0;
         BigInteger value = BigInteger.Zero;
-        bool seenNonZero = false;
+        var seenNonZero = false;
 
-        for (int i = 0; i < chars.Length; i++)
+        for (var i = 0; i < chars.Length; i++)
         {
-            char c = chars[i];
+            var c = chars[i];
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 
@@ -154,7 +151,7 @@ public static partial class Base58
             value = (value * 58) + symbolValue;
         }
 
-        byte[] decoded = value.IsZero
+        var decoded = value.IsZero
             ? Array.Empty<byte>()
             : value.ToByteArray(isUnsigned: true, isBigEndian: true);
 
@@ -164,10 +161,9 @@ public static partial class Base58
             return true;
         }
 
-        byte[] combined = new byte[leadingZeros + decoded.Length];
+        var combined = new byte[leadingZeros + decoded.Length];
         Buffer.BlockCopy(decoded, 0, combined, leadingZeros, decoded.Length);
         result = combined;
         return true;
     }
-
 }

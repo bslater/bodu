@@ -48,11 +48,10 @@ public static partial class Base16
         if ((utf8Source.Length & 1) != 0)
             throw new FormatException("Hex digit count is not even.");
 
-        byte[] result = new byte[utf8Source.Length / 2];
-        if (!DecodeHexPairsFromUtf8(utf8Source, result))
-            throw new FormatException("Input contains non-hexadecimal characters.");
-
-        return result;
+        var result = new byte[utf8Source.Length / 2];
+        return !DecodeHexPairsFromUtf8(utf8Source, result)
+            ? throw new FormatException("Input contains non-hexadecimal characters.")
+            : result;
     }
 
     /// <summary>
@@ -199,5 +198,4 @@ public static partial class Base16
     /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
     public static bool TryToHexStringLower(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
         TryEncodeToUtf8(source, utf8Destination, out bytesWritten, BaseFormattingOptions.None);
-
 }

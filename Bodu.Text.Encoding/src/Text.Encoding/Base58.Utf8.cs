@@ -27,7 +27,7 @@ public static partial class Base58
     /// </remarks>
     public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        sbyte[] lookup = GetLookup(variant);
+        var lookup = GetLookup(variant);
         bytesConsumed = 0;
         bytesWritten = 0;
 
@@ -35,11 +35,11 @@ public static partial class Base58
             return OperationStatus.Done;
 
         // Project the UTF-8 source through a temporary char buffer so the BigInteger decode path can be reused.
-        char[] scratch = new char[source.Length];
-        for (int i = 0; i < source.Length; i++)
+        var scratch = new char[source.Length];
+        for (var i = 0; i < source.Length; i++)
             scratch[i] = (char)source[i];
 
-        OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out int _, out bytesWritten, variant, styles);
+        OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out var _, out bytesWritten, variant, styles);
         if (status == OperationStatus.Done)
             bytesConsumed = source.Length;
 
@@ -54,19 +54,19 @@ public static partial class Base58
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static byte[] EncodeToUtf8(ReadOnlySpan<byte> source, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
-        string alphabet = GetAlphabet(variant);
+        var alphabet = GetAlphabet(variant);
 
         if (source.IsEmpty)
             return Array.Empty<byte>();
 
-        int upperBound = GetMaxEncodedLength(source.Length);
-        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        var upperBound = GetMaxEncodedLength(source.Length);
+        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
         try
         {
-            int written = EncodeIntoBuffer(source, alphabet.AsSpan(), scratch, upperBound);
+            var written = EncodeIntoBuffer(source, alphabet.AsSpan(), scratch, upperBound);
 
-            byte[] result = new byte[written];
-            for (int i = 0; i < written; i++)
+            var result = new byte[written];
+            for (var i = 0; i < written; i++)
                 result[i] = (byte)scratch[upperBound - written + i];
 
             return result;
@@ -88,7 +88,7 @@ public static partial class Base58
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
-        string alphabet = GetAlphabet(variant);
+        var alphabet = GetAlphabet(variant);
 
         if (source.IsEmpty)
         {
@@ -96,11 +96,11 @@ public static partial class Base58
             return true;
         }
 
-        int upperBound = GetMaxEncodedLength(source.Length);
-        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        var upperBound = GetMaxEncodedLength(source.Length);
+        var scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
         try
         {
-            int written = EncodeIntoBuffer(source, alphabet.AsSpan(), scratch, upperBound);
+            var written = EncodeIntoBuffer(source, alphabet.AsSpan(), scratch, upperBound);
 
             if (destination.Length < written)
             {
@@ -108,7 +108,7 @@ public static partial class Base58
                 return false;
             }
 
-            for (int i = 0; i < written; i++)
+            for (var i = 0; i < written; i++)
                 destination[i] = (byte)scratch[upperBound - written + i];
 
             bytesWritten = written;
@@ -132,14 +132,14 @@ public static partial class Base58
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     private static OperationStatus DecodeWithStatus(ReadOnlySpan<char> source, Span<byte> destination, out int charsConsumed, out int bytesWritten, Base58Variant variant, BaseFormatStyles styles)
     {
-        sbyte[] lookup = GetLookup(variant);
+        var lookup = GetLookup(variant);
         charsConsumed = 0;
         bytesWritten = 0;
 
         if (source.IsEmpty)
             return OperationStatus.Done;
 
-        if (!TryDecodeCore(source, lookup, styles, out byte[]? result, out _))
+        if (!TryDecodeCore(source, lookup, styles, out var result, out _))
             return OperationStatus.InvalidData;
 
         if (destination.Length < result!.Length)
@@ -150,5 +150,4 @@ public static partial class Base58
         charsConsumed = source.Length;
         return OperationStatus.Done;
     }
-
 }

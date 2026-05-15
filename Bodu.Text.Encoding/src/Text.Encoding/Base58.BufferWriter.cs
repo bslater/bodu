@@ -28,9 +28,9 @@ public static partial class Base58
         if (source.IsEmpty)
             return 0;
 
-        int upper = GetMaxEncodedLength(source.Length);
+        var upper = GetMaxEncodedLength(source.Length);
         Span<char> destination = writer.GetSpan(upper);
-        int written = Encode(source, destination, variant);
+        var written = Encode(source, destination, variant);
         writer.Advance(written);
         return written;
     }
@@ -52,11 +52,10 @@ public static partial class Base58
         if (source.IsEmpty)
             return 0;
 
-        byte[] utf8 = EncodeToUtf8(source, variant);
+        var utf8 = EncodeToUtf8(source, variant);
         Span<byte> destination = writer.GetSpan(utf8.Length);
         utf8.CopyTo(destination);
         writer.Advance(utf8.Length);
         return utf8.Length;
     }
-
 }

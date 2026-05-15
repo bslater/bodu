@@ -85,23 +85,22 @@ public static partial class Base85
     public static int GetEncodedLength(ReadOnlySpan<byte> source, Base85Variant variant = Base85Variant.Ascii85, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         EnsureValidVariant(variant);
-        bool emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
+        var emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
 
         if (source.IsEmpty)
             return emitDelimiters ? Ascii85DelimiterLength : 0;
 
         if (variant == Base85Variant.Z85)
         {
-            if ((source.Length & 3) != 0)
-                throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(source));
-
-            return (source.Length / 4) * 5;
+            return (source.Length & 3) != 0
+                ? throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(source))
+                : (source.Length / 4) * 5;
         }
 
         // Ascii85: scan for the 'z' shortcut. Four consecutive zero bytes encode to a single 'z'; otherwise the
         // group is 5 chars. Trailing 1, 2, or 3 bytes encode to 2, 3, or 4 chars respectively.
-        int total = 0;
-        int i = 0;
+        var total = 0;
+        var i = 0;
         while (i + 4 <= source.Length)
         {
             if (source[i] == 0 && source[i + 1] == 0 && source[i + 2] == 0 && source[i + 3] == 0)
@@ -112,7 +111,7 @@ public static partial class Base85
             i += 4;
         }
 
-        int remainder = source.Length - i;
+        var remainder = source.Length - i;
         if (remainder > 0)
             total += remainder + 1;
 
@@ -155,20 +154,20 @@ public static partial class Base85
         ThrowHelper.ThrowIfNegative(byteCount);
         EnsureValidVariant(variant);
 
-        bool emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
+        var emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
 
         if (byteCount == 0)
             return emitDelimiters ? Ascii85DelimiterLength : 0;
 
-        int completeGroups = byteCount / 4;
-        int remainder = byteCount % 4;
+        var completeGroups = byteCount / 4;
+        var remainder = byteCount % 4;
 
         checked
         {
             int total;
             if (variant == Base85Variant.Z85)
             {
-                int aligned = (byteCount + 3) & ~3;
+                var aligned = (byteCount + 3) & ~3;
                 total = (aligned / 4) * 5;
             }
             else
@@ -193,7 +192,7 @@ public static partial class Base85
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsBase85Digit(char value, Base85Variant variant = Base85Variant.Ascii85)
     {
-        sbyte[] lookup = GetLookup(variant);
+        var lookup = GetLookup(variant);
         return value < lookup.Length && lookup[value] >= 0;
     }
 
@@ -210,9 +209,9 @@ public static partial class Base85
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool IsValid(ReadOnlySpan<char> source, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        sbyte[] lookup = GetLookup(variant);
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        bool isAscii85 = variant == Base85Variant.Ascii85;
+        var lookup = GetLookup(variant);
+        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        var isAscii85 = variant == Base85Variant.Ascii85;
 
         if (isAscii85 && styles.HasFlag(BaseFormatStyles.AllowPrefix))
             source = StripAscii85Delimiters(source, ignoreWhitespace);
@@ -221,10 +220,10 @@ public static partial class Base85
         // strict decoder. For Ascii85 the 'z' shortcut may only appear at a group boundary; trailing partial groups
         // must be 2, 3, or 4 chars (1 cannot represent any byte). Z85 requires the symbol count to be a multiple
         // of 5.
-        int symbolsThisGroup = 0;
-        int totalSymbols = 0;
+        var symbolsThisGroup = 0;
+        var totalSymbols = 0;
 
-        foreach (char c in source)
+        foreach (var c in source)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -264,12 +263,12 @@ public static partial class Base85
     /// <returns>The lookup table.</returns>
     private static sbyte[] BuildLookup(string alphabet)
     {
-        sbyte[] table = new sbyte[128];
+        var table = new sbyte[128];
         Array.Fill(table, (sbyte)-1);
 
-        for (int i = 0; i < alphabet.Length; i++)
+        for (var i = 0; i < alphabet.Length; i++)
         {
-            char c = alphabet[i];
+            var c = alphabet[i];
             table[c] = (sbyte)i;
         }
 
@@ -337,10 +336,10 @@ public static partial class Base85
     {
         if (trimSurroundingWhitespace)
         {
-            int start = 0;
+            var start = 0;
             while (start < source.Length && source[start] is ' ' or '\t' or '\r' or '\n')
                 start++;
-            int end = source.Length;
+            var end = source.Length;
             while (end > start && source[end - 1] is ' ' or '\t' or '\r' or '\n')
                 end--;
             source = source.Slice(start, end - start);
@@ -354,5 +353,4 @@ public static partial class Base85
 
         return source;
     }
-
 }

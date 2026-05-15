@@ -31,7 +31,7 @@ public static partial class Base85
         ThrowHelper.ThrowIfNull(writer);
         EnsureValidVariant(variant);
 
-        bool emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
+        var emitDelimiters = ShouldEmitAscii85Delimiters(variant, options);
 
         if (source.IsEmpty)
         {
@@ -47,9 +47,9 @@ public static partial class Base85
             return 4;
         }
 
-        int upper = GetMaxEncodedLength(source.Length, variant, options);
+        var upper = GetMaxEncodedLength(source.Length, variant, options);
         Span<char> destination = writer.GetSpan(upper);
-        int written = Encode(source, destination, variant, options);
+        var written = Encode(source, destination, variant, options);
         writer.Advance(written);
         return written;
     }
@@ -76,11 +76,10 @@ public static partial class Base85
         if (source.IsEmpty)
             return 0;
 
-        byte[] utf8 = EncodeToUtf8(source, variant);
+        var utf8 = EncodeToUtf8(source, variant);
         Span<byte> destination = writer.GetSpan(utf8.Length);
         utf8.CopyTo(destination);
         writer.Advance(utf8.Length);
         return utf8.Length;
     }
-
 }

@@ -40,9 +40,9 @@ public static partial class Base32
         if (bytes.IsEmpty)
             return string.Empty;
 
-        (string alphabet, _) = GetVariantConfig(variant);
-        bool emitPadding = ShouldEmitPadding(variant, options);
-        bool emitLineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
+        (var alphabet, _) = GetVariantConfig(variant);
+        var emitPadding = ShouldEmitPadding(variant, options);
+        var emitLineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
 
         StringBuilder sb = new(GetEncodedLength(bytes.Length, variant, options));
         EncodeCore(bytes, alphabet, emitPadding, emitLineBreaks, sb);
@@ -64,18 +64,18 @@ public static partial class Base32
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
     public static int Encode(ReadOnlySpan<byte> bytes, Span<char> destination, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
-        int required = GetEncodedLength(bytes.Length, variant, options);
+        var required = GetEncodedLength(bytes.Length, variant, options);
         if (destination.Length < required)
             throw new ArgumentException("Destination is too small to receive the encoded characters.", nameof(destination));
 
         if (bytes.IsEmpty)
             return 0;
 
-        (string alphabet, _) = GetVariantConfig(variant);
-        bool emitPadding = ShouldEmitPadding(variant, options);
-        bool emitLineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
+        (var alphabet, _) = GetVariantConfig(variant);
+        var emitPadding = ShouldEmitPadding(variant, options);
+        var emitLineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
 
-        int written = EncodeIntoSpan(bytes, alphabet, emitPadding, emitLineBreaks, destination);
+        var written = EncodeIntoSpan(bytes, alphabet, emitPadding, emitLineBreaks, destination);
         return written;
     }
 
@@ -116,7 +116,7 @@ public static partial class Base32
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is not a defined value.</exception>
     public static bool TryEncode(ReadOnlySpan<byte> bytes, Span<char> destination, out int charsWritten, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
-        int required = GetEncodedLength(bytes.Length, variant, options);
+        var required = GetEncodedLength(bytes.Length, variant, options);
         if (destination.Length < required)
         {
             charsWritten = 0;
@@ -129,9 +129,9 @@ public static partial class Base32
             return true;
         }
 
-        (string alphabet, _) = GetVariantConfig(variant);
-        bool emitPadding = ShouldEmitPadding(variant, options);
-        bool emitLineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
+        (var alphabet, _) = GetVariantConfig(variant);
+        var emitPadding = ShouldEmitPadding(variant, options);
+        var emitLineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
 
         charsWritten = EncodeIntoSpan(bytes, alphabet, emitPadding, emitLineBreaks, destination);
         return true;
@@ -167,12 +167,12 @@ public static partial class Base32
     /// <param name="sb">The destination string builder.</param>
     private static void EncodeCore(ReadOnlySpan<byte> bytes, string alphabet, bool emitPadding, bool emitLineBreaks, StringBuilder sb)
     {
-        int accumulator = 0;
-        int bitsAccumulated = 0;
-        int charsThisLine = 0;
-        int charsEmitted = 0;
+        var accumulator = 0;
+        var bitsAccumulated = 0;
+        var charsThisLine = 0;
+        var charsEmitted = 0;
 
-        foreach (byte b in bytes)
+        foreach (var b in bytes)
         {
             accumulator = (accumulator << 8) | b;
             bitsAccumulated += 8;
@@ -180,7 +180,7 @@ public static partial class Base32
             while (bitsAccumulated >= 5)
             {
                 bitsAccumulated -= 5;
-                int symbolIndex = (accumulator >> bitsAccumulated) & 0x1F;
+                var symbolIndex = (accumulator >> bitsAccumulated) & 0x1F;
                 AppendSymbol(sb, alphabet[symbolIndex], emitLineBreaks, ref charsThisLine);
                 charsEmitted++;
             }
@@ -188,15 +188,15 @@ public static partial class Base32
 
         if (bitsAccumulated > 0)
         {
-            int symbolIndex = (accumulator << (5 - bitsAccumulated)) & 0x1F;
+            var symbolIndex = (accumulator << (5 - bitsAccumulated)) & 0x1F;
             AppendSymbol(sb, alphabet[symbolIndex], emitLineBreaks, ref charsThisLine);
             charsEmitted++;
         }
 
         if (emitPadding)
         {
-            int paddingChars = (8 - (charsEmitted % 8)) % 8;
-            for (int i = 0; i < paddingChars; i++)
+            var paddingChars = (8 - (charsEmitted % 8)) % 8;
+            for (var i = 0; i < paddingChars; i++)
             {
                 AppendSymbol(sb, PaddingChar, emitLineBreaks, ref charsThisLine);
             }
@@ -214,13 +214,13 @@ public static partial class Base32
     /// <returns>The number of characters written.</returns>
     private static int EncodeIntoSpan(ReadOnlySpan<byte> bytes, string alphabet, bool emitPadding, bool emitLineBreaks, Span<char> destination)
     {
-        int accumulator = 0;
-        int bitsAccumulated = 0;
-        int charsThisLine = 0;
-        int charsEmitted = 0;
-        int dataChars = 0;
+        var accumulator = 0;
+        var bitsAccumulated = 0;
+        var charsThisLine = 0;
+        var charsEmitted = 0;
+        var dataChars = 0;
 
-        foreach (byte b in bytes)
+        foreach (var b in bytes)
         {
             accumulator = (accumulator << 8) | b;
             bitsAccumulated += 8;
@@ -228,7 +228,7 @@ public static partial class Base32
             while (bitsAccumulated >= 5)
             {
                 bitsAccumulated -= 5;
-                int symbolIndex = (accumulator >> bitsAccumulated) & 0x1F;
+                var symbolIndex = (accumulator >> bitsAccumulated) & 0x1F;
                 WriteSymbol(destination, ref charsEmitted, alphabet[symbolIndex], emitLineBreaks, ref charsThisLine);
                 dataChars++;
             }
@@ -236,15 +236,15 @@ public static partial class Base32
 
         if (bitsAccumulated > 0)
         {
-            int symbolIndex = (accumulator << (5 - bitsAccumulated)) & 0x1F;
+            var symbolIndex = (accumulator << (5 - bitsAccumulated)) & 0x1F;
             WriteSymbol(destination, ref charsEmitted, alphabet[symbolIndex], emitLineBreaks, ref charsThisLine);
             dataChars++;
         }
 
         if (emitPadding)
         {
-            int paddingChars = (8 - (dataChars % 8)) % 8;
-            for (int i = 0; i < paddingChars; i++)
+            var paddingChars = (8 - (dataChars % 8)) % 8;
+            for (var i = 0; i < paddingChars; i++)
             {
                 WriteSymbol(destination, ref charsEmitted, PaddingChar, emitLineBreaks, ref charsThisLine);
             }
@@ -274,5 +274,4 @@ public static partial class Base32
         destination[position++] = symbol;
         charsThisLine++;
     }
-
 }

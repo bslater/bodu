@@ -52,10 +52,9 @@ public static partial class Base64
     /// </exception>
     public static int GetDecodedLength(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
-            throw new FormatException("Input contains characters outside the Base64 variant alphabet.");
-
-        return (symbolCount * 3) / 4;
+        return !TryCountSymbols(source, variant, styles, out var symbolCount)
+            ? throw new FormatException("Input contains characters outside the Base64 variant alphabet.")
+            : (symbolCount * 3) / 4;
     }
 
     /// <summary>
@@ -101,19 +100,19 @@ public static partial class Base64
         if (byteCount == 0)
             return 0;
 
-        bool emitPadding = ShouldEmitPadding(variant, options);
-        bool insertLineBreaks = ShouldInsertLineBreaks(variant, options);
+        var emitPadding = ShouldEmitPadding(variant, options);
+        var insertLineBreaks = ShouldInsertLineBreaks(variant, options);
 
         checked
         {
-            int dataChars = emitPadding
+            var dataChars = emitPadding
                 ? ((byteCount + 2) / 3) * 4
                 : ((byteCount * 4) + 2) / 3;
 
             if (!insertLineBreaks || dataChars <= MimeLineLength)
                 return dataChars;
 
-            int breaks = (dataChars - 1) / MimeLineLength;
+            var breaks = (dataChars - 1) / MimeLineLength;
             return dataChars + (breaks * 2);
         }
     }
@@ -171,7 +170,7 @@ public static partial class Base64
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
+        if (!TryCountSymbols(source, variant, styles, out var symbolCount))
         {
             byteCount = 0;
             return false;
@@ -200,14 +199,11 @@ public static partial class Base64
     /// <returns><see langword="true" /> when the character is a valid data symbol.</returns>
     private static bool IsAlphabetCharacter(char value, Base64Variant variant)
     {
-        bool isLetter = value is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z');
-        bool isDigit = value is >= '0' and <= '9';
-        if (isLetter || isDigit)
-            return true;
-
-        return variant == Base64Variant.UrlSafe
+        var isLetter = value is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z');
+        var isDigit = value is >= '0' and <= '9';
+        return isLetter || isDigit || (variant == Base64Variant.UrlSafe
             ? value is '-' or '_'
-            : value is '+' or '/';
+            : value is '+' or '/');
     }
 
     /// <summary>
@@ -218,10 +214,7 @@ public static partial class Base64
     /// <returns><see langword="true" /> when padding should be emitted.</returns>
     private static bool ShouldEmitPadding(Base64Variant variant, BaseFormattingOptions options)
     {
-        if (options.HasFlag(BaseFormattingOptions.OmitPadding))
-            return false;
-
-        return variant switch
+        return !options.HasFlag(BaseFormattingOptions.OmitPadding) && variant switch
         {
             Base64Variant.Standard => true,
             Base64Variant.Mime => true,
@@ -254,11 +247,11 @@ public static partial class Base64
     {
         EnsureValidVariant(variant);
 
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;
+        var ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace) || variant == Base64Variant.Mime;
         symbolCount = 0;
-        int paddingSeen = 0;
+        var paddingSeen = 0;
 
-        foreach (char c in source)
+        foreach (var c in source)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
@@ -285,7 +278,7 @@ public static partial class Base64
         }
 
         // Terminal-quantum data character count must be in {0, 2, 3, 4} per RFC 4648 §4.
-        int dataMod = symbolCount % 4;
+        var dataMod = symbolCount % 4;
         if (dataMod == 1)
         {
             symbolCount = 0;
@@ -295,13 +288,13 @@ public static partial class Base64
         // Padding alignment: Standard / Mime require canonical padding by default. UrlSafe and AllowMissingPadding
         // bypass the "must have padding" requirement. In all variants, if padding IS present it must match the
         // canonical count for the data — partial or excessive padding ("TQ===") is always rejected.
-        int expectedPadding = (4 - dataMod) % 4;
-        bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding)
+        var expectedPadding = (4 - dataMod) % 4;
+        var padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding)
             && variant != Base64Variant.UrlSafe;
 
         if (padIsRequired)
         {
-            int totalSymbols = symbolCount + paddingSeen;
+            var totalSymbols = symbolCount + paddingSeen;
             if ((totalSymbols % 4) != 0)
             {
                 symbolCount = 0;
@@ -323,5 +316,4 @@ public static partial class Base64
 
         return true;
     }
-
 }

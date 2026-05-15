@@ -32,9 +32,9 @@ public static partial class Base32
         if (source.IsEmpty)
             return 0;
 
-        int required = GetEncodedLength(source.Length, variant, options);
+        var required = GetEncodedLength(source.Length, variant, options);
         Span<char> destination = writer.GetSpan(required);
-        int written = Encode(source, destination, variant, options);
+        var written = Encode(source, destination, variant, options);
         writer.Advance(written);
         return written;
     }
@@ -59,11 +59,10 @@ public static partial class Base32
         if (source.IsEmpty)
             return 0;
 
-        int required = GetEncodedLength(source.Length, variant, options);
+        var required = GetEncodedLength(source.Length, variant, options);
         Span<byte> destination = writer.GetSpan(required);
-        int written = EncodeIntoUtf8Span(source, destination, variant, options);
+        var written = EncodeIntoUtf8Span(source, destination, variant, options);
         writer.Advance(written);
         return written;
     }
-
 }

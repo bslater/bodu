@@ -53,26 +53,22 @@ public static partial class Base16
             if ((chars.Length & 1) != 0)
                 throw new FormatException("Hex digit count is not even.");
 
-            byte[] result = new byte[chars.Length / 2];
-            if (!DecodeHexPairs(chars, result))
-                throw new FormatException("Input contains non-hexadecimal characters.");
-
-            return result;
+            var result = new byte[chars.Length / 2];
+            return !DecodeHexPairs(chars, result) ? throw new FormatException("Input contains non-hexadecimal characters.") : result;
         }
 
         Span<char> scratch = chars.Length <= StackallocThreshold
             ? stackalloc char[chars.Length]
             : new char[chars.Length];
 
-        int digitCount = StripDecorationsInto(chars, style, scratch);
+        var digitCount = StripDecorationsInto(chars, style, scratch);
         if ((digitCount & 1) != 0)
             throw new FormatException("Hex digit count is not even after removing decorations.");
 
-        byte[] decoded = new byte[digitCount / 2];
-        if (!DecodeHexPairs(scratch.Slice(0, digitCount), decoded))
-            throw new FormatException("Input contains non-hexadecimal characters.");
-
-        return decoded;
+        var decoded = new byte[digitCount / 2];
+        return !DecodeHexPairs(scratch.Slice(0, digitCount), decoded)
+            ? throw new FormatException("Input contains non-hexadecimal characters.")
+            : decoded;
     }
 
     /// <summary>
@@ -128,7 +124,7 @@ public static partial class Base16
             if ((chars.Length & 1) != 0)
                 return false;
 
-            int need = chars.Length / 2;
+            var need = chars.Length / 2;
             if (destination.Length < need)
                 return false;
 
@@ -143,11 +139,11 @@ public static partial class Base16
             ? stackalloc char[chars.Length]
             : new char[chars.Length];
 
-        int digitCount = StripDecorationsInto(chars, style, scratch);
+        var digitCount = StripDecorationsInto(chars, style, scratch);
         if ((digitCount & 1) != 0)
             return false;
 
-        int needBytes = digitCount / 2;
+        var needBytes = digitCount / 2;
         if (destination.Length < needBytes)
             return false;
 
@@ -168,11 +164,11 @@ public static partial class Base16
     /// <remarks>This method assumes the caller has already validated the input length.</remarks>
     private static bool DecodeHexPairs(ReadOnlySpan<char> chars, Span<byte> bytes)
     {
-        int bi = 0;
-        for (int i = 0; i < chars.Length; i += 2)
+        var bi = 0;
+        for (var i = 0; i < chars.Length; i += 2)
         {
-            int hi = Nibble(chars[i]);
-            int lo = Nibble(chars[i + 1]);
+            var hi = Nibble(chars[i]);
+            var lo = Nibble(chars[i + 1]);
             if ((hi | lo) < 0)
                 return false;
 
@@ -211,8 +207,8 @@ public static partial class Base16
     /// </remarks>
     private static int StripDecorationsInto(ReadOnlySpan<char> source, BaseFormatStyles style, Span<char> scratch)
     {
-        int j = 0;
-        int i = 0;
+        var j = 0;
+        var i = 0;
 
         if (style.HasFlag(BaseFormatStyles.AllowPrefix) &&
             source.Length >= Prefix.Length &&
@@ -221,10 +217,10 @@ public static partial class Base16
             i = Prefix.Length;
         }
 
-        bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        var ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
         for (; i < source.Length; i++)
         {
-            char c = source[i];
+            var c = source[i];
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 
@@ -233,5 +229,4 @@ public static partial class Base16
 
         return j;
     }
-
 }

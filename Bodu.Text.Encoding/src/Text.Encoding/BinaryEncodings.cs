@@ -24,12 +24,12 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public static class BinaryEncodings
 {
-
     /// <summary>
     /// Gets the Adobe Ascii85 encoding (4-byte groups → 5 characters; <c>z</c> shortcut for all-zero groups; partial
     /// trailing groups permitted).
     /// </summary>
     public static IBinaryEncoding Ascii85 { get; } = new Base85VariantAdapter(Base85Variant.Ascii85, "ascii85", "Adobe Ascii85 (! to u plus 'z' all-zero shortcut).");
+
     /// <summary>
     /// Gets the lower-case hexadecimal (Base16) encoding — the same canonical form
     /// <see cref="global::Bodu.Text.Encoding.Base16.Encode(byte[], BaseFormattingOptions)" /> produces with default options.
@@ -131,8 +131,8 @@ public static class BinaryEncodings
 
     private sealed class Base16LowerAdapter : IBinaryEncoding
     {
-
         public string Description => "Base16 / hexadecimal, lower case (default Bodu Base16 form; compatible with Convert.ToHexStringLower).";
+
         public string Name => "base16-lower";
 
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base16.Decode(chars);
@@ -150,13 +150,12 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten);
-
     }
 
     private sealed class Base16UpperAdapter : IBinaryEncoding
     {
-
         public string Description => "Base16 / hexadecimal, upper case (RFC 4648 §8 canonical case; compatible with Convert.ToHexString).";
+
         public string Name => "base16-upper";
 
         public byte[] Decode(ReadOnlySpan<char> chars) => global::Bodu.Text.Encoding.Base16.Decode(chars);
@@ -174,12 +173,10 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base16.TryEncode(source, destination, out charsWritten, BaseFormattingOptions.UpperCase);
-
     }
 
     private sealed class Base32VariantAdapter : IBinaryEncoding
     {
-
         private readonly Base32Variant _variant;
 
         public Base32VariantAdapter(Base32Variant variant, string name, string description)
@@ -208,12 +205,10 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base32.TryEncode(source, destination, out charsWritten, _variant);
-
     }
 
     private sealed class Base58VariantAdapter : IBinaryEncoding
     {
-
         private readonly Base58Variant _variant;
 
         public Base58VariantAdapter(Base58Variant variant, string name, string description)
@@ -242,12 +237,10 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base58.TryEncode(source, destination, out charsWritten, _variant);
-
     }
 
     private sealed class Base64VariantAdapter : IBinaryEncoding
     {
-
         private readonly Base64Variant _variant;
 
         public Base64VariantAdapter(Base64Variant variant, string name, string description)
@@ -276,12 +269,10 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base64.TryEncode(source, destination, out charsWritten, _variant);
-
     }
 
     private sealed class Base85VariantAdapter : IBinaryEncoding
     {
-
         private readonly Base85Variant _variant;
 
         public Base85VariantAdapter(Base85Variant variant, string name, string description)
@@ -310,7 +301,5 @@ public static class BinaryEncodings
 
         public bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
             global::Bodu.Text.Encoding.Base85.TryEncode(source, destination, out charsWritten, _variant);
-
     }
-
 }
