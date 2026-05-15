@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-
 namespace Bodu.Text.Formats;
 
 /// <summary>
@@ -36,13 +33,13 @@ public sealed class BencodedDictionary
         foreach (var pair in items)
         {
             if (pair.Key is null)
-                throw new ArgumentException("The dictionary cannot contain null keys.", nameof(items));
+                ThrowHelper.ThrowArgumentException_NullDictionaryKey(nameof(items));
 
             if (pair.Value is null)
-                throw new ArgumentException("The dictionary cannot contain null values.", nameof(items));
+                ThrowHelper.ThrowArgumentException_NullDictionaryValue(nameof(items));
 
             if (!this.items.TryAdd(pair.Key, pair.Value))
-                throw new ArgumentException("The dictionary cannot contain duplicate keys.", nameof(items));
+                ThrowHelper.ThrowArgumentException_DuplicateDictionaryKey(nameof(items));
         }
     }
 

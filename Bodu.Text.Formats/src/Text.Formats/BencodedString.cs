@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Text;
-
 namespace Bodu.Text.Formats;
 
 /// <summary>
@@ -70,7 +67,7 @@ public sealed class BencodedString
     {
         ThrowHelper.ThrowIfNull(value);
 
-        return new BencodedString(Encoding.UTF8.GetBytes(value));
+        return new BencodedString(System.Text.Encoding.UTF8.GetBytes(value));
     }
 
     /// <summary>
@@ -78,7 +75,7 @@ public sealed class BencodedString
     /// </summary>
     /// <returns>The decoded UTF-8 string.</returns>
     public string GetUtf8String() =>
-        Encoding.UTF8.GetString(bytes);
+        System.Text.Encoding.UTF8.GetString(bytes);
 
     /// <summary>
     /// Determines whether this instance and another <see cref="BencodedString" /> contain the same bytes.
