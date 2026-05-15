@@ -9,6 +9,14 @@ package, start with the **[Introduction](../../docs/text-encoding/index.md)** an
 **[Core concepts](../../docs/text-encoding/concepts.md)** pages first — the guides below assume you know the
 vocabulary (alphabet, variant, terminal quantum, padding, decoration, OperationStatus).
 
+## How the library works
+
+![Encode and decode pipeline — binary bytes to encoded text and back](../../images/diagrams/encoding-pipeline.svg)
+
+Every encoding follows the same four-stage pipeline — radix conversion, variant transform, optional decoration,
+encoded output. The per-encoding guides drill into the stages that vary by family: the bit-stream packing for
+Base16 / Base32 / Base64, the big-integer arithmetic for Base58, and the 4-byte block packing for Base85.
+
 ## At a glance
 
 | Family | Expansion | Variants | Use cases |

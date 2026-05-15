@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="tq-t tq-d">
+  <title id="tq-t">Terminal quantum and padding — RFC 4648</title>
+  <desc id="tq-d">The terminal quantum is the last partial group at the end of the input. Base64 packs 3 input bytes into 4 output characters; if the input is shorter than a multiple of 3 bytes, Base64 emits 2 or 3 characters and pads with one or two equals signs to maintain 4-character alignment. Base32 packs 5 input bytes into 8 output characters and pads to alignment with up to 6 equals signs. Base16 has no terminal quantum: input must be an even number of nibbles. Crockford Base32 and z-base-32 omit padding by convention.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .sub   { fill: #CBD5E1; font: 400 11px/1.25 "Segoe UI",Arial,sans-serif; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; }
+      .ttag  { fill: #94A3B8; font: 700 9px/1 "Segoe UI",Arial,sans-serif; letter-spacing: 1px; }
+      .mono  { font: 700 13px/1 "Consolas","Menlo",monospace; fill: #F8FAFC; }
+      .data  { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1; }
+      .pad   { fill: #431407; stroke: #FBBF24; stroke-width: 1; }
+      .none  { fill: #1F2937; stroke: #475569; stroke-width: 1; stroke-dasharray: 3 3; }
+      .by    { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="300" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Terminal quantum and padding — RFC 4648</text>
+
+    <!-- ============== BASE64 row ============== -->
+    <g transform="translate(20 50)">
+      <text class="ttag" x="0" y="0" fill="#60A5FA">BASE64 ·  3 BYTES → 4 CHARS  ·  GROUP SIZE 3</text>
+
+      <!-- Label columns -->
+      <text class="mut" x="80"   y="56" text-anchor="middle">input bytes</text>
+      <text class="mut" x="350"  y="56" text-anchor="middle">→</text>
+      <text class="mut" x="600"  y="56" text-anchor="middle">encoded output (chars + padding)</text>
+
+      <!-- Three rows: 3, 2, 1 input bytes -->
+      <!-- 3 bytes -->
+      <g transform="translate(0 70)">
+        <rect class="by" x="0"   y="0" width="42" height="22" rx="3"/>
+        <rect class="by" x="44"  y="0" width="42" height="22" rx="3"/>
+        <rect class="by" x="88"  y="0" width="42" height="22" rx="3"/>
+        <g class="mono" font-size="11" text-anchor="middle">
+          <text x="21"  y="16">66</text>
+          <text x="65"  y="16">6F</text>
+          <text x="109" y="16">6F</text>
+        </g>
+        <text class="mut" x="-8" y="16" text-anchor="end">3 bytes</text>
+
+        <rect class="data" x="240" y="0" width="32" height="22" rx="3"/>
+        <rect class="data" x="274" y="0" width="32" height="22" rx="3"/>
+        <rect class="data" x="308" y="0" width="32" height="22" rx="3"/>
+        <rect class="data" x="342" y="0" width="32" height="22" rx="3"/>
+        <g class="mono" font-size="13" text-anchor="middle">
+          <text x="256" y="16">Z</text>
+          <text x="290" y="16">m</text>
+          <text x="324" y="16">9</text>
+          <text x="358" y="16">v</text>
+        </g>
+        <text class="mut" x="420" y="16" style="text-anchor: start">4 chars, no padding</text>
+      </g>
+
+      <!-- 2 bytes -->
+      <g transform="translate(0 100)">
+        <rect class="by" x="0"   y="0" width="42" height="22" rx="3"/>
+        <rect class="by" x="44"  y="0" width="42" height="22" rx="3"/>
+        <rect class="none" x="88" y="0" width="42" height="22" rx="3"/>
+        <g class="mono" font-size="11" text-anchor="middle">
+          <text x="21"  y="16">66</text>
+          <text x="65"  y="16">6F</text>
+        </g>
+        <text class="mut" x="-8" y="16" text-anchor="end">2 bytes</text>
+
+        <rect class="data" x="240" y="0" width="32" height="22" rx="3"/>
+        <rect class="data" x="274" y="0" width="32" height="22" rx="3"/>
+        <rect class="data" x="308" y="0" width="32" height="22" rx="3"/>
+        <rect class="pad"  x="342" y="0" width="32" height="22" rx="3"/>
+        <g class="mono" font-size="13" text-anchor="middle">
+          <text x="256" y="16">Z</text>
+          <text x="290" y="16">m</text>
+          <text x="324" y="16">8</text>
+          <text x="358" y="16" fill="#FBBF24">=</text>
+        </g>
+        <text class="mut" x="420" y="16" style="text-anchor: start">3 chars + 1 '=' pad</text>
+      </g>
+
+      <!-- 1 byte -->
+      <g transform="translate(0 130)">
+        <rect class="by" x="0"   y="0" width="42" height="22" rx="3"/>
+        <rect class="none" x="44"  y="0" width="42" height="22" rx="3"/>
+        <rect class="none" x="88"  y="0" width="42" height="22" rx="3"/>
+        <g class="mono" font-size="11" text-anchor="middle">
+          <text x="21"  y="16">66</text>
+        </g>
+        <text class="mut" x="-8" y="16" text-anchor="end">1 byte</text>
+
+        <rect class="data" x="240" y="0" width="32" height="22" rx="3"/>
+        <rect class="data" x="274" y="0" width="32" height="22" rx="3"/>
+        <rect class="pad"  x="308" y="0" width="32" height="22" rx="3"/>
+        <rect class="pad"  x="342" y="0" width="32" height="22" rx="3"/>
+        <g class="mono" font-size="13" text-anchor="middle">
+          <text x="256" y="16">Z</text>
+          <text x="290" y="16">g</text>
+          <text x="324" y="16" fill="#FBBF24">=</text>
+          <text x="358" y="16" fill="#FBBF24">=</text>
+        </g>
+        <text class="mut" x="420" y="16" style="text-anchor: start">2 chars + 2 '=' pad</text>
+      </g>
+    </g>
+
+    <!-- ============== Base32 + Base16 summary block ============== -->
+    <g transform="translate(20 222)">
+      <text class="ttag" x="0" y="0" fill="#A78BFA">BASE32 ·  5 BYTES → 8 CHARS  ·  GROUP SIZE 5</text>
+      <text class="mut" x="0" y="18">Valid terminal-quantum data-character counts: {0, 2, 4, 5, 7, 8}. Counts 1, 3, 6 are invalid.</text>
+      <text class="mut" x="0" y="32">Standard / HexExtended pad with '=' to 8-character alignment. Crockford and z-base-32 omit padding by spec convention.</text>
+
+      <text class="ttag" x="430" y="0" fill="#2DD4BF">BASE16 ·  1 BYTE → 2 CHARS  ·  NO PADDING</text>
+      <text class="mut" x="430" y="18">Input length is always an even number of nibbles (length % 2 == 0).</text>
+      <text class="mut" x="430" y="32">There is no terminal quantum or padding character.</text>
+    </g>
+
+    <!-- ============== Footer ============== -->
+    <text class="mut" x="20" y="285" style="text-anchor: start">Control padding at encode time with <tspan class="mono" font-size="11" fill="#F8FAFC">BaseFormattingOptions.OmitPadding</tspan>; accept unpadded input at decode time with <tspan class="mono" font-size="11" fill="#F8FAFC">BaseFormatStyles.AllowMissingPadding</tspan>.</text>
+  </g>
+</svg>
