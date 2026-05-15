@@ -28,4 +28,16 @@
     <ProjectReference Include="..\..\Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="FormatsResourceStrings.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FormatsResourceStrings.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Update="FormatsResourceStrings.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FormatsResourceStrings.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
 </Project>
