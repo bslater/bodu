@@ -50,17 +50,7 @@ For power-of-two radices (Base16, Base32, Base64), encoding is a **bit-stream op
 concatenated into a bit stream, then chunked into N-bit groups (where N is `log2(radix)`). Each N-bit group becomes
 one output symbol.
 
-```
-Base16 (4 bits / symbol):  AB → 10101011 → 1010 1011 → 'a' 'b'
-Base32 (5 bits / symbol):  fooba → 01100110 01101111 01101111 01100010 01100001
-                                  → 01100 11001 10111 10110 11000 10011 00001
-                                  → 12 25 23 22 24 19 1
-                                  → M  Z  X  W  Y  T  B
-Base64 (6 bits / symbol):  foo   → 01100110 01101111 01101111
-                                  → 011001 100110 111101 101111
-                                  → 25 38 61 47
-                                  → Z  m  9  v
-```
+![Bit-stream packing — Base16, Base32, Base64](../../images/diagrams/encoding-bit-packing.svg)
 
 Base58 is **not** a power of two: it uses big-integer divmod by 58. Base85 uses **4-byte blocks** packed into a
 32-bit unsigned integer, then divided by 85 four times to emit five characters.
@@ -69,6 +59,8 @@ Base58 is **not** a power of two: it uses big-integer divmod by 58. Base85 uses 
 
 The **terminal quantum** is the last group at the end of the input. When the input does not divide evenly into
 the group size, the spec defines which character counts are legal and how padding aligns the output.
+
+![Terminal quantum and padding — RFC 4648](../../images/diagrams/encoding-terminal-quantum.svg)
 
 RFC 4648 quantum rules:
 

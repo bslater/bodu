@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 320" role="img" aria-labelledby="ef-t ef-d">
+  <title id="ef-t">Encoding families — payload expansion at a glance</title>
+  <desc id="ef-d">The five encoding families ship in Bodu.Text.Encoding. Base16 takes 4 bits per character and produces 100 percent expansion — two characters for every byte. Base32 takes 5 bits per character and produces 60 percent expansion. Base64 takes 6 bits per character and produces 33 percent expansion — the lowest of the power-of-two radices. Base58 uses a non-power-of-two radix and big-integer arithmetic with roughly 37 percent expansion. Base85 uses 4-byte block packing and produces 25 percent expansion, the lowest in the library. Each bar in the chart shows the encoded length per 100 input bytes.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; }
+      .sub   { fill: #CBD5E1; font: 400 11px/1.25 "Segoe UI",Arial,sans-serif; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; }
+      .num   { fill: #F8FAFC; font: 700 13px/1 "Consolas","Menlo",monospace; }
+      .axis  { stroke: #334155; stroke-width: 1; fill: none; }
+      .b1    { fill: #14B8A6; }
+      .b2    { fill: #3B82F6; }
+      .b3    { fill: #A78BFA; }
+      .b4    { fill: #F59E0B; }
+      .b5    { fill: #EC4899; }
+      .raw   { fill: #475569; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="820" height="320"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="300" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Encoding families — payload expansion at a glance</text>
+
+    <!-- ===== Bar chart: 5 horizontal bars, scale 0..200 chars per 100 input bytes ===== -->
+    <!-- Plot area: x = 120..720 (600px width). 100 input bytes baseline at x=120. -->
+    <!-- Each unit = 3px. 100% expansion bar = 100 units = 300px → ends at x=420. -->
+
+    <g transform="translate(20 60)">
+
+      <!-- Baseline (raw 100 bytes) marker -->
+      <line class="axis" x1="100" y1="0"   x2="100" y2="208" stroke-dasharray="3 3"/>
+      <text class="mut" x="100" y="-8" text-anchor="middle">100 raw bytes (reference)</text>
+
+      <!-- Horizontal axis markers at 25, 50, 75, 100, 200 chars per 100 bytes -->
+      <g class="mut" text-anchor="middle">
+        <line class="axis" x1="175" y1="0" x2="175" y2="208" stroke-dasharray="2 4" opacity="0.3"/>
+        <text x="175" y="222">+25%</text>
+        <line class="axis" x1="250" y1="0" x2="250" y2="208" stroke-dasharray="2 4" opacity="0.3"/>
+        <text x="250" y="222">+50%</text>
+        <line class="axis" x1="325" y1="0" x2="325" y2="208" stroke-dasharray="2 4" opacity="0.3"/>
+        <text x="325" y="222">+75%</text>
+        <line class="axis" x1="400" y1="0" x2="400" y2="208" stroke-dasharray="2 4" opacity="0.3"/>
+        <text x="400" y="222">+100%</text>
+      </g>
+
+      <!-- Row 1: Base85 — 25% (125 chars / 100 bytes) -->
+      <g transform="translate(0 4)">
+        <text class="lbl" x="92" y="20" style="text-anchor: end">Base85</text>
+        <rect class="b5" x="100" y="6" width="75" height="22" rx="3"/>
+        <text class="num" x="183" y="22">25%   ·   125 chars / 100 bytes</text>
+        <text class="mut" x="0"   y="36">Ascii85 (Adobe), Z85 (ZeroMQ) — PDF / PostScript, shell-safe keys</text>
+      </g>
+
+      <!-- Row 2: Base64 — 33% (~134 chars / 100 bytes) -->
+      <g transform="translate(0 48)">
+        <text class="lbl" x="92" y="20" style="text-anchor: end">Base64</text>
+        <rect class="b3" x="100" y="6" width="100" height="22" rx="3"/>
+        <text class="num" x="208" y="22">33%   ·   134 chars / 100 bytes</text>
+        <text class="mut" x="0"   y="36">Standard, URL-safe, MIME — JWT, certificates, generic binary-in-text</text>
+      </g>
+
+      <!-- Row 3: Base58 — 37% (~137 chars / 100 bytes) -->
+      <g transform="translate(0 92)">
+        <text class="lbl" x="92" y="20" style="text-anchor: end">Base58</text>
+        <rect class="b4" x="100" y="6" width="111" height="22" rx="3"/>
+        <text class="num" x="219" y="22">~37%   ·   ~137 chars / 100 bytes</text>
+        <text class="mut" x="0"   y="36">Bitcoin / Flickr, Ripple — Bitcoin addresses, IPFS CIDs, Solana, Stellar</text>
+      </g>
+
+      <!-- Row 4: Base32 — 60% (160 chars / 100 bytes) -->
+      <g transform="translate(0 136)">
+        <text class="lbl" x="92" y="20" style="text-anchor: end">Base32</text>
+        <rect class="b2" x="100" y="6" width="180" height="22" rx="3"/>
+        <text class="num" x="288" y="22">60%   ·   160 chars / 100 bytes</text>
+        <text class="mut" x="0"   y="36">Standard, HexExtended, Crockford, Z-Base-32 — TOTP, DNSSEC, human-spoken IDs</text>
+      </g>
+
+      <!-- Row 5: Base16 — 100% (200 chars / 100 bytes) -->
+      <g transform="translate(0 180)">
+        <text class="lbl" x="92" y="20" style="text-anchor: end">Base16</text>
+        <rect class="b1" x="100" y="6" width="300" height="22" rx="3"/>
+        <text class="num" x="408" y="22">100%   ·   200 chars / 100 bytes</text>
+        <text class="mut" x="0"   y="36">Hex (lower / upper) — hex dumps, hash digests, low-level binary inspection</text>
+      </g>
+    </g>
+
+  </g>
+</svg>

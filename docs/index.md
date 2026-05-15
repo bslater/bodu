@@ -74,6 +74,7 @@ Six independent NuGet packages that share a single solution, a single set of con
 </div>
 
 <div class="bodu-card">
+  <img src="images/hero-text.svg" alt="Bodu.Text.Encoding" />
   <h3>Bodu.Text.Encoding</h3>
   <p>Binary-to-text encoders for <strong>Base16</strong>, <strong>Base32</strong>, <strong>Base64</strong>, <strong>Base58</strong>, and <strong>Base85</strong> with every common variant — RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Flickr / Ripple, Adobe Ascii85, ZeroMQ Z85. Every encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming methods, length-prediction helpers, validation predicates, plus a unified <code>IBinaryEncoding</code> interface for runtime-pluggable encoding choice.</p>
   <div class="bodu-card-links">

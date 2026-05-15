@@ -17,36 +17,17 @@ It fills two gaps that `System.Convert` and `System.Buffers.Text.Base64` leave o
 
 ## Core mental model
 
-Every encoding in the library follows the same conceptual pipeline:
+![Encode and decode pipeline — binary bytes to encoded text and back](../../images/diagrams/encoding-pipeline.svg)
 
-```
-                   ┌──────────────────────────────────────────────────────────────┐
-                   │                       binary bytes                            │
-                   └──────────────────────────────────────────────────────────────┘
-                                            │
-                  ┌─────────────────────────┴──────────────────────────────────┐
-                  │ Encode                                                     │
-                  │  • bit-stream pack into N-bit symbols (Base16/32/64)       │
-                  │  • big-integer divmod (Base58)                             │
-                  │  • 4-byte block → 5 chars (Base85)                         │
-                  └─────────────────────────┬──────────────────────────────────┘
-                                            │
-                  ┌─────────────────────────┴──────────────────────────────────┐
-                  │ Apply variant transforms                                   │
-                  │  • alphabet (Standard / hex / URL-safe / Crockford / Z85)  │
-                  │  • padding (=) / shortcut (Ascii85 'z')                    │
-                  │  • optional decoration (UpperCase / spacing / line breaks) │
-                  └─────────────────────────┬──────────────────────────────────┘
-                                            │
-                   ┌────────────────────────┴─────────────────────────────────┐
-                   │                       encoded text                         │
-                   └──────────────────────────────────────────────────────────────┘
-```
-
-Decoding is the same path in reverse: optional decoration stripping → alphabet lookup → bit-stream unpack
-(or divmod / 5-char block expansion).
+Every encoding in the library follows the same four-stage pipeline. Encoding takes raw binary bytes, runs the
+radix conversion (bit-stream pack for Base16 / Base32 / Base64, big-integer divmod for Base58, 4-byte block packing
+for Base85), applies the variant-specific transform (alphabet swap, padding, shortcut), and optionally adds
+decorations (case folding, prefix, byte spacing, line breaks). Decoding is the same path in reverse — strip
+decoration, apply alphabet lookup, then bit-stream unpack / divmod / block expansion.
 
 ## Where each encoding fits
+
+![Encoding families — payload expansion at a glance](../../images/diagrams/encoding-families.svg)
 
 | Encoding | Bits per symbol | Payload expansion | Typical use cases |
 |---|---|---|---|
