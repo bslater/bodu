@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Threading;
-
 namespace Bodu.Security.Cryptography;
 
 public sealed partial class Whirlpool

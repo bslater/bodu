@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SipHashTests.64.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -76,13 +76,13 @@ public partial class SipHash64Tests
             {
                 "310E0EDD47DB6F72", "FD67DC93C539F874", "5A4FA9D909806C0D", "2D7EFBD796666785",
                 "B7877127E09427CF", "8DA699CD64557618", "CEE3FE586E46C9CB", "37D1018BF50002AB",
-                "6224939A79F5F593", "B0E4A90BDF82009E", 
+                "6224939A79F5F593", "B0E4A90BDF82009E",
             },
             SipHashVariant.SipHash_4_8 => new[]
             {
                 "41DA38992B0579C8", "51B89552F91459C8", "923716F0BEDDC333", "6A46D47D6547C105",
                 "C238592B4AC1FA48", "F6C2D7D9CF5247E1", "6BB6BC34C835558E", "47D73F715ABEFD4E",
-                "20B58B9C072FDB50", "36319AF35EE11253", 
+                "20B58B9C072FDB50", "36319AF35EE11253",
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant))
         };

@@ -18,10 +18,10 @@ public partial class CryptoHelpersTests
         // Typical valid depad scenarios
         new object[] { PaddingMode.PKCS7, "1020300505050505", "102030" },
         new object[] { PaddingMode.PKCS7, "0102030404040404", "01020304" },
-        new object[] { PaddingMode.PKCS7, "0808080808080808", "" },
+        new object[] { PaddingMode.PKCS7, "0808080808080808", string.Empty },
         new object[] { PaddingMode.PKCS7, "1020304050607001", "10203040506070" },
         new object[] { PaddingMode.ANSIX923, "1020300000000005", "102030" },
-        new object[] { PaddingMode.ANSIX923, "0000000000000008", "" },
+        new object[] { PaddingMode.ANSIX923, "0000000000000008", string.Empty },
         new object[] { PaddingMode.ANSIX923, "1020304050607001", "10203040506070" },
         new object[] { PaddingMode.Zeros, "1020300000000000", "1020300000000000" },
         new object[] { PaddingMode.None, "1020304050607080", "1020304050607080" },
@@ -35,13 +35,13 @@ public partial class CryptoHelpersTests
         new object[] { PaddingMode.None, "0001020304050607", "0001020304050607" },
 
         // Empty input with single-byte block (PKCS7)
-        new object[] { PaddingMode.PKCS7, "01", "" },
+        new object[] { PaddingMode.PKCS7, "01", string.Empty },
 
         // Non-power-of-two block size
         new object[] { PaddingMode.PKCS7, "01060606060606", "01" },
 
         // Empty input input
-        new object[] { PaddingMode.PKCS7, "0808080808080808", "" }
+        new object[] { PaddingMode.PKCS7, "0808080808080808", string.Empty }
     };
 
     /// <summary>

@@ -38,13 +38,13 @@ public partial class CryptoHelpersTests
         new object[] { PaddingMode.None, "0001020304050607", 8, "0001020304050607" },
 
         // Minimum block size of 1 (PKCS7)
-        new object[] { PaddingMode.PKCS7, "", 1, "01" },
+        new object[] { PaddingMode.PKCS7, string.Empty, 1, "01" },
 
         // Non-power-of-two block size (7)
         new object[] { PaddingMode.PKCS7, "01", 7, "01060606060606" },
 
         // Empty input
-        new object[] { PaddingMode.PKCS7, "", 8, "0808080808080808" }
+        new object[] { PaddingMode.PKCS7, string.Empty, 8, "0808080808080808" }
     };
 
     /// <summary>

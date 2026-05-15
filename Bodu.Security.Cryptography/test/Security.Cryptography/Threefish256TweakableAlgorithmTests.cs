@@ -46,7 +46,7 @@ public sealed partial class Threefish256TweakableAlgorithmTests
     /// <inheritdoc />
     protected override Threefish256 CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
     {
-        var algorithm = (Threefish256)Threefish256.Create();
+        var algorithm = Threefish256.Create();
         algorithm.Mode = CipherMode.ECB;
         algorithm.Padding = PaddingMode.None;
         algorithm.Key = answer.Key!;

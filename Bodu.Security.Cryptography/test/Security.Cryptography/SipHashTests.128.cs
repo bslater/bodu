@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SipHashTests.128.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -88,13 +88,13 @@ public partial class SipHash128Tests
             {
                 "A3817F04BA25A8E66DF67214C7550293", "DA87C1D86B99AF44347659119B22FC45", "8177228DA4A45DC7FCA38BDEF60AFFE4", "9C70B60C5267A94E5F33B6B02985ED51",
                 "F88164C12D9C8FAF7D0F6E7C7BCD5579", "1368875980776F8854527A07690E9627", "14EECA338B208613485EA0308FD7A15E", "A1F1EBBED8DBC153C0B84AA61FF08239",
-                "3B62A9BA6258F5610F83E264F31497B4", "264499060AD9BAABC47F8B02BB6D71ED", 
+                "3B62A9BA6258F5610F83E264F31497B4", "264499060AD9BAABC47F8B02BB6D71ED",
             },
             SipHashVariant.SipHash_4_8 => new[]
             {
                 "1F64CE586DA904E9CFECE85483A70A6C", "47345DA8EF4C79476AF27CA791C7A280", "E1495FA396CA2DC62273815F188221A4", "C7A273844AC54E835A9CB67F81057602",
                 "541F52BBF43ECE4E2A95C8E01F656DEF", "17973BD40DF34815244F990CBF12BE5D", "6B0B360D563280CDB17D56C908E1F5FF", "ED00E13B184BF1C2726B8B54FFD2EEE0",
-                "A7D946138FF9EDF5364A5A23AFCAE063", "9E7314B7545CECA38B9A5549E4FB0BE8", 
+                "A7D946138FF9EDF5364A5A23AFCAE063", "9E7314B7545CECA38B9A5549E4FB0BE8",
             },
             _ => throw new ArgumentOutOfRangeException(nameof(variant))
         };

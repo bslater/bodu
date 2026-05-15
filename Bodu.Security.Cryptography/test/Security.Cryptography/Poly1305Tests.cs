@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Poly1305Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -75,7 +75,7 @@ public partial class Poly1305Tests
             "4A40878F8A86881A7DDFAA023EE1C79B", "09702BB6238F9BF38133487AB52A0319", "38C2E56254AD7AC5638CF184301E91A6", "9002C8A709E81D7BF4769E83A89C0079",
             "2E411A1AD9A562A380C69184FC818264", "70B33F7EDBFF28F22D29A080512BD5E9", "DA8F878A51920DC1865BD94D56D4D3A9", "11FFFEA7441A30305EBE905DE2E1D0FD",
             "688072BA37F4C9E2579EFD99C82CE74E", "B57E3C32E5BC8A8E9A22E6108AE9F06D", "2776E5446105293658F5F4010B308436", "D1F28598BC850CAAE6C4579B04BB4FA0",
-            "A18A0DE2BA299128303A398E28BDE4F0", "37477D65160C3CA0466AAC5780785EF5", 
+            "A18A0DE2BA299128303A398E28BDE4F0", "37477D65160C3CA0466AAC5780785EF5",
         };
 
     public override IEnumerable<SingleTestVariant> GetHashAlgorithmVariants() => new[]

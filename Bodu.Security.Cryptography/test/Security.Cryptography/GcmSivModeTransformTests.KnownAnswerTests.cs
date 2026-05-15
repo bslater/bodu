@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
@@ -34,8 +32,8 @@ public sealed partial class GcmSivModeTransformTests
         {
             "01000000000000000000000000000000",  // master key
             "030000000000000000000000",          // 12-byte nonce
-            "",                                  // AAD (hex)
-            "",                                  // plaintext (hex)
+string.Empty,                                  // AAD (hex)
+string.Empty,                                  // plaintext (hex)
             "dc20e2d83f25705bb49e439eca56de25"   // expected Encrypt() output: CT(0 bytes) || Tag(16 bytes)
         };
     }

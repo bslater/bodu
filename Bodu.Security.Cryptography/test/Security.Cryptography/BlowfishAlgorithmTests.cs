@@ -41,7 +41,7 @@ public sealed partial class BlowfishAlgorithmTests
     /// <inheritdoc />
     protected override Blowfish CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
     {
-        var algorithm = (Blowfish)Blowfish.Create();
+        var algorithm = Blowfish.Create();
         algorithm.Mode = CipherMode.ECB;
         algorithm.Padding = PaddingMode.None;
         algorithm.Key = answer.Key!;

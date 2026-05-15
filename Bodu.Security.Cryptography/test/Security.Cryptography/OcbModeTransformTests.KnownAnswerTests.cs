@@ -37,8 +37,8 @@ public sealed partial class OcbModeTransformTests
             TestName       = "Test 01: A=, P=, CT=0 bytes, Tag=16 bytes",
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110000000000",
-            AssociatedData = "",
-            PlainText      = "",
+            AssociatedData = string.Empty,
+            PlainText      = string.Empty,
             CipherText     = "785407BFFFC8AD9EDCC5520AC9111EE6"
         },
         new OcbKat {
@@ -55,14 +55,14 @@ public sealed partial class OcbModeTransformTests
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110200000000",
             AssociatedData = "0001020304050607",
-            PlainText      = "",
+            PlainText      = string.Empty,
             CipherText     = "81017F8203F081277152FADE694A0A00"
         },
         new OcbKat {
             TestName       = "Test 04: A=, P=00010203, CT=8 bytes, Tag=16 bytes",
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110300000000",
-            AssociatedData = "",
+            AssociatedData = string.Empty,
             PlainText      = "0001020304050607",
             CipherText     = "45DD69F8F5AAE724" +
                              "14054CD1F35D82760B2CD00D2F99BFA9"
@@ -81,14 +81,14 @@ public sealed partial class OcbModeTransformTests
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110500000000",
             AssociatedData = "000102030405060708090A0B0C0D0E0F",
-            PlainText      = "",
+            PlainText      = string.Empty,
             CipherText     = "8CF761B6902EF764462AD86498CA6B97"
         },
         new OcbKat {
             TestName       = "Test 07: A=, P=00010203, CT=16 bytes, Tag=16 bytes",
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110600000000",
-            AssociatedData = "",
+            AssociatedData = string.Empty,
             PlainText      = "000102030405060708090A0B0C0D0E0F",
             CipherText     = "5CE88EC2E0692706A915C00AEB8B2396" +
                              "F40E1C743F52436BDF06D8FA1ECA343D"
@@ -107,14 +107,14 @@ public sealed partial class OcbModeTransformTests
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110800000000",
             AssociatedData = "000102030405060708090A0B0C0D0E0F1011121314151617",
-            PlainText      = "",
+            PlainText      = string.Empty,
             CipherText     = "6DC225A071FC1B9F7C69F93B0F1E10DE"
         },
         new OcbKat {
             TestName       = "Test 10: A=, P=00010203, CT=24 bytes, Tag=16 bytes",
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110900000000",
-            AssociatedData = "",
+            AssociatedData = string.Empty,
             PlainText      = "000102030405060708090A0B0C0D0E0F1011121314151617",
             CipherText     = "221BD0DE7FA6FE993ECCD769460A0AF2D6CDED0C395B1C3C" +
                              "E725F32494B9F914D85C0B1EB38357FF"
@@ -133,14 +133,14 @@ public sealed partial class OcbModeTransformTests
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110B00000000",
             AssociatedData = "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F",
-            PlainText      = "",
+            PlainText      = string.Empty,
             CipherText     = "FE80690BEE8A485D11F32965BC9D2A32"
         },
         new OcbKat {
             TestName       = "Test 13: A=, P=00010203, CT=32 bytes, Tag=16 bytes",
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110C00000000",
-            AssociatedData = "",
+            AssociatedData = string.Empty,
             PlainText      = "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F",
             CipherText     = "2942BFC773BDA23CABC6ACFD9BFD5835BD300F0973792EF46040C53F1432BCDF" +
                              "B5E1DDE3BC18A5F840B52E653444D5DF"
@@ -159,14 +159,14 @@ public sealed partial class OcbModeTransformTests
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110E00000000",
             AssociatedData = "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F2021222324252627",
-            PlainText      = "",
+            PlainText      = string.Empty,
             CipherText     = "C5CD9D1850C141E358649994EE701B68"
         },
         new OcbKat {
             TestName       = "Test 16: A=, P=00010203, CT=40 bytes, Tag=16 bytes",
             Key            = "000102030405060708090A0B0C0D0E0F",
             Nonce          = "BBAA9988776655443322110F00000000",
-            AssociatedData = "",
+            AssociatedData = string.Empty,
             PlainText      = "000102030405060708090A0B0C0D0E0F101112131415161718191A1B1C1D1E1F2021222324252627",
             CipherText     = "4412923493C57D5DE0D700F753CCE0D1D2D95060122E9F15A5DDBFC5787E50B5CC55EE507BCB084E" +
                              "479AD363AC366B95A98CA5F3000B1479"

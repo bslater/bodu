@@ -7,7 +7,6 @@
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
-using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 
@@ -218,7 +217,7 @@ public sealed class Poly1305
 
         // Fold final carry into h0 (modulo 2^130 - 5 reduction)
         h0 += (uint)(carry * 5);
-        carry = h0 >> 26; h0 &= (uint)Mask26;
+        carry = h0 >> 26; h0 &= Mask26;
         h1 += (uint)carry;
 
         // Save accumulator state

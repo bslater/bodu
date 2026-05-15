@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using Bodu.Extensions;
 

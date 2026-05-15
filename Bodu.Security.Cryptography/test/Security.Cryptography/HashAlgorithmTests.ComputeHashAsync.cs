@@ -4,10 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test;
-using Bodu.Test.IO;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using Bodu.Test;
+using Bodu.Test.IO;
 
 namespace Bodu.Security.Cryptography;
 

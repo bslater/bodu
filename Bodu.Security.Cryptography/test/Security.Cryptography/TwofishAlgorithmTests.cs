@@ -45,7 +45,7 @@ public sealed partial class TwofishAlgorithmTests
     /// <inheritdoc />
     protected override Twofish CreateAlgorithmForKnownAnswer(BlockCipherKnownAnswer answer)
     {
-        var algorithm = (Twofish)Twofish.Create();
+        var algorithm = Twofish.Create();
         algorithm.Mode = CipherMode.ECB;
         algorithm.Padding = PaddingMode.None;
         algorithm.Key = answer.Key!;

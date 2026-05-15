@@ -4,9 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.Security.Cryptography;
 

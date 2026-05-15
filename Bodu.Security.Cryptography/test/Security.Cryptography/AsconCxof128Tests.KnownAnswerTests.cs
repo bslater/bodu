@@ -28,14 +28,14 @@ public partial class AsconCxof128Tests
     /// <param name="outputLength">Requested output length in bytes.</param>
     [TestMethod]
 
-    [DataRow(0, 0,  32)]
-    [DataRow(0, 1,  32)]
-    [DataRow(1, 0,  32)]
-    [DataRow(1, 1,  32)]
-    [DataRow(0, 8,  32)]
-    [DataRow(8, 0,  32)]
-    [DataRow(8, 8,  32)]
-    [DataRow(9, 9,  64)]
+    [DataRow(0, 0, 32)]
+    [DataRow(0, 1, 32)]
+    [DataRow(1, 0, 32)]
+    [DataRow(1, 1, 32)]
+    [DataRow(0, 8, 32)]
+    [DataRow(8, 0, 32)]
+    [DataRow(8, 8, 32)]
+    [DataRow(9, 9, 64)]
     [DataRow(16, 16, 32)]
     [DataRow(17, 17, 32)]
     public void GetHash_WithVariousLengths_ShouldProduceCorrectOutputLength(
@@ -97,11 +97,11 @@ public partial class AsconCxof128Tests
     /// </summary>
     [TestMethod]
 
-    [DataRow(0,  0,  1)]
-    [DataRow(0,  7,  8)]
-    [DataRow(0,  8,  9)]
-    [DataRow(4,  0,  1)]
-    [DataRow(4,  7,  8)]
+    [DataRow(0, 0, 1)]
+    [DataRow(0, 7, 8)]
+    [DataRow(0, 8, 9)]
+    [DataRow(4, 0, 1)]
+    [DataRow(4, 7, 8)]
     public void GetHash_ConsecutiveMessageLengths_ShouldProduceDifferentOutputs(
         int customizationLength, int msgLen1, int msgLen2)
     {
@@ -136,13 +136,13 @@ public partial class AsconCxof128Tests
     /// <param name="expectedHex">Expected digest as an uppercase hex string.</param>
     [TestMethod]
 
-    [DataRow(0,  0,  32, "5F3BAD7F21E67C1A86D198604EFB594C096B80C43223679EDE3B16BD1BEE6BE5")]
-    [DataRow(0,  1,  32, "410EF74BBF6E16EACAF8EA9E8691CB77E7D6CE449AD8D3DD489965254B5846BF")]
-    [DataRow(1,  0,  32, "DD73FB03019376173D6B0DA8C86D3D1CE04607AE7738C99DFAE54710A9702A3D")]
-    [DataRow(1,  1,  32, "C751C00DC01B5F7DB430658C77A08844E103FB5ED4BF8EAEFBA0E8E1FC7B11D5")]
-    [DataRow(0,  8,  32, "0AF1E0799ABA63E6053785E47187268F44C8B725246F16A378256DFB3FB6B5BB")]
-    [DataRow(8,  0,  32, "1A008D442A5F7B1443B5DE68746020AA4CCDD9492D52260A78F788246F934A33")]
-    [DataRow(8,  8,  32, "426B59200E3D762EBCFDEC7138CD0B665BD234E06CB174B2430EAA14DD4669E7")]
+    [DataRow(0, 0, 32, "5F3BAD7F21E67C1A86D198604EFB594C096B80C43223679EDE3B16BD1BEE6BE5")]
+    [DataRow(0, 1, 32, "410EF74BBF6E16EACAF8EA9E8691CB77E7D6CE449AD8D3DD489965254B5846BF")]
+    [DataRow(1, 0, 32, "DD73FB03019376173D6B0DA8C86D3D1CE04607AE7738C99DFAE54710A9702A3D")]
+    [DataRow(1, 1, 32, "C751C00DC01B5F7DB430658C77A08844E103FB5ED4BF8EAEFBA0E8E1FC7B11D5")]
+    [DataRow(0, 8, 32, "0AF1E0799ABA63E6053785E47187268F44C8B725246F16A378256DFB3FB6B5BB")]
+    [DataRow(8, 0, 32, "1A008D442A5F7B1443B5DE68746020AA4CCDD9492D52260A78F788246F934A33")]
+    [DataRow(8, 8, 32, "426B59200E3D762EBCFDEC7138CD0B665BD234E06CB174B2430EAA14DD4669E7")]
     [DataRow(16, 16, 32, "16858DC805F8E84205479149FF8855A1822B924329E51FC2BA7B200A6A222077")]
     [DataRow(17, 17, 32, "C86D091C5D40DD2E371C8C453D0CB3AA5F583244C8413C0A9E0E625CAF988E6A")]
     public void GetHash_WhenGivenKnownInputs_ShouldMatchReferenceDigest(
