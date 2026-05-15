@@ -85,4 +85,22 @@ public sealed class SmokeTests
         Assert.AreEqual("9Ajdvzr", encoded);
         CollectionAssert.AreEqual(original, decoded);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Encode(byte[], Base85Variant)" /> uses the Ascii85 <c>z</c> shortcut for an
+    /// all-zero 4-byte input and that <see cref="Base85.Decode(string, Base85Variant, BaseFormatStyles)" /> reverses
+    /// it.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void Base85_EncodeDecode_ShouldHandleZShortcut()
+    {
+        byte[] original = new byte[] { 0, 0, 0, 0 };
+
+        string encoded = Base85.Encode(original);
+        byte[] decoded = Base85.Decode(encoded);
+
+        Assert.AreEqual("z", encoded);
+        CollectionAssert.AreEqual(original, decoded);
+    }
 }
