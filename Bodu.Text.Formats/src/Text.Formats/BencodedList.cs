@@ -4,10 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Bodu.Text.Formats;
 
 /// <summary>
@@ -35,7 +31,7 @@ public sealed class BencodedList
         this.items = items.ToArray();
 
         if (this.items.Any(item => item is null))
-            throw new ArgumentException("The list cannot contain null values.", nameof(items));
+            ThrowHelper.ThrowArgumentException_NullListElement(nameof(items));
     }
 
     /// <inheritdoc />

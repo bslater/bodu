@@ -4,9 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.Text;
-
 namespace Bodu.Text.Formats;
 
 /// <summary>
