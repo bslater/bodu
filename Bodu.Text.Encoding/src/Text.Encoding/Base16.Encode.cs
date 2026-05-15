@@ -140,24 +140,23 @@ public static partial class Base16
     /// <param name="bytes">The byte span to encode.</param>
     /// <param name="upper">Specifies whether to use upper case characters.</param>
     /// <returns>A hexadecimal string representing the input bytes.</returns>
-    /// <remarks>Uses <see cref="string.Create{TState}" /> to write characters directly into the resulting string's
-    /// backing buffer without an intermediate allocation.</remarks>
+    /// <remarks>
+    /// Delegates the upper case path to <see cref="Convert.ToHexString(ReadOnlySpan{byte})" /> to inherit the BCL's
+    /// SIMD-accelerated hex conversion. On .NET 9 or later the lower case path delegates to
+    /// <c>Convert.ToHexStringLower</c>; on earlier frameworks it uses the local hand-rolled lookup path.
+    /// </remarks>
     private static string EncodeFast(ReadOnlySpan<byte> bytes, bool upper)
     {
-        char[] map = (upper ? HexUpperAlphabet : HexLowerAlphabet).ToCharArray();
-        byte[] buffer = bytes.ToArray();
+        if (upper)
+            return Convert.ToHexString(bytes);
 
-        return string.Create(buffer.Length * 2, (buffer, map), static (dest, state) =>
-        {
-            byte[] data = state.buffer;
-            char[] alphabet = state.map;
-            for (int i = 0; i < data.Length; i++)
-            {
-                byte b = data[i];
-                dest[i * 2] = alphabet[b >> 4];
-                dest[(i * 2) + 1] = alphabet[b & 0x0F];
-            }
-        });
+#if NET9_0_OR_GREATER
+        return Convert.ToHexStringLower(bytes);
+#else
+        char[] buffer = new char[bytes.Length * 2];
+        EncodeToHexCore(bytes, buffer, upperCase: false);
+        return new string(buffer);
+#endif
     }
 
     /// <summary>
