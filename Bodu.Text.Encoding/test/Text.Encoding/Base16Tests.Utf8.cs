@@ -342,4 +342,85 @@ public sealed partial class Base16Tests
         Assert.AreEqual(CanonicalHexUpper, System.Text.Encoding.ASCII.GetString(destination));
     }
 
+    /// <summary>
+    /// Verifies that the lenient UTF-8 decode path takes the heap-allocated scratch branch when the source exceeds the
+    /// 256-byte stackalloc threshold, and the kept-to-source map is still correct for partial outcomes.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenLenientStylesAndLargeInput_ShouldTakeHeapPath()
+    {
+        // 600 hex digits = 1200 UTF-8 bytes — well above the 256-byte stackalloc threshold for the lenient projection.
+        byte[] payload = new byte[300];
+        new Random(0xC0DE).NextBytes(payload);
+        byte[] encoded = Base16.EncodeToUtf8(payload);
+
+        // Inject whitespace every 10 bytes so the IgnoreWhitespace path is exercised on the heap-allocated map.
+        byte[] withWhitespace = new byte[encoded.Length + (encoded.Length / 10)];
+        int dst = 0;
+        for (int i = 0; i < encoded.Length; i++)
+        {
+            withWhitespace[dst++] = encoded[i];
+            if (((i + 1) % 10) == 0 && i != encoded.Length - 1)
+                withWhitespace[dst++] = (byte)' ';
+        }
+
+        byte[] destination = new byte[payload.Length];
+        OperationStatus status = Base16.DecodeFromUtf8(
+            withWhitespace.AsSpan(0, dst),
+            destination,
+            out int bytesConsumed,
+            out int bytesWritten,
+            BaseFormatStyles.IgnoreWhitespace);
+
+        Assert.AreEqual(OperationStatus.Done, status);
+        Assert.AreEqual(dst, bytesConsumed);
+        Assert.AreEqual(payload.Length, bytesWritten);
+        CollectionAssert.AreEqual(payload, destination);
+    }
+
+    /// <summary>
+    /// Verifies that the lenient UTF-8 decode path returns <see cref="OperationStatus.InvalidData" /> when an invalid
+    /// hex character remains after whitespace stripping. The partial-bytes-written counter reflects the strict
+    /// decoder's progress before it hit the invalid pair, and <c>bytesConsumed</c> resets to <c>0</c>.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenLenientStylesAndInvalidCharAfterStripping_ShouldReturnInvalidData()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD ZZ");
+        byte[] destination = new byte[4];
+
+        OperationStatus status = Base16.DecodeFromUtf8(
+            utf8,
+            destination,
+            out int bytesConsumed,
+            out int bytesWritten,
+            BaseFormatStyles.IgnoreWhitespace);
+
+        Assert.AreEqual(OperationStatus.InvalidData, status);
+        Assert.AreEqual(0, bytesConsumed);
+        Assert.AreEqual(2, bytesWritten);
+    }
+
+    /// <summary>
+    /// Verifies that the lenient UTF-8 decode path with <see cref="BaseFormatStyles.AllowPrefix" /> still works when
+    /// the source does not start with the prefix (the prefix-skip branch is a no-op).
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenAllowPrefixButPrefixMissing_ShouldDecodeWithoutSkip()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("DEADBEEF");
+        byte[] destination = new byte[4];
+
+        OperationStatus status = Base16.DecodeFromUtf8(
+            utf8,
+            destination,
+            out int bytesConsumed,
+            out int bytesWritten,
+            BaseFormatStyles.AllowPrefix);
+
+        Assert.AreEqual(OperationStatus.Done, status);
+        Assert.AreEqual(utf8.Length, bytesConsumed);
+        Assert.AreEqual(4, bytesWritten);
+    }
+
 }

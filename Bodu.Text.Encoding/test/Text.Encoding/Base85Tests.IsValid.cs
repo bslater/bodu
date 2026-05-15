@@ -107,4 +107,37 @@ public sealed partial class Base85Tests
         Assert.IsTrue(Base85.IsValid("HelloWorld".AsSpan(), Base85Variant.Z85));
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Base85.IsValid" /> with <see cref="BaseFormatStyles.IgnoreWhitespace" /> accepts an
+    /// Ascii85 input containing embedded whitespace — drives the whitespace-skip branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAscii85IgnoreWhitespaceAndInputContainsWhitespace_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Base85.IsValid("9jq o^".AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.IgnoreWhitespace));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="false" /> for an input containing a
+    /// character past the 128-entry lookup table range — exercises the <c>c &gt;= lookup.Length</c> branch
+    /// independently of the <c>lookup[c] &lt; 0</c> branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAscii85InputContainsCharAboveLookupRange_ShouldReturnFalse()
+    {
+        // 'ÿ' (U+00FF) is past the 128-entry Ascii85 lookup.
+        Assert.IsFalse(Base85.IsValid("9jqÿo".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.IsValid" /> for the Z85 variant ignores
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> — Z85 has no delimiter convention, so a <c>&lt;~</c> prefix is just
+    /// invalid characters under Z85.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenZ85AndAllowPrefix_ShouldStillRejectDelimiters()
+    {
+        Assert.IsFalse(Base85.IsValid("<~HelloWorld~>".AsSpan(), Base85Variant.Z85, BaseFormatStyles.AllowPrefix));
+    }
+
 }
