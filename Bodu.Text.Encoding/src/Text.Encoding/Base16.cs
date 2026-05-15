@@ -265,36 +265,4 @@ public static partial class Base16
         digitCount = digits;
         return true;
     }
-
-    /// <summary>
-    /// Legacy entry point retained for backwards compatibility with callers that expect a count without validation.
-    /// New code should use <see cref="TryCountHexDigits" />.
-    /// </summary>
-    /// <param name="source">The hexadecimal input.</param>
-    /// <param name="styles">The parsing styles.</param>
-    /// <returns>The retained character count.</returns>
-    private static int CountHexDigits(ReadOnlySpan<char> source, BaseFormatStyles styles)
-    {
-        int start = 0;
-        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-
-        if (styles.HasFlag(BaseFormatStyles.AllowPrefix) &&
-            source.Length >= Prefix.Length &&
-            source.StartsWith(Prefix.AsSpan(), StringComparison.OrdinalIgnoreCase))
-        {
-            start = Prefix.Length;
-        }
-
-        int digits = 0;
-        for (int i = start; i < source.Length; i++)
-        {
-            char c = source[i];
-            if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
-                continue;
-
-            digits++;
-        }
-
-        return digits;
-    }
 }
