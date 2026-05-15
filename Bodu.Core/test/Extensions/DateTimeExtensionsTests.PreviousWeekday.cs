@@ -20,24 +20,24 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, CalendarWeekendDefinition)" /> preserves the input's <see cref="DateTime.Kind" />.
+    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, WorkingDaysOfWeek)" /> preserves the input's <see cref="DateTime.Kind" />.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenCalled_ShouldPreserveInputKind()
     {
         var input = new DateTime(2024, 4, 22, 0, 0, 0, DateTimeKind.Utc);
-        DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday);
+        DateTime actual = input.PreviousWeekday(WorkingDaysOfWeek.MondayToFriday);
         Assert.AreEqual(DateTimeKind.Utc, actual.Kind);
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, CalendarWeekendDefinition)" /> preserves the input's <see cref="DateTime.TimeOfDay" />.
+    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, WorkingDaysOfWeek)" /> preserves the input's <see cref="DateTime.TimeOfDay" />.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenCalled_ShouldPreserveTimeOfDay()
     {
         var input = new DateTime(2024, 4, 22, 9, 15, 0);
-        DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday);
+        DateTime actual = input.PreviousWeekday(WorkingDaysOfWeek.MondayToFriday);
         Assert.AreEqual(new TimeSpan(9, 15, 0), actual.TimeOfDay);
     }
 
@@ -46,18 +46,18 @@ public partial class DateTimeExtensionsTests
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the provider overload falls back to the <see cref="CalendarWeekendDefinition" /> enum value when the provider is <see langword="null" />.
+    /// Verifies that the provider overload falls back to the <see cref="WorkingDaysOfWeek" /> enum value when the provider is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenProviderIsNull_ShouldUseWeekendEnum()
     {
         var input = new DateTime(2024, 4, 22);
-        DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday, provider: null);
+        DateTime actual = input.PreviousWeekday(WorkingDaysOfWeek.MondayToFriday, provider: null);
         Assert.AreEqual(new DateTime(2024, 4, 19), actual);
     }
 
     /// <summary>
-    /// Verifies that the provider overload still throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarWeekendDefinition" /> even when a provider is supplied.
+    /// Verifies that the provider overload still throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="WorkingDaysOfWeek" /> even when a provider is supplied.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -66,12 +66,12 @@ public partial class DateTimeExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = input.PreviousWeekday((CalendarWeekendDefinition)999, provider: null);
+            _ = input.PreviousWeekday((WorkingDaysOfWeek)999, provider: null);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="CalendarWeekendDefinition.Custom" /> with a user-supplied <c>IWeekendDefinitionProvider</c> applies the provider's rule when determining the previous weekday.
+    /// Verifies that <see cref="WorkingDaysOfWeek.Custom" /> with a user-supplied <c>IWeekendDefinitionProvider</c> applies the provider's rule when determining the previous weekday.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenUsingCustomProvider_ShouldApplyProviderRule()
@@ -80,23 +80,23 @@ public partial class DateTimeExtensionsTests
         IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
 
         // Only Friday is weekend per provider. Previous calendar day is Fri 19 → weekend, so skip to Thu 18.
-        DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.Custom, provider);
+        DateTime actual = input.PreviousWeekday(WorkingDaysOfWeek.Custom, provider);
         Assert.AreEqual(new DateTime(2024, 4, 18), actual);
     }
 
     /// <summary>
-    /// Verifies that with a Friday/Saturday weekend, <see cref="DateTimeExtensions.PreviousWeekday(DateTime, CalendarWeekendDefinition)" /> skips both weekend days and returns the preceding Thursday.
+    /// Verifies that with a Friday/Saturday weekend, <see cref="DateTimeExtensions.PreviousWeekday(DateTime, WorkingDaysOfWeek)" /> skips both weekend days and returns the preceding Thursday.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsFridaySaturday_ShouldSkipSaturdayAndFriday()
     {
         var input = new DateTime(2024, 4, 21); // Sunday
-        DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.FridaySaturday);
+        DateTime actual = input.PreviousWeekday(WorkingDaysOfWeek.SundayToThursday);
         Assert.AreEqual(new DateTime(2024, 4, 18), actual); // Thursday
     }
 
     /// <summary>
-    /// Verifies that an undefined <see cref="CalendarWeekendDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that an undefined <see cref="WorkingDaysOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -105,13 +105,13 @@ public partial class DateTimeExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = input.PreviousWeekday((CalendarWeekendDefinition)999);
+            _ = input.PreviousWeekday((WorkingDaysOfWeek)999);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, CalendarWeekendDefinition)" />, when called with
-    /// <see cref="CalendarWeekendDefinition.None" />, retreats by exactly one day. Because <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, WorkingDaysOfWeek)" />, when called with
+    /// <see cref="WorkingDaysOfWeek.AllDays" />, retreats by exactly one day. Because <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
     /// classifies every day as a weekday under <c>None</c>, the reverse search loop's first iteration moves the cursor back one day and exits.
     /// </summary>
     [TestMethod]
@@ -119,19 +119,19 @@ public partial class DateTimeExtensionsTests
     {
         var input = new DateTime(2024, 4, 21);
 
-        DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.None);
+        DateTime actual = input.PreviousWeekday(WorkingDaysOfWeek.AllDays);
 
         Assert.AreEqual(input.AddDays(-1), actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, CalendarWeekendDefinition)" /> returns the prior non-weekend date when Saturday and Sunday are defined as the weekend.
+    /// Verifies that <see cref="DateTimeExtensions.PreviousWeekday(DateTime, WorkingDaysOfWeek)" /> returns the prior non-weekend date when Saturday and Sunday are defined as the weekend.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(PreviousWeekdaySaturdaySundayDateTimeTestData))]
     public void PreviousWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateTime input, DateTime expected)
     {
-        DateTime actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday);
+        DateTime actual = input.PreviousWeekday(WorkingDaysOfWeek.MondayToFriday);
         Assert.AreEqual(expected, actual);
     }
 

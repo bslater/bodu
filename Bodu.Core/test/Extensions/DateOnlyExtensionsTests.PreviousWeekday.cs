@@ -11,7 +11,7 @@ namespace Bodu.Extensions;
 public partial class DateOnlyExtensionsTests
 {
     // =========================================================================
-    // PreviousWeekday(this DateOnly, CalendarWeekendDefinition)
+    // PreviousWeekday(this DateOnly, WorkingDaysOfWeek)
     // =========================================================================
 
     /// <summary>
@@ -30,22 +30,22 @@ public partial class DateOnlyExtensionsTests
     }
 
     // =========================================================================
-    // PreviousWeekday(this DateOnly, CalendarWeekendDefinition, IWeekendDefinitionProvider?)
+    // PreviousWeekday(this DateOnly, WorkingDaysOfWeek, IWeekendDefinitionProvider?)
     // =========================================================================
 
     /// <summary>
-    /// Verifies that the provider overload falls back to the <see cref="CalendarWeekendDefinition" /> enum value when the provider is <see langword="null" />.
+    /// Verifies that the provider overload falls back to the <see cref="WorkingDaysOfWeek" /> enum value when the provider is <see langword="null" />.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenProviderIsNull_ShouldUseWeekendEnum()
     {
         var input = new DateOnly(2024, 4, 22); // Monday
-        DateOnly actual = input.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday, provider: null);
+        DateOnly actual = input.PreviousWeekday(WorkingDaysOfWeek.MondayToFriday, provider: null);
         Assert.AreEqual(new DateOnly(2024, 4, 19), actual);
     }
 
     /// <summary>
-    /// Verifies that the provider overload still throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="CalendarWeekendDefinition" /> even when a provider is supplied.
+    /// Verifies that the provider overload still throws <see cref="ArgumentOutOfRangeException" /> for an undefined <see cref="WorkingDaysOfWeek" /> even when a provider is supplied.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenProviderOverload_WeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -54,24 +54,24 @@ public partial class DateOnlyExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = input.PreviousWeekday((CalendarWeekendDefinition)999, provider: null);
+            _ = input.PreviousWeekday((WorkingDaysOfWeek)999, provider: null);
         });
     }
 
     /// <summary>
-    /// Verifies that with a Friday/Saturday weekend, <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, CalendarWeekendDefinition)" /> skips both weekend days and returns the preceding Thursday.
+    /// Verifies that with a Friday/Saturday weekend, <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, WorkingDaysOfWeek)" /> skips both weekend days and returns the preceding Thursday.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsFridaySaturday_ShouldSkipSaturdayAndFriday()
     {
         // Sun 21 Apr 2024 → skip Sat 20, Fri 19 → Thu 18 Apr.
         var input = new DateOnly(2024, 4, 21);
-        DateOnly actual = input.PreviousWeekday(CalendarWeekendDefinition.FridaySaturday);
+        DateOnly actual = input.PreviousWeekday(WorkingDaysOfWeek.SundayToThursday);
         Assert.AreEqual(new DateOnly(2024, 4, 18), actual);
     }
 
     /// <summary>
-    /// Verifies that an undefined <see cref="CalendarWeekendDefinition" /> value throws <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that an undefined <see cref="WorkingDaysOfWeek" /> value throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
     public void PreviousWeekday_WhenWeekendIsInvalid_ShouldThrowArgumentOutOfRangeException()
@@ -80,13 +80,13 @@ public partial class DateOnlyExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = input.PreviousWeekday((CalendarWeekendDefinition)999);
+            _ = input.PreviousWeekday((WorkingDaysOfWeek)999);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, CalendarWeekendDefinition)" />, when called with
-    /// <see cref="CalendarWeekendDefinition.None" />, retreats by exactly one day. Because <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, WorkingDaysOfWeek)" />, when called with
+    /// <see cref="WorkingDaysOfWeek.AllDays" />, retreats by exactly one day. Because <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
     /// classifies every day as a weekday under <c>None</c>, the reverse search loop's first iteration moves the cursor back one day and exits.
     /// </summary>
     [TestMethod]
@@ -94,19 +94,19 @@ public partial class DateOnlyExtensionsTests
     {
         var input = new DateOnly(2024, 4, 21);
 
-        DateOnly actual = input.PreviousWeekday(CalendarWeekendDefinition.None);
+        DateOnly actual = input.PreviousWeekday(WorkingDaysOfWeek.AllDays);
 
         Assert.AreEqual(input.AddDays(-1), actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, CalendarWeekendDefinition)" /> returns the prior non-weekend date when Saturday and Sunday are defined as the weekend.
+    /// Verifies that <see cref="DateOnlyExtensions.PreviousWeekday(DateOnly, WorkingDaysOfWeek)" /> returns the prior non-weekend date when Saturday and Sunday are defined as the weekend.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(PreviousWeekdaySaturdaySundayTestData))]
     public void PreviousWeekday_WhenWeekendIsSaturdaySunday_ShouldReturnExpectedDate(DateOnly date, DateOnly expected)
     {
-        DateOnly actual = date.PreviousWeekday(CalendarWeekendDefinition.SaturdaySunday);
+        DateOnly actual = date.PreviousWeekday(WorkingDaysOfWeek.MondayToFriday);
         Assert.AreEqual(expected, actual);
     }
 

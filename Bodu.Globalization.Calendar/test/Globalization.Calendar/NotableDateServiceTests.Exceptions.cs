@@ -30,13 +30,13 @@ public sealed partial class NotableDateServiceTests
         {
             _ = new NotableDateService(
                 Array.Empty<INotableDateRuleProvider>(),
-                (CalendarWeekendDefinition)int.MaxValue);
+                (WorkingDaysOfWeek)int.MaxValue);
         });
     }
 
     /// <summary>
     /// Verifies that the <see cref="NotableDateService" /> constructor rejects
-    /// <see cref="CalendarWeekendDefinition.Custom" /> because it has no canonical
+    /// <see cref="WorkingDaysOfWeek.Custom" /> because it has no canonical
     /// <see cref="WeekPattern" />; callers must convert their <see cref="IWeekendDefinitionProvider" /> to a
     /// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor instead.
     /// </summary>
@@ -47,7 +47,7 @@ public sealed partial class NotableDateServiceTests
         {
             _ = new NotableDateService(
                 Array.Empty<INotableDateRuleProvider>(),
-                CalendarWeekendDefinition.Custom);
+                WorkingDaysOfWeek.Custom);
         });
     }
 

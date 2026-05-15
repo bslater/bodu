@@ -27,7 +27,7 @@ namespace Bodu.Globalization.Calendar.Data.Americas;
 /// <code>
 /// var service = new NotableDateService(
 ///     ruleProviders: AmericasCalendarData.CreateProviders(),
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 /// </code>
 /// </example>
 public static class AmericasCalendarData

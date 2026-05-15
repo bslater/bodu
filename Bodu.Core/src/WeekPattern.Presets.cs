@@ -59,5 +59,12 @@ public partial struct WeekPattern
     public static readonly WeekPattern SundayToThursday = new WeekPattern(
         DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday);
 
+    /// <summary>
+    /// Represents a working-week <see cref="WeekPattern" /> with every day of the week selected.
+    /// </summary>
+    /// <remarks>Corresponds to <see cref="WorkingDaysOfWeek.AllDays" />.</remarks>
+    public static readonly WeekPattern AllDays = new WeekPattern(
+        DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday);
+
 #pragma warning restore IDE1006
 }

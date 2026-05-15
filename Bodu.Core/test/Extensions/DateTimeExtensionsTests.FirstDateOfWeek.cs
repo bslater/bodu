@@ -83,7 +83,7 @@ public partial class DateTimeExtensionsTests
     public void FirstDateOfWeek_WhenNearMinValue_ShouldReturnExpectedStart()
     {
         var date = DateTime.MinValue.AddDays(6); // 0001-01-07
-        var actual = date.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
+        var actual = date.FirstDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
 
         Assert.IsTrue(actual >= DateTime.MinValue);
         Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
@@ -96,7 +96,7 @@ public partial class DateTimeExtensionsTests
     public void FirstDateOfWeek_WhenResultWouldUnderflowMinValue_ShouldThrowExactly()
     {
         var nearMin = DateTime.MinValue.AddDays(1); // e.g., Jan 2, 0001
-        var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1
+        var weekend = WorkingDaysOfWeek.SundayToThursday; // Start of week = Sunday → offset = -1
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -182,7 +182,7 @@ public partial class DateTimeExtensionsTests
     public void FirstDateOfWeek_WhenUsingSaturdaySunday_ShouldPreserveDateTimeKind(DateTimeKind kind)
     {
         var original = new DateTime(2024, 1, 3, 0, 0, 0, kind);
-        var actual = original.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
+        var actual = original.FirstDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
         Assert.AreEqual(kind, actual.Kind, $"Kind mismatch for FirstDateOfWeek with {kind}");
     }
 
@@ -191,7 +191,7 @@ public partial class DateTimeExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(FirstDateOfWeekDefinitionTestData))]
-    public void FirstDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedStart(DateTime input, CalendarWeekendDefinition weekend, DateTime expected)
+    public void FirstDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedStart(DateTime input, WorkingDaysOfWeek weekend, DateTime expected)
     {
         var actual = input.FirstDateOfWeek(weekend);
 
@@ -202,8 +202,8 @@ public partial class DateTimeExtensionsTests
     /// Verifies that the weekend-definition overload preserves the input's <see cref="DateTime.Kind" /> across every <c>(definition, kind)</c> combination.
     /// </summary>
     [TestMethod]
-    [DynamicData(nameof(CalendarWeekendDefinitionDateTimeKindTestData))]
-    public void FirstDateOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(CalendarWeekendDefinition definition, DateTimeKind kind)
+    [DynamicData(nameof(WorkingDaysOfWeekDateTimeKindTestData))]
+    public void FirstDateOfWeek_WhenWeekendDefinitionAndKindIsSet_ShouldPreserveKind(WorkingDaysOfWeek definition, DateTimeKind kind)
     {
         DateTime input = new DateTime(2024, 7, 5, 10, 0, 0, kind);
         DateTime actual = input.FirstDateOfWeek(definition);
@@ -213,13 +213,13 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
+    /// Verifies that <see cref="DateTimeExtensions.FirstDateOfWeek"/> throws when given an undefined <see cref="WorkingDaysOfWeek"/>.
     /// </summary>
     [TestMethod]
     public void FirstDateOfWeek_WhenWeekendDefinitionIsInvalid_ShouldThrowExactly()
     {
         var date = new DateTime(2024, 1, 1);
-        var invalidWeekend = (CalendarWeekendDefinition)999;
+        var invalidWeekend = (WorkingDaysOfWeek)999;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

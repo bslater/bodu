@@ -48,7 +48,7 @@ namespace Bodu.Globalization.Calendar;
 /// // Wire registry into the service so DateResolutionStrategy.Algorithm rules can be resolved:
 /// NotableDateService service = new NotableDateService(
 ///     ruleProviders: new[] { new InMemoryRuleProvider(new[] { easterSunday }) },
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
 ///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 /// </code>
 /// </example>

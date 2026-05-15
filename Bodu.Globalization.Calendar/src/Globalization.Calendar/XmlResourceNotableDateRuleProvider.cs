@@ -43,7 +43,7 @@ namespace Bodu.Globalization.Calendar;
 ///
 /// INotableDateService service = new NotableDateService(
 ///     ruleProviders: new[] { provider },
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ///
 /// // Load from a specific assembly (for example, a companion data assembly):
 /// Assembly resourceAssembly = Assembly.Load("MyApp.Resources");

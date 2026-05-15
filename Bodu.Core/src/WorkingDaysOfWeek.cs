@@ -62,4 +62,13 @@ public enum WorkingDaysOfWeek
     /// Indicates a non-standard working week whose pattern is supplied externally via a <see cref="WeekPattern" />.
     /// </summary>
     Custom = 7,
+
+    /// <summary>
+    /// Indicates that every day of the week is treated as a working day (no weekend is defined).
+    /// </summary>
+    /// <remarks>
+    /// Use this value when the working week has no rest day — for example, an "always on" service schedule or
+    /// regional configurations that do not define a standard weekend.
+    /// </remarks>
+    AllDays = 8,
 }

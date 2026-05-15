@@ -35,7 +35,7 @@ public sealed class AustralianNotableDatesTests
     private static NotableDateService BuildAuService() =>
         new(
             new[] { AsiaPacificCalendarData.CreateAustraliaProvider() },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
     /// <summary>
     /// Verifies that querying the country scope returns the four national fixed-date holidays at their unadjusted positions for

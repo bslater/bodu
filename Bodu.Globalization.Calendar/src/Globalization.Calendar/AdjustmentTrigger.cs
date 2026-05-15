@@ -26,7 +26,7 @@ public enum AdjustmentTrigger
     IfDayOfWeek,
 
     /// <summary>
-    /// Activates when the calculated date falls on a weekend, as determined by the configured <see cref="Bodu.Extensions.CalendarWeekendDefinition" />.
+    /// Activates when the calculated date falls on a weekend, as determined by the configured <see cref="Bodu.WorkingDaysOfWeek" />.
     /// </summary>
     IfWeekend,
 

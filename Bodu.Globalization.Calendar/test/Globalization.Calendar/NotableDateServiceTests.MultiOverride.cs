@@ -27,7 +27,7 @@ public partial class NotableDateServiceTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new INotableDateRuleOverrideProvider[]

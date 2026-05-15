@@ -96,7 +96,7 @@ public sealed class UnitedStatesNotableDatesTests
     {
         var service = new NotableDateService(
             new[] { AmericasCalendarData.CreateUnitedStatesProvider() },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         var july4 = service.GetNotableDates(new DateTime(2026, 7, 4), "US");
 

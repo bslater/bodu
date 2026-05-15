@@ -11,16 +11,16 @@ public partial class DateTimeExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="DateTimeExtensions.GetWeekStartDay" /> returns the correct start-of-week day for each known
-    /// <see cref="CalendarWeekendDefinition" /> value.
+    /// <see cref="WorkingDaysOfWeek" /> value.
     /// </summary>
     [TestMethod]
-    [DataRow(CalendarWeekendDefinition.SaturdaySunday, DayOfWeek.Monday)]
-    [DataRow(CalendarWeekendDefinition.ThursdayFriday, DayOfWeek.Saturday)]
-    [DataRow(CalendarWeekendDefinition.FridaySaturday, DayOfWeek.Sunday)]
-    [DataRow(CalendarWeekendDefinition.SundayOnly, DayOfWeek.Monday)]
-    [DataRow(CalendarWeekendDefinition.FridayOnly, DayOfWeek.Saturday)]
-    [DataRow(CalendarWeekendDefinition.None, DayOfWeek.Monday)]
-    public void GetWeekStartDay_ForDefinedDefinition_ShouldReturnExpectedDay(CalendarWeekendDefinition weekend, DayOfWeek expected)
+    [DataRow(WorkingDaysOfWeek.MondayToFriday, DayOfWeek.Monday)]
+    [DataRow(WorkingDaysOfWeek.SaturdayToWednesday, DayOfWeek.Saturday)]
+    [DataRow(WorkingDaysOfWeek.SundayToThursday, DayOfWeek.Sunday)]
+    [DataRow(WorkingDaysOfWeek.MondayToSaturday, DayOfWeek.Monday)]
+    [DataRow(WorkingDaysOfWeek.SaturdayToThursday, DayOfWeek.Saturday)]
+    [DataRow(WorkingDaysOfWeek.AllDays, DayOfWeek.Monday)]
+    public void GetWeekStartDay_ForDefinedDefinition_ShouldReturnExpectedDay(WorkingDaysOfWeek weekend, DayOfWeek expected)
     {
         Assert.AreEqual(expected, DateTimeExtensions.GetWeekStartDay(weekend));
     }
@@ -34,7 +34,7 @@ public partial class DateTimeExtensionsTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.GetWeekStartDay((CalendarWeekendDefinition)int.MaxValue);
+            _ = DateTimeExtensions.GetWeekStartDay((WorkingDaysOfWeek)int.MaxValue);
         });
     }
 

@@ -37,7 +37,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         NotableDateResolutionWindow window = new(new DateTime(2024, 12, 20), new DateTime(2024, 12, 31));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         processor.ApplyAdjustments(
             window,
             Request(new DateTime(2024, 12, 20), new DateTime(2024, 12, 31)),
@@ -78,7 +78,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         NotableDateResolutionWindow window = new(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         processor.ApplyAdjustments(
             window,
             Request(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30)),
@@ -110,7 +110,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         NotableDateResolutionWindow window = new(new DateTime(2022, 12, 1), new DateTime(2022, 12, 31));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         processor.ApplyAdjustments(
             window,
             new NotableDateResolutionRequest(
@@ -143,7 +143,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         NotableDateResolutionWindow window = new(new DateTime(2022, 12, 1), new DateTime(2022, 12, 31));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         processor.ApplyAdjustments(
             window,
             Request(new DateTime(2022, 12, 1), new DateTime(2022, 12, 31)),
@@ -156,7 +156,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
     }
 
     /// <summary>
-    /// Verifies that constructing the processor with <see cref="CalendarWeekendDefinition.Custom" /> but no provider
+    /// Verifies that constructing the processor with <see cref="WorkingDaysOfWeek.Custom" /> but no provider
     /// throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
@@ -164,7 +164,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new NotableDateResolutionAdjustmentProcessor(CalendarWeekendDefinition.Custom);
+            _ = new NotableDateResolutionAdjustmentProcessor(WorkingDaysOfWeek.Custom);
         });
 
         Assert.AreEqual("weekendProvider", ex.ParamName);
@@ -190,7 +190,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         NotableDateResolutionWindow window = new(new DateTime(2024, 1, 1), new DateTime(2024, 1, 31));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -224,7 +224,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorEmissionContractTest
         NotableDateResolutionWindow window = new(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         processor.ApplyAdjustments(
             window,
             Request(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30)),

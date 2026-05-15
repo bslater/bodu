@@ -31,7 +31,7 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeek(DateOnly, CalendarWeekendDefinition)" /> throws
+    /// Verifies that <see cref="DateOnlyExtensions.LastDateOfWeek(DateOnly, WorkingDaysOfWeek)" /> throws
     /// <see cref="ArgumentOutOfRangeException" /> when projecting forward would exceed <see cref="DateOnly.MaxValue" />.
     /// </summary>
     [TestMethod]
@@ -43,7 +43,7 @@ public partial class DateOnlyExtensionsTests
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = date.LastDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
+            _ = date.LastDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
         });
     }
 

@@ -46,22 +46,22 @@ public static partial class DateOnlyExtensions
     }
 
     /// <summary>
-    /// Returns a new <see cref="DateOnly"/> representing the first day of the week that contains the specified <paramref name="date"/>, using a start-of-week inferred from the specified <see cref="CalendarWeekendDefinition"/>.
+    /// Returns a new <see cref="DateOnly"/> representing the first day of the week that contains the specified <paramref name="date"/>, using a start-of-week inferred from the specified <see cref="WorkingDaysOfWeek"/>.
     /// </summary>
     /// <param name="date">The date value used to determine the containing week.</param>
-    /// <param name="weekend">A <see cref="CalendarWeekendDefinition"/> used to infer the first day of the week. For example, <see cref="CalendarWeekendDefinition.SaturdaySunday"/> implies a Monday start.</param>
+    /// <param name="workingWeek">A <see cref="WorkingDaysOfWeek"/> used to infer the first day of the week. For example, <see cref="WorkingDaysOfWeek.MondayToFriday"/> implies a Monday start.</param>
     /// <returns>A <see cref="DateOnly"/> value set to the first day of the week containing <paramref name="date"/>.</returns>
     /// <remarks>
-    /// <para>The method infers the start of the week based on the specified <paramref name="weekend"/> value. If <see cref="CalendarWeekendDefinition.None"/> is supplied, the method defaults to using <see cref="DayOfWeek.Monday"/>.</para>
+    /// <para>The method infers the start of the week based on the specified <paramref name="workingWeek"/> value. If <see cref="WorkingDaysOfWeek.AllDays"/> is supplied, the method defaults to using <see cref="DayOfWeek.Monday"/>.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="weekend"/> is not a defined <see cref="CalendarWeekendDefinition"/> value,
+    /// Thrown if <paramref name="workingWeek"/> is not a defined <see cref="WorkingDaysOfWeek"/> value,
     /// -or- the resulting date is earlier than <see cref="DateOnly.MinValue"/>.
     /// </exception>
-    public static DateOnly FirstDateOfWeek(this DateOnly date, CalendarWeekendDefinition weekend)
+    public static DateOnly FirstDateOfWeek(this DateOnly date, WorkingDaysOfWeek workingWeek)
     {
-        ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
-        DayOfWeek firstDayOfWeek = DateTimeExtensions.GetWeekStartDay(weekend);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
+        DayOfWeek firstDayOfWeek = DateTimeExtensions.GetWeekStartDay(workingWeek);
 
         var dayNumber = date.DayNumber - ((7 + (date.DayOfWeek - firstDayOfWeek)) % 7);
 

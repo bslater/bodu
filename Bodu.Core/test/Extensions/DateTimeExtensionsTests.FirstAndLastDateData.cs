@@ -27,7 +27,7 @@ public partial class DateTimeExtensionsTests
 
         public DateTime Input { get; set; }
 
-        public CalendarWeekendDefinition? Weekend { get; set; }
+        public WorkingDaysOfWeek? Weekend { get; set; }
 
     }
 

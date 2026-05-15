@@ -23,10 +23,10 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     {
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = new NotableDateResolutionAdjustmentProcessor((CalendarWeekendDefinition)999);
+            _ = new NotableDateResolutionAdjustmentProcessor((WorkingDaysOfWeek)999);
         });
 
-        Assert.AreEqual("weekendDefinition", ex.ParamName);
+        Assert.AreEqual("workingWeek", ex.ParamName);
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     [TestMethod]
     public void ApplyAdjustments_WhenWindowIsNull_ShouldThrowArgumentNullException()
     {
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         NotableDateResolutionRequest request = Request(new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -52,7 +52,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     [TestMethod]
     public void ApplyAdjustments_WhenRequestIsNull_ShouldThrowArgumentNullException()
     {
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         NotableDateResolutionWindow window = new(new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
@@ -69,7 +69,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
     [TestMethod]
     public void ApplyAdjustments_WhenOccurrencesIsNull_ShouldThrowArgumentNullException()
     {
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         NotableDateResolutionWindow window = new(new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));
         NotableDateResolutionRequest request = Request(new DateTime(2021, 12, 1), new DateTime(2021, 12, 31));
 
@@ -98,7 +98,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
         window.AddBase(boxingDay);
 
         NotableDateResolutionRequest request = Request(new DateTime(2021, 12, 24), new DateTime(2021, 12, 31));
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
 
         processor.ApplyAdjustments(window, request, [christmas, boxingDay]);
 
@@ -133,7 +133,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorTests
         window.AddBase(occurrence);
 
         NotableDateResolutionRequest request = Request(new DateTime(2021, 12, 24), new DateTime(2021, 12, 31));
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
 
         processor.ApplyAdjustments(window, request, [occurrence]);
 

@@ -1,4 +1,4 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DateTimeExtensions.PreviousWeekday.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -9,50 +9,50 @@ namespace Bodu.Extensions;
 public static partial class DateTimeExtensions
 {
     /// <summary>
-    /// Returns a new <see cref="DateTime"/> representing the previous calendar weekday before the specified <paramref name="dateTime"/>, based on the supplied <paramref name="weekend"/> definition.
+    /// Returns a new <see cref="DateTime"/> representing the previous calendar weekday before the specified <paramref name="dateTime"/>, based on the supplied <paramref name="workingWeek"/> pattern.
     /// </summary>
     /// <param name="dateTime">The starting date and time value from which to search backward.</param>
-    /// <param name="weekend">The <see cref="CalendarWeekendDefinition"/> that determines which days are considered weekends.</param>
-    /// <returns>An object whose value is set to the first calendar day before <paramref name="dateTime"/> that is not a weekend under the specified <paramref name="weekend"/> rule, with the original time-of-day and <see cref="DateTime.Kind"/> preserved.</returns>
+    /// <param name="workingWeek">The <see cref="WorkingDaysOfWeek"/> that determines which days are treated as working days.</param>
+    /// <returns>An object whose value is set to the first calendar day before <paramref name="dateTime"/> that is a working day under the specified <paramref name="workingWeek"/> rule, with the original time-of-day and <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
-    /// <para>The method evaluates each preceding day until it finds one that is not designated as a weekend by the specified rule. The original <paramref name="dateTime"/> is never returned, even if it already falls on a weekday.</para>
+    /// <para>The method evaluates each preceding day until it finds one that is selected as a working day by the specified rule. The original <paramref name="dateTime"/> is never returned, even if it already falls on a working day.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration.</exception>
-    public static DateTime PreviousWeekday(this DateTime dateTime, CalendarWeekendDefinition weekend)
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="workingWeek"/> is not a defined value of the <see cref="WorkingDaysOfWeek"/> enumeration.</exception>
+    public static DateTime PreviousWeekday(this DateTime dateTime, WorkingDaysOfWeek workingWeek)
     {
-        ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
         var ticks = dateTime.Ticks;
         do
         {
             ticks -= TicksPerDay;
         }
-        while (IsWeekend(GetDayOfWeekFromTicks(ticks), weekend));
+        while (IsWeekend(GetDayOfWeekFromTicks(ticks), workingWeek));
 
         return new DateTime(ticks, dateTime.Kind);
     }
 
     /// <summary>
-    /// Returns a new <see cref="DateTime"/> representing the previous calendar weekday before the specified <paramref name="dateTime"/>, using the supplied <paramref name="weekend"/> definition and an optional custom <paramref name="provider"/>.
+    /// Returns a new <see cref="DateTime"/> representing the previous calendar weekday before the specified <paramref name="dateTime"/>, using the supplied <paramref name="workingWeek"/> pattern and an optional custom <paramref name="provider"/>.
     /// </summary>
     /// <param name="dateTime">The starting date and time value from which to search backward.</param>
-    /// <param name="weekend">The <see cref="CalendarWeekendDefinition"/> that determines which days are considered weekends.</param>
-    /// <param name="provider">An optional <see cref="IWeekendDefinitionProvider"/> that supplies custom weekend logic when <paramref name="weekend"/> is <see cref="CalendarWeekendDefinition.Custom"/>. If <see langword="null"/>, the default behavior for the supplied <paramref name="weekend"/> applies.</param>
-    /// <returns>An object whose value is set to the first calendar day before <paramref name="dateTime"/> that is not a weekend under the specified <paramref name="weekend"/> rule and the logic of <paramref name="provider"/>, with the original time-of-day and <see cref="DateTime.Kind"/> preserved.</returns>
+    /// <param name="workingWeek">The <see cref="WorkingDaysOfWeek"/> that determines which days are treated as working days.</param>
+    /// <param name="provider">An optional <see cref="IWeekendDefinitionProvider"/> that supplies custom weekend logic when <paramref name="workingWeek"/> is <see cref="WorkingDaysOfWeek.Custom"/>. If <see langword="null"/>, the default behavior for the supplied <paramref name="workingWeek"/> applies.</param>
+    /// <returns>An object whose value is set to the first calendar day before <paramref name="dateTime"/> that is a working day under the specified <paramref name="workingWeek"/> rule and the logic of <paramref name="provider"/>, with the original time-of-day and <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
-    /// <para>The method evaluates each preceding day prior to <paramref name="dateTime"/> until it finds one that is not considered a weekend, either by the supplied <paramref name="weekend"/> pattern or by the custom logic of <paramref name="provider"/>.</para>
+    /// <para>The method evaluates each preceding day prior to <paramref name="dateTime"/> until it finds one that is a working day, either by the supplied <paramref name="workingWeek"/> pattern or by the custom logic of <paramref name="provider"/>.</para>
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="weekend"/> is not a defined value of the <see cref="CalendarWeekendDefinition"/> enumeration.</exception>
-    public static DateTime PreviousWeekday(this DateTime dateTime, CalendarWeekendDefinition weekend, IWeekendDefinitionProvider? provider)
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="workingWeek"/> is not a defined value of the <see cref="WorkingDaysOfWeek"/> enumeration.</exception>
+    public static DateTime PreviousWeekday(this DateTime dateTime, WorkingDaysOfWeek workingWeek, IWeekendDefinitionProvider? provider)
     {
-        ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
 
         var ticks = dateTime.Ticks;
         do
         {
             ticks -= TicksPerDay;
         }
-        while (IsWeekend(GetDayOfWeekFromTicks(ticks), weekend, provider));
+        while (IsWeekend(GetDayOfWeekFromTicks(ticks), workingWeek, provider));
 
         return new DateTime(ticks, dateTime.Kind);
     }

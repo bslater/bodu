@@ -60,7 +60,7 @@ public sealed class UnitedKingdomNotableDatesTests
     {
         var service = new NotableDateService(
             new[] { EuropeCalendarData.CreateUnitedKingdomProvider() },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         var christmas = service.GetNotableDates(new DateTime(2026, 12, 25), "GB");
 

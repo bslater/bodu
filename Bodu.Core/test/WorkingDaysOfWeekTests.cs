@@ -26,6 +26,7 @@ public class WorkingDaysOfWeekTests
         yield return new object[] { WorkingDaysOfWeek.SaturdayToWednesday, new[] { DayOfWeek.Saturday, DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday } };
         yield return new object[] { WorkingDaysOfWeek.SundayToFriday, new[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday } };
         yield return new object[] { WorkingDaysOfWeek.SundayToThursday, new[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday } };
+        yield return new object[] { WorkingDaysOfWeek.AllDays, new[] { DayOfWeek.Sunday, DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday } };
     }
 
     /// <summary>
@@ -129,4 +130,85 @@ public class WorkingDaysOfWeekTests
         Assert.AreEqual(WorkingDaysOfWeek.Custom, value);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern(WorkingDaysOfWeek)" /> maps
+    /// <see cref="WorkingDaysOfWeek.AllDays" /> to a <see cref="WeekPattern" /> selecting all seven days.
+    /// </summary>
+    [TestMethod]
+    public void ToWeekPattern_WhenAllDays_ShouldSelectAllSevenDays()
+    {
+        var pattern = WorkingDaysOfWeek.AllDays.ToWeekPattern();
+
+        Assert.AreEqual(7, pattern.Count);
+        for (var i = 0; i < 7; i++)
+            Assert.IsTrue(pattern.Contains((DayOfWeek)i), $"Expected AllDays to include {(DayOfWeek)i}.");
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern(WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
+    /// routes <see cref="WorkingDaysOfWeek.Custom" /> through the supplied provider.
+    /// </summary>
+    [TestMethod]
+    public void ToWeekPattern_WhenCustomWithProvider_ShouldReturnProviderImpliedPattern()
+    {
+        IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
+
+        var pattern = WorkingDaysOfWeek.Custom.ToWeekPattern(provider);
+
+        Assert.AreEqual(6, pattern.Count);
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
+        Assert.IsTrue(pattern.Contains(DayOfWeek.Saturday));
+        Assert.IsTrue(pattern.Contains(DayOfWeek.Sunday));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="WorkingDaysOfWeekExtensions.ToWeekPattern(WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
+    /// throws <see cref="ArgumentNullException" /> when called with <see cref="WorkingDaysOfWeek.Custom" /> and a <see langword="null" /> provider.
+    /// </summary>
+    [TestMethod]
+    public void ToWeekPattern_WhenCustomAndProviderIsNull_ShouldThrowExactlyArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = WorkingDaysOfWeek.Custom.ToWeekPattern(null);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToWeekPattern" /> projects the provider's weekend
+    /// definition onto the complement <see cref="WeekPattern" />.
+    /// </summary>
+    [TestMethod]
+    public void IWeekendDefinitionProviderToWeekPattern_WhenProviderReturnsFridayOnly_ShouldSelectAllOtherDays()
+    {
+        IWeekendDefinitionProvider provider = new FridayOnlyWeekendProvider();
+
+        var pattern = provider.ToWeekPattern();
+
+        Assert.AreEqual(6, pattern.Count);
+        Assert.IsFalse(pattern.Contains(DayOfWeek.Friday));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="IWeekendDefinitionProviderExtensions.ToWeekPattern" /> throws
+    /// <see cref="ArgumentNullException" /> when the provider argument is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void IWeekendDefinitionProviderToWeekPattern_WhenProviderIsNull_ShouldThrowExactlyArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = ((IWeekendDefinitionProvider)null!).ToWeekPattern();
+        });
+    }
+
+    /// <summary>
+    /// Test helper that flags Friday as the weekend and every other day as a working day.
+    /// </summary>
+    private sealed class FridayOnlyWeekendProvider
+        : IWeekendDefinitionProvider
+    {
+        /// <inheritdoc />
+        public bool IsWeekend(DayOfWeek dayOfWeek) => dayOfWeek == DayOfWeek.Friday;
+    }
 }

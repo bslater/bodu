@@ -21,7 +21,7 @@ public partial class DateOnlyExtensionsTests
         var date = new DateTime(2024, 4, 19);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = date.IsWeekday(CalendarWeekendDefinition.Custom, null!);
+            _ = date.IsWeekday(WorkingDaysOfWeek.Custom, null!);
         });
     }
 
@@ -30,7 +30,7 @@ public partial class DateOnlyExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(DateTimeExtensionsTests.WeekendTestData), typeof(DateTimeExtensionsTests))]
-    public void IsWeekday_WhenUsingStandardWeekend_ShouldReturnExpected(DateTime input, CalendarWeekendDefinition weekend, Type? providerType, bool expected)
+    public void IsWeekday_WhenUsingStandardWeekend_ShouldReturnExpected(DateTime input, WorkingDaysOfWeek weekend, Type? providerType, bool expected)
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 

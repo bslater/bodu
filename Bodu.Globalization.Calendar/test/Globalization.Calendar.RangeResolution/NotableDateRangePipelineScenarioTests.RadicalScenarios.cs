@@ -57,7 +57,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new INotableDateRuleOverrideProvider[]
@@ -588,7 +588,7 @@ public sealed partial class NotableDateRangePipelineScenarioTests
         IReadOnlyList<RuleRemoval> removals) =>
         new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRules.ToArray()) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new INotableDateRuleOverrideProvider[]

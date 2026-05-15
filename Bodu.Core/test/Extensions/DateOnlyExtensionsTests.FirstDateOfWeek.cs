@@ -125,7 +125,7 @@ public partial class DateOnlyExtensionsTests
     public void FirstDateOfWeek_WhenNearMinValue_ShouldReturnValidResult()
     {
         var date = DateOnly.MinValue.AddDays(6); // 0001-01-07
-        var actual = date.FirstDateOfWeek(CalendarWeekendDefinition.SaturdaySunday);
+        var actual = date.FirstDateOfWeek(WorkingDaysOfWeek.MondayToFriday);
 
         Assert.IsTrue(actual >= DateOnly.MinValue);
         Assert.AreEqual(DayOfWeek.Monday, actual.DayOfWeek);
@@ -138,7 +138,7 @@ public partial class DateOnlyExtensionsTests
     public void FirstDateOfWeek_WhenResultUnderflowsMinValue_ShouldThrowException()
     {
         var nearMin = DateOnly.MinValue.AddDays(1); // e.g., Jan 2, 0001
-        var weekend = CalendarWeekendDefinition.FridaySaturday; // Start of week = Sunday → offset = -1
+        var weekend = WorkingDaysOfWeek.SundayToThursday; // Start of week = Sunday → offset = -1
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
@@ -151,7 +151,7 @@ public partial class DateOnlyExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(DateTimeExtensionsTests.FirstDateOfWeekDefinitionTestData), typeof(DateTimeExtensionsTests))]
-    public void FirstDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedStart(DateTime inputDateTime, CalendarWeekendDefinition weekend, DateTime expectedDateTime)
+    public void FirstDateOfWeek_WhenUsingWeekendDefinition_ShouldReturnExpectedStart(DateTime inputDateTime, WorkingDaysOfWeek weekend, DateTime expectedDateTime)
     {
         var input = DateOnly.FromDateTime(inputDateTime);
         var expected = DateOnly.FromDateTime(expectedDateTime);
@@ -162,13 +162,13 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> throws when given an undefined <see cref="CalendarWeekendDefinition"/>.
+    /// Verifies that <see cref="DateOnlyExtensions.FirstDateOfWeek"/> throws when given an undefined <see cref="WorkingDaysOfWeek"/>.
     /// </summary>
     [TestMethod]
     public void FirstDateOfWeek_WhenWeekendIsUndefined_ShouldThrowException()
     {
         var date = new DateOnly(2024, 1, 1);
-        var invalidWeekend = (CalendarWeekendDefinition)999;
+        var invalidWeekend = (WorkingDaysOfWeek)999;
 
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {

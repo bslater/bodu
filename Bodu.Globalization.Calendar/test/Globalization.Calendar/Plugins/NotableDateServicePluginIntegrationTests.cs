@@ -33,7 +33,7 @@ public sealed class NotableDateServicePluginIntegrationTests
 
         var service = new NotableDateService(
             ruleProviders: Array.Empty<INotableDateRuleProvider>(),
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { Plugins = new[] { plugin } });
 
         // Plugin1's HarnessPlugin contributes "Harness Test Day" on 15 June with territory "ZZ".
@@ -65,7 +65,7 @@ public sealed class NotableDateServicePluginIntegrationTests
 
         var service = new NotableDateService(
             ruleProviders: new[] { new InMemoryRuleProvider(consumerRule) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { Plugins = new[] { plugin } });
 
         var results = service.GetNotableDates(2027);
@@ -101,7 +101,7 @@ public sealed class NotableDateServicePluginIntegrationTests
 
         var service = new NotableDateService(
             ruleProviders: new[] { new InMemoryRuleProvider(consumerRule) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = hostRegistry,
@@ -147,7 +147,7 @@ public sealed class NotableDateServicePluginIntegrationTests
 
         var service = new NotableDateService(
             ruleProviders: new[] { new InMemoryRuleProvider(hostOnlyRule, pluginOnlyRule) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = hostRegistry,
@@ -185,7 +185,7 @@ public sealed class NotableDateServicePluginIntegrationTests
 
         var service = new NotableDateService(
             ruleProviders: new[] { new InMemoryRuleProvider(orphan) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = hostRegistry,

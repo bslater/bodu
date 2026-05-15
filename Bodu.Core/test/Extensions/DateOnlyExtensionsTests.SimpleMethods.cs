@@ -198,14 +198,14 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.IsWeekday(DateOnly, CalendarWeekendDefinition, IWeekendDefinitionProvider)" /> respects
+    /// Verifies that <see cref="DateOnlyExtensions.IsWeekday(DateOnly, WorkingDaysOfWeek, IWeekendDefinitionProvider)" /> respects
     /// a supplied non-default weekend definition.
     /// </summary>
     [TestMethod]
     public void IsWeekday_WithFridaySaturdayWeekend_ShouldRespectDefinition()
     {
-        Assert.IsTrue(new DateOnly(2024, 1, 7).IsWeekday(CalendarWeekendDefinition.FridaySaturday));  // Sun = weekday
-        Assert.IsFalse(new DateOnly(2024, 1, 5).IsWeekday(CalendarWeekendDefinition.FridaySaturday)); // Fri = weekend
+        Assert.IsTrue(new DateOnly(2024, 1, 7).IsWeekday(WorkingDaysOfWeek.SundayToThursday));  // Sun = weekday
+        Assert.IsFalse(new DateOnly(2024, 1, 5).IsWeekday(WorkingDaysOfWeek.SundayToThursday)); // Fri = weekend
     }
 
     /// <summary>
@@ -221,15 +221,15 @@ public partial class DateOnlyExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateOnlyExtensions.IsWeekend(DateOnly, CalendarWeekendDefinition, IWeekendDefinitionProvider)" />
+    /// Verifies that <see cref="DateOnlyExtensions.IsWeekend(DateOnly, WorkingDaysOfWeek, IWeekendDefinitionProvider)" />
     /// respects a supplied non-default weekend definition.
     /// </summary>
     [TestMethod]
     public void IsWeekend_WithFridaySaturdayWeekend_ShouldRespectDefinition()
     {
-        Assert.IsTrue(new DateOnly(2024, 1, 5).IsWeekend(CalendarWeekendDefinition.FridaySaturday));  // Fri
-        Assert.IsTrue(new DateOnly(2024, 1, 6).IsWeekend(CalendarWeekendDefinition.FridaySaturday));  // Sat
-        Assert.IsFalse(new DateOnly(2024, 1, 7).IsWeekend(CalendarWeekendDefinition.FridaySaturday)); // Sun
+        Assert.IsTrue(new DateOnly(2024, 1, 5).IsWeekend(WorkingDaysOfWeek.SundayToThursday));  // Fri
+        Assert.IsTrue(new DateOnly(2024, 1, 6).IsWeekend(WorkingDaysOfWeek.SundayToThursday));  // Sat
+        Assert.IsFalse(new DateOnly(2024, 1, 7).IsWeekend(WorkingDaysOfWeek.SundayToThursday)); // Sun
     }
 
     /// <summary>
