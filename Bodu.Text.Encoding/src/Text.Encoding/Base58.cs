@@ -52,7 +52,12 @@ public static partial class Base58
     public static int GetMaxEncodedLength(int byteCount)
     {
         ThrowHelper.ThrowIfNegative(byteCount);
-        return byteCount == 0 ? 0 : ((byteCount * 138) / 100) + 1;
+        if (byteCount == 0)
+            return 0;
+        checked
+        {
+            return ((byteCount * 138) / 100) + 1;
+        }
     }
 
     /// <summary>
@@ -67,7 +72,12 @@ public static partial class Base58
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
-        return charCount == 0 ? 0 : ((charCount * 733) / 1000) + 1;
+        if (charCount == 0)
+            return 0;
+        checked
+        {
+            return ((charCount * 733) / 1000) + 1;
+        }
     }
 
     /// <summary>

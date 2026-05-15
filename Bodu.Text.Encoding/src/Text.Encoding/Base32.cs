@@ -58,6 +58,9 @@ public static partial class Base32
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="byteCount" /> is negative.
     /// </exception>
+    /// <exception cref="OverflowException">
+    /// Thrown when the resulting character count would overflow <see cref="int" />.
+    /// </exception>
     public static int GetEncodedLength(int byteCount, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNegative(byteCount);
@@ -66,15 +69,18 @@ public static partial class Base32
             return 0;
 
         bool padding = ShouldEmitPadding(variant, options);
-        int charsBeforeLineBreaks = padding
-            ? ((byteCount + 4) / 5) * 8
-            : ((byteCount * 8) + 4) / 5;
+        checked
+        {
+            int charsBeforeLineBreaks = padding
+                ? ((byteCount + 4) / 5) * 8
+                : ((byteCount * 8) + 4) / 5;
 
-        if (!options.HasFlag(BaseFormattingOptions.InsertLineBreaks) || charsBeforeLineBreaks <= LineBreakInterval)
-            return charsBeforeLineBreaks;
+            if (!options.HasFlag(BaseFormattingOptions.InsertLineBreaks) || charsBeforeLineBreaks <= LineBreakInterval)
+                return charsBeforeLineBreaks;
 
-        int breaks = (charsBeforeLineBreaks - 1) / LineBreakInterval;
-        return charsBeforeLineBreaks + (breaks * 2);
+            int breaks = (charsBeforeLineBreaks - 1) / LineBreakInterval;
+            return charsBeforeLineBreaks + (breaks * 2);
+        }
     }
 
     /// <summary>
@@ -88,7 +94,10 @@ public static partial class Base32
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
-        return (charCount * 5) / 8;
+        checked
+        {
+            return (charCount * 5) / 8;
+        }
     }
 
     /// <summary>

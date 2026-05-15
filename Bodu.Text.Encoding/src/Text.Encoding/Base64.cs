@@ -59,15 +59,18 @@ public static partial class Base64
         bool emitPadding = ShouldEmitPadding(variant, options);
         bool insertLineBreaks = ShouldInsertLineBreaks(variant, options);
 
-        int dataChars = emitPadding
-            ? ((byteCount + 2) / 3) * 4
-            : ((byteCount * 4) + 2) / 3;
+        checked
+        {
+            int dataChars = emitPadding
+                ? ((byteCount + 2) / 3) * 4
+                : ((byteCount * 4) + 2) / 3;
 
-        if (!insertLineBreaks || dataChars <= MimeLineLength)
-            return dataChars;
+            if (!insertLineBreaks || dataChars <= MimeLineLength)
+                return dataChars;
 
-        int breaks = (dataChars - 1) / MimeLineLength;
-        return dataChars + (breaks * 2);
+            int breaks = (dataChars - 1) / MimeLineLength;
+            return dataChars + (breaks * 2);
+        }
     }
 
     /// <summary>
@@ -81,7 +84,10 @@ public static partial class Base64
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
-        return (charCount * 3) / 4;
+        checked
+        {
+            return (charCount * 3) / 4;
+        }
     }
 
     /// <summary>

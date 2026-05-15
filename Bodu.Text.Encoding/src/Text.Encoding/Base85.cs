@@ -112,13 +112,16 @@ public static partial class Base85
         int completeGroups = byteCount / 4;
         int remainder = byteCount % 4;
 
-        if (variant == Base85Variant.Z85)
+        checked
         {
-            int aligned = (byteCount + 3) & ~3;
-            return (aligned / 4) * 5;
-        }
+            if (variant == Base85Variant.Z85)
+            {
+                int aligned = (byteCount + 3) & ~3;
+                return (aligned / 4) * 5;
+            }
 
-        return (completeGroups * 5) + (remainder == 0 ? 0 : remainder + 1);
+            return (completeGroups * 5) + (remainder == 0 ? 0 : remainder + 1);
+        }
     }
 
     /// <summary>
@@ -131,7 +134,12 @@ public static partial class Base85
     public static int GetMaxDecodedLength(int charCount)
     {
         ThrowHelper.ThrowIfNegative(charCount);
-        return charCount == 0 ? 0 : (charCount * 4);
+        if (charCount == 0)
+            return 0;
+        checked
+        {
+            return charCount * 4;
+        }
     }
 
     /// <summary>

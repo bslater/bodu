@@ -59,6 +59,10 @@ public static partial class Base16
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="byteCount" /> is negative.
     /// </exception>
+    /// <exception cref="OverflowException">
+    /// Thrown when <paramref name="byteCount" /> is large enough that the resulting character count would overflow
+    /// <see cref="int" />.
+    /// </exception>
     public static int GetEncodedLength(int byteCount, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
         ThrowHelper.ThrowIfNegative(byteCount);
@@ -70,38 +74,37 @@ public static partial class Base16
         bool lineBreaks = options.HasFlag(BaseFormattingOptions.InsertLineBreaks);
         bool prefix = options.HasFlag(BaseFormattingOptions.IncludePrefix);
 
-        int chars = spacing ? (byteCount * 3) - 1 : byteCount * 2;
-        if (prefix)
-            chars += Prefix.Length;
-
-        if (lineBreaks)
+        checked
         {
-            int encodedCharsInLine = prefix ? Prefix.Length : 0;
-            int breaks = 0;
-            int remaining = chars - (prefix ? Prefix.Length : 0);
+            int chars = spacing ? (byteCount * 3) - 1 : byteCount * 2;
+            if (prefix)
+                chars += Prefix.Length;
 
-            // Tally how many \r\n insertions the encoder will emit. The encoder writes the break before emitting a
-            // byte once the running column count reaches the interval, so the count is floor((written - first byte
-            // already in line) / interval) — see EncodeWithFormatting for the matching loop.
-            int column = encodedCharsInLine;
-            for (int i = 0; i < byteCount; i++)
+            if (lineBreaks)
             {
-                if (spacing && i > 0)
-                    column++;
+                int encodedCharsInLine = prefix ? Prefix.Length : 0;
+                int breaks = 0;
 
-                if (column >= LineBreakInterval)
+                int column = encodedCharsInLine;
+                for (int i = 0; i < byteCount; i++)
                 {
-                    breaks++;
-                    column = 0;
+                    if (spacing && i > 0)
+                        column++;
+
+                    if (column >= LineBreakInterval)
+                    {
+                        breaks++;
+                        column = 0;
+                    }
+
+                    column += 2;
                 }
 
-                column += 2;
+                chars += breaks * 2; // "\r\n" per break
             }
 
-            chars += breaks * 2; // "\r\n" per break
+            return chars;
         }
-
-        return chars;
     }
 
     /// <summary>
