@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BclAliasCoverageTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,6 +17,7 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class BclAliasCoverageTests
 {
+
     private static readonly byte[] SamplePayload = System.Text.Encoding.ASCII.GetBytes("Hello, World!");
 
     /// <summary>
@@ -43,21 +44,6 @@ public sealed class BclAliasCoverageTests
 
     /// <summary>
     /// Verifies that <see cref="Base16.FromHexString(ReadOnlySpan{byte})" /> throws <see cref="FormatException" />
-    /// when the byte count is odd.
-    /// </summary>
-    [TestMethod]
-    public void Base16_FromHexString_Utf8WithOddLength_ShouldThrowFormatException()
-    {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base16.FromHexString(System.Text.Encoding.ASCII.GetBytes("DEADBE0"));
-        });
-
-        Assert.IsTrue(ex.Message.Contains("not even", StringComparison.OrdinalIgnoreCase));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base16.FromHexString(ReadOnlySpan{byte})" /> throws <see cref="FormatException" />
     /// when a byte is outside the hex alphabet.
     /// </summary>
     [TestMethod]
@@ -72,12 +58,18 @@ public sealed class BclAliasCoverageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base16.ToHexStringLower(ReadOnlySpan{byte})" /> produces lower-case hex.
+    /// Verifies that <see cref="Base16.FromHexString(ReadOnlySpan{byte})" /> throws <see cref="FormatException" />
+    /// when the byte count is odd.
     /// </summary>
     [TestMethod]
-    public void Base16_ToHexStringLower_Span_ShouldReturnLowerCaseHex()
+    public void Base16_FromHexString_Utf8WithOddLength_ShouldThrowFormatException()
     {
-        Assert.AreEqual("deadbeef", Base16.ToHexStringLower(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }.AsSpan()));
+        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base16.FromHexString(System.Text.Encoding.ASCII.GetBytes("DEADBE0"));
+        });
+
+        Assert.IsTrue(ex.Message.Contains("not even", StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -91,6 +83,15 @@ public sealed class BclAliasCoverageTests
         string encoded = Base16.ToHexStringLower(bytes, 1, 4);
 
         Assert.AreEqual("deadbeef", encoded);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.ToHexStringLower(ReadOnlySpan{byte})" /> produces lower-case hex.
+    /// </summary>
+    [TestMethod]
+    public void Base16_ToHexStringLower_Span_ShouldReturnLowerCaseHex()
+    {
+        Assert.AreEqual("deadbeef", Base16.ToHexStringLower(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }.AsSpan()));
     }
 
     /// <summary>
@@ -206,17 +207,6 @@ public sealed class BclAliasCoverageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58.ToBase58String(ReadOnlySpan{byte})" /> aliases the canonical encoder.
-    /// </summary>
-    [TestMethod]
-    public void Base58_ToBase58String_Span_ShouldMatchCanonicalEncoder()
-    {
-        byte[] payload = SamplePayload;
-
-        Assert.AreEqual(Base58.Encode(payload), Base58.ToBase58String(payload.AsSpan()));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Base58.ToBase58String(byte[], int, int)" /> encodes a slice.
     /// </summary>
     [TestMethod]
@@ -227,6 +217,17 @@ public sealed class BclAliasCoverageTests
         string encoded = Base58.ToBase58String(bytes, 1, 3);
 
         Assert.AreEqual(Base58.Encode(new byte[] { 0x01, 0x02, 0x03 }), encoded);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.ToBase58String(ReadOnlySpan{byte})" /> aliases the canonical encoder.
+    /// </summary>
+    [TestMethod]
+    public void Base58_ToBase58String_Span_ShouldMatchCanonicalEncoder()
+    {
+        byte[] payload = SamplePayload;
+
+        Assert.AreEqual(Base58.Encode(payload), Base58.ToBase58String(payload.AsSpan()));
     }
 
     /// <summary>
@@ -297,6 +298,24 @@ public sealed class BclAliasCoverageTests
     }
 
     /// <summary>
+    /// Verifies that the four-parameter <see cref="Base85.FromBase85String(ReadOnlySpan{byte}, Span{byte}, out int, out int)" />
+    /// streams a decode and reports consumption.
+    /// </summary>
+    [TestMethod]
+    public void Base85_FromBase85String_Utf8Streaming_ShouldReportProgress()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9jqo^");
+        byte[] destination = new byte[4];
+
+        OperationStatus status = Base85.FromBase85String(utf8, destination, out int bytesConsumed, out int bytesWritten);
+
+        Assert.AreEqual(OperationStatus.Done, status);
+        Assert.AreEqual(utf8.Length, bytesConsumed);
+        Assert.AreEqual(4, bytesWritten);
+        CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), destination);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base85.FromBase85String(ReadOnlySpan{byte})" /> returns an empty array for empty input.
     /// </summary>
     [TestMethod]
@@ -320,33 +339,6 @@ public sealed class BclAliasCoverageTests
     }
 
     /// <summary>
-    /// Verifies that the four-parameter <see cref="Base85.FromBase85String(ReadOnlySpan{byte}, Span{byte}, out int, out int)" />
-    /// streams a decode and reports consumption.
-    /// </summary>
-    [TestMethod]
-    public void Base85_FromBase85String_Utf8Streaming_ShouldReportProgress()
-    {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9jqo^");
-        byte[] destination = new byte[4];
-
-        OperationStatus status = Base85.FromBase85String(utf8, destination, out int bytesConsumed, out int bytesWritten);
-
-        Assert.AreEqual(OperationStatus.Done, status);
-        Assert.AreEqual(utf8.Length, bytesConsumed);
-        Assert.AreEqual(4, bytesWritten);
-        CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), destination);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base85.ToBase85String(ReadOnlySpan{byte})" /> aliases the canonical encoder.
-    /// </summary>
-    [TestMethod]
-    public void Base85_ToBase85String_Span_ShouldMatchCanonicalEncoder()
-    {
-        Assert.AreEqual(Base85.Encode(SamplePayload), Base85.ToBase85String(SamplePayload.AsSpan()));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Base85.ToBase85String(byte[], int, int)" /> encodes a slice.
     /// </summary>
     [TestMethod]
@@ -357,6 +349,15 @@ public sealed class BclAliasCoverageTests
         string encoded = Base85.ToBase85String(bytes, 1, 4);
 
         Assert.AreEqual(Base85.Encode(new byte[] { 0x01, 0x02, 0x03, 0x04 }), encoded);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.ToBase85String(ReadOnlySpan{byte})" /> aliases the canonical encoder.
+    /// </summary>
+    [TestMethod]
+    public void Base85_ToBase85String_Span_ShouldMatchCanonicalEncoder()
+    {
+        Assert.AreEqual(Base85.Encode(SamplePayload), Base85.ToBase85String(SamplePayload.AsSpan()));
     }
 
     /// <summary>
@@ -375,4 +376,5 @@ public sealed class BclAliasCoverageTests
         Assert.AreEqual(5, bytesWritten);
         Assert.AreEqual("9jqo^", System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten));
     }
+
 }

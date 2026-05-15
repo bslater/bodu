@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DecoderStateMachineCoverageTests.cs" company="PlaceholderCompany" >
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,36 +17,6 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class DecoderStateMachineCoverageTests
 {
-    /// <summary>
-    /// Verifies that <see cref="Base32.Decode(ReadOnlySpan{char}, Base32Variant, BaseFormatStyles)" /> throws
-    /// <see cref="FormatException" /> when a non-padding character appears after padding has begun.
-    /// </summary>
-    [TestMethod]
-    public void Base32_Decode_WhenPaddingFollowedByDataChar_ShouldThrowFormatException()
-    {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base32.Decode("MZ=A====".AsSpan());
-        });
-
-        Assert.IsTrue(ex.Message.Contains("padding", StringComparison.OrdinalIgnoreCase));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base32.Decode(ReadOnlySpan{char}, Base32Variant, BaseFormatStyles)" /> throws
-    /// <see cref="FormatException" /> when the total non-whitespace symbol count is not a multiple of 8 and the
-    /// padding flag is not relaxed.
-    /// </summary>
-    [TestMethod]
-    public void Base32_Decode_WhenTotalSymbolsNotMultipleOfEight_ShouldThrowFormatException()
-    {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base32.Decode("MZXW6Y".AsSpan());
-        });
-
-        Assert.IsTrue(ex.Message.Contains("multiple of 8", StringComparison.OrdinalIgnoreCase));
-    }
 
     /// <summary>
     /// Verifies that <see cref="Base32.Decode(ReadOnlySpan{char}, Base32Variant, BaseFormatStyles)" /> throws when the
@@ -60,6 +30,20 @@ public sealed class DecoderStateMachineCoverageTests
         var ex = Assert.ThrowsExactly<FormatException>(() =>
         {
             _ = Base32.Decode("MZXW6===========".AsSpan());
+        });
+
+        Assert.IsTrue(ex.Message.Contains("padding", StringComparison.OrdinalIgnoreCase));
+    }
+    /// <summary>
+    /// Verifies that <see cref="Base32.Decode(ReadOnlySpan{char}, Base32Variant, BaseFormatStyles)" /> throws
+    /// <see cref="FormatException" /> when a non-padding character appears after padding has begun.
+    /// </summary>
+    [TestMethod]
+    public void Base32_Decode_WhenPaddingFollowedByDataChar_ShouldThrowFormatException()
+    {
+        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base32.Decode("MZ=A====".AsSpan());
         });
 
         Assert.IsTrue(ex.Message.Contains("padding", StringComparison.OrdinalIgnoreCase));
@@ -81,33 +65,19 @@ public sealed class DecoderStateMachineCoverageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base32.TryDecode" /> returns <see langword="false" /> when the destination span is
-    /// smaller than the decoded byte count, driving the destination-too-small branch in <c>DecodeCore</c>.
+    /// Verifies that <see cref="Base32.Decode(ReadOnlySpan{char}, Base32Variant, BaseFormatStyles)" /> throws
+    /// <see cref="FormatException" /> when the total non-whitespace symbol count is not a multiple of 8 and the
+    /// padding flag is not relaxed.
     /// </summary>
     [TestMethod]
-    public void Base32_TryDecode_WhenDestinationTooSmallMidStream_ShouldReturnFalse()
+    public void Base32_Decode_WhenTotalSymbolsNotMultipleOfEight_ShouldThrowFormatException()
     {
-        byte[] destination = new byte[1];
+        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base32.Decode("MZXW6Y".AsSpan());
+        });
 
-        bool ok = Base32.TryDecode("MZXW6YTBOI======".AsSpan(), destination, out int bytesWritten);
-
-        Assert.IsFalse(ok);
-        Assert.AreEqual(0, bytesWritten);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base32.DecodeFromUtf8" /> returns <see cref="OperationStatus.InvalidData" /> when a
-    /// non-padding character appears after padding has begun in the streaming bit-stream decoder.
-    /// </summary>
-    [TestMethod]
-    public void Base32_DecodeFromUtf8_WhenPaddingFollowedByDataChar_ShouldReturnInvalidData()
-    {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZ=A====");
-        byte[] destination = new byte[5];
-
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
-
-        Assert.AreEqual(OperationStatus.InvalidData, status);
+        Assert.IsTrue(ex.Message.Contains("multiple of 8", StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -118,6 +88,37 @@ public sealed class DecoderStateMachineCoverageTests
     public void Base32_DecodeFromUtf8_WhenByteAbovePrintableAscii_ShouldReturnInvalidData()
     {
         byte[] utf8 = new byte[] { (byte)'M', (byte)'Z', 0xFF, (byte)'X', (byte)'W', (byte)'6', (byte)'Y', (byte)'Q' };
+        byte[] destination = new byte[5];
+
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
+
+        Assert.AreEqual(OperationStatus.InvalidData, status);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.DecodeFromUtf8" /> returns <see cref="OperationStatus.InvalidData" /> when the
+    /// padding character count does not match what the symbol count requires (despite the total still being a
+    /// multiple of 8).
+    /// </summary>
+    [TestMethod]
+    public void Base32_DecodeFromUtf8_WhenPaddingCountMismatch_ShouldReturnInvalidData()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6===========");
+        byte[] destination = new byte[5];
+
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
+
+        Assert.AreEqual(OperationStatus.InvalidData, status);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.DecodeFromUtf8" /> returns <see cref="OperationStatus.InvalidData" /> when a
+    /// non-padding character appears after padding has begun in the streaming bit-stream decoder.
+    /// </summary>
+    [TestMethod]
+    public void Base32_DecodeFromUtf8_WhenPaddingFollowedByDataChar_ShouldReturnInvalidData()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZ=A====");
         byte[] destination = new byte[5];
 
         OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
@@ -157,34 +158,59 @@ public sealed class DecoderStateMachineCoverageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base32.DecodeFromUtf8" /> returns <see cref="OperationStatus.InvalidData" /> when the
-    /// padding character count does not match what the symbol count requires (despite the total still being a
-    /// multiple of 8).
+    /// Verifies that <see cref="Base32.TryDecode" /> returns <see langword="false" /> when the destination span is
+    /// smaller than the decoded byte count, driving the destination-too-small branch in <c>DecodeCore</c>.
     /// </summary>
     [TestMethod]
-    public void Base32_DecodeFromUtf8_WhenPaddingCountMismatch_ShouldReturnInvalidData()
+    public void Base32_TryDecode_WhenDestinationTooSmallMidStream_ShouldReturnFalse()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6===========");
-        byte[] destination = new byte[5];
+        byte[] destination = new byte[1];
 
-        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out _, out _);
+        bool ok = Base32.TryDecode("MZXW6YTBOI======".AsSpan(), destination, out int bytesWritten);
 
-        Assert.AreEqual(OperationStatus.InvalidData, status);
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, bytesWritten);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64.Decode(ReadOnlySpan{char}, Base64Variant, BaseFormatStyles)" /> throws when a
-    /// non-padding character appears after padding has begun.
+    /// Verifies that <see cref="Base58.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> throws when an
+    /// input character is outside the alphabet's lookup table range (covers <c>c &gt;= lookup.Length</c> at the
+    /// <c>TryDecodeCore</c> branch).
     /// </summary>
     [TestMethod]
-    public void Base64_DecodeFromUtf8_WhenPaddingFollowedByDataChar_ShouldReturnInvalidData()
+    public void Base58_Decode_WhenCharAboveLookupRange_ShouldThrowFormatException()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=A");
-        byte[] destination = new byte[5];
+        // 'ÿ' is past the 128-entry lookup table.
+        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base58.Decode("AÿA".AsSpan());
+        });
 
-        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out _);
+        Assert.IsTrue(ex.Message.Contains("alphabet", StringComparison.OrdinalIgnoreCase));
+    }
 
-        Assert.AreEqual(OperationStatus.InvalidData, status);
+    /// <summary>
+    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> with <see cref="BaseFormatStyles.IgnoreWhitespace" /> tolerates
+    /// embedded whitespace via the lenient kept-character projection.
+    /// </summary>
+    [TestMethod]
+    public void Base58_DecodeFromUtf8_WhenIgnoreWhitespace_ShouldStripBeforeDecode()
+    {
+        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Hello");
+        byte[] encoded = Base58.EncodeToUtf8(payload);
+
+        // Insert a space byte in the middle.
+        byte[] withSpace = new byte[encoded.Length + 1];
+        encoded.AsSpan(0, 2).CopyTo(withSpace);
+        withSpace[2] = (byte)' ';
+        encoded.AsSpan(2).CopyTo(withSpace.AsSpan(3));
+
+        byte[] destination = new byte[payload.Length];
+        OperationStatus status = Base58.DecodeFromUtf8(withSpace, destination, out _, out int bytesWritten, Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace);
+
+        Assert.AreEqual(OperationStatus.Done, status);
+        Assert.AreEqual(payload.Length, bytesWritten);
+        CollectionAssert.AreEqual(payload, destination);
     }
 
     /// <summary>
@@ -220,6 +246,21 @@ public sealed class DecoderStateMachineCoverageTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base64.Decode(ReadOnlySpan{char}, Base64Variant, BaseFormatStyles)" /> throws when a
+    /// non-padding character appears after padding has begun.
+    /// </summary>
+    [TestMethod]
+    public void Base64_DecodeFromUtf8_WhenPaddingFollowedByDataChar_ShouldReturnInvalidData()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("Zg=A");
+        byte[] destination = new byte[5];
+
+        OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out _);
+
+        Assert.AreEqual(OperationStatus.InvalidData, status);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.DecodeFromUtf8" /> with partial padding in a non-final block returns
     /// <see cref="OperationStatus.NeedMoreData" /> so the caller can resume.
     /// </summary>
@@ -232,23 +273,6 @@ public sealed class DecoderStateMachineCoverageTests
         OperationStatus status = Base64.DecodeFromUtf8(utf8, destination, out _, out _, isFinalBlock: false);
 
         Assert.AreEqual(OperationStatus.NeedMoreData, status);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base58.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> throws when an
-    /// input character is outside the alphabet's lookup table range (covers <c>c &gt;= lookup.Length</c> at the
-    /// <c>TryDecodeCore</c> branch).
-    /// </summary>
-    [TestMethod]
-    public void Base58_Decode_WhenCharAboveLookupRange_ShouldThrowFormatException()
-    {
-        // 'ÿ' is past the 128-entry lookup table.
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base58.Decode("AÿA".AsSpan());
-        });
-
-        Assert.IsTrue(ex.Message.Contains("alphabet", StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
@@ -286,30 +310,6 @@ public sealed class DecoderStateMachineCoverageTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> with <see cref="BaseFormatStyles.IgnoreWhitespace" /> tolerates
-    /// embedded whitespace via the lenient kept-character projection.
-    /// </summary>
-    [TestMethod]
-    public void Base58_DecodeFromUtf8_WhenIgnoreWhitespace_ShouldStripBeforeDecode()
-    {
-        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Hello");
-        byte[] encoded = Base58.EncodeToUtf8(payload);
-
-        // Insert a space byte in the middle.
-        byte[] withSpace = new byte[encoded.Length + 1];
-        encoded.AsSpan(0, 2).CopyTo(withSpace);
-        withSpace[2] = (byte)' ';
-        encoded.AsSpan(2).CopyTo(withSpace.AsSpan(3));
-
-        byte[] destination = new byte[payload.Length];
-        OperationStatus status = Base58.DecodeFromUtf8(withSpace, destination, out _, out int bytesWritten, Base58Variant.BitcoinFlickr, BaseFormatStyles.IgnoreWhitespace);
-
-        Assert.AreEqual(OperationStatus.Done, status);
-        Assert.AreEqual(payload.Length, bytesWritten);
-        CollectionAssert.AreEqual(payload, destination);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Base85.DecodeFromUtf8" /> tolerates whitespace and the Ascii85 delimiters when both
     /// styles are enabled.
     /// </summary>
@@ -332,4 +332,5 @@ public sealed class DecoderStateMachineCoverageTests
         Assert.AreEqual(4, bytesWritten);
         CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), destination);
     }
+
 }

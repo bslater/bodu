@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64UrlCoverageTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,43 +15,8 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class Base64UrlCoverageTests
 {
+
     private static readonly byte[] Payload = new byte[] { 0xFB, 0xFF, 0xFE, 0x00 };
-
-    /// <summary>
-    /// Verifies that <see cref="Base64Url.Encode(ReadOnlySpan{byte})" /> produces the same URL-safe output as the
-    /// equivalent <c>Base64.Encode(..., Base64Variant.UrlSafe)</c> call.
-    /// </summary>
-    [TestMethod]
-    public void Encode_Span_ShouldMatchBase64UrlSafeVariant()
-    {
-        string encoded = Base64Url.Encode(Payload.AsSpan());
-
-        Assert.AreEqual(Base64.Encode(Payload, Base64Variant.UrlSafe), encoded);
-        Assert.IsFalse(encoded.Contains('+', StringComparison.Ordinal));
-        Assert.IsFalse(encoded.Contains('/', StringComparison.Ordinal));
-        Assert.IsFalse(encoded.Contains('=', StringComparison.Ordinal));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base64Url.Encode(byte[])" /> produces the same URL-safe output as the equivalent
-    /// variant call.
-    /// </summary>
-    [TestMethod]
-    public void Encode_ArrayOverload_ShouldMatchBase64UrlSafeVariant()
-    {
-        Assert.AreEqual(Base64.Encode(Payload, Base64Variant.UrlSafe), Base64Url.Encode(Payload));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base64Url.EncodeToUtf8(ReadOnlySpan{byte})" /> emits ASCII bytes of the URL-safe form.
-    /// </summary>
-    [TestMethod]
-    public void EncodeToUtf8_Span_ShouldMatchAsciiOfUrlSafeForm()
-    {
-        byte[] utf8 = Base64Url.EncodeToUtf8(Payload.AsSpan());
-
-        Assert.AreEqual(Base64Url.Encode(Payload.AsSpan()), System.Text.Encoding.ASCII.GetString(utf8));
-    }
 
     /// <summary>
     /// Verifies that <see cref="Base64Url.Decode(ReadOnlySpan{char})" /> round-trips an encoded payload.
@@ -104,6 +69,42 @@ public sealed class Base64UrlCoverageTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base64Url.Encode(byte[])" /> produces the same URL-safe output as the equivalent
+    /// variant call.
+    /// </summary>
+    [TestMethod]
+    public void Encode_ArrayOverload_ShouldMatchBase64UrlSafeVariant()
+    {
+        Assert.AreEqual(Base64.Encode(Payload, Base64Variant.UrlSafe), Base64Url.Encode(Payload));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64Url.Encode(ReadOnlySpan{byte})" /> produces the same URL-safe output as the
+    /// equivalent <c>Base64.Encode(..., Base64Variant.UrlSafe)</c> call.
+    /// </summary>
+    [TestMethod]
+    public void Encode_Span_ShouldMatchBase64UrlSafeVariant()
+    {
+        string encoded = Base64Url.Encode(Payload.AsSpan());
+
+        Assert.AreEqual(Base64.Encode(Payload, Base64Variant.UrlSafe), encoded);
+        Assert.IsFalse(encoded.Contains('+', StringComparison.Ordinal));
+        Assert.IsFalse(encoded.Contains('/', StringComparison.Ordinal));
+        Assert.IsFalse(encoded.Contains('=', StringComparison.Ordinal));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64Url.EncodeToUtf8(ReadOnlySpan{byte})" /> emits ASCII bytes of the URL-safe form.
+    /// </summary>
+    [TestMethod]
+    public void EncodeToUtf8_Span_ShouldMatchAsciiOfUrlSafeForm()
+    {
+        byte[] utf8 = Base64Url.EncodeToUtf8(Payload.AsSpan());
+
+        Assert.AreEqual(Base64Url.Encode(Payload.AsSpan()), System.Text.Encoding.ASCII.GetString(utf8));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64Url.GetMaxDecodedLength(int)" /> delegates to
     /// <see cref="Base64.GetMaxDecodedLength(int)" />.
     /// </summary>
@@ -145,4 +146,5 @@ public sealed class Base64UrlCoverageTests
         Assert.IsFalse(ok);
         Assert.AreEqual(0, bytesWritten);
     }
+
 }

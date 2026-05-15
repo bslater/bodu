@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,6 +26,7 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public static partial class Base16
 {
+
     /// <summary>
     /// The Base16 alphabet using lower case letters.
     /// </summary>
@@ -47,6 +48,40 @@ public static partial class Base16
     /// prefix accepted when <see cref="BaseFormatStyles.AllowPrefix" /> is set.
     /// </summary>
     private const string Prefix = "0x";
+
+    /// <summary>
+    /// Computes the exact number of bytes that decoding <paramref name="source" /> would produce after stripping
+    /// decorations permitted by <paramref name="styles" />.
+    /// </summary>
+    /// <param name="source">The hexadecimal input.</param>
+    /// <param name="styles">The parsing styles.</param>
+    /// <returns>The exact byte count that <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" /> would
+    /// return.</returns>
+    /// <exception cref="FormatException">
+    /// Thrown when the post-decoration digit count is odd, which indicates the input cannot decode cleanly.
+    /// </exception>
+    public static int GetDecodedLength(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        if (!TryCountHexDigits(source, styles, out int digits))
+            throw new FormatException("Input contains non-hexadecimal characters after applying parsing styles.");
+
+        if ((digits & 1) != 0)
+            throw new FormatException("Hex digit count is not even after applying parsing styles.");
+
+        return digits / 2;
+    }
+
+    /// <summary>
+    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes with strict
+    /// formatting (no decorations).
+    /// </summary>
+    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
+    /// <returns><c>byteCount * 2</c>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="byteCount" /> is negative.
+    /// </exception>
+    public static int GetEncodedLength(int byteCount) =>
+        GetEncodedLength(byteCount, BaseFormattingOptions.None);
 
     /// <summary>
     /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the supplied
@@ -123,58 +158,18 @@ public static partial class Base16
     }
 
     /// <summary>
-    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes with strict
-    /// formatting (no decorations).
+    /// Indicates whether <paramref name="value" /> is one of the 22 hexadecimal digit characters.
     /// </summary>
-    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
-    /// <returns><c>byteCount * 2</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
-    public static int GetEncodedLength(int byteCount) =>
-        GetEncodedLength(byteCount, BaseFormattingOptions.None);
-
-    /// <summary>
-    /// Computes the exact number of bytes that decoding <paramref name="source" /> would produce after stripping
-    /// decorations permitted by <paramref name="styles" />.
-    /// </summary>
-    /// <param name="source">The hexadecimal input.</param>
-    /// <param name="styles">The parsing styles.</param>
-    /// <returns>The exact byte count that <see cref="Decode(ReadOnlySpan{char}, BaseFormatStyles)" /> would
-    /// return.</returns>
-    /// <exception cref="FormatException">
-    /// Thrown when the post-decoration digit count is odd, which indicates the input cannot decode cleanly.
-    /// </exception>
-    public static int GetDecodedLength(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
+    /// <param name="value">The character to test.</param>
+    /// <returns><see langword="true" /> for <c>'0'</c>-<c>'9'</c>, <c>'A'</c>-<c>'F'</c>, and <c>'a'</c>-<c>'f'</c>;
+    /// otherwise <see langword="false" />.</returns>
+    public static bool IsHexDigit(char value) => value switch
     {
-        if (!TryCountHexDigits(source, styles, out int digits))
-            throw new FormatException("Input contains non-hexadecimal characters after applying parsing styles.");
-
-        if ((digits & 1) != 0)
-            throw new FormatException("Hex digit count is not even after applying parsing styles.");
-
-        return digits / 2;
-    }
-
-    /// <summary>
-    /// Attempts to compute the exact number of bytes that decoding <paramref name="source" /> would produce.
-    /// </summary>
-    /// <param name="source">The hexadecimal input.</param>
-    /// <param name="byteCount">When this method returns, contains the byte count, or <c>0</c> when the input is
-    /// malformed.</param>
-    /// <param name="styles">The parsing styles.</param>
-    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
-    public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        if (!TryCountHexDigits(source, styles, out int digits) || (digits & 1) != 0)
-        {
-            byteCount = 0;
-            return false;
-        }
-
-        byteCount = digits / 2;
-        return true;
-    }
+        >= '0' and <= '9' => true,
+        >= 'A' and <= 'F' => true,
+        >= 'a' and <= 'f' => true,
+        _ => false,
+    };
 
     /// <summary>
     /// Indicates whether <paramref name="source" /> is a valid hexadecimal input under the supplied parsing styles.
@@ -212,18 +207,24 @@ public static partial class Base16
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="value" /> is one of the 22 hexadecimal digit characters.
+    /// Attempts to compute the exact number of bytes that decoding <paramref name="source" /> would produce.
     /// </summary>
-    /// <param name="value">The character to test.</param>
-    /// <returns><see langword="true" /> for <c>'0'</c>-<c>'9'</c>, <c>'A'</c>-<c>'F'</c>, and <c>'a'</c>-<c>'f'</c>;
-    /// otherwise <see langword="false" />.</returns>
-    public static bool IsHexDigit(char value) => value switch
+    /// <param name="source">The hexadecimal input.</param>
+    /// <param name="byteCount">When this method returns, contains the byte count, or <c>0</c> when the input is
+    /// malformed.</param>
+    /// <param name="styles">The parsing styles.</param>
+    /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
+    public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        >= '0' and <= '9' => true,
-        >= 'A' and <= 'F' => true,
-        >= 'a' and <= 'f' => true,
-        _ => false,
-    };
+        if (!TryCountHexDigits(source, styles, out int digits) || (digits & 1) != 0)
+        {
+            byteCount = 0;
+            return false;
+        }
+
+        byteCount = digits / 2;
+        return true;
+    }
 
     /// <summary>
     /// Counts the hex digits remaining in <paramref name="source" /> after applying the decoration leniency flags,
@@ -265,4 +266,5 @@ public static partial class Base16
         digitCount = digits;
         return true;
     }
+
 }

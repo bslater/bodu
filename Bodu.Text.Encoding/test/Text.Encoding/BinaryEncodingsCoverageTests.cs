@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BinaryEncodingsCoverageTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,7 +16,63 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class BinaryEncodingsCoverageTests
 {
+
     private static readonly byte[] Payload = System.Text.Encoding.ASCII.GetBytes("Hello, World!");
+
+    /// <summary>
+    /// Verifies that every <see cref="BinaryEncodings" /> singleton returns a deterministic non-empty Name and
+    /// Description (exercising property getters across all six adapter types).
+    /// </summary>
+    [TestMethod]
+    public void AllAdapters_ShouldExposeNameAndDescription()
+    {
+        IBinaryEncoding[] encodings =
+        {
+            BinaryEncodings.Base16Lower,
+            BinaryEncodings.Base16Upper,
+            BinaryEncodings.Base32,
+            BinaryEncodings.Base32Crockford,
+            BinaryEncodings.Base32Hex,
+            BinaryEncodings.Base32ZBase32,
+            BinaryEncodings.Base58,
+            BinaryEncodings.Base58Ripple,
+            BinaryEncodings.Base64,
+            BinaryEncodings.Base64Mime,
+            BinaryEncodings.Base64UrlSafe,
+            BinaryEncodings.Ascii85,
+            BinaryEncodings.Z85,
+        };
+
+        foreach (IBinaryEncoding encoding in encodings)
+        {
+            Assert.IsFalse(string.IsNullOrWhiteSpace(encoding.Name));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(encoding.Description));
+        }
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="BinaryEncodings.Ascii85" /> variant adapter mirrors the canonical Ascii85 API.
+    /// </summary>
+    [TestMethod]
+    public void Ascii85_AdapterRoundTrip_ShouldMatchCanonicalApi()
+    {
+        IBinaryEncoding encoding = BinaryEncodings.Ascii85;
+
+        string encoded = encoding.Encode(Payload);
+
+        Assert.AreEqual(Base85.Encode(Payload), encoded);
+        Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
+        Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
+        Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
+
+        char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
+        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
+        Assert.AreEqual(encoded.Length, charsWritten);
+
+        byte[] byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
+        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out int bytesWritten));
+        Assert.AreEqual(Payload.Length, bytesWritten);
+    }
 
     /// <summary>
     /// Verifies that the <see cref="BinaryEncodings.Base16Lower" /> singleton exposes the canonical Base16 surface
@@ -145,58 +201,20 @@ public sealed class BinaryEncodingsCoverageTests
     }
 
     /// <summary>
-    /// Verifies that the <see cref="BinaryEncodings.Ascii85" /> variant adapter mirrors the canonical Ascii85 API.
+    /// Verifies that the generic <see cref="BinaryEncodingExtensions.Encode(byte[], IBinaryEncoding)" /> and
+    /// <see cref="BinaryEncodingExtensions.Decode(string, IBinaryEncoding)" /> route through
+    /// <see cref="IBinaryEncoding" /> and round-trip the payload.
     /// </summary>
     [TestMethod]
-    public void Ascii85_AdapterRoundTrip_ShouldMatchCanonicalApi()
+    public void GenericExtensions_ShouldRoundTripThroughIBinaryEncoding()
     {
-        IBinaryEncoding encoding = BinaryEncodings.Ascii85;
+        IBinaryEncoding encoding = BinaryEncodings.Base16Lower;
 
-        string encoded = encoding.Encode(Payload);
+        string encoded = Payload.Encode(encoding);
+        byte[] decoded = encoded.Decode(encoding);
 
-        Assert.AreEqual(Base85.Encode(Payload), encoded);
-        Assert.IsTrue(encoding.IsValid(encoded.AsSpan()));
-        Assert.IsTrue(encoding.GetMaxEncodedLength(Payload.Length) >= encoded.Length);
-        Assert.IsTrue(encoding.GetMaxDecodedLength(encoded.Length) >= Payload.Length);
-
-        char[] charBuffer = new char[encoding.GetMaxEncodedLength(Payload.Length)];
-        Assert.IsTrue(encoding.TryEncode(Payload, charBuffer, out int charsWritten));
-        Assert.AreEqual(encoded.Length, charsWritten);
-
-        byte[] byteBuffer = new byte[encoding.GetMaxDecodedLength(encoded.Length)];
-        Assert.IsTrue(encoding.TryDecode(encoded.AsSpan(), byteBuffer, out int bytesWritten));
-        Assert.AreEqual(Payload.Length, bytesWritten);
-    }
-
-    /// <summary>
-    /// Verifies that every <see cref="BinaryEncodings" /> singleton returns a deterministic non-empty Name and
-    /// Description (exercising property getters across all six adapter types).
-    /// </summary>
-    [TestMethod]
-    public void AllAdapters_ShouldExposeNameAndDescription()
-    {
-        IBinaryEncoding[] encodings =
-        {
-            BinaryEncodings.Base16Lower,
-            BinaryEncodings.Base16Upper,
-            BinaryEncodings.Base32,
-            BinaryEncodings.Base32Crockford,
-            BinaryEncodings.Base32Hex,
-            BinaryEncodings.Base32ZBase32,
-            BinaryEncodings.Base58,
-            BinaryEncodings.Base58Ripple,
-            BinaryEncodings.Base64,
-            BinaryEncodings.Base64Mime,
-            BinaryEncodings.Base64UrlSafe,
-            BinaryEncodings.Ascii85,
-            BinaryEncodings.Z85,
-        };
-
-        foreach (IBinaryEncoding encoding in encodings)
-        {
-            Assert.IsFalse(string.IsNullOrWhiteSpace(encoding.Name));
-            Assert.IsFalse(string.IsNullOrWhiteSpace(encoding.Description));
-        }
+        Assert.AreEqual(Base16.Encode(Payload), encoded);
+        CollectionAssert.AreEqual(Payload, decoded);
     }
 
     /// <summary>
@@ -285,20 +303,4 @@ public sealed class BinaryEncodingsCoverageTests
         Assert.AreEqual(Base85.ToBase85String(Payload.AsSpan()), Payload.AsSpan().ToBase85String());
     }
 
-    /// <summary>
-    /// Verifies that the generic <see cref="BinaryEncodingExtensions.Encode(byte[], IBinaryEncoding)" /> and
-    /// <see cref="BinaryEncodingExtensions.Decode(string, IBinaryEncoding)" /> route through
-    /// <see cref="IBinaryEncoding" /> and round-trip the payload.
-    /// </summary>
-    [TestMethod]
-    public void GenericExtensions_ShouldRoundTripThroughIBinaryEncoding()
-    {
-        IBinaryEncoding encoding = BinaryEncodings.Base16Lower;
-
-        string encoded = Payload.Encode(encoding);
-        byte[] decoded = encoded.Decode(encoding);
-
-        Assert.AreEqual(Base16.Encode(Payload), encoded);
-        CollectionAssert.AreEqual(Payload, decoded);
-    }
 }

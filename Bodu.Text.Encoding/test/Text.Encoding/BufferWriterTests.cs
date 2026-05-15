@@ -123,6 +123,50 @@ public sealed class BufferWriterTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> writes
+    /// the same UTF-8 bytes as the byte-array EncodeToUtf8.
+    /// </summary>
+    [TestMethod]
+    public void Base58_EncodeToUtf8_IntoBufferWriter_ShouldMatchArrayOutput()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base58.EncodeToUtf8(Payload, writer);
+        byte[] expected = Base58.EncodeToUtf8(Payload);
+
+        Assert.AreEqual(expected.Length, written);
+        CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> writes
+    /// zero bytes and does not advance the writer when the source is empty.
+    /// </summary>
+    [TestMethod]
+    public void Base58_EncodeToUtf8_IntoBufferWriterWithEmptyPayload_ShouldWriteZeroBytes()
+    {
+        ArrayBufferWriter<byte> writer = new();
+
+        int written = Base58.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer);
+
+        Assert.AreEqual(0, written);
+        Assert.AreEqual(0, writer.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> with a
+    /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Base58_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Base58.EncodeToUtf8(Payload, (IBufferWriter<byte>)null!);
+        });
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.Encode(ReadOnlySpan{byte}, IBufferWriter{char}, Base64Variant, BaseFormattingOptions)" />
     /// writes the same characters as the string-returning Encode.
     /// </summary>
@@ -184,50 +228,6 @@ public sealed class BufferWriterTests
         Assert.AreEqual(expected.Length, written);
         Assert.AreEqual(expected, new string(writer.WrittenSpan));
         Assert.IsTrue(expected.StartsWith("<~", StringComparison.Ordinal));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> writes
-    /// the same UTF-8 bytes as the byte-array EncodeToUtf8.
-    /// </summary>
-    [TestMethod]
-    public void Base58_EncodeToUtf8_IntoBufferWriter_ShouldMatchArrayOutput()
-    {
-        ArrayBufferWriter<byte> writer = new();
-
-        int written = Base58.EncodeToUtf8(Payload, writer);
-        byte[] expected = Base58.EncodeToUtf8(Payload);
-
-        Assert.AreEqual(expected.Length, written);
-        CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> writes
-    /// zero bytes and does not advance the writer when the source is empty.
-    /// </summary>
-    [TestMethod]
-    public void Base58_EncodeToUtf8_IntoBufferWriterWithEmptyPayload_ShouldWriteZeroBytes()
-    {
-        ArrayBufferWriter<byte> writer = new();
-
-        int written = Base58.EncodeToUtf8(ReadOnlySpan<byte>.Empty, writer);
-
-        Assert.AreEqual(0, written);
-        Assert.AreEqual(0, writer.WrittenCount);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base58.EncodeToUtf8(ReadOnlySpan{byte}, IBufferWriter{byte}, Base58Variant)" /> with a
-    /// <see langword="null" /> writer throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void Base58_EncodeToUtf8_IntoNullBufferWriter_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = Base58.EncodeToUtf8(Payload, (IBufferWriter<byte>)null!);
-        });
     }
 
     /// <summary>

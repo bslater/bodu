@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16.Encode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
+
     /// <summary>
     /// Encodes the entire byte array into a hexadecimal string.
     /// </summary>
@@ -21,29 +22,6 @@ public static partial class Base16
     {
         ThrowHelper.ThrowIfNull(bytes);
         return Encode(bytes.AsSpan(), options);
-    }
-
-    /// <summary>
-    /// Encodes a portion of a byte array into a formatted hexadecimal string.
-    /// </summary>
-    /// <param name="bytes">The byte array to encode.</param>
-    /// <param name="offset">The zero-based offset in <paramref name="bytes" /> at which to begin encoding.</param>
-    /// <param name="count">The number of bytes to encode.</param>
-    /// <param name="options">Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</param>
-    /// <returns>A Base16 encoded string representing the selected slice of <paramref name="bytes" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds of
-    /// <paramref name="bytes" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
-    /// available range of <paramref name="bytes" />.
-    /// </exception>
-    public static string Encode(byte[] bytes, int offset, int count, BaseFormattingOptions options = BaseFormattingOptions.None)
-    {
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
-        return Encode(bytes.AsSpan(offset, count), options);
     }
 
     /// <summary>
@@ -96,6 +74,29 @@ public static partial class Base16
 
         EncodeToHexCore(bytes, destination, options.HasFlag(BaseFormattingOptions.UpperCase));
         return required;
+    }
+
+    /// <summary>
+    /// Encodes a portion of a byte array into a formatted hexadecimal string.
+    /// </summary>
+    /// <param name="bytes">The byte array to encode.</param>
+    /// <param name="offset">The zero-based offset in <paramref name="bytes" /> at which to begin encoding.</param>
+    /// <param name="count">The number of bytes to encode.</param>
+    /// <param name="options">Formatting options to apply, such as upper case, spacing, prefix, or line breaks.</param>
+    /// <returns>A Base16 encoded string representing the selected slice of <paramref name="bytes" />.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds of
+    /// <paramref name="bytes" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="bytes" />.
+    /// </exception>
+    public static string Encode(byte[] bytes, int offset, int count, BaseFormattingOptions options = BaseFormattingOptions.None)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
+        return Encode(bytes.AsSpan(offset, count), options);
     }
 
     /// <summary>
@@ -160,6 +161,24 @@ public static partial class Base16
     }
 
     /// <summary>
+    /// Writes the hexadecimal representation of <paramref name="bytes" /> directly into <paramref name="chars" />.
+    /// </summary>
+    /// <param name="bytes">The input byte span.</param>
+    /// <param name="chars">The destination character span. The caller must ensure it is at least
+    /// <c>bytes.Length * 2</c> characters in size.</param>
+    /// <param name="upperCase">Whether to emit upper case characters.</param>
+    private static void EncodeToHexCore(ReadOnlySpan<byte> bytes, Span<char> chars, bool upperCase)
+    {
+        ReadOnlySpan<char> map = (upperCase ? HexUpperAlphabet : HexLowerAlphabet).AsSpan();
+        for (int i = 0; i < bytes.Length; i++)
+        {
+            byte b = bytes[i];
+            chars[i * 2] = map[b >> 4];
+            chars[(i * 2) + 1] = map[b & 0x0F];
+        }
+    }
+
+    /// <summary>
     /// Encodes a byte span into a hexadecimal string with optional decoration (spacing, prefix, line breaks).
     /// </summary>
     /// <param name="bytes">The byte span to encode.</param>
@@ -204,24 +223,6 @@ public static partial class Base16
     }
 
     /// <summary>
-    /// Writes the hexadecimal representation of <paramref name="bytes" /> directly into <paramref name="chars" />.
-    /// </summary>
-    /// <param name="bytes">The input byte span.</param>
-    /// <param name="chars">The destination character span. The caller must ensure it is at least
-    /// <c>bytes.Length * 2</c> characters in size.</param>
-    /// <param name="upperCase">Whether to emit upper case characters.</param>
-    private static void EncodeToHexCore(ReadOnlySpan<byte> bytes, Span<char> chars, bool upperCase)
-    {
-        ReadOnlySpan<char> map = (upperCase ? HexUpperAlphabet : HexLowerAlphabet).AsSpan();
-        for (int i = 0; i < bytes.Length; i++)
-        {
-            byte b = bytes[i];
-            chars[i * 2] = map[b >> 4];
-            chars[(i * 2) + 1] = map[b & 0x0F];
-        }
-    }
-
-    /// <summary>
     /// Validates that <paramref name="options" /> contains no flags incompatible with span-based output.
     /// </summary>
     /// <param name="options">The encode options requested by the caller.</param>
@@ -237,4 +238,5 @@ public static partial class Base16
                 nameof(options));
         }
     }
+
 }

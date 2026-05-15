@@ -78,16 +78,6 @@ public sealed partial class Base58Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58.IsValid" /> without <see cref="BaseFormatStyles.IgnoreWhitespace" /> rejects
-    /// input containing whitespace.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenInputContainsWhitespaceWithoutFlag_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base58.IsValid("9 Ajdvzr".AsSpan()));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Base58.IsValid" /> returns <see langword="false" /> for input containing a character
     /// past the 128-entry lookup table range — exercises the <c>c &gt;= lookup.Length</c> branch.
     /// </summary>
@@ -96,6 +86,16 @@ public sealed partial class Base58Tests
     {
         // 'ÿ' (U+00FF) is outside the 128-entry lookup.
         Assert.IsFalse(Base58.IsValid("9Ajdvÿzr".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.IsValid" /> without <see cref="BaseFormatStyles.IgnoreWhitespace" /> rejects
+    /// input containing whitespace.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenInputContainsWhitespaceWithoutFlag_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base58.IsValid("9 Ajdvzr".AsSpan()));
     }
 
     /// <summary>

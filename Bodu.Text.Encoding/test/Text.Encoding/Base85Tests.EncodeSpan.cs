@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85Tests.EncodeSpan.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,6 +14,7 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 public sealed partial class Base85Tests
 {
+
     private static readonly byte[] SampleBytes = System.Text.Encoding.ASCII.GetBytes("Hello world!");
 
     /// <summary>
@@ -105,6 +106,25 @@ public sealed partial class Base85Tests
         {
             _ = Base85.Encode(ReadOnlySpan<byte>.Empty, destination, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
         });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Encode(ReadOnlySpan{byte}, Span{char}, Base85Variant, BaseFormattingOptions)" />
+    /// without delimiters routes through the rented-scratch slow path when the destination shrinks due to the
+    /// Ascii85 <c>z</c> shortcut.
+    /// </summary>
+    [TestMethod]
+    public void Encode_SpanWithoutDelimitersAndShortcutShrinksOutput_ShouldUseRentedScratch()
+    {
+        // 4 zero bytes encode to a single 'z' character (vs 5 chars worst case).
+        byte[] zeros = new byte[4];
+        int actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85);
+        char[] destination = new char[actualLength];
+
+        int written = Base85.Encode(zeros, destination, Base85Variant.Ascii85);
+
+        Assert.AreEqual(actualLength, written);
+        Assert.AreEqual("z", new string(destination, 0, written));
     }
 
     /// <summary>
@@ -206,22 +226,4 @@ public sealed partial class Base85Tests
         });
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Base85.Encode(ReadOnlySpan{byte}, Span{char}, Base85Variant, BaseFormattingOptions)" />
-    /// without delimiters routes through the rented-scratch slow path when the destination shrinks due to the
-    /// Ascii85 <c>z</c> shortcut.
-    /// </summary>
-    [TestMethod]
-    public void Encode_SpanWithoutDelimitersAndShortcutShrinksOutput_ShouldUseRentedScratch()
-    {
-        // 4 zero bytes encode to a single 'z' character (vs 5 chars worst case).
-        byte[] zeros = new byte[4];
-        int actualLength = Base85.GetEncodedLength(zeros, Base85Variant.Ascii85);
-        char[] destination = new char[actualLength];
-
-        int written = Base85.Encode(zeros, destination, Base85Variant.Ascii85);
-
-        Assert.AreEqual(actualLength, written);
-        Assert.AreEqual("z", new string(destination, 0, written));
-    }
 }
