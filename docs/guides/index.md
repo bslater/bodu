@@ -383,3 +383,35 @@ runtime-pluggable encoding choice.
 </div>
 
 </div>
+
+---
+
+## Bodu.Text.Formats
+
+Self-framing binary serialization formats with a strongly-typed value model and a span- and stream-friendly codec.
+The first format the package ships is **Bencode** (the BitTorrent BEP 3 grammar) — full canonicality enforcement
+on both sides of the pipeline.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="formats/index.md">Overview</a></h3>
+  <p>Namespace map, pipeline diagram, and where each guide fits.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="formats/bencode.md">Using Bencode</a></h3>
+  <p>The static codec — <code>Encode</code>, <code>Decode</code>, <code>TryEncode</code>, <code>TryDecode</code>, <code>GetEncodedLength</code>, and the BEP 3 invariants enforced on both sides.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="formats/value-model.md">The BencodedValue model</a></h3>
+  <p><code>BencodedInteger</code>, <code>BencodedString</code>, <code>BencodedList</code>, and <code>BencodedDictionary</code> — construction rules, <code>Kind</code>-based dispatch, and the ordinal <code>BencodedStringComparer</code> that drives dictionary ordering.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="formats/streaming.md">Streams and async I/O</a></h3>
+  <p>Sync and async stream overloads — buffer staging via <code>ArrayPool&lt;byte&gt;</code>, cancellation, lifetime contracts, and when to prefer the span path over <code>Stream</code>.</p>
+</div>
+
+</div>

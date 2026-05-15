@@ -1,0 +1,12 @@
+- name: Overview
+  href: index.md
+- name: Bodu.Text.Formats — Codec
+  items:
+    - name: Using Bencode
+      href: bencode.md
+    - name: The BencodedValue model
+      href: value-model.md
+- name: Bodu.Text.Formats — I/O
+  items:
+    - name: Streams and async I/O
+      href: streaming.md

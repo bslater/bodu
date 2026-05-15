@@ -20,16 +20,20 @@ Each top-level namespace has a landing page that introduces its purpose, lists i
 - **[Bodu.Globalization.Calendar — notable-date resolution](../apidoc/Bodu.Globalization.Calendar.md)**
   Rule-driven notable-date resolution with fixed, day-of-week-in-month, offset, and algorithm strategies — including Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming — driven from pluggable XML or JSON rule sources, an observance-adjustment pipeline, and a trust-policy-driven plugin host.
 
+- **[Bodu.Text.Formats — self-framing binary serialization formats](../docs/formats/index.md)**
+  Strongly-typed value model and a span- and stream-friendly codec for self-framing binary formats. Ships **Bencode** (the BitTorrent BEP 3 grammar) as the first format — `Bencode.Encode` / `Decode` / `TryEncode` / `TryDecode` / `GetEncodedLength` over `ReadOnlySpan<byte>`, `byte[]`, and `Stream`, an immutable `BencodedValue` tree (`Integer`, `String`, `List`, `Dictionary`), and full canonicality enforcement on both sides of the pipeline.
+
 ## Guides
 
 - **[Bodu.Core guides](../guides/core/index.md)** — circular buffer, deque, evicting dictionary, week pattern.
 - **[Bodu.IO.Hashing guides](../guides/io-hashing/index.md)** — fingerprints (FNV, CityHash, MurmurHash3, Pearson, classic string hashes), checksums (CRC, Fletcher, Adler), and check digits.
 - **[Bodu.Security.Cryptography guides](../guides/cryptography/index.md)** — encryption basics, cipher block modes, AEAD, padding, composing primitives, keyed and cryptographic hashing, the ASCON family.
 - **[Bodu.Globalization.Calendar guides](../guides/calendar/index.md)** — `NotableDateService`, built-in algorithms, rule authoring, data packs.
+- **[Bodu.Text.Formats guides](../guides/formats/index.md)** — using the `Bencode` codec, the `BencodedValue` tree model, and stream support.
 
 ## Project documentation
 
 - [Introduction](../docs/introduction.md) — project overview, design principles, and the per-library map.
 - [Getting started](../docs/getting-started.md) — prerequisites, install commands, and one-minute samples per library.
 - [Algorithm families](../docs/algorithm-families.md) — cross-library taxonomy of fingerprints, checksums, check digits, cryptographic hashes, keyed hashes, and the three symmetric-cipher subtypes (standard, tweakable, AEAD).
-- Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md).
+- Per-library introductions: [Bodu.Core](../docs/core/index.md) · [Bodu.IO.Hashing](../docs/io-hashing/index.md) · [Bodu.Security.Cryptography](../docs/cryptography/index.md) · [Bodu.Globalization.Calendar](../docs/calendar/index.md) · [Bodu.Text.Formats](../docs/formats/index.md).

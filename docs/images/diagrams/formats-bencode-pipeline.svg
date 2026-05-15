@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 280" role="img" aria-labelledby="bp-t bp-d">
+  <title id="bp-t">Bencode encode/decode pipeline</title>
+  <desc id="bp-d">The Bencode pipeline runs in both directions. Encoding takes a BencodedValue object tree, walks it with a recursive writer, emits framing tokens and raw payload bytes into a span-, array-, or stream-sized destination, and writes a canonical byte stream. Decoding takes a byte source, runs a forward-only parser that recognises the leading token for each value, builds the matching BencodedValue subtype, validates BEP 3 invariants (no leading zeros, no negative zero, sorted dictionary keys, no trailing data), and returns the object tree.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub   { fill: #CBD5E1; font: 400 11px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ttag  { fill: #94A3B8; font: 700 9px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; letter-spacing: 1px; }
+      .row   { fill: #2DD4BF; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .rowd  { fill: #A78BFA; font: 700 11px/1 "Segoe UI",Arial,sans-serif; text-anchor: start; }
+      .src   { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .mid   { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .dst   { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .out   { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+      .wt    { stroke: #2DD4BF; stroke-width: 1.6; fill: none; }
+      .wp    { stroke: #A78BFA; stroke-width: 1.6; fill: none; }
+    </style>
+    <marker id="bpt-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#2DD4BF"/>
+    </marker>
+    <marker id="bpd-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 Z" fill="#A78BFA"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" width="820" height="280"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="260" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Bencode encode/decode pipeline</text>
+
+    <!-- ===== Top row — ENCODE (left-to-right, teal) ===== -->
+    <text class="row" x="20" y="58">ENCODE  ▸ object tree → canonical bytes</text>
+
+    <g transform="translate(20 70)">
+      <rect class="src" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="20">BencodedValue tree</text>
+      <text class="mut" x="80" y="36">Integer · String · List · Dict</text>
+    </g>
+
+    <line class="wt" x1="180" y1="93" x2="220" y2="93" marker-end="url(#bpt-a)"/>
+
+    <g transform="translate(220 70)">
+      <rect class="mid" width="160" height="46" rx="6"/>
+      <text class="lbl" x="80" y="20">GetEncodedLength</text>
+      <text class="mut" x="80" y="36">measure exact byte count</text>
+    </g>
+
+    <line class="wt" x1="380" y1="93" x2="420" y2="93" marker-end="url(#bpt-a)"/>
+
+    <g transform="translate(420 70)">
+      <rect class="mid" width="160" height="46" rx="6"/>
+      <text class="lbl" x="80" y="20">WriteValue (recursive)</text>
+      <text class="mut" x="80" y="36">emit framing + payload</text>
+    </g>
+
+    <line class="wt" x1="580" y1="93" x2="620" y2="93" marker-end="url(#bpt-a)"/>
+
+    <g transform="translate(620 70)">
+      <rect class="out" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="20">byte[] / Span&lt;byte&gt;</text>
+      <text class="mut" x="80" y="36">canonical encoding</text>
+    </g>
+
+    <!-- ===== Middle separator ===== -->
+    <line x1="20" y1="138" x2="780" y2="138" stroke="#334155" stroke-width="1"/>
+
+    <!-- ===== Bottom row — DECODE (left-to-right, purple) ===== -->
+    <text class="rowd" x="20" y="160">DECODE  ▸ canonical bytes → object tree</text>
+
+    <g transform="translate(20 172)">
+      <rect class="out" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="80" y="20">byte[] / Stream</text>
+      <text class="mut" x="80" y="36">network · file · cache</text>
+    </g>
+
+    <line class="wp" x1="180" y1="195" x2="220" y2="195" marker-end="url(#bpd-a)"/>
+
+    <g transform="translate(220 172)">
+      <rect class="dst" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">Parser (ref struct)</text>
+      <text class="mut" x="80" y="36">peek prefix → dispatch</text>
+    </g>
+
+    <line class="wp" x1="380" y1="195" x2="420" y2="195" marker-end="url(#bpd-a)"/>
+
+    <g transform="translate(420 172)">
+      <rect class="dst" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="80" y="20">Validate invariants</text>
+      <text class="mut" x="80" y="36">no leading zeros · sorted keys</text>
+    </g>
+
+    <line class="wp" x1="580" y1="195" x2="620" y2="195" marker-end="url(#bpd-a)"/>
+
+    <g transform="translate(620 172)">
+      <rect class="src" width="160" height="46" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="80" y="20">BencodedValue tree</text>
+      <text class="mut" x="80" y="36">strongly typed result</text>
+    </g>
+
+    <!-- Footer note -->
+    <text class="mut" x="400" y="244" text-anchor="middle">Try variants (TryEncode / TryDecode) return false / null instead of throwing; stream overloads stage to a pooled buffer before passing the span path.</text>
+  </g>
+</svg>

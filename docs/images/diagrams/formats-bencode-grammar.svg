@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 300" role="img" aria-labelledby="bg-t bg-d">
+  <title id="bg-t">Bencode value grammar — four kinds, four framings</title>
+  <desc id="bg-d">Bencode defines four value kinds. An integer is framed by 'i' and 'e' around an ASCII signed decimal. A byte string is length-prefixed by an ASCII integer, a colon separator, and a raw byte payload. A list is framed by 'l' and 'e' around zero or more child values. A dictionary is framed by 'd' and 'e' around an ordered sequence of byte-string keys paired with values. Keys must appear in raw byte-ordinal order.</desc>
+
+  <defs>
+    <style>
+      .bg    { fill: #0F172A; }
+      .pan   { fill: #1E293B; stroke: #334155; stroke-width: 1; }
+      .hdr   { fill: #111827; stroke: #334155; stroke-width: 1; }
+      .ttl   { fill: #F8FAFC; font: 700 15px/1 "Segoe UI",Arial,sans-serif; }
+      .lbl   { fill: #F8FAFC; font: 700 12px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .sub   { fill: #CBD5E1; font: 400 11px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .mut   { fill: #94A3B8; font: 400 10px/1.25 "Segoe UI",Arial,sans-serif; text-anchor: middle; }
+      .ttag  { fill: #94A3B8; font: 700 9px/1 "Segoe UI",Arial,sans-serif; text-anchor: middle; letter-spacing: 1px; }
+      .mono  { font: 700 13px/1 "Consolas","Menlo",monospace; fill: #E2E8F0; text-anchor: middle; }
+      .tok   { fill: #FBBF24; font: 700 13px/1 "Consolas","Menlo",monospace; }
+      .alt   { fill: #60A5FA; font: 700 13px/1 "Consolas","Menlo",monospace; }
+      .b1    { fill: #0D3331; stroke: #2DD4BF; stroke-width: 1.5; }
+      .b2    { fill: #1E3A5F; stroke: #60A5FA; stroke-width: 1.5; }
+      .b3    { fill: #2A1B54; stroke: #A78BFA; stroke-width: 1.5; }
+      .b4    { fill: #431407; stroke: #FBBF24; stroke-width: 1.5; }
+    </style>
+  </defs>
+
+  <rect class="bg" width="820" height="300"/>
+
+  <g transform="translate(10 10)">
+    <rect class="pan" width="800" height="280" rx="8"/>
+    <rect class="hdr" width="800" height="30" rx="8"/>
+    <rect class="hdr" y="22" width="800" height="8"/>
+    <text class="ttl" x="16" y="20">Bencode value grammar — four kinds, four framings</text>
+
+    <!-- ============ Integer ============ -->
+    <g transform="translate(28 56)">
+      <text class="ttag" x="86" y="0">INTEGER</text>
+      <rect class="b1" width="172" height="58" y="8" rx="6"/>
+      <text class="lbl" fill="#2DD4BF" x="86" y="30">BencodedInteger</text>
+      <text x="86" y="54" class="mono">
+        <tspan class="tok">i</tspan>-1024<tspan class="tok">e</tspan>
+      </text>
+      <text class="mut" x="86" y="84">signed decimal, 64-bit</text>
+      <text class="mut" x="86" y="98">no leading zeros, no -0</text>
+    </g>
+
+    <!-- ============ Byte string ============ -->
+    <g transform="translate(220 56)">
+      <text class="ttag" x="86" y="0">BYTE STRING</text>
+      <rect class="b2" width="172" height="58" y="8" rx="6"/>
+      <text class="lbl" fill="#93C5FD" x="86" y="30">BencodedString</text>
+      <text x="86" y="54" class="mono">
+        5<tspan class="tok">:</tspan>hello
+      </text>
+      <text class="mut" x="86" y="84">length-prefixed raw bytes</text>
+      <text class="mut" x="86" y="98">opaque — not necessarily UTF-8</text>
+    </g>
+
+    <!-- ============ List ============ -->
+    <g transform="translate(412 56)">
+      <text class="ttag" x="86" y="0">LIST</text>
+      <rect class="b3" width="172" height="58" y="8" rx="6"/>
+      <text class="lbl" fill="#C4B5FD" x="86" y="30">BencodedList</text>
+      <text x="86" y="54" class="mono">
+        <tspan class="tok">l</tspan>4<tspan class="tok">:</tspan>spam<tspan class="tok">i</tspan>42<tspan class="tok">ee</tspan>
+      </text>
+      <text class="mut" x="86" y="84">ordered sequence of values</text>
+      <text class="mut" x="86" y="98">any kind, any depth</text>
+    </g>
+
+    <!-- ============ Dictionary ============ -->
+    <g transform="translate(604 56)">
+      <text class="ttag" x="86" y="0">DICTIONARY</text>
+      <rect class="b4" width="172" height="58" y="8" rx="6"/>
+      <text class="lbl" fill="#FBBF24" x="86" y="30">BencodedDictionary</text>
+      <text x="86" y="54" class="mono">
+        <tspan class="tok">d</tspan>3<tspan class="tok">:</tspan>cow3<tspan class="tok">:</tspan>moo<tspan class="tok">e</tspan>
+      </text>
+      <text class="mut" x="86" y="84">byte-string keys → values</text>
+      <text class="mut" x="86" y="98">ordered by raw key bytes</text>
+    </g>
+
+    <!-- ============ Framing-token legend ============ -->
+    <g transform="translate(28 168)">
+      <text class="lbl" fill="#F8FAFC" x="0" y="0" style="text-anchor: start">Framing tokens</text>
+
+      <g transform="translate(0 14)" font-family="'Consolas','Menlo',monospace" font-size="13">
+        <text class="tok" x="0"   y="14">i ... e</text>
+        <text class="mut" x="80"  y="14" style="text-anchor: start">integer body between 'i' and 'e'</text>
+
+        <text class="tok" x="0"   y="34">N : bytes</text>
+        <text class="mut" x="80"  y="34" style="text-anchor: start">decimal length, ':' separator, exactly N bytes</text>
+
+        <text class="tok" x="0"   y="54">l ... e</text>
+        <text class="mut" x="80"  y="54" style="text-anchor: start">list elements between 'l' and 'e'</text>
+
+        <text class="tok" x="0"   y="74">d K V K V e</text>
+        <text class="mut" x="100" y="74" style="text-anchor: start">dictionary key/value pairs between 'd' and 'e' — keys are byte strings, sorted by raw byte order</text>
+      </g>
+    </g>
+
+    <text class="mut" x="400" y="266" text-anchor="middle">A full document is exactly one top-level value (typically a dictionary). Trailing bytes are rejected.</text>
+  </g>
+</svg>

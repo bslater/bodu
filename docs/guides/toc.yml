@@ -157,3 +157,18 @@
       items:
         - name: The IBinaryEncoding interface
           href: text-encoding/binary-encodings-interface.md
+- name: Bodu.Text.Formats
+  href: formats/
+  items:
+    - name: Overview
+      href: formats/index.md
+    - name: Bodu.Text.Formats — Codec
+      items:
+        - name: Using Bencode
+          href: formats/bencode.md
+        - name: The BencodedValue model
+          href: formats/value-model.md
+    - name: Bodu.Text.Formats — I/O
+      items:
+        - name: Streams and async I/O
+          href: formats/streaming.md

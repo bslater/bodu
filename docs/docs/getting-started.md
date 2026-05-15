@@ -11,6 +11,7 @@ This page is a **cross-library tour**. It installs every Bodu package and runs o
 - [Bodu.Security.Cryptography — getting started](cryptography/getting-started.md)
 - [Bodu.Globalization.Calendar — getting started](calendar/getting-started.md)
 - [Bodu.Text.Encoding — getting started](text-encoding/getting-started.md)
+- [Bodu.Text.Formats — getting started](formats/getting-started.md)
 
 ## Prerequisites
 
@@ -30,6 +31,7 @@ dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
 dotnet add package Bodu.Text.Encoding
+dotnet add package Bodu.Text.Formats
 
 # Optional region-specific calendar data packs:
 dotnet add package Bodu.Globalization.Calendar.Data.Americas
@@ -129,10 +131,31 @@ For lenient parsing (whitespace, `0x` prefix, missing padding), `OperationStatus
 options like MIME line wrapping or Crockford alias decoding, see the
 [Bodu.Text.Encoding getting-started](text-encoding/getting-started.md).
 
+### Bodu.Text.Formats — decode a Bencode document
+
+```csharp
+using Bodu.Text.Formats;
+
+byte[] payload = File.ReadAllBytes("ubuntu.iso.torrent");
+
+BencodedValue root = Bencode.Decode(payload);
+BencodedDictionary doc = (BencodedDictionary)root;
+
+string tracker = ((BencodedString)doc["announce"]).GetUtf8String();
+BencodedDictionary info = (BencodedDictionary)doc["info"];
+string name = ((BencodedString)info["name"]).GetUtf8String();
+long pieceLength = ((BencodedInteger)info["piece length"]).Value;
+```
+
+The parser enforces every BEP 3 invariant — no leading zeros, no negative zero, dictionary keys sorted by raw byte
+order, no trailing bytes — so a successful decode round-trips bit-exactly through `Bencode.Encode`. For
+non-throwing parsing, stream support, and the full value model, see the
+[Bodu.Text.Formats getting-started](formats/getting-started.md).
+
 ## Where to go next
 
 - **[Introduction](introduction.md)** — what each library is for and how they fit together.
 - **[Algorithm families](algorithm-families.md)** — the cross-library taxonomy if your problem touches hashing, checksums, or encryption.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md) · [Bodu.Text.Formats](formats/index.md).
 - **API references:** [Bodu.Collections.Generic](../apidoc/Bodu.Collections.Generic.md) · [Bodu.IO.Hashing](../apidoc/Bodu.IO.Hashing.md) · [Bodu.Security.Cryptography](../apidoc/Bodu.Security.Cryptography.md) · [Bodu.Globalization.Calendar](../apidoc/Bodu.Globalization.Calendar.md).
-- **Guides:** [Bodu.Core](../guides/core/index.md) · [Bodu.IO.Hashing](../guides/io-hashing/index.md) · [Bodu.Security.Cryptography](../guides/cryptography/index.md) · [Bodu.Globalization.Calendar](../guides/calendar/index.md) · [Bodu.Text.Encoding](../guides/text-encoding/index.md).
+- **Guides:** [Bodu.Core](../guides/core/index.md) · [Bodu.IO.Hashing](../guides/io-hashing/index.md) · [Bodu.Security.Cryptography](../guides/cryptography/index.md) · [Bodu.Globalization.Calendar](../guides/calendar/index.md) · [Bodu.Text.Encoding](../guides/text-encoding/index.md) · [Bodu.Text.Formats](../guides/formats/index.md).
