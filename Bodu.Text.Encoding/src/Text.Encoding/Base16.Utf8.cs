@@ -90,10 +90,16 @@ public static partial class Base16
         if (styles == BaseFormatStyles.None)
             return DecodeUtf8WithStatus(source, destination, out bytesConsumed, out bytesWritten, isFinalBlock);
 
-        // Lenient path: project UTF-8 bytes through a transient char buffer that omits decorations.
+        // Lenient path: project UTF-8 bytes through a transient char buffer that omits decorations. Track a parallel
+        // map from kept-buffer index to original source position so partial-progress outcomes can report the correct
+        // source-byte boundary.
         Span<char> scratch = source.Length <= StackallocThreshold
             ? stackalloc char[source.Length]
             : new char[source.Length];
+
+        Span<int> keptToSource = source.Length <= StackallocThreshold
+            ? stackalloc int[source.Length]
+            : new int[source.Length];
 
         int kept = 0;
         bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
@@ -113,16 +119,19 @@ public static partial class Base16
             if (ignoreWhitespace && b is ((byte)' ') or ((byte)'\t') or ((byte)'\r') or ((byte)'\n'))
                 continue;
 
+            keptToSource[kept] = i;
             scratch[kept++] = (char)b;
         }
 
-        OperationStatus status = DecodeStrictWithStatus(scratch.Slice(0, kept), destination, out int _, out bytesWritten, isFinalBlock);
+        OperationStatus status = DecodeStrictWithStatus(scratch.Slice(0, kept), destination, out int charsConsumed, out bytesWritten, isFinalBlock);
 
-        // Lenient consumption: we report the entire source as consumed since the kept-character buffer was the basis
-        // of the decode. Partial-pair scenarios in streaming mode still surface via NeedMoreData.
-        bytesConsumed = (status == OperationStatus.NeedMoreData || status == OperationStatus.DestinationTooSmall)
-            ? 0
-            : source.Length;
+        bytesConsumed = status switch
+        {
+            OperationStatus.Done => source.Length,
+            OperationStatus.DestinationTooSmall => charsConsumed < kept ? keptToSource[charsConsumed] : source.Length,
+            OperationStatus.NeedMoreData => charsConsumed < kept ? keptToSource[charsConsumed] : source.Length,
+            _ => 0,
+        };
 
         return status;
     }

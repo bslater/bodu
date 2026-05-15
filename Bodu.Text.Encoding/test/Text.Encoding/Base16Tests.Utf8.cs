@@ -264,4 +264,81 @@ public sealed partial class Base16Tests
             : OperationStatus.NeedMoreData;
         Assert.AreEqual(expectedStatus, status);
     }
+
+    /// <summary>
+    /// Verifies that the lenient UTF-8 decode path returns a <c>bytesConsumed</c> that points at the source position
+    /// where decoding stopped — mapped through the kept-character projection so the caller can resume cleanly. The
+    /// previous implementation hard-coded <c>bytesConsumed = 0</c> on partial outcomes.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenLenientStylesAndDestinationTooSmall_ShouldMapKeptPositionBackToSourceIndex()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD BE EF");
+        byte[] destination = new byte[2];
+
+        OperationStatus status = Base16.DecodeFromUtf8(
+            utf8,
+            destination,
+            out int bytesConsumed,
+            out int bytesWritten,
+            BaseFormatStyles.IgnoreWhitespace);
+
+        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+        Assert.AreEqual(2, bytesWritten);
+
+        // Kept positions [0..3] = source [0,1,3,4]; next unconsumed kept position 4 maps to source index 6 ("B" after
+        // the third space).
+        Assert.AreEqual(6, bytesConsumed);
+        Assert.AreEqual(0xDE, destination[0]);
+        Assert.AreEqual(0xAD, destination[1]);
+    }
+
+    /// <summary>
+    /// Verifies that the lenient UTF-8 decode path reports the kept-character mapping back to the source for
+    /// <see cref="OperationStatus.NeedMoreData" /> when an odd trailing kept character remains after stripping
+    /// whitespace.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenLenientStylesAndOddTrailingNonFinal_ShouldReportSourceProgress()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("DE AD B");
+        byte[] destination = new byte[4];
+
+        OperationStatus status = Base16.DecodeFromUtf8(
+            utf8,
+            destination,
+            out int bytesConsumed,
+            out int bytesWritten,
+            BaseFormatStyles.IgnoreWhitespace,
+            isFinalBlock: false);
+
+        Assert.AreEqual(OperationStatus.NeedMoreData, status);
+        Assert.AreEqual(2, bytesWritten);
+
+        // Kept = "DEADB" (5 chars). Strict decode consumes 4 chars (2 pairs). Trailing kept char "B" is at kept index 4,
+        // which maps back to source index 6.
+        Assert.AreEqual(6, bytesConsumed);
+    }
+
+    /// <summary>
+    /// Verifies that the lenient UTF-8 decode path reports <see cref="OperationStatus.Done" /> with the full source
+    /// length consumed when the input is valid and the destination is sized to fit.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenLenientStylesAndDone_ShouldConsumeEntireSource()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("0xDE AD");
+        byte[] destination = new byte[2];
+
+        OperationStatus status = Base16.DecodeFromUtf8(
+            utf8,
+            destination,
+            out int bytesConsumed,
+            out int bytesWritten,
+            BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
+
+        Assert.AreEqual(OperationStatus.Done, status);
+        Assert.AreEqual(7, bytesConsumed);
+        Assert.AreEqual(2, bytesWritten);
+    }
 }

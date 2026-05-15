@@ -172,4 +172,63 @@ public sealed partial class Base32Tests
         Assert.AreEqual(OperationStatus.Done, status);
         CollectionAssert.AreEqual(original, destination);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.DecodeFromUtf8" /> rolls back <c>bytesConsumed</c> and <c>bytesWritten</c> to
+    /// the last completed 8-symbol / 5-byte quantum boundary when the destination cannot accommodate the next quantum.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportLastQuantumBoundary()
+    {
+        // "MZXW6YTBOI======" encodes "foobar" (6 bytes). A 5-byte destination fits only the first quantum.
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
+        byte[] destination = new byte[5];
+
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
+
+        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+        Assert.AreEqual(8, bytesConsumed);
+        Assert.AreEqual(5, bytesWritten);
+
+        // The committed bytes correspond to "fooba" (5 bytes of "foobar").
+        byte[] expected = Ascii("fooba");
+        CollectionAssert.AreEqual(expected, destination);
+    }
+
+    /// <summary>
+    /// Verifies that when the destination is smaller than a single Base32 quantum the decoder reports no progress
+    /// rather than partial-quantum writes — the OperationStatus contract requires <c>bytesConsumed</c> to map to a
+    /// re-feedable position.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenDestinationSmallerThanQuantum_ShouldReportZeroProgress()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI======");
+        byte[] destination = new byte[3];
+
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
+
+        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+        Assert.AreEqual(0, bytesConsumed);
+        Assert.AreEqual(0, bytesWritten);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base32.DecodeFromUtf8" /> reports <see cref="OperationStatus.NeedMoreData" /> with
+    /// quantum-aligned counters when the streaming input ends mid-quantum.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenNeedMoreData_ShouldReportLastQuantumBoundary()
+    {
+        // "MZXW6YTB" is exactly one full quantum (5 bytes). Append "OI" to start a partial second quantum without
+        // padding.
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("MZXW6YTBOI");
+        byte[] destination = new byte[6];
+
+        OperationStatus status = Base32.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten, isFinalBlock: false);
+
+        Assert.AreEqual(OperationStatus.NeedMoreData, status);
+        Assert.AreEqual(8, bytesConsumed);
+        Assert.AreEqual(5, bytesWritten);
+    }
 }

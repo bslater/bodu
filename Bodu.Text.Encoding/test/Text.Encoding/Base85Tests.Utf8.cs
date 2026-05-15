@@ -73,4 +73,23 @@ public sealed partial class Base85Tests
 
         Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.DecodeFromUtf8" /> reports <c>bytesConsumed = 0</c> and <c>bytesWritten = 0</c>
+    /// on <see cref="OperationStatus.DestinationTooSmall" />. Base85 cannot commit partial output, so the contract is
+    /// "all-or-nothing" — the caller retries with a larger destination.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportNoCommittedProgress()
+    {
+        byte[] original = Ascii("Hello world!");
+        byte[] encoded = Base85.EncodeToUtf8(original);
+        byte[] destination = new byte[1];
+
+        OperationStatus status = Base85.DecodeFromUtf8(encoded, destination, out int bytesConsumed, out int bytesWritten);
+
+        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+        Assert.AreEqual(0, bytesConsumed);
+        Assert.AreEqual(0, bytesWritten);
+    }
 }

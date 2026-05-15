@@ -98,4 +98,23 @@ public sealed partial class Base58Tests
         Assert.AreEqual(OperationStatus.Done, status);
         CollectionAssert.AreEqual(original, destination.AsSpan(0, bytesWritten).ToArray());
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> reports <c>bytesConsumed = 0</c> and <c>bytesWritten = 0</c>
+    /// on <see cref="OperationStatus.DestinationTooSmall" />. Base58 cannot commit partial output (it decodes through
+    /// big-integer divmod into a scratch buffer), so the contract is "all-or-nothing" — the caller retries with a
+    /// larger destination.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportNoCommittedProgress()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
+        byte[] destination = new byte[1];
+
+        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
+
+        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+        Assert.AreEqual(0, bytesConsumed);
+        Assert.AreEqual(0, bytesWritten);
+    }
 }
