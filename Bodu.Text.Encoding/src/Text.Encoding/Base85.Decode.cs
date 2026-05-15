@@ -126,6 +126,9 @@ public static partial class Base85
         bool allowShortcut = variant == Base85Variant.Ascii85;
         bool requireFullGroups = variant == Base85Variant.Z85;
 
+        if (allowShortcut && style.HasFlag(BaseFormatStyles.AllowPrefix))
+            chars = StripAscii85Delimiters(chars, ignoreWhitespace);
+
         written = 0;
         error = null;
 
