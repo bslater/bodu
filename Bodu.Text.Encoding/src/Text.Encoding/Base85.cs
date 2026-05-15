@@ -155,21 +155,46 @@ public static partial class Base85
     {
         sbyte[] lookup = GetLookup(variant);
         bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
-        bool allowShortcut = variant == Base85Variant.Ascii85;
+        bool isAscii85 = variant == Base85Variant.Ascii85;
+
+        // Walk the input and validate both alphabet membership AND structural rules so IsValid agrees with the
+        // strict decoder. For Ascii85 the 'z' shortcut may only appear at a group boundary; trailing partial groups
+        // must be 2, 3, or 4 chars (1 cannot represent any byte). Z85 requires the symbol count to be a multiple
+        // of 5.
+        int symbolsThisGroup = 0;
+        int totalSymbols = 0;
 
         foreach (char c in source)
         {
             if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
                 continue;
 
-            if (allowShortcut && c == ZeroShortcut)
+            if (isAscii85 && c == ZeroShortcut)
+            {
+                if (symbolsThisGroup != 0)
+                    return false;
+
                 continue;
+            }
 
             if (c >= lookup.Length || lookup[c] < 0)
                 return false;
+
+            symbolsThisGroup++;
+            totalSymbols++;
+            if (symbolsThisGroup == 5)
+                symbolsThisGroup = 0;
         }
 
-        return true;
+        if (variant == Base85Variant.Z85)
+        {
+            // Z85 requires the input length (excluding stripped whitespace) to be an exact multiple of five.
+            return symbolsThisGroup == 0;
+        }
+
+        // Ascii85: terminal partial group of 1 character cannot produce any byte and is rejected. 0, 2, 3, 4 are
+        // permitted (0 = no partial; 2/3/4 = 1/2/3 bytes of tail per the partial-group rule).
+        return symbolsThisGroup != 1;
     }
 
     /// <summary>

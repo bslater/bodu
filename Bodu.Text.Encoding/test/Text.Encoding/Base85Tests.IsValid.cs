@@ -60,4 +60,50 @@ public sealed partial class Base85Tests
         Assert.IsTrue(Base85.IsBase85Digit('#', Base85Variant.Z85));
         Assert.IsFalse(Base85.IsBase85Digit('"', Base85Variant.Z85));
     }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base85.IsValid" /> now performs full structural validation. A trailing
+    /// single character (partial group of 1) cannot represent any byte and must be rejected — previously IsValid
+    /// reported true because only alphabet membership was checked.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAscii85TrailingSingleChar_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base85.IsValid("9".AsSpan()));
+        Assert.IsTrue(Base85.IsValid("9jqo^".AsSpan()), "5-char Ascii85 input is valid.");
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base85.IsValid" /> rejects a misplaced <c>z</c> shortcut. The shortcut
+    /// may only appear at a 5-char group boundary.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAscii85ZShortcutInsideGroup_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base85.IsValid("9jz".AsSpan()));
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base85.IsValid" /> for Z85 requires the symbol count to be a multiple
+    /// of five (RFC 32 length rule).
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenZ85LengthNotMultipleOfFive_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base85.IsValid("HelloW".AsSpan(), Base85Variant.Z85));
+        Assert.IsTrue(Base85.IsValid("HelloWorld".AsSpan(), Base85Variant.Z85));
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base85.IsValid" /> for Ascii85 accepts the canonical partial-group
+    /// sizes (2, 3, 4 chars) which represent 1, 2, 3 bytes of tail.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAscii85CanonicalPartialGroup_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Base85.IsValid("!!".AsSpan()));    // 2 chars → 1 byte
+        Assert.IsTrue(Base85.IsValid("!!!".AsSpan()));   // 3 chars → 2 bytes
+        Assert.IsTrue(Base85.IsValid("!!!!".AsSpan()));  // 4 chars → 3 bytes
+        Assert.IsTrue(Base85.IsValid("9jqo^".AsSpan()));  // 5 chars → 4 bytes (full group)
+    }
 }
