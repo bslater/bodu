@@ -82,6 +82,12 @@ public static partial class Base64
             if (!Convert.TryFromBase64Chars(scratch.AsSpan(0, normalized), buffer, out int bytesWritten))
                 throw new FormatException("Input is not valid Base64.");
 
+            if (style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding)
+                && !IsCanonicalEncoding(buffer.AsSpan(0, bytesWritten), scratch.AsSpan(0, normalized)))
+            {
+                throw new FormatException("Base64 input is not in canonical form — unused trailing bits are non-zero.");
+            }
+
             if (bytesWritten == buffer.Length)
                 return buffer;
 
@@ -123,7 +129,17 @@ public static partial class Base64
             if (normalized < 0)
                 return false;
 
-            return Convert.TryFromBase64Chars(scratch.AsSpan(0, normalized), destination, out bytesWritten);
+            if (!Convert.TryFromBase64Chars(scratch.AsSpan(0, normalized), destination, out bytesWritten))
+                return false;
+
+            if (style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding)
+                && !IsCanonicalEncoding(destination.Slice(0, bytesWritten), scratch.AsSpan(0, normalized)))
+            {
+                bytesWritten = 0;
+                return false;
+            }
+
+            return true;
         }
         finally
         {
@@ -213,5 +229,28 @@ public static partial class Base64
         }
 
         return j;
+    }
+
+    /// <summary>
+    /// Indicates whether <paramref name="normalisedInput" /> is the canonical Base64 encoding of
+    /// <paramref name="decodedBytes" />. Re-encodes the bytes using the standard alphabet and compares the result.
+    /// </summary>
+    /// <param name="decodedBytes">The bytes that <paramref name="normalisedInput" /> decoded to.</param>
+    /// <param name="normalisedInput">The post-normalisation Base64 input (standard alphabet, fully padded).</param>
+    /// <returns><see langword="true" /> when the input matches the canonical re-encoding; <see langword="false" />
+    /// when the input has non-zero unused bits in its final partial group.</returns>
+    private static bool IsCanonicalEncoding(ReadOnlySpan<byte> decodedBytes, ReadOnlySpan<char> normalisedInput)
+    {
+        int expectedLength = ((decodedBytes.Length + 2) / 3) * 4;
+        if (expectedLength != normalisedInput.Length)
+            return false;
+
+        Span<char> reencoded = expectedLength <= 256
+            ? stackalloc char[256]
+            : new char[expectedLength];
+        if (!Convert.TryToBase64Chars(decodedBytes, reencoded, out int reLen))
+            return false;
+
+        return normalisedInput.SequenceEqual(reencoded.Slice(0, reLen));
     }
 }

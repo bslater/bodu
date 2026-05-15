@@ -74,10 +74,11 @@ public static partial class Base32
         bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
         bool padIsRequired = ShouldRequireExactPadding(variant, style);
         bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        bool requireCanonical = style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding);
 
         byte[] buffer = new byte[GetMaxDecodedLength(chars.Length)];
 
-        if (!DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, buffer, out int written, out string? error))
+        if (!DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, buffer, out int written, out string? error))
             throw new FormatException(error);
 
         if (written == buffer.Length)
@@ -111,8 +112,9 @@ public static partial class Base32
         bool ignoreWhitespace = style.HasFlag(BaseFormatStyles.IgnoreWhitespace);
         bool padIsRequired = ShouldRequireExactPadding(variant, style);
         bool strictQuantum = variant is Base32Variant.Standard or Base32Variant.HexExtended;
+        bool requireCanonical = style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding);
 
-        return DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, destination, out bytesWritten, out _);
+        return DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, destination, out bytesWritten, out _);
     }
 
     /// <summary>
@@ -148,13 +150,15 @@ public static partial class Base32
     /// <param name="strictQuantum">Whether the input must match an RFC 4648 §6 terminal-quantum length (2, 4, 5, 7,
     /// or 8 data characters). Only the Standard and HexExtended variants enforce this; Crockford and Z-Base32 omit
     /// the check.</param>
+    /// <param name="requireCanonical">Whether the input must be in canonical form — the unused bits of the final
+    /// partial group must be zero.</param>
     /// <param name="destination">The destination span.</param>
     /// <param name="bytesWritten">When this method returns, contains the number of bytes written, or <c>0</c> on
     /// failure.</param>
     /// <param name="error">When this method returns <see langword="false" />, contains the failure reason, or
     /// <see langword="null" /> on success.</param>
     /// <returns><see langword="true" /> on success; <see langword="false" /> on any validation failure.</returns>
-    private static bool DecodeCore(ReadOnlySpan<char> chars, sbyte[] lookup, bool ignoreWhitespace, bool requireExactPadding, bool strictQuantum, Span<byte> destination, out int bytesWritten, out string? error)
+    private static bool DecodeCore(ReadOnlySpan<char> chars, sbyte[] lookup, bool ignoreWhitespace, bool requireExactPadding, bool strictQuantum, bool requireCanonical, Span<byte> destination, out int bytesWritten, out string? error)
     {
         bytesWritten = 0;
         error = null;
@@ -241,6 +245,19 @@ public static partial class Base32
             error = "Base32 input has an invalid number of data characters for the final quantum.";
             bytesWritten = 0;
             return false;
+        }
+
+        // Canonical encoding requires the unused low bits of the final partial group to be zero. Without this check
+        // multiple distinct inputs decode to the same bytes (RFC 4648 §3.5).
+        if (requireCanonical && bitsAccumulated > 0)
+        {
+            int leftoverMask = (1 << bitsAccumulated) - 1;
+            if ((accumulator & leftoverMask) != 0)
+            {
+                error = "Base32 input is not in canonical form — unused trailing bits are non-zero.";
+                bytesWritten = 0;
+                return false;
+            }
         }
 
         return true;

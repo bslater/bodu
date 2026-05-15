@@ -340,6 +340,19 @@ public static partial class Base32
             return OperationStatus.InvalidData;
         }
 
+        // Canonical-encoding check: the final partial group's unused low bits must be zero. Without this check a
+        // decoder accepts multiple distinct inputs that round-trip to the same byte sequence (RFC 4648 §3.5).
+        if (styles.HasFlag(BaseFormatStyles.RequireCanonicalEncoding) && bitsAccumulated > 0)
+        {
+            int leftoverMask = (1 << bitsAccumulated) - 1;
+            if ((accumulator & leftoverMask) != 0)
+            {
+                consumed = checkpointConsumed;
+                written = checkpointWritten;
+                return OperationStatus.InvalidData;
+            }
+        }
+
         return OperationStatus.Done;
     }
 
