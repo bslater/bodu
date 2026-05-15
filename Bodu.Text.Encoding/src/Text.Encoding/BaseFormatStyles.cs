@@ -32,4 +32,10 @@ public enum BaseFormatStyles : byte
     /// anywhere in the input.
     /// </summary>
     IgnoreWhitespace = 1 << 1,
+
+    /// <summary>
+    /// Allows the parser to accept encoded input that omits the trailing padding characters mandated by the encoding
+    /// specification. This flag has no effect on encodings that do not use padding.
+    /// </summary>
+    AllowMissingPadding = 1 << 2,
 }

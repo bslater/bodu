@@ -45,4 +45,10 @@ public enum BaseFormattingOptions : byte
     /// Inserts a single space between adjacent groups of encoded symbols, typically aligned to byte boundaries.
     /// </summary>
     InsertSpacing = 1 << 3,
+
+    /// <summary>
+    /// Omits the trailing padding characters that the encoding specification would normally emit. This flag has no
+    /// effect on encodings that do not use padding.
+    /// </summary>
+    OmitPadding = 1 << 4,
 }
