@@ -67,4 +67,22 @@ public sealed class SmokeTests
         Assert.AreEqual("Zm9vYmFy", encoded);
         CollectionAssert.AreEqual(original, decoded);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.Encode(byte[], Base58Variant)" /> followed by
+    /// <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> round-trips the ASCII representation of
+    /// <c>"Hello"</c> using the canonical Bitcoin/Flickr alphabet.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void Base58_EncodeDecode_ShouldRoundTripBitcoinFlickrReferenceVector()
+    {
+        byte[] original = System.Text.Encoding.ASCII.GetBytes("Hello");
+
+        string encoded = Base58.Encode(original);
+        byte[] decoded = Base58.Decode(encoded);
+
+        Assert.AreEqual("9Ajdvzr", encoded);
+        CollectionAssert.AreEqual(original, decoded);
+    }
 }
