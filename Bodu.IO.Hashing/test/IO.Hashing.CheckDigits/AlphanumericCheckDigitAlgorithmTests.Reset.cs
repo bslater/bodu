@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
+
 public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that <c>Reset</c> after an Append restores the algorithm to the empty-body check character
     /// declared in the specification (when one is declared).
@@ -47,4 +47,5 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigit());
     }
+
 }

@@ -10,6 +10,30 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
+    /// <summary>
+    /// Verifies that the span and string overloads of <c>GetCurrentCheckDigits</c> agree.
+    /// </summary>
+    /// <param name="name">A descriptive name for the vector (unused).</param>
+    /// <param name="body">The body characters.</param>
+    /// <param name="expectedCheck">The expected check code (unused in this cross-check).</param>
+    [TestMethod]
+
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    public void GetCurrentCheckDigits_SpanAndStringOverloads_ShouldAgree(string name, string body, string expectedCheck)
+    {
+        _ = name;
+        _ = expectedCheck;
+
+        TAlgorithm algorithm = CreateAlgorithm();
+        algorithm.Append(body.AsSpan());
+
+        Span<char> buffer = stackalloc char[algorithm.CheckLength];
+        var written = algorithm.GetCurrentCheckDigits(buffer);
+
+        Assert.AreEqual(algorithm.CheckLength, written);
+        Assert.AreEqual(algorithm.GetCurrentCheckDigits(), new string(buffer));
+    }
     /// <summary>
     /// Verifies that a freshly constructed algorithm reports the empty-body check code declared in the
     /// specification, when one is declared.
@@ -43,27 +67,4 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         Assert.AreEqual(second, third);
     }
 
-    /// <summary>
-    /// Verifies that the span and string overloads of <c>GetCurrentCheckDigits</c> agree.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector (unused).</param>
-    /// <param name="body">The body characters.</param>
-    /// <param name="expectedCheck">The expected check code (unused in this cross-check).</param>
-    [TestMethod]
-
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
-    public void GetCurrentCheckDigits_SpanAndStringOverloads_ShouldAgree(string name, string body, string expectedCheck)
-    {
-        _ = name;
-        _ = expectedCheck;
-
-        TAlgorithm algorithm = CreateAlgorithm();
-        algorithm.Append(body.AsSpan());
-
-        Span<char> buffer = stackalloc char[algorithm.CheckLength];
-        var written = algorithm.GetCurrentCheckDigits(buffer);
-
-        Assert.AreEqual(algorithm.CheckLength, written);
-        Assert.AreEqual(algorithm.GetCurrentCheckDigits(), new string(buffer));
-    }
 }

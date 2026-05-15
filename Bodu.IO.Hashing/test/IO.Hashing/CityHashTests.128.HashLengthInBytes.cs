@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHashTests.128.HashLengthInBytes.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class CityHash128Tests
 {
+
     /// <summary>
     /// Verifies that a <see cref="CityHash128" /> instance reports a 16-byte hash length.
     /// </summary>
@@ -17,4 +18,5 @@ public partial class CityHash128Tests
         CityHash128 algorithm = CreateAlgorithm();
         Assert.AreEqual(16, algorithm.HashLengthInBytes);
     }
+
 }

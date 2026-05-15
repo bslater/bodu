@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fnv.Fnv1a32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -46,6 +46,7 @@ namespace Bodu.IO.Hashing;
 public sealed class Fnv1a32
     : Fnv<Fnv1a32>
 {
+
     private const ulong OffsetBasis = 0x811C9DC5UL;
     private const ulong Prime = 0x01000193UL;
 
@@ -56,4 +57,5 @@ public sealed class Fnv1a32
         : base(hashSize: 32, prime: Prime, offsetBasis: OffsetBasis, useFnv1a: true)
     {
     }
+
 }

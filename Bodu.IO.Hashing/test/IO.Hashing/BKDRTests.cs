@@ -13,54 +13,13 @@ namespace Bodu.IO.Hashing;
 public sealed partial class BKDRTests
     : NonCryptographicHashAlgorithmTests<BKDRTests, BKDR, BKDRVariant>
 {
+
     /// <inheritdoc />
     protected override BKDR CreateAlgorithm(BKDRVariant variant) => variant switch
     {
         BKDRVariant.Default => new BKDR(),
         BKDRVariant.Seed31 => new BKDR(31U),
         BKDRVariant.Seed1313 => new BKDR(1313U),
-        _ => throw new ArgumentOutOfRangeException(nameof(variant)),
-    };
-
-    /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(BKDRVariant variant) => variant switch
-    {
-        BKDRVariant.Default => new()
-        {
-            HashLengthInBytes = 4,
-            KnownAnswers = new()
-            {
-                Empty = "00000083",
-                Abc = "119EDDA3",
-                QuickBrownFox = "FDAD9AD8",
-                Zeros16 = "760E2E43",
-                Sequential0To255 = "752AC0AC",
-            },
-        },
-        BKDRVariant.Seed31 => new()
-        {
-            HashLengthInBytes = 4,
-            KnownAnswers = new()
-            {
-                Empty = "0000001F",
-                Abc = "000F13C3",
-                QuickBrownFox = "764D9FD4",
-                Zeros16 = "C491E21F",
-                Sequential0To255 = "B7D06C60",
-            },
-        },
-        BKDRVariant.Seed1313 => new()
-        {
-            HashLengthInBytes = 4,
-            KnownAnswers = new()
-            {
-                Empty = "00000521",
-                Abc = "03CEDDC7",
-                QuickBrownFox = "373C737A",
-                Zeros16 = "62687721",
-                Sequential0To255 = "DA826D62",
-            },
-        },
         _ => throw new ArgumentOutOfRangeException(nameof(variant)),
     };
 
@@ -109,4 +68,47 @@ public sealed partial class BKDRTests
         ],
         _ => throw new ArgumentOutOfRangeException(nameof(variant)),
     };
+
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(BKDRVariant variant) => variant switch
+    {
+        BKDRVariant.Default => new()
+        {
+            HashLengthInBytes = 4,
+            KnownAnswers = new()
+            {
+                Empty = "00000083",
+                Abc = "119EDDA3",
+                QuickBrownFox = "FDAD9AD8",
+                Zeros16 = "760E2E43",
+                Sequential0To255 = "752AC0AC",
+            },
+        },
+        BKDRVariant.Seed31 => new()
+        {
+            HashLengthInBytes = 4,
+            KnownAnswers = new()
+            {
+                Empty = "0000001F",
+                Abc = "000F13C3",
+                QuickBrownFox = "764D9FD4",
+                Zeros16 = "C491E21F",
+                Sequential0To255 = "B7D06C60",
+            },
+        },
+        BKDRVariant.Seed1313 => new()
+        {
+            HashLengthInBytes = 4,
+            KnownAnswers = new()
+            {
+                Empty = "00000521",
+                Abc = "03CEDDC7",
+                QuickBrownFox = "373C737A",
+                Zeros16 = "62687721",
+                Sequential0To255 = "DA826D62",
+            },
+        },
+        _ => throw new ArgumentOutOfRangeException(nameof(variant)),
+    };
+
 }

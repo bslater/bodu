@@ -15,6 +15,10 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class LeiTests
     : MultiCharCheckDigitAlgorithmTests<LeiTests, Lei>
 {
+
+    /// <inheritdoc />
+    protected override string ComputeStatic(ReadOnlySpan<char> body) =>
+        Lei.Compute(body);
     /// <inheritdoc />
     protected override MultiCharCheckDigitAlgorithmSpecification GetSpecification() => new()
     {
@@ -30,10 +34,7 @@ public sealed class LeiTests
     };
 
     /// <inheritdoc />
-    protected override string ComputeStatic(ReadOnlySpan<char> body) =>
-        Lei.Compute(body);
-
-    /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> value) =>
         Lei.IsValid(value);
+
 }

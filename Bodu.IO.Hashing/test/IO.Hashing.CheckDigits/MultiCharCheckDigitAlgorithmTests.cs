@@ -27,12 +27,57 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     where TTest : MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>, new()
     where TAlgorithm : MultiCharCheckDigitAlgorithm, new()
 {
+
     /// <summary>
-    /// Returns the <see cref="MultiCharCheckDigitAlgorithmSpecification" /> describing the algorithm's expected
-    /// properties and known-answer vectors used for streaming, <c>Compute</c>, and <c>Reset</c> assertions.
+    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
     /// </summary>
-    /// <returns>A non-null specification; its <c>KnownAnswers</c> must be non-empty.</returns>
-    protected abstract MultiCharCheckDigitAlgorithmSpecification GetSpecification();
+    /// <param name="methodInfo">The <see cref="MethodInfo" /> for the test under construction (unused).</param>
+    /// <param name="data">The test case data row; the first element is expected to be the vector name.</param>
+    /// <returns>The vector name for the current test case.</returns>
+    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
+    {
+        _ = methodInfo;
+        return (string)data[0];
+    }
+
+    /// <summary>
+    /// Returns an ordered dataset of <c>IsValid</c> known-answer vectors for use with MSTest data-driven tests.
+    /// </summary>
+    /// <returns>
+    /// An enumerable sequence of <c>object[]</c> arrays in the form <c>{ name, value, expectedIsValid }</c>.
+    /// </returns>
+    public static IEnumerable<object[]> IsValidKnownAnswerData()
+    {
+        foreach (MultiCharCheckDigitIsValidKnownAnswer vector in new TTest().GetIsValidKnownAnswers())
+            yield return new object[] { vector.Name, vector.Value, vector.ExpectedIsValid };
+    }
+
+    /// <summary>
+    /// Returns an ordered dataset of body / expected-check known-answer vectors for use with MSTest data-driven
+    /// tests covering the streaming and <c>Compute</c> surface.
+    /// </summary>
+    /// <returns>
+    /// An enumerable sequence of <c>object[]</c> arrays in the form <c>{ name, body, expectedCheck }</c>.
+    /// </returns>
+    public static IEnumerable<object[]> KnownAnswerData()
+    {
+        MultiCharCheckDigitAlgorithmSpecification spec = new TTest().GetSpecification();
+        foreach (MultiCharCheckDigitKnownAnswer vector in spec.KnownAnswers)
+            yield return new object[] { vector.Name, vector.Body, vector.ExpectedCheck };
+    }
+
+    /// <summary>
+    /// Invokes the algorithm's static <c>Compute</c> helper. Derived classes forward to the concrete type.
+    /// </summary>
+    /// <param name="body">The body characters.</param>
+    /// <returns>The expected check code as a string of <c>CheckLength</c> decimal digits.</returns>
+    protected abstract string ComputeStatic(ReadOnlySpan<char> body);
+
+    /// <summary>
+    /// Creates a new instance of <typeparamref name="TAlgorithm" /> in its initial state.
+    /// </summary>
+    /// <returns>A fresh algorithm instance.</returns>
+    protected virtual TAlgorithm CreateAlgorithm() => new();
 
     /// <summary>
     /// Returns the set of explicit known-answer vectors used to exercise the algorithm's <c>IsValid</c> static
@@ -67,19 +112,12 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
             };
         }
     }
-
     /// <summary>
-    /// Creates a new instance of <typeparamref name="TAlgorithm" /> in its initial state.
+    /// Returns the <see cref="MultiCharCheckDigitAlgorithmSpecification" /> describing the algorithm's expected
+    /// properties and known-answer vectors used for streaming, <c>Compute</c>, and <c>Reset</c> assertions.
     /// </summary>
-    /// <returns>A fresh algorithm instance.</returns>
-    protected virtual TAlgorithm CreateAlgorithm() => new();
-
-    /// <summary>
-    /// Invokes the algorithm's static <c>Compute</c> helper. Derived classes forward to the concrete type.
-    /// </summary>
-    /// <param name="body">The body characters.</param>
-    /// <returns>The expected check code as a string of <c>CheckLength</c> decimal digits.</returns>
-    protected abstract string ComputeStatic(ReadOnlySpan<char> body);
+    /// <returns>A non-null specification; its <c>KnownAnswers</c> must be non-empty.</returns>
+    protected abstract MultiCharCheckDigitAlgorithmSpecification GetSpecification();
 
     /// <summary>
     /// Invokes the algorithm's static <c>IsValid</c> helper. Derived classes forward to the concrete type.
@@ -88,41 +126,4 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
     /// <returns><see langword="true" /> if the sequence is valid under the algorithm; otherwise, <see langword="false" />.</returns>
     protected abstract bool IsValidStatic(ReadOnlySpan<char> value);
 
-    /// <summary>
-    /// Returns an ordered dataset of body / expected-check known-answer vectors for use with MSTest data-driven
-    /// tests covering the streaming and <c>Compute</c> surface.
-    /// </summary>
-    /// <returns>
-    /// An enumerable sequence of <c>object[]</c> arrays in the form <c>{ name, body, expectedCheck }</c>.
-    /// </returns>
-    public static IEnumerable<object[]> KnownAnswerData()
-    {
-        MultiCharCheckDigitAlgorithmSpecification spec = new TTest().GetSpecification();
-        foreach (MultiCharCheckDigitKnownAnswer vector in spec.KnownAnswers)
-            yield return new object[] { vector.Name, vector.Body, vector.ExpectedCheck };
-    }
-
-    /// <summary>
-    /// Returns an ordered dataset of <c>IsValid</c> known-answer vectors for use with MSTest data-driven tests.
-    /// </summary>
-    /// <returns>
-    /// An enumerable sequence of <c>object[]</c> arrays in the form <c>{ name, value, expectedIsValid }</c>.
-    /// </returns>
-    public static IEnumerable<object[]> IsValidKnownAnswerData()
-    {
-        foreach (MultiCharCheckDigitIsValidKnownAnswer vector in new TTest().GetIsValidKnownAnswers())
-            yield return new object[] { vector.Name, vector.Value, vector.ExpectedIsValid };
-    }
-
-    /// <summary>
-    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
-    /// </summary>
-    /// <param name="methodInfo">The <see cref="MethodInfo" /> for the test under construction (unused).</param>
-    /// <param name="data">The test case data row; the first element is expected to be the vector name.</param>
-    /// <returns>The vector name for the current test case.</returns>
-    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
-    {
-        _ = methodInfo;
-        return (string)data[0];
-    }
 }

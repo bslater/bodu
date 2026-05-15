@@ -10,6 +10,23 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
+
+    /// <summary>
+    /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> returns a digest whose length
+    /// matches <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void GetCurrentHash_WhenReturningDigest_ShouldHaveLengthMatchingHashLengthInBytes(TVariant variant)
+    {
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+        algorithm.Append([0xAB, 0xCD, 0xEF]);
+
+        var digest = algorithm.GetCurrentHash();
+
+        Assert.AreEqual(algorithm.HashLengthInBytes, digest.Length);
+    }
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" /> matches the specification
     /// declared for the given variant, both before and after hashing.
@@ -28,20 +45,4 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         Assert.AreEqual(specification.HashLengthInBytes, algorithm.HashLengthInBytes);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> returns a digest whose length
-    /// matches <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.
-    /// </summary>
-    /// <param name="variant">The algorithm variant under test.</param>
-    [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void GetCurrentHash_WhenReturningDigest_ShouldHaveLengthMatchingHashLengthInBytes(TVariant variant)
-    {
-        TAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append([0xAB, 0xCD, 0xEF]);
-
-        var digest = algorithm.GetCurrentHash();
-
-        Assert.AreEqual(algorithm.HashLengthInBytes, digest.Length);
-    }
 }

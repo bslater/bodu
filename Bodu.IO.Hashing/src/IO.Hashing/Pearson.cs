@@ -55,15 +55,15 @@ namespace Bodu.IO.Hashing;
 public sealed partial class Pearson
     : NonCryptographicHashAlgorithm
 {
-    /// <summary>
-    /// The minimum allowable hash size in bits.
-    /// </summary>
-    public const int MinHashSizeBits = 8;
 
     /// <summary>
     /// The maximum allowable hash size in bits.
     /// </summary>
     public const int MaxHashSizeBits = 2048;
+    /// <summary>
+    /// The minimum allowable hash size in bits.
+    /// </summary>
+    public const int MinHashSizeBits = 8;
 
     private readonly byte[] _permutationTable;
     private readonly PearsonTableType _tableType;
@@ -169,14 +169,14 @@ public sealed partial class Pearson
     }
 
     /// <summary>
-    /// Gets the permutation table preset selected for this instance.
-    /// </summary>
-    public PearsonTableType TableType => this._tableType;
-
-    /// <summary>
     /// Gets a copy of the 256-byte permutation table currently in use.
     /// </summary>
     public byte[] Table => (byte[])this._permutationTable.Clone();
+
+    /// <summary>
+    /// Gets the permutation table preset selected for this instance.
+    /// </summary>
+    public PearsonTableType TableType => this._tableType;
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
@@ -217,14 +217,6 @@ public sealed partial class Pearson
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         this._workingHash.AsSpan().CopyTo(destination);
 
-    private static int ValidateHashSize(int hashSizeBits)
-    {
-        ThrowHelper.ThrowIfOutOfRange(hashSizeBits, MinHashSizeBits, MaxHashSizeBits);
-        ThrowHelper.ThrowIfNotPositiveMultipleOf(hashSizeBits, 8, nameof(hashSizeBits));
-
-        return hashSizeBits;
-    }
-
     private static byte[] GetPermutationTable(PearsonTableType type) => type switch
     {
         PearsonTableType.Pearson => (byte[])s_pearsonTable.Value.Clone(),
@@ -236,4 +228,13 @@ public sealed partial class Pearson
                 string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, type, typeof(PearsonTableType).Name))
 
     };
+
+    private static int ValidateHashSize(int hashSizeBits)
+    {
+        ThrowHelper.ThrowIfOutOfRange(hashSizeBits, MinHashSizeBits, MaxHashSizeBits);
+        ThrowHelper.ThrowIfNotPositiveMultipleOf(hashSizeBits, 8, nameof(hashSizeBits));
+
+        return hashSizeBits;
+    }
+
 }

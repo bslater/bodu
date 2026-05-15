@@ -33,6 +33,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public abstract class AlphanumericCheckDigitAlgorithm
 {
+
     /// <summary>
     /// Initializes a new instance of the <see cref="AlphanumericCheckDigitAlgorithm" /> class.
     /// </summary>
@@ -81,12 +82,6 @@ public abstract class AlphanumericCheckDigitAlgorithm
         Append([ch]);
 
     /// <summary>
-    /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
-    /// </summary>
-    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
-    public abstract void Reset();
-
-    /// <summary>
     /// Returns the check character computed for the body absorbed since the last <see cref="Reset" /> (or since
     /// construction).
     /// </summary>
@@ -96,4 +91,11 @@ public abstract class AlphanumericCheckDigitAlgorithm
     /// <remarks>This call is non-destructive; the running state is unaffected and the method may be invoked any
     /// number of times with identical results between appends.</remarks>
     public abstract char GetCurrentCheckDigit();
+
+    /// <summary>
+    /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
+    /// </summary>
+    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
+    public abstract void Reset();
+
 }

@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
+
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.Reset" /> after appending data returns the
     /// algorithm to the same state as a freshly constructed instance.
@@ -26,23 +27,6 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
 
         CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
-    }
-
-    /// <summary>
-    /// Verifies that calling <see cref="NonCryptographicHashAlgorithm.Reset" /> on a freshly constructed
-    /// instance is a no-op and leaves the empty-input digest unchanged.
-    /// </summary>
-    /// <param name="variant">The algorithm variant under test.</param>
-    [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void Reset_OnFreshInstance_ShouldBeNoOp(TVariant variant)
-    {
-        TAlgorithm algorithm = CreateAlgorithm(variant);
-        var before = algorithm.GetCurrentHash();
-
-        algorithm.Reset();
-
-        CollectionAssert.AreEqual(before, algorithm.GetCurrentHash());
     }
 
     /// <summary>
@@ -64,4 +48,22 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         CollectionAssert.AreEqual(direct.GetCurrentHash(), algorithm.GetCurrentHash());
     }
+
+    /// <summary>
+    /// Verifies that calling <see cref="NonCryptographicHashAlgorithm.Reset" /> on a freshly constructed
+    /// instance is a no-op and leaves the empty-input digest unchanged.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void Reset_OnFreshInstance_ShouldBeNoOp(TVariant variant)
+    {
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+        var before = algorithm.GetCurrentHash();
+
+        algorithm.Reset();
+
+        CollectionAssert.AreEqual(before, algorithm.GetCurrentHash());
+    }
+
 }

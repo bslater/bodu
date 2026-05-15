@@ -63,6 +63,7 @@ public abstract class Adler<T>
     : NonCryptographicHashAlgorithm
     where T : unmanaged, INumber<T>
 {
+
     /// <summary>
     /// The A accumulator, initialized to one and updated with each input byte.
     /// </summary>
@@ -174,4 +175,5 @@ public abstract class Adler<T>
         this.partA = T.One;
         this.partB = T.Zero;
     }
+
 }

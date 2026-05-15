@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
 {
+
     /// <summary>
     /// Verifies that hashing an input long enough to engage the SIMD-accelerated branch
     /// (≥ 512 bytes and crossing the internal NMAX reduction window) produces the same digest
@@ -39,6 +40,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
     }
+
 }
 
 /// <summary>
@@ -53,6 +55,7 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
 /// </remarks>
 internal static class AdlerSimdRegressionInputs
 {
+
     /// <summary>The 1024-byte input <c>0x00, 0x01, …, 0xFF, 0x00, …</c> (four repetitions of 0..255).</summary>
     public static readonly byte[] ModuloByte1K = Build(1024);
 
@@ -66,4 +69,5 @@ internal static class AdlerSimdRegressionInputs
             data[i] = (byte)i;
         return data;
     }
+
 }

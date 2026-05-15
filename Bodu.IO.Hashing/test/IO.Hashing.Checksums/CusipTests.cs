@@ -15,38 +15,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class CusipTests
     : AlphanumericCheckDigitAlgorithmTests<CusipTests, Cusip>
 {
-    /// <inheritdoc />
-    protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()
-    {
-        AlgorithmName = "CUSIP",
-        InputAlphabet = CheckDigitInputAlphabet.AlphanumericUppercase,
-        OutputAlphabet = CheckDigitOutputAlphabet.DecimalDigits,
-        EmptyCheckDigit = '0',
-        KnownAnswers =
-        [
-            new() { Name = "AppleInc",          Body = "03783310", ExpectedCheck = '0' },
-            new() { Name = "MicrosoftCorp",     Body = "59491810", ExpectedCheck = '4' },
-        ],
-    };
-
-    /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> body) =>
-        Cusip.Compute(body);
-
-    /// <inheritdoc />
-    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
-        Cusip.IsValid(valueIncludingCheck);
-
-    /// <summary>
-    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
-    /// exactly <see cref="Cusip.SequenceLength" />.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Cusip.IsValid("0378331000".AsSpan()));
-        Assert.IsFalse(Cusip.IsValid("03783310".AsSpan()));
-    }
 
     /// <summary>
     /// Verifies that <see cref="Cusip.Compute(ReadOnlySpan{char})" /> accepts the historical CUSIP sentinels
@@ -61,13 +29,16 @@ public sealed class CusipTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> when invoked
-    /// with an empty span — the documented short-circuit branch.
+    /// Verifies that <see cref="Cusip.Compute(ReadOnlySpan{char})" /> rejects a body character that is not part of
+    /// the CUSIP alphabet by throwing <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
     {
-        Assert.IsTrue(Cusip.IsValid(ReadOnlySpan<char>.Empty));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Cusip.Compute("0378331-".AsSpan());
+        });
     }
 
     /// <summary>
@@ -110,15 +81,45 @@ public sealed class CusipTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Cusip.Compute(ReadOnlySpan{char})" /> rejects a body character that is not part of
-    /// the CUSIP alphabet by throwing <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> when invoked
+    /// with an empty span — the documented short-circuit branch.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = Cusip.Compute("0378331-".AsSpan());
-        });
+        Assert.IsTrue(Cusip.IsValid(ReadOnlySpan<char>.Empty));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Cusip.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
+    /// exactly <see cref="Cusip.SequenceLength" />.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Cusip.IsValid("0378331000".AsSpan()));
+        Assert.IsFalse(Cusip.IsValid("03783310".AsSpan()));
+    }
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> body) =>
+        Cusip.Compute(body);
+    /// <inheritdoc />
+    protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()
+    {
+        AlgorithmName = "CUSIP",
+        InputAlphabet = CheckDigitInputAlphabet.AlphanumericUppercase,
+        OutputAlphabet = CheckDigitOutputAlphabet.DecimalDigits,
+        EmptyCheckDigit = '0',
+        KnownAnswers =
+        [
+            new() { Name = "AppleInc",          Body = "03783310", ExpectedCheck = '0' },
+            new() { Name = "MicrosoftCorp",     Body = "59491810", ExpectedCheck = '4' },
+        ],
+    };
+
+    /// <inheritdoc />
+    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
+        Cusip.IsValid(valueIncludingCheck);
+
 }

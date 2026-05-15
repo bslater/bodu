@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class Elf64Tests
 {
+
     /// <summary>
     /// Verifies that different seed values produce distinct digests for the same input.
     /// </summary>
@@ -23,4 +24,5 @@ public partial class Elf64Tests
 
         CollectionAssert.AreNotEqual(a.GetCurrentHash(), b.GetCurrentHash());
     }
+
 }

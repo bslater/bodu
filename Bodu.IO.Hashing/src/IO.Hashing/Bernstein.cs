@@ -61,6 +61,7 @@ namespace Bodu.IO.Hashing;
 public sealed class Bernstein
     : NonCryptographicHashAlgorithm
 {
+
     /// <summary>
     /// The default initial value used to seed the hash algorithm.
     /// </summary>
@@ -71,9 +72,9 @@ public sealed class Bernstein
         "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
     private uint _initialValue;
+    private bool _started;
     private bool _useModified;
     private uint _workingHash;
-    private bool _started;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Bernstein" /> class with the canonical djb2 seed
@@ -169,18 +170,6 @@ public sealed class Bernstein
         BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void AppendOriginal(ReadOnlySpan<byte> source)
-    {
-        var v = this._workingHash;
-        foreach (var b in source)
-        {
-            v = ((v << 5) + v) + b;
-        }
-
-        this._workingHash = v;
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void AppendModified(ReadOnlySpan<byte> source)
     {
         var v = this._workingHash;
@@ -193,9 +182,22 @@ public sealed class Bernstein
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private void AppendOriginal(ReadOnlySpan<byte> source)
+    {
+        var v = this._workingHash;
+        foreach (var b in source)
+        {
+            v = ((v << 5) + v) + b;
+        }
+
+        this._workingHash = v;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void ThrowIfInvalidState()
     {
         if (this._started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
+
 }

@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that appending a body in a single call produces the check digit recorded for that known-answer
     /// vector.
@@ -111,4 +112,5 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
             Assert.AreEqual(fromCompute, streaming, $"Prefix length {i + 1} (\"{body[..(i + 1)]}\").");
         }
     }
+
 }

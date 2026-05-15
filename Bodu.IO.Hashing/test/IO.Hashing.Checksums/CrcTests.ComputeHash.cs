@@ -10,19 +10,6 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcTests
 {
-    /// <summary>
-    /// Verifies that <see cref="Crc.ComputeHash(System.ReadOnlySpan{byte})" /> on the reference input
-    /// <c>"123456789"</c> under CRC-32/ISO-HDLC produces the documented check value <c>0xCBF43926</c>, packed
-    /// little-endian.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHash_WhenInputIsReferenceString_ForCRC32_ISOHDLC_ShouldMatchPublishedCheck()
-    {
-        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        var hash = crc.ComputeHash(s_revEngCheckInput);
-
-        CollectionAssert.AreEqual(new byte[] { 0x26, 0x39, 0xF4, 0xCB }, hash);
-    }
 
     /// <summary>
     /// Verifies that calling <see cref="Crc.ComputeHash(System.ReadOnlySpan{byte})" /> twice on different inputs
@@ -79,4 +66,18 @@ public partial class CrcTests
 
         CollectionAssert.AreEqual(expected, actual);
     }
+    /// <summary>
+    /// Verifies that <see cref="Crc.ComputeHash(System.ReadOnlySpan{byte})" /> on the reference input
+    /// <c>"123456789"</c> under CRC-32/ISO-HDLC produces the documented check value <c>0xCBF43926</c>, packed
+    /// little-endian.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHash_WhenInputIsReferenceString_ForCRC32_ISOHDLC_ShouldMatchPublishedCheck()
+    {
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+        var hash = crc.ComputeHash(s_revEngCheckInput);
+
+        CollectionAssert.AreEqual(new byte[] { 0x26, 0x39, 0xF4, 0xCB }, hash);
+    }
+
 }

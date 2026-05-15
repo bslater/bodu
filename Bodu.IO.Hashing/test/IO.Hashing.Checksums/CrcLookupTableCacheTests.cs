@@ -13,9 +13,11 @@ namespace Bodu.IO.Hashing.Checksums;
 [TestClass]
 public partial class CrcLookupTableCacheTests
 {
+
     private CrcLookupTableCache _cache = null!;
 
     [TestInitialize]
     public void SetUp() =>
         _cache = new CrcLookupTableCache();
+
 }

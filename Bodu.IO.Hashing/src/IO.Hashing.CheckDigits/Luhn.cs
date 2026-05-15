@@ -37,9 +37,10 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Luhn
     : CheckDigitAlgorithm
 {
+
+    private int _count;
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;
-    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Luhn" /> class.
@@ -50,60 +51,6 @@ public sealed class Luhn
 
     /// <inheritdoc />
     public override string AlgorithmName => "Luhn";
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
-    {
-        var sumEven = this._sumEvenHypothesis;
-        var sumOdd = this._sumOddHypothesis;
-        var count = this._count;
-
-        for (var i = 0; i < digits.Length; i++)
-        {
-            var ch = digits[i];
-            if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
-
-            var v = ch - '0';
-            var doubled = v * 2;
-            if (doubled > 9) doubled -= 9;
-
-            // _sumEvenHypothesis (body length N will be even): body[i] is doubled iff i is odd.
-            // _sumOddHypothesis  (body length N will be odd):  body[i] is doubled iff i is even.
-
-            if ((count & 1) == 0)
-            {
-                sumEven += v;
-                sumOdd += doubled;
-            }
-            else
-            {
-                sumEven += doubled;
-                sumOdd += v;
-            }
-
-            count++;
-        }
-
-        this._sumEvenHypothesis = sumEven;
-        this._sumOddHypothesis = sumOdd;
-        this._count = count;
-    }
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        this._sumEvenHypothesis = 0;
-        this._sumOddHypothesis = 0;
-        this._count = 0;
-    }
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit()
-    {
-        var sum = (this._count & 1) == 0 ? this._sumEvenHypothesis : this._sumOddHypothesis;
-        return (char)('0' + ((10 - (sum % 10)) % 10));
-    }
 
     /// <summary>
     /// Computes the Luhn check digit for the supplied body of decimal digits without allocating a streaming
@@ -166,4 +113,59 @@ public sealed class Luhn
 
         return sum % 10 == 0;
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> digits)
+    {
+        var sumEven = this._sumEvenHypothesis;
+        var sumOdd = this._sumOddHypothesis;
+        var count = this._count;
+
+        for (var i = 0; i < digits.Length; i++)
+        {
+            var ch = digits[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+
+            var v = ch - '0';
+            var doubled = v * 2;
+            if (doubled > 9) doubled -= 9;
+
+            // _sumEvenHypothesis (body length N will be even): body[i] is doubled iff i is odd.
+            // _sumOddHypothesis  (body length N will be odd):  body[i] is doubled iff i is even.
+
+            if ((count & 1) == 0)
+            {
+                sumEven += v;
+                sumOdd += doubled;
+            }
+            else
+            {
+                sumEven += doubled;
+                sumOdd += v;
+            }
+
+            count++;
+        }
+
+        this._sumEvenHypothesis = sumEven;
+        this._sumOddHypothesis = sumOdd;
+        this._count = count;
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        var sum = (this._count & 1) == 0 ? this._sumEvenHypothesis : this._sumOddHypothesis;
+        return (char)('0' + ((10 - (sum % 10)) % 10));
+    }
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        this._sumEvenHypothesis = 0;
+        this._sumOddHypothesis = 0;
+        this._count = 0;
+    }
+
 }

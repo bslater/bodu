@@ -33,6 +33,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Sedol
     : AlphanumericCheckDigitAlgorithm
 {
+
     /// <summary>The required body length of <c>6</c> characters.</summary>
     public const int BodyLength = 6;
 
@@ -40,9 +41,9 @@ public sealed class Sedol
     public const int SequenceLength = 7;
 
     private static readonly int[] s_weights = new int[] { 1, 3, 1, 7, 3, 9 };
+    private int _count;
 
     private int _sum;
-    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Sedol" /> class.
@@ -59,41 +60,6 @@ public sealed class Sedol
 
     /// <inheritdoc />
     public override CheckDigitOutputAlphabet OutputAlphabet => CheckDigitOutputAlphabet.DecimalDigits;
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> body)
-    {
-        var sum = this._sum;
-        var count = this._count;
-
-        for (var i = 0; i < body.Length; i++)
-        {
-            var ch = body[i];
-            if (Alphanumeric.IsVowel(ch) || ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u))
-                throw new ArgumentOutOfRangeException(
-                    nameof(body),
-                    ch,
-                    $"Character '{ch}' (U+{(int)ch:X4}) is not a valid SEDOL character ('0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted).");
-
-            var weight = count < s_weights.Length ? s_weights[count] : 1;
-            sum += Alphanumeric.ExpandLetterDigit(ch) * weight;
-            count++;
-        }
-
-        this._sum = sum;
-        this._count = count;
-    }
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        _sum = 0;
-        _count = 0;
-    }
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit() =>
-        (char)('0' + ((10 - (_sum % 10)) % 10));
 
     /// <summary>
     /// Computes the SEDOL check digit for the supplied body without allocating a streaming instance.
@@ -151,4 +117,40 @@ public sealed class Sedol
 
         return sum % 10 == 0;
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> body)
+    {
+        var sum = this._sum;
+        var count = this._count;
+
+        for (var i = 0; i < body.Length; i++)
+        {
+            var ch = body[i];
+            if (Alphanumeric.IsVowel(ch) || ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u))
+                throw new ArgumentOutOfRangeException(
+                    nameof(body),
+                    ch,
+                    $"Character '{ch}' (U+{(int)ch:X4}) is not a valid SEDOL character ('0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted).");
+
+            var weight = count < s_weights.Length ? s_weights[count] : 1;
+            sum += Alphanumeric.ExpandLetterDigit(ch) * weight;
+            count++;
+        }
+
+        this._sum = sum;
+        this._count = count;
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit() =>
+        (char)('0' + ((10 - (_sum % 10)) % 10));
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _sum = 0;
+        _count = 0;
+    }
+
 }

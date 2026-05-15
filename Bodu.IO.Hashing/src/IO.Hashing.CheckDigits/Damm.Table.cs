@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public sealed partial class Damm
 {
+
     // Standard totally antisymmetric quasigroup of order 10 proposed by H. Michael Damm (2004).
     // Indexed as Table[interim, digit]. Row 0 column d gives the check digit of a single-digit body 'd'.
     private static readonly byte[,] s_table = new byte[10, 10]
@@ -23,4 +24,5 @@ public sealed partial class Damm
         { 9, 4, 3, 8, 6, 1, 7, 2, 0, 5 },
         { 2, 5, 8, 1, 4, 3, 6, 7, 9, 0 },
     };
+
 }

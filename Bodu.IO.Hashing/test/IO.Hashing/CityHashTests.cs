@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CityHashTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,6 +16,8 @@ public abstract partial class CityHashTests<TTest, TAlgorithm>
     where TTest : CityHashTests<TTest, TAlgorithm>, new()
     where TAlgorithm : CityHash<TAlgorithm>, new()
 {
+
     /// <inheritdoc />
     protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
+
 }

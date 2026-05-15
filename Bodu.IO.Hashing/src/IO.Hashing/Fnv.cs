@@ -65,6 +65,7 @@ public abstract class Fnv<TSelf>
     : NonCryptographicHashAlgorithm
     where TSelf : Fnv<TSelf>, new()
 {
+
     private static readonly int[] s_validHashSizes = [32, 64];
 
     private readonly int _hashSizeBits;
@@ -174,4 +175,5 @@ public abstract class Fnv<TSelf>
 
         this._workingHash = hash;
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FnvTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,6 +17,8 @@ public abstract partial class FnvTests<TTest, TAlgorithm>
     where TTest : FnvTests<TTest, TAlgorithm>, new()
     where TAlgorithm : Fnv<TAlgorithm>, new()
 {
+
     /// <inheritdoc />
     protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
+
 }

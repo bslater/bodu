@@ -13,6 +13,10 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class LuhnTests
     : CheckDigitAlgorithmTests<LuhnTests, Luhn>
 {
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
+        Luhn.Compute(digits);
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()
     {
@@ -20,7 +24,7 @@ public sealed partial class LuhnTests
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",            Body = "",                ExpectedCheck = '0' },
+            new() { Name = "Empty",            Body = string.Empty,                ExpectedCheck = '0' },
             new() { Name = "SingleZero",       Body = "0",               ExpectedCheck = '0' },
             new() { Name = "SingleOne",        Body = "1",               ExpectedCheck = '8' },
             new() { Name = "WikipediaExample", Body = "7992739871",      ExpectedCheck = '3' },
@@ -29,10 +33,7 @@ public sealed partial class LuhnTests
     };
 
     /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
-        Luhn.Compute(digits);
-
-    /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck) =>
         Luhn.IsValid(digitsIncludingCheck);
+
 }

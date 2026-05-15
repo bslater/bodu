@@ -54,6 +54,7 @@ namespace Bodu.IO.Hashing;
 public sealed class SuperFastHash
     : NonCryptographicHashAlgorithm, IDisposable
 {
+
     private const int HashLength = 4;
 
     private readonly MemoryStream _buffer = new MemoryStream();
@@ -65,6 +66,13 @@ public sealed class SuperFastHash
     public SuperFastHash()
         : base(HashLength)
     {
+    }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<byte> source)
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+        this._buffer.Write(source);
     }
 
     /// <summary>
@@ -83,13 +91,6 @@ public sealed class SuperFastHash
 
         this._buffer.Dispose();
         this._disposed = true;
-    }
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<byte> source)
-    {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        this._buffer.Write(source);
     }
 
     /// <inheritdoc />
@@ -173,4 +174,5 @@ public sealed class SuperFastHash
 
         return hash;
     }
+
 }

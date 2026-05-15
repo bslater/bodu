@@ -11,6 +11,7 @@ namespace Bodu.IO.Hashing;
 
 public sealed partial class CityHashTests
 {
+
     /// <summary>
     /// Provides CityHash known-answer vectors transcribed from Google's reference test corpus.
     /// </summary>
@@ -29,127 +30,18 @@ public sealed partial class CityHashTests
     /// </remarks>
     internal static class CityHashGoogleReferenceKnownAnswers
     {
-        private const ulong K0 = 0xC3A5C85C97CB3127UL;
+
         private const int GoogleReferenceDataSize = 1 << 20;
+        private const ulong K0 = 0xC3A5C85C97CB3127UL;
+
+        private static readonly Lazy<IReadOnlyList<NonCryptographicHashKnownAnswer>> CityHash128KnownAnswers =
+            new(() => CreateKnownAnswers(CityHashVariant.CityHash128));
 
         private static readonly Lazy<IReadOnlyList<NonCryptographicHashKnownAnswer>> CityHash32KnownAnswers =
             new(() => CreateKnownAnswers(CityHashVariant.CityHash32));
 
         private static readonly Lazy<IReadOnlyList<NonCryptographicHashKnownAnswer>> CityHash64KnownAnswers =
             new(() => CreateKnownAnswers(CityHashVariant.CityHash64));
-
-        private static readonly Lazy<IReadOnlyList<NonCryptographicHashKnownAnswer>> CityHash128KnownAnswers =
-            new(() => CreateKnownAnswers(CityHashVariant.CityHash128));
-
-        /// <summary>
-        /// Gets the Google reference known-answer vectors for CityHash32.
-        /// </summary>
-        public static IReadOnlyList<NonCryptographicHashKnownAnswer> CityHash32 =>
-            CityHash32KnownAnswers.Value;
-
-        /// <summary>
-        /// Gets the Google reference known-answer vectors for CityHash64.
-        /// </summary>
-        public static IReadOnlyList<NonCryptographicHashKnownAnswer> CityHash64 =>
-            CityHash64KnownAnswers.Value;
-
-        /// <summary>
-        /// Gets the Google reference known-answer vectors for CityHash128.
-        /// </summary>
-        public static IReadOnlyList<NonCryptographicHashKnownAnswer> CityHash128 =>
-            CityHash128KnownAnswers.Value;
-
-        private static ReadOnlyCollection<NonCryptographicHashKnownAnswer> CreateKnownAnswers(CityHashVariant variant)
-        {
-            byte[] corpus = CreateGoogleReferenceData();
-            var knownAnswers = new NonCryptographicHashKnownAnswer[s_googleReferenceVectors.Length];
-
-            for (int i = 0; i < s_googleReferenceVectors.Length; i++)
-            {
-                GoogleReferenceVector vector = s_googleReferenceVectors[i];
-
-                knownAnswers[i] = new NonCryptographicHashKnownAnswer
-                {
-                    Name = $"Google CityHash reference #{i:000} offset {vector.Offset} length {vector.Length}",
-                    Input = corpus.AsSpan(vector.Offset, vector.Length).ToArray(),
-                    ExpectedHex = variant switch
-                    {
-                        CityHashVariant.CityHash32 => ToHashBytesHex(vector.CityHash32),
-                        CityHashVariant.CityHash64 => ToHashBytesHex(vector.CityHash64),
-                        CityHashVariant.CityHash128 => ToHashBytesHex(vector.CityHash128Low64, vector.CityHash128High64),
-                        _ => throw new InvalidOperationException($"Unknown CityHash variant: {variant}."),
-                    },
-                };
-            }
-
-            return Array.AsReadOnly(knownAnswers);
-        }
-
-        private static byte[] CreateGoogleReferenceData()
-        {
-            byte[] data = new byte[GoogleReferenceDataSize];
-
-            unchecked
-            {
-                ulong a = 9;
-                ulong b = 777;
-
-                for (int i = 0; i < data.Length; i++)
-                {
-                    a += b;
-                    b += a;
-                    a = (a ^ (a >> 41)) * K0;
-                    b = ((b ^ (b >> 41)) * K0) + (uint)i;
-
-                    data[i] = (byte)(b >> 37);
-                }
-            }
-
-            return data;
-        }
-
-        private static string ToHashBytesHex(uint value)
-        {
-            Span<byte> bytes = stackalloc byte[sizeof(uint)];
-
-            BinaryPrimitives.WriteUInt32LittleEndian(bytes, value);
-
-            return Convert.ToHexString(bytes);
-        }
-
-        private static string ToHashBytesHex(ulong value)
-        {
-            Span<byte> bytes = stackalloc byte[sizeof(ulong)];
-
-            BinaryPrimitives.WriteUInt64LittleEndian(bytes, value);
-
-            return Convert.ToHexString(bytes);
-        }
-
-        private static string ToHashBytesHex(ulong low64, ulong high64)
-        {
-            Span<byte> bytes = stackalloc byte[16];
-
-            BinaryPrimitives.WriteUInt64LittleEndian(bytes[..8], low64);
-            BinaryPrimitives.WriteUInt64LittleEndian(bytes[8..], high64);
-
-            return Convert.ToHexString(bytes);
-        }
-
-        private enum CityHashVariant
-        {
-            CityHash32,
-            CityHash64,
-            CityHash128,
-        }
-
-        private readonly record struct GoogleReferenceVector(
-            int Offset,
-            int Length,
-            ulong CityHash64,
-            ulong CityHash128Low64,
-            ulong CityHash128High64,
-            uint CityHash32);
 
         private static readonly GoogleReferenceVector[] s_googleReferenceVectors =
         [
@@ -454,5 +346,117 @@ public sealed partial class CityHashTests
             new(88804,     298, 0x74C0B8A6821FAAFEUL, 0x967E970DF9673D2AUL, 0xD465247CFFA415C0UL, 0xF6A9FBF8U),
             new(    0, 1048576, 0x5FB5E48AC7B7FA4FUL, 0x6CC09E60700563E9UL, 0xD18F23221E964791UL, 0x5398210CU),
         ];
+
+        private enum CityHashVariant
+        {
+            CityHash32,
+            CityHash64,
+            CityHash128,
+        }
+
+        /// <summary>
+        /// Gets the Google reference known-answer vectors for CityHash128.
+        /// </summary>
+        public static IReadOnlyList<NonCryptographicHashKnownAnswer> CityHash128 =>
+            CityHash128KnownAnswers.Value;
+
+        /// <summary>
+        /// Gets the Google reference known-answer vectors for CityHash32.
+        /// </summary>
+        public static IReadOnlyList<NonCryptographicHashKnownAnswer> CityHash32 =>
+            CityHash32KnownAnswers.Value;
+
+        /// <summary>
+        /// Gets the Google reference known-answer vectors for CityHash64.
+        /// </summary>
+        public static IReadOnlyList<NonCryptographicHashKnownAnswer> CityHash64 =>
+            CityHash64KnownAnswers.Value;
+
+        private static byte[] CreateGoogleReferenceData()
+        {
+            byte[] data = new byte[GoogleReferenceDataSize];
+
+            unchecked
+            {
+                ulong a = 9;
+                ulong b = 777;
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    a += b;
+                    b += a;
+                    a = (a ^ (a >> 41)) * K0;
+                    b = ((b ^ (b >> 41)) * K0) + (uint)i;
+
+                    data[i] = (byte)(b >> 37);
+                }
+            }
+
+            return data;
+        }
+
+        private static ReadOnlyCollection<NonCryptographicHashKnownAnswer> CreateKnownAnswers(CityHashVariant variant)
+        {
+            byte[] corpus = CreateGoogleReferenceData();
+            var knownAnswers = new NonCryptographicHashKnownAnswer[s_googleReferenceVectors.Length];
+
+            for (int i = 0; i < s_googleReferenceVectors.Length; i++)
+            {
+                GoogleReferenceVector vector = s_googleReferenceVectors[i];
+
+                knownAnswers[i] = new NonCryptographicHashKnownAnswer
+                {
+                    Name = $"Google CityHash reference #{i:000} offset {vector.Offset} length {vector.Length}",
+                    Input = corpus.AsSpan(vector.Offset, vector.Length).ToArray(),
+                    ExpectedHex = variant switch
+                    {
+                        CityHashVariant.CityHash32 => ToHashBytesHex(vector.CityHash32),
+                        CityHashVariant.CityHash64 => ToHashBytesHex(vector.CityHash64),
+                        CityHashVariant.CityHash128 => ToHashBytesHex(vector.CityHash128Low64, vector.CityHash128High64),
+                        _ => throw new InvalidOperationException($"Unknown CityHash variant: {variant}."),
+                    },
+                };
+            }
+
+            return Array.AsReadOnly(knownAnswers);
+        }
+
+        private static string ToHashBytesHex(uint value)
+        {
+            Span<byte> bytes = stackalloc byte[sizeof(uint)];
+
+            BinaryPrimitives.WriteUInt32LittleEndian(bytes, value);
+
+            return Convert.ToHexString(bytes);
+        }
+
+        private static string ToHashBytesHex(ulong value)
+        {
+            Span<byte> bytes = stackalloc byte[sizeof(ulong)];
+
+            BinaryPrimitives.WriteUInt64LittleEndian(bytes, value);
+
+            return Convert.ToHexString(bytes);
+        }
+
+        private static string ToHashBytesHex(ulong low64, ulong high64)
+        {
+            Span<byte> bytes = stackalloc byte[16];
+
+            BinaryPrimitives.WriteUInt64LittleEndian(bytes[..8], low64);
+            BinaryPrimitives.WriteUInt64LittleEndian(bytes[8..], high64);
+
+            return Convert.ToHexString(bytes);
+        }
+
+        private readonly record struct GoogleReferenceVector(
+            int Offset,
+            int Length,
+            ulong CityHash64,
+            ulong CityHash128Low64,
+            ulong CityHash128High64,
+            uint CityHash32);
+
     }
+
 }

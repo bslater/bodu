@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Adler.Adler64.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -49,6 +49,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler64
     : Adler64Base
 {
+
     private const ulong Adler64Modulo = 4294967291UL;
 
     /// <summary>
@@ -59,4 +60,5 @@ public sealed class Adler64
         : base(Adler64Modulo)
     {
     }
+
 }

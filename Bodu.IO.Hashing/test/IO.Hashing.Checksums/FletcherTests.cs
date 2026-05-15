@@ -24,8 +24,6 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     where TTest : FletcherTests<TTest, TAlgorithm>, new()
     where TAlgorithm : Fletcher<TAlgorithm>, new()
 {
-    /// <inheritdoc />
-    protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
 
 
     /// <summary>
@@ -52,4 +50,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
 
         Assert.IsTrue(digest.All(b => b == 0), $"Expected all-zero digest, was {Convert.ToHexString(digest)}.");
     }
+    /// <inheritdoc />
+    protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
+
 }

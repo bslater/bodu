@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class PearsonTests
 {
+
     /// <summary>
     /// Verifies that constructing with a supported hash size yields a digest of the expected length.
     /// </summary>
@@ -28,4 +29,5 @@ public partial class PearsonTests
         var result = algorithm.GetCurrentHash();
         Assert.AreEqual(bits / 8, result.Length);
     }
+
 }

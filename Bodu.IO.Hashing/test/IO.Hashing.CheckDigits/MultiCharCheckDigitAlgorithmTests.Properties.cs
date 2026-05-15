@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitAlgorithmTests.Properties.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that a freshly constructed algorithm exposes the algorithm name declared in the specification.
     /// </summary>
@@ -20,6 +21,18 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
 
         Assert.AreEqual(spec.AlgorithmName, algorithm.AlgorithmName);
+    }
+
+    /// <summary>
+    /// Verifies that a freshly constructed algorithm exposes the check length declared in the specification.
+    /// </summary>
+    [TestMethod]
+    public void CheckLength_WhenQueried_ShouldMatchSpecification()
+    {
+        TAlgorithm algorithm = CreateAlgorithm();
+        MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
+
+        Assert.AreEqual(spec.CheckLength, algorithm.CheckLength);
     }
 
     /// <summary>
@@ -34,15 +47,4 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         Assert.AreEqual(spec.InputAlphabet, algorithm.InputAlphabet);
     }
 
-    /// <summary>
-    /// Verifies that a freshly constructed algorithm exposes the check length declared in the specification.
-    /// </summary>
-    [TestMethod]
-    public void CheckLength_WhenQueried_ShouldMatchSpecification()
-    {
-        TAlgorithm algorithm = CreateAlgorithm();
-        MultiCharCheckDigitAlgorithmSpecification spec = GetSpecification();
-
-        Assert.AreEqual(spec.CheckLength, algorithm.CheckLength);
-    }
 }

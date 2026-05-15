@@ -30,14 +30,15 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Isbn10
     : AlphanumericCheckDigitAlgorithm
 {
+
     /// <summary>The required body length of <c>9</c> decimal digits.</summary>
     public const int BodyLength = 9;
 
     /// <summary>The required full-sequence length of <c>10</c> characters.</summary>
     public const int SequenceLength = 10;
+    private int _count;
 
     private int _sum;
-    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isbn10" /> class.
@@ -54,43 +55,6 @@ public sealed class Isbn10
 
     /// <inheritdoc />
     public override CheckDigitOutputAlphabet OutputAlphabet => CheckDigitOutputAlphabet.DecimalDigitsOrX;
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> body)
-    {
-        var sum = this._sum;
-        var count = this._count;
-        for (var i = 0; i < body.Length; i++)
-        {
-            var ch = body[i];
-            if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
-
-            // ISBN-10 weight for the digit at zero-based left-to-right position k is (10 - k). At k = 9 the
-            // weight would be 1 (the check position), which this streaming API does not reach; beyond k = 9 the
-            // weight becomes non-positive and the algorithm's guarantees no longer hold. Callers invoking with
-            // bodies longer than 9 digits do so outside the ISBN-10 specification.
-            sum += (10 - count) * (ch - '0');
-            count++;
-        }
-
-        this._sum = sum;
-        this._count = count;
-    }
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        _sum = 0;
-        _count = 0;
-    }
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit()
-    {
-        var check = (11 - (((_sum % 11) + 11) % 11)) % 11;
-        return check == 10 ? 'X' : (char)('0' + check);
-    }
 
     /// <summary>
     /// Computes the ISBN-10 check character for the supplied body of decimal digits without allocating a
@@ -160,4 +124,42 @@ public sealed class Isbn10
 
         return sum % 11 == 0;
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> body)
+    {
+        var sum = this._sum;
+        var count = this._count;
+        for (var i = 0; i < body.Length; i++)
+        {
+            var ch = body[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
+
+            // ISBN-10 weight for the digit at zero-based left-to-right position k is (10 - k). At k = 9 the
+            // weight would be 1 (the check position), which this streaming API does not reach; beyond k = 9 the
+            // weight becomes non-positive and the algorithm's guarantees no longer hold. Callers invoking with
+            // bodies longer than 9 digits do so outside the ISBN-10 specification.
+            sum += (10 - count) * (ch - '0');
+            count++;
+        }
+
+        this._sum = sum;
+        this._count = count;
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        var check = (11 - (((_sum % 11) + 11) % 11)) % 11;
+        return check == 10 ? 'X' : (char)('0' + check);
+    }
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _sum = 0;
+        _count = 0;
+    }
+
 }

@@ -1,15 +1,14 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AlphanumericCheckDigitAlgorithmTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that a freshly constructed algorithm exposes the algorithm name, input alphabet, and output
     /// alphabet declared in the specification.
@@ -24,4 +23,5 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         Assert.AreEqual(spec.InputAlphabet, algorithm.InputAlphabet);
         Assert.AreEqual(spec.OutputAlphabet, algorithm.OutputAlphabet);
     }
+
 }

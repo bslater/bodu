@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Adler.Adler32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,6 +50,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Adler32
     : Adler32Base
 {
+
     private const uint Adler32Modulo = 65521U;
 
     /// <summary>
@@ -60,4 +61,5 @@ public sealed class Adler32
         : base(Adler32Modulo)
     {
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcStandardTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,6 +13,7 @@ namespace Bodu.IO.Hashing.Checksums;
 [TestClass]
 public partial class CrcStandardTests
 {
+
     private static CrcStandard CreateReference(
         string name = "Test",
         int size = 32,
@@ -22,4 +23,5 @@ public partial class CrcStandardTests
         bool reflectOut = true,
         ulong xOrOut = 0xFFFFFFFFUL)
         => new(name, size, polynomial, initialValue, reflectIn, reflectOut, xOrOut);
+
 }

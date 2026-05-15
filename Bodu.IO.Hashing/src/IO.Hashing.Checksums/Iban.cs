@@ -37,6 +37,7 @@ using Bodu.IO.Hashing.CheckDigits;
 public sealed class Iban
     : MultiCharCheckDigitAlgorithm
 {
+
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
@@ -59,69 +60,10 @@ public sealed class Iban
     public override string AlgorithmName => "IBAN";
 
     /// <inheritdoc />
-    public override CheckDigitInputAlphabet InputAlphabet => CheckDigitInputAlphabet.AlphanumericUppercase;
-
-    /// <inheritdoc />
     public override int CheckLength => CheckDigits;
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> body)
-    {
-        var consumed = this.consumed;
-        var r = rBban;
-
-        for (var i = 0; i < body.Length; i++)
-        {
-            var ch = body[i];
-            if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u)
-                ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
-
-            if (consumed == 0)
-            {
-                cc0 = ch;
-            }
-            else if (consumed == 1)
-            {
-                cc1 = ch;
-            }
-            else
-            {
-                r = FoldChar(r, ch);
-            }
-
-            consumed++;
-        }
-
-        this.consumed = consumed;
-        rBban = r;
-    }
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        cc0 = default;
-        cc1 = default;
-        consumed = 0;
-        rBban = 0;
-    }
-
-    /// <inheritdoc />
-    public override int GetCurrentCheckDigits(Span<char> destination)
-    {
-        if (destination.Length < CheckLength)
-            throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
-
-        var r = rBban;
-        if (consumed >= 1) r = FoldChar(r, cc0);
-        if (consumed >= 2) r = FoldChar(r, cc1);
-
-        // Fold in the two trailing placeholder zero digits.
-        r = (r * 100) % 97;
-        var check = (98 - r) % 97;
-        destination[0] = (char)('0' + (check / 10));
-        destination[1] = (char)('0' + (check % 10));
-        return CheckLength;
-    }
+    public override CheckDigitInputAlphabet InputAlphabet => CheckDigitInputAlphabet.AlphanumericUppercase;
 
     /// <summary>
     /// Computes the IBAN check digits for the supplied country-code-plus-BBAN body without allocating a
@@ -174,6 +116,65 @@ public sealed class Iban
         return r == 1;
     }
 
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> body)
+    {
+        var consumed = this.consumed;
+        var r = rBban;
+
+        for (var i = 0; i < body.Length; i++)
+        {
+            var ch = body[i];
+            if ((uint)(ch - '0') > 9u && (uint)(ch - 'A') > 25u)
+                ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
+
+            if (consumed == 0)
+            {
+                cc0 = ch;
+            }
+            else if (consumed == 1)
+            {
+                cc1 = ch;
+            }
+            else
+            {
+                r = FoldChar(r, ch);
+            }
+
+            consumed++;
+        }
+
+        this.consumed = consumed;
+        rBban = r;
+    }
+
+    /// <inheritdoc />
+    public override int GetCurrentCheckDigits(Span<char> destination)
+    {
+        if (destination.Length < CheckLength)
+            throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
+
+        var r = rBban;
+        if (consumed >= 1) r = FoldChar(r, cc0);
+        if (consumed >= 2) r = FoldChar(r, cc1);
+
+        // Fold in the two trailing placeholder zero digits.
+        r = (r * 100) % 97;
+        var check = (98 - r) % 97;
+        destination[0] = (char)('0' + (check / 10));
+        destination[1] = (char)('0' + (check % 10));
+        return CheckLength;
+    }
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        cc0 = default;
+        cc1 = default;
+        consumed = 0;
+        rBban = 0;
+    }
+
     private static int FoldChar(int r, char ch)
     {
         if ((uint)(ch - '0') <= 9u)
@@ -197,4 +198,5 @@ public sealed class Iban
 
         return false;
     }
+
 }

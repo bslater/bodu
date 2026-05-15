@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.IO.Hashing;
 using Bodu.Test.IO;
 
@@ -33,67 +32,6 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         });
     }
 
-    // ─── Span overload — accumulation ─────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that an empty span does not alter the current hash state.
-    /// </summary>
-    [TestMethod]
-    public void AppendData_WhenSpanIsEmpty_ShouldNotContributeToHash()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        MonitoringNonCryptographicHashAlgorithm baseline = CreateAlgorithm();
-
-        algorithm.AppendData([]);
-
-        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
-    }
-
-    /// <summary>
-    /// Verifies that the supplied bytes contribute to the hash after retrieval.
-    /// </summary>
-    [TestMethod]
-    public void AppendData_WhenSpanContainsData_ShouldContributeToHash()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
-
-        algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3, 4]));
-
-        CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
-    }
-
-    /// <summary>
-    /// Verifies that multiple calls accumulate all supplied bytes correctly.
-    /// </summary>
-    [TestMethod]
-    public void AppendData_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
-
-        algorithm.AppendData(new ReadOnlySpan<byte>([10, 20]));
-        algorithm.AppendData(new ReadOnlySpan<byte>([30, 40]));
-
-        CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="NonCryptographicHashAlgorithmExtensions.AppendData(NonCryptographicHashAlgorithm, ReadOnlySpan{byte})" />
-    /// increments <see cref="MonitoringNonCryptographicHashAlgorithm.AppendCallCount" />, confirming the underlying
-    /// <see cref="NonCryptographicHashAlgorithm.Append" /> path is exercised exactly once per call.
-    /// </summary>
-    [TestMethod]
-    public void AppendData_WhenCalled_ShouldInvokeAppendOnce()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var before = algorithm.AppendCallCount;
-
-        algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3]));
-
-        Assert.AreEqual(before + 1, algorithm.AppendCallCount);
-    }
-
     // ─── Stream overload — argument validation ─────────────────────────────────────────────────
 
     /// <summary>
@@ -113,17 +51,17 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the stream overload throws <see cref="ArgumentNullException" /> when the source is
-    /// <see langword="null" />.
+    /// Verifies that a negative <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void AppendData_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    public void AppendData_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
 
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            algorithm.AppendData((Stream)null!);
+            algorithm.AppendData(stream, bufferSize: -1);
         });
     }
 
@@ -140,52 +78,6 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         {
             algorithm.AppendData(stream, bufferSize: 0);
         });
-    }
-
-    /// <summary>
-    /// Verifies that a negative <paramref name="bufferSize" /> throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void AppendData_WhenBufferSizeIsNegative_ShouldThrowArgumentOutOfRangeException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(s_sampleData);
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            algorithm.AppendData(stream, bufferSize: -1);
-        });
-    }
-
-    // ─── Stream overload — correctness ────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that an empty stream does not alter the current hash state.
-    /// </summary>
-    [TestMethod]
-    public void AppendData_WhenStreamIsEmpty_ShouldNotContributeToHash()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        MonitoringNonCryptographicHashAlgorithm baseline = CreateAlgorithm();
-
-        algorithm.AppendData(new MemoryStream([]));
-
-        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
-    }
-
-    /// <summary>
-    /// Verifies that stream bytes contribute to the hash identically to a direct span append.
-    /// </summary>
-    [TestMethod]
-    public void AppendData_WhenStreamHasData_ShouldMatchDirectSpanAppend()
-    {
-        MonitoringNonCryptographicHashAlgorithm fromStream = CreateAlgorithm();
-        MonitoringNonCryptographicHashAlgorithm fromSpan = CreateAlgorithm();
-
-        fromStream.AppendData(new MemoryStream(s_sampleData));
-        fromSpan.AppendData(s_sampleData.AsSpan());
-
-        CollectionAssert.AreEqual(fromSpan.GetCurrentHash(), fromStream.GetCurrentHash());
     }
 
     /// <summary>
@@ -206,17 +98,32 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that a <see cref="FixedChunkStream" /> delivering data 1 byte at a time is correctly accumulated.
+    /// Verifies that <see cref="NonCryptographicHashAlgorithmExtensions.AppendData(NonCryptographicHashAlgorithm, ReadOnlySpan{byte})" />
+    /// increments <see cref="MonitoringNonCryptographicHashAlgorithm.AppendCallCount" />, confirming the underlying
+    /// <see cref="NonCryptographicHashAlgorithm.Append" /> path is exercised exactly once per call.
     /// </summary>
     [TestMethod]
-    public void AppendData_WhenSourceIsFixedChunkStream_ShouldProduceCorrectHash()
+    public void AppendData_WhenCalled_ShouldInvokeAppendOnce()
     {
-        MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
-        reference.AppendData(s_sampleData.AsSpan());
-        var expected = reference.GetCurrentHash();
-
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        algorithm.AppendData(new FixedChunkStream(s_sampleData, chunkSize: 1));
+        var before = algorithm.AppendCallCount;
+
+        algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3]));
+
+        Assert.AreEqual(before + 1, algorithm.AppendCallCount);
+    }
+
+    /// <summary>
+    /// Verifies that multiple calls accumulate all supplied bytes correctly.
+    /// </summary>
+    [TestMethod]
+    public void AppendData_WhenCalledMultipleTimes_ShouldAccumulateAllBytes()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var expected = BitConverter.GetBytes((uint)(10 + 20 + 30 + 40));
+
+        algorithm.AppendData(new ReadOnlySpan<byte>([10, 20]));
+        algorithm.AppendData(new ReadOnlySpan<byte>([30, 40]));
 
         CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
     }
@@ -235,4 +142,97 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
             algorithm.AppendData(new FaultingStream(s_sampleData, throwAfterBytes: 2));
         });
     }
+
+    /// <summary>
+    /// Verifies that a <see cref="FixedChunkStream" /> delivering data 1 byte at a time is correctly accumulated.
+    /// </summary>
+    [TestMethod]
+    public void AppendData_WhenSourceIsFixedChunkStream_ShouldProduceCorrectHash()
+    {
+        MonitoringNonCryptographicHashAlgorithm reference = CreateAlgorithm();
+        reference.AppendData(s_sampleData.AsSpan());
+        var expected = reference.GetCurrentHash();
+
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        algorithm.AppendData(new FixedChunkStream(s_sampleData, chunkSize: 1));
+
+        CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
+    }
+
+    /// <summary>
+    /// Verifies that the supplied bytes contribute to the hash after retrieval.
+    /// </summary>
+    [TestMethod]
+    public void AppendData_WhenSpanContainsData_ShouldContributeToHash()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var expected = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
+
+        algorithm.AppendData(new ReadOnlySpan<byte>([1, 2, 3, 4]));
+
+        CollectionAssert.AreEqual(expected, algorithm.GetCurrentHash());
+    }
+
+    // ─── Span overload — accumulation ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that an empty span does not alter the current hash state.
+    /// </summary>
+    [TestMethod]
+    public void AppendData_WhenSpanIsEmpty_ShouldNotContributeToHash()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm baseline = CreateAlgorithm();
+
+        algorithm.AppendData([]);
+
+        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
+    }
+
+    /// <summary>
+    /// Verifies that stream bytes contribute to the hash identically to a direct span append.
+    /// </summary>
+    [TestMethod]
+    public void AppendData_WhenStreamHasData_ShouldMatchDirectSpanAppend()
+    {
+        MonitoringNonCryptographicHashAlgorithm fromStream = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm fromSpan = CreateAlgorithm();
+
+        fromStream.AppendData(new MemoryStream(s_sampleData));
+        fromSpan.AppendData(s_sampleData.AsSpan());
+
+        CollectionAssert.AreEqual(fromSpan.GetCurrentHash(), fromStream.GetCurrentHash());
+    }
+
+    // ─── Stream overload — correctness ────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that an empty stream does not alter the current hash state.
+    /// </summary>
+    [TestMethod]
+    public void AppendData_WhenStreamIsEmpty_ShouldNotContributeToHash()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        MonitoringNonCryptographicHashAlgorithm baseline = CreateAlgorithm();
+
+        algorithm.AppendData(new MemoryStream([]));
+
+        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
+    }
+
+    /// <summary>
+    /// Verifies that the stream overload throws <see cref="ArgumentNullException" /> when the source is
+    /// <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void AppendData_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            algorithm.AppendData((Stream)null!);
+        });
+    }
+
 }

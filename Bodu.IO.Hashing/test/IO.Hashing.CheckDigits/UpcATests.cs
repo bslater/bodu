@@ -13,6 +13,21 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class UpcATests
     : CheckDigitAlgorithmTests<UpcATests, UpcA>
 {
+
+    /// <summary>
+    /// Verifies that <see cref="UpcA.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
+    /// exactly <see cref="UpcA.SequenceLength" />.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
+    {
+        Assert.IsFalse(UpcA.IsValid("0360002914520".AsSpan()));
+        Assert.IsFalse(UpcA.IsValid("03600029145".AsSpan()));
+    }
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
+        UpcA.Compute(digits);
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()
     {
@@ -26,21 +41,7 @@ public sealed class UpcATests
     };
 
     /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
-        UpcA.Compute(digits);
-
-    /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck) =>
         UpcA.IsValid(digitsIncludingCheck);
 
-    /// <summary>
-    /// Verifies that <see cref="UpcA.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
-    /// exactly <see cref="UpcA.SequenceLength" />.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
-    {
-        Assert.IsFalse(UpcA.IsValid("0360002914520".AsSpan()));
-        Assert.IsFalse(UpcA.IsValid("03600029145".AsSpan()));
-    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="WeightedMod10Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,6 +15,7 @@ namespace Bodu.IO.Hashing.Checksums;
 [TestClass]
 public sealed class WeightedMod10Tests
 {
+
     /// <summary>
     /// Verifies that <see cref="WeightedMod10.IsValidAba" /> returns <see langword="false" /> as soon as a
     /// non-digit character is encountered, without throwing.
@@ -34,4 +35,5 @@ public sealed class WeightedMod10Tests
     {
         Assert.IsFalse(WeightedMod10.IsValidIsbn13("978030640615X".AsSpan()));
     }
+
 }

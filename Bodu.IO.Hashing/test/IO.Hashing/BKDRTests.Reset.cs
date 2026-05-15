@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class BKDRTests
 {
+
     /// <summary>
     /// Verifies that <see cref="BKDR.Reset" /> restores the accumulator to the seed so the next empty-input
     /// digest reflects the seed itself, encoded big-endian.
@@ -25,4 +26,5 @@ public partial class BKDRTests
 
         CollectionAssert.AreEqual(expected, actual);
     }
+
 }

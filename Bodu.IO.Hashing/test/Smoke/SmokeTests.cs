@@ -17,6 +17,19 @@ namespace Bodu.Smoke;
 [TestClass]
 public sealed class SmokeTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="Adler32" /> produces a 4-byte digest from a non-empty input.
+    /// </summary>
+    [TestMethod]
+    public void Adler32_Append_ShouldProduceFourByteDigest()
+    {
+        Adler32 adler = new();
+        adler.Append(Encoding.ASCII.GetBytes("Wikipedia"));
+        var digest = adler.GetCurrentHash();
+
+        Assert.AreEqual(4, digest.Length);
+    }
     /// <summary>
     /// Verifies that <see cref="Crc.ComputeHash(System.ReadOnlySpan{byte})" /> reproduces the published
     /// CRC-32/ISO-HDLC check value for the reference input <c>"123456789"</c>.
@@ -59,16 +72,4 @@ public sealed class SmokeTests
         Assert.AreEqual(4, digest.Length);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Adler32" /> produces a 4-byte digest from a non-empty input.
-    /// </summary>
-    [TestMethod]
-    public void Adler32_Append_ShouldProduceFourByteDigest()
-    {
-        Adler32 adler = new();
-        adler.Append(Encoding.ASCII.GetBytes("Wikipedia"));
-        var digest = adler.GetCurrentHash();
-
-        Assert.AreEqual(4, digest.Length);
-    }
 }

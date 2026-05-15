@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that reading the current check digit twice in succession — with no intervening appends — yields
     /// the same value, proving the getter is non-destructive.
@@ -25,4 +26,5 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         Assert.AreEqual(first, second);
         Assert.AreEqual(second, third);
     }
+
 }

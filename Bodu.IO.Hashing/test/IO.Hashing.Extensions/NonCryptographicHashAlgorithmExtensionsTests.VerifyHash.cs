@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.IO.Hashing;
 using System.Text;
 
@@ -21,6 +20,59 @@ namespace Bodu.IO.Hashing.Extensions;
 /// </remarks>
 public partial class NonCryptographicHashAlgorithmExtensionsTests
 {
+
+    /// <summary>
+    /// Verifies that a null algorithm raises <see cref="ArgumentNullException" /> on the memory overload.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenAlgorithmIsNull_ForMemoryOverload_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            NonCryptographicHashAlgorithm? algorithm = null;
+            algorithm!.VerifyHash(new ReadOnlyMemory<byte>(s_sampleData), s_sampleHash);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a null algorithm raises <see cref="ArgumentNullException" /> on the span overload.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenAlgorithmIsNull_ForSpanOverload_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            NonCryptographicHashAlgorithm? algorithm = null;
+            algorithm!.VerifyHash(new ReadOnlySpan<byte>(s_sampleData), new ReadOnlySpan<byte>(s_sampleHash));
+        });
+    }
+
+    // ─── Argument validation ──────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> algorithm receiver raises <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            NonCryptographicHashAlgorithm? algorithm = null;
+            algorithm!.VerifyHash(s_sampleData, s_sampleHash);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that the byte-array overload returns <see langword="false" /> when the input produces a different hash.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenByteArrayDoesNotMatch_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var wrong = BitConverter.GetBytes((uint)999);
+
+        Assert.IsFalse(algorithm.VerifyHash(s_sampleData, wrong));
+    }
     // ─── Byte-array overload — matching input ─────────────────────────────────────────────────
 
     /// <summary>
@@ -51,15 +103,114 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the byte-array overload returns <see langword="false" /> when the input produces a different hash.
+    /// Verifies that <c>VerifyHash</c> resets any prior accumulated state before computing, so successive calls
+    /// with different inputs produce independent results.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenByteArrayDoesNotMatch_ShouldReturnFalse()
+    public void VerifyHash_WhenCalledSuccessively_ShouldResetStateBeforeEachComputation()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.IsTrue(algorithm.VerifyHash(s_sampleData, s_sampleHash));
+        Assert.IsTrue(algorithm.VerifyHash(s_sampleData, s_sampleHash));
+    }
+
+    /// <summary>
+    /// Verifies that the string overload returns <see langword="false" /> when the encoded hash does not match.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenEncodedStringDoesNotMatch_ShouldReturnFalse()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
         var wrong = BitConverter.GetBytes((uint)999);
 
-        Assert.IsFalse(algorithm.VerifyHash(s_sampleData, wrong));
+        Assert.IsFalse(algorithm.VerifyHash(s_sampleString, s_sampleEncoding, wrong));
+    }
+
+    // ─── String-with-encoding overload ────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that the string overload encodes the input with the supplied encoding before hashing and returns
+    /// <see langword="true" /> when the result matches.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenEncodedStringMatches_ShouldReturnTrue()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        var input = "ABC"; // ASCII: 65 + 66 + 67 = 198
+        var expected = BitConverter.GetBytes((uint)198);
+
+        Assert.IsTrue(algorithm.VerifyHash(input, Encoding.ASCII, expected));
+    }
+
+    /// <summary>
+    /// Verifies that a null encoding raises <see cref="ArgumentNullException" /> on the string+encoding overload.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenEncodingIsNull_ShouldThrowArgumentNullException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            algorithm.VerifyHash("hello", null!, s_sampleHash);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the memory overload.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenExpectedHashIsNull_ForMemoryOverload_ShouldThrowArgumentNullException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            algorithm.VerifyHash(new ReadOnlyMemory<byte>(s_sampleData), null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hash byte array raises <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            algorithm.VerifyHash(s_sampleData, (byte[])null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the string+encoding overload.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrowArgumentNullException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            algorithm.VerifyHash("hello", Encoding.ASCII, null!);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that a null expected hex string raises <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            algorithm.VerifyHash(s_sampleData, (string)null!);
+        });
     }
 
     /// <summary>
@@ -86,16 +237,17 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that <c>VerifyHash</c> resets any prior accumulated state before computing, so successive calls
-    /// with different inputs produce independent results.
+    /// Verifies that a null input byte array raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public void VerifyHash_WhenCalledSuccessively_ShouldResetStateBeforeEachComputation()
+    public void VerifyHash_WhenInputIsNull_ShouldThrowArgumentNullException()
     {
         MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
 
-        Assert.IsTrue(algorithm.VerifyHash(s_sampleData, s_sampleHash));
-        Assert.IsTrue(algorithm.VerifyHash(s_sampleData, s_sampleHash));
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            algorithm.VerifyHash((byte[])null!, s_sampleHash);
+        });
     }
 
     // ─── Span and memory overloads ────────────────────────────────────────────────────────────
@@ -128,63 +280,6 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         Assert.IsFalse(algorithm.VerifyHash(new ReadOnlySpan<byte>(s_sampleData), wrong));
     }
 
-    // ─── String-with-encoding overload ────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that the string overload encodes the input with the supplied encoding before hashing and returns
-    /// <see langword="true" /> when the result matches.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenEncodedStringMatches_ShouldReturnTrue()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var input = "ABC"; // ASCII: 65 + 66 + 67 = 198
-        var expected = BitConverter.GetBytes((uint)198);
-
-        Assert.IsTrue(algorithm.VerifyHash(input, Encoding.ASCII, expected));
-    }
-
-    /// <summary>
-    /// Verifies that the string overload returns <see langword="false" /> when the encoded hash does not match.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenEncodedStringDoesNotMatch_ShouldReturnFalse()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        var wrong = BitConverter.GetBytes((uint)999);
-
-        Assert.IsFalse(algorithm.VerifyHash(s_sampleString, s_sampleEncoding, wrong));
-    }
-
-    // ─── Stream overload ──────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that the stream overload reads the entire stream and returns <see langword="true" /> when the
-    /// accumulated hash matches.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenStreamMatchesHash_ShouldReturnTrue()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new([5, 5, 5]);
-        var expected = BitConverter.GetBytes((uint)15);
-
-        Assert.IsTrue(algorithm.VerifyHash(stream, expected));
-    }
-
-    /// <summary>
-    /// Verifies that the stream-with-hex overload returns <see langword="true" /> when the stream hash matches the
-    /// hex string.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenStreamMatchesHex_ShouldReturnTrue()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(s_sampleData);
-
-        Assert.IsTrue(algorithm.VerifyHash(stream, s_sampleHex));
-    }
-
     /// <summary>
     /// Verifies that the stream overload resets prior state before reading, so it hashes only the stream content.
     /// </summary>
@@ -197,77 +292,6 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         using MemoryStream stream = new(s_sampleData);
 
         Assert.IsTrue(algorithm.VerifyHash(stream, s_sampleHash));
-    }
-
-    // ─── Argument validation ──────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> algorithm receiver raises <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            NonCryptographicHashAlgorithm? algorithm = null;
-            algorithm!.VerifyHash(s_sampleData, s_sampleHash);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null input byte array raises <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenInputIsNull_ShouldThrowArgumentNullException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.VerifyHash((byte[])null!, s_sampleHash);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null expected hash byte array raises <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenExpectedHashIsNull_ShouldThrowArgumentNullException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.VerifyHash(s_sampleData, (byte[])null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null expected hex string raises <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenExpectedHexIsNull_ShouldThrowArgumentNullException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.VerifyHash(s_sampleData, (string)null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null stream raises <see cref="ArgumentNullException" /> on the stream-with-byte-array overload.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenStreamIsNull_ShouldThrowArgumentNullException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.VerifyHash((Stream)null!, s_sampleHash);
-        });
     }
 
     /// <summary>
@@ -301,6 +325,49 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     }
 
     /// <summary>
+    /// Verifies that a null stream raises <see cref="ArgumentNullException" /> on the stream-with-byte-array overload.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            algorithm.VerifyHash((Stream)null!, s_sampleHash);
+        });
+    }
+
+    // ─── Stream overload ──────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that the stream overload reads the entire stream and returns <see langword="true" /> when the
+    /// accumulated hash matches.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenStreamMatchesHash_ShouldReturnTrue()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new([5, 5, 5]);
+        var expected = BitConverter.GetBytes((uint)15);
+
+        Assert.IsTrue(algorithm.VerifyHash(stream, expected));
+    }
+
+    /// <summary>
+    /// Verifies that the stream-with-hex overload returns <see langword="true" /> when the stream hash matches the
+    /// hex string.
+    /// </summary>
+    [TestMethod]
+    public void VerifyHash_WhenStreamMatchesHex_ShouldReturnTrue()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+
+        Assert.IsTrue(algorithm.VerifyHash(stream, s_sampleHex));
+    }
+
+    /// <summary>
     /// Verifies that a null string input raises <see cref="ArgumentNullException" /> on the string+encoding overload.
     /// </summary>
     [TestMethod]
@@ -314,71 +381,4 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         });
     }
 
-    /// <summary>
-    /// Verifies that a null encoding raises <see cref="ArgumentNullException" /> on the string+encoding overload.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenEncodingIsNull_ShouldThrowArgumentNullException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.VerifyHash("hello", null!, s_sampleHash);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the string+encoding overload.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenExpectedHashIsNullForString_ShouldThrowArgumentNullException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.VerifyHash("hello", Encoding.ASCII, null!);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null algorithm raises <see cref="ArgumentNullException" /> on the span overload.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenAlgorithmIsNull_ForSpanOverload_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            NonCryptographicHashAlgorithm? algorithm = null;
-            algorithm!.VerifyHash(new ReadOnlySpan<byte>(s_sampleData), new ReadOnlySpan<byte>(s_sampleHash));
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null algorithm raises <see cref="ArgumentNullException" /> on the memory overload.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenAlgorithmIsNull_ForMemoryOverload_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            NonCryptographicHashAlgorithm? algorithm = null;
-            algorithm!.VerifyHash(new ReadOnlyMemory<byte>(s_sampleData), s_sampleHash);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that a null expected hash raises <see cref="ArgumentNullException" /> on the memory overload.
-    /// </summary>
-    [TestMethod]
-    public void VerifyHash_WhenExpectedHashIsNull_ForMemoryOverload_ShouldThrowArgumentNullException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            algorithm.VerifyHash(new ReadOnlyMemory<byte>(s_sampleData), null!);
-        });
-    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitAlgorithmSpecification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,17 +19,12 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </remarks>
 public sealed record MultiCharCheckDigitAlgorithmSpecification
 {
+
     /// <summary>
     /// Gets the expected <see cref="MultiCharCheckDigitAlgorithm.AlgorithmName" /> string.
     /// </summary>
     /// <returns>The canonical algorithm name, e.g. <c>"ISO 7064 MOD 97-10"</c>.</returns>
     public required string AlgorithmName { get; init; }
-
-    /// <summary>
-    /// Gets the expected <see cref="MultiCharCheckDigitAlgorithm.InputAlphabet" /> value.
-    /// </summary>
-    /// <returns>The declared input alphabet for the algorithm under test.</returns>
-    public required CheckDigitInputAlphabet InputAlphabet { get; init; }
 
     /// <summary>
     /// Gets the expected <see cref="MultiCharCheckDigitAlgorithm.CheckLength" /> value.
@@ -45,8 +40,15 @@ public sealed record MultiCharCheckDigitAlgorithmSpecification
     public string? EmptyCheckDigits { get; init; }
 
     /// <summary>
+    /// Gets the expected <see cref="MultiCharCheckDigitAlgorithm.InputAlphabet" /> value.
+    /// </summary>
+    /// <returns>The declared input alphabet for the algorithm under test.</returns>
+    public required CheckDigitInputAlphabet InputAlphabet { get; init; }
+
+    /// <summary>
     /// Gets the known-answer vectors to exercise.
     /// </summary>
     /// <returns>A non-empty list of <see cref="MultiCharCheckDigitKnownAnswer" /> entries.</returns>
     public required IReadOnlyList<MultiCharCheckDigitKnownAnswer> KnownAnswers { get; init; }
+
 }

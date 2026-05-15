@@ -33,6 +33,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Iso7064Mod11_2
     : AlphanumericCheckDigitAlgorithm
 {
+
     private int _p;
 
     /// <summary>
@@ -50,33 +51,6 @@ public sealed class Iso7064Mod11_2
 
     /// <inheritdoc />
     public override CheckDigitOutputAlphabet OutputAlphabet => CheckDigitOutputAlphabet.DecimalDigitsOrX;
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> body)
-    {
-        var p = this._p;
-        for (var i = 0; i < body.Length; i++)
-        {
-            var ch = body[i];
-            if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
-
-            p = ((p + (ch - '0')) * 2) % 11;
-        }
-
-        this._p = p;
-    }
-
-    /// <inheritdoc />
-    public override void Reset() =>
-        _p = 0;
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit()
-    {
-        var c = (12 - _p) % 11;
-        return c == 10 ? 'X' : (char)('0' + c);
-    }
 
     /// <summary>
     /// Computes the ISO 7064 MOD 11-2 check character for the supplied body of decimal digits without allocating
@@ -135,4 +109,32 @@ public sealed class Iso7064Mod11_2
 
         return (p + checkValue) % 11 == 1;
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> body)
+    {
+        var p = this._p;
+        for (var i = 0; i < body.Length; i++)
+        {
+            var ch = body[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(body));
+
+            p = ((p + (ch - '0')) * 2) % 11;
+        }
+
+        this._p = p;
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        var c = (12 - _p) % 11;
+        return c == 10 ? 'X' : (char)('0' + c);
+    }
+
+    /// <inheritdoc />
+    public override void Reset() =>
+        _p = 0;
+
 }

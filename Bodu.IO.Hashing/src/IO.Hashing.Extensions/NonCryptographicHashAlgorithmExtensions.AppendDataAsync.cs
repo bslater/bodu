@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
+
     /// <summary>
     /// Asynchronously reads all bytes from <paramref name="source" /> and feeds them into the hash accumulator via
     /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />, without finalizing the computation.
@@ -97,4 +98,5 @@ public static partial class NonCryptographicHashAlgorithmExtensions
             ArrayPool<byte>.Shared.Return(buffer);
         }
     }
+
 }

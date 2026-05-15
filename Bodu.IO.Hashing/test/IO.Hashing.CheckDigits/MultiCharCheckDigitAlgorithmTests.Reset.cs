@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that <see cref="MultiCharCheckDigitAlgorithm.Reset" /> after an Append restores the algorithm to
     /// the empty-body check code declared in the specification (when one is declared).
@@ -48,4 +49,5 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigits());
     }
+
 }

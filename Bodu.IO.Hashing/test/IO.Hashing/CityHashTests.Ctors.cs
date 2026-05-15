@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class CityHashTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that the base-class constructor throws an <see cref="ArgumentOutOfRangeException" /> when
     /// provided an unsupported <c>hashSize</c> value.
@@ -47,11 +48,14 @@ public abstract partial class CityHashTests<TTest, TAlgorithm>
     private sealed class TestCityHash
         : CityHash<TAlgorithm>
     {
+
         public TestCityHash(int hashSize)
             : base(hashSize)
         {
         }
 
         protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source) => [];
+
     }
+
 }

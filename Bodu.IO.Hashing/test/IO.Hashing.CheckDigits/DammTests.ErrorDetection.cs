@@ -8,7 +8,31 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public sealed partial class DammTests
 {
+
     private const string SingleDigitSeedBody = "572";
+
+    /// <summary>
+    /// Verifies that Damm detects <i>every</i> adjacent-digit transposition — without exception — in the
+    /// canonical seed sequence. Unlike Luhn, Damm has no known transposition blind spot.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAdjacentDigitsAreTransposed_ShouldReturnFalse()
+    {
+        var check = Damm.Compute(SingleDigitSeedBody.AsSpan());
+        var valid = SingleDigitSeedBody + check;
+        var buffer = valid.ToCharArray();
+
+        for (var i = 0; i < buffer.Length - 1; i++)
+        {
+            if (buffer[i] == buffer[i + 1]) continue;
+
+            (buffer[i], buffer[i + 1]) = (buffer[i + 1], buffer[i]);
+            Assert.IsFalse(
+                Damm.IsValid(buffer),
+                $"Transposition at index {i} ({new string(buffer)}) must be rejected by Damm.");
+            (buffer[i], buffer[i + 1]) = (buffer[i + 1], buffer[i]);
+        }
+    }
 
     /// <summary>
     /// Verifies that Damm detects every single-digit substitution error in the canonical seed sequence.
@@ -38,26 +62,4 @@ public sealed partial class DammTests
         }
     }
 
-    /// <summary>
-    /// Verifies that Damm detects <i>every</i> adjacent-digit transposition — without exception — in the
-    /// canonical seed sequence. Unlike Luhn, Damm has no known transposition blind spot.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenAdjacentDigitsAreTransposed_ShouldReturnFalse()
-    {
-        var check = Damm.Compute(SingleDigitSeedBody.AsSpan());
-        var valid = SingleDigitSeedBody + check;
-        var buffer = valid.ToCharArray();
-
-        for (var i = 0; i < buffer.Length - 1; i++)
-        {
-            if (buffer[i] == buffer[i + 1]) continue;
-
-            (buffer[i], buffer[i + 1]) = (buffer[i + 1], buffer[i]);
-            Assert.IsFalse(
-                Damm.IsValid(buffer),
-                $"Transposition at index {i} ({new string(buffer)}) must be rejected by Damm.");
-            (buffer[i], buffer[i + 1]) = (buffer[i + 1], buffer[i]);
-        }
-    }
 }

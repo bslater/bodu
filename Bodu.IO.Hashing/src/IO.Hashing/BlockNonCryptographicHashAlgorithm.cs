@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu;
 using System;
 using System.IO.Hashing;
 
@@ -102,6 +101,7 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     : NonCryptographicHashAlgorithm
     where T : BlockNonCryptographicHashAlgorithm<T>, new()
 {
+
     /// <summary>
     /// The fixed size, in bytes, of each block processed by the algorithm.
     /// </summary>
@@ -134,6 +134,26 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// </summary>
     protected virtual bool AllowUnalignedFinalBlock => false;
 
+    /// <summary>
+    /// Gets the number of residual bytes currently buffered but not yet processed.
+    /// </summary>
+    /// <remarks>Exposed to derived types that snapshot state in <see cref="Clone" />.</remarks>
+    protected int ResidualByteCount => this._residualBytes;
+
+    /// <summary>
+    /// Gets a read-only view over the residual byte buffer.
+    /// </summary>
+    /// <remarks>Exposed to derived types that snapshot state in <see cref="Clone" />.</remarks>
+    protected ReadOnlySpan<byte> ResidualBytes =>
+        new ReadOnlySpan<byte>(this._residualByteBuffer, 0, this._residualBytes);
+
+    /// <summary>
+    /// Gets the total number of bytes that have been passed to <see cref="Append(ReadOnlySpan{byte})" /> since the
+    /// last call to <see cref="Reset" />.
+    /// </summary>
+    /// <remarks>Exposed to derived types that snapshot state in <see cref="Clone" />.</remarks>
+    protected ulong TotalLength => this._totalLength;
+
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
@@ -150,14 +170,24 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Resets the derived algorithm's internal accumulators. Called from <see cref="Reset" /> after base-class state is cleared.
+    /// Creates a deep copy of the current algorithm instance, preserving accumulator state. Used by
+    /// <see cref="GetCurrentHashCore" /> so that retrieving an intermediate hash does not disturb ongoing computation.
     /// </summary>
-    /// <remarks>
-    /// Derived types override this to restore any running state they own (for example, partial sums, index counters).
-    /// The default implementation does nothing.
-    /// </remarks>
-    protected virtual void ResetState()
+    /// <returns>A new instance with the same internal state as the current one.</returns>
+    protected abstract T Clone();
+
+    /// <summary>
+    /// Copies the caller's residual-buffer state onto this instance. Used by <see cref="Clone" /> implementations in
+    /// derived types to duplicate the running input-alignment state.
+    /// </summary>
+    /// <param name="source">The algorithm instance whose residual state should be copied.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
+    protected void CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm<T> source)
     {
+        ArgumentNullException.ThrowIfNull(source);
+        source._residualByteBuffer.AsSpan(0, source._residualBytes).CopyTo(this._residualByteBuffer);
+        this._residualBytes = source._residualBytes;
+        this._totalLength = source._totalLength;
     }
 
     /// <inheritdoc />
@@ -193,13 +223,6 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     }
 
     /// <summary>
-    /// Creates a deep copy of the current algorithm instance, preserving accumulator state. Used by
-    /// <see cref="GetCurrentHashCore" /> so that retrieving an intermediate hash does not disturb ongoing computation.
-    /// </summary>
-    /// <returns>A new instance with the same internal state as the current one.</returns>
-    protected abstract T Clone();
-
-    /// <summary>
     /// Pads the final partial block of input data and appends the encoded total message length. This ensures that all input
     /// is padded and aligned to the block size required by the algorithm.
     /// </summary>
@@ -225,6 +248,17 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     protected abstract byte[] ProcessFinalBlock();
 
     /// <summary>
+    /// Resets the derived algorithm's internal accumulators. Called from <see cref="Reset" /> after base-class state is cleared.
+    /// </summary>
+    /// <remarks>
+    /// Derived types override this to restore any running state they own (for example, partial sums, index counters).
+    /// The default implementation does nothing.
+    /// </remarks>
+    protected virtual void ResetState()
+    {
+    }
+
+    /// <summary>
     /// Determines whether the final block of input data should be padded before processing.
     /// </summary>
     /// <returns><see langword="true" /> if the final block should be padded; otherwise, <see langword="false" />.</returns>
@@ -233,40 +267,6 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
     /// residual bytes should be processed verbatim without explicit padding.
     /// </remarks>
     protected virtual bool ShouldPadFinalBlock() => true;
-
-    /// <summary>
-    /// Gets the number of residual bytes currently buffered but not yet processed.
-    /// </summary>
-    /// <remarks>Exposed to derived types that snapshot state in <see cref="Clone" />.</remarks>
-    protected int ResidualByteCount => this._residualBytes;
-
-    /// <summary>
-    /// Gets a read-only view over the residual byte buffer.
-    /// </summary>
-    /// <remarks>Exposed to derived types that snapshot state in <see cref="Clone" />.</remarks>
-    protected ReadOnlySpan<byte> ResidualBytes =>
-        new ReadOnlySpan<byte>(this._residualByteBuffer, 0, this._residualBytes);
-
-    /// <summary>
-    /// Gets the total number of bytes that have been passed to <see cref="Append(ReadOnlySpan{byte})" /> since the
-    /// last call to <see cref="Reset" />.
-    /// </summary>
-    /// <remarks>Exposed to derived types that snapshot state in <see cref="Clone" />.</remarks>
-    protected ulong TotalLength => this._totalLength;
-
-    /// <summary>
-    /// Copies the caller's residual-buffer state onto this instance. Used by <see cref="Clone" /> implementations in
-    /// derived types to duplicate the running input-alignment state.
-    /// </summary>
-    /// <param name="source">The algorithm instance whose residual state should be copied.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    protected void CopyResidualStateFrom(BlockNonCryptographicHashAlgorithm<T> source)
-    {
-        ArgumentNullException.ThrowIfNull(source);
-        source._residualByteBuffer.AsSpan(0, source._residualBytes).CopyTo(this._residualByteBuffer);
-        this._residualBytes = source._residualBytes;
-        this._totalLength = source._totalLength;
-    }
 
     /// <summary>
     /// Accumulates <paramref name="buffer" /> into the residual buffer and drains complete blocks
@@ -309,4 +309,5 @@ public abstract class BlockNonCryptographicHashAlgorithm<T>
         if (this._residualBytes > 0)
             buffer.Slice(pos, this._residualBytes).CopyTo(residualSpan);
     }
+
 }

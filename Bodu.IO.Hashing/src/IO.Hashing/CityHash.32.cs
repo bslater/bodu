@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Buffers.Binary;
+using Bodu.Extensions;
 
 namespace Bodu.IO.Hashing;
 
@@ -54,6 +54,7 @@ namespace Bodu.IO.Hashing;
 public sealed class CityHash32
     : CityHash<CityHash32>
 {
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash32" /> class with a fixed 32-bit (4-byte) hash output size.
     /// </summary>
@@ -105,33 +106,6 @@ public sealed class CityHash32
 
             return Mix(Mur(b, Mur((uint)s.Length, c)));
         }
-    }
-
-    private static uint RotateMix32(uint value)
-    {
-        unchecked
-        {
-            return (value * C1).RotateBitsRightUnchecked(17) * C2;
-        }
-    }
-
-    /// <summary>
-    /// Hashes 5 to 12 bytes by reading 4-byte words from the start, end, and center of the input.
-    /// </summary>
-    /// <param name="s">The input span. Length must be in the range [5, 12].</param>
-    /// <returns>The 32-bit hash value.</returns>
-    private static uint Hash32Len5to12(ReadOnlySpan<byte> s)
-    {
-        var a = (uint)s.Length;
-        var b = a * 5;
-        uint c = 9;
-        var d = b;
-
-        a += BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(0, 4));
-        b += BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(s.Length - 4, 4));
-        c += BinaryPrimitives.ReadUInt32LittleEndian(s.Slice((s.Length >> 1) & 4, 4));
-
-        return Mix(Mur(c, Mur(b, Mur(a, d))));
     }
 
     /// <summary>
@@ -241,4 +215,32 @@ public sealed class CityHash32
 
         return h;
     }
+
+    /// <summary>
+    /// Hashes 5 to 12 bytes by reading 4-byte words from the start, end, and center of the input.
+    /// </summary>
+    /// <param name="s">The input span. Length must be in the range [5, 12].</param>
+    /// <returns>The 32-bit hash value.</returns>
+    private static uint Hash32Len5to12(ReadOnlySpan<byte> s)
+    {
+        var a = (uint)s.Length;
+        var b = a * 5;
+        uint c = 9;
+        var d = b;
+
+        a += BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(0, 4));
+        b += BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(s.Length - 4, 4));
+        c += BinaryPrimitives.ReadUInt32LittleEndian(s.Slice((s.Length >> 1) & 4, 4));
+
+        return Mix(Mur(c, Mur(b, Mur(a, d))));
+    }
+
+    private static uint RotateMix32(uint value)
+    {
+        unchecked
+        {
+            return (value * C1).RotateBitsRightUnchecked(17) * C2;
+        }
+    }
+
 }

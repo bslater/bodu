@@ -34,6 +34,7 @@ using Bodu.IO.Hashing.Checksums;
 public sealed class Isin
     : AlphanumericCheckDigitAlgorithm
 {
+
     /// <summary>The required body length of <c>11</c> characters.</summary>
     public const int BodyLength = 11;
 
@@ -57,37 +58,6 @@ public sealed class Isin
 
     /// <inheritdoc />
     public override CheckDigitOutputAlphabet OutputAlphabet => CheckDigitOutputAlphabet.DecimalDigits;
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> body)
-    {
-        for (var i = 0; i < body.Length; i++)
-        {
-            var ch = body[i];
-            if ((uint)(ch - '0') <= 9u)
-            {
-                luhn.Append(ch);
-            }
-            else if ((uint)(ch - 'A') <= 25u)
-            {
-                var value = ch - 'A' + 10;
-                luhn.Append((char)('0' + (value / 10)));
-                luhn.Append((char)('0' + (value % 10)));
-            }
-            else
-            {
-                ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
-            }
-        }
-    }
-
-    /// <inheritdoc />
-    public override void Reset() =>
-        luhn.Reset();
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit() =>
-        luhn.GetCurrentCheckDigit();
 
     /// <summary>
     /// Computes the ISIN check digit for the supplied body without allocating a streaming instance.
@@ -132,4 +102,36 @@ public sealed class Isin
         var computed = Compute(valueIncludingCheck[..^1]);
         return computed == valueIncludingCheck[SequenceLength - 1];
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> body)
+    {
+        for (var i = 0; i < body.Length; i++)
+        {
+            var ch = body[i];
+            if ((uint)(ch - '0') <= 9u)
+            {
+                luhn.Append(ch);
+            }
+            else if ((uint)(ch - 'A') <= 25u)
+            {
+                var value = ch - 'A' + 10;
+                luhn.Append((char)('0' + (value / 10)));
+                luhn.Append((char)('0' + (value % 10)));
+            }
+            else
+            {
+                ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
+            }
+        }
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit() =>
+        luhn.GetCurrentCheckDigit();
+
+    /// <inheritdoc />
+    public override void Reset() =>
+        luhn.Reset();
+
 }

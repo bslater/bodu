@@ -8,17 +8,6 @@ namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests
 {
-    /// <summary>
-    /// Verifies that the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> constructor throws
-    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> equal to <c>blockSize</c> when the
-    /// supplied block size is zero.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
-    {
-        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new InvalidBlockSizeHasher());
-        Assert.AreEqual("blockSize", ex.ParamName);
-    }
 
     /// <summary>
     /// Verifies that the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> constructor throws
@@ -31,4 +20,16 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new NegativeBlockSizeHasher());
         Assert.AreEqual("blockSize", ex.ParamName);
     }
+    /// <summary>
+    /// Verifies that the <see cref="BlockNonCryptographicHashAlgorithm{T}" /> constructor throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> equal to <c>blockSize</c> when the
+    /// supplied block size is zero.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WhenBlockSizeIsZero_ShouldThrowArgumentOutOfRangeException()
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => new InvalidBlockSizeHasher());
+        Assert.AreEqual("blockSize", ex.ParamName);
+    }
+
 }

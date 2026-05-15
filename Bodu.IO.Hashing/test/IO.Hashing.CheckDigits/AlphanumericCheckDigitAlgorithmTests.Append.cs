@@ -7,8 +7,26 @@
 using Bodu.IO.Hashing.Checksums;
 
 namespace Bodu.IO.Hashing.CheckDigits;
+
 public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
+    /// <summary>
+    /// Verifies that <c>Append</c> rejects characters that fall outside the declared input alphabet.
+    /// </summary>
+    [TestMethod]
+    public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
+    {
+        AlphanumericCheckDigitAlgorithmSpecification spec = GetSpecification();
+        var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
+
+        TAlgorithm algorithm = CreateAlgorithm();
+
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            algorithm.Append(new[] { '1', invalid, '2' }.AsSpan());
+        });
+    }
     /// <summary>
     /// Verifies that appending a body in a single call produces the check character recorded for that
     /// known-answer vector.
@@ -18,7 +36,7 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
     /// <param name="expectedCheck">The check character the algorithm is expected to emit.</param>
     [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName =nameof(GetKnownAnswerTestName))]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
     public void Append_WhenKnownAnswerIsAppendedInFull_ShouldProduceExpectedCheckDigit(string name, string body, char expectedCheck)
     {
         _ = name;
@@ -89,20 +107,4 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         Assert.AreEqual(initial, algorithm.GetCurrentCheckDigit());
     }
 
-    /// <summary>
-    /// Verifies that <c>Append</c> rejects characters that fall outside the declared input alphabet.
-    /// </summary>
-    [TestMethod]
-    public void Append_WhenCharacterIsOutsideInputAlphabet_ShouldThrowArgumentOutOfRangeException()
-    {
-        AlphanumericCheckDigitAlgorithmSpecification spec = GetSpecification();
-        var invalid = spec.InputAlphabet == CheckDigitInputAlphabet.DecimalDigits ? 'A' : '!';
-
-        TAlgorithm algorithm = CreateAlgorithm();
-
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            algorithm.Append(new[] { '1', invalid, '2' }.AsSpan());
-        });
-    }
 }

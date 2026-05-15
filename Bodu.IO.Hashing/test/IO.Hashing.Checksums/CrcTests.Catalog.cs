@@ -8,7 +8,6 @@
 //     Source: Bodu.IO/src/crc-specs.json (derived from https://reveng.sourceforge.io/crc-catalogue/all.htm).
 // </auto-generated>
 
-using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 
@@ -16,6 +15,7 @@ namespace Bodu.IO.Hashing.Checksums
 {
     public partial class CrcTests
     {
+
         private static readonly byte[] CatalogCheckInput = Encoding.ASCII.GetBytes("123456789");
 
         /// <summary>
@@ -176,6 +176,7 @@ namespace Bodu.IO.Hashing.Checksums
 
             Assert.AreEqual(expectedCheck, actual, $"Check vector mismatch for {standard.Name}: expected 0x{expectedCheck:X}, got 0x{actual:X}.");
         }
+
     }
 }
 

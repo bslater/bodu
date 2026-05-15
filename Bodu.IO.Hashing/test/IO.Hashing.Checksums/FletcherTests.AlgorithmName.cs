@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public abstract partial class FletcherTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that <see cref="Fletcher{T}.AlgorithmName" /> begins with the <c>Fletcher-</c> prefix and ends
     /// with the expected bit width for the concrete variant under test.

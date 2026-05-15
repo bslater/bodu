@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public abstract partial class FletcherTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Test-only <see cref="Fletcher{TSelf}" /> subclass used solely to reach the protected constructor with
     /// arbitrary hash sizes. The parameterless public constructor satisfies the CRTP <c>new()</c> constraint and
@@ -16,6 +17,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     private sealed class TestFletcher
         : Fletcher<TestFletcher>
     {
+
         public TestFletcher()
             : base(16)
         {
@@ -25,5 +27,7 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
             : base(hashSize)
         {
         }
+
     }
+
 }

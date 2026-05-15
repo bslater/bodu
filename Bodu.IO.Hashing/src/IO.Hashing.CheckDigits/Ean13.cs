@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ean13.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,15 +29,16 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Ean13
     : CheckDigitAlgorithm
 {
+
     /// <summary>The required body length of <c>12</c> decimal digits.</summary>
     public const int BodyLength = 12;
 
     /// <summary>The required full-sequence length of <c>13</c> decimal digits.</summary>
     public const int SequenceLength = 13;
+    private int _count;
 
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;
-    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Ean13" /> class.
@@ -118,6 +119,13 @@ public sealed class Ean13
     }
 
     /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        return (char)('0' + ((10 - (sum % 10)) % 10));
+    }
+
+    /// <inheritdoc />
     public override void Reset()
     {
         _sumEvenHypothesis = 0;
@@ -125,10 +133,4 @@ public sealed class Ean13
         _count = 0;
     }
 
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit()
-    {
-        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
-        return (char)('0' + ((10 - (sum % 10)) % 10));
-    }
 }

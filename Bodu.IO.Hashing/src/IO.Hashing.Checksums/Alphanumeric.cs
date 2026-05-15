@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.Globalization;
-using System.Resources;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.IO.Hashing.Checksums;
@@ -21,23 +19,6 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </remarks>
 internal static class Alphanumeric
 {
-    /// <summary>
-    /// Expands an ASCII uppercase alphanumeric character to its numeric value. <c>'0'</c>–<c>'9'</c> map to 0–9
-    /// and <c>'A'</c>–<c>'Z'</c> map to 10–35.
-    /// </summary>
-    /// <param name="ch">The character to expand.</param>
-    /// <returns>The integer value in the range 0 to 35.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="ch" /> is not an ASCII decimal digit or uppercase letter.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static int ExpandLetterDigit(char ch)
-    {
-        if ((uint)(ch - '0') <= 9u) return ch - '0';
-        if ((uint)(ch - 'A') <= 25u) return ch - 'A' + 10;
-        ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch);
-        return -1;
-    }
 
     /// <summary>
     /// Expands an ASCII uppercase alphanumeric character, or one of the CUSIP punctuation sentinels
@@ -65,6 +46,32 @@ internal static class Alphanumeric
                 "CUSIP",
                 "'0'-'9', 'A'-'Z', '*', '@', or '#'"));
     }
+    /// <summary>
+    /// Expands an ASCII uppercase alphanumeric character to its numeric value. <c>'0'</c>–<c>'9'</c> map to 0–9
+    /// and <c>'A'</c>–<c>'Z'</c> map to 10–35.
+    /// </summary>
+    /// <param name="ch">The character to expand.</param>
+    /// <returns>The integer value in the range 0 to 35.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="ch" /> is not an ASCII decimal digit or uppercase letter.
+    /// </exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static int ExpandLetterDigit(char ch)
+    {
+        if ((uint)(ch - '0') <= 9u) return ch - '0';
+        if ((uint)(ch - 'A') <= 25u) return ch - 'A' + 10;
+        ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch);
+        return -1;
+    }
+
+    /// <summary>
+    /// Determines whether the supplied ASCII character is an uppercase Latin vowel.
+    /// </summary>
+    /// <param name="ch">The character to test.</param>
+    /// <returns><see langword="true" /> if <paramref name="ch" /> is one of <c>'A'</c>, <c>'E'</c>, <c>'I'</c>, <c>'O'</c>, or <c>'U'</c>; otherwise, <see langword="false" />.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static bool IsVowel(char ch) =>
+        ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
 
     /// <summary>
     /// Validates that every character in <paramref name="value" /> is an ASCII decimal digit or uppercase letter.
@@ -145,15 +152,6 @@ internal static class Alphanumeric
         }
     }
 
-    /// <summary>
-    /// Determines whether the supplied ASCII character is an uppercase Latin vowel.
-    /// </summary>
-    /// <param name="ch">The character to test.</param>
-    /// <returns><see langword="true" /> if <paramref name="ch" /> is one of <c>'A'</c>, <c>'E'</c>, <c>'I'</c>, <c>'O'</c>, or <c>'U'</c>; otherwise, <see langword="false" />.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static bool IsVowel(char ch) =>
-        ch == 'A' || ch == 'E' || ch == 'I' || ch == 'O' || ch == 'U';
-
     private static string FormatInvalidCharacterMessage(
         char ch,
         string characterSetName,
@@ -166,4 +164,5 @@ internal static class Alphanumeric
             characterSetName,
             validCharacterDescription);
     }
+
 }

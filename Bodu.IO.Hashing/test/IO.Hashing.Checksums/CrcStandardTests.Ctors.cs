@@ -8,17 +8,6 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcStandardTests
 {
-    /// <summary>
-    /// Verifies that passing <see langword="null" /> as the CRC name to the constructor throws
-    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> equal to <c>name</c>.
-    /// </summary>
-    [TestMethod]
-    public void Ctor_WhenNameIsNull_ShouldThrowArgumentNullException()
-    {
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(
-            () => new CrcStandard(null!, 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL));
-        Assert.AreEqual("name", ex.ParamName);
-    }
 
     /// <summary>
     /// Verifies that passing an empty string as the CRC name to the constructor throws
@@ -31,25 +20,16 @@ public partial class CrcStandardTests
             () => new CrcStandard(string.Empty, 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL));
         Assert.AreEqual("name", ex.ParamName);
     }
-
     /// <summary>
-    /// Verifies that constructing a <see cref="CrcStandard" /> with a <paramref name="size" /> outside the
-    /// inclusive range [<see cref="CrcStandard.MinSize" />, <see cref="CrcStandard.MaxSize" />] throws
-    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> equal to <c>size</c>.
+    /// Verifies that passing <see langword="null" /> as the CRC name to the constructor throws
+    /// <see cref="ArgumentNullException" /> with <c>ParamName</c> equal to <c>name</c>.
     /// </summary>
-    /// <param name="size">The invalid width under test.</param>
     [TestMethod]
-    [DataRow(int.MinValue)]
-    [DataRow(-1)]
-    [DataRow(0)]
-    [DataRow(65)]
-    [DataRow(128)]
-    [DataRow(int.MaxValue)]
-    public void Ctor_WhenSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int size)
+    public void Ctor_WhenNameIsNull_ShouldThrowArgumentNullException()
     {
-        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
-            () => new CrcStandard("Test", size, 0x1UL, 0x0UL, false, false, 0x0UL));
-        Assert.AreEqual("size", ex.ParamName);
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(
+            () => new CrcStandard(null!, 32, 0x04C11DB7UL, 0xFFFFFFFFUL, true, true, 0xFFFFFFFFUL));
+        Assert.AreEqual("name", ex.ParamName);
     }
 
     /// <summary>
@@ -76,4 +56,25 @@ public partial class CrcStandardTests
         Assert.IsTrue(standard.ReflectOut);
         Assert.AreEqual(0xDEADBEEFUL, standard.XOrOut);
     }
+
+    /// <summary>
+    /// Verifies that constructing a <see cref="CrcStandard" /> with a <paramref name="size" /> outside the
+    /// inclusive range [<see cref="CrcStandard.MinSize" />, <see cref="CrcStandard.MaxSize" />] throws
+    /// <see cref="ArgumentOutOfRangeException" /> with <c>ParamName</c> equal to <c>size</c>.
+    /// </summary>
+    /// <param name="size">The invalid width under test.</param>
+    [TestMethod]
+    [DataRow(int.MinValue)]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(65)]
+    [DataRow(128)]
+    [DataRow(int.MaxValue)]
+    public void Ctor_WhenSizeIsOutOfRange_ShouldThrowArgumentOutOfRangeException(int size)
+    {
+        ArgumentOutOfRangeException ex = Assert.ThrowsExactly<ArgumentOutOfRangeException>(
+            () => new CrcStandard("Test", size, 0x1UL, 0x0UL, false, false, 0x0UL));
+        Assert.AreEqual("size", ex.ParamName);
+    }
+
 }

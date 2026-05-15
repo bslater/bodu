@@ -7,23 +7,9 @@
 using Bodu.IO.Hashing.Checksums;
 
 namespace Bodu.IO.Hashing.CheckDigits;
+
 public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
-    /// <summary>
-    /// Verifies that appending the algorithm's own computed check character to the body always yields a sequence
-    /// that <c>IsValid</c> accepts.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector.</param>
-    /// <param name="body">The body characters.</param>
-    /// <param name="expectedCheck">The expected check character.</param>
-    [TestMethod]
-    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
-    public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
-    {
-        _ = name;
-        var full = body + expectedCheck;
-        Assert.IsTrue(IsValidStatic(full.AsSpan()), $"Expected '{full}' to be valid.");
-    }
 
     /// <summary>
     /// Verifies that substituting the trailing check character for a different digit (or the sentinel
@@ -52,4 +38,20 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
             Assert.IsFalse(IsValidStatic(bad.AsSpan()), $"Expected '{bad}' to be invalid (swap of check digit to X).");
         }
     }
+    /// <summary>
+    /// Verifies that appending the algorithm's own computed check character to the body always yields a sequence
+    /// that <c>IsValid</c> accepts.
+    /// </summary>
+    /// <param name="name">A descriptive name for the vector.</param>
+    /// <param name="body">The body characters.</param>
+    /// <param name="expectedCheck">The expected check character.</param>
+    [TestMethod]
+    [DynamicData(nameof(KnownAnswerData), DynamicDataDisplayName = nameof(GetKnownAnswerTestName))]
+    public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
+    {
+        _ = name;
+        var full = body + expectedCheck;
+        Assert.IsTrue(IsValidStatic(full.AsSpan()), $"Expected '{full}' to be valid.");
+    }
+
 }

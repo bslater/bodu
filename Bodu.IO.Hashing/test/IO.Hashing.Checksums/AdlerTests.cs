@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdlerTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,6 +21,8 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
     where TAlgorithm : Adler<TModulo>, new()
     where TModulo : unmanaged, INumber<TModulo>
 {
+
     /// <inheritdoc />
     protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
+
 }

@@ -31,6 +31,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Verhoeff
     : CheckDigitAlgorithm
 {
+
     // Eight parallel accumulators allow the streaming Append surface to compute the check digit without
     // buffering digits. _c[k] holds the Verhoeff running value 'c' under the hypothesis that the most
     // recently appended digit occupies right-index k in the final sequence. Update: on each append of v,
@@ -51,32 +52,6 @@ public sealed partial class Verhoeff
 
     /// <inheritdoc />
     public override string AlgorithmName => "Verhoeff";
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
-    {
-        Span<byte> next = stackalloc byte[8];
-        for (var i = 0; i < digits.Length; i++)
-        {
-            var ch = digits[i];
-            if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
-
-            var v = ch - '0';
-            for (var k = 0; k < 8; k++)
-                next[k] = s_d[s_p[k, v], this._c[(k + 1) & 7]];
-
-            next.CopyTo(this._c);
-        }
-    }
-
-    /// <inheritdoc />
-    public override void Reset() =>
-        Array.Clear(this._c);
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit() =>
-        (char)('0' + s_inv[this._c[1]]);
 
     /// <summary>
     /// Computes the Verhoeff check digit for the supplied body of decimal digits without allocating a streaming
@@ -125,4 +100,31 @@ public sealed partial class Verhoeff
 
         return c == 0;
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> digits)
+    {
+        Span<byte> next = stackalloc byte[8];
+        for (var i = 0; i < digits.Length; i++)
+        {
+            var ch = digits[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+
+            var v = ch - '0';
+            for (var k = 0; k < 8; k++)
+                next[k] = s_d[s_p[k, v], this._c[(k + 1) & 7]];
+
+            next.CopyTo(this._c);
+        }
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit() =>
+        (char)('0' + s_inv[this._c[1]]);
+
+    /// <inheritdoc />
+    public override void Reset() =>
+        Array.Clear(this._c);
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitIsValidKnownAnswer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,6 +19,12 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public sealed record MultiCharCheckDigitIsValidKnownAnswer
 {
+
+    /// <summary>
+    /// Gets the verdict the algorithm's <c>IsValid</c> helper is expected to return for <see cref="Value" />.
+    /// </summary>
+    /// <returns><see langword="true" /> if the sequence is valid under the algorithm; otherwise, <see langword="false" />.</returns>
+    public required bool ExpectedIsValid { get; init; }
     /// <summary>
     /// Gets a short descriptive name used in test output to identify the vector.
     /// </summary>
@@ -32,9 +38,4 @@ public sealed record MultiCharCheckDigitIsValidKnownAnswer
     /// <returns>A non-null string drawn from the algorithm's declared input alphabet.</returns>
     public required string Value { get; init; }
 
-    /// <summary>
-    /// Gets the verdict the algorithm's <c>IsValid</c> helper is expected to return for <see cref="Value" />.
-    /// </summary>
-    /// <returns><see langword="true" /> if the sequence is valid under the algorithm; otherwise, <see langword="false" />.</returns>
-    public required bool ExpectedIsValid { get; init; }
 }

@@ -8,22 +8,6 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
-    /// <summary>
-    /// Verifies that appending the algorithm's own computed check digit to the body always yields a sequence
-    /// that <c>IsValid</c> accepts.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector.</param>
-    /// <param name="body">The body digits.</param>
-    /// <param name="expectedCheck">The expected check digit.</param>
-    [TestMethod]
-
-    [DynamicData(nameof(KnownAnswerData))]
-    public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
-    {
-        _ = name;
-        var full = body + expectedCheck;
-        Assert.IsTrue(IsValidStatic(full.AsSpan()), $"Expected '{full}' to be valid.");
-    }
 
     /// <summary>
     /// Verifies that substituting the trailing check digit for a different digit makes <c>IsValid</c> reject
@@ -65,4 +49,21 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     {
         Assert.IsTrue(IsValidStatic([]));
     }
+    /// <summary>
+    /// Verifies that appending the algorithm's own computed check digit to the body always yields a sequence
+    /// that <c>IsValid</c> accepts.
+    /// </summary>
+    /// <param name="name">A descriptive name for the vector.</param>
+    /// <param name="body">The body digits.</param>
+    /// <param name="expectedCheck">The expected check digit.</param>
+    [TestMethod]
+
+    [DynamicData(nameof(KnownAnswerData))]
+    public void IsValid_WhenSequenceIncludesComputedCheckDigit_ShouldReturnTrue(string name, string body, char expectedCheck)
+    {
+        _ = name;
+        var full = body + expectedCheck;
+        Assert.IsTrue(IsValidStatic(full.AsSpan()), $"Expected '{full}' to be valid.");
+    }
+
 }

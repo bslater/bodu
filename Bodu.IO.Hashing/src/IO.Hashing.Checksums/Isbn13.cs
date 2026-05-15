@@ -32,9 +32,10 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Isbn13
     : CheckDigitAlgorithm
 {
+
+    private int _count;
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;
-    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Isbn13" /> class.
@@ -45,6 +46,31 @@ public sealed class Isbn13
 
     /// <inheritdoc />
     public override string AlgorithmName => "ISBN-13";
+
+    /// <summary>
+    /// Computes the ISBN-13 check digit for the supplied body of decimal digits without allocating a streaming
+    /// instance.
+    /// </summary>
+    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
+    /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// </exception>
+    public static char Compute(ReadOnlySpan<char> digits) =>
+        WeightedMod10.ComputeIsbn13(digits);
+
+    /// <summary>
+    /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing ISBN-13
+    /// check digit, is consistent — that is, whether the weighted sum evaluates to a multiple of ten.
+    /// </summary>
+    /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
+    /// <returns>
+    /// <see langword="true" /> if the sequence is empty or evaluates as valid under ISBN-13; otherwise,
+    /// <see langword="false" /> — including the case where <paramref name="digitsIncludingCheck" /> contains a
+    /// character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// </returns>
+    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>
+        WeightedMod10.IsValidIsbn13(digitsIncludingCheck);
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
@@ -85,6 +111,13 @@ public sealed class Isbn13
     }
 
     /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        return (char)('0' + ((10 - (sum % 10)) % 10));
+    }
+
+    /// <inheritdoc />
     public override void Reset()
     {
         _sumEvenHypothesis = 0;
@@ -92,35 +125,4 @@ public sealed class Isbn13
         _count = 0;
     }
 
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit()
-    {
-        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
-        return (char)('0' + ((10 - (sum % 10)) % 10));
-    }
-
-    /// <summary>
-    /// Computes the ISBN-13 check digit for the supplied body of decimal digits without allocating a streaming
-    /// instance.
-    /// </summary>
-    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
-    /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
-    /// </exception>
-    public static char Compute(ReadOnlySpan<char> digits) =>
-        WeightedMod10.ComputeIsbn13(digits);
-
-    /// <summary>
-    /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing ISBN-13
-    /// check digit, is consistent — that is, whether the weighted sum evaluates to a multiple of ten.
-    /// </summary>
-    /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
-    /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid under ISBN-13; otherwise,
-    /// <see langword="false" /> — including the case where <paramref name="digitsIncludingCheck" /> contains a
-    /// character outside the range <c>'0'</c> to <c>'9'</c>.
-    /// </returns>
-    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck) =>
-        WeightedMod10.IsValidIsbn13(digitsIncludingCheck);
 }

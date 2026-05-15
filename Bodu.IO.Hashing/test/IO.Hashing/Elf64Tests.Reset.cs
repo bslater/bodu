@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class Elf64Tests
 {
+
     /// <summary>
     /// Verifies that <see cref="Elf64.Reset" /> restores the accumulator to the seed so the next empty-input
     /// digest reflects the seed itself, encoded big-endian.
@@ -25,4 +26,5 @@ public partial class Elf64Tests
 
         CollectionAssert.AreEqual(expected, actual);
     }
+
 }

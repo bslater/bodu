@@ -13,22 +13,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed partial class Fletcher16Tests
     : FletcherTests<Fletcher16Tests, Fletcher16>
 {
-    /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
-        new()
-        {
-            HashLengthInBytes = 2,
-            AlgorithmName = "Fletcher-16",
-            BlockSizeBytes = 1,
-            KnownAnswers = new()
-            {
-                Empty = "0000",
-                Abc = "8BC6",
-                QuickBrownFox = "FEE8",
-                Zeros16 = "0000",
-                Sequential0To255="5500",
-            },
-        };
 
     /// <inheritdoc />
     /// <remarks>
@@ -43,4 +27,21 @@ public sealed partial class Fletcher16Tests
         "1F42", "6D4E", "C85B", "3269",
         "AA78", "3388",
     };
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
+        new()
+        {
+            HashLengthInBytes = 2,
+            AlgorithmName = "Fletcher-16",
+            BlockSizeBytes = 1,
+            KnownAnswers = new()
+            {
+                Empty = "0000",
+                Abc = "8BC6",
+                QuickBrownFox = "FEE8",
+                Zeros16 = "0000",
+                Sequential0To255 = "5500",
+            },
+        };
+
 }

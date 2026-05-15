@@ -59,6 +59,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <seealso cref="CrcLookupTableBuilder"/>
 public class CrcLookupTableCache
 {
+
     private readonly ConcurrentDictionary<string, ulong[]> _localCache;
 
     /// <summary>
@@ -88,4 +89,5 @@ public class CrcLookupTableCache
         var cacheKey = $"{size}_{polynomial}_{reflectIn}";
         return this._localCache.GetOrAdd(cacheKey, _ => CrcLookupTableBuilder.BuildLookupTable(size, polynomial, reflectIn));
     }
+
 }

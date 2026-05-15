@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
+
     /// <summary>
     /// Verifies that <see cref="object.GetHashCode" /> throws <see cref="NotImplementedException" />,
     /// confirming that the algorithm does not override the method inherited from
@@ -26,4 +27,5 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             _ = algorithm.GetHashCode();
         });
     }
+
 }

@@ -8,19 +8,32 @@ namespace Bodu.IO.Hashing;
 
 public partial class CityHash128Tests
 {
-    /// <summary>
-    /// Verifies that hashing a short, varied input produces a non-trivial 16-byte digest.
-    /// </summary>
-    [TestMethod]
-    public void Append_WhenShortInput_ShouldProduceNonZeroDigest()
-    {
-        var input = Enumerable.Range(1, 24).Select(i => (byte)(i * 7)).ToArray();
-        CityHash128 algorithm = CreateAlgorithm();
-        algorithm.Append(input);
-        var digest = algorithm.GetCurrentHash();
 
-        Assert.AreEqual(16, digest.Length);
-        Assert.IsTrue(digest.Any(b => b != 0), "Short varied input should not produce an all-zero digest.");
+    /// <summary>
+    /// Verifies that flipping a single bit in the input changes the digest, sampled across the major
+    /// internal length paths.
+    /// </summary>
+    /// <param name="length">The input length under test, in bytes.</param>
+    [TestMethod]
+    [DataRow(8)]
+    [DataRow(64)]
+    [DataRow(200)]
+    public void Append_WhenInputDiffersByOneBit_ShouldProduceDifferentDigest(int length)
+    {
+        var a = new byte[length];
+        for (var i = 0; i < length; i++)
+            a[i] = (byte)(i * 17);
+
+        var b = (byte[])a.Clone();
+        b[length - 1] ^= 0x01;
+
+        CityHash128 ha = CreateAlgorithm();
+        CityHash128 hb = CreateAlgorithm();
+        ha.Append(a);
+        hb.Append(b);
+
+        CollectionAssert.AreNotEqual(ha.GetCurrentHash(), hb.GetCurrentHash(),
+            $"Flipping a single bit in a {length}-byte input must change the digest.");
     }
 
     /// <summary>
@@ -72,31 +85,19 @@ public partial class CityHash128Tests
         CollectionAssert.AreEqual(a.GetCurrentHash(), b.GetCurrentHash(),
             $"Two independent instances must produce the same digest for a {length}-byte input.");
     }
-
     /// <summary>
-    /// Verifies that flipping a single bit in the input changes the digest, sampled across the major
-    /// internal length paths.
+    /// Verifies that hashing a short, varied input produces a non-trivial 16-byte digest.
     /// </summary>
-    /// <param name="length">The input length under test, in bytes.</param>
     [TestMethod]
-    [DataRow(8)]
-    [DataRow(64)]
-    [DataRow(200)]
-    public void Append_WhenInputDiffersByOneBit_ShouldProduceDifferentDigest(int length)
+    public void Append_WhenShortInput_ShouldProduceNonZeroDigest()
     {
-        var a = new byte[length];
-        for (var i = 0; i < length; i++)
-            a[i] = (byte)(i * 17);
+        var input = Enumerable.Range(1, 24).Select(i => (byte)(i * 7)).ToArray();
+        CityHash128 algorithm = CreateAlgorithm();
+        algorithm.Append(input);
+        var digest = algorithm.GetCurrentHash();
 
-        var b = (byte[])a.Clone();
-        b[length - 1] ^= 0x01;
-
-        CityHash128 ha = CreateAlgorithm();
-        CityHash128 hb = CreateAlgorithm();
-        ha.Append(a);
-        hb.Append(b);
-
-        CollectionAssert.AreNotEqual(ha.GetCurrentHash(), hb.GetCurrentHash(),
-            $"Flipping a single bit in a {length}-byte input must change the digest.");
+        Assert.AreEqual(16, digest.Length);
+        Assert.IsTrue(digest.Any(b => b != 0), "Short varied input should not produce an all-zero digest.");
     }
+
 }

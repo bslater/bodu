@@ -10,6 +10,27 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
+
+    /// <summary>
+    /// Verifies that a cancelled token passed to
+    /// <see cref="NonCryptographicHashAlgorithm.AppendAsync(Stream, CancellationToken)" /> surfaces a
+    /// <see cref="TaskCanceledException" /> without consuming the stream.
+    /// </summary>
+    /// <returns>A task that represents the asynchronous test operation.</returns>
+    [TestMethod]
+    public async Task AppendAsync_WhenCancellationRequested_ShouldThrowTaskCanceledException()
+    {
+        TAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(new byte[1024]);
+
+        using CancellationTokenSource cts = new();
+        cts.Cancel();
+
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
+        {
+            await algorithm.AppendAsync(stream, cts.Token).ConfigureAwait(false);
+        }).ConfigureAwait(false);
+    }
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.AppendAsync(Stream, CancellationToken)" />
     /// produces the same digest as the synchronous
@@ -53,27 +74,6 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     }
 
     /// <summary>
-    /// Verifies that a cancelled token passed to
-    /// <see cref="NonCryptographicHashAlgorithm.AppendAsync(Stream, CancellationToken)" /> surfaces a
-    /// <see cref="TaskCanceledException" /> without consuming the stream.
-    /// </summary>
-    /// <returns>A task that represents the asynchronous test operation.</returns>
-    [TestMethod]
-    public async Task AppendAsync_WhenCancellationRequested_ShouldThrowTaskCanceledException()
-    {
-        TAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(new byte[1024]);
-
-        using CancellationTokenSource cts = new();
-        cts.Cancel();
-
-        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
-        {
-            await algorithm.AppendAsync(stream, cts.Token).ConfigureAwait(false);
-        }).ConfigureAwait(false);
-    }
-
-    /// <summary>
     /// Verifies that the asynchronous stream append path produces the correct hash value for
     /// incrementally growing inputs from empty input through one byte past the spec's coverage threshold.
     /// </summary>
@@ -91,4 +91,5 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
             return algorithm.GetHashAndReset();
         });
+
 }

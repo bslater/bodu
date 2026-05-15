@@ -15,38 +15,30 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class IsinTests
     : AlphanumericCheckDigitAlgorithmTests<IsinTests, Isin>
 {
-    /// <inheritdoc />
-    protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()
-    {
-        AlgorithmName = "ISIN",
-        InputAlphabet = CheckDigitInputAlphabet.AlphanumericUppercase,
-        OutputAlphabet = CheckDigitOutputAlphabet.DecimalDigits,
-        EmptyCheckDigit = '0',
-        KnownAnswers =
-        [
-            new() { Name = "AppleUS",       Body = "US037833100", ExpectedCheck = '5' },
-            new() { Name = "BritishGB",     Body = "GB000263494", ExpectedCheck = '6' },
-            new() { Name = "NumericOnly",   Body = "00000000000", ExpectedCheck = '0' },
-        ],
-    };
-
-    /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> body) =>
-        Isin.Compute(body);
-
-    /// <inheritdoc />
-    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
-        Isin.IsValid(valueIncludingCheck);
 
     /// <summary>
-    /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
-    /// exactly <see cref="Isin.SequenceLength" />.
+    /// Verifies that <see cref="Isin.Compute(ReadOnlySpan{char})" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when the body contains a character outside the alphanumeric
+    /// uppercase alphabet.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
     {
-        Assert.IsFalse(Isin.IsValid("US03783310050".AsSpan()));
-        Assert.IsFalse(Isin.IsValid("US037833100".AsSpan()));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Isin.Compute("US037833-00".AsSpan());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> rejects a full ISIN whose body contains a
+    /// non-alphanumeric character.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Isin.IsValid("US0378331-05".AsSpan()));
+        Assert.IsFalse(Isin.IsValid("US 378331005".AsSpan()));
     }
 
     /// <summary>
@@ -70,27 +62,36 @@ public sealed class IsinTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> rejects a full ISIN whose body contains a
-    /// non-alphanumeric character.
+    /// Verifies that <see cref="Isin.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
+    /// exactly <see cref="Isin.SequenceLength" />.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
+    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
     {
-        Assert.IsFalse(Isin.IsValid("US0378331-05".AsSpan()));
-        Assert.IsFalse(Isin.IsValid("US 378331005".AsSpan()));
+        Assert.IsFalse(Isin.IsValid("US03783310050".AsSpan()));
+        Assert.IsFalse(Isin.IsValid("US037833100".AsSpan()));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Isin.Compute(ReadOnlySpan{char})" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when the body contains a character outside the alphanumeric
-    /// uppercase alphabet.
-    /// </summary>
-    [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> body) =>
+        Isin.Compute(body);
+    /// <inheritdoc />
+    protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = Isin.Compute("US037833-00".AsSpan());
-        });
-    }
+        AlgorithmName = "ISIN",
+        InputAlphabet = CheckDigitInputAlphabet.AlphanumericUppercase,
+        OutputAlphabet = CheckDigitOutputAlphabet.DecimalDigits,
+        EmptyCheckDigit = '0',
+        KnownAnswers =
+        [
+            new() { Name = "AppleUS",       Body = "US037833100", ExpectedCheck = '5' },
+            new() { Name = "BritishGB",     Body = "GB000263494", ExpectedCheck = '6' },
+            new() { Name = "NumericOnly",   Body = "00000000000", ExpectedCheck = '0' },
+        ],
+    };
+
+    /// <inheritdoc />
+    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
+        Isin.IsValid(valueIncludingCheck);
+
 }

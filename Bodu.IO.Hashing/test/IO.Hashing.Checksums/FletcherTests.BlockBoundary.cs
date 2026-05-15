@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public abstract partial class FletcherTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that appending inputs around the Fletcher block boundary (a spread of lengths covering residual-only,
     /// exact-block, block-plus-one, and multi-block scenarios) produces identical digests whether the input is
@@ -79,4 +80,5 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
 
         CollectionAssert.AreEqual(reference.GetCurrentHash(), observed.GetCurrentHash());
     }
+
 }

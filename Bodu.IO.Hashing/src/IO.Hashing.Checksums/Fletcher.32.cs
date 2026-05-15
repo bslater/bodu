@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Fletcher.32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -50,6 +50,7 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Fletcher32
     : Fletcher<Fletcher32>
 {
+
     private const int FletcherHashSize = 32;
 
     /// <summary>
@@ -59,4 +60,5 @@ public sealed class Fletcher32
         : base(FletcherHashSize)
     {
     }
+
 }

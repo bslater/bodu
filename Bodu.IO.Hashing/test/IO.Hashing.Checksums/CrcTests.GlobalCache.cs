@@ -8,20 +8,6 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcTests
 {
-    /// <summary>
-    /// Verifies that <see cref="Crc.GlobalCache" /> is lazily initialised on first access and returns a usable,
-    /// non-null instance even when no explicit cache has been assigned.
-    /// </summary>
-    [TestMethod]
-    public void GlobalCache_WhenNotAssigned_ShouldReturnLazilyCreatedCache()
-    {
-        CrcLookupTableCache cache = Crc.GlobalCache;
-        Assert.IsNotNull(cache);
-
-        var table = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
-        Assert.IsNotNull(table);
-        Assert.AreEqual(256, table.Length);
-    }
 
     /// <summary>
     /// Verifies that assigning a non-null <see cref="CrcLookupTableCache" /> to <see cref="Crc.GlobalCache" />
@@ -55,4 +41,19 @@ public partial class CrcTests
         ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(() => Crc.GlobalCache = null!);
         Assert.AreEqual("value", ex.ParamName);
     }
+    /// <summary>
+    /// Verifies that <see cref="Crc.GlobalCache" /> is lazily initialised on first access and returns a usable,
+    /// non-null instance even when no explicit cache has been assigned.
+    /// </summary>
+    [TestMethod]
+    public void GlobalCache_WhenNotAssigned_ShouldReturnLazilyCreatedCache()
+    {
+        CrcLookupTableCache cache = Crc.GlobalCache;
+        Assert.IsNotNull(cache);
+
+        var table = cache.GetLookupTable(32, 0x04C11DB7UL, reflectIn: true);
+        Assert.IsNotNull(table);
+        Assert.AreEqual(256, table.Length);
+    }
+
 }

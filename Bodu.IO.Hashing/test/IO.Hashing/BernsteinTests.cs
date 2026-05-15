@@ -13,41 +13,12 @@ namespace Bodu.IO.Hashing;
 public sealed partial class BernsteinTests
     : NonCryptographicHashAlgorithmTests<BernsteinTests, Bernstein, BernsteinHashVariant>
 {
+
     /// <inheritdoc />
     protected override Bernstein CreateAlgorithm(BernsteinHashVariant variant) => variant switch
     {
         BernsteinHashVariant.Default => new Bernstein(),
         BernsteinHashVariant.Modified => new Bernstein(Bernstein.DefaultInitialValue, useModifiedAlgorithm: true),
-        _ => throw new ArgumentOutOfRangeException(nameof(variant)),
-    };
-
-    /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(BernsteinHashVariant variant) => variant switch
-    {
-        BernsteinHashVariant.Default => new()
-        {
-            HashLengthInBytes = 4,
-            KnownAnswers = new()
-            {
-                Empty = "00001505",
-                Abc = "0B87D02B",
-                QuickBrownFox = "34CC38DE",
-                Zeros16 = "BDCB7F05",
-                Sequential0To255 = "9FD43AC6",
-            },
-        },
-        BernsteinHashVariant.Modified => new()
-        {
-            HashLengthInBytes = 4,
-            KnownAnswers = new()
-            {
-                Empty = "00001505",
-                Abc = "0B87B6A5",
-                QuickBrownFox = "B679B80A",
-                Zeros16 = "BDCB7F05",
-                Sequential0To255 = "4CCB76BA",
-            },
-        },
         _ => throw new ArgumentOutOfRangeException(nameof(variant)),
     };
 
@@ -84,4 +55,35 @@ public sealed partial class BernsteinTests
         ],
         _ => throw new ArgumentOutOfRangeException(nameof(variant)),
     };
+
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(BernsteinHashVariant variant) => variant switch
+    {
+        BernsteinHashVariant.Default => new()
+        {
+            HashLengthInBytes = 4,
+            KnownAnswers = new()
+            {
+                Empty = "00001505",
+                Abc = "0B87D02B",
+                QuickBrownFox = "34CC38DE",
+                Zeros16 = "BDCB7F05",
+                Sequential0To255 = "9FD43AC6",
+            },
+        },
+        BernsteinHashVariant.Modified => new()
+        {
+            HashLengthInBytes = 4,
+            KnownAnswers = new()
+            {
+                Empty = "00001505",
+                Abc = "0B87B6A5",
+                QuickBrownFox = "B679B80A",
+                Zeros16 = "BDCB7F05",
+                Sequential0To255 = "4CCB76BA",
+            },
+        },
+        _ => throw new ArgumentOutOfRangeException(nameof(variant)),
+    };
+
 }

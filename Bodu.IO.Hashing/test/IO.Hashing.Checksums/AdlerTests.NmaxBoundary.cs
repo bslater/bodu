@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AdlerTests.NmaxBoundary.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,7 +10,32 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
 {
+
     private const int Nmax = 5552;
+
+    /// <summary>
+    /// Verifies that a single <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" />
+    /// call carrying an input of exactly <c>NMAX</c> bytes produces the same digest as the per-byte scalar
+    /// recurrence — exercising the scalar-fallback modulo reduction at the precise <c>index == NMAX</c> point.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void Append_WhenSingleCallEqualsNmaxBoundary_ShouldMatchPerByteRecurrence(SingleTestVariant variant)
+    {
+        var data = new byte[Nmax];
+        for (int i = 0; i < data.Length; i++)
+            data[i] = (byte)(i & 0xFF);
+
+        NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
+        whole.Append(data);
+
+        NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
+        for (int i = 0; i < data.Length; i++)
+            perByte.Append(data.AsSpan(i, 1));
+
+        CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
+    }
 
     /// <summary>
     /// Verifies that a single <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" />
@@ -48,27 +73,4 @@ public abstract partial class AdlerTests<TTest, TAlgorithm, TModulo>
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
     }
 
-    /// <summary>
-    /// Verifies that a single <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Append(System.ReadOnlySpan{byte})" />
-    /// call carrying an input of exactly <c>NMAX</c> bytes produces the same digest as the per-byte scalar
-    /// recurrence — exercising the scalar-fallback modulo reduction at the precise <c>index == NMAX</c> point.
-    /// </summary>
-    /// <param name="variant">The algorithm variant under test.</param>
-    [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void Append_WhenSingleCallEqualsNmaxBoundary_ShouldMatchPerByteRecurrence(SingleTestVariant variant)
-    {
-        var data = new byte[Nmax];
-        for (int i = 0; i < data.Length; i++)
-            data[i] = (byte)(i & 0xFF);
-
-        NonCryptographicHashAlgorithm whole = CreateAlgorithm(variant);
-        whole.Append(data);
-
-        NonCryptographicHashAlgorithm perByte = CreateAlgorithm(variant);
-        for (int i = 0; i < data.Length; i++)
-            perByte.Append(data.AsSpan(i, 1));
-
-        CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
-    }
 }

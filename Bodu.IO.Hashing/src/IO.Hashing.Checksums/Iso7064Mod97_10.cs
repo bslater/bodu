@@ -37,6 +37,7 @@ using Bodu.IO.Hashing.CheckDigits;
 public sealed class Iso7064Mod97_10
     : MultiCharCheckDigitAlgorithm
 {
+
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
 
@@ -53,51 +54,10 @@ public sealed class Iso7064Mod97_10
     public override string AlgorithmName => "ISO 7064 MOD 97-10";
 
     /// <inheritdoc />
-    public override CheckDigitInputAlphabet InputAlphabet => CheckDigitInputAlphabet.AlphanumericUppercase;
-
-    /// <inheritdoc />
     public override int CheckLength => CheckDigits;
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> body)
-    {
-        var r = this.r;
-        for (var i = 0; i < body.Length; i++)
-        {
-            var ch = body[i];
-            if ((uint)(ch - '0') <= 9u)
-            {
-                r = ((r * 10) + (ch - '0')) % 97;
-            }
-            else if ((uint)(ch - 'A') <= 25u)
-            {
-                r = ((r * 100) + (ch - 'A' + 10)) % 97;
-            }
-            else
-            {
-                ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
-            }
-        }
-
-        this.r = r;
-    }
-
-    /// <inheritdoc />
-    public override void Reset() =>
-        r = 0;
-
-    /// <inheritdoc />
-    public override int GetCurrentCheckDigits(Span<char> destination)
-    {
-        if (destination.Length < CheckLength)
-            throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
-
-        var full = (r * 100) % 97;
-        var check = (98 - full) % 97;
-        destination[0] = (char)('0' + (check / 10));
-        destination[1] = (char)('0' + (check % 10));
-        return CheckLength;
-    }
+    public override CheckDigitInputAlphabet InputAlphabet => CheckDigitInputAlphabet.AlphanumericUppercase;
 
     /// <summary>
     /// Computes the ISO 7064 MOD 97-10 check code for the supplied body without allocating a streaming instance.
@@ -149,4 +109,46 @@ public sealed class Iso7064Mod97_10
 
         return r == 1;
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> body)
+    {
+        var r = this.r;
+        for (var i = 0; i < body.Length; i++)
+        {
+            var ch = body[i];
+            if ((uint)(ch - '0') <= 9u)
+            {
+                r = ((r * 10) + (ch - '0')) % 97;
+            }
+            else if ((uint)(ch - 'A') <= 25u)
+            {
+                r = ((r * 100) + (ch - 'A' + 10)) % 97;
+            }
+            else
+            {
+                ThrowHelper.ThrowIfNotAsciiAlphanumericUppercase(ch, nameof(body));
+            }
+        }
+
+        this.r = r;
+    }
+
+    /// <inheritdoc />
+    public override int GetCurrentCheckDigits(Span<char> destination)
+    {
+        if (destination.Length < CheckLength)
+            throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
+
+        var full = (r * 100) % 97;
+        var check = (98 - full) % 97;
+        destination[0] = (char)('0' + (check / 10));
+        destination[1] = (char)('0' + (check % 10));
+        return CheckLength;
+    }
+
+    /// <inheritdoc />
+    public override void Reset() =>
+        r = 0;
+
 }

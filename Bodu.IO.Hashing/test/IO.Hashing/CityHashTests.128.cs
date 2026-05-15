@@ -27,22 +27,6 @@ namespace Bodu.IO.Hashing;
 public sealed partial class CityHash128Tests
     : CityHashTests<CityHash128Tests, CityHash128>
 {
-    /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
-    {
-        HashLengthInBytes = 16,
-        BoundaryLengths = new[] { 16, 64, 128, 256 },
-        MinNonZeroBytesForLongInput = 14,
-        KnownAnswers = new()
-        {
-            Empty = "2B9AC064FC9DF03D291EE592C340B53C",
-            Abc = "9717CA3B25CC615A1B261265679D8D63",
-            QuickBrownFox = "68C9602D6AA8F9A779E2DB76F89814BF",
-            Zeros16 = "FB283BD19CDFC998FCA2C3E8828C4AD0",
-            Sequential0To255 = "56BDAB3A23A16A60099AAA7B35F47A52",
-            Additional = CityHashTests.CityHashGoogleReferenceKnownAnswers.CityHash128,
-        },
-    };
 
     /// <inheritdoc />
     /// <remarks>
@@ -85,4 +69,21 @@ public sealed partial class CityHash128Tests
         "5030F26B8D6F1C84C86CAB43CD836A3D", "9C271F508B9DC839FF2E45A656163D54", "9D1447BC1943DBC092FBD633EAC34615", "D10849E2F9B48F422DACB77830D2E661",
         "67519245A7347F98A22F83E3FB62E9D7", "45F105EF364B231B8E841DA7DFD1ED18",
     };
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
+    {
+        HashLengthInBytes = 16,
+        BoundaryLengths = new[] { 16, 64, 128, 256 },
+        MinNonZeroBytesForLongInput = 14,
+        KnownAnswers = new()
+        {
+            Empty = "2B9AC064FC9DF03D291EE592C340B53C",
+            Abc = "9717CA3B25CC615A1B261265679D8D63",
+            QuickBrownFox = "68C9602D6AA8F9A779E2DB76F89814BF",
+            Zeros16 = "FB283BD19CDFC998FCA2C3E8828C4AD0",
+            Sequential0To255 = "56BDAB3A23A16A60099AAA7B35F47A52",
+            Additional = CityHashTests.CityHashGoogleReferenceKnownAnswers.CityHash128,
+        },
+    };
+
 }

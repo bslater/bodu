@@ -8,36 +8,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public sealed partial class LuhnTests
 {
+
     private const string SingleDigitSeedBody = "7992739871";
-
-    /// <summary>
-    /// Verifies that Luhn detects every single-digit substitution error — for each position in the body, every
-    /// distinct replacement digit invalidates the resulting sequence.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenAnySingleDigitIsSubstituted_ShouldReturnFalse()
-    {
-        var check = Luhn.Compute(SingleDigitSeedBody.AsSpan());
-        var valid = SingleDigitSeedBody + check;
-
-        Assert.IsTrue(Luhn.IsValid(valid.AsSpan()), "Precondition: baseline must be valid.");
-
-        var buffer = valid.ToCharArray();
-        for (var i = 0; i < buffer.Length; i++)
-        {
-            var original = buffer[i];
-            for (var c = '0'; c <= '9'; c++)
-            {
-                if (c == original) continue;
-                buffer[i] = c;
-                Assert.IsFalse(
-                    Luhn.IsValid(buffer),
-                    $"Substitution of '{original}' with '{c}' at index {i} ({new string(buffer)}) must be rejected.");
-            }
-
-            buffer[i] = original;
-        }
-    }
 
     /// <summary>
     /// Verifies that Luhn detects every adjacent-digit transposition error in the seed sequence, <i>except</i>
@@ -70,6 +42,35 @@ public sealed partial class LuhnTests
     }
 
     /// <summary>
+    /// Verifies that Luhn detects every single-digit substitution error — for each position in the body, every
+    /// distinct replacement digit invalidates the resulting sequence.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAnySingleDigitIsSubstituted_ShouldReturnFalse()
+    {
+        var check = Luhn.Compute(SingleDigitSeedBody.AsSpan());
+        var valid = SingleDigitSeedBody + check;
+
+        Assert.IsTrue(Luhn.IsValid(valid.AsSpan()), "Precondition: baseline must be valid.");
+
+        var buffer = valid.ToCharArray();
+        for (var i = 0; i < buffer.Length; i++)
+        {
+            var original = buffer[i];
+            for (var c = '0'; c <= '9'; c++)
+            {
+                if (c == original) continue;
+                buffer[i] = c;
+                Assert.IsFalse(
+                    Luhn.IsValid(buffer),
+                    $"Substitution of '{original}' with '{c}' at index {i} ({new string(buffer)}) must be rejected.");
+            }
+
+            buffer[i] = original;
+        }
+    }
+
+    /// <summary>
     /// Verifies the documented Luhn blind-spot: swapping adjacent <c>'0'</c> and <c>'9'</c> preserves the
     /// weighted digit sum, so the resulting transposition is not detected.
     /// </summary>
@@ -79,4 +80,5 @@ public sealed partial class LuhnTests
         Assert.IsTrue(Luhn.IsValid("091".AsSpan()), "Precondition: '091' is a valid Luhn sequence.");
         Assert.IsTrue(Luhn.IsValid("901".AsSpan()), "Transposing the adjacent 0 and 9 of '091' must remain valid under Luhn — the documented blind spot.");
     }
+
 }

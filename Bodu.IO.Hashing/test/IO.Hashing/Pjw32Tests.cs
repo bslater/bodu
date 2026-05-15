@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Pjw32Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,25 +13,9 @@ namespace Bodu.IO.Hashing;
 public sealed partial class Pjw32Tests
     : NonCryptographicHashAlgorithmTests<Pjw32Tests, Pjw32, SingleTestVariant>
 {
-    /// <inheritdoc />
-    protected override Pjw32 CreateAlgorithm(SingleTestVariant variant) => new();
 
     /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
-        new()
-        {
-            HashLengthInBytes = 4,
-            BoundaryLengths = new[] { 1, 8, 16, 64 },
-            LongInputLength = 200,
-            MinNonZeroBytesForLongInput = 2,
-            KnownAnswers = new()
-            {
-                Empty = "00000000",
-                Abc = "00004563",
-                QuickBrownFox = "021B6694",
-                Zeros16 = "00000000",
-            },
-        };
+    protected override Pjw32 CreateAlgorithm(SingleTestVariant variant) => new();
 
     /// <inheritdoc />
     /// <remarks>
@@ -50,4 +34,22 @@ public sealed partial class Pjw32Tests
         "0D2C287B", "02C287C1", "0C287C2F", "0287C302",
         "087C303D", "07C303F8",
     };
+
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
+        new()
+        {
+            HashLengthInBytes = 4,
+            BoundaryLengths = new[] { 1, 8, 16, 64 },
+            LongInputLength = 200,
+            MinNonZeroBytesForLongInput = 2,
+            KnownAnswers = new()
+            {
+                Empty = "00000000",
+                Abc = "00004563",
+                QuickBrownFox = "021B6694",
+                Zeros16 = "00000000",
+            },
+        };
+
 }

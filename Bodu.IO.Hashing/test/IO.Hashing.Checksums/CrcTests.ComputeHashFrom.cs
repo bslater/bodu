@@ -8,36 +8,37 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcTests
 {
+
     /// <summary>
-    /// Verifies that <see cref="Crc.ComputeHashFrom(System.ReadOnlySpan{byte}, System.ReadOnlySpan{byte})" />
-    /// continues a prior hash by undoing finalisation and hashing additional data, yielding the same digest as
-    /// a single-shot hash over the combined input. Covers each reflection branch:
-    /// <list type="bullet">
-    ///   <item><c>CRC32_ISOHDLC</c> — fully reflecting (<c>ReflectIn = ReflectOut = true</c>).</item>
-    ///   <item><c>CRC16_XMODEM</c> — non-reflecting (<c>ReflectIn = ReflectOut = false</c>).</item>
-    ///   <item><c>CRC12_UMTS</c> — asymmetric (<c>ReflectIn != ReflectOut</c>) so the bit-reversal branch in
-    ///   <see cref="Crc.TryComputeHashFrom" /> is exercised.</item>
-    /// </list>
+    /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[])" /> throws
+    /// <see cref="System.ArgumentNullException" /> with <c>ParamName</c> equal to <c>newData</c> when the
+    /// additional-data argument is <see langword="null" />.
     /// </summary>
-    /// <param name="standardId">The CRC catalogue entry under test.</param>
     [TestMethod]
-    [DataRow(CrcStandards.CRC32_ISOHDLC)]
-    [DataRow(CrcStandards.CRC16_XMODEM)]
-    [DataRow(CrcStandards.CRC12_UMTS)]
-    public void ComputeHashFrom_WhenResumed_ShouldMatchSingleShotCombinedHash(CrcStandards standardId)
+    public void ComputeHashFrom_WhenNewDataByteArrayIsNull_ShouldThrowArgumentNullException()
     {
-        var standard = CrcStandard.Get(standardId);
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+        var previousHash = new byte[crc.HashLengthInBytes];
 
-        byte[] first = [0x31, 0x32, 0x33, 0x34];
-        byte[] rest = [0x35, 0x36, 0x37, 0x38, 0x39];
+        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(
+            () => crc.ComputeHashFrom(previousHash, null!));
+        Assert.AreEqual("newData", ex.ParamName);
+    }
 
-        var firstHash = new Crc(standard).ComputeHash(first);
+    /// <summary>
+    /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[], int, int)" /> throws
+    /// <see cref="System.ArgumentNullException" /> with <c>ParamName</c> equal to <c>newData</c> when the
+    /// additional-data argument is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void ComputeHashFrom_WhenNewDataIsNull_ForOffsetOverload_ShouldThrowArgumentNullException()
+    {
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+        var previousHash = new byte[crc.HashLengthInBytes];
 
-        Crc resumer = new(standard);
-        var resumed = resumer.ComputeHashFrom(firstHash, rest);
-
-        var combined = new Crc(standard).ComputeHash(s_revEngCheckInput);
-        CollectionAssert.AreEqual(combined, resumed);
+        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(
+            () => crc.ComputeHashFrom(previousHash, null!, 0, 0));
+        Assert.AreEqual("newData", ex.ParamName);
     }
 
     /// <summary>
@@ -79,22 +80,6 @@ public partial class CrcTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[])" /> throws
-    /// <see cref="System.ArgumentNullException" /> with <c>ParamName</c> equal to <c>newData</c> when the
-    /// additional-data argument is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void ComputeHashFrom_WhenNewDataByteArrayIsNull_ShouldThrowArgumentNullException()
-    {
-        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        var previousHash = new byte[crc.HashLengthInBytes];
-
-        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(
-            () => crc.ComputeHashFrom(previousHash, null!));
-        Assert.AreEqual("newData", ex.ParamName);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[], int, int)" /> throws
     /// <see cref="System.ArgumentNullException" /> with <c>ParamName</c> equal to <c>previousHash</c> when the
     /// prior-digest argument is <see langword="null" />.
@@ -109,60 +94,36 @@ public partial class CrcTests
             () => crc.ComputeHashFrom(null!, newData, 0, newData.Length));
         Assert.AreEqual("previousHash", ex.ParamName);
     }
-
     /// <summary>
-    /// Verifies that <see cref="Crc.ComputeHashFrom(byte[], byte[], int, int)" /> throws
-    /// <see cref="System.ArgumentNullException" /> with <c>ParamName</c> equal to <c>newData</c> when the
-    /// additional-data argument is <see langword="null" />.
+    /// Verifies that <see cref="Crc.ComputeHashFrom(System.ReadOnlySpan{byte}, System.ReadOnlySpan{byte})" />
+    /// continues a prior hash by undoing finalisation and hashing additional data, yielding the same digest as
+    /// a single-shot hash over the combined input. Covers each reflection branch:
+    /// <list type="bullet">
+    ///   <item><c>CRC32_ISOHDLC</c> — fully reflecting (<c>ReflectIn = ReflectOut = true</c>).</item>
+    ///   <item><c>CRC16_XMODEM</c> — non-reflecting (<c>ReflectIn = ReflectOut = false</c>).</item>
+    ///   <item><c>CRC12_UMTS</c> — asymmetric (<c>ReflectIn != ReflectOut</c>) so the bit-reversal branch in
+    ///   <see cref="Crc.TryComputeHashFrom" /> is exercised.</item>
+    /// </list>
     /// </summary>
+    /// <param name="standardId">The CRC catalogue entry under test.</param>
     [TestMethod]
-    public void ComputeHashFrom_WhenNewDataIsNull_ForOffsetOverload_ShouldThrowArgumentNullException()
+    [DataRow(CrcStandards.CRC32_ISOHDLC)]
+    [DataRow(CrcStandards.CRC16_XMODEM)]
+    [DataRow(CrcStandards.CRC12_UMTS)]
+    public void ComputeHashFrom_WhenResumed_ShouldMatchSingleShotCombinedHash(CrcStandards standardId)
     {
-        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        var previousHash = new byte[crc.HashLengthInBytes];
+        var standard = CrcStandard.Get(standardId);
 
-        ArgumentNullException ex = Assert.ThrowsExactly<System.ArgumentNullException>(
-            () => crc.ComputeHashFrom(previousHash, null!, 0, 0));
-        Assert.AreEqual("newData", ex.ParamName);
-    }
+        byte[] first = [0x31, 0x32, 0x33, 0x34];
+        byte[] rest = [0x35, 0x36, 0x37, 0x38, 0x39];
 
-    /// <summary>
-    /// Verifies that <see cref="Crc.TryComputeHashFrom" /> throws <see cref="System.ArgumentException" /> with
-    /// <c>ParamName</c> equal to <c>previousHash</c> when the supplied prior digest is shorter or longer than
-    /// <see cref="Crc.HashLengthInBytes" />.
-    /// </summary>
-    /// <param name="lengthDelta">The difference between the prior-hash length and <see cref="Crc.HashLengthInBytes" />.</param>
-    [TestMethod]
-    [DataRow(-1)]
-    [DataRow(+1)]
-    public void TryComputeHashFrom_WhenPreviousHashLengthMismatches_ShouldThrowArgumentException(int lengthDelta)
-    {
-        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        var previousHash = new byte[crc.HashLengthInBytes + lengthDelta];
-        byte[] newData = [0x01];
-        var destination = new byte[crc.HashLengthInBytes];
+        var firstHash = new Crc(standard).ComputeHash(first);
 
-        ArgumentException ex = Assert.ThrowsExactly<System.ArgumentException>(
-            () => crc.TryComputeHashFrom(previousHash, newData, destination, out _));
-        Assert.AreEqual("previousHash", ex.ParamName);
-    }
+        Crc resumer = new(standard);
+        var resumed = resumer.ComputeHashFrom(firstHash, rest);
 
-    /// <summary>
-    /// Verifies that <see cref="Crc.TryComputeHashFrom" /> returns <see langword="false" /> and writes zero bytes
-    /// when <paramref name="destination" /> is smaller than <see cref="Crc.HashLengthInBytes" />.
-    /// </summary>
-    [TestMethod]
-    public void TryComputeHashFrom_WhenDestinationIsTooSmall_ShouldReturnFalseAndWriteZeroBytes()
-    {
-        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
-        var previousHash = new byte[crc.HashLengthInBytes];
-        byte[] newData = [0x01, 0x02, 0x03];
-        var destination = new byte[crc.HashLengthInBytes - 1];
-
-        var success = crc.TryComputeHashFrom(previousHash, newData, destination, out var written);
-
-        Assert.IsFalse(success);
-        Assert.AreEqual(0, written);
+        var combined = new Crc(standard).ComputeHash(s_revEngCheckInput);
+        CollectionAssert.AreEqual(combined, resumed);
     }
 
     /// <summary>
@@ -186,6 +147,45 @@ public partial class CrcTests
 
         var combined = new Crc(CrcStandard.CRC32_ISOHDLC).ComputeHash(s_revEngCheckInput);
         CollectionAssert.AreEqual(combined, destination);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Crc.TryComputeHashFrom" /> returns <see langword="false" /> and writes zero bytes
+    /// when <paramref name="destination" /> is smaller than <see cref="Crc.HashLengthInBytes" />.
+    /// </summary>
+    [TestMethod]
+    public void TryComputeHashFrom_WhenDestinationIsTooSmall_ShouldReturnFalseAndWriteZeroBytes()
+    {
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+        var previousHash = new byte[crc.HashLengthInBytes];
+        byte[] newData = [0x01, 0x02, 0x03];
+        var destination = new byte[crc.HashLengthInBytes - 1];
+
+        var success = crc.TryComputeHashFrom(previousHash, newData, destination, out var written);
+
+        Assert.IsFalse(success);
+        Assert.AreEqual(0, written);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Crc.TryComputeHashFrom" /> throws <see cref="System.ArgumentException" /> with
+    /// <c>ParamName</c> equal to <c>previousHash</c> when the supplied prior digest is shorter or longer than
+    /// <see cref="Crc.HashLengthInBytes" />.
+    /// </summary>
+    /// <param name="lengthDelta">The difference between the prior-hash length and <see cref="Crc.HashLengthInBytes" />.</param>
+    [TestMethod]
+    [DataRow(-1)]
+    [DataRow(+1)]
+    public void TryComputeHashFrom_WhenPreviousHashLengthMismatches_ShouldThrowArgumentException(int lengthDelta)
+    {
+        Crc crc = new(CrcStandard.CRC32_ISOHDLC);
+        var previousHash = new byte[crc.HashLengthInBytes + lengthDelta];
+        byte[] newData = [0x01];
+        var destination = new byte[crc.HashLengthInBytes];
+
+        ArgumentException ex = Assert.ThrowsExactly<System.ArgumentException>(
+            () => crc.TryComputeHashFrom(previousHash, newData, destination, out _));
+        Assert.AreEqual("previousHash", ex.ParamName);
     }
 
 }

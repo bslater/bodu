@@ -4,11 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
+
 public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that the static <c>Compute</c> helper returns the expected check character for every
     /// known-answer vector.
@@ -23,4 +23,5 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         _ = name;
         Assert.AreEqual(expectedCheck, ComputeStatic(body.AsSpan()));
     }
+
 }

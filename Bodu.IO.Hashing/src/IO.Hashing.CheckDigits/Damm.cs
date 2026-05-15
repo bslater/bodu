@@ -30,6 +30,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class Damm
     : CheckDigitAlgorithm
 {
+
     private byte _interim;
 
     /// <summary>
@@ -107,10 +108,11 @@ public sealed partial class Damm
     }
 
     /// <inheritdoc />
+    public override char GetCurrentCheckDigit() =>
+        (char)('0' + this._interim);
+
+    /// <inheritdoc />
     public override void Reset() =>
         this._interim = 0;
 
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit() =>
-        (char)('0' + this._interim);
 }

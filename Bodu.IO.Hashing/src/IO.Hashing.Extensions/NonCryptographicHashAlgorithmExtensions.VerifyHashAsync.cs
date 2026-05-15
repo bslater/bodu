@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
+
     /// <summary>
     /// Asynchronously verifies that the computed hash of a stream matches the expected hash value.
     /// </summary>
@@ -176,4 +177,5 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         return actualHash.AsSpan().SequenceEqual(expectedHash.Span);
     }
+
 }

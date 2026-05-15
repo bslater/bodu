@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that <see cref="CheckDigitAlgorithm.Reset" /> after an Append restores the algorithm to the
     /// empty-body check digit declared in the specification.
@@ -45,4 +46,5 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigit());
     }
+
 }

@@ -4,9 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System.IO;
 using System.IO.Hashing;
-using System.Threading;
 using Bodu.Test.IO;
 
 namespace Bodu.IO.Hashing.Extensions;
@@ -17,97 +15,20 @@ namespace Bodu.IO.Hashing.Extensions;
 /// </summary>
 public partial class NonCryptographicHashAlgorithmExtensionsTests
 {
-    // ─── Byte-array expected hash ─────────────────────────────────────────────────────────────
+
+    // ─── Argument validation ──────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Verifies that the stream-with-byte-array overload returns <see langword="true" /> when the hashes match.
+    /// Verifies that a <see langword="null" /> algorithm raises <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
-    public async Task VerifyHashAsync_WhenStreamMatchesByteArray_ShouldReturnTrue()
+    public async Task VerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
     {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        NonCryptographicHashAlgorithm? algorithm = null;
         using MemoryStream stream = new(s_sampleData);
 
-        var result = await algorithm.VerifyHashAsync(stream, s_sampleHash);
-
-        Assert.IsTrue(result);
-    }
-
-    /// <summary>
-    /// Verifies that the stream-with-byte-array overload returns <see langword="false" /> when the hashes differ.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenStreamDoesNotMatchByteArray_ShouldReturnFalse()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(s_sampleData);
-        var wrong = BitConverter.GetBytes((uint)999);
-
-        var result = await algorithm.VerifyHashAsync(stream, wrong);
-
-        Assert.IsFalse(result);
-    }
-
-    // ─── Hex string expected hash ─────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that the stream-with-hex overload returns <see langword="true" /> when the hashes match.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenStreamMatchesHex_ShouldReturnTrue()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(s_sampleData);
-
-        var result = await algorithm.VerifyHashAsync(stream, s_sampleHex);
-
-        Assert.IsTrue(result);
-    }
-
-    /// <summary>
-    /// Verifies that a malformed hex string is treated as a non-match and returns <see langword="false" />.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenHexStringIsMalformed_ShouldReturnFalse()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(s_sampleData);
-
-        var result = await algorithm.VerifyHashAsync(stream, "ZZZZZZZZ");
-
-        Assert.IsFalse(result);
-    }
-
-    // ─── ReadOnlyMemory expected hash ─────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that the stream-with-memory overload returns <see langword="true" /> when the hashes match.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenStreamMatchesMemory_ShouldReturnTrue()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(s_sampleData);
-        ReadOnlyMemory<byte> expected = s_sampleHash;
-
-        var result = await algorithm.VerifyHashAsync(stream, expected);
-
-        Assert.IsTrue(result);
-    }
-
-    /// <summary>
-    /// Verifies that the stream-with-memory overload returns <see langword="false" /> when the hashes differ.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenStreamDoesNotMatchMemory_ShouldReturnFalse()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(s_sampleData);
-        ReadOnlyMemory<byte> wrong = BitConverter.GetBytes((uint)999);
-
-        var result = await algorithm.VerifyHashAsync(stream, wrong);
-
-        Assert.IsFalse(result);
+        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
+            await algorithm!.VerifyHashAsync(stream, s_sampleHash));
     }
 
     // ─── State reset behaviour ────────────────────────────────────────────────────────────────
@@ -126,65 +47,6 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         var result = await algorithm.VerifyHashAsync(stream, s_sampleHash);
 
         Assert.IsTrue(result);
-    }
-
-    // ─── Stream variants ──────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that a <see cref="FixedChunkStream" /> delivering data 1 byte at a time is correctly hashed.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenSourceIsFixedChunkStream_ShouldReturnTrue()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        var result = await algorithm.VerifyHashAsync(new FixedChunkStream(s_sampleData, chunkSize: 1), s_sampleHash);
-
-        Assert.IsTrue(result);
-    }
-
-    // ─── Cancellation ─────────────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that an already-cancelled token causes <see cref="OperationCanceledException" /> before any I/O.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenTokenAlreadyCancelled_ShouldThrowOperationCanceledException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-        using MemoryStream stream = new(s_sampleData);
-        using CancellationTokenSource cts = new();
-        cts.Cancel();
-
-        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
-            await algorithm.VerifyHashAsync(stream, s_sampleHash, cts.Token));
-    }
-
-    // ─── Argument validation ──────────────────────────────────────────────────────────────────
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> algorithm raises <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenAlgorithmIsNull_ShouldThrowArgumentNullException()
-    {
-        NonCryptographicHashAlgorithm? algorithm = null;
-        using MemoryStream stream = new(s_sampleData);
-
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-            await algorithm!.VerifyHashAsync(stream, s_sampleHash));
-    }
-
-    /// <summary>
-    /// Verifies that a <see langword="null" /> stream raises <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public async Task VerifyHashAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
-    {
-        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
-
-        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
-            await algorithm.VerifyHashAsync((Stream)null!, s_sampleHash));
     }
 
     /// <summary>
@@ -212,4 +74,141 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
         await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             await algorithm.VerifyHashAsync(stream, (string)null!));
     }
+
+    /// <summary>
+    /// Verifies that a malformed hex string is treated as a non-match and returns <see langword="false" />.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenHexStringIsMalformed_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+
+        var result = await algorithm.VerifyHashAsync(stream, "ZZZZZZZZ");
+
+        Assert.IsFalse(result);
+    }
+
+    // ─── Stream variants ──────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that a <see cref="FixedChunkStream" /> delivering data 1 byte at a time is correctly hashed.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenSourceIsFixedChunkStream_ShouldReturnTrue()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        var result = await algorithm.VerifyHashAsync(new FixedChunkStream(s_sampleData, chunkSize: 1), s_sampleHash);
+
+        Assert.IsTrue(result);
+    }
+
+    /// <summary>
+    /// Verifies that the stream-with-byte-array overload returns <see langword="false" /> when the hashes differ.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenStreamDoesNotMatchByteArray_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+        var wrong = BitConverter.GetBytes((uint)999);
+
+        var result = await algorithm.VerifyHashAsync(stream, wrong);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that the stream-with-memory overload returns <see langword="false" /> when the hashes differ.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenStreamDoesNotMatchMemory_ShouldReturnFalse()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+        ReadOnlyMemory<byte> wrong = BitConverter.GetBytes((uint)999);
+
+        var result = await algorithm.VerifyHashAsync(stream, wrong);
+
+        Assert.IsFalse(result);
+    }
+
+    /// <summary>
+    /// Verifies that a <see langword="null" /> stream raises <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenStreamIsNull_ShouldThrowArgumentNullException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+
+        await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
+            await algorithm.VerifyHashAsync((Stream)null!, s_sampleHash));
+    }
+    // ─── Byte-array expected hash ─────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that the stream-with-byte-array overload returns <see langword="true" /> when the hashes match.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenStreamMatchesByteArray_ShouldReturnTrue()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+
+        var result = await algorithm.VerifyHashAsync(stream, s_sampleHash);
+
+        Assert.IsTrue(result);
+    }
+
+    // ─── Hex string expected hash ─────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that the stream-with-hex overload returns <see langword="true" /> when the hashes match.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenStreamMatchesHex_ShouldReturnTrue()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+
+        var result = await algorithm.VerifyHashAsync(stream, s_sampleHex);
+
+        Assert.IsTrue(result);
+    }
+
+    // ─── ReadOnlyMemory expected hash ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that the stream-with-memory overload returns <see langword="true" /> when the hashes match.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenStreamMatchesMemory_ShouldReturnTrue()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+        ReadOnlyMemory<byte> expected = s_sampleHash;
+
+        var result = await algorithm.VerifyHashAsync(stream, expected);
+
+        Assert.IsTrue(result);
+    }
+
+    // ─── Cancellation ─────────────────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Verifies that an already-cancelled token causes <see cref="OperationCanceledException" /> before any I/O.
+    /// </summary>
+    [TestMethod]
+    public async Task VerifyHashAsync_WhenTokenAlreadyCancelled_ShouldThrowOperationCanceledException()
+    {
+        MonitoringNonCryptographicHashAlgorithm algorithm = CreateAlgorithm();
+        using MemoryStream stream = new(s_sampleData);
+        using CancellationTokenSource cts = new();
+        cts.Cancel();
+
+        await Assert.ThrowsAsync<OperationCanceledException>(async () =>
+            await algorithm.VerifyHashAsync(stream, s_sampleHash, cts.Token));
+    }
+
 }

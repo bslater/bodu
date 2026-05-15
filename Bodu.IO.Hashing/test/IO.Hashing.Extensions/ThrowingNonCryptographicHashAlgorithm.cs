@@ -24,6 +24,7 @@ namespace Bodu.IO.Hashing.Extensions;
 public sealed class ThrowingNonCryptographicHashAlgorithm
     : NonCryptographicHashAlgorithm
 {
+
     /// <summary>
     /// Initialises a new instance of <see cref="ThrowingNonCryptographicHashAlgorithm" /> with a 4-byte output
     /// matching <see cref="MonitoringNonCryptographicHashAlgorithm" />.
@@ -38,12 +39,13 @@ public sealed class ThrowingNonCryptographicHashAlgorithm
         throw new InvalidOperationException("Simulated algorithm failure during Append.");
 
     /// <inheritdoc />
-    protected override void GetCurrentHashCore(Span<byte> destination)
+    public override void Reset()
     {
     }
 
     /// <inheritdoc />
-    public override void Reset()
+    protected override void GetCurrentHashCore(Span<byte> destination)
     {
     }
+
 }

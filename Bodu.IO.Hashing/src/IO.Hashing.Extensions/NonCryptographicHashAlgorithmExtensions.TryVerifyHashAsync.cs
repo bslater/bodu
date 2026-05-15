@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
+
     /// <summary>
     /// Attempts to asynchronously compute and verify the hash of a stream against the expected hash value.
     /// </summary>
@@ -282,4 +283,5 @@ public static partial class NonCryptographicHashAlgorithmExtensions
             return false;
         }
     }
+
 }

@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests
 {
+
     /// <summary>
     /// Verifies that when <c>ShouldPadFinalBlock</c> is <see langword="true" /> and
     /// <c>AllowUnalignedFinalBlock</c> is <see langword="false" />, <c>GetCurrentHashCore</c> slices the padded
@@ -50,4 +51,5 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         Assert.IsNotNull(digest);
         Assert.AreEqual(4, digest.Length);
     }
+
 }

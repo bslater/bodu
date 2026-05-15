@@ -14,6 +14,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </summary>
 public abstract partial class FletcherTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that constructing a <see cref="Fletcher{TSelf}" /> subclass with an unsupported hash size throws
     /// <see cref="ArgumentException" /> whose <c>ParamName</c> is <c>hashSize</c> and whose message begins with
@@ -53,4 +54,5 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
         Assert.AreEqual(expectedBytes, fletcher.HashLengthInBytes);
         Assert.AreEqual($"Fletcher-{hashSize}", fletcher.AlgorithmName);
     }
+
 }

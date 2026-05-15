@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class FnvTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that <see cref="Fnv{T}.AlgorithmName" /> returns a string of the form
     /// <c>FNV-{variant}-{bits}</c> matching the variant under test.
@@ -26,4 +27,5 @@ public abstract partial class FnvTests<TTest, TAlgorithm>
 
         Assert.AreEqual(expected, algorithm.AlgorithmName);
     }
+
 }

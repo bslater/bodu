@@ -4,11 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Buffers.Binary;
-using System.IO;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.IO.Hashing;
 
@@ -78,6 +77,7 @@ public abstract class CityHash<T>
     : NonCryptographicHashAlgorithm, IDisposable
     where T : CityHash<T>, new()
 {
+
     /// <summary>The first Murmur-style mixing constant used in 32-bit operations.</summary>
     protected const uint C1 = 0xCC9E2D51U;
 
@@ -125,6 +125,14 @@ public abstract class CityHash<T>
     {
     }
 
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<byte> source)
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+        if (source.Length > 0)
+            this._inputBuffer.Write(source);
+    }
+
     /// <summary>
     /// Releases all resources used by the current instance and clears its buffered input state.
     /// </summary>
@@ -139,39 +147,6 @@ public abstract class CityHash<T>
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Releases the resources used by the current instance, optionally clearing managed state.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
-    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
-    /// <see langword="true" />.
-    /// </param>
-    /// <remarks>
-    /// Override in a derived class to release additional resources owned by the subclass. Always invoke
-    /// <c>base.Dispose(disposing)</c> from the override so that the buffered input state is released.
-    /// </remarks>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (this._disposed)
-            return;
-
-        if (disposing)
-        {
-            this._inputBuffer.Dispose();
-        }
-
-        this._disposed = true;
-    }
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<byte> source)
-    {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        if (source.Length > 0)
-            this._inputBuffer.Write(source);
-    }
-
     /// <inheritdoc />
     public override void Reset()
     {
@@ -180,24 +155,77 @@ public abstract class CityHash<T>
         this._inputBuffer.Position = 0;
     }
 
-    /// <inheritdoc />
-    protected override void GetCurrentHashCore(Span<byte> destination)
+    /// <summary>
+    /// Hashes 0 to 16 bytes to a 64-bit value, selecting a byte-, word-, or double-word code path based on
+    /// the exact input length.
+    /// </summary>
+    /// <param name="s">The input span. Length must be in the range [0, 16].</param>
+    /// <returns>The 64-bit hash value.</returns>
+    /// <remarks>
+    /// An empty input returns <see cref="K2" /> directly.
+    /// </remarks>
+    protected static ulong Hash64Len0to16(ReadOnlySpan<byte> s)
     {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
+        var len = s.Length;
 
-        // CityHash is a one-shot algorithm; finalization re-runs over the accumulated buffer so that
-        // GetCurrentHash remains non-destructive and may be invoked multiple times.
-        var data = this._inputBuffer.ToArray();
-        var digest = this.ComputeHashCore(data);
-        digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
+        if (len >= 8)
+        {
+            var mul = K2 + (ulong)(len * 2);
+            var a = BinaryPrimitives.ReadUInt64LittleEndian(s) + K2;
+            var b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
+            var c = (b.RotateBitsRightUnchecked(37) * mul) + a;
+            var d = (a.RotateBitsRightUnchecked(25) + b) * mul;
+            return HashLen16(c, d, mul);
+        }
+
+        if (len >= 4)
+        {
+            var mul = K2 + (ulong)(len * 2);
+            ulong a = BinaryPrimitives.ReadUInt32LittleEndian(s);
+            return HashLen16((ulong)len + (a << 3), BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4)), mul);
+        }
+
+        if (len > 0)
+        {
+            var a = s[0];
+            var b = s[len >> 1];
+            var c = s[len - 1];
+            var y = a + ((uint)b << 8);
+            var z = (uint)len + ((uint)c << 2);
+            return ShiftMix(y * K2 ^ z * K0) * K2;
+        }
+
+        return K2;
     }
 
     /// <summary>
-    /// Performs the full hash computation over the complete accumulated input in a single pass.
+    /// Combines two 64-bit values into a single 64-bit hash using the default <see cref="KMul" /> multiplier.
     /// </summary>
-    /// <param name="source">The complete input bytes to hash.</param>
-    /// <returns>A byte array containing the final hash output.</returns>
-    protected abstract byte[] ComputeHashCore(ReadOnlySpan<byte> source);
+    /// <param name="u">The first input value.</param>
+    /// <param name="v">The second input value.</param>
+    /// <returns>The combined 64-bit hash value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static ulong HashLen16(ulong u, ulong v) => HashLen16(u, v, KMul);
+
+    /// <summary>
+    /// Combines two 64-bit values into a single 64-bit hash using a caller-supplied multiplier, applying
+    /// two rounds of multiply-shift-XOR to thoroughly distribute entropy across all output bits.
+    /// </summary>
+    /// <param name="u">The first input value.</param>
+    /// <param name="v">The second input value.</param>
+    /// <param name="mul">The multiplier to apply during mixing. Typically a large odd prime.</param>
+    /// <returns>The combined 64-bit hash value.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected static ulong HashLen16(ulong u, ulong v, ulong mul)
+    {
+        var a = (u ^ v) * mul;
+        a ^= a >> 47;
+
+        var b = (v ^ a) * mul;
+        b ^= b >> 47;
+
+        return b * mul;
+    }
 
     /// <summary>
     /// Applies a final avalanche mixing step to a 32-bit value, improving bit diffusion.
@@ -264,33 +292,26 @@ public abstract class CityHash<T>
     protected static ulong ShiftMix(ulong val) => val ^ (val >> 47);
 
     /// <summary>
-    /// Combines two 64-bit values into a single 64-bit hash using the default <see cref="KMul" /> multiplier.
+    /// Reads four consecutive 64-bit little-endian words from the specified span and forwards them to
+    /// <see cref="WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)" /> along with the
+    /// provided seeds.
     /// </summary>
-    /// <param name="u">The first input value.</param>
-    /// <param name="v">The second input value.</param>
-    /// <returns>The combined 64-bit hash value.</returns>
+    /// <param name="s">The input span. Must contain at least 32 bytes starting at offset 0.</param>
+    /// <param name="a">The first accumulator seed.</param>
+    /// <param name="b">The second accumulator seed.</param>
+    /// <returns>
+    /// A tuple containing two independent 64-bit hash values derived from the 32-byte block and seeds.
+    /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected static ulong HashLen16(ulong u, ulong v) => HashLen16(u, v, KMul);
-
-    /// <summary>
-    /// Combines two 64-bit values into a single 64-bit hash using a caller-supplied multiplier, applying
-    /// two rounds of multiply-shift-XOR to thoroughly distribute entropy across all output bits.
-    /// </summary>
-    /// <param name="u">The first input value.</param>
-    /// <param name="v">The second input value.</param>
-    /// <param name="mul">The multiplier to apply during mixing. Typically a large odd prime.</param>
-    /// <returns>The combined 64-bit hash value.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected static ulong HashLen16(ulong u, ulong v, ulong mul)
-    {
-        var a = (u ^ v) * mul;
-        a ^= a >> 47;
-
-        var b = (v ^ a) * mul;
-        b ^= b >> 47;
-
-        return b * mul;
-    }
+    protected static (ulong First, ulong Second) WeakHashLen32WithSeeds(
+        ReadOnlySpan<byte> s, ulong a, ulong b) =>
+        WeakHashLen32WithSeeds(
+            BinaryPrimitives.ReadUInt64LittleEndian(s),
+            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8)),
+            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(16)),
+            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(24)),
+            a,
+            b);
 
     /// <summary>
     /// Computes a weak 64-bit hash of 32 bytes using six provided seed values, returning a pair of
@@ -321,68 +342,47 @@ public abstract class CityHash<T>
     }
 
     /// <summary>
-    /// Reads four consecutive 64-bit little-endian words from the specified span and forwards them to
-    /// <see cref="WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)" /> along with the
-    /// provided seeds.
+    /// Performs the full hash computation over the complete accumulated input in a single pass.
     /// </summary>
-    /// <param name="s">The input span. Must contain at least 32 bytes starting at offset 0.</param>
-    /// <param name="a">The first accumulator seed.</param>
-    /// <param name="b">The second accumulator seed.</param>
-    /// <returns>
-    /// A tuple containing two independent 64-bit hash values derived from the 32-byte block and seeds.
-    /// </returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    protected static (ulong First, ulong Second) WeakHashLen32WithSeeds(
-        ReadOnlySpan<byte> s, ulong a, ulong b) =>
-        WeakHashLen32WithSeeds(
-            BinaryPrimitives.ReadUInt64LittleEndian(s),
-            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(8)),
-            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(16)),
-            BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(24)),
-            a,
-            b);
+    /// <param name="source">The complete input bytes to hash.</param>
+    /// <returns>A byte array containing the final hash output.</returns>
+    protected abstract byte[] ComputeHashCore(ReadOnlySpan<byte> source);
 
     /// <summary>
-    /// Hashes 0 to 16 bytes to a 64-bit value, selecting a byte-, word-, or double-word code path based on
-    /// the exact input length.
+    /// Releases the resources used by the current instance, optionally clearing managed state.
     /// </summary>
-    /// <param name="s">The input span. Length must be in the range [0, 16].</param>
-    /// <returns>The 64-bit hash value.</returns>
+    /// <param name="disposing">
+    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
+    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
+    /// <see langword="true" />.
+    /// </param>
     /// <remarks>
-    /// An empty input returns <see cref="K2" /> directly.
+    /// Override in a derived class to release additional resources owned by the subclass. Always invoke
+    /// <c>base.Dispose(disposing)</c> from the override so that the buffered input state is released.
     /// </remarks>
-    protected static ulong Hash64Len0to16(ReadOnlySpan<byte> s)
+    protected virtual void Dispose(bool disposing)
     {
-        var len = s.Length;
+        if (this._disposed)
+            return;
 
-        if (len >= 8)
+        if (disposing)
         {
-            var mul = K2 + (ulong)(len * 2);
-            var a = BinaryPrimitives.ReadUInt64LittleEndian(s) + K2;
-            var b = BinaryPrimitives.ReadUInt64LittleEndian(s.Slice(len - 8));
-            var c = (b.RotateBitsRightUnchecked(37) * mul) + a;
-            var d = (a.RotateBitsRightUnchecked(25) + b) * mul;
-            return HashLen16(c, d, mul);
+            this._inputBuffer.Dispose();
         }
 
-        if (len >= 4)
-        {
-            var mul = K2 + (ulong)(len * 2);
-            ulong a = BinaryPrimitives.ReadUInt32LittleEndian(s);
-            return HashLen16((ulong)len + (a << 3), BinaryPrimitives.ReadUInt32LittleEndian(s.Slice(len - 4)), mul);
-        }
+        this._disposed = true;
+    }
 
-        if (len > 0)
-        {
-            var a = s[0];
-            var b = s[len >> 1];
-            var c = s[len - 1];
-            var y = a + ((uint)b << 8);
-            var z = (uint)len + ((uint)c << 2);
-            return ShiftMix(y * K2 ^ z * K0) * K2;
-        }
+    /// <inheritdoc />
+    protected override void GetCurrentHashCore(Span<byte> destination)
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
 
-        return K2;
+        // CityHash is a one-shot algorithm; finalization re-runs over the accumulated buffer so that
+        // GetCurrentHash remains non-destructive and may be invoked multiple times.
+        var data = this._inputBuffer.ToArray();
+        var digest = this.ComputeHashCore(data);
+        digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
 
     private static int ValidateHashSize(int hashSize)
@@ -397,4 +397,5 @@ public abstract class CityHash<T>
 
         return hashSize;
     }
+
 }

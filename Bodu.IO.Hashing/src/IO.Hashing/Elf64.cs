@@ -51,6 +51,7 @@ namespace Bodu.IO.Hashing;
 public sealed class Elf64
     : NonCryptographicHashAlgorithm
 {
+
     private const int HashLength = 8;
     private const ulong HighBitsMask = 0xF000000000000000UL;
     private const int HighBitsShift = 56;
@@ -58,8 +59,8 @@ public sealed class Elf64
         "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
     private ulong _seed;
-    private ulong _workingHash;
     private bool _started;
+    private ulong _workingHash;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Elf64" /> class with a seed of <c>0</c>.
@@ -138,4 +139,5 @@ public sealed class Elf64
         if (this._started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
+
 }

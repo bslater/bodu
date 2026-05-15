@@ -4,25 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.IO.Hashing.Checksums;
-
 namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
-    /// <summary>
-    /// Verifies that a freshly constructed algorithm reports the empty-body check character declared in the
-    /// specification, when one is declared.
-    /// </summary>
-    [TestMethod]
-    public void GetCurrentCheckDigit_WhenJustConstructed_ShouldReturnEmptyCheckDigit()
-    {
-        AlphanumericCheckDigitAlgorithmSpecification spec = GetSpecification();
-        if (spec.EmptyCheckDigit is not char expected) return;
-
-        TAlgorithm algorithm = CreateAlgorithm();
-        Assert.AreEqual(expected, algorithm.GetCurrentCheckDigit());
-    }
 
     /// <summary>
     /// Verifies that streaming the body one character at a time and reading <c>GetCurrentCheckDigit</c> matches
@@ -47,6 +32,19 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
             Assert.AreEqual(fromCompute, streaming, $"Prefix length {i + 1} (\"{body[..(i + 1)]}\").");
         }
     }
+    /// <summary>
+    /// Verifies that a freshly constructed algorithm reports the empty-body check character declared in the
+    /// specification, when one is declared.
+    /// </summary>
+    [TestMethod]
+    public void GetCurrentCheckDigit_WhenJustConstructed_ShouldReturnEmptyCheckDigit()
+    {
+        AlphanumericCheckDigitAlgorithmSpecification spec = GetSpecification();
+        if (spec.EmptyCheckDigit is not char expected) return;
+
+        TAlgorithm algorithm = CreateAlgorithm();
+        Assert.AreEqual(expected, algorithm.GetCurrentCheckDigit());
+    }
 
     /// <summary>
     /// Verifies that reading the current check character twice in succession — with no intervening appends —
@@ -65,4 +63,5 @@ public abstract partial class AlphanumericCheckDigitAlgorithmTests<TTest, TAlgor
         Assert.AreEqual(first, second);
         Assert.AreEqual(second, third);
     }
+
 }

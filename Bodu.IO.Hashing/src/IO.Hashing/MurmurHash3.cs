@@ -99,6 +99,14 @@ public abstract class MurmurHash3<T>
     /// <returns>The seed value supplied at construction time, or zero if no seed was specified.</returns>
     public uint Seed { get; }
 
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<byte> source)
+    {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+        if (source.Length > 0)
+            this._inputBuffer.Write(source);
+    }
+
     /// <summary>
     /// Releases all resources used by the current instance and clears its buffered input state.
     /// </summary>
@@ -113,54 +121,12 @@ public abstract class MurmurHash3<T>
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Releases the resources used by the current instance, optionally clearing managed state.
-    /// </summary>
-    /// <param name="disposing">
-    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
-    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
-    /// <see langword="true" />.
-    /// </param>
-    /// <remarks>
-    /// Override in a derived class to release additional resources owned by the subclass. Always invoke
-    /// <c>base.Dispose(disposing)</c> from the override so that the buffered input state is released.
-    /// </remarks>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (this._disposed)
-            return;
-
-        if (disposing)
-        {
-            this._inputBuffer.Dispose();
-        }
-
-        this._disposed = true;
-    }
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<byte> source)
-    {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        if (source.Length > 0)
-            this._inputBuffer.Write(source);
-    }
-
     /// <inheritdoc />
     public override void Reset()
     {
         ObjectDisposedException.ThrowIf(this._disposed, this);
         this._inputBuffer.SetLength(0);
         this._inputBuffer.Position = 0;
-    }
-
-    /// <inheritdoc />
-    protected override void GetCurrentHashCore(Span<byte> destination)
-    {
-        ObjectDisposedException.ThrowIf(this._disposed, this);
-        byte[] data = this._inputBuffer.ToArray();
-        byte[] digest = this.ComputeHashCore(data);
-        digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
 
     /// <summary>
@@ -202,11 +168,37 @@ public abstract class MurmurHash3<T>
     /// <returns>A byte array containing the final hash output.</returns>
     protected abstract byte[] ComputeHashCore(ReadOnlySpan<byte> source);
 
+    /// <summary>
+    /// Releases the resources used by the current instance, optionally clearing managed state.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
+    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
+    /// <see langword="true" />.
+    /// </param>
+    /// <remarks>
+    /// Override in a derived class to release additional resources owned by the subclass. Always invoke
+    /// <c>base.Dispose(disposing)</c> from the override so that the buffered input state is released.
+    /// </remarks>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (this._disposed)
+            return;
+
+        if (disposing)
+        {
+            this._inputBuffer.Dispose();
+        }
+
+        this._disposed = true;
+    }
+
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        var data = this._inputBuffer.ToArray();
-        var digest = this.ComputeHashCore(data);
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+        byte[] data = this._inputBuffer.ToArray();
+        byte[] digest = this.ComputeHashCore(data);
         digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
     }
 
@@ -222,4 +214,5 @@ public abstract class MurmurHash3<T>
 
         return hashSize;
     }
+
 }

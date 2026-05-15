@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockNonCryptographicHashAlgorithmTests.State.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,24 @@ namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="BlockNonCryptographicHashAlgorithm{T}.Reset" /> clears the residual byte count
+    /// alongside the cumulative total length.
+    /// </summary>
+    [TestMethod]
+    public void Reset_WhenInvokedAfterPartialBlock_ShouldClearResidual()
+    {
+        StateInspectingBlockHasher hasher = new();
+        hasher.Append(new byte[] { 0x01, 0x02 });
+        Assert.AreEqual(2, hasher.ResidualByteCountExposed);
+
+        hasher.Reset();
+
+        Assert.AreEqual(0, hasher.ResidualByteCountExposed);
+        Assert.AreEqual(0, hasher.ResidualBytesExposed.Length);
+        Assert.AreEqual(0UL, hasher.TotalLengthExposed);
+    }
     /// <summary>
     /// Verifies that <see cref="BlockNonCryptographicHashAlgorithm{T}.ResidualByteCount" /> tracks the number of
     /// bytes currently buffered but not yet processed.
@@ -69,24 +87,6 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BlockNonCryptographicHashAlgorithm{T}.Reset" /> clears the residual byte count
-    /// alongside the cumulative total length.
-    /// </summary>
-    [TestMethod]
-    public void Reset_WhenInvokedAfterPartialBlock_ShouldClearResidual()
-    {
-        StateInspectingBlockHasher hasher = new();
-        hasher.Append(new byte[] { 0x01, 0x02 });
-        Assert.AreEqual(2, hasher.ResidualByteCountExposed);
-
-        hasher.Reset();
-
-        Assert.AreEqual(0, hasher.ResidualByteCountExposed);
-        Assert.AreEqual(0, hasher.ResidualBytesExposed.Length);
-        Assert.AreEqual(0UL, hasher.TotalLengthExposed);
-    }
-
-    /// <summary>
     /// A test-only block hasher whose only job is to expose the protected base-class state properties
     /// (<see cref="BlockNonCryptographicHashAlgorithm{T}.ResidualByteCount" />,
     /// <see cref="BlockNonCryptographicHashAlgorithm{T}.ResidualBytes" />,
@@ -95,6 +95,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     private sealed class StateInspectingBlockHasher
         : BlockNonCryptographicHashAlgorithm<StateInspectingBlockHasher>
     {
+
         public StateInspectingBlockHasher()
             : base(hashLengthInBytes: 4, blockSize: 4)
         {
@@ -106,22 +107,24 @@ public partial class BlockNonCryptographicHashAlgorithmTests
 
         public ulong TotalLengthExposed => this.TotalLength;
 
-        protected override void ProcessBlock(ReadOnlySpan<byte> block)
-        {
-        }
-
-        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
-            block.ToArray();
-
-        protected override byte[] ProcessFinalBlock() => new byte[4];
-
-        protected override bool ShouldPadFinalBlock() => false;
-
         protected override StateInspectingBlockHasher Clone()
         {
             StateInspectingBlockHasher clone = new();
             clone.CopyResidualStateFrom(this);
             return clone;
         }
+
+        protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
+            block.ToArray();
+
+        protected override void ProcessBlock(ReadOnlySpan<byte> block)
+        {
+        }
+
+        protected override byte[] ProcessFinalBlock() => new byte[4];
+
+        protected override bool ShouldPadFinalBlock() => false;
+
     }
+
 }

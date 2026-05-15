@@ -4,10 +4,9 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test;
 using System.IO.Hashing;
 using System.Reflection;
-using System.Security.Cryptography;
+using Bodu.Test;
 
 namespace Bodu.IO.Hashing;
 
@@ -31,14 +30,32 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     where TAlgorithm : NonCryptographicHashAlgorithm, new()
     where TVariant : struct, Enum
 {
+
     /// <summary>
-    /// Returns the <see cref="NonCryptographicHashAlgorithmSpecification" /> describing the expected properties
-    /// of <typeparamref name="TAlgorithm" /> — including its known-answer test vectors — when constructed for
-    /// the given <paramref name="variant" />.
+    /// Defines the strategy used to observe the current hash after one further byte has been appended
+    /// to a streaming non-cryptographic hash algorithm instance.
     /// </summary>
-    /// <param name="variant">The variant under test.</param>
-    /// <returns>A specification describing expected output width, block size, distribution parameters, and KATs.</returns>
-    protected abstract NonCryptographicHashAlgorithmSpecification GetSpecification(TVariant variant);
+    /// <param name="algorithm">The algorithm instance under test.</param>
+    /// <param name="source">The next input segment to append. This is empty for length <c>0</c>.</param>
+    /// <returns>A task producing the current hash bytes without resetting the algorithm.</returns>
+    protected delegate Task<byte[]> IncrementalCurrentHashInvoker(
+        NonCryptographicHashAlgorithm algorithm,
+        byte[] source);
+    /// <summary>
+    /// Defines the strategy used to compute a non-cryptographic hash over the first
+    /// <paramref name="byteCount" /> bytes of a shared input buffer during the incremental-length test.
+    /// </summary>
+    /// <param name="algorithm">The algorithm instance under test.</param>
+    /// <param name="input">
+    /// A backing buffer of length <c>maxLength</c>. Only the first <paramref name="byteCount" />
+    /// bytes are part of the input; trailing bytes are unrelated scratch space and must be ignored.
+    /// </param>
+    /// <param name="byteCount">The number of leading bytes from <paramref name="input" /> to hash.</param>
+    /// <returns>A task producing the computed hash bytes.</returns>
+    protected delegate Task<byte[]> IncrementalHashInvoker(
+        NonCryptographicHashAlgorithm algorithm,
+        byte[] input,
+        int byteCount);
 
     /// <summary>
     /// Gets the default variant to use in non-parameterised test scenarios.
@@ -48,6 +65,24 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     /// It is used for tests that do not require variant-specific logic.
     /// </remarks>
     protected virtual TVariant DefaultVariant => GetNonCryptographicHashAlgorithmVariants().First();
+
+    /// <summary>
+    /// Gets the field names excluded from disposal validation tests. Override in a derived class to suppress
+    /// fields that are intentionally retained after disposal.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedFieldNames => [];
+
+    /// <summary>
+    /// Gets the readable property names excluded from disposal validation tests. Override in a derived class to
+    /// suppress properties that are intentionally accessible after disposal.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedReadablePropertyNames => [];
+
+    /// <summary>
+    /// Gets the writable property names excluded from disposal validation tests. Override in a derived class to
+    /// suppress properties that are intentionally assignable after disposal.
+    /// </summary>
+    protected virtual IReadOnlyCollection<string> ExcludedWritablePropertyNames => [];
 
     /// <summary>
     /// Gets the expected hash result for an empty input using <see cref="DefaultVariant" />.
@@ -71,93 +106,6 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
                 $"Expected hash for the empty input is not defined for variant '{DefaultVariant}'.");
         }
     }
-
-    /// <summary>
-    /// Returns test case parameters for each defined algorithm variant.
-    /// </summary>
-    /// <returns>An enumerable of <typeparamref name="TVariant" /> values wrapped in object arrays.</returns>
-    public static IEnumerable<object[]> NonCryptographicHashAlgorithmVariants() =>
-        new TTest().GetNonCryptographicHashAlgorithmVariants().Select(variant => new object[] { variant });
-
-    /// <summary>
-    /// Returns all supported algorithm variants to be tested for the current implementation.
-    /// </summary>
-    /// <returns>
-    /// A sequence of <typeparamref name="TVariant" /> values representing valid configuration variants for the
-    /// algorithm under test.
-    /// </returns>
-    /// <remarks>
-    /// This method drives variant-specific tests. Each variant may represent a change in output size, internal
-    /// configuration, or other algorithm-specific mode flags.
-    /// </remarks>
-    public virtual IEnumerable<TVariant> GetNonCryptographicHashAlgorithmVariants() => Enum.GetValues<TVariant>();
-
-    /// <summary>
-    /// Creates a new instance of the algorithm under test using <see cref="DefaultVariant" />.
-    /// </summary>
-    /// <returns>A fully initialised instance of <typeparamref name="TAlgorithm" />.</returns>
-    protected TAlgorithm CreateAlgorithm() => CreateAlgorithm(DefaultVariant);
-
-    /// <summary>
-    /// Gets the field names excluded from disposal validation tests. Override in a derived class to suppress
-    /// fields that are intentionally retained after disposal.
-    /// </summary>
-    protected virtual IReadOnlyCollection<string> ExcludedFieldNames => [];
-
-    /// <summary>
-    /// Gets the readable property names excluded from disposal validation tests. Override in a derived class to
-    /// suppress properties that are intentionally accessible after disposal.
-    /// </summary>
-    protected virtual IReadOnlyCollection<string> ExcludedReadablePropertyNames => [];
-
-    /// <summary>
-    /// Gets the writable property names excluded from disposal validation tests. Override in a derived class to
-    /// suppress properties that are intentionally assignable after disposal.
-    /// </summary>
-    protected virtual IReadOnlyCollection<string> ExcludedWritablePropertyNames => [];
-
-    /// <summary>
-    /// Returns the merged set of field names excluded from the disposal field-zero test. Combines
-    /// <see cref="ExcludedFieldNames" /> with the disposal-state flags shared across Bodu and BCL hashing types.
-    /// </summary>
-    /// <returns>A distinct, materialised collection of field names to exclude.</returns>
-    private IReadOnlyCollection<string> GetExcludedFieldNames() =>
-        ExcludedFieldNames
-            .Concat([
-                // Disposal-state flags are intentionally non-default after Dispose; exclude them from the
-                // field-zero test so subclasses don't need to know about them.
-                "disposed",
-                "_disposed"
-            ])
-            .Distinct()
-            .ToArray();
-
-    /// <summary>
-    /// Returns the merged set of readable property names excluded from the disposal property-read test. Combines
-    /// <see cref="ExcludedReadablePropertyNames" /> with inherited properties on
-    /// <see cref="NonCryptographicHashAlgorithm" /> that are not expected to throw after disposal.
-    /// </summary>
-    /// <returns>A distinct, materialised collection of property names to exclude.</returns>
-    private IReadOnlyCollection<string> GetExcludedReadablePropertyNames() =>
-        ExcludedReadablePropertyNames
-            .Concat([
-                // HashLengthInBytes is exposed by the BCL NonCryptographicHashAlgorithm base class and does not
-                // observe disposal state.
-                nameof(NonCryptographicHashAlgorithm.HashLengthInBytes),
-            ])
-            .Distinct()
-            .ToArray();
-
-    /// <summary>
-    /// Returns the merged set of writable property names excluded from the disposal property-write test.
-    /// Currently a pass-through of <see cref="ExcludedWritablePropertyNames" />; preserved as a hook for future
-    /// inherited write-protected members.
-    /// </summary>
-    /// <returns>A distinct, materialised collection of property names to exclude.</returns>
-    private IReadOnlyCollection<string> GetExcludedWritablePropertyNames() =>
-        ExcludedWritablePropertyNames
-            .Distinct()
-            .ToArray();
 
     /// <summary>
     /// Enumerates the writable instance fields on <typeparamref name="TAlgorithm" /> that the disposal field-zero
@@ -189,29 +137,59 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             TestHelpers.PropertyAccessMode.Write,
             excludeProperties: new TTest().GetExcludedWritablePropertyNames()?.ToArray() ?? []);
 
-    /// <summary>
-    /// Creates a new instance of the algorithm for the specified <paramref name="variant" />.
-    /// </summary>
-    /// <param name="variant">The variant to instantiate.</param>
-    /// <returns>A new instance of <typeparamref name="TAlgorithm" /> configured for the given variant.</returns>
-    protected abstract TAlgorithm CreateAlgorithm(TVariant variant);
 
     /// <summary>
-    /// Returns the expected hash values after progressively appending a single byte at a time from the sequence
-    /// <c>0x00, 0x01, 0x02, …</c>.
+    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
     /// </summary>
-    /// <param name="variant">The variant under test.</param>
+    /// <param name="data">
+    /// The test case data row. The first element is expected to contain the human-readable standard name.
+    /// </param>
     /// <returns>
-    /// A sequence of expected hex-encoded hash values. The entry at index <c>i</c> is the hash of the first
-    /// <c>i</c> bytes of the incremental sequence (so index 0 is the empty-input hash). An empty sequence
-    /// causes the incremental test to be marked inconclusive.
+    /// The standard name for the current test case as a <see cref="string" />.
+    /// </returns>
+    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
+    {
+        var variant = (TVariant)data[0];
+        var testName = (string)data[1];
+        return $"{testName} (Variant: {variant})";
+    }
+
+    /// <summary>
+    /// Returns test data that combines algorithm variants, named inputs, and expected hash results for
+    /// parameterised known-answer tests.
+    /// </summary>
+    /// <returns>A sequence of test case arguments: variant, input name, input bytes, expected hash output.</returns>
+    public static IEnumerable<object[]> KnownAnswerTestData()
+    {
+        var instance = new TTest();
+        foreach (TVariant variant in instance.GetNonCryptographicHashAlgorithmVariants())
+        {
+            foreach (KnownAnswerTest vector in instance.GetTestVectors(variant))
+            {
+                yield return new object[] { variant, vector.Name, vector.Input, vector.ExpectedOutput };
+            }
+        }
+    }
+
+    /// <summary>
+    /// Returns test case parameters for each defined algorithm variant.
+    /// </summary>
+    /// <returns>An enumerable of <typeparamref name="TVariant" /> values wrapped in object arrays.</returns>
+    public static IEnumerable<object[]> NonCryptographicHashAlgorithmVariants() =>
+        new TTest().GetNonCryptographicHashAlgorithmVariants().Select(variant => new object[] { variant });
+
+    /// <summary>
+    /// Returns all supported algorithm variants to be tested for the current implementation.
+    /// </summary>
+    /// <returns>
+    /// A sequence of <typeparamref name="TVariant" /> values representing valid configuration variants for the
+    /// algorithm under test.
     /// </returns>
     /// <remarks>
-    /// The incremental test iterates once per entry, appending one further byte at each step and comparing the
-    /// current hash to the corresponding entry. This lets derived classes validate streaming semantics across
-    /// residual-buffer and block-alignment boundaries.
+    /// This method drives variant-specific tests. Each variant may represent a change in output size, internal
+    /// configuration, or other algorithm-specific mode flags.
     /// </remarks>
-    protected abstract IReadOnlyList<string> GetExpectedHashesForIncrementalInput(TVariant variant);
+    public virtual IEnumerable<TVariant> GetNonCryptographicHashAlgorithmVariants() => Enum.GetValues<TVariant>();
 
     /// <summary>
     /// Verifies that the expected hash for the "Empty" named input matches the first entry in the incremental hash vector set.
@@ -246,6 +224,44 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         var emptyB = incrementalHashes[0];
         Assert.AreEqual(emptyA, emptyB, "Expected hash value for 'Empty' named input should equal the first item of incremental input.");
     }
+
+    /// <summary>
+    /// Creates a new instance of the algorithm under test using <see cref="DefaultVariant" />.
+    /// </summary>
+    /// <returns>A fully initialised instance of <typeparamref name="TAlgorithm" />.</returns>
+    protected TAlgorithm CreateAlgorithm() => CreateAlgorithm(DefaultVariant);
+
+    /// <summary>
+    /// Creates a new instance of the algorithm for the specified <paramref name="variant" />.
+    /// </summary>
+    /// <param name="variant">The variant to instantiate.</param>
+    /// <returns>A new instance of <typeparamref name="TAlgorithm" /> configured for the given variant.</returns>
+    protected abstract TAlgorithm CreateAlgorithm(TVariant variant);
+
+    /// <summary>
+    /// Returns the expected hash values after progressively appending a single byte at a time from the sequence
+    /// <c>0x00, 0x01, 0x02, …</c>.
+    /// </summary>
+    /// <param name="variant">The variant under test.</param>
+    /// <returns>
+    /// A sequence of expected hex-encoded hash values. The entry at index <c>i</c> is the hash of the first
+    /// <c>i</c> bytes of the incremental sequence (so index 0 is the empty-input hash). An empty sequence
+    /// causes the incremental test to be marked inconclusive.
+    /// </returns>
+    /// <remarks>
+    /// The incremental test iterates once per entry, appending one further byte at each step and comparing the
+    /// current hash to the corresponding entry. This lets derived classes validate streaming semantics across
+    /// residual-buffer and block-alignment boundaries.
+    /// </remarks>
+    protected abstract IReadOnlyList<string> GetExpectedHashesForIncrementalInput(TVariant variant);
+    /// <summary>
+    /// Returns the <see cref="NonCryptographicHashAlgorithmSpecification" /> describing the expected properties
+    /// of <typeparamref name="TAlgorithm" /> — including its known-answer test vectors — when constructed for
+    /// the given <paramref name="variant" />.
+    /// </summary>
+    /// <param name="variant">The variant under test.</param>
+    /// <returns>A specification describing expected output width, block size, distribution parameters, and KATs.</returns>
+    protected abstract NonCryptographicHashAlgorithmSpecification GetSpecification(TVariant variant);
 
     /// <summary>
     /// Yields the known-answer vectors declared by the specification for the given <paramref name="variant" />:
@@ -285,40 +301,6 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         }
     }
 
-    /// <summary>
-    /// Returns test data that combines algorithm variants, named inputs, and expected hash results for
-    /// parameterised known-answer tests.
-    /// </summary>
-    /// <returns>A sequence of test case arguments: variant, input name, input bytes, expected hash output.</returns>
-    public static IEnumerable<object[]> KnownAnswerTestData()
-    {
-        var instance = new TTest();
-        foreach (TVariant variant in instance.GetNonCryptographicHashAlgorithmVariants())
-        {
-            foreach (KnownAnswerTest vector in instance.GetTestVectors(variant))
-            {
-                yield return new object[] { variant, vector.Name, vector.Input, vector.ExpectedOutput };
-            }
-        }
-    }
-
-
-    /// <summary>
-    /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
-    /// </summary>
-    /// <param name="data">
-    /// The test case data row. The first element is expected to contain the human-readable standard name.
-    /// </param>
-    /// <returns>
-    /// The standard name for the current test case as a <see cref="string" />.
-    /// </returns>
-    public static string GetKnownAnswerTestName(MethodInfo methodInfo, object[] data)
-    {
-        var variant = (TVariant)data[0];
-        var testName = (string)data[1];
-        return $"{testName} (Variant: {variant})";
-    }
-
     private static KnownAnswerTest CreateVector(string name, byte[] input, string expectedHex) =>
         new()
         {
@@ -326,32 +308,54 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
             Input = input,
             ExpectedOutput = Convert.FromHexString(expectedHex),
         };
-    /// <summary>
-    /// Defines the strategy used to compute a non-cryptographic hash over the first
-    /// <paramref name="byteCount" /> bytes of a shared input buffer during the incremental-length test.
-    /// </summary>
-    /// <param name="algorithm">The algorithm instance under test.</param>
-    /// <param name="input">
-    /// A backing buffer of length <c>maxLength</c>. Only the first <paramref name="byteCount" />
-    /// bytes are part of the input; trailing bytes are unrelated scratch space and must be ignored.
-    /// </param>
-    /// <param name="byteCount">The number of leading bytes from <paramref name="input" /> to hash.</param>
-    /// <returns>A task producing the computed hash bytes.</returns>
-    protected delegate Task<byte[]> IncrementalHashInvoker(
-        NonCryptographicHashAlgorithm algorithm,
-        byte[] input,
-        int byteCount);
 
     /// <summary>
-    /// Defines the strategy used to observe the current hash after one further byte has been appended
-    /// to a streaming non-cryptographic hash algorithm instance.
+    /// Drives true streaming incremental verification for a single variant, appending one additional
+    /// byte at each step and asserting that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" />
+    /// matches the expected value after each append.
     /// </summary>
-    /// <param name="algorithm">The algorithm instance under test.</param>
-    /// <param name="source">The next input segment to append. This is empty for length <c>0</c>.</param>
-    /// <returns>A task producing the current hash bytes without resetting the algorithm.</returns>
-    protected delegate Task<byte[]> IncrementalCurrentHashInvoker(
-        NonCryptographicHashAlgorithm algorithm,
-        byte[] source);
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <param name="invoke">The strategy used to append the next segment and observe the current hash.</param>
+    /// <returns>A task that completes when all incremental stages have been verified.</returns>
+    private async Task AssertIncrementalCurrentHashAsync(TVariant variant, IncrementalCurrentHashInvoker invoke)
+    {
+        NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
+        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
+
+        if (expectedHashes.Length == 0)
+        {
+            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
+            return;
+        }
+
+        var coverage = specification.IncrementalCoverageBytes
+            ?? (specification.HashLengthInBytes > 1 ? specification.HashLengthInBytes * 8 : 16);
+        var maxLength = coverage + 1;
+        var expectedEntryCount = maxLength + 1;
+
+        Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
+            $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
+            $"covering input lengths 0 through {maxLength} " +
+            $"(HashLengthInBytes={specification.HashLengthInBytes}, coverage={coverage}), " +
+            $"but got {expectedHashes.Length}.");
+
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+
+        for (var byteCount = 0; byteCount <= maxLength; byteCount++)
+        {
+            byte[] source = byteCount == 0
+                ? []
+                : [unchecked((byte)(byteCount - 1))];
+
+            var expected = Convert.FromHexString(expectedHashes[byteCount]);
+            var actual = await invoke(algorithm, source).ConfigureAwait(false);
+
+            TestHelpers.TraceWriteIfNotEqual(expected, actual);
+
+            CollectionAssert.AreEqual(expected, actual,
+                $"Hash mismatch for variant '{variant}' at incremental length {byteCount}.");
+        }
+    }
 
     /// <summary>
     /// Drives dense incremental-length verification for a single variant, asserting that the supplied
@@ -401,50 +405,46 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     }
 
     /// <summary>
-    /// Drives true streaming incremental verification for a single variant, appending one additional
-    /// byte at each step and asserting that <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" />
-    /// matches the expected value after each append.
+    /// Returns the merged set of field names excluded from the disposal field-zero test. Combines
+    /// <see cref="ExcludedFieldNames" /> with the disposal-state flags shared across Bodu and BCL hashing types.
     /// </summary>
-    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
-    /// <param name="invoke">The strategy used to append the next segment and observe the current hash.</param>
-    /// <returns>A task that completes when all incremental stages have been verified.</returns>
-    private async Task AssertIncrementalCurrentHashAsync(TVariant variant, IncrementalCurrentHashInvoker invoke)
-    {
-        NonCryptographicHashAlgorithmSpecification specification = GetSpecification(variant);
-        var expectedHashes = GetExpectedHashesForIncrementalInput(variant).ToArray();
+    /// <returns>A distinct, materialised collection of field names to exclude.</returns>
+    private IReadOnlyCollection<string> GetExcludedFieldNames() =>
+        ExcludedFieldNames
+            .Concat([
+                // Disposal-state flags are intentionally non-default after Dispose; exclude them from the
+                // field-zero test so subclasses don't need to know about them.
+                "disposed",
+                "_disposed"
+            ])
+            .Distinct()
+            .ToArray();
 
-        if (expectedHashes.Length == 0)
-        {
-            Assert.Inconclusive($"No expected hashes defined for variant {variant}.");
-            return;
-        }
+    /// <summary>
+    /// Returns the merged set of readable property names excluded from the disposal property-read test. Combines
+    /// <see cref="ExcludedReadablePropertyNames" /> with inherited properties on
+    /// <see cref="NonCryptographicHashAlgorithm" /> that are not expected to throw after disposal.
+    /// </summary>
+    /// <returns>A distinct, materialised collection of property names to exclude.</returns>
+    private IReadOnlyCollection<string> GetExcludedReadablePropertyNames() =>
+        ExcludedReadablePropertyNames
+            .Concat([
+                // HashLengthInBytes is exposed by the BCL NonCryptographicHashAlgorithm base class and does not
+                // observe disposal state.
+                nameof(NonCryptographicHashAlgorithm.HashLengthInBytes),
+            ])
+            .Distinct()
+            .ToArray();
 
-        var coverage = specification.IncrementalCoverageBytes
-            ?? (specification.HashLengthInBytes > 1 ? specification.HashLengthInBytes * 8 : 16);
-        var maxLength = coverage + 1;
-        var expectedEntryCount = maxLength + 1;
+    /// <summary>
+    /// Returns the merged set of writable property names excluded from the disposal property-write test.
+    /// Currently a pass-through of <see cref="ExcludedWritablePropertyNames" />; preserved as a hook for future
+    /// inherited write-protected members.
+    /// </summary>
+    /// <returns>A distinct, materialised collection of property names to exclude.</returns>
+    private IReadOnlyCollection<string> GetExcludedWritablePropertyNames() =>
+        ExcludedWritablePropertyNames
+            .Distinct()
+            .ToArray();
 
-        Assert.AreEqual(expectedEntryCount, expectedHashes.Length,
-            $"Expected {expectedEntryCount} algorithm entries for variant '{variant}' " +
-            $"covering input lengths 0 through {maxLength} " +
-            $"(HashLengthInBytes={specification.HashLengthInBytes}, coverage={coverage}), " +
-            $"but got {expectedHashes.Length}.");
-
-        TAlgorithm algorithm = CreateAlgorithm(variant);
-
-        for (var byteCount = 0; byteCount <= maxLength; byteCount++)
-        {
-            byte[] source = byteCount == 0
-                ? []
-                : [unchecked((byte)(byteCount - 1))];
-
-            var expected = Convert.FromHexString(expectedHashes[byteCount]);
-            var actual = await invoke(algorithm, source).ConfigureAwait(false);
-
-            TestHelpers.TraceWriteIfNotEqual(expected, actual);
-
-            CollectionAssert.AreEqual(expected, actual,
-                $"Hash mismatch for variant '{variant}' at incremental length {byteCount}.");
-        }
-    }
 }

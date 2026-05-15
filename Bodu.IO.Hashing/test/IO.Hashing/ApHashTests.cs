@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ApHashTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,23 +13,9 @@ namespace Bodu.IO.Hashing;
 public sealed partial class ApHashTests
     : NonCryptographicHashAlgorithmTests<ApHashTests, ApHash, SingleTestVariant>
 {
-    /// <inheritdoc />
-    protected override ApHash CreateAlgorithm(SingleTestVariant variant) => new();
 
     /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
-        new()
-        {
-            HashLengthInBytes = 4,
-            KnownAnswers = new()
-            {
-                Empty = "AAAAAAAA",
-                Abc = "1F6547E5",
-                QuickBrownFox = "4724B335",
-                Zeros16 = "8D323DA9",
-                Sequential0To255 = "8EF230D2",
-            },
-        };
+    protected override ApHash CreateAlgorithm(SingleTestVariant variant) => new();
 
     /// <inheritdoc />
     /// <remarks>
@@ -48,4 +34,20 @@ public sealed partial class ApHashTests
         "8506EC7B", "C9C49282", "0DE55FEF", "329F465D",
         "2BC4AA94", "0E895DD3",
     };
+
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
+        new()
+        {
+            HashLengthInBytes = 4,
+            KnownAnswers = new()
+            {
+                Empty = "AAAAAAAA",
+                Abc = "1F6547E5",
+                QuickBrownFox = "4724B335",
+                Zeros16 = "8D323DA9",
+                Sequential0To255 = "8EF230D2",
+            },
+        };
+
 }

@@ -51,6 +51,7 @@ namespace Bodu.IO.Hashing;
 public sealed class BKDR
     : NonCryptographicHashAlgorithm
 {
+
     /// <summary>
     /// Represents the default seed value used by the <see cref="BKDR" /> hash algorithm.
     /// </summary>
@@ -66,8 +67,8 @@ public sealed class BKDR
     };
 
     private uint _seed;
-    private uint _workingHash;
     private bool _started;
+    private uint _workingHash;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BKDR" /> class with the default seed of <c>131</c>.
@@ -174,4 +175,5 @@ public sealed class BKDR
         if (this._started)
             throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
     }
+
 }

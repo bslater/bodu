@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FnvTests.Fnv132.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,21 +13,6 @@ namespace Bodu.IO.Hashing;
 public sealed partial class Fnv132Tests
     : FnvTests<Fnv132Tests, Fnv132>
 {
-    /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
-    {
-        HashLengthInBytes = 4,
-        AlgorithmName = "FNV-1-32",
-        MinNonZeroBytesForLongInput = 3,
-        KnownAnswers = new()
-        {
-            Empty = "811C9DC5",
-            Abc = "634CAFEB",
-            QuickBrownFox = "E9C86C6E",
-            Zeros16 = "69691905",
-            Sequential0To255 = "5051A61E",
-        },
-    };
 
     /// <inheritdoc />
     /// <remarks>
@@ -46,4 +31,20 @@ public sealed partial class Fnv132Tests
         "9C1F2C21", "E61277EF", "1E12CD20", "7798E97E",
         "C3B79145", "5EF9AFBF",
     };
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
+    {
+        HashLengthInBytes = 4,
+        AlgorithmName = "FNV-1-32",
+        MinNonZeroBytesForLongInput = 3,
+        KnownAnswers = new()
+        {
+            Empty = "811C9DC5",
+            Abc = "634CAFEB",
+            QuickBrownFox = "E9C86C6E",
+            Zeros16 = "69691905",
+            Sequential0To255 = "5051A61E",
+        },
+    };
+
 }

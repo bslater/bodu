@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class PearsonTests
 {
+
     /// <summary>
     /// Verifies that the <see cref="Pearson.Table" /> getter returns a defensive copy.
     /// </summary>
@@ -36,4 +37,5 @@ public partial class PearsonTests
         Assert.AreEqual(256, table.Length);
         Assert.AreEqual(256, table.Distinct().Count());
     }
+
 }

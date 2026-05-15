@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BKDRTests.Seed.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,13 +10,16 @@ namespace Bodu.IO.Hashing;
 
 public partial class BKDRTests
 {
+
     /// <summary>
-    /// Verifies that the default <see cref="BKDR" /> constructor selects the canonical seed of 131.
+    /// Verifies that assigning an unsupported seed throws <see cref="ArgumentException" /> and leaves the
+    /// previously stored seed unchanged.
     /// </summary>
     [TestMethod]
-    public void Seed_WhenDefaultConstructed_ShouldBe131()
+    public void Seed_WhenAssignedUnsupportedValue_ShouldThrowAndNotModifyState()
     {
         BKDR algorithm = new();
+        Assert.ThrowsExactly<ArgumentException>(() => algorithm.Seed = 1234U);
         Assert.AreEqual(131U, algorithm.Seed);
     }
 
@@ -29,15 +32,14 @@ public partial class BKDRTests
         BKDR algorithm = new(1313U);
         Assert.AreEqual(1313U, algorithm.Seed);
     }
-
     /// <summary>
-    /// Verifies that <see cref="BKDR.Seed" /> can be reassigned before any input has been consumed.
+    /// Verifies that the default <see cref="BKDR" /> constructor selects the canonical seed of 131.
     /// </summary>
     [TestMethod]
-    public void Seed_WhenSetBeforeUse_ShouldBeRetained()
+    public void Seed_WhenDefaultConstructed_ShouldBe131()
     {
-        BKDR algorithm = new() { Seed = 1313U };
-        Assert.AreEqual(1313U, algorithm.Seed);
+        BKDR algorithm = new();
+        Assert.AreEqual(131U, algorithm.Seed);
     }
 
     /// <summary>
@@ -68,14 +70,13 @@ public partial class BKDRTests
     }
 
     /// <summary>
-    /// Verifies that assigning an unsupported seed throws <see cref="ArgumentException" /> and leaves the
-    /// previously stored seed unchanged.
+    /// Verifies that <see cref="BKDR.Seed" /> can be reassigned before any input has been consumed.
     /// </summary>
     [TestMethod]
-    public void Seed_WhenAssignedUnsupportedValue_ShouldThrowAndNotModifyState()
+    public void Seed_WhenSetBeforeUse_ShouldBeRetained()
     {
-        BKDR algorithm = new();
-        Assert.ThrowsExactly<ArgumentException>(() => algorithm.Seed = 1234U);
-        Assert.AreEqual(131U, algorithm.Seed);
+        BKDR algorithm = new() { Seed = 1313U };
+        Assert.AreEqual(1313U, algorithm.Seed);
     }
+
 }

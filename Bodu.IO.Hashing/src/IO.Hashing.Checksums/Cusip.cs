@@ -35,14 +35,15 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Cusip
     : AlphanumericCheckDigitAlgorithm
 {
+
     /// <summary>The required body length of <c>8</c> characters.</summary>
     public const int BodyLength = 8;
 
     /// <summary>The required full-sequence length of <c>9</c> characters.</summary>
     public const int SequenceLength = 9;
+    private int _count;
 
     private int _sum;
-    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Cusip" /> class.
@@ -59,36 +60,6 @@ public sealed class Cusip
 
     /// <inheritdoc />
     public override CheckDigitOutputAlphabet OutputAlphabet => CheckDigitOutputAlphabet.DecimalDigits;
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> body)
-    {
-        var sum = this._sum;
-        var count = this._count;
-
-        for (var i = 0; i < body.Length; i++)
-        {
-            var value = Alphanumeric.ExpandCusip(body[i]);
-            var weight = (count & 1) == 0 ? 1 : 2;
-            var product = value * weight;
-            sum += (product / 10) + (product % 10);
-            count++;
-        }
-
-        this._sum = sum;
-        this._count = count;
-    }
-
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        _sum = 0;
-        _count = 0;
-    }
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit() =>
-        (char)('0' + ((10 - (_sum % 10)) % 10));
 
     /// <summary>
     /// Computes the CUSIP check digit for the supplied body without allocating a streaming instance.
@@ -150,4 +121,35 @@ public sealed class Cusip
 
         return sum % 10 == 0;
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> body)
+    {
+        var sum = this._sum;
+        var count = this._count;
+
+        for (var i = 0; i < body.Length; i++)
+        {
+            var value = Alphanumeric.ExpandCusip(body[i]);
+            var weight = (count & 1) == 0 ? 1 : 2;
+            var product = value * weight;
+            sum += (product / 10) + (product % 10);
+            count++;
+        }
+
+        this._sum = sum;
+        this._count = count;
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit() =>
+        (char)('0' + ((10 - (_sum % 10)) % 10));
+
+    /// <inheritdoc />
+    public override void Reset()
+    {
+        _sum = 0;
+        _count = 0;
+    }
+
 }

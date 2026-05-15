@@ -13,6 +13,21 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Gtin14Tests
     : CheckDigitAlgorithmTests<Gtin14Tests, Gtin14>
 {
+
+    /// <summary>
+    /// Verifies that <see cref="Gtin14.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
+    /// exactly <see cref="Gtin14.SequenceLength" />.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Gtin14.IsValid("106141410004150".AsSpan()));
+        Assert.IsFalse(Gtin14.IsValid("1061414100041".AsSpan()));
+    }
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
+        Gtin14.Compute(digits);
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()
     {
@@ -26,21 +41,7 @@ public sealed class Gtin14Tests
     };
 
     /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
-        Gtin14.Compute(digits);
-
-    /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck) =>
         Gtin14.IsValid(digitsIncludingCheck);
 
-    /// <summary>
-    /// Verifies that <see cref="Gtin14.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
-    /// exactly <see cref="Gtin14.SequenceLength" />.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Gtin14.IsValid("106141410004150".AsSpan()));
-        Assert.IsFalse(Gtin14.IsValid("1061414100041".AsSpan()));
-    }
 }

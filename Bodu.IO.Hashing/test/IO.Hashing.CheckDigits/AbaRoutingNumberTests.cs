@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AbaRoutingNumberTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,6 +13,10 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed partial class AbaRoutingNumberTests
     : CheckDigitAlgorithmTests<AbaRoutingNumberTests, AbaRoutingNumber>
 {
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
+        AbaRoutingNumber.Compute(digits);
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()
     {
@@ -27,10 +31,7 @@ public sealed partial class AbaRoutingNumberTests
     };
 
     /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
-        AbaRoutingNumber.Compute(digits);
-
-    /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck) =>
         AbaRoutingNumber.IsValid(digitsIncludingCheck);
+
 }

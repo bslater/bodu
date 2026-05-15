@@ -47,11 +47,12 @@ namespace Bodu.IO.Hashing;
 public sealed class ApHash
     : NonCryptographicHashAlgorithm
 {
+
     private const int HashLength = 4;
     private const uint Seed = 0xAAAAAAAAu;
+    private ulong _size;
 
     private uint _workingHash = Seed;
-    private ulong _size;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ApHash" /> class with a 32-bit hash size.
@@ -90,4 +91,5 @@ public sealed class ApHash
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         BinaryPrimitives.WriteUInt32LittleEndian(destination, this._workingHash);
+
 }

@@ -25,45 +25,6 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
     where TTest : CheckDigitAlgorithmTests<TTest, TAlgorithm>, new()
     where TAlgorithm : CheckDigitAlgorithm, new()
 {
-    /// <summary>
-    /// Returns the <see cref="CheckDigitAlgorithmSpecification" /> describing the algorithm's expected
-    /// properties and known-answer vectors.
-    /// </summary>
-    /// <returns>A non-null specification; <see cref="CheckDigitAlgorithmSpecification.KnownAnswers" /> must be non-empty.</returns>
-    protected abstract CheckDigitAlgorithmSpecification GetSpecification();
-
-    /// <summary>
-    /// Creates a new instance of <typeparamref name="TAlgorithm" /> in its initial state.
-    /// </summary>
-    /// <returns>A fresh algorithm instance.</returns>
-    protected virtual TAlgorithm CreateAlgorithm() => new();
-
-    /// <summary>
-    /// Invokes the algorithm's static <c>Compute</c> helper. Derived classes forward to the concrete type.
-    /// </summary>
-    /// <param name="digits">The body digits.</param>
-    /// <returns>The check digit as a character.</returns>
-    protected abstract char ComputeStatic(ReadOnlySpan<char> digits);
-
-    /// <summary>
-    /// Invokes the algorithm's static <c>IsValid</c> helper. Derived classes forward to the concrete type.
-    /// </summary>
-    /// <param name="digitsIncludingCheck">The full sequence including the trailing check digit.</param>
-    /// <returns><see langword="true" /> if the sequence is valid under the algorithm; otherwise, <see langword="false" />.</returns>
-    protected abstract bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck);
-
-    /// <summary>
-    /// Returns an ordered dataset of known-answer vectors for use with MSTest data-driven tests.
-    /// </summary>
-    /// <returns>
-    /// An enumerable sequence of <c>object[]</c> arrays in the form <c>{ name, body, expectedCheck }</c>.
-    /// </returns>
-    public static IEnumerable<object[]> KnownAnswerData()
-    {
-        CheckDigitAlgorithmSpecification spec = new TTest().GetSpecification();
-        foreach (CheckDigitKnownAnswer vector in spec.KnownAnswers)
-            yield return new object[] { vector.Name, vector.Body, vector.ExpectedCheck };
-    }
 
     /// <summary>
     /// Gets the display name used by <see cref="DynamicDataAttribute" /> for a test case row.
@@ -79,4 +40,44 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
         var name = (string)data[0];
         return $"{name}";
     }
+
+    /// <summary>
+    /// Returns an ordered dataset of known-answer vectors for use with MSTest data-driven tests.
+    /// </summary>
+    /// <returns>
+    /// An enumerable sequence of <c>object[]</c> arrays in the form <c>{ name, body, expectedCheck }</c>.
+    /// </returns>
+    public static IEnumerable<object[]> KnownAnswerData()
+    {
+        CheckDigitAlgorithmSpecification spec = new TTest().GetSpecification();
+        foreach (CheckDigitKnownAnswer vector in spec.KnownAnswers)
+            yield return new object[] { vector.Name, vector.Body, vector.ExpectedCheck };
+    }
+
+    /// <summary>
+    /// Invokes the algorithm's static <c>Compute</c> helper. Derived classes forward to the concrete type.
+    /// </summary>
+    /// <param name="digits">The body digits.</param>
+    /// <returns>The check digit as a character.</returns>
+    protected abstract char ComputeStatic(ReadOnlySpan<char> digits);
+
+    /// <summary>
+    /// Creates a new instance of <typeparamref name="TAlgorithm" /> in its initial state.
+    /// </summary>
+    /// <returns>A fresh algorithm instance.</returns>
+    protected virtual TAlgorithm CreateAlgorithm() => new();
+    /// <summary>
+    /// Returns the <see cref="CheckDigitAlgorithmSpecification" /> describing the algorithm's expected
+    /// properties and known-answer vectors.
+    /// </summary>
+    /// <returns>A non-null specification; <see cref="CheckDigitAlgorithmSpecification.KnownAnswers" /> must be non-empty.</returns>
+    protected abstract CheckDigitAlgorithmSpecification GetSpecification();
+
+    /// <summary>
+    /// Invokes the algorithm's static <c>IsValid</c> helper. Derived classes forward to the concrete type.
+    /// </summary>
+    /// <param name="digitsIncludingCheck">The full sequence including the trailing check digit.</param>
+    /// <returns><see langword="true" /> if the sequence is valid under the algorithm; otherwise, <see langword="false" />.</returns>
+    protected abstract bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck);
+
 }

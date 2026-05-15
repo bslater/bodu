@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcStandardTests.Equals.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,38 +8,6 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcStandardTests
 {
-    /// <summary>
-    /// Verifies that <see cref="CrcStandard.Equals(CrcStandard?)" /> returns <see langword="false" /> when the
-    /// comparand is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Equals_WhenTypedOtherIsNull_ShouldReturnFalse()
-    {
-        CrcStandard a = CreateReference();
-        Assert.IsFalse(a.Equals(null));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="CrcStandard.Equals(object?)" /> returns <see langword="false" /> when the
-    /// comparand is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void Equals_WhenObjectOtherIsNull_ShouldReturnFalse()
-    {
-        CrcStandard a = CreateReference();
-        Assert.IsFalse(a.Equals((object?)null));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="CrcStandard.Equals(object?)" /> returns <see langword="false" /> when the
-    /// comparand is not a <see cref="CrcStandard" />.
-    /// </summary>
-    [TestMethod]
-    public void Equals_WhenObjIsDifferentType_ShouldReturnFalse()
-    {
-        CrcStandard a = CreateReference();
-        Assert.IsFalse(a.Equals("not a CrcStandard"));
-    }
 
     /// <summary>
     /// Verifies that two <see cref="CrcStandard" /> instances with identical parameters compare equal and
@@ -73,4 +41,37 @@ public partial class CrcStandardTests
         Assert.IsFalse(baseStandard.Equals(CreateReference(reflectOut: false)));
         Assert.IsFalse(baseStandard.Equals(CreateReference(xOrOut: 0UL)));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.Equals(object?)" /> returns <see langword="false" /> when the
+    /// comparand is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenObjectOtherIsNull_ShouldReturnFalse()
+    {
+        CrcStandard a = CreateReference();
+        Assert.IsFalse(a.Equals((object?)null));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.Equals(object?)" /> returns <see langword="false" /> when the
+    /// comparand is not a <see cref="CrcStandard" />.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenObjIsDifferentType_ShouldReturnFalse()
+    {
+        CrcStandard a = CreateReference();
+        Assert.IsFalse(a.Equals("not a CrcStandard"));
+    }
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.Equals(CrcStandard?)" /> returns <see langword="false" /> when the
+    /// comparand is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void Equals_WhenTypedOtherIsNull_ShouldReturnFalse()
+    {
+        CrcStandard a = CreateReference();
+        Assert.IsFalse(a.Equals(null));
+    }
+
 }

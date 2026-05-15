@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that <c>Append</c> rejects characters that fall outside the declared input alphabet with
     /// <see cref="ArgumentOutOfRangeException" />.
@@ -61,4 +62,5 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
             algorithm.GetCurrentCheckDigits(tooSmall.AsSpan());
         });
     }
+
 }

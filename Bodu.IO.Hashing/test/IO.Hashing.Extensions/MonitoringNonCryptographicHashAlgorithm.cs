@@ -21,6 +21,7 @@ namespace Bodu.IO.Hashing.Extensions;
 public sealed class MonitoringNonCryptographicHashAlgorithm
     : NonCryptographicHashAlgorithm
 {
+
     private uint _sum;
 
     /// <summary>
@@ -34,14 +35,14 @@ public sealed class MonitoringNonCryptographicHashAlgorithm
     /// <summary>Gets the number of times <see cref="Append(ReadOnlySpan{byte})" /> has been called on this instance.</summary>
     public int AppendCallCount { get; private set; }
 
+    /// <summary>Gets the total number of bytes fed into this instance across all <see cref="Append(ReadOnlySpan{byte})" /> calls.</summary>
+    public long BytesAppended { get; private set; }
+
     /// <summary>Gets the number of times <see cref="GetCurrentHashCore" /> has been invoked.</summary>
     public int GetCurrentHashCoreCallCount { get; private set; }
 
     /// <summary>Gets the number of times <see cref="Reset()" /> has been called on this instance.</summary>
     public int ResetCallCount { get; private set; }
-
-    /// <summary>Gets the total number of bytes fed into this instance across all <see cref="Append(ReadOnlySpan{byte})" /> calls.</summary>
-    public long BytesAppended { get; private set; }
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
@@ -54,17 +55,18 @@ public sealed class MonitoringNonCryptographicHashAlgorithm
     }
 
     /// <inheritdoc />
-    protected override void GetCurrentHashCore(Span<byte> destination)
-    {
-        BitConverter.TryWriteBytes(destination, _sum);
-        GetCurrentHashCoreCallCount++;
-    }
-
-    /// <inheritdoc />
     public override void Reset()
     {
         _sum = 0;
         BytesAppended = 0;
         ResetCallCount++;
     }
+
+    /// <inheritdoc />
+    protected override void GetCurrentHashCore(Span<byte> destination)
+    {
+        BitConverter.TryWriteBytes(destination, _sum);
+        GetCurrentHashCoreCallCount++;
+    }
+
 }

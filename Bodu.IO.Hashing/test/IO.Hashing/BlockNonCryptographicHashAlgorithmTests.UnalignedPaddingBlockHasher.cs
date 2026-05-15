@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests
 {
+
     /// <summary>
     /// A padded hasher identical to <see cref="PaddingBlockHasher" /> except that it overrides
     /// <c>AllowUnalignedFinalBlock</c> to <see langword="true" />, exercising the code path where
@@ -17,6 +18,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     private sealed class UnalignedPaddingBlockHasher
         : BlockNonCryptographicHashAlgorithm<UnalignedPaddingBlockHasher>
     {
+
         public readonly List<byte[]> Blocks = new();
 
         public UnalignedPaddingBlockHasher()
@@ -26,9 +28,12 @@ public partial class BlockNonCryptographicHashAlgorithmTests
 
         protected override bool AllowUnalignedFinalBlock => true;
 
-        protected override void ProcessBlock(ReadOnlySpan<byte> block)
+        protected override UnalignedPaddingBlockHasher Clone()
         {
-            Blocks.Add(block.ToArray());
+            UnalignedPaddingBlockHasher clone = new();
+            clone.Blocks.AddRange(Blocks);
+            clone.CopyResidualStateFrom(this);
+            return clone;
         }
 
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
@@ -39,14 +44,13 @@ public partial class BlockNonCryptographicHashAlgorithmTests
             return output;
         }
 
+        protected override void ProcessBlock(ReadOnlySpan<byte> block)
+        {
+            Blocks.Add(block.ToArray());
+        }
+
         protected override byte[] ProcessFinalBlock() => new byte[4];
 
-        protected override UnalignedPaddingBlockHasher Clone()
-        {
-            UnalignedPaddingBlockHasher clone = new();
-            clone.Blocks.AddRange(Blocks);
-            clone.CopyResidualStateFrom(this);
-            return clone;
-        }
     }
+
 }

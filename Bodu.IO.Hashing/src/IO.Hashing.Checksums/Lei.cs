@@ -30,14 +30,15 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Lei
     : MultiCharCheckDigitAlgorithm
 {
+
     /// <summary>The required body length of <c>18</c> characters.</summary>
     public const int BodyLength = 18;
 
-    /// <summary>The required full-sequence length of <c>20</c> characters.</summary>
-    public const int SequenceLength = 20;
-
     /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
     public const int CheckDigits = 2;
+
+    /// <summary>The required full-sequence length of <c>20</c> characters.</summary>
+    public const int SequenceLength = 20;
 
     private readonly Iso7064Mod97_10 _engine = new Iso7064Mod97_10();
 
@@ -52,22 +53,10 @@ public sealed class Lei
     public override string AlgorithmName => "LEI";
 
     /// <inheritdoc />
-    public override CheckDigitInputAlphabet InputAlphabet => CheckDigitInputAlphabet.AlphanumericUppercase;
-
-    /// <inheritdoc />
     public override int CheckLength => CheckDigits;
 
     /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> body) =>
-        _engine.Append(body);
-
-    /// <inheritdoc />
-    public override void Reset() =>
-        _engine.Reset();
-
-    /// <inheritdoc />
-    public override int GetCurrentCheckDigits(Span<char> destination) =>
-        _engine.GetCurrentCheckDigits(destination);
+    public override CheckDigitInputAlphabet InputAlphabet => CheckDigitInputAlphabet.AlphanumericUppercase;
 
     /// <summary>
     /// Computes the LEI check digits for the supplied body without allocating a streaming instance.
@@ -92,4 +81,17 @@ public sealed class Lei
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck) =>
         Iso7064Mod97_10.IsValid(valueIncludingCheck);
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> body) =>
+        _engine.Append(body);
+
+    /// <inheritdoc />
+    public override int GetCurrentCheckDigits(Span<char> destination) =>
+        _engine.GetCurrentCheckDigits(destination);
+
+    /// <inheritdoc />
+    public override void Reset() =>
+        _engine.Reset();
+
 }

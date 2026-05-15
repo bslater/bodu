@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
+
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.TryGetHashAndReset(Span{byte}, out int)" /> writes
     /// the digest into a correctly sized destination and reports the number of bytes written.
@@ -80,4 +81,5 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
         CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
     }
+
 }

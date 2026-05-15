@@ -10,18 +10,6 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
-    /// <summary>
-    /// Verifies that <see cref="CreateAlgorithm(TVariant)" /> returns a non-null instance for every declared
-    /// variant of <typeparamref name="TAlgorithm" />.
-    /// </summary>
-    /// <param name="variant">The algorithm variant under test.</param>
-    [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void Ctor_WhenDefaultConstructed_ShouldReturnNonNullInstance(TVariant variant)
-    {
-        TAlgorithm algorithm = CreateAlgorithm(variant);
-        Assert.IsNotNull(algorithm);
-    }
 
     /// <summary>
     /// Verifies that the freshly constructed algorithm reports the
@@ -38,4 +26,17 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         Assert.AreEqual(specification.HashLengthInBytes, algorithm.HashLengthInBytes);
     }
+    /// <summary>
+    /// Verifies that <see cref="CreateAlgorithm(TVariant)" /> returns a non-null instance for every declared
+    /// variant of <typeparamref name="TAlgorithm" />.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void Ctor_WhenDefaultConstructed_ShouldReturnNonNullInstance(TVariant variant)
+    {
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+        Assert.IsNotNull(algorithm);
+    }
+
 }

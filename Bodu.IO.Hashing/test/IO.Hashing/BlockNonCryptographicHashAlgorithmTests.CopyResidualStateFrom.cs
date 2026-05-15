@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests
 {
+
     /// <summary>
     /// Verifies that <see cref="BlockNonCryptographicHashAlgorithm{T}.CopyResidualStateFrom" /> throws
     /// <see cref="ArgumentNullException" /> with <c>ParamName</c> equal to <c>source</c> when invoked with a
@@ -21,4 +22,5 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() => hasher.CopyFromExposed(null));
         Assert.AreEqual("source", ex.ParamName);
     }
+
 }

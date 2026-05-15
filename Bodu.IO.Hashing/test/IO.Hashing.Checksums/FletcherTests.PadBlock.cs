@@ -14,6 +14,22 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </summary>
 public abstract partial class FletcherTests<TTest, TAlgorithm>
 {
+
+    /// <summary>
+    /// Verifies that <see cref="Fletcher{TSelf}.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> produces a buffer
+    /// sized to one block and preserves the residual byte at the head of that block.
+    /// </summary>
+    [TestMethod]
+    public void PadBlock_WhenInvokedDirectly_ShouldReturnSingleByteBlockWithResidualPrefix()
+    {
+        PaddingFletcher fletcher = new();
+        byte[] residual = { 0xAA };
+
+        byte[] padded = fletcher.PadBlockExposed(residual, messageLength: 1);
+
+        Assert.AreEqual(1, padded.Length); // Fletcher is processed byte-wise.
+        Assert.AreEqual(0xAA, padded[0]);
+    }
     /// <summary>
     /// Verifies that enabling final-block padding on a Fletcher derivative — and forcing a residual into the
     /// buffer — drives <see cref="Fletcher{TSelf}.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> without throwing
@@ -34,22 +50,6 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     }
 
     /// <summary>
-    /// Verifies that <see cref="Fletcher{TSelf}.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> produces a buffer
-    /// sized to one block and preserves the residual byte at the head of that block.
-    /// </summary>
-    [TestMethod]
-    public void PadBlock_WhenInvokedDirectly_ShouldReturnSingleByteBlockWithResidualPrefix()
-    {
-        PaddingFletcher fletcher = new();
-        byte[] residual = { 0xAA };
-
-        byte[] padded = fletcher.PadBlockExposed(residual, messageLength: 1);
-
-        Assert.AreEqual(1, padded.Length); // Fletcher is processed byte-wise.
-        Assert.AreEqual(0xAA, padded[0]);
-    }
-
-    /// <summary>
     /// Test-only Fletcher subclass that re-enables final-block padding so that
     /// <see cref="Fletcher{TSelf}.PadBlock(System.ReadOnlySpan{byte}, ulong)" /> is reachable through the standard
     /// hash flow. Also exposes <see cref="PadBlockExposed(byte[], ulong)" /> for direct assertion without going via
@@ -58,14 +58,17 @@ public abstract partial class FletcherTests<TTest, TAlgorithm>
     private sealed class PaddingFletcher
         : Fletcher<PaddingFletcher>
     {
+
         public PaddingFletcher()
             : base(32)
         {
         }
 
-        protected override bool ShouldPadFinalBlock() => true;
-
         public byte[] PadBlockExposed(byte[] residual, ulong messageLength) =>
             this.PadBlock(residual, messageLength);
+
+        protected override bool ShouldPadFinalBlock() => true;
+
     }
+
 }

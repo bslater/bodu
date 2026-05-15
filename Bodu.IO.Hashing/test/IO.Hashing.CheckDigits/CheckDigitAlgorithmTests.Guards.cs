@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitAlgorithmTests.Guards.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that <see cref="CheckDigitAlgorithm.Append(ReadOnlySpan{char})" /> rejects any character outside
     /// the inclusive range <c>'0'</c> to <c>'9'</c> with <see cref="ArgumentOutOfRangeException" />.
@@ -44,4 +45,5 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
             algorithm.Append('x');
         });
     }
+
 }

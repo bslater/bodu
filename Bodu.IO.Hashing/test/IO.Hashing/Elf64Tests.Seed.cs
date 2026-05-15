@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Elf64Tests.Seed.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,15 +10,6 @@ namespace Bodu.IO.Hashing;
 
 public partial class Elf64Tests
 {
-    /// <summary>
-    /// Verifies that the default <see cref="Elf64" /> constructor selects a seed of zero.
-    /// </summary>
-    [TestMethod]
-    public void Seed_WhenDefaultConstructed_ShouldBeZero()
-    {
-        Elf64 algorithm = new();
-        Assert.AreEqual(0UL, algorithm.Seed);
-    }
 
     /// <summary>
     /// Verifies that a seed supplied to the constructor is retained on the <see cref="Elf64.Seed" /> property.
@@ -29,15 +20,14 @@ public partial class Elf64Tests
         Elf64 algorithm = new(1313UL);
         Assert.AreEqual(1313UL, algorithm.Seed);
     }
-
     /// <summary>
-    /// Verifies that <see cref="Elf64.Seed" /> can be reassigned before any input has been consumed.
+    /// Verifies that the default <see cref="Elf64" /> constructor selects a seed of zero.
     /// </summary>
     [TestMethod]
-    public void Seed_WhenSetBeforeUse_ShouldBeRetained()
+    public void Seed_WhenDefaultConstructed_ShouldBeZero()
     {
-        Elf64 algorithm = new() { Seed = 1313UL };
-        Assert.AreEqual(1313UL, algorithm.Seed);
+        Elf64 algorithm = new();
+        Assert.AreEqual(0UL, algorithm.Seed);
     }
 
     /// <summary>
@@ -66,4 +56,15 @@ public partial class Elf64Tests
 
         Assert.AreEqual(131UL, algorithm.Seed);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Elf64.Seed" /> can be reassigned before any input has been consumed.
+    /// </summary>
+    [TestMethod]
+    public void Seed_WhenSetBeforeUse_ShouldBeRetained()
+    {
+        Elf64 algorithm = new() { Seed = 1313UL };
+        Assert.AreEqual(1313UL, algorithm.Seed);
+    }
+
 }

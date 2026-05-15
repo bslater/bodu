@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MultiCharCheckDigitAlgorithmTests.IsValid.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that the static <c>IsValid</c> helper returns the expected verdict for each vector supplied by
     /// <see cref="GetIsValidKnownAnswers" />.
@@ -22,4 +23,5 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
         _ = name;
         Assert.AreEqual(expectedIsValid, IsValidStatic(value.AsSpan()), $"Unexpected verdict for '{value}'.");
     }
+
 }

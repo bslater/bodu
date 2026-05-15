@@ -8,20 +8,28 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
-    /// <summary>
-    /// Verifies that the static <c>Compute</c> helper returns the expected check digit for every known-answer
-    /// vector.
-    /// </summary>
-    /// <param name="name">A descriptive name for the vector.</param>
-    /// <param name="body">The body digits.</param>
-    /// <param name="expectedCheck">The expected check digit.</param>
-    [TestMethod]
 
-    [DynamicData(nameof(KnownAnswerData))]
-    public void Compute_WhenKnownAnswer_ShouldReturnExpectedCheckDigit(string name, string body, char expectedCheck)
+    /// <summary>
+    /// Verifies that <c>Compute</c> rejects non-digit characters with <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsNonDigit_ShouldThrowArgumentOutOfRangeException()
     {
-        _ = name;
-        Assert.AreEqual(expectedCheck, ComputeStatic(body.AsSpan()));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = ComputeStatic("12a45".AsSpan());
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <c>Compute</c> on an empty span returns the empty-body check digit declared in the
+    /// specification.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyIsEmpty_ShouldReturnEmptyCheckDigit()
+    {
+        CheckDigitAlgorithmSpecification spec = GetSpecification();
+        Assert.AreEqual(spec.EmptyCheckDigit, ComputeStatic([]));
     }
 
     /// <summary>
@@ -44,27 +52,20 @@ public abstract partial class CheckDigitAlgorithmTests<TTest, TAlgorithm>
 
         Assert.AreEqual(algorithm.GetCurrentCheckDigit(), ComputeStatic(body.AsSpan()));
     }
-
     /// <summary>
-    /// Verifies that <c>Compute</c> on an empty span returns the empty-body check digit declared in the
-    /// specification.
+    /// Verifies that the static <c>Compute</c> helper returns the expected check digit for every known-answer
+    /// vector.
     /// </summary>
+    /// <param name="name">A descriptive name for the vector.</param>
+    /// <param name="body">The body digits.</param>
+    /// <param name="expectedCheck">The expected check digit.</param>
     [TestMethod]
-    public void Compute_WhenBodyIsEmpty_ShouldReturnEmptyCheckDigit()
+
+    [DynamicData(nameof(KnownAnswerData))]
+    public void Compute_WhenKnownAnswer_ShouldReturnExpectedCheckDigit(string name, string body, char expectedCheck)
     {
-        CheckDigitAlgorithmSpecification spec = GetSpecification();
-        Assert.AreEqual(spec.EmptyCheckDigit, ComputeStatic([]));
+        _ = name;
+        Assert.AreEqual(expectedCheck, ComputeStatic(body.AsSpan()));
     }
 
-    /// <summary>
-    /// Verifies that <c>Compute</c> rejects non-digit characters with <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    public void Compute_WhenBodyContainsNonDigit_ShouldThrowArgumentOutOfRangeException()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = ComputeStatic("12a45".AsSpan());
-        });
-    }
 }

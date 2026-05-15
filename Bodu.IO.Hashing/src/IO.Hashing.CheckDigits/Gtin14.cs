@@ -28,15 +28,16 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Gtin14
     : CheckDigitAlgorithm
 {
+
     /// <summary>The required body length of <c>13</c> decimal digits.</summary>
     public const int BodyLength = 13;
 
     /// <summary>The required full-sequence length of <c>14</c> decimal digits.</summary>
     public const int SequenceLength = 14;
+    private int _count;
 
     private int _sumEvenHypothesis;
     private int _sumOddHypothesis;
-    private int _count;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Gtin14" /> class.
@@ -47,6 +48,38 @@ public sealed class Gtin14
 
     /// <inheritdoc />
     public override string AlgorithmName => "GTIN-14";
+
+    /// <summary>
+    /// Computes the GTIN-14 check digit for the supplied body of decimal digits without allocating a streaming
+    /// instance.
+    /// </summary>
+    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
+    /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
+    /// </exception>
+    /// <remarks>
+    /// This helper is length-tolerant to support streaming and partial-body use; <see cref="IsValid(ReadOnlySpan{char})" />
+    /// enforces the strict <see cref="SequenceLength" /> domain contract for full validation.
+    /// </remarks>
+    public static char Compute(ReadOnlySpan<char> digits) =>
+        WeightedMod10.ComputeIsbn13(digits);
+
+    /// <summary>
+    /// Determines whether the supplied sequence, comprising a thirteen-digit body followed by a trailing
+    /// GTIN-14 check digit, is consistent.
+    /// </summary>
+    /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
+    /// <returns>
+    /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as
+    /// valid under GTIN-14; otherwise, <see langword="false" />.
+    /// </returns>
+    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
+    {
+        if (digitsIncludingCheck.IsEmpty) return true;
+        if (digitsIncludingCheck.Length != SequenceLength) return false;
+        return WeightedMod10.IsValidIsbn13(digitsIncludingCheck);
+    }
 
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<char> digits)
@@ -84,6 +117,13 @@ public sealed class Gtin14
     }
 
     /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
+        return (char)('0' + ((10 - (sum % 10)) % 10));
+    }
+
+    /// <inheritdoc />
     public override void Reset()
     {
         _sumEvenHypothesis = 0;
@@ -91,42 +131,4 @@ public sealed class Gtin14
         _count = 0;
     }
 
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit()
-    {
-        var sum = (_count & 1) == 0 ? _sumEvenHypothesis : _sumOddHypothesis;
-        return (char)('0' + ((10 - (sum % 10)) % 10));
-    }
-
-    /// <summary>
-    /// Computes the GTIN-14 check digit for the supplied body of decimal digits without allocating a streaming
-    /// instance.
-    /// </summary>
-    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
-    /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
-    /// </exception>
-    /// <remarks>
-    /// This helper is length-tolerant to support streaming and partial-body use; <see cref="IsValid(ReadOnlySpan{char})" />
-    /// enforces the strict <see cref="SequenceLength" /> domain contract for full validation.
-    /// </remarks>
-    public static char Compute(ReadOnlySpan<char> digits) =>
-        WeightedMod10.ComputeIsbn13(digits);
-
-    /// <summary>
-    /// Determines whether the supplied sequence, comprising a thirteen-digit body followed by a trailing
-    /// GTIN-14 check digit, is consistent.
-    /// </summary>
-    /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
-    /// <returns>
-    /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as
-    /// valid under GTIN-14; otherwise, <see langword="false" />.
-    /// </returns>
-    public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
-    {
-        if (digitsIncludingCheck.IsEmpty) return true;
-        if (digitsIncludingCheck.Length != SequenceLength) return false;
-        return WeightedMod10.IsValidIsbn13(digitsIncludingCheck);
-    }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitAlgorithmSpecification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,6 +25,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public sealed record CheckDigitAlgorithmSpecification
 {
+
     /// <summary>
     /// Gets the expected <see cref="CheckDigitAlgorithm.AlgorithmName" /> string.
     /// </summary>
@@ -42,4 +43,5 @@ public sealed record CheckDigitAlgorithmSpecification
     /// </summary>
     /// <returns>A non-empty list of <see cref="CheckDigitKnownAnswer" /> entries.</returns>
     public required IReadOnlyList<CheckDigitKnownAnswer> KnownAnswers { get; init; }
+
 }

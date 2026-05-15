@@ -9,9 +9,7 @@
 // </auto-generated>
 
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Threading;
 
 namespace Bodu.IO.Hashing.Checksums;
 
@@ -22,6 +20,15 @@ public sealed partial class CrcStandard
     /// <summary>Compact value-type row in the packed catalogue data table. Indexed by <see cref="CrcStandards" /> ordinal.</summary>
     private readonly struct CatalogEntry
     {
+
+        public readonly string Name;
+        public readonly int Size;
+        public readonly ulong Polynomial;
+        public readonly ulong InitialValue;
+        public readonly ulong XOrOut;
+        public readonly bool ReflectIn;
+        public readonly bool ReflectOut;
+
         public CatalogEntry(string name, int size, ulong polynomial, ulong initialValue, bool reflectIn, bool reflectOut, ulong xOrOut)
         {
             Name = name;
@@ -33,13 +40,6 @@ public sealed partial class CrcStandard
             ReflectOut = reflectOut;
         }
 
-        public readonly string Name;
-        public readonly int Size;
-        public readonly ulong Polynomial;
-        public readonly ulong InitialValue;
-        public readonly ulong XOrOut;
-        public readonly bool ReflectIn;
-        public readonly bool ReflectOut;
     }
     private static readonly CatalogEntry[] s_catalog = new CatalogEntry[]
     {
@@ -125,7 +125,7 @@ public sealed partial class CrcStandard
         new CatalogEntry("CRC-16/XMODEM", 16, 0x1021UL, 0x0000UL, false, false, 0x0000UL),
         new CatalogEntry("CRC-17/CAN-FD", 17, 0x1685BUL, 0x00000UL, false, false, 0x00000UL),
         new CatalogEntry("CRC-21/CAN-FD", 21, 0x102899UL, 0x000000UL, false, false, 0x000000UL),
-        new CatalogEntry("CRC-24/BLE", 24, 0x00065BUL, 0x555555UL, true, true, 0x000000UL),  
+        new CatalogEntry("CRC-24/BLE", 24, 0x00065BUL, 0x555555UL, true, true, 0x000000UL),
         new CatalogEntry("CRC-24/FLEXRAY-A", 24, 0x5D6DCBUL, 0xFEDCBAUL, false, false, 0x000000UL),
         new CatalogEntry("CRC-24/FLEXRAY-B", 24, 0x5D6DCBUL, 0xABCDEFUL, false, false, 0x000000UL),
         new CatalogEntry("CRC-24/INTERLAKEN", 24, 0x328B63UL, 0xFFFFFFUL, false, false, 0xFFFFFFUL),
@@ -182,8 +182,8 @@ public sealed partial class CrcStandard
             IReadOnlyList<CrcStandard>? cached = Volatile.Read(ref s_all);
             if (cached is not null) return cached;
             return BuildAll();
-         }
-   }
+        }
+    }
 
     /// <summary>
     /// Materializes — or retrieves from cache — the <see cref="CrcStandard" /> identified by the given enum value.
@@ -393,3 +393,4 @@ public sealed partial class CrcStandard
     }
 #pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.
 }
+#pragma warning restore CS8669 // The annotation for nullable reference types should only be used in code within a '#nullable' annotations context. Auto-generated code requires an explicit '#nullable' directive in source.

@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
+
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.TryGetCurrentHash(Span{byte}, out int)" /> writes
     /// the digest and reports the number of bytes written when the destination is exactly
@@ -76,4 +77,5 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         var second = algorithm.GetCurrentHash();
         CollectionAssert.AreEqual(first, second);
     }
+
 }

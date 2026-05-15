@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashKnownAnswers.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,26 +25,9 @@ namespace Bodu.IO.Hashing;
 /// </remarks>
 public sealed record NonCryptographicHashKnownAnswers
 {
-    /// <summary>Gets the expected hex digest for an empty input, or <see langword="null" /> when unspecified.</summary>
-    public string? Empty { get; init; }
 
     /// <summary>Gets the expected hex digest for the ASCII input <c>"ABC"</c>, or <see langword="null" /> when unspecified.</summary>
     public string? Abc { get; init; }
-
-    /// <summary>
-    /// Gets the expected hex digest for the ASCII input
-    /// <c>"The quick brown fox jumps over the lazy dog"</c>, or <see langword="null" /> when unspecified.
-    /// </summary>
-    public string? QuickBrownFox { get; init; }
-
-    /// <summary>Gets the expected hex digest for sixteen zero bytes, or <see langword="null" /> when unspecified.</summary>
-    public string? Zeros16 { get; init; }
-
-    /// <summary>
-    /// Gets the expected hex digest for the 255-byte sequence <c>0x00, 0x01, …, 0xFE</c>, or
-    /// <see langword="null" /> when unspecified.
-    /// </summary>
-    public string? Sequential0To255 { get; init; }
 
     /// <summary>
     /// Gets algorithm-specific known-answer vectors that fall outside the shared-input set.
@@ -52,4 +35,22 @@ public sealed record NonCryptographicHashKnownAnswers
     /// <value>A list of named vectors. Defaults to an empty list.</value>
     public IReadOnlyList<NonCryptographicHashKnownAnswer> Additional { get; init; } =
         Array.Empty<NonCryptographicHashKnownAnswer>();
+    /// <summary>Gets the expected hex digest for an empty input, or <see langword="null" /> when unspecified.</summary>
+    public string? Empty { get; init; }
+
+    /// <summary>
+    /// Gets the expected hex digest for the ASCII input
+    /// <c>"The quick brown fox jumps over the lazy dog"</c>, or <see langword="null" /> when unspecified.
+    /// </summary>
+    public string? QuickBrownFox { get; init; }
+
+    /// <summary>
+    /// Gets the expected hex digest for the 255-byte sequence <c>0x00, 0x01, …, 0xFE</c>, or
+    /// <see langword="null" /> when unspecified.
+    /// </summary>
+    public string? Sequential0To255 { get; init; }
+
+    /// <summary>Gets the expected hex digest for sixteen zero bytes, or <see langword="null" /> when unspecified.</summary>
+    public string? Zeros16 { get; init; }
+
 }

@@ -10,22 +10,6 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
-    /// <summary>
-    /// Verifies that appending an empty span leaves <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" />
-    /// unchanged — equal to the hash of a freshly constructed instance.
-    /// </summary>
-    /// <param name="variant">The algorithm variant under test.</param>
-    [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void Append_WhenInputIsEmpty_ShouldLeaveHashUnchanged(TVariant variant)
-    {
-        TAlgorithm algorithm = CreateAlgorithm(variant);
-        NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
-
-        algorithm.Append([]);
-
-        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
-    }
 
     /// <summary>
     /// Verifies that splitting an input across multiple
@@ -71,6 +55,22 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         CollectionAssert.AreEqual(whole.GetCurrentHash(), perByte.GetCurrentHash());
     }
+    /// <summary>
+    /// Verifies that appending an empty span leaves <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" />
+    /// unchanged — equal to the hash of a freshly constructed instance.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void Append_WhenInputIsEmpty_ShouldLeaveHashUnchanged(TVariant variant)
+    {
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+        NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
+
+        algorithm.Append([]);
+
+        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
+    }
 
     /// <summary>
     /// Verifies that hashing a named input via a single
@@ -93,4 +93,5 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
 
         CollectionAssert.AreEqual(expected, actual, $"Hash mismatch for '{testName}' using variant '{variant}'.");
     }
+
 }

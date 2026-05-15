@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashKnownAnswer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,12 +20,13 @@ namespace Bodu.IO.Hashing;
 /// </remarks>
 public sealed record NonCryptographicHashKnownAnswer
 {
-    /// <summary>Gets the semantic name of this test vector used in diagnostic messages.</summary>
-    public required string Name { get; init; }
-
-    /// <summary>Gets the raw input bytes to append to the algorithm.</summary>
-    public required byte[] Input { get; init; }
 
     /// <summary>Gets the hex-encoded expected digest produced by hashing <see cref="Input" />.</summary>
     public required string ExpectedHex { get; init; }
+
+    /// <summary>Gets the raw input bytes to append to the algorithm.</summary>
+    public required byte[] Input { get; init; }
+    /// <summary>Gets the semantic name of this test vector used in diagnostic messages.</summary>
+    public required string Name { get; init; }
+
 }

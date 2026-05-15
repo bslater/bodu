@@ -13,57 +13,13 @@ namespace Bodu.IO.Hashing;
 public sealed partial class Elf64Tests
     : NonCryptographicHashAlgorithmTests<Elf64Tests, Elf64, Elf64Variant>
 {
+
     /// <inheritdoc />
     protected override Elf64 CreateAlgorithm(Elf64Variant variant) => variant switch
     {
         Elf64Variant.Default => new Elf64(),
         Elf64Variant.Seed31 => new Elf64(31UL),
         Elf64Variant.Seed131 => new Elf64(131UL),
-        _ => throw new ArgumentOutOfRangeException(nameof(variant)),
-    };
-
-    /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(Elf64Variant variant) => variant switch
-    {
-        Elf64Variant.Default => new()
-        {
-            HashLengthInBytes = 8,
-            MinNonZeroBytesForLongInput = 4,
-            KnownAnswers = new()
-            {
-                Empty = "0000000000000000",
-                Abc = "0000000000004563",
-                QuickBrownFox = "06CBBC9912066B07",
-                Zeros16 = "0000000000000000",
-                Sequential0To255 = "00C794F30E5FBF6E",
-            },
-        },
-        Elf64Variant.Seed31 => new()
-        {
-            HashLengthInBytes = 8,
-            MinNonZeroBytesForLongInput = 4,
-            KnownAnswers = new()
-            {
-                Empty = "000000000000001F",
-                Abc = "0000000000023563",
-                QuickBrownFox = "06CBBC9912066937",
-                Zeros16 = "0000000000001F00",
-                Sequential0To255 = "00C794F30E530F6E",
-            },
-        },
-        Elf64Variant.Seed131 => new()
-        {
-            HashLengthInBytes = 8,
-            MinNonZeroBytesForLongInput = 4,
-            KnownAnswers = new()
-            {
-                Empty = "0000000000000083",
-                Abc = "0000000000087563",
-                QuickBrownFox = "06CBBC99120663F7",
-                Zeros16 = "0000000000008300",
-                Sequential0To255 = "00C794F30E6A4F6E",
-            },
-        },
         _ => throw new ArgumentOutOfRangeException(nameof(variant)),
     };
 
@@ -136,4 +92,50 @@ public sealed partial class Elf64Tests
         ],
         _ => throw new ArgumentOutOfRangeException(nameof(variant)),
     };
+
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(Elf64Variant variant) => variant switch
+    {
+        Elf64Variant.Default => new()
+        {
+            HashLengthInBytes = 8,
+            MinNonZeroBytesForLongInput = 4,
+            KnownAnswers = new()
+            {
+                Empty = "0000000000000000",
+                Abc = "0000000000004563",
+                QuickBrownFox = "06CBBC9912066B07",
+                Zeros16 = "0000000000000000",
+                Sequential0To255 = "00C794F30E5FBF6E",
+            },
+        },
+        Elf64Variant.Seed31 => new()
+        {
+            HashLengthInBytes = 8,
+            MinNonZeroBytesForLongInput = 4,
+            KnownAnswers = new()
+            {
+                Empty = "000000000000001F",
+                Abc = "0000000000023563",
+                QuickBrownFox = "06CBBC9912066937",
+                Zeros16 = "0000000000001F00",
+                Sequential0To255 = "00C794F30E530F6E",
+            },
+        },
+        Elf64Variant.Seed131 => new()
+        {
+            HashLengthInBytes = 8,
+            MinNonZeroBytesForLongInput = 4,
+            KnownAnswers = new()
+            {
+                Empty = "0000000000000083",
+                Abc = "0000000000087563",
+                QuickBrownFox = "06CBBC99120663F7",
+                Zeros16 = "0000000000008300",
+                Sequential0To255 = "00C794F30E6A4F6E",
+            },
+        },
+        _ => throw new ArgumentOutOfRangeException(nameof(variant)),
+    };
+
 }

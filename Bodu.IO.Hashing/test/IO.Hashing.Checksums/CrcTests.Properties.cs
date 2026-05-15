@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CrcTests.Properties.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcTests
 {
+
     /// <summary>
     /// Verifies that each publicly exposed property on <see cref="Crc" /> mirrors the configured
     /// <see cref="CrcStandard" /> for every representative variant — the full parameter surface
@@ -47,4 +48,5 @@ public partial class CrcTests
         Assert.AreEqual(standard.ReflectOut, crc.ReflectOut);
         Assert.AreEqual(standard.XOrOut, crc.XOrOut);
     }
+
 }

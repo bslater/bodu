@@ -13,6 +13,21 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class Ean8Tests
     : CheckDigitAlgorithmTests<Ean8Tests, Ean8>
 {
+
+    /// <summary>
+    /// Verifies that <see cref="Ean8.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
+    /// exactly <see cref="Ean8.SequenceLength" />.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Ean8.IsValid("735135370".AsSpan()));
+        Assert.IsFalse(Ean8.IsValid("7351353".AsSpan()));
+    }
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
+        Ean8.Compute(digits);
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()
     {
@@ -26,21 +41,7 @@ public sealed class Ean8Tests
     };
 
     /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
-        Ean8.Compute(digits);
-
-    /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck) =>
         Ean8.IsValid(digitsIncludingCheck);
 
-    /// <summary>
-    /// Verifies that <see cref="Ean8.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
-    /// exactly <see cref="Ean8.SequenceLength" />.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Ean8.IsValid("735135370".AsSpan()));
-        Assert.IsFalse(Ean8.IsValid("7351353".AsSpan()));
-    }
 }

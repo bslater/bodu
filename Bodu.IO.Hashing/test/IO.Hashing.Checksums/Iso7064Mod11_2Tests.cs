@@ -15,50 +15,18 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Iso7064Mod11_2Tests
     : AlphanumericCheckDigitAlgorithmTests<Iso7064Mod11_2Tests, Iso7064Mod11_2>
 {
-    /// <inheritdoc />
-    protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()
-    {
-        AlgorithmName = "ISO 7064 MOD 11-2",
-        InputAlphabet = CheckDigitInputAlphabet.DecimalDigits,
-        OutputAlphabet = CheckDigitOutputAlphabet.DecimalDigitsOrX,
-        EmptyCheckDigit = '1',
-        KnownAnswers =
-        [
-            new() { Name = "StandardExample",     Body = "0794",      ExpectedCheck = '0' },
-            new() { Name = "SingleZero",          Body = "0",         ExpectedCheck = '1' },
-            new() { Name = "SingleOne",           Body = "1",         ExpectedCheck = 'X' },
-            new() { Name = "LongerNumeric",       Body = "1234567890", ExpectedCheck = '8' },
-        ],
-    };
-
-    /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> body) =>
-        Iso7064Mod11_2.Compute(body);
-
-    /// <inheritdoc />
-    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
-        Iso7064Mod11_2.IsValid(valueIncludingCheck);
 
     /// <summary>
-    /// Verifies that <see cref="Iso7064Mod11_2.IsValid(ReadOnlySpan{char})" /> accepts the sentinel <c>'X'</c>
-    /// in the trailing check position and rejects it elsewhere.
+    /// Verifies that <see cref="Iso7064Mod11_2.Compute(ReadOnlySpan{char})" /> throws
+    /// <see cref="ArgumentOutOfRangeException" /> when invoked with a non-digit input.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenCheckPositionIsX_ShouldBeInterpretedAsTen()
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
     {
-        // '1' computes to 'X'; concatenated sequence is therefore valid.
-        Assert.IsTrue(Iso7064Mod11_2.IsValid("1X".AsSpan()));
-        Assert.IsFalse(Iso7064Mod11_2.IsValid("X1".AsSpan()));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Iso7064Mod11_2.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for
-    /// an empty span — the documented short-circuit branch.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Iso7064Mod11_2.IsValid(ReadOnlySpan<char>.Empty));
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Iso7064Mod11_2.Compute("07X4".AsSpan());
+        });
     }
 
     /// <summary>
@@ -83,15 +51,48 @@ public sealed class Iso7064Mod11_2Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Iso7064Mod11_2.Compute(ReadOnlySpan{char})" /> throws
-    /// <see cref="ArgumentOutOfRangeException" /> when invoked with a non-digit input.
+    /// Verifies that <see cref="Iso7064Mod11_2.IsValid(ReadOnlySpan{char})" /> accepts the sentinel <c>'X'</c>
+    /// in the trailing check position and rejects it elsewhere.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void IsValid_WhenCheckPositionIsX_ShouldBeInterpretedAsTen()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = Iso7064Mod11_2.Compute("07X4".AsSpan());
-        });
+        // '1' computes to 'X'; concatenated sequence is therefore valid.
+        Assert.IsTrue(Iso7064Mod11_2.IsValid("1X".AsSpan()));
+        Assert.IsFalse(Iso7064Mod11_2.IsValid("X1".AsSpan()));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Iso7064Mod11_2.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for
+    /// an empty span — the documented short-circuit branch.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Iso7064Mod11_2.IsValid(ReadOnlySpan<char>.Empty));
+    }
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> body) =>
+        Iso7064Mod11_2.Compute(body);
+    /// <inheritdoc />
+    protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()
+    {
+        AlgorithmName = "ISO 7064 MOD 11-2",
+        InputAlphabet = CheckDigitInputAlphabet.DecimalDigits,
+        OutputAlphabet = CheckDigitOutputAlphabet.DecimalDigitsOrX,
+        EmptyCheckDigit = '1',
+        KnownAnswers =
+        [
+            new() { Name = "StandardExample",     Body = "0794",      ExpectedCheck = '0' },
+            new() { Name = "SingleZero",          Body = "0",         ExpectedCheck = '1' },
+            new() { Name = "SingleOne",           Body = "1",         ExpectedCheck = 'X' },
+            new() { Name = "LongerNumeric",       Body = "1234567890", ExpectedCheck = '8' },
+        ],
+    };
+
+    /// <inheritdoc />
+    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
+        Iso7064Mod11_2.IsValid(valueIncludingCheck);
+
 }

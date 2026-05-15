@@ -15,6 +15,7 @@ namespace Bodu.IO.Hashing;
 [TestClass]
 public sealed class MurmurHash3HashSizeValidationTests
 {
+
     /// <summary>
     /// Verifies that constructing a <see cref="MurmurHash3{T}" /> subclass with an unsupported hash size throws
     /// <see cref="ArgumentOutOfRangeException" /> whose <c>ParamName</c> is <c>hashSize</c> and whose message begins
@@ -76,6 +77,7 @@ public sealed class MurmurHash3HashSizeValidationTests
     private sealed class TestMurmurHash3
         : MurmurHash3<TestMurmurHash3>
     {
+
         public TestMurmurHash3()
             : base(32)
         {
@@ -93,5 +95,7 @@ public sealed class MurmurHash3HashSizeValidationTests
 
         protected override byte[] ComputeHashCore(ReadOnlySpan<byte> source) =>
             new byte[this.HashLengthInBytes];
+
     }
+
 }

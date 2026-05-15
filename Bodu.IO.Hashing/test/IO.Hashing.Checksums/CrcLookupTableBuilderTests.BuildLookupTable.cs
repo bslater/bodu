@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcLookupTableBuilderTests
 {
+
     /// <summary>
     /// Verifies that an all-ones polynomial produces a lookup table whose entries never exceed the declared bit width.
     /// </summary>
@@ -70,6 +71,23 @@ public partial class CrcLookupTableBuilderTests
     }
 
     /// <summary>
+    /// Verifies that the non-reflected and reflected variants of the same CRC-8 polynomial produce lookup
+    /// tables whose entry at index <c>1</c> is the bit-reversal of one another, confirming that the
+    /// <c>reflectIn</c> flag is the sole contributor to the difference.
+    /// </summary>
+    [TestMethod]
+    public void BuildLookupTable_WhenReflected_ShouldBeBitReversedAgainstNonReflected()
+    {
+        var nonReflected = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
+        var reflected = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: true);
+
+        // Non-reflected table[1] is 0x07; reflected table[0x80] computes the CRC for the "reflected"
+        // single-bit input 0x01, which should match the bit-reverse of 0x07 = 0b00000111 → 0b11100000 = 0xE0.
+        Assert.AreEqual(0x07UL, nonReflected[0x01]);
+        Assert.AreEqual(0xE0UL, reflected[0x80]);
+    }
+
+    /// <summary>
     /// Verifies that the reflected and non-reflected tables for the same polynomial differ for at least one entry.
     /// </summary>
     [TestMethod]
@@ -109,23 +127,6 @@ public partial class CrcLookupTableBuilderTests
     }
 
     /// <summary>
-    /// Verifies that an out-of-range <paramref name="size" /> throws <see cref="ArgumentOutOfRangeException" />.
-    /// </summary>
-    [TestMethod]
-    [DataRow(int.MinValue)]
-    [DataRow(-1)]
-    [DataRow(0)]
-    [DataRow(65)]
-    [DataRow(int.MaxValue)]
-    public void BuildLookupTable_WhenSizeIsInvalid_ShouldThrow(int size)
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = CrcLookupTableBuilder.BuildLookupTable(size, 0x1UL, false);
-        });
-    }
-
-    /// <summary>
     /// Verifies that invalid <paramref name="size" /> values surface via <see cref="ArgumentOutOfRangeException" />
     /// whose <c>ParamName</c> matches the original parameter name, confirming the <see cref="ThrowHelper" />
     /// contract rather than merely relying on the exception type.
@@ -142,38 +143,20 @@ public partial class CrcLookupTableBuilderTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CrcLookupTableBuilder.BuildLookupTable" /> produces the canonical first row
-    /// of the 8-bit <c>CRC-8/SMBUS</c> lookup table for polynomial <c>0x07</c> in non-reflected mode. The
-    /// verified entries are drawn from the published SMBus / CRC-8 reference table, ensuring the builder's
-    /// output is numerically correct rather than merely well-formed.
+    /// Verifies that an out-of-range <paramref name="size" /> throws <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [TestMethod]
-    public void BuildLookupTable_WhenStandardIsCRC8_SMBUS_ShouldMatchPublishedEntries()
+    [DataRow(int.MinValue)]
+    [DataRow(-1)]
+    [DataRow(0)]
+    [DataRow(65)]
+    [DataRow(int.MaxValue)]
+    public void BuildLookupTable_WhenSizeIsInvalid_ShouldThrow(int size)
     {
-        var table = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
-
-        Assert.AreEqual(256, table.Length);
-        Assert.AreEqual(0x00UL, table[0x00]);
-        Assert.AreEqual(0x07UL, table[0x01]);
-        Assert.AreEqual(0x0EUL, table[0x02]);
-        Assert.AreEqual(0x09UL, table[0x03]);
-    }
-
-    /// <summary>
-    /// Verifies that the non-reflected and reflected variants of the same CRC-8 polynomial produce lookup
-    /// tables whose entry at index <c>1</c> is the bit-reversal of one another, confirming that the
-    /// <c>reflectIn</c> flag is the sole contributor to the difference.
-    /// </summary>
-    [TestMethod]
-    public void BuildLookupTable_WhenReflected_ShouldBeBitReversedAgainstNonReflected()
-    {
-        var nonReflected = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
-        var reflected = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: true);
-
-        // Non-reflected table[1] is 0x07; reflected table[0x80] computes the CRC for the "reflected"
-        // single-bit input 0x01, which should match the bit-reverse of 0x07 = 0b00000111 → 0b11100000 = 0xE0.
-        Assert.AreEqual(0x07UL, nonReflected[0x01]);
-        Assert.AreEqual(0xE0UL, reflected[0x80]);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = CrcLookupTableBuilder.BuildLookupTable(size, 0x1UL, false);
+        });
     }
 
     /// <summary>
@@ -230,6 +213,24 @@ public partial class CrcLookupTableBuilderTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="CrcLookupTableBuilder.BuildLookupTable" /> produces the canonical first row
+    /// of the 8-bit <c>CRC-8/SMBUS</c> lookup table for polynomial <c>0x07</c> in non-reflected mode. The
+    /// verified entries are drawn from the published SMBus / CRC-8 reference table, ensuring the builder's
+    /// output is numerically correct rather than merely well-formed.
+    /// </summary>
+    [TestMethod]
+    public void BuildLookupTable_WhenStandardIsCRC8_SMBUS_ShouldMatchPublishedEntries()
+    {
+        var table = CrcLookupTableBuilder.BuildLookupTable(8, 0x07UL, reflectIn: false);
+
+        Assert.AreEqual(256, table.Length);
+        Assert.AreEqual(0x00UL, table[0x00]);
+        Assert.AreEqual(0x07UL, table[0x01]);
+        Assert.AreEqual(0x0EUL, table[0x02]);
+        Assert.AreEqual(0x09UL, table[0x03]);
+    }
+
+    /// <summary>
     /// Verifies that reflected and non-reflected lookup tables for the same polynomial are not equal.
     /// </summary>
     [TestMethod]
@@ -252,4 +253,5 @@ public partial class CrcLookupTableBuilderTests
 
         CollectionAssert.AreNotEqual(table1, table2);
     }
+
 }

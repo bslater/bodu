@@ -6,11 +6,10 @@
 
 namespace Bodu.IO.Hashing.Checksums;
 
-using Bodu.Extensions;
-using Bodu.IO.Hashing;
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Bodu.IO.Hashing;
 
 /// <summary>
 /// Provides a base class for the Fletcher checksum family (Fletcher-16, Fletcher-32, Fletcher-64).
@@ -64,6 +63,7 @@ public abstract class Fletcher<TSelf>
     : BlockNonCryptographicHashAlgorithm<TSelf>
     where TSelf : Fletcher<TSelf>, new()
 {
+
     private static readonly int[] ValidHashSizes = { 16, 32, 64 };
 
     private readonly int hashSizeBits;
@@ -99,13 +99,6 @@ public abstract class Fletcher<TSelf>
     /// </summary>
     /// <value>A string such as <c>Fletcher-16</c>, <c>Fletcher-32</c>, or <c>Fletcher-64</c>.</value>
     public string AlgorithmName { get; }
-
-    /// <inheritdoc />
-    protected override void ResetState()
-    {
-        this.partA = 0;
-        this.partB = 0;
-    }
 
     /// <inheritdoc />
     protected override TSelf Clone()
@@ -145,6 +138,16 @@ public abstract class Fletcher<TSelf>
         return result;
     }
 
+    /// <inheritdoc />
+    protected override void ResetState()
+    {
+        this.partA = 0;
+        this.partB = 0;
+    }
+
+    /// <inheritdoc />
+    protected override bool ShouldPadFinalBlock() => false;
+
     private static void WriteBigEndian(ulong value, Span<byte> destination)
     {
         for (var i = 0; i < destination.Length; i++)
@@ -153,6 +156,4 @@ public abstract class Fletcher<TSelf>
         }
     }
 
-    /// <inheritdoc />
-    protected override bool ShouldPadFinalBlock() => false;
 }

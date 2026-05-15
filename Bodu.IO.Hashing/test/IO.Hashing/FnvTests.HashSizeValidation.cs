@@ -15,6 +15,7 @@ namespace Bodu.IO.Hashing;
 [TestClass]
 public sealed class FnvHashSizeValidationTests
 {
+
     /// <summary>
     /// Verifies that constructing a <see cref="Fnv{TSelf}" /> subclass with an unsupported hash size throws
     /// <see cref="ArgumentException" /> whose <c>ParamName</c> is <c>hashSize</c> and whose message begins with
@@ -65,6 +66,7 @@ public sealed class FnvHashSizeValidationTests
     private sealed class TestFnv
         : Fnv<TestFnv>
     {
+
         public TestFnv()
             : base(32, prime: 0x01000193UL, offsetBasis: 0x811C9DC5UL, useFnv1a: false)
         {
@@ -74,5 +76,7 @@ public sealed class FnvHashSizeValidationTests
             : base(hashSize, prime: 0x01000193UL, offsetBasis: 0x811C9DC5UL, useFnv1a: false)
         {
         }
+
     }
+
 }

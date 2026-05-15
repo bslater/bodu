@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CheckDigitAlgorithm.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,6 +32,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public abstract class CheckDigitAlgorithm
 {
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CheckDigitAlgorithm" /> class.
     /// </summary>
@@ -68,12 +69,6 @@ public abstract class CheckDigitAlgorithm
         this.Append([digit]);
 
     /// <summary>
-    /// Resets the algorithm to its initial state, discarding any digits previously absorbed.
-    /// </summary>
-    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
-    public abstract void Reset();
-
-    /// <summary>
     /// Returns the check digit computed for the body absorbed since the last <see cref="Reset" /> (or since
     /// construction).
     /// </summary>
@@ -84,4 +79,11 @@ public abstract class CheckDigitAlgorithm
     /// <remarks>This call is non-destructive; the running state is unaffected and the method may be invoked any
     /// number of times with identical results between appends.</remarks>
     public abstract char GetCurrentCheckDigit();
+
+    /// <summary>
+    /// Resets the algorithm to its initial state, discarding any digits previously absorbed.
+    /// </summary>
+    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
+    public abstract void Reset();
+
 }

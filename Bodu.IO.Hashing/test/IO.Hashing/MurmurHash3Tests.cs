@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MurmurHash3Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,8 +16,6 @@ public abstract partial class MurmurHash3Tests<TTest, TAlgorithm>
     where TTest : MurmurHash3Tests<TTest, TAlgorithm>, new()
     where TAlgorithm : MurmurHash3<TAlgorithm>, new()
 {
-    /// <inheritdoc />
-    protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
 
     /// <inheritdoc />
     /// <remarks>
@@ -26,4 +24,8 @@ public abstract partial class MurmurHash3Tests<TTest, TAlgorithm>
     /// </remarks>
     protected override IReadOnlyCollection<string> ExcludedReadablePropertyNames =>
         [nameof(MurmurHash3<TAlgorithm>.Seed)];
+
+    /// <inheritdoc />
+    protected override TAlgorithm CreateAlgorithm(SingleTestVariant variant) => new();
+
 }

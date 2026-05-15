@@ -33,6 +33,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 public sealed class AbaRoutingNumber
     : CheckDigitAlgorithm
 {
+
     /// <summary>The required body length of <c>8</c> decimal digits.</summary>
     public const int BodyLength = 8;
 
@@ -56,35 +57,6 @@ public sealed class AbaRoutingNumber
 
     /// <inheritdoc />
     public override string AlgorithmName => "ABA";
-
-    /// <inheritdoc />
-    public override void Append(ReadOnlySpan<char> digits)
-    {
-        for (var i = 0; i < digits.Length; i++)
-        {
-            var ch = digits[i];
-            if ((uint)(ch - '0') > 9u)
-                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
-
-            this._digits.Add(ch - '0');
-        }
-    }
-
-    /// <inheritdoc />
-    public override void Reset() =>
-        _digits.Clear();
-
-    /// <inheritdoc />
-    public override char GetCurrentCheckDigit()
-    {
-        ReadOnlySpan<int> weights = new int[] { 7, 3, 1 };
-        var count = _digits.Count;
-        var sum = 0;
-        for (int i = count - 1, j = 0; i >= 0; i--, j++)
-            sum += _digits[i] * weights[j % 3];
-
-        return (char)('0' + ((10 - (sum % 10)) % 10));
-    }
 
     /// <summary>
     /// Computes the ABA routing-number check digit for the supplied body of decimal digits without allocating a
@@ -118,4 +90,34 @@ public sealed class AbaRoutingNumber
         if (digitsIncludingCheck.Length != SequenceLength) return false;
         return WeightedMod10.IsValidAba(digitsIncludingCheck);
     }
+
+    /// <inheritdoc />
+    public override void Append(ReadOnlySpan<char> digits)
+    {
+        for (var i = 0; i < digits.Length; i++)
+        {
+            var ch = digits[i];
+            if ((uint)(ch - '0') > 9u)
+                ThrowHelper.ThrowIfNotAsciiDecimalDigit(ch, nameof(digits));
+
+            this._digits.Add(ch - '0');
+        }
+    }
+
+    /// <inheritdoc />
+    public override char GetCurrentCheckDigit()
+    {
+        ReadOnlySpan<int> weights = new int[] { 7, 3, 1 };
+        var count = _digits.Count;
+        var sum = 0;
+        for (int i = count - 1, j = 0; i >= 0; i--, j++)
+            sum += _digits[i] * weights[j % 3];
+
+        return (char)('0' + ((10 - (sum % 10)) % 10));
+    }
+
+    /// <inheritdoc />
+    public override void Reset() =>
+        _digits.Clear();
+
 }

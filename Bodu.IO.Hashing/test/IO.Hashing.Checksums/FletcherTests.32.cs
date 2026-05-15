@@ -13,26 +13,6 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed partial class Fletcher32Tests
     : FletcherTests<Fletcher32Tests, Fletcher32>
 {
-    /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
-        new()
-        {
-            HashLengthInBytes = 4,
-            AlgorithmName = "Fletcher-32",
-            BlockSizeBytes = 2,
-            KnownAnswers = new()
-            {
-                Empty = "00000000",
-                Abc = "018A00C6",
-
-                // QuickBrownFox suppressed — tracked by issue #167 (Adler/Fletcher KAT mismatch
-                // observed on PR #166 CI: index 1 expected 0xCD, actual 0xDC). Restore once the
-                // root cause is identified and fixed.
-                QuickBrownFox = "5BA30FD9",
-                Zeros16 = "00000000",
-                Sequential0To255= "2B2A7E81",
-            },
-        };
 
     /// <inheritdoc />
     /// <remarks>
@@ -51,4 +31,25 @@ public sealed partial class Fletcher32Tests
         "0E46017A", "0FDC0196", "118F01B3", "136001D1",
         "155001F0", "17600210",
     };
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) =>
+        new()
+        {
+            HashLengthInBytes = 4,
+            AlgorithmName = "Fletcher-32",
+            BlockSizeBytes = 2,
+            KnownAnswers = new()
+            {
+                Empty = "00000000",
+                Abc = "018A00C6",
+
+                // QuickBrownFox suppressed — tracked by issue #167 (Adler/Fletcher KAT mismatch
+                // observed on PR #166 CI: index 1 expected 0xCD, actual 0xDC). Restore once the
+                // root cause is identified and fixed.
+                QuickBrownFox = "5BA30FD9",
+                Zeros16 = "00000000",
+                Sequential0To255 = "2B2A7E81",
+            },
+        };
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AlphanumericCheckDigitAlgorithmSpecification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,23 +26,12 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public sealed record AlphanumericCheckDigitAlgorithmSpecification
 {
+
     /// <summary>
     /// Gets the expected <see cref="AlphanumericCheckDigitAlgorithm.AlgorithmName" /> string.
     /// </summary>
     /// <returns>The canonical algorithm name, e.g. <c>"ISBN-10"</c>.</returns>
     public required string AlgorithmName { get; init; }
-
-    /// <summary>
-    /// Gets the expected <see cref="AlphanumericCheckDigitAlgorithm.InputAlphabet" /> value.
-    /// </summary>
-    /// <returns>The declared input alphabet for the algorithm under test.</returns>
-    public required CheckDigitInputAlphabet InputAlphabet { get; init; }
-
-    /// <summary>
-    /// Gets the expected <see cref="AlphanumericCheckDigitAlgorithm.OutputAlphabet" /> value.
-    /// </summary>
-    /// <returns>The declared output alphabet for the algorithm under test.</returns>
-    public required CheckDigitOutputAlphabet OutputAlphabet { get; init; }
 
     /// <summary>
     /// Gets the check character expected for an empty body, or <see langword="null" /> to indicate that the
@@ -52,8 +41,21 @@ public sealed record AlphanumericCheckDigitAlgorithmSpecification
     public char? EmptyCheckDigit { get; init; } = '0';
 
     /// <summary>
+    /// Gets the expected <see cref="AlphanumericCheckDigitAlgorithm.InputAlphabet" /> value.
+    /// </summary>
+    /// <returns>The declared input alphabet for the algorithm under test.</returns>
+    public required CheckDigitInputAlphabet InputAlphabet { get; init; }
+
+    /// <summary>
     /// Gets the known-answer vectors to exercise.
     /// </summary>
     /// <returns>A non-empty list of <see cref="CheckDigitKnownAnswer" /> entries.</returns>
     public required IReadOnlyList<CheckDigitKnownAnswer> KnownAnswers { get; init; }
+
+    /// <summary>
+    /// Gets the expected <see cref="AlphanumericCheckDigitAlgorithm.OutputAlphabet" /> value.
+    /// </summary>
+    /// <returns>The declared output alphabet for the algorithm under test.</returns>
+    public required CheckDigitOutputAlphabet OutputAlphabet { get; init; }
+
 }

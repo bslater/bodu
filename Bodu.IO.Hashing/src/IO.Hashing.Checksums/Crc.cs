@@ -4,13 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu;
-using Bodu.Extensions;
-using Bodu.IO.Hashing;
 using System;
 using System.Buffers.Binary;
 using System.IO.Hashing;
 using System.Runtime.CompilerServices;
+using Bodu.Extensions;
 
 namespace Bodu.IO.Hashing.Checksums;
 
@@ -111,12 +109,13 @@ public sealed class Crc
     : NonCryptographicHashAlgorithm,
       IResumableHashAlgorithm
 {
+
     private static Lazy<CrcLookupTableCache> s_globalLookupTableCache =
         new Lazy<CrcLookupTableCache>(() => new CrcLookupTableCache());
-
-    private readonly CrcStandard _standard;
     private readonly int _hashSizeBits;
     private readonly ulong[] _lookupTable;
+
+    private readonly CrcStandard _standard;
     private ulong _workingHash;
 
     /// <summary>
@@ -199,23 +198,6 @@ public sealed class Crc
         this.ProcessBlocks(source);
     }
 
-    /// <inheritdoc />
-    public override void Reset()
-    {
-        this._workingHash = this.ComputeInitialState();
-    }
-
-    /// <inheritdoc />
-    /// <remarks>
-    /// Finalization (output reflection, XOR-out, and width-masking) is applied to a snapshot of the accumulator so that
-    /// the instance remains usable for further <see cref="Append(ReadOnlySpan{byte})" /> calls after retrieval.
-    /// </remarks>
-    protected override void GetCurrentHashCore(Span<byte> destination)
-    {
-        var folded = this.FoldOutputState(this._workingHash);
-        WriteHashBytes(folded, this.HashLengthInBytes, destination);
-    }
-
     /// <summary>
     /// Computes and returns the CRC hash of the specified input in a single call, resetting internal state first.
     /// </summary>
@@ -248,6 +230,18 @@ public sealed class Crc
 
     /// <inheritdoc />
     /// <remarks>
+    /// Reverses finalization on <paramref name="previousHash" />, resumes the CRC computation with the contents of
+    /// <paramref name="newData" />, and returns the final CRC hash as a new byte array.
+    /// </remarks>
+    public byte[] ComputeHashFrom(ReadOnlySpan<byte> previousHash, ReadOnlySpan<byte> newData)
+    {
+        var buffer = new byte[this.HashLengthInBytes];
+        this.TryComputeHashFrom(previousHash, newData, buffer, out _);
+        return buffer;
+    }
+
+    /// <inheritdoc />
+    /// <remarks>
     /// Reverses finalization on <paramref name="previousHash" /> and continues the CRC computation with a sliced segment
     /// of <paramref name="newData" /> (starting at <paramref name="offset" /> and spanning <paramref name="length" />).
     /// </remarks>
@@ -260,15 +254,9 @@ public sealed class Crc
     }
 
     /// <inheritdoc />
-    /// <remarks>
-    /// Reverses finalization on <paramref name="previousHash" />, resumes the CRC computation with the contents of
-    /// <paramref name="newData" />, and returns the final CRC hash as a new byte array.
-    /// </remarks>
-    public byte[] ComputeHashFrom(ReadOnlySpan<byte> previousHash, ReadOnlySpan<byte> newData)
+    public override void Reset()
     {
-        var buffer = new byte[this.HashLengthInBytes];
-        this.TryComputeHashFrom(previousHash, newData, buffer, out _);
-        return buffer;
+        this._workingHash = this.ComputeInitialState();
     }
 
     /// <inheritdoc />
@@ -316,36 +304,30 @@ public sealed class Crc
         return true;
     }
 
-    /// <summary>
-    /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection
-    /// when required.
-    /// </summary>
-    /// <returns>The initial CRC accumulator value, bit-reflected if the standard's
-    /// <see cref="CrcStandard.ReflectIn" /> flag is set.</returns>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ulong ComputeInitialState()
-        => this._standard.ReflectIn
-            ? NumericExtensions.ReverseBitsUnchecked(this._standard.InitialValue, this._hashSizeBits)
-            : this._standard.InitialValue;
-
-    /// <summary>
-    /// Applies final output reflection, XOR-out, and width-masking to the supplied working CRC value.
-    /// </summary>
-    /// <param name="value">The working CRC accumulator to finalize.</param>
-    /// <returns>The finalized CRC output value, width-masked to the standard's polynomial size.</returns>
+    /// <inheritdoc />
     /// <remarks>
-    /// The supplied <paramref name="value" /> is passed by value and the result is returned; no instance state is
-    /// mutated. This is the load-bearing property that lets <see cref="GetCurrentHashCore" /> stay non-destructive.
+    /// Finalization (output reflection, XOR-out, and width-masking) is applied to a snapshot of the accumulator so that
+    /// the instance remains usable for further <see cref="Append(ReadOnlySpan{byte})" /> calls after retrieval.
     /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private ulong FoldOutputState(ulong value)
+    protected override void GetCurrentHashCore(Span<byte> destination)
     {
-        if (this._standard.ReflectIn ^ this._standard.ReflectOut)
-            value = NumericExtensions.ReverseBitsUnchecked(value, this._hashSizeBits);
+        var folded = this.FoldOutputState(this._workingHash);
+        WriteHashBytes(folded, this.HashLengthInBytes, destination);
+    }
 
-        value ^= this._standard.XOrOut;
-        value &= ulong.MaxValue >> (64 - this._hashSizeBits);
-        return value;
+    /// <summary>
+    /// Returns the output byte length for <paramref name="crcStandard" />, rounding up the polynomial
+    /// width in bits to the next whole byte.
+    /// </summary>
+    /// <param name="crcStandard">The CRC standard whose output size is requested. Must not be
+    /// <see langword="null" />.</param>
+    /// <returns>The output length in bytes.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="crcStandard" /> is <see langword="null" />.</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static int HashLengthInBytesFor(CrcStandard crcStandard)
+    {
+        ThrowHelper.ThrowIfNull(crcStandard);
+        return (crcStandard.Size + 7) / 8;
     }
 
     /// <summary>
@@ -434,6 +416,53 @@ public sealed class Crc
     }
 
     /// <summary>
+    /// Writes the low <paramref name="byteCount" /> bytes of <paramref name="value" /> to <paramref name="destination" />
+    /// in little-endian order.
+    /// </summary>
+    /// <param name="value">The 64-bit value whose low bytes are to be written.</param>
+    /// <param name="byteCount">The number of low-order bytes to write; must be between 1 and 8.</param>
+    /// <param name="destination">The destination span; must be at least <paramref name="byteCount" /> bytes long.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static void WriteHashBytes(ulong value, int byteCount, Span<byte> destination)
+    {
+        Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
+        BinaryPrimitives.WriteUInt64LittleEndian(fullWord, value);
+        fullWord.Slice(0, byteCount).CopyTo(destination);
+    }
+
+    /// <summary>
+    /// Returns the working-state representation of <see cref="CrcStandard.InitialValue" />, applying input reflection
+    /// when required.
+    /// </summary>
+    /// <returns>The initial CRC accumulator value, bit-reflected if the standard's
+    /// <see cref="CrcStandard.ReflectIn" /> flag is set.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private ulong ComputeInitialState()
+        => this._standard.ReflectIn
+            ? NumericExtensions.ReverseBitsUnchecked(this._standard.InitialValue, this._hashSizeBits)
+            : this._standard.InitialValue;
+
+    /// <summary>
+    /// Applies final output reflection, XOR-out, and width-masking to the supplied working CRC value.
+    /// </summary>
+    /// <param name="value">The working CRC accumulator to finalize.</param>
+    /// <returns>The finalized CRC output value, width-masked to the standard's polynomial size.</returns>
+    /// <remarks>
+    /// The supplied <paramref name="value" /> is passed by value and the result is returned; no instance state is
+    /// mutated. This is the load-bearing property that lets <see cref="GetCurrentHashCore" /> stay non-destructive.
+    /// </remarks>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private ulong FoldOutputState(ulong value)
+    {
+        if (this._standard.ReflectIn ^ this._standard.ReflectOut)
+            value = NumericExtensions.ReverseBitsUnchecked(value, this._hashSizeBits);
+
+        value ^= this._standard.XOrOut;
+        value &= ulong.MaxValue >> (64 - this._hashSizeBits);
+        return value;
+    }
+
+    /// <summary>
     /// Routes <paramref name="data" /> through the reflected or non-reflected byte-wise path
     /// when the hash width is at least a byte, or the corresponding bit-wise path otherwise.
     /// </summary>
@@ -455,33 +484,4 @@ public sealed class Crc
         }
     }
 
-    /// <summary>
-    /// Writes the low <paramref name="byteCount" /> bytes of <paramref name="value" /> to <paramref name="destination" />
-    /// in little-endian order.
-    /// </summary>
-    /// <param name="value">The 64-bit value whose low bytes are to be written.</param>
-    /// <param name="byteCount">The number of low-order bytes to write; must be between 1 and 8.</param>
-    /// <param name="destination">The destination span; must be at least <paramref name="byteCount" /> bytes long.</param>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static void WriteHashBytes(ulong value, int byteCount, Span<byte> destination)
-    {
-        Span<byte> fullWord = stackalloc byte[sizeof(ulong)];
-        BinaryPrimitives.WriteUInt64LittleEndian(fullWord, value);
-        fullWord.Slice(0, byteCount).CopyTo(destination);
-    }
-
-    /// <summary>
-    /// Returns the output byte length for <paramref name="crcStandard" />, rounding up the polynomial
-    /// width in bits to the next whole byte.
-    /// </summary>
-    /// <param name="crcStandard">The CRC standard whose output size is requested. Must not be
-    /// <see langword="null" />.</param>
-    /// <returns>The output length in bytes.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="crcStandard" /> is <see langword="null" />.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static int HashLengthInBytesFor(CrcStandard crcStandard)
-    {
-        ThrowHelper.ThrowIfNull(crcStandard);
-        return (crcStandard.Size + 7) / 8;
-    }
 }

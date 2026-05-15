@@ -10,6 +10,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class BernsteinTests
 {
+
     /// <summary>
     /// Verifies that the default constructor selects <see cref="Bernstein.DefaultInitialValue" />.
     /// </summary>
@@ -18,23 +19,6 @@ public partial class BernsteinTests
     {
         Bernstein algorithm = new();
         Assert.AreEqual(Bernstein.DefaultInitialValue, algorithm.InitialValue);
-    }
-
-    /// <summary>
-    /// Verifies that changing <see cref="Bernstein.InitialValue" /> before any input has been consumed
-    /// updates the accumulator so that two instances with distinct seeds produce distinct digests.
-    /// </summary>
-    [TestMethod]
-    public void InitialValue_WhenSetBeforeHashing_ShouldAffectResult()
-    {
-        var input = NonCryptographicHashSharedInputs.Abc;
-
-        Bernstein a = new() { InitialValue = 1U };
-        Bernstein b = new() { InitialValue = 2U };
-        a.Append(input);
-        b.Append(input);
-
-        CollectionAssert.AreNotEqual(a.GetCurrentHash(), b.GetCurrentHash());
     }
 
     /// <summary>
@@ -81,16 +65,20 @@ public partial class BernsteinTests
     }
 
     /// <summary>
-    /// Verifies that an initial seed of zero is accepted and yields a 4-byte digest.
+    /// Verifies that changing <see cref="Bernstein.InitialValue" /> before any input has been consumed
+    /// updates the accumulator so that two instances with distinct seeds produce distinct digests.
     /// </summary>
     [TestMethod]
-    public void InitialValue_WhenSetToZero_ShouldBeAccepted()
+    public void InitialValue_WhenSetBeforeHashing_ShouldAffectResult()
     {
-        Bernstein algorithm = new() { InitialValue = 0U };
-        algorithm.Append(NonCryptographicHashSharedInputs.Abc);
+        var input = NonCryptographicHashSharedInputs.Abc;
 
-        var digest = algorithm.GetCurrentHash();
-        Assert.AreEqual(4, digest.Length);
+        Bernstein a = new() { InitialValue = 1U };
+        Bernstein b = new() { InitialValue = 2U };
+        a.Append(input);
+        b.Append(input);
+
+        CollectionAssert.AreNotEqual(a.GetCurrentHash(), b.GetCurrentHash());
     }
 
     /// <summary>
@@ -105,4 +93,18 @@ public partial class BernsteinTests
         var digest = algorithm.GetCurrentHash();
         Assert.IsNotNull(digest);
     }
+
+    /// <summary>
+    /// Verifies that an initial seed of zero is accepted and yields a 4-byte digest.
+    /// </summary>
+    [TestMethod]
+    public void InitialValue_WhenSetToZero_ShouldBeAccepted()
+    {
+        Bernstein algorithm = new() { InitialValue = 0U };
+        algorithm.Append(NonCryptographicHashSharedInputs.Abc);
+
+        var digest = algorithm.GetCurrentHash();
+        Assert.AreEqual(4, digest.Length);
+    }
+
 }

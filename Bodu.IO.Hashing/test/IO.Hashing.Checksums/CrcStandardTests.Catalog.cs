@@ -5,12 +5,12 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System;
-using System.Collections.Generic;
 
 namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcStandardTests
 {
+
     /// <summary>
     /// Verifies that <see cref="CrcStandard.All" /> returns a non-empty read-only list whose count matches the
     /// number of declared <see cref="CrcStandards" /> values.
@@ -51,6 +51,19 @@ public partial class CrcStandardTests
         {
             Assert.AreSame(CrcStandard.Get(values[i]), all[i]);
         }
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.FromName(string)" /> performs an ordinal case-sensitive comparison and
+    /// therefore rejects a lowercased canonical name.
+    /// </summary>
+    [TestMethod]
+    public void FromName_WhenNameCaseDiffers_ShouldThrowKeyNotFoundException()
+    {
+        Assert.ThrowsExactly<KeyNotFoundException>(() =>
+        {
+            _ = CrcStandard.FromName("crc-32/iso-hdlc");
+        });
     }
 
     /// <summary>
@@ -109,69 +122,16 @@ public partial class CrcStandardTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="CrcStandard.FromName(string)" /> performs an ordinal case-sensitive comparison and
-    /// therefore rejects a lowercased canonical name.
+    /// Verifies that successive calls to <see cref="CrcStandard.Get(CrcStandards)" /> for the same enum value
+    /// return the same cached instance to guarantee reference-equality stability.
     /// </summary>
     [TestMethod]
-    public void FromName_WhenNameCaseDiffers_ShouldThrowKeyNotFoundException()
+    public void Get_WhenInvokedRepeatedly_ShouldReturnSameInstance()
     {
-        Assert.ThrowsExactly<KeyNotFoundException>(() =>
-        {
-            _ = CrcStandard.FromName("crc-32/iso-hdlc");
-        });
-    }
+        var first = CrcStandard.Get(CrcStandards.CRC32_ISOHDLC);
+        var second = CrcStandard.Get(CrcStandards.CRC32_ISOHDLC);
 
-    /// <summary>
-    /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> returns <see langword="true" />
-    /// and produces the canonical instance for a known catalogue name.
-    /// </summary>
-    [TestMethod]
-    public void TryFromName_WhenNameIsCanonical_ShouldReturnTrueAndProduceCanonicalInstance()
-    {
-        bool ok = CrcStandard.TryFromName("CRC-32/ISO-HDLC", out CrcStandard? resolved);
-
-        Assert.IsTrue(ok);
-        Assert.IsNotNull(resolved);
-        Assert.AreSame(CrcStandard.Get(CrcStandards.CRC32_ISOHDLC), resolved);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> returns <see langword="false" />
-    /// and a <see langword="null" /> standard when the supplied name does not match any catalogue entry.
-    /// </summary>
-    [TestMethod]
-    public void TryFromName_WhenNameIsUnknown_ShouldReturnFalseAndNull()
-    {
-        bool ok = CrcStandard.TryFromName("CRC-NOT-A-REAL-STANDARD", out CrcStandard? resolved);
-
-        Assert.IsFalse(ok);
-        Assert.IsNull(resolved);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> returns <see langword="false" />
-    /// rather than throwing when the supplied name is <see langword="null" />.
-    /// </summary>
-    [TestMethod]
-    public void TryFromName_WhenNameIsNull_ShouldReturnFalseAndNull()
-    {
-        bool ok = CrcStandard.TryFromName(null, out CrcStandard? resolved);
-
-        Assert.IsFalse(ok);
-        Assert.IsNull(resolved);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> is case-sensitive and rejects a
-    /// lowercased canonical name.
-    /// </summary>
-    [TestMethod]
-    public void TryFromName_WhenNameCaseDiffers_ShouldReturnFalse()
-    {
-        bool ok = CrcStandard.TryFromName("crc-16/modbus", out CrcStandard? resolved);
-
-        Assert.IsFalse(ok);
-        Assert.IsNull(resolved);
+        Assert.AreSame(first, second);
     }
 
     /// <summary>
@@ -187,19 +147,6 @@ public partial class CrcStandardTests
             _ = CrcStandard.Get((CrcStandards)(-1));
         });
         Assert.AreEqual("standard", ex.ParamName);
-    }
-
-    /// <summary>
-    /// Verifies that successive calls to <see cref="CrcStandard.Get(CrcStandards)" /> for the same enum value
-    /// return the same cached instance to guarantee reference-equality stability.
-    /// </summary>
-    [TestMethod]
-    public void Get_WhenInvokedRepeatedly_ShouldReturnSameInstance()
-    {
-        var first = CrcStandard.Get(CrcStandards.CRC32_ISOHDLC);
-        var second = CrcStandard.Get(CrcStandards.CRC32_ISOHDLC);
-
-        Assert.AreSame(first, second);
     }
 
     /// <summary>
@@ -236,4 +183,58 @@ public partial class CrcStandardTests
         Assert.AreEqual("CRC-64/ECMA-182", CrcStandard.CRC64_ECMA182.Name);
         Assert.AreEqual("CRC-64/XZ", CrcStandard.CRC64_XZ.Name);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> is case-sensitive and rejects a
+    /// lowercased canonical name.
+    /// </summary>
+    [TestMethod]
+    public void TryFromName_WhenNameCaseDiffers_ShouldReturnFalse()
+    {
+        bool ok = CrcStandard.TryFromName("crc-16/modbus", out CrcStandard? resolved);
+
+        Assert.IsFalse(ok);
+        Assert.IsNull(resolved);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> returns <see langword="true" />
+    /// and produces the canonical instance for a known catalogue name.
+    /// </summary>
+    [TestMethod]
+    public void TryFromName_WhenNameIsCanonical_ShouldReturnTrueAndProduceCanonicalInstance()
+    {
+        bool ok = CrcStandard.TryFromName("CRC-32/ISO-HDLC", out CrcStandard? resolved);
+
+        Assert.IsTrue(ok);
+        Assert.IsNotNull(resolved);
+        Assert.AreSame(CrcStandard.Get(CrcStandards.CRC32_ISOHDLC), resolved);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> returns <see langword="false" />
+    /// rather than throwing when the supplied name is <see langword="null" />.
+    /// </summary>
+    [TestMethod]
+    public void TryFromName_WhenNameIsNull_ShouldReturnFalseAndNull()
+    {
+        bool ok = CrcStandard.TryFromName(null, out CrcStandard? resolved);
+
+        Assert.IsFalse(ok);
+        Assert.IsNull(resolved);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="CrcStandard.TryFromName(string, out CrcStandard)" /> returns <see langword="false" />
+    /// and a <see langword="null" /> standard when the supplied name does not match any catalogue entry.
+    /// </summary>
+    [TestMethod]
+    public void TryFromName_WhenNameIsUnknown_ShouldReturnFalseAndNull()
+    {
+        bool ok = CrcStandard.TryFromName("CRC-NOT-A-REAL-STANDARD", out CrcStandard? resolved);
+
+        Assert.IsFalse(ok);
+        Assert.IsNull(resolved);
+    }
+
 }

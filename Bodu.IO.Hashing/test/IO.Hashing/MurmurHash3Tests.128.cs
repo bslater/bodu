@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MurmurHash3Tests.128.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,20 +13,6 @@ namespace Bodu.IO.Hashing;
 public sealed partial class MurmurHash3_128Tests
     : MurmurHash3Tests<MurmurHash3_128Tests, MurmurHash3_128>
 {
-    /// <inheritdoc />
-    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
-    {
-        HashLengthInBytes = 16,
-        KnownAnswers = new()
-        {
-            // Seed = 0. Verified against the reference MurmurHash3_x64_128 implementation.
-            Empty = "00000000000000000000000000000000",
-            Abc = "DE2FF8A27764BE8D4AA65B1C4FEE2B9E",
-            QuickBrownFox = "6C1B07BC7BBC4BE347939AC4A93C437A",
-            Zeros16 = "D618A97DF21BBD4BB61C79CDECA965B4",
-            Sequential0To255 = "9D586942829AB00383DAED0E6167FB85",
-        },
-    };
 
     /// <inheritdoc />
     protected override IReadOnlyList<string> GetExpectedHashesForIncrementalInput(SingleTestVariant variant) => new[]
@@ -65,4 +51,19 @@ public sealed partial class MurmurHash3_128Tests
         "236B3D4421A48893FE8EC4CDF751DF63", "588087B47715121E9597460C827F366A", "66B241284915E667B30AF54441C7D5C6", "4B43AF66BDF09FBA5E41DBB64227F511",
         "537EF1A53B4DD7952E808DB6AFA7A0AB", "E5AF6FDC48D6675388233CA8627CFE63",
     };
+    /// <inheritdoc />
+    protected override NonCryptographicHashAlgorithmSpecification GetSpecification(SingleTestVariant variant) => new()
+    {
+        HashLengthInBytes = 16,
+        KnownAnswers = new()
+        {
+            // Seed = 0. Verified against the reference MurmurHash3_x64_128 implementation.
+            Empty = "00000000000000000000000000000000",
+            Abc = "DE2FF8A27764BE8D4AA65B1C4FEE2B9E",
+            QuickBrownFox = "6C1B07BC7BBC4BE347939AC4A93C437A",
+            Zeros16 = "D618A97DF21BBD4BB61C79CDECA965B4",
+            Sequential0To255 = "9D586942829AB00383DAED0E6167FB85",
+        },
+    };
+
 }

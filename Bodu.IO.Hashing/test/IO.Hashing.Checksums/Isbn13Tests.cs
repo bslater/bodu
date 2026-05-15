@@ -15,6 +15,10 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed class Isbn13Tests
     : CheckDigitAlgorithmTests<Isbn13Tests, Isbn13>
 {
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
+        Isbn13.Compute(digits);
     /// <inheritdoc />
     protected override CheckDigitAlgorithmSpecification GetSpecification() => new()
     {
@@ -22,7 +26,7 @@ public sealed class Isbn13Tests
         EmptyCheckDigit = '0',
         KnownAnswers =
         [
-            new() { Name = "Empty",               Body = "",              ExpectedCheck = '0' },
+            new() { Name = "Empty",               Body = string.Empty,              ExpectedCheck = '0' },
             new() { Name = "SingleZero",          Body = "0",             ExpectedCheck = '0' },
             new() { Name = "WikipediaISBN13",     Body = "978030640615",  ExpectedCheck = '7' },
             new() { Name = "KnuthVolume1",        Body = "978020137962",  ExpectedCheck = '4' },
@@ -31,10 +35,7 @@ public sealed class Isbn13Tests
     };
 
     /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> digits) =>
-        Isbn13.Compute(digits);
-
-    /// <inheritdoc />
     protected override bool IsValidStatic(ReadOnlySpan<char> digitsIncludingCheck) =>
         Isbn13.IsValid(digitsIncludingCheck);
+
 }

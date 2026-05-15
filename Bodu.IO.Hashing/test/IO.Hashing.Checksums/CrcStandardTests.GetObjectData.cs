@@ -12,6 +12,23 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcStandardTests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="ISerializable.GetObjectData" /> throws <see cref="ArgumentNullException" /> with
+    /// <c>ParamName</c> equal to <c>info</c> when invoked with a <see langword="null" />
+    /// <see cref="SerializationInfo" />.
+    /// </summary>
+    [TestMethod]
+    public void GetObjectData_WhenInfoIsNull_ShouldThrowArgumentNullException()
+    {
+        CrcStandard standard = CreateReference();
+
+        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ((ISerializable)standard).GetObjectData(null!, new StreamingContext(StreamingContextStates.All));
+        });
+        Assert.AreEqual("info", ex.ParamName);
+    }
     /// <summary>
     /// Verifies that <see cref="ISerializable.GetObjectData" /> populates the
     /// <see cref="SerializationInfo" /> with the expected field set, and that a round-trip through the
@@ -47,20 +64,4 @@ public partial class CrcStandardTests
         Assert.AreEqual(original.GetHashCode(), restored.GetHashCode());
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ISerializable.GetObjectData" /> throws <see cref="ArgumentNullException" /> with
-    /// <c>ParamName</c> equal to <c>info</c> when invoked with a <see langword="null" />
-    /// <see cref="SerializationInfo" />.
-    /// </summary>
-    [TestMethod]
-    public void GetObjectData_WhenInfoIsNull_ShouldThrowArgumentNullException()
-    {
-        CrcStandard standard = CreateReference();
-
-        ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(            () =>
-        {
-            ((ISerializable)standard).GetObjectData(null!, new StreamingContext(StreamingContextStates.All));
-        });
-        Assert.AreEqual("info", ex.ParamName);
-    }
 }

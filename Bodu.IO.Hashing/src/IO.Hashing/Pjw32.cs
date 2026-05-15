@@ -48,6 +48,7 @@ namespace Bodu.IO.Hashing;
 public sealed class Pjw32
     : NonCryptographicHashAlgorithm
 {
+
     private const int HashLength = 4;
     private const uint HighBitsMask = 0xF0000000u;
     private const uint LowBitsMask = 0x0FFFFFFFu;
@@ -85,4 +86,5 @@ public sealed class Pjw32
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination) =>
         BinaryPrimitives.WriteUInt32BigEndian(destination, this._workingHash);
+
 }

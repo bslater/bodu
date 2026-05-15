@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="NonCryptographicHashAlgorithmSpecification.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,8 +20,6 @@ namespace Bodu.IO.Hashing;
 /// </remarks>
 public record NonCryptographicHashAlgorithmSpecification
 {
-    /// <summary>Gets the expected <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.</summary>
-    public required int HashLengthInBytes { get; init; }
 
     /// <summary>
     /// Gets the expected algorithm name string, when the concrete type exposes one via its own surface.
@@ -40,6 +38,15 @@ public record NonCryptographicHashAlgorithmSpecification
     public int? BlockSizeBytes { get; init; }
 
     /// <summary>
+    /// Gets the input lengths used to exercise distinct internal algorithm paths during hash distribution tests.
+    /// Defaults to a general-purpose set suitable for most streaming hash algorithms; override for algorithms
+    /// with well-defined internal path boundaries.
+    /// </summary>
+    public IReadOnlyList<int> BoundaryLengths { get; init; } = [1, 8, 16, 64];
+    /// <summary>Gets the expected <see cref="NonCryptographicHashAlgorithm.HashLengthInBytes" />.</summary>
+    public required int HashLengthInBytes { get; init; }
+
+    /// <summary>
     /// Optional override for the upper bound (in bytes) of the dense incremental-input test.
     /// When <see langword="null" />, the test defaults to <c>HashLengthInBytes * 4</c> for
     /// block-based algorithms and <c>16</c> for byte-stream algorithms
@@ -49,11 +56,34 @@ public record NonCryptographicHashAlgorithmSpecification
     public int? IncrementalCoverageBytes { get; init; }
 
     /// <summary>
-    /// Gets the input lengths used to exercise distinct internal algorithm paths during hash distribution tests.
-    /// Defaults to a general-purpose set suitable for most streaming hash algorithms; override for algorithms
-    /// with well-defined internal path boundaries.
+    /// Gets a value indicating whether the algorithm implements <see cref="IResumableHashAlgorithm" /> and
+    /// supports continuing a previous finalised hash with additional input data.
     /// </summary>
-    public IReadOnlyList<int> BoundaryLengths { get; init; } = [1, 8, 16, 64];
+    /// <value>
+    /// <see langword="true" /> if the algorithm exposes resume semantics; otherwise, <see langword="false" />.
+    /// Defaults to <see langword="false" />.
+    /// </value>
+    public bool IsResumable { get; init; } = false;
+
+    /// <summary>
+    /// Gets a value indicating whether the algorithm produces the same output regardless of any prior hashing
+    /// operations performed on the instance.
+    /// </summary>
+    /// <value>
+    /// <see langword="true" /> if the algorithm is entirely stateless; otherwise, <see langword="false" />.
+    /// Defaults to <see langword="false" />.
+    /// </value>
+    public bool IsStateless { get; init; } = false;
+
+    /// <summary>
+    /// Gets the known-answer test vectors associated with this variant.
+    /// </summary>
+    /// <value>
+    /// A <see cref="NonCryptographicHashKnownAnswers" /> record carrying the expected digests for the shared
+    /// inputs and any algorithm-specific extension vectors. Defaults to an empty record, in which case the
+    /// harness emits no named-input assertions for this variant.
+    /// </value>
+    public NonCryptographicHashKnownAnswers KnownAnswers { get; init; } = new();
 
     /// <summary>
     /// Gets the input length used to exercise the long/iterative internal path of the algorithm. Should be large
@@ -68,33 +98,4 @@ public record NonCryptographicHashAlgorithmSpecification
     /// </summary>
     public int? MinNonZeroBytesForLongInput { get; init; } = null;
 
-    /// <summary>
-    /// Gets a value indicating whether the algorithm produces the same output regardless of any prior hashing
-    /// operations performed on the instance.
-    /// </summary>
-    /// <value>
-    /// <see langword="true" /> if the algorithm is entirely stateless; otherwise, <see langword="false" />.
-    /// Defaults to <see langword="false" />.
-    /// </value>
-    public bool IsStateless { get; init; } = false;
-
-    /// <summary>
-    /// Gets a value indicating whether the algorithm implements <see cref="IResumableHashAlgorithm" /> and
-    /// supports continuing a previous finalised hash with additional input data.
-    /// </summary>
-    /// <value>
-    /// <see langword="true" /> if the algorithm exposes resume semantics; otherwise, <see langword="false" />.
-    /// Defaults to <see langword="false" />.
-    /// </value>
-    public bool IsResumable { get; init; } = false;
-
-    /// <summary>
-    /// Gets the known-answer test vectors associated with this variant.
-    /// </summary>
-    /// <value>
-    /// A <see cref="NonCryptographicHashKnownAnswers" /> record carrying the expected digests for the shared
-    /// inputs and any algorithm-specific extension vectors. Defaults to an empty record, in which case the
-    /// harness emits no named-input assertions for this variant.
-    /// </value>
-    public NonCryptographicHashKnownAnswers KnownAnswers { get; init; } = new();
 }

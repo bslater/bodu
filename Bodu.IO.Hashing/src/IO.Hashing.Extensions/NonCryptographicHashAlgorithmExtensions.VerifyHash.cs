@@ -13,6 +13,7 @@ using System.Text;
 
 public static partial class NonCryptographicHashAlgorithmExtensions
 {
+
     /// <summary>
     /// Verifies that the computed hash of the input data matches the expected hash value.
     /// </summary>
@@ -288,4 +289,5 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 
         return algorithm.VerifyHash(data, expectedHash);
     }
+
 }

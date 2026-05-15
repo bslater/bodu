@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorithm>
 {
+
     /// <summary>
     /// Verifies that appending an empty span leaves the running check code unchanged — equal to the value
     /// reported by a freshly constructed instance.
@@ -86,4 +87,5 @@ public abstract partial class MultiCharCheckDigitAlgorithmTests<TTest, TAlgorith
 
         Assert.AreEqual(expectedCheck, algorithm.GetCurrentCheckDigits());
     }
+
 }

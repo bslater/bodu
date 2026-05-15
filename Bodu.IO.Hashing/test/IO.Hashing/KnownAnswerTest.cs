@@ -18,6 +18,7 @@ namespace Bodu.IO.Hashing;
 /// </remarks>
 public sealed class KnownAnswerTest
 {
+
     /// <summary>Gets the expected digest for this known-answer test case.</summary>
     public byte[] ExpectedOutput { get; init; } = [];
 
@@ -29,4 +30,5 @@ public sealed class KnownAnswerTest
 
     /// <summary>Gets the optional auxiliary parameters associated with this test case.</summary>
     public IDictionary<string, object> Parameters { get; init; } = new Dictionary<string, object>();
+
 }

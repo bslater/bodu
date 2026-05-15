@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BlockNonCryptographicHashAlgorithmTests.Reset.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests
 {
+
     /// <summary>
     /// Verifies that <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset" /> clears the residual
     /// buffer accumulated by <c>ProcessBlocks</c> so that the next append cycle starts from an empty residual.
@@ -26,4 +27,5 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         Assert.AreEqual(1, hasher.Blocks.Count);
         CollectionAssert.AreEqual(new byte[] { 0xAA, 0xBB, 0xCC, 0xDD }, hasher.Blocks[0]);
     }
+
 }

@@ -4,8 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Extensions;
 using System.Buffers.Binary;
+using Bodu.Extensions;
 
 namespace Bodu.IO.Hashing;
 
@@ -54,6 +54,7 @@ namespace Bodu.IO.Hashing;
 public sealed class CityHash64
     : CityHash<CityHash64>
 {
+
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash64" /> class with a fixed 64-bit (8-byte) hash output size.
     /// </summary>
@@ -199,4 +200,5 @@ public sealed class CityHash64
             HashLen16(v0, w0) + (ShiftMix(y) * K1) + z,
             HashLen16(v1, w1) + x);
     }
+
 }

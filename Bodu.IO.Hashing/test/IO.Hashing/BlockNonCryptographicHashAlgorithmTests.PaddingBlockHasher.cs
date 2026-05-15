@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class BlockNonCryptographicHashAlgorithmTests
 {
+
     /// <summary>
     /// A test-only block hasher that exercises the <c>ShouldPadFinalBlock = true</c> path. Padding is a simple
     /// zero-fill out to the next block boundary plus a length-encoding block; <see cref="AllowUnalignedFinalBlock" />
@@ -17,6 +18,7 @@ public partial class BlockNonCryptographicHashAlgorithmTests
     private sealed class PaddingBlockHasher
         : BlockNonCryptographicHashAlgorithm<PaddingBlockHasher>
     {
+
         // Shared across the outer instance and any Clone() snapshots so block invocations performed during
         // GetCurrentHashCore on the clone are observable through the outer instance's Blocks property.
         public List<byte[]> Blocks = new();
@@ -26,9 +28,12 @@ public partial class BlockNonCryptographicHashAlgorithmTests
         {
         }
 
-        protected override void ProcessBlock(ReadOnlySpan<byte> block)
+        protected override PaddingBlockHasher Clone()
         {
-            Blocks.Add(block.ToArray());
+            PaddingBlockHasher clone = new();
+            clone.Blocks = Blocks;
+            clone.CopyResidualStateFrom(this);
+            return clone;
         }
 
         protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
@@ -42,14 +47,13 @@ public partial class BlockNonCryptographicHashAlgorithmTests
             return output;
         }
 
+        protected override void ProcessBlock(ReadOnlySpan<byte> block)
+        {
+            Blocks.Add(block.ToArray());
+        }
+
         protected override byte[] ProcessFinalBlock() => new byte[4];
 
-        protected override PaddingBlockHasher Clone()
-        {
-            PaddingBlockHasher clone = new();
-            clone.Blocks = Blocks;
-            clone.CopyResidualStateFrom(this);
-            return clone;
-        }
     }
+
 }

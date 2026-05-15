@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.Checksums;
 
 public partial class CrcTests
 {
+
     /// <summary>
     /// Verifies that calling the default constructor selects the CRC-32/ISO-HDLC standard.
     /// </summary>
@@ -30,4 +31,5 @@ public partial class CrcTests
             _ = new Crc(null!);
         });
     }
+
 }

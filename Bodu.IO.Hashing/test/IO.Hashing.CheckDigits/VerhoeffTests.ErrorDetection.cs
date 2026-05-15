@@ -8,35 +8,8 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public sealed partial class VerhoeffTests
 {
+
     private const string SingleDigitSeedBody = "1428570";
-
-    /// <summary>
-    /// Verifies that Verhoeff detects every single-digit substitution error in the canonical seed sequence.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenAnySingleDigitIsSubstituted_ShouldReturnFalse()
-    {
-        var check = Verhoeff.Compute(SingleDigitSeedBody.AsSpan());
-        var valid = SingleDigitSeedBody + check;
-
-        Assert.IsTrue(Verhoeff.IsValid(valid.AsSpan()), "Precondition: baseline must be valid.");
-
-        var buffer = valid.ToCharArray();
-        for (var i = 0; i < buffer.Length; i++)
-        {
-            var original = buffer[i];
-            for (var c = '0'; c <= '9'; c++)
-            {
-                if (c == original) continue;
-                buffer[i] = c;
-                Assert.IsFalse(
-                    Verhoeff.IsValid(buffer),
-                    $"Substitution of '{original}' with '{c}' at index {i} ({new string(buffer)}) must be rejected.");
-            }
-
-            buffer[i] = original;
-        }
-    }
 
     /// <summary>
     /// Verifies that Verhoeff detects <i>every</i> adjacent-digit transposition — without exception — in the
@@ -83,4 +56,33 @@ public sealed partial class VerhoeffTests
                 $"Twin substitution '33' -> '{c}{c}' ({twin}) must be rejected by Verhoeff.");
         }
     }
+
+    /// <summary>
+    /// Verifies that Verhoeff detects every single-digit substitution error in the canonical seed sequence.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAnySingleDigitIsSubstituted_ShouldReturnFalse()
+    {
+        var check = Verhoeff.Compute(SingleDigitSeedBody.AsSpan());
+        var valid = SingleDigitSeedBody + check;
+
+        Assert.IsTrue(Verhoeff.IsValid(valid.AsSpan()), "Precondition: baseline must be valid.");
+
+        var buffer = valid.ToCharArray();
+        for (var i = 0; i < buffer.Length; i++)
+        {
+            var original = buffer[i];
+            for (var c = '0'; c <= '9'; c++)
+            {
+                if (c == original) continue;
+                buffer[i] = c;
+                Assert.IsFalse(
+                    Verhoeff.IsValid(buffer),
+                    $"Substitution of '{original}' with '{c}' at index {i} ({new string(buffer)}) must be rejected.");
+            }
+
+            buffer[i] = original;
+        }
+    }
+
 }

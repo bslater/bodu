@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SedolTests.LengthTolerant.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,6 +11,7 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </summary>
 public sealed partial class SedolTests
 {
+
     /// <summary>
     /// Verifies that streaming <see cref="Sedol.Append" /> rejects a non-alphanumeric body character with
     /// <see cref="ArgumentOutOfRangeException" />. The validation must occur on the streaming surface, not just
@@ -60,4 +61,5 @@ public sealed partial class SedolTests
 
         Assert.AreEqual(checkAtSix, checkAtSeven);
     }
+
 }

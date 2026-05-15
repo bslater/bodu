@@ -15,27 +15,19 @@ namespace Bodu.IO.Hashing.Checksums;
 public sealed partial class SedolTests
     : AlphanumericCheckDigitAlgorithmTests<SedolTests, Sedol>
 {
-    /// <inheritdoc />
-    protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()
+
+    /// <summary>
+    /// Verifies that <see cref="Sedol.Compute(ReadOnlySpan{char})" /> rejects a body character that is not part of
+    /// the SEDOL alphabet by throwing <see cref="ArgumentOutOfRangeException" />.
+    /// </summary>
+    [TestMethod]
+    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
     {
-        AlgorithmName = "SEDOL",
-        InputAlphabet = CheckDigitInputAlphabet.AlphanumericUppercase,
-        OutputAlphabet = CheckDigitOutputAlphabet.DecimalDigits,
-        EmptyCheckDigit = '0',
-        KnownAnswers =
-        [
-            new() { Name = "NumericBody",      Body = "026349", ExpectedCheck = '4' },
-            new() { Name = "AlphanumericBody", Body = "B0WNLY", ExpectedCheck = '7' },
-        ],
-    };
-
-    /// <inheritdoc />
-    protected override char ComputeStatic(ReadOnlySpan<char> body) =>
-        Sedol.Compute(body);
-
-    /// <inheritdoc />
-    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
-        Sedol.IsValid(valueIncludingCheck);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Sedol.Compute("B0WNL-".AsSpan());
+        });
+    }
 
     /// <summary>
     /// Verifies that <see cref="Sedol.Compute(ReadOnlySpan{char})" /> rejects a body that contains a vowel.
@@ -57,24 +49,14 @@ public sealed partial class SedolTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
-    /// exactly <see cref="Sedol.SequenceLength" />.
+    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains a
+    /// non-alphanumeric character.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
+    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
     {
-        Assert.IsFalse(Sedol.IsValid("B0WNLY7X".AsSpan()));
-        Assert.IsFalse(Sedol.IsValid("B0WNLY".AsSpan()));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an empty
-    /// span — the documented short-circuit branch.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Sedol.IsValid(ReadOnlySpan<char>.Empty));
+        Assert.IsFalse(Sedol.IsValid("B0WNL-7".AsSpan()));
+        Assert.IsFalse(Sedol.IsValid("B0WNL 7".AsSpan()));
     }
 
     /// <summary>
@@ -96,17 +78,6 @@ public sealed partial class SedolTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose body contains a
-    /// non-alphanumeric character.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenBodyContainsInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Sedol.IsValid("B0WNL-7".AsSpan()));
-        Assert.IsFalse(Sedol.IsValid("B0WNL 7".AsSpan()));
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose check character is
     /// not a decimal digit.
     /// </summary>
@@ -118,15 +89,45 @@ public sealed partial class SedolTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Sedol.Compute(ReadOnlySpan{char})" /> rejects a body character that is not part of
-    /// the SEDOL alphabet by throwing <see cref="ArgumentOutOfRangeException" />.
+    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> returns <see langword="true" /> for an empty
+    /// span — the documented short-circuit branch.
     /// </summary>
     [TestMethod]
-    public void Compute_WhenBodyContainsInvalidCharacter_ShouldThrowArgumentOutOfRangeException()
+    public void IsValid_WhenSequenceIsEmpty_ShouldReturnTrue()
     {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = Sedol.Compute("B0WNL-".AsSpan());
-        });
+        Assert.IsTrue(Sedol.IsValid(ReadOnlySpan<char>.Empty));
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Sedol.IsValid(ReadOnlySpan{char})" /> rejects a sequence whose length is not
+    /// exactly <see cref="Sedol.SequenceLength" />.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSequenceLengthIsWrong_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Sedol.IsValid("B0WNLY7X".AsSpan()));
+        Assert.IsFalse(Sedol.IsValid("B0WNLY".AsSpan()));
+    }
+
+    /// <inheritdoc />
+    protected override char ComputeStatic(ReadOnlySpan<char> body) =>
+        Sedol.Compute(body);
+    /// <inheritdoc />
+    protected override AlphanumericCheckDigitAlgorithmSpecification GetSpecification() => new()
+    {
+        AlgorithmName = "SEDOL",
+        InputAlphabet = CheckDigitInputAlphabet.AlphanumericUppercase,
+        OutputAlphabet = CheckDigitOutputAlphabet.DecimalDigits,
+        EmptyCheckDigit = '0',
+        KnownAnswers =
+        [
+            new() { Name = "NumericBody",      Body = "026349", ExpectedCheck = '4' },
+            new() { Name = "AlphanumericBody", Body = "B0WNLY", ExpectedCheck = '7' },
+        ],
+    };
+
+    /// <inheritdoc />
+    protected override bool IsValidStatic(ReadOnlySpan<char> valueIncludingCheck) =>
+        Sedol.IsValid(valueIncludingCheck);
+
 }

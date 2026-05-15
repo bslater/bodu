@@ -32,6 +32,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// </remarks>
 public abstract class MultiCharCheckDigitAlgorithm
 {
+
     /// <summary>
     /// Initializes a new instance of the <see cref="MultiCharCheckDigitAlgorithm" /> class.
     /// </summary>
@@ -46,16 +47,16 @@ public abstract class MultiCharCheckDigitAlgorithm
     public abstract string AlgorithmName { get; }
 
     /// <summary>
-    /// Gets the subset of ASCII from which this algorithm accepts body characters.
-    /// </summary>
-    /// <returns>The declared input alphabet.</returns>
-    public abstract CheckDigitInputAlphabet InputAlphabet { get; }
-
-    /// <summary>
     /// Gets the fixed number of decimal-digit characters emitted as the trailing check code.
     /// </summary>
     /// <returns>A positive integer; for example, <c>2</c> for ISO 7064 MOD 97-10.</returns>
     public abstract int CheckLength { get; }
+
+    /// <summary>
+    /// Gets the subset of ASCII from which this algorithm accepts body characters.
+    /// </summary>
+    /// <returns>The declared input alphabet.</returns>
+    public abstract CheckDigitInputAlphabet InputAlphabet { get; }
 
     /// <summary>
     /// Absorbs the supplied characters into the running check-code state.
@@ -80,10 +81,19 @@ public abstract class MultiCharCheckDigitAlgorithm
         Append([ch]);
 
     /// <summary>
-    /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
+    /// Returns the current check code as a newly allocated <see cref="string" />.
     /// </summary>
-    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
-    public abstract void Reset();
+    /// <returns>A string of length <see cref="CheckLength" /> containing the trailing check characters.</returns>
+    /// <remarks>
+    /// Allocating convenience wrapper over <see cref="GetCurrentCheckDigits(Span{char})" />. Prefer the span
+    /// overload in hot paths where the allocation is undesirable.
+    /// </remarks>
+    public string GetCurrentCheckDigits()
+    {
+        Span<char> buffer = stackalloc char[CheckLength];
+        GetCurrentCheckDigits(buffer);
+        return new string(buffer);
+    }
 
     /// <summary>
     /// Writes the current check code into the supplied destination span.
@@ -100,17 +110,9 @@ public abstract class MultiCharCheckDigitAlgorithm
     public abstract int GetCurrentCheckDigits(Span<char> destination);
 
     /// <summary>
-    /// Returns the current check code as a newly allocated <see cref="string" />.
+    /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
     /// </summary>
-    /// <returns>A string of length <see cref="CheckLength" /> containing the trailing check characters.</returns>
-    /// <remarks>
-    /// Allocating convenience wrapper over <see cref="GetCurrentCheckDigits(Span{char})" />. Prefer the span
-    /// overload in hot paths where the allocation is undesirable.
-    /// </remarks>
-    public string GetCurrentCheckDigits()
-    {
-        Span<char> buffer = stackalloc char[CheckLength];
-        GetCurrentCheckDigits(buffer);
-        return new string(buffer);
-    }
+    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
+    public abstract void Reset();
+
 }

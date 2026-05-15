@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class CityHash32Tests
 {
+
     /// <summary>
     /// Verifies that boundary inputs at each algorithm-path transition produce distinct, non-trivial hash
     /// values, confirming that each path is exercised correctly and produces well-distributed output.
@@ -40,4 +41,5 @@ public partial class CityHash32Tests
             }
         }
     }
+
 }

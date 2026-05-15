@@ -27,8 +27,12 @@ namespace Bodu.IO.Hashing.Extensions;
 [TestClass]
 public partial class NonCryptographicHashAlgorithmExtensionsTests
 {
+
     /// <summary>Deterministic sample input whose additive byte sum is 10.</summary>
     private static readonly byte[] s_sampleData = [1, 2, 3, 4];
+
+    /// <summary>The encoding paired with <see cref="s_sampleString" /> and <see cref="s_sampleStringHash" />.</summary>
+    private static readonly Encoding s_sampleEncoding = Encoding.ASCII;
 
     /// <summary>Expected hash of <see cref="s_sampleData" /> (byte sum = 10, platform byte order uint).</summary>
     private static readonly byte[] s_sampleHash = BitConverter.GetBytes((uint)(1 + 2 + 3 + 4));
@@ -42,12 +46,10 @@ public partial class NonCryptographicHashAlgorithmExtensionsTests
     /// <summary>Expected hash of <see cref="s_sampleString" /> encoded as ASCII.</summary>
     private static readonly byte[] s_sampleStringHash = BitConverter.GetBytes((uint)(97 + 98 + 99 + 100));
 
-    /// <summary>The encoding paired with <see cref="s_sampleString" /> and <see cref="s_sampleStringHash" />.</summary>
-    private static readonly Encoding s_sampleEncoding = Encoding.ASCII;
-
     /// <summary>
     /// Creates a fresh <see cref="MonitoringNonCryptographicHashAlgorithm" /> instance for a single test.
     /// </summary>
     /// <returns>A new <see cref="MonitoringNonCryptographicHashAlgorithm" /> with no accumulated state.</returns>
     private static MonitoringNonCryptographicHashAlgorithm CreateAlgorithm() => new();
+
 }

@@ -10,6 +10,24 @@ namespace Bodu.IO.Hashing;
 
 public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorithm, TVariant>
 {
+
+    /// <summary>
+    /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" /> leaves the algorithm in the
+    /// same state as a freshly constructed instance.
+    /// </summary>
+    /// <param name="variant">The algorithm variant under test.</param>
+    [TestMethod]
+    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
+    public void GetHashAndReset_AfterAppend_ShouldResetInstance(TVariant variant)
+    {
+        TAlgorithm algorithm = CreateAlgorithm(variant);
+        algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
+        _ = algorithm.GetHashAndReset();
+
+        NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
+
+        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
+    }
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" /> returns the same digest that
     /// <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> would have produced at the same point.
@@ -32,22 +50,21 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
     }
 
     /// <summary>
-    /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" /> leaves the algorithm in the
-    /// same state as a freshly constructed instance.
+    /// Verifies that the synchronous append-and-finalise path produces the correct hash value for
+    /// incrementally growing inputs from empty input through one byte past the spec's coverage threshold.
     /// </summary>
-    /// <param name="variant">The algorithm variant under test.</param>
+    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
+    /// <returns>A task that completes when all incremental lengths have been verified.</returns>
     [TestMethod]
     [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public void GetHashAndReset_AfterAppend_ShouldResetInstance(TVariant variant)
-    {
-        TAlgorithm algorithm = CreateAlgorithm(variant);
-        algorithm.Append(NonCryptographicHashSharedInputs.QuickBrownFox);
-        _ = algorithm.GetHashAndReset();
-
-        NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
-
-        CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
-    }
+    public Task GetHashAndReset_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
+        AssertIncrementalInputAsync(variant,
+            (algorithm, input, byteCount) =>
+            {
+                algorithm.Reset();
+                algorithm.Append(input.AsSpan(0, byteCount));
+                return Task.FromResult(algorithm.GetHashAndReset());
+            });
 
     /// <summary>
     /// Verifies that <see cref="NonCryptographicHashAlgorithm.GetHashAndReset(Span{byte})" /> writes the digest
@@ -69,22 +86,5 @@ public abstract partial class NonCryptographicHashAlgorithmTests<TTest, TAlgorit
         NonCryptographicHashAlgorithm baseline = CreateAlgorithm(variant);
         CollectionAssert.AreEqual(baseline.GetCurrentHash(), algorithm.GetCurrentHash());
     }
-
-    /// <summary>
-    /// Verifies that the synchronous append-and-finalise path produces the correct hash value for
-    /// incrementally growing inputs from empty input through one byte past the spec's coverage threshold.
-    /// </summary>
-    /// <param name="variant">The variant identifier supplied by the dynamic data source.</param>
-    /// <returns>A task that completes when all incremental lengths have been verified.</returns>
-    [TestMethod]
-    [DynamicData(nameof(NonCryptographicHashAlgorithmVariants))]
-    public Task GetHashAndReset_WhenUsingIncrementalInput_ShouldMatchExpected(TVariant variant) =>
-        AssertIncrementalInputAsync(variant,
-            (algorithm, input, byteCount) =>
-            {
-                algorithm.Reset();
-                algorithm.Append(input.AsSpan(0, byteCount));
-                return Task.FromResult(algorithm.GetHashAndReset());
-            });
 
 }

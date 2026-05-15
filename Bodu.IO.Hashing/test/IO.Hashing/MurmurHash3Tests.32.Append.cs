@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing;
 
 public partial class MurmurHash3_32Tests
 {
+
     /// <summary>
     /// Verifies that a non-zero seed produces a different hash than seed zero for the same input.
     /// </summary>
@@ -27,4 +28,5 @@ public partial class MurmurHash3_32Tests
         CollectionAssert.AreNotEqual(hash0, hash1,
             "Non-zero seed must produce a different hash for identical input.");
     }
+
 }

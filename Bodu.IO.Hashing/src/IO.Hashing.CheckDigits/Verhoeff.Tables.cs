@@ -8,6 +8,7 @@ namespace Bodu.IO.Hashing.CheckDigits;
 
 public sealed partial class Verhoeff
 {
+
     // D5 dihedral multiplication table.
     private static readonly byte[,] s_d = new byte[10, 10]
     {
@@ -38,4 +39,5 @@ public sealed partial class Verhoeff
         { 2, 7, 9, 3, 8, 0, 6, 4, 1, 5 },
         { 7, 0, 4, 6, 9, 1, 3, 2, 5, 8 },
     };
+
 }
