@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32.Encode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
+
     /// <summary>
     /// Encodes the entire byte array into a Base32 string using the supplied variant.
     /// </summary>
@@ -24,30 +25,6 @@ public static partial class Base32
     {
         ThrowHelper.ThrowIfNull(bytes);
         return Encode(bytes.AsSpan(), variant, options);
-    }
-
-    /// <summary>
-    /// Encodes a portion of a byte array into a Base32 string using the supplied variant.
-    /// </summary>
-    /// <param name="bytes">The byte array to encode.</param>
-    /// <param name="offset">The zero-based offset in <paramref name="bytes" /> at which to begin encoding.</param>
-    /// <param name="count">The number of bytes to encode.</param>
-    /// <param name="variant">The Base32 variant.</param>
-    /// <param name="options">Formatting options.</param>
-    /// <returns>A Base32 encoded string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
-    /// <paramref name="variant" /> is not a defined value.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
-    /// available range of <paramref name="bytes" />.
-    /// </exception>
-    public static string Encode(byte[] bytes, int offset, int count, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
-    {
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
-        return Encode(bytes.AsSpan(offset, count), variant, options);
     }
 
     /// <summary>
@@ -103,6 +80,30 @@ public static partial class Base32
     }
 
     /// <summary>
+    /// Encodes a portion of a byte array into a Base32 string using the supplied variant.
+    /// </summary>
+    /// <param name="bytes">The byte array to encode.</param>
+    /// <param name="offset">The zero-based offset in <paramref name="bytes" /> at which to begin encoding.</param>
+    /// <param name="count">The number of bytes to encode.</param>
+    /// <param name="variant">The Base32 variant.</param>
+    /// <param name="options">Formatting options.</param>
+    /// <returns>A Base32 encoded string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
+    /// <paramref name="variant" /> is not a defined value.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="bytes" />.
+    /// </exception>
+    public static string Encode(byte[] bytes, int offset, int count, Base32Variant variant = Base32Variant.Standard, BaseFormattingOptions options = BaseFormattingOptions.None)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
+        return Encode(bytes.AsSpan(offset, count), variant, options);
+    }
+
+    /// <summary>
     /// Attempts to encode binary bytes into Base32 characters using the provided destination span.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
@@ -134,6 +135,26 @@ public static partial class Base32
 
         charsWritten = EncodeIntoSpan(bytes, alphabet, emitPadding, emitLineBreaks, destination);
         return true;
+    }
+
+    /// <summary>
+    /// Appends a single symbol to the string builder, inserting a line break beforehand when the line interval has
+    /// been reached.
+    /// </summary>
+    /// <param name="sb">The destination string builder.</param>
+    /// <param name="symbol">The symbol to append.</param>
+    /// <param name="emitLineBreaks">Whether line breaking is requested.</param>
+    /// <param name="charsThisLine">The running column count, updated by reference.</param>
+    private static void AppendSymbol(StringBuilder sb, char symbol, bool emitLineBreaks, ref int charsThisLine)
+    {
+        if (emitLineBreaks && charsThisLine >= LineBreakInterval)
+        {
+            sb.Append("\r\n");
+            charsThisLine = 0;
+        }
+
+        sb.Append(symbol);
+        charsThisLine++;
     }
 
     /// <summary>
@@ -233,26 +254,6 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Appends a single symbol to the string builder, inserting a line break beforehand when the line interval has
-    /// been reached.
-    /// </summary>
-    /// <param name="sb">The destination string builder.</param>
-    /// <param name="symbol">The symbol to append.</param>
-    /// <param name="emitLineBreaks">Whether line breaking is requested.</param>
-    /// <param name="charsThisLine">The running column count, updated by reference.</param>
-    private static void AppendSymbol(StringBuilder sb, char symbol, bool emitLineBreaks, ref int charsThisLine)
-    {
-        if (emitLineBreaks && charsThisLine >= LineBreakInterval)
-        {
-            sb.Append("\r\n");
-            charsThisLine = 0;
-        }
-
-        sb.Append(symbol);
-        charsThisLine++;
-    }
-
-    /// <summary>
     /// Writes a single symbol into the destination span, inserting a line break beforehand when the line interval
     /// has been reached.
     /// </summary>
@@ -273,4 +274,5 @@ public static partial class Base32
         destination[position++] = symbol;
         charsThisLine++;
     }
+
 }

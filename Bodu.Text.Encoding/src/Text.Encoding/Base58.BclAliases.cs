@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58.BclAliases.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,40 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
-    /// <summary>
-    /// Encodes <paramref name="inArray" /> into a Base58 string using the Bitcoin/Flickr alphabet.
-    /// </summary>
-    /// <param name="inArray">The byte array to encode.</param>
-    /// <returns>A Base58 (Bitcoin/Flickr) string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
-    public static string ToBase58String(byte[] inArray) =>
-        Encode(inArray, Base58Variant.BitcoinFlickr);
-
-    /// <summary>
-    /// Encodes a portion of <paramref name="inArray" /> into a Base58 string using the Bitcoin/Flickr alphabet.
-    /// </summary>
-    /// <param name="inArray">The byte array.</param>
-    /// <param name="offset">The starting offset.</param>
-    /// <param name="length">The number of bytes to encode.</param>
-    /// <returns>A Base58 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="length" /> exceeds the
-    /// available range of <paramref name="inArray" />.
-    /// </exception>
-    public static string ToBase58String(byte[] inArray, int offset, int length) =>
-        Encode(inArray, offset, length, Base58Variant.BitcoinFlickr);
-
-    /// <summary>
-    /// Encodes <paramref name="bytes" /> into a Base58 string using the Bitcoin/Flickr alphabet.
-    /// </summary>
-    /// <param name="bytes">The bytes.</param>
-    /// <returns>A Base58 string.</returns>
-    public static string ToBase58String(ReadOnlySpan<byte> bytes) =>
-        Encode(bytes, Base58Variant.BitcoinFlickr);
 
     /// <summary>
     /// Decodes <paramref name="s" /> as Bitcoin/Flickr Base58 into a byte array.
@@ -89,26 +55,6 @@ public static partial class Base58
     }
 
     /// <summary>
-    /// Attempts to encode <paramref name="source" /> as a Bitcoin/Flickr Base58 character span.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="destination">The destination character span.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
-    public static bool TryToBase58String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
-        TryEncode(source, destination, out charsWritten, Base58Variant.BitcoinFlickr);
-
-    /// <summary>
-    /// Attempts to encode <paramref name="source" /> as a Bitcoin/Flickr Base58 UTF-8 byte span.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="utf8Destination">The UTF-8 destination span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
-    public static bool TryToBase58String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
-        TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base58Variant.BitcoinFlickr);
-
-    /// <summary>
     /// Strict Bitcoin/Flickr Base58 decode from a character span using the <see cref="OperationStatus" /> return
     /// convention.
     /// </summary>
@@ -135,4 +81,59 @@ public static partial class Base58
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus FromBase58String(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base58Variant.BitcoinFlickr, BaseFormatStyles.None);
+    /// <summary>
+    /// Encodes <paramref name="inArray" /> into a Base58 string using the Bitcoin/Flickr alphabet.
+    /// </summary>
+    /// <param name="inArray">The byte array to encode.</param>
+    /// <returns>A Base58 (Bitcoin/Flickr) string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    public static string ToBase58String(byte[] inArray) =>
+        Encode(inArray, Base58Variant.BitcoinFlickr);
+
+    /// <summary>
+    /// Encodes <paramref name="bytes" /> into a Base58 string using the Bitcoin/Flickr alphabet.
+    /// </summary>
+    /// <param name="bytes">The bytes.</param>
+    /// <returns>A Base58 string.</returns>
+    public static string ToBase58String(ReadOnlySpan<byte> bytes) =>
+        Encode(bytes, Base58Variant.BitcoinFlickr);
+
+    /// <summary>
+    /// Encodes a portion of <paramref name="inArray" /> into a Base58 string using the Bitcoin/Flickr alphabet.
+    /// </summary>
+    /// <param name="inArray">The byte array.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="length">The number of bytes to encode.</param>
+    /// <returns>A Base58 string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="length" /> exceeds the
+    /// available range of <paramref name="inArray" />.
+    /// </exception>
+    public static string ToBase58String(byte[] inArray, int offset, int length) =>
+        Encode(inArray, offset, length, Base58Variant.BitcoinFlickr);
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> as a Bitcoin/Flickr Base58 character span.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="destination">The destination character span.</param>
+    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
+    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    public static bool TryToBase58String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
+        TryEncode(source, destination, out charsWritten, Base58Variant.BitcoinFlickr);
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> as a Bitcoin/Flickr Base58 UTF-8 byte span.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="utf8Destination">The UTF-8 destination span.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    public static bool TryToBase58String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
+        TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base58Variant.BitcoinFlickr);
+
 }

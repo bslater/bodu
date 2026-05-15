@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16.Guid.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,22 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
+
+    /// <summary>
+    /// Decodes a hexadecimal representation of a <see cref="Guid" />.
+    /// </summary>
+    /// <param name="source">The hexadecimal characters (32 hex digits after any decoration is stripped).</param>
+    /// <param name="styles">Parsing styles to apply when interpreting decorations.</param>
+    /// <returns>The decoded <see cref="Guid" />.</returns>
+    /// <exception cref="FormatException">Thrown when the input does not decode to exactly 16 bytes.</exception>
+    public static Guid DecodeGuid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        Span<byte> bytes = stackalloc byte[16];
+        if (!TryDecode(source, bytes, out int written, styles) || written != 16)
+            throw new FormatException("Input does not decode to a 16-byte GUID.");
+
+        return new Guid(bytes);
+    }
     /// <summary>
     /// Encodes the byte representation of <paramref name="value" /> as a hexadecimal string.
     /// </summary>
@@ -26,22 +42,6 @@ public static partial class Base16
         Span<byte> bytes = stackalloc byte[16];
         value.TryWriteBytes(bytes);
         return Encode(bytes, options);
-    }
-
-    /// <summary>
-    /// Decodes a hexadecimal representation of a <see cref="Guid" />.
-    /// </summary>
-    /// <param name="source">The hexadecimal characters (32 hex digits after any decoration is stripped).</param>
-    /// <param name="styles">Parsing styles to apply when interpreting decorations.</param>
-    /// <returns>The decoded <see cref="Guid" />.</returns>
-    /// <exception cref="FormatException">Thrown when the input does not decode to exactly 16 bytes.</exception>
-    public static Guid DecodeGuid(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        Span<byte> bytes = stackalloc byte[16];
-        if (!TryDecode(source, bytes, out int written, styles) || written != 16)
-            throw new FormatException("Input does not decode to a 16-byte GUID.");
-
-        return new Guid(bytes);
     }
 
     /// <summary>
@@ -64,4 +64,5 @@ public static partial class Base16
         value = new Guid(bytes);
         return true;
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32.Utf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,30 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
+
+    /// <summary>
+    /// Decodes a UTF-8 Base32 byte span into a byte span with the <see cref="OperationStatus" /> return convention.
+    /// </summary>
+    /// <param name="source">The UTF-8 Base32 source.</param>
+    /// <param name="destination">The destination byte span.</param>
+    /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block of a streamed
+    /// input.</param>
+    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
+    public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None, bool isFinalBlock = true)
+    {
+        bytesConsumed = 0;
+        bytesWritten = 0;
+
+        if (source.IsEmpty)
+            return OperationStatus.Done;
+
+        (_, sbyte[] lookup) = GetVariantConfig(variant);
+        return DecodeBitStream<Utf8Source>(default, source, destination, lookup, styles, isFinalBlock, variant, ref bytesConsumed, ref bytesWritten);
+    }
     /// <summary>
     /// Encodes <paramref name="source" /> into a UTF-8 Base32 byte array using the supplied variant and the variant's
     /// default padding convention.
@@ -72,118 +96,6 @@ public static partial class Base32
 
         bytesWritten = EncodeIntoUtf8Span(source, destination, variant, options);
         return true;
-    }
-
-    /// <summary>
-    /// Decodes a UTF-8 Base32 byte span into a byte span with the <see cref="OperationStatus" /> return convention.
-    /// </summary>
-    /// <param name="source">The UTF-8 Base32 source.</param>
-    /// <param name="destination">The destination byte span.</param>
-    /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles.</param>
-    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block of a streamed
-    /// input.</param>
-    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
-    public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None, bool isFinalBlock = true)
-    {
-        bytesConsumed = 0;
-        bytesWritten = 0;
-
-        if (source.IsEmpty)
-            return OperationStatus.Done;
-
-        (_, sbyte[] lookup) = GetVariantConfig(variant);
-        return DecodeBitStream<Utf8Source>(default, source, destination, lookup, styles, isFinalBlock, variant, ref bytesConsumed, ref bytesWritten);
-    }
-
-    /// <summary>
-    /// Streaming Base32 decode from a character span using <see cref="OperationStatus" /> semantics.
-    /// </summary>
-    /// <param name="source">The character source.</param>
-    /// <param name="destination">The destination span.</param>
-    /// <param name="charsConsumed">When this method returns, contains the number of characters consumed.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles.</param>
-    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block.</param>
-    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
-    private static OperationStatus DecodeWithStatus(ReadOnlySpan<char> source, Span<byte> destination, out int charsConsumed, out int bytesWritten, Base32Variant variant, BaseFormatStyles styles, bool isFinalBlock)
-    {
-        charsConsumed = 0;
-        bytesWritten = 0;
-
-        if (source.IsEmpty)
-            return OperationStatus.Done;
-
-        (_, sbyte[] lookup) = GetVariantConfig(variant);
-        return DecodeBitStream<CharSource>(source, default, destination, lookup, styles, isFinalBlock, variant, ref charsConsumed, ref bytesWritten);
-    }
-
-    /// <summary>
-    /// Encodes <paramref name="source" /> into <paramref name="destination" /> using the variant alphabet, returning
-    /// the count of UTF-8 bytes written.
-    /// </summary>
-    /// <param name="source">The input bytes.</param>
-    /// <param name="destination">The destination byte span.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="options">The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).</param>
-    /// <returns>The number of UTF-8 bytes written.</returns>
-    private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base32Variant variant, BaseFormattingOptions options)
-    {
-        (string alphabet, _) = GetVariantConfig(variant);
-        bool emitPadding = ShouldEmitPadding(variant, options);
-
-        int position = 0;
-        int dataChars = 0;
-        int accumulator = 0;
-        int bitsAccumulated = 0;
-
-        foreach (byte b in source)
-        {
-            accumulator = (accumulator << 8) | b;
-            bitsAccumulated += 8;
-
-            while (bitsAccumulated >= 5)
-            {
-                bitsAccumulated -= 5;
-                int symbolIndex = (accumulator >> bitsAccumulated) & 0x1F;
-                destination[position++] = (byte)alphabet[symbolIndex];
-                dataChars++;
-            }
-        }
-
-        if (bitsAccumulated > 0)
-        {
-            int symbolIndex = (accumulator << (5 - bitsAccumulated)) & 0x1F;
-            destination[position++] = (byte)alphabet[symbolIndex];
-            dataChars++;
-        }
-
-        if (emitPadding)
-        {
-            int paddingChars = (8 - (dataChars % 8)) % 8;
-            for (int i = 0; i < paddingChars; i++)
-                destination[position++] = (byte)PaddingChar;
-        }
-
-        return position;
-    }
-
-    /// <summary>
-    /// Validates that <paramref name="options" /> contains no flags incompatible with the UTF-8 fast-path encoder.
-    /// </summary>
-    /// <param name="options">The encode options.</param>
-    /// <exception cref="ArgumentException">Thrown when an unsupported flag is set.</exception>
-    private static void EnsureUtf8EncodeOptionsSupported(BaseFormattingOptions options)
-    {
-        if ((options & ~BaseFormattingOptions.OmitPadding) != 0)
-        {
-            throw new ArgumentException(
-                "Only OmitPadding is supported on the Base32 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.",
-                nameof(options));
-        }
     }
 
     /// <summary>
@@ -356,6 +268,94 @@ public static partial class Base32
         return OperationStatus.Done;
     }
 
+    /// <summary>
+    /// Streaming Base32 decode from a character span using <see cref="OperationStatus" /> semantics.
+    /// </summary>
+    /// <param name="source">The character source.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="charsConsumed">When this method returns, contains the number of characters consumed.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block.</param>
+    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
+    private static OperationStatus DecodeWithStatus(ReadOnlySpan<char> source, Span<byte> destination, out int charsConsumed, out int bytesWritten, Base32Variant variant, BaseFormatStyles styles, bool isFinalBlock)
+    {
+        charsConsumed = 0;
+        bytesWritten = 0;
+
+        if (source.IsEmpty)
+            return OperationStatus.Done;
+
+        (_, sbyte[] lookup) = GetVariantConfig(variant);
+        return DecodeBitStream<CharSource>(source, default, destination, lookup, styles, isFinalBlock, variant, ref charsConsumed, ref bytesWritten);
+    }
+
+    /// <summary>
+    /// Encodes <paramref name="source" /> into <paramref name="destination" /> using the variant alphabet, returning
+    /// the count of UTF-8 bytes written.
+    /// </summary>
+    /// <param name="source">The input bytes.</param>
+    /// <param name="destination">The destination byte span.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="options">The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).</param>
+    /// <returns>The number of UTF-8 bytes written.</returns>
+    private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base32Variant variant, BaseFormattingOptions options)
+    {
+        (string alphabet, _) = GetVariantConfig(variant);
+        bool emitPadding = ShouldEmitPadding(variant, options);
+
+        int position = 0;
+        int dataChars = 0;
+        int accumulator = 0;
+        int bitsAccumulated = 0;
+
+        foreach (byte b in source)
+        {
+            accumulator = (accumulator << 8) | b;
+            bitsAccumulated += 8;
+
+            while (bitsAccumulated >= 5)
+            {
+                bitsAccumulated -= 5;
+                int symbolIndex = (accumulator >> bitsAccumulated) & 0x1F;
+                destination[position++] = (byte)alphabet[symbolIndex];
+                dataChars++;
+            }
+        }
+
+        if (bitsAccumulated > 0)
+        {
+            int symbolIndex = (accumulator << (5 - bitsAccumulated)) & 0x1F;
+            destination[position++] = (byte)alphabet[symbolIndex];
+            dataChars++;
+        }
+
+        if (emitPadding)
+        {
+            int paddingChars = (8 - (dataChars % 8)) % 8;
+            for (int i = 0; i < paddingChars; i++)
+                destination[position++] = (byte)PaddingChar;
+        }
+
+        return position;
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="options" /> contains no flags incompatible with the UTF-8 fast-path encoder.
+    /// </summary>
+    /// <param name="options">The encode options.</param>
+    /// <exception cref="ArgumentException">Thrown when an unsupported flag is set.</exception>
+    private static void EnsureUtf8EncodeOptionsSupported(BaseFormattingOptions options)
+    {
+        if ((options & ~BaseFormattingOptions.OmitPadding) != 0)
+        {
+            throw new ArgumentException(
+                "Only OmitPadding is supported on the Base32 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.",
+                nameof(options));
+        }
+    }
+
     /// <summary>Marker struct used to select the character-source code path in
     /// <see cref="DecodeBitStream{TSource}" />.</summary>
     private readonly struct CharSource { }
@@ -363,4 +363,5 @@ public static partial class Base32
     /// <summary>Marker struct used to select the UTF-8-source code path in
     /// <see cref="DecodeBitStream{TSource}" />.</summary>
     private readonly struct Utf8Source { }
+
 }

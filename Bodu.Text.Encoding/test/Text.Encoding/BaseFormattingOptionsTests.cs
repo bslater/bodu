@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BaseFormattingOptionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,15 +12,6 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class BaseFormattingOptionsTests
 {
-    /// <summary>
-    /// Verifies that <see cref="BaseFormattingOptions.None" /> equals zero so the enum participates correctly in
-    /// default values and bitwise unions.
-    /// </summary>
-    [TestMethod]
-    public void None_ShouldEqualZero()
-    {
-        Assert.AreEqual(0, (int)BaseFormattingOptions.None);
-    }
 
     /// <summary>
     /// Verifies that the documented flag values are distinct powers of two.
@@ -33,6 +24,15 @@ public sealed class BaseFormattingOptionsTests
         Assert.AreEqual(4, (int)BaseFormattingOptions.IncludePrefix);
         Assert.AreEqual(8, (int)BaseFormattingOptions.InsertSpacing);
     }
+    /// <summary>
+    /// Verifies that <see cref="BaseFormattingOptions.None" /> equals zero so the enum participates correctly in
+    /// default values and bitwise unions.
+    /// </summary>
+    [TestMethod]
+    public void None_ShouldEqualZero()
+    {
+        Assert.AreEqual(0, (int)BaseFormattingOptions.None);
+    }
 
     /// <summary>
     /// Verifies that the enum carries the <see cref="FlagsAttribute" />.
@@ -42,4 +42,5 @@ public sealed class BaseFormattingOptionsTests
     {
         Assert.IsTrue(typeof(BaseFormattingOptions).IsDefined(typeof(FlagsAttribute), inherit: false));
     }
+
 }

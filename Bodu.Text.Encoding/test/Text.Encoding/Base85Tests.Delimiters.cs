@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85Tests.Delimiters.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,10 +13,56 @@ namespace Bodu.Text.Encoding;
 /// </summary>
 public sealed partial class Base85Tests
 {
+
     /// <summary>
     /// The canonical Adobe Ascii85 vector "Man " (the first four bytes of Adobe Tech Note 5045's example string).
     /// </summary>
     private const string ManAscii85 = "9jqo^";
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Decode(ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> with
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> tolerates the Ascii85 delimiter pair.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAscii85AndAllowPrefix_ShouldAcceptDelimitedInput()
+    {
+        byte[] decoded = Base85.Decode(
+            ("<~" + ManAscii85 + "~>").AsSpan(),
+            Base85Variant.Ascii85,
+            BaseFormatStyles.AllowPrefix);
+
+        CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), decoded);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Decode(ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> with both
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> and <see cref="BaseFormatStyles.IgnoreWhitespace" /> strips
+    /// whitespace surrounding the delimiters.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAscii85AndAllowPrefixAndIgnoreWhitespace_ShouldStripSurroundingWhitespace()
+    {
+        byte[] decoded = Base85.Decode(
+            ("  <~" + ManAscii85 + "~>  ").AsSpan(),
+            Base85Variant.Ascii85,
+            BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
+
+        CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), decoded);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.Decode(ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> without
+    /// <see cref="BaseFormatStyles.AllowPrefix" /> rejects an input with the delimiter pair — the leading <c>&lt;</c>
+    /// is outside the alphabet's value range.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAscii85AndDelimitersWithoutAllowPrefix_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base85.Decode(("<~" + ManAscii85 + "~>").AsSpan(), Base85Variant.Ascii85);
+        });
+    }
 
     /// <summary>
     /// Verifies that <see cref="Base85.Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" /> with
@@ -46,6 +92,17 @@ public sealed partial class Base85Tests
     }
 
     /// <summary>
+    /// Verifies that the empty-payload delimited encoding produces just the four-character delimiter pair.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenAscii85EmptyPayloadAndIncludePrefix_ShouldReturnDelimiterOnly()
+    {
+        string encoded = Base85.Encode(ReadOnlySpan<byte>.Empty, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+
+        Assert.AreEqual("<~~>", encoded);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="BaseFormattingOptions.IncludePrefix" /> is ignored for the
     /// <see cref="Base85Variant.Z85" /> variant — Z85 has no delimiter convention.
     /// </summary>
@@ -61,65 +118,17 @@ public sealed partial class Base85Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base85.Decode(ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> with
-    /// <see cref="BaseFormatStyles.AllowPrefix" /> tolerates the Ascii85 delimiter pair.
+    /// Verifies that <see cref="Base85.GetEncodedLength(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />
+    /// reports the four extra characters when delimiters are requested.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAscii85AndAllowPrefix_ShouldAcceptDelimitedInput()
+    public void GetEncodedLength_WhenAscii85AndIncludePrefix_ShouldAddFourDelimiterCharacters()
     {
-        byte[] decoded = Base85.Decode(
-            ("<~" + ManAscii85 + "~>").AsSpan(),
-            Base85Variant.Ascii85,
-            BaseFormatStyles.AllowPrefix);
+        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Man ");
+        int undecorated = Base85.GetEncodedLength(payload, Base85Variant.Ascii85);
+        int decorated = Base85.GetEncodedLength(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
 
-        CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), decoded);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base85.Decode(ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> without
-    /// <see cref="BaseFormatStyles.AllowPrefix" /> rejects an input with the delimiter pair — the leading <c>&lt;</c>
-    /// is outside the alphabet's value range.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenAscii85AndDelimitersWithoutAllowPrefix_ShouldThrowFormatException()
-    {
-        Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base85.Decode(("<~" + ManAscii85 + "~>").AsSpan(), Base85Variant.Ascii85);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base85.Decode(ReadOnlySpan{char}, Base85Variant, BaseFormatStyles)" /> with both
-    /// <see cref="BaseFormatStyles.AllowPrefix" /> and <see cref="BaseFormatStyles.IgnoreWhitespace" /> strips
-    /// whitespace surrounding the delimiters.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenAscii85AndAllowPrefixAndIgnoreWhitespace_ShouldStripSurroundingWhitespace()
-    {
-        byte[] decoded = Base85.Decode(
-            ("  <~" + ManAscii85 + "~>  ").AsSpan(),
-            Base85Variant.Ascii85,
-            BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
-
-        CollectionAssert.AreEqual(System.Text.Encoding.ASCII.GetBytes("Man "), decoded);
-    }
-
-    /// <summary>
-    /// Verifies that the delimited encoded form round-trips through encode and decode.
-    /// </summary>
-    [TestMethod]
-    public void RoundTrip_WhenAscii85WithDelimiters_ShouldRecoverPayload()
-    {
-        byte[] payload = new byte[256];
-        new Random(0xFEED).NextBytes(payload);
-
-        string encoded = Base85.Encode(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
-        Assert.IsTrue(encoded.StartsWith("<~", StringComparison.Ordinal));
-        Assert.IsTrue(encoded.EndsWith("~>", StringComparison.Ordinal));
-
-        byte[] decoded = Base85.Decode(encoded.AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.AllowPrefix);
-        CollectionAssert.AreEqual(payload, decoded);
+        Assert.AreEqual(undecorated + 4, decorated);
     }
 
     /// <summary>
@@ -143,27 +152,20 @@ public sealed partial class Base85Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base85.GetEncodedLength(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />
-    /// reports the four extra characters when delimiters are requested.
+    /// Verifies that the delimited encoded form round-trips through encode and decode.
     /// </summary>
     [TestMethod]
-    public void GetEncodedLength_WhenAscii85AndIncludePrefix_ShouldAddFourDelimiterCharacters()
+    public void RoundTrip_WhenAscii85WithDelimiters_ShouldRecoverPayload()
     {
-        byte[] payload = System.Text.Encoding.ASCII.GetBytes("Man ");
-        int undecorated = Base85.GetEncodedLength(payload, Base85Variant.Ascii85);
-        int decorated = Base85.GetEncodedLength(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        byte[] payload = new byte[256];
+        new Random(0xFEED).NextBytes(payload);
 
-        Assert.AreEqual(undecorated + 4, decorated);
+        string encoded = Base85.Encode(payload, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
+        Assert.IsTrue(encoded.StartsWith("<~", StringComparison.Ordinal));
+        Assert.IsTrue(encoded.EndsWith("~>", StringComparison.Ordinal));
+
+        byte[] decoded = Base85.Decode(encoded.AsSpan(), Base85Variant.Ascii85, BaseFormatStyles.AllowPrefix);
+        CollectionAssert.AreEqual(payload, decoded);
     }
 
-    /// <summary>
-    /// Verifies that the empty-payload delimited encoding produces just the four-character delimiter pair.
-    /// </summary>
-    [TestMethod]
-    public void Encode_WhenAscii85EmptyPayloadAndIncludePrefix_ShouldReturnDelimiterOnly()
-    {
-        string encoded = Base85.Encode(ReadOnlySpan<byte>.Empty, Base85Variant.Ascii85, BaseFormattingOptions.IncludePrefix);
-
-        Assert.AreEqual("<~~>", encoded);
-    }
 }

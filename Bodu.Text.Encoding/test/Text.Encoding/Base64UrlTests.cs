@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64UrlTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,33 +12,20 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class Base64UrlTests
 {
-    /// <summary>
-    /// Verifies that <see cref="Base64Url.Encode(byte[])" /> produces the URL-safe alphabet output of the underlying
-    /// <see cref="Base64" /> variant, with padding omitted by default.
-    /// </summary>
-    [TestMethod]
-    public void Encode_ShouldProduceUrlSafeOutputWithoutPadding()
-    {
-        byte[] bytes = new byte[] { 0xFB, 0xFF, 0xFE };
-
-        string actual = Base64Url.Encode(bytes);
-
-        Assert.AreEqual("-__-", actual);
-        Assert.IsFalse(actual.Contains('='));
-    }
 
     /// <summary>
-    /// Verifies that <see cref="Base64Url.Decode(string)" /> recovers the original bytes from an unpadded URL-safe
-    /// input (the JWT / OAuth convention).
+    /// Verifies that <see cref="Base64Url.Decode(ReadOnlySpan{byte})" /> decodes a UTF-8 input directly without
+    /// allocating an intermediate string.
     /// </summary>
     [TestMethod]
-    public void Decode_ShouldAcceptUnpaddedInput()
+    public void Decode_FromUtf8_ShouldRoundTrip()
     {
-        byte[] expected = new byte[] { 0xFB, 0xFF, 0xFE };
+        byte[] original = System.Text.Encoding.ASCII.GetBytes("foobar");
+        byte[] encodedUtf8 = Base64Url.EncodeToUtf8(original);
 
-        byte[] actual = Base64Url.Decode("-__-");
+        byte[] decoded = Base64Url.Decode(encodedUtf8);
 
-        CollectionAssert.AreEqual(expected, actual);
+        CollectionAssert.AreEqual(original, decoded);
     }
 
     /// <summary>
@@ -58,18 +45,17 @@ public sealed class Base64UrlTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64Url.Decode(ReadOnlySpan{byte})" /> decodes a UTF-8 input directly without
-    /// allocating an intermediate string.
+    /// Verifies that <see cref="Base64Url.Decode(string)" /> recovers the original bytes from an unpadded URL-safe
+    /// input (the JWT / OAuth convention).
     /// </summary>
     [TestMethod]
-    public void Decode_FromUtf8_ShouldRoundTrip()
+    public void Decode_ShouldAcceptUnpaddedInput()
     {
-        byte[] original = System.Text.Encoding.ASCII.GetBytes("foobar");
-        byte[] encodedUtf8 = Base64Url.EncodeToUtf8(original);
+        byte[] expected = new byte[] { 0xFB, 0xFF, 0xFE };
 
-        byte[] decoded = Base64Url.Decode(encodedUtf8);
+        byte[] actual = Base64Url.Decode("-__-");
 
-        CollectionAssert.AreEqual(original, decoded);
+        CollectionAssert.AreEqual(expected, actual);
     }
 
     /// <summary>
@@ -86,6 +72,31 @@ public sealed class Base64UrlTests
         string json = System.Text.Encoding.UTF8.GetString(decoded);
 
         Assert.AreEqual("{\"alg\":\"HS256\",\"typ\":\"JWT\"}", json);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64Url.Decode(string)" /> rejects characters from the Standard alphabet that are
+    /// not part of the URL-safe alphabet.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenInputContainsStandardOnlyCharacter_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() => _ = Base64Url.Decode("Zm+v"));
+        Assert.ThrowsExactly<FormatException>(() => _ = Base64Url.Decode("Zm/v"));
+    }
+    /// <summary>
+    /// Verifies that <see cref="Base64Url.Encode(byte[])" /> produces the URL-safe alphabet output of the underlying
+    /// <see cref="Base64" /> variant, with padding omitted by default.
+    /// </summary>
+    [TestMethod]
+    public void Encode_ShouldProduceUrlSafeOutputWithoutPadding()
+    {
+        byte[] bytes = new byte[] { 0xFB, 0xFF, 0xFE };
+
+        string actual = Base64Url.Encode(bytes);
+
+        Assert.AreEqual("-__-", actual);
+        Assert.IsFalse(actual.Contains('='));
     }
 
     /// <summary>
@@ -118,14 +129,4 @@ public sealed class Base64UrlTests
         Assert.IsTrue(original.AsSpan().SequenceEqual(byteBuffer[..bytesWritten]));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Base64Url.Decode(string)" /> rejects characters from the Standard alphabet that are
-    /// not part of the URL-safe alphabet.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenInputContainsStandardOnlyCharacter_ShouldThrowFormatException()
-    {
-        Assert.ThrowsExactly<FormatException>(() => _ = Base64Url.Decode("Zm+v"));
-        Assert.ThrowsExactly<FormatException>(() => _ = Base64Url.Decode("Zm/v"));
-    }
 }

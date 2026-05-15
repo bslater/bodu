@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85.BclAliases.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,40 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
-    /// <summary>
-    /// Encodes <paramref name="inArray" /> into an Adobe Ascii85 string.
-    /// </summary>
-    /// <param name="inArray">The byte array to encode.</param>
-    /// <returns>An Ascii85 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
-    public static string ToBase85String(byte[] inArray) =>
-        Encode(inArray, Base85Variant.Ascii85);
-
-    /// <summary>
-    /// Encodes a portion of <paramref name="inArray" /> into an Ascii85 string.
-    /// </summary>
-    /// <param name="inArray">The byte array.</param>
-    /// <param name="offset">The starting offset.</param>
-    /// <param name="length">The number of bytes to encode.</param>
-    /// <returns>An Ascii85 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="length" /> exceeds the
-    /// available range of <paramref name="inArray" />.
-    /// </exception>
-    public static string ToBase85String(byte[] inArray, int offset, int length) =>
-        Encode(inArray, offset, length, Base85Variant.Ascii85);
-
-    /// <summary>
-    /// Encodes <paramref name="bytes" /> into an Ascii85 string.
-    /// </summary>
-    /// <param name="bytes">The bytes.</param>
-    /// <returns>An Ascii85 string.</returns>
-    public static string ToBase85String(ReadOnlySpan<byte> bytes) =>
-        Encode(bytes, Base85Variant.Ascii85);
 
     /// <summary>
     /// Decodes an Ascii85 string into a byte array.
@@ -89,26 +55,6 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> using Ascii85.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="destination">The destination span.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
-    public static bool TryToBase85String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
-        TryEncode(source, destination, out charsWritten, Base85Variant.Ascii85);
-
-    /// <summary>
-    /// Attempts to encode <paramref name="source" /> as Ascii85 UTF-8 bytes into <paramref name="utf8Destination" />.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="utf8Destination">The UTF-8 destination span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
-    public static bool TryToBase85String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
-        TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base85Variant.Ascii85);
-
-    /// <summary>
     /// Ascii85 decode from a character span returning <see cref="OperationStatus" />.
     /// </summary>
     /// <param name="source">The character span.</param>
@@ -129,4 +75,59 @@ public static partial class Base85
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus FromBase85String(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base85Variant.Ascii85, BaseFormatStyles.None);
+    /// <summary>
+    /// Encodes <paramref name="inArray" /> into an Adobe Ascii85 string.
+    /// </summary>
+    /// <param name="inArray">The byte array to encode.</param>
+    /// <returns>An Ascii85 string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    public static string ToBase85String(byte[] inArray) =>
+        Encode(inArray, Base85Variant.Ascii85);
+
+    /// <summary>
+    /// Encodes <paramref name="bytes" /> into an Ascii85 string.
+    /// </summary>
+    /// <param name="bytes">The bytes.</param>
+    /// <returns>An Ascii85 string.</returns>
+    public static string ToBase85String(ReadOnlySpan<byte> bytes) =>
+        Encode(bytes, Base85Variant.Ascii85);
+
+    /// <summary>
+    /// Encodes a portion of <paramref name="inArray" /> into an Ascii85 string.
+    /// </summary>
+    /// <param name="inArray">The byte array.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="length">The number of bytes to encode.</param>
+    /// <returns>An Ascii85 string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="length" /> exceeds the
+    /// available range of <paramref name="inArray" />.
+    /// </exception>
+    public static string ToBase85String(byte[] inArray, int offset, int length) =>
+        Encode(inArray, offset, length, Base85Variant.Ascii85);
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> using Ascii85.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
+    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    public static bool TryToBase85String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
+        TryEncode(source, destination, out charsWritten, Base85Variant.Ascii85);
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> as Ascii85 UTF-8 bytes into <paramref name="utf8Destination" />.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="utf8Destination">The UTF-8 destination span.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    public static bool TryToBase85String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
+        TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base85Variant.Ascii85);
+
 }

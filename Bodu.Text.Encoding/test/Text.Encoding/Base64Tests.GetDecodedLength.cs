@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64Tests.GetDecodedLength.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,27 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base64Tests
 {
-    /// <summary>
-    /// Verifies that <see cref="Base64.GetDecodedLength" /> returns the exact byte count for a padded input.
-    /// </summary>
-    [TestMethod]
-    public void GetDecodedLength_WhenPaddedInput_ShouldReturnExactByteCount()
-    {
-        int actual = Base64.GetDecodedLength("Zm9vYg==".AsSpan());
-
-        Assert.AreEqual(4, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base64.GetDecodedLength" /> handles unpadded input.
-    /// </summary>
-    [TestMethod]
-    public void GetDecodedLength_WhenUnpaddedInput_ShouldExcludePaddingFromCount()
-    {
-        int actual = Base64.GetDecodedLength("Zm9vYmFy".AsSpan());
-
-        Assert.AreEqual(6, actual);
-    }
 
     /// <summary>
     /// Verifies that <see cref="Base64.GetDecodedLength" /> rejects invalid characters with
@@ -53,29 +32,26 @@ public sealed partial class Base64Tests
 
         Assert.AreEqual(6, actual);
     }
-
     /// <summary>
-    /// Verifies that <see cref="Base64.TryGetDecodedLength" /> returns <see langword="true" /> for a valid input.
+    /// Verifies that <see cref="Base64.GetDecodedLength" /> returns the exact byte count for a padded input.
     /// </summary>
     [TestMethod]
-    public void TryGetDecodedLength_WhenValid_ShouldReturnTrueAndCount()
+    public void GetDecodedLength_WhenPaddedInput_ShouldReturnExactByteCount()
     {
-        bool ok = Base64.TryGetDecodedLength("Zm9vYmFy".AsSpan(), out int byteCount);
+        int actual = Base64.GetDecodedLength("Zm9vYg==".AsSpan());
 
-        Assert.IsTrue(ok);
-        Assert.AreEqual(6, byteCount);
+        Assert.AreEqual(4, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64.TryGetDecodedLength" /> returns <see langword="false" /> for invalid input.
+    /// Verifies that <see cref="Base64.GetDecodedLength" /> handles unpadded input.
     /// </summary>
     [TestMethod]
-    public void TryGetDecodedLength_WhenInvalid_ShouldReturnFalseAndZero()
+    public void GetDecodedLength_WhenUnpaddedInput_ShouldExcludePaddingFromCount()
     {
-        bool ok = Base64.TryGetDecodedLength("Zm@v".AsSpan(), out int byteCount);
+        int actual = Base64.GetDecodedLength("Zm9vYmFy".AsSpan());
 
-        Assert.IsFalse(ok);
-        Assert.AreEqual(0, byteCount);
+        Assert.AreEqual(6, actual);
     }
 
     /// <summary>
@@ -102,4 +78,29 @@ public sealed partial class Base64Tests
         Assert.AreEqual(8, standard);
         Assert.AreEqual(6, urlSafe);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.TryGetDecodedLength" /> returns <see langword="false" /> for invalid input.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDecodedLength_WhenInvalid_ShouldReturnFalseAndZero()
+    {
+        bool ok = Base64.TryGetDecodedLength("Zm@v".AsSpan(), out int byteCount);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, byteCount);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.TryGetDecodedLength" /> returns <see langword="true" /> for a valid input.
+    /// </summary>
+    [TestMethod]
+    public void TryGetDecodedLength_WhenValid_ShouldReturnTrueAndCount()
+    {
+        bool ok = Base64.TryGetDecodedLength("Zm9vYmFy".AsSpan(), out int byteCount);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(6, byteCount);
+    }
+
 }

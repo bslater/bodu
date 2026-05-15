@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64.Decode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
+
     /// <summary>
     /// Decodes a Base64 string into a byte array using the supplied variant.
     /// </summary>
@@ -24,31 +25,6 @@ public static partial class Base64
     {
         ThrowHelper.ThrowIfNull(s);
         return Decode(s.AsSpan(), variant, style);
-    }
-
-    /// <summary>
-    /// Decodes a portion of a character array into a byte array.
-    /// </summary>
-    /// <param name="chars">The character array.</param>
-    /// <param name="offset">The starting offset.</param>
-    /// <param name="count">The number of characters.</param>
-    /// <param name="variant">The Base64 variant.</param>
-    /// <param name="style">Parsing styles.</param>
-    /// <returns>A new byte array containing the decoded data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
-    /// <paramref name="variant" /> is undefined.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
-    /// available range of <paramref name="chars" />.
-    /// </exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
-    public static byte[] Decode(char[] chars, int offset, int count, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
-    {
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
-        return Decode(chars.AsSpan(offset, count), variant, style);
     }
 
     /// <summary>
@@ -102,6 +78,31 @@ public static partial class Base64
     }
 
     /// <summary>
+    /// Decodes a portion of a character array into a byte array.
+    /// </summary>
+    /// <param name="chars">The character array.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="count">The number of characters.</param>
+    /// <param name="variant">The Base64 variant.</param>
+    /// <param name="style">Parsing styles.</param>
+    /// <returns>A new byte array containing the decoded data.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
+    /// <paramref name="variant" /> is undefined.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="chars" />.
+    /// </exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
+    public static byte[] Decode(char[] chars, int offset, int count, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
+        return Decode(chars.AsSpan(offset, count), variant, style);
+    }
+
+    /// <summary>
     /// Attempts to decode Base64 characters into bytes using the provided destination span.
     /// </summary>
     /// <param name="chars">The input characters.</param>
@@ -145,6 +146,29 @@ public static partial class Base64
         {
             ArrayPool<char>.Shared.Return(scratch);
         }
+    }
+
+    /// <summary>
+    /// Indicates whether <paramref name="normalisedInput" /> is the canonical Base64 encoding of
+    /// <paramref name="decodedBytes" />. Re-encodes the bytes using the standard alphabet and compares the result.
+    /// </summary>
+    /// <param name="decodedBytes">The bytes that <paramref name="normalisedInput" /> decoded to.</param>
+    /// <param name="normalisedInput">The post-normalisation Base64 input (standard alphabet, fully padded).</param>
+    /// <returns><see langword="true" /> when the input matches the canonical re-encoding; <see langword="false" />
+    /// when the input has non-zero unused bits in its final partial group.</returns>
+    private static bool IsCanonicalEncoding(ReadOnlySpan<byte> decodedBytes, ReadOnlySpan<char> normalisedInput)
+    {
+        int expectedLength = ((decodedBytes.Length + 2) / 3) * 4;
+        if (expectedLength != normalisedInput.Length)
+            return false;
+
+        Span<char> reencoded = expectedLength <= 256
+            ? stackalloc char[256]
+            : new char[expectedLength];
+        if (!Convert.TryToBase64Chars(decodedBytes, reencoded, out int reLen))
+            return false;
+
+        return normalisedInput.SequenceEqual(reencoded.Slice(0, reLen));
     }
 
     /// <summary>
@@ -231,26 +255,4 @@ public static partial class Base64
         return j;
     }
 
-    /// <summary>
-    /// Indicates whether <paramref name="normalisedInput" /> is the canonical Base64 encoding of
-    /// <paramref name="decodedBytes" />. Re-encodes the bytes using the standard alphabet and compares the result.
-    /// </summary>
-    /// <param name="decodedBytes">The bytes that <paramref name="normalisedInput" /> decoded to.</param>
-    /// <param name="normalisedInput">The post-normalisation Base64 input (standard alphabet, fully padded).</param>
-    /// <returns><see langword="true" /> when the input matches the canonical re-encoding; <see langword="false" />
-    /// when the input has non-zero unused bits in its final partial group.</returns>
-    private static bool IsCanonicalEncoding(ReadOnlySpan<byte> decodedBytes, ReadOnlySpan<char> normalisedInput)
-    {
-        int expectedLength = ((decodedBytes.Length + 2) / 3) * 4;
-        if (expectedLength != normalisedInput.Length)
-            return false;
-
-        Span<char> reencoded = expectedLength <= 256
-            ? stackalloc char[256]
-            : new char[expectedLength];
-        if (!Convert.TryToBase64Chars(decodedBytes, reencoded, out int reLen))
-            return false;
-
-        return normalisedInput.SequenceEqual(reencoded.Slice(0, reLen));
-    }
 }

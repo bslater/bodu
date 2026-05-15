@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58Check.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,35 +26,11 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public static class Base58Check
 {
+
     /// <summary>
     /// The number of checksum bytes appended to the payload before Base58 encoding.
     /// </summary>
     private const int ChecksumLength = 4;
-
-    /// <summary>
-    /// Encodes <paramref name="payload" /> using Base58Check — appends a four-byte SHA-256 squared checksum and Base58
-    /// encodes the concatenation.
-    /// </summary>
-    /// <param name="payload">The bytes to encode.</param>
-    /// <param name="variant">The Base58 variant.</param>
-    /// <returns>A Base58Check encoded string.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static string Encode(ReadOnlySpan<byte> payload, Base58Variant variant = Base58Variant.BitcoinFlickr)
-    {
-        int totalLength = payload.Length + ChecksumLength;
-        byte[] rented = ArrayPool<byte>.Shared.Rent(totalLength);
-        try
-        {
-            Span<byte> buffer = rented.AsSpan(0, totalLength);
-            payload.CopyTo(buffer);
-            ComputeChecksum(payload, buffer.Slice(payload.Length));
-            return Base58.Encode(buffer, variant);
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(rented);
-        }
-    }
 
     /// <summary>
     /// Decodes a Base58Check encoded string back to the original payload, throwing if the trailing four-byte checksum
@@ -85,6 +61,96 @@ public static class Base58Check
         byte[] payload = new byte[payloadLength];
         Buffer.BlockCopy(decoded, 0, payload, 0, payloadLength);
         return payload;
+    }
+
+    /// <summary>
+    /// Encodes <paramref name="payload" /> using Base58Check — appends a four-byte SHA-256 squared checksum and Base58
+    /// encodes the concatenation.
+    /// </summary>
+    /// <param name="payload">The bytes to encode.</param>
+    /// <param name="variant">The Base58 variant.</param>
+    /// <returns>A Base58Check encoded string.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static string Encode(ReadOnlySpan<byte> payload, Base58Variant variant = Base58Variant.BitcoinFlickr)
+    {
+        int totalLength = payload.Length + ChecksumLength;
+        byte[] rented = ArrayPool<byte>.Shared.Rent(totalLength);
+        try
+        {
+            Span<byte> buffer = rented.AsSpan(0, totalLength);
+            payload.CopyTo(buffer);
+            ComputeChecksum(payload, buffer.Slice(payload.Length));
+            return Base58.Encode(buffer, variant);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(rented);
+        }
+    }
+
+    /// <summary>
+    /// Returns an upper bound on the payload byte count that decoding <paramref name="charCount" /> characters can
+    /// produce, after stripping the four-byte checksum suffix.
+    /// </summary>
+    /// <param name="charCount">The input character count.</param>
+    /// <returns>An upper bound on the payload byte count, or <c>0</c> when <paramref name="charCount" /> is too small
+    /// to contain a checksum.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
+    public static int GetMaxDecodedLength(int charCount)
+    {
+        ThrowHelper.ThrowIfNegative(charCount);
+        int maxDecoded = Base58.GetMaxDecodedLength(charCount);
+        return maxDecoded <= ChecksumLength ? 0 : maxDecoded - ChecksumLength;
+    }
+
+    /// <summary>
+    /// Returns an upper bound on the number of characters required to encode a <paramref name="payloadByteCount" />-byte
+    /// payload via Base58Check (payload + four checksum bytes).
+    /// </summary>
+    /// <param name="payloadByteCount">The payload byte count.</param>
+    /// <returns>An upper bound on the encoded character count.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="payloadByteCount" /> is negative.</exception>
+    public static int GetMaxEncodedLength(int payloadByteCount)
+    {
+        ThrowHelper.ThrowIfNegative(payloadByteCount);
+        return Base58.GetMaxEncodedLength(payloadByteCount + ChecksumLength);
+    }
+
+    /// <summary>
+    /// Indicates whether <paramref name="source" /> is a valid Base58Check input under the supplied variant — that is,
+    /// every character is in the variant alphabet and the trailing four-byte checksum matches the decoded payload.
+    /// </summary>
+    /// <param name="source">The Base58Check encoded input.</param>
+    /// <param name="variant">The Base58 variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <returns><see langword="true" /> when the input is a structurally and cryptographically valid Base58Check
+    /// encoding; otherwise <see langword="false" />.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool IsValid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        if (!Base58.IsValid(source, variant, styles))
+            return false;
+
+        int upper = Base58.GetMaxDecodedLength(source.Length);
+        byte[] rented = ArrayPool<byte>.Shared.Rent(upper);
+        try
+        {
+            if (!Base58.TryDecode(source, rented, out int decodedLength, variant, styles))
+                return false;
+
+            if (decodedLength < ChecksumLength)
+                return false;
+
+            int payloadLength = decodedLength - ChecksumLength;
+            Span<byte> expectedChecksum = stackalloc byte[ChecksumLength];
+            ComputeChecksum(rented.AsSpan(0, payloadLength), expectedChecksum);
+
+            return rented.AsSpan(payloadLength, ChecksumLength).SequenceEqual(expectedChecksum);
+        }
+        finally
+        {
+            ArrayPool<byte>.Shared.Return(rented);
+        }
     }
 
     /// <summary>
@@ -132,71 +198,6 @@ public static class Base58Check
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="source" /> is a valid Base58Check input under the supplied variant — that is,
-    /// every character is in the variant alphabet and the trailing four-byte checksum matches the decoded payload.
-    /// </summary>
-    /// <param name="source">The Base58Check encoded input.</param>
-    /// <param name="variant">The Base58 variant.</param>
-    /// <param name="styles">Parsing styles.</param>
-    /// <returns><see langword="true" /> when the input is a structurally and cryptographically valid Base58Check
-    /// encoding; otherwise <see langword="false" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static bool IsValid(ReadOnlySpan<char> source, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        if (!Base58.IsValid(source, variant, styles))
-            return false;
-
-        int upper = Base58.GetMaxDecodedLength(source.Length);
-        byte[] rented = ArrayPool<byte>.Shared.Rent(upper);
-        try
-        {
-            if (!Base58.TryDecode(source, rented, out int decodedLength, variant, styles))
-                return false;
-
-            if (decodedLength < ChecksumLength)
-                return false;
-
-            int payloadLength = decodedLength - ChecksumLength;
-            Span<byte> expectedChecksum = stackalloc byte[ChecksumLength];
-            ComputeChecksum(rented.AsSpan(0, payloadLength), expectedChecksum);
-
-            return rented.AsSpan(payloadLength, ChecksumLength).SequenceEqual(expectedChecksum);
-        }
-        finally
-        {
-            ArrayPool<byte>.Shared.Return(rented);
-        }
-    }
-
-    /// <summary>
-    /// Returns an upper bound on the number of characters required to encode a <paramref name="payloadByteCount" />-byte
-    /// payload via Base58Check (payload + four checksum bytes).
-    /// </summary>
-    /// <param name="payloadByteCount">The payload byte count.</param>
-    /// <returns>An upper bound on the encoded character count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="payloadByteCount" /> is negative.</exception>
-    public static int GetMaxEncodedLength(int payloadByteCount)
-    {
-        ThrowHelper.ThrowIfNegative(payloadByteCount);
-        return Base58.GetMaxEncodedLength(payloadByteCount + ChecksumLength);
-    }
-
-    /// <summary>
-    /// Returns an upper bound on the payload byte count that decoding <paramref name="charCount" /> characters can
-    /// produce, after stripping the four-byte checksum suffix.
-    /// </summary>
-    /// <param name="charCount">The input character count.</param>
-    /// <returns>An upper bound on the payload byte count, or <c>0</c> when <paramref name="charCount" /> is too small
-    /// to contain a checksum.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
-    public static int GetMaxDecodedLength(int charCount)
-    {
-        ThrowHelper.ThrowIfNegative(charCount);
-        int maxDecoded = Base58.GetMaxDecodedLength(charCount);
-        return maxDecoded <= ChecksumLength ? 0 : maxDecoded - ChecksumLength;
-    }
-
-    /// <summary>
     /// Computes the first four bytes of <c>SHA-256(SHA-256(payload))</c> into <paramref name="destination" />.
     /// </summary>
     /// <param name="payload">The payload bytes.</param>
@@ -209,4 +210,5 @@ public static class Base58Check
         SHA256.HashData(firstHash, secondHash);
         secondHash.Slice(0, ChecksumLength).CopyTo(destination);
     }
+
 }

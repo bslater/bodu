@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64.Utf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
+
     /// <summary>
     /// The Standard variant alphabet, used for UTF-8 encode paths.
     /// </summary>
@@ -22,6 +23,30 @@ public static partial class Base64
 
     private static readonly sbyte[] s_standardLookup = BuildLookup(StandardAlphabet);
     private static readonly sbyte[] s_urlSafeLookup = BuildLookup(UrlSafeAlphabet);
+
+    /// <summary>
+    /// Decodes UTF-8 Base64 bytes into a byte span using the <see cref="OperationStatus" /> return convention.
+    /// </summary>
+    /// <param name="source">The UTF-8 Base64 source.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block.</param>
+    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
+    public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None, bool isFinalBlock = true)
+    {
+        EnsureValidVariant(variant);
+        bytesConsumed = 0;
+        bytesWritten = 0;
+
+        if (source.IsEmpty)
+            return OperationStatus.Done;
+
+        sbyte[] lookup = GetLookup(variant);
+        return DecodeBitStream<Utf8Source>(default, source, destination, lookup, styles, isFinalBlock, variant, ref bytesConsumed, ref bytesWritten);
+    }
 
     /// <summary>
     /// Encodes <paramref name="source" /> into a UTF-8 Base64 byte array.
@@ -87,126 +112,6 @@ public static partial class Base64
         bytesWritten = EncodeIntoUtf8Span(source, destination, variant, options);
         return true;
     }
-
-    /// <summary>
-    /// Decodes UTF-8 Base64 bytes into a byte span using the <see cref="OperationStatus" /> return convention.
-    /// </summary>
-    /// <param name="source">The UTF-8 Base64 source.</param>
-    /// <param name="destination">The destination span.</param>
-    /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles.</param>
-    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block.</param>
-    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
-    public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None, bool isFinalBlock = true)
-    {
-        EnsureValidVariant(variant);
-        bytesConsumed = 0;
-        bytesWritten = 0;
-
-        if (source.IsEmpty)
-            return OperationStatus.Done;
-
-        sbyte[] lookup = GetLookup(variant);
-        return DecodeBitStream<Utf8Source>(default, source, destination, lookup, styles, isFinalBlock, variant, ref bytesConsumed, ref bytesWritten);
-    }
-
-    /// <summary>
-    /// Decodes Base64 characters into a byte span using the <see cref="OperationStatus" /> return convention.
-    /// </summary>
-    /// <param name="source">The character source.</param>
-    /// <param name="destination">The destination span.</param>
-    /// <param name="charsConsumed">When this method returns, contains the number of characters consumed.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles.</param>
-    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block.</param>
-    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
-    private static OperationStatus DecodeWithStatus(ReadOnlySpan<char> source, Span<byte> destination, out int charsConsumed, out int bytesWritten, Base64Variant variant, BaseFormatStyles styles, bool isFinalBlock)
-    {
-        EnsureValidVariant(variant);
-        charsConsumed = 0;
-        bytesWritten = 0;
-
-        if (source.IsEmpty)
-            return OperationStatus.Done;
-
-        sbyte[] lookup = GetLookup(variant);
-        return DecodeBitStream<CharSource>(source, default, destination, lookup, styles, isFinalBlock, variant, ref charsConsumed, ref bytesWritten);
-    }
-
-    /// <summary>
-    /// Encodes <paramref name="source" /> into <paramref name="destination" /> as UTF-8 Base64 bytes.
-    /// </summary>
-    /// <param name="source">The input bytes.</param>
-    /// <param name="destination">The destination span.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="options">The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).</param>
-    /// <returns>The number of UTF-8 bytes written.</returns>
-    private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base64Variant variant, BaseFormattingOptions options)
-    {
-        string alphabet = variant == Base64Variant.UrlSafe ? UrlSafeAlphabet : StandardAlphabet;
-        bool emitPadding = ShouldEmitPadding(variant, options);
-
-        int position = 0;
-        int dataChars = 0;
-        int accumulator = 0;
-        int bitsAccumulated = 0;
-
-        foreach (byte b in source)
-        {
-            accumulator = (accumulator << 8) | b;
-            bitsAccumulated += 8;
-
-            while (bitsAccumulated >= 6)
-            {
-                bitsAccumulated -= 6;
-                int symbolIndex = (accumulator >> bitsAccumulated) & 0x3F;
-                destination[position++] = (byte)alphabet[symbolIndex];
-                dataChars++;
-            }
-        }
-
-        if (bitsAccumulated > 0)
-        {
-            int symbolIndex = (accumulator << (6 - bitsAccumulated)) & 0x3F;
-            destination[position++] = (byte)alphabet[symbolIndex];
-            dataChars++;
-        }
-
-        if (emitPadding)
-        {
-            int paddingChars = (4 - (dataChars % 4)) % 4;
-            for (int i = 0; i < paddingChars; i++)
-                destination[position++] = (byte)PaddingChar;
-        }
-
-        return position;
-    }
-
-    /// <summary>
-    /// Validates that <paramref name="options" /> contains no flags incompatible with the UTF-8 fast-path encoder.
-    /// </summary>
-    /// <param name="options">The encode options.</param>
-    /// <exception cref="ArgumentException">Thrown when an unsupported flag is set.</exception>
-    private static void EnsureUtf8EncodeOptionsSupported(BaseFormattingOptions options)
-    {
-        if ((options & ~BaseFormattingOptions.OmitPadding) != 0)
-        {
-            throw new ArgumentException(
-                "Only OmitPadding is supported on the Base64 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.",
-                nameof(options));
-        }
-    }
-
-    /// <summary>
-    /// Returns the lookup table for the supplied variant.
-    /// </summary>
-    /// <param name="variant">The variant.</param>
-    /// <returns>The lookup table.</returns>
-    private static sbyte[] GetLookup(Base64Variant variant) =>
-        variant == Base64Variant.UrlSafe ? s_urlSafeLookup : s_standardLookup;
 
     /// <summary>
     /// Builds a lookup table for the supplied alphabet, plus UrlSafe aliases for the standard alphabet (and vice
@@ -378,9 +283,106 @@ public static partial class Base64
         return OperationStatus.Done;
     }
 
+    /// <summary>
+    /// Decodes Base64 characters into a byte span using the <see cref="OperationStatus" /> return convention.
+    /// </summary>
+    /// <param name="source">The character source.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="charsConsumed">When this method returns, contains the number of characters consumed.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <param name="isFinalBlock">Whether <paramref name="source" /> represents the final block.</param>
+    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
+    private static OperationStatus DecodeWithStatus(ReadOnlySpan<char> source, Span<byte> destination, out int charsConsumed, out int bytesWritten, Base64Variant variant, BaseFormatStyles styles, bool isFinalBlock)
+    {
+        EnsureValidVariant(variant);
+        charsConsumed = 0;
+        bytesWritten = 0;
+
+        if (source.IsEmpty)
+            return OperationStatus.Done;
+
+        sbyte[] lookup = GetLookup(variant);
+        return DecodeBitStream<CharSource>(source, default, destination, lookup, styles, isFinalBlock, variant, ref charsConsumed, ref bytesWritten);
+    }
+
+    /// <summary>
+    /// Encodes <paramref name="source" /> into <paramref name="destination" /> as UTF-8 Base64 bytes.
+    /// </summary>
+    /// <param name="source">The input bytes.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="options">The encode options (only <see cref="BaseFormattingOptions.OmitPadding" /> is honoured).</param>
+    /// <returns>The number of UTF-8 bytes written.</returns>
+    private static int EncodeIntoUtf8Span(ReadOnlySpan<byte> source, Span<byte> destination, Base64Variant variant, BaseFormattingOptions options)
+    {
+        string alphabet = variant == Base64Variant.UrlSafe ? UrlSafeAlphabet : StandardAlphabet;
+        bool emitPadding = ShouldEmitPadding(variant, options);
+
+        int position = 0;
+        int dataChars = 0;
+        int accumulator = 0;
+        int bitsAccumulated = 0;
+
+        foreach (byte b in source)
+        {
+            accumulator = (accumulator << 8) | b;
+            bitsAccumulated += 8;
+
+            while (bitsAccumulated >= 6)
+            {
+                bitsAccumulated -= 6;
+                int symbolIndex = (accumulator >> bitsAccumulated) & 0x3F;
+                destination[position++] = (byte)alphabet[symbolIndex];
+                dataChars++;
+            }
+        }
+
+        if (bitsAccumulated > 0)
+        {
+            int symbolIndex = (accumulator << (6 - bitsAccumulated)) & 0x3F;
+            destination[position++] = (byte)alphabet[symbolIndex];
+            dataChars++;
+        }
+
+        if (emitPadding)
+        {
+            int paddingChars = (4 - (dataChars % 4)) % 4;
+            for (int i = 0; i < paddingChars; i++)
+                destination[position++] = (byte)PaddingChar;
+        }
+
+        return position;
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="options" /> contains no flags incompatible with the UTF-8 fast-path encoder.
+    /// </summary>
+    /// <param name="options">The encode options.</param>
+    /// <exception cref="ArgumentException">Thrown when an unsupported flag is set.</exception>
+    private static void EnsureUtf8EncodeOptionsSupported(BaseFormattingOptions options)
+    {
+        if ((options & ~BaseFormattingOptions.OmitPadding) != 0)
+        {
+            throw new ArgumentException(
+                "Only OmitPadding is supported on the Base64 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.",
+                nameof(options));
+        }
+    }
+
+    /// <summary>
+    /// Returns the lookup table for the supplied variant.
+    /// </summary>
+    /// <param name="variant">The variant.</param>
+    /// <returns>The lookup table.</returns>
+    private static sbyte[] GetLookup(Base64Variant variant) =>
+        variant == Base64Variant.UrlSafe ? s_urlSafeLookup : s_standardLookup;
+
     /// <summary>Marker struct used to select the character-source code path.</summary>
     private readonly struct CharSource { }
 
     /// <summary>Marker struct used to select the UTF-8-source code path.</summary>
     private readonly struct Utf8Source { }
+
 }

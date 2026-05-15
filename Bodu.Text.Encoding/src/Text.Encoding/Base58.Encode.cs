@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58.Encode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
+
     /// <summary>
     /// Encodes <paramref name="bytes" /> into a Base58 string using the supplied variant.
     /// </summary>
@@ -22,29 +23,6 @@ public static partial class Base58
     {
         ThrowHelper.ThrowIfNull(bytes);
         return Encode(bytes.AsSpan(), variant);
-    }
-
-    /// <summary>
-    /// Encodes a portion of <paramref name="bytes" /> into a Base58 string.
-    /// </summary>
-    /// <param name="bytes">The byte array to encode.</param>
-    /// <param name="offset">The starting offset.</param>
-    /// <param name="count">The number of bytes to encode.</param>
-    /// <param name="variant">The Base58 variant.</param>
-    /// <returns>A Base58 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
-    /// range.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
-    /// available range of <paramref name="bytes" />.
-    /// </exception>
-    public static string Encode(byte[] bytes, int offset, int count, Base58Variant variant = Base58Variant.BitcoinFlickr)
-    {
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
-        return Encode(bytes.AsSpan(offset, count), variant);
     }
 
     /// <summary>
@@ -111,6 +89,29 @@ public static partial class Base58
         {
             System.Buffers.ArrayPool<char>.Shared.Return(scratch);
         }
+    }
+
+    /// <summary>
+    /// Encodes a portion of <paramref name="bytes" /> into a Base58 string.
+    /// </summary>
+    /// <param name="bytes">The byte array to encode.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="count">The number of bytes to encode.</param>
+    /// <param name="variant">The Base58 variant.</param>
+    /// <returns>A Base58 string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
+    /// range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="bytes" />.
+    /// </exception>
+    public static string Encode(byte[] bytes, int offset, int count, Base58Variant variant = Base58Variant.BitcoinFlickr)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
+        return Encode(bytes.AsSpan(offset, count), variant);
     }
 
     /// <summary>
@@ -193,4 +194,5 @@ public static partial class Base58
 
         return usableLength - position;
     }
+
 }

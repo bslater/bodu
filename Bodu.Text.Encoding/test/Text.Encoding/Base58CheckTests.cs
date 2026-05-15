@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58CheckTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,6 +13,7 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class Base58CheckTests
 {
+
     /// <summary>
     /// Known answer test vector from the Bitcoin Genesis block coinbase address. The input is the 21-byte
     /// representation of the address (version byte 0x00 + 20-byte HASH-160 of Satoshi's public key).
@@ -31,18 +32,6 @@ public sealed class Base58CheckTests
     };
 
     /// <summary>
-    /// Verifies that <see cref="Base58Check.Encode(ReadOnlySpan{byte}, Base58Variant)" /> produces the canonical
-    /// Bitcoin Genesis block address from the corresponding 21-byte payload.
-    /// </summary>
-    [TestMethod]
-    public void Encode_ForGenesisBlockPayload_ShouldProduceGenesisAddress()
-    {
-        string encoded = Base58Check.Encode(GenesisPayload);
-
-        Assert.AreEqual(GenesisAddress, encoded);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Base58Check.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> recovers
     /// the original 21-byte payload from the Bitcoin Genesis block address.
     /// </summary>
@@ -52,30 +41,6 @@ public sealed class Base58CheckTests
         byte[] decoded = Base58Check.Decode(GenesisAddress.AsSpan());
 
         CollectionAssert.AreEqual(GenesisPayload, decoded);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base58Check.Encode(ReadOnlySpan{byte}, Base58Variant)" /> followed by
-    /// <see cref="Base58Check.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> recovers arbitrary input
-    /// bytes across a sweep of payload sizes.
-    /// </summary>
-    /// <param name="payloadLength">The payload byte count under test.</param>
-    [TestMethod]
-    [DataRow(0)]
-    [DataRow(1)]
-    [DataRow(5)]
-    [DataRow(20)]
-    [DataRow(32)]
-    [DataRow(64)]
-    public void RoundTrip_ShouldRecoverPayload(int payloadLength)
-    {
-        byte[] payload = new byte[payloadLength];
-        new Random(0xCAFE).NextBytes(payload);
-
-        string encoded = Base58Check.Encode(payload);
-        byte[] decoded = Base58Check.Decode(encoded.AsSpan());
-
-        CollectionAssert.AreEqual(payload, decoded);
     }
 
     /// <summary>
@@ -99,36 +64,46 @@ public sealed class Base58CheckTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58Check.TryDecode" /> returns <see langword="false" /> for a tampered input rather
-    /// than throwing.
+    /// Verifies that <see cref="Base58Check.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> throws
+    /// <see cref="FormatException" /> when the input is shorter than the checksum suffix.
     /// </summary>
     [TestMethod]
-    public void TryDecode_WhenChecksumIsCorrupted_ShouldReturnFalse()
+    public void Decode_WhenInputTooShortForChecksum_ShouldThrowFormatException()
     {
-        char[] tampered = GenesisAddress.ToCharArray();
-        tampered[^1] = tampered[^1] == 'a' ? 'b' : 'a';
-        byte[] destination = new byte[GenesisPayload.Length];
+        var ex = Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base58Check.Decode("1".AsSpan());
+        });
 
-        bool ok = Base58Check.TryDecode(new string(tampered).AsSpan(), destination, out int bytesWritten);
-
-        Assert.IsFalse(ok);
-        Assert.AreEqual(0, bytesWritten);
+        Assert.IsTrue(ex.Message.Contains("checksum", StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58Check.TryDecode" /> succeeds for the canonical Genesis address and writes the
-    /// expected 21-byte payload.
+    /// Verifies that <see cref="Base58Check.Encode(ReadOnlySpan{byte}, Base58Variant)" /> produces the canonical
+    /// Bitcoin Genesis block address from the corresponding 21-byte payload.
     /// </summary>
     [TestMethod]
-    public void TryDecode_ForGenesisAddress_ShouldRecoverPayload()
+    public void Encode_ForGenesisBlockPayload_ShouldProduceGenesisAddress()
     {
-        byte[] destination = new byte[GenesisPayload.Length];
+        string encoded = Base58Check.Encode(GenesisPayload);
 
-        bool ok = Base58Check.TryDecode(GenesisAddress.AsSpan(), destination, out int bytesWritten);
+        Assert.AreEqual(GenesisAddress, encoded);
+    }
 
-        Assert.IsTrue(ok);
-        Assert.AreEqual(GenesisPayload.Length, bytesWritten);
-        CollectionAssert.AreEqual(GenesisPayload, destination);
+    /// <summary>
+    /// Verifies that <see cref="Base58Check.GetMaxEncodedLength(int)" /> returns a bound large enough to fit the
+    /// actual encoded output.
+    /// </summary>
+    [TestMethod]
+    public void GetMaxEncodedLength_ShouldReturnUpperBoundLargeEnoughForOutput()
+    {
+        byte[] payload = new byte[20];
+        new Random(0xABCDEF).NextBytes(payload);
+
+        int upper = Base58Check.GetMaxEncodedLength(payload.Length);
+        string encoded = Base58Check.Encode(payload);
+
+        Assert.IsTrue(encoded.Length <= upper);
     }
 
     /// <summary>
@@ -166,21 +141,6 @@ public sealed class Base58CheckTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58Check.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> throws
-    /// <see cref="FormatException" /> when the input is shorter than the checksum suffix.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenInputTooShortForChecksum_ShouldThrowFormatException()
-    {
-        var ex = Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base58Check.Decode("1".AsSpan());
-        });
-
-        Assert.IsTrue(ex.Message.Contains("checksum", StringComparison.OrdinalIgnoreCase));
-    }
-
-    /// <summary>
     /// Verifies that an empty payload round-trips — the encoded form is the Base58 of the 4-byte checksum alone.
     /// </summary>
     [TestMethod]
@@ -193,18 +153,60 @@ public sealed class Base58CheckTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58Check.GetMaxEncodedLength(int)" /> returns a bound large enough to fit the
-    /// actual encoded output.
+    /// Verifies that <see cref="Base58Check.Encode(ReadOnlySpan{byte}, Base58Variant)" /> followed by
+    /// <see cref="Base58Check.Decode(ReadOnlySpan{char}, Base58Variant, BaseFormatStyles)" /> recovers arbitrary input
+    /// bytes across a sweep of payload sizes.
+    /// </summary>
+    /// <param name="payloadLength">The payload byte count under test.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(5)]
+    [DataRow(20)]
+    [DataRow(32)]
+    [DataRow(64)]
+    public void RoundTrip_ShouldRecoverPayload(int payloadLength)
+    {
+        byte[] payload = new byte[payloadLength];
+        new Random(0xCAFE).NextBytes(payload);
+
+        string encoded = Base58Check.Encode(payload);
+        byte[] decoded = Base58Check.Decode(encoded.AsSpan());
+
+        CollectionAssert.AreEqual(payload, decoded);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58Check.TryDecode" /> succeeds for the canonical Genesis address and writes the
+    /// expected 21-byte payload.
     /// </summary>
     [TestMethod]
-    public void GetMaxEncodedLength_ShouldReturnUpperBoundLargeEnoughForOutput()
+    public void TryDecode_ForGenesisAddress_ShouldRecoverPayload()
     {
-        byte[] payload = new byte[20];
-        new Random(0xABCDEF).NextBytes(payload);
+        byte[] destination = new byte[GenesisPayload.Length];
 
-        int upper = Base58Check.GetMaxEncodedLength(payload.Length);
-        string encoded = Base58Check.Encode(payload);
+        bool ok = Base58Check.TryDecode(GenesisAddress.AsSpan(), destination, out int bytesWritten);
 
-        Assert.IsTrue(encoded.Length <= upper);
+        Assert.IsTrue(ok);
+        Assert.AreEqual(GenesisPayload.Length, bytesWritten);
+        CollectionAssert.AreEqual(GenesisPayload, destination);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58Check.TryDecode" /> returns <see langword="false" /> for a tampered input rather
+    /// than throwing.
+    /// </summary>
+    [TestMethod]
+    public void TryDecode_WhenChecksumIsCorrupted_ShouldReturnFalse()
+    {
+        char[] tampered = GenesisAddress.ToCharArray();
+        tampered[^1] = tampered[^1] == 'a' ? 'b' : 'a';
+        byte[] destination = new byte[GenesisPayload.Length];
+
+        bool ok = Base58Check.TryDecode(new string(tampered).AsSpan(), destination, out int bytesWritten);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, bytesWritten);
+    }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85Tests.BclAliases.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,50 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base85Tests
 {
-    /// <summary>
-    /// Verifies that <see cref="Base85.ToBase85String(byte[])" /> returns the Ascii85 output.
-    /// </summary>
-    [TestMethod]
-    public void ToBase85String_ForByteArray_ShouldReturnAscii85Output()
-    {
-        string actual = Base85.ToBase85String(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
-
-        Assert.IsFalse(string.IsNullOrEmpty(actual));
-        byte[] roundTrip = Base85.FromBase85String(actual);
-        CollectionAssert.AreEqual(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }, roundTrip);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base85.FromBase85String(ReadOnlySpan{byte})" /> decodes UTF-8 input.
-    /// </summary>
-    [TestMethod]
-    public void FromBase85String_ForUtf8Source_ShouldDecode()
-    {
-        byte[] original = Ascii("Hello world!");
-        string encoded = Base85.Encode(original);
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(encoded);
-
-        byte[] actual = Base85.FromBase85String(utf8);
-
-        CollectionAssert.AreEqual(original, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base85.TryToBase85String(ReadOnlySpan{byte}, Span{char}, out int)" /> writes Ascii85
-    /// output into a char destination.
-    /// </summary>
-    [TestMethod]
-    public void TryToBase85String_ForCharSpan_ShouldWriteExpectedOutput()
-    {
-        byte[] bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
-        char[] destination = new char[Base85.GetMaxEncodedLength(bytes.Length)];
-
-        bool ok = Base85.TryToBase85String(bytes.AsSpan(), destination, out int charsWritten);
-
-        Assert.IsTrue(ok);
-        string encoded = new(destination, 0, charsWritten);
-        CollectionAssert.AreEqual(bytes, Base85.FromBase85String(encoded));
-    }
 
     /// <summary>
     /// Verifies that <see cref="Base85.FromBase85String(ReadOnlySpan{char}, Span{byte}, out int, out int)" /> returns
@@ -95,4 +51,49 @@ public sealed partial class Base85Tests
 
         Assert.AreEqual(OperationStatus.InvalidData, status);
     }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.FromBase85String(ReadOnlySpan{byte})" /> decodes UTF-8 input.
+    /// </summary>
+    [TestMethod]
+    public void FromBase85String_ForUtf8Source_ShouldDecode()
+    {
+        byte[] original = Ascii("Hello world!");
+        string encoded = Base85.Encode(original);
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes(encoded);
+
+        byte[] actual = Base85.FromBase85String(utf8);
+
+        CollectionAssert.AreEqual(original, actual);
+    }
+    /// <summary>
+    /// Verifies that <see cref="Base85.ToBase85String(byte[])" /> returns the Ascii85 output.
+    /// </summary>
+    [TestMethod]
+    public void ToBase85String_ForByteArray_ShouldReturnAscii85Output()
+    {
+        string actual = Base85.ToBase85String(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF });
+
+        Assert.IsFalse(string.IsNullOrEmpty(actual));
+        byte[] roundTrip = Base85.FromBase85String(actual);
+        CollectionAssert.AreEqual(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF }, roundTrip);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.TryToBase85String(ReadOnlySpan{byte}, Span{char}, out int)" /> writes Ascii85
+    /// output into a char destination.
+    /// </summary>
+    [TestMethod]
+    public void TryToBase85String_ForCharSpan_ShouldWriteExpectedOutput()
+    {
+        byte[] bytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
+        char[] destination = new char[Base85.GetMaxEncodedLength(bytes.Length)];
+
+        bool ok = Base85.TryToBase85String(bytes.AsSpan(), destination, out int charsWritten);
+
+        Assert.IsTrue(ok);
+        string encoded = new(destination, 0, charsWritten);
+        CollectionAssert.AreEqual(bytes, Base85.FromBase85String(encoded));
+    }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingNegativeDecodeVector.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,6 +21,7 @@ public sealed record EncodingNegativeDecodeVector(
     Type ExpectedExceptionType,
     string? Source = null)
 {
+
     /// <summary>
     /// Returns the human-readable label, used by MSTest's <c>[DynamicData]</c> infrastructure when generating test
     /// names.
@@ -28,4 +29,5 @@ public sealed record EncodingNegativeDecodeVector(
     /// <returns>The description.</returns>
     public override string ToString() =>
         Source is null ? Description : $"{Description} [{Source}]";
+
 }

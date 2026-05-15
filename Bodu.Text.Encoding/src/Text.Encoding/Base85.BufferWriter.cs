@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85.BufferWriter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
+
     /// <summary>
     /// Encodes <paramref name="source" /> as Base85 characters into <paramref name="writer" />, suitable for use in
     /// pipelines and other <see cref="IBufferWriter{T}" />-based scenarios.
@@ -81,4 +82,5 @@ public static partial class Base85
         writer.Advance(utf8.Length);
         return utf8.Length;
     }
+
 }

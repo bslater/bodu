@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58.Utf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,41 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
+
+    /// <summary>
+    /// Decodes UTF-8 Base58 bytes into a byte span using the <see cref="OperationStatus" /> return convention.
+    /// </summary>
+    /// <param name="source">The UTF-8 Base58 source.</param>
+    /// <param name="destination">The destination byte span.</param>
+    /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
+    /// <remarks>
+    /// Base58 is not a streamable encoding; this overload always treats <paramref name="source" /> as a complete
+    /// input. <see cref="OperationStatus.NeedMoreData" /> is never returned.
+    /// </remarks>
+    public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        sbyte[] lookup = GetLookup(variant);
+        bytesConsumed = 0;
+        bytesWritten = 0;
+
+        if (source.IsEmpty)
+            return OperationStatus.Done;
+
+        // Project the UTF-8 source through a temporary char buffer so the BigInteger decode path can be reused.
+        char[] scratch = new char[source.Length];
+        for (int i = 0; i < source.Length; i++)
+            scratch[i] = (char)source[i];
+
+        OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out int _, out bytesWritten, variant, styles);
+        if (status == OperationStatus.Done)
+            bytesConsumed = source.Length;
+
+        return status;
+    }
     /// <summary>
     /// Encodes <paramref name="source" /> into a UTF-8 Base58 byte array using the supplied variant.
     /// </summary>
@@ -86,41 +121,6 @@ public static partial class Base58
     }
 
     /// <summary>
-    /// Decodes UTF-8 Base58 bytes into a byte span using the <see cref="OperationStatus" /> return convention.
-    /// </summary>
-    /// <param name="source">The UTF-8 Base58 source.</param>
-    /// <param name="destination">The destination byte span.</param>
-    /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles.</param>
-    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
-    /// <remarks>
-    /// Base58 is not a streamable encoding; this overload always treats <paramref name="source" /> as a complete
-    /// input. <see cref="OperationStatus.NeedMoreData" /> is never returned.
-    /// </remarks>
-    public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        sbyte[] lookup = GetLookup(variant);
-        bytesConsumed = 0;
-        bytesWritten = 0;
-
-        if (source.IsEmpty)
-            return OperationStatus.Done;
-
-        // Project the UTF-8 source through a temporary char buffer so the BigInteger decode path can be reused.
-        char[] scratch = new char[source.Length];
-        for (int i = 0; i < source.Length; i++)
-            scratch[i] = (char)source[i];
-
-        OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out int _, out bytesWritten, variant, styles);
-        if (status == OperationStatus.Done)
-            bytesConsumed = source.Length;
-
-        return status;
-    }
-
-    /// <summary>
     /// Decodes a Base58 character span into a byte span using the <see cref="OperationStatus" /> return convention.
     /// </summary>
     /// <param name="source">The Base58 character span.</param>
@@ -150,4 +150,5 @@ public static partial class Base58
         charsConsumed = source.Length;
         return OperationStatus.Done;
     }
+
 }

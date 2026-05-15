@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85.Decode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
+
     /// <summary>
     /// Decodes a Base85 string into a byte array using the supplied variant.
     /// </summary>
@@ -22,31 +23,6 @@ public static partial class Base85
     {
         ThrowHelper.ThrowIfNull(s);
         return Decode(s.AsSpan(), variant, style);
-    }
-
-    /// <summary>
-    /// Decodes a portion of a character array.
-    /// </summary>
-    /// <param name="chars">The character array.</param>
-    /// <param name="offset">The starting offset.</param>
-    /// <param name="count">The number of characters.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="style">Parsing styles.</param>
-    /// <returns>The decoded byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
-    /// range.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
-    /// available range of <paramref name="chars" />.
-    /// </exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base85.</exception>
-    public static byte[] Decode(char[] chars, int offset, int count, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles style = BaseFormatStyles.None)
-    {
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
-        return Decode(chars.AsSpan(offset, count), variant, style);
     }
 
     /// <summary>
@@ -76,6 +52,31 @@ public static partial class Base85
         byte[] trimmed = new byte[written];
         Buffer.BlockCopy(buffer, 0, trimmed, 0, written);
         return trimmed;
+    }
+
+    /// <summary>
+    /// Decodes a portion of a character array.
+    /// </summary>
+    /// <param name="chars">The character array.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="count">The number of characters.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="style">Parsing styles.</param>
+    /// <returns>The decoded byte array.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
+    /// range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="chars" />.
+    /// </exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Base85.</exception>
+    public static byte[] Decode(char[] chars, int offset, int count, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles style = BaseFormatStyles.None)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
+        return Decode(chars.AsSpan(offset, count), variant, style);
     }
 
     /// <summary>
@@ -229,4 +230,5 @@ public static partial class Base85
 
         return true;
     }
+
 }

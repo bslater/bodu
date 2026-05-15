@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58.Decode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base58
 {
+
     /// <summary>
     /// Decodes a Base58 string into a byte array using the supplied variant.
     /// </summary>
@@ -24,6 +25,28 @@ public static partial class Base58
     {
         ThrowHelper.ThrowIfNull(s);
         return Decode(s.AsSpan(), variant, style);
+    }
+
+    /// <summary>
+    /// Decodes a Base58 character span into a byte array.
+    /// </summary>
+    /// <param name="chars">The Base58 character span.</param>
+    /// <param name="variant">The Base58 variant.</param>
+    /// <param name="style">Parsing styles.</param>
+    /// <returns>The decoded byte array. Returns <see cref="Array.Empty{T}" /> for empty input.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Base58.</exception>
+    public static byte[] Decode(ReadOnlySpan<char> chars, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
+    {
+        sbyte[] lookup = GetLookup(variant);
+
+        if (chars.IsEmpty)
+            return Array.Empty<byte>();
+
+        if (!TryDecodeCore(chars, lookup, style, out byte[]? result, out string? error))
+            throw new FormatException(error);
+
+        return result!;
     }
 
     /// <summary>
@@ -49,28 +72,6 @@ public static partial class Base58
     {
         ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
         return Decode(chars.AsSpan(offset, count), variant, style);
-    }
-
-    /// <summary>
-    /// Decodes a Base58 character span into a byte array.
-    /// </summary>
-    /// <param name="chars">The Base58 character span.</param>
-    /// <param name="variant">The Base58 variant.</param>
-    /// <param name="style">Parsing styles.</param>
-    /// <returns>The decoded byte array. Returns <see cref="Array.Empty{T}" /> for empty input.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base58.</exception>
-    public static byte[] Decode(ReadOnlySpan<char> chars, Base58Variant variant = Base58Variant.BitcoinFlickr, BaseFormatStyles style = BaseFormatStyles.None)
-    {
-        sbyte[] lookup = GetLookup(variant);
-
-        if (chars.IsEmpty)
-            return Array.Empty<byte>();
-
-        if (!TryDecodeCore(chars, lookup, style, out byte[]? result, out string? error))
-            throw new FormatException(error);
-
-        return result!;
     }
 
     /// <summary>
@@ -168,4 +169,5 @@ public static partial class Base58
         result = combined;
         return true;
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="EncodingKnownAnswerVector.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,6 +23,7 @@ public sealed record EncodingKnownAnswerVector(
     string Encoded,
     string? Source = null)
 {
+
     /// <summary>
     /// Builds a vector from an ASCII string input, used for the many RFC 4648 §10 examples that express the input
     /// as a readable ASCII fragment ("f", "fo", "foo", "foob", "fooba", "foobar").
@@ -55,4 +56,5 @@ public sealed record EncodingKnownAnswerVector(
     /// <returns>The description.</returns>
     public override string ToString() =>
         Source is null ? Description : $"{Description} [{Source}]";
+
 }

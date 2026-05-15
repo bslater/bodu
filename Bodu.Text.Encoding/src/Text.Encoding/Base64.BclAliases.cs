@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64.BclAliases.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,40 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
-    /// <summary>
-    /// Encodes <paramref name="inArray" /> into a Standard Base64 string with default formatting.
-    /// </summary>
-    /// <param name="inArray">The byte array to encode.</param>
-    /// <returns>A Base64 (RFC 4648 §4) string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
-    public static string ToBase64String(byte[] inArray) =>
-        Encode(inArray, Base64Variant.Standard, BaseFormattingOptions.None);
-
-    /// <summary>
-    /// Encodes a portion of <paramref name="inArray" /> into a Standard Base64 string.
-    /// </summary>
-    /// <param name="inArray">The byte array to encode.</param>
-    /// <param name="offset">The starting offset.</param>
-    /// <param name="length">The number of bytes to encode.</param>
-    /// <returns>A Base64 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="length" /> exceeds the
-    /// available range of <paramref name="inArray" />.
-    /// </exception>
-    public static string ToBase64String(byte[] inArray, int offset, int length) =>
-        Encode(inArray, offset, length, Base64Variant.Standard, BaseFormattingOptions.None);
-
-    /// <summary>
-    /// Encodes <paramref name="bytes" /> into a Standard Base64 string.
-    /// </summary>
-    /// <param name="bytes">The bytes to encode.</param>
-    /// <returns>A Base64 string.</returns>
-    public static string ToBase64String(ReadOnlySpan<byte> bytes) =>
-        Encode(bytes, Base64Variant.Standard, BaseFormattingOptions.None);
 
     /// <summary>
     /// Decodes <paramref name="s" /> as a Standard Base64 string into a byte array, mirroring the lenient
@@ -96,28 +62,6 @@ public static partial class Base64
     }
 
     /// <summary>
-    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> as a Standard Base64
-    /// character sequence.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="destination">The destination span.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
-    public static bool TryToBase64String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
-        TryEncode(source, destination, out charsWritten, Base64Variant.Standard, BaseFormattingOptions.None);
-
-    /// <summary>
-    /// Attempts to encode <paramref name="source" /> as a Standard Base64 UTF-8 byte sequence into
-    /// <paramref name="utf8Destination" />.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="utf8Destination">The UTF-8 destination span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
-    public static bool TryToBase64String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
-        TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base64Variant.Standard, BaseFormattingOptions.None);
-
-    /// <summary>
     /// Strict-mode Standard Base64 decode from a character span using the <see cref="OperationStatus" /> return
     /// convention.
     /// </summary>
@@ -139,4 +83,61 @@ public static partial class Base64
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus FromBase64String(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base64Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
+    /// <summary>
+    /// Encodes <paramref name="inArray" /> into a Standard Base64 string with default formatting.
+    /// </summary>
+    /// <param name="inArray">The byte array to encode.</param>
+    /// <returns>A Base64 (RFC 4648 §4) string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    public static string ToBase64String(byte[] inArray) =>
+        Encode(inArray, Base64Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Encodes <paramref name="bytes" /> into a Standard Base64 string.
+    /// </summary>
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <returns>A Base64 string.</returns>
+    public static string ToBase64String(ReadOnlySpan<byte> bytes) =>
+        Encode(bytes, Base64Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Encodes a portion of <paramref name="inArray" /> into a Standard Base64 string.
+    /// </summary>
+    /// <param name="inArray">The byte array to encode.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="length">The number of bytes to encode.</param>
+    /// <returns>A Base64 string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="length" /> exceeds the
+    /// available range of <paramref name="inArray" />.
+    /// </exception>
+    public static string ToBase64String(byte[] inArray, int offset, int length) =>
+        Encode(inArray, offset, length, Base64Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> as a Standard Base64
+    /// character sequence.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
+    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    public static bool TryToBase64String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
+        TryEncode(source, destination, out charsWritten, Base64Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> as a Standard Base64 UTF-8 byte sequence into
+    /// <paramref name="utf8Destination" />.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="utf8Destination">The UTF-8 destination span.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    public static bool TryToBase64String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
+        TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base64Variant.Standard, BaseFormattingOptions.None);
+
 }

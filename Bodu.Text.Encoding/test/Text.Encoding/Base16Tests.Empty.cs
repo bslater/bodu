@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16Tests.Empty.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,27 +8,16 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base16Tests
 {
-    /// <summary>
-    /// Verifies that encoding an empty byte array returns <see cref="string.Empty" /> with default options.
-    /// </summary>
-    [TestMethod]
-    public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString()
-    {
-        string actual = Base16.Encode(Array.Empty<byte>());
-
-        Assert.AreEqual(string.Empty, actual);
-    }
 
     /// <summary>
-    /// Verifies that encoding an empty input with <see cref="BaseFormattingOptions.IncludePrefix" /> still emits the
-    /// prefix.
+    /// Verifies that decoding an empty span returns an empty byte array.
     /// </summary>
     [TestMethod]
-    public void Encode_WhenEmptyAndIncludePrefix_ShouldReturnPrefixOnly()
+    public void Decode_WhenEmptySpan_ShouldReturnEmptyByteArray()
     {
-        string actual = Base16.Encode(ReadOnlySpan<byte>.Empty, BaseFormattingOptions.IncludePrefix);
+        byte[] actual = Base16.Decode(ReadOnlySpan<char>.Empty);
 
-        Assert.AreEqual("0x", actual);
+        Assert.AreEqual(0, actual.Length);
     }
 
     /// <summary>
@@ -43,14 +32,46 @@ public sealed partial class Base16Tests
     }
 
     /// <summary>
-    /// Verifies that decoding an empty span returns an empty byte array.
+    /// Verifies that encoding an empty input with <see cref="BaseFormattingOptions.IncludePrefix" /> still emits the
+    /// prefix.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenEmptySpan_ShouldReturnEmptyByteArray()
+    public void Encode_WhenEmptyAndIncludePrefix_ShouldReturnPrefixOnly()
     {
-        byte[] actual = Base16.Decode(ReadOnlySpan<char>.Empty);
+        string actual = Base16.Encode(ReadOnlySpan<byte>.Empty, BaseFormattingOptions.IncludePrefix);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.AreEqual("0x", actual);
+    }
+    /// <summary>
+    /// Verifies that encoding an empty byte array returns <see cref="string.Empty" /> with default options.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenEmptyByteArray_ShouldReturnEmptyString()
+    {
+        string actual = Base16.Encode(Array.Empty<byte>());
+
+        Assert.AreEqual(string.Empty, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.TryDecode" /> with an empty source returns <see langword="true" /> and writes
+    /// zero bytes regardless of the destination span size.
+    /// </summary>
+    [TestMethod]
+    public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
+    {
+        byte[] tiny = new byte[1];
+        byte[] zero = Array.Empty<byte>();
+        byte[] huge = new byte[1000];
+
+        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, tiny, out int bytesTiny));
+        Assert.AreEqual(0, bytesTiny);
+
+        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, zero, out int bytesZero));
+        Assert.AreEqual(0, bytesZero);
+
+        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, huge, out int bytesHuge));
+        Assert.AreEqual(0, bytesHuge);
     }
 
     /// <summary>
@@ -74,24 +95,4 @@ public sealed partial class Base16Tests
         Assert.AreEqual(0, charsHuge);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Base16.TryDecode" /> with an empty source returns <see langword="true" /> and writes
-    /// zero bytes regardless of the destination span size.
-    /// </summary>
-    [TestMethod]
-    public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
-    {
-        byte[] tiny = new byte[1];
-        byte[] zero = Array.Empty<byte>();
-        byte[] huge = new byte[1000];
-
-        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, tiny, out int bytesTiny));
-        Assert.AreEqual(0, bytesTiny);
-
-        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, zero, out int bytesZero));
-        Assert.AreEqual(0, bytesZero);
-
-        Assert.IsTrue(Base16.TryDecode(ReadOnlySpan<char>.Empty, huge, out int bytesHuge));
-        Assert.AreEqual(0, bytesHuge);
-    }
 }

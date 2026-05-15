@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58Tests.Variants.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,20 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base58Tests
 {
-    /// <summary>
-    /// Verifies that the Bitcoin/Flickr and Ripple variants produce different encoded strings for the same input
-    /// (because the alphabet ordering differs).
-    /// </summary>
-    [TestMethod]
-    public void Encode_WhenSameInputDifferentVariants_ShouldProduceDifferentOutputs()
-    {
-        byte[] input = Ascii("Hello");
-
-        string bitcoin = Base58.Encode(input, Base58Variant.BitcoinFlickr);
-        string ripple = Base58.Encode(input, Base58Variant.Ripple);
-
-        Assert.AreNotEqual(bitcoin, ripple);
-    }
 
     /// <summary>
     /// Verifies that the Bitcoin/Flickr variant rejects the visually ambiguous characters <c>0</c>, <c>O</c>,
@@ -62,4 +48,19 @@ public sealed partial class Base58Tests
             // Acceptable - the Ripple alphabet may use a character that is not in Bitcoin/Flickr.
         }
     }
+    /// <summary>
+    /// Verifies that the Bitcoin/Flickr and Ripple variants produce different encoded strings for the same input
+    /// (because the alphabet ordering differs).
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenSameInputDifferentVariants_ShouldProduceDifferentOutputs()
+    {
+        byte[] input = Ascii("Hello");
+
+        string bitcoin = Base58.Encode(input, Base58Variant.BitcoinFlickr);
+        string ripple = Base58.Encode(input, Base58Variant.Ripple);
+
+        Assert.AreNotEqual(bitcoin, ripple);
+    }
+
 }

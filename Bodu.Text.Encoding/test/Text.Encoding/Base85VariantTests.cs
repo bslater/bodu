@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85VariantTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,6 +12,7 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class Base85VariantTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Base85Variant.Ascii85" /> is the default value.
     /// </summary>
@@ -30,4 +31,5 @@ public sealed class Base85VariantTests
         Assert.AreEqual(0, (int)Base85Variant.Ascii85);
         Assert.AreEqual(1, (int)Base85Variant.Z85);
     }
+
 }

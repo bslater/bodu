@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,18 +35,8 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public static partial class Base85
 {
+
     private const string Ascii85Alphabet = "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstu";
-    private const string Z85Alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#";
-
-    /// <summary>
-    /// The Ascii85 <c>z</c> shortcut representing four consecutive zero bytes.
-    /// </summary>
-    private const char ZeroShortcut = 'z';
-
-    /// <summary>
-    /// The Adobe Ascii85 leading delimiter emitted when <see cref="BaseFormattingOptions.IncludePrefix" /> is set.
-    /// </summary>
-    private const string Ascii85DelimiterStart = "<~";
 
     /// <summary>
     /// The Adobe Ascii85 trailing delimiter emitted when <see cref="BaseFormattingOptions.IncludePrefix" /> is set.
@@ -57,6 +47,17 @@ public static partial class Base85
     /// The combined length of <see cref="Ascii85DelimiterStart" /> and <see cref="Ascii85DelimiterEnd" />.
     /// </summary>
     private const int Ascii85DelimiterLength = 4;
+
+    /// <summary>
+    /// The Adobe Ascii85 leading delimiter emitted when <see cref="BaseFormattingOptions.IncludePrefix" /> is set.
+    /// </summary>
+    private const string Ascii85DelimiterStart = "<~";
+    private const string Z85Alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.-:+=^!/*?&<>()[]{}@%$#";
+
+    /// <summary>
+    /// The Ascii85 <c>z</c> shortcut representing four consecutive zero bytes.
+    /// </summary>
+    private const char ZeroShortcut = 'z';
 
     private static readonly sbyte[] s_ascii85Lookup = BuildLookup(Ascii85Alphabet);
     private static readonly sbyte[] s_z85Lookup = BuildLookup(Z85Alphabet);
@@ -122,6 +123,24 @@ public static partial class Base85
     }
 
     /// <summary>
+    /// Returns the maximum number of bytes that decoding <paramref name="charCount" /> characters could produce
+    /// (worst case, assuming no <c>z</c> shortcuts expand to four zero bytes).
+    /// </summary>
+    /// <param name="charCount">The input character count. Must be non-negative.</param>
+    /// <returns>The worst-case decoded byte count.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
+    public static int GetMaxDecodedLength(int charCount)
+    {
+        ThrowHelper.ThrowIfNegative(charCount);
+        if (charCount == 0)
+            return 0;
+        checked
+        {
+            return charCount * 4;
+        }
+    }
+
+    /// <summary>
     /// Returns the maximum number of characters that encoding <paramref name="byteCount" /> bytes could produce
     /// (i.e. assuming no Ascii85 <c>z</c> shortcuts are emitted), with optional Adobe Ascii85 delimiters.
     /// </summary>
@@ -165,21 +184,17 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Returns the maximum number of bytes that decoding <paramref name="charCount" /> characters could produce
-    /// (worst case, assuming no <c>z</c> shortcuts expand to four zero bytes).
+    /// Indicates whether <paramref name="value" /> is a valid digit for the supplied Base85 variant. The Ascii85
+    /// <c>z</c> shortcut is not considered a digit.
     /// </summary>
-    /// <param name="charCount">The input character count. Must be non-negative.</param>
-    /// <returns>The worst-case decoded byte count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="charCount" /> is negative.</exception>
-    public static int GetMaxDecodedLength(int charCount)
+    /// <param name="value">The character to test.</param>
+    /// <param name="variant">The variant.</param>
+    /// <returns><see langword="true" /> when the character belongs to the variant alphabet.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool IsBase85Digit(char value, Base85Variant variant = Base85Variant.Ascii85)
     {
-        ThrowHelper.ThrowIfNegative(charCount);
-        if (charCount == 0)
-            return 0;
-        checked
-        {
-            return charCount * 4;
-        }
+        sbyte[] lookup = GetLookup(variant);
+        return value < lookup.Length && lookup[value] >= 0;
     }
 
     /// <summary>
@@ -243,17 +258,33 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="value" /> is a valid digit for the supplied Base85 variant. The Ascii85
-    /// <c>z</c> shortcut is not considered a digit.
+    /// Builds a 128-entry lookup table mapping alphabet characters to their numeric value.
     /// </summary>
-    /// <param name="value">The character to test.</param>
-    /// <param name="variant">The variant.</param>
-    /// <returns><see langword="true" /> when the character belongs to the variant alphabet.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static bool IsBase85Digit(char value, Base85Variant variant = Base85Variant.Ascii85)
+    /// <param name="alphabet">The alphabet.</param>
+    /// <returns>The lookup table.</returns>
+    private static sbyte[] BuildLookup(string alphabet)
     {
-        sbyte[] lookup = GetLookup(variant);
-        return value < lookup.Length && lookup[value] >= 0;
+        sbyte[] table = new sbyte[128];
+        Array.Fill(table, (sbyte)-1);
+
+        for (int i = 0; i < alphabet.Length; i++)
+        {
+            char c = alphabet[i];
+            table[c] = (sbyte)i;
+        }
+
+        return table;
+    }
+
+    /// <summary>
+    /// Validates that <paramref name="variant" /> is a defined enum value.
+    /// </summary>
+    /// <param name="variant">The variant to test.</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    private static void EnsureValidVariant(Base85Variant variant)
+    {
+        if (variant is not (Base85Variant.Ascii85 or Base85Variant.Z85))
+            throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base85 variant.");
     }
 
     /// <summary>
@@ -283,17 +314,6 @@ public static partial class Base85
             Base85Variant.Z85 => s_z85Lookup,
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base85 variant."),
         };
-
-    /// <summary>
-    /// Validates that <paramref name="variant" /> is a defined enum value.
-    /// </summary>
-    /// <param name="variant">The variant to test.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    private static void EnsureValidVariant(Base85Variant variant)
-    {
-        if (variant is not (Base85Variant.Ascii85 or Base85Variant.Z85))
-            throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base85 variant.");
-    }
 
     /// <summary>
     /// Indicates whether the Adobe Ascii85 <c>&lt;~ ... ~&gt;</c> delimiter pair should be emitted given the supplied
@@ -335,22 +355,4 @@ public static partial class Base85
         return source;
     }
 
-    /// <summary>
-    /// Builds a 128-entry lookup table mapping alphabet characters to their numeric value.
-    /// </summary>
-    /// <param name="alphabet">The alphabet.</param>
-    /// <returns>The lookup table.</returns>
-    private static sbyte[] BuildLookup(string alphabet)
-    {
-        sbyte[] table = new sbyte[128];
-        Array.Fill(table, (sbyte)-1);
-
-        for (int i = 0; i < alphabet.Length; i++)
-        {
-            char c = alphabet[i];
-            table[c] = (sbyte)i;
-        }
-
-        return table;
-    }
 }

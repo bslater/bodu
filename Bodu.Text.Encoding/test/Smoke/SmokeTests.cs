@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="SmokeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -15,6 +15,7 @@ namespace Bodu.Smoke;
 [TestClass]
 public sealed class SmokeTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Base16.Encode(byte[], BaseFormattingOptions)" /> followed by
     /// <see cref="Base16.Decode(string, BaseFormatStyles)" /> round-trips the canonical reference input.
@@ -51,24 +52,6 @@ public sealed class SmokeTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64.Encode(byte[], Base64Variant, BaseFormattingOptions)" /> followed by
-    /// <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> reproduces the RFC 4648 §10 reference
-    /// vector for the input <c>"foobar"</c>.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Smoke")]
-    public void Base64_EncodeDecode_ShouldMatchRfc4648ReferenceVector()
-    {
-        byte[] original = System.Text.Encoding.ASCII.GetBytes("foobar");
-
-        string encoded = Base64.Encode(original);
-        byte[] decoded = Base64.Decode(encoded);
-
-        Assert.AreEqual("Zm9vYmFy", encoded);
-        CollectionAssert.AreEqual(original, decoded);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Base58.Encode(byte[], Base58Variant)" /> followed by
     /// <see cref="Base58.Decode(string, Base58Variant, BaseFormatStyles)" /> round-trips the ASCII representation of
     /// <c>"Hello"</c> using the canonical Bitcoin/Flickr alphabet.
@@ -83,6 +66,24 @@ public sealed class SmokeTests
         byte[] decoded = Base58.Decode(encoded);
 
         Assert.AreEqual("9Ajdvzr", encoded);
+        CollectionAssert.AreEqual(original, decoded);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.Encode(byte[], Base64Variant, BaseFormattingOptions)" /> followed by
+    /// <see cref="Base64.Decode(string, Base64Variant, BaseFormatStyles)" /> reproduces the RFC 4648 §10 reference
+    /// vector for the input <c>"foobar"</c>.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Smoke")]
+    public void Base64_EncodeDecode_ShouldMatchRfc4648ReferenceVector()
+    {
+        byte[] original = System.Text.Encoding.ASCII.GetBytes("foobar");
+
+        string encoded = Base64.Encode(original);
+        byte[] decoded = Base64.Decode(encoded);
+
+        Assert.AreEqual("Zm9vYmFy", encoded);
         CollectionAssert.AreEqual(original, decoded);
     }
 
@@ -103,4 +104,5 @@ public sealed class SmokeTests
         Assert.AreEqual("z", encoded);
         CollectionAssert.AreEqual(original, decoded);
     }
+
 }

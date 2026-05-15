@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64Tests.TryEncode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,31 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base64Tests
 {
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.TryEncode" /> succeeds when the destination is exactly the required size for
+    /// representative inputs.
+    /// </summary>
+    /// <param name="byteCount">The input byte count.</param>
+    /// <param name="expectedCharCount">The expected output char count (Standard variant, padded).</param>
+    [TestMethod]
+    [DataRow(1, 4)]
+    [DataRow(2, 4)]
+    [DataRow(3, 4)]
+    [DataRow(4, 8)]
+    [DataRow(5, 8)]
+    [DataRow(6, 8)]
+    [DataRow(9, 12)]
+    public void TryEncode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int byteCount, int expectedCharCount)
+    {
+        byte[] bytes = new byte[byteCount];
+        char[] destination = new char[expectedCharCount];
+
+        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
+
+        Assert.IsTrue(ok);
+        Assert.AreEqual(expectedCharCount, charsWritten);
+    }
     /// <summary>
     /// Verifies that <see cref="Base64.TryEncode" /> succeeds when the destination is large enough.
     /// </summary>
@@ -22,6 +47,27 @@ public sealed partial class Base64Tests
         Assert.IsTrue(ok);
         Assert.AreEqual(8, charsWritten);
         Assert.AreEqual("Zm9vYmFy", new string(destination));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base64.TryEncode" /> returns <see langword="false" /> when the destination is exactly
+    /// one character short.
+    /// </summary>
+    /// <param name="byteCount">The input byte count.</param>
+    /// <param name="exactRequired">The exact required char count.</param>
+    [TestMethod]
+    [DataRow(1, 4)]
+    [DataRow(3, 4)]
+    [DataRow(6, 8)]
+    public void TryEncode_WhenDestinationOneCharShort_ShouldReturnFalseAndZeroCharsWritten(int byteCount, int exactRequired)
+    {
+        byte[] bytes = new byte[byteCount];
+        char[] destination = new char[exactRequired - 1];
+
+        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(0, charsWritten);
     }
 
     /// <summary>
@@ -72,52 +118,6 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64.TryEncode" /> succeeds when the destination is exactly the required size for
-    /// representative inputs.
-    /// </summary>
-    /// <param name="byteCount">The input byte count.</param>
-    /// <param name="expectedCharCount">The expected output char count (Standard variant, padded).</param>
-    [TestMethod]
-    [DataRow(1, 4)]
-    [DataRow(2, 4)]
-    [DataRow(3, 4)]
-    [DataRow(4, 8)]
-    [DataRow(5, 8)]
-    [DataRow(6, 8)]
-    [DataRow(9, 12)]
-    public void TryEncode_WhenDestinationExactlyRequiredSize_ShouldReturnTrueAndFillBuffer(int byteCount, int expectedCharCount)
-    {
-        byte[] bytes = new byte[byteCount];
-        char[] destination = new char[expectedCharCount];
-
-        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
-
-        Assert.IsTrue(ok);
-        Assert.AreEqual(expectedCharCount, charsWritten);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base64.TryEncode" /> returns <see langword="false" /> when the destination is exactly
-    /// one character short.
-    /// </summary>
-    /// <param name="byteCount">The input byte count.</param>
-    /// <param name="exactRequired">The exact required char count.</param>
-    [TestMethod]
-    [DataRow(1, 4)]
-    [DataRow(3, 4)]
-    [DataRow(6, 8)]
-    public void TryEncode_WhenDestinationOneCharShort_ShouldReturnFalseAndZeroCharsWritten(int byteCount, int exactRequired)
-    {
-        byte[] bytes = new byte[byteCount];
-        char[] destination = new char[exactRequired - 1];
-
-        bool ok = Base64.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
-
-        Assert.IsFalse(ok);
-        Assert.AreEqual(0, charsWritten);
-    }
-
-    /// <summary>
     /// Verifies that <see cref="Base64.TryEncode" /> rejects an undefined variant.
     /// </summary>
     [TestMethod]
@@ -130,4 +130,5 @@ public sealed partial class Base64Tests
             _ = Base64.TryEncode(Ascii("foo").AsSpan(), destination, out _, (Base64Variant)99);
         });
     }
+
 }

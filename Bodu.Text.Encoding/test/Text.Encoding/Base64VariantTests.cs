@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64VariantTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,6 +12,7 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class Base64VariantTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Base64Variant.Standard" /> is the default value (numerical zero).
     /// </summary>
@@ -31,4 +32,5 @@ public sealed class Base64VariantTests
         Assert.AreEqual(1, (int)Base64Variant.UrlSafe);
         Assert.AreEqual(2, (int)Base64Variant.Mime);
     }
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BinaryEncodingExtensions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,19 +25,6 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public static class BinaryEncodingExtensions
 {
-    /// <summary>
-    /// Encodes <paramref name="bytes" /> using <paramref name="encoding" />.
-    /// </summary>
-    /// <param name="bytes">The bytes to encode.</param>
-    /// <param name="encoding">The encoding to use.</param>
-    /// <returns>The encoded string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when either argument is <see langword="null" />.</exception>
-    public static string Encode(this byte[] bytes, IBinaryEncoding encoding)
-    {
-        ThrowHelper.ThrowIfNull(bytes);
-        ThrowHelper.ThrowIfNull(encoding);
-        return encoding.Encode(bytes.AsSpan());
-    }
 
     /// <summary>
     /// Decodes <paramref name="encoded" /> using <paramref name="encoding" />.
@@ -53,6 +40,64 @@ public static class BinaryEncodingExtensions
         ThrowHelper.ThrowIfNull(encoding);
         return encoding.Decode(encoded.AsSpan());
     }
+    /// <summary>
+    /// Encodes <paramref name="bytes" /> using <paramref name="encoding" />.
+    /// </summary>
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <param name="encoding">The encoding to use.</param>
+    /// <returns>The encoded string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when either argument is <see langword="null" />.</exception>
+    public static string Encode(this byte[] bytes, IBinaryEncoding encoding)
+    {
+        ThrowHelper.ThrowIfNull(bytes);
+        ThrowHelper.ThrowIfNull(encoding);
+        return encoding.Encode(bytes.AsSpan());
+    }
+
+    /// <summary>
+    /// Decodes a Base16 hexadecimal string into a byte array using strict parsing.
+    /// </summary>
+    /// <param name="hex">The hex input.</param>
+    /// <returns>The decoded bytes.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="hex" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid hexadecimal.</exception>
+    public static byte[] FromBase16String(this string hex) => Base16.FromHexString(hex);
+
+    /// <summary>
+    /// Decodes a Standard RFC 4648 Base32 string into a byte array.
+    /// </summary>
+    /// <param name="base32">The Base32 input.</param>
+    /// <returns>The decoded bytes.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base32" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Base32.</exception>
+    public static byte[] FromBase32String(this string base32) => Base32.FromBase32String(base32);
+
+    /// <summary>
+    /// Decodes a Bitcoin/Flickr Base58 string into a byte array.
+    /// </summary>
+    /// <param name="base58">The Base58 input.</param>
+    /// <returns>The decoded bytes.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base58" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin/Flickr Base58.</exception>
+    public static byte[] FromBase58String(this string base58) => Base58.FromBase58String(base58);
+
+    /// <summary>
+    /// Decodes a Standard RFC 4648 Base64 string into a byte array.
+    /// </summary>
+    /// <param name="base64">The Base64 input.</param>
+    /// <returns>The decoded bytes.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base64" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
+    public static byte[] FromBase64String(this string base64) => Base64.FromBase64String(base64);
+
+    /// <summary>
+    /// Decodes an Adobe Ascii85 string into a byte array.
+    /// </summary>
+    /// <param name="ascii85">The Ascii85 input.</param>
+    /// <returns>The decoded bytes.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ascii85" /> is <see langword="null" />.</exception>
+    /// <exception cref="FormatException">Thrown when the input is not valid Ascii85.</exception>
+    public static byte[] FromBase85String(this string ascii85) => Base85.FromBase85String(ascii85);
 
     /// <summary>
     /// Encodes <paramref name="bytes" /> to lower-case hexadecimal (the default Bodu Base16 form).
@@ -70,15 +115,6 @@ public static class BinaryEncodingExtensions
     public static string ToBase16String(this ReadOnlySpan<byte> bytes) => Base16.ToHexStringLower(bytes);
 
     /// <summary>
-    /// Decodes a Base16 hexadecimal string into a byte array using strict parsing.
-    /// </summary>
-    /// <param name="hex">The hex input.</param>
-    /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="hex" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid hexadecimal.</exception>
-    public static byte[] FromBase16String(this string hex) => Base16.FromHexString(hex);
-
-    /// <summary>
     /// Encodes <paramref name="bytes" /> using the Standard RFC 4648 Base32 alphabet.
     /// </summary>
     /// <param name="bytes">The bytes to encode.</param>
@@ -92,39 +128,6 @@ public static class BinaryEncodingExtensions
     /// <param name="bytes">The bytes to encode.</param>
     /// <returns>The Base32 string.</returns>
     public static string ToBase32String(this ReadOnlySpan<byte> bytes) => Base32.ToBase32String(bytes);
-
-    /// <summary>
-    /// Decodes a Standard RFC 4648 Base32 string into a byte array.
-    /// </summary>
-    /// <param name="base32">The Base32 input.</param>
-    /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base32" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base32.</exception>
-    public static byte[] FromBase32String(this string base32) => Base32.FromBase32String(base32);
-
-    /// <summary>
-    /// Encodes <paramref name="bytes" /> using the Standard RFC 4648 Base64 alphabet.
-    /// </summary>
-    /// <param name="bytes">The bytes to encode.</param>
-    /// <returns>The Base64 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
-    public static string ToBase64String(this byte[] bytes) => Base64.ToBase64String(bytes);
-
-    /// <summary>
-    /// Encodes <paramref name="bytes" /> using the Standard RFC 4648 Base64 alphabet.
-    /// </summary>
-    /// <param name="bytes">The bytes to encode.</param>
-    /// <returns>The Base64 string.</returns>
-    public static string ToBase64String(this ReadOnlySpan<byte> bytes) => Base64.ToBase64String(bytes);
-
-    /// <summary>
-    /// Decodes a Standard RFC 4648 Base64 string into a byte array.
-    /// </summary>
-    /// <param name="base64">The Base64 input.</param>
-    /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base64" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Base64.</exception>
-    public static byte[] FromBase64String(this string base64) => Base64.FromBase64String(base64);
 
     /// <summary>
     /// Encodes <paramref name="bytes" /> using the Bitcoin/Flickr Base58 alphabet.
@@ -142,13 +145,19 @@ public static class BinaryEncodingExtensions
     public static string ToBase58String(this ReadOnlySpan<byte> bytes) => Base58.ToBase58String(bytes);
 
     /// <summary>
-    /// Decodes a Bitcoin/Flickr Base58 string into a byte array.
+    /// Encodes <paramref name="bytes" /> using the Standard RFC 4648 Base64 alphabet.
     /// </summary>
-    /// <param name="base58">The Base58 input.</param>
-    /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="base58" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Bitcoin/Flickr Base58.</exception>
-    public static byte[] FromBase58String(this string base58) => Base58.FromBase58String(base58);
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <returns>The Base64 string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    public static string ToBase64String(this byte[] bytes) => Base64.ToBase64String(bytes);
+
+    /// <summary>
+    /// Encodes <paramref name="bytes" /> using the Standard RFC 4648 Base64 alphabet.
+    /// </summary>
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <returns>The Base64 string.</returns>
+    public static string ToBase64String(this ReadOnlySpan<byte> bytes) => Base64.ToBase64String(bytes);
 
     /// <summary>
     /// Encodes <paramref name="bytes" /> using Adobe Ascii85.
@@ -165,12 +174,4 @@ public static class BinaryEncodingExtensions
     /// <returns>The Ascii85 string.</returns>
     public static string ToBase85String(this ReadOnlySpan<byte> bytes) => Base85.ToBase85String(bytes);
 
-    /// <summary>
-    /// Decodes an Adobe Ascii85 string into a byte array.
-    /// </summary>
-    /// <param name="ascii85">The Ascii85 input.</param>
-    /// <returns>The decoded bytes.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ascii85" /> is <see langword="null" />.</exception>
-    /// <exception cref="FormatException">Thrown when the input is not valid Ascii85.</exception>
-    public static byte[] FromBase85String(this string ascii85) => Base85.FromBase85String(ascii85);
 }

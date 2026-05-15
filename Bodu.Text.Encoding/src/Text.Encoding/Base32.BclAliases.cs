@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32.BclAliases.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,40 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
-    /// <summary>
-    /// Encodes <paramref name="inArray" /> into a Base32 string using the Standard variant with default formatting.
-    /// </summary>
-    /// <param name="inArray">The byte array to encode.</param>
-    /// <returns>A Base32 (RFC 4648 §6) string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
-    public static string ToBase32String(byte[] inArray) =>
-        Encode(inArray, Base32Variant.Standard, BaseFormattingOptions.None);
-
-    /// <summary>
-    /// Encodes a portion of <paramref name="inArray" /> into a Base32 string using the Standard variant.
-    /// </summary>
-    /// <param name="inArray">The byte array to encode.</param>
-    /// <param name="offset">The starting offset.</param>
-    /// <param name="length">The number of bytes to encode.</param>
-    /// <returns>A Base32 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="length" /> exceeds the
-    /// available range of <paramref name="inArray" />.
-    /// </exception>
-    public static string ToBase32String(byte[] inArray, int offset, int length) =>
-        Encode(inArray, offset, length, Base32Variant.Standard, BaseFormattingOptions.None);
-
-    /// <summary>
-    /// Encodes <paramref name="bytes" /> into a Base32 string using the Standard variant.
-    /// </summary>
-    /// <param name="bytes">The bytes to encode.</param>
-    /// <returns>A Base32 string.</returns>
-    public static string ToBase32String(ReadOnlySpan<byte> bytes) =>
-        Encode(bytes, Base32Variant.Standard, BaseFormattingOptions.None);
 
     /// <summary>
     /// Decodes <paramref name="s" /> into a byte array using the Standard variant with strict parsing.
@@ -91,28 +57,6 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> using the Standard variant
-    /// without padding decoration.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="destination">The destination span.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
-    public static bool TryToBase32String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
-        TryEncode(source, destination, out charsWritten, Base32Variant.Standard, BaseFormattingOptions.None);
-
-    /// <summary>
-    /// Attempts to encode <paramref name="source" /> as UTF-8 Base32 bytes into <paramref name="utf8Destination" />
-    /// using the Standard variant.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="utf8Destination">The UTF-8 destination span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
-    public static bool TryToBase32String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
-        TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base32Variant.Standard, BaseFormattingOptions.None);
-
-    /// <summary>
     /// Strict-mode Base32 decode from a character span into a byte span, using the Standard variant and the
     /// <see cref="OperationStatus" /> return convention.
     /// </summary>
@@ -134,4 +78,61 @@ public static partial class Base32
     /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
     public static OperationStatus FromBase32String(ReadOnlySpan<byte> utf8Source, Span<byte> destination, out int bytesConsumed, out int bytesWritten) =>
         DecodeFromUtf8(utf8Source, destination, out bytesConsumed, out bytesWritten, Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
+    /// <summary>
+    /// Encodes <paramref name="inArray" /> into a Base32 string using the Standard variant with default formatting.
+    /// </summary>
+    /// <param name="inArray">The byte array to encode.</param>
+    /// <returns>A Base32 (RFC 4648 §6) string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    public static string ToBase32String(byte[] inArray) =>
+        Encode(inArray, Base32Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Encodes <paramref name="bytes" /> into a Base32 string using the Standard variant.
+    /// </summary>
+    /// <param name="bytes">The bytes to encode.</param>
+    /// <returns>A Base32 string.</returns>
+    public static string ToBase32String(ReadOnlySpan<byte> bytes) =>
+        Encode(bytes, Base32Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Encodes a portion of <paramref name="inArray" /> into a Base32 string using the Standard variant.
+    /// </summary>
+    /// <param name="inArray">The byte array to encode.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="length">The number of bytes to encode.</param>
+    /// <returns>A Base32 string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="inArray" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="length" /> is out of range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="length" /> exceeds the
+    /// available range of <paramref name="inArray" />.
+    /// </exception>
+    public static string ToBase32String(byte[] inArray, int offset, int length) =>
+        Encode(inArray, offset, length, Base32Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> using the Standard variant
+    /// without padding decoration.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
+    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    public static bool TryToBase32String(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten) =>
+        TryEncode(source, destination, out charsWritten, Base32Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Attempts to encode <paramref name="source" /> as UTF-8 Base32 bytes into <paramref name="utf8Destination" />
+    /// using the Standard variant.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="utf8Destination">The UTF-8 destination span.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <returns><see langword="true" /> on success; <see langword="false" /> when the destination is too small.</returns>
+    public static bool TryToBase32String(ReadOnlySpan<byte> source, Span<byte> utf8Destination, out int bytesWritten) =>
+        TryEncodeToUtf8(source, utf8Destination, out bytesWritten, Base32Variant.Standard, BaseFormattingOptions.None);
+
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32VariantTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,6 +12,7 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class Base32VariantTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Base32Variant.Standard" /> is the default value (numerical zero).
     /// </summary>
@@ -32,4 +33,5 @@ public sealed class Base32VariantTests
         Assert.AreEqual(2, (int)Base32Variant.Crockford);
         Assert.AreEqual(3, (int)Base32Variant.ZBase32);
     }
+
 }

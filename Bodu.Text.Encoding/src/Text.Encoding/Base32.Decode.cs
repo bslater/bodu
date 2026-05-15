@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32.Decode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base32
 {
+
     /// <summary>
     /// Decodes a Base32 string into a byte array using the supplied variant.
     /// </summary>
@@ -25,33 +26,6 @@ public static partial class Base32
     {
         ThrowHelper.ThrowIfNull(s);
         return Decode(s.AsSpan(), variant, style);
-    }
-
-    /// <summary>
-    /// Decodes a portion of a character array into a byte array using the supplied variant.
-    /// </summary>
-    /// <param name="chars">The character array.</param>
-    /// <param name="offset">The zero-based starting offset.</param>
-    /// <param name="count">The number of characters to decode.</param>
-    /// <param name="variant">The Base32 variant.</param>
-    /// <param name="style">Parsing styles.</param>
-    /// <returns>A new byte array representing the decoded binary data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
-    /// <paramref name="variant" /> is not a defined value.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
-    /// available range of <paramref name="chars" />.
-    /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the input is not valid Base32 for the chosen variant and parsing styles.
-    /// </exception>
-    public static byte[] Decode(char[] chars, int offset, int count, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
-    {
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
-        return Decode(chars.AsSpan(offset, count), variant, style);
     }
 
     /// <summary>
@@ -90,6 +64,33 @@ public static partial class Base32
     }
 
     /// <summary>
+    /// Decodes a portion of a character array into a byte array using the supplied variant.
+    /// </summary>
+    /// <param name="chars">The character array.</param>
+    /// <param name="offset">The zero-based starting offset.</param>
+    /// <param name="count">The number of characters to decode.</param>
+    /// <param name="variant">The Base32 variant.</param>
+    /// <param name="style">Parsing styles.</param>
+    /// <returns>A new byte array representing the decoded binary data.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is out of range, or when
+    /// <paramref name="variant" /> is not a defined value.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="chars" />.
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input is not valid Base32 for the chosen variant and parsing styles.
+    /// </exception>
+    public static byte[] Decode(char[] chars, int offset, int count, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles style = BaseFormatStyles.None)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
+        return Decode(chars.AsSpan(offset, count), variant, style);
+    }
+
+    /// <summary>
     /// Attempts to decode Base32 characters into bytes using the provided destination span.
     /// </summary>
     /// <param name="chars">The input characters.</param>
@@ -115,28 +116,6 @@ public static partial class Base32
         bool requireCanonical = style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding);
 
         return DecodeCore(chars, lookup, ignoreWhitespace, padIsRequired, strictQuantum, requireCanonical, destination, out bytesWritten, out _);
-    }
-
-    /// <summary>
-    /// Determines whether the decoder must require strict <c>=</c> padding alignment for the supplied variant and
-    /// parsing style.
-    /// </summary>
-    /// <param name="variant">The variant.</param>
-    /// <param name="style">The parsing style.</param>
-    /// <returns><see langword="true" /> when padding alignment is required.</returns>
-    private static bool ShouldRequireExactPadding(Base32Variant variant, BaseFormatStyles style)
-    {
-        if (style.HasFlag(BaseFormatStyles.AllowMissingPadding))
-            return false;
-
-        return variant switch
-        {
-            Base32Variant.Standard => true,
-            Base32Variant.HexExtended => true,
-            Base32Variant.Crockford => false,
-            Base32Variant.ZBase32 => false,
-            _ => false,
-        };
     }
 
     /// <summary>
@@ -262,4 +241,27 @@ public static partial class Base32
 
         return true;
     }
+
+    /// <summary>
+    /// Determines whether the decoder must require strict <c>=</c> padding alignment for the supplied variant and
+    /// parsing style.
+    /// </summary>
+    /// <param name="variant">The variant.</param>
+    /// <param name="style">The parsing style.</param>
+    /// <returns><see langword="true" /> when padding alignment is required.</returns>
+    private static bool ShouldRequireExactPadding(Base32Variant variant, BaseFormatStyles style)
+    {
+        if (style.HasFlag(BaseFormatStyles.AllowMissingPadding))
+            return false;
+
+        return variant switch
+        {
+            Base32Variant.Standard => true,
+            Base32Variant.HexExtended => true,
+            Base32Variant.Crockford => false,
+            Base32Variant.ZBase32 => false,
+            _ => false,
+        };
+    }
+
 }

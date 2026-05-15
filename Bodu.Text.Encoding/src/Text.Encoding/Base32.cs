@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,15 +25,9 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public static partial class Base32
 {
-    private const string StandardAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
-    private const string HexExtendedAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
-    private const string CrockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
-    private const string ZBase32Alphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
 
-    /// <summary>
-    /// The padding character used to align Base32 output to a multiple of eight characters per RFC 4648.
-    /// </summary>
-    private const char PaddingChar = '=';
+    private const string CrockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+    private const string HexExtendedAlphabet = "0123456789ABCDEFGHIJKLMNOPQRSTUV";
 
     /// <summary>
     /// The number of encoded characters per output line when
@@ -41,10 +35,63 @@ public static partial class Base32
     /// </summary>
     private const int LineBreakInterval = 64;
 
+    /// <summary>
+    /// The padding character used to align Base32 output to a multiple of eight characters per RFC 4648.
+    /// </summary>
+    private const char PaddingChar = '=';
+    private const string StandardAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+    private const string ZBase32Alphabet = "ybndrfg8ejkmcpqxot1uwisza345h769";
+
     private static readonly sbyte[] s_standardLookup = BuildLookup(StandardAlphabet);
     private static readonly sbyte[] s_hexExtendedLookup = BuildLookup(HexExtendedAlphabet);
     private static readonly sbyte[] s_crockfordLookup = BuildCrockfordLookup();
     private static readonly sbyte[] s_zBase32Lookup = BuildLookup(ZBase32Alphabet);
+
+    /// <summary>
+    /// Computes the exact number of bytes that decoding <paramref name="source" /> would produce after applying
+    /// <paramref name="styles" /> and stripping padding for the supplied <paramref name="variant" />.
+    /// </summary>
+    /// <param name="source">The input characters.</param>
+    /// <param name="variant">The Base32 variant.</param>
+    /// <param name="styles">The parsing styles.</param>
+    /// <returns>The exact decoded byte count.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input contains characters outside the variant alphabet, or when the digit count is invalid
+    /// after stripping decorations.
+    /// </exception>
+    public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
+            throw new FormatException("Input contains characters outside the Base32 variant alphabet.");
+
+        return (symbolCount * 5) / 8;
+    }
+
+    /// <summary>
+    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using the Standard
+    /// variant with default formatting.
+    /// </summary>
+    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
+    /// <returns>The number of characters the encoder will produce.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="byteCount" /> is negative.
+    /// </exception>
+    public static int GetEncodedLength(int byteCount) =>
+        GetEncodedLength(byteCount, Base32Variant.Standard, BaseFormattingOptions.None);
+
+    /// <summary>
+    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using
+    /// <paramref name="variant" /> with default formatting.
+    /// </summary>
+    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
+    /// <param name="variant">The Base32 variant.</param>
+    /// <returns>The number of characters the encoder will produce.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="byteCount" /> is negative or <paramref name="variant" /> is undefined.
+    /// </exception>
+    public static int GetEncodedLength(int byteCount, Base32Variant variant) =>
+        GetEncodedLength(byteCount, variant, BaseFormattingOptions.None);
 
     /// <summary>
     /// Computes the number of characters required to encode <paramref name="byteCount" /> bytes with the given
@@ -101,50 +148,30 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using the Standard
-    /// variant with default formatting.
+    /// Indicates whether <paramref name="value" /> is a valid symbol for the supplied Base32 variant. Padding
+    /// (<c>=</c>) is not considered a symbol.
     /// </summary>
-    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
-    /// <returns>The number of characters the encoder will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative.
-    /// </exception>
-    public static int GetEncodedLength(int byteCount) =>
-        GetEncodedLength(byteCount, Base32Variant.Standard, BaseFormattingOptions.None);
+    /// <param name="value">The character to test.</param>
+    /// <param name="variant">The variant.</param>
+    /// <returns><see langword="true" /> when the character maps to a value within the variant's alphabet.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool IsBase32Digit(char value, Base32Variant variant = Base32Variant.Standard)
+    {
+        (_, sbyte[] lookup) = GetVariantConfig(variant);
+        return value < lookup.Length && lookup[value] >= 0;
+    }
 
     /// <summary>
-    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using
-    /// <paramref name="variant" /> with default formatting.
-    /// </summary>
-    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
-    /// <param name="variant">The Base32 variant.</param>
-    /// <returns>The number of characters the encoder will produce.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative or <paramref name="variant" /> is undefined.
-    /// </exception>
-    public static int GetEncodedLength(int byteCount, Base32Variant variant) =>
-        GetEncodedLength(byteCount, variant, BaseFormattingOptions.None);
-
-    /// <summary>
-    /// Computes the exact number of bytes that decoding <paramref name="source" /> would produce after applying
-    /// <paramref name="styles" /> and stripping padding for the supplied <paramref name="variant" />.
+    /// Indicates whether <paramref name="source" /> is a valid Base32 input under the supplied variant and parsing
+    /// styles.
     /// </summary>
     /// <param name="source">The input characters.</param>
-    /// <param name="variant">The Base32 variant.</param>
+    /// <param name="variant">The variant.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <returns>The exact decoded byte count.</returns>
+    /// <returns><see langword="true" /> when the input is valid; otherwise <see langword="false" />.</returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the input contains characters outside the variant alphabet, or when the digit count is invalid
-    /// after stripping decorations.
-    /// </exception>
-    public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        if (!TryCountSymbols(source, variant, styles, out int symbolCount))
-            throw new FormatException("Input contains characters outside the Base32 variant alphabet.");
-
-        return (symbolCount * 5) / 8;
-    }
+    public static bool IsValid(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
+        TryCountSymbols(source, variant, styles, out _);
 
     /// <summary>
     /// Attempts to compute the exact number of decoded bytes for <paramref name="source" />.
@@ -168,29 +195,92 @@ public static partial class Base32
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="source" /> is a valid Base32 input under the supplied variant and parsing
-    /// styles.
+    /// Builds the Crockford Base32 lookup table, including the documented aliases <c>I</c>/<c>L</c> -&gt; <c>1</c>
+    /// and <c>O</c> -&gt; <c>0</c>.
     /// </summary>
-    /// <param name="source">The input characters.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="styles">The parsing styles.</param>
-    /// <returns><see langword="true" /> when the input is valid; otherwise <see langword="false" />.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static bool IsValid(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None) =>
-        TryCountSymbols(source, variant, styles, out _);
+    /// <returns>The Crockford lookup table.</returns>
+    private static sbyte[] BuildCrockfordLookup()
+    {
+        sbyte[] table = BuildLookup(CrockfordAlphabet);
+
+        sbyte one = (sbyte)CrockfordAlphabet.IndexOf('1');
+        sbyte zero = (sbyte)CrockfordAlphabet.IndexOf('0');
+
+        table['I'] = one;
+        table['i'] = one;
+        table['L'] = one;
+        table['l'] = one;
+        table['O'] = zero;
+        table['o'] = zero;
+
+        return table;
+    }
 
     /// <summary>
-    /// Indicates whether <paramref name="value" /> is a valid symbol for the supplied Base32 variant. Padding
-    /// (<c>=</c>) is not considered a symbol.
+    /// Builds a 128-entry symbol lookup table from the supplied alphabet, case-folding letter characters so the
+    /// decoder accepts either case.
     /// </summary>
-    /// <param name="value">The character to test.</param>
-    /// <param name="variant">The variant.</param>
-    /// <returns><see langword="true" /> when the character maps to a value within the variant's alphabet.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static bool IsBase32Digit(char value, Base32Variant variant = Base32Variant.Standard)
+    /// <param name="alphabet">The encoding alphabet.</param>
+    /// <returns>A lookup table where valid characters map to their symbol value and others map to <c>-1</c>.</returns>
+    private static sbyte[] BuildLookup(string alphabet)
     {
-        (_, sbyte[] lookup) = GetVariantConfig(variant);
-        return value < lookup.Length && lookup[value] >= 0;
+        sbyte[] table = new sbyte[128];
+        Array.Fill(table, (sbyte)-1);
+
+        for (int i = 0; i < alphabet.Length; i++)
+        {
+            char c = alphabet[i];
+            table[c] = (sbyte)i;
+
+            if (char.IsLetter(c))
+            {
+                char lower = char.ToLowerInvariant(c);
+                char upper = char.ToUpperInvariant(c);
+                table[lower] = (sbyte)i;
+                table[upper] = (sbyte)i;
+            }
+        }
+
+        return table;
+    }
+
+    /// <summary>
+    /// Returns the alphabet and the matching lookup table for the requested variant.
+    /// </summary>
+    /// <param name="variant">The variant to resolve.</param>
+    /// <returns>A tuple containing the alphabet string and its lookup table.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="variant" /> is not a defined member of <see cref="Base32Variant" />.
+    /// </exception>
+    private static (string Alphabet, sbyte[] Lookup) GetVariantConfig(Base32Variant variant) =>
+        variant switch
+        {
+            Base32Variant.Standard => (StandardAlphabet, s_standardLookup),
+            Base32Variant.HexExtended => (HexExtendedAlphabet, s_hexExtendedLookup),
+            Base32Variant.Crockford => (CrockfordAlphabet, s_crockfordLookup),
+            Base32Variant.ZBase32 => (ZBase32Alphabet, s_zBase32Lookup),
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base32 variant."),
+        };
+
+    /// <summary>
+    /// Determines whether the encoder should emit <c>=</c> padding for the supplied variant and options.
+    /// </summary>
+    /// <param name="variant">The variant in use.</param>
+    /// <param name="options">The encoder options.</param>
+    /// <returns><see langword="true" /> when padding should be appended; otherwise <see langword="false" />.</returns>
+    private static bool ShouldEmitPadding(Base32Variant variant, BaseFormattingOptions options)
+    {
+        if (options.HasFlag(BaseFormattingOptions.OmitPadding))
+            return false;
+
+        return variant switch
+        {
+            Base32Variant.Standard => true,
+            Base32Variant.HexExtended => true,
+            Base32Variant.Crockford => false,
+            Base32Variant.ZBase32 => false,
+            _ => false,
+        };
     }
 
     /// <summary>
@@ -288,92 +378,4 @@ public static partial class Base32
         return true;
     }
 
-    /// <summary>
-    /// Returns the alphabet and the matching lookup table for the requested variant.
-    /// </summary>
-    /// <param name="variant">The variant to resolve.</param>
-    /// <returns>A tuple containing the alphabet string and its lookup table.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="variant" /> is not a defined member of <see cref="Base32Variant" />.
-    /// </exception>
-    private static (string Alphabet, sbyte[] Lookup) GetVariantConfig(Base32Variant variant) =>
-        variant switch
-        {
-            Base32Variant.Standard => (StandardAlphabet, s_standardLookup),
-            Base32Variant.HexExtended => (HexExtendedAlphabet, s_hexExtendedLookup),
-            Base32Variant.Crockford => (CrockfordAlphabet, s_crockfordLookup),
-            Base32Variant.ZBase32 => (ZBase32Alphabet, s_zBase32Lookup),
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base32 variant."),
-        };
-
-    /// <summary>
-    /// Determines whether the encoder should emit <c>=</c> padding for the supplied variant and options.
-    /// </summary>
-    /// <param name="variant">The variant in use.</param>
-    /// <param name="options">The encoder options.</param>
-    /// <returns><see langword="true" /> when padding should be appended; otherwise <see langword="false" />.</returns>
-    private static bool ShouldEmitPadding(Base32Variant variant, BaseFormattingOptions options)
-    {
-        if (options.HasFlag(BaseFormattingOptions.OmitPadding))
-            return false;
-
-        return variant switch
-        {
-            Base32Variant.Standard => true,
-            Base32Variant.HexExtended => true,
-            Base32Variant.Crockford => false,
-            Base32Variant.ZBase32 => false,
-            _ => false,
-        };
-    }
-
-    /// <summary>
-    /// Builds a 128-entry symbol lookup table from the supplied alphabet, case-folding letter characters so the
-    /// decoder accepts either case.
-    /// </summary>
-    /// <param name="alphabet">The encoding alphabet.</param>
-    /// <returns>A lookup table where valid characters map to their symbol value and others map to <c>-1</c>.</returns>
-    private static sbyte[] BuildLookup(string alphabet)
-    {
-        sbyte[] table = new sbyte[128];
-        Array.Fill(table, (sbyte)-1);
-
-        for (int i = 0; i < alphabet.Length; i++)
-        {
-            char c = alphabet[i];
-            table[c] = (sbyte)i;
-
-            if (char.IsLetter(c))
-            {
-                char lower = char.ToLowerInvariant(c);
-                char upper = char.ToUpperInvariant(c);
-                table[lower] = (sbyte)i;
-                table[upper] = (sbyte)i;
-            }
-        }
-
-        return table;
-    }
-
-    /// <summary>
-    /// Builds the Crockford Base32 lookup table, including the documented aliases <c>I</c>/<c>L</c> -&gt; <c>1</c>
-    /// and <c>O</c> -&gt; <c>0</c>.
-    /// </summary>
-    /// <returns>The Crockford lookup table.</returns>
-    private static sbyte[] BuildCrockfordLookup()
-    {
-        sbyte[] table = BuildLookup(CrockfordAlphabet);
-
-        sbyte one = (sbyte)CrockfordAlphabet.IndexOf('1');
-        sbyte zero = (sbyte)CrockfordAlphabet.IndexOf('0');
-
-        table['I'] = one;
-        table['i'] = one;
-        table['L'] = one;
-        table['l'] = one;
-        table['O'] = zero;
-        table['o'] = zero;
-
-        return table;
-    }
 }

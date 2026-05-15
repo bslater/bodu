@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85.Encode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
+
     /// <summary>
     /// Encodes <paramref name="bytes" /> into a Base85 string using the supplied variant and options.
     /// </summary>
@@ -27,30 +28,6 @@ public static partial class Base85
     {
         ThrowHelper.ThrowIfNull(bytes);
         return Encode(bytes.AsSpan(), variant, options);
-    }
-
-    /// <summary>
-    /// Encodes a portion of <paramref name="bytes" /> into a Base85 string.
-    /// </summary>
-    /// <param name="bytes">The byte array.</param>
-    /// <param name="offset">The starting offset.</param>
-    /// <param name="count">The number of bytes to encode.</param>
-    /// <param name="variant">The Base85 variant.</param>
-    /// <param name="options">Formatting options. See <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />.</param>
-    /// <returns>A Base85 string.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
-    /// range.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
-    /// available range of <paramref name="bytes" />, or the Z85 variant receives a byte count not divisible by four.
-    /// </exception>
-    public static string Encode(byte[] bytes, int offset, int count, Base85Variant variant = Base85Variant.Ascii85, BaseFormattingOptions options = BaseFormattingOptions.None)
-    {
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
-        return Encode(bytes.AsSpan(offset, count), variant, options);
     }
 
     /// <summary>
@@ -202,6 +179,30 @@ public static partial class Base85
         {
             System.Buffers.ArrayPool<char>.Shared.Return(scratch);
         }
+    }
+
+    /// <summary>
+    /// Encodes a portion of <paramref name="bytes" /> into a Base85 string.
+    /// </summary>
+    /// <param name="bytes">The byte array.</param>
+    /// <param name="offset">The starting offset.</param>
+    /// <param name="count">The number of bytes to encode.</param>
+    /// <param name="variant">The Base85 variant.</param>
+    /// <param name="options">Formatting options. See <see cref="Encode(ReadOnlySpan{byte}, Base85Variant, BaseFormattingOptions)" />.</param>
+    /// <returns>A Base85 string.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="bytes" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" />, <paramref name="count" />, or <paramref name="variant" /> is out of
+    /// range.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="bytes" />, or the Z85 variant receives a byte count not divisible by four.
+    /// </exception>
+    public static string Encode(byte[] bytes, int offset, int count, Base85Variant variant = Base85Variant.Ascii85, BaseFormattingOptions options = BaseFormattingOptions.None)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(bytes, offset, count);
+        return Encode(bytes.AsSpan(offset, count), variant, options);
     }
 
     /// <summary>
@@ -376,4 +377,5 @@ public static partial class Base85
 
         return position;
     }
+
 }

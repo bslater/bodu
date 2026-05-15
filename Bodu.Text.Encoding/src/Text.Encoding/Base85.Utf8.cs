@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85.Utf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,41 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
+
+    /// <summary>
+    /// Decodes UTF-8 Base85 bytes into a byte span using the <see cref="OperationStatus" /> return convention.
+    /// </summary>
+    /// <param name="source">The UTF-8 Base85 source.</param>
+    /// <param name="destination">The destination byte span.</param>
+    /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
+    /// <param name="variant">The variant.</param>
+    /// <param name="styles">Parsing styles.</param>
+    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
+    /// <remarks>
+    /// Base85 decoding is not streamable in a useful way (each group requires exactly five characters), so the
+    /// decoder treats <paramref name="source" /> as a complete input and does not return
+    /// <see cref="OperationStatus.NeedMoreData" />.
+    /// </remarks>
+    public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)
+    {
+        EnsureValidVariant(variant);
+        bytesConsumed = 0;
+        bytesWritten = 0;
+
+        if (source.IsEmpty)
+            return OperationStatus.Done;
+
+        char[] scratch = new char[source.Length];
+        for (int i = 0; i < source.Length; i++)
+            scratch[i] = (char)source[i];
+
+        OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out int _, out bytesWritten, variant, styles);
+        if (status == OperationStatus.Done)
+            bytesConsumed = source.Length;
+
+        return status;
+    }
     /// <summary>
     /// Encodes <paramref name="source" /> into a UTF-8 Base85 byte array.
     /// </summary>
@@ -86,41 +121,6 @@ public static partial class Base85
     }
 
     /// <summary>
-    /// Decodes UTF-8 Base85 bytes into a byte span using the <see cref="OperationStatus" /> return convention.
-    /// </summary>
-    /// <param name="source">The UTF-8 Base85 source.</param>
-    /// <param name="destination">The destination byte span.</param>
-    /// <param name="bytesConsumed">When this method returns, contains the number of source bytes consumed.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of bytes written.</param>
-    /// <param name="variant">The variant.</param>
-    /// <param name="styles">Parsing styles.</param>
-    /// <returns>An <see cref="OperationStatus" /> describing the outcome.</returns>
-    /// <remarks>
-    /// Base85 decoding is not streamable in a useful way (each group requires exactly five characters), so the
-    /// decoder treats <paramref name="source" /> as a complete input and does not return
-    /// <see cref="OperationStatus.NeedMoreData" />.
-    /// </remarks>
-    public static OperationStatus DecodeFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesConsumed, out int bytesWritten, Base85Variant variant = Base85Variant.Ascii85, BaseFormatStyles styles = BaseFormatStyles.None)
-    {
-        EnsureValidVariant(variant);
-        bytesConsumed = 0;
-        bytesWritten = 0;
-
-        if (source.IsEmpty)
-            return OperationStatus.Done;
-
-        char[] scratch = new char[source.Length];
-        for (int i = 0; i < source.Length; i++)
-            scratch[i] = (char)source[i];
-
-        OperationStatus status = DecodeWithStatus(scratch.AsSpan(), destination, out int _, out bytesWritten, variant, styles);
-        if (status == OperationStatus.Done)
-            bytesConsumed = source.Length;
-
-        return status;
-    }
-
-    /// <summary>
     /// Decodes Base85 characters into a byte span using the <see cref="OperationStatus" /> return convention.
     /// </summary>
     /// <param name="source">The character source.</param>
@@ -150,4 +150,5 @@ public static partial class Base85
         charsConsumed = source.Length;
         return OperationStatus.Done;
     }
+
 }

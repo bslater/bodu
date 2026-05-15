@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16Tests.FormattingOptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,34 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base16Tests
 {
-    /// <summary>
-    /// Verifies that <see cref="BaseFormattingOptions.UpperCase" /> combined with
-    /// <see cref="BaseFormattingOptions.IncludePrefix" /> yields a prefixed upper case string.
-    /// </summary>
-    [TestMethod]
-    public void Encode_WhenUpperCaseAndIncludePrefix_ShouldEmitUpperCaseWithPrefix()
-    {
-        string actual = Base16.Encode(
-            CanonicalBytes,
-            BaseFormattingOptions.UpperCase | BaseFormattingOptions.IncludePrefix);
-
-        Assert.AreEqual("0xDEADBEEF", actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BaseFormattingOptions.InsertSpacing" /> with
-    /// <see cref="BaseFormattingOptions.UpperCase" /> separates upper case byte pairs with a single space.
-    /// </summary>
-    [TestMethod]
-    public void Encode_WhenInsertSpacingAndUpperCase_ShouldInterleaveSingleSpaceBetweenBytes()
-    {
-        string actual = Base16.Encode(
-            CanonicalBytes,
-            BaseFormattingOptions.InsertSpacing | BaseFormattingOptions.UpperCase);
-
-        Assert.AreEqual("DE AD BE EF", actual);
-        Assert.IsFalse(actual.EndsWith(' '));
-    }
 
     /// <summary>
     /// Verifies that <see cref="BaseFormattingOptions.IncludePrefix" /> combined with
@@ -74,6 +46,34 @@ public sealed partial class Base16Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="BaseFormattingOptions.InsertSpacing" /> with
+    /// <see cref="BaseFormattingOptions.UpperCase" /> separates upper case byte pairs with a single space.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenInsertSpacingAndUpperCase_ShouldInterleaveSingleSpaceBetweenBytes()
+    {
+        string actual = Base16.Encode(
+            CanonicalBytes,
+            BaseFormattingOptions.InsertSpacing | BaseFormattingOptions.UpperCase);
+
+        Assert.AreEqual("DE AD BE EF", actual);
+        Assert.IsFalse(actual.EndsWith(' '));
+    }
+    /// <summary>
+    /// Verifies that <see cref="BaseFormattingOptions.UpperCase" /> combined with
+    /// <see cref="BaseFormattingOptions.IncludePrefix" /> yields a prefixed upper case string.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenUpperCaseAndIncludePrefix_ShouldEmitUpperCaseWithPrefix()
+    {
+        string actual = Base16.Encode(
+            CanonicalBytes,
+            BaseFormattingOptions.UpperCase | BaseFormattingOptions.IncludePrefix);
+
+        Assert.AreEqual("0xDEADBEEF", actual);
+    }
+
+    /// <summary>
     /// Verifies that the encoded length reported by <see cref="Base16.GetEncodedLength" /> matches the actual encoded
     /// string length for every combination of flags.
     /// </summary>
@@ -107,4 +107,5 @@ public sealed partial class Base16Tests
                 $"Prediction mismatch for byteCount={byteCount}, options={options}.");
         }
     }
+
 }

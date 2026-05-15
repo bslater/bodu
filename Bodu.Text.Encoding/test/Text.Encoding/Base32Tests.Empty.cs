@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32Tests.Empty.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,22 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base32Tests
 {
+
+    /// <summary>
+    /// Verifies that decoding an empty string returns an empty byte array for every variant.
+    /// </summary>
+    /// <param name="variant">The Base32 variant.</param>
+    [DataTestMethod]
+    [DataRow(Base32Variant.Standard)]
+    [DataRow(Base32Variant.HexExtended)]
+    [DataRow(Base32Variant.Crockford)]
+    [DataRow(Base32Variant.ZBase32)]
+    public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base32Variant variant)
+    {
+        byte[] actual = Base32.Decode(string.Empty, variant);
+
+        Assert.AreEqual(0, actual.Length);
+    }
     /// <summary>
     /// Verifies that encoding an empty byte array returns <see cref="string.Empty" /> for every variant.
     /// </summary>
@@ -25,19 +41,20 @@ public sealed partial class Base32Tests
     }
 
     /// <summary>
-    /// Verifies that decoding an empty string returns an empty byte array for every variant.
+    /// Verifies that <see cref="Base32.TryDecode" /> with an empty source returns <see langword="true" /> and writes
+    /// zero bytes regardless of the destination span size.
     /// </summary>
-    /// <param name="variant">The Base32 variant.</param>
-    [DataTestMethod]
-    [DataRow(Base32Variant.Standard)]
-    [DataRow(Base32Variant.HexExtended)]
-    [DataRow(Base32Variant.Crockford)]
-    [DataRow(Base32Variant.ZBase32)]
-    public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base32Variant variant)
+    [TestMethod]
+    public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
     {
-        byte[] actual = Base32.Decode(string.Empty, variant);
+        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, new byte[1], out int t1));
+        Assert.AreEqual(0, t1);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, Array.Empty<byte>(), out int t2));
+        Assert.AreEqual(0, t2);
+
+        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, new byte[100], out int t3));
+        Assert.AreEqual(0, t3);
     }
 
     /// <summary>
@@ -57,20 +74,4 @@ public sealed partial class Base32Tests
         Assert.AreEqual(0, t3);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Base32.TryDecode" /> with an empty source returns <see langword="true" /> and writes
-    /// zero bytes regardless of the destination span size.
-    /// </summary>
-    [TestMethod]
-    public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
-    {
-        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, new byte[1], out int t1));
-        Assert.AreEqual(0, t1);
-
-        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, Array.Empty<byte>(), out int t2));
-        Assert.AreEqual(0, t2);
-
-        Assert.IsTrue(Base32.TryDecode(ReadOnlySpan<char>.Empty, new byte[100], out int t3));
-        Assert.AreEqual(0, t3);
-    }
 }

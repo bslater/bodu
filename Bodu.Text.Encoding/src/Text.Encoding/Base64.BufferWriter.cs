@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64.BufferWriter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,6 +10,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base64
 {
+
     /// <summary>
     /// Encodes <paramref name="source" /> as Base64 characters into <paramref name="writer" />, suitable for use in
     /// pipelines and other <see cref="IBufferWriter{T}" />-based scenarios.
@@ -65,4 +66,5 @@ public static partial class Base64
         writer.Advance(written);
         return written;
     }
+
 }

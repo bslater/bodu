@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85.Guid.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,20 +8,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base85
 {
-    /// <summary>
-    /// Encodes the byte representation of <paramref name="value" /> as a Base85 string. 16 bytes encode to exactly
-    /// 20 characters (Ascii85 or Z85).
-    /// </summary>
-    /// <param name="value">The <see cref="Guid" /> to encode.</param>
-    /// <param name="variant">The Base85 variant.</param>
-    /// <param name="options">Formatting options.</param>
-    /// <returns>A Base85 string of the GUID bytes (mixed-endian, matching <see cref="Guid.TryWriteBytes(Span{byte})" />).</returns>
-    public static string Encode(Guid value, Base85Variant variant = Base85Variant.Ascii85, BaseFormattingOptions options = BaseFormattingOptions.None)
-    {
-        Span<byte> bytes = stackalloc byte[16];
-        value.TryWriteBytes(bytes);
-        return Encode(bytes, variant, options);
-    }
 
     /// <summary>
     /// Decodes a Base85 representation of a <see cref="Guid" />.
@@ -38,6 +24,20 @@ public static partial class Base85
             throw new FormatException("Input does not decode to a 16-byte GUID.");
 
         return new Guid(bytes);
+    }
+    /// <summary>
+    /// Encodes the byte representation of <paramref name="value" /> as a Base85 string. 16 bytes encode to exactly
+    /// 20 characters (Ascii85 or Z85).
+    /// </summary>
+    /// <param name="value">The <see cref="Guid" /> to encode.</param>
+    /// <param name="variant">The Base85 variant.</param>
+    /// <param name="options">Formatting options.</param>
+    /// <returns>A Base85 string of the GUID bytes (mixed-endian, matching <see cref="Guid.TryWriteBytes(Span{byte})" />).</returns>
+    public static string Encode(Guid value, Base85Variant variant = Base85Variant.Ascii85, BaseFormattingOptions options = BaseFormattingOptions.None)
+    {
+        Span<byte> bytes = stackalloc byte[16];
+        value.TryWriteBytes(bytes);
+        return Encode(bytes, variant, options);
     }
 
     /// <summary>
@@ -61,4 +61,5 @@ public static partial class Base85
         value = new Guid(bytes);
         return true;
     }
+
 }

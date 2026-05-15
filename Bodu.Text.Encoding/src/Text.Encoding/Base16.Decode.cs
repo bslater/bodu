@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16.Decode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
+
     /// <summary>
     /// The maximum scratch-buffer size that may be allocated on the stack during lenient decoding. Inputs larger than
     /// this fall back to a heap allocation to avoid stack overflow.
@@ -29,33 +30,6 @@ public static partial class Base16
     {
         ThrowHelper.ThrowIfNull(s);
         return Decode(s.AsSpan(), style);
-    }
-
-    /// <summary>
-    /// Decodes a portion of a character array containing hexadecimal-encoded data into a byte array.
-    /// </summary>
-    /// <param name="chars">The character array containing Base16 (hex) characters.</param>
-    /// <param name="offset">The zero-based starting position within <paramref name="chars" />.</param>
-    /// <param name="count">The number of characters to decode.</param>
-    /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
-    /// <returns>A new byte array representing the decoded binary data.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds
-    /// of <paramref name="chars" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
-    /// available range of <paramref name="chars" />.
-    /// </exception>
-    /// <exception cref="FormatException">
-    /// Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
-    /// applying <paramref name="style" />.
-    /// </exception>
-    public static byte[] Decode(char[] chars, int offset, int count, BaseFormatStyles style = BaseFormatStyles.None)
-    {
-        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
-        return Decode(chars.AsSpan(offset, count), style);
     }
 
     /// <summary>
@@ -99,6 +73,33 @@ public static partial class Base16
             throw new FormatException("Input contains non-hexadecimal characters.");
 
         return decoded;
+    }
+
+    /// <summary>
+    /// Decodes a portion of a character array containing hexadecimal-encoded data into a byte array.
+    /// </summary>
+    /// <param name="chars">The character array containing Base16 (hex) characters.</param>
+    /// <param name="offset">The zero-based starting position within <paramref name="chars" />.</param>
+    /// <param name="count">The number of characters to decode.</param>
+    /// <param name="style">Parsing styles that allow optional prefix and whitespace tolerance.</param>
+    /// <returns>A new byte array representing the decoded binary data.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="chars" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or either exceeds the bounds
+    /// of <paramref name="chars" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the segment defined by <paramref name="offset" /> and <paramref name="count" /> exceeds the
+    /// available range of <paramref name="chars" />.
+    /// </exception>
+    /// <exception cref="FormatException">
+    /// Thrown when the input contains non-hexadecimal characters, or when it has an odd number of hex digits after
+    /// applying <paramref name="style" />.
+    /// </exception>
+    public static byte[] Decode(char[] chars, int offset, int count, BaseFormatStyles style = BaseFormatStyles.None)
+    {
+        ThrowHelper.ThrowIfArrayOffsetOrCountInvalid(chars, offset, count);
+        return Decode(chars.AsSpan(offset, count), style);
     }
 
     /// <summary>
@@ -232,4 +233,5 @@ public static partial class Base16
 
         return j;
     }
+
 }

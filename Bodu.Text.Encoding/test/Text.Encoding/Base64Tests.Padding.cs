@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64Tests.Padding.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base64Tests
 {
+
     /// <summary>
     /// Verifies that the Standard variant emits the expected number of trailing <c>=</c> characters for each input
     /// length mod 3.
@@ -62,4 +63,5 @@ public sealed partial class Base64Tests
                 $"Mismatch for length={n}, variant={variantValue}, omitPadding={omitPadding}.");
         }
     }
+
 }

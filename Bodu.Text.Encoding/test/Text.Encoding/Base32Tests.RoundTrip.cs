@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32Tests.RoundTrip.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,29 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base32Tests
 {
+
+    /// <summary>
+    /// Verifies that every possible single byte value round-trips through all four variants. Tagged Regression
+    /// because of the exhaustive 256 * 4 sweep.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(Base32Variant.Standard)]
+    [DataRow(Base32Variant.HexExtended)]
+    [DataRow(Base32Variant.Crockford)]
+    [DataRow(Base32Variant.ZBase32)]
+    public void RoundTrip_ForEverySingleByteValueAndVariant_ShouldRecover(Base32Variant variant)
+    {
+        for (int value = 0; value <= 255; value++)
+        {
+            byte[] original = new byte[] { (byte)value };
+
+            string encoded = Base32.Encode(original, variant);
+            byte[] decoded = Base32.Decode(encoded, variant);
+
+            CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}, variant={variant}.");
+        }
+    }
     /// <summary>
     /// Verifies that encode followed by decode recovers the original bytes for every variant across a span of input
     /// sizes spanning all five residue classes mod 5.
@@ -34,6 +57,27 @@ public sealed partial class Base32Tests
             CollectionAssert.AreEqual(original, decoded,
                 $"Round trip failed for variant={variant}, length={len}.");
         }
+    }
+
+    /// <summary>
+    /// Verifies that large random inputs round-trip cleanly through every variant. Tagged Regression because of the
+    /// per-variant 8 KiB sweep.
+    /// </summary>
+    [TestMethod]
+    [TestCategory("Regression")]
+    [DataRow(Base32Variant.Standard)]
+    [DataRow(Base32Variant.HexExtended)]
+    [DataRow(Base32Variant.Crockford)]
+    [DataRow(Base32Variant.ZBase32)]
+    public void RoundTrip_ForLargeRandomInput_ShouldRecover(Base32Variant variant)
+    {
+        byte[] original = new byte[8192];
+        new Random(0xC0FFEE).NextBytes(original);
+
+        string encoded = Base32.Encode(original, variant);
+        byte[] decoded = Base32.Decode(encoded, variant);
+
+        CollectionAssert.AreEqual(original, decoded);
     }
 
     /// <summary>
@@ -72,47 +116,4 @@ public sealed partial class Base32Tests
         CollectionAssert.AreEqual(original, byteBuffer);
     }
 
-    /// <summary>
-    /// Verifies that every possible single byte value round-trips through all four variants. Tagged Regression
-    /// because of the exhaustive 256 * 4 sweep.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    [DataRow(Base32Variant.Standard)]
-    [DataRow(Base32Variant.HexExtended)]
-    [DataRow(Base32Variant.Crockford)]
-    [DataRow(Base32Variant.ZBase32)]
-    public void RoundTrip_ForEverySingleByteValueAndVariant_ShouldRecover(Base32Variant variant)
-    {
-        for (int value = 0; value <= 255; value++)
-        {
-            byte[] original = new byte[] { (byte)value };
-
-            string encoded = Base32.Encode(original, variant);
-            byte[] decoded = Base32.Decode(encoded, variant);
-
-            CollectionAssert.AreEqual(original, decoded, $"Round trip failed for byte 0x{value:X2}, variant={variant}.");
-        }
-    }
-
-    /// <summary>
-    /// Verifies that large random inputs round-trip cleanly through every variant. Tagged Regression because of the
-    /// per-variant 8 KiB sweep.
-    /// </summary>
-    [TestMethod]
-    [TestCategory("Regression")]
-    [DataRow(Base32Variant.Standard)]
-    [DataRow(Base32Variant.HexExtended)]
-    [DataRow(Base32Variant.Crockford)]
-    [DataRow(Base32Variant.ZBase32)]
-    public void RoundTrip_ForLargeRandomInput_ShouldRecover(Base32Variant variant)
-    {
-        byte[] original = new byte[8192];
-        new Random(0xC0FFEE).NextBytes(original);
-
-        string encoded = Base32.Encode(original, variant);
-        byte[] decoded = Base32.Decode(encoded, variant);
-
-        CollectionAssert.AreEqual(original, decoded);
-    }
 }

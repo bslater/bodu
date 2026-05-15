@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58Tests.Utf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,46 +10,39 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base58Tests
 {
-    /// <summary>
-    /// Verifies that <see cref="Base58.EncodeToUtf8" /> returns the Bitcoin/Flickr output as ASCII bytes.
-    /// </summary>
-    [TestMethod]
-    public void EncodeToUtf8_ShouldReturnAsciiBytesOfBitcoinFlickrOutput()
-    {
-        byte[] actual = Base58.EncodeToUtf8(Ascii("Hello"));
-
-        Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(actual));
-    }
 
     /// <summary>
-    /// Verifies that <see cref="Base58.TryEncodeToUtf8" /> writes the expected bytes into the destination.
+    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> reports <c>bytesConsumed = 0</c> and <c>bytesWritten = 0</c>
+    /// on <see cref="OperationStatus.DestinationTooSmall" />. Base58 cannot commit partial output (it decodes through
+    /// big-integer divmod into a scratch buffer), so the contract is "all-or-nothing" — the caller retries with a
+    /// larger destination.
     /// </summary>
     [TestMethod]
-    public void TryEncodeToUtf8_WhenDestinationLargeEnough_ShouldReturnTrueAndExpectedBytes()
-    {
-        byte[] destination = new byte[Base58.GetMaxEncodedLength(5)];
-
-        bool ok = Base58.TryEncodeToUtf8(Ascii("Hello").AsSpan(), destination, out int bytesWritten);
-
-        Assert.IsTrue(ok);
-        Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> recovers bytes and reports counts.
-    /// </summary>
-    [TestMethod]
-    public void DecodeFromUtf8_WhenValidInput_ShouldReturnDoneWithCounts()
+    public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportNoCommittedProgress()
     {
         byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
-        byte[] destination = new byte[5];
+        byte[] destination = new byte[1];
 
         OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
-        Assert.AreEqual(OperationStatus.Done, status);
-        Assert.AreEqual(7, bytesConsumed);
-        Assert.AreEqual(5, bytesWritten);
-        CollectionAssert.AreEqual(Ascii("Hello"), destination);
+        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+        Assert.AreEqual(0, bytesConsumed);
+        Assert.AreEqual(0, bytesWritten);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> returns <see cref="OperationStatus.DestinationTooSmall" />
+    /// when the destination cannot fit the result.
+    /// </summary>
+    [TestMethod]
+    public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
+    {
+        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
+        byte[] destination = new byte[1];
+
+        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int _, out int _);
+
+        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
     }
 
     /// <summary>
@@ -68,18 +61,30 @@ public sealed partial class Base58Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> returns <see cref="OperationStatus.DestinationTooSmall" />
-    /// when the destination cannot fit the result.
+    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> recovers bytes and reports counts.
     /// </summary>
     [TestMethod]
-    public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReturnDestinationTooSmall()
+    public void DecodeFromUtf8_WhenValidInput_ShouldReturnDoneWithCounts()
     {
         byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
-        byte[] destination = new byte[1];
+        byte[] destination = new byte[5];
 
-        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int _, out int _);
+        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
 
-        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
+        Assert.AreEqual(OperationStatus.Done, status);
+        Assert.AreEqual(7, bytesConsumed);
+        Assert.AreEqual(5, bytesWritten);
+        CollectionAssert.AreEqual(Ascii("Hello"), destination);
+    }
+    /// <summary>
+    /// Verifies that <see cref="Base58.EncodeToUtf8" /> returns the Bitcoin/Flickr output as ASCII bytes.
+    /// </summary>
+    [TestMethod]
+    public void EncodeToUtf8_ShouldReturnAsciiBytesOfBitcoinFlickrOutput()
+    {
+        byte[] actual = Base58.EncodeToUtf8(Ascii("Hello"));
+
+        Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(actual));
     }
 
     /// <summary>
@@ -100,21 +105,17 @@ public sealed partial class Base58Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base58.DecodeFromUtf8" /> reports <c>bytesConsumed = 0</c> and <c>bytesWritten = 0</c>
-    /// on <see cref="OperationStatus.DestinationTooSmall" />. Base58 cannot commit partial output (it decodes through
-    /// big-integer divmod into a scratch buffer), so the contract is "all-or-nothing" — the caller retries with a
-    /// larger destination.
+    /// Verifies that <see cref="Base58.TryEncodeToUtf8" /> writes the expected bytes into the destination.
     /// </summary>
     [TestMethod]
-    public void DecodeFromUtf8_WhenDestinationTooSmall_ShouldReportNoCommittedProgress()
+    public void TryEncodeToUtf8_WhenDestinationLargeEnough_ShouldReturnTrueAndExpectedBytes()
     {
-        byte[] utf8 = System.Text.Encoding.ASCII.GetBytes("9Ajdvzr");
-        byte[] destination = new byte[1];
+        byte[] destination = new byte[Base58.GetMaxEncodedLength(5)];
 
-        OperationStatus status = Base58.DecodeFromUtf8(utf8, destination, out int bytesConsumed, out int bytesWritten);
+        bool ok = Base58.TryEncodeToUtf8(Ascii("Hello").AsSpan(), destination, out int bytesWritten);
 
-        Assert.AreEqual(OperationStatus.DestinationTooSmall, status);
-        Assert.AreEqual(0, bytesConsumed);
-        Assert.AreEqual(0, bytesWritten);
+        Assert.IsTrue(ok);
+        Assert.AreEqual("9Ajdvzr", System.Text.Encoding.ASCII.GetString(destination, 0, bytesWritten));
     }
+
 }

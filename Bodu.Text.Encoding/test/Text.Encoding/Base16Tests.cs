@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16Tests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,10 +13,6 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed partial class Base16Tests
 {
-    /// <summary>
-    /// A canonical four-byte input used as the reference vector across encode/decode round-trip tests.
-    /// </summary>
-    private static readonly byte[] CanonicalBytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
     /// <summary>
     /// The lower case hexadecimal representation of <see cref="CanonicalBytes" />.
@@ -27,6 +23,10 @@ public sealed partial class Base16Tests
     /// The upper case hexadecimal representation of <see cref="CanonicalBytes" />.
     /// </summary>
     private const string CanonicalHexUpper = "DEADBEEF";
+    /// <summary>
+    /// A canonical four-byte input used as the reference vector across encode/decode round-trip tests.
+    /// </summary>
+    private static readonly byte[] CanonicalBytes = new byte[] { 0xDE, 0xAD, 0xBE, 0xEF };
 
     /// <summary>
     /// Returns a curated byte pattern used in round-trip and regression tests.
@@ -45,4 +45,5 @@ public sealed partial class Base16Tests
         "high-bytes" => Enumerable.Range(128, 32).Select(i => (byte)i).ToArray(),
         _ => throw new ArgumentException($"Unknown pattern key: {key}", nameof(key)),
     };
+
 }

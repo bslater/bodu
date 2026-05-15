@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BufferWriterTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,6 +16,7 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class BufferWriterTests
 {
+
     private static readonly byte[] Payload = System.Text.Encoding.ASCII.GetBytes("Hello, World!");
 
     /// <summary>
@@ -31,6 +32,32 @@ public sealed class BufferWriterTests
 
         Assert.AreEqual(Payload.Length * 2, written);
         Assert.AreEqual(Base16.Encode(Payload), new string(writer.WrittenSpan));
+    }
+
+    /// <summary>
+    /// Verifies that an empty payload writes zero characters to the buffer writer.
+    /// </summary>
+    [TestMethod]
+    public void Base16_Encode_IntoBufferWriterWithEmptyPayload_ShouldWriteZeroChars()
+    {
+        ArrayBufferWriter<char> writer = new();
+
+        int written = Base16.Encode(ReadOnlySpan<byte>.Empty, writer);
+
+        Assert.AreEqual(0, written);
+        Assert.AreEqual(0, writer.WrittenCount);
+    }
+
+    /// <summary>
+    /// Verifies that passing a null buffer writer throws <see cref="ArgumentNullException" />.
+    /// </summary>
+    [TestMethod]
+    public void Base16_Encode_IntoBufferWriterWithNull_ShouldThrowArgumentNullException()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            _ = Base16.Encode(Payload, (IBufferWriter<char>)null!);
+        });
     }
 
     /// <summary>
@@ -81,6 +108,21 @@ public sealed class BufferWriterTests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base58.Encode(ReadOnlySpan{byte}, IBufferWriter{char}, Base58Variant)" /> writes the
+    /// same characters as the string-returning Encode.
+    /// </summary>
+    [TestMethod]
+    public void Base58_Encode_IntoBufferWriter_ShouldMatchStringOutput()
+    {
+        ArrayBufferWriter<char> writer = new();
+
+        int written = Base58.Encode(Payload, writer);
+
+        Assert.AreEqual(Base58.Encode(Payload).Length, written);
+        Assert.AreEqual(Base58.Encode(Payload), new string(writer.WrittenSpan));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base64.Encode(ReadOnlySpan{byte}, IBufferWriter{char}, Base64Variant, BaseFormattingOptions)" />
     /// writes the same characters as the string-returning Encode.
     /// </summary>
@@ -109,21 +151,6 @@ public sealed class BufferWriterTests
 
         Assert.AreEqual(expected.Length, written);
         CollectionAssert.AreEqual(expected, writer.WrittenSpan.ToArray());
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base58.Encode(ReadOnlySpan{byte}, IBufferWriter{char}, Base58Variant)" /> writes the
-    /// same characters as the string-returning Encode.
-    /// </summary>
-    [TestMethod]
-    public void Base58_Encode_IntoBufferWriter_ShouldMatchStringOutput()
-    {
-        ArrayBufferWriter<char> writer = new();
-
-        int written = Base58.Encode(Payload, writer);
-
-        Assert.AreEqual(Base58.Encode(Payload).Length, written);
-        Assert.AreEqual(Base58.Encode(Payload), new string(writer.WrittenSpan));
     }
 
     /// <summary>
@@ -159,29 +186,4 @@ public sealed class BufferWriterTests
         Assert.IsTrue(expected.StartsWith("<~", StringComparison.Ordinal));
     }
 
-    /// <summary>
-    /// Verifies that an empty payload writes zero characters to the buffer writer.
-    /// </summary>
-    [TestMethod]
-    public void Base16_Encode_IntoBufferWriterWithEmptyPayload_ShouldWriteZeroChars()
-    {
-        ArrayBufferWriter<char> writer = new();
-
-        int written = Base16.Encode(ReadOnlySpan<byte>.Empty, writer);
-
-        Assert.AreEqual(0, written);
-        Assert.AreEqual(0, writer.WrittenCount);
-    }
-
-    /// <summary>
-    /// Verifies that passing a null buffer writer throws <see cref="ArgumentNullException" />.
-    /// </summary>
-    [TestMethod]
-    public void Base16_Encode_IntoBufferWriterWithNull_ShouldThrowArgumentNullException()
-    {
-        Assert.ThrowsExactly<ArgumentNullException>(() =>
-        {
-            _ = Base16.Encode(Payload, (IBufferWriter<char>)null!);
-        });
-    }
 }

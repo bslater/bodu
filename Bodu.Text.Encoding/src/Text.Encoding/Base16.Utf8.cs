@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16.Utf8.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -10,59 +10,6 @@ namespace Bodu.Text.Encoding;
 
 public static partial class Base16
 {
-    /// <summary>
-    /// Encodes <paramref name="source" /> into a UTF-8 hexadecimal byte array using lower case characters.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <returns>A UTF-8 encoded hexadecimal byte array. Each input byte produces two output bytes.</returns>
-    /// <remarks>
-    /// Hexadecimal characters are ASCII, so each UTF-8 byte equals the ASCII code of its corresponding character.
-    /// </remarks>
-    public static byte[] EncodeToUtf8(ReadOnlySpan<byte> source)
-    {
-        if (source.IsEmpty)
-            return Array.Empty<byte>();
-
-        byte[] result = new byte[source.Length * 2];
-        EncodeToUtf8Core(source, result, upperCase: false);
-        return result;
-    }
-
-    /// <summary>
-    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> as UTF-8 hexadecimal bytes.
-    /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="destination">The destination UTF-8 byte span.</param>
-    /// <param name="bytesWritten">When this method returns, contains the number of UTF-8 bytes written.</param>
-    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured;
-    /// line-break / spacing / prefix flags are not supported on the UTF-8 fast path.</param>
-    /// <returns><see langword="true" /> when <paramref name="destination" /> is large enough; otherwise
-    /// <see langword="false" />.</returns>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="options" /> contains any flag other than
-    /// <see cref="BaseFormattingOptions.UpperCase" />.
-    /// </exception>
-    public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, BaseFormattingOptions options = BaseFormattingOptions.None)
-    {
-        EnsureSpanOutputOptionsSupported(options);
-
-        int required = source.Length * 2;
-        if (destination.Length < required)
-        {
-            bytesWritten = 0;
-            return false;
-        }
-
-        if (source.IsEmpty)
-        {
-            bytesWritten = 0;
-            return true;
-        }
-
-        EncodeToUtf8Core(source, destination, options.HasFlag(BaseFormattingOptions.UpperCase));
-        bytesWritten = required;
-        return true;
-    }
 
     /// <summary>
     /// Streaming decode of a UTF-8 hexadecimal byte span into a byte span, with leniency styles and a streaming
@@ -135,23 +82,81 @@ public static partial class Base16
 
         return status;
     }
+    /// <summary>
+    /// Encodes <paramref name="source" /> into a UTF-8 hexadecimal byte array using lower case characters.
+    /// </summary>
+    /// <param name="source">The bytes to encode.</param>
+    /// <returns>A UTF-8 encoded hexadecimal byte array. Each input byte produces two output bytes.</returns>
+    /// <remarks>
+    /// Hexadecimal characters are ASCII, so each UTF-8 byte equals the ASCII code of its corresponding character.
+    /// </remarks>
+    public static byte[] EncodeToUtf8(ReadOnlySpan<byte> source)
+    {
+        if (source.IsEmpty)
+            return Array.Empty<byte>();
+
+        byte[] result = new byte[source.Length * 2];
+        EncodeToUtf8Core(source, result, upperCase: false);
+        return result;
+    }
 
     /// <summary>
-    /// Writes the hexadecimal representation of <paramref name="source" /> as UTF-8 bytes into
-    /// <paramref name="destination" />.
+    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> as UTF-8 hexadecimal bytes.
     /// </summary>
-    /// <param name="source">The source bytes.</param>
-    /// <param name="destination">The destination span. Must be at least <c>source.Length * 2</c> bytes.</param>
-    /// <param name="upperCase">Whether to emit upper case digits.</param>
-    private static void EncodeToUtf8Core(ReadOnlySpan<byte> source, Span<byte> destination, bool upperCase)
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="destination">The destination UTF-8 byte span.</param>
+    /// <param name="bytesWritten">When this method returns, contains the number of UTF-8 bytes written.</param>
+    /// <param name="options">Formatting options. Only <see cref="BaseFormattingOptions.UpperCase" /> is honoured;
+    /// line-break / spacing / prefix flags are not supported on the UTF-8 fast path.</param>
+    /// <returns><see langword="true" /> when <paramref name="destination" /> is large enough; otherwise
+    /// <see langword="false" />.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="options" /> contains any flag other than
+    /// <see cref="BaseFormattingOptions.UpperCase" />.
+    /// </exception>
+    public static bool TryEncodeToUtf8(ReadOnlySpan<byte> source, Span<byte> destination, out int bytesWritten, BaseFormattingOptions options = BaseFormattingOptions.None)
     {
-        string alphabet = upperCase ? HexUpperAlphabet : HexLowerAlphabet;
-        for (int i = 0; i < source.Length; i++)
+        EnsureSpanOutputOptionsSupported(options);
+
+        int required = source.Length * 2;
+        if (destination.Length < required)
         {
-            byte b = source[i];
-            destination[i * 2] = (byte)alphabet[b >> 4];
-            destination[(i * 2) + 1] = (byte)alphabet[b & 0x0F];
+            bytesWritten = 0;
+            return false;
         }
+
+        if (source.IsEmpty)
+        {
+            bytesWritten = 0;
+            return true;
+        }
+
+        EncodeToUtf8Core(source, destination, options.HasFlag(BaseFormattingOptions.UpperCase));
+        bytesWritten = required;
+        return true;
+    }
+
+    /// <summary>
+    /// Decodes consecutive pairs of UTF-8 hex bytes into the destination span. Used by the strict-mode
+    /// <c>FromHexString(ReadOnlySpan{byte})</c> overload.
+    /// </summary>
+    /// <param name="source">The UTF-8 hex source.</param>
+    /// <param name="destination">The destination byte span.</param>
+    /// <returns><see langword="true" /> when every UTF-8 byte is a valid hex digit; otherwise <see langword="false" />.</returns>
+    private static bool DecodeHexPairsFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination)
+    {
+        int bi = 0;
+        for (int i = 0; i < source.Length; i += 2)
+        {
+            int hi = NibbleFromByte(source[i]);
+            int lo = NibbleFromByte(source[i + 1]);
+            if ((hi | lo) < 0)
+                return false;
+
+            destination[bi++] = (byte)((hi << 4) | lo);
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -235,27 +240,35 @@ public static partial class Base16
     }
 
     /// <summary>
-    /// Decodes consecutive pairs of UTF-8 hex bytes into the destination span. Used by the strict-mode
-    /// <c>FromHexString(ReadOnlySpan{byte})</c> overload.
+    /// Writes the hexadecimal representation of <paramref name="source" /> as UTF-8 bytes into
+    /// <paramref name="destination" />.
     /// </summary>
-    /// <param name="source">The UTF-8 hex source.</param>
-    /// <param name="destination">The destination byte span.</param>
-    /// <returns><see langword="true" /> when every UTF-8 byte is a valid hex digit; otherwise <see langword="false" />.</returns>
-    private static bool DecodeHexPairsFromUtf8(ReadOnlySpan<byte> source, Span<byte> destination)
+    /// <param name="source">The source bytes.</param>
+    /// <param name="destination">The destination span. Must be at least <c>source.Length * 2</c> bytes.</param>
+    /// <param name="upperCase">Whether to emit upper case digits.</param>
+    private static void EncodeToUtf8Core(ReadOnlySpan<byte> source, Span<byte> destination, bool upperCase)
     {
-        int bi = 0;
-        for (int i = 0; i < source.Length; i += 2)
+        string alphabet = upperCase ? HexUpperAlphabet : HexLowerAlphabet;
+        for (int i = 0; i < source.Length; i++)
         {
-            int hi = NibbleFromByte(source[i]);
-            int lo = NibbleFromByte(source[i + 1]);
-            if ((hi | lo) < 0)
-                return false;
-
-            destination[bi++] = (byte)((hi << 4) | lo);
+            byte b = source[i];
+            destination[i * 2] = (byte)alphabet[b >> 4];
+            destination[(i * 2) + 1] = (byte)alphabet[b & 0x0F];
         }
-
-        return true;
     }
+
+    /// <summary>
+    /// Maps a UTF-8 byte to its hexadecimal nibble value.
+    /// </summary>
+    /// <param name="b">The byte.</param>
+    /// <returns>The nibble value (0-15) or <c>-1</c> when the byte is not a valid ASCII hex digit.</returns>
+    private static int NibbleFromByte(byte b) => b switch
+    {
+        >= (byte)'0' and <= (byte)'9' => b - (byte)'0',
+        >= (byte)'A' and <= (byte)'F' => b - (byte)'A' + 10,
+        >= (byte)'a' and <= (byte)'f' => b - (byte)'a' + 10,
+        _ => -1,
+    };
 
     /// <summary>
     /// Maps a character to its hexadecimal nibble value.
@@ -270,16 +283,4 @@ public static partial class Base16
         _ => -1,
     };
 
-    /// <summary>
-    /// Maps a UTF-8 byte to its hexadecimal nibble value.
-    /// </summary>
-    /// <param name="b">The byte.</param>
-    /// <returns>The nibble value (0-15) or <c>-1</c> when the byte is not a valid ASCII hex digit.</returns>
-    private static int NibbleFromByte(byte b) => b switch
-    {
-        >= (byte)'0' and <= (byte)'9' => b - (byte)'0',
-        >= (byte)'A' and <= (byte)'F' => b - (byte)'A' + 10,
-        >= (byte)'a' and <= (byte)'f' => b - (byte)'a' + 10,
-        _ => -1,
-    };
 }

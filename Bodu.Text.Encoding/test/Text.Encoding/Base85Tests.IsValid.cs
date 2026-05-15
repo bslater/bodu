@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base85Tests.IsValid.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,34 +8,16 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base85Tests
 {
-    /// <summary>
-    /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="true" /> for canonical Ascii85 input.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenAscii85CanonicalInput_ShouldReturnTrue()
-    {
-        string encoded = Base85.Encode(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE });
-
-        Assert.IsTrue(Base85.IsValid(encoded.AsSpan()));
-    }
 
     /// <summary>
-    /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="true" /> for the <c>z</c> shortcut under
-    /// Ascii85.
+    /// Verifies that <see cref="Base85.IsBase85Digit" /> with the Z85 variant recognises Z85-specific characters.
     /// </summary>
     [TestMethod]
-    public void IsValid_WhenAscii85ZShortcut_ShouldReturnTrue()
+    public void IsBase85Digit_ForZ85Variant_ShouldRecogniseAlphabet()
     {
-        Assert.IsTrue(Base85.IsValid("zz".AsSpan()));
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="false" /> for an invalid character.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse()
-    {
-        Assert.IsFalse(Base85.IsValid("\x01\x02".AsSpan()));
+        Assert.IsTrue(Base85.IsBase85Digit('0', Base85Variant.Z85));
+        Assert.IsTrue(Base85.IsBase85Digit('#', Base85Variant.Z85));
+        Assert.IsFalse(Base85.IsBase85Digit('"', Base85Variant.Z85));
     }
 
     /// <summary>
@@ -49,16 +31,28 @@ public sealed partial class Base85Tests
         Assert.IsFalse(Base85.IsBase85Digit('z')); // 'z' is shortcut, not a digit
         Assert.IsFalse(Base85.IsBase85Digit('\x01'));
     }
-
     /// <summary>
-    /// Verifies that <see cref="Base85.IsBase85Digit" /> with the Z85 variant recognises Z85-specific characters.
+    /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="true" /> for canonical Ascii85 input.
     /// </summary>
     [TestMethod]
-    public void IsBase85Digit_ForZ85Variant_ShouldRecogniseAlphabet()
+    public void IsValid_WhenAscii85CanonicalInput_ShouldReturnTrue()
     {
-        Assert.IsTrue(Base85.IsBase85Digit('0', Base85Variant.Z85));
-        Assert.IsTrue(Base85.IsBase85Digit('#', Base85Variant.Z85));
-        Assert.IsFalse(Base85.IsBase85Digit('"', Base85Variant.Z85));
+        string encoded = Base85.Encode(new byte[] { 0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE });
+
+        Assert.IsTrue(Base85.IsValid(encoded.AsSpan()));
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base85.IsValid" /> for Ascii85 accepts the canonical partial-group
+    /// sizes (2, 3, 4 chars) which represent 1, 2, 3 bytes of tail.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAscii85CanonicalPartialGroup_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Base85.IsValid("!!".AsSpan()));    // 2 chars → 1 byte
+        Assert.IsTrue(Base85.IsValid("!!!".AsSpan()));   // 3 chars → 2 bytes
+        Assert.IsTrue(Base85.IsValid("!!!!".AsSpan()));  // 4 chars → 3 bytes
+        Assert.IsTrue(Base85.IsValid("9jqo^".AsSpan()));  // 5 chars → 4 bytes (full group)
     }
 
     /// <summary>
@@ -74,6 +68,16 @@ public sealed partial class Base85Tests
     }
 
     /// <summary>
+    /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="true" /> for the <c>z</c> shortcut under
+    /// Ascii85.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAscii85ZShortcut_ShouldReturnTrue()
+    {
+        Assert.IsTrue(Base85.IsValid("zz".AsSpan()));
+    }
+
+    /// <summary>
     /// Regression: verifies that <see cref="Base85.IsValid" /> rejects a misplaced <c>z</c> shortcut. The shortcut
     /// may only appear at a 5-char group boundary.
     /// </summary>
@@ -81,6 +85,15 @@ public sealed partial class Base85Tests
     public void IsValid_WhenAscii85ZShortcutInsideGroup_ShouldReturnFalse()
     {
         Assert.IsFalse(Base85.IsValid("9jz".AsSpan()));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base85.IsValid" /> returns <see langword="false" /> for an invalid character.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenInvalidCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base85.IsValid("\x01\x02".AsSpan()));
     }
 
     /// <summary>
@@ -94,16 +107,4 @@ public sealed partial class Base85Tests
         Assert.IsTrue(Base85.IsValid("HelloWorld".AsSpan(), Base85Variant.Z85));
     }
 
-    /// <summary>
-    /// Regression: verifies that <see cref="Base85.IsValid" /> for Ascii85 accepts the canonical partial-group
-    /// sizes (2, 3, 4 chars) which represent 1, 2, 3 bytes of tail.
-    /// </summary>
-    [TestMethod]
-    public void IsValid_WhenAscii85CanonicalPartialGroup_ShouldReturnTrue()
-    {
-        Assert.IsTrue(Base85.IsValid("!!".AsSpan()));    // 2 chars → 1 byte
-        Assert.IsTrue(Base85.IsValid("!!!".AsSpan()));   // 3 chars → 2 bytes
-        Assert.IsTrue(Base85.IsValid("!!!!".AsSpan()));  // 4 chars → 3 bytes
-        Assert.IsTrue(Base85.IsValid("9jqo^".AsSpan()));  // 5 chars → 4 bytes (full group)
-    }
 }

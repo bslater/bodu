@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IBinaryEncoding.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -27,6 +27,11 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public interface IBinaryEncoding
 {
+
+    /// <summary>
+    /// Gets a human-readable description of the encoding and its origin (specification clause, RFC, etc.).
+    /// </summary>
+    string Description { get; }
     /// <summary>
     /// Gets a short stable name identifying the encoding and variant — for example, <c>"base16-lower"</c>,
     /// <c>"base32"</c>, <c>"base64-urlsafe"</c>. Suitable as a key in configuration and for diagnostic output.
@@ -34,24 +39,11 @@ public interface IBinaryEncoding
     string Name { get; }
 
     /// <summary>
-    /// Gets a human-readable description of the encoding and its origin (specification clause, RFC, etc.).
+    /// Decodes <paramref name="chars" /> into a newly allocated byte array using the variant's strict parsing rules.
     /// </summary>
-    string Description { get; }
-
-    /// <summary>
-    /// Returns an upper bound on the number of characters required to encode <paramref name="byteCount" /> bytes.
-    /// </summary>
-    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
-    /// <returns>The maximum encoded character count.</returns>
-    int GetMaxEncodedLength(int byteCount);
-
-    /// <summary>
-    /// Returns an upper bound on the number of bytes that decoding <paramref name="charCount" /> characters could
-    /// produce.
-    /// </summary>
-    /// <param name="charCount">The input character count. Must be non-negative.</param>
-    /// <returns>The maximum decoded byte count.</returns>
-    int GetMaxDecodedLength(int charCount);
+    /// <param name="chars">The encoded character span.</param>
+    /// <returns>The decoded bytes.</returns>
+    byte[] Decode(ReadOnlySpan<char> chars);
 
     /// <summary>
     /// Encodes <paramref name="bytes" /> into a newly allocated <see cref="string" /> using the variant's canonical
@@ -62,20 +54,27 @@ public interface IBinaryEncoding
     string Encode(ReadOnlySpan<byte> bytes);
 
     /// <summary>
-    /// Decodes <paramref name="chars" /> into a newly allocated byte array using the variant's strict parsing rules.
+    /// Returns an upper bound on the number of bytes that decoding <paramref name="charCount" /> characters could
+    /// produce.
     /// </summary>
-    /// <param name="chars">The encoded character span.</param>
-    /// <returns>The decoded bytes.</returns>
-    byte[] Decode(ReadOnlySpan<char> chars);
+    /// <param name="charCount">The input character count. Must be non-negative.</param>
+    /// <returns>The maximum decoded byte count.</returns>
+    int GetMaxDecodedLength(int charCount);
 
     /// <summary>
-    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> without allocation.
+    /// Returns an upper bound on the number of characters required to encode <paramref name="byteCount" /> bytes.
     /// </summary>
-    /// <param name="source">The bytes to encode.</param>
-    /// <param name="destination">The destination span.</param>
-    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
-    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
-    bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten);
+    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
+    /// <returns>The maximum encoded character count.</returns>
+    int GetMaxEncodedLength(int byteCount);
+
+    /// <summary>
+    /// Indicates whether <paramref name="source" /> is a valid encoded input under this encoding's variant rules.
+    /// </summary>
+    /// <param name="source">The character span to validate.</param>
+    /// <returns><see langword="true" /> when <paramref name="source" /> would decode without error; otherwise
+    /// <see langword="false" />.</returns>
+    bool IsValid(ReadOnlySpan<char> source);
 
     /// <summary>
     /// Attempts to decode <paramref name="source" /> into <paramref name="destination" /> without allocation.
@@ -88,10 +87,12 @@ public interface IBinaryEncoding
     bool TryDecode(ReadOnlySpan<char> source, Span<byte> destination, out int bytesWritten);
 
     /// <summary>
-    /// Indicates whether <paramref name="source" /> is a valid encoded input under this encoding's variant rules.
+    /// Attempts to encode <paramref name="source" /> into <paramref name="destination" /> without allocation.
     /// </summary>
-    /// <param name="source">The character span to validate.</param>
-    /// <returns><see langword="true" /> when <paramref name="source" /> would decode without error; otherwise
-    /// <see langword="false" />.</returns>
-    bool IsValid(ReadOnlySpan<char> source);
+    /// <param name="source">The bytes to encode.</param>
+    /// <param name="destination">The destination span.</param>
+    /// <param name="charsWritten">When this method returns, contains the number of characters written.</param>
+    /// <returns><see langword="true" /> when the destination is large enough; otherwise <see langword="false" />.</returns>
+    bool TryEncode(ReadOnlySpan<byte> source, Span<char> destination, out int charsWritten);
+
 }

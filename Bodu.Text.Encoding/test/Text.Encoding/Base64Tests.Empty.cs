@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base64Tests.Empty.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,21 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base64Tests
 {
+
+    /// <summary>
+    /// Verifies that decoding an empty string returns an empty byte array for every variant.
+    /// </summary>
+    /// <param name="variant">The variant.</param>
+    [DataTestMethod]
+    [DataRow(Base64Variant.Standard)]
+    [DataRow(Base64Variant.UrlSafe)]
+    [DataRow(Base64Variant.Mime)]
+    public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base64Variant variant)
+    {
+        byte[] actual = Base64.Decode(string.Empty, variant);
+
+        Assert.AreEqual(0, actual.Length);
+    }
     /// <summary>
     /// Verifies that encoding an empty byte array returns <see cref="string.Empty" /> for every variant.
     /// </summary>
@@ -24,18 +39,20 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
-    /// Verifies that decoding an empty string returns an empty byte array for every variant.
+    /// Verifies that <see cref="Base64.TryDecode" /> with an empty source returns <see langword="true" /> and writes
+    /// zero bytes regardless of the destination span size.
     /// </summary>
-    /// <param name="variant">The variant.</param>
-    [DataTestMethod]
-    [DataRow(Base64Variant.Standard)]
-    [DataRow(Base64Variant.UrlSafe)]
-    [DataRow(Base64Variant.Mime)]
-    public void Decode_WhenEmptyString_ShouldReturnEmptyByteArray(Base64Variant variant)
+    [TestMethod]
+    public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
     {
-        byte[] actual = Base64.Decode(string.Empty, variant);
+        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, new byte[1], out int t1));
+        Assert.AreEqual(0, t1);
 
-        Assert.AreEqual(0, actual.Length);
+        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, Array.Empty<byte>(), out int t2));
+        Assert.AreEqual(0, t2);
+
+        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, new byte[100], out int t3));
+        Assert.AreEqual(0, t3);
     }
 
     /// <summary>
@@ -55,20 +72,4 @@ public sealed partial class Base64Tests
         Assert.AreEqual(0, t3);
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Base64.TryDecode" /> with an empty source returns <see langword="true" /> and writes
-    /// zero bytes regardless of the destination span size.
-    /// </summary>
-    [TestMethod]
-    public void TryDecode_WhenSourceIsEmpty_ShouldReturnTrueAndZeroBytesRegardlessOfDestination()
-    {
-        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, new byte[1], out int t1));
-        Assert.AreEqual(0, t1);
-
-        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, Array.Empty<byte>(), out int t2));
-        Assert.AreEqual(0, t2);
-
-        Assert.IsTrue(Base64.TryDecode(ReadOnlySpan<char>.Empty, new byte[100], out int t3));
-        Assert.AreEqual(0, t3);
-    }
 }

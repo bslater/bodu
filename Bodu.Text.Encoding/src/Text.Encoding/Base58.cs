@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,11 +30,32 @@ namespace Bodu.Text.Encoding;
 /// </remarks>
 public static partial class Base58
 {
+
     private const string BitcoinFlickrAlphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     private const string RippleAlphabet = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
 
     private static readonly sbyte[] s_bitcoinFlickrLookup = BuildLookup(BitcoinFlickrAlphabet);
     private static readonly sbyte[] s_rippleLookup = BuildLookup(RippleAlphabet);
+
+    /// <summary>
+    /// Returns an upper bound on the number of bytes that decoding <paramref name="charCount" /> characters can
+    /// produce.
+    /// </summary>
+    /// <param name="charCount">The input character count.</param>
+    /// <returns>An upper bound on the decoded byte count.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="charCount" /> is negative.
+    /// </exception>
+    public static int GetMaxDecodedLength(int charCount)
+    {
+        ThrowHelper.ThrowIfNegative(charCount);
+        if (charCount == 0)
+            return 0;
+        checked
+        {
+            return ((charCount * 733) / 1000) + 1;
+        }
+    }
 
     /// <summary>
     /// Returns an upper bound on the number of characters required to encode <paramref name="byteCount" /> bytes.
@@ -61,23 +82,16 @@ public static partial class Base58
     }
 
     /// <summary>
-    /// Returns an upper bound on the number of bytes that decoding <paramref name="charCount" /> characters can
-    /// produce.
+    /// Indicates whether <paramref name="value" /> is a valid digit for the supplied Base58 variant.
     /// </summary>
-    /// <param name="charCount">The input character count.</param>
-    /// <returns>An upper bound on the decoded byte count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="charCount" /> is negative.
-    /// </exception>
-    public static int GetMaxDecodedLength(int charCount)
+    /// <param name="value">The character to test.</param>
+    /// <param name="variant">The variant.</param>
+    /// <returns><see langword="true" /> when the character belongs to the variant alphabet.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
+    public static bool IsBase58Digit(char value, Base58Variant variant = Base58Variant.BitcoinFlickr)
     {
-        ThrowHelper.ThrowIfNegative(charCount);
-        if (charCount == 0)
-            return 0;
-        checked
-        {
-            return ((charCount * 733) / 1000) + 1;
-        }
+        sbyte[] lookup = GetLookup(variant);
+        return value < lookup.Length && lookup[value] >= 0;
     }
 
     /// <summary>
@@ -107,16 +121,22 @@ public static partial class Base58
     }
 
     /// <summary>
-    /// Indicates whether <paramref name="value" /> is a valid digit for the supplied Base58 variant.
+    /// Builds a 128-entry lookup table mapping alphabet characters to their numeric value.
     /// </summary>
-    /// <param name="value">The character to test.</param>
-    /// <param name="variant">The variant.</param>
-    /// <returns><see langword="true" /> when the character belongs to the variant alphabet.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
-    public static bool IsBase58Digit(char value, Base58Variant variant = Base58Variant.BitcoinFlickr)
+    /// <param name="alphabet">The alphabet.</param>
+    /// <returns>The lookup table.</returns>
+    private static sbyte[] BuildLookup(string alphabet)
     {
-        sbyte[] lookup = GetLookup(variant);
-        return value < lookup.Length && lookup[value] >= 0;
+        sbyte[] table = new sbyte[128];
+        Array.Fill(table, (sbyte)-1);
+
+        for (int i = 0; i < alphabet.Length; i++)
+        {
+            char c = alphabet[i];
+            table[c] = (sbyte)i;
+        }
+
+        return table;
     }
 
     /// <summary>
@@ -147,22 +167,4 @@ public static partial class Base58
             _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base58 variant."),
         };
 
-    /// <summary>
-    /// Builds a 128-entry lookup table mapping alphabet characters to their numeric value.
-    /// </summary>
-    /// <param name="alphabet">The alphabet.</param>
-    /// <returns>The lookup table.</returns>
-    private static sbyte[] BuildLookup(string alphabet)
-    {
-        sbyte[] table = new sbyte[128];
-        Array.Fill(table, (sbyte)-1);
-
-        for (int i = 0; i < alphabet.Length; i++)
-        {
-            char c = alphabet[i];
-            table[c] = (sbyte)i;
-        }
-
-        return table;
-    }
 }

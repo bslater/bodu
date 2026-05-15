@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16Tests.GetMaxDecodedLength.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base16Tests
 {
+
     /// <summary>
     /// Verifies that <see cref="Base16.GetMaxDecodedLength" /> returns half of the character count (rounded down).
     /// </summary>
@@ -15,6 +16,18 @@ public sealed partial class Base16Tests
     public void GetMaxDecodedLength_WhenEvenCharCount_ShouldReturnHalf()
     {
         Assert.AreEqual(4, Base16.GetMaxDecodedLength(8));
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Base16.GetMaxDecodedLength" /> rejects a negative input.
+    /// </summary>
+    [TestMethod]
+    public void GetMaxDecodedLength_WhenNegativeInput_ShouldThrowArgumentOutOfRangeException()
+    {
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            _ = Base16.GetMaxDecodedLength(-1);
+        });
     }
 
     /// <summary>
@@ -36,15 +49,4 @@ public sealed partial class Base16Tests
         Assert.AreEqual(0, Base16.GetMaxDecodedLength(0));
     }
 
-    /// <summary>
-    /// Verifies that <see cref="Base16.GetMaxDecodedLength" /> rejects a negative input.
-    /// </summary>
-    [TestMethod]
-    public void GetMaxDecodedLength_WhenNegativeInput_ShouldThrowArgumentOutOfRangeException()
-    {
-        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
-        {
-            _ = Base16.GetMaxDecodedLength(-1);
-        });
-    }
 }

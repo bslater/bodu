@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="GuidEncodingTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,6 +14,7 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class GuidEncodingTests
 {
+
     /// <summary>
     /// A fixed, recognisable test <see cref="Guid" />.
     /// </summary>
@@ -64,6 +65,18 @@ public sealed class GuidEncodingTests
     }
 
     /// <summary>
+    /// Verifies the Base58 GUID round trip.
+    /// </summary>
+    [TestMethod]
+    public void Base58_EncodeGuid_RoundTrip_ShouldRecoverOriginalGuid()
+    {
+        string encoded = Base58.Encode(TestGuid);
+        Guid decoded = Base58.DecodeGuid(encoded.AsSpan());
+
+        Assert.AreEqual(TestGuid, decoded);
+    }
+
+    /// <summary>
     /// Verifies the Base64 GUID round trip.
     /// </summary>
     [TestMethod]
@@ -93,18 +106,6 @@ public sealed class GuidEncodingTests
     }
 
     /// <summary>
-    /// Verifies the Base58 GUID round trip.
-    /// </summary>
-    [TestMethod]
-    public void Base58_EncodeGuid_RoundTrip_ShouldRecoverOriginalGuid()
-    {
-        string encoded = Base58.Encode(TestGuid);
-        Guid decoded = Base58.DecodeGuid(encoded.AsSpan());
-
-        Assert.AreEqual(TestGuid, decoded);
-    }
-
-    /// <summary>
     /// Verifies the Base85 (Ascii85) GUID round trip produces exactly 20 characters.
     /// </summary>
     [TestMethod]
@@ -115,6 +116,19 @@ public sealed class GuidEncodingTests
 
         Assert.AreEqual(20, encoded.Length);
         Assert.AreEqual(TestGuid, decoded);
+    }
+
+    /// <summary>
+    /// Verifies that <c>DecodeGuid</c> throws <see cref="FormatException" /> for input that does not decode to
+    /// 16 bytes.
+    /// </summary>
+    [TestMethod]
+    public void DecodeGuid_WhenInputNotSixteenBytes_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base16.DecodeGuid("DEADBEEF".AsSpan());
+        });
     }
 
     /// <summary>
@@ -130,32 +144,6 @@ public sealed class GuidEncodingTests
         Assert.AreEqual(empty, Base64.DecodeGuid(Base64.Encode(empty).AsSpan()));
         Assert.AreEqual(empty, Base58.DecodeGuid(Base58.Encode(empty).AsSpan()));
         Assert.AreEqual(empty, Base85.DecodeGuid(Base85.Encode(empty).AsSpan()));
-    }
-
-    /// <summary>
-    /// Verifies that <c>TryDecodeGuid</c> returns <see langword="false" /> for input that does not decode to 16 bytes.
-    /// </summary>
-    [TestMethod]
-    public void TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalse()
-    {
-        // "DEADBEEF" decodes to 4 bytes — not a GUID.
-        bool ok = Base16.TryDecodeGuid("DEADBEEF".AsSpan(), out Guid value);
-
-        Assert.IsFalse(ok);
-        Assert.AreEqual(Guid.Empty, value);
-    }
-
-    /// <summary>
-    /// Verifies that <c>DecodeGuid</c> throws <see cref="FormatException" /> for input that does not decode to
-    /// 16 bytes.
-    /// </summary>
-    [TestMethod]
-    public void DecodeGuid_WhenInputNotSixteenBytes_ShouldThrowFormatException()
-    {
-        Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base16.DecodeGuid("DEADBEEF".AsSpan());
-        });
     }
 
     /// <summary>
@@ -178,4 +166,18 @@ public sealed class GuidEncodingTests
             Assert.AreEqual(g, Base85.DecodeGuid(Base85.Encode(g).AsSpan()));
         }
     }
+
+    /// <summary>
+    /// Verifies that <c>TryDecodeGuid</c> returns <see langword="false" /> for input that does not decode to 16 bytes.
+    /// </summary>
+    [TestMethod]
+    public void TryDecodeGuid_WhenInputNotSixteenBytes_ShouldReturnFalse()
+    {
+        // "DEADBEEF" decodes to 4 bytes — not a GUID.
+        bool ok = Base16.TryDecodeGuid("DEADBEEF".AsSpan(), out Guid value);
+
+        Assert.IsFalse(ok);
+        Assert.AreEqual(Guid.Empty, value);
+    }
+
 }

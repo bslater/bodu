@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base58VariantTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,6 +12,7 @@ namespace Bodu.Text.Encoding;
 [TestClass]
 public sealed class Base58VariantTests
 {
+
     /// <summary>
     /// Verifies that <see cref="Base58Variant.BitcoinFlickr" /> is the default value.
     /// </summary>
@@ -30,4 +31,5 @@ public sealed class Base58VariantTests
         Assert.AreEqual(0, (int)Base58Variant.BitcoinFlickr);
         Assert.AreEqual(1, (int)Base58Variant.Ripple);
     }
+
 }

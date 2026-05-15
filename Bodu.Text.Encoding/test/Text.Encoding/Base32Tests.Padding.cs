@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base32Tests.Padding.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,6 +8,7 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base32Tests
 {
+
     /// <summary>
     /// Verifies that the Standard variant emits the expected number of trailing <c>=</c> characters for each input
     /// length mod 5.
@@ -58,4 +59,5 @@ public sealed partial class Base32Tests
             Assert.AreEqual(predicted, actual, $"Mismatch for length={n}, omitPadding={omitPadding}.");
         }
     }
+
 }

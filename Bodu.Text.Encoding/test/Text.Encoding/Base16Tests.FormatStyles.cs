@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Base16Tests.FormatStyles.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,26 +8,96 @@ namespace Bodu.Text.Encoding;
 
 public sealed partial class Base16Tests
 {
+
     /// <summary>
-    /// Verifies that strict mode (<see cref="BaseFormatStyles.None" />) accepts only clean digit input.
+    /// Verifies that combined prefix-and-whitespace stripping works when the prefix is followed by whitespace.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenStrictAndCleanDigits_ShouldDecodeSuccessfully()
+    public void Decode_WhenAllowPrefixAndIgnoreWhitespaceAndPrefixFollowedByWhitespace_ShouldDecode()
     {
-        byte[] actual = Base16.Decode("deadbeef");
+        byte[] actual = Base16.Decode(
+            "0x  DE AD BE EF",
+            BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
 
     /// <summary>
-    /// Verifies that strict mode rejects whitespace anywhere in the input.
+    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> only consumes a leading <c>0x</c> at the start of the
+    /// input; later <c>0x</c> sequences are not stripped.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenStrictAndWhitespacePresent_ShouldThrowFormatException()
+    public void Decode_WhenAllowPrefixAndInternalPrefix_ShouldRejectInternalPrefix()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base16.Decode("de ad");
+            _ = Base16.Decode("ab0xcd", BaseFormatStyles.AllowPrefix);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> does not strip a literal <c>0x</c> if the input
+    /// continues with non-hex characters after the prefix.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAllowPrefixAndInvalidCharsAfterPrefix_ShouldThrowFormatException()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base16.Decode("0xZZ", BaseFormatStyles.AllowPrefix);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> tolerates the absence of a prefix.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAllowPrefixAndNoPrefix_ShouldDecodeSuccessfully()
+    {
+        byte[] actual = Base16.Decode("deadbeef", BaseFormatStyles.AllowPrefix);
+
+        CollectionAssert.AreEqual(CanonicalBytes, actual);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> rejects truncated prefix forms (just <c>0</c> with
+    /// no following <c>x</c>, in the presence of no other content).
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAllowPrefixAndOnlyLeadingZeroPresent_ShouldThrowFormatExceptionForOddDigitCount()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base16.Decode("0", BaseFormatStyles.AllowPrefix);
+        });
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> matches both lower and upper case prefix forms.
+    /// </summary>
+    /// <param name="prefix">The prefix variant.</param>
+    [TestMethod]
+    [DataRow("0x")]
+    [DataRow("0X")]
+    public void Decode_WhenAllowPrefixAndPrefixCaseVariants_ShouldStripPrefix(string prefix)
+    {
+        byte[] actual = Base16.Decode(prefix + "DEADBEEF", BaseFormatStyles.AllowPrefix);
+
+        CollectionAssert.AreEqual(CanonicalBytes, actual);
+    }
+
+    /// <summary>
+    /// Verifies that whitespace inside the prefix (e.g. <c>"0 x..."</c>) is treated as a leading <c>0</c> followed by
+    /// data: only the literal two-character <c>0x</c> sequence is recognised as a prefix.
+    /// </summary>
+    [TestMethod]
+    public void Decode_WhenAllowPrefixAndWhitespaceBetweenZeroAndX_ShouldNotTreatAsPrefix()
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base16.Decode(
+                "0 xDEADBEEF",
+                BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
         });
     }
 
@@ -57,39 +127,22 @@ public sealed partial class Base16Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> only consumes a leading <c>0x</c> at the start of the
-    /// input; later <c>0x</c> sequences are not stripped.
+    /// Verifies that <see cref="BaseFormatStyles.IgnoreWhitespace" /> does NOT strip non-ASCII whitespace
+    /// characters such as no-break space (U+00A0) or zero-width space (U+200B).
     /// </summary>
+    /// <param name="whitespaceChar">A non-ASCII whitespace character.</param>
     [TestMethod]
-    public void Decode_WhenAllowPrefixAndInternalPrefix_ShouldRejectInternalPrefix()
+    [DataRow(' ')] // no-break space
+    [DataRow(' ')] // em space
+    [DataRow('​')] // zero-width space
+    [DataRow('　')] // ideographic space
+    public void Decode_WhenIgnoreWhitespaceAndNonAsciiWhitespaceCharacter_ShouldThrowFormatException(char whitespaceChar)
     {
+        string input = "DE" + whitespaceChar + "AD";
+
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base16.Decode("ab0xcd", BaseFormatStyles.AllowPrefix);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> tolerates the absence of a prefix.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenAllowPrefixAndNoPrefix_ShouldDecodeSuccessfully()
-    {
-        byte[] actual = Base16.Decode("deadbeef", BaseFormatStyles.AllowPrefix);
-
-        CollectionAssert.AreEqual(CanonicalBytes, actual);
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> does not strip a literal <c>0x</c> if the input
-    /// continues with non-hex characters after the prefix.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenAllowPrefixAndInvalidCharsAfterPrefix_ShouldThrowFormatException()
-    {
-        Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base16.Decode("0xZZ", BaseFormatStyles.AllowPrefix);
+            _ = Base16.Decode(input, BaseFormatStyles.IgnoreWhitespace);
         });
     }
 
@@ -115,79 +168,27 @@ public sealed partial class Base16Tests
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
-
     /// <summary>
-    /// Verifies that <see cref="BaseFormatStyles.IgnoreWhitespace" /> does NOT strip non-ASCII whitespace
-    /// characters such as no-break space (U+00A0) or zero-width space (U+200B).
+    /// Verifies that strict mode (<see cref="BaseFormatStyles.None" />) accepts only clean digit input.
     /// </summary>
-    /// <param name="whitespaceChar">A non-ASCII whitespace character.</param>
     [TestMethod]
-    [DataRow(' ')] // no-break space
-    [DataRow(' ')] // em space
-    [DataRow('​')] // zero-width space
-    [DataRow('　')] // ideographic space
-    public void Decode_WhenIgnoreWhitespaceAndNonAsciiWhitespaceCharacter_ShouldThrowFormatException(char whitespaceChar)
+    public void Decode_WhenStrictAndCleanDigits_ShouldDecodeSuccessfully()
     {
-        string input = "DE" + whitespaceChar + "AD";
-
-        Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base16.Decode(input, BaseFormatStyles.IgnoreWhitespace);
-        });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> matches both lower and upper case prefix forms.
-    /// </summary>
-    /// <param name="prefix">The prefix variant.</param>
-    [TestMethod]
-    [DataRow("0x")]
-    [DataRow("0X")]
-    public void Decode_WhenAllowPrefixAndPrefixCaseVariants_ShouldStripPrefix(string prefix)
-    {
-        byte[] actual = Base16.Decode(prefix + "DEADBEEF", BaseFormatStyles.AllowPrefix);
+        byte[] actual = Base16.Decode("deadbeef");
 
         CollectionAssert.AreEqual(CanonicalBytes, actual);
     }
 
     /// <summary>
-    /// Verifies that <see cref="BaseFormatStyles.AllowPrefix" /> rejects truncated prefix forms (just <c>0</c> with
-    /// no following <c>x</c>, in the presence of no other content).
+    /// Verifies that strict mode rejects whitespace anywhere in the input.
     /// </summary>
     [TestMethod]
-    public void Decode_WhenAllowPrefixAndOnlyLeadingZeroPresent_ShouldThrowFormatExceptionForOddDigitCount()
+    public void Decode_WhenStrictAndWhitespacePresent_ShouldThrowFormatException()
     {
         Assert.ThrowsExactly<FormatException>(() =>
         {
-            _ = Base16.Decode("0", BaseFormatStyles.AllowPrefix);
+            _ = Base16.Decode("de ad");
         });
     }
 
-    /// <summary>
-    /// Verifies that combined prefix-and-whitespace stripping works when the prefix is followed by whitespace.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenAllowPrefixAndIgnoreWhitespaceAndPrefixFollowedByWhitespace_ShouldDecode()
-    {
-        byte[] actual = Base16.Decode(
-            "0x  DE AD BE EF",
-            BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
-
-        CollectionAssert.AreEqual(CanonicalBytes, actual);
-    }
-
-    /// <summary>
-    /// Verifies that whitespace inside the prefix (e.g. <c>"0 x..."</c>) is treated as a leading <c>0</c> followed by
-    /// data: only the literal two-character <c>0x</c> sequence is recognised as a prefix.
-    /// </summary>
-    [TestMethod]
-    public void Decode_WhenAllowPrefixAndWhitespaceBetweenZeroAndX_ShouldNotTreatAsPrefix()
-    {
-        Assert.ThrowsExactly<FormatException>(() =>
-        {
-            _ = Base16.Decode(
-                "0 xDEADBEEF",
-                BaseFormatStyles.AllowPrefix | BaseFormatStyles.IgnoreWhitespace);
-        });
-    }
 }
