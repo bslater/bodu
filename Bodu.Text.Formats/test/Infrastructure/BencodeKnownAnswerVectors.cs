@@ -105,7 +105,7 @@ public static class BencodeKnownAnswerVectors
                 }),
             }),
         });
-        yield return new object[] { BencodeKnownAnswerVector.List("Deeply nested empty/integer lists", "lllli1eeee", nested, EdgeCase) };
+        yield return new object[] { BencodeKnownAnswerVector.List("Deeply nested empty/integer lists", "llli1eeee", nested, EdgeCase) };
 
         BencodedList dictInList = new(new BencodedValue[]
         {
