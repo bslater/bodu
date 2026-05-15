@@ -4,7 +4,7 @@ title: Introduction
 
 # Introduction
 
-**Bodu** is a solution that ships four independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. The packages share nothing at runtime — every assembly is self-contained — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
+**Bodu** is a solution that ships five independent .NET NuGet packages, each focused on a narrow, well-defined problem domain. The packages share nothing at runtime — every assembly is self-contained — but they share a single set of source and documentation conventions, a single analyzer and test configuration, and a single quality bar.
 
 If you are new to Bodu, start with the **library introductions** below to understand what each package is for. The deeper conceptual map across the hashing and cryptography libraries lives in [Algorithm families](algorithm-families.md).
 
@@ -16,8 +16,9 @@ If you are new to Bodu, start with the **library introductions** below to unders
 | **[Bodu.IO.Hashing](io-hashing/index.md)** | Non-cryptographic hashing on the BCL <xref:System.IO.Hashing.NonCryptographicHashAlgorithm?displayProperty=nameWithType> contract — fingerprints (FNV, CityHash, MurmurHash3, Pearson, Bernstein and the classic string hashes), checksums (CRC, Fletcher, Adler), and check digits (Luhn, Damm, Verhoeff, IBAN, ISBN, …). Nothing here is safe against an adversary; everything is fast and portable. | `net8.0` |
 | **[Bodu.Security.Cryptography](cryptography/index.md)** | Cryptographic primitives on the BCL <xref:System.Security.Cryptography.SymmetricAlgorithm?displayProperty=nameWithType> and <xref:System.Security.Cryptography.HashAlgorithm?displayProperty=nameWithType> contracts — managed block ciphers (Threefish, Serpent, Camellia, Twofish, Blowfish, Skipjack), AES paired with six AEAD mode transforms (GCM, CCM, OCB, EAX, SIV, GCM-SIV), keyed hashes (SipHash, Poly1305), cryptographic digests (Tiger, CubeHash, Snefru, Whirlpool, BLAKE2/3, Skein, Shake), Merkle-tree hashing, and the full ASCON family. | `net8.0` |
 | **[Bodu.Globalization.Calendar](calendar/index.md)** | Rule-driven notable-date resolution — public holidays, observances, religious festivals — for any year, territory, or calendar system. Built-in algorithms cover Gregorian and Orthodox Easter, Hindu Lunar dates, Losar, Vesak, Asalha Puja, and Qingming, with a pluggable algorithm registry, observance-adjustment pipeline, and trust-policy-driven plugin host. | `net8.0` |
+| **[Bodu.Text.Encoding](text-encoding/index.md)** | Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant (RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin/Flickr / Ripple, Ascii85 / Z85). Each encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, `OperationStatus` streaming, length-prediction helpers, validation predicates, plus a unified `IBinaryEncoding` interface for runtime-pluggable encoding choice. | `net8.0` |
 
-Each package is versioned and released independently. Take the one you need and ignore the others — there are no cross-package runtime dependencies. `Bodu.IO.Hashing` and `Bodu.Security.Cryptography` both depend on `Bodu.Core` for shared argument-validation helpers.
+Each package is versioned and released independently. Take the one you need and ignore the others — there are no cross-package runtime dependencies. `Bodu.IO.Hashing`, `Bodu.Security.Cryptography`, and `Bodu.Text.Encoding` all depend on `Bodu.Core` for shared argument-validation helpers.
 
 ## Library introductions
 
@@ -69,6 +70,16 @@ Each library has a dedicated introduction page that explains its namespaces, the
   </div>
 </div>
 
+<div class="bodu-card">
+  <h3><a href="text-encoding/index.md">Bodu.Text.Encoding</a></h3>
+  <p>Binary-to-text encoders for Base16, Base32, Base64, Base58, and Base85 with every common variant. Span-, UTF-8-, and <code>OperationStatus</code>-friendly; unified <code>IBinaryEncoding</code> interface for runtime-pluggable choice.</p>
+  <div class="bodu-card-links">
+    <a href="text-encoding/index.md">Introduction</a>
+    <a href="text-encoding/getting-started.md">Getting started</a>
+    <a href="../guides/text-encoding/index.md">Guides</a>
+  </div>
+</div>
+
 </div>
 
 ## Cross-library map: which library do I need?
@@ -89,6 +100,10 @@ If your problem touches **hashing**, **checksums**, or **encryption**, the [Algo
 | Keyed hash / message authentication | `SipHash64` / `SipHash128`, `Poly1305` | Bodu.Security.Cryptography |
 | Cryptographic digest for content addressing | `Tiger`, `CubeHash`, `AsconHash256`, `Whirlpool`, `Blake2b` | Bodu.Security.Cryptography |
 | Resolve a public holiday, observance, or religious festival | `NotableDateService` + `NotableDateRule` | Bodu.Globalization.Calendar |
+| Encode a hash digest as hex / Base32 / Base64 | `Base16`, `Base32`, `Base64` | Bodu.Text.Encoding |
+| Decode a JWT token segment (URL-safe Base64) | `Base64.Decode(token, Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding)` | Bodu.Text.Encoding |
+| Parse a Bitcoin / IPFS / Solana identifier | `Base58.Decode(id)` | Bodu.Text.Encoding |
+| Format a TOTP / HOTP shared secret for a user | `Base32.Encode(secret, Base32Variant.Standard, BaseFormattingOptions.OmitPadding)` | Bodu.Text.Encoding |
 
 ## Design principles
 
@@ -107,5 +122,5 @@ The solution uses **MSTest** with a partial-class test layout that mirrors the s
 
 - **[Getting started](getting-started.md)** — prerequisites, install commands, and a one-minute sample from each library.
 - **[Algorithm families](algorithm-families.md)** — the cross-library taxonomy of fingerprints, checksums, check digits, cryptographic hashes, keyed hashes, and symmetric ciphers.
-- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md).
+- **Library introductions:** [Bodu.Core](core/index.md) · [Bodu.IO.Hashing](io-hashing/index.md) · [Bodu.Security.Cryptography](cryptography/index.md) · [Bodu.Globalization.Calendar](calendar/index.md) · [Bodu.Text.Encoding](text-encoding/index.md).
 - **API references:** [Bodu.Collections.Generic](../apidoc/Bodu.Collections.Generic.md) · [Bodu.IO.Hashing](../apidoc/Bodu.IO.Hashing.md) · [Bodu.Security.Cryptography](../apidoc/Bodu.Security.Cryptography.md) · [Bodu.Globalization.Calendar](../apidoc/Bodu.Globalization.Calendar.md).

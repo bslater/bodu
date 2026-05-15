@@ -136,3 +136,24 @@
       items:
         - name: Calendar data packs
           href: calendar/data-packs.md
+- name: Bodu.Text.Encoding
+  href: text-encoding/
+  items:
+    - name: Overview
+      href: text-encoding/index.md
+    - name: Bodu.Text.Encoding — Encodings
+      items:
+        - name: Using Base16 (hexadecimal)
+          href: text-encoding/base16.md
+        - name: Using Base32
+          href: text-encoding/base32.md
+        - name: Using Base64
+          href: text-encoding/base64.md
+        - name: Using Base58
+          href: text-encoding/base58.md
+        - name: Using Base85 (Ascii85 and Z85)
+          href: text-encoding/base85.md
+    - name: Bodu.Text.Encoding — Patterns
+      items:
+        - name: The IBinaryEncoding interface
+          href: text-encoding/binary-encodings-interface.md

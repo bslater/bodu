@@ -336,3 +336,50 @@ Rule-driven notable-date (public holiday, observance, festival) resolution for a
 </div>
 
 [Bodu.Globalization.Calendar API reference](../apidoc/Bodu.Globalization.Calendar.md)
+
+---
+
+## Bodu.Text.Encoding
+
+Binary-to-text encoders for **Base16**, **Base32**, **Base64**, **Base58**, and **Base85** with every common
+variant — span- and UTF-8-friendly, `OperationStatus`-aware, with a unified `IBinaryEncoding` interface for
+runtime-pluggable encoding choice.
+
+<div class="bodu-cards">
+
+<div class="bodu-card">
+  <h3><a href="text-encoding/index.md">Overview</a></h3>
+  <p>The encoding family, payload-expansion comparison, and the choose-an-encoding decision table.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-encoding/base16.md">Using Base16 (hexadecimal)</a></h3>
+  <p>Formatting decorations (case / prefix / spacing / line breaks), lenient parsing, hex dumps, BCL aliases.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-encoding/base32.md">Using Base32</a></h3>
+  <p>Standard / HexExtended / Crockford / Z-Base-32 variants, TOTP secrets, padding control.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-encoding/base64.md">Using Base64</a></h3>
+  <p>Standard / URL-safe / MIME variants, JWT decoding, 76-character line wrapping.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-encoding/base58.md">Using Base58</a></h3>
+  <p>Bitcoin / Flickr / Ripple alphabets, leading-zero preservation, address decoding.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-encoding/base85.md">Using Base85 (Ascii85 and Z85)</a></h3>
+  <p>Adobe Ascii85 with the <code>z</code> shortcut and partial-group rules; ZeroMQ Z85 with shell-safe alphabet.</p>
+</div>
+
+<div class="bodu-card">
+  <h3><a href="text-encoding/binary-encodings-interface.md">The IBinaryEncoding interface</a></h3>
+  <p>Runtime-selected encoding choice via <code>BinaryEncodings.Get(name)</code> and the <code>IBinaryEncoding</code> contract.</p>
+</div>
+
+</div>

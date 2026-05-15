@@ -31,3 +31,11 @@
       href: calendar/concepts.md
     - name: Getting started
       href: calendar/getting-started.md
+- name: Bodu.Text.Encoding
+  items:
+    - name: Introduction
+      href: text-encoding/index.md
+    - name: Core concepts
+      href: text-encoding/concepts.md
+    - name: Getting started
+      href: text-encoding/getting-started.md

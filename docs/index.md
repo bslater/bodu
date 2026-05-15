@@ -20,10 +20,10 @@ _disableBreadcrumb: true
 
 <div class="bodu-hero">
   <h1>Bodu</h1>
-  <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, and calendar computation.</p>
+  <p class="tagline">A suite of small, focused .NET libraries for collections, non-cryptographic hashing, cryptography, calendar computation, and binary-to-text encoding.</p>
 </div>
 
-Four independent NuGet packages that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
+Five independent NuGet packages that share a single solution, a single set of conventions, and a single bar for quality: nullable-enabled, analyzer-clean, deterministic builds, and framework-style XML documentation.
 
 ## Libraries
 
@@ -73,6 +73,15 @@ Four independent NuGet packages that share a single solution, a single set of co
   </div>
 </div>
 
+<div class="bodu-card">
+  <h3>Bodu.Text.Encoding</h3>
+  <p>Binary-to-text encoders for <strong>Base16</strong>, <strong>Base32</strong>, <strong>Base64</strong>, <strong>Base58</strong>, and <strong>Base85</strong> with every common variant — RFC 4648 standard / hex-extended / URL-safe / MIME, Crockford, z-base-32, Bitcoin / Flickr / Ripple, Adobe Ascii85, ZeroMQ Z85. Every encoding exposes the same modern API shape: span- and UTF-8-friendly overloads, <code>OperationStatus</code> streaming methods, length-prediction helpers, validation predicates, plus a unified <code>IBinaryEncoding</code> interface for runtime-pluggable encoding choice.</p>
+  <div class="bodu-card-links">
+    <a href="docs/text-encoding/index.md">Introduction</a>
+    <a href="guides/text-encoding/index.md">Guides</a>
+  </div>
+</div>
+
 </div>
 
 ## Install
@@ -84,6 +93,7 @@ dotnet add package Bodu.Core
 dotnet add package Bodu.IO.Hashing
 dotnet add package Bodu.Security.Cryptography
 dotnet add package Bodu.Globalization.Calendar
+dotnet add package Bodu.Text.Encoding
 
 # Optional region-specific calendar data packs:
 dotnet add package Bodu.Globalization.Calendar.Data.Americas
