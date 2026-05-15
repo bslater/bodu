@@ -62,10 +62,16 @@ public static partial class Base58
             return string.Empty;
 
         int upperBound = GetMaxEncodedLength(bytes.Length);
-        char[] buffer = new char[upperBound];
-        int written = EncodeIntoBuffer(bytes, alphabet, buffer);
-
-        return new string(buffer, buffer.Length - written, written);
+        char[] buffer = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
+        {
+            int written = EncodeIntoBuffer(bytes, alphabet.AsSpan(), buffer, upperBound);
+            return new string(buffer, upperBound - written, written);
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(buffer);
+        }
     }
 
     /// <summary>
@@ -86,15 +92,25 @@ public static partial class Base58
             return 0;
 
         int upperBound = GetMaxEncodedLength(bytes.Length);
-        if (destination.Length < upperBound)
-            throw new ArgumentException(
-                $"Destination must be at least {upperBound} characters to safely encode {bytes.Length} bytes.",
-                nameof(destination));
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
+        {
+            int written = EncodeIntoBuffer(bytes, alphabet.AsSpan(), scratch, upperBound);
 
-        char[] scratch = new char[upperBound];
-        int written = EncodeIntoBuffer(bytes, alphabet, scratch);
-        scratch.AsSpan(scratch.Length - written, written).CopyTo(destination);
-        return written;
+            // Compare against the ACTUAL encoded length, not the worst-case upper bound, so callers that pre-size
+            // destination for the actual output (rather than the max bound) still succeed.
+            if (destination.Length < written)
+                throw new ArgumentException(
+                    $"Destination must be at least {written} characters to encode the provided bytes.",
+                    nameof(destination));
+
+            scratch.AsSpan(upperBound - written, written).CopyTo(destination);
+            return written;
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
     }
 
     /// <summary>
@@ -117,18 +133,26 @@ public static partial class Base58
         }
 
         int upperBound = GetMaxEncodedLength(bytes.Length);
-        char[] scratch = new char[upperBound];
-        int written = EncodeIntoBuffer(bytes, alphabet, scratch);
-
-        if (destination.Length < written)
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
         {
-            charsWritten = 0;
-            return false;
-        }
+            int written = EncodeIntoBuffer(bytes, alphabet.AsSpan(), scratch, upperBound);
 
-        scratch.AsSpan(scratch.Length - written, written).CopyTo(destination);
-        charsWritten = written;
-        return true;
+            // Check ACTUAL output length, not worst-case upper bound, so a tightly-sized destination still succeeds.
+            if (destination.Length < written)
+            {
+                charsWritten = 0;
+                return false;
+            }
+
+            scratch.AsSpan(upperBound - written, written).CopyTo(destination);
+            charsWritten = written;
+            return true;
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
     }
 
     /// <summary>
@@ -138,8 +162,10 @@ public static partial class Base58
     /// <param name="bytes">The input bytes.</param>
     /// <param name="alphabet">The variant alphabet.</param>
     /// <param name="buffer">The scratch buffer; the encoder writes from the end towards the start.</param>
+    /// <param name="usableLength">The portion of <paramref name="buffer" /> to use (may be smaller than the array
+    /// length when the buffer was rented from <see cref="System.Buffers.ArrayPool{T}" />).</param>
     /// <returns>The number of characters written into the buffer.</returns>
-    private static int EncodeIntoBuffer(ReadOnlySpan<byte> bytes, string alphabet, char[] buffer)
+    private static int EncodeIntoBuffer(ReadOnlySpan<byte> bytes, ReadOnlySpan<char> alphabet, char[] buffer, int usableLength)
     {
         int leadingZeros = 0;
         while (leadingZeros < bytes.Length && bytes[leadingZeros] == 0)
@@ -155,7 +181,7 @@ public static partial class Base58
             value = new BigInteger(bytes[leadingZeros..], isUnsigned: true, isBigEndian: true);
         }
 
-        int position = buffer.Length;
+        int position = usableLength;
         while (value > 0)
         {
             value = BigInteger.DivRem(value, 58, out BigInteger remainder);
@@ -165,6 +191,6 @@ public static partial class Base58
         for (int i = 0; i < leadingZeros; i++)
             buffer[--position] = alphabet[0];
 
-        return buffer.Length - position;
+        return usableLength - position;
     }
 }

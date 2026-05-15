@@ -41,44 +41,56 @@ public static partial class Base85
     private static readonly sbyte[] s_z85Lookup = BuildLookup(Z85Alphabet);
 
     /// <summary>
-    /// Returns the number of characters produced by encoding <paramref name="byteCount" /> bytes using the supplied
-    /// variant. The result is an exact, not a worst-case, prediction.
+    /// Returns the exact number of characters that <see cref="Encode(ReadOnlySpan{byte}, Base85Variant)" /> will
+    /// produce for the supplied data, accounting for the Adobe Ascii85 <c>z</c> shortcut on all-zero groups.
     /// </summary>
-    /// <param name="byteCount">The input byte count. Must be non-negative.</param>
+    /// <param name="source">The input bytes.</param>
     /// <param name="variant">The Base85 variant.</param>
-    /// <returns>The encoded character count.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="byteCount" /> is negative, or when <paramref name="variant" /> is undefined.
-    /// </exception>
+    /// <returns>The exact encoded character count.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="variant" /> is undefined.</exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="variant" /> is <see cref="Base85Variant.Z85" /> and <paramref name="byteCount" />
-    /// is not a multiple of four.
+    /// Thrown when <paramref name="variant" /> is <see cref="Base85Variant.Z85" /> and the source length is not a
+    /// multiple of four bytes.
     /// </exception>
     /// <remarks>
-    /// The Adobe Ascii85 variant emits the <c>z</c> shortcut for four-zero groups, so the maximum encoded length is
-    /// <c>ceil(byteCount * 1.25)</c>; the actual length may be smaller when the input contains all-zero groups. For
-    /// sizing buffers, use <see cref="GetMaxEncodedLength(int, Base85Variant)" />.
+    /// For Ascii85 the exact length cannot be computed from byte count alone because four-zero groups collapse to a
+    /// single <c>z</c> character. Code that needs a buffer size without scanning the data should call
+    /// <see cref="GetMaxEncodedLength(int, Base85Variant)" /> for the worst-case upper bound.
     /// </remarks>
-    public static int GetEncodedLength(int byteCount, Base85Variant variant = Base85Variant.Ascii85)
+    public static int GetEncodedLength(ReadOnlySpan<byte> source, Base85Variant variant = Base85Variant.Ascii85)
     {
-        ThrowHelper.ThrowIfNegative(byteCount);
         EnsureValidVariant(variant);
 
-        if (byteCount == 0)
+        if (source.IsEmpty)
             return 0;
-
-        int completeGroups = byteCount / 4;
-        int remainder = byteCount % 4;
 
         if (variant == Base85Variant.Z85)
         {
-            if (remainder != 0)
-                throw new ArgumentException("Z85 byte count must be a multiple of four.", nameof(byteCount));
+            if ((source.Length & 3) != 0)
+                throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(source));
 
-            return completeGroups * 5;
+            return (source.Length / 4) * 5;
         }
 
-        return (completeGroups * 5) + (remainder == 0 ? 0 : remainder + 1);
+        // Ascii85: scan for the 'z' shortcut. Four consecutive zero bytes encode to a single 'z'; otherwise the
+        // group is 5 chars. Trailing 1, 2, or 3 bytes encode to 2, 3, or 4 chars respectively.
+        int total = 0;
+        int i = 0;
+        while (i + 4 <= source.Length)
+        {
+            if (source[i] == 0 && source[i + 1] == 0 && source[i + 2] == 0 && source[i + 3] == 0)
+                total += 1;
+            else
+                total += 5;
+
+            i += 4;
+        }
+
+        int remainder = source.Length - i;
+        if (remainder > 0)
+            total += remainder + 1;
+
+        return total;
     }
 
     /// <summary>

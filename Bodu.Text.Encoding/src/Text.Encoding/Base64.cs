@@ -228,8 +228,10 @@ public static partial class Base64
             return false;
         }
 
-        // Padding alignment: Standard and Mime require canonical padding by default. UrlSafe and AllowMissingPadding
-        // bypass that requirement.
+        // Padding alignment: Standard / Mime require canonical padding by default. UrlSafe and AllowMissingPadding
+        // bypass the "must have padding" requirement. In all variants, if padding IS present it must match the
+        // canonical count for the data — partial or excessive padding ("TQ===") is always rejected.
+        int expectedPadding = (4 - dataMod) % 4;
         bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding)
             && variant != Base64Variant.UrlSafe;
 
@@ -242,12 +244,17 @@ public static partial class Base64
                 return false;
             }
 
-            int expectedPadding = (4 - dataMod) % 4;
             if (paddingSeen != expectedPadding)
             {
                 symbolCount = 0;
                 return false;
             }
+        }
+        else if (paddingSeen != 0 && paddingSeen != expectedPadding)
+        {
+            // AllowMissingPadding / UrlSafe mode: padding may be absent OR canonical, but never partial / excessive.
+            symbolCount = 0;
+            return false;
         }
 
         return true;

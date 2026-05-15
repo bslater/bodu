@@ -70,6 +70,43 @@ public sealed partial class Base58Tests
     }
 
     /// <summary>
+    /// Regression: verifies that <see cref="Base58.Encode(ReadOnlySpan{byte}, Span{char}, Base58Variant)" /> and
+    /// <see cref="Base58.TryEncode(ReadOnlySpan{byte}, Span{char}, out int, Base58Variant)" /> succeed when the
+    /// destination is exactly the actual output size (rather than the worst-case upper bound). Before the fix, a
+    /// tightly-sized destination would be rejected even though the encoded result fits.
+    /// </summary>
+    [TestMethod]
+    public void TryEncode_WhenDestinationExactlyActualSize_ShouldReturnTrue()
+    {
+        byte[] bytes = Ascii("Hello"); // encodes to "9Ajdvzr" — 7 chars
+
+        // Destination is exactly the actual encoded size (7), well below the worst-case upper bound for 5 bytes.
+        char[] destination = new char[7];
+
+        bool ok = Base58.TryEncode(bytes.AsSpan(), destination, out int charsWritten);
+
+        Assert.IsTrue(ok, "TryEncode should succeed when destination is at least the actual encoded length.");
+        Assert.AreEqual(7, charsWritten);
+        Assert.AreEqual("9Ajdvzr", new string(destination));
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base58.Encode(ReadOnlySpan{byte}, Span{char}, Base58Variant)" /> with
+    /// a tightly-sized destination matching the actual output succeeds rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenDestinationExactlyActualSize_ShouldSucceed()
+    {
+        byte[] bytes = Ascii("Hello");
+        char[] destination = new char[7]; // actual encoded length, smaller than the worst-case max
+
+        int charsWritten = Base58.Encode(bytes.AsSpan(), destination);
+
+        Assert.AreEqual(7, charsWritten);
+        Assert.AreEqual("9Ajdvzr", new string(destination));
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base58.Encode(byte[], int, int, Base58Variant)" /> rejects a negative offset.
     /// </summary>
     [TestMethod]

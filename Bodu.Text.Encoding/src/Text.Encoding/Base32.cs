@@ -239,25 +239,41 @@ public static partial class Base32
         }
 
         // Padding alignment: Standard / HexExtended require canonical padding by default. AllowMissingPadding
-        // bypasses this requirement; Crockford / Z-Base32 ignore padding entirely.
-        bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding)
-            && variant is Base32Variant.Standard or Base32Variant.HexExtended;
-
-        if (padIsRequired)
+        // bypasses the "must have padding" requirement; Crockford / Z-Base32 ignore padding entirely. In every
+        // case, if padding IS present it must match the canonical count for the data — partial or excessive
+        // padding ("MZXW6Y========" or "M=") is always rejected.
+        if (variant is Base32Variant.Standard or Base32Variant.HexExtended)
         {
-            int totalSymbols = symbolCount + paddingSeen;
-            if ((totalSymbols % 8) != 0)
-            {
-                symbolCount = 0;
-                return false;
-            }
-
             int expectedPadding = (8 - dataMod) % 8;
-            if (paddingSeen != expectedPadding)
+            bool padIsRequired = !styles.HasFlag(BaseFormatStyles.AllowMissingPadding);
+
+            if (padIsRequired)
             {
+                int totalSymbols = symbolCount + paddingSeen;
+                if ((totalSymbols % 8) != 0)
+                {
+                    symbolCount = 0;
+                    return false;
+                }
+
+                if (paddingSeen != expectedPadding)
+                {
+                    symbolCount = 0;
+                    return false;
+                }
+            }
+            else if (paddingSeen != 0 && paddingSeen != expectedPadding)
+            {
+                // AllowMissingPadding mode: padding may be absent OR canonical, but never partial / excessive.
                 symbolCount = 0;
                 return false;
             }
+        }
+        else if (paddingSeen > 0)
+        {
+            // Crockford and Z-Base32 do not use padding at all. Any padding character is a structural error.
+            symbolCount = 0;
+            return false;
         }
 
         return true;

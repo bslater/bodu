@@ -101,12 +101,29 @@ public static partial class Base85
             throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(bytes));
 
         int upperBound = GetMaxEncodedLength(bytes.Length, variant);
-        if (destination.Length < upperBound)
-            throw new ArgumentException(
-                $"Destination must be at least {upperBound} characters to safely encode {bytes.Length} bytes.",
-                nameof(destination));
 
-        return EncodeIntoBuffer(bytes, variant, destination);
+        // If destination already meets the worst-case bound we can encode directly into it. Otherwise we encode
+        // into a rented scratch buffer and copy only when the ACTUAL written length fits — so callers that pre-size
+        // destination for the actual output (which may be shorter when the Ascii85 'z' shortcut is used) succeed.
+        if (destination.Length >= upperBound)
+            return EncodeIntoBuffer(bytes, variant, destination);
+
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
+        {
+            int written = EncodeIntoBuffer(bytes, variant, scratch);
+            if (destination.Length < written)
+                throw new ArgumentException(
+                    $"Destination must be at least {written} characters to encode the provided bytes.",
+                    nameof(destination));
+
+            scratch.AsSpan(0, written).CopyTo(destination);
+            return written;
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
     }
 
     /// <summary>
@@ -135,14 +152,34 @@ public static partial class Base85
             throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(bytes));
 
         int upperBound = GetMaxEncodedLength(bytes.Length, variant);
-        if (destination.Length < upperBound)
+
+        // Fast path: destination meets the worst-case bound — encode in place.
+        if (destination.Length >= upperBound)
         {
-            charsWritten = 0;
-            return false;
+            charsWritten = EncodeIntoBuffer(bytes, variant, destination);
+            return true;
         }
 
-        charsWritten = EncodeIntoBuffer(bytes, variant, destination);
-        return true;
+        // Slow path: encode into a rented scratch then copy if the ACTUAL output (which may be shorter when the
+        // Ascii85 'z' shortcut is used) fits the caller's destination.
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
+        {
+            int written = EncodeIntoBuffer(bytes, variant, scratch);
+            if (destination.Length < written)
+            {
+                charsWritten = 0;
+                return false;
+            }
+
+            scratch.AsSpan(0, written).CopyTo(destination);
+            charsWritten = written;
+            return true;
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
     }
 
     /// <summary>

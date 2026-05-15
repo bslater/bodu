@@ -25,14 +25,21 @@ public static partial class Base58
             return Array.Empty<byte>();
 
         int upperBound = GetMaxEncodedLength(source.Length);
-        char[] scratch = new char[upperBound];
-        int written = EncodeIntoBuffer(source, alphabet, scratch);
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
+        {
+            int written = EncodeIntoBuffer(source, alphabet.AsSpan(), scratch, upperBound);
 
-        byte[] result = new byte[written];
-        for (int i = 0; i < written; i++)
-            result[i] = (byte)scratch[scratch.Length - written + i];
+            byte[] result = new byte[written];
+            for (int i = 0; i < written; i++)
+                result[i] = (byte)scratch[upperBound - written + i];
 
-        return result;
+            return result;
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
     }
 
     /// <summary>
@@ -55,20 +62,27 @@ public static partial class Base58
         }
 
         int upperBound = GetMaxEncodedLength(source.Length);
-        char[] scratch = new char[upperBound];
-        int written = EncodeIntoBuffer(source, alphabet, scratch);
-
-        if (destination.Length < written)
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(upperBound);
+        try
         {
-            bytesWritten = 0;
-            return false;
+            int written = EncodeIntoBuffer(source, alphabet.AsSpan(), scratch, upperBound);
+
+            if (destination.Length < written)
+            {
+                bytesWritten = 0;
+                return false;
+            }
+
+            for (int i = 0; i < written; i++)
+                destination[i] = (byte)scratch[upperBound - written + i];
+
+            bytesWritten = written;
+            return true;
         }
-
-        for (int i = 0; i < written; i++)
-            destination[i] = (byte)scratch[scratch.Length - written + i];
-
-        bytesWritten = written;
-        return true;
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
     }
 
     /// <summary>

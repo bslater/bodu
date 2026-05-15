@@ -103,4 +103,30 @@ public sealed partial class Base32Tests
         Assert.IsTrue(Base32.IsBase32Digit('Z', Base32Variant.Crockford));
         Assert.IsFalse(Base32.IsBase32Digit('U', Base32Variant.Crockford));
     }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base32.IsValid" /> rejects excessive padding even when
+    /// <see cref="BaseFormatStyles.AllowMissingPadding" /> is set. The AllowMissingPadding leniency permits
+    /// absent padding but never partial or excessive padding.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAllowMissingPaddingAndExcessivePadding_ShouldStillReturnFalse()
+    {
+        // "MY========" — 1 data char + 8 padding chars (canonical is 6). Invalid even with lenient padding.
+        Assert.IsFalse(Base32.IsValid("MY========".AsSpan(), Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
+
+        // "MZXW6YTBOI=" — 10 data chars + 1 padding char (canonical is 6 for 10%8=2 data). Invalid.
+        Assert.IsFalse(Base32.IsValid("MZXW6YTBOI=".AsSpan(), Base32Variant.Standard, BaseFormatStyles.AllowMissingPadding));
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base32.IsValid" /> in the Crockford and Z-Base32 variants rejects any
+    /// padding character because the specifications do not use padding.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenCrockfordOrZBase32WithPaddingCharacter_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base32.IsValid("D1G2=".AsSpan(), Base32Variant.Crockford));
+        Assert.IsFalse(Base32.IsValid("ybnd=".AsSpan(), Base32Variant.ZBase32));
+    }
 }

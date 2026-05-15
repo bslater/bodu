@@ -144,7 +144,9 @@ public static partial class Base16
     /// </exception>
     public static int GetDecodedLength(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        int digits = CountHexDigits(source, styles);
+        if (!TryCountHexDigits(source, styles, out int digits))
+            throw new FormatException("Input contains non-hexadecimal characters after applying parsing styles.");
+
         if ((digits & 1) != 0)
             throw new FormatException("Hex digit count is not even after applying parsing styles.");
 
@@ -161,8 +163,7 @@ public static partial class Base16
     /// <returns><see langword="true" /> when the input would decode cleanly; otherwise <see langword="false" />.</returns>
     public static bool TryGetDecodedLength(ReadOnlySpan<char> source, out int byteCount, BaseFormatStyles styles = BaseFormatStyles.None)
     {
-        int digits = CountHexDigits(source, styles);
-        if ((digits & 1) != 0)
+        if (!TryCountHexDigits(source, styles, out int digits) || (digits & 1) != 0)
         {
             byteCount = 0;
             return false;
@@ -222,12 +223,53 @@ public static partial class Base16
     };
 
     /// <summary>
-    /// Counts the hex digits remaining in <paramref name="source" /> after applying the decoration leniency flags.
+    /// Counts the hex digits remaining in <paramref name="source" /> after applying the decoration leniency flags,
+    /// validating each retained character against the hexadecimal alphabet so that the result agrees with what the
+    /// decoder would accept.
     /// </summary>
     /// <param name="source">The hexadecimal input.</param>
     /// <param name="styles">The parsing styles.</param>
-    /// <returns>The retained digit count. Returns <c>-1</c> when an invalid character is encountered (treated by
-    /// callers as a hint that the input would fail decode anyway).</returns>
+    /// <param name="digitCount">When this method returns, contains the retained digit count, or <c>0</c> when an
+    /// invalid character was encountered.</param>
+    /// <returns><see langword="true" /> when every retained character is a hex digit; <see langword="false" /> when
+    /// any retained character is outside the hex alphabet.</returns>
+    private static bool TryCountHexDigits(ReadOnlySpan<char> source, BaseFormatStyles styles, out int digitCount)
+    {
+        digitCount = 0;
+        bool ignoreWhitespace = styles.HasFlag(BaseFormatStyles.IgnoreWhitespace);
+        int start = 0;
+
+        if (styles.HasFlag(BaseFormatStyles.AllowPrefix) &&
+            source.Length >= Prefix.Length &&
+            source.StartsWith(Prefix.AsSpan(), StringComparison.OrdinalIgnoreCase))
+        {
+            start = Prefix.Length;
+        }
+
+        int digits = 0;
+        for (int i = start; i < source.Length; i++)
+        {
+            char c = source[i];
+            if (ignoreWhitespace && c is ' ' or '\t' or '\r' or '\n')
+                continue;
+
+            if (!IsHexDigit(c))
+                return false;
+
+            digits++;
+        }
+
+        digitCount = digits;
+        return true;
+    }
+
+    /// <summary>
+    /// Legacy entry point retained for backwards compatibility with callers that expect a count without validation.
+    /// New code should use <see cref="TryCountHexDigits" />.
+    /// </summary>
+    /// <param name="source">The hexadecimal input.</param>
+    /// <param name="styles">The parsing styles.</param>
+    /// <returns>The retained character count.</returns>
     private static int CountHexDigits(ReadOnlySpan<char> source, BaseFormatStyles styles)
     {
         int start = 0;

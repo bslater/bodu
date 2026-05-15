@@ -210,6 +210,42 @@ public sealed partial class Base85Tests
     }
 
     /// <summary>
+    /// Regression: verifies that <see cref="Base85.TryEncode" /> for Ascii85 succeeds when the destination is sized
+    /// for the actual output that uses the <c>z</c> shortcut, even though it is smaller than the worst-case upper
+    /// bound. Before the fix, a tightly-sized destination would be rejected because the check compared against
+    /// the no-shortcut maximum length.
+    /// </summary>
+    [TestMethod]
+    public void TryEncode_WhenAscii85ZShortcutShrinksOutput_ShouldSucceedWithTightlySizedDestination()
+    {
+        // Four zero bytes encode as "z" (1 char) under Ascii85, well below the 5-char worst case.
+        byte[] zeros = new byte[4];
+        char[] destination = new char[1];
+
+        bool ok = Base85.TryEncode(zeros.AsSpan(), destination, out int charsWritten);
+
+        Assert.IsTrue(ok, "TryEncode should succeed when destination is at least the actual encoded length.");
+        Assert.AreEqual(1, charsWritten);
+        Assert.AreEqual("z", new string(destination));
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base85.Encode(ReadOnlySpan{byte}, Span{char}, Base85Variant)" /> with a
+    /// destination sized for the actual <c>z</c>-shortcut output succeeds rather than throwing.
+    /// </summary>
+    [TestMethod]
+    public void Encode_WhenAscii85ZShortcutAndDestinationExactlyActualSize_ShouldSucceed()
+    {
+        byte[] zeros = new byte[4];
+        char[] destination = new char[1];
+
+        int charsWritten = Base85.Encode(zeros.AsSpan(), destination);
+
+        Assert.AreEqual(1, charsWritten);
+        Assert.AreEqual('z', destination[0]);
+    }
+
+    /// <summary>
     /// Verifies that <see cref="Base85.Encode(ReadOnlySpan{byte}, Base85Variant)" /> reproduces every Adobe Ascii85
     /// Known Answer Test vector, including the <c>z</c> shortcut for all-zero groups.
     /// </summary>
@@ -235,5 +271,48 @@ public sealed partial class Base85Tests
         string actual = Base85.Encode(vector.DecodedBytes, Base85Variant.Z85);
 
         Assert.AreEqual(vector.Encoded, actual);
+    }
+
+    /// <summary>
+    /// Regression: verifies that the renamed exact <see cref="Base85.GetEncodedLength(ReadOnlySpan{byte}, Base85Variant)" />
+    /// accounts for the Ascii85 <c>z</c> shortcut — four-zero groups collapse to a single character.
+    /// </summary>
+    [TestMethod]
+    public void GetEncodedLength_ForAscii85WithZeroGroups_ShouldAccountForShortcut()
+    {
+        // 8 zero bytes = two all-zero groups = "zz" (2 chars), not 10.
+        Assert.AreEqual(2, Base85.GetEncodedLength(new byte[8].AsSpan(), Base85Variant.Ascii85));
+
+        // 4 zero bytes + 4 non-zero bytes (high byte set) = "z" + 5 chars = 6.
+        byte[] mixed = new byte[8];
+        mixed[4] = 0x01;
+        Assert.AreEqual(6, Base85.GetEncodedLength(mixed.AsSpan(), Base85Variant.Ascii85));
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base85.GetEncodedLength(ReadOnlySpan{byte}, Base85Variant)" /> agrees
+    /// with the actual encoded length across input shapes, so consumers can pre-size buffers exactly.
+    /// </summary>
+    /// <param name="byteCount">The input byte count.</param>
+    [TestMethod]
+    [DataRow(0)]
+    [DataRow(1)]
+    [DataRow(2)]
+    [DataRow(3)]
+    [DataRow(4)]
+    [DataRow(8)]
+    [DataRow(12)]
+    public void GetEncodedLength_ShouldAgreeWithActualEncodedLength(int byteCount)
+    {
+        byte[] bytes = new byte[byteCount];
+        for (int i = 0; i < byteCount; i++)
+        {
+            bytes[i] = (byte)((i * 7) + 1);
+        }
+
+        int predicted = Base85.GetEncodedLength(bytes.AsSpan(), Base85Variant.Ascii85);
+        int actual = Base85.Encode(bytes, Base85Variant.Ascii85).Length;
+
+        Assert.AreEqual(actual, predicted);
     }
 }

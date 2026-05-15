@@ -100,4 +100,40 @@ public sealed partial class Base64Tests
         Assert.IsFalse(Base64.IsBase64Digit('+', Base64Variant.UrlSafe));
         Assert.IsFalse(Base64.IsBase64Digit('/', Base64Variant.UrlSafe));
     }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base64.IsValid" /> rejects excessive padding even in strict mode.
+    /// <c>TQ===</c> has three padding characters where the canonical count for a 2-symbol terminal quantum is one.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenExcessivePadding_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base64.IsValid("TQ===".AsSpan()), "Three padding chars after 2 data chars is invalid.");
+        Assert.IsFalse(Base64.IsValid("T===".AsSpan()), "Three padding chars after 1 data char is invalid (and 1 data char itself).");
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base64.IsValid" /> rejects excessive padding even when
+    /// <see cref="BaseFormatStyles.AllowMissingPadding" /> is set. AllowMissingPadding permits absent padding but
+    /// never partial or excessive padding.
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenAllowMissingPaddingAndExcessivePadding_ShouldStillReturnFalse()
+    {
+        Assert.IsFalse(Base64.IsValid("TQ===".AsSpan(), Base64Variant.Standard, BaseFormatStyles.AllowMissingPadding));
+        Assert.IsFalse(Base64.IsValid("Zm9vYmE==".AsSpan(), Base64Variant.Standard, BaseFormatStyles.AllowMissingPadding),
+            "Two padding chars after 5 data chars is invalid (canonical is one).");
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base64.IsValid" /> rejects single-symbol terminal quantum
+    /// (one Base64 character cannot represent any whole byte).
+    /// </summary>
+    [TestMethod]
+    public void IsValid_WhenSingleSymbolTerminalQuantum_ShouldReturnFalse()
+    {
+        Assert.IsFalse(Base64.IsValid("A".AsSpan()));
+        Assert.IsFalse(Base64.IsValid("A".AsSpan(), Base64Variant.UrlSafe));
+        Assert.IsFalse(Base64.IsValid("Zm9vA".AsSpan(), Base64Variant.Standard, BaseFormatStyles.AllowMissingPadding));
+    }
 }

@@ -90,4 +90,58 @@ public sealed partial class Base16Tests
     {
         Assert.AreEqual(8, Base16.GetEncodedLength(4));
     }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base16.GetDecodedLength(ReadOnlySpan{char}, BaseFormatStyles)" />
+    /// validates each retained character against the hexadecimal alphabet — non-hex characters like <c>'z'</c>
+    /// must produce <see cref="FormatException" /> rather than a length count that disagrees with the decoder.
+    /// </summary>
+    /// <param name="invalidInput">An input containing a character outside the hex alphabet.</param>
+    [TestMethod]
+    [DataRow("zz")]
+    [DataRow("gg")]
+    [DataRow("ab!c")]
+    [DataRow("xx")]
+    [DataRow("0xZZ")]
+    public void GetDecodedLength_WhenInputContainsNonHexCharacters_ShouldThrowFormatException(string invalidInput)
+    {
+        Assert.ThrowsExactly<FormatException>(() =>
+        {
+            _ = Base16.GetDecodedLength(invalidInput.AsSpan());
+        });
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base16.TryGetDecodedLength(ReadOnlySpan{char}, out int, BaseFormatStyles)" />
+    /// returns <see langword="false" /> for inputs that contain non-hex characters — matching the behaviour of
+    /// <see cref="Base16.Decode(string, BaseFormatStyles)" /> rather than silently reporting a length the decoder
+    /// would reject.
+    /// </summary>
+    /// <param name="invalidInput">An input containing a character outside the hex alphabet.</param>
+    [TestMethod]
+    [DataRow("zz")]
+    [DataRow("gg")]
+    [DataRow("ab!c")]
+    [DataRow("xx")]
+    public void TryGetDecodedLength_WhenInputContainsNonHexCharacters_ShouldReturnFalse(string invalidInput)
+    {
+        bool ok = Base16.TryGetDecodedLength(invalidInput.AsSpan(), out int byteCount);
+
+        Assert.IsFalse(ok, $"TryGetDecodedLength should return false for: {invalidInput}");
+        Assert.AreEqual(0, byteCount);
+    }
+
+    /// <summary>
+    /// Regression: verifies that the length helper still returns the correct count for valid inputs after the
+    /// character-validation fix — the validation must not regress the valid-input path.
+    /// </summary>
+    [TestMethod]
+    public void GetDecodedLength_WhenInputIsValid_ShouldStillReturnExpectedCount()
+    {
+        Assert.AreEqual(0, Base16.GetDecodedLength(ReadOnlySpan<char>.Empty));
+        Assert.AreEqual(4, Base16.GetDecodedLength("DEADBEEF".AsSpan()));
+        Assert.AreEqual(4, Base16.GetDecodedLength("deadbeef".AsSpan()));
+        Assert.AreEqual(4, Base16.GetDecodedLength("0xDEADBEEF".AsSpan(), BaseFormatStyles.AllowPrefix));
+        Assert.AreEqual(4, Base16.GetDecodedLength("DE AD BE EF".AsSpan(), BaseFormatStyles.IgnoreWhitespace));
+    }
 }

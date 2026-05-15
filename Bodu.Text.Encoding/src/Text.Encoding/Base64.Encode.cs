@@ -148,28 +148,70 @@ public static partial class Base64
     {
         bool insertLineBreaks = ShouldInsertLineBreaks(variant, options);
         Base64FormattingOptions bclOpts = insertLineBreaks ? Base64FormattingOptions.InsertLineBreaks : Base64FormattingOptions.None;
+        bool emitPadding = ShouldEmitPadding(variant, options);
 
-        if (!Convert.TryToBase64Chars(bytes, destination, out int rawWritten, bclOpts))
-            throw new InvalidOperationException("Unexpected failure while encoding Base64 characters.");
+        // Convert.TryToBase64Chars always writes the canonical padded form. When the caller's destination is sized
+        // for the unpadded URL-safe output (which is the typical case for JWT-style consumers) the BCL call would
+        // fail with a too-small destination. Detect that case and route through a rented scratch buffer.
+        int bclRequired = ((bytes.Length + 2) / 3) * 4;
+        if (insertLineBreaks)
+        {
+            int breaks = (bclRequired - 1) / MimeLineLength;
+            bclRequired += breaks * 2;
+        }
 
+        if (destination.Length >= bclRequired)
+        {
+            if (!Convert.TryToBase64Chars(bytes, destination, out int rawWritten, bclOpts))
+                throw new InvalidOperationException("Unexpected failure while encoding Base64 characters.");
+
+            ApplyVariantTransforms(destination, ref rawWritten, variant, emitPadding);
+            return rawWritten;
+        }
+
+        char[] scratch = System.Buffers.ArrayPool<char>.Shared.Rent(bclRequired);
+        try
+        {
+            Span<char> scratchSpan = scratch.AsSpan(0, bclRequired);
+            if (!Convert.TryToBase64Chars(bytes, scratchSpan, out int rawWritten, bclOpts))
+                throw new InvalidOperationException("Unexpected failure while encoding Base64 characters.");
+
+            ApplyVariantTransforms(scratchSpan, ref rawWritten, variant, emitPadding);
+            scratchSpan[..rawWritten].CopyTo(destination);
+            return rawWritten;
+        }
+        finally
+        {
+            System.Buffers.ArrayPool<char>.Shared.Return(scratch);
+        }
+    }
+
+    /// <summary>
+    /// Applies the URL-safe alphabet swap and the padding-strip step to <paramref name="buffer" /> in place. Updates
+    /// <paramref name="writtenLength" /> to reflect the post-strip length.
+    /// </summary>
+    /// <param name="buffer">The buffer holding the BCL-encoded characters.</param>
+    /// <param name="writtenLength">The number of characters written by the BCL call. Updated on padding strip.</param>
+    /// <param name="variant">The Base64 variant.</param>
+    /// <param name="emitPadding">Whether trailing <c>=</c> padding should be retained.</param>
+    private static void ApplyVariantTransforms(Span<char> buffer, ref int writtenLength, Base64Variant variant, bool emitPadding)
+    {
         if (variant == Base64Variant.UrlSafe)
         {
-            for (int i = 0; i < rawWritten; i++)
+            for (int i = 0; i < writtenLength; i++)
             {
-                char c = destination[i];
+                char c = buffer[i];
                 if (c == '+')
-                    destination[i] = '-';
+                    buffer[i] = '-';
                 else if (c == '/')
-                    destination[i] = '_';
+                    buffer[i] = '_';
             }
         }
 
-        if (!ShouldEmitPadding(variant, options))
+        if (!emitPadding)
         {
-            while (rawWritten > 0 && destination[rawWritten - 1] == PaddingChar)
-                rawWritten--;
+            while (writtenLength > 0 && buffer[writtenLength - 1] == PaddingChar)
+                writtenLength--;
         }
-
-        return rawWritten;
     }
 }

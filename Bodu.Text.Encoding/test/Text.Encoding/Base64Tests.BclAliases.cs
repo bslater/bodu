@@ -46,10 +46,10 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64.FromBase64String(string)" /> performs strict Standard variant decode.
+    /// Verifies that <see cref="Base64.FromBase64String(string)" /> decodes canonical Standard Base64.
     /// </summary>
     [TestMethod]
-    public void FromBase64String_ForString_ShouldStrictlyDecode()
+    public void FromBase64String_ForString_ShouldDecodeCanonicalInput()
     {
         byte[] actual = Base64.FromBase64String("Zm9vYmFy");
 
@@ -57,7 +57,8 @@ public sealed partial class Base64Tests
     }
 
     /// <summary>
-    /// Verifies that <see cref="Base64.FromBase64String(string)" /> rejects unpadded input.
+    /// Verifies that <see cref="Base64.FromBase64String(string)" /> still requires canonical padding (it mirrors
+    /// <see cref="System.Convert.FromBase64String(string)" />, which is strict on padding).
     /// </summary>
     [TestMethod]
     public void FromBase64String_WhenPaddingOmitted_ShouldThrowFormatException()
@@ -66,6 +67,43 @@ public sealed partial class Base64Tests
         {
             _ = Base64.FromBase64String("Zm9vYmE");
         });
+    }
+
+    /// <summary>
+    /// Regression: verifies that <see cref="Base64.FromBase64String(string)" /> matches the lenient whitespace
+    /// behaviour of <see cref="System.Convert.FromBase64String(string)" /> — ASCII whitespace inside the encoded
+    /// input is silently ignored. Before the fix the Bodu alias was stricter than the BCL.
+    /// </summary>
+    [TestMethod]
+    public void FromBase64String_WhenInputContainsWhitespace_ShouldIgnoreWhitespaceLikeBcl()
+    {
+        byte[] expected = Ascii("foobar");
+
+        byte[] viaBodu = Base64.FromBase64String("Zm9v\r\nYmFy");
+        byte[] viaBcl = System.Convert.FromBase64String("Zm9v\r\nYmFy");
+
+        CollectionAssert.AreEqual(expected, viaBodu);
+        CollectionAssert.AreEqual(expected, viaBcl);
+        CollectionAssert.AreEqual(viaBcl, viaBodu);
+    }
+
+    /// <summary>
+    /// Regression: verifies that whitespace tolerance applies to leading, trailing, tab, and CR forms — matching
+    /// the BCL exactly.
+    /// </summary>
+    /// <param name="input">An input with whitespace.</param>
+    [TestMethod]
+    [DataRow("  Zm9vYmFy  ")]
+    [DataRow("Zm9v\tYmFy")]
+    [DataRow("Zm9v\rYmFy")]
+    [DataRow("Zm9v\nYmFy")]
+    [DataRow("Zm9v\r\nYmFy")]
+    public void FromBase64String_WhenInputHasVariedWhitespace_ShouldMatchBclBehaviour(string input)
+    {
+        byte[] viaBodu = Base64.FromBase64String(input);
+        byte[] viaBcl = System.Convert.FromBase64String(input);
+
+        CollectionAssert.AreEqual(viaBcl, viaBodu);
     }
 
     /// <summary>
