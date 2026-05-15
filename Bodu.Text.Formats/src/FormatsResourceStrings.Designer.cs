@@ -277,6 +277,33 @@ namespace Bodu {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to The column header '{0}' was not found..
+        /// </summary>
+        internal static string DelimitedDocument_HeaderNotFound {
+            get {
+                return ResourceManager.GetString("DelimitedDocument_HeaderNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Unterminated quoted field starting on line {0}..
+        /// </summary>
+        internal static string DelimitedFormatException_UnterminatedQuotedField {
+            get {
+                return ResourceManager.GetString("DelimitedFormatException_UnterminatedQuotedField", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The document was parsed without a header row; field access by column name is not available..
+        /// </summary>
+        internal static string DelimitedRow_NoHeaders {
+            get {
+                return ResourceManager.GetString("DelimitedRow_NoHeaders", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to The key '{0}' was not found..
         /// </summary>
         internal static string DotEnvDocument_KeyNotFound {

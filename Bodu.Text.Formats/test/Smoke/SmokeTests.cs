@@ -6,6 +6,7 @@
 
 using Bodu.Test;
 using Bodu.Text.Formats.Ini;
+using DelimitedParser = Bodu.Text.Formats.Delimited.Delimited;
 using DotEnvParser = Bodu.Text.Formats.DotEnv.DotEnv;
 using IniParser = Bodu.Text.Formats.Ini.Ini;
 
@@ -112,6 +113,27 @@ public sealed class SmokeTests
         BencodedString b = new(new byte[] { 0xAA, 0xBB });
 
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Delimited.Parse(ReadOnlySpan{char})" /> and
+    /// <see cref="Delimited.Format(DelimitedDocument)" /> round-trip a simple CSV document — headers and all field
+    /// values survive unchanged.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void Delimited_ParseFormat_ShouldRoundTripSimpleDocument()
+    {
+        const string source = "name,age,city\nAlice,30,Paris\nBob,25,London";
+
+        Bodu.Text.Formats.Delimited.DelimitedDocument original = DelimitedParser.Parse(source);
+        string formatted = DelimitedParser.Format(original);
+        Bodu.Text.Formats.Delimited.DelimitedDocument roundTripped = DelimitedParser.Parse(formatted);
+
+        Assert.AreEqual(2, roundTripped.Rows.Count);
+        Assert.AreEqual("Alice", roundTripped.Rows[0]["name"]);
+        Assert.AreEqual("25", roundTripped.Rows[1]["age"]);
+        Assert.AreEqual("London", roundTripped.Rows[1]["city"]);
     }
 
     /// <summary>

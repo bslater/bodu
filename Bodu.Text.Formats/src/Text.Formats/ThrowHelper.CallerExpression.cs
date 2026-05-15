@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Bodu.Text.Formats.Delimited;
 using Bodu.Text.Formats.DotEnv;
 using Bodu.Text.Formats.Ini;
 
@@ -19,6 +20,14 @@ internal static partial class ThrowHelper
     /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.BencodeFormatException_UnexpectedToken" />.</summary>
     private static readonly CompositeFormat s_unexpectedToken =
         CompositeFormat.Parse(FormatsResourceStrings.BencodeFormatException_UnexpectedToken);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DelimitedDocument_HeaderNotFound" />.</summary>
+    private static readonly CompositeFormat s_delimitedHeaderNotFound =
+        CompositeFormat.Parse(FormatsResourceStrings.DelimitedDocument_HeaderNotFound);
+
+    /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DelimitedFormatException_UnterminatedQuotedField" />.</summary>
+    private static readonly CompositeFormat s_delimitedUnterminatedQuotedField =
+        CompositeFormat.Parse(FormatsResourceStrings.DelimitedFormatException_UnterminatedQuotedField);
 
     /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.DotEnvDocument_KeyNotFound" />.</summary>
     private static readonly CompositeFormat s_dotEnvDocumentKeyNotFound =
@@ -355,6 +364,40 @@ internal static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowInvalidOperationException_StringLengthFormatFailed() =>
         throw new InvalidOperationException(FormatsResourceStrings.InvalidOperationException_StringLengthFormatFailed);
+
+    /// <summary>
+    /// Throws a <see cref="DelimitedFormatException" /> indicating that a quoted field was not closed before the
+    /// end of the source.
+    /// </summary>
+    /// <param name="lineNumber">The 1-based line number on which the quoted field opened.</param>
+    /// <exception cref="DelimitedFormatException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowDelimitedFormatException_UnterminatedQuotedField(int lineNumber) =>
+        throw new DelimitedFormatException(
+            string.Format(CultureInfo.InvariantCulture, s_delimitedUnterminatedQuotedField, lineNumber), lineNumber);
+
+    /// <summary>
+    /// Throws a <see cref="KeyNotFoundException" /> indicating that the specified column header is absent from a
+    /// <see cref="DelimitedDocument" />.
+    /// </summary>
+    /// <param name="header">The header name that was not found.</param>
+    /// <exception cref="KeyNotFoundException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowKeyNotFoundException_DelimitedDocument(string header) =>
+        throw new KeyNotFoundException(
+            string.Format(CultureInfo.InvariantCulture, s_delimitedHeaderNotFound, header));
+
+    /// <summary>
+    /// Throws an <see cref="InvalidOperationException" /> indicating that the document was parsed without a header
+    /// row, making column-name access unavailable.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">Always thrown.</exception>
+    [DoesNotReturn]
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static void ThrowInvalidOperationException_NoDelimitedHeaders() =>
+        throw new InvalidOperationException(FormatsResourceStrings.DelimitedRow_NoHeaders);
 
     /// <summary>
     /// Throws a <see cref="KeyNotFoundException" /> indicating that the specified key is absent from a
