@@ -53,7 +53,7 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
 
         NotableDateResolutionService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(target, redirect) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.GetNotableDates(
             new DateTime(2026, 6, 1),
@@ -95,7 +95,7 @@ public sealed class NotableDateResolutionServiceAdjusterCallbacksTests
 
         NotableDateResolutionService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(redirect) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.GetNotableDates(
             new DateTime(2026, 6, 1),

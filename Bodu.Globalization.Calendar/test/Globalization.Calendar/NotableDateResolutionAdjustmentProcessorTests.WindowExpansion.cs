@@ -41,7 +41,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorWindowExpansionTests
             new DateTime(2022, 12, 31));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         processor.ApplyAdjustments(
             window,
             new NotableDateResolutionRequest(
@@ -82,7 +82,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorWindowExpansionTests
             new DateTime(2022, 1, 5));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         processor.ApplyAdjustments(
             window,
             new NotableDateResolutionRequest(
@@ -121,7 +121,7 @@ public sealed class NotableDateResolutionAdjustmentProcessorWindowExpansionTests
         NotableDateResolutionWindow window = new(new DateTime(2024, 6, 1), new DateTime(2024, 6, 30));
         window.AddBase(occurrence);
 
-        NotableDateResolutionAdjustmentProcessor processor = new(CalendarWeekendDefinition.SaturdaySunday);
+        NotableDateResolutionAdjustmentProcessor processor = new(WorkingDaysOfWeek.MondayToFriday);
         processor.ApplyAdjustments(
             window,
             new NotableDateResolutionRequest(

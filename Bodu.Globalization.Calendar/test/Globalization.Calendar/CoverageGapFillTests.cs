@@ -58,7 +58,7 @@ public sealed class CoverageGapFillTests
     }
 
     private static NotableDateService BuildService(params NotableDateRule[] rules) =>
-        new(new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) }, CalendarWeekendDefinition.SaturdaySunday);
+        new(new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) }, WorkingDaysOfWeek.MondayToFriday);
 
     // ---------------------------------------------------------------------------------
     // NotableDateService: branch coverage
@@ -127,7 +127,7 @@ public sealed class CoverageGapFillTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AlgorithmRegistry = nullAlgorithmRegistry });
 
         IReadOnlyList<NotableDate> result = service.GetNotableDates(2025);
@@ -171,7 +171,7 @@ public sealed class CoverageGapFillTests
     {
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Real", 1, 1)) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
                 OverrideProviders = new[]
@@ -200,7 +200,7 @@ public sealed class CoverageGapFillTests
         // Global rule: no TerritoryCode on the rule → ExpandTerritories yields a single null.
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Global", 1, 1)) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
                 OverrideProviders = new[]
@@ -227,7 +227,7 @@ public sealed class CoverageGapFillTests
     {
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(FixedRule("Picnic", 8, 4, territory: "AU-NSW")) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
                 OverrideProviders = new[]
@@ -471,7 +471,7 @@ public sealed class CoverageGapFillTests
 
         var service = new NotableDateService(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = hostRegistry,

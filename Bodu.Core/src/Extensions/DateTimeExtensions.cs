@@ -693,22 +693,24 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns the day of the week considered the start of the week for a given <see cref="CalendarWeekendDefinition"/> definition.
+    /// Returns the day of the week considered the start of the week for a given <see cref="WorkingDaysOfWeek"/> pattern.
     /// </summary>
-    /// <param name="weekend">The weekend configuration to evaluate.</param>
+    /// <param name="workingWeek">The working-week pattern to evaluate.</param>
     /// <returns>The inferred <see cref="DayOfWeek"/> that begins the week.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided <paramref name="weekend"/> is not supported.</exception>
-    internal static DayOfWeek GetWeekStartDay(CalendarWeekendDefinition weekend) => weekend switch
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the provided <paramref name="workingWeek"/> is not supported.</exception>
+    internal static DayOfWeek GetWeekStartDay(WorkingDaysOfWeek workingWeek) => workingWeek switch
     {
-        CalendarWeekendDefinition.SaturdaySunday => DayOfWeek.Monday,
-        CalendarWeekendDefinition.ThursdayFriday => DayOfWeek.Saturday,
-        CalendarWeekendDefinition.FridaySaturday => DayOfWeek.Sunday,
-        CalendarWeekendDefinition.SundayOnly => DayOfWeek.Monday,
-        CalendarWeekendDefinition.FridayOnly => DayOfWeek.Saturday,
-        CalendarWeekendDefinition.None => DayOfWeek.Monday,
+        WorkingDaysOfWeek.MondayToFriday => DayOfWeek.Monday,
+        WorkingDaysOfWeek.MondayToSaturday => DayOfWeek.Monday,
+        WorkingDaysOfWeek.MondayToThursdayAndSaturday => DayOfWeek.Monday,
+        WorkingDaysOfWeek.SaturdayToThursday => DayOfWeek.Saturday,
+        WorkingDaysOfWeek.SaturdayToWednesday => DayOfWeek.Saturday,
+        WorkingDaysOfWeek.SundayToFriday => DayOfWeek.Sunday,
+        WorkingDaysOfWeek.SundayToThursday => DayOfWeek.Sunday,
+        WorkingDaysOfWeek.AllDays => DayOfWeek.Monday,
         _ => throw new ArgumentOutOfRangeException(
-            nameof(weekend),
-            $"Unsupported {nameof(CalendarWeekendDefinition)} definition: {weekend}")
+            nameof(workingWeek),
+            $"Unsupported {nameof(WorkingDaysOfWeek)} pattern: {workingWeek}")
     };
 
     /// <summary>

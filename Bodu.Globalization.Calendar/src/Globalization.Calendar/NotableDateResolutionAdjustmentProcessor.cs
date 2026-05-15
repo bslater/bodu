@@ -25,7 +25,7 @@ namespace Bodu.Globalization.Calendar;
 internal sealed class NotableDateResolutionAdjustmentProcessor
     : INotableDateResolutionAdjustmentProcessor
 {
-    private readonly CalendarWeekendDefinition _weekendDefinition;
+    private readonly WorkingDaysOfWeek _workingWeek;
     private readonly IWeekendDefinitionProvider? _weekendProvider;
     private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
     private readonly INotableDateRuleOccurrenceResolver? _occurrenceResolver;
@@ -33,28 +33,28 @@ internal sealed class NotableDateResolutionAdjustmentProcessor
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateResolutionAdjustmentProcessor" /> class.
     /// </summary>
-    /// <param name="weekendDefinition">The weekend definition used for weekend checks.</param>
+    /// <param name="workingWeek">The working-week pattern used for weekend checks.</param>
     /// <param name="weekendProvider">The optional custom weekend provider.</param>
     /// <param name="handlerRegistry">The optional custom adjustment handler registry.</param>
     /// <param name="occurrenceResolver">The optional occurrence resolver used to expand neighbouring blocker dates.</param>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weekendDefinition" /> is not defined.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="workingWeek" /> is not defined.</exception>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="weekendProvider" /> is <see langword="null" /> when <paramref name="weekendDefinition" /> is
-    /// <see cref="CalendarWeekendDefinition.Custom" />.
+    /// <paramref name="weekendProvider" /> is <see langword="null" /> when <paramref name="workingWeek" /> is
+    /// <see cref="WorkingDaysOfWeek.Custom" />.
     /// </exception>
     public NotableDateResolutionAdjustmentProcessor(
-        CalendarWeekendDefinition weekendDefinition,
+        WorkingDaysOfWeek workingWeek,
         IWeekendDefinitionProvider? weekendProvider = null,
         IAdjustmentHandlerRegistry? handlerRegistry = null,
         INotableDateRuleOccurrenceResolver? occurrenceResolver = null)
     {
-        if (!Enum.IsDefined(weekendDefinition))
-            throw new ArgumentOutOfRangeException(nameof(weekendDefinition), weekendDefinition, "The weekend definition is not defined.");
+        if (!Enum.IsDefined(workingWeek))
+            throw new ArgumentOutOfRangeException(nameof(workingWeek), workingWeek, "The working-week pattern is not defined.");
 
-        if (weekendDefinition == CalendarWeekendDefinition.Custom && weekendProvider is null)
+        if (workingWeek == WorkingDaysOfWeek.Custom && weekendProvider is null)
             throw new ArgumentNullException(nameof(weekendProvider));
 
-        this._weekendDefinition = weekendDefinition;
+        this._workingWeek = workingWeek;
         this._weekendProvider = weekendProvider;
         this._handlerRegistry = handlerRegistry;
         this._occurrenceResolver = occurrenceResolver;
@@ -259,7 +259,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor
 
                 return window.IsNonWorkingDay(date, territoryCode, calendarType, IsWeekend);
             },
-            _weekendDefinition.ToWeekPattern(_weekendProvider),
+            _workingWeek.ToWeekPattern(_weekendProvider),
             _handlerRegistry,
             (ruleName, year, territoryCode, calendarType) => window.ResolveByName(ruleName, year, territoryCode, calendarType));
 
@@ -366,5 +366,5 @@ internal sealed class NotableDateResolutionAdjustmentProcessor
     /// </summary>
     /// <param name="date">The date to test.</param>
     /// <returns><see langword="true" /> when the date is a weekend; otherwise, <see langword="false" />.</returns>
-    private bool IsWeekend(DateTime date) => date.IsWeekend(_weekendDefinition, _weekendProvider);
+    private bool IsWeekend(DateTime date) => date.IsWeekend(_workingWeek, _weekendProvider);
 }

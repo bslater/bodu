@@ -34,7 +34,7 @@ namespace Bodu.Globalization.Calendar;
 ///
 /// INotableDateService service = new NotableDateService(
 ///     ruleProviders: new[] { provider },
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 /// </code>
 /// </example>
 public sealed class JsonResourceNotableDateRuleProvider

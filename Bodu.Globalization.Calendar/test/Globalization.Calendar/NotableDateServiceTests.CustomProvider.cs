@@ -24,7 +24,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)provider },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -47,7 +47,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new INotableDateRuleProvider[] { first, second },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -65,7 +65,7 @@ public sealed partial class NotableDateServiceTests
     {
         var service = new NotableDateService(
             Array.Empty<INotableDateRuleProvider>(),
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -80,7 +80,7 @@ public sealed partial class NotableDateServiceTests
     {
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
 
@@ -99,7 +99,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)provider },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         source.Add(Fixed("Added Later", 2, 2));
 
@@ -122,7 +122,7 @@ public sealed partial class NotableDateServiceTests
         {
             _ = new NotableDateService(
                 new[] { (INotableDateRuleProvider)provider },
-                CalendarWeekendDefinition.SaturdaySunday);
+                WorkingDaysOfWeek.MondayToFriday);
         });
 
         Assert.AreEqual("broken", ex.Message);
@@ -139,7 +139,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)provider },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         _ = service.GetNotableDates(2024);
         _ = service.GetNotableDates(2025);
@@ -159,7 +159,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new INotableDateRuleProvider[] { first, second },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         _ = service.GetNotableDates(2025);
 
@@ -179,7 +179,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)provider },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         _ = service.GetNotableDates(2025);
         service.Invalidate();
@@ -202,7 +202,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)provider },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> nsw = service.GetNotableDates(2025, territoryCode: "AU-NSW");
         IReadOnlyList<NotableDate> qld = service.GetNotableDates(2025, territoryCode: "AU-QLD");
@@ -227,7 +227,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)baseProvider },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)overrideProvider },
@@ -258,7 +258,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new INotableDateRuleProvider[] { anchorProvider, offsetProvider },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> results = service.GetNotableDates(2025);
         NotableDate offset = results.Single(r => r.Name == "Day After Anchor");
@@ -282,7 +282,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)provider },
-            CalendarWeekendDefinition.SaturdaySunday);
+            WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(0, service.GetNotableDates(2023).Count);
         Assert.AreEqual(1, service.GetNotableDates(2024).Count);
@@ -306,7 +306,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)baseProvider },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
@@ -336,7 +336,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)baseProvider },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },

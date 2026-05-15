@@ -176,7 +176,7 @@ public partial class NotableDateServiceTests
         IReadOnlyList<RuleRemoval> removals) =>
         new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRules.ToArray()) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)new TestOverrideProvider(removals, additions) },

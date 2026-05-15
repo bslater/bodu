@@ -32,7 +32,7 @@ namespace Bodu.Globalization.Calendar;
 ///     ruleProviders: new[] { new XmlResourceNotableDateRuleProvider(
 ///         "MyApp/Calendar/Resources/rules.xml",
 ///         new ResourcePathResolver()) },
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
 ///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 /// </code>
 /// </example>

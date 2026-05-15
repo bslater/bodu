@@ -11,8 +11,8 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// Implement this interface to supply custom weekend definitions that are not covered by the built-in
-/// <see cref="CalendarWeekendDefinition"/> values. This allows support for region-specific, cultural, or organizational weekend
-/// patterns beyond standard configurations such as <see cref="CalendarWeekendDefinition.SaturdaySunday"/> or <see cref="CalendarWeekendDefinition.FridaySaturday"/>.
+/// <see cref="WorkingDaysOfWeek"/> presets. This allows support for region-specific, cultural, or organizational weekend
+/// patterns beyond standard configurations such as <see cref="WorkingDaysOfWeek.MondayToFriday"/> or <see cref="WorkingDaysOfWeek.SundayToThursday"/>.
 /// </remarks>
 public interface IWeekendDefinitionProvider
 {
@@ -25,8 +25,8 @@ public interface IWeekendDefinitionProvider
     /// </returns>
     /// <remarks>
     /// This method applies the logic defined by the implementing provider, which may differ from the commonly used
-    /// <see cref="CalendarWeekendDefinition"/> values such as <see cref="CalendarWeekendDefinition.SaturdaySunday"/> or
-    /// <see cref="CalendarWeekendDefinition.FridayOnly"/>. Custom implementations enable support for hybrid, rotating, or
+    /// <see cref="WorkingDaysOfWeek"/> presets such as <see cref="WorkingDaysOfWeek.MondayToFriday"/> or
+    /// <see cref="WorkingDaysOfWeek.SaturdayToThursday"/>. Custom implementations enable support for hybrid, rotating, or
     /// domain-specific weekend rules.
     /// </remarks>
     bool IsWeekend(DayOfWeek dayOfWeek);

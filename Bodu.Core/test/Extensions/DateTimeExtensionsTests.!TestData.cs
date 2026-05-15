@@ -41,9 +41,9 @@ public partial class DateTimeExtensionsTests
                 Enum.GetValues<DateTimeKind>()
                     .Select(kind => new object[] { def, kind }));
 
-    public static IEnumerable<object[]> CalendarWeekendDefinitionDateTimeKindTestData() =>
-        Enum.GetValues<CalendarWeekendDefinition>()
-            .Where(def => def != CalendarWeekendDefinition.Custom)
+    public static IEnumerable<object[]> WorkingDaysOfWeekDateTimeKindTestData() =>
+        Enum.GetValues<WorkingDaysOfWeek>()
+            .Where(def => def != WorkingDaysOfWeek.Custom)
             .SelectMany(def =>
                 Enum.GetValues<DateTimeKind>()
                     .Select(kind => new object[] { def, kind }));
@@ -428,59 +428,59 @@ public partial class DateTimeExtensionsTests
 
     public static IEnumerable<object[]> FirstDateOfWeekDefinitionTestData()
     {
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 15) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 15) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 07) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 07) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 07) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 07) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 07) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 07) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 07) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 07) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 07) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 07) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 07) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 07) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 14) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 13) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 06) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 06) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 13) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 15) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 15) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.None, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.None, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.None, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.None, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.None, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.None, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.None, new DateTime(2024, 04, 08) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.None, new DateTime(2024, 04, 15) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 08) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 15) };
     }
 
     public static IEnumerable<object[]> FirstDateOfWeekInMonthTestData()
@@ -1631,59 +1631,59 @@ public partial class DateTimeExtensionsTests
 
     public static IEnumerable<object[]> LastDateOfWeekDefinitionTestData()
     {
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.SaturdaySunday, new DateTime(2024, 04, 21) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.MondayToFriday, new DateTime(2024, 04, 21) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 13) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 20) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.FridaySaturday, new DateTime(2024, 04, 20) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 13) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 20) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.SundayToThursday, new DateTime(2024, 04, 20) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 19) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 19) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.ThursdayFriday, new DateTime(2024, 04, 19) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 19) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 19) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.SaturdayToWednesday, new DateTime(2024, 04, 19) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 12) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 19) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 19) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.FridayOnly, new DateTime(2024, 04, 19) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 12) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 19) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 19) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.SaturdayToThursday, new DateTime(2024, 04, 19) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.SundayOnly, new DateTime(2024, 04, 21) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.MondayToSaturday, new DateTime(2024, 04, 21) };
 
-        yield return new object[] { new DateTime(2024, 04, 08), CalendarWeekendDefinition.None, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 09), CalendarWeekendDefinition.None, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 10), CalendarWeekendDefinition.None, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 11), CalendarWeekendDefinition.None, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 12), CalendarWeekendDefinition.None, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 13), CalendarWeekendDefinition.None, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 14), CalendarWeekendDefinition.None, new DateTime(2024, 04, 14) };
-        yield return new object[] { new DateTime(2024, 04, 15), CalendarWeekendDefinition.None, new DateTime(2024, 04, 21) };
+        yield return new object[] { new DateTime(2024, 04, 08), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 09), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 10), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 11), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 12), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 13), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 14), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 14) };
+        yield return new object[] { new DateTime(2024, 04, 15), WorkingDaysOfWeek.AllDays, new DateTime(2024, 04, 21) };
     }
 
     public static IEnumerable<object[]> LastDateOfWeekInMonthTestData()
@@ -2171,35 +2171,35 @@ public partial class DateTimeExtensionsTests
 
     public static IEnumerable<object[]> WeekendTestData()
     {
-        yield return new object[] { new DateTime(2024, 04, 20), CalendarWeekendDefinition.SaturdaySunday, null, true }; // Saturday
-        yield return new object[] { new DateTime(2024, 04, 21), CalendarWeekendDefinition.SaturdaySunday, null, true }; // Sunday
-        yield return new object[] { new DateTime(2024, 04, 22), CalendarWeekendDefinition.SaturdaySunday, null, false }; // Monday
+        yield return new object[] { new DateTime(2024, 04, 20), WorkingDaysOfWeek.MondayToFriday, null, true }; // Saturday
+        yield return new object[] { new DateTime(2024, 04, 21), WorkingDaysOfWeek.MondayToFriday, null, true }; // Sunday
+        yield return new object[] { new DateTime(2024, 04, 22), WorkingDaysOfWeek.MondayToFriday, null, false }; // Monday
 
-        yield return new object[] { new DateTime(2024, 04, 19), CalendarWeekendDefinition.FridaySaturday, null, true }; // Friday
-        yield return new object[] { new DateTime(2024, 04, 20), CalendarWeekendDefinition.FridaySaturday, null, true }; // Saturday
-        yield return new object[] { new DateTime(2024, 04, 21), CalendarWeekendDefinition.FridaySaturday, null, false }; // Sunday
+        yield return new object[] { new DateTime(2024, 04, 19), WorkingDaysOfWeek.SundayToThursday, null, true }; // Friday
+        yield return new object[] { new DateTime(2024, 04, 20), WorkingDaysOfWeek.SundayToThursday, null, true }; // Saturday
+        yield return new object[] { new DateTime(2024, 04, 21), WorkingDaysOfWeek.SundayToThursday, null, false }; // Sunday
 
-        yield return new object[] { new DateTime(2024, 04, 18), CalendarWeekendDefinition.ThursdayFriday, null, true }; // Thursday
-        yield return new object[] { new DateTime(2024, 04, 19), CalendarWeekendDefinition.ThursdayFriday, null, true }; // Friday
-        yield return new object[] { new DateTime(2024, 04, 20), CalendarWeekendDefinition.ThursdayFriday, null, false }; // Saturday
+        yield return new object[] { new DateTime(2024, 04, 18), WorkingDaysOfWeek.SaturdayToWednesday, null, true }; // Thursday
+        yield return new object[] { new DateTime(2024, 04, 19), WorkingDaysOfWeek.SaturdayToWednesday, null, true }; // Friday
+        yield return new object[] { new DateTime(2024, 04, 20), WorkingDaysOfWeek.SaturdayToWednesday, null, false }; // Saturday
 
-        yield return new object[] { new DateTime(2024, 04, 21), CalendarWeekendDefinition.SundayOnly, null, true }; // Sunday
-        yield return new object[] { new DateTime(2024, 04, 22), CalendarWeekendDefinition.SundayOnly, null, false }; // Monday
+        yield return new object[] { new DateTime(2024, 04, 21), WorkingDaysOfWeek.MondayToSaturday, null, true }; // Sunday
+        yield return new object[] { new DateTime(2024, 04, 22), WorkingDaysOfWeek.MondayToSaturday, null, false }; // Monday
 
-        yield return new object[] { new DateTime(2024, 04, 19), CalendarWeekendDefinition.FridayOnly, null, true }; // Friday
-        yield return new object[] { new DateTime(2024, 04, 20), CalendarWeekendDefinition.FridayOnly, null, false }; // Saturday
+        yield return new object[] { new DateTime(2024, 04, 19), WorkingDaysOfWeek.SaturdayToThursday, null, true }; // Friday
+        yield return new object[] { new DateTime(2024, 04, 20), WorkingDaysOfWeek.SaturdayToThursday, null, false }; // Saturday
 
-        // CalendarWeekendDefinition.None means no day of the week is a weekend, so every day must evaluate to false.
-        yield return new object[] { new DateTime(2024, 04, 21), CalendarWeekendDefinition.None, null, false }; // Sunday
-        yield return new object[] { new DateTime(2024, 04, 22), CalendarWeekendDefinition.None, null, false }; // Monday
-        yield return new object[] { new DateTime(2024, 04, 23), CalendarWeekendDefinition.None, null, false }; // Tuesday
-        yield return new object[] { new DateTime(2024, 04, 24), CalendarWeekendDefinition.None, null, false }; // Wednesday
-        yield return new object[] { new DateTime(2024, 04, 25), CalendarWeekendDefinition.None, null, false }; // Thursday
-        yield return new object[] { new DateTime(2024, 04, 26), CalendarWeekendDefinition.None, null, false }; // Friday
-        yield return new object[] { new DateTime(2024, 04, 27), CalendarWeekendDefinition.None, null, false }; // Saturday
+        // WorkingDaysOfWeek.AllDays means no day of the week is a weekend, so every day must evaluate to false.
+        yield return new object[] { new DateTime(2024, 04, 21), WorkingDaysOfWeek.AllDays, null, false }; // Sunday
+        yield return new object[] { new DateTime(2024, 04, 22), WorkingDaysOfWeek.AllDays, null, false }; // Monday
+        yield return new object[] { new DateTime(2024, 04, 23), WorkingDaysOfWeek.AllDays, null, false }; // Tuesday
+        yield return new object[] { new DateTime(2024, 04, 24), WorkingDaysOfWeek.AllDays, null, false }; // Wednesday
+        yield return new object[] { new DateTime(2024, 04, 25), WorkingDaysOfWeek.AllDays, null, false }; // Thursday
+        yield return new object[] { new DateTime(2024, 04, 26), WorkingDaysOfWeek.AllDays, null, false }; // Friday
+        yield return new object[] { new DateTime(2024, 04, 27), WorkingDaysOfWeek.AllDays, null, false }; // Saturday
 
-        yield return new object[] { new DateTime(2024, 04, 19), CalendarWeekendDefinition.Custom, typeof(FridayOnlyWeekendProvider), true };
-        yield return new object[] { new DateTime(2024, 04, 20), CalendarWeekendDefinition.Custom, typeof(FridayOnlyWeekendProvider), false };
+        yield return new object[] { new DateTime(2024, 04, 19), WorkingDaysOfWeek.Custom, typeof(FridayOnlyWeekendProvider), true };
+        yield return new object[] { new DateTime(2024, 04, 20), WorkingDaysOfWeek.Custom, typeof(FridayOnlyWeekendProvider), false };
     }
 
     public static IEnumerable<object[]> WeekOfMonthCalendarWeekRuleTestData()

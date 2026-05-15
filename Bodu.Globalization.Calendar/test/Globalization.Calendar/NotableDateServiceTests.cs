@@ -41,7 +41,7 @@ public sealed partial class NotableDateServiceTests
     }
 
     private static NotableDateService BuildService(params NotableDateRule[] rules) =>
-        new(new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) }, CalendarWeekendDefinition.SaturdaySunday);
+        new(new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) }, WorkingDaysOfWeek.MondayToFriday);
 
     /// <summary>
     /// Verifies that querying a year returns every notable date defined for that year in chronological order.
@@ -190,7 +190,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
@@ -213,7 +213,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("Holiday", 1, 1)) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)override_ },
@@ -239,7 +239,7 @@ public sealed partial class NotableDateServiceTests
         {
             _ = new NotableDateService(
                 ruleProviders: null!,
-                CalendarWeekendDefinition.SaturdaySunday);
+                WorkingDaysOfWeek.MondayToFriday);
         });
 
         Assert.AreEqual("ruleProviders", ex.ParamName);
@@ -247,7 +247,7 @@ public sealed partial class NotableDateServiceTests
 
     /// <summary>
     /// Verifies that the <see cref="NotableDateService" /> constructor rejects undefined
-    /// <see cref="CalendarWeekendDefinition" /> values via
+    /// <see cref="WorkingDaysOfWeek" /> values via
     /// <see cref="ArgumentOutOfRangeException" />.
     /// </summary>
     [DataRow(-1)]
@@ -259,13 +259,13 @@ public sealed partial class NotableDateServiceTests
         {
             _ = new NotableDateService(
                 Array.Empty<INotableDateRuleProvider>(),
-                (CalendarWeekendDefinition)undefined);
+                (WorkingDaysOfWeek)undefined);
         });
     }
 
     /// <summary>
     /// Verifies that the <see cref="NotableDateService" /> constructor rejects
-    /// <see cref="CalendarWeekendDefinition.Custom" /> because it has no canonical <see cref="WeekPattern" />;
+    /// <see cref="WorkingDaysOfWeek.Custom" /> because it has no canonical <see cref="WeekPattern" />;
     /// callers must convert their <see cref="IWeekendDefinitionProvider" /> to a <see cref="WeekPattern" /> first.
     /// </summary>
     [TestMethod]
@@ -275,7 +275,7 @@ public sealed partial class NotableDateServiceTests
         {
             _ = new NotableDateService(
                 Array.Empty<INotableDateRuleProvider>(),
-                CalendarWeekendDefinition.Custom);
+                WorkingDaysOfWeek.Custom);
         });
     }
 
@@ -412,7 +412,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
@@ -442,7 +442,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
@@ -467,7 +467,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
@@ -491,7 +491,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(baseRule) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 OverrideProviders = new[] { (INotableDateRuleOverrideProvider)provider },
@@ -516,7 +516,7 @@ public sealed partial class NotableDateServiceTests
         var localiser = new DelegateLocaliser((notable, culture) => "Jour de l'An");
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("New Year's Day", 1, 1)) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { NameLocalizer = localiser });
 
         NotableDate result = service.GetNotableDates(2025)[0];
@@ -534,7 +534,7 @@ public sealed partial class NotableDateServiceTests
         var localiser = new DelegateLocaliser((notable, culture) => notable.Name);
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(Fixed("New Year's Day", 1, 1)) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { NameLocalizer = localiser });
 
         NotableDate first = service.GetNotableDates(2025)[0];

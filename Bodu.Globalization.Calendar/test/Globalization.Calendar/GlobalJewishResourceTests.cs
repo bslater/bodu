@@ -31,7 +31,7 @@ public sealed class GlobalJewishResourceTests
             {
                 (INotableDateRuleProvider)new XmlResourceNotableDateRuleProvider(JewishResourceName, new ResourcePathResolver()),
             },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
     /// <summary>
     /// Verifies that all seven Jewish observances declared in <c>global-jewish.xml</c> resolve into <see cref="NotableDate" />

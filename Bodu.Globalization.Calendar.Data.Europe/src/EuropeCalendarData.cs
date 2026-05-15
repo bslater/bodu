@@ -28,7 +28,7 @@ namespace Bodu.Globalization.Calendar.Data.Europe;
 /// <code>
 /// var service = new NotableDateService(
 ///     ruleProviders: EuropeCalendarData.CreateProviders(),
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 /// </code>
 /// </example>
 public static class EuropeCalendarData

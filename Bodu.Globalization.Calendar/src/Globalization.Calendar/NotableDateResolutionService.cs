@@ -21,7 +21,7 @@ internal sealed class NotableDateResolutionService
 {
     private readonly INotableDateResolutionEngine _resolutionEngine;
     private readonly INotableDateCollisionResolver? _collisionResolver;
-    private readonly CalendarWeekendDefinition _weekendDefinition;
+    private readonly WorkingDaysOfWeek _workingWeek;
     private readonly IWeekendDefinitionProvider? _weekendProvider;
 
     /// <summary>
@@ -30,33 +30,33 @@ internal sealed class NotableDateResolutionService
     /// <param name="ruleProviders">The rule providers used to load notable-date rules.</param>
     /// <param name="algorithmRegistry">The optional algorithm registry used to resolve algorithm-backed rules.</param>
     /// <param name="collisionResolver">The optional collision resolver applied to emitted dates.</param>
-    /// <param name="weekendDefinition">The weekend definition used by observance adjustment processing.</param>
+    /// <param name="workingWeek">The working-week pattern used by observance adjustment processing.</param>
     /// <param name="weekendProvider">The optional custom weekend provider.</param>
     /// <param name="adjustmentHandlers">The optional custom adjustment handler registry.</param>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="ruleProviders" /> is <see langword="null" />, or <paramref name="weekendProvider" /> is
-    /// <see langword="null" /> when <paramref name="weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.
+    /// <see langword="null" /> when <paramref name="workingWeek" /> is <see cref="WorkingDaysOfWeek.Custom" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="weekendDefinition" /> is not defined.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="workingWeek" /> is not defined.</exception>
     public NotableDateResolutionService(
         IEnumerable<INotableDateRuleProvider> ruleProviders,
         INotableDateAlgorithmRegistry? algorithmRegistry = null,
         INotableDateCollisionResolver? collisionResolver = null,
-        CalendarWeekendDefinition weekendDefinition = CalendarWeekendDefinition.SaturdaySunday,
+        WorkingDaysOfWeek workingWeek = WorkingDaysOfWeek.MondayToFriday,
         IWeekendDefinitionProvider? weekendProvider = null,
         IAdjustmentHandlerRegistry? adjustmentHandlers = null)
     {
         ArgumentNullException.ThrowIfNull(ruleProviders);
 
-        if (!Enum.IsDefined(weekendDefinition))
-            throw new ArgumentOutOfRangeException(nameof(weekendDefinition), weekendDefinition, "The weekend definition is not defined.");
+        if (!Enum.IsDefined(workingWeek))
+            throw new ArgumentOutOfRangeException(nameof(workingWeek), workingWeek, "The working-week pattern is not defined.");
 
-        if (weekendDefinition == CalendarWeekendDefinition.Custom && weekendProvider is null)
+        if (workingWeek == WorkingDaysOfWeek.Custom && weekendProvider is null)
             throw new ArgumentNullException(nameof(weekendProvider));
 
         this.EffectiveRules = LoadRules(ruleProviders);
         this._collisionResolver = collisionResolver;
-        this._weekendDefinition = weekendDefinition;
+        this._workingWeek = workingWeek;
         this._weekendProvider = weekendProvider;
 
         NotableDateRuleResolver ruleResolver = new(this.EffectiveRules, algorithmRegistry);
@@ -69,7 +69,7 @@ internal sealed class NotableDateResolutionService
             anchorRelativeRules);
 
         INotableDateResolutionAdjustmentProcessor adjustmentProcessor = new NotableDateResolutionAdjustmentProcessor(
-            weekendDefinition,
+            workingWeek,
             weekendProvider,
             adjustmentHandlers,
             occurrenceResolver);
@@ -192,7 +192,7 @@ internal sealed class NotableDateResolutionService
     {
         DateTime day = date.Date;
 
-        if (day.IsWeekend(_weekendDefinition, _weekendProvider))
+        if (day.IsWeekend(_workingWeek, _weekendProvider))
             return true;
 
         return GetNotableDates(day, territoryCode, calendarType)

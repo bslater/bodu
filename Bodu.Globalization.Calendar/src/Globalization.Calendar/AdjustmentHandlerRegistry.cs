@@ -26,7 +26,7 @@ namespace Bodu.Globalization.Calendar;
 ///
 /// NotableDateService service = new NotableDateService(
 ///     ruleProviders: new[] { AustraliaCalendarData.CreateProvider() },
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
 ///     options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 ///
 /// // A rule's adjustment can now reference the handler by key:

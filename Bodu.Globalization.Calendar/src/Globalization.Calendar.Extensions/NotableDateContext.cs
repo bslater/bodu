@@ -34,7 +34,7 @@ namespace Bodu.Globalization.Calendar;
 /// // In Program.cs / Startup.cs:
 /// NotableDateContext.Default = new NotableDateService(
 ///     ruleProviders: new[] { AustraliaCalendarData.CreateProvider() },
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 ///
 /// // Anywhere downstream:
 /// DateTime nextWorkingDay = DateTime.Today.NextWorkingDay(territoryCode: "AU-NSW");

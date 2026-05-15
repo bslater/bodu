@@ -51,23 +51,23 @@ public static partial class DateTimeExtensions
     }
 
     /// <summary>
-    /// Returns a new <see cref="DateTime"/> representing the first day of the week that contains the specified <paramref name="dateTime"/>, using a start-of-week inferred from the specified <see cref="CalendarWeekendDefinition"/>.
+    /// Returns a new <see cref="DateTime"/> representing the first day of the week that contains the specified <paramref name="dateTime"/>, using a start-of-week inferred from the specified <see cref="WorkingDaysOfWeek"/>.
     /// </summary>
     /// <param name="dateTime">The date and time value used to determine the containing week.</param>
-    /// <param name="weekend">A <see cref="CalendarWeekendDefinition"/> used to infer the first day of the week. For example, <see cref="CalendarWeekendDefinition.SaturdaySunday"/> implies a Monday start.</param>
+    /// <param name="workingWeek">A <see cref="WorkingDaysOfWeek"/> used to infer the first day of the week. For example, <see cref="WorkingDaysOfWeek.MondayToFriday"/> implies a Monday start.</param>
     /// <returns>An object whose value is set to midnight (00:00:00) on the first day of the week containing <paramref name="dateTime"/>, with the original <see cref="DateTime.Kind"/> preserved.</returns>
     /// <remarks>
-    /// <para>The method infers the start of the week based on the specified <paramref name="weekend"/> value. If <see cref="CalendarWeekendDefinition.None"/> is supplied, the method defaults to using <see cref="DayOfWeek.Monday"/>.</para>
+    /// <para>The method infers the start of the week based on the specified <paramref name="workingWeek"/> value. If <see cref="WorkingDaysOfWeek.AllDays"/> is supplied, the method defaults to using <see cref="DayOfWeek.Monday"/>.</para>
     /// <para>The returned value has its time component normalized to midnight (00:00:00), and the original <see cref="DateTime.Kind"/> is retained.</para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="weekend"/> is not a defined <see cref="CalendarWeekendDefinition"/> value,
+    /// Thrown if <paramref name="workingWeek"/> is not a defined <see cref="WorkingDaysOfWeek"/> value,
     /// -or- the resulting date is earlier than <see cref="DateTime.MinValue"/> or later than <see cref="DateTime.MaxValue"/>.
     /// </exception>
-    public static DateTime FirstDateOfWeek(this DateTime dateTime, CalendarWeekendDefinition weekend)
+    public static DateTime FirstDateOfWeek(this DateTime dateTime, WorkingDaysOfWeek workingWeek)
     {
-        ThrowHelper.ThrowIfEnumValueIsUndefined(weekend);
-        DayOfWeek startOfWeek = GetWeekStartDay(weekend);
+        ThrowHelper.ThrowIfEnumValueIsUndefined(workingWeek);
+        DayOfWeek startOfWeek = GetWeekStartDay(workingWeek);
 
         var offsetDays = (7 + (dateTime.DayOfWeek - startOfWeek)) % 7;
         var dateTicks = dateTime.Ticks - (offsetDays * TicksPerDay);

@@ -101,7 +101,7 @@ namespace Bodu.Globalization.Calendar;
 ///     ruleProviders: new[] { new XmlResourceNotableDateRuleProvider(
 ///         "MyApp/Calendar/Resources/custom-rules.xml",
 ///         new ResourcePathResolver()) },
-///     weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+///     workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
 ///     options: new NotableDateServiceOptions { AlgorithmRegistry = registry });
 ///
 /// // Invalidate the cache when runtime overrides change:
@@ -220,54 +220,6 @@ public sealed class NotableDateService
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateService" /> class using a built-in
-    /// <see cref="CalendarWeekendDefinition" /> as a shorthand for the working week.
-    /// </summary>
-    /// <param name="ruleProviders">Sources of base notable date rules. Must not be <see langword="null" />.</param>
-    /// <param name="weekendDefinition">A built-in weekend pattern. The working week is the complement of the configured weekend.</param>
-    /// <param name="options">Optional service configuration. When <see langword="null" />, defaults apply.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="ruleProviders" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="weekendDefinition" /> is not a defined value of the <see cref="CalendarWeekendDefinition" /> enumeration.</exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="weekendDefinition" /> is <see cref="CalendarWeekendDefinition.Custom" />.
-    /// <see cref="CalendarWeekendDefinition.Custom" /> requires an out-of-band weekend source; convert it to a
-    /// <see cref="WeekPattern" /> first (see remarks) and use the <see cref="WeekPattern" /> constructor instead.
-    /// </exception>
-    /// <remarks>
-    /// <para>
-    /// Convenience overload for callers whose working week corresponds to one of the built-in
-    /// <see cref="CalendarWeekendDefinition" /> values. Internally delegates to the canonical
-    /// <see cref="WeekPattern" /> constructor via
-    /// <see cref="Bodu.Extensions.CalendarWeekendDefinitionExtensions.ToWeekPattern(CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />.
-    /// </para>
-    /// <para>
-    /// For non-standard weekends, do <em>not</em> use this overload with <see cref="CalendarWeekendDefinition.Custom" />.
-    /// Convert your weekend source (for example an <see cref="IWeekendDefinitionProvider" />) to a
-    /// <see cref="WeekPattern" /> and use the <see cref="WeekPattern" /> constructor.
-    /// </para>
-    /// <example>
-    /// <code language="csharp">
-    /// <![CDATA[
-    /// // From an IWeekendDefinitionProvider:
-    /// IWeekendDefinitionProvider provider = new MyCustomWeekend();
-    /// WeekPattern workingWeek = provider.ToWeekPattern();
-    /// var service = new NotableDateService(ruleProviders, workingWeek);
-    ///
-    /// // Or directly from a built-in definition:
-    /// WeekPattern workingWeek = CalendarWeekendDefinition.FridaySaturday.ToWeekPattern();
-    /// var service = new NotableDateService(ruleProviders, workingWeek);
-    /// ]]>
-    /// </code>
-    /// </example>
-    /// </remarks>
-    public NotableDateService(
-        IEnumerable<INotableDateRuleProvider> ruleProviders,
-        CalendarWeekendDefinition weekendDefinition,
-        NotableDateServiceOptions? options = null)
-        : this(ruleProviders, weekendDefinition.ToWeekPattern(), options)
-    { }
-
-    /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateService" /> class using a caller-supplied
     /// <see cref="WeekPattern" /> as the working week. This is the canonical constructor; every other overload routes
     /// through it.
@@ -280,7 +232,7 @@ public sealed class NotableDateService
     /// <para>
     /// To use a custom weekend supplied by an <see cref="IWeekendDefinitionProvider" />, convert it to a
     /// <see cref="WeekPattern" /> first via
-    /// <see cref="Bodu.Extensions.CalendarWeekendDefinitionExtensions.ToWeekPattern(IWeekendDefinitionProvider)" />.
+    /// <see cref="Bodu.Extensions.IWeekendDefinitionProviderExtensions.ToWeekPattern(IWeekendDefinitionProvider)" />.
     /// </para>
     /// <example>
     /// <code language="csharp">

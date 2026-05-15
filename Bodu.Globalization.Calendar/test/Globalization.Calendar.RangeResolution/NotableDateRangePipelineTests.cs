@@ -53,7 +53,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(easter, lent, palmSunday) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions
             {
                 AlgorithmRegistry = new NotableDateAlgorithmRegistry()
@@ -111,7 +111,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(yearEnd, secondJan) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2023, 1, 3),
@@ -149,7 +149,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(christmas) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2026, 6, 1),
@@ -176,7 +176,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(christmas) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2026, 12, 1),
@@ -224,7 +224,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(yearEnd, secondJan) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2022, 12, 25),
@@ -281,7 +281,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(yearEnd, secondJan) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2023, 1, 3),
@@ -334,7 +334,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(yearEndAnchor, yearEndBonus) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         // Request entirely in 2027 so 2026 is a fringe year. The Tier 2 Year-End Bonus 2026 anchors on Year-End Anchor 2026
         // (Dec 30 2026) which Pass 1 does NOT materialise. The fringe pass must on-demand materialise the anchor before computing
@@ -373,7 +373,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(festival) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2026, 1, 1),
@@ -419,7 +419,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(shifted) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         // Anchor 1 Dec 2025 + 60 days = 30 Jan 2026. The request ends 5 Feb 2026 so the adjusted date lands inside.
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
@@ -469,7 +469,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rule) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday,
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday,
             options: new NotableDateServiceOptions { AdjustmentHandlers = handlers });
 
         // Anchor 1 Nov 2025 + 90 days = 30 Jan 2026. Default ±31 fringe would not admit this; the explicit declaration must.
@@ -514,7 +514,7 @@ public sealed class NotableDateRangePipelineTests
 
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(christmas, probe) },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         IReadOnlyList<NotableDate> resolved = service.ResolveNotableDatesInRange(
             new DateTime(2026, 6, 15),
@@ -534,7 +534,7 @@ public sealed class NotableDateRangePipelineTests
     {
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         Assert.AreEqual(0, service.ResolvedWindows.Count, "Service should report no resolved windows on construction.");
 
@@ -560,7 +560,7 @@ public sealed class NotableDateRangePipelineTests
     {
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         _ = service.ResolveNotableDatesInRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31));
         _ = service.ResolveNotableDatesInRange(new DateTime(2026, 9, 1), new DateTime(2026, 12, 31));
@@ -584,7 +584,7 @@ public sealed class NotableDateRangePipelineTests
     {
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         _ = service.ResolveNotableDatesInRange(new DateTime(2026, 1, 1), new DateTime(2026, 3, 31));
         Assert.AreEqual(1, service.ResolvedWindows.Count);
@@ -604,7 +604,7 @@ public sealed class NotableDateRangePipelineTests
     {
         NotableDateService service = new(
             ruleProviders: new[] { (INotableDateRuleProvider)new InMemoryRuleProvider() },
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingDaysOfWeek: WorkingDaysOfWeek.MondayToFriday);
 
         ArgumentException ex = Assert.ThrowsExactly<ArgumentException>(() =>
         {

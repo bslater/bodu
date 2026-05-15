@@ -21,7 +21,7 @@ public partial class NotableDateTimeExtensionsTests
     /// <param name="rules">The rules to expose through the service.</param>
     /// <returns>A configured <see cref="NotableDateService" /> instance.</returns>
     private static NotableDateService BuildService(params NotableDateRule[] rules) =>
-        new(new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) }, CalendarWeekendDefinition.SaturdaySunday);
+        new(new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(rules) }, WorkingDaysOfWeek.MondayToFriday);
 
     /// <summary>
     /// Constructs a <see cref="NotableDateRule" /> for a fixed Gregorian month/day, optionally non-working and territory-scoped.

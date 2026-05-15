@@ -13,13 +13,13 @@ public partial class DateTimeExtensionsTests
 {
 
     /// <summary>
-    /// Verifies that the static <see cref="DateTimeExtensions.IsWeekday(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
-    /// overload returns the dual of <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// Verifies that the static <see cref="DateTimeExtensions.IsWeekday(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
+    /// overload returns the dual of <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
     /// without recursing infinitely, regressing the bug fixed in issue #160.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekendTestData))]
-    public void IsWeekday_WhenCalledOnDayOfWeek_ShouldReturnNegationOfIsWeekend(DateTime input, CalendarWeekendDefinition weekend, Type? providerType, bool expected)
+    public void IsWeekday_WhenCalledOnDayOfWeek_ShouldReturnNegationOfIsWeekend(DateTime input, WorkingDaysOfWeek weekend, Type? providerType, bool expected)
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 
@@ -29,15 +29,15 @@ public partial class DateTimeExtensionsTests
     }
 
     /// <summary>
-    /// Verifies that the static <see cref="DateTimeExtensions.IsWeekday(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
-    /// overload throws <see cref="ArgumentOutOfRangeException" /> when invoked with <see cref="CalendarWeekendDefinition.Custom" /> and no provider.
+    /// Verifies that the static <see cref="DateTimeExtensions.IsWeekday(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
+    /// overload throws <see cref="ArgumentOutOfRangeException" /> when invoked with <see cref="WorkingDaysOfWeek.Custom" /> and no provider.
     /// </summary>
     [TestMethod]
     public void IsWeekday_WhenCalledOnDayOfWeekWithCustomRuleMissingProvider_ShouldThrowExactly()
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.IsWeekday(DayOfWeek.Monday, CalendarWeekendDefinition.Custom, null);
+            _ = DateTimeExtensions.IsWeekday(DayOfWeek.Monday, WorkingDaysOfWeek.Custom, null);
         });
     }
 
@@ -50,7 +50,7 @@ public partial class DateTimeExtensionsTests
         var date = new DateTime(2024, 4, 19);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = date.IsWeekday(CalendarWeekendDefinition.Custom, null!);
+            _ = date.IsWeekday(WorkingDaysOfWeek.Custom, null!);
         });
     }
 
@@ -59,7 +59,7 @@ public partial class DateTimeExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekendTestData))]
-    public void IsWeekday_WhenUsingStandardWeekend_ShouldReturnExpected(DateTime input, CalendarWeekendDefinition weekend, Type? providerType, bool expected)
+    public void IsWeekday_WhenUsingStandardWeekend_ShouldReturnExpected(DateTime input, WorkingDaysOfWeek weekend, Type? providerType, bool expected)
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 

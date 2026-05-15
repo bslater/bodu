@@ -22,7 +22,7 @@ public partial class DateTimeExtensionsTests
         var date = new DateTime(2024, 4, 19);
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = date.IsWeekend(CalendarWeekendDefinition.Custom, null!);
+            _ = date.IsWeekend(WorkingDaysOfWeek.Custom, null!);
         });
     }
 
@@ -34,14 +34,14 @@ public partial class DateTimeExtensionsTests
     {
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
         {
-            _ = DateTimeExtensions.IsWeekend((DayOfWeek)99, CalendarWeekendDefinition.SaturdaySunday);
+            _ = DateTimeExtensions.IsWeekend((DayOfWeek)99, WorkingDaysOfWeek.MondayToFriday);
         });
     }
 
     /// <summary>
-    /// Verifies that <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, CalendarWeekendDefinition, IWeekendDefinitionProvider?)" />
+    /// Verifies that <see cref="DateTimeExtensions.IsWeekend(DayOfWeek, WorkingDaysOfWeek, IWeekendDefinitionProvider?)" />
     /// returns <see langword="false" /> for every day of the week when called with
-    /// <see cref="CalendarWeekendDefinition.None" />, matching the enum's documented contract that no standard weekend is defined.
+    /// <see cref="WorkingDaysOfWeek.AllDays" />, matching the enum's documented contract that no standard weekend is defined.
     /// </summary>
     [TestMethod]
     [DataRow(DayOfWeek.Sunday)]
@@ -53,9 +53,9 @@ public partial class DateTimeExtensionsTests
     [DataRow(DayOfWeek.Saturday)]
     public void IsWeekend_WhenNoneAndAnyDay_ShouldReturnFalse(DayOfWeek day)
     {
-        var actual = DateTimeExtensions.IsWeekend(day, CalendarWeekendDefinition.None);
+        var actual = DateTimeExtensions.IsWeekend(day, WorkingDaysOfWeek.AllDays);
 
-        Assert.IsFalse(actual, $"CalendarWeekendDefinition.None must classify every day as a weekday, but {day} was classified as weekend.");
+        Assert.IsFalse(actual, $"WorkingDaysOfWeek.AllDays must classify every day as a weekday, but {day} was classified as weekend.");
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public partial class DateTimeExtensionsTests
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(WeekendTestData))]
-    public void IsWeekend_WhenUsingStandardWeekend_ShouldReturnExpected(DateTime input, CalendarWeekendDefinition weekend, Type? providerType, bool expected)
+    public void IsWeekend_WhenUsingStandardWeekend_ShouldReturnExpected(DateTime input, WorkingDaysOfWeek weekend, Type? providerType, bool expected)
     {
         IWeekendDefinitionProvider? provider = providerType is null ? null : (IWeekendDefinitionProvider)Activator.CreateInstance(providerType)!;
 

@@ -106,7 +106,7 @@ public sealed class NotableDateResolutionServiceProductionEasterTests
         return new NotableDateResolutionService(
             ruleProviders: new[] { EuropeCalendarData.CreateUnitedKingdomProvider() },
             algorithmRegistry: registry,
-            weekendDefinition: CalendarWeekendDefinition.SaturdaySunday);
+            workingWeek: WorkingDaysOfWeek.MondayToFriday);
     }
 
     private static void AssertContains(

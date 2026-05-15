@@ -259,7 +259,7 @@ public sealed partial class NotableDateServiceTests
 
         var service = new NotableDateService(
             new[] { (INotableDateRuleProvider)new InMemoryRuleProvider(walkTrigger, probe) },
-            CalendarWeekendDefinition.SaturdaySunday,
+            WorkingDaysOfWeek.MondayToFriday,
             new NotableDateServiceOptions { AlgorithmRegistry = registry });
 
         var walkResults = service.GetNotableDates(2025)
