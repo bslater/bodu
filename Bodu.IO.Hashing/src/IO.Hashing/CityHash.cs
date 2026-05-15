@@ -75,7 +75,7 @@ namespace Bodu.IO.Hashing;
 /// <seealso cref="CityHash64"/>
 /// <seealso cref="CityHash128"/>
 public abstract class CityHash<T>
-    : NonCryptographicHashAlgorithm
+    : NonCryptographicHashAlgorithm, IDisposable
     where T : CityHash<T>, new()
 {
     /// <summary>The first Murmur-style mixing constant used in 32-bit operations.</summary>
@@ -110,6 +110,7 @@ public abstract class CityHash<T>
     private static readonly int[] s_validHashSizes = { 32, 64, 128 };
 
     private readonly MemoryStream _inputBuffer = new MemoryStream();
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output
@@ -124,9 +125,49 @@ public abstract class CityHash<T>
     {
     }
 
+    /// <summary>
+    /// Releases all resources used by the current instance and clears its buffered input state.
+    /// </summary>
+    /// <remarks>
+    /// After disposal, subsequent calls to <see cref="Append(ReadOnlySpan{byte})" />, <see cref="Reset" />, or
+    /// <see cref="GetCurrentHashCore(Span{byte})" /> throw <see cref="ObjectDisposedException" />. Calling
+    /// <see cref="Dispose()" /> multiple times is safe and has no effect after the first invocation.
+    /// </remarks>
+    public void Dispose()
+    {
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Releases the resources used by the current instance, optionally clearing managed state.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
+    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
+    /// <see langword="true" />.
+    /// </param>
+    /// <remarks>
+    /// Override in a derived class to release additional resources owned by the subclass. Always invoke
+    /// <c>base.Dispose(disposing)</c> from the override so that the buffered input state is released.
+    /// </remarks>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (this._disposed)
+            return;
+
+        if (disposing)
+        {
+            this._inputBuffer.Dispose();
+        }
+
+        this._disposed = true;
+    }
+
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         if (source.Length > 0)
             this._inputBuffer.Write(source);
     }
@@ -134,6 +175,7 @@ public abstract class CityHash<T>
     /// <inheritdoc />
     public override void Reset()
     {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         this._inputBuffer.SetLength(0);
         this._inputBuffer.Position = 0;
     }
@@ -141,6 +183,8 @@ public abstract class CityHash<T>
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
+
         // CityHash is a one-shot algorithm; finalization re-runs over the accumulated buffer so that
         // GetCurrentHash remains non-destructive and may be invoked multiple times.
         byte[] data = this._inputBuffer.ToArray();

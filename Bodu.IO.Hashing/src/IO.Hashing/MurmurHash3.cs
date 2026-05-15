@@ -70,12 +70,13 @@ namespace Bodu.IO.Hashing;
 /// <seealso cref="MurmurHash3_32"/>
 /// <seealso cref="MurmurHash3_128"/>
 public abstract class MurmurHash3<T>
-    : NonCryptographicHashAlgorithm
+    : NonCryptographicHashAlgorithm, IDisposable
     where T : MurmurHash3<T>, new()
 {
     private static readonly int[] s_validHashSizes = { 32, 128 };
 
     private readonly MemoryStream _inputBuffer = new MemoryStream();
+    private bool _disposed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="MurmurHash3{T}" /> class with the specified hash output
@@ -98,9 +99,49 @@ public abstract class MurmurHash3<T>
     /// <returns>The seed value supplied at construction time, or zero if no seed was specified.</returns>
     public uint Seed { get; }
 
+    /// <summary>
+    /// Releases all resources used by the current instance and clears its buffered input state.
+    /// </summary>
+    /// <remarks>
+    /// After disposal, subsequent calls to <see cref="Append(ReadOnlySpan{byte})" />, <see cref="Reset" />, or
+    /// <see cref="GetCurrentHashCore(Span{byte})" /> throw <see cref="ObjectDisposedException" />. Calling
+    /// <see cref="Dispose()" /> multiple times is safe and has no effect after the first invocation.
+    /// </remarks>
+    public void Dispose()
+    {
+        this.Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Releases the resources used by the current instance, optionally clearing managed state.
+    /// </summary>
+    /// <param name="disposing">
+    /// <see langword="true" /> when called from <see cref="Dispose()" />; <see langword="false" /> when called
+    /// from a finalizer. Managed resources are released only when <paramref name="disposing" /> is
+    /// <see langword="true" />.
+    /// </param>
+    /// <remarks>
+    /// Override in a derived class to release additional resources owned by the subclass. Always invoke
+    /// <c>base.Dispose(disposing)</c> from the override so that the buffered input state is released.
+    /// </remarks>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (this._disposed)
+            return;
+
+        if (disposing)
+        {
+            this._inputBuffer.Dispose();
+        }
+
+        this._disposed = true;
+    }
+
     /// <inheritdoc />
     public override void Append(ReadOnlySpan<byte> source)
     {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         if (source.Length > 0)
             this._inputBuffer.Write(source);
     }
@@ -108,6 +149,7 @@ public abstract class MurmurHash3<T>
     /// <inheritdoc />
     public override void Reset()
     {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         this._inputBuffer.SetLength(0);
         this._inputBuffer.Position = 0;
     }
@@ -115,6 +157,7 @@ public abstract class MurmurHash3<T>
     /// <inheritdoc />
     protected override void GetCurrentHashCore(Span<byte> destination)
     {
+        ObjectDisposedException.ThrowIf(this._disposed, this);
         byte[] data = this._inputBuffer.ToArray();
         byte[] digest = this.ComputeHashCore(data);
         digest.AsSpan(0, this.HashLengthInBytes).CopyTo(destination);
