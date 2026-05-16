@@ -29,7 +29,7 @@ internal sealed class BoduConfigurationResolver
 
         string? pathRoot = this._options.PathRoot;
         if (pathRoot is null && this._options.MissingPathRootMode == BoduConfigurationMissingPathRootMode.Throw && targetPath is null)
-            throw new InvalidOperationException(ConfigurationResourceStrings.InvalidOperation_ResolveWithoutPathRoot);
+            throw new InvalidOperationException(ConfigurationResourceStrings.Op_Invalid_ResolveWithoutPathRoot);
 
         StringComparer comparer = this._options.KeyOptions.KeyComparer;
         Dictionary<string, string?> values = new(comparer);

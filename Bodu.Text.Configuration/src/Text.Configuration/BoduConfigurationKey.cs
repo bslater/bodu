@@ -177,7 +177,7 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
         if (segment.IsEmpty)
         {
             if (!options.AllowEmptySegments)
-                throw new ArgumentException("A configuration key contains an empty segment.", nameof(segment));
+                throw new ArgumentException(ConfigurationResourceStrings.Arg_Invalid_ConfigKeyEmptySegment, nameof(segment));
 
             builder.Add(string.Empty);
             return;
@@ -192,7 +192,7 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
         {
             char c = rawKey[i];
             if (char.IsControl(c))
-                throw new ArgumentException($"Configuration key contains an illegal control character at position {i}.", nameof(rawKey));
+                throw new ArgumentException(string.Format(System.Globalization.CultureInfo.InvariantCulture, ConfigurationResourceStrings.Arg_Invalid_ConfigKeyControlChar, i), nameof(rawKey));
         }
     }
 
