@@ -29,11 +29,9 @@ public sealed class IniSection
     private static readonly CompositeFormat s_keyNotFound =
         CompositeFormat.Parse(FormatsResourceStrings.IniSection_KeyNotFound);
 
-    private static readonly IReadOnlyList<IniComment> s_emptyComments = Array.Empty<IniComment>();
-
     private readonly List<IniEntry> _entries;
     private readonly Dictionary<string, IniEntry> _lookup;
-    private IReadOnlyList<IniComment> _leadingComments = s_emptyComments;
+    private readonly List<IniComment> _leadingComments = new();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniSection" /> class.
@@ -53,18 +51,33 @@ public sealed class IniSection
     /// Gets the comments authored on lines preceding this section header, in source order.
     /// </summary>
     /// <returns>
-    /// A read-only list of <see cref="IniComment" />. The list is empty when no comments precede the section
-    /// or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
+    /// A read-only view onto the section's leading-comment list. The list is empty when no comments precede the
+    /// section or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
     /// </returns>
     public IReadOnlyList<IniComment> LeadingComments => _leadingComments;
 
     /// <summary>
-    /// Replaces the leading comments associated with this section. Used by the parser when constructing the
-    /// section before its entries have been attached.
+    /// Appends a leading comment to this section.
     /// </summary>
-    /// <param name="comments">The comments to associate with this section.</param>
-    internal void SetLeadingComments(IReadOnlyList<IniComment> comments) =>
-        _leadingComments = comments ?? s_emptyComments;
+    /// <param name="comment">The comment to append.</param>
+    public void AddLeadingComment(IniComment comment) => _leadingComments.Add(comment);
+
+    /// <summary>
+    /// Replaces the leading comments of this section with the supplied sequence.
+    /// </summary>
+    /// <param name="comments">The new sequence of leading comments.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="comments" /> is <see langword="null" />.</exception>
+    public void SetLeadingComments(IEnumerable<IniComment> comments)
+    {
+        ThrowHelper.ThrowIfNull(comments);
+        _leadingComments.Clear();
+        _leadingComments.AddRange(comments);
+    }
+
+    /// <summary>
+    /// Removes every leading comment from this section.
+    /// </summary>
+    public void ClearLeadingComments() => _leadingComments.Clear();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniSection" /> class with the supplied name and entries.
@@ -211,5 +224,97 @@ public sealed class IniSection
 
         value = null;
         return false;
+    }
+
+    /// <summary>
+    /// Attempts to locate the entry with the specified key.
+    /// </summary>
+    /// <param name="key">The key to look up.</param>
+    /// <param name="entry">When this method returns <see langword="true" />, the matching entry.</param>
+    /// <returns><see langword="true" /> when the key is present; otherwise, <see langword="false" />.</returns>
+    public bool TryGetEntry(string key, [NotNullWhen(true)] out IniEntry? entry)
+    {
+        if (key is null)
+        {
+            entry = null;
+            return false;
+        }
+
+        return _lookup.TryGetValue(key, out entry);
+    }
+
+    /// <summary>
+    /// Adds the supplied entry to this section, replacing an existing entry with the same key.
+    /// </summary>
+    /// <param name="entry">The entry to add or replace.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="entry" /> is <see langword="null" />.</exception>
+    public void AddEntry(IniEntry entry)
+    {
+        ThrowHelper.ThrowIfNull(entry);
+
+        if (_lookup.TryGetValue(entry.Key, out IniEntry? existing))
+        {
+            int idx = _entries.IndexOf(existing);
+            _entries[idx] = entry;
+            _lookup[entry.Key] = entry;
+        }
+        else
+        {
+            _entries.Add(entry);
+            _lookup[entry.Key] = entry;
+        }
+    }
+
+    /// <summary>
+    /// Sets the value for <paramref name="key" />, creating a new entry when no entry with that key exists.
+    /// </summary>
+    /// <param name="key">The key to set.</param>
+    /// <param name="value">The value to assign.</param>
+    /// <returns>The entry that now holds <paramref name="value" />.</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    public IniEntry SetEntry(string key, string value)
+    {
+        ThrowHelper.ThrowIfNull(key);
+        ThrowHelper.ThrowIfNull(value);
+
+        if (_lookup.TryGetValue(key, out IniEntry? existing))
+        {
+            existing.Value = value;
+            return existing;
+        }
+
+        IniEntry entry = new(key, value);
+        _entries.Add(entry);
+        _lookup[key] = entry;
+        return entry;
+    }
+
+    /// <summary>
+    /// Removes the entry with the specified key.
+    /// </summary>
+    /// <param name="key">The key to remove.</param>
+    /// <returns><see langword="true" /> when an entry was removed; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public bool RemoveEntry(string key)
+    {
+        ThrowHelper.ThrowIfNull(key);
+
+        if (!_lookup.TryGetValue(key, out IniEntry? entry))
+            return false;
+
+        _entries.Remove(entry);
+        _lookup.Remove(key);
+        return true;
+    }
+
+    /// <summary>
+    /// Removes every entry from this section.
+    /// </summary>
+    public void ClearEntries()
+    {
+        _entries.Clear();
+        _lookup.Clear();
     }
 }

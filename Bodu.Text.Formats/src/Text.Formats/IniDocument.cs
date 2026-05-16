@@ -25,6 +25,23 @@ public sealed class IniDocument
 {
     private readonly List<IniSection> _sections;
     private readonly Dictionary<string, IniSection> _lookup;
+    private readonly bool _caseSensitiveSections;
+
+    /// <summary>
+    /// Initializes a new <see cref="IniDocument" /> with an empty global section and no named sections.
+    /// </summary>
+    /// <param name="caseSensitiveSections">
+    /// <see langword="true" /> to compare section names with ordinal case sensitivity; otherwise,
+    /// <see langword="false" /> (the INI default).
+    /// </param>
+    public IniDocument(bool caseSensitiveSections = false)
+    {
+        GlobalSection = new IniSection(string.Empty, Array.Empty<IniEntry>());
+        _sections = new List<IniSection>();
+        _lookup = new Dictionary<string, IniSection>(caseSensitiveSections ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+        _caseSensitiveSections = caseSensitiveSections;
+        Sections = _sections.AsReadOnly();
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniDocument" /> class.
@@ -40,6 +57,7 @@ public sealed class IniDocument
         GlobalSection = globalSection;
         _sections = sections;
         _lookup = lookup;
+        _caseSensitiveSections = lookup.Comparer == StringComparer.Ordinal;
         Sections = _sections.AsReadOnly();
     }
 
@@ -75,6 +93,7 @@ public sealed class IniDocument
         GlobalSection = globalSection;
         _sections = new List<IniSection>();
         _lookup = new Dictionary<string, IniSection>(caseSensitiveSections ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+        _caseSensitiveSections = caseSensitiveSections;
 
         foreach (IniSection section in sections)
         {
@@ -143,5 +162,73 @@ public sealed class IniDocument
         ThrowHelper.ThrowIfNull(name);
 
         return _lookup.TryGetValue(name, out section);
+    }
+
+    /// <summary>
+    /// Appends <paramref name="section" /> to the document.
+    /// </summary>
+    /// <param name="section">The section to append.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="section" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="section" /> has an empty <see cref="IniSection.Name" /> (i.e. it is the global section).
+    /// </exception>
+    public void AddSection(IniSection section)
+    {
+        ThrowHelper.ThrowIfNull(section);
+        if (section.Name.Length == 0)
+            throw new ArgumentException("Cannot add a section with an empty name; the global section is preallocated.", nameof(section));
+
+        _sections.Add(section);
+        if (!_lookup.ContainsKey(section.Name))
+            _lookup[section.Name] = section;
+    }
+
+    /// <summary>
+    /// Returns the first section with the supplied name, creating and appending one when no match exists.
+    /// </summary>
+    /// <param name="name">The section name.</param>
+    /// <returns>The matching or newly created section.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="name" /> is empty.</exception>
+    public IniSection GetOrAddSection(string name)
+    {
+        ThrowHelper.ThrowIfNull(name);
+        if (name.Length == 0)
+            throw new ArgumentException("Section name cannot be empty; the global section is accessed via GlobalSection.", nameof(name));
+
+        if (_lookup.TryGetValue(name, out IniSection? existing))
+            return existing;
+
+        IniSection section = new(name, Array.Empty<IniEntry>(), _caseSensitiveSections);
+        _sections.Add(section);
+        _lookup[name] = section;
+        return section;
+    }
+
+    /// <summary>
+    /// Removes the section with the supplied name. When multiple sections share the same name (under
+    /// <see cref="IniDuplicateSectionBehavior.Preserve" /> or <see cref="IniDuplicateSectionBehavior.MergeAdjacent" />),
+    /// every occurrence is removed.
+    /// </summary>
+    /// <param name="name">The section name to remove.</param>
+    /// <returns><see langword="true" /> when at least one section was removed; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="name" /> is <see langword="null" />.</exception>
+    public bool RemoveSection(string name)
+    {
+        ThrowHelper.ThrowIfNull(name);
+
+        IEqualityComparer<string> comparer = _lookup.Comparer;
+        bool removed = false;
+        for (int i = _sections.Count - 1; i >= 0; i--)
+        {
+            if (comparer.Equals(_sections[i].Name, name))
+            {
+                _sections.RemoveAt(i);
+                removed = true;
+            }
+        }
+
+        _lookup.Remove(name);
+        return removed;
     }
 }
