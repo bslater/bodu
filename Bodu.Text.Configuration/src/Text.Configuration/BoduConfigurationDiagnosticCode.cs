@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -28,7 +30,7 @@ public enum BoduConfigurationDiagnosticCode
     EmptyKey = 2,
 
     /// <summary>
-    /// A duplicate key was encountered when <see cref="BoduConfigurationDuplicateKeyMode.Reject" /> was active.
+    /// A duplicate key was encountered when <see cref="IniDuplicateKeyBehavior.Disallowed" /> was active.
     /// </summary>
     DuplicateKey = 3,
 

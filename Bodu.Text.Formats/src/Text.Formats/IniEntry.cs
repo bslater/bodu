@@ -19,10 +19,34 @@ public sealed class IniEntry
     /// </summary>
     /// <param name="key">The trimmed key name.</param>
     /// <param name="value">The trimmed value string.</param>
-    internal IniEntry(string key, string value)
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    public IniEntry(string key, string value)
+        : this(key, value, lineNumber: 0)
     {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IniEntry" /> class with a source line number.
+    /// </summary>
+    /// <param name="key">The trimmed key name.</param>
+    /// <param name="value">The trimmed value string.</param>
+    /// <param name="lineNumber">
+    /// The 1-based source line at which this entry was authored, or <c>0</c> when the entry was constructed
+    /// programmatically rather than parsed.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    public IniEntry(string key, string value, int lineNumber)
+    {
+        ThrowHelper.ThrowIfNull(key);
+        ThrowHelper.ThrowIfNull(value);
+
         Key = key;
         Value = value;
+        LineNumber = lineNumber;
     }
 
     /// <summary>
@@ -36,6 +60,13 @@ public sealed class IniEntry
     /// </summary>
     /// <returns>The trimmed value string as it appeared in the source.</returns>
     public string Value { get; }
+
+    /// <summary>
+    /// Gets the 1-based source line number at which this entry was authored, or <c>0</c> when the entry was
+    /// constructed programmatically rather than parsed.
+    /// </summary>
+    /// <returns>A non-negative line number.</returns>
+    public int LineNumber { get; }
 
     /// <summary>
     /// Parses <see cref="Value" /> as <typeparamref name="T" /> using <see cref="CultureInfo.InvariantCulture" />.

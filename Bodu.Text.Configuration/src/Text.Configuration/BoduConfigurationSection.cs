@@ -7,6 +7,8 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -104,7 +106,7 @@ public sealed partial class BoduConfigurationSection
 
     /// <summary>
     /// Replaces the property at <paramref name="index" /> with <paramref name="property" />, preserving the
-    /// position in author order. Used by the reader to honour <see cref="BoduConfigurationDuplicateKeyMode.LastWins" />
+    /// position in author order. Used by the reader to honour <see cref="IniDuplicateKeyBehavior.LastWins" />
     /// when a duplicate key is encountered.
     /// </summary>
     /// <param name="index">The zero-based index of the property to replace.</param>

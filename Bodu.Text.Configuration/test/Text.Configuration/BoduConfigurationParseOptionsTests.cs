@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -22,7 +24,7 @@ public partial class BoduConfigurationParseOptionsTests
 
         Assert.AreEqual(BoduConfigurationProfile.Bodu, options.Profile);
         Assert.AreEqual(BoduConfigurationInlineCommentMode.WhitespaceIntroduced, options.InlineCommentMode);
-        Assert.AreEqual(BoduConfigurationDuplicateKeyMode.LastWins, options.DuplicateKeyMode);
+        Assert.AreEqual(IniDuplicateKeyBehavior.LastWins, options.DuplicateKeyMode);
         Assert.AreEqual(BoduConfigurationDiagnosticMode.Throw, options.DiagnosticMode);
         Assert.IsTrue(options.TrimKeysAndValues);
         Assert.IsFalse(options.AllowKeyOnlyProperties);

@@ -6,6 +6,8 @@
 
 using System.Diagnostics.CodeAnalysis;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -32,7 +34,7 @@ internal static class ConfigurationResourceStrings
     /// <summary>A configuration section header was empty (<c>[]</c>).</summary>
     internal const string ParseException_EmptySectionHeader = "Configuration section header cannot be empty.";
 
-    /// <summary>A duplicate key was rejected because <see cref="BoduConfigurationDuplicateKeyMode.Reject" /> was active.</summary>
+    /// <summary>A duplicate key was rejected because <see cref="IniDuplicateKeyBehavior.Disallowed" /> was active.</summary>
     internal const string ParseException_DuplicateKey = "Duplicate configuration key '{0}'.";
 
     /// <summary>An escape sequence in a value was malformed.</summary>

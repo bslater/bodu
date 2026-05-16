@@ -13,6 +13,49 @@ namespace Bodu.Text.Configuration;
 public sealed partial class BoduConfigurationView
 {
     /// <summary>
+    /// Gets the value for <paramref name="key" /> parsed as <typeparamref name="T" /> using
+    /// <see cref="CultureInfo.InvariantCulture" />. Mirrors
+    /// <c>Bodu.Text.Formats.IniSection.GetValue&lt;T&gt;(key)</c>.
+    /// </summary>
+    /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
+    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <returns>The parsed value.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    /// <exception cref="KeyNotFoundException">The key is absent from the resolved view.</exception>
+    /// <exception cref="FormatException">The value cannot be parsed as <typeparamref name="T" />.</exception>
+    public T GetValue<T>(string key)
+        where T : ISpanParsable<T>
+    {
+        ThrowHelper.ThrowIfNull(key);
+        string? raw = LookupValue(this._values, key);
+        if (raw is null)
+            throw new KeyNotFoundException($"Configuration key '{key}' is not present in the resolved view.");
+
+        return T.Parse(raw.AsSpan(), CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Attempts to get the value for <paramref name="key" /> parsed as <typeparamref name="T" />, returning
+    /// <see langword="false" /> on missing or malformed values. Never throws on a parse failure.
+    /// </summary>
+    /// <typeparam name="T">The target type. Must implement <see cref="ISpanParsable{TSelf}" />.</typeparam>
+    /// <param name="key">The configuration key, in either dotted or colon-delimited form.</param>
+    /// <param name="value">When this method returns <see langword="true" />, contains the parsed value.</param>
+    /// <returns><see langword="true" /> when the value was present and parseable; otherwise, <see langword="false" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
+    public bool TryGetValue<T>(string key, [MaybeNullWhen(false)] out T value)
+        where T : ISpanParsable<T>
+    {
+        ThrowHelper.ThrowIfNull(key);
+        string? raw = LookupValue(this._values, key);
+        if (raw is not null && T.TryParse(raw.AsSpan(), CultureInfo.InvariantCulture, out value))
+            return true;
+
+        value = default;
+        return false;
+    }
+
+    /// <summary>
     /// Gets the raw string value for <paramref name="key" />, throwing if the key is missing.
     /// </summary>
     /// <param name="key">The configuration key in colon-delimited form.</param>

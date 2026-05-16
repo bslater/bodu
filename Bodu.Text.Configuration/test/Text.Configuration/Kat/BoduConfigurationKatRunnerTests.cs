@@ -6,6 +6,8 @@
 
 using Bodu.Text.Configuration.Test.Infrastructure;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration.Kat;
 
 /// <summary>
@@ -30,15 +32,15 @@ public partial class BoduConfigurationKatRunnerTests
         };
 
     /// <summary>
-    /// Translates the KAT duplicate-key-mode string into a <see cref="BoduConfigurationDuplicateKeyMode" />.
+    /// Translates the KAT duplicate-key-mode string into a <see cref="IniDuplicateKeyBehavior" />.
     /// </summary>
-    private static BoduConfigurationDuplicateKeyMode MapDuplicateKeyMode(string? mode) =>
+    private static IniDuplicateKeyBehavior MapDuplicateKeyMode(string? mode) =>
         mode switch
         {
-            null => BoduConfigurationDuplicateKeyMode.LastWins,
-            "LastWins" => BoduConfigurationDuplicateKeyMode.LastWins,
-            "FirstWins" => BoduConfigurationDuplicateKeyMode.FirstWins,
-            "Reject" => BoduConfigurationDuplicateKeyMode.Reject,
+            null => IniDuplicateKeyBehavior.LastWins,
+            "LastWins" => IniDuplicateKeyBehavior.LastWins,
+            "FirstWins" => IniDuplicateKeyBehavior.FirstWins,
+            "Disallowed" => IniDuplicateKeyBehavior.Disallowed,
             _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, "Unknown KAT duplicate-key mode."),
         };
 

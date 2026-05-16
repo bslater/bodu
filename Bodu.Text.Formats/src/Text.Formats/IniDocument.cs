@@ -44,6 +44,52 @@ public sealed class IniDocument
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="IniDocument" /> class from a global section and an ordered
+    /// sequence of named sections. Use this constructor to build documents programmatically without first parsing
+    /// INI text.
+    /// </summary>
+    /// <param name="globalSection">
+    /// The global section (entries authored before the first named section header). Its
+    /// <see cref="IniSection.Name" /> must be the empty string.
+    /// </param>
+    /// <param name="sections">The ordered, named sections that follow the global section.</param>
+    /// <param name="caseSensitiveSections">
+    /// <see langword="true" /> to compare section names with ordinal case sensitivity; otherwise,
+    /// <see langword="false" /> (the INI default).
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="globalSection" /> or <paramref name="sections" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="globalSection" /> has a non-empty <see cref="IniSection.Name" />, or when
+    /// <paramref name="sections" /> contains a <see langword="null" /> entry.
+    /// </exception>
+    public IniDocument(IniSection globalSection, IEnumerable<IniSection> sections, bool caseSensitiveSections = false)
+    {
+        ThrowHelper.ThrowIfNull(globalSection);
+        ThrowHelper.ThrowIfNull(sections);
+
+        if (globalSection.Name.Length != 0)
+            throw new ArgumentException("Global section must have an empty Name.", nameof(globalSection));
+
+        GlobalSection = globalSection;
+        _sections = new List<IniSection>();
+        _lookup = new Dictionary<string, IniSection>(caseSensitiveSections ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+
+        foreach (IniSection section in sections)
+        {
+            if (section is null)
+                throw new ArgumentException("Sections sequence contains a null section.", nameof(sections));
+
+            _sections.Add(section);
+            if (!_lookup.ContainsKey(section.Name))
+                _lookup[section.Name] = section;
+        }
+
+        Sections = _sections.AsReadOnly();
+    }
+
+    /// <summary>
     /// Gets the global section, which contains any key/value entries that appeared before the first named section
     /// header.
     /// </summary>

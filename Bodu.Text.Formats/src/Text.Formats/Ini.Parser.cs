@@ -223,14 +223,14 @@ public static partial class Ini
                     case IniDuplicateKeyBehavior.LastWins:
                         // Replace the existing entry in-place so its original position is preserved.
                         var idx = entries.IndexOf(existing);
-                        IniEntry replacement = new(key, value);
+                        IniEntry replacement = new(key, value, _lineNumber);
                         entries[idx] = replacement;
                         lookup[key] = replacement;
                         return;
                 }
             }
 
-            IniEntry entry = new(key, value);
+            IniEntry entry = new(key, value, _lineNumber);
             entries.Add(entry);
             lookup[key] = entry;
         }

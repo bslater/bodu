@@ -6,6 +6,8 @@
 
 using System.Text;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -36,8 +38,8 @@ public sealed partial class BoduConfigurationParseOptions
     /// Gets the duplicate key handling mode used by the reader.
     /// </summary>
     /// <returns>The selected duplicate key mode.</returns>
-    public BoduConfigurationDuplicateKeyMode DuplicateKeyMode { get; init; } =
-        BoduConfigurationDuplicateKeyMode.LastWins;
+    public IniDuplicateKeyBehavior DuplicateKeyMode { get; init; } =
+        IniDuplicateKeyBehavior.LastWins;
 
     /// <summary>
     /// Gets the duplicate section handling mode used by the reader.
@@ -92,4 +94,28 @@ public sealed partial class BoduConfigurationParseOptions
     /// </summary>
     /// <returns>The default encoding.</returns>
     public Encoding DefaultEncoding { get; init; } = Encoding.UTF8;
+
+    /// <summary>
+    /// Returns the subset of these options that maps onto an
+    /// <see cref="Bodu.Text.Formats.IniParseOptions" />. Useful when callers want to delegate basic INI parsing
+    /// to <see cref="Bodu.Text.Formats.Ini" /> and layer Configuration-specific features (globs, resolution,
+    /// trivia) on top.
+    /// </summary>
+    /// <returns>A projection that preserves duplicate-key handling and case sensitivity. Configuration features
+    /// without an INI equivalent — inline comments, diagnostics, preamble — are not exposed by the projection.</returns>
+    public IniParseOptions ToIniParseOptions() =>
+        new()
+        {
+            AllowGlobalSection = true,
+            CaseSensitiveKeys = this.KeyOptions.CaseSensitive,
+            CaseSensitiveSections = this.KeyOptions.CaseSensitive,
+            DuplicateKeyBehavior = this.DuplicateKeyMode,
+            DuplicateSectionBehavior = this.DuplicateSectionMode switch
+            {
+                BoduConfigurationDuplicateSectionMode.MergeAdjacent => IniDuplicateSectionBehavior.Merge,
+                BoduConfigurationDuplicateSectionMode.MergeAll => IniDuplicateSectionBehavior.Merge,
+                BoduConfigurationDuplicateSectionMode.Reject => IniDuplicateSectionBehavior.Disallowed,
+                _ => IniDuplicateSectionBehavior.Merge,
+            },
+        };
 }

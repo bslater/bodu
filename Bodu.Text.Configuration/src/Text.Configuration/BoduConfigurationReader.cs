@@ -9,6 +9,8 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -287,10 +289,10 @@ internal sealed partial class BoduConfigurationReader
         {
             switch (this._options.DuplicateKeyMode)
             {
-                case BoduConfigurationDuplicateKeyMode.FirstWins:
+                case IniDuplicateKeyBehavior.FirstWins:
                     return;
 
-                case BoduConfigurationDuplicateKeyMode.Reject:
+                case IniDuplicateKeyBehavior.Disallowed:
                     this.EmitDiagnostic(
                         BoduConfigurationDiagnosticSeverity.Error,
                         BoduConfigurationDiagnosticCode.DuplicateKey,
@@ -298,7 +300,7 @@ internal sealed partial class BoduConfigurationReader
                         loc);
                     return;
 
-                case BoduConfigurationDuplicateKeyMode.LastWins:
+                case IniDuplicateKeyBehavior.LastWins:
                 default:
                     section.ReplacePropertyAt(existingIndex, property);
                     return;

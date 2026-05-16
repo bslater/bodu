@@ -891,8 +891,8 @@ public static class BoduConfigurationKnownAnswerData
 
         items.Add(BoduConfigurationKat.ParseFail(
             id: "FAIL-0005",
-            title: "Duplicate key rejects in Reject mode",
-            duplicateKeyMode: "Reject",
+            title: "Duplicate key rejects in Disallowed mode",
+            duplicateKeyMode: "Disallowed",
             source:
                 """
                 [*]

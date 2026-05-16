@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationParseOptionsTests
@@ -28,7 +30,7 @@ public partial class BoduConfigurationParseOptionsTests
     {
         BoduConfigurationParseOptions options = BoduConfigurationParseOptions.Strict;
 
-        Assert.AreEqual(BoduConfigurationDuplicateKeyMode.Reject, options.DuplicateKeyMode);
+        Assert.AreEqual(IniDuplicateKeyBehavior.Disallowed, options.DuplicateKeyMode);
         Assert.AreEqual(BoduConfigurationDuplicateSectionMode.Reject, options.DuplicateSectionMode);
     }
 

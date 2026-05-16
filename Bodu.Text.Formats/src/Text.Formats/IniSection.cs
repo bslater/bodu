@@ -47,6 +47,55 @@ public sealed class IniSection
     }
 
     /// <summary>
+    /// Initializes a new instance of the <see cref="IniSection" /> class with the supplied name and entries.
+    /// Use this constructor to build sections programmatically without first parsing INI text.
+    /// </summary>
+    /// <param name="name">The section name, or an empty string for the global section.</param>
+    /// <param name="entries">
+    /// The ordered entries for this section. Duplicate keys are resolved by last-wins to mirror
+    /// <see cref="IniDuplicateKeyBehavior.LastWins" />; supply a deduplicated sequence to preserve order exactly.
+    /// </param>
+    /// <param name="caseSensitiveKeys">
+    /// <see langword="true" /> to compare keys with ordinal case sensitivity; otherwise,
+    /// <see langword="false" /> (the INI default) for ordinal case-insensitive comparison.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> or <paramref name="entries" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="entries" /> contains a <see langword="null" /> entry.
+    /// </exception>
+    public IniSection(string name, IEnumerable<IniEntry> entries, bool caseSensitiveKeys = false)
+    {
+        ThrowHelper.ThrowIfNull(name);
+        ThrowHelper.ThrowIfNull(entries);
+
+        Name = name;
+        _entries = new List<IniEntry>();
+        _lookup = new Dictionary<string, IniEntry>(caseSensitiveKeys ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase);
+
+        foreach (IniEntry entry in entries)
+        {
+            if (entry is null)
+                throw new ArgumentException("Entries sequence contains a null entry.", nameof(entries));
+
+            if (_lookup.TryGetValue(entry.Key, out IniEntry? existing))
+            {
+                int idx = _entries.IndexOf(existing);
+                _entries[idx] = entry;
+                _lookup[entry.Key] = entry;
+            }
+            else
+            {
+                _entries.Add(entry);
+                _lookup[entry.Key] = entry;
+            }
+        }
+
+        Entries = _entries.AsReadOnly();
+    }
+
+    /// <summary>
     /// Gets the name of this section.
     /// </summary>
     /// <returns>
