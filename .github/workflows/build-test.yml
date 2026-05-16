@@ -41,6 +41,13 @@ jobs:
             7.0.x
             8.0.x
 
+      - name: Pack Bodu.CodeStyle.XmlDocumentation analyzer (local feed)
+        working-directory: Bodu.CodeStyle
+        run: |
+          dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj \
+            --configuration Release \
+            --output "${{ github.workspace }}/local-packages"
+
       - name: Restore
         run: |
           for proj in $TEST_PROJECTS; do

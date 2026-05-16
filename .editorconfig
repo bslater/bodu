@@ -303,6 +303,9 @@ dotnet_diagnostic.CA1707.severity = none
 dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1601.severity = none
 dotnet_diagnostic.CS1591.severity = none
+# The Bodu XML documentation formatter is intended for production-API doc comments, not the
+# test methods' `Verifies that ...` summaries — keep the test surface free of formatter noise.
+dotnet_diagnostic.BODUXML001.severity = none
 # Inline array literals in test data providers are intentional — they keep expected values
 # co-located with the inputs they describe. CA1861 would scatter them into static fields
 # for no practical benefit since data providers are called once by the test runner.

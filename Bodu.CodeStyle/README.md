@@ -48,6 +48,27 @@ dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.cspr
 The packaging project produces a NuGet that lays out the analyzer, code fix, and Core DLLs under
 `analyzers/dotnet/cs/`, matching Microsoft's documented analyzer NuGet layout.
 
+## Consuming from the rest of the Bodu repository
+
+`bld/Bodu.props` adds a `PackageReference` to `Bodu.CodeStyle.XmlDocumentation` for every consuming project
+(controlled by the `BoduCodeStyleAnalyzers` MSBuild property, default `true`). The analyzer is restored from the
+`bodu-local` source declared in the repo-root `NuGet.config`, which points at `./local-packages/`.
+
+Local-dev workflow:
+
+```bash
+# From the repository root — populate local-packages/ with the freshly-packed analyzer.
+bash bld/pack-codestyle-analyzer.sh
+
+# Then build any Bodu library project normally; restore will pick up the analyzer.
+dotnet build Bodu.Core/src/Bodu.Core.csproj -c Release
+```
+
+CI runs the same `dotnet pack` step before restoring the library projects (see
+`.github/workflows/build-test.yml`). The `Bodu.CodeStyle/Directory.Build.props` sets
+`BoduCodeStyleAnalyzers=false` so the analyzer projects never analyse themselves and never form a circular
+package reference.
+
 ## Status
 
 - Milestone 1 — Core formatter: shipped.
