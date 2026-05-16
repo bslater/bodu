@@ -585,6 +585,23 @@ public static class BoduCodeStyleKats
             """,
             expectedChanged: false),
 
+        CodeStyleKat.XmlFormat(
+            id: "XMLFMT-0019",
+            name: "Every <see> variant (cref / href / langword) stays inline inside another doc tag",
+            input:
+            """
+            /// <summary>
+            /// See <see cref="Sample" />, <see href="https://example.com" />, or pass <see langword="null" />.
+            /// </summary>
+            """,
+            expected:
+            """
+            /// <summary>
+            /// See <see cref="Sample" />, <see href="https://example.com" />, or pass <see langword="null" />.
+            /// </summary>
+            """,
+            expectedChanged: false),
+
         // Analyzer KATs.
         CodeStyleKat.Analyze(
             id: "XMLANL-0001",
