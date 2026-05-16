@@ -90,7 +90,7 @@ public sealed class NotableDateAlgorithmRegistry
     public NotableDateAlgorithmRegistry Register(string key, INotableDateAlgorithm algorithm)
     {
         if (string.IsNullOrWhiteSpace(key))
-            throw new ArgumentException(CalendarResourceStrings.ArgumentException_KeyNullOrWhiteSpace, nameof(key));
+            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_KeyNullOrWhiteSpace, nameof(key));
         if (algorithm is null)
             throw new ArgumentNullException(nameof(algorithm));
 

@@ -47,7 +47,7 @@ public static partial class NotableDateOnlyExtensions
         while (remaining > 0)
         {
             if (dayNumber <= DateOnly.MinValue.DayNumber)
-                throw new ArgumentOutOfRangeException(nameof(count), "Retreating the requested number of working days would underrun DateOnly.MinValue.");
+                throw new ArgumentOutOfRangeException(nameof(count), string.Format(System.Globalization.CultureInfo.InvariantCulture, CalendarResourceStrings.Arg_OutOfRange_RetreatUnderrunDays, "DateOnly.MinValue"));
 
             dayNumber--;
             var candidate = DateOnly.FromDayNumber(dayNumber);
@@ -76,7 +76,7 @@ public static partial class NotableDateOnlyExtensions
     {
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNegative(count);
-        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), "The working week must select at least one day.");
+        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), CalendarResourceStrings.Arg_OutOfRange_WorkingWeekEmpty);
 
         if (count == 0) return DateOnly.FromDayNumber(date.DayNumber);
 
@@ -85,7 +85,7 @@ public static partial class NotableDateOnlyExtensions
         while (remaining > 0)
         {
             if (dayNumber <= DateOnly.MinValue.DayNumber)
-                throw new ArgumentOutOfRangeException(nameof(count), "Retreating the requested number of working days would underrun DateOnly.MinValue.");
+                throw new ArgumentOutOfRangeException(nameof(count), string.Format(System.Globalization.CultureInfo.InvariantCulture, CalendarResourceStrings.Arg_OutOfRange_RetreatUnderrunDays, "DateOnly.MinValue"));
 
             dayNumber--;
             var candidate = DateOnly.FromDayNumber(dayNumber);

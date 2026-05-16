@@ -106,7 +106,7 @@ public static class NotableDateRuleJsonParser
         // Schema validation enforces type:object at the root, so a successful Validate guarantees a non-null tree.
         NotableDatesDocumentDto dto = node!.Deserialize<NotableDatesDocumentDto>(s_serializerOptions)
             ?? throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, "root", "NotableDates"));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, "root", "NotableDates"));
 
         var useGroups = (dto.UseFrom ?? [])
             .Select(MapUseGroup)
@@ -132,7 +132,7 @@ public static class NotableDateRuleJsonParser
     {
         if (string.IsNullOrWhiteSpace(dto.Resource))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, "resource", "useFrom"));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, "resource", "useFrom"));
 
         var uses = (dto.Uses ?? [])
             .Select(MapUseDirective)
@@ -150,7 +150,7 @@ public static class NotableDateRuleJsonParser
     {
         if (string.IsNullOrWhiteSpace(dto.Name))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, "name", "use"));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, "name", "use"));
 
         NotableDateRuleOverrideBody? overrideBody = dto.Rule is null ? null : MapOverrideBody(dto.Rule);
 
@@ -218,7 +218,7 @@ public static class NotableDateRuleJsonParser
     {
         if (string.IsNullOrWhiteSpace(dto.Name))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, "name", "notableDate"));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, "name", "notableDate"));
 
         foreach (RuleDto ruleDto in dto.Rules ?? [])
         {
@@ -275,7 +275,7 @@ public static class NotableDateRuleJsonParser
     {
         if (string.IsNullOrWhiteSpace(dto.Key))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, "key", "adjustment"));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, "key", "adjustment"));
 
         return new ObservanceAdjustment
         {
@@ -319,11 +319,11 @@ public static class NotableDateRuleJsonParser
 
         if (count == 0)
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_RuleMissingStrategy, notableDateName));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_RuleMissingStrategy, notableDateName));
 
         if (count > 1)
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_UnknownStrategyElementOnRule, "<multiple>", notableDateName));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnRule, "<multiple>", notableDateName));
 
         return result;
     }
@@ -349,7 +349,7 @@ public static class NotableDateRuleJsonParser
 
         if (count > 1)
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_UnknownStrategyElementOnOverrideRule, "<multiple>"));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnOverrideRule, "<multiple>"));
 
         return result;
     }
@@ -413,7 +413,7 @@ public static class NotableDateRuleJsonParser
 
             default:
                 throw new NotSupportedException(
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.NotSupportedException_UnsupportedStrategy, rule.Strategy));
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_NotSupported_Strategy, rule.Strategy));
         }
     }
 
@@ -494,7 +494,7 @@ public static class NotableDateRuleJsonParser
     {
         if (string.IsNullOrWhiteSpace(value))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, fieldName, contextName));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, fieldName, contextName));
 
         return value;
     }
@@ -510,7 +510,7 @@ public static class NotableDateRuleJsonParser
     {
         if (value is null)
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, fieldName, contextName));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, fieldName, contextName));
 
         return value.Value;
     }
@@ -528,11 +528,11 @@ public static class NotableDateRuleJsonParser
     {
         if (string.IsNullOrWhiteSpace(raw))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_MissingRequiredAttribute, fieldName, contextName));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, fieldName, contextName));
 
         if (!Enum.TryParse<TEnum>(raw, ignoreCase: true, out TEnum result))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_InvalidAttributeValue, fieldName, contextName));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_InvalidAttributeValue, fieldName, contextName));
 
         return result;
     }
@@ -553,7 +553,7 @@ public static class NotableDateRuleJsonParser
 
         if (!Enum.TryParse<TEnum>(raw, ignoreCase: true, out TEnum result))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_InvalidAttributeValue, fieldName, contextName));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_InvalidAttributeValue, fieldName, contextName));
 
         return result;
     }
@@ -607,7 +607,7 @@ public static class NotableDateRuleJsonParser
             return numeric;
 
         throw new FormatException(
-            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.FormatException_InvalidMonthValueGregorian, monthName));
+            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, monthName));
     }
 
     /// <summary>
@@ -646,7 +646,7 @@ public static class NotableDateRuleJsonParser
             return (null, token);
 
         throw new FormatException(
-            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.FormatException_InvalidMonthValueHebrew, token));
+            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueHebrew, token));
     }
 
     /// <summary>
@@ -661,7 +661,7 @@ public static class NotableDateRuleJsonParser
         {
             if (!seen.Add(adjustment.Key))
                 throw new InvalidOperationException(
-                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_DuplicateAdjustmentKey, adjustment.Key, contextName));
+                    string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_DuplicateAdjustmentKey, adjustment.Key, contextName));
         }
     }
 
@@ -682,7 +682,7 @@ public static class NotableDateRuleJsonParser
             ?? throw new FileNotFoundException(
                 string.Format(
                     CultureInfo.InvariantCulture,
-                    CalendarResourceStrings.FileNotFoundException_EmbeddedSchemaResourceNotFound,
+                    CalendarResourceStrings.IO_FileNotFound_EmbeddedSchemaResource,
                     schemaResourceName,
                     assembly.FullName));
 
@@ -704,7 +704,7 @@ public static class NotableDateRuleJsonParser
         throw new JsonException(
             string.Format(
                 CultureInfo.InvariantCulture,
-                CalendarResourceStrings.JsonException_SchemaValidationError,
+                CalendarResourceStrings.Format_Invalid_JsonSchema,
                 FormatValidationFailures(results)));
     }
 

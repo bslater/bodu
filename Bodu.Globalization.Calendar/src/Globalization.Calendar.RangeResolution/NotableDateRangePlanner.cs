@@ -55,7 +55,7 @@ internal sealed class NotableDateRangePlanner
     public NotableDateRangePlanner(RuleStaticAnalysis analysis, int fringeDays)
     {
         _analysis = analysis ?? throw new ArgumentNullException(nameof(analysis));
-        if (fringeDays < 0) throw new ArgumentOutOfRangeException(nameof(fringeDays), fringeDays, "The fringe distance must not be negative.");
+        if (fringeDays < 0) throw new ArgumentOutOfRangeException(nameof(fringeDays), fringeDays, CalendarResourceStrings.Arg_OutOfRange_FringeDistanceNegative);
         _fringeDays = fringeDays;
     }
 

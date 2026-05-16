@@ -51,7 +51,7 @@ public sealed class LosarNotableDateAlgorithm
     public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
     {
         if (year < 1)
-            throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.ArgumentOutOfRangeException_YearOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.Arg_OutOfRange_Year);
 
         // The Tibetan New Year falls on or shortly after the second new moon after the winter
         // solstice. The winter solstice is approximately 21 December; the second new moon after

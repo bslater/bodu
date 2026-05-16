@@ -49,7 +49,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor
         INotableDateRuleOccurrenceResolver? occurrenceResolver = null)
     {
         if (!Enum.IsDefined(workingWeek))
-            throw new ArgumentOutOfRangeException(nameof(workingWeek), workingWeek, "The working-week pattern is not defined.");
+            throw new ArgumentOutOfRangeException(nameof(workingWeek), workingWeek, CalendarResourceStrings.Arg_OutOfRange_WorkingWeekUndefined);
 
         if (workingWeek == WorkingDaysOfWeek.Custom && weekendProvider is null)
             throw new ArgumentNullException(nameof(weekendProvider));
@@ -283,7 +283,7 @@ internal sealed class NotableDateResolutionAdjustmentProcessor
             NotableDateResolutionProjection.ObservedDate =>
                 Intersects(request.StartDate, request.EndDate, adjustedDate.Date, adjustedDate.EndDate),
 
-            _ => throw new ArgumentOutOfRangeException(nameof(request), request.Projection, "The requested projection is not supported."),
+            _ => throw new ArgumentOutOfRangeException(nameof(request), request.Projection, CalendarResourceStrings.Arg_OutOfRange_UnsupportedProjection),
         };
 
     /// <summary>

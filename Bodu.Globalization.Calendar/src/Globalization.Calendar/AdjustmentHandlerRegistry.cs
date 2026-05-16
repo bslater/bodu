@@ -77,7 +77,7 @@ public sealed class AdjustmentHandlerRegistry
     public AdjustmentHandlerRegistry Register(string key, IAdjustmentHandler handler)
     {
         if (string.IsNullOrWhiteSpace(key))
-            throw new ArgumentException(CalendarResourceStrings.ArgumentException_KeyNullOrWhiteSpace, nameof(key));
+            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_KeyNullOrWhiteSpace, nameof(key));
         if (handler is null)
             throw new ArgumentNullException(nameof(handler));
 

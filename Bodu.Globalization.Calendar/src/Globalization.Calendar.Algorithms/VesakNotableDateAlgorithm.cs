@@ -47,7 +47,7 @@ public sealed class VesakNotableDateAlgorithm
     public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
     {
         if (year < 1)
-            throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.ArgumentOutOfRangeException_YearOutOfRange);
+            throw new ArgumentOutOfRangeException(nameof(year), CalendarResourceStrings.Arg_OutOfRange_Year);
 
         DateTime? fullMoon = LunarPhaseAlgorithm.GetFullMoonOnOrAfter(new DateTime(year, 5, 1));
         if (fullMoon is null)

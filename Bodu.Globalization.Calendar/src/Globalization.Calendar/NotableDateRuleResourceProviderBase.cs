@@ -95,10 +95,10 @@ public abstract class NotableDateRuleResourceProviderBase
         if (assemblies is null) throw new ArgumentNullException(nameof(assemblies));
 
         Assembly[] snapshot = [.. assemblies];
-        if (snapshot.Length == 0) throw new ArgumentException("At least one assembly must be supplied.", nameof(assemblies));
+        if (snapshot.Length == 0) throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_AssemblyChainEmpty, nameof(assemblies));
         for (var i = 0; i < snapshot.Length; i++)
         {
-            if (snapshot[i] is null) throw new ArgumentException("Assembly chain entries must not be null.", nameof(assemblies));
+            if (snapshot[i] is null) throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_AssemblyChainContainsNull, nameof(assemblies));
         }
 
         _assemblies = snapshot;
@@ -143,7 +143,7 @@ public abstract class NotableDateRuleResourceProviderBase
 
         if (!inProgress.Add(resourceName))
             throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_CircularReferenceInResource, resourceName));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_CircularReferenceInResource, resourceName));
 
         try
         {
@@ -174,7 +174,7 @@ public abstract class NotableDateRuleResourceProviderBase
                     if (matches.Count == 0)
                     {
                         throw new InvalidOperationException(
-                            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_RuleNotFoundInSource, directive.SourceRuleName, group.SourceResource, resourceName));
+                            string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_RuleNotFoundInSource, directive.SourceRuleName, group.SourceResource, resourceName));
                     }
 
                     if (directive.ClearInherited)
@@ -339,7 +339,7 @@ public abstract class NotableDateRuleResourceProviderBase
 
         using Stream stream = OpenManifestResourceStream(resourceName)
             ?? throw new FileNotFoundException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.FileNotFoundException_EmbeddedXmlResourceNotFound, resourceName, FormatAssemblyChain(_assemblies)));
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.IO_FileNotFound_EmbeddedXmlResource, resourceName, FormatAssemblyChain(_assemblies)));
 
         using var reader = new StreamReader(stream);
         var content = reader.ReadToEnd();

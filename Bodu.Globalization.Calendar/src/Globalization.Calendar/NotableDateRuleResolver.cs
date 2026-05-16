@@ -84,7 +84,7 @@ internal sealed class NotableDateRuleResolver
         if (!resolving.Add(rule.Name))
         {
             var chain = string.Join(" -> ", resolving.Concat(new[] { rule.Name }));
-            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_CircularDependencyInRule, rule.Name, chain));
+            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_CircularDependencyInRule, rule.Name, chain));
         }
 
         try
@@ -145,7 +145,7 @@ internal sealed class NotableDateRuleResolver
                     return ResolveAlgorithm(rule, year);
 
                 default:
-                    throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.NotSupportedException_UnsupportedDateResolutionStrategy, rule.Strategy, rule.Name));
+                    throw new NotSupportedException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_NotSupported_DateResolutionStrategy, rule.Strategy, rule.Name));
             }
         }
         finally
@@ -169,7 +169,7 @@ internal sealed class NotableDateRuleResolver
             return null;
 
         if (!_rulesByName.TryGetValue(rule.AnchorRuleName!, out NotableDateRule? anchorRule))
-            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.InvalidOperationException_AnchorRuleNotFound, rule.AnchorRuleName, rule.Name));
+            throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_AnchorRuleNotFound, rule.AnchorRuleName, rule.Name));
 
         DateTime? anchorDate = ResolveInternal(anchorRule, year, resolving);
         if (anchorDate is null || rule.OffsetDays is not { } offset)
