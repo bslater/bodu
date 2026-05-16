@@ -24,7 +24,7 @@ public static partial class Bencode
     private const byte StringLengthSeparator = (byte)':';
 
     private static readonly CompositeFormat s_unexpectedToken =
-        CompositeFormat.Parse(FormatsResourceStrings.BencodeFormatException_UnexpectedToken);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedToken);
 
     /// <summary>
     /// Decodes a complete bencoded document.
@@ -40,7 +40,7 @@ public static partial class Bencode
         BencodedValue value = parser.ParseValue();
 
         if (parser.Position != source.Length)
-            throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_TrailingData);
+            throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeTrailingData);
 
         return value;
     }
@@ -176,7 +176,7 @@ public static partial class Bencode
                 BencodedDictionary dictionary => 2 + dictionary.GetOrderedItems()
                     .Sum(item => GetStringEncodedLength(item.Key) + GetEncodedLengthCore(item.Value)),
 
-                _ => throw new ArgumentOutOfRangeException(nameof(value), FormatsResourceStrings.ArgumentOutOfRange_UnsupportedBencodedValueType),
+                _ => throw new ArgumentOutOfRangeException(nameof(value), FormatsResourceStrings.Arg_OutOfRange_UnsupportedBencodedValueType),
             };
         }
     }
@@ -216,7 +216,7 @@ public static partial class Bencode
         destination[offset++] = IntegerPrefix;
 
         if (!Utf8Formatter.TryFormat(value.Value, destination[offset..], out var bytesWritten))
-            throw new InvalidOperationException(FormatsResourceStrings.InvalidOperationException_IntegerFormatFailed);
+            throw new InvalidOperationException(FormatsResourceStrings.Op_Invalid_IntegerFormatFailed);
 
         offset += bytesWritten;
         destination[offset++] = EndMarker;
@@ -225,7 +225,7 @@ public static partial class Bencode
     private static void WriteString(BencodedString value, Span<byte> destination, ref int offset)
     {
         if (!Utf8Formatter.TryFormat(value.Length, destination[offset..], out var bytesWritten))
-            throw new InvalidOperationException(FormatsResourceStrings.InvalidOperationException_StringLengthFormatFailed);
+            throw new InvalidOperationException(FormatsResourceStrings.Op_Invalid_StringLengthFormatFailed);
 
         offset += bytesWritten;
         destination[offset++] = StringLengthSeparator;
@@ -277,7 +277,7 @@ public static partial class Bencode
                 return;
 
             default:
-                throw new ArgumentOutOfRangeException(nameof(value), FormatsResourceStrings.ArgumentOutOfRange_UnsupportedBencodedValueType);
+                throw new ArgumentOutOfRangeException(nameof(value), FormatsResourceStrings.Arg_OutOfRange_UnsupportedBencodedValueType);
         }
     }
 
@@ -296,7 +296,7 @@ public static partial class Bencode
         public BencodedValue ParseValue()
         {
             if (Position >= _source.Length)
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_UnexpectedEndOfData);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData);
 
             switch (_source[Position])
             {
@@ -324,7 +324,7 @@ public static partial class Bencode
             while (true)
             {
                 if (Position >= _source.Length)
-                    throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_UnterminatedDictionary);
+                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedDictionary);
 
                 if (_source[Position] == EndMarker)
                 {
@@ -333,14 +333,14 @@ public static partial class Bencode
                 }
 
                 if (!IsAsciiDigit(_source[Position]))
-                    throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_NonStringDictionaryKey);
+                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeNonStringDictionaryKey);
 
                 BencodedString key = ParseString();
 
                 if (previousKey is not null &&
                     BencodedStringComparer.Ordinal.Compare(previousKey, key) >= 0)
                 {
-                    throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_UnorderedDictionaryKeys);
+                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys);
                 }
 
                 BencodedValue value = ParseValue();
@@ -354,7 +354,7 @@ public static partial class Bencode
             Position++;
 
             if (Position >= _source.Length)
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_UnterminatedInteger);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedInteger);
 
             var numberStart = Position;
             var isNegative = false;
@@ -365,21 +365,21 @@ public static partial class Bencode
                 Position++;
 
                 if (Position >= _source.Length)
-                    throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_InvalidInteger);
+                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeInvalidInteger);
             }
 
             if (!IsAsciiDigit(_source[Position]))
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_InvalidInteger);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeInvalidInteger);
 
             if (_source[Position] == (byte)'0')
             {
                 Position++;
 
                 if (isNegative)
-                    throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_NegativeZeroInteger);
+                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeNegativeZeroInteger);
 
                 if (Position < _source.Length && IsAsciiDigit(_source[Position]))
-                    throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_LeadingZerosInteger);
+                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeLeadingZerosInteger);
             }
             else
             {
@@ -390,14 +390,14 @@ public static partial class Bencode
             }
 
             if (Position >= _source.Length || _source[Position] != EndMarker)
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_UnterminatedInteger);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedInteger);
 
             ReadOnlySpan<byte> number = _source[numberStart..Position];
 
             if (!Utf8Parser.TryParse(number, out long value, out var bytesConsumed) ||
                 bytesConsumed != number.Length)
             {
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_IntegerOutOfRange);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeIntegerOutOfRange);
             }
 
             Position++;
@@ -413,7 +413,7 @@ public static partial class Bencode
             while (true)
             {
                 if (Position >= _source.Length)
-                    throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_UnterminatedList);
+                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedList);
 
                 if (_source[Position] == EndMarker)
                 {
@@ -430,7 +430,7 @@ public static partial class Bencode
             var length = ParseStringLength();
 
             if (length > _source.Length - Position)
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_StringLengthExceedsInput);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringLengthExceedsInput);
 
             BencodedString value = new(_source.Slice(Position, length));
             Position += length;
@@ -441,7 +441,7 @@ public static partial class Bencode
         private int ParseStringLength()
         {
             if (Position >= _source.Length || !IsAsciiDigit(_source[Position]))
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_StringLengthExpected);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringLengthExpected);
 
             var digitStart = Position;
             var hasLeadingZero = _source[Position] == (byte)'0';
@@ -452,17 +452,17 @@ public static partial class Bencode
                 var digit = _source[Position] - (byte)'0';
 
                 if (length > (int.MaxValue - digit) / 10)
-                    throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_StringLengthTooLarge);
+                    throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringLengthTooLarge);
 
                 length = (length * 10) + digit;
                 Position++;
             }
 
             if (Position >= _source.Length || _source[Position] != StringLengthSeparator)
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_StringMissingSeparator);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringMissingSeparator);
 
             if (hasLeadingZero && Position - digitStart > 1)
-                throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_StringLengthLeadingZeros);
+                throw new BencodeFormatException(FormatsResourceStrings.Format_Invalid_BencodeStringLengthLeadingZeros);
 
             Position++;
             return length;

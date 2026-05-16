@@ -13,19 +13,19 @@ namespace Bodu.Text.Formats;
 public static partial class DotEnv
 {
     private static readonly CompositeFormat s_duplicateKey =
-        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_DuplicateKey);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvDuplicateKey);
 
     private static readonly CompositeFormat s_invalidKey =
-        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_InvalidKey);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvInvalidKey);
 
     private static readonly CompositeFormat s_malformedEntry =
-        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_MalformedEntry);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvMalformedEntry);
 
     private static readonly CompositeFormat s_unterminatedDoubleQuote =
-        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_UnterminatedDoubleQuote);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvUnterminatedDoubleQuote);
 
     private static readonly CompositeFormat s_unterminatedSingleQuote =
-        CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_UnterminatedSingleQuote);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DotEnvUnterminatedSingleQuote);
 
     /// <summary>Throws a <see cref="DotEnvFormatException" /> for a duplicate key.</summary>
     [DoesNotReturn]

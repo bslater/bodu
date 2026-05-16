@@ -26,7 +26,7 @@ public sealed class DotEnvDocument
 {
     /// <summary>Cached format for the <c>KeyNotFound</c> message.</summary>
     private static readonly CompositeFormat s_keyNotFound =
-        CompositeFormat.Parse(FormatsResourceStrings.DotEnvDocument_KeyNotFound);
+        CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_DotEnvKeyNotFound);
 
     private readonly List<DotEnvEntry> _entries;
     private readonly Dictionary<string, DotEnvEntry> _lookup;

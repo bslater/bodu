@@ -22,7 +22,7 @@ public sealed partial class BencodedListTests
         });
 
         Assert.AreEqual("items", ex.ParamName);
-        StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_NullListElement);
+        StringAssert.Contains(ex.Message, FormatsResourceStrings.Arg_Invalid_NullListElement);
     }
     /// <summary>
     /// Verifies that the constructor rejects a <see langword="null" /> items enumerable with

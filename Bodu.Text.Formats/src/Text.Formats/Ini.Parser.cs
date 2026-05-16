@@ -13,19 +13,19 @@ namespace Bodu.Text.Formats;
 public static partial class Ini
 {
     private static readonly CompositeFormat s_iniDuplicateKey =
-        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_DuplicateKey);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniDuplicateKey);
 
     private static readonly CompositeFormat s_iniDuplicateSection =
-        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_DuplicateSection);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniDuplicateSection);
 
     private static readonly CompositeFormat s_iniGlobalKeyDisallowed =
-        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_GlobalKeyDisallowed);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniGlobalKeyDisallowed);
 
     private static readonly CompositeFormat s_iniMalformedSectionHeader =
-        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_MalformedSectionHeader);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniMalformedSectionHeader);
 
     private static readonly CompositeFormat s_iniMissingKey =
-        CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_MissingKey);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_IniMissingKey);
 
     /// <summary>Throws an <see cref="IniFormatException" /> for a duplicate key.</summary>
     [DoesNotReturn]

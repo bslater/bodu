@@ -51,27 +51,27 @@ public static class BencodeKnownAnswerVectors
     /// <returns>A sequence suitable for <c>[DynamicData]</c>.</returns>
     public static IEnumerable<object[]> Bep3NegativeVectors()
     {
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Integer with leading zero (i03e)", "i03e", nameof(FormatsResourceStrings.BencodeFormatException_LeadingZerosInteger), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Negative zero integer (i-0e)", "i-0e", nameof(FormatsResourceStrings.BencodeFormatException_NegativeZeroInteger), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Unterminated integer (i42)", "i42", nameof(FormatsResourceStrings.BencodeFormatException_UnterminatedInteger), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Integer with minus only (i-e)", "i-e", nameof(FormatsResourceStrings.BencodeFormatException_InvalidInteger), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Empty integer body (ie)", "ie", nameof(FormatsResourceStrings.BencodeFormatException_InvalidInteger), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Integer overflows Int64 (i99…e)", "i99999999999999999999e", nameof(FormatsResourceStrings.BencodeFormatException_IntegerOutOfRange), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Integer with leading zero (i03e)", "i03e", nameof(FormatsResourceStrings.Format_Invalid_BencodeLeadingZerosInteger), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Negative zero integer (i-0e)", "i-0e", nameof(FormatsResourceStrings.Format_Invalid_BencodeNegativeZeroInteger), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Unterminated integer (i42)", "i42", nameof(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedInteger), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Integer with minus only (i-e)", "i-e", nameof(FormatsResourceStrings.Format_Invalid_BencodeInvalidInteger), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Empty integer body (ie)", "ie", nameof(FormatsResourceStrings.Format_Invalid_BencodeInvalidInteger), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Integer overflows Int64 (i99…e)", "i99999999999999999999e", nameof(FormatsResourceStrings.Format_Invalid_BencodeIntegerOutOfRange), Bep3) };
 
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("String length exceeds input (4:spa)", "4:spa", nameof(FormatsResourceStrings.BencodeFormatException_StringLengthExceedsInput), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("String missing colon (4spam)", "4spam", nameof(FormatsResourceStrings.BencodeFormatException_StringMissingSeparator), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("String length with leading zero (04:spam)", "04:spam", nameof(FormatsResourceStrings.BencodeFormatException_StringLengthLeadingZeros), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("String length overflows Int32 (9999999999:)", "9999999999:", nameof(FormatsResourceStrings.BencodeFormatException_StringLengthTooLarge), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("String length exceeds input (4:spa)", "4:spa", nameof(FormatsResourceStrings.Format_Invalid_BencodeStringLengthExceedsInput), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("String missing colon (4spam)", "4spam", nameof(FormatsResourceStrings.Format_Invalid_BencodeStringMissingSeparator), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("String length with leading zero (04:spam)", "04:spam", nameof(FormatsResourceStrings.Format_Invalid_BencodeStringLengthLeadingZeros), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("String length overflows Int32 (9999999999:)", "9999999999:", nameof(FormatsResourceStrings.Format_Invalid_BencodeStringLengthTooLarge), Bep3) };
 
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Unknown token (x)", "x", nameof(FormatsResourceStrings.BencodeFormatException_UnexpectedToken), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Empty input", string.Empty, nameof(FormatsResourceStrings.BencodeFormatException_UnexpectedEndOfData), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Trailing data after value (i3e0:trailing)", "i3e0:trailing", nameof(FormatsResourceStrings.BencodeFormatException_TrailingData), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Unknown token (x)", "x", nameof(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedToken), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Empty input", string.Empty, nameof(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Trailing data after value (i3e0:trailing)", "i3e0:trailing", nameof(FormatsResourceStrings.Format_Invalid_BencodeTrailingData), Bep3) };
 
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Unterminated list (l1:a)", "l1:a", nameof(FormatsResourceStrings.BencodeFormatException_UnterminatedList), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Unterminated dictionary (d1:a1:b)", "d1:a1:b", nameof(FormatsResourceStrings.BencodeFormatException_UnterminatedDictionary), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Dictionary with non-string key (di1e1:ve)", "di1e1:ve", nameof(FormatsResourceStrings.BencodeFormatException_NonStringDictionaryKey), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Dictionary with unsorted keys (b before a)", "d1:b0:1:a0:e", nameof(FormatsResourceStrings.BencodeFormatException_UnorderedDictionaryKeys), Bep3) };
-        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Dictionary with duplicate keys", "d1:a0:1:a0:e", nameof(FormatsResourceStrings.BencodeFormatException_UnorderedDictionaryKeys), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Unterminated list (l1:a)", "l1:a", nameof(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedList), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Unterminated dictionary (d1:a1:b)", "d1:a1:b", nameof(FormatsResourceStrings.Format_Invalid_BencodeUnterminatedDictionary), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Dictionary with non-string key (di1e1:ve)", "di1e1:ve", nameof(FormatsResourceStrings.Format_Invalid_BencodeNonStringDictionaryKey), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Dictionary with unsorted keys (b before a)", "d1:b0:1:a0:e", nameof(FormatsResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys), Bep3) };
+        yield return new object[] { BencodeNegativeDecodeVector.Ascii("Dictionary with duplicate keys", "d1:a0:1:a0:e", nameof(FormatsResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys), Bep3) };
     }
 
     /// <summary>

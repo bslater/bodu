@@ -33,7 +33,7 @@ public sealed partial class BencodeTests
             string expectedMessage = FormatsResourceStrings.ResourceManager.GetString(vector.ExpectedResourceKey, System.Globalization.CultureInfo.InvariantCulture)
                 ?? throw new InvalidOperationException($"Missing resource key {vector.ExpectedResourceKey}");
 
-            if (vector.ExpectedResourceKey == nameof(FormatsResourceStrings.BencodeFormatException_UnexpectedToken))
+            if (vector.ExpectedResourceKey == nameof(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedToken))
             {
                 // Composite-format message — assert that the canonical prefix (everything before the first
                 // placeholder) appears in the thrown message.
@@ -61,7 +61,7 @@ public sealed partial class BencodeTests
     {
         // Skip the trailing-data vector — TryDecode consumes only the value prefix and reports success, while
         // Decode (the strict variant) rejects trailing bytes. The negative vector set is shared across both.
-        if (vector.ExpectedResourceKey == nameof(FormatsResourceStrings.BencodeFormatException_TrailingData))
+        if (vector.ExpectedResourceKey == nameof(FormatsResourceStrings.Format_Invalid_BencodeTrailingData))
             return;
 
         bool result = Bencode.TryDecode(vector.EncodedBytes, out BencodedValue? value, out int consumed);

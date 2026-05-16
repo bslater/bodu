@@ -13,7 +13,7 @@ namespace Bodu.Text.Formats;
 public static partial class Delimited
 {
     private static readonly CompositeFormat s_unterminatedQuotedField =
-        CompositeFormat.Parse(FormatsResourceStrings.DelimitedFormatException_UnterminatedQuotedField);
+        CompositeFormat.Parse(FormatsResourceStrings.Format_Invalid_DelimitedUnterminatedQuotedField);
 
     /// <summary>Throws a <see cref="DelimitedFormatException" /> for an unterminated quoted field.</summary>
     /// <param name="lineNumber">The 1-based line on which the opening quote appeared.</param>

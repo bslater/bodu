@@ -63,369 +63,423 @@ namespace Bodu {
         /// <summary>
         ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
         /// </summary>
-        internal static string ArgumentException_DuplicateDictionaryKey {
+        internal static string Arg_Invalid_DuplicateDictionaryKey {
             get {
-                return ResourceManager.GetString("ArgumentException_DuplicateDictionaryKey", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Comment prefix must be '#' or ';'..
+        /// </summary>
+        internal static string Arg_Invalid_IniCommentPrefix {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniCommentPrefix", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Entries sequence contains a null entry..
+        /// </summary>
+        internal static string Arg_Invalid_IniEntriesContainsNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniEntriesContainsNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Global section must have an empty Name..
+        /// </summary>
+        internal static string Arg_Invalid_IniGlobalSectionNotEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniGlobalSectionNotEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot add a section with an empty name; the global section is preallocated..
+        /// </summary>
+        internal static string Arg_Invalid_IniSectionCannotAddGlobal {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSectionCannotAddGlobal", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Section name cannot be empty; the global section is accessed via GlobalSection..
+        /// </summary>
+        internal static string Arg_Invalid_IniSectionNameEmpty {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSectionNameEmpty", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sections sequence contains a null section..
+        /// </summary>
+        internal static string Arg_Invalid_IniSectionsContainsNull {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_IniSectionsContainsNull", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The dictionary cannot contain null keys..
         /// </summary>
-        internal static string ArgumentException_NullDictionaryKey {
+        internal static string Arg_Invalid_NullDictionaryKey {
             get {
-                return ResourceManager.GetString("ArgumentException_NullDictionaryKey", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_NullDictionaryKey", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The dictionary cannot contain null values..
         /// </summary>
-        internal static string ArgumentException_NullDictionaryValue {
+        internal static string Arg_Invalid_NullDictionaryValue {
             get {
-                return ResourceManager.GetString("ArgumentException_NullDictionaryValue", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_NullDictionaryValue", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The list cannot contain null values..
         /// </summary>
-        internal static string ArgumentException_NullListElement {
+        internal static string Arg_Invalid_NullListElement {
             get {
-                return ResourceManager.GetString("ArgumentException_NullListElement", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_NullListElement", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Stream does not support reading..
         /// </summary>
-        internal static string ArgumentException_StreamNotReadable {
+        internal static string Arg_Invalid_StreamNotReadable {
             get {
-                return ResourceManager.GetString("ArgumentException_StreamNotReadable", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_StreamNotReadable", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Stream does not support writing..
         /// </summary>
-        internal static string ArgumentException_StreamNotWritable {
+        internal static string Arg_Invalid_StreamNotWritable {
             get {
-                return ResourceManager.GetString("ArgumentException_StreamNotWritable", resourceCulture);
+                return ResourceManager.GetString("Arg_Invalid_StreamNotWritable", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Unsupported bencoded value type..
         /// </summary>
-        internal static string ArgumentOutOfRange_UnsupportedBencodedValueType {
+        internal static string Arg_OutOfRange_UnsupportedBencodedValueType {
             get {
-                return ResourceManager.GetString("ArgumentOutOfRange_UnsupportedBencodedValueType", resourceCulture);
+                return ResourceManager.GetString("Arg_OutOfRange_UnsupportedBencodedValueType", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The bencoded integer is outside the supported Int64 range..
         /// </summary>
-        internal static string BencodeFormatException_IntegerOutOfRange {
+        internal static string Format_Invalid_BencodeIntegerOutOfRange {
             get {
-                return ResourceManager.GetString("BencodeFormatException_IntegerOutOfRange", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeIntegerOutOfRange", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Invalid bencoded integer..
         /// </summary>
-        internal static string BencodeFormatException_InvalidInteger {
+        internal static string Format_Invalid_BencodeInvalidInteger {
             get {
-                return ResourceManager.GetString("BencodeFormatException_InvalidInteger", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeInvalidInteger", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Bencoded integers cannot contain leading zeros..
         /// </summary>
-        internal static string BencodeFormatException_LeadingZerosInteger {
+        internal static string Format_Invalid_BencodeLeadingZerosInteger {
             get {
-                return ResourceManager.GetString("BencodeFormatException_LeadingZerosInteger", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeLeadingZerosInteger", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Negative zero is not a valid bencoded integer..
         /// </summary>
-        internal static string BencodeFormatException_NegativeZeroInteger {
+        internal static string Format_Invalid_BencodeNegativeZeroInteger {
             get {
-                return ResourceManager.GetString("BencodeFormatException_NegativeZeroInteger", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeNegativeZeroInteger", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Bencoded dictionary keys must be byte strings..
         /// </summary>
-        internal static string BencodeFormatException_NonStringDictionaryKey {
+        internal static string Format_Invalid_BencodeNonStringDictionaryKey {
             get {
-                return ResourceManager.GetString("BencodeFormatException_NonStringDictionaryKey", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeNonStringDictionaryKey", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The bencoded string length exceeds the available input..
         /// </summary>
-        internal static string BencodeFormatException_StringLengthExceedsInput {
+        internal static string Format_Invalid_BencodeStringLengthExceedsInput {
             get {
-                return ResourceManager.GetString("BencodeFormatException_StringLengthExceedsInput", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthExceedsInput", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Expected a bencoded string length..
         /// </summary>
-        internal static string BencodeFormatException_StringLengthExpected {
+        internal static string Format_Invalid_BencodeStringLengthExpected {
             get {
-                return ResourceManager.GetString("BencodeFormatException_StringLengthExpected", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthExpected", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Bencoded string lengths cannot contain leading zeros..
         /// </summary>
-        internal static string BencodeFormatException_StringLengthLeadingZeros {
+        internal static string Format_Invalid_BencodeStringLengthLeadingZeros {
             get {
-                return ResourceManager.GetString("BencodeFormatException_StringLengthLeadingZeros", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthLeadingZeros", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The bencoded string length exceeds Int32.MaxValue..
         /// </summary>
-        internal static string BencodeFormatException_StringLengthTooLarge {
+        internal static string Format_Invalid_BencodeStringLengthTooLarge {
             get {
-                return ResourceManager.GetString("BencodeFormatException_StringLengthTooLarge", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeStringLengthTooLarge", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Expected &apos;:&apos; after bencoded string length..
+        ///   Looks up a localized string similar to Expected ':' after bencoded string length..
         /// </summary>
-        internal static string BencodeFormatException_StringMissingSeparator {
+        internal static string Format_Invalid_BencodeStringMissingSeparator {
             get {
-                return ResourceManager.GetString("BencodeFormatException_StringMissingSeparator", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeStringMissingSeparator", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The bencoded value contains trailing data..
         /// </summary>
-        internal static string BencodeFormatException_TrailingData {
+        internal static string Format_Invalid_BencodeTrailingData {
             get {
-                return ResourceManager.GetString("BencodeFormatException_TrailingData", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeTrailingData", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Unexpected end of bencoded data..
         /// </summary>
-        internal static string BencodeFormatException_UnexpectedEndOfData {
+        internal static string Format_Invalid_BencodeUnexpectedEndOfData {
             get {
-                return ResourceManager.GetString("BencodeFormatException_UnexpectedEndOfData", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeUnexpectedEndOfData", resourceCulture);
             }
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Unexpected bencode token &apos;{0}&apos; at offset {1}..
+        ///   Looks up a localized string similar to Unexpected bencode token '{0}' at offset {1}..
         /// </summary>
-        internal static string BencodeFormatException_UnexpectedToken {
+        internal static string Format_Invalid_BencodeUnexpectedToken {
             get {
-                return ResourceManager.GetString("BencodeFormatException_UnexpectedToken", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeUnexpectedToken", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Bencoded dictionary keys must be unique and sorted by raw byte order..
         /// </summary>
-        internal static string BencodeFormatException_UnorderedDictionaryKeys {
+        internal static string Format_Invalid_BencodeUnorderedDictionaryKeys {
             get {
-                return ResourceManager.GetString("BencodeFormatException_UnorderedDictionaryKeys", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeUnorderedDictionaryKeys", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Unterminated bencoded dictionary..
         /// </summary>
-        internal static string BencodeFormatException_UnterminatedDictionary {
+        internal static string Format_Invalid_BencodeUnterminatedDictionary {
             get {
-                return ResourceManager.GetString("BencodeFormatException_UnterminatedDictionary", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedDictionary", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Unterminated bencoded integer..
         /// </summary>
-        internal static string BencodeFormatException_UnterminatedInteger {
+        internal static string Format_Invalid_BencodeUnterminatedInteger {
             get {
-                return ResourceManager.GetString("BencodeFormatException_UnterminatedInteger", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedInteger", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Unterminated bencoded list..
         /// </summary>
-        internal static string BencodeFormatException_UnterminatedList {
+        internal static string Format_Invalid_BencodeUnterminatedList {
             get {
-                return ResourceManager.GetString("BencodeFormatException_UnterminatedList", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The column header '{0}' was not found..
-        /// </summary>
-        internal static string DelimitedDocument_HeaderNotFound {
-            get {
-                return ResourceManager.GetString("DelimitedDocument_HeaderNotFound", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_BencodeUnterminatedList", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Unterminated quoted field starting on line {0}..
         /// </summary>
-        internal static string DelimitedFormatException_UnterminatedQuotedField {
+        internal static string Format_Invalid_DelimitedUnterminatedQuotedField {
             get {
-                return ResourceManager.GetString("DelimitedFormatException_UnterminatedQuotedField", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The document was parsed without a header row; field access by column name is not available..
-        /// </summary>
-        internal static string DelimitedRow_NoHeaders {
-            get {
-                return ResourceManager.GetString("DelimitedRow_NoHeaders", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The key '{0}' was not found..
-        /// </summary>
-        internal static string DotEnvDocument_KeyNotFound {
-            get {
-                return ResourceManager.GetString("DotEnvDocument_KeyNotFound", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_DelimitedUnterminatedQuotedField", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Duplicate key '{0}' on line {1}..
         /// </summary>
-        internal static string DotEnvFormatException_DuplicateKey {
+        internal static string Format_Invalid_DotEnvDuplicateKey {
             get {
-                return ResourceManager.GetString("DotEnvFormatException_DuplicateKey", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_DotEnvDuplicateKey", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Invalid key '{0}' on line {1}. Keys must start with a letter or underscore and contain only letters, digits, and underscores..
         /// </summary>
-        internal static string DotEnvFormatException_InvalidKey {
+        internal static string Format_Invalid_DotEnvInvalidKey {
             get {
-                return ResourceManager.GetString("DotEnvFormatException_InvalidKey", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_DotEnvInvalidKey", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Malformed entry on line {0}..
         /// </summary>
-        internal static string DotEnvFormatException_MalformedEntry {
+        internal static string Format_Invalid_DotEnvMalformedEntry {
             get {
-                return ResourceManager.GetString("DotEnvFormatException_MalformedEntry", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_DotEnvMalformedEntry", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Unterminated double-quoted string starting on line {0}..
         /// </summary>
-        internal static string DotEnvFormatException_UnterminatedDoubleQuote {
+        internal static string Format_Invalid_DotEnvUnterminatedDoubleQuote {
             get {
-                return ResourceManager.GetString("DotEnvFormatException_UnterminatedDoubleQuote", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_DotEnvUnterminatedDoubleQuote", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Unterminated single-quoted string on line {0}..
         /// </summary>
-        internal static string DotEnvFormatException_UnterminatedSingleQuote {
+        internal static string Format_Invalid_DotEnvUnterminatedSingleQuote {
             get {
-                return ResourceManager.GetString("DotEnvFormatException_UnterminatedSingleQuote", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_DotEnvUnterminatedSingleQuote", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Duplicate key '{0}' on line {1}..
         /// </summary>
-        internal static string IniFormatException_DuplicateKey {
+        internal static string Format_Invalid_IniDuplicateKey {
             get {
-                return ResourceManager.GetString("IniFormatException_DuplicateKey", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_IniDuplicateKey", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Duplicate section '{0}' on line {1}..
         /// </summary>
-        internal static string IniFormatException_DuplicateSection {
+        internal static string Format_Invalid_IniDuplicateSection {
             get {
-                return ResourceManager.GetString("IniFormatException_DuplicateSection", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_IniDuplicateSection", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Keys are not permitted before the first section header (line {0})..
         /// </summary>
-        internal static string IniFormatException_GlobalKeyDisallowed {
+        internal static string Format_Invalid_IniGlobalKeyDisallowed {
             get {
-                return ResourceManager.GetString("IniFormatException_GlobalKeyDisallowed", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_IniGlobalKeyDisallowed", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Malformed section header on line {0}..
         /// </summary>
-        internal static string IniFormatException_MalformedSectionHeader {
+        internal static string Format_Invalid_IniMalformedSectionHeader {
             get {
-                return ResourceManager.GetString("IniFormatException_MalformedSectionHeader", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_IniMalformedSectionHeader", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to Expected a key name on line {0}..
         /// </summary>
-        internal static string IniFormatException_MissingKey {
+        internal static string Format_Invalid_IniMissingKey {
             get {
-                return ResourceManager.GetString("IniFormatException_MissingKey", resourceCulture);
+                return ResourceManager.GetString("Format_Invalid_IniMissingKey", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The column header '{0}' was not found..
+        /// </summary>
+        internal static string Op_Invalid_DelimitedHeaderNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DelimitedHeaderNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The document was parsed without a header row; field access by column name is not available..
+        /// </summary>
+        internal static string Op_Invalid_DelimitedRowNoHeaders {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DelimitedRowNoHeaders", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The key '{0}' was not found..
+        /// </summary>
+        internal static string Op_Invalid_DotEnvKeyNotFound {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DotEnvKeyNotFound", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The key '{0}' was not found in the section..
         /// </summary>
-        internal static string IniSection_KeyNotFound {
+        internal static string Op_Invalid_IniSectionKeyNotFound {
             get {
-                return ResourceManager.GetString("IniSection_KeyNotFound", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_IniSectionKeyNotFound", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The integer value could not be formatted..
         /// </summary>
-        internal static string InvalidOperationException_IntegerFormatFailed {
+        internal static string Op_Invalid_IntegerFormatFailed {
             get {
-                return ResourceManager.GetString("InvalidOperationException_IntegerFormatFailed", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_IntegerFormatFailed", resourceCulture);
             }
         }
 
         /// <summary>
         ///   Looks up a localized string similar to The string length could not be formatted..
         /// </summary>
-        internal static string InvalidOperationException_StringLengthFormatFailed {
+        internal static string Op_Invalid_StringLengthFormatFailed {
             get {
-                return ResourceManager.GetString("InvalidOperationException_StringLengthFormatFailed", resourceCulture);
+                return ResourceManager.GetString("Op_Invalid_StringLengthFormatFailed", resourceCulture);
             }
         }
     }

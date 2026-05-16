@@ -88,7 +88,7 @@ public sealed class IniDocument
         ThrowHelper.ThrowIfNull(sections);
 
         if (globalSection.Name.Length != 0)
-            throw new ArgumentException("Global section must have an empty Name.", nameof(globalSection));
+            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniGlobalSectionNotEmpty, nameof(globalSection));
 
         GlobalSection = globalSection;
         _sections = new List<IniSection>();
@@ -98,7 +98,7 @@ public sealed class IniDocument
         foreach (IniSection section in sections)
         {
             if (section is null)
-                throw new ArgumentException("Sections sequence contains a null section.", nameof(sections));
+                throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniSectionsContainsNull, nameof(sections));
 
             _sections.Add(section);
             if (!_lookup.ContainsKey(section.Name))
@@ -176,7 +176,7 @@ public sealed class IniDocument
     {
         ThrowHelper.ThrowIfNull(section);
         if (section.Name.Length == 0)
-            throw new ArgumentException("Cannot add a section with an empty name; the global section is preallocated.", nameof(section));
+            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniSectionCannotAddGlobal, nameof(section));
 
         _sections.Add(section);
         if (!_lookup.ContainsKey(section.Name))
@@ -194,7 +194,7 @@ public sealed class IniDocument
     {
         ThrowHelper.ThrowIfNull(name);
         if (name.Length == 0)
-            throw new ArgumentException("Section name cannot be empty; the global section is accessed via GlobalSection.", nameof(name));
+            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniSectionNameEmpty, nameof(name));
 
         if (_lookup.TryGetValue(name, out IniSection? existing))
             return existing;

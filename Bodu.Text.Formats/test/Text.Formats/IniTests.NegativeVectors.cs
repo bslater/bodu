@@ -23,7 +23,7 @@ public sealed partial class IniTests
 
         Assert.AreEqual(1, ex.LineNumber);
         StringAssert.Contains(ex.Message, FormatsResourceStrings.ResourceManager
-            .GetString("IniFormatException_MalformedSectionHeader",
+            .GetString("Format_Invalid_IniMalformedSectionHeader",
                 System.Globalization.CultureInfo.InvariantCulture)![..10]);
     }
 

@@ -23,7 +23,7 @@ public sealed partial class BencodeTests
 
         // The encoded duplicate-key case fails the "strictly greater than previous" sort-order check, so the
         // decoder reports the unordered-keys message rather than a separate duplicate-key error.
-        Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_UnorderedDictionaryKeys, ex.Message);
+        Assert.AreEqual(FormatsResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys, ex.Message);
     }
     /// <summary>
     /// Verifies that <see cref="Bencode.Decode(ReadOnlySpan{byte})" /> rejects a dictionary whose encoded keys
@@ -37,7 +37,7 @@ public sealed partial class BencodeTests
             _ = Bencode.Decode(Bytes("d1:b0:1:a0:e"));
         });
 
-        Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_UnorderedDictionaryKeys, ex.Message);
+        Assert.AreEqual(FormatsResourceStrings.Format_Invalid_BencodeUnorderedDictionaryKeys, ex.Message);
     }
 
     /// <summary>

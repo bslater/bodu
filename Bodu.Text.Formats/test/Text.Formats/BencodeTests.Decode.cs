@@ -21,7 +21,7 @@ public sealed partial class BencodeTests
             _ = Bencode.Decode(ReadOnlySpan<byte>.Empty);
         });
 
-        Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_UnexpectedEndOfData, ex.Message);
+        Assert.AreEqual(FormatsResourceStrings.Format_Invalid_BencodeUnexpectedEndOfData, ex.Message);
     }
 
     /// <summary>
@@ -102,7 +102,7 @@ public sealed partial class BencodeTests
             _ = Bencode.Decode(Bytes("i3e0:trailing"));
         });
 
-        Assert.AreEqual(FormatsResourceStrings.BencodeFormatException_TrailingData, ex.Message);
+        Assert.AreEqual(FormatsResourceStrings.Format_Invalid_BencodeTrailingData, ex.Message);
     }
 
 }
