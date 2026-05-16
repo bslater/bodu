@@ -86,6 +86,22 @@ new ConfigurationBuilder()
 When `TargetPath` is `null`, only preamble (top-of-file) keys flow into the configuration view — anchored
 sections are skipped.
 
+## Array binding
+
+`Microsoft.Extensions.Configuration` binds collection types (`List<T>`, `T[]`) when child keys are
+zero-based numeric segments. The Bodu source format produces those keys via the default dotted-segment
+notation:
+
+```
+items.0 = first
+items.1 = second
+items.2 = third
+```
+
+The resolved view exposes `items:0`, `items:1`, `items:2`, which bind through
+`configuration.GetSection("items").Get<List<string>>()` exactly the way JSON arrays bind in
+`Microsoft.Extensions.Configuration.Json`.
+
 ## Default-filename convention
 
 `AddBoduConfiguration()` (no arguments) probes the builder's file provider for `.boduconfig` first, then
