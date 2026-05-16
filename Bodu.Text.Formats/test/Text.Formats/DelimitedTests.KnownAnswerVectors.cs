@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test;
-
 namespace Bodu.Text.Formats;
 
 public sealed partial class DelimitedTests
@@ -17,7 +15,6 @@ public sealed partial class DelimitedTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="DelimitedKnownAnswerVectors.Rfc4180Vectors" />.</param>
     [TestMethod]
-    [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(DelimitedKnownAnswerVectors.Rfc4180Vectors), typeof(DelimitedKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Parse_ForRfc4180KnownAnswerVector_ShouldProduceExpectedDocument(DelimitedKnownAnswerVector vector)
     {
@@ -47,7 +44,6 @@ public sealed partial class DelimitedTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="DelimitedKnownAnswerVectors.Rfc4180Vectors" />.</param>
     [TestMethod]
-    [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(DelimitedKnownAnswerVectors.Rfc4180Vectors), typeof(DelimitedKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Format_ForRfc4180KnownAnswerVector_ShouldRoundTripDocument(DelimitedKnownAnswerVector vector)
     {

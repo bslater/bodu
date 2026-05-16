@@ -112,6 +112,27 @@ public static partial class Delimited
     }
 
     /// <summary>
+    /// Creates a forward-only <see cref="DelimitedReader" /> that reads from the specified
+    /// <see cref="TextReader" /> using default options.
+    /// </summary>
+    /// <param name="reader">The <see cref="TextReader" /> to read delimited text from. Owned by the returned reader.</param>
+    /// <returns>A <see cref="DelimitedReader" /> positioned before the first row.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="reader" /> is <see langword="null" />.</exception>
+    public static DelimitedReader CreateReader(TextReader reader) =>
+        new(reader);
+
+    /// <summary>
+    /// Creates a forward-only <see cref="DelimitedReader" /> that reads from the specified
+    /// <see cref="TextReader" /> using the supplied options.
+    /// </summary>
+    /// <param name="reader">The <see cref="TextReader" /> to read delimited text from. Owned by the returned reader.</param>
+    /// <param name="options">Options that control how the source is interpreted.</param>
+    /// <returns>A <see cref="DelimitedReader" /> positioned before the first row.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="reader" /> is <see langword="null" />.</exception>
+    public static DelimitedReader CreateReader(TextReader reader, DelimitedParseOptions options) =>
+        new(reader, options);
+
+    /// <summary>
     /// Attempts to parse a delimited-text document from the specified character span using default options.
     /// </summary>
     /// <param name="source">The delimited source text.</param>

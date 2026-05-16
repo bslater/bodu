@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test;
-
 namespace Bodu.Text.Formats;
 
 public sealed partial class IniTests
@@ -16,7 +14,6 @@ public sealed partial class IniTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="IniKnownAnswerVectors.SpecVectors" />.</param>
     [TestMethod]
-    [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(IniKnownAnswerVectors.SpecVectors), typeof(IniKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Parse_ForSpecKnownAnswerVector_ShouldProduceExpectedDocument(IniKnownAnswerVector vector)
     {
@@ -64,7 +61,6 @@ public sealed partial class IniTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="IniKnownAnswerVectors.SpecVectors" />.</param>
     [TestMethod]
-    [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(IniKnownAnswerVectors.SpecVectors), typeof(IniKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Format_ForSpecKnownAnswerVector_ShouldRoundTripDocument(IniKnownAnswerVector vector)
     {

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using Bodu.Test;
-
 namespace Bodu.Text.Formats;
 
 public sealed partial class DotEnvTests
@@ -17,7 +15,6 @@ public sealed partial class DotEnvTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="DotEnvKnownAnswerVectors.SpecVectors" />.</param>
     [TestMethod]
-    [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(DotEnvKnownAnswerVectors.SpecVectors), typeof(DotEnvKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Parse_ForSpecKnownAnswerVector_ShouldProduceExpectedDocument(DotEnvKnownAnswerVector vector)
     {
@@ -45,7 +42,6 @@ public sealed partial class DotEnvTests
     /// </summary>
     /// <param name="vector">A KAT vector sourced from <see cref="DotEnvKnownAnswerVectors.SpecVectors" />.</param>
     [TestMethod]
-    [TestCategory(TestCategories.Regression)]
     [DynamicData(nameof(DotEnvKnownAnswerVectors.SpecVectors), typeof(DotEnvKnownAnswerVectors), DynamicDataSourceType.Method)]
     public void Format_ForSpecKnownAnswerVector_ShouldRoundTripDocument(DotEnvKnownAnswerVector vector)
     {

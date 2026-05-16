@@ -16,8 +16,9 @@ public static partial class Delimited
         CompositeFormat.Parse(FormatsResourceStrings.DelimitedFormatException_UnterminatedQuotedField);
 
     /// <summary>Throws a <see cref="DelimitedFormatException" /> for an unterminated quoted field.</summary>
+    /// <param name="lineNumber">The 1-based line on which the opening quote appeared.</param>
     [DoesNotReturn]
-    private static void ThrowUnterminatedQuotedField(int lineNumber) =>
+    internal static void ThrowUnterminatedQuotedField(int lineNumber) =>
         throw new DelimitedFormatException(
             string.Format(CultureInfo.InvariantCulture, s_unterminatedQuotedField, lineNumber), lineNumber);
 
