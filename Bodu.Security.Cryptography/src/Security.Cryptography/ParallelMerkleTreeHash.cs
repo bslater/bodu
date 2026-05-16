@@ -610,7 +610,7 @@ public sealed class ParallelMerkleTreeHash
         // in _blockBuffer are cleared explicitly since the buffer is reused across calls.
         if (this._bufferLength > 0)
         {
-            Array.Clear(this._blockBuffer, this._bufferLength, this._blockSize - this._bufferLength);
+            CryptoHelpers.Clear(this._blockBuffer.AsSpan(this._bufferLength, this._blockSize - this._bufferLength));
             this.SubmitLeaf(this._blockBuffer, this._blockSize);
             this._bufferLength = 0;
         }

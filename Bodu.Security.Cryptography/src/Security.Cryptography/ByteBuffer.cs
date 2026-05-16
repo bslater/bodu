@@ -119,7 +119,7 @@ internal sealed class ByteBuffer
     public byte[] GetBytesZeroPadded()
     {
         var count = this.Count;
-        Array.Clear(this._internalBuffer, count, this._internalBuffer.Length - count);
+        CryptoHelpers.Clear(this._internalBuffer.AsSpan(count, this._internalBuffer.Length - count));
         this._index = EmptyIndex;
         return this._internalBuffer;
     }
@@ -131,7 +131,7 @@ internal sealed class ByteBuffer
     public void Initialize(bool clear = true)
     {
         if (clear)
-            Array.Clear(this._internalBuffer, 0, this._internalBuffer.Length);
+            CryptoHelpers.Clear(this._internalBuffer);
 
         this._index = EmptyIndex;
     }

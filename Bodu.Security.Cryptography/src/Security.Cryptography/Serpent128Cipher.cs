@@ -201,11 +201,9 @@ public sealed class Serpent128Cipher
     {
         if (this._disposed) return;
 
-        if (disposing)
-        {
-            // The round-key schedule is derived from secret key material and must be cleared on deterministic disposal.
-            CryptoHelpers.Clear(this._roundKeys);
-        }
+        // Round keys are derived from secret key material and are zeroed in both disposal paths
+        // so they are not retained if the finalizer runs before an explicit Dispose call.
+        CryptoHelpers.Clear(this._roundKeys);
 
         base.Dispose(disposing);
     }

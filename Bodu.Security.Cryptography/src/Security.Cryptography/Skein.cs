@@ -221,7 +221,7 @@ public abstract partial class Skein<T>
         this._pendingBytes = 0;
         this._messageBytesProcessed = 0UL;
         this._hasProcessedAnyMessageBlock = false;
-        Array.Clear(this._pendingBlock, 0, this._pendingBlock.Length);
+        CryptoHelpers.Clear(this._pendingBlock);
 
         this.EnsureChainingValueInitialized();
         Array.Copy(this._initialChainingValue, this._state, this._state.Length);
@@ -283,7 +283,7 @@ public abstract partial class Skein<T>
         var blockBytes = this.BlockSize / 8;
         if (residual < blockBytes)
         {
-            Array.Clear(this._pendingBlock, residual, blockBytes - residual);
+            CryptoHelpers.Clear(this._pendingBlock.AsSpan(residual, blockBytes - residual));
         }
 
         this._messageBytesProcessed += (ulong)residual;

@@ -544,7 +544,7 @@ public sealed class CubeHash
             return;
 
         // Zero and seed the state with algorithm parameters, then apply initialization rounds
-        Array.Clear(this._state, 0, this._state.Length);
+        CryptoHelpers.Clear(this._state);
         this._state[0] = (uint)(this.HashSizeValue / 8);
         this._state[1] = (uint)this._inputBlockSizeBytes;
         this._state[2] = (uint)this._rounds;
