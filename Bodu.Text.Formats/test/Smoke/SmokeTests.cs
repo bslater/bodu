@@ -111,4 +111,66 @@ public sealed class SmokeTests
         Assert.IsTrue(BencodedStringComparer.Ordinal.Compare(a, b) < 0);
     }
 
+    /// <summary>
+    /// Verifies that <see cref="Delimited.Parse(ReadOnlySpan{char})" /> and
+    /// <see cref="Delimited.Format(DelimitedDocument)" /> round-trip a simple CSV document — headers and all field
+    /// values survive unchanged.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void Delimited_ParseFormat_ShouldRoundTripSimpleDocument()
+    {
+        const string source = "name,age,city\nAlice,30,Paris\nBob,25,London";
+
+        DelimitedDocument original = Delimited.Parse(source);
+        string formatted = Delimited.Format(original);
+        DelimitedDocument roundTripped = Delimited.Parse(formatted);
+
+        Assert.AreEqual(2, roundTripped.Rows.Count);
+        Assert.AreEqual("Alice", roundTripped.Rows[0]["name"]);
+        Assert.AreEqual("25", roundTripped.Rows[1]["age"]);
+        Assert.AreEqual("London", roundTripped.Rows[1]["city"]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DotEnv.Parse(ReadOnlySpan{char})" /> and
+    /// <see cref="DotEnv.Format(DotEnvDocument)" /> round-trip a simple DotEnv document — all keys and values
+    /// survive unchanged.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void DotEnv_ParseFormat_ShouldRoundTripSimpleDocument()
+    {
+        const string source = "HOST=localhost\nPORT=8080\nDEBUG=True";
+
+        DotEnvDocument original = DotEnv.Parse(source);
+        string formatted = DotEnv.Format(original);
+        DotEnvDocument roundTripped = DotEnv.Parse(formatted);
+
+        Assert.AreEqual("localhost", roundTripped["HOST"]);
+        Assert.AreEqual("8080", roundTripped["PORT"]);
+        Assert.AreEqual("True", roundTripped["DEBUG"]);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="Ini.Parse(ReadOnlySpan{char})" /> and <see cref="Ini.Format(IniDocument)" />
+    /// round-trip a simple INI document — all sections, keys, and values survive unchanged.
+    /// </summary>
+    [TestMethod]
+    [TestCategory(TestCategories.Smoke)]
+    public void Ini_ParseFormat_ShouldRoundTripSimpleDocument()
+    {
+        const string source = "global=g\n[server]\nhost=localhost\nport=8080";
+
+        IniDocument original = Ini.Parse(source);
+        string formatted = Ini.Format(original);
+        IniDocument roundTripped = Ini.Parse(formatted);
+
+        Assert.AreEqual("g", roundTripped.GlobalSection["global"]);
+        IniSection? server = roundTripped.GetSection("server");
+        Assert.IsNotNull(server);
+        Assert.AreEqual("localhost", server["host"]);
+        Assert.AreEqual("8080", server["port"]);
+    }
+
 }

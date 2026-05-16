@@ -1,17 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -120,14 +120,29 @@
   <data name="Arg_Invalid_ActionRequiresNull" xml:space="preserve">
     <value>{0} action must be initialized with no {1} items.</value>
   </data>
+  <data name="Arg_Invalid_ArrayIsZeroLength" xml:space="preserve">
+    <value>The array must not be empty.</value>
+  </data>
   <data name="Arg_Invalid_ArrayLength" xml:space="preserve">
     <value>The array length must be exactly {0}.</value>
   </data>
-  <data name="Arg_Invalid_SpanLength" xml:space="preserve">
-    <value>The span length must be exactly {0}.</value>
+  <data name="Arg_Invalid_ArrayLengthExceedsCapacity" xml:space="preserve">
+    <value>The number of elements to copy exceeds the capacity available.</value>
   </data>
-  <data name="Arg_Invalid_SpanTooShort" xml:space="preserve">
-    <value>The span is too short. The minimum required length from the specified index is {0}.</value>
+  <data name="Arg_Invalid_ArrayLengthMultipleOf" xml:space="preserve">
+    <value>The length of the array must be a multiple of {0}.</value>
+  </data>
+  <data name="Arg_Invalid_ArrayNonZeroLowerBound" xml:space="preserve">
+    <value>The lower bound of the target array must be zero.</value>
+  </data>
+  <data name="Arg_Invalid_ArrayNumericOnly" xml:space="preserve">
+    <value>The array contains non-numeric values.</value>
+  </data>
+  <data name="Arg_Invalid_ArrayOffset" xml:space="preserve">
+    <value>The value must be zero or positive, and less than the number of elements in the {0}.</value>
+  </data>
+  <data name="Arg_Invalid_ArrayOffsetOrLength" xml:space="preserve">
+    <value>The sum of {0} and {1} exceeds the number of elements in the {2}.</value>
   </data>
   <data name="Arg_Invalid_ArrayTooShort" xml:space="preserve">
     <value>The array is too short. The minimum required length from the specified index is {0}.</value>
@@ -135,29 +150,101 @@
   <data name="Arg_Invalid_ArrayType" xml:space="preserve">
     <value>Target array type is not compatible with the type of items in the collection.</value>
   </data>
-  <data name="Arg_Invalid_Array_NumericOnly" xml:space="preserve">
-    <value>The array contains non-numeric values.</value>
+  <data name="Arg_Invalid_CollectionIsEmpty" xml:space="preserve">
+    <value>The collection is empty.</value>
+  </data>
+  <data name="Arg_Invalid_CollectionReadOnly" xml:space="preserve">
+    <value>The collection must not be read-only.</value>
   </data>
   <data name="Arg_Invalid_CollectionTooSmall" xml:space="preserve">
     <value>The collection contains insufficient elements. At least {0} element(s) are required.</value>
   </data>
-  <data name="Arg_Invalid_ArrayLengthExceedsCapacity" xml:space="preserve">
-    <value>The number of elements to copy exceeds the capacity available.</value>
+  <data name="Arg_Invalid_Conversion" xml:space="preserve">
+    <value>The value cannot be converted to type {0}.</value>
+  </data>
+  <data name="Arg_Invalid_DestinationTooSmall" xml:space="preserve">
+    <value>The destination {0} must be at least as long as the source {1}.</value>
+  </data>
+  <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
+    <value>The dictionary cannot contain duplicate keys.</value>
+  </data>
+  <data name="Arg_Invalid_FormatString" xml:space="preserve">
+    <value>The format string is invalid.</value>
+  </data>
+  <data name="Arg_Invalid_GreaterThanOrEqualOtherParameter" xml:space="preserve">
+    <value>The value must not be greater than or equal to the value of {0}.</value>
+  </data>
+  <data name="Arg_Invalid_GreaterThanOtherParameter" xml:space="preserve">
+    <value>The value must not be greater than the value of {0}.</value>
+  </data>
+  <data name="Arg_Invalid_InputTooShort" xml:space="preserve">
+    <value>The input is too short. At least {0} elements are required.</value>
+  </data>
+  <data name="Arg_Invalid_LessThanOrEqualOtherParameter" xml:space="preserve">
+    <value>The value must not be less than or equal to the value of {0}.</value>
+  </data>
+  <data name="Arg_Invalid_LessThanOtherParameter" xml:space="preserve">
+    <value>The value must not be less than the value of {0}.</value>
   </data>
   <data name="Arg_Invalid_MaxIsLessThanSuffixLength" xml:space="preserve">
     <value>The maximum length of the string is less than the length of the suffix.</value>
   </data>
+  <data name="Arg_Invalid_MustBeComparableType" xml:space="preserve">
+    <value>Object must be of type {0} to be compared.</value>
+  </data>
   <data name="Arg_Invalid_MustBeOfType" xml:space="preserve">
     <value>Object must be of type {0}.</value>
   </data>
-  <data name="Arg_Invalid_ArrayNonZeroLowerBound" xml:space="preserve">
-    <value>The lower bound of the target array must be zero.</value>
+  <data name="Arg_Invalid_NullCollectionElement" xml:space="preserve">
+    <value>The collection cannot contain null elements.</value>
   </data>
-  <data name="Arg_Invalid_ArrayOffsetOrLength" xml:space="preserve">
-    <value>The sum of {0} and {1} exceeds the number of elements in the {2}.</value>
+  <data name="Arg_Invalid_NullDictionaryKey" xml:space="preserve">
+    <value>The dictionary cannot contain null keys.</value>
+  </data>
+  <data name="Arg_Invalid_NullDictionaryValue" xml:space="preserve">
+    <value>The dictionary cannot contain null values.</value>
+  </data>
+  <data name="Arg_Invalid_NullListElement" xml:space="preserve">
+    <value>The list cannot contain null elements.</value>
+  </data>
+  <data name="Arg_Invalid_OrdinalDoesNotExistForMonth" xml:space="preserve">
+    <value>The ordinal '{0}' does not exist for {1} in {2}.</value>
+  </data>
+  <data name="Arg_Invalid_OutputBufferTooSmall" xml:space="preserve">
+    <value>The output buffer is too small. At least {0} elements are required.</value>
+  </data>
+  <data name="Arg_Invalid_ParameterRequiredIf" xml:space="preserve">
+    <value>The '{0}' parameter is required when '{1}' is set to {2}.</value>
+  </data>
+  <data name="Arg_Invalid_ParamsContainsNullValue" xml:space="preserve">
+    <value>The value collection contains one or more null elements.</value>
   </data>
   <data name="Arg_Invalid_PositiveMultipleOf" xml:space="preserve">
     <value>The value must be a positive number and a multiple of {0}.</value>
+  </data>
+  <data name="Arg_Invalid_PowerOfTwo" xml:space="preserve">
+    <value>The value must be a positive power of two.</value>
+  </data>
+  <data name="Arg_Invalid_ProviderInterface" xml:space="preserve">
+    <value>Custom definitions require an external provider that implements {0}.</value>
+  </data>
+  <data name="Arg_Invalid_RankMultiDimensionArray" xml:space="preserve">
+    <value>Only single-dimension arrays are supported.</value>
+  </data>
+  <data name="Arg_Invalid_SingleSurrogateCharacter" xml:space="preserve">
+    <value>The value is a single Unicode surrogate character, which must be written as a pair. Consider passing a character array instead.</value>
+  </data>
+  <data name="Arg_Invalid_SpanLength" xml:space="preserve">
+    <value>The span length must be exactly {0}.</value>
+  </data>
+  <data name="Arg_Invalid_SpanLengthMultipleOf" xml:space="preserve">
+    <value>The length of the span must be a multiple of {0}.</value>
+  </data>
+  <data name="Arg_Invalid_SpanTooShort" xml:space="preserve">
+    <value>The span is too short. The minimum required length from the specified index is {0}.</value>
+  </data>
+  <data name="Arg_Invalid_StreamLengthExceeded" xml:space="preserve">
+    <value>Cannot write beyond the end of the stream.</value>
   </data>
   <data name="Arg_Invalid_StringComparison" xml:space="preserve">
     <value>The string comparison type is not supported.</value>
@@ -165,17 +252,26 @@
   <data name="Arg_Invalid_StringEmptyOrWhitespace" xml:space="preserve">
     <value>The value cannot be empty or consist only of white-space characters.</value>
   </data>
+  <data name="Arg_Invalid_StringLength" xml:space="preserve">
+    <value>The string length must be exactly {0} characters.</value>
+  </data>
+  <data name="Arg_Invalid_StringLengthRange" xml:space="preserve">
+    <value>The string length must be between {0} and {1} characters.</value>
+  </data>
   <data name="Arg_Invalid_StringMustBeDigits" xml:space="preserve">
     <value>The string must contain numeric digits only.</value>
   </data>
   <data name="Arg_Invalid_StringNullOrEmpty" xml:space="preserve">
     <value>The value cannot be null or empty.</value>
   </data>
-  <data name="Arg_OutOfRangeException_EnumValue" xml:space="preserve">
-    <value>The value '{1}' is not a defined member of the {0} enumeration.</value>
+  <data name="Arg_Invalid_StringTooLong" xml:space="preserve">
+    <value>The string must not exceed {0} characters.</value>
   </data>
-  <data name="Arg_Invalid_WrongActionForCtor" xml:space="preserve">
-    <value>Constructor supports only the '{0}' action.</value>
+  <data name="Arg_Invalid_ValueForOperation" xml:space="preserve">
+    <value>The value for '{0}' must be {1}, but was {2}.</value>
+  </data>
+  <data name="Arg_Invalid_ValuesNotEqual" xml:space="preserve">
+    <value>The value must equal {0}.</value>
   </data>
   <data name="Arg_Invalid_WrongAction2ForCtor" xml:space="preserve">
     <value>Constructor supports only the '{0}' or '{1}' actions.</value>
@@ -183,176 +279,59 @@
   <data name="Arg_Invalid_WrongAction3ForCtor" xml:space="preserve">
     <value>Constructor supports only the '{0}', '{1}', or '{2}' actions.</value>
   </data>
+  <data name="Arg_Invalid_WrongActionForCtor" xml:space="preserve">
+    <value>Constructor supports only the '{0}' action.</value>
+  </data>
   <data name="Arg_OutOfRange_BadHourMinuteSecond" xml:space="preserve">
     <value>Hour, Minute, and Second parameters describe an unrepresentable DateTime.</value>
   </data>
   <data name="Arg_OutOfRange_BadYearMonthDay" xml:space="preserve">
     <value>Year, Month, and Day parameters describe an unrepresentable DateTime.</value>
   </data>
+  <data name="Arg_OutOfRange_CountExceedsAvailable" xml:space="preserve">
+    <value>The count must be non-negative and must not exceed the number of available items ({0}).</value>
+  </data>
+  <data name="Arg_OutOfRange_CountGreaterThanSource" xml:space="preserve">
+    <value>The source has fewer elements than requested.</value>
+  </data>
+  <data name="Arg_OutOfRange_DateOutsideFiscalYear" xml:space="preserve">
+    <value>The specified date {0:d} is outside the range of the configured fiscal year starting on {1:d}.</value>
+  </data>
+  <data name="Arg_OutOfRange_EnumValue" xml:space="preserve">
+    <value>The value '{1}' is not a defined member of the {0} enumeration.</value>
+  </data>
   <data name="Arg_OutOfRange_IndexValidRange" xml:space="preserve">
     <value>The index must be non-negative and less than the size of {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_InvalidMonthNumber" xml:space="preserve">
+    <value>The month number must be between 1 and 12.</value>
+  </data>
+  <data name="Arg_OutOfRange_InvalidQuarterNumber" xml:space="preserve">
+    <value>The quarter number must be between 1 and 4.</value>
   </data>
   <data name="Arg_OutOfRange_MinCannotExceedMax" xml:space="preserve">
     <value>The value cannot be greater than the value of '{0}'.</value>
   </data>
-  <data name="Arg_OutOfRange_RequireGreaterThanOrEqual" xml:space="preserve">
-    <value>The value must be greater than or equal to {0}.</value>
+  <data name="Arg_OutOfRange_NotFinite" xml:space="preserve">
+    <value>Value must be a finite number (not NaN or infinity).</value>
+  </data>
+  <data name="Arg_OutOfRange_RequireBetweenExclusive" xml:space="preserve">
+    <value>The value must be greater than {0} and less than {1}.</value>
+  </data>
+  <data name="Arg_OutOfRange_RequireBetweenInclusive" xml:space="preserve">
+    <value>The value must be between {0} and {1}, inclusive.</value>
   </data>
   <data name="Arg_OutOfRange_RequireGreaterThan" xml:space="preserve">
     <value>The value must be greater than {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_RequireGreaterThanOrEqual" xml:space="preserve">
+    <value>The value must be greater than or equal to {0}.</value>
   </data>
   <data name="Arg_OutOfRange_RequireLessThan" xml:space="preserve">
     <value>The value must be less than {0}.</value>
   </data>
   <data name="Arg_OutOfRange_RequireLessThanOrEqual" xml:space="preserve">
     <value>The value must be less than or equal to {0}.</value>
-  </data>
-  <data name="Arg_OutOfRange_RequireBetweenInclusive" xml:space="preserve">
-    <value>The value must be between {0} and {1}, inclusive.</value>
-  </data>
-  <data name="Arg_Params_ContainsNullValue" xml:space="preserve">
-    <value>The value collection contains one or more null elements.</value>
-  </data>
-  <data name="Arg_Invalid_SingleSurrogateCharacter" xml:space="preserve">
-    <value>The value is a single Unicode surrogate character, which must be written as a pair. Consider passing a character array instead.</value>
-  </data>
-  <data name="Arg_Invalid_Conversion" xml:space="preserve">
-    <value>The value cannot be converted to type {0}.</value>
-  </data>
-  <data name="Concurrent_SnapshotUnstable" xml:space="preserve">
-    <value>The collection could not produce a stable snapshot under sustained concurrent modification.</value>
-  </data>
-  <data name="Format_FileSize_Unrecognized" xml:space="preserve">
-    <value>Unrecognized file size format.</value>
-  </data>
-  <data name="Format_Invalid_7BitInt32" xml:space="preserve">
-    <value>Too many bytes in what should have been a 7 bit encoded Int32.</value>
-  </data>
-  <data name="Format_Invalid_String" xml:space="preserve">
-    <value>Input string was not in the correct format.</value>
-  </data>
-  <data name="Format_Invalid_WeekDays" xml:space="preserve">
-    <value>Unrecognized week days format.</value>
-  </data>
-  <data name="Arg_Invalid_FormatString" xml:space="preserve">
-    <value>The format string is invalid.</value>
-  </data>
-  <data name="IO_Error_PathDirectoryNotFound" xml:space="preserve">
-    <value>Could not find directory '{0}'.</value>
-  </data>
-  <data name="IO_Error_PathFileNotFound" xml:space="preserve">
-    <value>Could not find file '{0}'.</value>
-  </data>
-  <data name="IO_Error_StreamReadBeyondEnd" xml:space="preserve">
-    <value>Unable to read beyond the end of the stream.</value>
-  </data>
-  <data name="IO_Error_StreamClosed" xml:space="preserve">
-    <value>Cannot access a closed stream.</value>
-  </data>
-  <data name="IO_Error_StreamNotReadable" xml:space="preserve">
-    <value>The stream is not readable.</value>
-  </data>
-  <data name="IO_Error_StreamNotWritable" xml:space="preserve">
-    <value>The stream is not writable.</value>
-  </data>
-  <data name="InvalidOperation_CapacityExhausted" xml:space="preserve">
-    <value>The capacity has been exhausted.</value>
-  </data>
-  <data name="InvalidOperation_CollectionEmpty" xml:space="preserve">
-    <value>The collection is empty.</value>
-  </data>
-  <data name="InvalidOperation_CollectionModified" xml:space="preserve">
-    <value>The collection was modified; enumerator operations may not execute.</value>
-  </data>
-  <data name="InvalidOperation_EnumeratorExhausted" xml:space="preserve">
-    <value>The enumerator has been exhausted.</value>
-  </data>
-  <data name="InvalidOperation_EnumeratorNotOnElement" xml:space="preserve">
-    <value>Enumeration has either not started or has already finished.</value>
-  </data>
-  <data name="InvalidOperation_InvalidConversion" xml:space="preserve">
-    <value>Unable to convert type {0} to {1}.</value>
-  </data>
-  <data name="InvalidOperation_SequenceNoMatch" xml:space="preserve">
-    <value>The sequence contains no matching elements.</value>
-  </data>
-  <data name="InvalidOperation_ReentrancyNotAllowed" xml:space="preserve">
-    <value>Cannot modify the collection during a change notification event.</value>
-  </data>
-  <data name="InvalidOperation_TimeoutAlreadyEstablished" xml:space="preserve">
-    <value>The timeout cannot be changed after the lock has already been established.</value>
-  </data>
-  <data name="Overflow_NegatingTwosComplementNumber" xml:space="preserve">
-    <value>Negating the minimum value of a twos complement number is invalid.</value>
-  </data>
-  <data name="Rank_MultiDimensionArrayNotSupported" xml:space="preserve">
-    <value>Only single-dimension arrays are supported.</value>
-  </data>
-  <data name="InvalidOperation_SequenceContainsInvalidElement" xml:space="preserve">
-    <value>The sequence contains an invalid item.</value>
-  </data>
-  <data name="String_Number_Bytes" xml:space="preserve">
-    <value>Bytes</value>
-  </data>
-  <data name="String_Number_Exabytes" xml:space="preserve">
-    <value>Exabytes</value>
-  </data>
-  <data name="String_Number_Gigabytes" xml:space="preserve">
-    <value>Gigabytes</value>
-  </data>
-  <data name="String_Number_Kilobytes" xml:space="preserve">
-    <value>Kilobytes</value>
-  </data>
-  <data name="String_Number_Megabytes" xml:space="preserve">
-    <value>Megabytes</value>
-  </data>
-  <data name="String_Ordinal_Eighth" xml:space="preserve">
-    <value>Eighth</value>
-  </data>
-  <data name="String_Ordinal_First" xml:space="preserve">
-    <value>First</value>
-  </data>
-  <data name="String_Ordinal_Fifth" xml:space="preserve">
-    <value>Fifth</value>
-  </data>
-  <data name="String_Ordinal_Fourth" xml:space="preserve">
-    <value>Fourth</value>
-  </data>
-  <data name="String_Ordinal_Last" xml:space="preserve">
-    <value>Last</value>
-  </data>
-  <data name="String_Ordinal_Ninth" xml:space="preserve">
-    <value>Ninth</value>
-  </data>
-  <data name="String_Ordinal_Second" xml:space="preserve">
-    <value>Second</value>
-  </data>
-  <data name="String_Ordinal_Seventh" xml:space="preserve">
-    <value>Seventh</value>
-  </data>
-  <data name="String_Ordinal_Sixth" xml:space="preserve">
-    <value>Sixth</value>
-  </data>
-  <data name="String_Ordinal_Tenth" xml:space="preserve">
-    <value>Tenth</value>
-  </data>
-  <data name="String_Ordinal_Third" xml:space="preserve">
-    <value>Third</value>
-  </data>
-  <data name="String_Number_Petabytes" xml:space="preserve">
-    <value>Petabytes</value>
-  </data>
-  <data name="String_Number_Terabytes" xml:space="preserve">
-    <value>Terabytes</value>
-  </data>
-  <data name="String_VowelCharacters" xml:space="preserve">
-    <value>AEUIOU</value>
-  </data>
-  <data name="String_Number_Zettabytes" xml:space="preserve">
-    <value>Zettabytes</value>
-  </data>
-  <data name="Arg_OutOfRange_RequireBetweenExclusive" xml:space="preserve">
-    <value>The value must be greater than {0} and less than {1}.</value>
   </data>
   <data name="Arg_OutOfRange_RequireNegative" xml:space="preserve">
     <value>The value must be a negative number.</value>
@@ -372,59 +351,29 @@
   <data name="Arg_OutOfRange_RequireZero" xml:space="preserve">
     <value>The value must be zero.</value>
   </data>
-  <data name="Arg_Invalid_GreaterThanOtherParameter" xml:space="preserve">
-    <value>The value must not be greater than the value of {0}.</value>
-  </data>
-  <data name="InvalidOperation_EmptySequence" xml:space="preserve">
-    <value>The sequence is empty.</value>
-  </data>
-  <data name="Arg_Invalid_ArrayIsZeroLength" xml:space="preserve">
-    <value>The array must not be empty.</value>
-  </data>
-  <data name="Arg_Invalid_ArrayLengthMultipleOf" xml:space="preserve">
-    <value>The length of the array must be a multiple of {0}.</value>
-  </data>
-  <data name="Arg_Invalid_SpanLengthMultipleOf" xml:space="preserve">
-    <value>The length of the span must be a multiple of {0}.</value>
-  </data>
-  <data name="Arg_Invalid_GreaterThanOrEqualOtherParameter" xml:space="preserve">
-    <value>The value must not be greater than or equal to the value of {0}.</value>
-  </data>
-  <data name="Arg_Required_ParameterRequiredIf" xml:space="preserve">
-    <value>The '{0}' parameter is required when '{1}' is set to {2}.</value>
-  </data>
-  <data name="Arg_Invalid_LessThanOrEqualOtherParameter" xml:space="preserve">
-    <value>The value must not be less than or equal to the value of {0}.</value>
-  </data>
-  <data name="Arg_Invalid_LessThanOtherParameter" xml:space="preserve">
-    <value>The value must not be less than the value of {0}.</value>
-  </data>
-  <data name="Arg_OutOfRange_CountGreaterThanSource" xml:space="preserve">
-    <value>The source has fewer elements than requested.</value>
-  </data>
-  <data name="Arg_Invalid_OrdinalDoesNotExistForMonth" xml:space="preserve">
-    <value>The ordinal '{0}' does not exist for {1} in {2}.</value>
-  </data>
   <data name="Arg_OutOfRange_ResultingValueOutOfRangeForType" xml:space="preserve">
     <value>The resulting value is outside the supported range for {0}.</value>
-  </data>
-  <data name="Arg_OutOfRange_InvalidMonthNumber" xml:space="preserve">
-    <value>The month number must be between 1 and 12.</value>
-  </data>
-  <data name="Arg_OutOfRange_InvalidQuarterNumber" xml:space="preserve">
-    <value>The quarter number must be between 1 and 4.</value>
-  </data>
-  <data name="Arg_Invalid_ArrayOffset" xml:space="preserve">
-    <value>The value must be zero or positive, and less than the number of elements in the {0}.</value>
   </data>
   <data name="Arg_OutOfRange_SequenceRangeOverflow" xml:space="preserve">
     <value>The specified sequence range would exceed the maximum allowed value for {0}.</value>
   </data>
-  <data name="Arg_OutOfRange_CountExceedsAvailable" xml:space="preserve">
-    <value>The count must be non-negative and must not exceed the number of available items ({0}).</value>
+  <data name="Arg_OutOfRange_ValuesEqual" xml:space="preserve">
+    <value>The value must not equal {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_WeekNotValidForYearAndCulture" xml:space="preserve">
+    <value>Week {0} is not valid for the year {1} using culture {2}.</value>
+  </data>
+  <data name="Format_Invalid_7BitInt32" xml:space="preserve">
+    <value>Too many bytes in what should have been a 7 bit encoded Int32.</value>
   </data>
   <data name="Format_Invalid_Character" xml:space="preserve">
     <value>Input string contains an invalid character '{0}' at position {1}.</value>
+  </data>
+  <data name="Format_Invalid_FileSize" xml:space="preserve">
+    <value>Unrecognized file size format.</value>
+  </data>
+  <data name="Format_Invalid_String" xml:space="preserve">
+    <value>Input string was not in the correct format.</value>
   </data>
   <data name="Format_Invalid_StringLength" xml:space="preserve">
     <value>Input string was not in the correct format. The value must be {0} characters in length.</value>
@@ -432,55 +381,187 @@
   <data name="Format_Invalid_UnselectedCharacter" xml:space="preserve">
     <value>The unselected day character must be consistent. Found '{0}' but expected '{1}'.</value>
   </data>
-  <data name="SerializationException_InvalidState" xml:space="preserve">
-    <value>Insufficient or invalid serialized state for {0}.</value>
+  <data name="Format_Invalid_WeekDays" xml:space="preserve">
+    <value>Unrecognized week days format.</value>
   </data>
-  <data name="Arg_Invalid_DestinationTooSmall" xml:space="preserve">
-    <value>The destination {0} must be at least as long as the source {1}.</value>
+  <data name="IO_DirNotFound_Path" xml:space="preserve">
+    <value>Could not find directory '{0}'.</value>
   </data>
-  <data name="Arg_OutOfRange_DateOutsideFiscalYear" xml:space="preserve">
-    <value>The specified date {0:d} is outside the range of the configured fiscal year starting on {1:d}.</value>
+  <data name="IO_Disposed_Stream" xml:space="preserve">
+    <value>Cannot access a disposed stream.</value>
   </data>
-  <data name="Arg_Required_ProviderInterface" xml:space="preserve">
-    <value>Custom definitions require an external provider that implements {0}.</value>
+  <data name="IO_Disposed_StreamClosed" xml:space="preserve">
+    <value>Cannot access a closed stream.</value>
   </data>
-  <data name="Arg_Invalid_MustBeComparableType" xml:space="preserve">
-    <value>Object must be of type {0} to be compared.</value>
+  <data name="IO_EndOfStream_Reached" xml:space="preserve">
+    <value>Reached the end of the stream before the operation could complete.</value>
   </data>
-  <data name="Arg_Invalid_ValueForOperation" xml:space="preserve">
-    <value>The value for '{0}' must be {1}, but was {2}.</value>
+  <data name="IO_EndOfStream_Read" xml:space="preserve">
+    <value>Unable to read beyond the end of the stream.</value>
   </data>
-  <data name="Arg_OutOfRange_WeekNotValidForYearAndCulture" xml:space="preserve">
-    <value>Week {0} is not valid for the year {1} using culture {2}.</value>
+  <data name="IO_Failed_StreamRead" xml:space="preserve">
+    <value>An error occurred while reading from the stream.</value>
   </data>
-  <data name="NotSupported_ConcurrentSyncRoot" xml:space="preserve">
-    <value>The SyncRoot property may not be used for the synchronization of concurrent collections.</value>
+  <data name="IO_Failed_StreamWrite" xml:space="preserve">
+    <value>An error occurred while writing to the stream.</value>
   </data>
-  <data name="Arg_Invalid_CollectionIsEmpty" xml:space="preserve">
+  <data name="IO_FileNotFound_Path" xml:space="preserve">
+    <value>Could not find file '{0}'.</value>
+  </data>
+  <data name="IO_NotSupported_StreamRead" xml:space="preserve">
+    <value>The stream is not readable.</value>
+  </data>
+  <data name="IO_NotSupported_StreamSeek" xml:space="preserve">
+    <value>The stream does not support seeking.</value>
+  </data>
+  <data name="IO_NotSupported_StreamSetLength" xml:space="preserve">
+    <value>The stream does not support setting its length.</value>
+  </data>
+  <data name="IO_NotSupported_StreamTimeout" xml:space="preserve">
+    <value>The stream does not support timeouts.</value>
+  </data>
+  <data name="IO_NotSupported_StreamWrite" xml:space="preserve">
+    <value>The stream is not writable.</value>
+  </data>
+  <data name="Op_Invalid_ActivatorReturnedNull" xml:space="preserve">
+    <value>Activator.CreateInstance returned null for type '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_AlreadyFinalized" xml:space="preserve">
+    <value>The operation has already been finalized and cannot be reused.</value>
+  </data>
+  <data name="Op_Invalid_AlreadyInitialized" xml:space="preserve">
+    <value>The instance has already been initialized.</value>
+  </data>
+  <data name="Op_Invalid_AttributeValue" xml:space="preserve">
+    <value>Invalid value '{0}' for attribute '{1}'.</value>
+  </data>
+  <data name="Op_Invalid_CapacityExhausted" xml:space="preserve">
+    <value>The capacity has been exhausted.</value>
+  </data>
+  <data name="Op_Invalid_CircularDependency" xml:space="preserve">
+    <value>Circular dependency detected for '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_CircularReference" xml:space="preserve">
+    <value>Circular reference detected for '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_CollectionEmpty" xml:space="preserve">
     <value>The collection is empty.</value>
   </data>
-  <data name="Arg_Invalid_CollectionReadOnly" xml:space="preserve">
-    <value>The collection must not be read-only.</value>
+  <data name="Op_Invalid_CollectionModified" xml:space="preserve">
+    <value>The collection was modified; enumerator operations may not execute.</value>
   </data>
-  <data name="Arg_Invalid_PowerOfTwo" xml:space="preserve">
-    <value>The value must be a positive power of two.</value>
+  <data name="Op_Invalid_ConcurrentSnapshotUnstable" xml:space="preserve">
+    <value>The collection could not produce a stable snapshot under sustained concurrent modification.</value>
   </data>
-  <data name="Arg_Invalid_StringLength" xml:space="preserve">
-    <value>The string length must be exactly {0} characters.</value>
+  <data name="Op_Invalid_Conversion" xml:space="preserve">
+    <value>Unable to convert type {0} to {1}.</value>
   </data>
-  <data name="Arg_Invalid_StringLengthRange" xml:space="preserve">
-    <value>The string length must be between {0} and {1} characters.</value>
+  <data name="Op_Invalid_DuplicateKey" xml:space="preserve">
+    <value>An item with the key '{0}' has already been added.</value>
   </data>
-  <data name="Arg_Invalid_StringTooLong" xml:space="preserve">
-    <value>The string must not exceed {0} characters.</value>
+  <data name="Op_Invalid_EmptySequence" xml:space="preserve">
+    <value>The sequence is empty.</value>
   </data>
-  <data name="Arg_Invalid_ValuesNotEqual" xml:space="preserve">
-    <value>The value must equal {0}.</value>
+  <data name="Op_Invalid_EnumeratorExhausted" xml:space="preserve">
+    <value>The enumerator has been exhausted.</value>
   </data>
-  <data name="Arg_OutOfRange_NotFinite" xml:space="preserve">
-    <value>Value must be a finite number (not NaN or infinity).</value>
+  <data name="Op_Invalid_EnumeratorNotOnElement" xml:space="preserve">
+    <value>Enumeration has either not started or has already finished.</value>
   </data>
-  <data name="Arg_OutOfRange_ValuesEqual" xml:space="preserve">
-    <value>The value must not equal {0}.</value>
+  <data name="Op_Invalid_FactoryReturnedNull" xml:space="preserve">
+    <value>The factory returned null for type '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_MemoryStreamBufferInaccessible" xml:space="preserve">
+    <value>The MemoryStream does not expose its underlying buffer.</value>
+  </data>
+  <data name="Op_Invalid_MissingRequiredAttribute" xml:space="preserve">
+    <value>Missing required attribute '{0}' on element '{1}'.</value>
+  </data>
+  <data name="Op_Invalid_NoInputData" xml:space="preserve">
+    <value>No input data was provided.</value>
+  </data>
+  <data name="Op_Invalid_NotInitialized" xml:space="preserve">
+    <value>The instance has not been initialized.</value>
+  </data>
+  <data name="Op_Invalid_ReentrancyNotAllowed" xml:space="preserve">
+    <value>Cannot modify the collection during a change notification event.</value>
+  </data>
+  <data name="Op_Invalid_SequenceContainsInvalidElement" xml:space="preserve">
+    <value>The sequence contains an invalid item.</value>
+  </data>
+  <data name="Op_Invalid_SequenceNoMatch" xml:space="preserve">
+    <value>The sequence contains no matching elements.</value>
+  </data>
+  <data name="Op_Invalid_TimeoutAlreadyEstablished" xml:space="preserve">
+    <value>The timeout cannot be changed after the lock has already been established.</value>
+  </data>
+  <data name="Op_NotSupported_ConcurrentSyncRoot" xml:space="preserve">
+    <value>The SyncRoot property may not be used for the synchronization of concurrent collections.</value>
+  </data>
+  <data name="Overflow_Invalid_NegatingTwosComplement" xml:space="preserve">
+    <value>Negating the minimum value of a twos complement number is invalid.</value>
+  </data>
+  <data name="Serial_Invalid_State" xml:space="preserve">
+    <value>Insufficient or invalid serialized state for {0}.</value>
+  </data>
+  <data name="Text_Character_Vowels" xml:space="preserve">
+    <value>AEUIOU</value>
+  </data>
+  <data name="Text_Number_Bytes" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="Text_Number_Exabytes" xml:space="preserve">
+    <value>Exabytes</value>
+  </data>
+  <data name="Text_Number_Gigabytes" xml:space="preserve">
+    <value>Gigabytes</value>
+  </data>
+  <data name="Text_Number_Kilobytes" xml:space="preserve">
+    <value>Kilobytes</value>
+  </data>
+  <data name="Text_Number_Megabytes" xml:space="preserve">
+    <value>Megabytes</value>
+  </data>
+  <data name="Text_Number_Petabytes" xml:space="preserve">
+    <value>Petabytes</value>
+  </data>
+  <data name="Text_Number_Terabytes" xml:space="preserve">
+    <value>Terabytes</value>
+  </data>
+  <data name="Text_Number_Zettabytes" xml:space="preserve">
+    <value>Zettabytes</value>
+  </data>
+  <data name="Text_Ordinal_Eighth" xml:space="preserve">
+    <value>Eighth</value>
+  </data>
+  <data name="Text_Ordinal_Fifth" xml:space="preserve">
+    <value>Fifth</value>
+  </data>
+  <data name="Text_Ordinal_First" xml:space="preserve">
+    <value>First</value>
+  </data>
+  <data name="Text_Ordinal_Fourth" xml:space="preserve">
+    <value>Fourth</value>
+  </data>
+  <data name="Text_Ordinal_Last" xml:space="preserve">
+    <value>Last</value>
+  </data>
+  <data name="Text_Ordinal_Ninth" xml:space="preserve">
+    <value>Ninth</value>
+  </data>
+  <data name="Text_Ordinal_Second" xml:space="preserve">
+    <value>Second</value>
+  </data>
+  <data name="Text_Ordinal_Seventh" xml:space="preserve">
+    <value>Seventh</value>
+  </data>
+  <data name="Text_Ordinal_Sixth" xml:space="preserve">
+    <value>Sixth</value>
+  </data>
+  <data name="Text_Ordinal_Tenth" xml:space="preserve">
+    <value>Tenth</value>
+  </data>
+  <data name="Text_Ordinal_Third" xml:space="preserve">
+    <value>Third</value>
   </data>
 </root>

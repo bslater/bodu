@@ -214,7 +214,7 @@ public sealed class CircularBuffer<T>
     public T Dequeue()
     {
         if (Count == 0)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_EmptySequence);
 
         return RemoveHead();
     }
@@ -234,7 +234,7 @@ public sealed class CircularBuffer<T>
     public T Peek()
     {
         if (Count == 0)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
 
         return PeekHead();
     }
@@ -309,7 +309,7 @@ public sealed class CircularBuffer<T>
             if (!AllowOverwrite)
             {
                 if (throwIfFull)
-                    throw new InvalidOperationException(ResourceStrings.InvalidOperation_CapacityExhausted);
+                    throw new InvalidOperationException(ResourceStrings.Op_Invalid_CapacityExhausted);
 
                 return false;
             }

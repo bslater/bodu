@@ -40,7 +40,7 @@ public static partial class IEnumerableExtensions
 
         using IEnumerator<TSource> enumerator = source.GetEnumerator();
         if (!enumerator.MoveNext())
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_EmptySequence);
 
         var index = -1;
         TSource value = default!;

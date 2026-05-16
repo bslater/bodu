@@ -321,7 +321,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 spinner.SpinOnce();
             }
 
-            throw new InvalidOperationException(ResourceStrings.Concurrent_SnapshotUnstable);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_ConcurrentSnapshotUnstable);
         }
     }
 
@@ -440,7 +440,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     {
         if (TryDequeue(out var item))
             return item!;
-        throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+        throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
     }
 
     /// <summary>
@@ -459,7 +459,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
     {
         if (TryPeek(out var item))
             return item!;
-        throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+        throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
     }
 
     /// <summary>
@@ -792,7 +792,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 // empty
                 item = default;
                 if (throwIfEmpty)
-                    throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+                    throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
                 return false;
             }
             else
@@ -846,7 +846,7 @@ public sealed partial class ConcurrentCircularBuffer<T>
                 if (!AllowOverwrite)
                 {
                     if (throwIfFull)
-                        throw new InvalidOperationException(ResourceStrings.InvalidOperation_CapacityExhausted);
+                        throw new InvalidOperationException(ResourceStrings.Op_Invalid_CapacityExhausted);
                     return false;
                 }
 

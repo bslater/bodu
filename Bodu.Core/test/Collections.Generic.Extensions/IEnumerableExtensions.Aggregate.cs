@@ -463,7 +463,7 @@ public sealed partial class IEnumerableExtensionsTests_Aggregate
             _ = source.Aggregate((acc, x, i) => acc + x);
         });
 
-        Assert.AreEqual(ResourceStrings.InvalidOperation_EmptySequence, ex.Message);
+        Assert.AreEqual(ResourceStrings.Op_Invalid_EmptySequence, ex.Message);
     }
 
     /// <summary>

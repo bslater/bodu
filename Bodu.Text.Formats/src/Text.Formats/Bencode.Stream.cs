@@ -10,7 +10,6 @@ namespace Bodu.Text.Formats;
 
 public static partial class Bencode
 {
-
     /// <summary>
     /// Decodes a complete bencoded document from the supplied byte array.
     /// </summary>
@@ -51,8 +50,7 @@ public static partial class Bencode
     {
         ThrowHelper.ThrowIfNull(source);
 
-        if (!source.CanRead)
-            ThrowHelper.ThrowArgumentException_StreamNotReadable(nameof(source));
+        TextThrowHelper.ThrowIfStreamNotReadable(source);
 
         using MemoryStream buffer = new();
         source.CopyTo(buffer);
@@ -86,10 +84,9 @@ public static partial class Bencode
     {
         ThrowHelper.ThrowIfNull(source);
 
-        if (!source.CanRead)
-            ThrowHelper.ThrowArgumentException_StreamNotReadable(nameof(source));
+        TextThrowHelper.ThrowIfStreamNotReadable(source);
 
-        using MemoryStream buffer = new();
+        await using MemoryStream buffer = new();
         await source.CopyToAsync(buffer, cancellationToken).ConfigureAwait(false);
 
         return Decode(buffer.GetBuffer().AsSpan(0, (int)buffer.Length));
@@ -118,15 +115,14 @@ public static partial class Bencode
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(destination);
 
-        if (!destination.CanWrite)
-            ThrowHelper.ThrowArgumentException_StreamNotWritable(nameof(destination));
+        TextThrowHelper.ThrowIfStreamNotWritable(destination);
 
-        int length = GetEncodedLength(value);
-        byte[] rented = ArrayPool<byte>.Shared.Rent(length);
+        var length = GetEncodedLength(value);
+        var rented = ArrayPool<byte>.Shared.Rent(length);
 
         try
         {
-            int written = WriteValue(value, rented.AsSpan(0, length));
+            var written = WriteValue(value, rented.AsSpan(0, length));
             destination.Write(rented, 0, written);
         }
         finally
@@ -164,15 +160,14 @@ public static partial class Bencode
         ThrowHelper.ThrowIfNull(value);
         ThrowHelper.ThrowIfNull(destination);
 
-        if (!destination.CanWrite)
-            ThrowHelper.ThrowArgumentException_StreamNotWritable(nameof(destination));
+        TextThrowHelper.ThrowIfStreamNotWritable(destination);
 
-        int length = GetEncodedLength(value);
-        byte[] rented = ArrayPool<byte>.Shared.Rent(length);
+        var length = GetEncodedLength(value);
+        var rented = ArrayPool<byte>.Shared.Rent(length);
 
         try
         {
-            int written = WriteValue(value, rented.AsSpan(0, length));
+            var written = WriteValue(value, rented.AsSpan(0, length));
             await destination.WriteAsync(rented.AsMemory(0, written), cancellationToken).ConfigureAwait(false);
         }
         finally
@@ -180,5 +175,4 @@ public static partial class Bencode
             ArrayPool<byte>.Shared.Return(rented);
         }
     }
-
 }

@@ -65,7 +65,7 @@ public partial class ConcurrentCircularBuffer<T>
     /// and other BCL concurrent collections.
     /// </remarks>
     object ICollection.SyncRoot =>
-        throw new NotSupportedException(ResourceStrings.NotSupported_ConcurrentSyncRoot);
+        throw new NotSupportedException(ResourceStrings.Op_NotSupported_ConcurrentSyncRoot);
 
     /// <summary>
     /// Copies the elements of the <see cref="ConcurrentCircularBuffer{T}"/> to a one-dimensional, zero-based <see cref="Array"/>,

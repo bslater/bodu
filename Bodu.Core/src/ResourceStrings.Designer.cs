@@ -70,15 +70,6 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The array contains non-numeric values..
-        /// </summary>
-        internal static string Arg_Invalid_Array_NumericOnly {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_Array_NumericOnly", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The array must not be empty..
         /// </summary>
         internal static string Arg_Invalid_ArrayIsZeroLength {
@@ -120,6 +111,15 @@ namespace Bodu {
         internal static string Arg_Invalid_ArrayNonZeroLowerBound {
             get {
                 return ResourceManager.GetString("Arg_Invalid_ArrayNonZeroLowerBound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The array contains non-numeric values..
+        /// </summary>
+        internal static string Arg_Invalid_ArrayNumericOnly {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ArrayNumericOnly", resourceCulture);
             }
         }
         
@@ -167,7 +167,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_CollectionIsEmpty", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The collection must not be read-only..
         /// </summary>
@@ -176,7 +176,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_CollectionReadOnly", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The collection contains insufficient elements. At least {0} element(s) are required..
         /// </summary>
@@ -205,6 +205,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The dictionary cannot contain duplicate keys..
+        /// </summary>
+        internal static string Arg_Invalid_DuplicateDictionaryKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_DuplicateDictionaryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The format string is invalid..
         /// </summary>
         internal static string Arg_Invalid_FormatString {
@@ -228,6 +237,15 @@ namespace Bodu {
         internal static string Arg_Invalid_GreaterThanOtherParameter {
             get {
                 return ResourceManager.GetString("Arg_Invalid_GreaterThanOtherParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The input is too short. At least {0} elements are required..
+        /// </summary>
+        internal static string Arg_Invalid_InputTooShort {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_InputTooShort", resourceCulture);
             }
         }
         
@@ -277,11 +295,74 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The collection cannot contain null elements..
+        /// </summary>
+        internal static string Arg_Invalid_NullCollectionElement {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_NullCollectionElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary cannot contain null keys..
+        /// </summary>
+        internal static string Arg_Invalid_NullDictionaryKey {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_NullDictionaryKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The dictionary cannot contain null values..
+        /// </summary>
+        internal static string Arg_Invalid_NullDictionaryValue {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_NullDictionaryValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The list cannot contain null elements..
+        /// </summary>
+        internal static string Arg_Invalid_NullListElement {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_NullListElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The ordinal &apos;{0}&apos; does not exist for {1} in {2}..
         /// </summary>
         internal static string Arg_Invalid_OrdinalDoesNotExistForMonth {
             get {
                 return ResourceManager.GetString("Arg_Invalid_OrdinalDoesNotExistForMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The output buffer is too small. At least {0} elements are required..
+        /// </summary>
+        internal static string Arg_Invalid_OutputBufferTooSmall {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_OutputBufferTooSmall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The &apos;{0}&apos; parameter is required when &apos;{1}&apos; is set to {2}..
+        /// </summary>
+        internal static string Arg_Invalid_ParameterRequiredIf {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ParameterRequiredIf", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The value collection contains one or more null elements..
+        /// </summary>
+        internal static string Arg_Invalid_ParamsContainsNullValue {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ParamsContainsNullValue", resourceCulture);
             }
         }
         
@@ -293,7 +374,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_PositiveMultipleOf", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The value must be a positive power of two..
         /// </summary>
@@ -302,7 +383,25 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_PowerOfTwo", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Custom definitions require an external provider that implements {0}..
+        /// </summary>
+        internal static string Arg_Invalid_ProviderInterface {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_ProviderInterface", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only single-dimension arrays are supported..
+        /// </summary>
+        internal static string Arg_Invalid_RankMultiDimensionArray {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_RankMultiDimensionArray", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to The value is a single Unicode surrogate character, which must be written as a pair. Consider passing a character array instead..
         /// </summary>
@@ -340,6 +439,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cannot write beyond the end of the stream..
+        /// </summary>
+        internal static string Arg_Invalid_StreamLengthExceeded {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StreamLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The string comparison type is not supported..
         /// </summary>
         internal static string Arg_Invalid_StringComparison {
@@ -354,6 +462,24 @@ namespace Bodu {
         internal static string Arg_Invalid_StringEmptyOrWhitespace {
             get {
                 return ResourceManager.GetString("Arg_Invalid_StringEmptyOrWhitespace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The string length must be exactly {0} characters..
+        /// </summary>
+        internal static string Arg_Invalid_StringLength {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StringLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The string length must be between {0} and {1} characters..
+        /// </summary>
+        internal static string Arg_Invalid_StringLengthRange {
+            get {
+                return ResourceManager.GetString("Arg_Invalid_StringLengthRange", resourceCulture);
             }
         }
         
@@ -374,25 +500,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_StringNullOrEmpty", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The string length must be exactly {0} characters..
-        /// </summary>
-        internal static string Arg_Invalid_StringLength {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_StringLength", resourceCulture);
-            }
-        }
-
-        /// <summary>
-        ///   Looks up a localized string similar to The string length must be between {0} and {1} characters..
-        /// </summary>
-        internal static string Arg_Invalid_StringLengthRange {
-            get {
-                return ResourceManager.GetString("Arg_Invalid_StringLengthRange", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The string must not exceed {0} characters..
         /// </summary>
@@ -401,7 +509,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_StringTooLong", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The value for &apos;{0}&apos; must be {1}, but was {2}..
         /// </summary>
@@ -410,7 +518,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_Invalid_ValueForOperation", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The value must equal {0}..
         /// </summary>
@@ -493,6 +601,15 @@ namespace Bodu {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value &apos;{1}&apos; is not a defined member of the {0} enumeration..
+        /// </summary>
+        internal static string Arg_OutOfRange_EnumValue {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_EnumValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The index must be non-negative and less than the size of {0}..
         /// </summary>
         internal static string Arg_OutOfRange_IndexValidRange {
@@ -525,6 +642,15 @@ namespace Bodu {
         internal static string Arg_OutOfRange_MinCannotExceedMax {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_MinCannotExceedMax", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Value must be a finite number (not NaN or infinity)..
+        /// </summary>
+        internal static string Arg_OutOfRange_NotFinite {
+            get {
+                return ResourceManager.GetString("Arg_OutOfRange_NotFinite", resourceCulture);
             }
         }
         
@@ -653,16 +779,7 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_OutOfRange_SequenceRangeOverflow", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Value must be a finite number (not NaN or infinity)..
-        /// </summary>
-        internal static string Arg_OutOfRange_NotFinite {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRange_NotFinite", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to The value must not equal {0}..
         /// </summary>
@@ -671,67 +788,13 @@ namespace Bodu {
                 return ResourceManager.GetString("Arg_OutOfRange_ValuesEqual", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Week {0} is not valid for the year {1} using culture {2}..
         /// </summary>
         internal static string Arg_OutOfRange_WeekNotValidForYearAndCulture {
             get {
                 return ResourceManager.GetString("Arg_OutOfRange_WeekNotValidForYearAndCulture", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The value &apos;{1}&apos; is not a defined member of the {0} enumeration..
-        /// </summary>
-        internal static string Arg_OutOfRangeException_EnumValue {
-            get {
-                return ResourceManager.GetString("Arg_OutOfRangeException_EnumValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The value collection contains one or more null elements..
-        /// </summary>
-        internal static string Arg_Params_ContainsNullValue {
-            get {
-                return ResourceManager.GetString("Arg_Params_ContainsNullValue", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The &apos;{0}&apos; parameter is required when &apos;{1}&apos; is set to {2}..
-        /// </summary>
-        internal static string Arg_Required_ParameterRequiredIf {
-            get {
-                return ResourceManager.GetString("Arg_Required_ParameterRequiredIf", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Custom definitions require an external provider that implements {0}..
-        /// </summary>
-        internal static string Arg_Required_ProviderInterface {
-            get {
-                return ResourceManager.GetString("Arg_Required_ProviderInterface", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The collection could not produce a stable snapshot under sustained concurrent modification..
-        /// </summary>
-        internal static string Concurrent_SnapshotUnstable {
-            get {
-                return ResourceManager.GetString("Concurrent_SnapshotUnstable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unrecognized file size format..
-        /// </summary>
-        internal static string Format_FileSize_Unrecognized {
-            get {
-                return ResourceManager.GetString("Format_FileSize_Unrecognized", resourceCulture);
             }
         }
         
@@ -750,6 +813,15 @@ namespace Bodu {
         internal static string Format_Invalid_Character {
             get {
                 return ResourceManager.GetString("Format_Invalid_Character", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unrecognized file size format..
+        /// </summary>
+        internal static string Format_Invalid_FileSize {
+            get {
+                return ResourceManager.GetString("Format_Invalid_FileSize", resourceCulture);
             }
         }
         
@@ -790,371 +862,542 @@ namespace Bodu {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The capacity has been exhausted..
-        /// </summary>
-        internal static string InvalidOperation_CapacityExhausted {
-            get {
-                return ResourceManager.GetString("InvalidOperation_CapacityExhausted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The collection is empty..
-        /// </summary>
-        internal static string InvalidOperation_CollectionEmpty {
-            get {
-                return ResourceManager.GetString("InvalidOperation_CollectionEmpty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The collection was modified; enumerator operations may not execute..
-        /// </summary>
-        internal static string InvalidOperation_CollectionModified {
-            get {
-                return ResourceManager.GetString("InvalidOperation_CollectionModified", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The sequence is empty..
-        /// </summary>
-        internal static string InvalidOperation_EmptySequence {
-            get {
-                return ResourceManager.GetString("InvalidOperation_EmptySequence", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The enumerator has been exhausted..
-        /// </summary>
-        internal static string InvalidOperation_EnumeratorExhausted {
-            get {
-                return ResourceManager.GetString("InvalidOperation_EnumeratorExhausted", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enumeration has either not started or has already finished..
-        /// </summary>
-        internal static string InvalidOperation_EnumeratorNotOnElement {
-            get {
-                return ResourceManager.GetString("InvalidOperation_EnumeratorNotOnElement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Unable to convert type {0} to {1}..
-        /// </summary>
-        internal static string InvalidOperation_InvalidConversion {
-            get {
-                return ResourceManager.GetString("InvalidOperation_InvalidConversion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cannot modify the collection during a change notification event..
-        /// </summary>
-        internal static string InvalidOperation_ReentrancyNotAllowed {
-            get {
-                return ResourceManager.GetString("InvalidOperation_ReentrancyNotAllowed", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The sequence contains an invalid item..
-        /// </summary>
-        internal static string InvalidOperation_SequenceContainsInvalidElement {
-            get {
-                return ResourceManager.GetString("InvalidOperation_SequenceContainsInvalidElement", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The sequence contains no matching elements..
-        /// </summary>
-        internal static string InvalidOperation_SequenceNoMatch {
-            get {
-                return ResourceManager.GetString("InvalidOperation_SequenceNoMatch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The timeout cannot be changed after the lock has already been established..
-        /// </summary>
-        internal static string InvalidOperation_TimeoutAlreadyEstablished {
-            get {
-                return ResourceManager.GetString("InvalidOperation_TimeoutAlreadyEstablished", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Could not find directory &apos;{0}&apos;..
         /// </summary>
-        internal static string IO_Error_PathDirectoryNotFound {
+        internal static string IO_DirNotFound_Path {
             get {
-                return ResourceManager.GetString("IO_Error_PathDirectoryNotFound", resourceCulture);
+                return ResourceManager.GetString("IO_DirNotFound_Path", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not find file &apos;{0}&apos;..
+        ///   Looks up a localized string similar to Cannot access a disposed stream..
         /// </summary>
-        internal static string IO_Error_PathFileNotFound {
+        internal static string IO_Disposed_Stream {
             get {
-                return ResourceManager.GetString("IO_Error_PathFileNotFound", resourceCulture);
+                return ResourceManager.GetString("IO_Disposed_Stream", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Cannot access a closed stream..
         /// </summary>
-        internal static string IO_Error_StreamClosed {
+        internal static string IO_Disposed_StreamClosed {
             get {
-                return ResourceManager.GetString("IO_Error_StreamClosed", resourceCulture);
+                return ResourceManager.GetString("IO_Disposed_StreamClosed", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The stream is not readable..
+        ///   Looks up a localized string similar to Reached the end of the stream before the operation could complete..
         /// </summary>
-        internal static string IO_Error_StreamNotReadable {
+        internal static string IO_EndOfStream_Reached {
             get {
-                return ResourceManager.GetString("IO_Error_StreamNotReadable", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The stream is not writable..
-        /// </summary>
-        internal static string IO_Error_StreamNotWritable {
-            get {
-                return ResourceManager.GetString("IO_Error_StreamNotWritable", resourceCulture);
+                return ResourceManager.GetString("IO_EndOfStream_Reached", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Unable to read beyond the end of the stream..
         /// </summary>
-        internal static string IO_Error_StreamReadBeyondEnd {
+        internal static string IO_EndOfStream_Read {
             get {
-                return ResourceManager.GetString("IO_Error_StreamReadBeyondEnd", resourceCulture);
+                return ResourceManager.GetString("IO_EndOfStream_Read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while reading from the stream..
+        /// </summary>
+        internal static string IO_Failed_StreamRead {
+            get {
+                return ResourceManager.GetString("IO_Failed_StreamRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An error occurred while writing to the stream..
+        /// </summary>
+        internal static string IO_Failed_StreamWrite {
+            get {
+                return ResourceManager.GetString("IO_Failed_StreamWrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not find file &apos;{0}&apos;..
+        /// </summary>
+        internal static string IO_FileNotFound_Path {
+            get {
+                return ResourceManager.GetString("IO_FileNotFound_Path", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stream is not readable..
+        /// </summary>
+        internal static string IO_NotSupported_StreamRead {
+            get {
+                return ResourceManager.GetString("IO_NotSupported_StreamRead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stream does not support seeking..
+        /// </summary>
+        internal static string IO_NotSupported_StreamSeek {
+            get {
+                return ResourceManager.GetString("IO_NotSupported_StreamSeek", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stream does not support setting its length..
+        /// </summary>
+        internal static string IO_NotSupported_StreamSetLength {
+            get {
+                return ResourceManager.GetString("IO_NotSupported_StreamSetLength", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stream does not support timeouts..
+        /// </summary>
+        internal static string IO_NotSupported_StreamTimeout {
+            get {
+                return ResourceManager.GetString("IO_NotSupported_StreamTimeout", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The stream is not writable..
+        /// </summary>
+        internal static string IO_NotSupported_StreamWrite {
+            get {
+                return ResourceManager.GetString("IO_NotSupported_StreamWrite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Activator.CreateInstance returned null for type &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_ActivatorReturnedNull {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ActivatorReturnedNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation has already been finalized and cannot be reused..
+        /// </summary>
+        internal static string Op_Invalid_AlreadyFinalized {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AlreadyFinalized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance has already been initialized..
+        /// </summary>
+        internal static string Op_Invalid_AlreadyInitialized {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AlreadyInitialized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid value &apos;{0}&apos; for attribute &apos;{1}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_AttributeValue {
+            get {
+                return ResourceManager.GetString("Op_Invalid_AttributeValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The capacity has been exhausted..
+        /// </summary>
+        internal static string Op_Invalid_CapacityExhausted {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CapacityExhausted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Circular dependency detected for &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_CircularDependency {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CircularDependency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Circular reference detected for &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_CircularReference {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CircularReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The collection is empty..
+        /// </summary>
+        internal static string Op_Invalid_CollectionEmpty {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CollectionEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The collection was modified; enumerator operations may not execute..
+        /// </summary>
+        internal static string Op_Invalid_CollectionModified {
+            get {
+                return ResourceManager.GetString("Op_Invalid_CollectionModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The collection could not produce a stable snapshot under sustained concurrent modification..
+        /// </summary>
+        internal static string Op_Invalid_ConcurrentSnapshotUnstable {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ConcurrentSnapshotUnstable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to convert type {0} to {1}..
+        /// </summary>
+        internal static string Op_Invalid_Conversion {
+            get {
+                return ResourceManager.GetString("Op_Invalid_Conversion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An item with the key &apos;{0}&apos; has already been added..
+        /// </summary>
+        internal static string Op_Invalid_DuplicateKey {
+            get {
+                return ResourceManager.GetString("Op_Invalid_DuplicateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sequence is empty..
+        /// </summary>
+        internal static string Op_Invalid_EmptySequence {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EmptySequence", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The enumerator has been exhausted..
+        /// </summary>
+        internal static string Op_Invalid_EnumeratorExhausted {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumeratorExhausted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enumeration has either not started or has already finished..
+        /// </summary>
+        internal static string Op_Invalid_EnumeratorNotOnElement {
+            get {
+                return ResourceManager.GetString("Op_Invalid_EnumeratorNotOnElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The factory returned null for type &apos;{0}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_FactoryReturnedNull {
+            get {
+                return ResourceManager.GetString("Op_Invalid_FactoryReturnedNull", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The MemoryStream does not expose its underlying buffer..
+        /// </summary>
+        internal static string Op_Invalid_MemoryStreamBufferInaccessible {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MemoryStreamBufferInaccessible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing required attribute &apos;{0}&apos; on element &apos;{1}&apos;..
+        /// </summary>
+        internal static string Op_Invalid_MissingRequiredAttribute {
+            get {
+                return ResourceManager.GetString("Op_Invalid_MissingRequiredAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No input data was provided..
+        /// </summary>
+        internal static string Op_Invalid_NoInputData {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NoInputData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The instance has not been initialized..
+        /// </summary>
+        internal static string Op_Invalid_NotInitialized {
+            get {
+                return ResourceManager.GetString("Op_Invalid_NotInitialized", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot modify the collection during a change notification event..
+        /// </summary>
+        internal static string Op_Invalid_ReentrancyNotAllowed {
+            get {
+                return ResourceManager.GetString("Op_Invalid_ReentrancyNotAllowed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sequence contains an invalid item..
+        /// </summary>
+        internal static string Op_Invalid_SequenceContainsInvalidElement {
+            get {
+                return ResourceManager.GetString("Op_Invalid_SequenceContainsInvalidElement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sequence contains no matching elements..
+        /// </summary>
+        internal static string Op_Invalid_SequenceNoMatch {
+            get {
+                return ResourceManager.GetString("Op_Invalid_SequenceNoMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The timeout cannot be changed after the lock has already been established..
+        /// </summary>
+        internal static string Op_Invalid_TimeoutAlreadyEstablished {
+            get {
+                return ResourceManager.GetString("Op_Invalid_TimeoutAlreadyEstablished", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to The SyncRoot property may not be used for the synchronization of concurrent collections..
         /// </summary>
-        internal static string NotSupported_ConcurrentSyncRoot {
+        internal static string Op_NotSupported_ConcurrentSyncRoot {
             get {
-                return ResourceManager.GetString("NotSupported_ConcurrentSyncRoot", resourceCulture);
+                return ResourceManager.GetString("Op_NotSupported_ConcurrentSyncRoot", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Negating the minimum value of a twos complement number is invalid..
         /// </summary>
-        internal static string Overflow_NegatingTwosComplementNumber {
+        internal static string Overflow_Invalid_NegatingTwosComplement {
             get {
-                return ResourceManager.GetString("Overflow_NegatingTwosComplementNumber", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Only single-dimension arrays are supported..
-        /// </summary>
-        internal static string Rank_MultiDimensionArrayNotSupported {
-            get {
-                return ResourceManager.GetString("Rank_MultiDimensionArrayNotSupported", resourceCulture);
+                return ResourceManager.GetString("Overflow_Invalid_NegatingTwosComplement", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to Insufficient or invalid serialized state for {0}..
         /// </summary>
-        internal static string SerializationException_InvalidState {
+        internal static string Serial_Invalid_State {
             get {
-                return ResourceManager.GetString("SerializationException_InvalidState", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Bytes.
-        /// </summary>
-        internal static string String_Number_Bytes {
-            get {
-                return ResourceManager.GetString("String_Number_Bytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Exabytes.
-        /// </summary>
-        internal static string String_Number_Exabytes {
-            get {
-                return ResourceManager.GetString("String_Number_Exabytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Gigabytes.
-        /// </summary>
-        internal static string String_Number_Gigabytes {
-            get {
-                return ResourceManager.GetString("String_Number_Gigabytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Kilobytes.
-        /// </summary>
-        internal static string String_Number_Kilobytes {
-            get {
-                return ResourceManager.GetString("String_Number_Kilobytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Megabytes.
-        /// </summary>
-        internal static string String_Number_Megabytes {
-            get {
-                return ResourceManager.GetString("String_Number_Megabytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Petabytes.
-        /// </summary>
-        internal static string String_Number_Petabytes {
-            get {
-                return ResourceManager.GetString("String_Number_Petabytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Terabytes.
-        /// </summary>
-        internal static string String_Number_Terabytes {
-            get {
-                return ResourceManager.GetString("String_Number_Terabytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Zettabytes.
-        /// </summary>
-        internal static string String_Number_Zettabytes {
-            get {
-                return ResourceManager.GetString("String_Number_Zettabytes", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Eighth.
-        /// </summary>
-        internal static string String_Ordinal_Eighth {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Eighth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fifth.
-        /// </summary>
-        internal static string String_Ordinal_Fifth {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Fifth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to First.
-        /// </summary>
-        internal static string String_Ordinal_First {
-            get {
-                return ResourceManager.GetString("String_Ordinal_First", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Fourth.
-        /// </summary>
-        internal static string String_Ordinal_Fourth {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Fourth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Last.
-        /// </summary>
-        internal static string String_Ordinal_Last {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Last", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ninth.
-        /// </summary>
-        internal static string String_Ordinal_Ninth {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Ninth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Second.
-        /// </summary>
-        internal static string String_Ordinal_Second {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Second", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Seventh.
-        /// </summary>
-        internal static string String_Ordinal_Seventh {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Seventh", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Sixth.
-        /// </summary>
-        internal static string String_Ordinal_Sixth {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Sixth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Tenth.
-        /// </summary>
-        internal static string String_Ordinal_Tenth {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Tenth", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Third.
-        /// </summary>
-        internal static string String_Ordinal_Third {
-            get {
-                return ResourceManager.GetString("String_Ordinal_Third", resourceCulture);
+                return ResourceManager.GetString("Serial_Invalid_State", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to AEUIOU.
         /// </summary>
-        internal static string String_VowelCharacters {
+        internal static string Text_Character_Vowels {
             get {
-                return ResourceManager.GetString("String_VowelCharacters", resourceCulture);
+                return ResourceManager.GetString("Text_Character_Vowels", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Bytes.
+        /// </summary>
+        internal static string Text_Number_Bytes {
+            get {
+                return ResourceManager.GetString("Text_Number_Bytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Exabytes.
+        /// </summary>
+        internal static string Text_Number_Exabytes {
+            get {
+                return ResourceManager.GetString("Text_Number_Exabytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Gigabytes.
+        /// </summary>
+        internal static string Text_Number_Gigabytes {
+            get {
+                return ResourceManager.GetString("Text_Number_Gigabytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kilobytes.
+        /// </summary>
+        internal static string Text_Number_Kilobytes {
+            get {
+                return ResourceManager.GetString("Text_Number_Kilobytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Megabytes.
+        /// </summary>
+        internal static string Text_Number_Megabytes {
+            get {
+                return ResourceManager.GetString("Text_Number_Megabytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Petabytes.
+        /// </summary>
+        internal static string Text_Number_Petabytes {
+            get {
+                return ResourceManager.GetString("Text_Number_Petabytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terabytes.
+        /// </summary>
+        internal static string Text_Number_Terabytes {
+            get {
+                return ResourceManager.GetString("Text_Number_Terabytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Zettabytes.
+        /// </summary>
+        internal static string Text_Number_Zettabytes {
+            get {
+                return ResourceManager.GetString("Text_Number_Zettabytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Eighth.
+        /// </summary>
+        internal static string Text_Ordinal_Eighth {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Eighth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fifth.
+        /// </summary>
+        internal static string Text_Ordinal_Fifth {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Fifth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First.
+        /// </summary>
+        internal static string Text_Ordinal_First {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_First", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fourth.
+        /// </summary>
+        internal static string Text_Ordinal_Fourth {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Fourth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last.
+        /// </summary>
+        internal static string Text_Ordinal_Last {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Last", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ninth.
+        /// </summary>
+        internal static string Text_Ordinal_Ninth {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Ninth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Second.
+        /// </summary>
+        internal static string Text_Ordinal_Second {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Second", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seventh.
+        /// </summary>
+        internal static string Text_Ordinal_Seventh {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Seventh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sixth.
+        /// </summary>
+        internal static string Text_Ordinal_Sixth {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Sixth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tenth.
+        /// </summary>
+        internal static string Text_Ordinal_Tenth {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Tenth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Third.
+        /// </summary>
+        internal static string Text_Ordinal_Third {
+            get {
+                return ResourceManager.GetString("Text_Ordinal_Third", resourceCulture);
             }
         }
     }

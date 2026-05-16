@@ -72,7 +72,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
         public bool MoveNext()
         {
             if (_version != _owner._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             if (_index >= _owner._count)
                 return false;
@@ -91,7 +91,7 @@ public sealed partial class RangeDictionary<TKey, TValue>
         public void Reset()
         {
             if (_version != _owner._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             _index = 0;
             _current = default;

@@ -688,7 +688,7 @@ public static partial class DateTimeExtensions
 
             _ => throw new ArgumentOutOfRangeException(
                     nameof(rule),
-                    string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, rule, nameof(CalendarWeekRule))),
+                    string.Format(ResourceStrings.Arg_OutOfRange_EnumValue, rule, nameof(CalendarWeekRule))),
         };
     }
 

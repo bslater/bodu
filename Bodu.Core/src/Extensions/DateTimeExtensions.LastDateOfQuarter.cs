@@ -44,7 +44,7 @@ public static partial class DateTimeExtensions
 
         if (definition == CalendarQuarterDefinition.Custom)
             throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
+                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
         return LastDateOfQuarterInternal(dateTime, definition);
     }
@@ -106,7 +106,7 @@ public static partial class DateTimeExtensions
 
         if (definition == CalendarQuarterDefinition.Custom)
             throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
+                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
         return new DateTime(ComputeQuarterEndTicks(year, quarter, GetQuarterDefinition(definition)), DateTimeKind.Unspecified);
     }
