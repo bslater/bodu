@@ -534,6 +534,57 @@ public static class BoduCodeStyleKats
             expectedChanged: false,
             expectedFailure: CodeStyleKatFailureKind.MalformedXml),
 
+        CodeStyleKat.XmlFormat(
+            id: "XMLFMT-0016",
+            name: "Returns block with two inline see langword tags preserves both atoms across a clause break",
+            input:
+            """
+            /// <returns>
+            /// <see langword="true" /> when the value was encoded; otherwise,
+            /// <see langword="false" /> when the destination buffer is too small.
+            /// </returns>
+            """,
+            expected:
+            """
+            /// <returns>
+            /// <see langword="true" /> when the value was encoded; otherwise,
+            /// <see langword="false" /> when the destination buffer is too small.
+            /// </returns>
+            """,
+            expectedChanged: false),
+
+        CodeStyleKat.XmlFormat(
+            id: "XMLFMT-0017",
+            name: "Single-line returns with two inline see langword tags expands and preserves both atoms",
+            input:
+            """
+            /// <returns><see langword="true" /> when the value was encoded; otherwise, <see langword="false" /> when the destination buffer is too small.</returns>
+            """,
+            expected:
+            """
+            /// <returns>
+            /// <see langword="true" /> when the value was encoded; otherwise,
+            /// <see langword="false" /> when the destination buffer is too small.
+            /// </returns>
+            """),
+
+        CodeStyleKat.XmlFormat(
+            id: "XMLFMT-0018",
+            name: "Two adjacent inline see tags separated only by whitespace are both preserved as atoms",
+            input:
+            """
+            /// <summary>
+            /// Either <see langword="true" /> or <see langword="false" />.
+            /// </summary>
+            """,
+            expected:
+            """
+            /// <summary>
+            /// Either <see langword="true" /> or <see langword="false" />.
+            /// </summary>
+            """,
+            expectedChanged: false),
+
         // Analyzer KATs.
         CodeStyleKat.Analyze(
             id: "XMLANL-0001",
