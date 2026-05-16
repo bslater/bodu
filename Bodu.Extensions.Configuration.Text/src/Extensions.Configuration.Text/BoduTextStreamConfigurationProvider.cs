@@ -1,5 +1,5 @@
 // ---------------------------------------------------------------------------------------------------------------
-// <copyright file="BoduTextConfigurationProvider.cs" company="PlaceholderCompany">
+// <copyright file="BoduTextStreamConfigurationProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -10,24 +10,24 @@ using Microsoft.Extensions.Configuration;
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
-/// A <see cref="FileConfigurationProvider" /> that parses a Bodu Text Configuration file and populates the
+/// A <see cref="StreamConfigurationProvider" /> that parses a Bodu Text Configuration stream and populates the
 /// configuration data dictionary with the resolved colon-delimited keys.
 /// </summary>
 /// <remarks>
-/// The provider inherits change-token, reload-on-change, optional-file, and exception-wrapping behaviour from
-/// <see cref="FileConfigurationProvider" />. Override <see cref="Load(Stream)" /> only. The Parse → Resolve →
-/// flatten pipeline is shared with <see cref="BoduTextStreamConfigurationProvider" /> via
-/// <see cref="BoduTextConfigurationLoader" />.
+/// Stream-backed providers are one-shot: the stream is consumed during the initial <see cref="Load(Stream)" />
+/// call and no reload-on-change machinery is attached. For file-backed loading with reload support, use
+/// <see cref="BoduTextConfigurationProvider" /> instead. The Parse → Resolve → flatten pipeline is shared with
+/// <see cref="BoduTextConfigurationProvider" /> via <see cref="BoduTextConfigurationLoader" />.
 /// </remarks>
-public sealed class BoduTextConfigurationProvider : FileConfigurationProvider
+public sealed class BoduTextStreamConfigurationProvider : StreamConfigurationProvider
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="BoduTextConfigurationProvider" /> class backed by the
-    /// supplied source.
+    /// Initializes a new instance of the <see cref="BoduTextStreamConfigurationProvider" /> class backed by
+    /// the supplied source.
     /// </summary>
     /// <param name="source">The source that produced this provider.</param>
     /// <exception cref="ArgumentNullException"><paramref name="source" /> is <see langword="null" />.</exception>
-    public BoduTextConfigurationProvider(BoduTextConfigurationSource source)
+    public BoduTextStreamConfigurationProvider(BoduTextStreamConfigurationSource source)
         : base(source)
     {
         ThrowHelper.ThrowIfNull(source);
@@ -37,8 +37,8 @@ public sealed class BoduTextConfigurationProvider : FileConfigurationProvider
     /// <summary>
     /// Gets the typed source that backs this provider.
     /// </summary>
-    /// <returns>The originating <see cref="BoduTextConfigurationSource" />.</returns>
-    public BoduTextConfigurationSource BoduSource { get; }
+    /// <returns>The originating <see cref="BoduTextStreamConfigurationSource" />.</returns>
+    public BoduTextStreamConfigurationSource BoduSource { get; }
 
     /// <inheritdoc />
     public override void Load(Stream stream) =>
