@@ -220,11 +220,11 @@ public abstract partial class ThreefishBlockCipher
     {
         if (this._disposed) return;
 
-        if (disposing)
-        {
-            CryptoHelpers.Clear(this._keySchedule);  // Securely zeros content
-            CryptoHelpers.Clear(this._tweakSchedule);
-        }
+        // Key and tweak schedules are owned exclusively by this instance and are zeroed in both
+        // the deterministic Dispose() path and the finalizer path so that key material is never
+        // retained if the caller omits an explicit Dispose call.
+        CryptoHelpers.Clear(this._keySchedule);
+        CryptoHelpers.Clear(this._tweakSchedule);
 
         this._disposed = true;
     }

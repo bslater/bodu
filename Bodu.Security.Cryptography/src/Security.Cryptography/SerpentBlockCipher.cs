@@ -223,12 +223,10 @@ public abstract partial class SerpentBlockCipher
     {
         if (this._disposed) return;
 
-        if (disposing)
-        {
-            // Round keys and tweak material are derived from secret inputs and are cleared during deterministic disposal.
-            CryptoHelpers.Clear(this._roundKeys);
-            CryptoHelpers.Clear(this._tweakSchedule);
-        }
+        // Round keys and tweak material are derived from secret inputs and are zeroed in both disposal
+        // paths so they are not retained if the finalizer runs before an explicit Dispose call.
+        CryptoHelpers.Clear(this._roundKeys);
+        CryptoHelpers.Clear(this._tweakSchedule);
 
         base.Dispose(disposing);
     }
