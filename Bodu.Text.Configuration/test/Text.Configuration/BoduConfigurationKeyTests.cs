@@ -12,7 +12,7 @@ namespace Bodu.Text.Configuration;
 /// Tests for <see cref="BoduConfigurationKey" /> covering parsing, segment splitting, and mapping.
 /// </summary>
 [TestClass]
-public class BoduConfigurationKeyTests
+public partial class BoduConfigurationKeyTests
 {
     /// <summary>
     /// Verifies that dotted keys map to colon-delimited configuration keys under the default options.
