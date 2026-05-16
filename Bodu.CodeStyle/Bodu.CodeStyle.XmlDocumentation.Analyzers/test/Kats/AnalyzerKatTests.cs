@@ -79,7 +79,7 @@ public sealed class AnalyzerKatTests
             test.ExpectedDiagnostics.Add(result);
         }
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>

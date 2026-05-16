@@ -98,7 +98,7 @@ public sealed class CodeFixKatTests
             test.ExpectedDiagnostics.Add(expectedDiagnostic);
         }
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>

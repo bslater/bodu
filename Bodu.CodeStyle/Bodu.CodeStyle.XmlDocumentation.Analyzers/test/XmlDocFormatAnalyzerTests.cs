@@ -38,7 +38,7 @@ public partial class XmlDocFormatAnalyzerTests
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
-        await CreateTest(source).RunAsync(TestContext.CancellationToken);
+        await CreateTest(source).RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -78,7 +78,7 @@ public partial class XmlDocFormatAnalyzerTests
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
-        await CreateTest(source).RunAsync(TestContext.CancellationToken);
+        await CreateTest(source).RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     public TestContext TestContext { get; set; }

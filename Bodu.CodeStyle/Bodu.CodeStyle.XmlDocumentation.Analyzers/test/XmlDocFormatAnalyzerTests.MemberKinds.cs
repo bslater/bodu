@@ -33,7 +33,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(1, 1, 2, 1)
                 );
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -55,7 +55,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -127,7 +127,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(5, 5, 6, 1)
                 );
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -136,6 +136,6 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenSourceIsEmpty_ShouldReportNothing()
     {
-        await CreateTest(string.Empty).RunAsync(TestContext.CancellationToken);
+        await CreateTest(string.Empty).RunAsync(TestContext.CancellationTokenSource.Token);
     }
 }

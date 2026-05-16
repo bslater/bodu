@@ -53,7 +53,7 @@ public partial class XmlDocFormatCodeFixProviderTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -101,7 +101,7 @@ public partial class XmlDocFormatCodeFixProviderTests
                 .WithSpan(5, 5, 6, 1)
                 );
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 
     /// <summary>
@@ -128,6 +128,6 @@ public partial class XmlDocFormatCodeFixProviderTests
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
             };
 
-        await test.RunAsync(TestContext.CancellationToken);
+        await test.RunAsync(TestContext.CancellationTokenSource.Token);
     }
 }
