@@ -24,6 +24,7 @@
     <ProjectReference Include="..\src\Bodu.CodeStyle.XmlDocumentation.CodeFixes.csproj" />
     <ProjectReference Include="..\..\Bodu.CodeStyle.XmlDocumentation.Analyzers\src\Bodu.CodeStyle.XmlDocumentation.Analyzers.csproj" />
     <ProjectReference Include="..\..\Bodu.CodeStyle.XmlDocumentation.Core\src\Bodu.CodeStyle.XmlDocumentation.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.CodeStyle.Test.Common\Bodu.CodeStyle.Test.Common.csproj" />
   </ItemGroup>
 
 </Project>

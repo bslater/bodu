@@ -56,8 +56,13 @@ internal static class DocLayout
             {
                 if (TryFindMatchingEnd(tokens, position, end, token.TagName!, out int matchEnd))
                 {
-                    bool forceMultiline = options.ForceMultilineTags.Contains(token.TagName!) || options.GetTagPolicy(token.TagName!).Layout == XmlDocTagLayout.MultilineBlock;
-                    bool singleLineCandidate = options.SingleLineWhenShortTags.Contains(token.TagName!) || options.GetTagPolicy(token.TagName!).Layout == XmlDocTagLayout.SingleLineWhenShort;
+                    // ForceMultilineTags and SingleLineWhenShortTags are the authoritative source of truth for
+                    // layout. Per-tag policies (XmlDocTagPolicy.Layout) carry supplementary metadata such as
+                    // self-closing attribute spacing but do NOT promote a tag into a layout class — that way a
+                    // JSON config that narrows ForceMultilineTags can take effect without also having to
+                    // override every tagPolicy entry.
+                    bool forceMultiline = options.ForceMultilineTags.Contains(token.TagName!);
+                    bool singleLineCandidate = options.SingleLineWhenShortTags.Contains(token.TagName!);
 
                     if (forceMultiline)
                     {

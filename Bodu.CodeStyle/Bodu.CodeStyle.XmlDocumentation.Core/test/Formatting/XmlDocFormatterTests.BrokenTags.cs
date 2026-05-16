@@ -67,8 +67,9 @@ public partial class XmlDocFormatterTests
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
         Assert.IsTrue(result.Changed);
-        // The inline <c> body is preserved verbatim — newline is replaced by a single space when rejoined.
-        StringAssert.Contains(result.FormattedText, "<c>[A-Z] [0-9]+</c>");
+        // Inside a paired inline tag, line breaks introduced by line-wrapping are stripped (not replaced with a
+        // space) so the original content (e.g. a regex split for visual layout) is restored verbatim.
+        StringAssert.Contains(result.FormattedText, "<c>[A-Z][0-9]+</c>");
     }
 
     /// <summary>

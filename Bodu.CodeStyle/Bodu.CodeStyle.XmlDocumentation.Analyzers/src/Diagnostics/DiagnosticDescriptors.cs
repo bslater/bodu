@@ -19,7 +19,7 @@ internal static class DiagnosticDescriptors
     public static DiagnosticDescriptor XmlDocumentationFormatting { get; } = new DiagnosticDescriptor(
         id: DiagnosticIds.XmlDocumentationFormatting,
         title: "XML documentation comment is not formatted according to Bodu style",
-        messageFormat: "XML documentation comment formatting differs from project policy ({0} change(s))",
+        messageFormat: "XML documentation comment formatting differs from project policy",
         category: "Documentation",
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,

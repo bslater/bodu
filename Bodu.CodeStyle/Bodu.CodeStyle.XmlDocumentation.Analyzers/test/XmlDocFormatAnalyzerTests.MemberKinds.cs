@@ -30,8 +30,8 @@ public partial class XmlDocFormatAnalyzerTests
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(1, 4, 2, 1)
-                .WithArguments(1));
+                .WithSpan(1, 1, 2, 1)
+                );
 
         await test.RunAsync();
     }
@@ -52,8 +52,8 @@ public partial class XmlDocFormatAnalyzerTests
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(3, 8, 4, 1)
-                .WithArguments(1));
+                .WithSpan(3, 5, 4, 1)
+                );
 
         await test.RunAsync();
     }
@@ -74,8 +74,8 @@ public partial class XmlDocFormatAnalyzerTests
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(3, 8, 4, 1)
-                .WithArguments(1));
+                .WithSpan(3, 5, 4, 1)
+                );
 
         await test.RunAsync();
     }
@@ -96,8 +96,8 @@ public partial class XmlDocFormatAnalyzerTests
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(3, 8, 4, 1)
-                .WithArguments(1));
+                .WithSpan(3, 5, 4, 1)
+                );
 
         await test.RunAsync();
     }
@@ -120,12 +120,12 @@ public partial class XmlDocFormatAnalyzerTests
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(3, 8, 4, 1)
-                .WithArguments(1));
+                .WithSpan(3, 5, 4, 1)
+                );
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(5, 8, 6, 1)
-                .WithArguments(1));
+                .WithSpan(5, 5, 6, 1)
+                );
 
         await test.RunAsync();
     }

@@ -19,6 +19,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\src\Bodu.CodeStyle.Ordering.Core.csproj" />
+    <ProjectReference Include="..\..\Bodu.CodeStyle.Test.Common\Bodu.CodeStyle.Test.Common.csproj" />
   </ItemGroup>
 
 </Project>

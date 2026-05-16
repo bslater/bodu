@@ -64,6 +64,14 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
                 }
             }
 
+            if (HasPreprocessorDirectiveBetweenTriviaAndMember(trivia))
+            {
+                // A preprocessor directive between the doc comment and the documented member makes any rewrite
+                // unsafe — we cannot guarantee the documented member is the same across configurations. Skip
+                // registering a fix for this diagnostic; the squiggle remains, but no code action is offered.
+                continue;
+            }
+
             context.RegisterCodeFix(
                 CodeAction.Create(
                     title: ActionTitle,
@@ -71,6 +79,27 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
                     equivalenceKey: EquivalenceKey),
                 diagnostic);
         }
+    }
+
+    private static bool HasPreprocessorDirectiveBetweenTriviaAndMember(SyntaxTrivia trivia)
+    {
+        SyntaxToken token = trivia.Token;
+        SyntaxTriviaList leading = token.LeadingTrivia;
+        int index = leading.IndexOf(trivia);
+        if (index < 0)
+        {
+            return false;
+        }
+
+        for (int i = index + 1; i < leading.Count; i++)
+        {
+            if (leading[i].IsDirective)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private static async Task<Document> ApplyFixAsync(Document document, SyntaxTrivia trivia, string formattedText, CancellationToken cancellationToken)

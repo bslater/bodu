@@ -28,14 +28,14 @@ public sealed class DiagnosticDescriptorsTests
     }
 
     /// <summary>
-    /// Verifies that the BODUXML001 message format places a count argument in its template.
+    /// Verifies that the BODUXML001 message format mentions the project policy.
     /// </summary>
     [TestMethod]
-    public void XmlDocumentationFormatting_MessageFormatShouldContainCountPlaceholder()
+    public void XmlDocumentationFormatting_MessageFormatShouldMentionProjectPolicy()
     {
         DiagnosticDescriptor descriptor = DiagnosticDescriptors.XmlDocumentationFormatting;
 
-        StringAssert.Contains(descriptor.MessageFormat.ToString(System.Globalization.CultureInfo.InvariantCulture), "{0}");
+        StringAssert.Contains(descriptor.MessageFormat.ToString(System.Globalization.CultureInfo.InvariantCulture), "project policy");
     }
 
     /// <summary>

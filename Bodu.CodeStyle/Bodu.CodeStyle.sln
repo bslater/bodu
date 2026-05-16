@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.Ordering.Cor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.Ordering.Core.Test", "Bodu.CodeStyle.Ordering.Core\test\Bodu.CodeStyle.Ordering.Core.Test.csproj", "{7C5FCD4A-A94B-4C22-9FA4-1EDFA429C464}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.Test.Common", "Bodu.CodeStyle.Test.Common\Bodu.CodeStyle.Test.Common.csproj", "{986DEB98-EAC7-4CD6-97C9-48C9F5084401}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,10 @@ Global
 		{7C5FCD4A-A94B-4C22-9FA4-1EDFA429C464}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7C5FCD4A-A94B-4C22-9FA4-1EDFA429C464}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7C5FCD4A-A94B-4C22-9FA4-1EDFA429C464}.Release|Any CPU.Build.0 = Release|Any CPU
+		{986DEB98-EAC7-4CD6-97C9-48C9F5084401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{986DEB98-EAC7-4CD6-97C9-48C9F5084401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{986DEB98-EAC7-4CD6-97C9-48C9F5084401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{986DEB98-EAC7-4CD6-97C9-48C9F5084401}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{B49BDE5F-29B7-4D5D-A93D-51A09DAD9025} = {CC19A894-3798-46AC-AE0E-01BE34E3613F}

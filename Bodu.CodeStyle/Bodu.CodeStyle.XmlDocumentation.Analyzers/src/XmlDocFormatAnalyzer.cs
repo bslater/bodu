@@ -90,11 +90,13 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
             ImmutableDictionary<string, string?> properties = ImmutableDictionary<string, string?>.Empty
                 .Add(FormattedTextPropertyKey, result.FormattedText);
 
+            // Use FullSpan to include the leading "///" characters in the diagnostic location so that the
+            // editor squiggle covers the full doc trivia text rather than just the structured XML payload.
+            Location location = Location.Create(treeContext.Tree, trivia.FullSpan);
             Diagnostic diagnostic = Diagnostic.Create(
                 DiagnosticDescriptors.XmlDocumentationFormatting,
-                trivia.GetLocation(),
-                properties,
-                result.Changes.Length);
+                location,
+                properties);
 
             treeContext.ReportDiagnostic(diagnostic);
         }

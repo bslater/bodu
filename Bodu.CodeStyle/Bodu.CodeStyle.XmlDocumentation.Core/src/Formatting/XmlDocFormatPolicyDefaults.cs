@@ -71,7 +71,9 @@ public static class XmlDocFormatPolicyDefaults
         "remarks",
         "para",
         "example",
-        "list");
+        "list",
+        "item",
+        "description");
 
     /// <summary>
     /// Gets the default set of tags that may stay single-line when short enough.
@@ -130,6 +132,8 @@ public static class XmlDocFormatPolicyDefaults
         builder.Add("para", multiline);
         builder.Add("example", multiline);
         builder.Add("list", multiline);
+        builder.Add("item", multiline);
+        builder.Add("description", multiline);
 
         builder.Add("param", singleLine);
         builder.Add("typeparam", singleLine);

@@ -317,12 +317,115 @@ internal static class XmlDocTokenizer
             return raw;
         }
 
+        int openTagEnd = ScanToTagEnd(raw, 0);
+        if (openTagEnd < 0)
+        {
+            return NormalizeAttributeSection(raw, 0, raw.Length);
+        }
+
+        int closeTagStart = FindClosingTagStart(raw, openTagEnd + 1);
+        if (closeTagStart < 0)
+        {
+            return NormalizeAttributeSection(raw, 0, raw.Length);
+        }
+
         StringBuilder result = new StringBuilder(raw.Length);
+        result.Append(NormalizeAttributeSection(raw, 0, openTagEnd + 1));
+        AppendBodyWithoutNewlines(result, raw, openTagEnd + 1, closeTagStart);
+        result.Append(NormalizeAttributeSection(raw, closeTagStart, raw.Length));
+        return result.ToString();
+    }
+
+    private static int ScanToTagEnd(string raw, int start)
+    {
+        bool inQuote = false;
+        char quoteChar = '\0';
+        for (int i = start; i < raw.Length; i++)
+        {
+            char ch = raw[i];
+            if (inQuote)
+            {
+                if (ch == quoteChar)
+                {
+                    inQuote = false;
+                }
+
+                continue;
+            }
+
+            if (ch == '"' || ch == '\'')
+            {
+                inQuote = true;
+                quoteChar = ch;
+                continue;
+            }
+
+            if (ch == '>')
+            {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    private static int FindClosingTagStart(string raw, int start)
+    {
+        bool inQuote = false;
+        char quoteChar = '\0';
+        int lastClosingTagStart = -1;
+        for (int i = start; i < raw.Length - 1; i++)
+        {
+            char ch = raw[i];
+            if (inQuote)
+            {
+                if (ch == quoteChar)
+                {
+                    inQuote = false;
+                }
+
+                continue;
+            }
+
+            if (ch == '"' || ch == '\'')
+            {
+                inQuote = true;
+                quoteChar = ch;
+                continue;
+            }
+
+            if (ch == '<' && raw[i + 1] == '/')
+            {
+                lastClosingTagStart = i;
+            }
+        }
+
+        return lastClosingTagStart;
+    }
+
+    private static void AppendBodyWithoutNewlines(StringBuilder builder, string raw, int start, int end)
+    {
+        for (int i = start; i < end; i++)
+        {
+            char ch = raw[i];
+            if (ch == '\r' || ch == '\n')
+            {
+                continue;
+            }
+
+            builder.Append(ch);
+        }
+    }
+
+    private static string NormalizeAttributeSection(string raw, int start, int end)
+    {
+        StringBuilder result = new StringBuilder(end - start);
         bool inQuote = false;
         char quoteChar = '\0';
         bool lastWasSpace = false;
-        foreach (char ch in raw)
+        for (int i = start; i < end; i++)
         {
+            char ch = raw[i];
             if (inQuote)
             {
                 if (ch == '\n' || ch == '\r')
@@ -357,7 +460,6 @@ internal static class XmlDocTokenizer
 
             if (ch == '>' && lastWasSpace && result.Length > 0 && result[result.Length - 1] == ' ')
             {
-                // Strip the trailing whitespace before a closing > to avoid producing "<tag attr=value >".
                 result.Length--;
                 result.Append('>');
                 lastWasSpace = false;

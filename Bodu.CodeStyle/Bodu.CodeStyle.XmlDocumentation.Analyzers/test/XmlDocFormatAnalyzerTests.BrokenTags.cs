@@ -33,8 +33,8 @@ public partial class XmlDocFormatAnalyzerTests
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(3, 8, 5, 1)
-                .WithArguments(1));
+                .WithSpan(3, 5, 5, 1)
+                );
 
         await test.RunAsync();
     }
@@ -59,8 +59,8 @@ public partial class XmlDocFormatAnalyzerTests
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
             new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(3, 8, 7, 1)
-                .WithArguments(1));
+                .WithSpan(3, 5, 7, 1)
+                );
 
         await test.RunAsync();
     }
