@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThrowHelper.cs" company="PlaceholderCompany">
+// <copyright file="TextThrowHelper.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -47,6 +47,6 @@ namespace Bodu.Text.Formats;
     "Roslynator",
     "RCS1001:Add braces (when expression spans over multiple lines)",
     Justification = "ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.")]
-internal static partial class ThrowHelper
+internal static partial class TextThrowHelper
 {
 }

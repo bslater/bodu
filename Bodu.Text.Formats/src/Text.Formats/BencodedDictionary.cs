@@ -33,13 +33,13 @@ public sealed class BencodedDictionary
         foreach (KeyValuePair<BencodedString, BencodedValue> pair in items)
         {
             if (pair.Key is null)
-                ThrowHelper.ThrowArgumentException_NullDictionaryKey(nameof(items));
+                TextThrowHelper.ThrowArgumentException_NullDictionaryKey(nameof(items));
 
             if (pair.Value is null)
-                ThrowHelper.ThrowArgumentException_NullDictionaryValue(nameof(items));
+                TextThrowHelper.ThrowArgumentException_NullDictionaryValue(nameof(items));
 
             if (!this._items.TryAdd(pair.Key, pair.Value))
-                ThrowHelper.ThrowArgumentException_DuplicateDictionaryKey(nameof(items));
+                TextThrowHelper.ThrowArgumentException_DuplicateDictionaryKey(nameof(items));
         }
     }
 

@@ -1,5 +1,5 @@
 ﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
+// <copyright file="TextThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -11,7 +11,7 @@ using System.Text;
 
 namespace Bodu.Text.Formats;
 
-internal static partial class ThrowHelper
+internal static partial class TextThrowHelper
 {
     /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.BencodeFormatException_UnexpectedToken" />.</summary>
     private static readonly CompositeFormat s_unexpectedToken =
@@ -263,29 +263,6 @@ internal static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowBencodeFormatException_UnterminatedList() =>
         throw new BencodeFormatException(FormatsResourceStrings.BencodeFormatException_UnterminatedList);
-
-    /// <summary>
-    /// Throws an <see cref="ArgumentNullException" /> when <paramref name="value" /> is <see langword="null" />.
-    /// </summary>
-    /// <typeparam name="T">The reference type being validated.</typeparam>
-    /// <param name="value">The argument to validate.</param>
-    /// <param name="paramName">
-    /// The name of the parameter being validated. Supplied automatically by the compiler via
-    /// <see cref="CallerArgumentExpressionAttribute" />.
-    /// </param>
-    /// <remarks>
-    /// Forwards to <see cref="Bodu.ThrowHelper.ThrowIfNull{T}(T, string)" /> so callers in this project can use
-    /// the unqualified name <c>ThrowHelper</c> uniformly. The forwarder exists to avoid the namespace shadowing
-    /// that would otherwise break the existing <c>ThrowHelper.ThrowIfNull(...)</c> call sites once a project-local
-    /// <c>ThrowHelper</c> is introduced in <see cref="Bodu.Text.Formats" />.
-    /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value" /> is <see langword="null" />.</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    internal static void ThrowIfNull<T>(
-        [NotNull] T? value,
-        [CallerArgumentExpression(nameof(value))] string? paramName = null)
-            where T : class =>
-        Bodu.ThrowHelper.ThrowIfNull(value, paramName);
 
     /// <summary>
     /// Throws an <see cref="InvalidOperationException" /> indicating that <see cref="System.Buffers.Text.Utf8Formatter" />

@@ -51,7 +51,7 @@ public static partial class Bencode
         ThrowHelper.ThrowIfNull(source);
 
         if (!source.CanRead)
-            ThrowHelper.ThrowArgumentException_StreamNotReadable(nameof(source));
+            TextThrowHelper.ThrowArgumentException_StreamNotReadable(nameof(source));
 
         using MemoryStream buffer = new();
         source.CopyTo(buffer);
@@ -86,7 +86,7 @@ public static partial class Bencode
         ThrowHelper.ThrowIfNull(source);
 
         if (!source.CanRead)
-            ThrowHelper.ThrowArgumentException_StreamNotReadable(nameof(source));
+            TextThrowHelper.ThrowArgumentException_StreamNotReadable(nameof(source));
 
         await using MemoryStream buffer = new();
         await source.CopyToAsync(buffer, cancellationToken).ConfigureAwait(false);
@@ -118,7 +118,7 @@ public static partial class Bencode
         ThrowHelper.ThrowIfNull(destination);
 
         if (!destination.CanWrite)
-            ThrowHelper.ThrowArgumentException_StreamNotWritable(nameof(destination));
+            TextThrowHelper.ThrowArgumentException_StreamNotWritable(nameof(destination));
 
         var length = GetEncodedLength(value);
         var rented = ArrayPool<byte>.Shared.Rent(length);
@@ -164,7 +164,7 @@ public static partial class Bencode
         ThrowHelper.ThrowIfNull(destination);
 
         if (!destination.CanWrite)
-            ThrowHelper.ThrowArgumentException_StreamNotWritable(nameof(destination));
+            TextThrowHelper.ThrowArgumentException_StreamNotWritable(nameof(destination));
 
         var length = GetEncodedLength(value);
         var rented = ArrayPool<byte>.Shared.Rent(length);
