@@ -293,19 +293,30 @@ dotnet_diagnostic.IDE0290.severity = none
 file_header_template = // ---------------------------------------------------------------------------------------------------------------\n// <copyright file="{fileName}" company="PlaceholderCompany">\n//     Copyright (c) PlaceholderCompany. All rights reserved.\n// </copyright>\n// ---------------------------------------------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------------------------------------------
-# Bodu XML documentation analyzer (BODUXML001)
+# Bodu code-style analyzer diagnostics (BODU#### family)
 # ---------------------------------------------------------------------------------------------------------------
 #
-# The full policy lives in /bodu.xmldocstyle.json (loaded via <AdditionalFiles> from bld/Bodu.props).
+# Diagnostic IDs follow the BODU#### scheme — the thousands digit denotes the analyzer family:
+#   BODU0xxx  reserved / analyzer infrastructure
+#   BODU1xxx  XML documentation       (1001 formatting, 1100 required tags, 1200 ordering, 1300 cref, 1400 content)
+#   BODU2xxx  member ordering         (deferred)
+#   BODU3xxx  naming conventions      (deferred)
+#   BODU4xxx  performance             (deferred)
+#   BODU5xxx  security                (deferred)
+#   BODU6xxx  design / API shape      (deferred)
+#   BODU9xxx  whitespace / brace      (deferred)
+# See Bodu.CodeStyle/README.md#diagnostic-ids for the canonical range table.
+#
+# The full XML-doc policy lives in /bodu.xmldocstyle.json (loaded via <AdditionalFiles> from bld/Bodu.props).
 # The scalar keys below win over the JSON values for any file that matches the pattern, so they're left
 # commented out as documentation. Uncomment + tweak per-folder when you need a narrower override.
 #
 # [*.cs]
-# dotnet_diagnostic.BODUXML001.severity = warning           # warning | suggestion | none | error
-# bodu_xmldoc_max_line_length            = 120
-# bodu_xmldoc_force_summary_multiline    = true
-# bodu_xmldoc_force_para_multiline       = true
-# bodu_xmldoc_preserve_inline_tags       = true
+# dotnet_diagnostic.BODU1001.severity   = warning           # warning | suggestion | none | error
+# bodu_xmldoc_max_line_length           = 120
+# bodu_xmldoc_force_summary_multiline   = true
+# bodu_xmldoc_force_para_multiline      = true
+# bodu_xmldoc_preserve_inline_tags      = true
 
 # ---------------------------------------------------------------------------------------------------------------
 # Test file overrides — relax rules that are noisy and unhelpful in test code
@@ -320,7 +331,7 @@ dotnet_diagnostic.SA1601.severity = none
 dotnet_diagnostic.CS1591.severity = none
 # The Bodu XML documentation formatter is intended for production-API doc comments, not the
 # test methods' `Verifies that ...` summaries — keep the test surface free of formatter noise.
-dotnet_diagnostic.BODUXML001.severity = none
+dotnet_diagnostic.BODU1001.severity = none
 # Inline array literals in test data providers are intentional — they keep expected values
 # co-located with the inputs they describe. CA1861 would scatter them into static fields
 # for no practical benefit since data providers are called once by the test runner.

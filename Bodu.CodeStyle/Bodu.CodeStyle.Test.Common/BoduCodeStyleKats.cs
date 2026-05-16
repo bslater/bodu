@@ -255,13 +255,13 @@ public sealed record CodeStyleKat(
 /// </summary>
 public static class CodeStyleKatConstants
 {
-    public const string XmlDocumentationDiagnosticId = "BODUXML001";
+    public const string XmlDocumentationDiagnosticId = "BODU1001";
 
     public const string DefaultAnalyzerConfig = """
         root = true
 
         [*.cs]
-        dotnet_diagnostic.BODUXML001.severity = warning
+        dotnet_diagnostic.BODU1001.severity = warning
 
         bodu_xmldoc_max_line_length = 120
         bodu_xmldoc_force_summary_multiline = true
@@ -852,7 +852,7 @@ public static class BoduCodeStyleKats
             root = true
 
             [*.cs]
-            dotnet_diagnostic.BODUXML001.severity = warning
+            dotnet_diagnostic.BODU1001.severity = warning
             bodu_xmldoc_max_line_length = 72
             """),
 

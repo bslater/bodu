@@ -16,7 +16,7 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Test;
 public partial class XmlDocFormatAnalyzerTests
 {
     /// <summary>
-    /// Verifies that a misformatted comment on a type declaration triggers BODUXML001.
+    /// Verifies that a misformatted comment on a type declaration triggers BODU1001.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenDocOnTypeDeclarationMisformatted_ShouldReport()
@@ -37,7 +37,7 @@ public partial class XmlDocFormatAnalyzerTests
     }
 
     /// <summary>
-    /// Verifies that a misformatted comment on a method declaration triggers BODUXML001.
+    /// Verifies that a misformatted comment on a method declaration triggers BODU1001.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenDocOnMethodDeclarationMisformatted_ShouldReport()
@@ -59,7 +59,7 @@ public partial class XmlDocFormatAnalyzerTests
     }
 
     /// <summary>
-    /// Verifies that a misformatted comment on a field declaration triggers BODUXML001.
+    /// Verifies that a misformatted comment on a field declaration triggers BODU1001.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenDocOnFieldDeclarationMisformatted_ShouldReport()
@@ -81,7 +81,7 @@ public partial class XmlDocFormatAnalyzerTests
     }
 
     /// <summary>
-    /// Verifies that a misformatted comment on an event declaration triggers BODUXML001.
+    /// Verifies that a misformatted comment on an event declaration triggers BODU1001.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenDocOnEventDeclarationMisformatted_ShouldReport()

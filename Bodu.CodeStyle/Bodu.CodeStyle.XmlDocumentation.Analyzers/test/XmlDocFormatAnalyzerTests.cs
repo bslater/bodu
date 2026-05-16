@@ -24,7 +24,7 @@ public partial class XmlDocFormatAnalyzerTests
         };
 
     /// <summary>
-    /// Verifies that a canonical, multi-line doc comment does not trigger BODUXML001.
+    /// Verifies that a canonical, multi-line doc comment does not trigger BODU1001.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenDocCommentIsCanonical_ShouldNotReport()
@@ -42,11 +42,11 @@ public partial class XmlDocFormatAnalyzerTests
     }
 
     /// <summary>
-    /// Verifies that a single-line summary triggers BODUXML001.
+    /// Verifies that a single-line summary triggers BODU1001.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
-    public async Task Analyze_WhenDocCommentMisformatted_ShouldReportBODUXML001()
+    public async Task Analyze_WhenDocCommentMisformatted_ShouldReportBODU1001()
     {
         var source =
             "public sealed class Sample\r\n" +

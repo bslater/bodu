@@ -2,9 +2,10 @@
   "$schema": "https://raw.githubusercontent.com/bodu/bodu/master/Bodu.CodeStyle/schema/bodu.xmldocstyle.schema.json",
   "profile": "Bodu",
 
-  "_": "Source of truth for the Bodu XML documentation formatter / analyzer (BODUXML001).",
+  "_": "Source of truth for the Bodu XML documentation formatter / analyzer (BODU1001).",
   "_loadedBy": "Bodu.CodeStyle.XmlDocumentation.Analyzers — wired in via bld/Bodu.props as <AdditionalFiles>.",
   "_overriddenBy": "Scalar keys in .editorconfig (bodu_xmldoc_max_line_length, etc.) win over JSON for per-folder tuning.",
+  "_diagnosticIds": "Diagnostic IDs follow the BODU#### scheme — BODU1xxx is the XML-documentation family. See Bodu.CodeStyle/README.md#diagnostic-ids for the full range table.",
 
   "maxLineLength": 120,
   "documentationPrefix": "/// ",
@@ -80,7 +81,7 @@
     "typeparamref": { "layout": "inlineAtomic", "allowLineBreakInside": false, "selfClosingTrailingSpace": true }
   },
 
-  "_requiredTags": "Declares which doc tags must appear on each member kind. The shape is locked in; enforcement will land in a follow-up analyzer rule (BODUXML002 — Missing required tag). The current JSON reader ignores this section so it is safe to author now.",
+  "_requiredTags": "Declares which doc tags must appear on each member kind. The shape is locked in; enforcement will land in a follow-up analyzer rule (BODU1100 — Missing required tag). The current JSON reader ignores this section so it is safe to author now.",
   "requiredTags": {
     "class":                    [ "summary" ],
     "struct":                   [ "summary" ],

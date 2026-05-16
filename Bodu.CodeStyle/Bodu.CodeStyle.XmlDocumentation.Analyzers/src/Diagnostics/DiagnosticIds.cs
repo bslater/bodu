@@ -15,5 +15,5 @@ internal static class DiagnosticIds
     /// The diagnostic identifier reported when an XML documentation comment is not formatted according to the
     /// active project policy.
     /// </summary>
-    public const string XmlDocumentationFormatting = "BODUXML001";
+    public const string XmlDocumentationFormatting = "BODU1001";
 }

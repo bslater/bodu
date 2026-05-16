@@ -19,7 +19,7 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 
 /// <summary>
-/// Reports <c>BODUXML001</c> when an XML documentation comment's formatting differs from the active project
+/// Reports <c>BODU1001</c> when an XML documentation comment's formatting differs from the active project
 /// policy.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]

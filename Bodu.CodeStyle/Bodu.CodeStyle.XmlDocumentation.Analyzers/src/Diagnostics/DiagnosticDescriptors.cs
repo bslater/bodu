@@ -14,7 +14,7 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Diagnostics;
 internal static class DiagnosticDescriptors
 {
     /// <summary>
-    /// Gets the descriptor for <c>BODUXML001</c> — XML documentation comment formatting differs from policy.
+    /// Gets the descriptor for <c>BODU1001</c> — XML documentation comment formatting differs from policy.
     /// </summary>
     public static DiagnosticDescriptor XmlDocumentationFormatting { get; } = new DiagnosticDescriptor(
         id: DiagnosticIds.XmlDocumentationFormatting,
@@ -24,5 +24,5 @@ internal static class DiagnosticDescriptors
         defaultSeverity: DiagnosticSeverity.Warning,
         isEnabledByDefault: true,
         description: "Reformats XML documentation comments to match the Bodu code-style policy.",
-        helpLinkUri: "https://github.com/bodu/bodu/blob/master/Bodu.CodeStyle/README.md#boduxml001");
+        helpLinkUri: "https://github.com/bodu/bodu/blob/master/Bodu.CodeStyle/README.md#bodu1001");
 }

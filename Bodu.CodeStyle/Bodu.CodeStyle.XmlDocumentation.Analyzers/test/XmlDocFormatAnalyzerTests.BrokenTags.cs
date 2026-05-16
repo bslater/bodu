@@ -17,7 +17,7 @@ public partial class XmlDocFormatAnalyzerTests
 {
     /// <summary>
     /// Verifies that prose spanning multiple <c>///</c> lines inside a single block tag is recognised as
-    /// non-canonical and triggers BODUXML001.
+    /// non-canonical and triggers BODU1001.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenSummaryProseSplitAcrossLines_ShouldReport()
@@ -41,7 +41,7 @@ public partial class XmlDocFormatAnalyzerTests
 
     /// <summary>
     /// Verifies that an inline tag whose attributes are split across <c>///</c> lines is recognised as
-    /// non-canonical and triggers BODUXML001.
+    /// non-canonical and triggers BODU1001.
     /// </summary>
     [TestMethod]
     public async Task Analyze_WhenInlineTagAttributesSplitAcrossLines_ShouldReport()
