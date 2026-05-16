@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Delimited.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -26,7 +26,6 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public static partial class Delimited
 {
-
     /// <summary>
     /// Parses a delimited-text document from the specified character span using default options.
     /// </summary>
@@ -92,8 +91,8 @@ public static partial class Delimited
     {
         ThrowHelper.ThrowIfNull(document);
 
-        char delimiter = options.Delimiter;
-        char quote = options.Quote;
+        var delimiter = options.Delimiter;
+        var quote = options.Quote;
 
         StringBuilder sb = new();
 
@@ -167,7 +166,7 @@ public static partial class Delimited
     /// <param name="quote">The quoting character.</param>
     private static void WriteRow(StringBuilder sb, IReadOnlyList<string> fields, char delimiter, char quote)
     {
-        for (int i = 0; i < fields.Count; i++)
+        for (var i = 0; i < fields.Count; i++)
         {
             if (i > 0)
                 sb.Append(delimiter);
@@ -185,7 +184,7 @@ public static partial class Delimited
     /// <param name="quote">The quoting character.</param>
     private static void AppendField(StringBuilder sb, string field, char delimiter, char quote)
     {
-        bool needsQuoting = field.IndexOf(delimiter) >= 0 ||
+        var needsQuoting = field.IndexOf(delimiter) >= 0 ||
                             field.IndexOf(quote) >= 0 ||
                             field.IndexOf('\n') >= 0 ||
                             field.IndexOf('\r') >= 0;
@@ -198,7 +197,7 @@ public static partial class Delimited
 
         sb.Append(quote);
 
-        foreach (char c in field)
+        foreach (var c in field)
         {
             if (c == quote)
                 sb.Append(quote); // RFC 4180 doubled-quote escape
@@ -208,5 +207,4 @@ public static partial class Delimited
 
         sb.Append(quote);
     }
-
 }

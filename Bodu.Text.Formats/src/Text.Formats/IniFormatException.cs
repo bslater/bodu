@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniFormatException.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ namespace Bodu.Text.Formats;
 public sealed class IniFormatException
     : FormatException
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="IniFormatException" /> class.
     /// </summary>
@@ -57,5 +56,4 @@ public sealed class IniFormatException
     /// The 1-based line number, or <c>0</c> when the exception is not associated with a specific source line.
     /// </returns>
     public int LineNumber { get; }
-
 }

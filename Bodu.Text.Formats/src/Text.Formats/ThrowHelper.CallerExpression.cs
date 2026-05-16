@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,7 +13,6 @@ namespace Bodu.Text.Formats;
 
 internal static partial class ThrowHelper
 {
-
     /// <summary>Cached parsed format for <see cref="FormatsResourceStrings.BencodeFormatException_UnexpectedToken" />.</summary>
     private static readonly CompositeFormat s_unexpectedToken =
         CompositeFormat.Parse(FormatsResourceStrings.BencodeFormatException_UnexpectedToken);
@@ -309,5 +308,4 @@ internal static partial class ThrowHelper
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void ThrowInvalidOperationException_StringLengthFormatFailed() =>
         throw new InvalidOperationException(FormatsResourceStrings.InvalidOperationException_StringLengthFormatFailed);
-
 }

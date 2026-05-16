@@ -12,8 +12,7 @@ namespace Bodu.Text.Formats;
 public sealed class BencodedDictionary
     : BencodedValue
 {
-
-    private readonly SortedDictionary<BencodedString, BencodedValue> items;
+    private readonly SortedDictionary<BencodedString, BencodedValue> _items;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BencodedDictionary" /> class.
@@ -29,9 +28,9 @@ public sealed class BencodedDictionary
     {
         ThrowHelper.ThrowIfNull(items);
 
-        this.items = new SortedDictionary<BencodedString, BencodedValue>(BencodedStringComparer.Ordinal);
+        this._items = new SortedDictionary<BencodedString, BencodedValue>(BencodedStringComparer.Ordinal);
 
-        foreach (var pair in items)
+        foreach (KeyValuePair<BencodedString, BencodedValue> pair in items)
         {
             if (pair.Key is null)
                 ThrowHelper.ThrowArgumentException_NullDictionaryKey(nameof(items));
@@ -39,7 +38,7 @@ public sealed class BencodedDictionary
             if (pair.Value is null)
                 ThrowHelper.ThrowArgumentException_NullDictionaryValue(nameof(items));
 
-            if (!this.items.TryAdd(pair.Key, pair.Value))
+            if (!this._items.TryAdd(pair.Key, pair.Value))
                 ThrowHelper.ThrowArgumentException_DuplicateDictionaryKey(nameof(items));
         }
     }
@@ -47,12 +46,12 @@ public sealed class BencodedDictionary
     /// <summary>
     /// Gets the number of key-value pairs in the dictionary.
     /// </summary>
-    public int Count => items.Count;
+    public int Count => _items.Count;
 
     /// <summary>
     /// Gets the dictionary items sorted by raw byte-string key order.
     /// </summary>
-    public IReadOnlyDictionary<BencodedString, BencodedValue> Items => items;
+    public IReadOnlyDictionary<BencodedString, BencodedValue> Items => _items;
 
     /// <inheritdoc />
     public override BencodedValueKind Kind => BencodedValueKind.Dictionary;
@@ -62,14 +61,14 @@ public sealed class BencodedDictionary
     /// </summary>
     /// <param name="key">The raw byte-string key.</param>
     /// <returns>The value associated with <paramref name="key" />.</returns>
-    public BencodedValue this[BencodedString key] => items[key];
+    public BencodedValue this[BencodedString key] => _items[key];
 
     /// <summary>
     /// Gets the key-value pairs in encoded dictionary order.
     /// </summary>
     /// <returns>The ordered key-value pairs.</returns>
     public IEnumerable<KeyValuePair<BencodedString, BencodedValue>> GetOrderedItems() =>
-        items;
+        _items;
 
     /// <summary>
     /// Attempts to get the value associated with the specified key.
@@ -78,7 +77,7 @@ public sealed class BencodedDictionary
     /// <param name="value">When this method returns, contains the matching value, when found.</param>
     /// <returns><see langword="true" /> when the key exists; otherwise, <see langword="false" />.</returns>
     public bool TryGetValue(BencodedString key, out BencodedValue value) =>
-        items.TryGetValue(key, out value!);
+        _items.TryGetValue(key, out value!);
 
     /// <summary>
     /// Attempts to get the value associated with a UTF-8 key.
@@ -93,7 +92,6 @@ public sealed class BencodedDictionary
     {
         ThrowHelper.ThrowIfNull(key);
 
-        return items.TryGetValue(BencodedString.FromUtf8(key), out value!);
+        return _items.TryGetValue(BencodedString.FromUtf8(key), out value!);
     }
-
 }

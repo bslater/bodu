@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedFormatException.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public sealed class DelimitedFormatException : FormatException
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DelimitedFormatException" /> class with a default message and
     /// no associated line number.
@@ -62,5 +61,4 @@ public sealed class DelimitedFormatException : FormatException
     /// A positive integer identifying the source line, or <c>0</c> when the line is unknown or not applicable.
     /// </returns>
     public int LineNumber { get; }
-
 }

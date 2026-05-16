@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedRow.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -16,11 +16,8 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public sealed class DelimitedRow
 {
-
     private static readonly CompositeFormat s_headerNotFound =
         CompositeFormat.Parse(FormatsResourceStrings.DelimitedDocument_HeaderNotFound);
-
-    private readonly IReadOnlyList<string> _fields;
 
     /// <summary>
     /// The column-name-to-index map built from the document's header row, or <see langword="null" /> when the
@@ -38,7 +35,7 @@ public sealed class DelimitedRow
     /// </param>
     internal DelimitedRow(IReadOnlyList<string> fields, IReadOnlyDictionary<string, int>? headerIndex)
     {
-        _fields = fields;
+        Fields = fields;
         _headerIndex = headerIndex;
     }
 
@@ -46,13 +43,13 @@ public sealed class DelimitedRow
     /// Gets the ordered, unmodified field values for this row.
     /// </summary>
     /// <returns>A read-only list of string field values in source order.</returns>
-    public IReadOnlyList<string> Fields => _fields;
+    public IReadOnlyList<string> Fields { get; }
 
     /// <summary>
     /// Gets the number of fields in this row.
     /// </summary>
     /// <returns>The number of fields.</returns>
-    public int Count => _fields.Count;
+    public int Count => Fields.Count;
 
     /// <summary>
     /// Gets the field at the specified zero-based index.
@@ -62,16 +59,7 @@ public sealed class DelimitedRow
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="index" /> is less than zero or greater than or equal to <see cref="Count" />.
     /// </exception>
-    public string this[int index]
-    {
-        get
-        {
-            if ((uint)index >= (uint)_fields.Count)
-                throw new ArgumentOutOfRangeException(nameof(index));
-
-            return _fields[index];
-        }
-    }
+    public string this[int index] => (uint)index >= (uint)Fields.Count ? throw new ArgumentOutOfRangeException(nameof(index)) : Fields[index];
 
     /// <summary>
     /// Gets the field in the column with the specified header name.
@@ -99,10 +87,10 @@ public sealed class DelimitedRow
 
             ThrowHelper.ThrowIfNull(header);
 
-            if (!_headerIndex.TryGetValue(header, out int index))
+            if (!_headerIndex.TryGetValue(header, out var index))
                 ThrowHeaderNotFound(header);
 
-            return index < _fields.Count ? _fields[index] : string.Empty;
+            return index < Fields.Count ? Fields[index] : string.Empty;
         }
     }
 
@@ -122,10 +110,9 @@ public sealed class DelimitedRow
     public T GetValue<T>(int index)
         where T : ISpanParsable<T>
     {
-        if ((uint)index >= (uint)_fields.Count)
-            throw new ArgumentOutOfRangeException(nameof(index));
-
-        return T.Parse(_fields[index].AsSpan(), CultureInfo.InvariantCulture);
+        return (uint)index >= (uint)Fields.Count
+            ? throw new ArgumentOutOfRangeException(nameof(index))
+            : T.Parse(Fields[index].AsSpan(), CultureInfo.InvariantCulture);
     }
 
     /// <summary>
@@ -145,13 +132,13 @@ public sealed class DelimitedRow
     public bool TryGetValue<T>(int index, [MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T>
     {
-        if ((uint)index >= (uint)_fields.Count)
+        if ((uint)index >= (uint)Fields.Count)
         {
             value = default;
             return false;
         }
 
-        return T.TryParse(_fields[index].AsSpan(), CultureInfo.InvariantCulture, out value);
+        return T.TryParse(Fields[index].AsSpan(), CultureInfo.InvariantCulture, out value);
     }
 
     /// <summary>
@@ -176,7 +163,7 @@ public sealed class DelimitedRow
     public T GetValue<T>(string header)
         where T : ISpanParsable<T>
     {
-        string field = this[header];
+        var field = this[header];
         return T.Parse(field.AsSpan(), CultureInfo.InvariantCulture);
     }
 
@@ -197,13 +184,13 @@ public sealed class DelimitedRow
     public bool TryGetValue<T>(string header, [MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T>
     {
-        if (_headerIndex is null || header is null || !_headerIndex.TryGetValue(header, out int index))
+        if (_headerIndex is null || header is null || !_headerIndex.TryGetValue(header, out var index))
         {
             value = default;
             return false;
         }
 
-        string field = index < _fields.Count ? _fields[index] : string.Empty;
+        var field = index < Fields.Count ? Fields[index] : string.Empty;
         return T.TryParse(field.AsSpan(), CultureInfo.InvariantCulture, out value);
     }
 
@@ -217,5 +204,4 @@ public sealed class DelimitedRow
     private static void ThrowHeaderNotFound(string header) =>
         throw new KeyNotFoundException(
             string.Format(CultureInfo.InvariantCulture, s_headerNotFound, header));
-
 }

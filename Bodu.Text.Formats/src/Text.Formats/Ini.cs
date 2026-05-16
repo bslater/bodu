@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ini.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -29,7 +29,6 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public static partial class Ini
 {
-
     /// <summary>
     /// Parses an INI document from the specified character span using default options.
     /// </summary>
@@ -76,7 +75,7 @@ public static partial class Ini
         ThrowHelper.ThrowIfNull(document);
 
         StringBuilder sb = new();
-        bool needsBlankLine = false;
+        var needsBlankLine = false;
 
         foreach (IniEntry entry in document.GlobalSection.Entries)
         {
@@ -146,5 +145,4 @@ public static partial class Ini
             return false;
         }
     }
-
 }

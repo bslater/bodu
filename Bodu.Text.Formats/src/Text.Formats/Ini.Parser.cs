@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Ini.Parser.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ namespace Bodu.Text.Formats;
 
 public static partial class Ini
 {
-
     private static readonly CompositeFormat s_iniDuplicateKey =
         CompositeFormat.Parse(FormatsResourceStrings.IniFormatException_DuplicateKey);
 
@@ -63,7 +62,6 @@ public static partial class Ini
     /// </summary>
     private ref struct Parser
     {
-
         private readonly IniParseOptions _options;
         private ReadOnlySpan<char> _remaining;
         private int _lineNumber;
@@ -100,7 +98,7 @@ public static partial class Ini
 
             List<IniEntry> currentEntries = globalEntries;
             Dictionary<string, IniEntry> currentLookup = globalLookup;
-            bool inGlobal = true;
+            var inGlobal = true;
 
             // Named section builders — kept as mutable lists/dicts until IniSection is constructed at the end
             // so that the Merge section behavior can redirect back to a previously opened section's state.
@@ -116,7 +114,7 @@ public static partial class Ini
 
                 if (line[0] == '[')
                 {
-                    int closeBracket = line.IndexOf(']');
+                    var closeBracket = line.IndexOf(']');
 
                     if (closeBracket < 0)
                         Ini.ThrowMalformedSectionHeader(_lineNumber);
@@ -126,9 +124,9 @@ public static partial class Ini
                     if (nameSpan.IsEmpty)
                         Ini.ThrowMalformedSectionHeader(_lineNumber);
 
-                    string sectionName = nameSpan.ToString();
+                    var sectionName = nameSpan.ToString();
 
-                    if (namedIndexByName.TryGetValue(sectionName, out int existingIdx))
+                    if (namedIndexByName.TryGetValue(sectionName, out var existingIdx))
                     {
                         if (_options.DuplicateSectionBehavior == IniDuplicateSectionBehavior.Disallowed)
                             Ini.ThrowDuplicateSection(sectionName, _lineNumber);
@@ -160,7 +158,7 @@ public static partial class Ini
             List<IniSection> sections = new(namedData.Count);
             Dictionary<string, IniSection> sectionsLookup = new(sectionComparer);
 
-            foreach ((string name, List<IniEntry> entries, Dictionary<string, IniEntry> lookup) in namedData)
+            foreach ((var name, List<IniEntry> entries, Dictionary<string, IniEntry> lookup) in namedData)
             {
                 IniSection section = new(name, entries, lookup);
                 sections.Add(section);
@@ -177,16 +175,16 @@ public static partial class Ini
         /// <param name="line">The trimmed source line (not a comment, not a section header, not empty).</param>
         /// <param name="entries">The ordered entry list for the active section.</param>
         /// <param name="lookup">The key-to-entry lookup for the active section.</param>
-        private void AddEntry(
+        private readonly void AddEntry(
             ReadOnlySpan<char> line,
             List<IniEntry> entries,
             Dictionary<string, IniEntry> lookup)
         {
             // Find the first = or : separator.
-            int sepIdx = -1;
-            for (int i = 0; i < line.Length; i++)
+            var sepIdx = -1;
+            for (var i = 0; i < line.Length; i++)
             {
-                if (line[i] == '=' || line[i] == ':')
+                if (line[i] is '=' or ':')
                 {
                     sepIdx = i;
                     break;
@@ -205,7 +203,7 @@ public static partial class Ini
             else
             {
                 key = line[..sepIdx].TrimEnd().ToString();
-                value = line[(sepIdx + 1) ..].TrimStart().ToString();
+                value = line[(sepIdx + 1)..].TrimStart().ToString();
             }
 
             if (key.Length == 0)
@@ -224,7 +222,7 @@ public static partial class Ini
 
                     case IniDuplicateKeyBehavior.LastWins:
                         // Replace the existing entry in-place so its original position is preserved.
-                        int idx = entries.IndexOf(existing);
+                        var idx = entries.IndexOf(existing);
                         IniEntry replacement = new(key, value);
                         entries[idx] = replacement;
                         lookup[key] = replacement;
@@ -257,26 +255,26 @@ public static partial class Ini
 
             ReadOnlySpan<char> source = _remaining;
 
-            for (int i = 0; i < source.Length; i++)
+            for (var i = 0; i < source.Length; i++)
             {
-                char c = source[i];
+                var c = source[i];
 
                 if (c == '\n')
                 {
                     line = source[..i];
-                    _remaining = source[(i + 1) ..];
+                    _remaining = source[(i + 1)..];
                     return true;
                 }
 
                 if (c == '\r')
                 {
                     line = source[..i];
-                    int next = i + 1;
+                    var next = i + 1;
 
                     // Consume LF following CR to handle \r\n as a single line ending.
                     _remaining = next < source.Length && source[next] == '\n'
-                        ? source[(next + 1) ..]
-                        : source[(i + 1) ..];
+                        ? source[(next + 1)..]
+                        : source[(i + 1)..];
 
                     return true;
                 }
@@ -284,10 +282,8 @@ public static partial class Ini
 
             // No line terminator — the remaining text is the final line.
             line = source;
-            _remaining = ReadOnlySpan<char>.Empty;
+            _remaining = [];
             return true;
         }
-
     }
-
 }

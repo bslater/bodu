@@ -11,10 +11,8 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public abstract class BencodedValue
 {
-
     /// <summary>
     /// Gets the concrete kind of the bencoded value.
     /// </summary>
     public abstract BencodedValueKind Kind { get; }
-
 }

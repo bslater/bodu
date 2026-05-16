@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniSection.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,14 +25,12 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public sealed class IniSection
 {
-
     /// <summary>Cached format for the <c>KeyNotFound</c> message.</summary>
     private static readonly CompositeFormat s_keyNotFound =
         CompositeFormat.Parse(FormatsResourceStrings.IniSection_KeyNotFound);
 
     private readonly List<IniEntry> _entries;
     private readonly Dictionary<string, IniEntry> _lookup;
-    private readonly IReadOnlyList<IniEntry> _entriesView;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniSection" /> class.
@@ -45,7 +43,7 @@ public sealed class IniSection
         Name = name;
         _entries = entries;
         _lookup = lookup;
-        _entriesView = _entries.AsReadOnly();
+        Entries = _entries.AsReadOnly();
     }
 
     /// <summary>
@@ -63,7 +61,7 @@ public sealed class IniSection
     /// A read-only list of <see cref="IniEntry" /> instances in source order, with duplicates resolved
     /// according to the <see cref="IniDuplicateKeyBehavior" /> that was active during parsing.
     /// </returns>
-    public IReadOnlyList<IniEntry> Entries => _entriesView;
+    public IReadOnlyList<IniEntry> Entries { get; }
 
     /// <summary>
     /// Gets the value associated with the specified key, or <see langword="null" /> if the key is absent.
@@ -93,10 +91,9 @@ public sealed class IniSection
     {
         ThrowHelper.ThrowIfNull(key);
 
-        if (!_lookup.TryGetValue(key, out IniEntry? entry))
-            throw new KeyNotFoundException(string.Format(CultureInfo.InvariantCulture, s_keyNotFound, key));
-
-        return entry.GetValue<T>();
+        return !_lookup.TryGetValue(key, out IniEntry? entry)
+            ? throw new KeyNotFoundException(string.Format(CultureInfo.InvariantCulture, s_keyNotFound, key))
+            : entry.GetValue<T>();
     }
 
     /// <summary>
@@ -146,5 +143,4 @@ public sealed class IniSection
         value = null;
         return false;
     }
-
 }

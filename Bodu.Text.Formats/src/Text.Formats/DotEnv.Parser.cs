@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnv.Parser.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ namespace Bodu.Text.Formats;
 
 public static partial class DotEnv
 {
-
     private static readonly CompositeFormat s_duplicateKey =
         CompositeFormat.Parse(FormatsResourceStrings.DotEnvFormatException_DuplicateKey);
 
@@ -63,7 +62,6 @@ public static partial class DotEnv
     /// </summary>
     private ref struct Parser
     {
-
         private readonly DotEnvParseOptions _options;
         private ReadOnlySpan<char> _remaining;
         private int _lineNumber;
@@ -81,10 +79,10 @@ public static partial class DotEnv
         }
 
         /// <summary>Gets a value indicating whether the remaining source is exhausted.</summary>
-        private bool IsEmpty => _remaining.IsEmpty;
+        private readonly bool IsEmpty => _remaining.IsEmpty;
 
         /// <summary>Gets the current character without consuming it, or <c>'\0'</c> when exhausted.</summary>
-        private char Current => _remaining.IsEmpty ? '\0' : _remaining[0];
+        private readonly char Current => _remaining.IsEmpty ? '\0' : _remaining[0];
 
         /// <summary>
         /// Parses the source text and returns a fully constructed <see cref="DotEnvDocument" />.
@@ -103,9 +101,9 @@ public static partial class DotEnv
                 if (IsEmpty)
                     break;
 
-                char c = Current;
+                var c = Current;
 
-                if (c == '\r' || c == '\n')
+                if (c is '\r' or '\n')
                 {
                     SkipLineEnding();
                     continue;
@@ -118,7 +116,7 @@ public static partial class DotEnv
                     continue;
                 }
 
-                int entryLineNumber = _lineNumber;
+                var entryLineNumber = _lineNumber;
 
                 // Optionally strip "export " prefix (word "export" followed by one or more spaces/tabs).
                 if (_options.AllowExportPrefix &&
@@ -133,15 +131,15 @@ public static partial class DotEnv
                 // Parse key: [A-Za-z_][A-Za-z0-9_]*
                 if (IsEmpty || !IsKeyStart(Current))
                 {
-                    string badToken = IsEmpty ? string.Empty : Current.ToString();
+                    var badToken = IsEmpty ? string.Empty : Current.ToString();
                     DotEnv.ThrowInvalidKey(badToken, entryLineNumber);
                 }
 
-                int keyLen = 1;
+                var keyLen = 1;
                 while (keyLen < _remaining.Length && IsKeyContinue(_remaining[keyLen]))
                     keyLen++;
 
-                string key = new string(_remaining[..keyLen]);
+                var key = new string(_remaining[..keyLen]);
                 _remaining = _remaining[keyLen..];
 
                 // Expect '='
@@ -151,14 +149,9 @@ public static partial class DotEnv
                 _remaining = _remaining[1..];
 
                 // Dispatch value parsing by leading delimiter.
-                string value;
-
-                if (Current == '"')
-                    value = ParseDoubleQuotedValue(entryLineNumber);
-                else if (Current == '\'')
-                    value = ParseSingleQuotedValue(entryLineNumber);
-                else
-                    value = ParseUnquotedValue();
+                var value = Current == '"'
+                    ? ParseDoubleQuotedValue(entryLineNumber)
+                    : Current == '\'' ? ParseSingleQuotedValue(entryLineNumber) : ParseUnquotedValue();
 
                 // Apply duplicate key behavior.
                 if (lookup.TryGetValue(key, out DotEnvEntry? existing))
@@ -174,7 +167,7 @@ public static partial class DotEnv
 
                         case DotEnvDuplicateKeyBehavior.LastWins:
                             DotEnvEntry replacement = new(key, value);
-                            int idx = entries.IndexOf(existing);
+                            var idx = entries.IndexOf(existing);
                             entries[idx] = replacement;
                             lookup[key] = replacement;
                             break;
@@ -194,6 +187,14 @@ public static partial class DotEnv
             return new DotEnvDocument(entries, lookup);
         }
 
+        /// <summary>Returns <see langword="true" /> when <paramref name="c" /> is a valid key start character.</summary>
+        private static bool IsKeyStart(char c) =>
+            c is >= 'A' and <= 'Z' or >= 'a' and <= 'z' or '_';
+
+        /// <summary>Returns <see langword="true" /> when <paramref name="c" /> is a valid key continuation character.</summary>
+        private static bool IsKeyContinue(char c) =>
+            IsKeyStart(c) || (c >= '0' && c <= '9');
+
         /// <summary>
         /// Parses a double-quoted value starting at the current position, resolving escape sequences and allowing
         /// literal embedded newlines.
@@ -211,7 +212,7 @@ public static partial class DotEnv
                 if (IsEmpty)
                     DotEnv.ThrowUnterminatedDoubleQuote(startLineNumber);
 
-                char c = Current;
+                var c = Current;
 
                 if (c == '"')
                 {
@@ -226,7 +227,7 @@ public static partial class DotEnv
                     if (IsEmpty)
                         DotEnv.ThrowUnterminatedDoubleQuote(startLineNumber);
 
-                    char esc = Current;
+                    var esc = Current;
                     Advance(); // consume escape char (may be '\n', incrementing _lineNumber)
 
                     switch (esc)
@@ -269,18 +270,18 @@ public static partial class DotEnv
             _remaining = _remaining[1..]; // consume opening '\''
 
             // Locate the closing quote, ensuring it appears before any line break.
-            for (int i = 0; i < _remaining.Length; i++)
+            for (var i = 0; i < _remaining.Length; i++)
             {
-                char c = _remaining[i];
+                var c = _remaining[i];
 
                 if (c == '\'')
                 {
-                    string value = new string(_remaining[..i]);
+                    var value = new string(_remaining[..i]);
                     _remaining = _remaining[(i + 1)..];
                     return value;
                 }
 
-                if (c == '\n' || c == '\r')
+                if (c is '\n' or '\r')
                     DotEnv.ThrowUnterminatedSingleQuote(startLineNumber);
             }
 
@@ -296,7 +297,7 @@ public static partial class DotEnv
         /// <returns>The trimmed value string.</returns>
         private string ParseUnquotedValue()
         {
-            int len = 0;
+            var len = 0;
 
             while (len < _remaining.Length && _remaining[len] != '\n' && _remaining[len] != '\r')
                 len++;
@@ -308,7 +309,7 @@ public static partial class DotEnv
 
             if (_options.AllowInlineComments)
             {
-                for (int i = 1; i < raw.Length; i++)
+                for (var i = 1; i < raw.Length; i++)
                 {
                     if (raw[i] == '#' && (raw[i - 1] == ' ' || raw[i - 1] == '\t'))
                     {
@@ -379,15 +380,5 @@ public static partial class DotEnv
                 _remaining = _remaining[1..];
             }
         }
-
-        /// <summary>Returns <see langword="true" /> when <paramref name="c" /> is a valid key start character.</summary>
-        private static bool IsKeyStart(char c) =>
-            (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '_';
-
-        /// <summary>Returns <see langword="true" /> when <paramref name="c" /> is a valid key continuation character.</summary>
-        private static bool IsKeyContinue(char c) =>
-            IsKeyStart(c) || (c >= '0' && c <= '9');
-
     }
-
 }

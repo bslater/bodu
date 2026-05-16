@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniDocument.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -23,10 +23,8 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public sealed class IniDocument
 {
-
     private readonly List<IniSection> _sections;
     private readonly Dictionary<string, IniSection> _lookup;
-    private readonly IReadOnlyList<IniSection> _sectionsView;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniDocument" /> class.
@@ -42,7 +40,7 @@ public sealed class IniDocument
         GlobalSection = globalSection;
         _sections = sections;
         _lookup = lookup;
-        _sectionsView = _sections.AsReadOnly();
+        Sections = _sections.AsReadOnly();
     }
 
     /// <summary>
@@ -63,7 +61,7 @@ public sealed class IniDocument
     /// A read-only list of <see cref="IniSection" /> instances. Does not include
     /// <see cref="GlobalSection" />.
     /// </returns>
-    public IReadOnlyList<IniSection> Sections => _sectionsView;
+    public IReadOnlyList<IniSection> Sections { get; }
 
     /// <summary>
     /// Gets the named section with the specified name, or <see langword="null" /> if it is absent.
@@ -100,5 +98,4 @@ public sealed class IniDocument
 
         return _lookup.TryGetValue(name, out section);
     }
-
 }

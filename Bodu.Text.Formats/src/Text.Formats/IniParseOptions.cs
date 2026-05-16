@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniParseOptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,7 +31,6 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public readonly struct IniParseOptions
 {
-
     /// <summary>
     /// Gets a pre-constructed <see cref="IniParseOptions" /> instance with all properties set to their default
     /// values.
@@ -92,5 +91,4 @@ public readonly struct IniParseOptions
     /// <see cref="IniDuplicateSectionBehavior.Merge" /> by default.
     /// </returns>
     public IniDuplicateSectionBehavior DuplicateSectionBehavior { get; init; } = IniDuplicateSectionBehavior.Merge;
-
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnv.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,7 +30,6 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public static partial class DotEnv
 {
-
     /// <summary>
     /// Parses a DotEnv document from the specified character span using default options.
     /// </summary>
@@ -157,7 +156,7 @@ public static partial class DotEnv
 
         sb.Append('"');
 
-        foreach (char c in value)
+        foreach (var c in value)
         {
             switch (c)
             {
@@ -184,7 +183,7 @@ public static partial class DotEnv
     /// </returns>
     private static bool IsUnquotable(string value)
     {
-        foreach (char c in value)
+        foreach (var c in value)
         {
             if (!IsUnquotableChar(c))
                 return false;
@@ -202,5 +201,4 @@ public static partial class DotEnv
     private static bool IsUnquotableChar(char c) =>
         (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') ||
         c == '_' || c == '.' || c == ',' || c == ':' || c == '/' || c == '@' || c == '+' || c == '-';
-
 }

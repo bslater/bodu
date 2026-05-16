@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DelimitedParseOptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public readonly struct DelimitedParseOptions
 {
-
     /// <summary>
     /// Gets a <see cref="DelimitedParseOptions" /> instance initialised with all default values — comma delimiter,
     /// double-quote character, header row present, no field trimming, no inline comments.
@@ -70,5 +69,4 @@ public readonly struct DelimitedParseOptions
     /// </summary>
     /// <returns>The comment-line start character.</returns>
     public char CommentChar { get; init; } = '#';
-
 }

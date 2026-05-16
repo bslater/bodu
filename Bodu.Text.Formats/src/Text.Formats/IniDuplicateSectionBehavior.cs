@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniDuplicateSectionBehavior.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,7 +11,6 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public enum IniDuplicateSectionBehavior
 {
-
     /// <summary>
     /// Entries from later occurrences of a section are merged into the first occurrence. The active
     /// <see cref="IniDuplicateKeyBehavior" /> governs any key conflicts introduced by the merge.
@@ -23,5 +22,4 @@ public enum IniDuplicateSectionBehavior
     /// <see cref="IniFormatException" /> to be thrown.
     /// </summary>
     Disallowed = 1,
-
 }

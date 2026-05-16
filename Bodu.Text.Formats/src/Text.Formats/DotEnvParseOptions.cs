@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvParseOptions.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public readonly struct DotEnvParseOptions
 {
-
     /// <summary>
     /// Gets a <see cref="DotEnvParseOptions" /> instance initialised with all default values.
     /// </summary>
@@ -51,5 +50,4 @@ public readonly struct DotEnvParseOptions
     /// </summary>
     /// <returns><see langword="true" /> if inline comments are stripped; otherwise, <see langword="false" />. The default is <see langword="true" />.</returns>
     public bool AllowInlineComments { get; init; } = true;
-
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvDocument.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,14 +24,12 @@ namespace Bodu.Text.Formats;
 /// </remarks>
 public sealed class DotEnvDocument
 {
-
     /// <summary>Cached format for the <c>KeyNotFound</c> message.</summary>
     private static readonly CompositeFormat s_keyNotFound =
         CompositeFormat.Parse(FormatsResourceStrings.DotEnvDocument_KeyNotFound);
 
     private readonly List<DotEnvEntry> _entries;
     private readonly Dictionary<string, DotEnvEntry> _lookup;
-    private readonly IReadOnlyList<DotEnvEntry> _entriesView;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="DotEnvDocument" /> class.
@@ -42,7 +40,7 @@ public sealed class DotEnvDocument
     {
         _entries = entries;
         _lookup = lookup;
-        _entriesView = _entries.AsReadOnly();
+        Entries = _entries.AsReadOnly();
     }
 
     /// <summary>
@@ -52,7 +50,7 @@ public sealed class DotEnvDocument
     /// A read-only list of <see cref="DotEnvEntry" /> instances in source order, with duplicates resolved
     /// according to the <see cref="DotEnvDuplicateKeyBehavior" /> that was active during parsing.
     /// </returns>
-    public IReadOnlyList<DotEnvEntry> Entries => _entriesView;
+    public IReadOnlyList<DotEnvEntry> Entries { get; }
 
     /// <summary>
     /// Gets the value associated with the specified key, or <see langword="null" /> if the key is absent.
@@ -82,10 +80,9 @@ public sealed class DotEnvDocument
     {
         ThrowHelper.ThrowIfNull(key);
 
-        if (!_lookup.TryGetValue(key, out DotEnvEntry? entry))
-            throw new KeyNotFoundException(string.Format(CultureInfo.InvariantCulture, s_keyNotFound, key));
-
-        return entry.GetValue<T>();
+        return !_lookup.TryGetValue(key, out DotEnvEntry? entry)
+            ? throw new KeyNotFoundException(string.Format(CultureInfo.InvariantCulture, s_keyNotFound, key))
+            : entry.GetValue<T>();
     }
 
     /// <summary>
@@ -135,5 +132,4 @@ public sealed class DotEnvDocument
 
         return entry.TryGetValue<T>(out value);
     }
-
 }

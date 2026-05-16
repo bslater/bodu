@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvFormatException.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public sealed class DotEnvFormatException : FormatException
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="DotEnvFormatException" /> class with a default message and
     /// no associated line number.
@@ -62,5 +61,4 @@ public sealed class DotEnvFormatException : FormatException
     /// A positive integer identifying the source line, or <c>0</c> when the line is unknown or not applicable.
     /// </returns>
     public int LineNumber { get; }
-
 }

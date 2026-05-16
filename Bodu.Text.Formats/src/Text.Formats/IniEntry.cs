@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniEntry.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,7 +14,6 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public sealed class IniEntry
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="IniEntry" /> class.
     /// </summary>
@@ -65,5 +64,4 @@ public sealed class IniEntry
     public bool TryGetValue<T>([MaybeNullWhen(false)] out T value)
         where T : ISpanParsable<T> =>
         T.TryParse(Value.AsSpan(), CultureInfo.InvariantCulture, out value);
-
 }

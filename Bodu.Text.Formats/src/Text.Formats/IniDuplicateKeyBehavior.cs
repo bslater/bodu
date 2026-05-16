@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="IniDuplicateKeyBehavior.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,7 +11,6 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public enum IniDuplicateKeyBehavior
 {
-
     /// <summary>
     /// The last occurrence of a duplicated key wins; earlier occurrences are silently replaced.
     /// </summary>
@@ -26,5 +25,4 @@ public enum IniDuplicateKeyBehavior
     /// Duplicate keys are not permitted. A duplicate key causes an <see cref="IniFormatException" /> to be thrown.
     /// </summary>
     Disallowed = 2,
-
 }

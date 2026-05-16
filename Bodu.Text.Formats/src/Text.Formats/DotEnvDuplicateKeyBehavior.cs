@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DotEnvDuplicateKeyBehavior.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -11,7 +11,6 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public enum DotEnvDuplicateKeyBehavior
 {
-
     /// <summary>
     /// The last occurrence of a duplicated key wins; earlier values are discarded. This is the default.
     /// </summary>
@@ -26,5 +25,4 @@ public enum DotEnvDuplicateKeyBehavior
     /// Any duplicated key causes a <see cref="DotEnvFormatException" /> to be thrown.
     /// </summary>
     Disallowed = 2,
-
 }

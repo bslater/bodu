@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="Delimited.Parser.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -12,7 +12,6 @@ namespace Bodu.Text.Formats;
 
 public static partial class Delimited
 {
-
     private static readonly CompositeFormat s_unterminatedQuotedField =
         CompositeFormat.Parse(FormatsResourceStrings.DelimitedFormatException_UnterminatedQuotedField);
 
@@ -28,7 +27,6 @@ public static partial class Delimited
     /// </summary>
     private ref struct Parser
     {
-
         private readonly DelimitedParseOptions _options;
         private ReadOnlySpan<char> _remaining;
         private int _lineNumber;
@@ -46,10 +44,10 @@ public static partial class Delimited
         }
 
         /// <summary>Gets a value indicating whether the remaining source is exhausted.</summary>
-        private bool IsEmpty => _remaining.IsEmpty;
+        private readonly bool IsEmpty => _remaining.IsEmpty;
 
         /// <summary>Gets the current character without consuming it, or <c>'\0'</c> when exhausted.</summary>
-        private char Current => _remaining.IsEmpty ? '\0' : _remaining[0];
+        private readonly char Current => _remaining.IsEmpty ? '\0' : _remaining[0];
 
         /// <summary>
         /// Parses the source text and returns a fully constructed <see cref="DelimitedDocument" />.
@@ -58,20 +56,19 @@ public static partial class Delimited
         /// <exception cref="DelimitedFormatException">Thrown when the source is structurally malformed.</exception>
         public DelimitedDocument Parse()
         {
-            char delimiter = _options.Delimiter;
-            char quote = _options.Quote;
+            var delimiter = _options.Delimiter;
+            var quote = _options.Quote;
 
             List<string>? headers = null;
-            Dictionary<string, int>? headerIndex = null;
             IReadOnlyDictionary<string, int>? roHeaderIndex = null;
 
             List<DelimitedRow> rows = new();
-            bool firstRecord = true;
+            var firstRecord = true;
 
             while (!IsEmpty)
             {
                 // Skip blank lines.
-                if (Current == '\r' || Current == '\n')
+                if (Current is '\r' or '\n')
                 {
                     SkipLineEnding();
                     continue;
@@ -92,9 +89,9 @@ public static partial class Delimited
                 {
                     // First record is the header row.
                     headers = fields;
-                    headerIndex = new Dictionary<string, int>(StringComparer.Ordinal);
+                    var headerIndex = new Dictionary<string, int>(StringComparer.Ordinal);
 
-                    for (int i = 0; i < headers.Count; i++)
+                    for (var i = 0; i < headers.Count; i++)
                         headerIndex[headers[i]] = i;
 
                     roHeaderIndex = headerIndex;
@@ -110,7 +107,7 @@ public static partial class Delimited
                 ? headers.AsReadOnly()
                 : Array.Empty<string>();
 
-            int fieldCount = headerList.Count > 0
+            var fieldCount = headerList.Count > 0
                 ? headerList.Count
                 : (rows.Count > 0 ? rows[0].Count : 0);
 
@@ -130,7 +127,7 @@ public static partial class Delimited
 
             while (true)
             {
-                string field = Current == quote
+                var field = Current == quote
                     ? ParseQuotedField(quote)
                     : ParseUnquotedField(delimiter);
 
@@ -168,7 +165,7 @@ public static partial class Delimited
         /// <returns>The field content with surrounding quotes removed and doubled-quote escapes resolved.</returns>
         private string ParseQuotedField(char quote)
         {
-            int startLine = _lineNumber;
+            var startLine = _lineNumber;
             Advance(); // consume opening quote
 
             StringBuilder sb = new();
@@ -178,7 +175,7 @@ public static partial class Delimited
                 if (IsEmpty)
                     Delimited.ThrowUnterminatedQuotedField(startLine);
 
-                char c = Current;
+                var c = Current;
 
                 if (c == quote)
                 {
@@ -210,7 +207,7 @@ public static partial class Delimited
         /// <returns>The raw field text.</returns>
         private string ParseUnquotedField(char delimiter)
         {
-            int len = 0;
+            var len = 0;
 
             while (len < _remaining.Length &&
                    _remaining[len] != delimiter &&
@@ -220,7 +217,7 @@ public static partial class Delimited
                 len++;
             }
 
-            string field = new string(_remaining[..len]);
+            var field = new string(_remaining[..len]);
             _remaining = _remaining[len..];
             return field;
         }
@@ -274,7 +271,5 @@ public static partial class Delimited
                 _remaining = _remaining[1..];
             }
         }
-
     }
-
 }
