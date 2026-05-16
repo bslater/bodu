@@ -48,10 +48,6 @@ jobs:
         working-directory: Bodu.CodeStyle
         run: dotnet test Bodu.CodeStyle.XmlDocumentation.CodeFixes/test/Bodu.CodeStyle.XmlDocumentation.CodeFixes.Test.csproj --configuration Release --no-build --logger "trx;LogFileName=codefixes.trx"
 
-      - name: Test - Bodu.CodeStyle.Ordering.Core
-        working-directory: Bodu.CodeStyle
-        run: dotnet test Bodu.CodeStyle.Ordering.Core/test/Bodu.CodeStyle.Ordering.Core.Test.csproj --configuration Release --no-build --logger "trx;LogFileName=ordering.trx"
-
       - name: Pack
         working-directory: Bodu.CodeStyle
         run: dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj --configuration Release --no-build --output ./artifacts

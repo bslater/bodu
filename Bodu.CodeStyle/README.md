@@ -149,6 +149,24 @@ the IDE / local `dotnet build` experience smooth.
 The `Bodu.CodeStyle/Directory.Build.props` sets `BoduCodeStyleAnalyzers=false` so the analyzer projects never
 analyse themselves and never form a circular package reference.
 
+### Troubleshooting
+
+**"Quick Actions" or the light-bulb code fix doesn't appear in Visual Studio for `BODU1xxx` warnings.**
+
+Visual Studio loads analyzer + code-fix DLLs into the IDE process at solution open and keeps them resident
+until the process is recycled. After a `dotnet pack` of `Bodu.CodeStyle.XmlDocumentation` (or a `git pull`
+that updates `local-packages/`), close and reopen the solution — or restart Visual Studio entirely — so the
+new payload is loaded. The `dotnet build` CLI does not have this caching issue.
+
+If the fix still does not appear after a clean restart:
+
+1. Confirm the `.nupkg` in `local-packages/` matches the analyzer source (`bash bld/pack-codestyle-analyzer.sh`).
+2. Confirm the consuming project has restored the new package (`dotnet restore <project> --force`).
+3. Confirm `BoduCodeStyleAnalyzers` is `true` in the consuming project's MSBuild graph (the default in
+   `bld/Bodu.props`; the `Bodu.CodeStyle/*` projects set it to `false`).
+4. Run `dotnet build` from the CLI to confirm the diagnostic still fires there — if it does, the analyzer
+   itself is loaded correctly and the missing fix is a Visual Studio caching issue specifically.
+
 ## Status
 
 - Milestone 1 — Core formatter: shipped.
