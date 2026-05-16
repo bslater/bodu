@@ -95,6 +95,7 @@ public static partial class Ini
 
             List<IniEntry> globalEntries = new();
             Dictionary<string, IniEntry> globalLookup = new(keyComparer);
+            List<IniComment> globalLeadingComments = new();
 
             List<IniEntry> currentEntries = globalEntries;
             Dictionary<string, IniEntry> currentLookup = globalLookup;
@@ -102,15 +103,32 @@ public static partial class Ini
 
             // Named section builders — kept as mutable lists/dicts until IniSection is constructed at the end
             // so that the Merge section behavior can redirect back to a previously opened section's state.
-            List<(string Name, List<IniEntry> Entries, Dictionary<string, IniEntry> Lookup)> namedData = new();
+            List<SectionBuilder> namedData = new();
             Dictionary<string, int> namedIndexByName = new(sectionComparer);
+            int lastBuilderIndex = -1;
+
+            // Pending comments collected from full-line `#` / `;` trivia. Attached to the next section or
+            // entry encountered, then cleared. When PreserveComments is false the list is never populated.
+            List<IniComment> pendingComments = new();
 
             while (TryReadLine(out ReadOnlySpan<char> rawLine))
             {
                 ReadOnlySpan<char> line = rawLine.Trim();
 
-                if (line.IsEmpty || line[0] == ';' || line[0] == '#')
+                if (line.IsEmpty)
                     continue;
+
+                if (line[0] == ';' || line[0] == '#')
+                {
+                    if (_options.PreserveComments)
+                    {
+                        char prefix = line[0];
+                        string text = line[1..].ToString();
+                        pendingComments.Add(new IniComment(prefix, text, _lineNumber));
+                    }
+
+                    continue;
+                }
 
                 if (line[0] == '[')
                 {
@@ -126,20 +144,49 @@ public static partial class Ini
 
                     var sectionName = nameSpan.ToString();
 
-                    if (namedIndexByName.TryGetValue(sectionName, out var existingIdx))
-                    {
-                        if (_options.DuplicateSectionBehavior == IniDuplicateSectionBehavior.Disallowed)
-                            Ini.ThrowDuplicateSection(sectionName, _lineNumber);
+                    int targetIdx = SelectSectionTarget(sectionName, namedData, namedIndexByName, lastBuilderIndex);
 
-                        // Merge: redirect current state to the existing section's builders.
-                        (_, currentEntries, currentLookup) = namedData[existingIdx];
+                    if (targetIdx < 0)
+                    {
+                        // New builder.
+                        currentEntries = new List<IniEntry>();
+                        currentLookup = new Dictionary<string, IniEntry>(keyComparer);
+                        SectionBuilder builder = new(sectionName, currentEntries, currentLookup);
+
+                        if (pendingComments.Count > 0)
+                        {
+                            builder.LeadingComments = pendingComments.ToArray();
+                            pendingComments.Clear();
+                        }
+
+                        // Maintain a first-occurrence lookup so Merge can find earlier builders; under Preserve
+                        // or MergeAdjacent this is intentionally not overwritten by later occurrences.
+                        if (!namedIndexByName.ContainsKey(sectionName))
+                            namedIndexByName[sectionName] = namedData.Count;
+
+                        lastBuilderIndex = namedData.Count;
+                        namedData.Add(builder);
                     }
                     else
                     {
-                        currentEntries = new List<IniEntry>();
-                        currentLookup = new Dictionary<string, IniEntry>(keyComparer);
-                        namedIndexByName[sectionName] = namedData.Count;
-                        namedData.Add((sectionName, currentEntries, currentLookup));
+                        // Redirect to existing builder (Merge or MergeAdjacent into immediate predecessor).
+                        SectionBuilder existing = namedData[targetIdx];
+                        currentEntries = existing.Entries;
+                        currentLookup = existing.Lookup;
+
+                        // Append any pending comments to the existing section's leading comments.
+                        if (pendingComments.Count > 0)
+                        {
+                            IniComment[] combined = new IniComment[existing.LeadingComments.Length + pendingComments.Count];
+                            existing.LeadingComments.CopyTo(combined, 0);
+                            for (int i = 0; i < pendingComments.Count; i++)
+                                combined[existing.LeadingComments.Length + i] = pendingComments[i];
+                            existing.LeadingComments = combined;
+                            pendingComments.Clear();
+                        }
+
+                        lastBuilderIndex = targetIdx;
+                        namedData[targetIdx] = existing;
                     }
 
                     inGlobal = false;
@@ -149,7 +196,20 @@ public static partial class Ini
                     if (inGlobal && !_options.AllowGlobalSection)
                         Ini.ThrowGlobalKeyDisallowed(_lineNumber);
 
-                    AddEntry(line, currentEntries, currentLookup);
+                    // Capture the pending comment list to attach to the resulting entry; clear immediately so a
+                    // subsequent entry on the same line never reuses these comments.
+                    IniComment[]? entryComments = null;
+                    if (pendingComments.Count > 0)
+                    {
+                        entryComments = pendingComments.ToArray();
+                        pendingComments.Clear();
+                    }
+                    else if (inGlobal && globalLeadingComments.Count > 0)
+                    {
+                        // No-op: globalLeadingComments are seeded once and not consumed per-entry.
+                    }
+
+                    AddEntry(line, currentEntries, currentLookup, entryComments);
                 }
             }
 
@@ -158,14 +218,83 @@ public static partial class Ini
             List<IniSection> sections = new(namedData.Count);
             Dictionary<string, IniSection> sectionsLookup = new(sectionComparer);
 
-            foreach ((var name, List<IniEntry> entries, Dictionary<string, IniEntry> lookup) in namedData)
+            foreach (SectionBuilder builder in namedData)
             {
-                IniSection section = new(name, entries, lookup);
+                IniSection section = new(builder.Name, builder.Entries, builder.Lookup);
+                if (builder.LeadingComments.Length > 0)
+                    section.SetLeadingComments(builder.LeadingComments);
                 sections.Add(section);
-                sectionsLookup[name] = section;
+                sectionsLookup[builder.Name] = section;
             }
 
             return new IniDocument(globalSection, sections, sectionsLookup);
+        }
+
+        /// <summary>
+        /// Resolves which existing builder a section header should redirect to under the configured
+        /// <see cref="IniDuplicateSectionBehavior" />.
+        /// </summary>
+        /// <param name="sectionName">The name of the section being opened.</param>
+        /// <param name="namedData">All section builders accumulated so far.</param>
+        /// <param name="namedIndexByName">First-occurrence lookup by section name.</param>
+        /// <param name="lastBuilderIndex">Index of the builder most recently appended or merged into.</param>
+        /// <returns>
+        /// The index of an existing builder to redirect into, or <c>-1</c> when a new builder must be created.
+        /// </returns>
+        /// <exception cref="IniFormatException">
+        /// Thrown under <see cref="IniDuplicateSectionBehavior.Disallowed" /> when a duplicate is encountered.
+        /// </exception>
+        private readonly int SelectSectionTarget(
+            string sectionName,
+            List<SectionBuilder> namedData,
+            Dictionary<string, int> namedIndexByName,
+            int lastBuilderIndex)
+        {
+            bool isDuplicate = namedIndexByName.TryGetValue(sectionName, out int firstIdx);
+
+            switch (_options.DuplicateSectionBehavior)
+            {
+                case IniDuplicateSectionBehavior.Disallowed:
+                    if (isDuplicate)
+                        Ini.ThrowDuplicateSection(sectionName, _lineNumber);
+                    return -1;
+
+                case IniDuplicateSectionBehavior.MergeAdjacent:
+                    if (lastBuilderIndex >= 0
+                        && string.Equals(namedData[lastBuilderIndex].Name, sectionName, _options.CaseSensitiveSections ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
+                    {
+                        return lastBuilderIndex;
+                    }
+
+                    return -1;
+
+                case IniDuplicateSectionBehavior.Preserve:
+                    return -1;
+
+                case IniDuplicateSectionBehavior.Merge:
+                default:
+                    return isDuplicate ? firstIdx : -1;
+            }
+        }
+
+        /// <summary>
+        /// Mutable builder used to accumulate one section's state until <see cref="IniSection" /> is materialized
+        /// at the end of parsing.
+        /// </summary>
+        private struct SectionBuilder
+        {
+            internal SectionBuilder(string name, List<IniEntry> entries, Dictionary<string, IniEntry> lookup)
+            {
+                Name = name;
+                Entries = entries;
+                Lookup = lookup;
+                LeadingComments = Array.Empty<IniComment>();
+            }
+
+            internal string Name { get; }
+            internal List<IniEntry> Entries { get; }
+            internal Dictionary<string, IniEntry> Lookup { get; }
+            internal IniComment[] LeadingComments { get; set; }
         }
 
         /// <summary>
@@ -175,10 +304,14 @@ public static partial class Ini
         /// <param name="line">The trimmed source line (not a comment, not a section header, not empty).</param>
         /// <param name="entries">The ordered entry list for the active section.</param>
         /// <param name="lookup">The key-to-entry lookup for the active section.</param>
+        /// <param name="leadingComments">
+        /// The trivia comments accumulated before this entry, or <see langword="null" /> when none were pending.
+        /// </param>
         private readonly void AddEntry(
             ReadOnlySpan<char> line,
             List<IniEntry> entries,
-            Dictionary<string, IniEntry> lookup)
+            Dictionary<string, IniEntry> lookup,
+            IReadOnlyList<IniComment>? leadingComments)
         {
             // Find the first = or : separator.
             var sepIdx = -1;
@@ -223,14 +356,14 @@ public static partial class Ini
                     case IniDuplicateKeyBehavior.LastWins:
                         // Replace the existing entry in-place so its original position is preserved.
                         var idx = entries.IndexOf(existing);
-                        IniEntry replacement = new(key, value);
+                        IniEntry replacement = new(key, value, _lineNumber, leadingComments);
                         entries[idx] = replacement;
                         lookup[key] = replacement;
                         return;
                 }
             }
 
-            IniEntry entry = new(key, value);
+            IniEntry entry = new(key, value, _lineNumber, leadingComments);
             entries.Add(entry);
             lookup[key] = entry;
         }

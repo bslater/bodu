@@ -77,28 +77,46 @@ public static partial class Ini
         StringBuilder sb = new();
         var needsBlankLine = false;
 
-        foreach (IniEntry entry in document.GlobalSection.Entries)
-        {
-            sb.Append(entry.Key).Append(" = ").AppendLine(entry.Value);
+        WriteEntries(sb, document.GlobalSection.Entries);
+        if (document.GlobalSection.Entries.Count > 0)
             needsBlankLine = true;
-        }
 
         foreach (IniSection section in document.Sections)
         {
             if (needsBlankLine)
                 sb.AppendLine();
 
+            foreach (IniComment comment in section.LeadingComments)
+                sb.Append(comment.Prefix).AppendLine(comment.Text);
+
             sb.Append('[').Append(section.Name).AppendLine("]");
 
-            foreach (IniEntry entry in section.Entries)
-            {
-                sb.Append(entry.Key).Append(" = ").AppendLine(entry.Value);
-            }
+            WriteEntries(sb, section.Entries);
 
             needsBlankLine = true;
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    /// Writes the supplied entries to <paramref name="sb" />, including any leading-comment trivia and an
+    /// optional inline comment captured on each entry.
+    /// </summary>
+    /// <param name="sb">The destination buffer.</param>
+    /// <param name="entries">The entries to emit, in order.</param>
+    private static void WriteEntries(StringBuilder sb, IReadOnlyList<IniEntry> entries)
+    {
+        foreach (IniEntry entry in entries)
+        {
+            foreach (IniComment comment in entry.LeadingComments)
+                sb.Append(comment.Prefix).AppendLine(comment.Text);
+
+            sb.Append(entry.Key).Append(" = ").Append(entry.Value);
+            if (entry.InlineComment is { } inline)
+                sb.Append(' ').Append(inline.Prefix).Append(inline.Text);
+            sb.AppendLine();
+        }
     }
 
     /// <summary>
