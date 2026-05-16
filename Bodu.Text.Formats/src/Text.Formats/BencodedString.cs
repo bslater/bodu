@@ -17,8 +17,7 @@ public sealed class BencodedString
     : BencodedValue
     , IEquatable<BencodedString>
 {
-
-    private readonly byte[] bytes;
+    private readonly byte[] _bytes;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BencodedString" /> class.
@@ -26,7 +25,7 @@ public sealed class BencodedString
     /// <param name="bytes">The raw byte content of the string.</param>
     public BencodedString(ReadOnlySpan<byte> bytes)
     {
-        this.bytes = bytes.ToArray();
+        this._bytes = bytes.ToArray();
     }
 
     /// <summary>
@@ -40,13 +39,13 @@ public sealed class BencodedString
     {
         ThrowHelper.ThrowIfNull(bytes);
 
-        this.bytes = bytes.ToArray();
+        this._bytes = [.. bytes];
     }
 
     /// <summary>
     /// Gets the raw byte content.
     /// </summary>
-    public ReadOnlyMemory<byte> Bytes => bytes;
+    public ReadOnlyMemory<byte> Bytes => _bytes;
 
     /// <inheritdoc />
     public override BencodedValueKind Kind => BencodedValueKind.String;
@@ -54,7 +53,7 @@ public sealed class BencodedString
     /// <summary>
     /// Gets the number of bytes in the string.
     /// </summary>
-    public int Length => bytes.Length;
+    public int Length => _bytes.Length;
 
     /// <summary>
     /// Creates a bencoded byte string from UTF-8 text.
@@ -77,7 +76,7 @@ public sealed class BencodedString
     /// <param name="other">The value to compare with this instance.</param>
     /// <returns><see langword="true" /> when both byte sequences are equal; otherwise, <see langword="false" />.</returns>
     public bool Equals(BencodedString? other) =>
-        other is not null && bytes.AsSpan().SequenceEqual(other.bytes);
+        other is not null && _bytes.AsSpan().SequenceEqual(other._bytes);
 
     /// <inheritdoc />
     public override bool Equals(object? obj) =>
@@ -92,10 +91,9 @@ public sealed class BencodedString
     /// </summary>
     /// <returns>The decoded UTF-8 string.</returns>
     public string GetUtf8String() =>
-        System.Text.Encoding.UTF8.GetString(bytes);
+        System.Text.Encoding.UTF8.GetString(_bytes);
 
     /// <inheritdoc />
     public override string ToString() =>
         GetUtf8String();
-
 }

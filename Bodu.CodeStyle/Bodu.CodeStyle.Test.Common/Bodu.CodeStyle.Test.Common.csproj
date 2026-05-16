@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu.CodeStyle.TestData</RootNamespace>
+    <AssemblyName>Bodu.CodeStyle.Test.Common</AssemblyName>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>false</IsTestProject>
+    <NoWarn>$(NoWarn);CS1591;CS1573;CS1572;CS1570;CS1574;CS1580;CS1581;CS1584;CS1587;CS1589;CS1590;CS1710;CS1711;CS1712;CS1713;CS1714;CA1062</NoWarn>
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+</Project>
+

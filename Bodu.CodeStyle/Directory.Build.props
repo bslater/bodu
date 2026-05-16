@@ -1,0 +1,29 @@
+<Project>
+
+  <PropertyGroup>
+    <!--
+      Disable the Bodu.CodeStyle.XmlDocumentation analyzer package on every project in this subtree
+      so the analyzer never analyses itself (which would cause a circular ProjectReference /
+      PackageReference cycle). The flag is read in bld/Bodu.props.
+    -->
+    <BoduCodeStyleAnalyzers>false</BoduCodeStyleAnalyzers>
+  </PropertyGroup>
+
+  <!--
+    Cascade to the repository-root Directory.Build.props so the analyzer projects pick up
+    the shared Authors/Copyright/LangVersion/Deterministic/EnforceCodeStyleInBuild policy
+    and the XML-documentation WarningsAsErrors list from bld/Bodu.props.
+  -->
+  <Import Project="$(MSBuildThisFileDirectory)..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <!--
+      Override AnalysisLevel to "latest-recommended" so the analyzer projects build on the
+      installed .NET SDK regardless of major version. The repository root pins
+      "10-recommended" which assumes the SDK 10 wave; analyzer development needs the value
+      to track whichever SDK is actually available.
+    -->
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
+  </PropertyGroup>
+
+</Project>

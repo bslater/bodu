@@ -1,0 +1,63 @@
+name: Bodu.CodeStyle - Build, Test, Pack
+
+on:
+  push:
+    branches:
+      - master
+      - 'claude/**'
+    paths:
+      - 'Bodu.CodeStyle/**'
+      - '.github/workflows/codestyle-build-test.yml'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'Bodu.CodeStyle/**'
+      - '.github/workflows/codestyle-build-test.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET SDK 8.0
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        working-directory: Bodu.CodeStyle
+        run: dotnet restore Bodu.CodeStyle.sln
+
+      - name: Build
+        working-directory: Bodu.CodeStyle
+        run: dotnet build Bodu.CodeStyle.sln --configuration Release --no-restore
+
+      - name: Test - Bodu.CodeStyle.XmlDocumentation.Core
+        working-directory: Bodu.CodeStyle
+        run: dotnet test Bodu.CodeStyle.XmlDocumentation.Core/test/Bodu.CodeStyle.XmlDocumentation.Core.Test.csproj --configuration Release --no-build --logger "trx;LogFileName=core.trx"
+
+      - name: Test - Bodu.CodeStyle.XmlDocumentation.Analyzers
+        working-directory: Bodu.CodeStyle
+        run: dotnet test Bodu.CodeStyle.XmlDocumentation.Analyzers/test/Bodu.CodeStyle.XmlDocumentation.Analyzers.Test.csproj --configuration Release --no-build --logger "trx;LogFileName=analyzers.trx"
+
+      - name: Test - Bodu.CodeStyle.XmlDocumentation.CodeFixes
+        working-directory: Bodu.CodeStyle
+        run: dotnet test Bodu.CodeStyle.XmlDocumentation.CodeFixes/test/Bodu.CodeStyle.XmlDocumentation.CodeFixes.Test.csproj --configuration Release --no-build --logger "trx;LogFileName=codefixes.trx"
+
+      - name: Test - Bodu.CodeStyle.Ordering.Core
+        working-directory: Bodu.CodeStyle
+        run: dotnet test Bodu.CodeStyle.Ordering.Core/test/Bodu.CodeStyle.Ordering.Core.Test.csproj --configuration Release --no-build --logger "trx;LogFileName=ordering.trx"
+
+      - name: Pack
+        working-directory: Bodu.CodeStyle
+        run: dotnet pack Bodu.CodeStyle.XmlDocumentation/Bodu.CodeStyle.XmlDocumentation.csproj --configuration Release --no-build --output ./artifacts
+
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: Bodu.CodeStyle.XmlDocumentation.nupkg
+          path: Bodu.CodeStyle/artifacts/*.nupkg
