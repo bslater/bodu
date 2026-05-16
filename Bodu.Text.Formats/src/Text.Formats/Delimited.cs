@@ -184,7 +184,8 @@ public static partial class Delimited
     /// <param name="quote">The quoting character.</param>
     private static void AppendField(StringBuilder sb, string field, char delimiter, char quote)
     {
-        var needsQuoting = field.IndexOf(delimiter) >= 0 ||
+        var needsQuoting = field.Length == 0 ||
+                            field.IndexOf(delimiter) >= 0 ||
                             field.IndexOf(quote) >= 0 ||
                             field.IndexOf('\n') >= 0 ||
                             field.IndexOf('\r') >= 0;
