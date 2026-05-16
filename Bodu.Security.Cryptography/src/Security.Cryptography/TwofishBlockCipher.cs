@@ -112,11 +112,11 @@ public sealed class TwofishBlockCipher
     {
         if (!this._disposed)
         {
-            Array.Clear(this._k, 0, this._k.Length);
-            Array.Clear(this._s1, 0, this._s1.Length);
-            Array.Clear(this._s2, 0, this._s2.Length);
-            Array.Clear(this._s3, 0, this._s3.Length);
-            Array.Clear(this._s4, 0, this._s4.Length);
+            CryptoHelpers.Clear(this._k);
+            CryptoHelpers.Clear(this._s1);
+            CryptoHelpers.Clear(this._s2);
+            CryptoHelpers.Clear(this._s3);
+            CryptoHelpers.Clear(this._s4);
 
             this._disposed = true;
         }
