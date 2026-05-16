@@ -151,8 +151,7 @@ public sealed class Iban
     /// <inheritdoc />
     public override int GetCurrentCheckDigits(Span<char> destination)
     {
-        if (destination.Length < CheckLength)
-            throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
+        HashingThrowHelper.ThrowIfDestinationSpanTooShort(destination.Length, CheckLength, nameof(destination));
 
         var r = rBban;
         if (consumed >= 1) r = FoldChar(r, cc0);

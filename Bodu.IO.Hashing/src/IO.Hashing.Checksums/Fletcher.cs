@@ -83,7 +83,8 @@ public abstract class Fletcher<TSelf>
                 ? hashSize / 8
                 : throw new ArgumentException(
                     string.Format(
-                        "Invalid hash size: {0}. Valid sizes are: {1}.",
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        HashingResourceStrings.Arg_OutOfRange_HashSize,
                         hashSize,
                         string.Join(", ", ValidHashSizes)),
                     nameof(hashSize)),

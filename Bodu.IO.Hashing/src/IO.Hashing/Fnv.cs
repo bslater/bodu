@@ -141,7 +141,11 @@ public abstract class Fnv<TSelf>
         if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
         {
             throw new ArgumentException(
-                $"Invalid hash size: {hashSize}. Valid sizes are: {string.Join(", ", s_validHashSizes)}.",
+                string.Format(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    HashingResourceStrings.Arg_OutOfRange_HashSize,
+                    hashSize,
+                    string.Join(", ", s_validHashSizes)),
                 nameof(hashSize));
         }
 

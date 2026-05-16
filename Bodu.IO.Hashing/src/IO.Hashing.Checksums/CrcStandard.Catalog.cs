@@ -200,7 +200,7 @@ public sealed partial class CrcStandard
     {
         int index = (int)standard;
         if ((uint)index >= (uint)s_catalog.Length)
-            throw new ArgumentOutOfRangeException(nameof(standard), standard, "The specified CrcStandards value is not defined.");
+            throw new ArgumentOutOfRangeException(nameof(standard), standard, HashingResourceStrings.Arg_OutOfRange_CrcStandardUndefined);
 
         CrcStandard? cached = Volatile.Read(ref s_cache[index]);
         if (cached is not null) return cached;
@@ -232,7 +232,11 @@ public sealed partial class CrcStandard
         ThrowHelper.ThrowIfNull(name);
         var map = GetNameToEnumMap();
         if (!map.TryGetValue(name, out CrcStandards standard))
-            throw new KeyNotFoundException($"No CRC standard with the name '{name}' exists in the catalogue.");
+            throw new KeyNotFoundException(
+                string.Format(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    HashingResourceStrings.Op_Invalid_CrcStandardNotFound,
+                    name));
         return Get(standard);
     }
 

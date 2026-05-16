@@ -387,14 +387,7 @@ public abstract class CityHash<T>
 
     private static int ValidateHashSize(int hashSize)
     {
-        if (Array.IndexOf(s_validHashSizes, hashSize) == -1)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(hashSize),
-                hashSize,
-                $"Invalid hash size: {hashSize}. Valid sizes are: {string.Join(", ", s_validHashSizes)}.");
-        }
-
+        HashingThrowHelper.ThrowIfInvalidHashSize(hashSize, s_validHashSizes);
         return hashSize;
     }
 

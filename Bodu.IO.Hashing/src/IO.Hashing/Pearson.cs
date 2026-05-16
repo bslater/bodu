@@ -104,7 +104,7 @@ public sealed partial class Pearson
         if (tableType == PearsonTableType.UserDefined)
         {
             throw new ArgumentException(
-                "Use the Pearson(int, byte[]) overload to supply a user-defined permutation table.",
+                HashingResourceStrings.Arg_Invalid_PearsonTableTypeOverloadRequired,
                 nameof(tableType));
         }
 
@@ -138,7 +138,7 @@ public sealed partial class Pearson
     {
         ArgumentNullException.ThrowIfNull(permutationTable);
         if (permutationTable.Length != 256 || permutationTable.Distinct().Count() != 256)
-            throw new ArgumentException(HashingResourceStrings.ArgumentException_PearsonInvalidTable, nameof(permutationTable));
+            throw new ArgumentException(HashingResourceStrings.Arg_Invalid_PearsonTable, nameof(permutationTable));
 
         this._tableType = PearsonTableType.UserDefined;
         this._permutationTable = (byte[])permutationTable.Clone();

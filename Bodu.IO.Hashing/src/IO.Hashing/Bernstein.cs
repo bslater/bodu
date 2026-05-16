@@ -68,8 +68,6 @@ public sealed class Bernstein
     public const uint DefaultInitialValue = 5381U;
 
     private const int HashLength = 4;
-    private const string ReconfigurationNotAllowed =
-        "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
     private uint _initialValue;
     private bool _started;
@@ -194,10 +192,7 @@ public sealed class Bernstein
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfInvalidState()
-    {
-        if (this._started)
-            throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
-    }
+    private void ThrowIfInvalidState() =>
+        HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(this._started);
 
 }

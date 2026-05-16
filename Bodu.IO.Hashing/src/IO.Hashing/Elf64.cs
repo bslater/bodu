@@ -55,8 +55,6 @@ public sealed class Elf64
     private const int HashLength = 8;
     private const ulong HighBitsMask = 0xF000000000000000UL;
     private const int HighBitsShift = 56;
-    private const string ReconfigurationNotAllowed =
-        "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
     private ulong _seed;
     private bool _started;
@@ -134,10 +132,7 @@ public sealed class Elf64
         BinaryPrimitives.WriteUInt64BigEndian(destination, this._workingHash);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfInvalidState()
-    {
-        if (this._started)
-            throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
-    }
+    private void ThrowIfInvalidState() =>
+        HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(this._started);
 
 }

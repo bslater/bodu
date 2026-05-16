@@ -158,7 +158,7 @@ internal static class Alphanumeric
         string validCharacterDescription)
     {
         return string.Format(
-            HashingResourceStrings.ArgumentOutOfRange_InvalidCharacterForCharacterSet,
+            HashingResourceStrings.Arg_OutOfRange_InvalidCharacterForCharacterSet,
             ch,
             (int)ch,
             characterSetName,
