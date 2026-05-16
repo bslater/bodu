@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Bodu.CodeStyle.XmlDocumentation</RootNamespace>
+    <AssemblyName>Bodu.CodeStyle.XmlDocumentation.Core</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Collections.Immutable" Version="7.0.0" PrivateAssets="all" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Bodu.CodeStyle.XmlDocumentation.Core.Test" />
+    <InternalsVisibleTo Include="Bodu.CodeStyle.XmlDocumentation.Analyzers" />
+    <InternalsVisibleTo Include="Bodu.CodeStyle.XmlDocumentation.Analyzers.Test" />
+    <InternalsVisibleTo Include="Bodu.CodeStyle.XmlDocumentation.CodeFixes" />
+    <InternalsVisibleTo Include="Bodu.CodeStyle.XmlDocumentation.CodeFixes.Test" />
+  </ItemGroup>
+
+</Project>
