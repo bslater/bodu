@@ -67,7 +67,9 @@ cd ..
 
 # 2. Repack into local-packages/ and evict NuGet's global cache for the package
 #    (because the version stays at 1.0.0, the cache would otherwise serve a stale copy).
-bash bld/pack-codestyle-analyzer.sh
+bash bld/pack-codestyle-analyzer.sh         # bash / Linux / macOS / WSL / Git Bash
+# pwsh bld\pack-codestyle-analyzer.ps1       # PowerShell on Windows or cross-platform
+# bld\pack-codestyle-analyzer.cmd            # cmd.exe shim that calls the .ps1
 
 # 3. Force-restore the consumer project so it picks up the freshly extracted DLLs.
 dotnet restore Bodu.Core/src/Bodu.Core.csproj --force
