@@ -31,7 +31,7 @@ public sealed class BencodedList
         this._items = [.. items];
 
         if (this._items.Any(item => item is null))
-            TextThrowHelper.ThrowArgumentException_NullListElement(nameof(items));
+            throw new ArgumentException(FormatsResourceStrings.ArgumentException_NullListElement, nameof(items));
     }
 
     /// <summary>
