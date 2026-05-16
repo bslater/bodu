@@ -19,8 +19,6 @@ public enum CodeStyleKatArea
     XmlDocumentationAnalyzer,
     XmlDocumentationCodeFix,
     Configuration,
-    GenericConstraintLayout,
-    MemberOrdering,
     Safety,
 }
 
@@ -33,8 +31,6 @@ public enum CodeStyleKatOperation
     AnalyzeDocument,
     ApplyCodeFix,
     ApplyFixAll,
-    VerifyLayout,
-    VerifyOrdering,
 }
 
 /// <summary>
@@ -226,50 +222,6 @@ public sealed record CodeStyleKat(
             FixAllScope: CodeStyleKatFixAllScope.SingleDiagnostic);
 
     /// <summary>
-    /// Creates a generic constraint layout KAT for a full C# source document.
-    /// </summary>
-    public static CodeStyleKat GenericConstraintLayout(
-        string id,
-        string name,
-        string inputSource,
-        string expectedSource,
-        IReadOnlyList<CodeStyleKatDiagnostic> diagnostics) =>
-        new(
-            Id: id,
-            Name: name,
-            Area: CodeStyleKatArea.GenericConstraintLayout,
-            Operation: CodeStyleKatOperation.VerifyLayout,
-            Input: inputSource,
-            Expected: expectedSource,
-            ExpectedDiagnostics: diagnostics,
-            ExpectedChanged: inputSource != expectedSource,
-            FixAllScope: CodeStyleKatFixAllScope.SingleDiagnostic);
-
-    /// <summary>
-    /// Creates a member ordering KAT for a full C# source document.
-    /// </summary>
-    public static CodeStyleKat MemberOrdering(
-        string id,
-        string name,
-        string inputSource,
-        string expectedSource,
-        IReadOnlyList<CodeStyleKatDiagnostic> diagnostics,
-        IReadOnlyList<CodeStyleKatAdditionalFile>? additionalFiles = null,
-        bool shouldOfferFix = true) =>
-        new(
-            Id: id,
-            Name: name,
-            Area: CodeStyleKatArea.MemberOrdering,
-            Operation: CodeStyleKatOperation.VerifyOrdering,
-            Input: inputSource,
-            Expected: expectedSource,
-            ExpectedDiagnostics: diagnostics,
-            AdditionalFiles: additionalFiles,
-            ExpectedChanged: inputSource != expectedSource,
-            FixAllScope: CodeStyleKatFixAllScope.SingleDiagnostic,
-            ShouldOfferFix: shouldOfferFix);
-
-    /// <summary>
     /// Creates a safety KAT for a full C# source document.
     /// </summary>
     public static CodeStyleKat Safety(
@@ -304,16 +256,12 @@ public sealed record CodeStyleKat(
 public static class CodeStyleKatConstants
 {
     public const string XmlDocumentationDiagnosticId = "BODUXML001";
-    public const string MemberOrderingDiagnosticId = "BODUORD001";
-    public const string GenericConstraintLayoutDiagnosticId = "BODULAYOUT001";
 
     public const string DefaultAnalyzerConfig = """
         root = true
 
         [*.cs]
         dotnet_diagnostic.BODUXML001.severity = warning
-        dotnet_diagnostic.BODUORD001.severity = suggestion
-        dotnet_diagnostic.BODULAYOUT001.severity = warning
 
         bodu_xmldoc_max_line_length = 120
         bodu_xmldoc_force_summary_multiline = true
@@ -334,30 +282,6 @@ public static class CodeStyleKatConstants
           "forceMultilineTags": [ "summary", "remarks", "para", "example", "list" ],
           "singleLineWhenShort": [ "param", "typeparam", "returns", "exception", "value" ],
           "neverSplitTagContent": [ "c", "see", "paramref", "typeparamref" ]
-        }
-        """;
-
-    public const string DefaultMemberOrderingPolicyJson = """
-        {
-          "profile": "Bodu",
-          "removeBlankLinesAtStartAndEndOfTypes": true,
-          "blankLinesBetweenMembers": 1,
-          "blankLinesBetweenGroups": 1,
-          "preserveRegions": false,
-          "preservePartialTypeOrder": true,
-          "reorderAcrossPreprocessorDirectives": false,
-          "modifierOrder": [ "public", "protected", "internal", "private", "static", "extern", "new", "virtual", "abstract", "sealed", "override", "readonly", "unsafe", "volatile", "async" ],
-          "accessibilityOrder": [ "public", "protectedInternal", "protected", "internal", "privateProtected", "private", "notApplicable" ],
-          "memberGroups": [
-            { "name": "Constants", "kinds": [ "field" ], "requiredModifiers": [ "const" ] },
-            { "name": "StaticFields", "kinds": [ "field" ], "requiredModifiers": [ "static" ] },
-            { "name": "Fields", "kinds": [ "field" ] },
-            { "name": "Constructors", "kinds": [ "constructor", "staticConstructor" ] },
-            { "name": "Properties", "kinds": [ "property", "indexer" ] },
-            { "name": "Events", "kinds": [ "event" ] },
-            { "name": "Methods", "kinds": [ "method", "operator", "conversionOperator" ] },
-            { "name": "NestedTypes", "kinds": [ "class", "struct", "interface", "enum", "delegate", "record" ] }
-          ]
         }
         """;
 }
@@ -905,236 +829,6 @@ public static class BoduCodeStyleKats
                     }
                     """),
             }),
-
-        // Generic constraint layout KATs.
-        CodeStyleKat.GenericConstraintLayout(
-            id: "GENLAYOUT-0001",
-            name: "Method where clause moves to new line",
-            inputSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Configuration
-            {
-                public T GetValue<T>(string key) where T : ISpanParsable<T>
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            """,
-            expectedSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Configuration
-            {
-                public T GetValue<T>(string key)
-                    where T : ISpanParsable<T>
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            """,
-            diagnostics: new[]
-            {
-                new CodeStyleKatDiagnostic(CodeStyleKatConstants.GenericConstraintLayoutDiagnosticId, Line: 5, Column: 5),
-            }),
-
-        CodeStyleKat.GenericConstraintLayout(
-            id: "GENLAYOUT-0002",
-            name: "Multiple where clauses each move to their own line",
-            inputSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Mapper
-            {
-                public TResult Map<TSource, TResult>(TSource source) where TSource : notnull where TResult : ISpanParsable<TResult>
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            """,
-            expectedSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Mapper
-            {
-                public TResult Map<TSource, TResult>(TSource source)
-                    where TSource : notnull
-                    where TResult : ISpanParsable<TResult>
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            """,
-            diagnostics: new[]
-            {
-                new CodeStyleKatDiagnostic(CodeStyleKatConstants.GenericConstraintLayoutDiagnosticId, Line: 5, Column: 5),
-            }),
-
-        CodeStyleKat.GenericConstraintLayout(
-            id: "GENLAYOUT-0003",
-            name: "Already formatted where clause remains unchanged",
-            inputSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Configuration
-            {
-                public T GetValue<T>(string key)
-                    where T : ISpanParsable<T>
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            """,
-            expectedSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Configuration
-            {
-                public T GetValue<T>(string key)
-                    where T : ISpanParsable<T>
-                {
-                    throw new NotImplementedException();
-                }
-            }
-            """,
-            diagnostics: System.Array.Empty<CodeStyleKatDiagnostic>()),
-
-        // Member ordering KATs.
-        CodeStyleKat.MemberOrdering(
-            id: "ORD-0001",
-            name: "Fields move before constructors and methods",
-            inputSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Parser
-            {
-                public Parser(string source)
-                {
-                    this.source = source;
-                }
-
-                public void Parse()
-                {
-                }
-
-                private readonly string source;
-            }
-            """,
-            expectedSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Parser
-            {
-                private readonly string source;
-
-                public Parser(string source)
-                {
-                    this.source = source;
-                }
-
-                public void Parse()
-                {
-                }
-            }
-            """,
-            diagnostics: new[]
-            {
-                new CodeStyleKatDiagnostic(CodeStyleKatConstants.MemberOrderingDiagnosticId, Severity: "Suggestion", Line: 3, Column: 21),
-            },
-            additionalFiles: new[]
-            {
-                new CodeStyleKatAdditionalFile("bodu.memberorder.json", CodeStyleKatConstants.DefaultMemberOrderingPolicyJson),
-            }),
-
-        CodeStyleKat.MemberOrdering(
-            id: "ORD-0002",
-            name: "XML docs and attributes move with member",
-            inputSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class DotEnvDocument
-            {
-                public int Count => this.entries.Count;
-
-                /// <summary>
-                /// Stores parsed entries.
-                /// </summary>
-                [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002")]
-                private readonly List<string> entries = [];
-            }
-            """,
-            expectedSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class DotEnvDocument
-            {
-                /// <summary>
-                /// Stores parsed entries.
-                /// </summary>
-                [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1002")]
-                private readonly List<string> entries = [];
-
-                public int Count => this.entries.Count;
-            }
-            """,
-            diagnostics: new[]
-            {
-                new CodeStyleKatDiagnostic(CodeStyleKatConstants.MemberOrderingDiagnosticId, Severity: "Suggestion", Line: 3, Column: 21),
-            },
-            additionalFiles: new[]
-            {
-                new CodeStyleKatAdditionalFile("bodu.memberorder.json", CodeStyleKatConstants.DefaultMemberOrderingPolicyJson),
-            }),
-
-        CodeStyleKat.MemberOrdering(
-            id: "ORD-0003",
-            name: "Does not reorder across preprocessor directives by default",
-            inputSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Parser
-            {
-                public void Parse()
-                {
-                }
-
-            #if DEBUG
-                private readonly string debugSource;
-            #endif
-            }
-            """,
-            expectedSource:
-            """
-            namespace Bodu.Text.Formats;
-
-            public sealed class Parser
-            {
-                public void Parse()
-                {
-                }
-
-            #if DEBUG
-                private readonly string debugSource;
-            #endif
-            }
-            """,
-            diagnostics: System.Array.Empty<CodeStyleKatDiagnostic>(),
-            additionalFiles: new[]
-            {
-                new CodeStyleKatAdditionalFile("bodu.memberorder.json", CodeStyleKatConstants.DefaultMemberOrderingPolicyJson),
-            },
-            shouldOfferFix: false),
 
         // Safety KATs.
         CodeStyleKat.Safety(
