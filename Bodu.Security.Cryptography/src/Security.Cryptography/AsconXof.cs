@@ -149,8 +149,8 @@ public abstract class AsconXof<T>
         this._squeezing = false;
         this._squeezeBufOffset = 0;
         this._squeezeBufAvailable = 0;
-        Array.Clear(this._residualBuffer, 0, BlockSize);
-        Array.Clear(this._squeezeBuffer, 0, BlockSize);
+        CryptoHelpers.Clear(this._residualBuffer.AsSpan(0, BlockSize));
+        CryptoHelpers.Clear(this._squeezeBuffer.AsSpan(0, BlockSize));
     }
 
     /// <summary>
@@ -308,7 +308,7 @@ public abstract class AsconXof<T>
         this._state.AbsorbRate64(pad);
         this._state.Permute(this._absorptionRounds);
         this._residualBytes = 0;
-        Array.Clear(this._residualBuffer, 0, BlockSize);
+        CryptoHelpers.Clear(this._residualBuffer.AsSpan(0, BlockSize));
     }
 
     /// <summary>

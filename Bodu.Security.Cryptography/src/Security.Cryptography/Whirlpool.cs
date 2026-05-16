@@ -146,7 +146,7 @@ public sealed partial class Whirlpool
     public override void Initialize()
     {
         base.Initialize();
-        Array.Clear(this._state);
+        CryptoHelpers.Clear(this._state);
         this._inputConsumed = false;
     }
 

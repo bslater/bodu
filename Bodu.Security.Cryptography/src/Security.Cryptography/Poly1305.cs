@@ -302,7 +302,7 @@ public sealed class Poly1305
         // Reset accumulator so the next computation starts clean — correct whether this
         // hook runs in response to an explicit Key assignment, from Initialize, or from
         // the constructor's default-key setup.
-        Array.Clear(this._acc);
+        CryptoHelpers.Clear(this._acc);
 
         // OnKeyChanged is only invoked by the Key setter and Initialize, both of which guarantee
         // KeyValue is non-null and of the expected length before this point.
