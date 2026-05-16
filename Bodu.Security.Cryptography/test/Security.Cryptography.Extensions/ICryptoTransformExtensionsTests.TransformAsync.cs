@@ -153,11 +153,13 @@ public partial class ICryptoTransformExtensionsTests
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-    /// throws <see cref="OperationCanceledException" /> or <see cref="TaskCanceledException" /> when the
-    /// cancellation token is signalled during a slow read operation.
+    /// throws <see cref="TaskCanceledException" /> when the cancellation token is signalled while
+    /// <c>ReadAsync</c> is blocked. The implementation catches the <see cref="OperationCanceledException" />
+    /// raised by the stream and converts it to a fresh <see cref="TaskCanceledException" />, so the exact
+    /// subtype is contractually significant.
     /// </summary>
     [TestMethod]
-    public async Task TransformAsync_Stream_WhenCancelled_ShouldThrowCancelledException()
+    public async Task TransformAsync_Stream_WhenCancelledDuringRead_ShouldThrowTaskCanceledException()
     {
         using SymmetricAlgorithm algorithm = CreateAlgorithm();
         algorithm.Padding = PaddingMode.None;
@@ -167,24 +169,21 @@ public partial class ICryptoTransformExtensionsTests
         using ICryptoTransform encryptor = algorithm.CreateEncryptor();
         using var cts = new CancellationTokenSource(millisecondsDelay: 150);
 
-        try
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
         {
             await encryptor.TransformAsync(source, target, bufferSize: 32, cts.Token);
-            Assert.Fail("Expected OperationCanceledException or TaskCanceledException.");
-        }
-        catch (OperationCanceledException)
-        {
-            // Expected — either OperationCanceledException or its subtype TaskCanceledException.
-        }
+        });
     }
 
     /// <summary>
     /// Verifies that <see cref="ICryptoTransformExtensions.TransformAsync(ICryptoTransform,Stream,Stream,int,CancellationToken)" />
-    /// throws immediately when the cancellation token is already cancelled before the call.
+    /// throws <see cref="TaskCanceledException" /> when the cancellation token is already cancelled before
+    /// the call. The cancelled <c>ReadAsync</c> raises <see cref="OperationCanceledException" />, which the
+    /// implementation converts to a fresh <see cref="TaskCanceledException" />.
     /// </summary>
     [TestMethod]
     [DynamicData(nameof(GetValidTransformTestData))]
-    public async Task TransformAsync_Stream_WhenAlreadyCancelled_ShouldThrowImmediately(KnownAnswerTest kat)
+    public async Task TransformAsync_Stream_WhenAlreadyCancelled_ShouldThrowTaskCanceledException(KnownAnswerTest kat)
     {
         using var source = new MemoryStream(kat.Input);
         using var target = new MemoryStream();
@@ -192,15 +191,10 @@ public partial class ICryptoTransformExtensionsTests
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
-        try
+        await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
         {
             await transform.TransformAsync(source, target, bufferSize: kat.Input.Length, cts.Token);
-            Assert.Fail($"[{kat.Name}] Expected OperationCanceledException.");
-        }
-        catch (OperationCanceledException)
-        {
-            // Expected.
-        }
+        });
     }
 
     /// <summary>
