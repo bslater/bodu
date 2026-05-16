@@ -55,17 +55,41 @@ The packaging project produces a NuGet that lays out the analyzer, code fix, and
 `bodu-local` source declared in the repo-root `NuGet.config`, which points at `./local-packages/`.
 
 The packed `.nupkg` is committed to `local-packages/` so a fresh clone restores out-of-the-box without an
-explicit pack step. After changing anything under `Bodu.CodeStyle/`, regenerate it:
+explicit pack step.
+
+### Updating the analyzer in `Bodu.Core` and the other library projects
 
 ```bash
-# From the repository root.
+# 1. Make your changes under Bodu.CodeStyle/ and verify them.
+cd Bodu.CodeStyle
+dotnet test Bodu.CodeStyle.sln -c Release
+cd ..
+
+# 2. Repack into local-packages/ and evict NuGet's global cache for the package
+#    (because the version stays at 1.0.0, the cache would otherwise serve a stale copy).
 bash bld/pack-codestyle-analyzer.sh
+
+# 3. Force-restore the consumer project so it picks up the freshly extracted DLLs.
+dotnet restore Bodu.Core/src/Bodu.Core.csproj --force
+
+# 4. Rebuild the consumer — the new analyzer is now loaded by Roslyn.
+dotnet build Bodu.Core/src/Bodu.Core.csproj -c Release
+
+# 5. Commit the updated local-packages/Bodu.CodeStyle.XmlDocumentation.1.0.0.nupkg
+#    alongside your analyzer source changes.
+git add Bodu.CodeStyle/ local-packages/
+git commit
 ```
 
-CI runs the same `dotnet pack` step before restoring the library projects (see
-`.github/workflows/build-test.yml`). The `Bodu.CodeStyle/Directory.Build.props` sets
-`BoduCodeStyleAnalyzers=false` so the analyzer projects never analyse themselves and never form a circular
-package reference.
+If you have Visual Studio open while doing the above, close and reopen the solution after step 2 — VS keeps the
+analyzer DLL loaded in memory and will not pick up the new payload until the AppDomain is recycled.
+
+CI runs the equivalent `dotnet pack` step in `.github/workflows/build-test.yml` before restoring the library
+projects, so PRs don't need a freshly packed `.nupkg` committed — but committing it after a local change keeps
+the IDE / local `dotnet build` experience smooth.
+
+The `Bodu.CodeStyle/Directory.Build.props` sets `BoduCodeStyleAnalyzers=false` so the analyzer projects never
+analyse themselves and never form a circular package reference.
 
 ## Status
 
