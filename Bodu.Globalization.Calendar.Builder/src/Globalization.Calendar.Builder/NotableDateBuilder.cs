@@ -71,7 +71,7 @@ public sealed class NotableDateBuilder
     internal IEnumerable<NotableDateRule> Build(string notableDateName)
     {
         if (_rules.Count == 0)
-            throw new InvalidOperationException($"At least one rule must be added to the notable date entry '{notableDateName}'.");
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_NotableDateRulesEmpty, notableDateName));
 
         return _rules.Select(r => r.Build(notableDateName));
     }
@@ -86,7 +86,7 @@ public sealed class NotableDateBuilder
     internal XElement ToXElement(string notableDateName, XNamespace ns)
     {
         if (_rules.Count == 0)
-            throw new InvalidOperationException($"At least one rule must be added to the notable date entry '{notableDateName}'.");
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_NotableDateRulesEmpty, notableDateName));
 
         XElement element = new(ns + "NotableDate", new XAttribute("name", notableDateName));
 
@@ -105,7 +105,7 @@ public sealed class NotableDateBuilder
     internal JsonObject ToJsonNode(string notableDateName)
     {
         if (_rules.Count == 0)
-            throw new InvalidOperationException($"At least one rule must be added to the notable date entry '{notableDateName}'.");
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_NotableDateRulesEmpty, notableDateName));
 
         JsonArray rules = [];
 

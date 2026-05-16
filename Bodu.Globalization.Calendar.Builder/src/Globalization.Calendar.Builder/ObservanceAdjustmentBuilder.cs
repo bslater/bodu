@@ -359,9 +359,9 @@ public sealed class ObservanceAdjustmentBuilder
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
         if (_trigger is null)
-            throw new InvalidOperationException("An adjustment trigger must be set via When() before building.");
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_AdjustmentTriggerMissingBuild);
         if (_action is null)
-            throw new InvalidOperationException("An adjustment action must be set via Action() before building.");
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_AdjustmentActionMissingBuild);
 
         DateTime? comparisonDate = (_comparisonMonth.HasValue && _comparisonDay.HasValue)
             ? new DateTime(2000, _comparisonMonth.Value, _comparisonDay.Value, 0, 0, 0, DateTimeKind.Unspecified)
@@ -403,9 +403,9 @@ public sealed class ObservanceAdjustmentBuilder
     internal XElement ToXElement(string key, XNamespace ns)
     {
         if (_trigger is null)
-            throw new InvalidOperationException("An adjustment trigger must be set via When() before serialising.");
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_AdjustmentTriggerMissingSerialise);
         if (_action is null)
-            throw new InvalidOperationException("An adjustment action must be set via Action() before serialising.");
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_AdjustmentActionMissingSerialise);
 
         XElement element = new(ns + "Adjustment",
             new XAttribute("key", key),
@@ -465,9 +465,9 @@ public sealed class ObservanceAdjustmentBuilder
     internal JsonObject ToJsonNode(string key)
     {
         if (_trigger is null)
-            throw new InvalidOperationException("An adjustment trigger must be set via When() before serialising.");
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_AdjustmentTriggerMissingSerialise);
         if (_action is null)
-            throw new InvalidOperationException("An adjustment action must be set via Action() before serialising.");
+            throw new InvalidOperationException(BuilderResourceStrings.Op_Invalid_AdjustmentActionMissingSerialise);
 
         JsonObject node = new()
         {
