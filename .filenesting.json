@@ -1,8 +1,10 @@
-{
-  "help": "https://go.microsoft.com/fwlink/?linkid=866610",
-  "dependentFileProviders": {
-    "regex": {
-      "^(.*)\\.\\.[^.]+\\.cs$": "$1.cs"
+﻿{
+    "help": "https://go.microsoft.com/fwlink/?linkid=866610",
+    "dependentFileProviders": {
+        "add": {
+            "regex": {
+                "^([^.]+)\\..+\\.cs$": "$1.cs"
+            }
+        }
     }
-  }
 }

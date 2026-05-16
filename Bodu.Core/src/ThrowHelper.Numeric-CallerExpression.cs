@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelper.Numeric.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,8 +8,6 @@
 #pragma warning disable SA1117 // Parameters should be on same line or separate lines
 #pragma warning disable IDE0011 // Add braces
 
-using Bodu.Extensions;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -19,30 +17,37 @@ namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_PositiveMultipleOf"/>.</summary>
+    /// <summary>
+    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_PositiveMultipleOf" />.
+    /// </summary>
     private static readonly CompositeFormat s_argInvalidPositiveMultipleOf =
         CompositeFormat.Parse(ResourceStrings.Arg_Invalid_PositiveMultipleOf);
 
-    /// <summary>Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_CountExceedsAvailable"/>.</summary>
+    /// <summary>
+    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_CountExceedsAvailable" />.
+    /// </summary>
     private static readonly CompositeFormat s_argOutOfRangeCountExceedsAvailable =
         CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_CountExceedsAvailable);
 
-    /// <summary>Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow"/>.</summary>
+    /// <summary>
+    /// Cached parsed format for <see cref="ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow" />.
+    /// </summary>
     private static readonly CompositeFormat s_argOutOfRangeSequenceRangeOverflow =
         CompositeFormat.Parse(ResourceStrings.Arg_OutOfRange_SequenceRangeOverflow);
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="count"/> is negative or exceeds
-    /// <paramref name="available"/>.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="count" /> is negative or exceeds
+    /// <paramref name="available" />.
     /// </summary>
     /// <param name="count">The count value to validate.</param>
     /// <param name="available">The number of available items.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="count"/> &lt; 0 or <paramref name="count"/> &gt;
-    /// <paramref name="available"/>.
+    /// Thrown when <paramref name="count" /> &lt; 0 or <paramref name="count" /> &gt; <paramref name="available" />.
     /// </exception>
-    /// <remarks>Use this method when validating that a subset operation will not exceed the size of the source.</remarks>
+    /// <remarks>
+    /// Use this method when validating that a subset operation will not exceed the size of the source.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfCountExceedsAvailable(
         int count, int available,
@@ -55,14 +60,12 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is negative.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is negative.
     /// </summary>
     /// <typeparam name="T">A comparable numeric type.</typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> &lt; 0.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value" /> &lt; 0.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNegative<T>(
         T value,
@@ -74,20 +77,20 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is not a positive multiple
-    /// of <paramref name="divisor"/>.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a positive multiple of
+    /// <paramref name="divisor" />.
     /// </summary>
     /// <typeparam name="T">A binary integer type.</typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="divisor">The required positive divisor. Must itself be positive.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> &lt;= 0 or <c>value % divisor != 0</c>.
+    /// Thrown when <paramref name="value" /> &lt;= 0 or <c>value % divisor != 0</c>.
     /// </exception>
     /// <remarks>
-    /// Useful for validating aligned buffer sizes, memory boundaries, or block-aligned lengths. When the
-    /// required constraint is specifically a power of two, prefer <see cref="ThrowIfNotPowerOfTwo{T}"/>,
-    /// which uses a single bitwise operation.
+    /// Useful for validating aligned buffer sizes, memory boundaries, or block-aligned lengths.
+    /// When the required constraint is specifically a power of two,
+    /// prefer <see cref="ThrowIfNotPowerOfTwo{T}" />, which uses a single bitwise operation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPositiveMultipleOf<T>(
@@ -102,19 +105,20 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is not a positive power of
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not a positive power of
     /// two.
     /// </summary>
     /// <typeparam name="T">A binary integer type.</typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> is not a positive integer whose binary representation contains
-    /// exactly one set bit (i.e. <c>value &lt;= 0</c> or <c>(value &amp; (value - 1)) != 0</c>).
+    /// Thrown when <paramref name="value" /> is not a positive integer whose binary representation contains exactly one
+    /// set bit (i.e. <c>value &lt;= 0</c> or <c>(value &amp; (value - 1)) != 0</c>).
     /// </exception>
     /// <remarks>
-    /// A specialization of the positive-multiple-of family. When the divisor is itself an arbitrary positive
-    /// integer rather than a power of two, use <see cref="ThrowIfNotPositiveMultipleOf{T}"/> instead.
+    /// A specialization of the positive-multiple-of family.
+    /// When the divisor is itself an arbitrary positive integer rather than a power of two,
+    /// use <see cref="ThrowIfNotPositiveMultipleOf{T}" /> instead.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPowerOfTwo<T>(
@@ -127,13 +131,13 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is not zero.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is not zero.
     /// </summary>
-    /// <typeparam name="T">A type that implements <see cref="IEquatable{T}"/>.</typeparam>
+    /// <typeparam name="T">A type that implements <see cref="IEquatable{T}" />.</typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> is not equal to the default value of <typeparamref name="T"/>.
+    /// Thrown when <paramref name="value" /> is not equal to the default value of <typeparamref name="T" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotZero<T>(
@@ -146,14 +150,12 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is positive.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is positive.
     /// </summary>
     /// <typeparam name="T">A comparable numeric type.</typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> &gt; 0.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value" /> &gt; 0.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfPositive<T>(
         T value,
@@ -165,16 +167,18 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if the sequence starting at <paramref name="start"/>
-    /// with <paramref name="count"/> elements would overflow <see cref="int.MaxValue"/>.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if the sequence starting at <paramref name="start" /> with
+    /// <paramref name="count" /> elements would overflow <see cref="int.MaxValue" />.
     /// </summary>
     /// <param name="start">The starting value of the sequence.</param>
     /// <param name="count">The number of values in the sequence.</param>
     /// <param name="paramName">The name of the count parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <c>start + count - 1</c> would exceed <see cref="int.MaxValue"/>.
+    /// Thrown when <c>start + count - 1</c> would exceed <see cref="int.MaxValue" />.
     /// </exception>
-    /// <remarks>Prevents arithmetic overflow when generating <see cref="int"/>-based numeric sequences.</remarks>
+    /// <remarks>
+    /// Prevents arithmetic overflow when generating <see cref="int" />-based numeric sequences.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSequenceRangeOverflows(
         int start, int count,
@@ -187,16 +191,18 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if the sequence starting at <paramref name="start"/>
-    /// with <paramref name="count"/> elements would overflow <see cref="long.MaxValue"/>.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if the sequence starting at <paramref name="start" /> with
+    /// <paramref name="count" /> elements would overflow <see cref="long.MaxValue" />.
     /// </summary>
     /// <param name="start">The starting value of the sequence.</param>
     /// <param name="count">The number of values in the sequence.</param>
     /// <param name="paramName">The name of the count parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <c>start + count - 1</c> would exceed <see cref="long.MaxValue"/>.
+    /// Thrown when <c>start + count - 1</c> would exceed <see cref="long.MaxValue" />.
     /// </exception>
-    /// <remarks>Prevents arithmetic overflow when generating <see cref="long"/>-based numeric sequences.</remarks>
+    /// <remarks>
+    /// Prevents arithmetic overflow when generating <see cref="long" />-based numeric sequences.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfSequenceRangeOverflows(
         long start, int count,
@@ -209,13 +215,13 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> equals zero.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> equals zero.
     /// </summary>
-    /// <typeparam name="T">A type that implements <see cref="IEquatable{T}"/>.</typeparam>
+    /// <typeparam name="T">A type that implements <see cref="IEquatable{T}" />.</typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> equals the default value of <typeparamref name="T"/>.
+    /// Thrown when <paramref name="value" /> equals the default value of <typeparamref name="T" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfZero<T>(
@@ -228,14 +234,12 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero or negative.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is zero or negative.
     /// </summary>
     /// <typeparam name="T">A comparable numeric type.</typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> &lt;= 0.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value" /> &lt;= 0.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfZeroOrNegative<T>(
         T value,
@@ -247,14 +251,12 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is zero or positive.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is zero or positive.
     /// </summary>
     /// <typeparam name="T">A comparable numeric type.</typeparam>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> &gt;= 0.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="value" /> &gt;= 0.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfZeroOrPositive<T>(
         T value,
@@ -266,14 +268,13 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is
-    /// <see cref="double.NaN"/>, <see cref="double.PositiveInfinity"/>, or
-    /// <see cref="double.NegativeInfinity"/>.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <see cref="double.NaN" />,
+    /// <see cref="double.PositiveInfinity" />, or <see cref="double.NegativeInfinity" />.
     /// </summary>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> is not a finite number.
+    /// Thrown when <paramref name="value" /> is not a finite number.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotFinite(
@@ -285,14 +286,13 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException"/> if <paramref name="value"/> is
-    /// <see cref="float.NaN"/>, <see cref="float.PositiveInfinity"/>, or
-    /// <see cref="float.NegativeInfinity"/>.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if <paramref name="value" /> is <see cref="float.NaN" />,
+    /// <see cref="float.PositiveInfinity" />, or <see cref="float.NegativeInfinity" />.
     /// </summary>
     /// <param name="value">The value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="value"/> is not a finite number.
+    /// Thrown when <paramref name="value" /> is not a finite number.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotFinite(

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelper.Null.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,25 +8,21 @@
 #pragma warning disable SA1117 // Parameters should be on same line or separate lines
 #pragma warning disable IDE0011 // Add braces
 
-using Bodu.Extensions;
 using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
-using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Bodu;
 
 public static partial class ThrowHelper
 {
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is <see langword="null"/>.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />.
     /// </summary>
     /// <typeparam name="T">The type of the object.</typeparam>
-    /// <param name="value">The value to check. Must not be <see langword="null"/>.</param>
+    /// <param name="value">The value to check. Must not be <see langword="null" />.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="value"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNull<T>(
@@ -38,15 +34,15 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is <see langword="null"/>,
-    /// using <paramref name="message"/> as the exception message.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
+    /// using <paramref name="message" /> as the exception message.
     /// </summary>
     /// <typeparam name="T">The type of the object.</typeparam>
-    /// <param name="value">The value to check. Must not be <see langword="null"/>.</param>
+    /// <param name="value">The value to check. Must not be <see langword="null" />.</param>
     /// <param name="message">The message to include in the exception.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="value"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNull<T>(
@@ -58,16 +54,15 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if <paramref name="disposed"/> is
-    /// <see langword="true"/>.
+    /// Throws an <see cref="ObjectDisposedException" /> if <paramref name="disposed" /> is <see langword="true" />.
     /// </summary>
     /// <param name="disposed">The disposal flag to evaluate.</param>
     /// <param name="objectName">
-    /// The name of the disposed object included in the exception message. Supplied automatically by the
-    /// compiler via <see cref="CallerArgumentExpressionAttribute"/>.
+    /// The name of the disposed object included in the exception message.
+    /// Supplied automatically by the compiler via <see cref="CallerArgumentExpressionAttribute" />.
     /// </param>
     /// <exception cref="ObjectDisposedException">
-    /// Thrown when <paramref name="disposed"/> is <see langword="true"/>.
+    /// Thrown when <paramref name="disposed" /> is <see langword="true" />.
     /// </exception>
     [SuppressMessage(
         "Microsoft.CodeAnalysis.NetAnalyzers",

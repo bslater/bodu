@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ThrowHelper.String.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -8,10 +8,7 @@
 #pragma warning disable SA1117 // Parameters should be on same line or separate lines
 #pragma warning disable IDE0011 // Add braces
 
-using Bodu.Extensions;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -19,26 +16,34 @@ namespace Bodu;
 
 public static partial class ThrowHelper
 {
-    /// <summary>Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringLength"/>.</summary>
+    /// <summary>
+    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringLength" />.
+    /// </summary>
     private static readonly CompositeFormat s_argInvalidStringLength =
         CompositeFormat.Parse(ResourceStrings.Arg_Invalid_StringLength);
 
-    /// <summary>Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringLengthRange"/>.</summary>
+    /// <summary>
+    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringLengthRange" />.
+    /// </summary>
     private static readonly CompositeFormat s_argInvalidStringLengthRange =
         CompositeFormat.Parse(ResourceStrings.Arg_Invalid_StringLengthRange);
 
-    /// <summary>Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringTooLong"/>.</summary>
+    /// <summary>
+    /// Cached parsed format for <see cref="ResourceStrings.Arg_Invalid_StringTooLong" />.
+    /// </summary>
     private static readonly CompositeFormat s_argInvalidStringTooLong =
         CompositeFormat.Parse(ResourceStrings.Arg_Invalid_StringTooLong);
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is <see langword="null"/>, or
-    /// an <see cref="ArgumentException"/> if it is an empty string.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
+    /// or an <see cref="ArgumentException" /> if it is an empty string.
     /// </summary>
     /// <param name="value">The string value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="value"/> is an empty string.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="value" /> is an empty string.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNullOrEmpty(
         string value,
@@ -52,14 +57,16 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is <see langword="null"/>, or
-    /// an <see cref="ArgumentException"/> if it is empty or contains only whitespace.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
+    /// or an <see cref="ArgumentException" /> if it is empty or contains only whitespace.
     /// </summary>
     /// <param name="value">The string value to validate.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="value"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="value"/> is empty or contains only whitespace characters.
+    /// Thrown when <paramref name="value" /> is empty or contains only whitespace characters.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNullOrWhiteSpace(
@@ -74,18 +81,16 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is <see langword="null"/>, or an
-    /// <see cref="ArgumentOutOfRangeException"/> if its length exceeds <paramref name="maxLength"/> characters.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
+    /// or an <see cref="ArgumentOutOfRangeException" /> if its length exceeds <paramref name="maxLength" /> characters.
     /// </summary>
-    /// <param name="value">The string to validate. Must not be <see langword="null"/>.</param>
+    /// <param name="value">The string to validate. Must not be <see langword="null" />.</param>
     /// <param name="maxLength">The maximum permitted length, inclusive.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="value"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <c>value.Length &gt; maxLength</c>.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <c>value.Length &gt; maxLength</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfStringTooLong(
         string value, int maxLength,
@@ -101,18 +106,17 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is <see langword="null"/>, or an
-    /// <see cref="ArgumentException"/> if its length does not equal <paramref name="expectedLength"/> characters.
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
+    /// or an <see cref="ArgumentException" /> if its length does not equal <paramref name="expectedLength" />
+    /// characters.
     /// </summary>
-    /// <param name="value">The string to validate. Must not be <see langword="null"/>.</param>
+    /// <param name="value">The string to validate. Must not be <see langword="null" />.</param>
     /// <param name="expectedLength">The exact required length in characters.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="value"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <c>value.Length != expectedLength</c>.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <c>value.Length != expectedLength</c>.</exception>
     /// <remarks>
     /// Useful for validating fixed-length identifiers such as ISIN (12 characters), CUSIP (9 characters),
     /// or IBAN country codes (2 characters).
@@ -132,16 +136,18 @@ public static partial class ThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="value"/> is <see langword="null"/>, or an
-    /// <see cref="ArgumentOutOfRangeException"/> if its length is not between <paramref name="minLength"/> and
-    /// <paramref name="maxLength"/> (inclusive).
+    /// Throws an <see cref="ArgumentNullException" /> if <paramref name="value" /> is <see langword="null" />,
+    /// or an <see cref="ArgumentOutOfRangeException" /> if its length is not between <paramref name="minLength" /> and
+    /// <paramref name="maxLength" /> (inclusive).
     /// </summary>
-    /// <param name="value">The string to validate. Must not be <see langword="null"/>.</param>
+    /// <param name="value">The string to validate. Must not be <see langword="null" />.</param>
     /// <param name="minLength">The minimum permitted length, inclusive.</param>
-    /// <param name="maxLength">The maximum permitted length, inclusive. Must be &gt;= <paramref name="minLength"/>.</param>
+    /// <param name="maxLength">
+    /// The maximum permitted length, inclusive. Must be &gt;= <paramref name="minLength" />.
+    /// </param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="value"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <c>value.Length &lt; minLength</c> or <c>value.Length &gt; maxLength</c>.

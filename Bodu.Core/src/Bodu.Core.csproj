@@ -35,10 +35,10 @@
     The wildcards keep new <Domain> partials picked up automatically.
     -->
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'netstandard2.1'">
-        <Compile Remove="ThrowHelper*.CallerExpression.cs" />
+        <Compile Remove="ThrowHelper.*-CallerExpression.cs" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' != 'netstandard2.0' And '$(TargetFramework)' != 'netstandard2.1'">
-        <Compile Remove="ThrowHelper*.NetStandard.cs" />
+        <Compile Remove="ThrowHelper.*-NetStandard.cs" />
     </ItemGroup>
     
     <ItemGroup>
