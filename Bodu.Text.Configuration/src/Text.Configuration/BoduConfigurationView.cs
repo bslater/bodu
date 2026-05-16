@@ -40,7 +40,8 @@ public sealed partial class BoduConfigurationView : IEnumerable<KeyValuePair<str
     /// Gets the effective value for <paramref name="key" />, or <see langword="null" /> if the key is absent
     /// from the resolved view.
     /// </summary>
-    /// <param name="key">The configuration key, in colon-delimited form (e.g. <c>logging:level:default</c>).</param>
+    /// <param name="key">The configuration key, in colon-delimited form (e.g. <c>logging:level:default</c>)
+    /// or the dotted form (<c>logging.level.default</c>). Both produce the same lookup.</param>
     /// <returns>The value, or <see langword="null" /> when absent.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="key" /> is <see langword="null" />.</exception>
     public string? this[string key]
@@ -48,8 +49,27 @@ public sealed partial class BoduConfigurationView : IEnumerable<KeyValuePair<str
         get
         {
             ThrowHelper.ThrowIfNull(key);
-            return this._values.TryGetValue(key, out string? value) ? value : null;
+            return LookupValue(this._values, key);
         }
+    }
+
+    /// <summary>
+    /// Looks up a value by canonical colon-delimited key or by the equivalent dotted form. Dotted lookups
+    /// are normalized to colon-delimited keys before consulting the backing dictionary.
+    /// </summary>
+    /// <param name="values">The dictionary of resolved values.</param>
+    /// <param name="key">The lookup key in either dotted or colon form.</param>
+    /// <returns>The value, or <see langword="null" /> when absent.</returns>
+    internal static string? LookupValue(IReadOnlyDictionary<string, string?> values, string key)
+    {
+        if (values.TryGetValue(key, out string? value))
+            return value;
+
+        if (key.IndexOf('.') < 0)
+            return null;
+
+        string normalized = key.Replace('.', ':');
+        return values.TryGetValue(normalized, out value) ? value : null;
     }
 
     /// <summary>

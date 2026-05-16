@@ -103,6 +103,24 @@ public sealed partial class BoduConfigurationSection
     }
 
     /// <summary>
+    /// Replaces the property at <paramref name="index" /> with <paramref name="property" />, preserving the
+    /// position in author order. Used by the reader to honour <see cref="BoduConfigurationDuplicateKeyMode.LastWins" />
+    /// when a duplicate key is encountered.
+    /// </summary>
+    /// <param name="index">The zero-based index of the property to replace.</param>
+    /// <param name="property">The new property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="property" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="index" /> is outside the valid range.</exception>
+    internal void ReplacePropertyAt(int index, BoduConfigurationProperty property)
+    {
+        ThrowHelper.ThrowIfNull(property);
+        if ((uint)index >= (uint)this._properties.Count)
+            throw new ArgumentOutOfRangeException(nameof(index));
+
+        this._properties[index] = property;
+    }
+
+    /// <summary>
     /// Appends a leading comment to this section header.
     /// </summary>
     /// <param name="comment">The comment to append.</param>

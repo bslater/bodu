@@ -247,12 +247,14 @@ internal sealed partial class BoduConfigurationReader
         BoduConfigurationComment? inlineComment = null)
     {
         BoduConfigurationProperty? existing = null;
+        int existingIndex = -1;
         StringComparer comparer = this._options.KeyOptions.KeyComparer;
-        foreach (BoduConfigurationProperty p in section.Properties)
+        for (int i = 0; i < section.Properties.Count; i++)
         {
-            if (comparer.Equals(p.RawKey, rawKey))
+            if (comparer.Equals(section.Properties[i].RawKey, rawKey))
             {
-                existing = p;
+                existing = section.Properties[i];
+                existingIndex = i;
                 break;
             }
         }
@@ -298,7 +300,7 @@ internal sealed partial class BoduConfigurationReader
 
                 case BoduConfigurationDuplicateKeyMode.LastWins:
                 default:
-                    section.AddProperty(property);
+                    section.ReplacePropertyAt(existingIndex, property);
                     return;
             }
         }

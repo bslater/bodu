@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Test\src\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Configuration\test\Bodu.Text.Configuration.Test.csproj" />
     <ProjectReference Include="..\src\Bodu.Extensions.Configuration.Text.csproj" />
   </ItemGroup>
 

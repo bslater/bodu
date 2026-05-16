@@ -22,7 +22,8 @@ public sealed partial class BoduConfigurationView
     public string GetString(string key)
     {
         ThrowHelper.ThrowIfNull(key);
-        if (this._values.TryGetValue(key, out string? value) && value is not null)
+        string? value = LookupValue(this._values, key);
+        if (value is not null)
             return value;
 
         throw new KeyNotFoundException($"Configuration key '{key}' is not present in the resolved view.");
@@ -38,7 +39,8 @@ public sealed partial class BoduConfigurationView
     public string? GetString(string key, string? fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        return this._values.TryGetValue(key, out string? value) ? value : fallback;
+        string? value = LookupValue(this._values, key);
+        return value ?? fallback;
     }
 
     /// <summary>
@@ -51,7 +53,8 @@ public sealed partial class BoduConfigurationView
     public bool TryGetString(string key, out string? value)
     {
         ThrowHelper.ThrowIfNull(key);
-        return this._values.TryGetValue(key, out value);
+        value = LookupValue(this._values, key);
+        return value is not null;
     }
 
     /// <summary>
@@ -80,7 +83,8 @@ public sealed partial class BoduConfigurationView
     public int GetInt32(string key, int fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        if (!this._values.TryGetValue(key, out string? raw) || raw is null)
+        string? raw = LookupValue(this._values, key);
+        if (raw is null)
             return fallback;
 
         if (int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out int value))
@@ -98,11 +102,9 @@ public sealed partial class BoduConfigurationView
     public bool TryGetInt32(string key, out int value)
     {
         ThrowHelper.ThrowIfNull(key);
-        if (this._values.TryGetValue(key, out string? raw) && raw is not null
-            && int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
-        {
+        string? raw = LookupValue(this._values, key);
+        if (raw is not null && int.TryParse(raw, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
             return true;
-        }
 
         value = 0;
         return false;
@@ -151,7 +153,8 @@ public sealed partial class BoduConfigurationView
     public bool GetBoolean(string key, bool fallback)
     {
         ThrowHelper.ThrowIfNull(key);
-        if (!this._values.TryGetValue(key, out string? raw) || raw is null)
+        string? raw = LookupValue(this._values, key);
+        if (raw is null)
             return fallback;
 
         if (bool.TryParse(raw, out bool value))
@@ -169,11 +172,9 @@ public sealed partial class BoduConfigurationView
     public bool TryGetBoolean(string key, out bool value)
     {
         ThrowHelper.ThrowIfNull(key);
-        if (this._values.TryGetValue(key, out string? raw) && raw is not null
-            && bool.TryParse(raw, out value))
-        {
+        string? raw = LookupValue(this._values, key);
+        if (raw is not null && bool.TryParse(raw, out value))
             return true;
-        }
 
         value = false;
         return false;

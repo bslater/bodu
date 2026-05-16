@@ -41,6 +41,7 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
     public BoduConfigurationKey(string rawKey, BoduConfigurationKeyOptions? options = null)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(rawKey);
+        RejectControlCharacters(rawKey);
 
         BoduConfigurationKeyOptions effective = options ?? BoduConfigurationKeyOptions.Default;
         ImmutableArray<string> segments = SplitSegments(rawKey, effective);
@@ -183,6 +184,16 @@ public readonly partial struct BoduConfigurationKey : IEquatable<BoduConfigurati
         }
 
         builder.Add(segment.ToString());
+    }
+
+    private static void RejectControlCharacters(string rawKey)
+    {
+        for (int i = 0; i < rawKey.Length; i++)
+        {
+            char c = rawKey[i];
+            if (char.IsControl(c))
+                throw new ArgumentException($"Configuration key contains an illegal control character at position {i}.", nameof(rawKey));
+        }
     }
 
     private static bool IsSeparator(char c, IReadOnlyList<char> separators)
