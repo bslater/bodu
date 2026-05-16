@@ -21,9 +21,10 @@ namespace Bodu.CodeStyle.XmlDocumentation.Layout;
 /// allows the line to exceed the budget rather than corrupt the content.
 /// </para>
 /// <para>
-/// Wrap point selection prefers the latest clause boundary (a word ending in <c>','</c>, <c>';'</c>, <c>'.'</c>,
-/// or <c>':'</c>) when available; if no clause boundary exists in the line the wrapper falls back to the latest
-/// word boundary.
+/// The wrap strategy is natural greedy: pack as many atoms onto a line as fit within the content budget and
+/// break at the last fitting word boundary. Clause-aware wrapping (breaking at <c>','</c>, <c>';'</c>,
+/// <c>'.'</c>, or <c>':'</c>) is deliberately not applied — it caused multi-sentence paragraphs to fragment
+/// at every clause even when the line could comfortably absorb more text.
 /// </para>
 /// </remarks>
 internal static class DocWrapper
@@ -66,33 +67,12 @@ internal static class DocWrapper
                 continue;
             }
 
-            var bestBreak = FindBestBreak(lineAtoms);
-            if (bestBreak.HasValue)
-            {
-                yield return JoinAtoms(lineAtoms, 0, bestBreak.Value);
-
-                var splitIndex = bestBreak.Value;
-                var remainder = new List<LineAtom>(lineAtoms.Count - splitIndex + 1);
-                remainder.Add(new LineAtom(lineAtoms[splitIndex].Text, hasLeadingSpace: false));
-                for (var i = splitIndex + 1; i < lineAtoms.Count; i++)
-                {
-                    remainder.Add(lineAtoms[i]);
-                }
-
-                remainder.Add(new LineAtom(atom, hasLeadingSpace: pendingWhitespace && remainder.Count > 0));
-
-                lineAtoms.Clear();
-                lineAtoms.AddRange(remainder);
-                lineLength = ComputeLineLength(lineAtoms);
-            }
-            else
-            {
-                yield return JoinAtoms(lineAtoms, 0, lineAtoms.Count);
-                lineAtoms.Clear();
-                lineAtoms.Add(new LineAtom(atom, hasLeadingSpace: false));
-                lineLength = atom.Length;
-            }
-
+            // Natural greedy wrap: emit the current line at the last fitting word boundary, then start the
+            // next line with the overflowing atom.
+            yield return JoinAtoms(lineAtoms, 0, lineAtoms.Count);
+            lineAtoms.Clear();
+            lineAtoms.Add(new LineAtom(atom, hasLeadingSpace: false));
+            lineLength = atom.Length;
             pendingWhitespace = false;
         }
 
@@ -100,55 +80,6 @@ internal static class DocWrapper
         {
             yield return JoinAtoms(lineAtoms, 0, lineAtoms.Count);
         }
-    }
-
-    private static int? FindBestBreak(List<LineAtom> atoms)
-    {
-        // Prefer the latest clause boundary (a word ending in ", ; . :"). When no clause boundary exists in the
-        // current line, return null so the caller falls back to natural greedy wrap (emit the current line
-        // as-is, start the next line with the candidate atom).
-        int? latestClause = null;
-        for (var i = 1; i < atoms.Count; i++)
-        {
-            if (!atoms[i].HasLeadingSpace)
-            {
-                continue;
-            }
-
-            if (EndsWithClausePunctuation(atoms[i - 1].Text))
-            {
-                latestClause = i;
-            }
-        }
-
-        return latestClause;
-    }
-
-    private static bool EndsWithClausePunctuation(string word)
-    {
-        if (word.Length == 0)
-        {
-            return false;
-        }
-
-        var last = word[word.Length - 1];
-        return last == ',' || last == ';' || last == '.' || last == ':';
-    }
-
-    private static int ComputeLineLength(List<LineAtom> atoms)
-    {
-        var total = 0;
-        foreach (LineAtom atom in atoms)
-        {
-            if (atom.HasLeadingSpace)
-            {
-                total += 1;
-            }
-
-            total += atom.Text.Length;
-        }
-
-        return total;
     }
 
     private static string JoinAtoms(List<LineAtom> atoms, int start, int count)

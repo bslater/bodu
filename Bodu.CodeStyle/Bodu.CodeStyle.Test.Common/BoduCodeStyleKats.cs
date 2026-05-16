@@ -458,8 +458,8 @@ public static class BoduCodeStyleKats
             expected:
             """
             /// <param name="source">
-            /// The source text to parse. The text may contain comments, blank lines, quoted values, escaped characters,
-            /// and export prefixes.
+            /// The source text to parse. The text may contain comments, blank lines, quoted values, escaped characters, and export
+            /// prefixes.
             /// </param>
             """),
 
@@ -549,7 +549,7 @@ public static class BoduCodeStyleKats
 
         CodeStyleKat.XmlFormat(
             id: "XMLFMT-0016",
-            name: "Returns block with two inline see langword tags preserves both atoms across a clause break",
+            name: "Returns block with two inline see langword tags packs both atoms onto one line when they fit",
             input:
             """
             /// <returns>
@@ -560,11 +560,10 @@ public static class BoduCodeStyleKats
             expected:
             """
             /// <returns>
-            /// <see langword="true" /> when the value was encoded; otherwise,
-            /// <see langword="false" /> when the destination buffer is too small.
+            /// <see langword="true" /> when the value was encoded; otherwise, <see langword="false" /> when the destination buffer
+            /// is too small.
             /// </returns>
-            """,
-            expectedChanged: false),
+            """),
 
         CodeStyleKat.XmlFormat(
             id: "XMLFMT-0017",
@@ -576,8 +575,8 @@ public static class BoduCodeStyleKats
             expected:
             """
             /// <returns>
-            /// <see langword="true" /> when the value was encoded; otherwise,
-            /// <see langword="false" /> when the destination buffer is too small.
+            /// <see langword="true" /> when the value was encoded; otherwise, <see langword="false" /> when the destination buffer
+            /// is too small.
             /// </returns>
             """),
 
