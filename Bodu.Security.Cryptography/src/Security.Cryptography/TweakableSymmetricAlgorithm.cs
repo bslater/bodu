@@ -322,7 +322,7 @@ public abstract class TweakableSymmetricAlgorithm
         {
             throw new CryptographicException(
                 string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidTweakSize,
+                    CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     bitLength,
                     CryptoHelpers.FormatLegalSizes(this.LegalTweakSizes)));
         }
@@ -339,7 +339,7 @@ public abstract class TweakableSymmetricAlgorithm
     protected void ThrowIfTweakNotSet()
     {
         if (this.TweakValue is null || this.TweakValue.Length == 0)
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_TweakNotSet);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_TweakNotSet);
     }
 
     /// <summary>

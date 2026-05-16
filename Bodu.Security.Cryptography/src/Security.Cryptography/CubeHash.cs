@@ -444,7 +444,7 @@ public sealed class CubeHash
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
         this.EnsureInitialized();
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -512,7 +512,7 @@ public sealed class CubeHash
         this.ThrowIfDisposed();
 #if !NET6_0_OR_GREATER
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
         this._finalized = true;
         this.State = 2;
 #endif
@@ -673,6 +673,6 @@ public sealed class CubeHash
     private void ThrowIfInvalidState()
     {
         if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_ReconfigurationNotAllowed);
     }
 }

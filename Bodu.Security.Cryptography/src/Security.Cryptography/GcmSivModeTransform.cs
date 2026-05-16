@@ -130,7 +130,7 @@ public sealed class GcmSivModeTransform
             this._authKey = authKey;
             this._encCipher = cipherFactory(encKeyMaterial)
                 ?? throw new InvalidOperationException(
-                    CryptoResourceStrings.InvalidOperationException_CipherFactoryReturnedNull);
+                    CryptoResourceStrings.Op_Invalid_CipherFactoryReturnedNull);
         }
         catch
         {
@@ -210,7 +210,7 @@ public sealed class GcmSivModeTransform
             {
                 CryptoHelpers.Clear(output[..plaintextLength]);
                 throw new CryptographicException(
-                    CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
+                    CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
             return plaintextLength;
         }

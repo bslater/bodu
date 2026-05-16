@@ -78,7 +78,7 @@ public sealed class Serpent128Cipher
     {
         if (key.Length != 16 && key.Length != 24 && key.Length != 32)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, "128, 192, 256"),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, "128, 192, 256"),
                 nameof(key));
 
         // Expand the supplied 128-, 192-, or 256-bit key into the 33 canonical Serpent round keys.
@@ -96,7 +96,7 @@ public sealed class Serpent128Cipher
         this.ThrowIfDisposed();
         if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBits / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
 
         // Load the 128-bit plaintext block as four little-endian 32-bit words. This is the canonical Serpent bitslice
         // representation used by the shared S-box and linear-transform helpers.
@@ -150,7 +150,7 @@ public sealed class Serpent128Cipher
         this.ThrowIfDisposed();
         if (input.Length != BlockSizeBits / 8 || output.Length != BlockSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, BlockSizeBits / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, BlockSizeBits / 8));
 
         // Load the 128-bit ciphertext block as four little-endian 32-bit words.
         var x0 = BinaryReadUInt32LE(input, 0);

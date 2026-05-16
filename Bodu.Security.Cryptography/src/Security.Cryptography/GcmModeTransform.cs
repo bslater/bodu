@@ -228,7 +228,7 @@ public sealed class GcmModeTransform
 
         if (this._aadProcessed)
             throw new InvalidOperationException(
-                CryptoResourceStrings.CryptographicException_AssociatedDataAlreadyProcessed);
+                CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
 
         this._aad = associatedData.IsEmpty ? Array.Empty<byte>() : associatedData.ToArray();
         this._aadProcessed = true;
@@ -245,7 +245,7 @@ public sealed class GcmModeTransform
         var required = checked(plaintext.Length + (DefaultTagSize / 8));
         if (output.Length < required)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
 
         try
@@ -284,13 +284,13 @@ public sealed class GcmModeTransform
 
         if (ciphertextWithTag.Length < DefaultTagSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, DefaultTagSize / 8),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, DefaultTagSize / 8),
                 nameof(ciphertextWithTag));
 
         var plaintextLength = ciphertextWithTag.Length - DefaultTagSize / 8;
         if (output.Length < plaintextLength)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, plaintextLength),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, plaintextLength),
                 nameof(output));
 
         try
@@ -312,7 +312,7 @@ public sealed class GcmModeTransform
                 {
                     CryptoHelpers.Clear(output[..plaintextLength]);
                     throw new CryptographicException(
-                        CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
+                        CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
                 }
 
                 this.ApplyCtr(ciphertext, output[..plaintextLength]);

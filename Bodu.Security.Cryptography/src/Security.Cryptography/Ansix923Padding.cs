@@ -56,7 +56,7 @@ public sealed class Ansix923Padding
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
-                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+                string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
 
         var size = blockSize / 8;
         var paddingLength = size - (input.Length % size);
@@ -86,7 +86,7 @@ public sealed class Ansix923Padding
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
-                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+                string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
 
         // Constant-time verification to mitigate CBC padding-oracle attacks.
         var size = blockSize / 8;

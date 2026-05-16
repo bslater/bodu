@@ -134,7 +134,7 @@ public sealed partial class Whirlpool
         {
             this.ThrowIfDisposed();
             if (this._inputConsumed)
-                throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+                throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_ReconfigurationNotAllowed);
             ThrowHelper.ThrowIfEnumValueIsUndefined(value);
 
             this._version = value;

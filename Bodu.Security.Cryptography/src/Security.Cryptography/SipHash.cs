@@ -242,7 +242,7 @@ public abstract class SipHash<T>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
         if ((uint)block.Length > 7)
-            throw new ArgumentOutOfRangeException(nameof(block), "Residual block must be 0-7 bytes.");
+            throw new ArgumentOutOfRangeException(nameof(block), CryptoResourceStrings.Arg_OutOfRange_SipHashResidualBlock);
 
         Span<byte> buffer = stackalloc byte[8];
         block.CopyTo(buffer);

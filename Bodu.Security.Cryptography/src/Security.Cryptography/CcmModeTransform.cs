@@ -167,7 +167,7 @@ public sealed class CcmModeTransform
         {
             CryptographicOperations.ZeroMemory(output[..plaintextLength]);
             this._completed = true;
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
         }
 
         this._completed = true;
@@ -259,7 +259,7 @@ public sealed class CcmModeTransform
         {
             if (aad.Length >= 0xFF00)
                 throw new NotSupportedException(
-                    string.Format(CryptoResourceStrings.NotSupportedException_AadTooLongForLengthEncoding, 0xFF00, 2));
+                    string.Format(CryptoResourceStrings.Op_NotSupported_AadTooLongForLengthEncoding, 0xFF00, 2));
 
             // Encode: 2-byte length + aad + zero-padding to block multiple.
             var encodedLen = 2 + aad.Length;

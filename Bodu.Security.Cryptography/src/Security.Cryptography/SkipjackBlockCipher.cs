@@ -102,7 +102,7 @@ public sealed class SkipjackBlockCipher
     {
         if (keyBytes.Length != KeySize / 8)
             throw new ArgumentException(
-                CryptoResourceStrings.ArgumentException_Skipjack_InvalidKeyLength,
+                CryptoResourceStrings.Arg_Invalid_SkipjackKeyLength,
                 nameof(keyBytes));
 
         this._key0 = new int[32];

@@ -107,7 +107,7 @@ public sealed class CtrModeTransform
         for (var offset = 0; offset < input.Length; offset += blockSize)
         {
             if (this._counterWrapped)
-                throw new CryptographicException(CryptoResourceStrings.CryptographicException_CtrCounterWrapped);
+                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_CtrCounterWrapped);
 
             this._cipher.Encrypt(this._counter, keystream);
             this.IncrementCounter();

@@ -89,7 +89,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
         var pos = 0;
@@ -133,7 +133,7 @@ public abstract class DeferredFinalBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
     if (this._finalized)
-        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+        throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
         Span<byte> residualSpan = this._residualBlock.Span;

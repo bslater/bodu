@@ -71,20 +71,20 @@ internal static partial class CryptoHelpers
 
             default:
                 throw new CryptographicException(
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidPropertyValue, nameof(SymmetricAlgorithm.Padding)));
+                    string.Format(CryptoResourceStrings.Crypt_Invalid_PropertyValue, nameof(SymmetricAlgorithm.Padding)));
         }
 
         int padCount = source[^1];
         if (padCount <= 0 || padCount > size)
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_Padding);
 
         ReadOnlySpan<byte> padRegion = source[^padCount..];
 
         if (padding == PaddingMode.PKCS7 && !IsUniformPadding(padRegion, (byte)padCount))
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_Padding);
 
         if (padding == PaddingMode.ANSIX923 && !IsUniformPadding(padRegion[..^1], 0x00))
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_InvalidPadding);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_Padding);
 
         var unpadded = count - padCount;
         source[..unpadded].CopyTo(destination);
@@ -144,14 +144,14 @@ internal static partial class CryptoHelpers
 
             default:
                 throw new CryptographicException(
-                    string.Format(CryptoResourceStrings.CryptographicException_InvalidPropertyValue, nameof(SymmetricAlgorithm.Padding)));
+                    string.Format(CryptoResourceStrings.Crypt_Invalid_PropertyValue, nameof(SymmetricAlgorithm.Padding)));
         }
 
         ThrowHelper.ThrowIfLessThan(blockSize, 1);
 
         var size = blockSize / 8;
         if (padding == PaddingMode.None && source.Length % size != 0)
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_PaddingModeNone_InputNotAligned);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_PaddingModeNoneInputNotAligned);
 
         var padCount = size - (source.Length % size);
         if (padCount == size && (padding == PaddingMode.None || padding == PaddingMode.Zeros))
