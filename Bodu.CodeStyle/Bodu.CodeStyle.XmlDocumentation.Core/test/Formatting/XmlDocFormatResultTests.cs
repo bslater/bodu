@@ -22,7 +22,7 @@ public sealed class XmlDocFormatResultTests
     {
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            _ = new XmlDocFormatResult(changed: false, formattedText: null!, changes: ImmutableArray<XmlDocFormattingChange>.Empty);
+            _ = new XmlDocFormatResult(changed: false, formattedText: null!, changes: []);
         });
 
         Assert.AreEqual("formattedText", ex.ParamName);

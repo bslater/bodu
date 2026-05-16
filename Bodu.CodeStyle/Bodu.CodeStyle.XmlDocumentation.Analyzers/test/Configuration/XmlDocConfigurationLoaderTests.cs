@@ -26,7 +26,7 @@ public sealed class XmlDocConfigurationLoaderTests
     public void LoadCompilationOptions_WhenNoAdditionalFiles_ShouldReturnDefaults()
     {
         XmlDocFormatOptions options = XmlDocConfigurationLoader.LoadCompilationOptions(
-            ImmutableArray<AdditionalText>.Empty,
+            [],
             CancellationToken.None);
 
         Assert.AreEqual(120, options.MaxLineLength);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatOptionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -30,11 +30,11 @@ public sealed class XmlDocFormatOptionsTests
                 preserveBlankLines: false,
                 preserveXmlTagAttributes: true,
                 preserveCrefText: true,
-                blockTags: ImmutableHashSet<string>.Empty,
-                inlineTags: ImmutableHashSet<string>.Empty,
-                forceMultilineTags: ImmutableHashSet<string>.Empty,
-                singleLineWhenShortTags: ImmutableHashSet<string>.Empty,
-                neverSplitTagContent: ImmutableHashSet<string>.Empty,
+                blockTags: [],
+                inlineTags: [],
+                forceMultilineTags: [],
+                singleLineWhenShortTags: [],
+                neverSplitTagContent: [],
                 tagPolicies: ImmutableDictionary<string, XmlDocTagPolicy>.Empty);
         });
 
@@ -57,11 +57,11 @@ public sealed class XmlDocFormatOptionsTests
                 preserveBlankLines: false,
                 preserveXmlTagAttributes: true,
                 preserveCrefText: true,
-                blockTags: ImmutableHashSet<string>.Empty,
-                inlineTags: ImmutableHashSet<string>.Empty,
-                forceMultilineTags: ImmutableHashSet<string>.Empty,
-                singleLineWhenShortTags: ImmutableHashSet<string>.Empty,
-                neverSplitTagContent: ImmutableHashSet<string>.Empty,
+                blockTags: [],
+                inlineTags: [],
+                forceMultilineTags: [],
+                singleLineWhenShortTags: [],
+                neverSplitTagContent: [],
                 tagPolicies: ImmutableDictionary<string, XmlDocTagPolicy>.Empty);
         });
 
@@ -85,11 +85,11 @@ public sealed class XmlDocFormatOptionsTests
                 preserveBlankLines: false,
                 preserveXmlTagAttributes: true,
                 preserveCrefText: true,
-                blockTags: ImmutableHashSet<string>.Empty,
-                inlineTags: ImmutableHashSet<string>.Empty,
-                forceMultilineTags: ImmutableHashSet<string>.Empty,
-                singleLineWhenShortTags: ImmutableHashSet<string>.Empty,
-                neverSplitTagContent: ImmutableHashSet<string>.Empty,
+                blockTags: [],
+                inlineTags: [],
+                forceMultilineTags: [],
+                singleLineWhenShortTags: [],
+                neverSplitTagContent: [],
                 tagPolicies: ImmutableDictionary<string, XmlDocTagPolicy>.Empty);
         });
 

@@ -41,7 +41,7 @@ public partial class XmlDocFormatterTests
         XmlDocFormatOptions options = CreateOptions().WithMaxLineLength(80);
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), options);
 
-        foreach (var line in result.FormattedText.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
+        foreach (var line in result.FormattedText.Split(["\r\n"], System.StringSplitOptions.None))
         {
             Assert.IsTrue(line.Length <= 80, $"Line '{line}' exceeds 80 characters.");
         }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="BoduCodeStyleKats.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -118,13 +118,13 @@ public sealed record CodeStyleKat(
     /// Gets the expected diagnostics as a non-null read-only list.
     /// </summary>
     public IReadOnlyList<CodeStyleKatDiagnostic> Diagnostics { get; } =
-        ExpectedDiagnostics ?? System.Array.Empty<CodeStyleKatDiagnostic>();
+        ExpectedDiagnostics ?? [];
 
     /// <summary>
     /// Gets the additional files as a non-null read-only list.
     /// </summary>
     public IReadOnlyList<CodeStyleKatAdditionalFile> Files { get; } =
-        AdditionalFiles ?? System.Array.Empty<CodeStyleKatAdditionalFile>();
+        AdditionalFiles ?? [];
 
     /// <summary>
     /// Creates a formatter KAT for a single XML documentation trivia block.
@@ -550,10 +550,10 @@ public static class BoduCodeStyleKats
                 }
             }
             """,
-            diagnostics: new[]
-            {
+            diagnostics:
+            [
                 new CodeStyleKatDiagnostic(CodeStyleKatConstants.XmlDocumentationDiagnosticId, Line: 5, Column: 5),
-            }),
+            ]),
 
         CodeStyleKat.Analyze(
             id: "XMLANL-0002",
@@ -572,7 +572,7 @@ public static class BoduCodeStyleKats
                 }
             }
             """,
-            diagnostics: System.Array.Empty<CodeStyleKatDiagnostic>()),
+            diagnostics: []),
 
         CodeStyleKat.Analyze(
             id: "XMLANL-0003",
@@ -592,10 +592,10 @@ public static class BoduCodeStyleKats
                 }
             }
             """,
-            diagnostics: new[]
-            {
+            diagnostics:
+            [
                 new CodeStyleKatDiagnostic(CodeStyleKatConstants.XmlDocumentationDiagnosticId, Line: 5, Column: 5),
-            }),
+            ]),
 
         CodeStyleKat.Analyze(
             id: "XMLANL-0004",
@@ -614,7 +614,7 @@ public static class BoduCodeStyleKats
                 }
             }
             """,
-            diagnostics: System.Array.Empty<CodeStyleKatDiagnostic>()),
+            diagnostics: []),
 
         // Code-fix KATs.
         CodeStyleKat.CodeFix(
@@ -815,8 +815,8 @@ public static class BoduCodeStyleKats
                 }
             }
             """,
-            additionalFiles: new[]
-            {
+            additionalFiles:
+            [
                 new CodeStyleKatAdditionalFile(
                     "bodu.xmldocstyle.json",
                     """
@@ -828,7 +828,7 @@ public static class BoduCodeStyleKats
                       "neverSplitTagContent": [ "c", "see", "paramref", "typeparamref" ]
                     }
                     """),
-            }),
+            ]),
 
         // Safety KATs.
         CodeStyleKat.Safety(

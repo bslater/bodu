@@ -57,7 +57,7 @@ public partial class XmlDocFormatterTests
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(builder.ToString(), CreateContext(), CreateOptions());
 
         Assert.IsTrue(result.Changed);
-        foreach (var line in result.FormattedText.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
+        foreach (var line in result.FormattedText.Split(["\r\n"], System.StringSplitOptions.None))
         {
             Assert.IsTrue(line.Length <= 200, $"Wrapped line is unexpectedly long: '{line}'.");
         }
