@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Arg_Invalid_Ascii85DestinationDelimiter" xml:space="preserve">
+    <value>Destination must be at least four characters to fit the Ascii85 delimiter pair.</value>
+  </data>
+  <data name="Arg_Invalid_Base16UnsupportedEncodeOptions" xml:space="preserve">
+    <value>Line breaks, byte spacing, and prefix are not supported when encoding into a pre-allocated character span. Use the string-returning Encode overloads to apply those flags.</value>
+  </data>
+  <data name="Arg_Invalid_Base32UnsupportedEncodeOptions" xml:space="preserve">
+    <value>Only OmitPadding is supported on the Base32 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.</value>
+  </data>
+  <data name="Arg_Invalid_Base58DestinationSize" xml:space="preserve">
+    <value>Destination must be at least {0} characters to encode the provided bytes.</value>
+  </data>
+  <data name="Arg_Invalid_Base64UnsupportedEncodeOptions" xml:space="preserve">
+    <value>Only OmitPadding is supported on the Base64 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.</value>
+  </data>
+  <data name="Arg_Invalid_Base85DestinationSize" xml:space="preserve">
+    <value>Destination must be at least {0} characters to encode the provided bytes.</value>
+  </data>
+  <data name="Arg_Invalid_DestinationTooSmallForEncoded" xml:space="preserve">
+    <value>Destination is too small to receive the encoded characters.</value>
+  </data>
+  <data name="Arg_Invalid_UnknownEncodingName" xml:space="preserve">
+    <value>Unknown encoding name: '{0}'.</value>
+  </data>
+  <data name="Arg_Invalid_Z85InputMultipleOfFour" xml:space="preserve">
+    <value>Z85 input length must be a multiple of four bytes.</value>
+  </data>
+  <data name="Arg_OutOfRange_Base32Variant" xml:space="preserve">
+    <value>Unknown Base32 variant.</value>
+  </data>
+  <data name="Arg_OutOfRange_Base58Variant" xml:space="preserve">
+    <value>Unknown Base58 variant.</value>
+  </data>
+  <data name="Arg_OutOfRange_Base64Variant" xml:space="preserve">
+    <value>Unknown Base64 variant.</value>
+  </data>
+  <data name="Arg_OutOfRange_Base85Variant" xml:space="preserve">
+    <value>Unknown Base85 variant.</value>
+  </data>
+  <data name="Format_Invalid_Ascii85" xml:space="preserve">
+    <value>Input is not valid Ascii85.</value>
+  </data>
+  <data name="Format_Invalid_Base32VariantAlphabet" xml:space="preserve">
+    <value>Input contains characters outside the Base32 variant alphabet.</value>
+  </data>
+  <data name="Format_Invalid_Base58CheckChecksumFailed" xml:space="preserve">
+    <value>Base58Check checksum verification failed.</value>
+  </data>
+  <data name="Format_Invalid_Base58CheckShorterThanChecksum" xml:space="preserve">
+    <value>Base58Check input is shorter than the four-byte checksum suffix.</value>
+  </data>
+  <data name="Format_Invalid_Base64" xml:space="preserve">
+    <value>Input is not valid Base64.</value>
+  </data>
+  <data name="Format_Invalid_Base64Alphabet" xml:space="preserve">
+    <value>Input contains characters outside the Base64 alphabet.</value>
+  </data>
+  <data name="Format_Invalid_Base64NonCanonical" xml:space="preserve">
+    <value>Base64 input is not in canonical form — unused trailing bits are non-zero.</value>
+  </data>
+  <data name="Format_Invalid_Base64VariantAlphabet" xml:space="preserve">
+    <value>Input contains characters outside the Base64 variant alphabet.</value>
+  </data>
+  <data name="Format_Invalid_BitcoinFlickrBase58" xml:space="preserve">
+    <value>Input is not valid Bitcoin/Flickr Base58.</value>
+  </data>
+  <data name="Format_Invalid_GuidNotSixteenBytes" xml:space="preserve">
+    <value>Input does not decode to a 16-byte GUID.</value>
+  </data>
+  <data name="Format_Invalid_HexCharacters" xml:space="preserve">
+    <value>Input contains non-hexadecimal characters.</value>
+  </data>
+  <data name="Format_Invalid_HexCharactersAfterStyles" xml:space="preserve">
+    <value>Input contains non-hexadecimal characters after applying parsing styles.</value>
+  </data>
+  <data name="Format_Invalid_HexDigitCountOdd" xml:space="preserve">
+    <value>Hex digit count is not even.</value>
+  </data>
+  <data name="Format_Invalid_HexDigitCountOddAfterDecorations" xml:space="preserve">
+    <value>Hex digit count is not even after removing decorations.</value>
+  </data>
+  <data name="Format_Invalid_HexDigitCountOddAfterStyles" xml:space="preserve">
+    <value>Hex digit count is not even after applying parsing styles.</value>
+  </data>
+  <data name="Format_Invalid_StandardBase32" xml:space="preserve">
+    <value>Input is not valid Standard Base32.</value>
+  </data>
+  <data name="Format_Invalid_StandardBase64" xml:space="preserve">
+    <value>Input is not valid Standard Base64.</value>
+  </data>
+  <data name="Format_Invalid_UrlSafeBase64" xml:space="preserve">
+    <value>Input is not valid URL-safe Base64.</value>
+  </data>
+  <data name="Op_Invalid_Base64EncodeUnexpectedFailure" xml:space="preserve">
+    <value>Unexpected failure while encoding Base64 characters.</value>
+  </data>
+</root>

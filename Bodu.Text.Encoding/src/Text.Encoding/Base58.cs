@@ -150,7 +150,7 @@ public static partial class Base58
         {
             Base58Variant.BitcoinFlickr => BitcoinFlickrAlphabet,
             Base58Variant.Ripple => RippleAlphabet,
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base58 variant."),
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base58Variant),
         };
 
     /// <summary>
@@ -164,6 +164,6 @@ public static partial class Base58
         {
             Base58Variant.BitcoinFlickr => s_bitcoinFlickrLookup,
             Base58Variant.Ripple => s_rippleLookup,
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base58 variant."),
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base58Variant),
         };
 }

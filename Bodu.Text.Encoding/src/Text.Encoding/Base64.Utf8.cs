@@ -366,7 +366,7 @@ public static partial class Base64
         if ((options & ~BaseFormattingOptions.OmitPadding) != 0)
         {
             throw new ArgumentException(
-                "Only OmitPadding is supported on the Base64 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.",
+                EncodingResourceStrings.Arg_Invalid_Base64UnsupportedEncodeOptions,
                 nameof(options));
         }
     }

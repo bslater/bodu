@@ -125,7 +125,7 @@ public static class BinaryEncodings
             "base58-ripple" => Base58Ripple,
             "ascii85" or "base85" => Ascii85,
             "z85" => Z85,
-            _ => throw new ArgumentException($"Unknown encoding name: '{name}'.", nameof(name)),
+            _ => throw new ArgumentException(string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Arg_Invalid_UnknownEncodingName, name), nameof(name)),
         };
     }
 

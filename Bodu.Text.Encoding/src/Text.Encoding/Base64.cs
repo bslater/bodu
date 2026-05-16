@@ -53,7 +53,7 @@ public static partial class Base64
     public static int GetDecodedLength(ReadOnlySpan<char> source, Base64Variant variant = Base64Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         return !TryCountSymbols(source, variant, styles, out var symbolCount)
-            ? throw new FormatException("Input contains characters outside the Base64 variant alphabet.")
+            ? throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64VariantAlphabet)
             : (symbolCount * 3) / 4;
     }
 
@@ -188,7 +188,7 @@ public static partial class Base64
     private static void EnsureValidVariant(Base64Variant variant)
     {
         if (variant is not (Base64Variant.Standard or Base64Variant.UrlSafe or Base64Variant.Mime))
-            throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base64 variant.");
+            throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base64Variant);
     }
 
     /// <summary>

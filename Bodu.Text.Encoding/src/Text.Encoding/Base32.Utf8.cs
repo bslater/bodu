@@ -351,7 +351,7 @@ public static partial class Base32
         if ((options & ~BaseFormattingOptions.OmitPadding) != 0)
         {
             throw new ArgumentException(
-                "Only OmitPadding is supported on the Base32 UTF-8 encoder. Use the string-returning Encode overloads to apply other flags.",
+                EncodingResourceStrings.Arg_Invalid_Base32UnsupportedEncodeOptions,
                 nameof(options));
         }
     }

@@ -44,7 +44,7 @@ public static partial class Base85
         var destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
         OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out var bytesWritten);
         if (status != OperationStatus.Done)
-            throw new FormatException("Input is not valid Ascii85.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_Ascii85);
 
         if (bytesWritten == destination.Length)
             return destination;

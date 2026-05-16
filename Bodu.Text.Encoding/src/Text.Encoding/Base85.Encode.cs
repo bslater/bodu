@@ -55,7 +55,7 @@ public static partial class Base85
             return emitDelimiters ? Ascii85DelimiterStart + Ascii85DelimiterEnd : string.Empty;
 
         if (variant == Base85Variant.Z85 && (bytes.Length & 3) != 0)
-            throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(bytes));
+            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(bytes));
 
         var upperBound = GetMaxEncodedLength(bytes.Length, variant);
         if (emitDelimiters)
@@ -108,7 +108,7 @@ public static partial class Base85
 
             if (destination.Length < Ascii85DelimiterLength)
                 throw new ArgumentException(
-                    "Destination must be at least four characters to fit the Ascii85 delimiter pair.",
+                    EncodingResourceStrings.Arg_Invalid_Ascii85DestinationDelimiter,
                     nameof(destination));
 
             destination[0] = '<';
@@ -119,7 +119,7 @@ public static partial class Base85
         }
 
         if (variant == Base85Variant.Z85 && (bytes.Length & 3) != 0)
-            throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(bytes));
+            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(bytes));
 
         var upperBound = GetMaxEncodedLength(bytes.Length, variant);
         var totalUpper = emitDelimiters ? upperBound + Ascii85DelimiterLength : upperBound;
@@ -154,7 +154,7 @@ public static partial class Base85
             var required = emitDelimiters ? written + Ascii85DelimiterLength : written;
             if (destination.Length < required)
                 throw new ArgumentException(
-                    $"Destination must be at least {required} characters to encode the provided bytes.",
+                    string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Arg_Invalid_Base85DestinationSize, required),
                     nameof(destination));
 
             var pos = 0;
@@ -247,7 +247,7 @@ public static partial class Base85
         }
 
         if (variant == Base85Variant.Z85 && (bytes.Length & 3) != 0)
-            throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(bytes));
+            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(bytes));
 
         var upperBound = GetMaxEncodedLength(bytes.Length, variant);
         var totalUpper = emitDelimiters ? upperBound + Ascii85DelimiterLength : upperBound;

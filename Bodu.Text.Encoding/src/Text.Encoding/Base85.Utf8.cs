@@ -64,7 +64,7 @@ public static partial class Base85
             return Array.Empty<byte>();
 
         if (variant == Base85Variant.Z85 && (source.Length & 3) != 0)
-            throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(source));
+            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(source));
 
         var upperBound = GetMaxEncodedLength(source.Length, variant);
         var scratch = new char[upperBound];
@@ -101,7 +101,7 @@ public static partial class Base85
         }
 
         if (variant == Base85Variant.Z85 && (source.Length & 3) != 0)
-            throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(source));
+            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(source));
 
         var upperBound = GetMaxEncodedLength(source.Length, variant);
         var scratch = new char[upperBound];

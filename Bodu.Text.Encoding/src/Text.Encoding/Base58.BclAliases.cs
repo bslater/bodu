@@ -44,7 +44,7 @@ public static partial class Base58
         var destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
         OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out var bytesWritten);
         if (status != OperationStatus.Done)
-            throw new FormatException("Input is not valid Bitcoin/Flickr Base58.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_BitcoinFlickrBase58);
 
         if (bytesWritten == destination.Length)
             return destination;

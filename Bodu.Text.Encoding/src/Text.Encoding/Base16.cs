@@ -63,9 +63,9 @@ public static partial class Base16
     public static int GetDecodedLength(ReadOnlySpan<char> source, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         if (!TryCountHexDigits(source, styles, out var digits))
-            throw new FormatException("Input contains non-hexadecimal characters after applying parsing styles.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharactersAfterStyles);
 
-        return (digits & 1) != 0 ? throw new FormatException("Hex digit count is not even after applying parsing styles.") : digits / 2;
+        return (digits & 1) != 0 ? throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOddAfterStyles) : digits / 2;
     }
 
     /// <summary>

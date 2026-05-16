@@ -51,10 +51,10 @@ public static partial class Base16
         if (style == BaseFormatStyles.None)
         {
             if ((chars.Length & 1) != 0)
-                throw new FormatException("Hex digit count is not even.");
+                throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOdd);
 
             var result = new byte[chars.Length / 2];
-            return !DecodeHexPairs(chars, result) ? throw new FormatException("Input contains non-hexadecimal characters.") : result;
+            return !DecodeHexPairs(chars, result) ? throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharacters) : result;
         }
 
         Span<char> scratch = chars.Length <= StackallocThreshold
@@ -63,11 +63,11 @@ public static partial class Base16
 
         var digitCount = StripDecorationsInto(chars, style, scratch);
         if ((digitCount & 1) != 0)
-            throw new FormatException("Hex digit count is not even after removing decorations.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOddAfterDecorations);
 
         var decoded = new byte[digitCount / 2];
         return !DecodeHexPairs(scratch.Slice(0, digitCount), decoded)
-            ? throw new FormatException("Input contains non-hexadecimal characters.")
+            ? throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharacters)
             : decoded;
     }
 

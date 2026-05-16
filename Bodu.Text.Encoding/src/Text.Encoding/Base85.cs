@@ -93,7 +93,7 @@ public static partial class Base85
         if (variant == Base85Variant.Z85)
         {
             return (source.Length & 3) != 0
-                ? throw new ArgumentException("Z85 input length must be a multiple of four bytes.", nameof(source))
+                ? throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_Z85InputMultipleOfFour, nameof(source))
                 : (source.Length / 4) * 5;
         }
 
@@ -283,7 +283,7 @@ public static partial class Base85
     private static void EnsureValidVariant(Base85Variant variant)
     {
         if (variant is not (Base85Variant.Ascii85 or Base85Variant.Z85))
-            throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base85 variant.");
+            throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant);
     }
 
     /// <summary>
@@ -297,7 +297,7 @@ public static partial class Base85
         {
             Base85Variant.Ascii85 => Ascii85Alphabet,
             Base85Variant.Z85 => Z85Alphabet,
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base85 variant."),
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant),
         };
 
     /// <summary>
@@ -311,7 +311,7 @@ public static partial class Base85
         {
             Base85Variant.Ascii85 => s_ascii85Lookup,
             Base85Variant.Z85 => s_z85Lookup,
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base85 variant."),
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base85Variant),
         };
 
     /// <summary>

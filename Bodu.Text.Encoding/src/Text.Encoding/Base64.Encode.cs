@@ -72,7 +72,7 @@ public static partial class Base64
 
         var required = GetEncodedLength(bytes.Length, variant, options);
         if (destination.Length < required)
-            throw new ArgumentException("Destination is too small to receive the encoded characters.", nameof(destination));
+            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded, nameof(destination));
 
         return bytes.IsEmpty ? 0 : EncodeIntoSpan(bytes, destination, variant, options);
     }
@@ -190,7 +190,7 @@ public static partial class Base64
         if (destination.Length >= bclRequired)
         {
             if (!Convert.TryToBase64Chars(bytes, destination, out var rawWritten, bclOpts))
-                throw new InvalidOperationException("Unexpected failure while encoding Base64 characters.");
+                throw new InvalidOperationException(EncodingResourceStrings.Op_Invalid_Base64EncodeUnexpectedFailure);
 
             ApplyVariantTransforms(destination, ref rawWritten, variant, emitPadding);
             return rawWritten;
@@ -201,7 +201,7 @@ public static partial class Base64
         {
             Span<char> scratchSpan = scratch.AsSpan(0, bclRequired);
             if (!Convert.TryToBase64Chars(bytes, scratchSpan, out var rawWritten, bclOpts))
-                throw new InvalidOperationException("Unexpected failure while encoding Base64 characters.");
+                throw new InvalidOperationException(EncodingResourceStrings.Op_Invalid_Base64EncodeUnexpectedFailure);
 
             ApplyVariantTransforms(scratchSpan, ref rawWritten, variant, emitPadding);
             scratchSpan[..rawWritten].CopyTo(destination);

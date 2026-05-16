@@ -62,7 +62,7 @@ public static partial class Base32
     public static int GetDecodedLength(ReadOnlySpan<char> source, Base32Variant variant = Base32Variant.Standard, BaseFormatStyles styles = BaseFormatStyles.None)
     {
         return !TryCountSymbols(source, variant, styles, out var symbolCount)
-            ? throw new FormatException("Input contains characters outside the Base32 variant alphabet.")
+            ? throw new FormatException(EncodingResourceStrings.Format_Invalid_Base32VariantAlphabet)
             : (symbolCount * 5) / 8;
     }
 
@@ -257,7 +257,7 @@ public static partial class Base32
             Base32Variant.HexExtended => (HexExtendedAlphabet, s_hexExtendedLookup),
             Base32Variant.Crockford => (CrockfordAlphabet, s_crockfordLookup),
             Base32Variant.ZBase32 => (ZBase32Alphabet, s_zBase32Lookup),
-            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, "Unknown Base32 variant."),
+            _ => throw new ArgumentOutOfRangeException(nameof(variant), variant, EncodingResourceStrings.Arg_OutOfRange_Base32Variant),
         };
 
     /// <summary>

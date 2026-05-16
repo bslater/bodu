@@ -20,7 +20,7 @@ public static partial class Base16
     {
         Span<byte> bytes = stackalloc byte[16];
         return !TryDecode(source, bytes, out var written, styles) || written != 16
-            ? throw new FormatException("Input does not decode to a 16-byte GUID.")
+            ? throw new FormatException(EncodingResourceStrings.Format_Invalid_GuidNotSixteenBytes)
             : new Guid(bytes);
     }
     /// <summary>

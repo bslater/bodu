@@ -46,11 +46,11 @@ public static partial class Base16
             return Array.Empty<byte>();
 
         if ((utf8Source.Length & 1) != 0)
-            throw new FormatException("Hex digit count is not even.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_HexDigitCountOdd);
 
         var result = new byte[utf8Source.Length / 2];
         return !DecodeHexPairsFromUtf8(utf8Source, result)
-            ? throw new FormatException("Input contains non-hexadecimal characters.")
+            ? throw new FormatException(EncodingResourceStrings.Format_Invalid_HexCharacters)
             : result;
     }
 

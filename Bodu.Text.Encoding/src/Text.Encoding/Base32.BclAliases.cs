@@ -46,7 +46,7 @@ public static partial class Base32
         var destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
         OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out var bytesWritten, Base32Variant.Standard, BaseFormatStyles.None, isFinalBlock: true);
         if (status != OperationStatus.Done)
-            throw new FormatException("Input is not valid Standard Base32.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_StandardBase32);
 
         if (bytesWritten == destination.Length)
             return destination;

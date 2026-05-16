@@ -49,14 +49,14 @@ public static class Base58Check
     {
         var decoded = Base58.Decode(source, variant, styles);
         if (decoded.Length < ChecksumLength)
-            throw new FormatException("Base58Check input is shorter than the four-byte checksum suffix.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_Base58CheckShorterThanChecksum);
 
         var payloadLength = decoded.Length - ChecksumLength;
         Span<byte> expectedChecksum = stackalloc byte[ChecksumLength];
         ComputeChecksum(decoded.AsSpan(0, payloadLength), expectedChecksum);
 
         if (!decoded.AsSpan(payloadLength, ChecksumLength).SequenceEqual(expectedChecksum))
-            throw new FormatException("Base58Check checksum verification failed.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_Base58CheckChecksumFailed);
 
         var payload = new byte[payloadLength];
         Buffer.BlockCopy(decoded, 0, payload, 0, payloadLength);
