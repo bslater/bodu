@@ -1,5 +1,5 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="ThrowHelper.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="TextThrowHelper.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
@@ -9,30 +9,21 @@ using System.Diagnostics.CodeAnalysis;
 namespace Bodu.Text.Formats;
 
 /// <summary>
-/// Provides centralized guard clause and terminal-throw helpers for the Bencode format implementation. Pairs with
-/// the catalogue in <see cref="Bodu.ThrowHelper" /> by re-exporting the few generic guards that the format actually
-/// uses and adding format-specific helpers backed by <see cref="FormatsResourceStrings" />.
+/// Provides <c>ThrowIf</c> guard helpers for stream capability checks that are not covered by
+/// <see cref="Bodu.ThrowHelper" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in
-/// <c>Bodu.Core</c>:
+/// All format-specific, single-use exceptions are thrown inline at their call sites. Only guards that are reused
+/// across multiple call sites and that test a condition (rather than unconditionally throwing) belong here.
 /// </para>
-/// <list type="bullet">
-/// <item>
-/// <description>
-/// <c>ThrowHelper.cs</c> — root declaration with assembly-level suppression attributes covering the compact
-/// guard/throw clauses used throughout the helpers.
-/// </description>
-/// </item>
-/// <item>
-/// <description>
-/// <c>ThrowHelper.CallerExpression.cs</c> — implementation file containing the cached
-/// <see cref="System.Text.CompositeFormat" /> state, the forwarding wrapper for
-/// <see cref="Bodu.ThrowHelper.ThrowIfNull{T}(T, string)" />, and every format-specific terminal throw.
-/// </description>
-/// </item>
-/// </list>
+/// <para>
+/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in
+/// <c>Bodu.Core</c>: <c>TextThrowHelper.cs</c> holds the root declaration and
+/// <c>TextThrowHelper.CallerExpression.cs</c> holds the implementations, which use
+/// <see cref="System.Runtime.CompilerServices.CallerArgumentExpressionAttribute" /> to capture the parameter name
+/// automatically.
+/// </para>
 /// <para>
 /// The class is <c>internal</c> because the helpers are validation primitives consumed only by the project's
 /// own production code and its <c>InternalsVisibleTo</c>-paired test assembly.
@@ -47,6 +38,6 @@ namespace Bodu.Text.Formats;
     "Roslynator",
     "RCS1001:Add braces (when expression spans over multiple lines)",
     Justification = "ThrowHelper methods intentionally use compact guard/throw clauses; adding braces adds noise without improving control-flow clarity.")]
-internal static partial class ThrowHelper
+internal static partial class TextThrowHelper
 {
 }

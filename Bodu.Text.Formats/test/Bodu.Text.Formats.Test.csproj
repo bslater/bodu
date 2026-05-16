@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Bodu.Test\src\Bodu.Test.csproj" />
+    <ProjectReference Include="..\..\Bodu.Text.Encoding\src\Bodu.Text.Encoding.csproj" />
     <ProjectReference Include="..\src\Bodu.Text.Formats.csproj" />
   </ItemGroup>
 

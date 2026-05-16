@@ -13,7 +13,6 @@ public sealed class BencodedStringComparer
     : IComparer<BencodedString>
     , IEqualityComparer<BencodedString>
 {
-
     private BencodedStringComparer()
     {
     }
@@ -24,19 +23,8 @@ public sealed class BencodedStringComparer
     public static BencodedStringComparer Ordinal { get; } = new();
 
     /// <inheritdoc />
-    public int Compare(BencodedString? x, BencodedString? y)
-    {
-        if (ReferenceEquals(x, y))
-            return 0;
-
-        if (x is null)
-            return -1;
-
-        if (y is null)
-            return 1;
-
-        return CompareBytes(x.Bytes.Span, y.Bytes.Span);
-    }
+    public int Compare(BencodedString? x, BencodedString? y) =>
+        ReferenceEquals(x, y) ? 0 : x is null ? -1 : y is null ? 1 : CompareBytes(x.Bytes.Span, y.Bytes.Span);
 
     /// <inheritdoc />
     public bool Equals(BencodedString? x, BencodedString? y) =>
@@ -49,7 +37,7 @@ public sealed class BencodedStringComparer
 
         HashCode hashCode = new();
 
-        foreach (byte value in obj.Bytes.Span)
+        foreach (var value in obj.Bytes.Span)
         {
             hashCode.Add(value);
         }
@@ -59,11 +47,11 @@ public sealed class BencodedStringComparer
 
     internal static int CompareBytes(ReadOnlySpan<byte> x, ReadOnlySpan<byte> y)
     {
-        int length = Math.Min(x.Length, y.Length);
+        var length = Math.Min(x.Length, y.Length);
 
-        for (int index = 0; index < length; index++)
+        for (var index = 0; index < length; index++)
         {
-            int result = x[index].CompareTo(y[index]);
+            var result = x[index].CompareTo(y[index]);
 
             if (result != 0)
                 return result;
@@ -71,5 +59,4 @@ public sealed class BencodedStringComparer
 
         return x.Length.CompareTo(y.Length);
     }
-
 }

@@ -15,7 +15,6 @@ public sealed class BencodedInteger
     : BencodedValue
     , IEquatable<BencodedInteger>
 {
-
     /// <summary>
     /// Initializes a new instance of the <see cref="BencodedInteger" /> class.
     /// </summary>
@@ -52,5 +51,4 @@ public sealed class BencodedInteger
     /// <inheritdoc />
     public override string ToString() =>
         Value.ToString(CultureInfo.InvariantCulture);
-
 }
