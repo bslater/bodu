@@ -265,7 +265,7 @@ public sealed class Deque<T>
         if (Count == Capacity)
         {
             if (!AllowGrow)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CapacityExhausted);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CapacityExhausted);
 
             Grow(Count + 1);
         }
@@ -285,7 +285,7 @@ public sealed class Deque<T>
         if (Count == Capacity)
         {
             if (!AllowGrow)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CapacityExhausted);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CapacityExhausted);
 
             Grow(Count + 1);
         }
@@ -355,7 +355,7 @@ public sealed class Deque<T>
     public T RemoveFirst()
     {
         if (Count == 0)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_EmptySequence);
 
         return RemoveHead();
     }
@@ -368,7 +368,7 @@ public sealed class Deque<T>
     public T RemoveLast()
     {
         if (Count == 0)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_EmptySequence);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_EmptySequence);
 
         return RemoveTail();
     }
@@ -415,7 +415,7 @@ public sealed class Deque<T>
     public T PeekFirst()
     {
         if (Count == 0)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
 
         return PeekHead();
     }
@@ -428,7 +428,7 @@ public sealed class Deque<T>
     public T PeekLast()
     {
         if (Count == 0)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
 
         return PeekTail();
     }

@@ -40,7 +40,7 @@ public static partial class DateTimeExtensions
 
         if (definition == CalendarQuarterDefinition.Custom)
             throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
+                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
         (var year, var quarter) = GetQuarterAndYearFromDate(definition, referenceDate: dateTime);
         return dateTime.Date.Ticks == ComputeQuarterEndTicks(year, quarter, GetQuarterDefinition(definition));

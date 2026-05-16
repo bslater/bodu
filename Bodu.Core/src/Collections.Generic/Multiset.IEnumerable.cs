@@ -76,7 +76,7 @@ public sealed partial class Multiset<T>
         /// </exception>
         public T Current =>
             _beforeFirst
-                ? throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement)
+                ? throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement)
                 : _current;
 
         /// <inheritdoc />
@@ -96,7 +96,7 @@ public sealed partial class Multiset<T>
         public bool MoveNext()
         {
             if (_version != _multiset._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             if (_remaining > 0)
             {
@@ -126,7 +126,7 @@ public sealed partial class Multiset<T>
         public void Reset()
         {
             if (_version != _multiset._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             _inner.Dispose();
             _inner = _multiset._items.GetEnumerator();

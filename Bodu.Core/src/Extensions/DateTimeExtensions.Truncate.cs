@@ -63,7 +63,7 @@ public static partial class DateTimeExtensions
             default:
                 throw new ArgumentOutOfRangeException(
                     nameof(resolution),
-                    string.Format(ResourceStrings.Arg_OutOfRangeException_EnumValue, resolution, nameof(DateTimeResolution)));
+                    string.Format(ResourceStrings.Arg_OutOfRange_EnumValue, resolution, nameof(DateTimeResolution)));
         }
     }
 }

@@ -288,7 +288,7 @@ public sealed partial class Multiset<T>
         foreach (T key in _items.Keys)
         {
             if (version != _version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             yield return key;
         }
@@ -312,7 +312,7 @@ public sealed partial class Multiset<T>
         foreach (KeyValuePair<T, int> pair in _items)
         {
             if (version != _version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             yield return pair;
         }

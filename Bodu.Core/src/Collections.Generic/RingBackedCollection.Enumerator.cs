@@ -45,7 +45,7 @@ public abstract partial class RingBackedCollection<T>
         /// <inheritdoc />
         public T Current =>
             _currentIndex == -1
-                ? throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement)
+                ? throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement)
                 : _current;
 
         /// <inheritdoc />
@@ -61,7 +61,7 @@ public abstract partial class RingBackedCollection<T>
         public bool MoveNext()
         {
             if (_version != _collection._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             if (_iteratedCount >= _collection._count)
             {
@@ -81,7 +81,7 @@ public abstract partial class RingBackedCollection<T>
         public void Reset()
         {
             if (_version != _collection._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             _currentIndex = -1;
             _current = default!;

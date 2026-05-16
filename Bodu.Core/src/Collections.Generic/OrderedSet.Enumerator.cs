@@ -71,7 +71,7 @@ public sealed partial class OrderedSet<T>
         public bool MoveNext()
         {
             if (_version != _storage._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             if (_index >= _storage._count)
                 return false;
@@ -85,7 +85,7 @@ public sealed partial class OrderedSet<T>
         public void Reset()
         {
             if (_version != _storage._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             _index = 0;
             _current = default!;

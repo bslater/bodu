@@ -75,7 +75,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         public KeyValuePair<TKey, IReadOnlyList<TValue>> Current =>
             _hasCurrent
                 ? _current
-                : throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement);
+                : throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement);
 
         /// <inheritdoc />
         object IEnumerator.Current => Current;
@@ -95,7 +95,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         public bool MoveNext()
         {
             if (_version != _dictionary._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             if (!_inner.MoveNext())
             {
@@ -120,7 +120,7 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
         public void Reset()
         {
             if (_version != _dictionary._version)
-                throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+                throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
 
             _inner.Dispose();
             _inner = _dictionary._map.GetEnumerator();

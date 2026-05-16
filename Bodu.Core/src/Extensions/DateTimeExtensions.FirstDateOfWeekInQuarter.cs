@@ -55,7 +55,7 @@ public static partial class DateTimeExtensions
 
         if (definition == CalendarQuarterDefinition.Custom)
             throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
+                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
         (var year, var quarter) = DateTimeExtensions.GetQuarterAndYearFromDate(definition, dateTime);
         return DateTimeExtensions.GetFirstDateOfWeekInQuarterInternal(
@@ -146,7 +146,7 @@ public static partial class DateTimeExtensions
 
         if (definition == CalendarQuarterDefinition.Custom)
             throw new InvalidOperationException(
-                string.Format(ResourceStrings.Arg_Required_ProviderInterface, nameof(IQuarterDefinitionProvider)));
+                string.Format(ResourceStrings.Arg_Invalid_ProviderInterface, nameof(IQuarterDefinitionProvider)));
 
         return DateTimeExtensions.GetFirstDateOfWeekInQuarterInternal(
             year,
