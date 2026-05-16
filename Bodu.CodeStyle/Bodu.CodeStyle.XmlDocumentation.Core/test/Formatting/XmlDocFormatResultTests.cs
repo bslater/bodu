@@ -49,7 +49,7 @@ public sealed class XmlDocFormatResultTests
     public void Ctor_ShouldRoundTripProperties()
     {
         var changes = ImmutableArray.Create(
-            new XmlDocFormattingChange(XmlDocFormatRangeKind.BlockLayout, "Test change."));
+            new XmlDocFormattingChange(tagName: null, XmlDocFormatRangeKind.BlockLayout, "Test change."));
 
         var result = new XmlDocFormatResult(changed: true, formattedText: "/// X\r\n", changes: changes);
 

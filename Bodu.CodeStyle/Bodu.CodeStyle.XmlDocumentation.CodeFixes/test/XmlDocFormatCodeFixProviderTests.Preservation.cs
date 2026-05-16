@@ -49,7 +49,7 @@ public partial class XmlDocFormatCodeFixProviderTests
             };
 
         test.ExpectedDiagnostics.Add(
-            new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocSummary)
                 .WithSpan(3, 5, 4, 1)
                 );
 
@@ -93,11 +93,11 @@ public partial class XmlDocFormatCodeFixProviderTests
             };
 
         test.ExpectedDiagnostics.Add(
-            new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocSummary)
                 .WithSpan(3, 5, 4, 1)
                 );
         test.ExpectedDiagnostics.Add(
-            new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocSummary)
                 .WithSpan(5, 5, 6, 1)
                 );
 

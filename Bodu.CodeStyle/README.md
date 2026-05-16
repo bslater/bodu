@@ -30,19 +30,46 @@ organised, so suppressing or re-targeting a family in `.editorconfig` stays stra
 
 ### BODU1xxx — XML documentation
 
+Each documented XML tag has its own diagnostic ID so individual tags can be silenced or re-targeted in
+`.editorconfig` independently. All BODU1xxx descriptors share the `Documentation` category, so a single
+`dotnet_analyzer_diagnostic.category-Documentation.severity = …` entry silences or re-targets the entire
+XML-doc family in one line.
+
+| ID | Tag | Family |
+|---|---|---|
+| `BODU1001` | `<summary>` | block (forced multiline) |
+| `BODU1002` | `<remarks>` | block |
+| `BODU1003` | `<para>` | block |
+| `BODU1004` | `<example>` | block |
+| `BODU1005` | `<code>` | block |
+| `BODU1006` | `<list>` | block |
+| `BODU1007` | `<item>` | block |
+| `BODU1008` | `<description>` | block |
+| `BODU1009` | `<term>` | block |
+| `BODU1010` | `<param>` | single-line-when-short |
+| `BODU1011` | `<typeparam>` | single-line-when-short |
+| `BODU1012` | `<returns>` | single-line-when-short |
+| `BODU1013` | `<exception>` | single-line-when-short |
+| `BODU1014` | `<value>` | single-line-when-short |
+| `BODU1015` | `<c>` | inline atomic |
+| `BODU1016` | `<see>` | inline atomic |
+| `BODU1017` | `<paramref>` | inline atomic |
+| `BODU1018` | `<typeparamref>` | inline atomic |
+| `BODU1040` | _(none — cross-cutting)_ | prose / prefix / indent changes outside any tag |
+
+Reserved future ranges within BODU1xxx:
+
 | Range | Purpose |
 |---|---|
-| `BODU1001`           | Catch-all XML documentation formatting differs from policy (current). |
-| `BODU1010` – `BODU1039` | Reserved for per-tag formatting diagnostics (one ID per documented tag — `<summary>`, `<remarks>`, `<param>`, `<see>`, etc.). |
-| `BODU1040` – `BODU1099` | Reserved for cross-cutting formatting diagnostics (prefix, indent, line length, blank lines). |
+| `BODU1019` – `BODU1039` | Reserved for additional documented tags (e.g. `<seealso>`, `<note>`). |
+| `BODU1041` – `BODU1099` | Reserved for granular cross-cutting splits (separate IDs for prefix vs indent vs line length). |
 | `BODU1100` – `BODU1199` | Required tags (e.g. missing `<summary>` on a public method). |
 | `BODU1200` – `BODU1299` | Tag / element ordering inside doc comments. |
 | `BODU1300` – `BODU1399` | `cref` / `paramref` / `typeparamref` reference validity. |
 | `BODU1400` – `BODU1499` | Content quality (empty tags, redundant prose). |
 
-## BODU1001
+## Formatting policy
 
-The analyzer reports `BODU1001` when an XML documentation comment's layout differs from the active policy.
 Defaults match the Bodu codebase conventions:
 
 - `<summary>`, `<remarks>`, `<para>`, `<example>`, and `<list>` are block tags that emit on their own lines.
@@ -61,7 +88,9 @@ The analyzer reads policy from three layers, applied in order:
    JSON shape mirrors `XmlDocFormatOptions` (`maxLineLength`, `documentationPrefix`, `blockTags`, `inlineTags`,
    `forceMultilineTags`, `singleLineWhenShort`, `neverSplitTagContent`, `tagPolicies`).
 3. **`.editorconfig` scalar overrides** — keys such as `bodu_xmldoc_max_line_length`, plus the standard
-   `dotnet_diagnostic.BODU1001.severity` and `end_of_line`.
+   `dotnet_diagnostic.BODU####.severity` per individual rule and `end_of_line`. To silence or re-target the
+   whole XML-doc family at once, use
+   `dotnet_analyzer_diagnostic.category-Documentation.severity = …` instead of listing each rule.
 
 ## Building
 

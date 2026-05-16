@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Threading.Tasks;
 using Bodu.CodeStyle.TestData;
@@ -186,12 +187,28 @@ public sealed class CodeFixKatTests
             }
 
             FileLinePositionSpan span = trivia.SyntaxTree!.GetLineSpan(trivia.FullSpan);
-            yield return new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
-                .WithSpan(
-                    span.StartLinePosition.Line + 1,
-                    span.StartLinePosition.Character + 1,
-                    span.EndLinePosition.Line + 1,
-                    span.EndLinePosition.Character + 1);
+            ImmutableArray<XmlDocFormattingChange> changes = result.Changes;
+            if (changes.IsDefaultOrEmpty)
+            {
+                yield return new DiagnosticResult(DiagnosticDescriptors.XmlDocCrossCutting)
+                    .WithSpan(
+                        span.StartLinePosition.Line + 1,
+                        span.StartLinePosition.Character + 1,
+                        span.EndLinePosition.Line + 1,
+                        span.EndLinePosition.Character + 1);
+                continue;
+            }
+
+            foreach (XmlDocFormattingChange change in changes)
+            {
+                DiagnosticDescriptor descriptor = DiagnosticDescriptors.ForTag(change.TagName);
+                yield return new DiagnosticResult(descriptor)
+                    .WithSpan(
+                        span.StartLinePosition.Line + 1,
+                        span.StartLinePosition.Character + 1,
+                        span.EndLinePosition.Line + 1,
+                        span.EndLinePosition.Character + 1);
+            }
         }
     }
 

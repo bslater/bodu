@@ -19,8 +19,9 @@ using Microsoft.CodeAnalysis.Diagnostics;
 namespace Bodu.CodeStyle.XmlDocumentation.Analyzers;
 
 /// <summary>
-/// Reports <c>BODU1001</c> when an XML documentation comment's formatting differs from the active project
-/// policy.
+/// Reports one of the <c>BODU1001</c>–<c>BODU1040</c> diagnostics when an XML documentation comment's
+/// formatting differs from the active project policy. Each per-tag rule has its own diagnostic ID so that
+/// individual tags can be silenced or re-targeted in <c>.editorconfig</c> independently.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
 public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
@@ -33,7 +34,7 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
 
     /// <inheritdoc />
     public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-        ImmutableArray.Create(DiagnosticDescriptors.XmlDocumentationFormatting);
+        DiagnosticDescriptors.All;
 
     /// <inheritdoc />
     public override void Initialize(AnalysisContext context)
@@ -93,12 +94,23 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
             // Use FullSpan to include the leading "///" characters in the diagnostic location so that the
             // editor squiggle covers the full doc trivia text rather than just the structured XML payload.
             var location = Location.Create(treeContext.Tree, trivia.FullSpan);
-            var diagnostic = Diagnostic.Create(
-                DiagnosticDescriptors.XmlDocumentationFormatting,
-                location,
-                properties);
 
-            treeContext.ReportDiagnostic(diagnostic);
+            // The attributor deduplicates per-tag changes; emit one diagnostic per attributed change so each
+            // tag and the cross-cutting bucket can be silenced independently in .editorconfig.
+            ImmutableArray<XmlDocFormattingChange> changes = result.Changes;
+            if (changes.IsDefaultOrEmpty)
+            {
+                // Defensive: the formatter reported a change but the attributor produced no records — emit
+                // the cross-cutting bucket so the diagnostic surfaces in the editor.
+                treeContext.ReportDiagnostic(Diagnostic.Create(DiagnosticDescriptors.XmlDocCrossCutting, location, properties));
+                continue;
+            }
+
+            foreach (XmlDocFormattingChange change in changes)
+            {
+                DiagnosticDescriptor descriptor = DiagnosticDescriptors.ForTag(change.TagName);
+                treeContext.ReportDiagnostic(Diagnostic.Create(descriptor, location, properties));
+            }
         }
     }
 

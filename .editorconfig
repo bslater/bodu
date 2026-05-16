@@ -298,21 +298,35 @@ file_header_template = // ------------------------------------------------------
 #
 # Diagnostic IDs follow the BODU#### scheme — the thousands digit denotes the analyzer family:
 #   BODU0xxx  reserved / analyzer infrastructure
-#   BODU1xxx  XML documentation       (1001 formatting, 1100 required tags, 1200 ordering, 1300 cref, 1400 content)
+#   BODU1xxx  XML documentation       (one ID per tag; see table below + Bodu.CodeStyle/README.md#bodu1xxx-xml-documentation)
 #   BODU2xxx  member ordering         (deferred)
 #   BODU3xxx  naming conventions      (deferred)
 #   BODU4xxx  performance             (deferred)
 #   BODU5xxx  security                (deferred)
 #   BODU6xxx  design / API shape      (deferred)
 #   BODU9xxx  whitespace / brace      (deferred)
-# See Bodu.CodeStyle/README.md#diagnostic-ids for the canonical range table.
+#
+# BODU1xxx — XML documentation IDs:
+#   BODU1001 <summary>     BODU1002 <remarks>     BODU1003 <para>          BODU1004 <example>
+#   BODU1005 <code>        BODU1006 <list>        BODU1007 <item>          BODU1008 <description>
+#   BODU1009 <term>        BODU1010 <param>       BODU1011 <typeparam>     BODU1012 <returns>
+#   BODU1013 <exception>   BODU1014 <value>       BODU1015 <c>             BODU1016 <see>
+#   BODU1017 <paramref>    BODU1018 <typeparamref>
+#   BODU1040 cross-cutting (prose/prefix/indent outside any tag)
+#
+# All BODU1xxx descriptors share the `Documentation` category, so a single category-level severity entry
+# silences or re-targets the entire XML-doc family in one line — preferred over enumerating each rule.
 #
 # The full XML-doc policy lives in /bodu.xmldocstyle.json (loaded via <AdditionalFiles> from bld/Bodu.props).
 # The scalar keys below win over the JSON values for any file that matches the pattern, so they're left
 # commented out as documentation. Uncomment + tweak per-folder when you need a narrower override.
 #
 # [*.cs]
-# dotnet_diagnostic.BODU1001.severity   = warning           # warning | suggestion | none | error
+# # Re-target the whole XML-doc family at once (preferred):
+# dotnet_analyzer_diagnostic.category-Documentation.severity = warning      # warning | suggestion | none | error
+# # ...or pick out individual rules:
+# dotnet_diagnostic.BODU1001.severity   = warning                           # <summary> only
+# dotnet_diagnostic.BODU1010.severity   = suggestion                        # <param>  only
 # bodu_xmldoc_max_line_length           = 120
 # bodu_xmldoc_force_summary_multiline   = true
 # bodu_xmldoc_force_para_multiline      = true
@@ -330,8 +344,9 @@ dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1601.severity = none
 dotnet_diagnostic.CS1591.severity = none
 # The Bodu XML documentation formatter is intended for production-API doc comments, not the
-# test methods' `Verifies that ...` summaries — keep the test surface free of formatter noise.
-dotnet_diagnostic.BODU1001.severity = none
+# test methods' `Verifies that ...` summaries — silence the whole BODU1xxx family on test files
+# in one line via the shared `Documentation` category.
+dotnet_analyzer_diagnostic.category-Documentation.severity = none
 # Inline array literals in test data providers are intentional — they keep expected values
 # co-located with the inputs they describe. CA1861 would scatter them into static fields
 # for no practical benefit since data providers are called once by the test runner.

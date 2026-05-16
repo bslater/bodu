@@ -57,7 +57,7 @@ public partial class XmlDocFormatAnalyzerTests
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
-            new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocSummary)
                 .WithSpan(3, 5, 4, 1)
                 );
 

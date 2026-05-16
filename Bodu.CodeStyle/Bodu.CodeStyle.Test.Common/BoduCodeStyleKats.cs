@@ -255,13 +255,26 @@ public sealed record CodeStyleKat(
 /// </summary>
 public static class CodeStyleKatConstants
 {
-    public const string XmlDocumentationDiagnosticId = "BODU1001";
+    /// <summary>Diagnostic id surfaced when a <c>&lt;summary&gt;</c> tag's formatting differs from policy.</summary>
+    public const string XmlDocSummaryDiagnosticId = "BODU1001";
+
+    /// <summary>Diagnostic id surfaced when an inline <c>&lt;c&gt;</c> tag's formatting differs from policy.</summary>
+    public const string XmlDocInlineCodeDiagnosticId = "BODU1015";
+
+    /// <summary>Diagnostic id surfaced for cross-cutting changes outside any tag scope.</summary>
+    public const string XmlDocCrossCuttingDiagnosticId = "BODU1040";
+
+    /// <summary>
+    /// Legacy alias used by pre-rename fixtures. Equal to <see cref="XmlDocSummaryDiagnosticId" /> because the
+    /// renamed <c>BODU1001</c> identifier now denotes the per-tag <c>&lt;summary&gt;</c> rule.
+    /// </summary>
+    public const string XmlDocumentationDiagnosticId = XmlDocSummaryDiagnosticId;
 
     public const string DefaultAnalyzerConfig = """
         root = true
 
         [*.cs]
-        dotnet_diagnostic.BODU1001.severity = warning
+        dotnet_analyzer_diagnostic.category-Documentation.severity = warning
 
         bodu_xmldoc_max_line_length = 120
         bodu_xmldoc_force_summary_multiline = true
@@ -644,7 +657,7 @@ public static class BoduCodeStyleKats
 
         CodeStyleKat.Analyze(
             id: "XMLANL-0003",
-            name: "CodeRush-broken c tag reports diagnostic",
+            name: "CodeRush-broken c tag reports inline-code diagnostic",
             source:
             """
             namespace Bodu.Text.Formats;
@@ -662,7 +675,7 @@ public static class BoduCodeStyleKats
             """,
             diagnostics:
             [
-                new CodeStyleKatDiagnostic(CodeStyleKatConstants.XmlDocumentationDiagnosticId, Line: 5, Column: 5),
+                new CodeStyleKatDiagnostic(CodeStyleKatConstants.XmlDocInlineCodeDiagnosticId, Line: 5, Column: 5),
             ]),
 
         CodeStyleKat.Analyze(
@@ -852,7 +865,7 @@ public static class BoduCodeStyleKats
             root = true
 
             [*.cs]
-            dotnet_diagnostic.BODU1001.severity = warning
+            dotnet_analyzer_diagnostic.category-Documentation.severity = warning
             bodu_xmldoc_max_line_length = 72
             """),
 

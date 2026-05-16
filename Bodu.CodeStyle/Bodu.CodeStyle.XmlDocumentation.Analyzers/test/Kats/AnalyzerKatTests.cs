@@ -88,12 +88,18 @@ public sealed class AnalyzerKatTests
     public static string GetDisplayName(MethodInfo methodInfo, object?[] data) =>
         BoduCodeStyleKats.GetDisplayName(methodInfo, data!);
 
-    private static DiagnosticDescriptor ResolveDescriptor(string id) =>
-        id switch
+    private static DiagnosticDescriptor ResolveDescriptor(string id)
+    {
+        foreach (DiagnosticDescriptor descriptor in DiagnosticDescriptors.All)
         {
-            CodeStyleKatConstants.XmlDocumentationDiagnosticId => DiagnosticDescriptors.XmlDocumentationFormatting,
-            _ => null!,
-        };
+            if (string.Equals(descriptor.Id, id, StringComparison.Ordinal))
+            {
+                return descriptor;
+            }
+        }
+
+        return null!;
+    }
 
     private static string NormalizeToCrlf(string text)
     {

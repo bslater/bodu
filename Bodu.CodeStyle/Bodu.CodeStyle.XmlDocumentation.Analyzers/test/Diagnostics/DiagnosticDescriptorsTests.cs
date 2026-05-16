@@ -14,12 +14,12 @@ namespace Bodu.CodeStyle.XmlDocumentation.Analyzers.Test.Diagnostics;
 public sealed class DiagnosticDescriptorsTests
 {
     /// <summary>
-    /// Verifies that the BODU1001 descriptor exposes the documented identifier and metadata.
+    /// Verifies that the BODU1001 (summary) descriptor exposes the documented identifier and metadata.
     /// </summary>
     [TestMethod]
-    public void XmlDocumentationFormatting_ShouldExposeDocumentedMetadata()
+    public void XmlDocSummary_ShouldExposeDocumentedMetadata()
     {
-        DiagnosticDescriptor descriptor = DiagnosticDescriptors.XmlDocumentationFormatting;
+        DiagnosticDescriptor descriptor = DiagnosticDescriptors.XmlDocSummary;
 
         Assert.AreEqual("BODU1001", descriptor.Id);
         Assert.AreEqual("Documentation", descriptor.Category);
@@ -28,22 +28,47 @@ public sealed class DiagnosticDescriptorsTests
     }
 
     /// <summary>
-    /// Verifies that the BODU1001 message format mentions the project policy.
+    /// Verifies that every tag-attributed descriptor's message format mentions the project policy.
     /// </summary>
     [TestMethod]
-    public void XmlDocumentationFormatting_MessageFormatShouldMentionProjectPolicy()
+    public void All_MessageFormatShouldMentionProjectPolicy()
     {
-        DiagnosticDescriptor descriptor = DiagnosticDescriptors.XmlDocumentationFormatting;
-
-        StringAssert.Contains(descriptor.MessageFormat.ToString(System.Globalization.CultureInfo.InvariantCulture), "project policy");
+        foreach (DiagnosticDescriptor descriptor in DiagnosticDescriptors.All)
+        {
+            StringAssert.Contains(descriptor.MessageFormat.ToString(System.Globalization.CultureInfo.InvariantCulture), "project policy");
+        }
     }
 
     /// <summary>
-    /// Verifies that the BODU1001 identifier constant matches the descriptor's identifier.
+    /// Verifies that the BODU1001 identifier constant matches the summary descriptor's identifier.
     /// </summary>
     [TestMethod]
     public void DiagnosticIds_ShouldMatchDescriptor()
     {
-        Assert.AreEqual(DiagnosticIds.XmlDocumentationFormatting, DiagnosticDescriptors.XmlDocumentationFormatting.Id);
+        Assert.AreEqual(DiagnosticIds.XmlDocSummary, DiagnosticDescriptors.XmlDocSummary.Id);
+    }
+
+    /// <summary>
+    /// Verifies that <see cref="DiagnosticDescriptors.ForTag(string)" /> returns the matching per-tag
+    /// descriptor for every known tag name and the cross-cutting descriptor for unknown / null inputs.
+    /// </summary>
+    [TestMethod]
+    public void ForTag_ShouldReturnMatchingDescriptor()
+    {
+        Assert.AreSame(DiagnosticDescriptors.XmlDocSummary, DiagnosticDescriptors.ForTag("summary"));
+        Assert.AreSame(DiagnosticDescriptors.XmlDocSee, DiagnosticDescriptors.ForTag("see"));
+        Assert.AreSame(DiagnosticDescriptors.XmlDocParamRef, DiagnosticDescriptors.ForTag("paramref"));
+        Assert.AreSame(DiagnosticDescriptors.XmlDocCrossCutting, DiagnosticDescriptors.ForTag(tagName: null));
+        Assert.AreSame(DiagnosticDescriptors.XmlDocCrossCutting, DiagnosticDescriptors.ForTag("unknownTag"));
+    }
+
+    /// <summary>
+    /// Verifies that the <see cref="DiagnosticDescriptors.All" /> collection includes one descriptor per
+    /// supported diagnostic ID.
+    /// </summary>
+    [TestMethod]
+    public void All_ShouldContainEveryKnownDescriptor()
+    {
+        Assert.AreEqual(19, DiagnosticDescriptors.All.Length);
     }
 }

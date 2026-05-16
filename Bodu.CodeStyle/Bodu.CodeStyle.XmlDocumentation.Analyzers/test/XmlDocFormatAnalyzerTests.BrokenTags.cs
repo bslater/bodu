@@ -32,7 +32,7 @@ public partial class XmlDocFormatAnalyzerTests
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
-            new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocSummary)
                 .WithSpan(3, 5, 5, 1)
                 );
 
@@ -40,11 +40,13 @@ public partial class XmlDocFormatAnalyzerTests
     }
 
     /// <summary>
-    /// Verifies that an inline tag whose attributes are split across <c>///</c> lines is recognised as
-    /// non-canonical and triggers BODU1001.
+    /// Verifies that an inline tag whose attributes are split across <c>///</c> lines triggers the
+    /// inline-tag-specific diagnostic (<c>BODU1016</c> for <c>&lt;see&gt;</c>) and does not falsely
+    /// implicate the enclosing summary, since the change is entirely within the inline tag's attribute
+    /// layout.
     /// </summary>
     [TestMethod]
-    public async Task Analyze_WhenInlineTagAttributesSplitAcrossLines_ShouldReport()
+    public async Task Analyze_WhenInlineTagAttributesSplitAcrossLines_ShouldReportSeeOnly()
     {
         var source =
             "public sealed class Sample\r\n" +
@@ -58,7 +60,7 @@ public partial class XmlDocFormatAnalyzerTests
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
         test.ExpectedDiagnostics.Add(
-            new DiagnosticResult(DiagnosticDescriptors.XmlDocumentationFormatting)
+            new DiagnosticResult(DiagnosticDescriptors.XmlDocSee)
                 .WithSpan(3, 5, 7, 1)
                 );
 
