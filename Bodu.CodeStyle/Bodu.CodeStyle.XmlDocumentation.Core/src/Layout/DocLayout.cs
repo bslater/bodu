@@ -83,17 +83,6 @@ internal static class DocLayout
                 continue;
             }
 
-            if (token.Kind == XmlDocTokenKind.LineBreak)
-            {
-                if (currentRun.Count > 0)
-                {
-                    FlushRun(currentRun, options, contentBudget, output);
-                }
-
-                position++;
-                continue;
-            }
-
             currentRun.Add(token);
             position++;
         }

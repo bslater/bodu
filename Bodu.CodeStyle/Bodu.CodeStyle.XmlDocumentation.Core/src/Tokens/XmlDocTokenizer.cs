@@ -216,6 +216,16 @@ internal static class XmlDocTokenizer
 
         string tagName = content.Substring(nameStart, position - nameStart);
 
+        // Reject tags whose name is split by an unescaped newline immediately after the captured name characters
+        // (e.g. "<sum\nmary>"). Returning false defers the original "<" to the text-run path so the caller
+        // emits the malformed input verbatim and the formatter leaves it unchanged.
+        if (position < content.Length && content[position] == '\n')
+        {
+            end = 0;
+            token = null;
+            return false;
+        }
+
         // Skip attributes until > or />.
         bool selfClosing = false;
         while (position < content.Length)
@@ -258,7 +268,7 @@ internal static class XmlDocTokenizer
             return false;
         }
 
-        string raw = content.Substring(start, position - start);
+        string raw = NormalizeTagWhitespace(content.Substring(start, position - start));
 
         if (isClosing)
         {
@@ -285,7 +295,7 @@ internal static class XmlDocTokenizer
                 if (closeTagEnd >= 0)
                 {
                     int totalEnd = closeTagEnd + 1;
-                    string atomic = content.Substring(start, totalEnd - start);
+                    string atomic = NormalizeTagWhitespace(content.Substring(start, totalEnd - start));
                     end = totalEnd;
                     token = new XmlDocToken(XmlDocTokenKind.InlineXml, atomic, tagName, isSelfClosing: false);
                     return true;
@@ -298,6 +308,78 @@ internal static class XmlDocTokenizer
         end = position;
         token = new XmlDocToken(XmlDocTokenKind.BlockStart, raw, tagName, isSelfClosing: false);
         return true;
+    }
+
+    private static string NormalizeTagWhitespace(string raw)
+    {
+        if (raw.IndexOf('\n') < 0 && raw.IndexOf('\r') < 0)
+        {
+            return raw;
+        }
+
+        StringBuilder result = new StringBuilder(raw.Length);
+        bool inQuote = false;
+        char quoteChar = '\0';
+        bool lastWasSpace = false;
+        foreach (char ch in raw)
+        {
+            if (inQuote)
+            {
+                if (ch == '\n' || ch == '\r')
+                {
+                    if (!lastWasSpace)
+                    {
+                        result.Append(' ');
+                        lastWasSpace = true;
+                    }
+                }
+                else
+                {
+                    result.Append(ch);
+                    lastWasSpace = false;
+                    if (ch == quoteChar)
+                    {
+                        inQuote = false;
+                    }
+                }
+
+                continue;
+            }
+
+            if (ch == '"' || ch == '\'')
+            {
+                inQuote = true;
+                quoteChar = ch;
+                result.Append(ch);
+                lastWasSpace = false;
+                continue;
+            }
+
+            if (ch == '>' && lastWasSpace && result.Length > 0 && result[result.Length - 1] == ' ')
+            {
+                // Strip the trailing whitespace before a closing > to avoid producing "<tag attr=value >".
+                result.Length--;
+                result.Append('>');
+                lastWasSpace = false;
+                continue;
+            }
+
+            if (ch == '\n' || ch == '\r' || ch == ' ' || ch == '\t')
+            {
+                if (!lastWasSpace)
+                {
+                    result.Append(' ');
+                    lastWasSpace = true;
+                }
+            }
+            else
+            {
+                result.Append(ch);
+                lastWasSpace = false;
+            }
+        }
+
+        return result.ToString();
     }
 
     private static bool IsNameChar(char ch) =>

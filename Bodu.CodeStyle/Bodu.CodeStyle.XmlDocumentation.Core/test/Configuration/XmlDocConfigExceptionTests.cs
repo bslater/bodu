@@ -1,0 +1,51 @@
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="XmlDocConfigExceptionTests.cs" company="PlaceholderCompany">
+//     Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
+// ---------------------------------------------------------------------------------------------------------------
+
+using System;
+using Bodu.CodeStyle.XmlDocumentation.Configuration;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
+namespace Bodu.CodeStyle.XmlDocumentation.Test.Configuration;
+
+[TestClass]
+public sealed class XmlDocConfigExceptionTests
+{
+    /// <summary>
+    /// Verifies that the parameterless constructor returns a non-null exception.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_Default_ShouldReturnNonNullInstance()
+    {
+        XmlDocConfigException ex = new XmlDocConfigException();
+
+        Assert.IsNotNull(ex);
+    }
+
+    /// <summary>
+    /// Verifies that the message constructor surfaces the given message.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WithMessage_ShouldExposeMessage()
+    {
+        XmlDocConfigException ex = new XmlDocConfigException("boom");
+
+        Assert.AreEqual("boom", ex.Message);
+    }
+
+    /// <summary>
+    /// Verifies that the inner-exception constructor surfaces both the message and the inner exception.
+    /// </summary>
+    [TestMethod]
+    public void Ctor_WithMessageAndInner_ShouldExposeBoth()
+    {
+        InvalidOperationException inner = new InvalidOperationException("root");
+
+        XmlDocConfigException ex = new XmlDocConfigException("boom", inner);
+
+        Assert.AreEqual("boom", ex.Message);
+        Assert.AreSame(inner, ex.InnerException);
+    }
+}

@@ -74,7 +74,7 @@ public sealed class XmlDocFormatter
         string content = DocIndent.Strip(triviaText, context.BaseIndent, options.DocumentationPrefix);
         ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize(content, options.InlineTags);
 
-        if (tokens.Length == 0)
+        if (tokens.Length == 0 || HasNoMeaningfulTokens(tokens))
         {
             return new XmlDocFormatResult(changed: false, triviaText, ImmutableArray<XmlDocFormattingChange>.Empty);
         }
@@ -95,6 +95,21 @@ public sealed class XmlDocFormatter
             : ImmutableArray<XmlDocFormattingChange>.Empty;
 
         return new XmlDocFormatResult(changed, formatted, changes);
+    }
+
+    private static bool HasNoMeaningfulTokens(ImmutableArray<XmlDocToken> tokens)
+    {
+        foreach (XmlDocToken token in tokens)
+        {
+            if (token.Kind == XmlDocTokenKind.LineBreak || token.Kind == XmlDocTokenKind.Whitespace)
+            {
+                continue;
+            }
+
+            return false;
+        }
+
+        return true;
     }
 
     private static bool HasMatchedTags(ImmutableArray<XmlDocToken> tokens)
