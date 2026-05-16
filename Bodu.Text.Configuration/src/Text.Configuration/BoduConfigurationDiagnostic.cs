@@ -14,7 +14,7 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// Diagnostics are immutable. When <see cref="BoduConfigurationDiagnosticMode.Collect" /> is in effect, the
-/// reader gathers diagnostics on <see cref="BoduConfigurationDocument.Diagnostics" /> rather than throwing
+/// reader gathers diagnostics on the parse result's diagnostics list rather than throwing
 /// at the first issue; the document is still produced and its valid portions remain usable.
 /// </remarks>
 [DebuggerDisplay("{Severity}: {Code} {Message,nq}")]

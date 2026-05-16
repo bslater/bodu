@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -18,7 +20,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void Indexer_WhenKeyExists_ShouldReturnValue()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual("1", view["a"]);
@@ -30,7 +32,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void Indexer_WhenKeyIsMissing_ShouldReturnNull()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsNull(view["missing"]);
@@ -42,7 +44,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void Indexer_WhenKeyIsNull_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.ThrowsExactly<ArgumentNullException>(() => _ = view[null!]);
@@ -54,7 +56,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void Count_WhenAccessed_ShouldReturnResolvedKeyCount()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(2, view.Count);

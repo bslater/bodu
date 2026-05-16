@@ -6,6 +6,8 @@
 
 using System.Collections.Generic;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationViewTests
@@ -23,7 +25,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueMatchesEnumMember_ShouldReturnParsedValue()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nseverity = warning\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nseverity = warning\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(Severity.Warning, view.GetEnum<Severity>("severity"));
@@ -36,7 +38,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenKeyIsMissing_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.ThrowsExactly<KeyNotFoundException>(() => _ = view.GetEnum<Severity>("missing"));
@@ -49,7 +51,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetEnum_WhenValueDoesNotMatchEnumMember_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nseverity = catastrophic\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nseverity = catastrophic\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetEnum<Severity>("severity"));

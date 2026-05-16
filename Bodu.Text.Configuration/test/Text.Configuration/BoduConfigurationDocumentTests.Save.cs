@@ -5,30 +5,30 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.IO;
-using System.Text;
 using Bodu.Text.Configuration.Infrastructure;
+using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationDocumentTests
 {
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.Save(string, BoduConfigurationWriteOptions?)" />
+    /// Verifies that <see cref="BoduConfigurationDocument.Save(IniDocument, string, BoduConfigurationWriteOptions?)" />
     /// writes a file that parses back to an equivalent document.
     /// </summary>
     [TestMethod]
     public void Save_WhenPathProvided_ShouldRoundTripThroughDisk()
     {
-        BoduConfigurationDocument original = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
+        IniDocument original = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
         string outPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + ".boduconfig");
         try
         {
-            original.Save(outPath);
+            BoduConfigurationDocument.Save(original, outPath);
 
-            BoduConfigurationDocument reloaded = BoduConfigurationDocument.Load(outPath);
+            IniDocument reloaded = BoduConfigurationDocument.Load(outPath);
 
             Assert.AreEqual(original.Sections.Count, reloaded.Sections.Count);
-            Assert.AreEqual(original.Sections[0].Properties.Count, reloaded.Sections[0].Properties.Count);
+            Assert.AreEqual(original.Sections[0].Entries.Count, reloaded.Sections[0].Entries.Count);
         }
         finally
         {
@@ -37,17 +37,17 @@ public partial class BoduConfigurationDocumentTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.Save(string, BoduConfigurationWriteOptions?)" />
+    /// Verifies that <see cref="BoduConfigurationDocument.Save(IniDocument, string, BoduConfigurationWriteOptions?)" />
     /// rejects a <see langword="null" /> path.
     /// </summary>
     [TestMethod]
     public void Save_WhenPathIsNull_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            doc.Save((string)null!);
+            BoduConfigurationDocument.Save(doc, (string)null!);
         });
     }
 
@@ -58,12 +58,12 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void Save_WhenStreamCannotWrite_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         using MemoryStream stream = new(new byte[16], writable: false);
 
         Assert.ThrowsExactly<ArgumentException>(() =>
         {
-            doc.Save(stream);
+            BoduConfigurationDocument.Save(doc, stream);
         });
     }
 
@@ -74,26 +74,11 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void Save_WhenStreamIsNull_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
 
         Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            doc.Save((Stream)null!);
+            BoduConfigurationDocument.Save(doc, (Stream)null!);
         });
-    }
-
-    /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.ToString" /> produces text that parses to an
-    /// equivalent document.
-    /// </summary>
-    [TestMethod]
-    public void ToString_WhenInvoked_ShouldProduceParseableText()
-    {
-        BoduConfigurationDocument original = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
-        string text = original.ToString();
-
-        BoduConfigurationDocument reparsed = BoduConfigurationDocument.Parse(text);
-
-        Assert.AreEqual(original.Sections.Count, reparsed.Sections.Count);
     }
 }

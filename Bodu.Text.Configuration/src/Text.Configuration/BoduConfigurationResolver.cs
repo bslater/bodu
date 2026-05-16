@@ -6,12 +6,13 @@
 
 using System.Collections.Generic;
 using System.IO;
+using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
 
 /// <summary>
-/// Projects a <see cref="BoduConfigurationDocument" /> into a flattened
-/// <see cref="BoduConfigurationView" /> for a specific target path.
+/// Projects an <see cref="IniDocument" /> into a flattened <see cref="BoduConfigurationView" /> for a specific
+/// target path, applying glob matching, preamble layering, and the EditorConfig <c>unset</c> sentinel.
 /// </summary>
 internal sealed class BoduConfigurationResolver
 {
@@ -22,7 +23,7 @@ internal sealed class BoduConfigurationResolver
         this._options = options;
     }
 
-    internal BoduConfigurationView Resolve(BoduConfigurationDocument document, string? targetPath)
+    internal BoduConfigurationView Resolve(IniDocument document, string? targetPath)
     {
         ThrowHelper.ThrowIfNull(document);
 
@@ -35,38 +36,39 @@ internal sealed class BoduConfigurationResolver
 
         string normalizedTarget = targetPath is null ? string.Empty : NormalizePath(targetPath, pathRoot);
 
-        // Apply preamble first (when enabled).
+        // Apply the global section (preamble) first when enabled.
         if (this._options.ApplyPreambleProperties)
-            this.ApplySection(document.Preamble, values);
+            this.ApplySection(document.GlobalSection, values);
 
-        // Apply sections that match the target path in source order; last-wins precedence.
-        foreach (BoduConfigurationSection section in document.Sections)
+        // Apply sections whose name (interpreted as a glob pattern) matches the target path, in source order.
+        // Last-wins precedence is naturally handled by dictionary overwrite.
+        foreach (IniSection section in document.Sections)
         {
             if (string.IsNullOrEmpty(normalizedTarget))
                 continue;
 
-            if (section.Pattern is not null && BoduConfigurationPattern.Compile(section.Pattern).IsMatch(normalizedTarget))
+            if (BoduConfigurationPattern.Compile(section.Name).IsMatch(normalizedTarget))
                 this.ApplySection(section, values);
         }
 
         return new BoduConfigurationView(values);
     }
 
-    private void ApplySection(BoduConfigurationSection section, Dictionary<string, string?> values)
+    private void ApplySection(IniSection section, Dictionary<string, string?> values)
     {
-        foreach (BoduConfigurationProperty property in section.Properties)
+        foreach (IniEntry entry in section.Entries)
         {
-            string key = property.ConfigurationKey;
+            string key = BoduConfigurationKey.Parse(entry.Key, this._options.KeyOptions).ConfigurationKey;
 
             // EditorConfig "unset" sentinel handling.
             if (this._options.UnsetValueMode == BoduConfigurationUnsetValueMode.RemoveEffectiveValue
-                && string.Equals(property.Value, "unset", StringComparison.OrdinalIgnoreCase))
+                && string.Equals(entry.Value, "unset", StringComparison.OrdinalIgnoreCase))
             {
                 values.Remove(key);
                 continue;
             }
 
-            values[key] = property.Value;
+            values[key] = entry.Value;
         }
     }
 

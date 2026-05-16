@@ -6,6 +6,8 @@
 
 using Bodu.Text.Configuration.Infrastructure;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -22,7 +24,7 @@ public partial class BoduConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenNoSectionMatches_ShouldStillApplyPreamble()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("root = true\napplication.name = Bodu\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("root = true\napplication.name = Bodu\n");
         BoduConfigurationView view = doc.Resolve("README");
 
         Assert.AreEqual("Bodu", view.GetString("application:name"));
@@ -35,7 +37,7 @@ public partial class BoduConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenEditorConfigCompatible_ShouldIgnoreNonRootPreamblePairs()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("application.name = Bodu\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("application.name = Bodu\n");
         BoduConfigurationView view = doc.Resolve("Foo.cs", BoduConfigurationResolveOptions.EditorConfigCompatible);
 
         Assert.IsNull(view["application:name"]);
@@ -47,7 +49,7 @@ public partial class BoduConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenDocumentIsEmpty_ShouldProduceEmptyView()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve("anything");
 
         Assert.AreEqual(0, view.Count);
@@ -60,10 +62,10 @@ public partial class BoduConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenDocumentMutatedAfterwards_ShouldNotAffectExistingView()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Minimal);
+        IniDocument doc = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Minimal);
         BoduConfigurationView view = doc.Resolve("Foo.cs");
 
-        doc.Sections[0].Set("format.indent.size", "999");
+        doc.Sections[0].SetEntry("format.indent.size", "999");
 
         Assert.AreEqual("4", view.GetString("format:indent:size"));
     }

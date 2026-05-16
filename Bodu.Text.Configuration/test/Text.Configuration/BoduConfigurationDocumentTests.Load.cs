@@ -7,6 +7,7 @@
 using System.IO;
 using System.Text;
 using Bodu.Text.Configuration.Infrastructure;
+using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
 
@@ -20,15 +21,14 @@ public partial class BoduConfigurationDocumentTests
     {
         using TempFileScope scope = new(BoduConfigurationFixtures.Representative);
 
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Load(scope.Path);
+        IniDocument doc = BoduConfigurationDocument.Load(scope.Path);
 
         Assert.AreEqual(2, doc.Sections.Count);
-        Assert.AreEqual(true, doc.Root);
+        Assert.AreEqual("true", doc.GlobalSection["root"]);
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.Load(string)" /> rejects a
-    /// <see langword="null" /> path.
+    /// Verifies that <see cref="BoduConfigurationDocument.Load(string)" /> rejects a <see langword="null" /> path.
     /// </summary>
     [TestMethod]
     public void Load_WhenPathIsNull_ShouldThrowExactly()
@@ -58,13 +58,13 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void Load_WhenStreamProvided_ShouldProduceSameDocumentAsParse()
     {
-        BoduConfigurationDocument fromText = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
+        IniDocument fromText = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
 
         using MemoryStream stream = new(Encoding.UTF8.GetBytes(BoduConfigurationFixtures.Representative));
-        BoduConfigurationDocument fromStream = BoduConfigurationDocument.Load(stream);
+        IniDocument fromStream = BoduConfigurationDocument.Load(stream);
 
         Assert.AreEqual(fromText.Sections.Count, fromStream.Sections.Count);
-        Assert.AreEqual(fromText.Preamble.Properties.Count, fromStream.Preamble.Properties.Count);
+        Assert.AreEqual(fromText.GlobalSection.Entries.Count, fromStream.GlobalSection.Entries.Count);
     }
 
     /// <summary>
@@ -84,8 +84,7 @@ public partial class BoduConfigurationDocumentTests
     }
 
     /// <summary>
-    /// Verifies that loading from a <see langword="null" /> stream throws
-    /// <see cref="ArgumentNullException" />.
+    /// Verifies that loading from a <see langword="null" /> stream throws <see cref="ArgumentNullException" />.
     /// </summary>
     [TestMethod]
     public void Load_WhenStreamIsNull_ShouldThrowExactly()
@@ -110,15 +109,15 @@ public partial class BoduConfigurationDocumentTests
     }
 
     /// <summary>
-    /// Verifies that the source location on a loaded document's properties includes the file path.
+    /// Verifies that <see cref="IniEntry.LineNumber" /> reflects the source line on a loaded document.
     /// </summary>
     [TestMethod]
-    public void Load_WhenPathProvided_ShouldAttachPathToSourceLocations()
+    public void Load_WhenPathProvided_ShouldAttachLineNumberToEntries()
     {
         using TempFileScope scope = new(BoduConfigurationFixtures.Minimal);
 
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Load(scope.Path);
+        IniDocument doc = BoduConfigurationDocument.Load(scope.Path);
 
-        Assert.AreEqual(scope.Path, doc.Sections[0].Properties[0].Location.Path);
+        Assert.AreEqual(2, doc.Sections[0].Entries[0].LineNumber);
     }
 }

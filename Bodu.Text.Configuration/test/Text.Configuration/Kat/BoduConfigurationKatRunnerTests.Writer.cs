@@ -6,6 +6,7 @@
 
 using System.IO;
 using Bodu.Text.Configuration.Test.Infrastructure;
+using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration.Kat;
 
@@ -29,17 +30,17 @@ public partial class BoduConfigurationKatRunnerTests
         BoduConfigurationParseOptions parseOptions = BoduConfigurationParseOptions.Bodu;
         BoduConfigurationWriteOptions writeOptions = BuildWriteOptions(kat, writeProfile);
 
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(kat.Source!, parseOptions);
+        IniDocument doc = BoduConfigurationDocument.Parse(kat.Source!, parseOptions);
 
         using StringWriter sw = new();
-        doc.Save(sw, writeOptions);
+        BoduConfigurationDocument.Save(doc, sw, writeOptions);
         string written = sw.ToString().TrimEnd('\n', '\r');
 
         string expected = (kat.ExpectedText ?? string.Empty).TrimEnd('\n', '\r');
 
         if (kat.Kind is BoduConfigurationKatKind.RoundTrip)
         {
-            BoduConfigurationDocument reparsed = BoduConfigurationDocument.Parse(written, BoduConfigurationParseOptions.Bodu);
+            IniDocument reparsed = BoduConfigurationDocument.Parse(written, BoduConfigurationParseOptions.Bodu);
             AssertDocumentsEquivalent(kat, doc, reparsed);
             return;
         }
@@ -71,20 +72,20 @@ public partial class BoduConfigurationKatRunnerTests
         };
     }
 
-    private static void AssertDocumentsEquivalent(BoduConfigurationKat kat, BoduConfigurationDocument expected, BoduConfigurationDocument actual)
+    private static void AssertDocumentsEquivalent(BoduConfigurationKat kat, IniDocument expected, IniDocument actual)
     {
         Assert.AreEqual(expected.Sections.Count, actual.Sections.Count, $"{kat.Id}: section count");
-        Assert.AreEqual(expected.Preamble.Properties.Count, actual.Preamble.Properties.Count, $"{kat.Id}: preamble count");
+        Assert.AreEqual(expected.GlobalSection.Entries.Count, actual.GlobalSection.Entries.Count, $"{kat.Id}: preamble count");
 
         for (int s = 0; s < expected.Sections.Count; s++)
         {
-            Assert.AreEqual(expected.Sections[s].Pattern, actual.Sections[s].Pattern, $"{kat.Id}: section[{s}].Pattern");
-            Assert.AreEqual(expected.Sections[s].Properties.Count, actual.Sections[s].Properties.Count, $"{kat.Id}: section[{s}].Properties.Count");
+            Assert.AreEqual(expected.Sections[s].Name, actual.Sections[s].Name, $"{kat.Id}: section[{s}].Name");
+            Assert.AreEqual(expected.Sections[s].Entries.Count, actual.Sections[s].Entries.Count, $"{kat.Id}: section[{s}].Entries.Count");
 
-            for (int p = 0; p < expected.Sections[s].Properties.Count; p++)
+            for (int p = 0; p < expected.Sections[s].Entries.Count; p++)
             {
-                Assert.AreEqual(expected.Sections[s].Properties[p].RawKey, actual.Sections[s].Properties[p].RawKey, $"{kat.Id}: section[{s}].Properties[{p}].RawKey");
-                Assert.AreEqual(expected.Sections[s].Properties[p].Value, actual.Sections[s].Properties[p].Value, $"{kat.Id}: section[{s}].Properties[{p}].Value");
+                Assert.AreEqual(expected.Sections[s].Entries[p].Key, actual.Sections[s].Entries[p].Key, $"{kat.Id}: section[{s}].Entries[{p}].Key");
+                Assert.AreEqual(expected.Sections[s].Entries[p].Value, actual.Sections[s].Entries[p].Value, $"{kat.Id}: section[{s}].Entries[{p}].Value");
             }
         }
     }

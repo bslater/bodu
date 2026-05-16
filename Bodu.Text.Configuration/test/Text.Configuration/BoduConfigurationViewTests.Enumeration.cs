@@ -7,6 +7,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationViewTests
@@ -17,7 +19,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetEnumerator_WhenResolved_ShouldYieldEveryResolvedKey()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         List<KeyValuePair<string, string?>> entries = view.ToList();
@@ -33,7 +35,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void Keys_WhenAccessed_ShouldExposeEveryKey()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\na = 1\nb = 2\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         List<string> keys = view.Keys.ToList();

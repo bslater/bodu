@@ -4,8 +4,10 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.IO;
 using Bodu.Test;
 using Bodu.Text.Configuration;
+using Bodu.Text.Formats;
 
 namespace Bodu.Smoke;
 
@@ -30,31 +32,32 @@ logging.level.default = Warning
 """;
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.Parse(string)" /> populates the preamble and
-    /// sections from a representative input.
+    /// Verifies that <see cref="BoduConfigurationDocument.Parse(string)" /> populates the global section and
+    /// the named sections from a representative input.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
     public void BoduConfigurationDocument_Parse_ShouldPopulateSections()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(Sample);
+        BoduConfigurationParseResult result = BoduConfigurationDocument.ParseWithDiagnostics(Sample);
+        IniDocument doc = result.Document;
 
-        Assert.AreEqual(true, doc.Root);
+        Assert.AreEqual("true", doc.GlobalSection["root"]);
         Assert.AreEqual(2, doc.Sections.Count);
-        Assert.AreEqual("*.cs", doc.Sections[0].Pattern);
-        Assert.AreEqual("src/**/*.{cs,csproj}", doc.Sections[1].Pattern);
-        Assert.AreEqual(0, doc.Diagnostics.Length);
+        Assert.AreEqual("*.cs", doc.Sections[0].Name);
+        Assert.AreEqual("src/**/*.{cs,csproj}", doc.Sections[1].Name);
+        Assert.AreEqual(0, result.Diagnostics.Length);
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.Resolve(string?, BoduConfigurationResolveOptions?)" />
-    /// layers preamble and matching sections so that later sections override earlier ones.
+    /// Verifies that <see cref="BoduConfigurationExtensions.Resolve(IniDocument, string?)" /> layers the
+    /// global section and matching named sections so that later sections override earlier ones.
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
     public void BoduConfigurationDocument_Resolve_ShouldLayerSectionsInOrder()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(Sample);
+        IniDocument doc = BoduConfigurationDocument.Parse(Sample);
         BoduConfigurationView view = doc.Resolve("src/Bodu.Text.Configuration/src/Foo.cs");
 
         Assert.AreEqual("space", view.GetString("format:indent:style"));
@@ -63,20 +66,21 @@ logging.level.default = Warning
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationDocument.Save(System.IO.TextWriter, BoduConfigurationWriteOptions?)" />
+    /// Verifies that <see cref="BoduConfigurationDocument.Save(IniDocument, System.IO.TextWriter, BoduConfigurationWriteOptions?)" />
     /// emits text that re-parses to an equivalent document (round-trip).
     /// </summary>
     [TestMethod]
     [TestCategory(TestCategories.Smoke)]
     public void BoduConfigurationDocument_RoundTrip_ShouldPreserveSemantics()
     {
-        BoduConfigurationDocument original = BoduConfigurationDocument.Parse(Sample);
-        string text = original.ToString();
-        BoduConfigurationDocument reparsed = BoduConfigurationDocument.Parse(text);
+        IniDocument original = BoduConfigurationDocument.Parse(Sample);
+        using StringWriter sw = new();
+        BoduConfigurationDocument.Save(original, sw);
+        IniDocument reparsed = BoduConfigurationDocument.Parse(sw.ToString());
 
         Assert.AreEqual(original.Sections.Count, reparsed.Sections.Count);
-        Assert.AreEqual(original.Root, reparsed.Root);
-        Assert.AreEqual(original.Preamble.Properties.Count, reparsed.Preamble.Properties.Count);
+        Assert.AreEqual(original.GlobalSection["root"], reparsed.GlobalSection["root"]);
+        Assert.AreEqual(original.GlobalSection.Entries.Count, reparsed.GlobalSection.Entries.Count);
     }
 
     /// <summary>

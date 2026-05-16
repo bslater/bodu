@@ -52,7 +52,7 @@ internal static class ConfigurationResourceStrings
     /// <summary>Caller attempted to set a pattern on the synthetic preamble section.</summary>
     internal const string InvalidOperation_PreambleHasPattern = "The preamble section does not have a pattern; attempting to set one is not allowed.";
 
-    /// <summary>Caller called <see cref="BoduConfigurationDocument.Resolve(string?, BoduConfigurationResolveOptions?)" /> on a parsed-from-string document without supplying a path root.</summary>
+    /// <summary>Caller called <see cref="BoduConfigurationExtensions.Resolve(Bodu.Text.Formats.IniDocument, string?, BoduConfigurationResolveOptions?)" /> on a parsed-from-string document without supplying a path root.</summary>
     internal const string InvalidOperation_ResolveWithoutPathRoot = "Cannot resolve a configuration document that was parsed from a string without a path root supplied via BoduConfigurationResolveOptions.PathRoot.";
 
     /// <summary>Caller invoked a typed getter that found the key but could not coerce the raw value.</summary>

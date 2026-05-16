@@ -7,6 +7,8 @@
 using System.Collections.Generic;
 using Bodu.Text.Configuration.Test.Infrastructure;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration.Kat;
 
 public partial class BoduConfigurationKatRunnerTests
@@ -43,11 +45,11 @@ public partial class BoduConfigurationKatRunnerTests
 
     private static BoduConfigurationView BuildTypedValueView(BoduConfigurationKat kat)
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         if (kat.RawValue is not null)
         {
-            BoduConfigurationSection section = doc.GetOrAddSection("*");
-            section.Set(kat.Key!, kat.RawValue);
+            IniSection section = doc.GetOrAddSection("*");
+            section.SetEntry(kat.Key!, kat.RawValue);
         }
 
         return doc.Resolve("any");

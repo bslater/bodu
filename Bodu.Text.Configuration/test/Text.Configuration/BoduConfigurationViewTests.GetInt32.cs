@@ -6,6 +6,8 @@
 
 using System.Collections.Generic;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationViewTests
@@ -17,7 +19,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetInt32_WhenKeyExistsWithValidInteger_ShouldReturnParsedValue()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = 42\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = 42\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(42, view.GetInt32("size"));
@@ -30,7 +32,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetInt32_WhenKeyIsMissing_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.ThrowsExactly<KeyNotFoundException>(() => _ = view.GetInt32("missing"));
@@ -43,7 +45,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetInt32_WhenValueIsMalformed_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = notanumber\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = notanumber\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetInt32("size"));
@@ -56,7 +58,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetInt32_WhenKeyMissingAndFallbackProvided_ShouldReturnFallback()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.AreEqual(7, view.GetInt32("missing", 7));
@@ -69,7 +71,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetInt32_WhenPresentButMalformedAndFallbackProvided_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = notanumber\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = notanumber\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetInt32("size", 0));
@@ -82,7 +84,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void TryGetInt32_WhenKeyMissingOrMalformed_ShouldReturnFalse()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nbad = abc\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nbad = abc\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsFalse(view.TryGetInt32("missing", out int _));

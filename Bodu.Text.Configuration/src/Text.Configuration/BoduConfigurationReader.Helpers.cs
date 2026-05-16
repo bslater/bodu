@@ -5,7 +5,6 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using System.Collections.Generic;
-
 using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
@@ -13,8 +12,9 @@ namespace Bodu.Text.Configuration;
 internal sealed partial class BoduConfigurationReader
 {
     /// <summary>
-    /// Emits a diagnostic, throwing immediately when the configured mode is <see cref="BoduConfigurationDiagnosticMode.Throw" />
-    /// and retaining it on the document only when the mode is <see cref="BoduConfigurationDiagnosticMode.Collect" />.
+    /// Emits a diagnostic, throwing immediately when the configured mode is
+    /// <see cref="BoduConfigurationDiagnosticMode.Throw" /> and retaining it on the local diagnostic list only
+    /// when the mode is <see cref="BoduConfigurationDiagnosticMode.Collect" />.
     /// </summary>
     private void EmitDiagnostic(
         BoduConfigurationDiagnosticSeverity severity,
@@ -42,10 +42,10 @@ internal sealed partial class BoduConfigurationReader
         }
     }
 
-    private static BoduConfigurationSection GetCurrentSection(BoduConfigurationDocument document) =>
-        document.Sections.Count > 0 ? document.Sections[^1] : document.Preamble;
+    private static IniSection GetCurrentSection(IniDocument document) =>
+        document.Sections.Count > 0 ? document.Sections[^1] : document.GlobalSection;
 
-    private static void AttachPendingComments(BoduConfigurationSection section, List<IniComment> pending)
+    private static void AttachPendingComments(IniSection section, List<IniComment> pending)
     {
         foreach (IniComment c in pending)
             section.AddLeadingComment(c);
@@ -105,9 +105,7 @@ internal sealed partial class BoduConfigurationReader
     private static IniComment? TryExtractInlineComment(
         ref string value,
         BoduConfigurationInlineCommentMode mode,
-        int lineNumber,
-        int valueStart,
-        string? path)
+        int lineNumber)
     {
         for (int i = 0; i < value.Length; i++)
         {
@@ -131,8 +129,6 @@ internal sealed partial class BoduConfigurationReader
             string commentText = value.Substring(i + 1);
             string remaining = value.Substring(0, i).TrimEnd();
             value = remaining;
-            _ = path;       // path no longer carried per-comment; entry-level Location records the source path.
-            _ = valueStart; // value-column not carried by IniComment; line number suffices for trivia.
             return new IniComment(c, commentText, lineNumber);
         }
 

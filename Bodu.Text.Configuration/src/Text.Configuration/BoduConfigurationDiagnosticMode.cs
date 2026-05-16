@@ -20,7 +20,7 @@ public enum BoduConfigurationDiagnosticMode
 
     /// <summary>
     /// The reader runs to completion, capturing diagnostics on the resulting
-    /// <see cref="BoduConfigurationDocument.Diagnostics" />. Non-recoverable errors (truncated stream,
+    /// parse result's diagnostics list. Non-recoverable errors (truncated stream,
     /// I/O exceptions) still throw.
     /// </summary>
     Collect = 1,

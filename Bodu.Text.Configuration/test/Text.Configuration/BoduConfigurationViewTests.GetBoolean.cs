@@ -6,6 +6,8 @@
 
 using System.Collections.Generic;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationViewTests
@@ -16,7 +18,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetBoolean_WhenValueIsTrueOrFalse_ShouldReturnParsedValue()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nflag = TRUE\nother = False\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nflag = TRUE\nother = False\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsTrue(view.GetBoolean("flag"));
@@ -29,7 +31,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetBoolean_WhenValueIsMalformed_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nflag = sometimes\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nflag = sometimes\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetBoolean("flag"));
@@ -42,7 +44,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetBoolean_WhenKeyMissingAndFallbackProvided_ShouldReturnFallback()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.IsTrue(view.GetBoolean("missing", true));
@@ -55,7 +57,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void TryGetBoolean_WhenKeyMissingOrMalformed_ShouldReturnFalse()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nbad = sometimes\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nbad = sometimes\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsFalse(view.TryGetBoolean("missing", out _));

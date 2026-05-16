@@ -5,6 +5,7 @@
 // ---------------------------------------------------------------------------------------------------------------
 
 using Bodu.Text.Configuration.Test.Infrastructure;
+using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration.Kat;
 
@@ -22,7 +23,7 @@ public partial class BoduConfigurationKatRunnerTests
     public void Resolve_Kat(BoduConfigurationKat kat)
     {
         BoduConfigurationProfile profile = MapProfile(kat.Profile);
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(kat.Source!, BoduConfigurationParseOptions.For(profile));
+        IniDocument doc = BoduConfigurationDocument.Parse(kat.Source!, BoduConfigurationParseOptions.For(profile));
         BoduConfigurationResolveOptions resolveOptions = BuildResolveOptions(kat, profile);
 
         if (kat.Outcome is BoduConfigurationKatOutcome.Fail)
@@ -52,8 +53,8 @@ public partial class BoduConfigurationKatRunnerTests
 
         if (kat.Mutation is { } mutation)
         {
-            BoduConfigurationSection section = doc.GetOrAddSection(mutation.Section);
-            section.Set(mutation.Key, mutation.Value);
+            IniSection section = doc.GetOrAddSection(mutation.Section);
+            section.SetEntry(mutation.Key, mutation.Value);
 
             // The view is a snapshot, so it must remain unchanged.
             ExpectedValue before = kat.ExpectedValues[0];

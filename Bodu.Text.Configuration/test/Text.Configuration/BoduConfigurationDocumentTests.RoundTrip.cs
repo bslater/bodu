@@ -4,30 +4,45 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using System.IO;
 using Bodu.Text.Configuration.Infrastructure;
+using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration;
 
+/// <summary>
+/// Parse / emit / re-parse coverage exercised through the static
+/// <see cref="BoduConfigurationDocument" /> facade. The underlying storage is <see cref="IniDocument" /> from
+/// <c>Bodu.Text.Formats</c>.
+/// </summary>
+[TestClass]
 public partial class BoduConfigurationDocumentTests
 {
+    internal static string Emit(IniDocument document)
+    {
+        using StringWriter sw = new();
+        BoduConfigurationDocument.Save(document, sw);
+        return sw.ToString();
+    }
+
     /// <summary>
     /// Verifies that parsing then emitting then re-parsing the representative fixture preserves the section
-    /// count, preamble property count, and per-section property counts.
+    /// count, preamble entry count, and per-section entry counts.
     /// </summary>
     [TestMethod]
     public void RoundTrip_WhenRepresentativeFixture_ShouldPreserveCountsAndOrder()
     {
-        BoduConfigurationDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
-        string emitted = first.ToString();
-        BoduConfigurationDocument second = BoduConfigurationDocument.Parse(emitted);
+        IniDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
+        string emitted = Emit(first);
+        IniDocument second = BoduConfigurationDocument.Parse(emitted);
 
         Assert.AreEqual(first.Sections.Count, second.Sections.Count);
-        Assert.AreEqual(first.Preamble.Properties.Count, second.Preamble.Properties.Count);
+        Assert.AreEqual(first.GlobalSection.Entries.Count, second.GlobalSection.Entries.Count);
 
         for (int i = 0; i < first.Sections.Count; i++)
         {
-            Assert.AreEqual(first.Sections[i].Pattern, second.Sections[i].Pattern);
-            Assert.AreEqual(first.Sections[i].Properties.Count, second.Sections[i].Properties.Count);
+            Assert.AreEqual(first.Sections[i].Name, second.Sections[i].Name);
+            Assert.AreEqual(first.Sections[i].Entries.Count, second.Sections[i].Entries.Count);
         }
     }
 
@@ -37,11 +52,11 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void RoundTrip_WhenLeadingCommentsPresent_ShouldPreserveLeadingComments()
     {
-        BoduConfigurationDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.CommentsAndProperties);
-        BoduConfigurationDocument second = BoduConfigurationDocument.Parse(first.ToString());
+        IniDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.CommentsAndProperties);
+        IniDocument second = BoduConfigurationDocument.Parse(Emit(first));
 
         Assert.AreEqual(first.Sections[0].LeadingComments.Count, second.Sections[0].LeadingComments.Count);
-        Assert.AreEqual(first.Sections[0].Properties[0].LeadingComments.Count, second.Sections[0].Properties[0].LeadingComments.Count);
+        Assert.AreEqual(first.Sections[0].Entries[0].LeadingComments.Count, second.Sections[0].Entries[0].LeadingComments.Count);
     }
 
     /// <summary>
@@ -50,11 +65,11 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void RoundTrip_WhenInlineCommentsPresent_ShouldPreserveInlineComments()
     {
-        BoduConfigurationDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.InlineComments);
-        BoduConfigurationDocument second = BoduConfigurationDocument.Parse(first.ToString());
+        IniDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.InlineComments);
+        IniDocument second = BoduConfigurationDocument.Parse(Emit(first));
 
-        BoduConfigurationProperty original = first.Sections[0].Properties[0];
-        BoduConfigurationProperty reparsed = second.Sections[0].Properties[0];
+        IniEntry original = first.Sections[0].Entries[0];
+        IniEntry reparsed = second.Sections[0].Entries[0];
 
         Assert.AreEqual(original.Value, reparsed.Value);
         Assert.AreEqual(original.InlineComment.HasValue, reparsed.InlineComment.HasValue);
@@ -66,31 +81,31 @@ public partial class BoduConfigurationDocumentTests
     [TestMethod]
     public void RoundTrip_WhenPreambleContainsRoot_ShouldPreserveRoot()
     {
-        BoduConfigurationDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
-        BoduConfigurationDocument second = BoduConfigurationDocument.Parse(first.ToString());
+        IniDocument first = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.Representative);
+        IniDocument second = BoduConfigurationDocument.Parse(Emit(first));
 
-        Assert.AreEqual(first.Root, second.Root);
+        Assert.AreEqual(first.GlobalSection["root"], second.GlobalSection["root"]);
     }
 
     /// <summary>
-    /// Verifies that authoring a document programmatically and round-tripping it through the writer
-    /// preserves property order and values.
+    /// Verifies that authoring a document programmatically through the mutable Ini surface and round-tripping
+    /// it through <see cref="BoduConfigurationDocument.Save(IniDocument, System.IO.TextWriter, BoduConfigurationWriteOptions?)" />
+    /// preserves entry order and values.
     /// </summary>
     [TestMethod]
     public void RoundTrip_WhenAuthoredProgrammatically_ShouldPreserveOrderAndValues()
     {
-        BoduConfigurationDocument doc = new();
-        doc.Preamble.Set("root", true);
+        IniDocument doc = new();
+        doc.GlobalSection.SetEntry("root", "true");
+        IniSection section = doc.GetOrAddSection("*.cs");
+        section.SetEntry("format.indent.size", "4");
+        section.SetEntry("format.indent.style", "space");
 
-        BoduConfigurationSection section = doc.GetOrAddSection("*.cs");
-        section.Set("format.indent.size", 4);
-        section.Set("format.indent.style", "space");
+        IniDocument reparsed = BoduConfigurationDocument.Parse(Emit(doc));
 
-        BoduConfigurationDocument reparsed = BoduConfigurationDocument.Parse(doc.ToString());
-
-        Assert.AreEqual(true, reparsed.Root);
+        Assert.AreEqual("true", reparsed.GlobalSection["root"]);
         Assert.AreEqual(1, reparsed.Sections.Count);
-        Assert.AreEqual("4", reparsed.Sections[0].Properties[0].Value);
-        Assert.AreEqual("space", reparsed.Sections[0].Properties[1].Value);
+        Assert.AreEqual("4", reparsed.Sections[0].Entries[0].Value);
+        Assert.AreEqual("space", reparsed.Sections[0].Entries[1].Value);
     }
 }

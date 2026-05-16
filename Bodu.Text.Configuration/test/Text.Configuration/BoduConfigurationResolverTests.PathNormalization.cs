@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationResolverTests
@@ -18,7 +20,7 @@ public partial class BoduConfigurationResolverTests
 [src/**/*.cs]
 format.indent.size = 2
 """;
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(fixture);
+        IniDocument doc = BoduConfigurationDocument.Parse(fixture);
 
         BoduConfigurationView windowsStyle = doc.Resolve(@"src\Foo.cs");
         BoduConfigurationView unixStyle = doc.Resolve("src/Foo.cs");
@@ -37,7 +39,7 @@ format.indent.size = 2
 [Foo.cs]
 format.indent.size = 2
 """;
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(fixture);
+        IniDocument doc = BoduConfigurationDocument.Parse(fixture);
 
         BoduConfigurationResolveOptions options = new() { PathRoot = "/project" };
         BoduConfigurationView view = doc.Resolve("/project/Foo.cs", options);
@@ -53,7 +55,7 @@ format.indent.size = 2
     public void Resolve_WhenMissingPathRootModeIsThrow_ShouldThrowWhenNoContext()
     {
         const string fixture = "application.name = Bodu\n";
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(fixture);
+        IniDocument doc = BoduConfigurationDocument.Parse(fixture);
 
         BoduConfigurationResolveOptions options = new()
         {

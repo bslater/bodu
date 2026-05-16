@@ -16,7 +16,7 @@ namespace Bodu.Text.Configuration;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use <see cref="BoduConfigurationDocument.Resolve(string?, BoduConfigurationResolveOptions?)" /> to obtain a
+/// Use <see cref="BoduConfigurationExtensions.Resolve(Bodu.Text.Formats.IniDocument, string?, BoduConfigurationResolveOptions?)" /> to obtain a
 /// view for a target path. The view is a one-shot snapshot — subsequent mutation of the originating document
 /// does not retroactively update the view.
 /// </para>

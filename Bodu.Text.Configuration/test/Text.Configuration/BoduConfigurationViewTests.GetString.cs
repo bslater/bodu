@@ -6,6 +6,8 @@
 
 using System.Collections.Generic;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationViewTests
@@ -17,7 +19,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetString_WhenKeyExists_ShouldReturnValue()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\na = hello\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\na = hello\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual("hello", view.GetString("a"));
@@ -30,7 +32,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetString_WhenKeyIsMissing_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.ThrowsExactly<KeyNotFoundException>(() => _ = view.GetString("missing"));
@@ -43,7 +45,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetString_WhenKeyIsMissingAndFallbackProvided_ShouldReturnFallback()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.AreEqual("default", view.GetString("missing", "default"));
@@ -56,7 +58,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void TryGetString_WhenKeyIsMissing_ShouldReturnFalse()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.IsFalse(view.TryGetString("missing", out string? value));

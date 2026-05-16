@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationResolverTests
@@ -21,7 +23,7 @@ format.indent.size = 4
 [*.cs]
 format.indent.size = 2
 """;
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(fixture);
+        IniDocument doc = BoduConfigurationDocument.Parse(fixture);
         BoduConfigurationView view = doc.Resolve("Foo.cs");
 
         Assert.AreEqual(2, view.GetInt32("format:indent:size"));
@@ -42,7 +44,7 @@ format.indent.size = 4
 [src/**/*.cs]
 format.indent.size = 2
 """;
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(fixture);
+        IniDocument doc = BoduConfigurationDocument.Parse(fixture);
         BoduConfigurationView view = doc.Resolve("src/Foo.cs");
 
         Assert.AreEqual("space", view.GetString("format:indent:style"));
@@ -63,7 +65,7 @@ format.indent.size = 4
 [*.txt]
 format.indent.size = 1
 """;
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(fixture);
+        IniDocument doc = BoduConfigurationDocument.Parse(fixture);
         BoduConfigurationView view = doc.Resolve("Foo.cs");
 
         Assert.AreEqual(4, view.GetInt32("format:indent:size"));

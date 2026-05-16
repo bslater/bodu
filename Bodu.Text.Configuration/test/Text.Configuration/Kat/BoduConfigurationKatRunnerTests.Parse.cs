@@ -6,6 +6,7 @@
 
 using System.Linq;
 using Bodu.Text.Configuration.Test.Infrastructure;
+using Bodu.Text.Formats;
 
 namespace Bodu.Text.Configuration.Kat;
 
@@ -35,33 +36,34 @@ public partial class BoduConfigurationKatRunnerTests
 
     private static void ExecuteParsePass(BoduConfigurationKat kat, BoduConfigurationParseOptions options)
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(kat.Source!, options);
+        BoduConfigurationParseResult result = BoduConfigurationDocument.ParseWithDiagnostics(kat.Source!, options);
+        IniDocument doc = result.Document;
 
         ExpectedDocument expected = kat.ExpectedDocument
             ?? throw new InvalidOperationException($"{kat.Id} is missing ExpectedDocument.");
 
-        Assert.AreEqual(expected.Preamble.Count, doc.Preamble.Properties.Count, $"{kat.Id}: preamble property count");
+        Assert.AreEqual(expected.Preamble.Count, doc.GlobalSection.Entries.Count, $"{kat.Id}: preamble entry count");
         for (int i = 0; i < expected.Preamble.Count; i++)
-            AssertProperty(kat, expected.Preamble[i], doc.Preamble.Properties[i]);
+            AssertEntry(kat, expected.Preamble[i], doc.GlobalSection.Entries[i]);
 
         Assert.AreEqual(expected.Sections.Count, doc.Sections.Count, $"{kat.Id}: section count");
         for (int s = 0; s < expected.Sections.Count; s++)
         {
             ExpectedSection es = expected.Sections[s];
-            BoduConfigurationSection actual = doc.Sections[s];
+            IniSection actual = doc.Sections[s];
 
-            Assert.AreEqual(es.Pattern, actual.Pattern, $"{kat.Id}: section[{s}].Pattern");
+            Assert.AreEqual(es.Pattern, actual.Name, $"{kat.Id}: section[{s}].Name");
             Assert.AreEqual(es.LeadingComments.Count, actual.LeadingComments.Count, $"{kat.Id}: section[{s}].LeadingComments.Count");
             for (int c = 0; c < es.LeadingComments.Count; c++)
                 Assert.AreEqual(es.LeadingComments[c], actual.LeadingComments[c].Text, $"{kat.Id}: section[{s}].LeadingComments[{c}]");
 
-            Assert.AreEqual(es.Properties.Count, actual.Properties.Count, $"{kat.Id}: section[{s}].Properties.Count");
+            Assert.AreEqual(es.Properties.Count, actual.Entries.Count, $"{kat.Id}: section[{s}].Entries.Count");
             for (int p = 0; p < es.Properties.Count; p++)
-                AssertProperty(kat, es.Properties[p], actual.Properties[p]);
+                AssertEntry(kat, es.Properties[p], actual.Entries[p]);
         }
 
         if (kat.ExpectedDiagnosticCount.HasValue)
-            Assert.AreEqual(kat.ExpectedDiagnosticCount.Value, doc.Diagnostics.Length, $"{kat.Id}: diagnostics count");
+            Assert.AreEqual(kat.ExpectedDiagnosticCount.Value, result.Diagnostics.Length, $"{kat.Id}: diagnostics count");
     }
 
     private static void ExecuteParseFail(BoduConfigurationKat kat, BoduConfigurationParseOptions options)
@@ -90,11 +92,11 @@ public partial class BoduConfigurationKatRunnerTests
         }
     }
 
-    private static void AssertProperty(BoduConfigurationKat kat, ExpectedProperty expected, BoduConfigurationProperty actual)
+    private static void AssertEntry(BoduConfigurationKat kat, ExpectedProperty expected, IniEntry actual)
     {
-        Assert.AreEqual(expected.Key, actual.RawKey, $"{kat.Id}: property raw key");
-        Assert.AreEqual(expected.Value, actual.Value, $"{kat.Id}: property value");
-        Assert.AreEqual(expected.ConfigurationKey, actual.ConfigurationKey, $"{kat.Id}: property configuration key");
+        Assert.AreEqual(expected.Key, actual.Key, $"{kat.Id}: entry raw key");
+        Assert.AreEqual(expected.Value, actual.Value, $"{kat.Id}: entry value");
+        Assert.AreEqual(expected.ConfigurationKey, actual.ConfigurationKey(), $"{kat.Id}: entry configuration key");
 
         Assert.AreEqual(expected.LeadingComments.Count, actual.LeadingComments.Count, $"{kat.Id}: leading comment count");
         for (int i = 0; i < expected.LeadingComments.Count; i++)

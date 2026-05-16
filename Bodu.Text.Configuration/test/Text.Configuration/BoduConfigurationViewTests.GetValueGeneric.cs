@@ -6,6 +6,8 @@
 
 using System.Collections.Generic;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationViewTests
@@ -18,7 +20,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenKeyExistsForIntegerType_ShouldReturnParsedValue()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = 42\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = 42\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(42, view.GetValue<int>("size"));
@@ -33,7 +35,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenKeyIsMissing_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = new();
+        IniDocument doc = new();
         BoduConfigurationView view = doc.Resolve();
 
         Assert.ThrowsExactly<KeyNotFoundException>(() => _ = view.GetValue<int>("missing"));
@@ -46,7 +48,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenValueIsMalformed_ShouldThrowExactly()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = notanumber\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nsize = notanumber\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.ThrowsExactly<FormatException>(() => _ = view.GetValue<int>("size"));
@@ -59,7 +61,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void TryGetValueGeneric_WhenKeyMissingOrMalformed_ShouldReturnFalse()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nbad = abc\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nbad = abc\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.IsFalse(view.TryGetValue("missing", out int _));
@@ -73,7 +75,7 @@ public partial class BoduConfigurationViewTests
     [TestMethod]
     public void GetValueGeneric_WhenKeyUsesDottedForm_ShouldResolveToSameValue()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse("[*]\nlogging.level.default = 7\n");
+        IniDocument doc = BoduConfigurationDocument.Parse("[*]\nlogging.level.default = 7\n");
         BoduConfigurationView view = doc.Resolve("any.cs");
 
         Assert.AreEqual(7, view.GetValue<int>("logging.level.default"));

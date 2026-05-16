@@ -6,6 +6,8 @@
 
 using Bodu.Text.Configuration.Infrastructure;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationResolverTests
@@ -17,7 +19,7 @@ public partial class BoduConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenUnsetModeIsTreatAsLiteral_ShouldPreserveUnsetLiteral()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.UnsetSentinel);
+        IniDocument doc = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.UnsetSentinel);
 
         BoduConfigurationView view = doc.Resolve("generated/Foo.cs");
 
@@ -31,7 +33,7 @@ public partial class BoduConfigurationResolverTests
     [TestMethod]
     public void Resolve_WhenUnsetModeIsRemoveEffectiveValue_ShouldOmitUnsetKey()
     {
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.UnsetSentinel);
+        IniDocument doc = BoduConfigurationDocument.Parse(BoduConfigurationFixtures.UnsetSentinel);
 
         BoduConfigurationResolveOptions options = new()
         {
@@ -57,7 +59,7 @@ format.indent.size = 4
 [generated/**]
 format.indent.size = unset
 """;
-        BoduConfigurationDocument doc = BoduConfigurationDocument.Parse(fixture);
+        IniDocument doc = BoduConfigurationDocument.Parse(fixture);
 
         BoduConfigurationResolveOptions options = new()
         {

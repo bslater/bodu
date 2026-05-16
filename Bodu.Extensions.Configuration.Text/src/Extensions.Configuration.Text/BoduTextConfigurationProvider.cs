@@ -9,6 +9,8 @@ using System.IO;
 using Bodu.Text.Configuration;
 using Microsoft.Extensions.Configuration;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Extensions.Configuration.Text;
 
 /// <summary>
@@ -47,7 +49,7 @@ public sealed class BoduTextConfigurationProvider : FileConfigurationProvider
         BoduConfigurationParseOptions parseOptions = this.BoduSource.ParseOptions ?? BoduConfigurationParseOptions.Bodu;
         BoduConfigurationResolveOptions resolveOptions = this.BoduSource.ResolveOptions ?? BoduConfigurationResolveOptions.Bodu;
 
-        BoduConfigurationDocument document = BoduConfigurationDocument.Load(stream, parseOptions, leaveOpen: true);
+        IniDocument document = BoduConfigurationDocument.Load(stream, parseOptions, leaveOpen: true);
         BoduConfigurationView view = document.Resolve(this.BoduSource.TargetPath, resolveOptions);
 
         Dictionary<string, string?> data = new(StringComparer.OrdinalIgnoreCase);
