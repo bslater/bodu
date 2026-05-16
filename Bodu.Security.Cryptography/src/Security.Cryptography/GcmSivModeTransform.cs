@@ -365,28 +365,35 @@ public sealed class GcmSivModeTransform
         var blockSize = this._encCipher.BlockSize / 8;
 
         // POLYVAL accumulation: process AAD blocks, then plaintext blocks, then length block.
+        // polyvalResult holds intermediate MAC state XOR'd with the nonce — cleared in finally.
         var polyvalResult = new byte[blockSize];
+        try
+        {
+            PolyvalUpdate(polyvalResult, aad);
+            PolyvalUpdate(polyvalResult, plaintext);
 
-        PolyvalUpdate(polyvalResult, aad);
-        PolyvalUpdate(polyvalResult, plaintext);
+            // Length block: LE64(|A| * 8) || LE64(|P| * 8). Stack-allocated; never reaches the heap.
+            Span<byte> lenBlock = stackalloc byte[blockSize];
+            var aadBits = (ulong)aad.Length * 8;
+            var ptBits = (ulong)plaintext.Length * 8;
+            for (var i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
+            for (var i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
+            PolyvalUpdate(polyvalResult, lenBlock);
 
-        // Length block: LE64(|A| * 8) || LE64(|P| * 8).
-        var lenBlock = new byte[blockSize];
-        var aadBits = (ulong)aad.Length * 8;
-        var ptBits = (ulong)plaintext.Length * 8;
-        for (var i = 0; i < 8; i++) lenBlock[i] = (byte)(aadBits >> (8 * i));
-        for (var i = 0; i < 8; i++) lenBlock[8 + i] = (byte)(ptBits >> (8 * i));
-        PolyvalUpdate(polyvalResult, lenBlock);
+            // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
+            for (var i = 0; i < (NonceSizeBits / 8); i++)
+                polyvalResult[i] ^= this._nonce[i];
+            polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
 
-        // XOR with nonce, clear bit 31 (byte 3 MSB) and bit 63 (byte 7 MSB).
-        for (var i = 0; i < (NonceSizeBits / 8); i++)
-            polyvalResult[i] ^= this._nonce[i];
-        polyvalResult[15] &= 0x7F; // clear bit 127 (RFC calls this bit 31 of the last 32-bit word)
-
-        // Encrypt with K_enc to produce the tag.
-        var tag = new byte[blockSize];
-        this._encCipher.Encrypt(polyvalResult, tag);
-        return tag;
+            // Encrypt with K_enc to produce the tag.
+            var tag = new byte[blockSize];
+            this._encCipher.Encrypt(polyvalResult, tag);
+            return tag;
+        }
+        finally
+        {
+            CryptoHelpers.Clear(polyvalResult);
+        }
     }
 
     /// <summary>
@@ -401,7 +408,8 @@ public sealed class GcmSivModeTransform
         const int blockSize = 16;
         for (var offset = 0; offset < data.Length; offset += blockSize)
         {
-            var block = new byte[blockSize];
+            // Stack-allocate the per-block scratch buffer so plaintext/AAD fragments never reach the heap.
+            Span<byte> block = stackalloc byte[blockSize];
             var len = Math.Min(blockSize, data.Length - offset);
             data.Slice(offset, len).CopyTo(block);
             // state ^= block, then multiply by H (authKey) via POLYVAL.
@@ -417,14 +425,15 @@ public sealed class GcmSivModeTransform
     /// <param name="x">The left operand block (16 bytes).</param>
     /// <param name="h">The POLYVAL hash key (16 bytes).</param>
     /// <param name="result">The destination block (16 bytes); receives the POLYVAL product.</param>
-    private static void PolyvalMultiply(byte[] x, byte[] h, byte[] result)
+    private static void PolyvalMultiply(Span<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
     {
-        var xr = new byte[16];
-        var hr = new byte[16];
+        // Stack-allocate all three scratch blocks so reflected key material never reaches the managed heap.
+        Span<byte> xr = stackalloc byte[16];
+        Span<byte> hr = stackalloc byte[16];
         ReflectBytesAndBits(x, xr);
         ReflectBytesAndBits(h, hr);
 
-        var product = new byte[16];
+        Span<byte> product = stackalloc byte[16];
         GhashMultiply(xr, hr, product);
 
         ReflectBytesAndBits(product, result);
@@ -435,7 +444,7 @@ public sealed class GcmSivModeTransform
     /// </summary>
     /// <param name="input">The source 16-byte block.</param>
     /// <param name="output">The destination 16-byte block; receives <paramref name="input"/> with byte and bit order reversed.</param>
-    private static void ReflectBytesAndBits(byte[] input, byte[] output)
+    private static void ReflectBytesAndBits(ReadOnlySpan<byte> input, Span<byte> output)
     {
         for (var i = 0; i < 16; i++)
         {
@@ -454,10 +463,13 @@ public sealed class GcmSivModeTransform
     /// <param name="x">The left operand block (16 bytes).</param>
     /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
     /// <param name="result">The destination block (16 bytes); receives the GF(2<sup>128</sup>) product.</param>
-    private static void GhashMultiply(byte[] x, byte[] h, byte[] result)
+    private static void GhashMultiply(ReadOnlySpan<byte> x, ReadOnlySpan<byte> h, Span<byte> result)
     {
-        var z = new byte[16];
-        var v = (byte[])h.Clone();
+        // Stack-allocate both working buffers. v is a mutable copy of the auth subkey H and must
+        // not escape to the managed heap — stack allocation ensures it is reclaimed with the frame.
+        Span<byte> z = stackalloc byte[16];
+        Span<byte> v = stackalloc byte[16];
+        h.CopyTo(v);
 
         for (var i = 0; i < 16; i++)
         {
@@ -476,7 +488,7 @@ public sealed class GcmSivModeTransform
                 if (lsb) v[0] ^= 0xE1;
             }
         }
-        z.CopyTo(result, 0);
+        z.CopyTo(result);
     }
 
     /// <summary>
@@ -503,7 +515,9 @@ public sealed class GcmSivModeTransform
     private void CtrEncrypt(ReadOnlySpan<byte> input, Span<byte> output, byte[] counter)
     {
         var blockSize = this._encCipher.BlockSize / 8;
-        var ctr = (byte[])counter.Clone();
+        // Stack-allocate the mutable counter copy so the ephemeral CTR state never reaches the heap.
+        Span<byte> ctr = stackalloc byte[blockSize];
+        counter.CopyTo(ctr);
         Span<byte> ks = stackalloc byte[blockSize];
 
         for (var offset = 0; offset < input.Length; offset += blockSize)
