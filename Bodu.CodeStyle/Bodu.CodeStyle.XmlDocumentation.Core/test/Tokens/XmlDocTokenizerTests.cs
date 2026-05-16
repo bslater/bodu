@@ -133,16 +133,33 @@ public sealed class XmlDocTokenizerTests
     }
 
     /// <summary>
-    /// Verifies that a CDATA section is preserved verbatim as a single text token.
+    /// Verifies that a single-line CDATA section is preserved verbatim as a single <see cref="XmlDocTokenKind.CData" />
+    /// token so the layout pass can recognise it and bypass prose normalisation for its body.
     /// </summary>
     [TestMethod]
-    public void Tokenize_WhenCDataSection_ShouldEmitTextTokenVerbatim()
+    public void Tokenize_WhenCDataSection_ShouldEmitCDataTokenVerbatim()
     {
         ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize("<![CDATA[var x = new Foo<int>();]]>", s_inlineTags);
 
         Assert.AreEqual(1, tokens.Length);
-        Assert.AreEqual(XmlDocTokenKind.Text, tokens[0].Kind);
+        Assert.AreEqual(XmlDocTokenKind.CData, tokens[0].Kind);
         Assert.AreEqual("<![CDATA[var x = new Foo<int>();]]>", tokens[0].RawText);
+    }
+
+    /// <summary>
+    /// Verifies that a multi-line CDATA section emits a single <see cref="XmlDocTokenKind.CData" /> token
+    /// whose <c>RawText</c> includes the internal newlines unchanged.
+    /// </summary>
+    [TestMethod]
+    public void Tokenize_WhenMultiLineCDataSection_ShouldEmitSingleCDataToken()
+    {
+        var content = "<![CDATA[\nvar buffer = new Foo();\nbuffer.Enqueue(1);\n]]>";
+
+        ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize(content, s_inlineTags);
+
+        Assert.AreEqual(1, tokens.Length);
+        Assert.AreEqual(XmlDocTokenKind.CData, tokens[0].Kind);
+        Assert.AreEqual(content, tokens[0].RawText);
     }
 
     /// <summary>

@@ -52,6 +52,26 @@ internal static class DocLayout
         {
             XmlDocToken token = tokens[position];
 
+            // CDATA sections are preserved verbatim. Multi-line CDATA (the open `<![CDATA[`, body, and
+            // closing `]]>` on separate lines) is emitted as a sequence of physical content lines, bypassing
+            // the wrapper so each body line gets its own `///` prefix and the delimiters keep the no-space
+            // convention. Single-line CDATA stays inline with the surrounding prose and flows through the
+            // normal run / wrap path as an indivisible atom.
+            if (token.Kind == XmlDocTokenKind.CData)
+            {
+                if (token.RawText.IndexOf('\n') >= 0)
+                {
+                    FlushRun(currentRun, options, contentBudget, output);
+                    EmitCDataLines(token.RawText, output);
+                    position++;
+                    continue;
+                }
+
+                currentRun.Add(token);
+                position++;
+                continue;
+            }
+
             if (token.Kind == XmlDocTokenKind.BlockStart)
             {
                 if (TryFindMatchingEnd(tokens, position, end, token.TagName!, out var matchEnd))
@@ -96,6 +116,28 @@ internal static class DocLayout
         return position;
     }
 
+    private static void EmitCDataLines(string cdataRawText, List<string> output)
+    {
+        // Split on '\n' (the tokenizer's logical line marker after DocIndent.Strip). Each piece becomes one
+        // entry in `output`, ready for DocIndent.Reapply to add the `///` prefix. The opening `<![CDATA[`
+        // and closing `]]>` lines are detected by Reapply and emitted with the no-space prefix per Bodu
+        // convention; body lines use the normal `/// ` prefix so any interior indentation is preserved.
+        var start = 0;
+        for (var i = 0; i < cdataRawText.Length; i++)
+        {
+            if (cdataRawText[i] == '\n')
+            {
+                output.Add(cdataRawText.Substring(start, i - start));
+                start = i + 1;
+            }
+        }
+
+        if (start <= cdataRawText.Length)
+        {
+            output.Add(cdataRawText.Substring(start));
+        }
+    }
+
     private static bool TryFindMatchingEnd(IReadOnlyList<XmlDocToken> tokens, int openIndex, int end, string tagName, out int closeIndex)
     {
         var depth = 1;
@@ -126,6 +168,18 @@ internal static class DocLayout
         XmlDocToken openToken = tokens[openIndex];
         XmlDocToken closeToken = tokens[closeIndex];
 
+        // Multi-line CDATA sections cannot be represented on a single line. When the body carries one, skip
+        // the candidate stage entirely and fall through to the expanded form, which dispatches to
+        // ComposeRange's CDATA handler. Single-line CDATA flows through the candidate as an indivisible atom.
+        for (var k = openIndex + 1; k < closeIndex; k++)
+        {
+            if (tokens[k].Kind == XmlDocTokenKind.CData && tokens[k].RawText.IndexOf('\n') >= 0)
+            {
+                EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, output);
+                return;
+            }
+        }
+
         var candidate = new StringBuilder();
         candidate.Append(openToken.RawText);
 
@@ -149,6 +203,7 @@ internal static class DocLayout
                 case XmlDocTokenKind.InlineXml:
                 case XmlDocTokenKind.BlockStart:
                 case XmlDocTokenKind.BlockEnd:
+                case XmlDocTokenKind.CData:
                     if (pendingWhitespace)
                     {
                         candidate.Append(' ');
@@ -172,7 +227,15 @@ internal static class DocLayout
             return;
         }
 
+        EmitExpandedSingleLineCandidate(tokens, openIndex, closeIndex, options, contentBudget, output);
+    }
+
+    private static void EmitExpandedSingleLineCandidate(IReadOnlyList<XmlDocToken> tokens, int openIndex, int closeIndex, XmlDocFormatOptions options, int contentBudget, List<string> output)
+    {
         // Expanded form: open on its own line, content on subsequent lines, close on its own line.
+        XmlDocToken openToken = tokens[openIndex];
+        XmlDocToken closeToken = tokens[closeIndex];
+
         output.Add(openToken.RawText);
 
         var contentTokens = new List<XmlDocToken>();
@@ -216,6 +279,7 @@ internal static class DocLayout
                 case XmlDocTokenKind.InlineXml:
                 case XmlDocTokenKind.BlockStart:
                 case XmlDocTokenKind.BlockEnd:
+                case XmlDocTokenKind.CData:
                     if (pendingWhitespace)
                     {
                         atoms.Add(" ");

@@ -77,4 +77,12 @@ internal sealed class XmlDocToken
     /// <returns>A new line-break token using a logical newline marker.</returns>
     public static XmlDocToken LineBreak() =>
         new XmlDocToken(XmlDocTokenKind.LineBreak, "\n", tagName: null, isSelfClosing: false);
+
+    /// <summary>
+    /// Returns a token representing a <c>&lt;![CDATA[...]]&gt;</c> section captured verbatim.
+    /// </summary>
+    /// <param name="rawText">The full CDATA literal, including the open and close delimiters and any internal newlines.</param>
+    /// <returns>A new CData token.</returns>
+    public static XmlDocToken CData(string rawText) =>
+        new XmlDocToken(XmlDocTokenKind.CData, rawText, tagName: null, isSelfClosing: false);
 }

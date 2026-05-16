@@ -40,4 +40,11 @@ internal enum XmlDocTokenKind
     /// Indicates a physical line break recorded in the input.
     /// </summary>
     LineBreak = 5,
+
+    /// <summary>
+    /// Indicates a <c>&lt;![CDATA[...]]&gt;</c> section. The token's <c>RawText</c> contains the entire
+    /// CDATA literal, including its open and close delimiters and any internal newlines, captured verbatim.
+    /// Downstream layout passes preserve the section's body byte-for-byte.
+    /// </summary>
+    CData = 6,
 }
