@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <PackageId>Bodu.CodeStyle.XmlDocumentation</PackageId>
+    <DevelopmentDependency>true</DevelopmentDependency>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <Description>Roslyn analyzer and code fix enforcing the Bodu XML documentation formatting policy (BODUXML001).</Description>
+    <PackageTags>analyzer roslyn codefix xmldoc bodu</PackageTags>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToPack</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Bodu.CodeStyle.XmlDocumentation.Analyzers\src\Bodu.CodeStyle.XmlDocumentation.Analyzers.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Bodu.CodeStyle.XmlDocumentation.CodeFixes\src\Bodu.CodeStyle.XmlDocumentation.CodeFixes.csproj" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\Bodu.CodeStyle.XmlDocumentation.Core\src\Bodu.CodeStyle.XmlDocumentation.Core.csproj" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
+  <Target Name="_AddAnalyzersToPack">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="..\Bodu.CodeStyle.XmlDocumentation.Analyzers\src\bin\$(Configuration)\netstandard2.0\Bodu.CodeStyle.XmlDocumentation.Analyzers.dll"
+                              PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="..\Bodu.CodeStyle.XmlDocumentation.CodeFixes\src\bin\$(Configuration)\netstandard2.0\Bodu.CodeStyle.XmlDocumentation.CodeFixes.dll"
+                              PackagePath="analyzers/dotnet/cs" />
+      <TfmSpecificPackageFile Include="..\Bodu.CodeStyle.XmlDocumentation.Core\src\bin\$(Configuration)\netstandard2.0\Bodu.CodeStyle.XmlDocumentation.Core.dll"
+                              PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+  </Target>
+
+</Project>

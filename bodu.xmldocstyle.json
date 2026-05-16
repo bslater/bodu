@@ -1,0 +1,106 @@
+{
+  "$schema": "https://raw.githubusercontent.com/bodu/bodu/master/Bodu.CodeStyle/schema/bodu.xmldocstyle.schema.json",
+  "profile": "Bodu",
+
+  "_": "Source of truth for the Bodu XML documentation formatter / analyzer (BODUXML001).",
+  "_loadedBy": "Bodu.CodeStyle.XmlDocumentation.Analyzers — wired in via bld/Bodu.props as <AdditionalFiles>.",
+  "_overriddenBy": "Scalar keys in .editorconfig (bodu_xmldoc_max_line_length, etc.) win over JSON for per-folder tuning.",
+
+  "maxLineLength": 120,
+  "documentationPrefix": "/// ",
+  "indentText": "    ",
+  "collapseProseWhitespace": true,
+  "preserveBlankLines": false,
+  "preserveXmlTagAttributes": true,
+  "preserveCrefText": true,
+
+  "blockTags": [
+    "summary",
+    "remarks",
+    "para",
+    "example",
+    "list",
+    "item",
+    "description",
+    "term",
+    "code"
+  ],
+
+  "inlineTags": [
+    "c",
+    "see",
+    "paramref",
+    "typeparamref"
+  ],
+
+  "forceMultilineTags": [
+    "summary",
+    "remarks",
+    "para",
+    "example",
+    "list",
+    "item",
+    "description"
+  ],
+
+  "singleLineWhenShort": [
+    "param",
+    "typeparam",
+    "returns",
+    "exception",
+    "value"
+  ],
+
+  "neverSplitTagContent": [
+    "c",
+    "see",
+    "paramref",
+    "typeparamref"
+  ],
+
+  "_tagPolicies": "Per-tag overrides. layout = multilineBlock | singleLineWhenShort | inlineAtomic | auto. maxSingleLineLength only applies to singleLineWhenShort tags. selfClosingTrailingSpace controls 'space before />' on inline atoms.",
+  "tagPolicies": {
+    "summary":     { "layout": "multilineBlock",      "allowLineBreakInside": true },
+    "remarks":     { "layout": "multilineBlock",      "allowLineBreakInside": true },
+    "para":        { "layout": "multilineBlock",      "allowLineBreakInside": true },
+    "example":     { "layout": "multilineBlock",      "allowLineBreakInside": true },
+    "list":        { "layout": "multilineBlock",      "allowLineBreakInside": true },
+    "item":        { "layout": "multilineBlock",      "allowLineBreakInside": true },
+    "description": { "layout": "multilineBlock",      "allowLineBreakInside": true },
+
+    "param":       { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
+    "typeparam":   { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
+    "returns":     { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
+    "exception":   { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
+    "value":       { "layout": "singleLineWhenShort", "maxSingleLineLength": 120, "allowLineBreakInside": true },
+
+    "c":            { "layout": "inlineAtomic", "allowLineBreakInside": false, "selfClosingTrailingSpace": true },
+    "see":          { "layout": "inlineAtomic", "allowLineBreakInside": false, "selfClosingTrailingSpace": true },
+    "paramref":     { "layout": "inlineAtomic", "allowLineBreakInside": false, "selfClosingTrailingSpace": true },
+    "typeparamref": { "layout": "inlineAtomic", "allowLineBreakInside": false, "selfClosingTrailingSpace": true }
+  },
+
+  "_requiredTags": "Declares which doc tags must appear on each member kind. The shape is locked in; enforcement will land in a follow-up analyzer rule (BODUXML002 — Missing required tag). The current JSON reader ignores this section so it is safe to author now.",
+  "requiredTags": {
+    "class":                    [ "summary" ],
+    "struct":                   [ "summary" ],
+    "record":                   [ "summary" ],
+    "recordStruct":             [ "summary" ],
+    "interface":                [ "summary" ],
+    "enum":                     [ "summary" ],
+    "delegate":                 [ "summary" ],
+
+    "constructor":              [ "summary" ],
+    "method":                   [ "summary" ],
+    "property":                 [ "summary" ],
+    "indexer":                  [ "summary", "value" ],
+    "field":                    [ "summary" ],
+    "event":                    [ "summary" ],
+
+    "methodWithReturnValue":    [ "returns" ],
+    "methodWithParameters":     [ "param" ],
+    "methodWithTypeParameters": [ "typeparam" ],
+    "genericTypeDeclaration":   [ "typeparam" ],
+    "throwingMember":           [ "exception" ]
+  }
+}

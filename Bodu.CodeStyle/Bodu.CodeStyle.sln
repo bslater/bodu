@@ -1,0 +1,78 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bodu.CodeStyle.XmlDocumentation.Core", "Bodu.CodeStyle.XmlDocumentation.Core", "{CC19A894-3798-46AC-AE0E-01BE34E3613F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.XmlDocumentation.Core", "Bodu.CodeStyle.XmlDocumentation.Core\src\Bodu.CodeStyle.XmlDocumentation.Core.csproj", "{B49BDE5F-29B7-4D5D-A93D-51A09DAD9025}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.XmlDocumentation.Core.Test", "Bodu.CodeStyle.XmlDocumentation.Core\test\Bodu.CodeStyle.XmlDocumentation.Core.Test.csproj", "{AFCA19D7-884E-4AAC-BEAE-4609258E2614}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bodu.CodeStyle.XmlDocumentation.Analyzers", "Bodu.CodeStyle.XmlDocumentation.Analyzers", "{BC36C8AC-A6A5-4C9A-BDEA-88EE14232C0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.XmlDocumentation.Analyzers", "Bodu.CodeStyle.XmlDocumentation.Analyzers\src\Bodu.CodeStyle.XmlDocumentation.Analyzers.csproj", "{C4052A2F-C194-44E6-8D32-AEACB4678AFD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.XmlDocumentation.Analyzers.Test", "Bodu.CodeStyle.XmlDocumentation.Analyzers\test\Bodu.CodeStyle.XmlDocumentation.Analyzers.Test.csproj", "{24C9EA98-E833-496B-9BC0-13516BCBBB34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Bodu.CodeStyle.XmlDocumentation.CodeFixes", "Bodu.CodeStyle.XmlDocumentation.CodeFixes", "{D3486BF0-7C6D-4A41-BE6D-B82EEB77BA55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.XmlDocumentation.CodeFixes", "Bodu.CodeStyle.XmlDocumentation.CodeFixes\src\Bodu.CodeStyle.XmlDocumentation.CodeFixes.csproj", "{DD353DD0-4522-496B-B0B2-996AFF976683}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.XmlDocumentation.CodeFixes.Test", "Bodu.CodeStyle.XmlDocumentation.CodeFixes\test\Bodu.CodeStyle.XmlDocumentation.CodeFixes.Test.csproj", "{CBD92601-5E51-4446-85CA-0EBEF040A7CA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.XmlDocumentation", "Bodu.CodeStyle.XmlDocumentation\Bodu.CodeStyle.XmlDocumentation.csproj", "{27742E55-1E0E-4E8C-9554-779FFB7095F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bodu.CodeStyle.Test.Common", "Bodu.CodeStyle.Test.Common\Bodu.CodeStyle.Test.Common.csproj", "{986DEB98-EAC7-4CD6-97C9-48C9F5084401}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B49BDE5F-29B7-4D5D-A93D-51A09DAD9025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B49BDE5F-29B7-4D5D-A93D-51A09DAD9025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B49BDE5F-29B7-4D5D-A93D-51A09DAD9025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B49BDE5F-29B7-4D5D-A93D-51A09DAD9025}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AFCA19D7-884E-4AAC-BEAE-4609258E2614}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFCA19D7-884E-4AAC-BEAE-4609258E2614}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFCA19D7-884E-4AAC-BEAE-4609258E2614}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFCA19D7-884E-4AAC-BEAE-4609258E2614}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4052A2F-C194-44E6-8D32-AEACB4678AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4052A2F-C194-44E6-8D32-AEACB4678AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4052A2F-C194-44E6-8D32-AEACB4678AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4052A2F-C194-44E6-8D32-AEACB4678AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24C9EA98-E833-496B-9BC0-13516BCBBB34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24C9EA98-E833-496B-9BC0-13516BCBBB34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24C9EA98-E833-496B-9BC0-13516BCBBB34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24C9EA98-E833-496B-9BC0-13516BCBBB34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD353DD0-4522-496B-B0B2-996AFF976683}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD353DD0-4522-496B-B0B2-996AFF976683}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD353DD0-4522-496B-B0B2-996AFF976683}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD353DD0-4522-496B-B0B2-996AFF976683}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBD92601-5E51-4446-85CA-0EBEF040A7CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBD92601-5E51-4446-85CA-0EBEF040A7CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBD92601-5E51-4446-85CA-0EBEF040A7CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBD92601-5E51-4446-85CA-0EBEF040A7CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27742E55-1E0E-4E8C-9554-779FFB7095F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27742E55-1E0E-4E8C-9554-779FFB7095F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27742E55-1E0E-4E8C-9554-779FFB7095F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27742E55-1E0E-4E8C-9554-779FFB7095F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{986DEB98-EAC7-4CD6-97C9-48C9F5084401}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{986DEB98-EAC7-4CD6-97C9-48C9F5084401}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{986DEB98-EAC7-4CD6-97C9-48C9F5084401}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{986DEB98-EAC7-4CD6-97C9-48C9F5084401}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B49BDE5F-29B7-4D5D-A93D-51A09DAD9025} = {CC19A894-3798-46AC-AE0E-01BE34E3613F}
+		{AFCA19D7-884E-4AAC-BEAE-4609258E2614} = {CC19A894-3798-46AC-AE0E-01BE34E3613F}
+		{C4052A2F-C194-44E6-8D32-AEACB4678AFD} = {BC36C8AC-A6A5-4C9A-BDEA-88EE14232C0B}
+		{24C9EA98-E833-496B-9BC0-13516BCBBB34} = {BC36C8AC-A6A5-4C9A-BDEA-88EE14232C0B}
+		{DD353DD0-4522-496B-B0B2-996AFF976683} = {D3486BF0-7C6D-4A41-BE6D-B82EEB77BA55}
+		{CBD92601-5E51-4446-85CA-0EBEF040A7CA} = {D3486BF0-7C6D-4A41-BE6D-B82EEB77BA55}
+	EndGlobalSection
+EndGlobal
