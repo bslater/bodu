@@ -54,14 +54,12 @@ The packaging project produces a NuGet that lays out the analyzer, code fix, and
 (controlled by the `BoduCodeStyleAnalyzers` MSBuild property, default `true`). The analyzer is restored from the
 `bodu-local` source declared in the repo-root `NuGet.config`, which points at `./local-packages/`.
 
-Local-dev workflow:
+The packed `.nupkg` is committed to `local-packages/` so a fresh clone restores out-of-the-box without an
+explicit pack step. After changing anything under `Bodu.CodeStyle/`, regenerate it:
 
 ```bash
-# From the repository root — populate local-packages/ with the freshly-packed analyzer.
+# From the repository root.
 bash bld/pack-codestyle-analyzer.sh
-
-# Then build any Bodu library project normally; restore will pick up the analyzer.
-dotnet build Bodu.Core/src/Bodu.Core.csproj -c Release
 ```
 
 CI runs the same `dotnet pack` step before restoring the library projects (see
