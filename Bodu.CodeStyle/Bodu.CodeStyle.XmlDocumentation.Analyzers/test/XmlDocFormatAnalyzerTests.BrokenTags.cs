@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatAnalyzerTests.BrokenTags.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenSummaryProseSplitAcrossLines_ShouldReport()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>The thing.\r\n" +
@@ -36,7 +36,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 5, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -46,7 +46,7 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenInlineTagAttributesSplitAcrossLines_ShouldReport()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>\r\n" +
@@ -62,7 +62,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 7, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -72,7 +72,7 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenBlockTagNameSplitMidName_ShouldNotReport()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <sum\r\n" +
@@ -82,6 +82,6 @@ public partial class XmlDocFormatAnalyzerTests
 
         CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test = CreateTest(source);
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.Malformed.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenOpeningTagHasNoClose_ShouldLeaveUnchanged()
     {
-        string input = "/// <summary>Foo bar.\r\n";
+        var input = "/// <summary>Foo bar.\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -31,7 +31,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenClosingTagHasNoOpen_ShouldLeaveUnchanged()
     {
-        string input = "/// Foo bar.</summary>\r\n";
+        var input = "/// Foo bar.</summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -45,7 +45,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenTagNamesDoNotMatch_ShouldLeaveUnchanged()
     {
-        string input = "/// <summary>Foo.</remarks>\r\n";
+        var input = "/// <summary>Foo.</remarks>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -59,7 +59,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenNestedTagsClosedOutOfOrder_ShouldLeaveUnchanged()
     {
-        string input = "/// <summary><para>x</summary></para>\r\n";
+        var input = "/// <summary><para>x</summary></para>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -74,7 +74,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenInlineTagHasNoClose_ShouldLeaveUnchanged()
     {
-        string input = "/// <summary>See <c>foo bar.</summary>\r\n";
+        var input = "/// <summary>See <c>foo bar.</summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -88,7 +88,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenInputIsOnlyDocPrefix_ShouldLeaveUnchanged()
     {
-        string input = "/// \r\n";
+        var input = "/// \r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 

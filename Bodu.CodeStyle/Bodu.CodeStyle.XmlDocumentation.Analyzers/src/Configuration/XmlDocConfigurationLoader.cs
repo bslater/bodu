@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocConfigurationLoader.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -79,8 +79,8 @@ internal static class XmlDocConfigurationLoader
 
         XmlDocFormatOptions current = compilationOptions;
 
-        if (treeOptions.TryGetValue(EditorConfigKeys.MaxLineLength, out string? maxLineLength) &&
-            int.TryParse(maxLineLength, out int parsedMaxLineLength) &&
+        if (treeOptions.TryGetValue(EditorConfigKeys.MaxLineLength, out var maxLineLength) &&
+            int.TryParse(maxLineLength, out var parsedMaxLineLength) &&
             parsedMaxLineLength > 0)
         {
             current = current.WithMaxLineLength(parsedMaxLineLength);
@@ -98,7 +98,7 @@ internal static class XmlDocConfigurationLoader
     {
         if (treeOptions is null) throw new ArgumentNullException(nameof(treeOptions));
 
-        if (treeOptions.TryGetValue(EditorConfigKeys.EndOfLine, out string? raw))
+        if (treeOptions.TryGetValue(EditorConfigKeys.EndOfLine, out var raw))
         {
             switch (raw)
             {
@@ -116,7 +116,7 @@ internal static class XmlDocConfigurationLoader
 
     private static bool IsConfigFile(string path)
     {
-        string fileName = Path.GetFileName(path);
+        var fileName = Path.GetFileName(path);
         return string.Equals(fileName, "bodu.xmldocstyle.json", StringComparison.OrdinalIgnoreCase);
     }
 }

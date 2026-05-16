@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DocLayout.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,15 +38,15 @@ internal static class DocLayout
         if (options is null) throw new ArgumentNullException(nameof(options));
         if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), "Content budget must be positive.");
 
-        List<string> output = new List<string>();
+        var output = new List<string>();
         ComposeRange(tokens, 0, tokens.Count, options, contentBudget, output);
         return output;
     }
 
     private static int ComposeRange(IReadOnlyList<XmlDocToken> tokens, int start, int end, XmlDocFormatOptions options, int contentBudget, List<string> output)
     {
-        List<XmlDocToken> currentRun = new List<XmlDocToken>();
-        int position = start;
+        var currentRun = new List<XmlDocToken>();
+        var position = start;
 
         while (position < end)
         {
@@ -54,15 +54,15 @@ internal static class DocLayout
 
             if (token.Kind == XmlDocTokenKind.BlockStart)
             {
-                if (TryFindMatchingEnd(tokens, position, end, token.TagName!, out int matchEnd))
+                if (TryFindMatchingEnd(tokens, position, end, token.TagName!, out var matchEnd))
                 {
                     // ForceMultilineTags and SingleLineWhenShortTags are the authoritative source of truth for
                     // layout. Per-tag policies (XmlDocTagPolicy.Layout) carry supplementary metadata such as
                     // self-closing attribute spacing but do NOT promote a tag into a layout class — that way a
                     // JSON config that narrows ForceMultilineTags can take effect without also having to
                     // override every tagPolicy entry.
-                    bool forceMultiline = options.ForceMultilineTags.Contains(token.TagName!);
-                    bool singleLineCandidate = options.SingleLineWhenShortTags.Contains(token.TagName!);
+                    var forceMultiline = options.ForceMultilineTags.Contains(token.TagName!);
+                    var singleLineCandidate = options.SingleLineWhenShortTags.Contains(token.TagName!);
 
                     if (forceMultiline)
                     {
@@ -98,8 +98,8 @@ internal static class DocLayout
 
     private static bool TryFindMatchingEnd(IReadOnlyList<XmlDocToken> tokens, int openIndex, int end, string tagName, out int closeIndex)
     {
-        int depth = 1;
-        for (int i = openIndex + 1; i < end; i++)
+        var depth = 1;
+        for (var i = openIndex + 1; i < end; i++)
         {
             XmlDocToken t = tokens[i];
             if (t.Kind == XmlDocTokenKind.BlockStart && string.Equals(t.TagName, tagName, StringComparison.Ordinal))
@@ -126,12 +126,12 @@ internal static class DocLayout
         XmlDocToken openToken = tokens[openIndex];
         XmlDocToken closeToken = tokens[closeIndex];
 
-        StringBuilder candidate = new StringBuilder();
+        var candidate = new StringBuilder();
         candidate.Append(openToken.RawText);
 
-        bool pendingWhitespace = false;
-        bool hadContent = false;
-        for (int i = openIndex + 1; i < closeIndex; i++)
+        var pendingWhitespace = false;
+        var hadContent = false;
+        for (var i = openIndex + 1; i < closeIndex; i++)
         {
             XmlDocToken t = tokens[i];
             switch (t.Kind)
@@ -164,8 +164,8 @@ internal static class DocLayout
         candidate.Append(closeToken.RawText);
 
         XmlDocTagPolicy policy = options.GetTagPolicy(openToken.TagName!);
-        int singleLineLimit = policy.MaxSingleLineLength ?? options.MaxLineLength;
-        string singleLine = candidate.ToString();
+        var singleLineLimit = policy.MaxSingleLineLength ?? options.MaxLineLength;
+        var singleLine = candidate.ToString();
         if (singleLine.Length <= singleLineLimit && singleLine.Length <= contentBudget)
         {
             output.Add(singleLine);
@@ -175,15 +175,15 @@ internal static class DocLayout
         // Expanded form: open on its own line, content on subsequent lines, close on its own line.
         output.Add(openToken.RawText);
 
-        List<XmlDocToken> contentTokens = new List<XmlDocToken>();
-        for (int i = openIndex + 1; i < closeIndex; i++)
+        var contentTokens = new List<XmlDocToken>();
+        for (var i = openIndex + 1; i < closeIndex; i++)
         {
             contentTokens.Add(tokens[i]);
         }
 
-        List<string> innerLines = new List<string>();
+        var innerLines = new List<string>();
         ComposeRange(contentTokens, 0, contentTokens.Count, options, contentBudget, innerLines);
-        foreach (string line in innerLines)
+        foreach (var line in innerLines)
         {
             output.Add(line);
         }
@@ -198,8 +198,8 @@ internal static class DocLayout
             return;
         }
 
-        List<string> atoms = new List<string>();
-        bool pendingWhitespace = false;
+        var atoms = new List<string>();
+        var pendingWhitespace = false;
         foreach (XmlDocToken token in run)
         {
             switch (token.Kind)
@@ -244,7 +244,7 @@ internal static class DocLayout
         }
 
         IEnumerable<string> wrapped = DocWrapper.Wrap(atoms, contentBudget);
-        foreach (string line in wrapped)
+        foreach (var line in wrapped)
         {
             output.Add(line);
         }
@@ -258,7 +258,7 @@ internal static class DocLayout
         }
 
         XmlDocTagPolicy policy = options.GetTagPolicy(token.TagName);
-        bool? wantTrailingSpace = policy.SelfClosingTrailingSpace;
+        var wantTrailingSpace = policy.SelfClosingTrailingSpace;
         if (wantTrailingSpace is null)
         {
             return token.RawText;
@@ -269,19 +269,19 @@ internal static class DocLayout
 
     private static string NormalizeSelfClosingTrailingSpace(string rawText, bool wantSpace)
     {
-        int length = rawText.Length;
+        var length = rawText.Length;
         if (length < 3 || rawText[length - 1] != '>' || rawText[length - 2] != '/')
         {
             return rawText;
         }
 
-        int trimmedEnd = length - 2;
+        var trimmedEnd = length - 2;
         while (trimmedEnd > 0 && (rawText[trimmedEnd - 1] == ' ' || rawText[trimmedEnd - 1] == '\t'))
         {
             trimmedEnd--;
         }
 
-        string head = rawText.Substring(0, trimmedEnd);
+        var head = rawText.Substring(0, trimmedEnd);
         return wantSpace ? head + " />" : head + "/>";
     }
 }

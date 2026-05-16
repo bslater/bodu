@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberOrderAnalysis.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ internal static class MemberOrderAnalysis
         if (member is null) throw new ArgumentNullException(nameof(member));
         if (classifier is null) throw new ArgumentNullException(nameof(classifier));
 
-        MemberInput input = MemberInput.FromSyntax(member);
+        var input = MemberInput.FromSyntax(member);
         ClassifiedMember classified = classifier.Classify(input);
         return (classified.GroupRank, classified.AccessibilityRank, originalIndex);
     }
@@ -47,7 +47,7 @@ internal static class MemberOrderAnalysis
         if (classifier is null) throw new ArgumentNullException(nameof(classifier));
 
         IReadOnlyList<(int GroupRank, int AccessibilityRank, int OriginalIndex)> keys = ResolveAllKeys(type, classifier);
-        for (int i = 1; i < keys.Count; i++)
+        for (var i = 1; i < keys.Count; i++)
         {
             if (CompareKeys(keys[i - 1], keys[i]) > 0)
             {
@@ -66,8 +66,8 @@ internal static class MemberOrderAnalysis
         TypeDeclarationSyntax type,
         MemberClassifier classifier)
     {
-        List<(int, int, int)> keys = new List<(int, int, int)>(type.Members.Count);
-        for (int i = 0; i < type.Members.Count; i++)
+        var keys = new List<(int, int, int)>(type.Members.Count);
+        for (var i = 0; i < type.Members.Count; i++)
         {
             keys.Add(ResolveOrderKey(type.Members[i], i, classifier));
         }
@@ -98,10 +98,10 @@ internal static class MemberOrderAnalysis
         (int GroupRank, int AccessibilityRank, int OriginalIndex) left,
         (int GroupRank, int AccessibilityRank, int OriginalIndex) right)
     {
-        int g = left.GroupRank.CompareTo(right.GroupRank);
+        var g = left.GroupRank.CompareTo(right.GroupRank);
         if (g != 0) return g;
 
-        int a = left.AccessibilityRank.CompareTo(right.AccessibilityRank);
+        var a = left.AccessibilityRank.CompareTo(right.AccessibilityRank);
         if (a != 0) return a;
 
         return left.OriginalIndex.CompareTo(right.OriginalIndex);

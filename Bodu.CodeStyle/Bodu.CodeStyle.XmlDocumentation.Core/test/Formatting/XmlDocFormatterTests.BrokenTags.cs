@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.BrokenTags.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenSummaryProseSplitAcrossLines_ShouldRejoinIntoSingleContentLine()
     {
-        string input =
+        var input =
             "/// <summary>The thing.\r\n" +
             "    /// More text.</summary>\r\n";
 
@@ -39,7 +39,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenInlineTagAttributesSplitAcrossLines_ShouldRejoinTag()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// See <see cref=\"Sample\"\r\n" +
             "    ///      langword=\"null\" /> for details.\r\n" +
@@ -58,7 +58,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenInlineCodeBodySplitAcrossLines_ShouldRejoinTag()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// Match <c>[A-Z]\r\n" +
             "    /// [0-9]+</c> for tokens.\r\n" +
@@ -79,7 +79,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenBlockOpeningTagSplitMidName_ShouldLeaveUnchanged()
     {
-        string input =
+        var input =
             "/// <sum\r\n" +
             "    /// mary>foo</summary>\r\n";
 
@@ -97,7 +97,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenBlockClosingTagSplitMidName_ShouldLeaveUnchanged()
     {
-        string input =
+        var input =
             "/// <summary>foo</summ\r\n" +
             "    /// ary>\r\n";
 
@@ -116,7 +116,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenParamAttributeNameSplitMidToken_ShouldRejoinTagOntoOneLine()
     {
-        string input =
+        var input =
             "/// <param na\r\n" +
             "    /// me=\"x\">The thing.</param>\r\n";
 
@@ -135,7 +135,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenParamAttributeValueSplitAcrossLines_ShouldRejoinTag()
     {
-        string input =
+        var input =
             "/// <param name=\"x\"\r\n" +
             "    ///        >The thing.</param>\r\n";
 
@@ -154,7 +154,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenOpeningTagAtEndOfLineWithContentOnNext_ShouldReformatToBlock()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// First line.\r\n" +
             "    /// Second line.</summary>\r\n";
@@ -176,7 +176,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenParamHasExtraWhitespace_ShouldCollapseToCanonical()
     {
-        string input = "/// <param   name=\"x\">  The   thing.   </param>\r\n";
+        var input = "/// <param   name=\"x\">  The   thing.   </param>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 

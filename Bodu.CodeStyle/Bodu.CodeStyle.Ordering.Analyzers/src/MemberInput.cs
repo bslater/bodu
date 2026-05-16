@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberInput.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -59,12 +59,12 @@ internal sealed class MemberInput : IMemberInput
     {
         if (member is null) throw new ArgumentNullException(nameof(member));
 
-        string declarationKind = member.Kind().ToString();
+        var declarationKind = member.Kind().ToString();
         AccessibilityRank accessibility = ResolveAccessibility(member);
-        bool isStatic = HasModifier(member, SyntaxKind.StaticKeyword);
-        bool isReadOnly = HasModifier(member, SyntaxKind.ReadOnlyKeyword);
-        bool isConst = HasModifier(member, SyntaxKind.ConstKeyword);
-        bool isExplicitInterface = HasExplicitInterfaceSpecifier(member);
+        var isStatic = HasModifier(member, SyntaxKind.StaticKeyword);
+        var isReadOnly = HasModifier(member, SyntaxKind.ReadOnlyKeyword);
+        var isConst = HasModifier(member, SyntaxKind.ConstKeyword);
+        var isExplicitInterface = HasExplicitInterfaceSpecifier(member);
 
         return new MemberInput(declarationKind, accessibility, isStatic, isReadOnly, isConst, isExplicitInterface);
     }
@@ -72,10 +72,10 @@ internal sealed class MemberInput : IMemberInput
     private static AccessibilityRank ResolveAccessibility(MemberDeclarationSyntax member)
     {
         SyntaxTokenList modifiers = member.Modifiers;
-        bool hasPublic = false;
-        bool hasProtected = false;
-        bool hasInternal = false;
-        bool hasPrivate = false;
+        var hasPublic = false;
+        var hasProtected = false;
+        var hasInternal = false;
+        var hasPrivate = false;
         foreach (SyntaxToken token in modifiers)
         {
             switch (token.Kind())

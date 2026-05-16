@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatCodeFixProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,7 +48,7 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
 
         foreach (Diagnostic diagnostic in context.Diagnostics)
         {
-            if (!diagnostic.Properties.TryGetValue(XmlDocFormatAnalyzer.FormattedTextPropertyKey, out string? formattedText) || formattedText is null)
+            if (!diagnostic.Properties.TryGetValue(XmlDocFormatAnalyzer.FormattedTextPropertyKey, out var formattedText) || formattedText is null)
             {
                 continue;
             }
@@ -85,13 +85,13 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
     {
         SyntaxToken token = trivia.Token;
         SyntaxTriviaList leading = token.LeadingTrivia;
-        int index = leading.IndexOf(trivia);
+        var index = leading.IndexOf(trivia);
         if (index < 0)
         {
             return false;
         }
 
-        for (int i = index + 1; i < leading.Count; i++)
+        for (var i = index + 1; i < leading.Count; i++)
         {
             if (leading[i].IsDirective)
             {
@@ -115,7 +115,7 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
 
         SyntaxToken token = trivia.Token;
         SyntaxTriviaList leading = token.LeadingTrivia;
-        int index = leading.IndexOf(trivia);
+        var index = leading.IndexOf(trivia);
         if (index < 0) return document;
 
         IEnumerable<SyntaxTrivia> rebuilt = leading.Take(index).Concat(replacement).Concat(leading.Skip(index + 1));

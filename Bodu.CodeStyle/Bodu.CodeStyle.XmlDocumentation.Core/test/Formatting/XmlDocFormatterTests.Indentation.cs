@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.Indentation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenBaseIndentIsEightSpaces_ShouldPreserveIt()
     {
-        string input = "/// <summary>Foo.</summary>\r\n";
+        var input = "/// <summary>Foo.</summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: "        "), CreateOptions());
 
@@ -32,7 +32,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenBaseIndentIsEmpty_ShouldEmitNoLeadingWhitespace()
     {
-        string input = "/// <summary>Foo.</summary>\r\n";
+        var input = "/// <summary>Foo.</summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(baseIndent: string.Empty), CreateOptions());
 
@@ -50,7 +50,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenBaseIndentIsTab_ShouldPreserveTab()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "\t/// Foo.\r\n" +
             "\t/// </summary>\r\n";

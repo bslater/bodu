@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CodeFixKatTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,17 +33,17 @@ public sealed class CodeFixKatTests
     /// </summary>
     public static IEnumerable<object[]> Kats()
     {
-        foreach (object[] row in BoduCodeStyleKats.Data(CodeStyleKatArea.XmlDocumentationCodeFix))
+        foreach (var row in BoduCodeStyleKats.Data(CodeStyleKatArea.XmlDocumentationCodeFix))
         {
             yield return row;
         }
 
-        foreach (object[] row in BoduCodeStyleKats.Data(CodeStyleKatArea.Configuration))
+        foreach (var row in BoduCodeStyleKats.Data(CodeStyleKatArea.Configuration))
         {
             yield return row;
         }
 
-        foreach (object[] row in BoduCodeStyleKats.Data(CodeStyleKatArea.Safety))
+        foreach (var row in BoduCodeStyleKats.Data(CodeStyleKatArea.Safety))
         {
             yield return row;
         }
@@ -58,10 +58,10 @@ public sealed class CodeFixKatTests
     {
         if (kat is null) throw new ArgumentNullException(nameof(kat));
 
-        string input = NormalizeToCrlf(kat.Input);
-        string expected = NormalizeToCrlf(kat.Expected);
+        var input = NormalizeToCrlf(kat.Input);
+        var expected = NormalizeToCrlf(kat.Expected);
 
-        CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier> test =
+        var test =
             new CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier>
             {
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
@@ -98,7 +98,7 @@ public sealed class CodeFixKatTests
             test.ExpectedDiagnostics.Add(expectedDiagnostic);
         }
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public sealed class CodeFixKatTests
 
         if (!string.IsNullOrEmpty(kat.AnalyzerConfig))
         {
-            int? max = ParseMaxLineLength(kat.AnalyzerConfig!);
+            var max = ParseMaxLineLength(kat.AnalyzerConfig!);
             if (max.HasValue)
             {
                 options = options.WithMaxLineLength(max.Value);
@@ -140,16 +140,16 @@ public sealed class CodeFixKatTests
 
     private static int? ParseMaxLineLength(string analyzerConfig)
     {
-        foreach (string line in analyzerConfig.Split('\n'))
+        foreach (var line in analyzerConfig.Split('\n'))
         {
-            string trimmed = line.Trim();
+            var trimmed = line.Trim();
             const string Key = "bodu_xmldoc_max_line_length";
-            int eq = trimmed.IndexOf('=');
+            var eq = trimmed.IndexOf('=');
             if (eq <= 0) continue;
-            string keyPart = trimmed.Substring(0, eq).Trim();
+            var keyPart = trimmed.Substring(0, eq).Trim();
             if (!string.Equals(keyPart, Key, StringComparison.Ordinal)) continue;
-            string valuePart = trimmed.Substring(eq + 1).Trim();
-            if (int.TryParse(valuePart, out int parsed) && parsed > 0)
+            var valuePart = trimmed.Substring(eq + 1).Trim();
+            if (int.TryParse(valuePart, out var parsed) && parsed > 0)
             {
                 return parsed;
             }
@@ -168,7 +168,7 @@ public sealed class CodeFixKatTests
         }
 
         SyntaxNode root = tree.GetRoot();
-        XmlDocFormatter formatter = new XmlDocFormatter();
+        var formatter = new XmlDocFormatter();
 
         foreach (SyntaxTrivia trivia in root.DescendantTrivia(descendIntoTrivia: true))
         {
@@ -177,8 +177,8 @@ public sealed class CodeFixKatTests
                 continue;
             }
 
-            string baseIndent = ResolveBaseIndent(trivia);
-            XmlDocFormatContext context = new XmlDocFormatContext(baseIndent, "\r\n", XmlDocMemberKindHint.Unknown);
+            var baseIndent = ResolveBaseIndent(trivia);
+            var context = new XmlDocFormatContext(baseIndent, "\r\n", XmlDocMemberKindHint.Unknown);
             XmlDocFormatResult result = formatter.FormatTrivia(trivia.ToFullString(), context, options);
             if (!result.Changed)
             {
@@ -198,7 +198,7 @@ public sealed class CodeFixKatTests
     private static bool IsGeneratedFilePath(string filePath)
     {
         if (string.IsNullOrEmpty(filePath)) return false;
-        string fileName = System.IO.Path.GetFileName(filePath);
+        var fileName = System.IO.Path.GetFileName(filePath);
         return fileName.EndsWith(".g.cs", StringComparison.OrdinalIgnoreCase) ||
                fileName.EndsWith(".designer.cs", StringComparison.OrdinalIgnoreCase) ||
                fileName.EndsWith(".generated.cs", StringComparison.OrdinalIgnoreCase);
@@ -208,7 +208,7 @@ public sealed class CodeFixKatTests
     {
         SyntaxToken token = trivia.Token;
         SyntaxTriviaList leading = token.LeadingTrivia;
-        int index = leading.IndexOf(trivia);
+        var index = leading.IndexOf(trivia);
         if (index <= 0) return string.Empty;
 
         SyntaxTrivia previous = leading[index - 1];
@@ -219,7 +219,9 @@ public sealed class CodeFixKatTests
 
     private static string NormalizeToCrlf(string text)
     {
-        string normalized = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
+        var normalized = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
         return normalized.EndsWith("\r\n", StringComparison.Ordinal) ? normalized : normalized + "\r\n";
     }
+
+    public TestContext TestContext { get; set; }
 }

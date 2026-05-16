@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatAnalyzer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -51,7 +51,7 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
             compilationContext.Options.AdditionalFiles,
             compilationContext.CancellationToken);
 
-        XmlDocFormatter formatter = new XmlDocFormatter();
+        var formatter = new XmlDocFormatter();
 
         compilationContext.RegisterSyntaxTreeAction(treeContext =>
             AnalyzeTree(treeContext, compilationOptions, formatter));
@@ -67,7 +67,7 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
 
         AnalyzerConfigOptions treeOptions = treeContext.Options.AnalyzerConfigOptionsProvider.GetOptions(treeContext.Tree);
         XmlDocFormatOptions options = XmlDocConfigurationLoader.ApplyEditorConfigOverrides(compilationOptions, treeOptions);
-        string lineEnding = XmlDocConfigurationLoader.ResolveLineEnding(treeOptions);
+        var lineEnding = XmlDocConfigurationLoader.ResolveLineEnding(treeOptions);
 
         SyntaxNode root = treeContext.Tree.GetRoot(treeContext.CancellationToken);
         foreach (SyntaxTrivia trivia in root.DescendantTrivia(descendIntoTrivia: true))
@@ -79,10 +79,10 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
                 continue;
             }
 
-            string triviaText = trivia.ToFullString();
-            string baseIndent = ResolveBaseIndent(trivia);
+            var triviaText = trivia.ToFullString();
+            var baseIndent = ResolveBaseIndent(trivia);
 
-            XmlDocFormatContext formatContext = new XmlDocFormatContext(baseIndent, lineEnding, XmlDocMemberKindHint.Unknown);
+            var formatContext = new XmlDocFormatContext(baseIndent, lineEnding, XmlDocMemberKindHint.Unknown);
             XmlDocFormatResult result = formatter.FormatTrivia(triviaText, formatContext, options);
 
             if (!result.Changed) continue;
@@ -92,8 +92,8 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
 
             // Use FullSpan to include the leading "///" characters in the diagnostic location so that the
             // editor squiggle covers the full doc trivia text rather than just the structured XML payload.
-            Location location = Location.Create(treeContext.Tree, trivia.FullSpan);
-            Diagnostic diagnostic = Diagnostic.Create(
+            var location = Location.Create(treeContext.Tree, trivia.FullSpan);
+            var diagnostic = Diagnostic.Create(
                 DiagnosticDescriptors.XmlDocumentationFormatting,
                 location,
                 properties);
@@ -106,7 +106,7 @@ public sealed class XmlDocFormatAnalyzer : DiagnosticAnalyzer
     {
         SyntaxToken token = trivia.Token;
         SyntaxTriviaList leading = token.LeadingTrivia;
-        int index = leading.IndexOf(trivia);
+        var index = leading.IndexOf(trivia);
         if (index <= 0) return string.Empty;
 
         SyntaxTrivia previous = leading[index - 1];

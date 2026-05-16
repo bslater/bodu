@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberOrderCodeFixProvider.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -49,7 +49,7 @@ public sealed class MemberOrderCodeFixProvider : CodeFixProvider
         foreach (Diagnostic diagnostic in context.Diagnostics)
         {
             SyntaxToken identifier = root.FindToken(diagnostic.Location.SourceSpan.Start);
-            TypeDeclarationSyntax? type = identifier.Parent as TypeDeclarationSyntax;
+            var type = identifier.Parent as TypeDeclarationSyntax;
             if (type is null) continue;
 
             if (MemberOrderAnalysis.HasPreprocessorDirectives(type))
@@ -71,30 +71,30 @@ public sealed class MemberOrderCodeFixProvider : CodeFixProvider
         SyntaxNode? root = await document.GetSyntaxRootAsync(cancellationToken).ConfigureAwait(false);
         if (root is null) return document;
 
-        MemberClassifier classifier = new MemberClassifier(DefaultBoduOrderingPolicy.Create());
+        var classifier = new MemberClassifier(DefaultBoduOrderingPolicy.Create());
         IReadOnlyList<MemberDeclarationSyntax> originalMembers = type.Members;
         List<(MemberDeclarationSyntax Member, (int GroupRank, int AccessibilityRank, int OriginalIndex) Key)> annotated =
             new List<(MemberDeclarationSyntax, (int, int, int))>(originalMembers.Count);
-        for (int i = 0; i < originalMembers.Count; i++)
+        for (var i = 0; i < originalMembers.Count; i++)
         {
             annotated.Add((originalMembers[i], MemberOrderAnalysis.ResolveOrderKey(originalMembers[i], i, classifier)));
         }
 
         annotated.Sort((a, b) =>
         {
-            int g = a.Key.GroupRank.CompareTo(b.Key.GroupRank);
+            var g = a.Key.GroupRank.CompareTo(b.Key.GroupRank);
             if (g != 0) return g;
 
-            int acc = a.Key.AccessibilityRank.CompareTo(b.Key.AccessibilityRank);
+            var acc = a.Key.AccessibilityRank.CompareTo(b.Key.AccessibilityRank);
             if (acc != 0) return acc;
 
             return a.Key.OriginalIndex.CompareTo(b.Key.OriginalIndex);
         });
 
-        string indent = ResolveMemberIndent(originalMembers);
-        List<MemberDeclarationSyntax> sortedMembers = annotated.Select(pair => pair.Member).ToList();
-        List<MemberDeclarationSyntax> normalized = new List<MemberDeclarationSyntax>(sortedMembers.Count);
-        for (int i = 0; i < sortedMembers.Count; i++)
+        var indent = ResolveMemberIndent(originalMembers);
+        var sortedMembers = annotated.Select(pair => pair.Member).ToList();
+        var normalized = new List<MemberDeclarationSyntax>(sortedMembers.Count);
+        for (var i = 0; i < sortedMembers.Count; i++)
         {
             normalized.Add(NormalizeMemberLeadingTrivia(sortedMembers[i], isFirst: i == 0, indent));
         }
@@ -109,7 +109,7 @@ public sealed class MemberOrderCodeFixProvider : CodeFixProvider
         foreach (MemberDeclarationSyntax member in members)
         {
             SyntaxTriviaList leading = member.GetLeadingTrivia();
-            for (int i = leading.Count - 1; i >= 0; i--)
+            for (var i = leading.Count - 1; i >= 0; i--)
             {
                 if (leading[i].IsKind(SyntaxKind.WhitespaceTrivia))
                 {
@@ -129,8 +129,8 @@ public sealed class MemberOrderCodeFixProvider : CodeFixProvider
     private static MemberDeclarationSyntax NormalizeMemberLeadingTrivia(MemberDeclarationSyntax member, bool isFirst, string indent)
     {
         SyntaxTriviaList leading = member.GetLeadingTrivia();
-        int firstSignificant = -1;
-        for (int i = 0; i < leading.Count; i++)
+        var firstSignificant = -1;
+        for (var i = 0; i < leading.Count; i++)
         {
             if (!leading[i].IsKind(SyntaxKind.WhitespaceTrivia) && !leading[i].IsKind(SyntaxKind.EndOfLineTrivia))
             {
@@ -148,7 +148,7 @@ public sealed class MemberOrderCodeFixProvider : CodeFixProvider
         // one extra newline so that the previous `\r\n` + our `\r\n` renders a single blank-line gap.
         // Significant trivia (doc comments, attributes) is preserved with the indent inserted before it so the
         // first physical line of the member declaration is correctly indented.
-        List<SyntaxTrivia> rebuilt = new List<SyntaxTrivia>();
+        var rebuilt = new List<SyntaxTrivia>();
         if (!isFirst)
         {
             rebuilt.Add(SyntaxFactory.EndOfLine("\r\n"));

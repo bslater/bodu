@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DefaultBoduOrderingPolicy.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public static class DefaultBoduOrderingPolicy
     /// <returns>A fresh options instance carrying the Bodu profile.</returns>
     public static MemberOrderOptions Create()
     {
-        ImmutableArray<MemberGroupRule> groups = ImmutableArray.Create(
+        var groups = ImmutableArray.Create(
             new MemberGroupRule("Constants", ImmutableArray.Create(MemberKind.Constant), ImmutableArray<string>.Empty),
             new MemberGroupRule("StaticReadonlyFields", ImmutableArray.Create(MemberKind.StaticReadonlyField), ImmutableArray<string>.Empty),
             new MemberGroupRule("StaticFields", ImmutableArray.Create(MemberKind.StaticField), ImmutableArray<string>.Empty),
@@ -35,7 +35,7 @@ public static class DefaultBoduOrderingPolicy
             new MemberGroupRule("ExplicitInterfaceMembers", ImmutableArray.Create(MemberKind.ExplicitInterfaceMember), ImmutableArray<string>.Empty),
             new MemberGroupRule("NestedTypes", ImmutableArray.Create(MemberKind.NestedType), ImmutableArray<string>.Empty));
 
-        ImmutableArray<AccessibilityRank> accessibilityOrder = ImmutableArray.Create(
+        var accessibilityOrder = ImmutableArray.Create(
             AccessibilityRank.Public,
             AccessibilityRank.ProtectedInternal,
             AccessibilityRank.Protected,
@@ -44,7 +44,7 @@ public static class DefaultBoduOrderingPolicy
             AccessibilityRank.Private,
             AccessibilityRank.NotApplicable);
 
-        ImmutableArray<string> modifierOrder = ImmutableArray.Create(
+        var modifierOrder = ImmutableArray.Create(
             "public",
             "protected",
             "internal",

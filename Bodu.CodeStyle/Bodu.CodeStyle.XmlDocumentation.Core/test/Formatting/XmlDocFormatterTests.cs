@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -25,7 +25,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenAlreadyFormatted_ShouldReturnUnchanged()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// Foo.\r\n" +
             "    /// </summary>\r\n";
@@ -43,7 +43,7 @@ public partial class XmlDocFormatterTests
     [TestCategory(TestCategories.Smoke)]
     public void Format_WhenSummaryIsSingleLine_ShouldExpandToMultiline()
     {
-        string input = "/// <summary>Foo bar.</summary>\r\n";
+        var input = "/// <summary>Foo bar.</summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -62,7 +62,7 @@ public partial class XmlDocFormatterTests
     [TestCategory(TestCategories.Smoke)]
     public void Format_WhenRunTwice_ShouldBeIdempotent()
     {
-        string input = "/// <summary>Lorem ipsum dolor.</summary>\r\n";
+        var input = "/// <summary>Lorem ipsum dolor.</summary>\r\n";
 
         XmlDocFormatter formatter = CreateFormatter();
         XmlDocFormatOptions options = CreateOptions();
@@ -81,7 +81,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenMalformedXmlDoc_ShouldLeaveUnchangedAndReportNoChange()
     {
-        string input = "/// <summary>Foo bar.\r\n";
+        var input = "/// <summary>Foo bar.\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DocIndent.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,17 +32,17 @@ internal static class DocIndent
         if (baseIndent is null) throw new ArgumentNullException(nameof(baseIndent));
         if (documentationPrefix is null) throw new ArgumentNullException(nameof(documentationPrefix));
 
-        string prefixNoTrailingSpace = TrimPrefixTrailingSpace(documentationPrefix);
+        var prefixNoTrailingSpace = TrimPrefixTrailingSpace(documentationPrefix);
 
-        StringBuilder result = new StringBuilder(triviaText.Length);
-        int position = 0;
-        bool firstLine = true;
+        var result = new StringBuilder(triviaText.Length);
+        var position = 0;
+        var firstLine = true;
         while (position < triviaText.Length)
         {
-            int lineEnd = FindLineEnd(triviaText, position);
-            string line = triviaText.Substring(position, lineEnd - position);
+            var lineEnd = FindLineEnd(triviaText, position);
+            var line = triviaText.Substring(position, lineEnd - position);
 
-            string stripped = StripLine(line, firstLine ? string.Empty : baseIndent, prefixNoTrailingSpace);
+            var stripped = StripLine(line, firstLine ? string.Empty : baseIndent, prefixNoTrailingSpace);
             result.Append(stripped);
 
             position = lineEnd;
@@ -85,12 +85,12 @@ internal static class DocIndent
         if (documentationPrefix is null) throw new ArgumentNullException(nameof(documentationPrefix));
         if (lineEnding is null) throw new ArgumentNullException(nameof(lineEnding));
 
-        string prefixNoTrailingSpace = TrimPrefixTrailingSpace(documentationPrefix);
+        var prefixNoTrailingSpace = TrimPrefixTrailingSpace(documentationPrefix);
 
-        StringBuilder result = new StringBuilder();
-        for (int i = 0; i < contentLines.Count; i++)
+        var result = new StringBuilder();
+        for (var i = 0; i < contentLines.Count; i++)
         {
-            string content = contentLines[i];
+            var content = contentLines[i];
             if (i > 0)
             {
                 result.Append(baseIndent);
@@ -114,7 +114,7 @@ internal static class DocIndent
 
     private static string TrimPrefixTrailingSpace(string prefix)
     {
-        int end = prefix.Length;
+        var end = prefix.Length;
         while (end > 0 && (prefix[end - 1] == ' ' || prefix[end - 1] == '\t'))
         {
             end--;
@@ -125,7 +125,7 @@ internal static class DocIndent
 
     private static int FindLineEnd(string text, int start)
     {
-        int position = start;
+        var position = start;
         while (position < text.Length && text[position] != '\r' && text[position] != '\n')
         {
             position++;
@@ -136,7 +136,7 @@ internal static class DocIndent
 
     private static string StripLine(string line, string expectedIndent, string prefixNoTrailingSpace)
     {
-        int cursor = 0;
+        var cursor = 0;
 
         // Consume the expected leading indent if it matches; otherwise tolerate any leading whitespace.
         if (expectedIndent.Length > 0 &&

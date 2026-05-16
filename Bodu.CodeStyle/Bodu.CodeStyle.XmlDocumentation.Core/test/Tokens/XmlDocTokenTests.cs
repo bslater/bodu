@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocTokenTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,7 +33,7 @@ public sealed class XmlDocTokenTests
     [TestMethod]
     public void Text_ShouldReturnTextToken()
     {
-        XmlDocToken token = XmlDocToken.Text("foo");
+        var token = XmlDocToken.Text("foo");
 
         Assert.AreEqual(XmlDocTokenKind.Text, token.Kind);
         Assert.AreEqual("foo", token.RawText);
@@ -46,7 +46,7 @@ public sealed class XmlDocTokenTests
     [TestMethod]
     public void Whitespace_ShouldReturnWhitespaceToken()
     {
-        XmlDocToken token = XmlDocToken.Whitespace("  ");
+        var token = XmlDocToken.Whitespace("  ");
 
         Assert.AreEqual(XmlDocTokenKind.Whitespace, token.Kind);
         Assert.AreEqual("  ", token.RawText);
@@ -58,7 +58,7 @@ public sealed class XmlDocTokenTests
     [TestMethod]
     public void LineBreak_ShouldReturnLineBreakToken()
     {
-        XmlDocToken token = XmlDocToken.LineBreak();
+        var token = XmlDocToken.LineBreak();
 
         Assert.AreEqual(XmlDocTokenKind.LineBreak, token.Kind);
     }

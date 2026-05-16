@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DefaultBoduOrderingPolicyTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -20,7 +20,7 @@ public sealed class DefaultBoduOrderingPolicyTests
     public void Create_ShouldOrderConstantsBeforeInstanceFields()
     {
         MemberOrderOptions options = DefaultBoduOrderingPolicy.Create();
-        MemberClassifier classifier = new MemberClassifier(options);
+        var classifier = new MemberClassifier(options);
 
         ClassifiedMember constant = classifier.Classify(new FakeMember("FieldDeclaration", AccessibilityRank.Private, isStatic: false, isReadOnly: false, isConst: true));
         ClassifiedMember instance = classifier.Classify(new FakeMember("FieldDeclaration", AccessibilityRank.Private, isStatic: false, isReadOnly: false, isConst: false));
@@ -35,7 +35,7 @@ public sealed class DefaultBoduOrderingPolicyTests
     public void Create_ShouldOrderPublicBeforePrivate()
     {
         MemberOrderOptions options = DefaultBoduOrderingPolicy.Create();
-        MemberClassifier classifier = new MemberClassifier(options);
+        var classifier = new MemberClassifier(options);
 
         ClassifiedMember pub = classifier.Classify(new FakeMember("MethodDeclaration", AccessibilityRank.Public, isStatic: false, isReadOnly: false, isConst: false));
         ClassifiedMember priv = classifier.Classify(new FakeMember("MethodDeclaration", AccessibilityRank.Private, isStatic: false, isReadOnly: false, isConst: false));

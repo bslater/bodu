@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.BrokenTagIdempotency.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenRejoinedInlineTag_ShouldBeIdempotentOnSecondPass()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// See <see cref=\"X\"\r\n" +
             "    ///      langword=\"null\" />.\r\n" +
@@ -42,7 +42,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenRejoinedBrokenProse_ShouldBeIdempotentOnSecondPass()
     {
-        string input =
+        var input =
             "/// <summary>The thing.\r\n" +
             "    /// More text.</summary>\r\n";
 
@@ -64,7 +64,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenMalformedTagNameSplit_ShouldStayUnchangedAcrossPasses()
     {
-        string input =
+        var input =
             "/// <sum\r\n" +
             "    /// mary>foo</summary>\r\n";
 
@@ -88,7 +88,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenLongCrefWrapped_ShouldRejoinAndBeIdempotent()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// See <see\r\n" +
             "    ///     cref=\"System.Collections.Generic.IEnumerable{T}\" />.\r\n" +

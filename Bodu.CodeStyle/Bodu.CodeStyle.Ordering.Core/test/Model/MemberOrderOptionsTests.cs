@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberOrderOptionsTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -130,12 +130,12 @@ public sealed class MemberOrderOptionsTests
     [TestMethod]
     public void Ctor_ShouldRoundTripProperties()
     {
-        ImmutableArray<MemberGroupRule> groups = ImmutableArray.Create(
+        var groups = ImmutableArray.Create(
             new MemberGroupRule("X", ImmutableArray.Create(MemberKind.Method), ImmutableArray<string>.Empty));
-        ImmutableArray<AccessibilityRank> access = ImmutableArray.Create(AccessibilityRank.Public);
-        ImmutableArray<string> modifiers = ImmutableArray.Create("public", "static");
+        var access = ImmutableArray.Create(AccessibilityRank.Public);
+        var modifiers = ImmutableArray.Create("public", "static");
 
-        MemberOrderOptions options = new MemberOrderOptions(
+        var options = new MemberOrderOptions(
             memberGroups: groups,
             accessibilityOrder: access,
             modifierOrder: modifiers,

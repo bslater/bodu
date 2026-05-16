@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatResultTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -48,10 +48,10 @@ public sealed class XmlDocFormatResultTests
     [TestMethod]
     public void Ctor_ShouldRoundTripProperties()
     {
-        ImmutableArray<XmlDocFormattingChange> changes = ImmutableArray.Create(
+        var changes = ImmutableArray.Create(
             new XmlDocFormattingChange(XmlDocFormatRangeKind.BlockLayout, "Test change."));
 
-        XmlDocFormatResult result = new XmlDocFormatResult(changed: true, formattedText: "/// X\r\n", changes: changes);
+        var result = new XmlDocFormatResult(changed: true, formattedText: "/// X\r\n", changes: changes);
 
         Assert.IsTrue(result.Changed);
         Assert.AreEqual("/// X\r\n", result.FormattedText);

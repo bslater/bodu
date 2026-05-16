@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberClassifierTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,7 +33,7 @@ public sealed class MemberClassifierTests
     [TestMethod]
     public void Classify_WhenInputIsNull_ShouldThrowArgumentNullException()
     {
-        MemberClassifier classifier = new MemberClassifier(DefaultBoduOrderingPolicy.Create());
+        var classifier = new MemberClassifier(DefaultBoduOrderingPolicy.Create());
 
         ArgumentNullException ex = Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
@@ -228,7 +228,7 @@ public sealed class MemberClassifierTests
 
     private static ClassifiedMember Classify(string declarationKind, AccessibilityRank accessibility, bool isStatic, bool isReadOnly, bool isConst, bool isExplicitInterface = false)
     {
-        MemberClassifier classifier = new MemberClassifier(DefaultBoduOrderingPolicy.Create());
+        var classifier = new MemberClassifier(DefaultBoduOrderingPolicy.Create());
         return classifier.Classify(new FakeMember(declarationKind, accessibility, isStatic, isReadOnly, isConst, isExplicitInterface));
     }
 

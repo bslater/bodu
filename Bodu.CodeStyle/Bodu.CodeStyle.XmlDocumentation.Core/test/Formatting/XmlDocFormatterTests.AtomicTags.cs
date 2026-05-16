@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.AtomicTags.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenSeeCrefIsInline_ShouldKeepSeeInline()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// See <see cref=\"Sample\" /> for details.\r\n" +
             "    /// </summary>\r\n";
@@ -37,7 +37,7 @@ public partial class XmlDocFormatterTests
     {
         const string LongCode = "<c>[A-Za-z0-9_.,:/@+\\-]+ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789</c>";
 
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// Use " + LongCode + " in expressions.\r\n" +
             "    /// </summary>\r\n";
@@ -53,7 +53,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenSelfClosingTagMissingTrailingSpace_ShouldEmitSpace()
     {
-        string input = "/// <summary>See <see cref=\"X\"/> here.</summary>\r\n";
+        var input = "/// <summary>See <see cref=\"X\"/> here.</summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 

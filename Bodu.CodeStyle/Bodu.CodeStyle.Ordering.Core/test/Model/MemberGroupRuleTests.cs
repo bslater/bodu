@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberGroupRuleTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -62,7 +62,7 @@ public sealed class MemberGroupRuleTests
     [TestMethod]
     public void Ctor_ShouldRoundTripProperties()
     {
-        MemberGroupRule rule = new MemberGroupRule(
+        var rule = new MemberGroupRule(
             name: "Constants",
             kinds: ImmutableArray.Create(MemberKind.Constant),
             requiredModifiers: ImmutableArray.Create("const"));

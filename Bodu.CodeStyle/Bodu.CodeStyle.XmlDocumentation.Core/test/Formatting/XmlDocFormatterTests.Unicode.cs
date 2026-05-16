@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.Unicode.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenProseContainsUnicode_ShouldPreserveCharacters()
     {
-        string input =
+        var input =
             "/// <summary>\r\n" +
             "    /// Café — résumé ☃☃☃.\r\n" +
             "    /// </summary>\r\n";
@@ -35,8 +35,8 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenProseContainsEmoji_ShouldPreserveSurrogatePair()
     {
-        string emoji = char.ConvertFromUtf32(0x1F600);
-        string input =
+        var emoji = char.ConvertFromUtf32(0x1F600);
+        var input =
             "/// <summary>\r\n" +
             "    /// Hello " + emoji + ".\r\n" +
             "    /// </summary>\r\n";

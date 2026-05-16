@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberClassifier.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,8 +38,8 @@ public sealed class MemberClassifier
         if (input is null) throw new ArgumentNullException(nameof(input));
 
         MemberKind kind = DetermineKind(input);
-        int groupRank = FindGroupRank(kind);
-        int accessibilityRank = FindAccessibilityRank(input.Accessibility);
+        var groupRank = FindGroupRank(kind);
+        var accessibilityRank = FindAccessibilityRank(input.Accessibility);
 
         return new ClassifiedMember(kind, input.Accessibility, groupRank, accessibilityRank);
     }
@@ -98,7 +98,7 @@ public sealed class MemberClassifier
     private int FindGroupRank(MemberKind kind)
     {
         ImmutableArray<MemberGroupRule> groups = this._options.MemberGroups;
-        for (int i = 0; i < groups.Length; i++)
+        for (var i = 0; i < groups.Length; i++)
         {
             if (groups[i].Kinds.Contains(kind))
             {
@@ -112,7 +112,7 @@ public sealed class MemberClassifier
     private int FindAccessibilityRank(AccessibilityRank accessibility)
     {
         ImmutableArray<AccessibilityRank> ranks = this._options.AccessibilityOrder;
-        for (int i = 0; i < ranks.Length; i++)
+        for (var i = 0; i < ranks.Length; i++)
         {
             if (ranks[i] == accessibility)
             {

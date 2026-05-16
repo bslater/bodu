@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocConfigExceptionTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,7 +19,7 @@ public sealed class XmlDocConfigExceptionTests
     [TestMethod]
     public void Ctor_Default_ShouldReturnNonNullInstance()
     {
-        XmlDocConfigException ex = new XmlDocConfigException();
+        var ex = new XmlDocConfigException();
 
         Assert.IsNotNull(ex);
     }
@@ -30,7 +30,7 @@ public sealed class XmlDocConfigExceptionTests
     [TestMethod]
     public void Ctor_WithMessage_ShouldExposeMessage()
     {
-        XmlDocConfigException ex = new XmlDocConfigException("boom");
+        var ex = new XmlDocConfigException("boom");
 
         Assert.AreEqual("boom", ex.Message);
     }
@@ -41,9 +41,9 @@ public sealed class XmlDocConfigExceptionTests
     [TestMethod]
     public void Ctor_WithMessageAndInner_ShouldExposeBoth()
     {
-        InvalidOperationException inner = new InvalidOperationException("root");
+        var inner = new InvalidOperationException("root");
 
-        XmlDocConfigException ex = new XmlDocConfigException("boom", inner);
+        var ex = new XmlDocConfigException("boom", inner);
 
         Assert.AreEqual("boom", ex.Message);
         Assert.AreSame(inner, ex.InnerException);

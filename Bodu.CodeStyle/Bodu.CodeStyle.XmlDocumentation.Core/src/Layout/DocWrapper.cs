@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DocWrapper.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,11 +39,11 @@ internal static class DocWrapper
         if (atoms is null) throw new ArgumentNullException(nameof(atoms));
         if (contentBudget <= 0) throw new ArgumentOutOfRangeException(nameof(contentBudget), "Content budget must be positive.");
 
-        List<LineAtom> lineAtoms = new List<LineAtom>();
-        int lineLength = 0;
-        bool pendingWhitespace = false;
+        var lineAtoms = new List<LineAtom>();
+        var lineLength = 0;
+        var pendingWhitespace = false;
 
-        foreach (string atom in atoms)
+        foreach (var atom in atoms)
         {
             if (IsWhitespaceAtom(atom))
             {
@@ -55,8 +55,8 @@ internal static class DocWrapper
                 continue;
             }
 
-            bool hasLeadingSpace = pendingWhitespace && lineAtoms.Count > 0;
-            int addedLength = (hasLeadingSpace ? 1 : 0) + atom.Length;
+            var hasLeadingSpace = pendingWhitespace && lineAtoms.Count > 0;
+            var addedLength = (hasLeadingSpace ? 1 : 0) + atom.Length;
 
             if (lineAtoms.Count == 0 || lineLength + addedLength <= contentBudget)
             {
@@ -66,15 +66,15 @@ internal static class DocWrapper
                 continue;
             }
 
-            int? bestBreak = FindBestBreak(lineAtoms);
+            var bestBreak = FindBestBreak(lineAtoms);
             if (bestBreak.HasValue)
             {
                 yield return JoinAtoms(lineAtoms, 0, bestBreak.Value);
 
-                int splitIndex = bestBreak.Value;
-                List<LineAtom> remainder = new List<LineAtom>(lineAtoms.Count - splitIndex + 1);
+                var splitIndex = bestBreak.Value;
+                var remainder = new List<LineAtom>(lineAtoms.Count - splitIndex + 1);
                 remainder.Add(new LineAtom(lineAtoms[splitIndex].Text, hasLeadingSpace: false));
-                for (int i = splitIndex + 1; i < lineAtoms.Count; i++)
+                for (var i = splitIndex + 1; i < lineAtoms.Count; i++)
                 {
                     remainder.Add(lineAtoms[i]);
                 }
@@ -108,7 +108,7 @@ internal static class DocWrapper
         // current line, return null so the caller falls back to natural greedy wrap (emit the current line
         // as-is, start the next line with the candidate atom).
         int? latestClause = null;
-        for (int i = 1; i < atoms.Count; i++)
+        for (var i = 1; i < atoms.Count; i++)
         {
             if (!atoms[i].HasLeadingSpace)
             {
@@ -131,13 +131,13 @@ internal static class DocWrapper
             return false;
         }
 
-        char last = word[word.Length - 1];
+        var last = word[word.Length - 1];
         return last == ',' || last == ';' || last == '.' || last == ':';
     }
 
     private static int ComputeLineLength(List<LineAtom> atoms)
     {
-        int total = 0;
+        var total = 0;
         foreach (LineAtom atom in atoms)
         {
             if (atom.HasLeadingSpace)
@@ -153,8 +153,8 @@ internal static class DocWrapper
 
     private static string JoinAtoms(List<LineAtom> atoms, int start, int count)
     {
-        StringBuilder sb = new StringBuilder();
-        for (int i = start; i < start + count; i++)
+        var sb = new StringBuilder();
+        for (var i = start; i < start + count; i++)
         {
             if (i > start && atoms[i].HasLeadingSpace)
             {
@@ -171,7 +171,7 @@ internal static class DocWrapper
     {
         if (atom.Length == 0) return true;
 
-        for (int i = 0; i < atom.Length; i++)
+        for (var i = 0; i < atom.Length; i++)
         {
             if (atom[i] != ' ' && atom[i] != '\t')
             {

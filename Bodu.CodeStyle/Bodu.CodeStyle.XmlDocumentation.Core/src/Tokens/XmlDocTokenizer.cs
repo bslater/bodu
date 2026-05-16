@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocTokenizer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -39,13 +39,13 @@ internal static class XmlDocTokenizer
         if (inlineTags is null) throw new ArgumentNullException(nameof(inlineTags));
 
         ImmutableArray<XmlDocToken>.Builder builder = ImmutableArray.CreateBuilder<XmlDocToken>();
-        int position = 0;
-        StringBuilder textRun = new StringBuilder();
-        StringBuilder whitespaceRun = new StringBuilder();
+        var position = 0;
+        var textRun = new StringBuilder();
+        var whitespaceRun = new StringBuilder();
 
         while (position < content.Length)
         {
-            char current = content[position];
+            var current = content[position];
 
             if (current == '\n')
             {
@@ -76,21 +76,21 @@ internal static class XmlDocTokenizer
                 FlushWhitespace(builder, whitespaceRun);
                 FlushText(builder, textRun);
 
-                if (TryReadCData(content, position, out int cdataEnd, out string cdataText))
+                if (TryReadCData(content, position, out var cdataEnd, out var cdataText))
                 {
                     builder.Add(XmlDocToken.Text(cdataText));
                     position = cdataEnd;
                     continue;
                 }
 
-                if (TryReadXmlComment(content, position, out int commentEnd, out string commentText))
+                if (TryReadXmlComment(content, position, out var commentEnd, out var commentText))
                 {
                     builder.Add(XmlDocToken.Text(commentText));
                     position = commentEnd;
                     continue;
                 }
 
-                if (TryReadTag(content, position, inlineTags, out int tagEnd, out XmlDocToken? tagToken))
+                if (TryReadTag(content, position, inlineTags, out var tagEnd, out XmlDocToken? tagToken))
                 {
                     builder.Add(tagToken!);
                     position = tagEnd;
@@ -143,7 +143,7 @@ internal static class XmlDocTokenizer
             return false;
         }
 
-        int closeIndex = content.IndexOf(CloseSequence, start + OpenSequence.Length, StringComparison.Ordinal);
+        var closeIndex = content.IndexOf(CloseSequence, start + OpenSequence.Length, StringComparison.Ordinal);
         if (closeIndex < 0)
         {
             end = 0;
@@ -169,7 +169,7 @@ internal static class XmlDocTokenizer
             return false;
         }
 
-        int closeIndex = content.IndexOf(CloseSequence, start + OpenSequence.Length, StringComparison.Ordinal);
+        var closeIndex = content.IndexOf(CloseSequence, start + OpenSequence.Length, StringComparison.Ordinal);
         if (closeIndex < 0)
         {
             end = 0;
@@ -185,7 +185,7 @@ internal static class XmlDocTokenizer
     private static bool TryReadTag(string content, int start, ImmutableHashSet<string> inlineTags, out int end, out XmlDocToken? token)
     {
         // Parse: < [/] name [attrs ...] [ /] >
-        int position = start;
+        var position = start;
         if (position >= content.Length || content[position] != '<')
         {
             end = 0;
@@ -194,14 +194,14 @@ internal static class XmlDocTokenizer
         }
 
         position++;
-        bool isClosing = false;
+        var isClosing = false;
         if (position < content.Length && content[position] == '/')
         {
             isClosing = true;
             position++;
         }
 
-        int nameStart = position;
+        var nameStart = position;
         while (position < content.Length && IsNameChar(content[position]))
         {
             position++;
@@ -214,7 +214,7 @@ internal static class XmlDocTokenizer
             return false;
         }
 
-        string tagName = content.Substring(nameStart, position - nameStart);
+        var tagName = content.Substring(nameStart, position - nameStart);
 
         // Reject tags whose name is split by an unescaped newline immediately after the captured name characters
         // (e.g. "<sum\nmary>"). Returning false defers the original "<" to the text-run path so the caller
@@ -227,13 +227,13 @@ internal static class XmlDocTokenizer
         }
 
         // Skip attributes until > or />.
-        bool selfClosing = false;
+        var selfClosing = false;
         while (position < content.Length)
         {
-            char ch = content[position];
+            var ch = content[position];
             if (ch == '"' || ch == '\'')
             {
-                int quoteEnd = content.IndexOf(ch, position + 1);
+                var quoteEnd = content.IndexOf(ch, position + 1);
                 if (quoteEnd < 0)
                 {
                     end = 0;
@@ -268,7 +268,7 @@ internal static class XmlDocTokenizer
             return false;
         }
 
-        string raw = NormalizeTagWhitespace(content.Substring(start, position - start));
+        var raw = NormalizeTagWhitespace(content.Substring(start, position - start));
 
         if (isClosing)
         {
@@ -287,15 +287,15 @@ internal static class XmlDocTokenizer
         // Opening tag. If the tag is in InlineTags, scan ahead for the matching </tag> and bundle as one atom.
         if (inlineTags.Contains(tagName))
         {
-            string closeSequence = "</" + tagName;
-            int closeIndex = content.IndexOf(closeSequence, position, StringComparison.Ordinal);
+            var closeSequence = "</" + tagName;
+            var closeIndex = content.IndexOf(closeSequence, position, StringComparison.Ordinal);
             if (closeIndex >= 0)
             {
-                int closeTagEnd = content.IndexOf('>', closeIndex + closeSequence.Length);
+                var closeTagEnd = content.IndexOf('>', closeIndex + closeSequence.Length);
                 if (closeTagEnd >= 0)
                 {
-                    int totalEnd = closeTagEnd + 1;
-                    string atomic = NormalizeTagWhitespace(content.Substring(start, totalEnd - start));
+                    var totalEnd = closeTagEnd + 1;
+                    var atomic = NormalizeTagWhitespace(content.Substring(start, totalEnd - start));
                     end = totalEnd;
                     token = new XmlDocToken(XmlDocTokenKind.InlineXml, atomic, tagName, isSelfClosing: false);
                     return true;
@@ -317,19 +317,19 @@ internal static class XmlDocTokenizer
             return raw;
         }
 
-        int openTagEnd = ScanToTagEnd(raw, 0);
+        var openTagEnd = ScanToTagEnd(raw, 0);
         if (openTagEnd < 0)
         {
             return NormalizeAttributeSection(raw, 0, raw.Length);
         }
 
-        int closeTagStart = FindClosingTagStart(raw, openTagEnd + 1);
+        var closeTagStart = FindClosingTagStart(raw, openTagEnd + 1);
         if (closeTagStart < 0)
         {
             return NormalizeAttributeSection(raw, 0, raw.Length);
         }
 
-        StringBuilder result = new StringBuilder(raw.Length);
+        var result = new StringBuilder(raw.Length);
         result.Append(NormalizeAttributeSection(raw, 0, openTagEnd + 1));
         AppendBodyWithoutNewlines(result, raw, openTagEnd + 1, closeTagStart);
         result.Append(NormalizeAttributeSection(raw, closeTagStart, raw.Length));
@@ -338,11 +338,11 @@ internal static class XmlDocTokenizer
 
     private static int ScanToTagEnd(string raw, int start)
     {
-        bool inQuote = false;
-        char quoteChar = '\0';
-        for (int i = start; i < raw.Length; i++)
+        var inQuote = false;
+        var quoteChar = '\0';
+        for (var i = start; i < raw.Length; i++)
         {
-            char ch = raw[i];
+            var ch = raw[i];
             if (inQuote)
             {
                 if (ch == quoteChar)
@@ -371,12 +371,12 @@ internal static class XmlDocTokenizer
 
     private static int FindClosingTagStart(string raw, int start)
     {
-        bool inQuote = false;
-        char quoteChar = '\0';
-        int lastClosingTagStart = -1;
-        for (int i = start; i < raw.Length - 1; i++)
+        var inQuote = false;
+        var quoteChar = '\0';
+        var lastClosingTagStart = -1;
+        for (var i = start; i < raw.Length - 1; i++)
         {
-            char ch = raw[i];
+            var ch = raw[i];
             if (inQuote)
             {
                 if (ch == quoteChar)
@@ -405,9 +405,9 @@ internal static class XmlDocTokenizer
 
     private static void AppendBodyWithoutNewlines(StringBuilder builder, string raw, int start, int end)
     {
-        for (int i = start; i < end; i++)
+        for (var i = start; i < end; i++)
         {
-            char ch = raw[i];
+            var ch = raw[i];
             if (ch == '\r' || ch == '\n')
             {
                 continue;
@@ -419,13 +419,13 @@ internal static class XmlDocTokenizer
 
     private static string NormalizeAttributeSection(string raw, int start, int end)
     {
-        StringBuilder result = new StringBuilder(end - start);
-        bool inQuote = false;
-        char quoteChar = '\0';
-        bool lastWasSpace = false;
-        for (int i = start; i < end; i++)
+        var result = new StringBuilder(end - start);
+        var inQuote = false;
+        var quoteChar = '\0';
+        var lastWasSpace = false;
+        for (var i = start; i < end; i++)
         {
-            char ch = raw[i];
+            var ch = raw[i];
             if (inQuote)
             {
                 if (ch == '\n' || ch == '\r')

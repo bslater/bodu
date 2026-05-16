@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocConfigJsonReader.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -35,13 +35,13 @@ public static class XmlDocConfigJsonReader
 
         XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
 
-        int maxLineLength = defaults.MaxLineLength;
-        string documentationPrefix = defaults.DocumentationPrefix;
-        string indentText = defaults.IndentText;
-        bool collapseProseWhitespace = defaults.CollapseProseWhitespace;
-        bool preserveBlankLines = defaults.PreserveBlankLines;
-        bool preserveXmlTagAttributes = defaults.PreserveXmlTagAttributes;
-        bool preserveCrefText = defaults.PreserveCrefText;
+        var maxLineLength = defaults.MaxLineLength;
+        var documentationPrefix = defaults.DocumentationPrefix;
+        var indentText = defaults.IndentText;
+        var collapseProseWhitespace = defaults.CollapseProseWhitespace;
+        var preserveBlankLines = defaults.PreserveBlankLines;
+        var preserveXmlTagAttributes = defaults.PreserveXmlTagAttributes;
+        var preserveCrefText = defaults.PreserveCrefText;
         ImmutableHashSet<string> blockTags = defaults.BlockTags;
         ImmutableHashSet<string> inlineTags = defaults.InlineTags;
         ImmutableHashSet<string> forceMultilineTags = defaults.ForceMultilineTags;
@@ -149,7 +149,7 @@ public static class XmlDocConfigJsonReader
 
     private static int ReadInt32(JsonProperty property)
     {
-        if (property.Value.ValueKind != JsonValueKind.Number || !property.Value.TryGetInt32(out int value))
+        if (property.Value.ValueKind != JsonValueKind.Number || !property.Value.TryGetInt32(out var value))
         {
             throw new XmlDocConfigException($"Property '{property.Name}' must be an integer.");
         }
@@ -192,7 +192,7 @@ public static class XmlDocConfigJsonReader
                 throw new XmlDocConfigException($"Property '{property.Name}' must be an array of strings.");
             }
 
-            string? value = element.GetString();
+            var value = element.GetString();
             if (!string.IsNullOrEmpty(value))
             {
                 builder.Add(value!);
@@ -209,7 +209,7 @@ public static class XmlDocConfigJsonReader
             throw new XmlDocConfigException($"Property '{property.Name}' must be an object.");
         }
 
-        ImmutableDictionary<string, XmlDocTagPolicy>.Builder builder = defaults.ToBuilder();
+        var builder = defaults.ToBuilder();
         foreach (JsonProperty tag in property.Value.EnumerateObject())
         {
             XmlDocTagPolicy policy = ReadTagPolicy(tag);
@@ -258,7 +258,7 @@ public static class XmlDocConfigJsonReader
 
     private static XmlDocTagLayout ParseLayout(JsonProperty property)
     {
-        string raw = ReadString(property);
+        var raw = ReadString(property);
         switch (raw)
         {
             case "auto":

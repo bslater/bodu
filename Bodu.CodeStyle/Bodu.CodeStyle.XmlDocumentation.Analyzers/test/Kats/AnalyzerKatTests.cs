@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="AnalyzerKatTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -28,7 +28,7 @@ public sealed class AnalyzerKatTests
     /// </summary>
     public static IEnumerable<object[]> Kats()
     {
-        foreach (object[] row in BoduCodeStyleKats.Data(CodeStyleKatArea.XmlDocumentationAnalyzer))
+        foreach (var row in BoduCodeStyleKats.Data(CodeStyleKatArea.XmlDocumentationAnalyzer))
         {
             yield return row;
         }
@@ -44,7 +44,7 @@ public sealed class AnalyzerKatTests
     {
         if (kat is null) throw new ArgumentNullException(nameof(kat));
 
-        CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier> test =
+        var test =
             new CSharpAnalyzerTest<XmlDocFormatAnalyzer, MSTestVerifier>
             {
                 TestCode = NormalizeToCrlf(kat.Input),
@@ -70,7 +70,7 @@ public sealed class AnalyzerKatTests
                 return;
             }
 
-            DiagnosticResult result = new DiagnosticResult(descriptor);
+            var result = new DiagnosticResult(descriptor);
             if (expected.Line.HasValue && expected.Column.HasValue)
             {
                 result = result.WithLocation(expected.Line.Value, expected.Column.Value);
@@ -79,7 +79,7 @@ public sealed class AnalyzerKatTests
             test.ExpectedDiagnostics.Add(result);
         }
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -97,7 +97,9 @@ public sealed class AnalyzerKatTests
 
     private static string NormalizeToCrlf(string text)
     {
-        string normalized = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
+        var normalized = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
         return normalized.EndsWith("\r\n", StringComparison.Ordinal) ? normalized : normalized + "\r\n";
     }
+
+    public TestContext TestContext { get; set; }
 }

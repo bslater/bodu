@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DocWrapperTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -49,7 +49,7 @@ public sealed class DocWrapperTests
     [TestMethod]
     public void Wrap_WhenAtomsIsEmpty_ShouldReturnNoLines()
     {
-        List<string> result = DocWrapper.Wrap(new List<string>(), 80).ToList();
+        var result = DocWrapper.Wrap(new List<string>(), 80).ToList();
 
         Assert.AreEqual(0, result.Count);
     }
@@ -60,7 +60,7 @@ public sealed class DocWrapperTests
     [TestMethod]
     public void Wrap_WhenContentFits_ShouldReturnSingleLine()
     {
-        List<string> result = DocWrapper.Wrap(new List<string> { "foo", " ", "bar" }, 80).ToList();
+        var result = DocWrapper.Wrap(new List<string> { "foo", " ", "bar" }, 80).ToList();
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual("foo bar", result[0]);
@@ -72,10 +72,10 @@ public sealed class DocWrapperTests
     [TestMethod]
     public void Wrap_WhenContentExceedsBudget_ShouldWrapAtWhitespace()
     {
-        List<string> result = DocWrapper.Wrap(new List<string> { "foo", " ", "bar", " ", "baz" }, 7).ToList();
+        var result = DocWrapper.Wrap(new List<string> { "foo", " ", "bar", " ", "baz" }, 7).ToList();
 
         Assert.IsTrue(result.Count > 1);
-        foreach (string line in result)
+        foreach (var line in result)
         {
             // Each emitted line should be either a single atom or fit the budget.
             Assert.IsTrue(line.Length <= 7 || !line.Contains(' '));
@@ -88,8 +88,8 @@ public sealed class DocWrapperTests
     [TestMethod]
     public void Wrap_WhenSingleAtomExceedsBudget_ShouldEmitOnItsOwnLine()
     {
-        string longAtom = "Aabcdefghijklmnopqrstuvwxyz";
-        List<string> result = DocWrapper.Wrap(new List<string> { longAtom }, 10).ToList();
+        var longAtom = "Aabcdefghijklmnopqrstuvwxyz";
+        var result = DocWrapper.Wrap(new List<string> { longAtom }, 10).ToList();
 
         Assert.AreEqual(1, result.Count);
         Assert.AreEqual(longAtom, result[0]);
@@ -101,7 +101,7 @@ public sealed class DocWrapperTests
     [TestMethod]
     public void Wrap_WhenWhitespaceFallsOnWrapBoundary_ShouldBeDroppedFromOutput()
     {
-        List<string> result = DocWrapper.Wrap(new List<string> { "aaaa", " ", "bbbb" }, 4).ToList();
+        var result = DocWrapper.Wrap(new List<string> { "aaaa", " ", "bbbb" }, 4).ToList();
 
         Assert.AreEqual(2, result.Count);
         Assert.AreEqual("aaaa", result[0]);

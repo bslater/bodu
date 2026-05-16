@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.SingleLine.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenTypeParamIsShort_ShouldKeepSingleLine()
     {
-        string input = "/// <typeparam name=\"T\">The element type.</typeparam>\r\n";
+        var input = "/// <typeparam name=\"T\">The element type.</typeparam>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -30,7 +30,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenReturnsIsShort_ShouldKeepSingleLine()
     {
-        string input = "/// <returns>The computed result.</returns>\r\n";
+        var input = "/// <returns>The computed result.</returns>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -43,7 +43,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenExceptionIsShort_ShouldKeepSingleLine()
     {
-        string input = "/// <exception cref=\"System.ArgumentNullException\">When the input is null.</exception>\r\n";
+        var input = "/// <exception cref=\"System.ArgumentNullException\">When the input is null.</exception>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -56,8 +56,8 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenParamIsLong_ShouldExpandToMultipleLines()
     {
-        string longText = string.Concat(System.Linq.Enumerable.Repeat("very long parameter description ", 8));
-        string input = "/// <param name=\"x\">" + longText + "</param>\r\n";
+        var longText = string.Concat(System.Linq.Enumerable.Repeat("very long parameter description ", 8));
+        var input = "/// <param name=\"x\">" + longText + "</param>\r\n";
 
         XmlDocFormatOptions options = CreateOptions().WithMaxLineLength(60);
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), options);
@@ -73,7 +73,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenValueIsShort_ShouldKeepSingleLine()
     {
-        string input = "/// <value>The current state.</value>\r\n";
+        var input = "/// <value>The current state.</value>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 

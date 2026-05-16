@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocTagPolicyTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -32,7 +32,7 @@ public sealed class XmlDocTagPolicyTests
     [TestMethod]
     public void Ctor_ShouldRoundTripProperties()
     {
-        XmlDocTagPolicy policy = new XmlDocTagPolicy(
+        var policy = new XmlDocTagPolicy(
             XmlDocTagLayout.InlineAtomic,
             maxSingleLineLength: 80,
             allowLineBreakInside: false,

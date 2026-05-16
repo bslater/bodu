@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.Wrapping.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenParamIsShort_ShouldKeepSingleLine()
     {
-        string input = "/// <param name=\"x\">The thing.</param>\r\n";
+        var input = "/// <param name=\"x\">The thing.</param>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -32,8 +32,8 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenLineExceedsMaxLength_ShouldWrapAtWordBoundary()
     {
-        string longProse = string.Concat(System.Linq.Enumerable.Repeat("Lorem ipsum dolor sit amet, ", 6));
-        string input =
+        var longProse = string.Concat(System.Linq.Enumerable.Repeat("Lorem ipsum dolor sit amet, ", 6));
+        var input =
             "/// <summary>\r\n" +
             "    /// " + longProse + "\r\n" +
             "    /// </summary>\r\n";
@@ -41,7 +41,7 @@ public partial class XmlDocFormatterTests
         XmlDocFormatOptions options = CreateOptions().WithMaxLineLength(80);
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), options);
 
-        foreach (string line in result.FormattedText.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
+        foreach (var line in result.FormattedText.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
         {
             Assert.IsTrue(line.Length <= 80, $"Line '{line}' exceeds 80 characters.");
         }

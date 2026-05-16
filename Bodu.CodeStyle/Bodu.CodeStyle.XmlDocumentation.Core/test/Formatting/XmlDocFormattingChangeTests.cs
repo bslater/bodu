@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormattingChangeTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,7 +33,7 @@ public sealed class XmlDocFormattingChangeTests
     [TestMethod]
     public void Ctor_ShouldRoundTripProperties()
     {
-        XmlDocFormattingChange change = new XmlDocFormattingChange(XmlDocFormatRangeKind.LineWrap, "Wrapped.");
+        var change = new XmlDocFormattingChange(XmlDocFormatRangeKind.LineWrap, "Wrapped.");
 
         Assert.AreEqual(XmlDocFormatRangeKind.LineWrap, change.Kind);
         Assert.AreEqual("Wrapped.", change.Description);

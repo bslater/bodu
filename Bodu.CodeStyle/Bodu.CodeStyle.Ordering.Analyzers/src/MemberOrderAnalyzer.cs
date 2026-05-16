@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="MemberOrderAnalyzer.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -45,7 +45,7 @@ public sealed class MemberOrderAnalyzer : DiagnosticAnalyzer
 
     private static void AnalyzeTypeDeclaration(SyntaxNodeAnalysisContext context)
     {
-        TypeDeclarationSyntax type = (TypeDeclarationSyntax)context.Node;
+        var type = (TypeDeclarationSyntax)context.Node;
         if (type.Members.Count < 2)
         {
             return;
@@ -56,13 +56,13 @@ public sealed class MemberOrderAnalyzer : DiagnosticAnalyzer
             return;
         }
 
-        MemberClassifier classifier = new MemberClassifier(DefaultBoduOrderingPolicy.Create());
+        var classifier = new MemberClassifier(DefaultBoduOrderingPolicy.Create());
         if (MemberOrderAnalysis.IsOrdered(type, classifier))
         {
             return;
         }
 
-        Diagnostic diagnostic = Diagnostic.Create(
+        var diagnostic = Diagnostic.Create(
             DiagnosticDescriptors.MemberOrdering,
             type.Identifier.GetLocation());
         context.ReportDiagnostic(diagnostic);

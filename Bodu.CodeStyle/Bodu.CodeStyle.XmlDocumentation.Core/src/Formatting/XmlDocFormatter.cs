@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatter.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -71,7 +71,7 @@ public sealed class XmlDocFormatter
 
     private static XmlDocFormatResult FormatCore(string triviaText, XmlDocFormatContext context, XmlDocFormatOptions options)
     {
-        string content = DocIndent.Strip(triviaText, context.BaseIndent, options.DocumentationPrefix);
+        var content = DocIndent.Strip(triviaText, context.BaseIndent, options.DocumentationPrefix);
         ImmutableArray<XmlDocToken> tokens = XmlDocTokenizer.Tokenize(content, options.InlineTags);
 
         if (tokens.Length == 0 || HasNoMeaningfulTokens(tokens))
@@ -85,11 +85,11 @@ public sealed class XmlDocFormatter
             return new XmlDocFormatResult(changed: false, triviaText, ImmutableArray<XmlDocFormattingChange>.Empty);
         }
 
-        int contentBudget = Math.Max(1, options.MaxLineLength - context.BaseIndent.Length - options.DocumentationPrefix.Length);
+        var contentBudget = Math.Max(1, options.MaxLineLength - context.BaseIndent.Length - options.DocumentationPrefix.Length);
         IReadOnlyList<string> contentLines = DocLayout.Compose(tokens, options, contentBudget);
-        string formatted = DocIndent.Reapply(contentLines, context.BaseIndent, options.DocumentationPrefix, context.LineEnding);
+        var formatted = DocIndent.Reapply(contentLines, context.BaseIndent, options.DocumentationPrefix, context.LineEnding);
 
-        bool changed = !string.Equals(formatted, triviaText, StringComparison.Ordinal);
+        var changed = !string.Equals(formatted, triviaText, StringComparison.Ordinal);
         ImmutableArray<XmlDocFormattingChange> changes = changed
             ? ImmutableArray.Create(new XmlDocFormattingChange(XmlDocFormatRangeKind.BlockLayout, "Documentation layout updated to project policy."))
             : ImmutableArray<XmlDocFormattingChange>.Empty;
@@ -114,7 +114,7 @@ public sealed class XmlDocFormatter
 
     private static bool HasMatchedTags(ImmutableArray<XmlDocToken> tokens)
     {
-        Stack<string> openTags = new Stack<string>();
+        var openTags = new Stack<string>();
         foreach (XmlDocToken token in tokens)
         {
             if (token.Kind == XmlDocTokenKind.BlockStart && token.TagName is not null)

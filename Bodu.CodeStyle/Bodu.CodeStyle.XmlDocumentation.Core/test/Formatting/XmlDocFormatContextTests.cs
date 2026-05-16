@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatContextTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -61,7 +61,7 @@ public sealed class XmlDocFormatContextTests
     [TestMethod]
     public void Ctor_ShouldRoundTripProperties()
     {
-        XmlDocFormatContext context = new XmlDocFormatContext("\t\t", "\n", XmlDocMemberKindHint.Property);
+        var context = new XmlDocFormatContext("\t\t", "\n", XmlDocMemberKindHint.Property);
 
         Assert.AreEqual("\t\t", context.BaseIndent);
         Assert.AreEqual("\n", context.LineEnding);

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.Nested.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenRemarksHasTwoParas_ShouldEmitEachOnItsOwnBlock()
     {
-        string input =
+        var input =
             "/// <remarks><para>First.</para><para>Second.</para></remarks>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
@@ -38,7 +38,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenListContainsItems_ShouldPreserveListStructure()
     {
-        string input =
+        var input =
             "/// <remarks>\r\n" +
             "    /// <list type=\"bullet\">\r\n" +
             "    /// <item>\r\n" +
@@ -65,7 +65,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenForceMultilineBlockContainsOnlyAtom_ShouldEmitAtomOnContentLine()
     {
-        string input = "/// <summary><see cref=\"Sample\" /></summary>\r\n";
+        var input = "/// <summary><see cref=\"Sample\" /></summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -82,7 +82,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenForceMultilineBlockIsEmpty_ShouldEmitOpenAndCloseTagsOnly()
     {
-        string input = "/// <summary></summary>\r\n";
+        var input = "/// <summary></summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 

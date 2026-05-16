@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.LongInput.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -19,9 +19,9 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenDocContainsManyParaBlocks_ShouldEmitOneBlockPerParagraph()
     {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.Append("/// <remarks>\r\n");
-        for (int i = 0; i < 200; i++)
+        for (var i = 0; i < 200; i++)
         {
             builder.Append("    /// <para>\r\n");
             builder.Append("    /// Paragraph ");
@@ -31,7 +31,7 @@ public partial class XmlDocFormatterTests
         }
 
         builder.Append("    /// </remarks>\r\n");
-        string input = builder.ToString();
+        var input = builder.ToString();
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
 
@@ -45,9 +45,9 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenSummaryHasVeryLongProse_ShouldWrapToFit()
     {
-        StringBuilder builder = new StringBuilder();
+        var builder = new StringBuilder();
         builder.Append("/// <summary>");
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             builder.Append("Lorem ipsum dolor sit amet ");
         }
@@ -57,7 +57,7 @@ public partial class XmlDocFormatterTests
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(builder.ToString(), CreateContext(), CreateOptions());
 
         Assert.IsTrue(result.Changed);
-        foreach (string line in result.FormattedText.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
+        foreach (var line in result.FormattedText.Split(new[] { "\r\n" }, System.StringSplitOptions.None))
         {
             Assert.IsTrue(line.Length <= 200, $"Wrapped line is unexpectedly long: '{line}'.");
         }

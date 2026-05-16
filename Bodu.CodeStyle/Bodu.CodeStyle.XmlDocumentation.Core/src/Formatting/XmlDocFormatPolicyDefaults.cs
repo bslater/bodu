@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatPolicyDefaults.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -123,9 +123,9 @@ public static class XmlDocFormatPolicyDefaults
         ImmutableDictionary<string, XmlDocTagPolicy>.Builder builder =
             ImmutableDictionary.CreateBuilder<string, XmlDocTagPolicy>(StringComparer.Ordinal);
 
-        XmlDocTagPolicy multiline = new XmlDocTagPolicy(XmlDocTagLayout.MultilineBlock, null, allowLineBreakInside: true, selfClosingTrailingSpace: null);
-        XmlDocTagPolicy singleLine = new XmlDocTagPolicy(XmlDocTagLayout.SingleLineWhenShort, maxSingleLineLength: DefaultMaxLineLength, allowLineBreakInside: true, selfClosingTrailingSpace: null);
-        XmlDocTagPolicy inlineAtomic = new XmlDocTagPolicy(XmlDocTagLayout.InlineAtomic, null, allowLineBreakInside: false, selfClosingTrailingSpace: true);
+        var multiline = new XmlDocTagPolicy(XmlDocTagLayout.MultilineBlock, null, allowLineBreakInside: true, selfClosingTrailingSpace: null);
+        var singleLine = new XmlDocTagPolicy(XmlDocTagLayout.SingleLineWhenShort, maxSingleLineLength: DefaultMaxLineLength, allowLineBreakInside: true, selfClosingTrailingSpace: null);
+        var inlineAtomic = new XmlDocTagPolicy(XmlDocTagLayout.InlineAtomic, null, allowLineBreakInside: false, selfClosingTrailingSpace: true);
 
         builder.Add("summary", multiline);
         builder.Add("remarks", multiline);

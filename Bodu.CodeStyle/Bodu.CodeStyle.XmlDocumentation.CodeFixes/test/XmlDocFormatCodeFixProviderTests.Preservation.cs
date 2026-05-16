@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatCodeFixProviderTests.Preservation.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -22,7 +22,7 @@ public partial class XmlDocFormatCodeFixProviderTests
     [TestMethod]
     public async Task CodeFix_WhenMemberHasAttribute_ShouldPreserveAttribute()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>Foo.</summary>\r\n" +
@@ -30,7 +30,7 @@ public partial class XmlDocFormatCodeFixProviderTests
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
-        string expected =
+        var expected =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>\r\n" +
@@ -40,7 +40,7 @@ public partial class XmlDocFormatCodeFixProviderTests
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
-        CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier> test =
+        var test =
             new CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier>
             {
                 TestCode = source,
@@ -53,7 +53,7 @@ public partial class XmlDocFormatCodeFixProviderTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -62,7 +62,7 @@ public partial class XmlDocFormatCodeFixProviderTests
     [TestMethod]
     public async Task CodeFix_WhenMultipleDocsMisformatted_ShouldFixAll()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>Foo.</summary>\r\n" +
@@ -71,7 +71,7 @@ public partial class XmlDocFormatCodeFixProviderTests
             "    public int Y;\r\n" +
             "}\r\n";
 
-        string expected =
+        var expected =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>\r\n" +
@@ -84,7 +84,7 @@ public partial class XmlDocFormatCodeFixProviderTests
             "    public int Y;\r\n" +
             "}\r\n";
 
-        CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier> test =
+        var test =
             new CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier>
             {
                 TestCode = source,
@@ -101,7 +101,7 @@ public partial class XmlDocFormatCodeFixProviderTests
                 .WithSpan(5, 5, 6, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -111,7 +111,7 @@ public partial class XmlDocFormatCodeFixProviderTests
     [TestMethod]
     public async Task CodeFix_WhenAlreadyCanonical_ShouldMakeNoChanges()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>\r\n" +
@@ -120,7 +120,7 @@ public partial class XmlDocFormatCodeFixProviderTests
             "    public int X;\r\n" +
             "}\r\n";
 
-        CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier> test =
+        var test =
             new CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier>
             {
                 TestCode = source,
@@ -128,6 +128,6 @@ public partial class XmlDocFormatCodeFixProviderTests
                 ReferenceAssemblies = ReferenceAssemblies.Net.Net80,
             };
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 }

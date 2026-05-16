@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.LineEndings.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -17,7 +17,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenInputAndContextAreCrlf_ShouldEmitCrlf()
     {
-        string input = "/// <summary>Foo.</summary>\r\n";
+        var input = "/// <summary>Foo.</summary>\r\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(lineEnding: "\r\n"), CreateOptions());
 
@@ -31,7 +31,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenInputUsesLfButContextIsCrlf_ShouldEmitCrlf()
     {
-        string input = "/// <summary>Foo.</summary>\n";
+        var input = "/// <summary>Foo.</summary>\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(lineEnding: "\r\n"), CreateOptions());
 
@@ -45,7 +45,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenContextRequestsLf_ShouldEmitLfOnly()
     {
-        string input = "/// <summary>Foo.</summary>\n";
+        var input = "/// <summary>Foo.</summary>\n";
 
         XmlDocFormatResult result = CreateFormatter().FormatTrivia(input, CreateContext(lineEnding: "\n"), CreateOptions());
 
@@ -58,7 +58,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenInputMixesLineEndings_ShouldNormaliseToContext()
     {
-        string input =
+        var input =
             "/// <summary>\r" +
             "    /// Foo.\n" +
             "    /// </summary>\r\n";

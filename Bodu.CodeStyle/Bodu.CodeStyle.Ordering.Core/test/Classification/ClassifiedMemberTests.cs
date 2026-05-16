@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="ClassifiedMemberTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -18,7 +18,7 @@ public sealed class ClassifiedMemberTests
     [TestMethod]
     public void Ctor_ShouldRoundTripProperties()
     {
-        ClassifiedMember member = new ClassifiedMember(MemberKind.Method, AccessibilityRank.Public, groupRank: 7, accessibilityRank: 0);
+        var member = new ClassifiedMember(MemberKind.Method, AccessibilityRank.Public, groupRank: 7, accessibilityRank: 0);
 
         Assert.AreEqual(MemberKind.Method, member.Kind);
         Assert.AreEqual(AccessibilityRank.Public, member.Accessibility);

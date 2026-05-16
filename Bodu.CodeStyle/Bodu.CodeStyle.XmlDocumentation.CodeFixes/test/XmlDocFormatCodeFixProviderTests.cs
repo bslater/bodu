@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatCodeFixProviderTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -24,14 +24,14 @@ public partial class XmlDocFormatCodeFixProviderTests
     [TestCategory(TestCategories.Smoke)]
     public async Task CodeFix_WhenSummarySingleLine_ShouldFormatToMultiline()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>Foo.</summary>\r\n" +
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
-        string expected =
+        var expected =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>\r\n" +
@@ -40,7 +40,7 @@ public partial class XmlDocFormatCodeFixProviderTests
             "    public int X { get; set; }\r\n" +
             "}\r\n";
 
-        CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier> test =
+        var test =
             new CSharpCodeFixTest<XmlDocFormatAnalyzer, XmlDocFormatCodeFixProvider, MSTestVerifier>
             {
                 TestCode = source,
@@ -53,6 +53,8 @@ public partial class XmlDocFormatCodeFixProviderTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
+
+    public TestContext TestContext { get; set; }
 }

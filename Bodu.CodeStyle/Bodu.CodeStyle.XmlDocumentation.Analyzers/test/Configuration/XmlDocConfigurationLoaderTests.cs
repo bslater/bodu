@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocConfigurationLoaderTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -38,7 +38,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void LoadCompilationOptions_WhenJsonFilePresent_ShouldApplyJsonValues()
     {
-        ImmutableArray<AdditionalText> additional = ImmutableArray.Create<AdditionalText>(
+        var additional = ImmutableArray.Create<AdditionalText>(
             new FakeAdditionalText("/repo/bodu.xmldocstyle.json", "{\"maxLineLength\":80}"));
 
         XmlDocFormatOptions options = XmlDocConfigurationLoader.LoadCompilationOptions(additional, CancellationToken.None);
@@ -52,7 +52,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void LoadCompilationOptions_WhenJsonIsMalformed_ShouldFallBackToDefaults()
     {
-        ImmutableArray<AdditionalText> additional = ImmutableArray.Create<AdditionalText>(
+        var additional = ImmutableArray.Create<AdditionalText>(
             new FakeAdditionalText("/repo/bodu.xmldocstyle.json", "{not valid"));
 
         XmlDocFormatOptions options = XmlDocConfigurationLoader.LoadCompilationOptions(additional, CancellationToken.None);
@@ -66,7 +66,7 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void LoadCompilationOptions_WhenUnrelatedAdditionalFile_ShouldIgnore()
     {
-        ImmutableArray<AdditionalText> additional = ImmutableArray.Create<AdditionalText>(
+        var additional = ImmutableArray.Create<AdditionalText>(
             new FakeAdditionalText("/repo/foo.txt", "{\"maxLineLength\":80}"));
 
         XmlDocFormatOptions options = XmlDocConfigurationLoader.LoadCompilationOptions(additional, CancellationToken.None);
@@ -82,7 +82,7 @@ public sealed class XmlDocConfigurationLoaderTests
     public void ApplyEditorConfigOverrides_WhenMaxLineLengthOverride_ShouldApply()
     {
         XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
-        FakeAnalyzerConfigOptions config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["bodu_xmldoc_max_line_length"] = "100",
         });
@@ -99,7 +99,7 @@ public sealed class XmlDocConfigurationLoaderTests
     public void ApplyEditorConfigOverrides_WhenMaxLineLengthIsNotInteger_ShouldKeepCompilationValue()
     {
         XmlDocFormatOptions defaults = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
-        FakeAnalyzerConfigOptions config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["bodu_xmldoc_max_line_length"] = "abc",
         });
@@ -115,9 +115,9 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ResolveLineEnding_WhenNotSpecified_ShouldReturnCrlf()
     {
-        FakeAnalyzerConfigOptions config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>());
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>());
 
-        string result = XmlDocConfigurationLoader.ResolveLineEnding(config);
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config);
 
         Assert.AreEqual("\r\n", result);
     }
@@ -128,12 +128,12 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ResolveLineEnding_WhenSpecifiedLf_ShouldReturnLf()
     {
-        FakeAnalyzerConfigOptions config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["end_of_line"] = "lf",
         });
 
-        string result = XmlDocConfigurationLoader.ResolveLineEnding(config);
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config);
 
         Assert.AreEqual("\n", result);
     }
@@ -144,12 +144,12 @@ public sealed class XmlDocConfigurationLoaderTests
     [TestMethod]
     public void ResolveLineEnding_WhenSpecifiedCrlf_ShouldReturnCrlf()
     {
-        FakeAnalyzerConfigOptions config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
+        var config = new FakeAnalyzerConfigOptions(new Dictionary<string, string>
         {
             ["end_of_line"] = "crlf",
         });
 
-        string result = XmlDocConfigurationLoader.ResolveLineEnding(config);
+        var result = XmlDocConfigurationLoader.ResolveLineEnding(config);
 
         Assert.AreEqual("\r\n", result);
     }
@@ -181,7 +181,7 @@ public sealed class XmlDocConfigurationLoaderTests
 
         public override bool TryGetValue(string key, out string value)
         {
-            if (this._values.TryGetValue(key, out string? raw) && raw is not null)
+            if (this._values.TryGetValue(key, out var raw) && raw is not null)
             {
                 value = raw;
                 return true;

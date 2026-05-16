@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="FormatterKatTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -31,11 +31,11 @@ public sealed class FormatterKatTests
     {
         if (kat is null) throw new ArgumentNullException(nameof(kat));
 
-        (string baseIndent, string canonicalInput) = SplitBaseIndent(NormalizeToCrlf(kat.Input));
-        (_, string canonicalExpected) = SplitBaseIndent(NormalizeToCrlf(kat.Expected));
+        (var baseIndent, var canonicalInput) = SplitBaseIndent(NormalizeToCrlf(kat.Input));
+        (_, var canonicalExpected) = SplitBaseIndent(NormalizeToCrlf(kat.Expected));
 
-        XmlDocFormatter formatter = new XmlDocFormatter();
-        XmlDocFormatContext context = new XmlDocFormatContext(baseIndent, "\r\n", XmlDocMemberKindHint.Unknown);
+        var formatter = new XmlDocFormatter();
+        var context = new XmlDocFormatContext(baseIndent, "\r\n", XmlDocMemberKindHint.Unknown);
         XmlDocFormatOptions options = XmlDocFormatPolicyDefaults.CreateBoduDefaults();
 
         XmlDocFormatResult result = formatter.FormatTrivia(canonicalInput, context, options);
@@ -63,13 +63,13 @@ public sealed class FormatterKatTests
 
     private static string NormalizeToCrlf(string text)
     {
-        string normalized = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
+        var normalized = text.Replace("\r\n", "\n").Replace("\n", "\r\n");
         return normalized.EndsWith("\r\n", StringComparison.Ordinal) ? normalized : normalized + "\r\n";
     }
 
     private static (string BaseIndent, string Canonical) SplitBaseIndent(string text)
     {
-        int end = 0;
+        var end = 0;
         while (end < text.Length && (text[end] == ' ' || text[end] == '\t'))
         {
             end++;
@@ -80,8 +80,8 @@ public sealed class FormatterKatTests
             return (string.Empty, text);
         }
 
-        string indent = text.Substring(0, end);
-        string canonical = text.Substring(end);
+        var indent = text.Substring(0, end);
+        var canonical = text.Substring(end);
         return (indent, canonical);
     }
 }

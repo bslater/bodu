@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatAnalyzerTests.MemberKinds.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -21,7 +21,7 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenDocOnTypeDeclarationMisformatted_ShouldReport()
     {
-        string source =
+        var source =
             "/// <summary>Foo.</summary>\r\n" +
             "public sealed class Sample\r\n" +
             "{\r\n" +
@@ -33,7 +33,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(1, 1, 2, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenDocOnMethodDeclarationMisformatted_ShouldReport()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>Foo.</summary>\r\n" +
@@ -55,7 +55,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -64,7 +64,7 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenDocOnFieldDeclarationMisformatted_ShouldReport()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>Foo.</summary>\r\n" +
@@ -77,7 +77,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenDocOnEventDeclarationMisformatted_ShouldReport()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>Fires when X happens.</summary>\r\n" +
@@ -99,7 +99,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(3, 5, 4, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -108,7 +108,7 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenTwoMisformattedDocsInOneFile_ShouldReportBoth()
     {
-        string source =
+        var source =
             "public sealed class Sample\r\n" +
             "{\r\n" +
             "    /// <summary>Foo.</summary>\r\n" +
@@ -127,7 +127,7 @@ public partial class XmlDocFormatAnalyzerTests
                 .WithSpan(5, 5, 6, 1)
                 );
 
-        await test.RunAsync();
+        await test.RunAsync(TestContext.CancellationToken);
     }
 
     /// <summary>
@@ -136,6 +136,6 @@ public partial class XmlDocFormatAnalyzerTests
     [TestMethod]
     public async Task Analyze_WhenSourceIsEmpty_ShouldReportNothing()
     {
-        await CreateTest(string.Empty).RunAsync();
+        await CreateTest(string.Empty).RunAsync(TestContext.CancellationToken);
     }
 }

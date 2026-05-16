@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="DocIndentTests.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -63,7 +63,7 @@ public sealed class DocIndentTests
     [TestMethod]
     public void Strip_WhenSingleLine_ShouldReturnContentOnly()
     {
-        string stripped = DocIndent.Strip("/// foo\r\n", string.Empty, "/// ");
+        var stripped = DocIndent.Strip("/// foo\r\n", string.Empty, "/// ");
 
         Assert.AreEqual("foo\n", stripped);
     }
@@ -74,7 +74,7 @@ public sealed class DocIndentTests
     [TestMethod]
     public void Strip_WhenMultiLine_ShouldReturnContentLinesJoinedByLf()
     {
-        string stripped = DocIndent.Strip(
+        var stripped = DocIndent.Strip(
             "/// foo\r\n" +
             "    /// bar\r\n",
             "    ",
@@ -103,7 +103,7 @@ public sealed class DocIndentTests
     [TestMethod]
     public void Reapply_WhenContentLinesGiven_ShouldEmitPrefixedLinesWithLineEnding()
     {
-        string output = DocIndent.Reapply(new List<string> { "foo", "bar" }, "    ", "/// ", "\r\n");
+        var output = DocIndent.Reapply(new List<string> { "foo", "bar" }, "    ", "/// ", "\r\n");
 
         Assert.AreEqual(
             "/// foo\r\n" +
@@ -118,7 +118,7 @@ public sealed class DocIndentTests
     [TestMethod]
     public void Reapply_WhenContentLineIsEmpty_ShouldEmitPrefixWithoutTrailingSpace()
     {
-        string output = DocIndent.Reapply(new List<string> { string.Empty }, string.Empty, "/// ", "\r\n");
+        var output = DocIndent.Reapply(new List<string> { string.Empty }, string.Empty, "/// ", "\r\n");
 
         Assert.AreEqual("///\r\n", output);
     }
@@ -129,13 +129,13 @@ public sealed class DocIndentTests
     [TestMethod]
     public void StripThenReapply_WhenCanonicalInput_ShouldRoundTrip()
     {
-        string input =
+        var input =
             "/// foo\r\n" +
             "    /// bar\r\n";
 
-        string stripped = DocIndent.Strip(input, "    ", "/// ");
-        string[] lines = stripped.TrimEnd('\n').Split('\n');
-        string output = DocIndent.Reapply(lines, "    ", "/// ", "\r\n");
+        var stripped = DocIndent.Strip(input, "    ", "/// ");
+        var lines = stripped.TrimEnd('\n').Split('\n');
+        var output = DocIndent.Reapply(lines, "    ", "/// ", "\r\n");
 
         Assert.AreEqual(input, output);
     }

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="XmlDocFormatterTests.Idempotency.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -76,7 +76,7 @@ public partial class XmlDocFormatterTests
     [TestMethod]
     public void Format_WhenMisformattedThenFormattedRunRepeatedly_ShouldBeIdempotent()
     {
-        string input = "/// <summary>Foo.</summary>\r\n";
+        var input = "/// <summary>Foo.</summary>\r\n";
         XmlDocFormatResult first = CreateFormatter().FormatTrivia(input, CreateContext(), CreateOptions());
         XmlDocFormatResult second = CreateFormatter().FormatTrivia(first.FormattedText, CreateContext(), CreateOptions());
         XmlDocFormatResult third = CreateFormatter().FormatTrivia(second.FormattedText, CreateContext(), CreateOptions());
