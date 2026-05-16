@@ -6,6 +6,8 @@
 
 using System.Collections.Generic;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 internal sealed partial class BoduConfigurationReader
@@ -43,9 +45,9 @@ internal sealed partial class BoduConfigurationReader
     private static BoduConfigurationSection GetCurrentSection(BoduConfigurationDocument document) =>
         document.Sections.Count > 0 ? document.Sections[^1] : document.Preamble;
 
-    private static void AttachPendingComments(BoduConfigurationSection section, List<BoduConfigurationComment> pending)
+    private static void AttachPendingComments(BoduConfigurationSection section, List<IniComment> pending)
     {
-        foreach (BoduConfigurationComment c in pending)
+        foreach (IniComment c in pending)
             section.AddLeadingComment(c);
         pending.Clear();
     }
@@ -100,7 +102,7 @@ internal sealed partial class BoduConfigurationReader
         return line.Substring(firstNonWs, end - firstNonWs + 1);
     }
 
-    private static BoduConfigurationComment? TryExtractInlineComment(
+    private static IniComment? TryExtractInlineComment(
         ref string value,
         BoduConfigurationInlineCommentMode mode,
         int lineNumber,
@@ -129,7 +131,9 @@ internal sealed partial class BoduConfigurationReader
             string commentText = value.Substring(i + 1);
             string remaining = value.Substring(0, i).TrimEnd();
             value = remaining;
-            return new BoduConfigurationComment(c, commentText, new BoduConfigurationSourceLocation(lineNumber, valueStart + i + 1, value.Length - i, path));
+            _ = path;       // path no longer carried per-comment; entry-level Location records the source path.
+            _ = valueStart; // value-column not carried by IniComment; line number suffices for trivia.
+            return new IniComment(c, commentText, lineNumber);
         }
 
         return null;

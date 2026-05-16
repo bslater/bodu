@@ -31,7 +31,7 @@ public partial class BoduConfigurationParseOptionsTests
         BoduConfigurationParseOptions options = BoduConfigurationParseOptions.Strict;
 
         Assert.AreEqual(IniDuplicateKeyBehavior.Disallowed, options.DuplicateKeyMode);
-        Assert.AreEqual(BoduConfigurationDuplicateSectionMode.Reject, options.DuplicateSectionMode);
+        Assert.AreEqual(IniDuplicateSectionBehavior.Disallowed, options.DuplicateSectionMode);
     }
 
     /// <summary>

@@ -29,8 +29,11 @@ public sealed class IniSection
     private static readonly CompositeFormat s_keyNotFound =
         CompositeFormat.Parse(FormatsResourceStrings.IniSection_KeyNotFound);
 
+    private static readonly IReadOnlyList<IniComment> s_emptyComments = Array.Empty<IniComment>();
+
     private readonly List<IniEntry> _entries;
     private readonly Dictionary<string, IniEntry> _lookup;
+    private IReadOnlyList<IniComment> _leadingComments = s_emptyComments;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniSection" /> class.
@@ -45,6 +48,23 @@ public sealed class IniSection
         _lookup = lookup;
         Entries = _entries.AsReadOnly();
     }
+
+    /// <summary>
+    /// Gets the comments authored on lines preceding this section header, in source order.
+    /// </summary>
+    /// <returns>
+    /// A read-only list of <see cref="IniComment" />. The list is empty when no comments precede the section
+    /// or when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
+    /// </returns>
+    public IReadOnlyList<IniComment> LeadingComments => _leadingComments;
+
+    /// <summary>
+    /// Replaces the leading comments associated with this section. Used by the parser when constructing the
+    /// section before its entries have been attached.
+    /// </summary>
+    /// <param name="comments">The comments to associate with this section.</param>
+    internal void SetLeadingComments(IReadOnlyList<IniComment> comments) =>
+        _leadingComments = comments ?? s_emptyComments;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IniSection" /> class with the supplied name and entries.

@@ -21,7 +21,7 @@ internal sealed partial class BoduConfigurationReader
 {
     private readonly BoduConfigurationParseOptions _options;
     private readonly List<BoduConfigurationDiagnostic> _diagnostics = [];
-    private readonly List<BoduConfigurationComment> _pendingLeadingComments = [];
+    private readonly List<IniComment> _pendingLeadingComments = [];
 
     internal BoduConfigurationReader(BoduConfigurationParseOptions options)
     {
@@ -51,7 +51,7 @@ internal sealed partial class BoduConfigurationReader
         }
 
         // Any pending leading comments at end-of-file attach to whichever section is current.
-        foreach (BoduConfigurationComment c in this._pendingLeadingComments)
+        foreach (IniComment c in this._pendingLeadingComments)
             currentSection.AddLeadingComment(c);
         this._pendingLeadingComments.Clear();
 
@@ -90,8 +90,9 @@ internal sealed partial class BoduConfigurationReader
         if (first == '#' || first == ';')
         {
             string commentText = line.Substring(firstNonWs + 1);
-            BoduConfigurationSourceLocation loc = new(lineNumber, firstNonWs + 1, line.Length - firstNonWs, path);
-            this._pendingLeadingComments.Add(new BoduConfigurationComment(first, commentText, loc));
+            _ = path; // entry-level Location captures the source path; per-comment location is the line number.
+            _ = firstNonWs;
+            this._pendingLeadingComments.Add(new IniComment(first, commentText, lineNumber));
             return currentSection;
         }
 
@@ -142,7 +143,7 @@ internal sealed partial class BoduConfigurationReader
         {
             switch (this._options.DuplicateSectionMode)
             {
-                case BoduConfigurationDuplicateSectionMode.Reject:
+                case IniDuplicateSectionBehavior.Disallowed:
                     this.EmitDiagnostic(
                         BoduConfigurationDiagnosticSeverity.Error,
                         BoduConfigurationDiagnosticCode.UnterminatedSectionHeader,
@@ -151,8 +152,8 @@ internal sealed partial class BoduConfigurationReader
                     section = existing;
                     break;
 
-                case BoduConfigurationDuplicateSectionMode.MergeAll:
-                case BoduConfigurationDuplicateSectionMode.MergeAdjacent when ReferenceEquals(GetCurrentSection(document), existing):
+                case IniDuplicateSectionBehavior.MergeAll:
+                case IniDuplicateSectionBehavior.MergeAdjacent when ReferenceEquals(GetCurrentSection(document), existing):
                     section = existing;
                     break;
 
@@ -229,7 +230,7 @@ internal sealed partial class BoduConfigurationReader
             return currentSection;
         }
 
-        BoduConfigurationComment? inlineComment = null;
+        IniComment? inlineComment = null;
         if (this._options.InlineCommentMode != BoduConfigurationInlineCommentMode.Disabled)
         {
             inlineComment = TryExtractInlineComment(ref valueText, this._options.InlineCommentMode, lineNumber, equalsIndex + 1, path);
@@ -246,7 +247,7 @@ internal sealed partial class BoduConfigurationReader
         int lineNumber,
         int linePosition,
         string? path,
-        BoduConfigurationComment? inlineComment = null)
+        IniComment? inlineComment = null)
     {
         BoduConfigurationProperty? existing = null;
         int existingIndex = -1;
@@ -281,7 +282,7 @@ internal sealed partial class BoduConfigurationReader
         if (inlineComment.HasValue)
             property.InlineComment = inlineComment.Value;
 
-        foreach (BoduConfigurationComment c in this._pendingLeadingComments)
+        foreach (IniComment c in this._pendingLeadingComments)
             property.AddLeadingComment(c);
         this._pendingLeadingComments.Clear();
 

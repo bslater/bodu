@@ -13,7 +13,7 @@ public sealed partial class BoduConfigurationParseOptions
     /// <summary>
     /// Gets the canonical option set for the default Bodu profile: <see cref="BoduConfigurationInlineCommentMode.WhitespaceIntroduced" />
     /// inline comments, <see cref="IniDuplicateKeyBehavior.LastWins" /> duplicates,
-    /// <see cref="BoduConfigurationDuplicateSectionMode.Preserve" /> sections, and throw-on-error diagnostics.
+    /// <see cref="IniDuplicateSectionBehavior.Preserve" /> sections, and throw-on-error diagnostics.
     /// </summary>
     /// <returns>A cached default options instance.</returns>
     public static BoduConfigurationParseOptions Bodu { get; } = For(BoduConfigurationProfile.Bodu);
@@ -57,7 +57,7 @@ public sealed partial class BoduConfigurationParseOptions
                 Profile = BoduConfigurationProfile.Bodu,
                 InlineCommentMode = BoduConfigurationInlineCommentMode.WhitespaceIntroduced,
                 DuplicateKeyMode = IniDuplicateKeyBehavior.LastWins,
-                DuplicateSectionMode = BoduConfigurationDuplicateSectionMode.Preserve,
+                DuplicateSectionMode = IniDuplicateSectionBehavior.Preserve,
                 DiagnosticMode = BoduConfigurationDiagnosticMode.Throw,
                 TrimKeysAndValues = true,
                 AllowKeyOnlyProperties = false,
@@ -67,7 +67,7 @@ public sealed partial class BoduConfigurationParseOptions
                 Profile = BoduConfigurationProfile.EditorConfigCompatible,
                 InlineCommentMode = BoduConfigurationInlineCommentMode.Disabled,
                 DuplicateKeyMode = IniDuplicateKeyBehavior.LastWins,
-                DuplicateSectionMode = BoduConfigurationDuplicateSectionMode.Preserve,
+                DuplicateSectionMode = IniDuplicateSectionBehavior.Preserve,
                 DiagnosticMode = BoduConfigurationDiagnosticMode.Throw,
                 TrimKeysAndValues = true,
                 AllowKeyOnlyProperties = false,
@@ -77,7 +77,7 @@ public sealed partial class BoduConfigurationParseOptions
                 Profile = BoduConfigurationProfile.Strict,
                 InlineCommentMode = BoduConfigurationInlineCommentMode.Disabled,
                 DuplicateKeyMode = IniDuplicateKeyBehavior.Disallowed,
-                DuplicateSectionMode = BoduConfigurationDuplicateSectionMode.Reject,
+                DuplicateSectionMode = IniDuplicateSectionBehavior.Disallowed,
                 DiagnosticMode = BoduConfigurationDiagnosticMode.Throw,
                 TrimKeysAndValues = true,
                 AllowKeyOnlyProperties = false,
@@ -87,7 +87,7 @@ public sealed partial class BoduConfigurationParseOptions
                 Profile = BoduConfigurationProfile.Relaxed,
                 InlineCommentMode = BoduConfigurationInlineCommentMode.WhitespaceIntroduced,
                 DuplicateKeyMode = IniDuplicateKeyBehavior.LastWins,
-                DuplicateSectionMode = BoduConfigurationDuplicateSectionMode.Preserve,
+                DuplicateSectionMode = IniDuplicateSectionBehavior.Preserve,
                 DiagnosticMode = BoduConfigurationDiagnosticMode.Collect,
                 TrimKeysAndValues = true,
                 AllowKeyOnlyProperties = false,

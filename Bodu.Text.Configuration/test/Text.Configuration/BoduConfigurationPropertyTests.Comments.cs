@@ -4,6 +4,8 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationPropertyTests
@@ -21,15 +23,15 @@ public partial class BoduConfigurationPropertyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationProperty.AddLeadingComment(BoduConfigurationComment)" />
+    /// Verifies that <see cref="BoduConfigurationProperty.AddLeadingComment(IniComment)" />
     /// appends in source order.
     /// </summary>
     [TestMethod]
     public void AddLeadingComment_WhenCalledMultipleTimes_ShouldPreserveOrder()
     {
         BoduConfigurationProperty property = new("key", "value");
-        property.AddLeadingComment(new BoduConfigurationComment('#', "first", default));
-        property.AddLeadingComment(new BoduConfigurationComment(';', "second", default));
+        property.AddLeadingComment(new IniComment('#', "first", default));
+        property.AddLeadingComment(new IniComment(';', "second", default));
 
         Assert.AreEqual(2, property.LeadingComments.Count);
         Assert.AreEqual("first", property.LeadingComments[0].Text);
@@ -37,23 +39,23 @@ public partial class BoduConfigurationPropertyTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationProperty.SetLeadingComments(System.Collections.Generic.IEnumerable{BoduConfigurationComment})" />
+    /// Verifies that <see cref="BoduConfigurationProperty.SetLeadingComments(System.Collections.Generic.IEnumerable{IniComment})" />
     /// replaces the existing leading comments.
     /// </summary>
     [TestMethod]
     public void SetLeadingComments_WhenSequenceProvided_ShouldReplaceExistingComments()
     {
         BoduConfigurationProperty property = new("key", "value");
-        property.AddLeadingComment(new BoduConfigurationComment('#', "old", default));
+        property.AddLeadingComment(new IniComment('#', "old", default));
 
-        property.SetLeadingComments([new BoduConfigurationComment('#', "new", default)]);
+        property.SetLeadingComments([new IniComment('#', "new", default)]);
 
         Assert.AreEqual(1, property.LeadingComments.Count);
         Assert.AreEqual("new", property.LeadingComments[0].Text);
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationProperty.SetLeadingComments(System.Collections.Generic.IEnumerable{BoduConfigurationComment})" />
+    /// Verifies that <see cref="BoduConfigurationProperty.SetLeadingComments(System.Collections.Generic.IEnumerable{IniComment})" />
     /// rejects a <see langword="null" /> sequence.
     /// </summary>
     [TestMethod]
@@ -71,7 +73,7 @@ public partial class BoduConfigurationPropertyTests
     public void InlineComment_WhenAssigned_ShouldRetainValue()
     {
         BoduConfigurationProperty property = new("key", "value");
-        BoduConfigurationComment comment = new('#', " note", default);
+        IniComment comment = new('#', " note", default);
 
         property.InlineComment = comment;
 

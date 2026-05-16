@@ -6,6 +6,8 @@
 
 using System.IO;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 /// <summary>
@@ -43,7 +45,7 @@ internal sealed class BoduConfigurationWriter
 
         if (this._options.PreserveComments)
         {
-            foreach (BoduConfigurationComment comment in section.LeadingComments)
+            foreach (IniComment comment in section.LeadingComments)
             {
                 writer.Write(comment.Prefix);
                 writer.Write(comment.Text);
@@ -65,7 +67,7 @@ internal sealed class BoduConfigurationWriter
         {
             if (this._options.PreserveComments)
             {
-                foreach (BoduConfigurationComment leading in property.LeadingComments)
+                foreach (IniComment leading in property.LeadingComments)
                 {
                     writer.Write(leading.Prefix);
                     writer.Write(leading.Text);
@@ -79,7 +81,7 @@ internal sealed class BoduConfigurationWriter
 
             if (this._options.WriteInlineComments && property.InlineComment.HasValue)
             {
-                BoduConfigurationComment inline = property.InlineComment.Value;
+                IniComment inline = property.InlineComment.Value;
                 writer.Write(' ');
                 writer.Write(inline.Prefix);
                 writer.Write(inline.Text);

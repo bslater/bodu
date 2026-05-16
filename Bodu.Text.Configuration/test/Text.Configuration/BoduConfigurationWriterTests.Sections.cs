@@ -6,6 +6,8 @@
 
 using System.IO;
 
+using Bodu.Text.Formats;
+
 namespace Bodu.Text.Configuration;
 
 public partial class BoduConfigurationWriterTests
@@ -73,7 +75,7 @@ public partial class BoduConfigurationWriterTests
     {
         BoduConfigurationDocument doc = new();
         BoduConfigurationSection section = doc.GetOrAddSection("*.cs");
-        section.AddLeadingComment(new BoduConfigurationComment('#', " leading note", default));
+        section.AddLeadingComment(new IniComment('#', " leading note", default));
         section.Set("a", "1");
 
         string text = doc.ToString();

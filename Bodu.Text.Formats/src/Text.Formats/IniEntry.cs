@@ -14,6 +14,10 @@ namespace Bodu.Text.Formats;
 /// </summary>
 public sealed class IniEntry
 {
+    private static readonly IReadOnlyList<IniComment> s_emptyComments = Array.Empty<IniComment>();
+
+    private readonly IReadOnlyList<IniComment> _leadingComments;
+
     /// <summary>
     /// Initializes a new instance of the <see cref="IniEntry" /> class.
     /// </summary>
@@ -23,7 +27,7 @@ public sealed class IniEntry
     /// Thrown when <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     public IniEntry(string key, string value)
-        : this(key, value, lineNumber: 0)
+        : this(key, value, lineNumber: 0, leadingComments: null)
     {
     }
 
@@ -40,6 +44,25 @@ public sealed class IniEntry
     /// Thrown when <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
     /// </exception>
     public IniEntry(string key, string value, int lineNumber)
+        : this(key, value, lineNumber, leadingComments: null)
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IniEntry" /> class with source line and leading-comment
+    /// trivia.
+    /// </summary>
+    /// <param name="key">The trimmed key name.</param>
+    /// <param name="value">The trimmed value string.</param>
+    /// <param name="lineNumber">The 1-based source line, or <c>0</c> when constructed programmatically.</param>
+    /// <param name="leadingComments">
+    /// The comments authored on lines that precede this entry, in source order, or <see langword="null" /> when
+    /// no comments precede the entry.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="key" /> or <paramref name="value" /> is <see langword="null" />.
+    /// </exception>
+    public IniEntry(string key, string value, int lineNumber, IReadOnlyList<IniComment>? leadingComments)
     {
         ThrowHelper.ThrowIfNull(key);
         ThrowHelper.ThrowIfNull(value);
@@ -47,7 +70,17 @@ public sealed class IniEntry
         Key = key;
         Value = value;
         LineNumber = lineNumber;
+        _leadingComments = leadingComments ?? s_emptyComments;
     }
+
+    /// <summary>
+    /// Gets the comments authored on lines preceding this entry, in source order.
+    /// </summary>
+    /// <returns>
+    /// A read-only list of <see cref="IniComment" />. The list is empty when no comments precede the entry or
+    /// when <see cref="IniParseOptions.PreserveComments" /> was <see langword="false" />.
+    /// </returns>
+    public IReadOnlyList<IniComment> LeadingComments => _leadingComments;
 
     /// <summary>
     /// Gets the key name of this entry.

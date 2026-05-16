@@ -31,7 +31,7 @@ namespace Bodu.Text.Configuration;
 public sealed partial class BoduConfigurationSection
 {
     private readonly List<BoduConfigurationProperty> _properties = [];
-    private readonly List<BoduConfigurationComment> _leadingComments = [];
+    private readonly List<IniComment> _leadingComments = [];
 
     /// <summary>
     /// Initializes a new section with the specified glob pattern.
@@ -84,7 +84,7 @@ public sealed partial class BoduConfigurationSection
     /// Gets the comments authored on lines preceding this section header.
     /// </summary>
     /// <returns>A read-only view of the leading comments.</returns>
-    public IReadOnlyList<BoduConfigurationComment> LeadingComments => this._leadingComments;
+    public IReadOnlyList<IniComment> LeadingComments => this._leadingComments;
 
     /// <summary>
     /// Creates a preamble section for use as <see cref="BoduConfigurationDocument.Preamble" />.
@@ -126,6 +126,6 @@ public sealed partial class BoduConfigurationSection
     /// Appends a leading comment to this section header.
     /// </summary>
     /// <param name="comment">The comment to append.</param>
-    public void AddLeadingComment(BoduConfigurationComment comment) =>
+    public void AddLeadingComment(IniComment comment) =>
         this._leadingComments.Add(comment);
 }

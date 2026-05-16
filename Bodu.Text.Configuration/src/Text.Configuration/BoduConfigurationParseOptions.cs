@@ -45,8 +45,8 @@ public sealed partial class BoduConfigurationParseOptions
     /// Gets the duplicate section handling mode used by the reader.
     /// </summary>
     /// <returns>The selected duplicate section mode.</returns>
-    public BoduConfigurationDuplicateSectionMode DuplicateSectionMode { get; init; } =
-        BoduConfigurationDuplicateSectionMode.Preserve;
+    public IniDuplicateSectionBehavior DuplicateSectionMode { get; init; } =
+        IniDuplicateSectionBehavior.Preserve;
 
     /// <summary>
     /// Gets the diagnostic routing mode that controls whether recoverable errors throw, are collected on the
@@ -110,12 +110,7 @@ public sealed partial class BoduConfigurationParseOptions
             CaseSensitiveKeys = this.KeyOptions.CaseSensitive,
             CaseSensitiveSections = this.KeyOptions.CaseSensitive,
             DuplicateKeyBehavior = this.DuplicateKeyMode,
-            DuplicateSectionBehavior = this.DuplicateSectionMode switch
-            {
-                BoduConfigurationDuplicateSectionMode.MergeAdjacent => IniDuplicateSectionBehavior.Merge,
-                BoduConfigurationDuplicateSectionMode.MergeAll => IniDuplicateSectionBehavior.Merge,
-                BoduConfigurationDuplicateSectionMode.Reject => IniDuplicateSectionBehavior.Disallowed,
-                _ => IniDuplicateSectionBehavior.Merge,
-            },
+            DuplicateSectionBehavior = this.DuplicateSectionMode,
+            PreserveComments = true,
         };
 }

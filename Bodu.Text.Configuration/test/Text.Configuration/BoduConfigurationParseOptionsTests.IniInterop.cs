@@ -25,27 +25,26 @@ public partial class BoduConfigurationParseOptionsTests
     }
 
     /// <summary>
-    /// Verifies that <see cref="BoduConfigurationParseOptions.ToIniParseOptions" /> maps
-    /// <see cref="BoduConfigurationDuplicateSectionMode.MergeAdjacent" /> and
-    /// <see cref="BoduConfigurationDuplicateSectionMode.MergeAll" /> to <see cref="IniDuplicateSectionBehavior.Merge" />.
+    /// Verifies that <see cref="BoduConfigurationParseOptions.ToIniParseOptions" /> passes the duplicate
+    /// section behaviour through unchanged now that the two enums are unified.
     /// </summary>
     [TestMethod]
-    public void ToIniParseOptions_WhenDuplicateSectionModeIsMerge_ShouldProjectToIniMerge()
+    public void ToIniParseOptions_WhenDuplicateSectionModeIsMergeAdjacent_ShouldProjectIdentically()
     {
-        BoduConfigurationParseOptions options = new() { DuplicateSectionMode = BoduConfigurationDuplicateSectionMode.MergeAdjacent };
+        BoduConfigurationParseOptions options = new() { DuplicateSectionMode = IniDuplicateSectionBehavior.MergeAdjacent };
 
-        Assert.AreEqual(IniDuplicateSectionBehavior.Merge, options.ToIniParseOptions().DuplicateSectionBehavior);
+        Assert.AreEqual(IniDuplicateSectionBehavior.MergeAdjacent, options.ToIniParseOptions().DuplicateSectionBehavior);
     }
 
     /// <summary>
     /// Verifies that <see cref="BoduConfigurationParseOptions.ToIniParseOptions" /> maps
-    /// <see cref="BoduConfigurationDuplicateSectionMode.Reject" /> to
+    /// <see cref="IniDuplicateSectionBehavior.Disallowed" /> to
     /// <see cref="IniDuplicateSectionBehavior.Disallowed" />.
     /// </summary>
     [TestMethod]
     public void ToIniParseOptions_WhenDuplicateSectionModeIsReject_ShouldProjectToIniDisallowed()
     {
-        BoduConfigurationParseOptions options = new() { DuplicateSectionMode = BoduConfigurationDuplicateSectionMode.Reject };
+        BoduConfigurationParseOptions options = new() { DuplicateSectionMode = IniDuplicateSectionBehavior.Disallowed };
 
         Assert.AreEqual(IniDuplicateSectionBehavior.Disallowed, options.ToIniParseOptions().DuplicateSectionBehavior);
     }

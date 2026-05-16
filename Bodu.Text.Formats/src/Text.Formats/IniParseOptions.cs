@@ -91,4 +91,15 @@ public readonly struct IniParseOptions
     /// <see cref="IniDuplicateSectionBehavior.Merge" /> by default.
     /// </returns>
     public IniDuplicateSectionBehavior DuplicateSectionBehavior { get; init; } = IniDuplicateSectionBehavior.Merge;
+
+    /// <summary>
+    /// Gets a value indicating whether the parser captures full-line comments as trivia and attaches them to
+    /// the next entry or section as <see cref="IniEntry.LeadingComments" /> and
+    /// <see cref="IniSection.LeadingComments" />.
+    /// </summary>
+    /// <returns>
+    /// <see langword="true" /> (the default) to retain comments for round-trip and tooling scenarios;
+    /// <see langword="false" /> to discard comments and behave like a classic INI parser.
+    /// </returns>
+    public bool PreserveComments { get; init; } = true;
 }
