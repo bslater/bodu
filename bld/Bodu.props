@@ -42,4 +42,15 @@
   <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true'">
     <PackageReference Include="Bodu.CodeStyle.XmlDocumentation" Version="1.0.0" PrivateAssets="all" />
   </ItemGroup>
+
+  <!--
+    Surface the repository-wide bodu.xmldocstyle.json policy to the analyzer via AdditionalFiles so each
+    consuming project sees the same rules. The Exists() guard keeps the build green for projects that opt
+    out (BoduCodeStyleAnalyzers=false) or for checkouts where the JSON has not been added yet.
+  -->
+  <ItemGroup Condition="'$(BoduCodeStyleAnalyzers)' == 'true' AND Exists('$(MSBuildThisFileDirectory)..\bodu.xmldocstyle.json')">
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)..\bodu.xmldocstyle.json"
+                     Link="bodu.xmldocstyle.json"
+                     Visible="false" />
+  </ItemGroup>
 </Project>

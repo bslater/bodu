@@ -293,6 +293,21 @@ dotnet_diagnostic.IDE0290.severity = none
 file_header_template = // ---------------------------------------------------------------------------------------------------------------\n// <copyright file="{fileName}" company="PlaceholderCompany">\n//     Copyright (c) PlaceholderCompany. All rights reserved.\n// </copyright>\n// ---------------------------------------------------------------------------------------------------------------
 
 # ---------------------------------------------------------------------------------------------------------------
+# Bodu XML documentation analyzer (BODUXML001)
+# ---------------------------------------------------------------------------------------------------------------
+#
+# The full policy lives in /bodu.xmldocstyle.json (loaded via <AdditionalFiles> from bld/Bodu.props).
+# The scalar keys below win over the JSON values for any file that matches the pattern, so they're left
+# commented out as documentation. Uncomment + tweak per-folder when you need a narrower override.
+#
+# [*.cs]
+# dotnet_diagnostic.BODUXML001.severity = warning           # warning | suggestion | none | error
+# bodu_xmldoc_max_line_length            = 120
+# bodu_xmldoc_force_summary_multiline    = true
+# bodu_xmldoc_force_para_multiline       = true
+# bodu_xmldoc_preserve_inline_tags       = true
+
+# ---------------------------------------------------------------------------------------------------------------
 # Test file overrides — relax rules that are noisy and unhelpful in test code
 # ---------------------------------------------------------------------------------------------------------------
 
