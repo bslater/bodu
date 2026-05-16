@@ -151,7 +151,7 @@ public static partial class IEnumerableExtensions
                 {
                     List<T> cache = _parent._cache ?? throw new ObjectDisposedException(nameof(CacheEnumerable<T>));
                     if (_index < 0 || _index >= cache.Count)
-                        throw new InvalidOperationException(ResourceStrings.InvalidOperation_EnumeratorNotOnElement);
+                        throw new InvalidOperationException(ResourceStrings.Op_Invalid_EnumeratorNotOnElement);
 
                     return cache[_index];
                 }

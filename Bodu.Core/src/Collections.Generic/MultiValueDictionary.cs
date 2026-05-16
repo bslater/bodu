@@ -480,6 +480,6 @@ public sealed partial class MultiValueDictionary<TKey, TValue>
     private void ThrowIfModified(int version)
     {
         if (version != _version)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionModified);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionModified);
     }
 }

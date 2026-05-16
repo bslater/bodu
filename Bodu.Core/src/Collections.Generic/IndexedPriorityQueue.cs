@@ -300,7 +300,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     public KeyValuePair<TElement, TPriority> Peek()
     {
         if (_size == 0)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
 
         (TElement Element, TPriority Priority) head = _nodes[0];
         return new KeyValuePair<TElement, TPriority>(head.Element, head.Priority);
@@ -388,7 +388,7 @@ public sealed partial class IndexedPriorityQueue<TElement, TPriority>
     public KeyValuePair<TElement, TPriority> Dequeue()
     {
         if (_size == 0)
-            throw new InvalidOperationException(ResourceStrings.InvalidOperation_CollectionEmpty);
+            throw new InvalidOperationException(ResourceStrings.Op_Invalid_CollectionEmpty);
 
         (TElement Element, TPriority Priority) head = _nodes[0];
         RemoveAt(0);
