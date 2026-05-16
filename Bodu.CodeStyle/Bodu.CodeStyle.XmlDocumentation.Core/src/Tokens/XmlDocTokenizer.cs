@@ -78,7 +78,7 @@ internal static class XmlDocTokenizer
 
                 if (TryReadCData(content, position, out var cdataEnd, out var cdataText))
                 {
-                    builder.Add(XmlDocToken.Text(cdataText));
+                    builder.Add(XmlDocToken.CData(cdataText));
                     position = cdataEnd;
                     continue;
                 }

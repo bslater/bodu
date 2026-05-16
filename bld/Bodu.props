@@ -31,10 +31,11 @@
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
 
     <!--
-      Enables the Bodu XML documentation analyzer (BODUXML001) on the consuming project. The analyzer is
-      shipped as the Bodu.CodeStyle.XmlDocumentation NuGet package (built in this repository, restored from the
-      `bodu-local` source declared in the root NuGet.config). Set BoduCodeStyleAnalyzers=false to opt out — the
-      Bodu.CodeStyle/* projects do this to avoid analysing themselves.
+      Enables the Bodu XML documentation analyzers (BODU1001-BODU1018 per tag + BODU1040 cross-cutting) on the
+      consuming project. The analyzer is shipped as the Bodu.CodeStyle.XmlDocumentation NuGet package (built in
+      this repository, restored from the `bodu-local` source declared in the root NuGet.config). Set
+      BoduCodeStyleAnalyzers=false to opt out — the Bodu.CodeStyle/* projects do this to avoid analysing
+      themselves.
     -->
     <BoduCodeStyleAnalyzers Condition="'$(BoduCodeStyleAnalyzers)' == ''">true</BoduCodeStyleAnalyzers>
   </PropertyGroup>

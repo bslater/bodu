@@ -35,7 +35,26 @@ public sealed class XmlDocFormatCodeFixProvider : CodeFixProvider
 
     /// <inheritdoc />
     public override ImmutableArray<string> FixableDiagnosticIds =>
-        ImmutableArray.Create(DiagnosticIds.XmlDocumentationFormatting);
+        ImmutableArray.Create(
+            DiagnosticIds.XmlDocSummary,
+            DiagnosticIds.XmlDocRemarks,
+            DiagnosticIds.XmlDocPara,
+            DiagnosticIds.XmlDocExample,
+            DiagnosticIds.XmlDocCode,
+            DiagnosticIds.XmlDocList,
+            DiagnosticIds.XmlDocItem,
+            DiagnosticIds.XmlDocDescription,
+            DiagnosticIds.XmlDocTerm,
+            DiagnosticIds.XmlDocParam,
+            DiagnosticIds.XmlDocTypeParam,
+            DiagnosticIds.XmlDocReturns,
+            DiagnosticIds.XmlDocException,
+            DiagnosticIds.XmlDocValue,
+            DiagnosticIds.XmlDocInlineCode,
+            DiagnosticIds.XmlDocSee,
+            DiagnosticIds.XmlDocParamRef,
+            DiagnosticIds.XmlDocTypeParamRef,
+            DiagnosticIds.XmlDocCrossCutting);
 
     /// <inheritdoc />
     public override FixAllProvider GetFixAllProvider() => WellKnownFixAllProviders.BatchFixer;

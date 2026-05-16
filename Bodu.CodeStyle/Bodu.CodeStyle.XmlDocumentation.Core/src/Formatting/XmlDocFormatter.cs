@@ -91,7 +91,7 @@ public sealed class XmlDocFormatter
 
         var changed = !string.Equals(formatted, triviaText, StringComparison.Ordinal);
         ImmutableArray<XmlDocFormattingChange> changes = changed
-            ? ImmutableArray.Create(new XmlDocFormattingChange(XmlDocFormatRangeKind.BlockLayout, "Documentation layout updated to project policy."))
+            ? XmlDocChangeAttributor.Attribute(triviaText, formatted, context, options)
             : ImmutableArray<XmlDocFormattingChange>.Empty;
 
         return new XmlDocFormatResult(changed, formatted, changes);
