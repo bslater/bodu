@@ -14,57 +14,63 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Twofish is a symmetric-key block cipher designed by Bruce Schneier, John Kelsey, Doug Whiting, David Wagner,
-/// Chris Hall, and Niels Ferguson, and submitted as one of the five finalists in the Advanced Encryption Standard
-/// (AES) competition. The reference paper, <em>Twofish: A 128-Bit Block Cipher</em> (1998), specifies a 16-round
-/// Feistel network with key-dependent S-boxes, an MDS-based linear layer, and a Pseudo-Hadamard Transform
-/// providing diffusion across the Feistel halves. Twofish operates on 128-bit blocks and supports 128-bit,
-/// 192-bit, and 256-bit keys.
+/// Twofish is a symmetric-key block cipher designed by Bruce Schneier, John Kelsey, Doug Whiting, David Wagner, Chris
+/// Hall, and Niels Ferguson, and submitted as one of the five finalists in the Advanced Encryption Standard (AES)
+/// competition. The reference paper, <em>Twofish: A 128-Bit Block Cipher</em> (1998), specifies a 16-round Feistel
+/// network with key-dependent S-boxes, an MDS-based linear layer, and a Pseudo-Hadamard Transform providing diffusion
+/// across the Feistel halves. Twofish operates on 128-bit blocks and supports 128-bit, 192-bit, and 256-bit keys.
 /// </para>
 /// <para>
-/// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block
-/// cipher modes via the <see cref="BlockMode"/> property. The default mode is <see cref="CipherModeKind.CBC"/>
-/// with <see cref="PaddingMode.PKCS7"/> padding.
+/// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block cipher
+/// modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherModeKind.CBC" /> with
+/// <see cref="PaddingMode.PKCS7" /> padding.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Block size: 128 bits (16 bytes).</description></item>
-///   <item><description>Key sizes: 128, 192, or 256 bits.</description></item>
-///   <item><description>16-round Feistel structure with key-dependent S-boxes and an MDS-based linear layer.</description></item>
-///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// <item>
+/// <description>
+/// Block size: 128 bits (16 bytes).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Key sizes: 128, 192, or 256 bits.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// 16-round Feistel structure with key-dependent S-boxes and an MDS-based linear layer.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Default mode: <see cref="CipherModeKind.CBC" />; default padding: <see cref="PaddingMode.PKCS7" />.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Twofish.</strong> Pick Twofish when interoperability with existing Twofish-based code
-/// or formats is required, or when you want an AES finalist with strong software performance and a different
-/// design philosophy from AES. For new general-purpose work, <see cref="System.Security.Cryptography.Aes"/> is
-/// the right default — hardware acceleration on most modern CPUs makes it the fastest option as well as the most
-/// widely vetted. Reach for <see cref="Serpent128"/> when you specifically want the higher round count
-/// conservatism of that AES finalist.
+/// <strong>When to choose Twofish.</strong> Pick Twofish when interoperability with existing Twofish-based code or
+/// formats is required, or when you want an AES finalist with strong software performance and a different design
+/// philosophy from AES. For new general-purpose work, <see cref="System.Security.Cryptography.Aes" /> is the right
+/// default — hardware acceleration on most modern CPUs makes it the fastest option as well as the most widely vetted.
+/// Reach for <see cref="Serpent128" /> when you specifically want the higher round count conservatism of that AES
+/// finalist.
 /// </para>
-/// <note type="important">
-/// For new general-purpose application encryption, prefer <see cref="Aes"/> unless Twofish compatibility is
-/// specifically required.
-/// </note>
+/// <note type="important"> For new general-purpose application encryption, prefer <see cref="Aes" /> unless Twofish
+/// compatibility is specifically required. </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using System.Security.Cryptography;
-/// using Bodu.Security.Cryptography;
-/// using Bodu.Security.Cryptography.Extensions;
-///
-/// using var twofish = new Twofish();
-/// twofish.GenerateKey(); // 256-bit by default
-/// twofish.GenerateIV();
-///
-/// byte[] ciphertext = twofish.Encrypt(plaintext);
-/// byte[] roundTrip  = twofish.Decrypt(ciphertext);
-/// </code>
+/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// Bodu.Security.Cryptography.Extensions; using var twofish = new Twofish(); twofish.GenerateKey(); // 256-bit by
+/// default twofish.GenerateIV(); byte[] ciphertext = twofish.Encrypt(plaintext); byte[] roundTrip =
+/// twofish.Decrypt(ciphertext); </code>
 /// </example>
-/// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/paper-twofish-paper.pdf">Twofish: A 128-Bit Block Cipher (Schneier, Kelsey, Whiting, Wagner, Hall, Ferguson, 1998)</seealso>
-/// <seealso href="../guides/cryptography/twofish.html">Using Twofish (guide with full encrypt / decrypt examples)</seealso>
-/// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
+/// <seealso href="https://www.schneier.com/wp-content/uploads/2016/02/paper-twofish-paper.pdf">Twofish: A 128-Bit Block
+/// Cipher (Schneier, Kelsey, Whiting, Wagner, Hall, Ferguson, 1998)</seealso>
+/// <seealso href="../guides/cryptography/twofish.html">Using Twofish (guide with full encrypt / decrypt examples)
+/// </seealso> <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Twofish
@@ -96,7 +102,7 @@ public sealed class Twofish
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Twofish"/> class with default parameters.
+    /// Initializes a new instance of the <see cref="Twofish" /> class with default parameters.
     /// </summary>
     /// <remarks>
     /// <para>
@@ -120,7 +126,7 @@ public sealed class Twofish
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherModeKind"/> values. The default is <see cref="CipherModeKind.CBC"/>.
+    /// One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.
     /// </value>
     public CipherModeKind BlockMode
     {
@@ -141,13 +147,13 @@ public sealed class Twofish
     /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="PaddingModeKind"/> values. The default is <see cref="PaddingModeKind.PKCS7"/>.
+    /// One of the <see cref="PaddingModeKind" /> values. The default is <see cref="PaddingModeKind.PKCS7" />.
     /// </value>
     /// <remarks>
-    /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
-    /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode"/> equivalent (such as <see cref="PaddingModeKind.ISO7816_4"/>) leave the base
-    /// property unchanged.
+    /// When the assigned value has a matching member in <see cref="PaddingMode" /> (for example, PKCS7, Zeros, None),
+    /// the inherited <see cref="SymmetricAlgorithm.Padding" /> is kept in sync. Extended modes with no
+    /// <see cref="PaddingMode" /> equivalent (such as <see cref="PaddingModeKind.ISO7816_4" />) leave the base property
+    /// unchanged.
     /// </remarks>
     public PaddingModeKind BlockPadding
     {
@@ -162,8 +168,8 @@ public sealed class Twofish
 
     /// <inheritdoc />
     /// <remarks>
-    /// Also synchronizes <see cref="BlockPadding"/> when the assigned value has a matching member in
-    /// <see cref="PaddingModeKind"/>.
+    /// Also synchronizes <see cref="BlockPadding" /> when the assigned value has a matching member in
+    /// <see cref="PaddingModeKind" />.
     /// </remarks>
     public override PaddingMode Padding
     {
@@ -177,9 +183,9 @@ public sealed class Twofish
     }
 
     /// <summary>
-    /// Creates a new <see cref="Twofish"/> instance with default parameters.
+    /// Creates a new <see cref="Twofish" /> instance with default parameters.
     /// </summary>
-    /// <returns>A new <see cref="Twofish"/> instance.</returns>
+    /// <returns>A new <see cref="Twofish" /> instance.</returns>
     public new static Twofish Create() =>
         new Twofish();
 
@@ -240,7 +246,7 @@ public sealed class Twofish
         new TwofishBlockCipher(key);
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

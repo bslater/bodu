@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography.Extensions;
@@ -14,16 +13,20 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Finalizes the transformation without processing any additional input data.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to finalize. Must not be <see langword="null"/>.</param>
+    /// <param name="cryptoTransform">
+    /// The cryptographic transform to finalize. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>
-    /// A new byte array containing the final block output, which may be empty or contain padding bytes depending on
-    /// the transform.
+    /// A new byte array containing the final block output, which may be empty or contain padding bytes depending on the
+    /// transform.
     /// </returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// <para>Use this overload when the transform should be finalized without processing any remaining data.</para>
+    /// <para>
+    /// Use this overload when the transform should be finalized without processing any remaining data.
+    /// </para>
     /// </remarks>
     public static byte[] TransformFinalBlock(this ICryptoTransform cryptoTransform)
     {
@@ -35,11 +38,13 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Finalizes the transformation of the entire specified byte array.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to finalize. Must not be <see langword="null"/>.</param>
-    /// <param name="array">The input array to transform. Must not be <see langword="null"/>.</param>
+    /// <param name="cryptoTransform">
+    /// The cryptographic transform to finalize. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="array">The input array to transform. Must not be <see langword="null" />.</param>
     /// <returns>A new byte array containing the final transformed output.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> or <paramref name="array"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> or <paramref name="array" /> is <see langword="null" />.
     /// </exception>
     /// <example>
     /// <code>
@@ -60,15 +65,17 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Finalizes the transformation of the specified byte array beginning at the given offset.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to finalize. Must not be <see langword="null"/>.</param>
-    /// <param name="array">The input array to transform. Must not be <see langword="null"/>.</param>
-    /// <param name="offset">The zero-based byte offset in <paramref name="array"/> at which to begin reading.</param>
+    /// <param name="cryptoTransform">
+    /// The cryptographic transform to finalize. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="array">The input array to transform. Must not be <see langword="null" />.</param>
+    /// <param name="offset">The zero-based byte offset in <paramref name="array" /> at which to begin reading.</param>
     /// <returns>A new byte array containing the final transformed output.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> or <paramref name="array"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> or <paramref name="array" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset"/> is negative or exceeds the length of <paramref name="array"/>.
+    /// Thrown when <paramref name="offset" /> is negative or exceeds the length of <paramref name="array" />.
     /// </exception>
     public static byte[] TransformFinalBlock(this ICryptoTransform cryptoTransform, byte[] array, int offset)
     {
@@ -82,16 +89,18 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Finalizes the transformation of the specified input span.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to finalize. Must not be <see langword="null"/>.</param>
+    /// <param name="cryptoTransform">
+    /// The cryptographic transform to finalize. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="input">The input span of bytes to transform.</param>
     /// <returns>A new byte array containing the final transformed output.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This overload writes the input through a <see cref="CryptoStream"/> and finalizes the block. It avoids
-    /// array copies for the input data while still producing a new byte array as output.
+    /// This overload writes the input through a <see cref="CryptoStream" /> and finalizes the block. It avoids array
+    /// copies for the input data while still producing a new byte array as output.
     /// </para>
     /// </remarks>
     /// <example>
@@ -120,14 +129,18 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Finalizes the transformation of the specified memory region.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to finalize. Must not be <see langword="null"/>.</param>
+    /// <param name="cryptoTransform">
+    /// The cryptographic transform to finalize. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="input">The input memory region to transform.</param>
     /// <returns>A new byte array containing the final transformed output.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// <para>This overload delegates to <see cref="TransformFinalBlock(ICryptoTransform, ReadOnlySpan{byte})"/>.</para>
+    /// <para>
+    /// This overload delegates to <see cref="TransformFinalBlock(ICryptoTransform, ReadOnlySpan{byte})" />.
+    /// </para>
     /// </remarks>
     public static byte[] TransformFinalBlock(this ICryptoTransform cryptoTransform, ReadOnlyMemory<byte> input)
         => cryptoTransform.TransformFinalBlock(input.Span);

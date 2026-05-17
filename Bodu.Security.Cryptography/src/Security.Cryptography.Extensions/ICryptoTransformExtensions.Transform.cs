@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers;
 using System.Security.Cryptography;
 
@@ -15,14 +14,16 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Transforms the entire input byte array using the specified cryptographic transform.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to apply. Must not be <see langword="null"/>.</param>
-    /// <param name="array">The input byte array to transform. Must not be <see langword="null"/>.</param>
+    /// <param name="cryptoTransform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
+    /// <param name="array">The input byte array to transform. Must not be <see langword="null" />.</param>
     /// <returns>A new byte array containing the transformed output.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> or <paramref name="array"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> or <paramref name="array" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// <para>This overload is equivalent to calling <c>Transform(array, 0, array.Length)</c>.</para>
+    /// <para>
+    /// This overload is equivalent to calling <c>Transform(array, 0, array.Length)</c>.
+    /// </para>
     /// </remarks>
     public static byte[] Transform(this ICryptoTransform cryptoTransform, byte[] array)
     {
@@ -35,19 +36,23 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Transforms a portion of the specified byte array using the given cryptographic transform.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to apply. Must not be <see langword="null"/>.</param>
-    /// <param name="array">The input byte array containing the data to transform. Must not be <see langword="null"/>.</param>
-    /// <param name="offset">The zero-based index in <paramref name="array"/> at which to begin reading.</param>
+    /// <param name="cryptoTransform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
+    /// <param name="array">
+    /// The input byte array containing the data to transform. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="offset">The zero-based index in <paramref name="array" /> at which to begin reading.</param>
     /// <param name="count">The number of bytes to transform.</param>
     /// <returns>A new byte array containing the transformed output.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> or <paramref name="array"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> or <paramref name="array" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="offset"/> or <paramref name="count"/> is negative, or exceeds the bounds of <paramref name="array"/>.
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative, or exceeds the bounds of
+    /// <paramref name="array" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when the sum of <paramref name="offset"/> and <paramref name="count"/> exceeds the length of <paramref name="array"/>.
+    /// Thrown when the sum of <paramref name="offset" /> and <paramref name="count" /> exceeds the length of
+    /// <paramref name="array" />.
     /// </exception>
     /// <example>
     /// <code>
@@ -69,11 +74,11 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Transforms a span of bytes using the specified cryptographic transform.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to apply. Must not be <see langword="null"/>.</param>
+    /// <param name="cryptoTransform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
     /// <param name="input">The span of input bytes to transform.</param>
     /// <returns>A new byte array containing the transformed output.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </exception>
     public static byte[] Transform(this ICryptoTransform cryptoTransform, ReadOnlySpan<byte> input)
     {
@@ -85,33 +90,37 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Transforms a memory region using the specified cryptographic transform.
     /// </summary>
-    /// <param name="cryptoTransform">The cryptographic transform to apply. Must not be <see langword="null"/>.</param>
+    /// <param name="cryptoTransform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
     /// <param name="input">The memory region of input bytes to transform.</param>
     /// <returns>A new byte array containing the transformed output.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="cryptoTransform"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="cryptoTransform" /> is <see langword="null" />.
     /// </exception>
     /// <remarks>
-    /// <para>This overload delegates to <see cref="Transform(ICryptoTransform, ReadOnlySpan{byte})"/>.</para>
+    /// <para>
+    /// This overload delegates to <see cref="Transform(ICryptoTransform, ReadOnlySpan{byte})" />.
+    /// </para>
     /// </remarks>
     public static byte[] Transform(this ICryptoTransform cryptoTransform, ReadOnlyMemory<byte> input)
         => cryptoTransform.Transform(input.Span);
 
     /// <summary>
-    /// Applies the cryptographic transform to data read from <paramref name="sourceStream"/> and writes the result
-    /// to <paramref name="targetStream"/> using the specified buffer size.
+    /// Applies the cryptographic transform to data read from <paramref name="sourceStream" /> and writes the result to
+    /// <paramref name="targetStream" /> using the specified buffer size.
     /// </summary>
-    /// <param name="transform">The cryptographic transform to apply. Must not be <see langword="null"/>.</param>
-    /// <param name="sourceStream">The stream to read untransformed data from. Must not be <see langword="null"/>.</param>
-    /// <param name="targetStream">The stream to write transformed data to. Must not be <see langword="null"/>.</param>
+    /// <param name="transform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
+    /// <param name="sourceStream">
+    /// The stream to read untransformed data from. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="targetStream">The stream to write transformed data to. Must not be <see langword="null" />.</param>
     /// <param name="bufferSize">The size, in bytes, of the temporary read buffer. Must be greater than zero.</param>
-    /// <returns>The total number of bytes read from <paramref name="sourceStream"/>.</returns>
+    /// <returns>The total number of bytes read from <paramref name="sourceStream" />.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="transform"/>, <paramref name="sourceStream"/>, or <paramref name="targetStream"/> is
-    /// <see langword="null"/>.
+    /// Thrown when <paramref name="transform" />, <paramref name="sourceStream" />, or <paramref name="targetStream" />
+    /// is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="bufferSize"/> is less than or equal to zero.
+    /// Thrown when <paramref name="bufferSize" /> is less than or equal to zero.
     /// </exception>
     /// <example>
     /// <code>
@@ -177,24 +186,26 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Transforms the input span and writes the result into the specified destination span.
     /// </summary>
-    /// <param name="transform">The cryptographic transform to apply. Must not be <see langword="null"/>.</param>
+    /// <param name="transform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
     /// <param name="input">The input span to transform.</param>
     /// <param name="destination">The destination span to receive the transformed output.</param>
-    /// <returns>The number of bytes written to <paramref name="destination"/>.</returns>
+    /// <returns>The number of bytes written to <paramref name="destination" />.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="transform"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="transform" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="destination"/> is too small to hold the transformed output. A safe minimum size
-    /// is <c>input.Length + transform.OutputBlockSize</c>.
+    /// Thrown when <paramref name="destination" /> is too small to hold the transformed output. A safe minimum size is
+    /// <c>input.Length + transform.OutputBlockSize</c>.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The transformed output is written into <paramref name="destination"/> rather than returned as a new allocation,
+    /// The transformed output is written into <paramref name="destination" /> rather than returned as a new allocation,
     /// making this overload suitable for scenarios where the caller manages buffer lifetimes.
     /// </para>
     /// </remarks>
-    /// <exception cref="InvalidOperationException">Thrown when the transform has been disposed or is in an invalid state.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when the transform has been disposed or is in an invalid state.
+    /// </exception>
     public static int Transform(this ICryptoTransform transform, ReadOnlySpan<byte> input, Span<byte> destination)
     {
         ThrowHelper.ThrowIfNull(transform);
@@ -214,32 +225,34 @@ public static partial class ICryptoTransformExtensions
     /// <summary>
     /// Transforms the input memory region and writes the result into the destination memory region.
     /// </summary>
-    /// <param name="transform">The cryptographic transform to apply. Must not be <see langword="null"/>.</param>
+    /// <param name="transform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
     /// <param name="input">The memory region containing the input data.</param>
     /// <param name="destination">The memory region to receive the transformed output.</param>
-    /// <returns>The number of bytes written to <paramref name="destination"/>.</returns>
+    /// <returns>The number of bytes written to <paramref name="destination" />.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="transform"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="transform" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="destination"/> is too small to hold the transformed output.
+    /// Thrown when <paramref name="destination" /> is too small to hold the transformed output.
     /// </exception>
     /// <remarks>
-    /// <para>This overload delegates to <see cref="Transform(ICryptoTransform, ReadOnlySpan{byte}, Span{byte})"/>.</para>
+    /// <para>
+    /// This overload delegates to <see cref="Transform(ICryptoTransform, ReadOnlySpan{byte}, Span{byte})" />.
+    /// </para>
     /// </remarks>
     public static int Transform(this ICryptoTransform transform, ReadOnlyMemory<byte> input, Memory<byte> destination)
         => transform.Transform(input.Span, destination.Span);
 
     /// <summary>
-    /// Performs the core transformation logic on a span of bytes using a <see cref="CryptoStream"/>.
+    /// Performs the core transformation logic on a span of bytes using a <see cref="CryptoStream" />.
     /// </summary>
     /// <param name="cryptoTransform">The cryptographic transform to apply.</param>
     /// <param name="input">The span of input bytes to transform.</param>
     /// <returns>The transformed output as a new byte array.</returns>
     /// <remarks>
     /// <para>
-    /// Used internally by the public <c>Transform</c> overloads. Callers are responsible for all argument
-    /// validation before invoking this method.
+    /// Used internally by the public <c>Transform</c> overloads. Callers are responsible for all argument validation
+    /// before invoking this method.
     /// </para>
     /// </remarks>
     internal static byte[] TransformInternal(ICryptoTransform cryptoTransform, ReadOnlySpan<byte> input)

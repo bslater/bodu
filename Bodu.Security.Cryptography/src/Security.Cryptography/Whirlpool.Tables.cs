@@ -13,18 +13,18 @@ public sealed partial class Whirlpool
     private static VariantTables? s_tablesInfo3;
 
     /// <summary>
-    /// Returns the precomputed multiplication table and round keys for the requested
-    /// <paramref name="version"/>, constructing them on first use.
+    /// Returns the precomputed multiplication table and round keys for the requested <paramref name="version" />,
+    /// constructing them on first use.
     /// </summary>
     /// <param name="version">The Whirlpool revision whose tables are required.</param>
-    /// <returns>The cached <see cref="VariantTables"/> instance for <paramref name="version"/>.</returns>
+    /// <returns>The cached <see cref="VariantTables" /> instance for <paramref name="version" />.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if <paramref name="version"/> is not a defined <see cref="WhirlpoolVersion"/> member.
+    /// Thrown if <paramref name="version" /> is not a defined <see cref="WhirlpoolVersion" /> member.
     /// </exception>
     /// <remarks>
-    /// Each variant owns an independent multiplication table and round-key schedule derived from its own
-    /// S-box and diffusion matrix. The tables are immutable once built, so safe publication via a simple
-    /// <see cref="Interlocked.CompareExchange{T}(ref T, T, T)"/> is sufficient.
+    /// Each variant owns an independent multiplication table and round-key schedule derived from its own S-box and
+    /// diffusion matrix. The tables are immutable once built, so safe publication via a simple
+    /// <see cref="Interlocked.CompareExchange{T}(ref T, T, T)" /> is sufficient.
     /// </remarks>
     private static VariantTables GetTables(WhirlpoolVersion version)
     {
@@ -45,13 +45,13 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Builds the multiplication table and round-key schedule for a variant and publishes the result to
-    /// the supplied cache slot.
+    /// Builds the multiplication table and round-key schedule for a variant and publishes the result to the supplied
+    /// cache slot.
     /// </summary>
     /// <param name="slot">The static cache slot that receives the constructed tables.</param>
     /// <param name="sbox">The S-box selected for the variant.</param>
     /// <param name="mds">The diffusion row selected for the variant.</param>
-    /// <returns>The freshly constructed or already-cached <see cref="VariantTables"/> instance.</returns>
+    /// <returns>The freshly constructed or already-cached <see cref="VariantTables" /> instance.</returns>
     private static VariantTables BuildAndCacheTables(ref VariantTables? slot, byte[] sbox, byte[] mds)
     {
         var mul = BuildMultiplicationTable(sbox, mds);
@@ -75,7 +75,7 @@ public sealed partial class Whirlpool
     private sealed class VariantTables
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="VariantTables"/> class.
+        /// Initializes a new instance of the <see cref="VariantTables" /> class.
         /// </summary>
         /// <param name="multiplication">The flat 8 × 256 multiplication table.</param>
         /// <param name="roundKeys">The ten round keys, each holding the round constant in column 0.</param>
@@ -92,8 +92,8 @@ public sealed partial class Whirlpool
         public ulong[] Multiplication { get; }
 
         /// <summary>
-        /// Gets the ten round keys driving the <c>W</c> key schedule. Each entry has the round constant in
-        /// index 0 and zeros elsewhere.
+        /// Gets the ten round keys driving the <c>W</c> key schedule. Each entry has the round constant in index 0 and
+        /// zeros elsewhere.
         /// </summary>
         /// <returns>The shared round-key schedule for the variant.</returns>
         public ulong[][] RoundKeys { get; }

@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers;
 using System.Security.Cryptography;
 
@@ -17,7 +16,9 @@ public static partial class ICryptoTransformExtensions
     /// transformed output to a target stream.
     /// </summary>
     /// <param name="transform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
-    /// <param name="sourceStream">The stream to read untransformed data from. Must not be <see langword="null" />.</param>
+    /// <param name="sourceStream">
+    /// The stream to read untransformed data from. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="targetStream">The stream to write transformed data to. Must not be <see langword="null" />.</param>
     /// <param name="bufferSize">The buffer size, in bytes, used for streaming. Must be greater than zero.</param>
     /// <param name="cancellationToken">
@@ -36,9 +37,9 @@ public static partial class ICryptoTransformExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// Cancellation is checked before the final block is flushed. If cancellation is requested after the last successful
-    /// read but before finalization, an <see cref="OperationCanceledException" /> is thrown and finalization is skipped,
-    /// leaving <paramref name="targetStream" /> in a partial state.
+    /// Cancellation is checked before the final block is flushed. If cancellation is requested after the last
+    /// successful read but before finalization, an <see cref="OperationCanceledException" /> is thrown and finalization
+    /// is skipped, leaving <paramref name="targetStream" /> in a partial state.
     /// </para>
     /// <para>
     /// Neither <paramref name="sourceStream" /> nor <paramref name="targetStream" /> is disposed by this method.
@@ -54,7 +55,9 @@ public static partial class ICryptoTransformExtensions
     ///]]>
     /// </code>
     /// </example>
-    /// <exception cref="TaskCanceledException">Thrown when the operation is canceled via the supplied cancellation token.</exception>
+    /// <exception cref="TaskCanceledException">
+    /// Thrown when the operation is canceled via the supplied cancellation token.
+    /// </exception>
     public static async Task TransformAsync(
         this ICryptoTransform transform,
         Stream sourceStream,
@@ -69,11 +72,11 @@ public static partial class ICryptoTransformExtensions
 
         // Use a pooled buffer cleared on return so plaintext read from sourceStream cannot leak
         // to a subsequent pool consumer.
-        byte[] buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+        var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try
         {
             var cryptoStream = new CryptoStream(targetStream, transform, CryptoStreamMode.Write, leaveOpen: true);
-            bool completed = false;
+            var completed = false;
 
             try
             {
@@ -128,15 +131,13 @@ public static partial class ICryptoTransformExtensions
     }
 
     /// <summary>
-    /// Asynchronously applies a cryptographic transformation to a memory region and writes the transformed result
-    /// into a destination memory region.
+    /// Asynchronously applies a cryptographic transformation to a memory region and writes the transformed result into
+    /// a destination memory region.
     /// </summary>
     /// <param name="transform">The cryptographic transform to apply. Must not be <see langword="null" />.</param>
     /// <param name="input">The memory region containing the input data.</param>
     /// <param name="destination">The memory region to receive the transformed output.</param>
-    /// <param name="cancellationToken">
-    /// A token that may be used to cancel the operation before finalization.
-    /// </param>
+    /// <param name="cancellationToken">A token that may be used to cancel the operation before finalization.</param>
     /// <returns>
     /// A <see cref="Task{TResult}" /> whose result is the number of bytes written to <paramref name="destination" />.
     /// </returns>
@@ -144,8 +145,8 @@ public static partial class ICryptoTransformExtensions
     /// Thrown when <paramref name="transform" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="destination" /> is too small to hold the transformed output. A safe minimum size
-    /// is <c>input.Length + transform.OutputBlockSize</c>.
+    /// Thrown when <paramref name="destination" /> is too small to hold the transformed output. A safe minimum size is
+    /// <c>input.Length + transform.OutputBlockSize</c>.
     /// </exception>
     /// <exception cref="OperationCanceledException">
     /// Thrown when the operation is canceled via <paramref name="cancellationToken" />.
@@ -184,7 +185,7 @@ public static partial class ICryptoTransformExtensions
 
         var ms = new MemoryStream(input.Length + transform.OutputBlockSize);
         CryptoStream? cryptoStream = null;
-        bool completed = false;
+        var completed = false;
 
         try
         {

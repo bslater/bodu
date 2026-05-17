@@ -4,42 +4,40 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Offset CodeBook mode version 3 (OCB3) to an underlying <see cref="IBlockCipher"/>,
-/// providing single-pass authenticated encryption with associated data per RFC 7253.
+/// Applies Offset CodeBook mode version 3 (OCB3) to an underlying <see cref="IBlockCipher" />, providing single-pass
+/// authenticated encryption with associated data per RFC 7253.
 /// </summary>
 /// <remarks>
 /// <para>
 /// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — OCB3 realizes both the keystream and the MAC pipelines as a single offset-driven pass over each block."/>
 /// </para>
 /// <para>
-/// OCB3 collapses the two pipelines of the generic AEAD shape above into a <em>single pass</em>: the
-/// keystream and the MAC chain share the same per-block offset Δ<sub>i</sub>, so each block is touched
-/// by the cipher exactly once. In the diagram, this corresponds to merging the top and bottom arrows
-/// that reach the MAC — the ciphertext output is simultaneously the next input to the authentication
-/// accumulator.
+/// OCB3 collapses the two pipelines of the generic AEAD shape above into a <em>single pass</em>: the keystream and the
+/// MAC chain share the same per-block offset Δ<sub>i</sub>, so each block is touched by the cipher exactly once. In the
+/// diagram, this corresponds to merging the top and bottom arrows that reach the MAC — the ciphertext output is
+/// simultaneously the next input to the authentication accumulator.
 /// </para>
 /// <para>
-/// The nonce is derived from the first 12 bytes of the IV supplied to the constructor.
-/// The tag size defaults to 128 bits (16 bytes / TAGLEN = 128) and may be set to any
-/// positive multiple of 8 bits between 8 and the cipher block size via the <c>tagSize</c>
-/// constructor parameter. Supported RFC 7253 values are 64, 96, and 128 bits
-/// (8, 12, and 16 bytes).
+/// The nonce is derived from the first 12 bytes of the IV supplied to the constructor. The tag size defaults to 128
+/// bits (16 bytes / TAGLEN = 128) and may be set to any positive multiple of 8 bits between 8 and the cipher block size
+/// via the <c>tagSize</c> constructor parameter. Supported RFC 7253 values are 64, 96, and 128 bits (8, 12, and 16
+/// bytes).
 /// </para>
 /// <para>
-/// Offset initialization uses the RFC 7253 §2.4 K_top stretch:
-/// <code>
+/// Offset initialization uses the RFC 7253 §2.4 K_top stretch: <code>
+///<![CDATA[
 ///   Nonce  = num2str(TAGLEN mod 128, 7) || zeros(120-bitlen(N)) || 1 || N
 ///   bottom = str2num(Nonce[123..128])
 ///   K_top  = ENCIPHER(K, Nonce[1..122] || zeros(6))
 ///   Stretch = K_top || (K_top[1..64] XOR K_top[9..72])   -- adjacent-byte XOR
 ///   Offset_0 = Stretch[1+bottom..128+bottom]
+///  ]]>
 /// </code>
 /// </para>
 /// <para>
@@ -47,16 +45,17 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// <strong>When to use OCB3.</strong> Pick OCB3 when you want a single-pass AEAD mode without GCM's
-/// catastrophic-on-nonce-reuse profile — OCB still requires nonces to be unique per key, but the failure
-/// mode is graceful (only that one message's confidentiality is lost; the GHASH-key-leak amplification
-/// does not apply). OCB historically had patent encumbrances that limited adoption; the patents have since
-/// been placed into the public domain, but <see cref="GcmModeTransform"/> remains the more widely deployed
-/// choice in practice. For nonce-misuse resistance prefer <see cref="GcmSivModeTransform"/> or
-/// <see cref="SivModeTransform"/>; for constrained environments prefer <see cref="CcmModeTransform"/>.
+/// catastrophic-on-nonce-reuse profile — OCB still requires nonces to be unique per key, but the failure mode is
+/// graceful (only that one message's confidentiality is lost; the GHASH-key-leak amplification does not apply). OCB
+/// historically had patent encumbrances that limited adoption; the patents have since been placed into the public
+/// domain, but <see cref="GcmModeTransform" /> remains the more widely deployed choice in practice. For nonce-misuse
+/// resistance prefer <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />; for constrained
+/// environments prefer <see cref="CcmModeTransform" />.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
+///<![CDATA[
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
@@ -66,18 +65,24 @@ namespace Bodu.Security.Cryptography;
 /// using IAeadBlockCipherModeTransform ocb = new OcbModeTransform(cipher, iv, tagSize: 128);
 ///
 /// byte[] sealed_ = ocb.Encrypt(plaintext, associatedData: header);
+///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/aead-modes.html#ocb3--single-pass-rfc-7253">OCB3 walk-through in the AEAD-modes guide</seealso>
-/// <seealso cref="AesBlockCipher"/>
+/// <seealso href="../guides/cryptography/aead-modes.html#ocb3--single-pass-rfc-7253">OCB3 walk-through in the
+/// AEAD-modes guide</seealso> <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class OcbModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>Length of the OCB cipher block is 128 bits (16 bytes). Byte length derived inline via <see cref="BlockSizeBits"/> / 8.</summary>
+    /// <summary>
+    /// Length of the OCB cipher block is 128 bits (16 bytes). Byte length derived inline via
+    /// <see cref="BlockSizeBits" /> / 8.
+    /// </summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>Length of the OCB nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits"/> / 8.</summary>
+    /// <summary>
+    /// Length of the OCB nonce is 96 bits (12 bytes). Byte length derived inline via <see cref="NonceSizeBits" /> / 8.
+    /// </summary>
     private const int NonceSizeBits = 96;
 
     private const int MaxLValues = 32; // enough for 2^32 blocks
@@ -94,25 +99,25 @@ public sealed class OcbModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="OcbModeTransform"/> class.
+    /// Initializes a new instance of the <see cref="OcbModeTransform" /> class.
     /// </summary>
     /// <param name="cipher">The block cipher. Must have a 128-bit (16-byte) block size.</param>
     /// <param name="iv">
-    /// The initialization vector. The first 12 bytes are used as the OCB3 nonce.
-    /// Must equal the cipher block size. A defensive copy is taken.
+    /// The initialization vector. The first 12 bytes are used as the OCB3 nonce. Must equal the cipher block size. A
+    /// defensive copy is taken.
     /// </param>
     /// <param name="tagSize">
-    /// The authentication-tag size, in bits, of the OCB3 tag. Must be a positive multiple of 8 between 8 bits
-    /// (1 byte) and the cipher block size. RFC 7253 defines recommended values of 64, 96, and 128 bits
-    /// (8, 12, and 16 bytes). Defaults to 128 bits (16 bytes).
+    /// The authentication-tag size, in bits, of the OCB3 tag. Must be a positive multiple of 8 between 8 bits (1 byte)
+    /// and the cipher block size. RFC 7253 defines recommended values of 64, 96, and 128 bits (8, 12, and 16 bytes).
+    /// Defaults to 128 bits (16 bytes).
     /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.
+    /// <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher"/> does not have a 128-bit (16-byte) block size, <paramref name="iv"/> length
-    /// does not equal the cipher block size, or <paramref name="tagSize"/> is outside the range
-    /// [8 bits, cipher block size] or is not a positive multiple of 8.
+    /// <paramref name="cipher" /> does not have a 128-bit (16-byte) block size, <paramref name="iv" /> length does not
+    /// equal the cipher block size, or <paramref name="tagSize" /> is outside the range [8 bits, cipher block size] or
+    /// is not a positive multiple of 8.
     /// </exception>
     public OcbModeTransform(IBlockCipher cipher, byte[] iv, int tagSize = 128)
     {
@@ -412,18 +417,18 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
-    /// decrypted a message. OCB transforms are single-use; create a fresh instance per message.
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or decrypted a message.
+    /// OCB transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
         CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
 
     /// <summary>
-    /// Releases the resources used by this instance and clears retained nonce, OCB offset constants,
-    /// and associated-data state from memory.
+    /// Releases the resources used by this instance and clears retained nonce, OCB offset constants, and
+    /// associated-data state from memory.
     /// </summary>
     /// <remarks>
-    /// The supplied <see cref="IBlockCipher"/> is not disposed by this type. Ownership remains with the caller.
+    /// The supplied <see cref="IBlockCipher" /> is not disposed by this type. Ownership remains with the caller.
     /// </remarks>
     public void Dispose()
     {
@@ -435,7 +440,8 @@ public sealed class OcbModeTransform
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
+    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources
+    /// only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -474,8 +480,7 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Computes the initial offset Offset_0 using the RFC 7253 §2.4 K_top stretch.
-    /// Supports a 12-byte nonce.
+    /// Computes the initial offset Offset_0 using the RFC 7253 §2.4 K_top stretch. Supports a 12-byte nonce.
     /// </summary>
     /// <returns>The initial <c>Offset_0</c> value derived from the nonce per RFC 7253.</returns>
     private byte[] ComputeInitialOffset()
@@ -541,7 +546,7 @@ public sealed class OcbModeTransform
     /// Computes HASH(K, A), the OCB3 authentication of associated data per RFC 7253.
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
-    /// <returns>The HASH value of <paramref name="aad"/> per RFC 7253.</returns>
+    /// <returns>The HASH value of <paramref name="aad" /> per RFC 7253.</returns>
     private byte[] ComputeHash(ReadOnlySpan<byte> aad)
     {
         var blockSize = this._cipher.BlockSize / 8;
@@ -611,11 +616,11 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Multiplies <paramref name="x"/> by α in GF(2^128) with big-endian bit order and
-    /// polynomial x^128 + x^7 + x^2 + x + 1.
+    /// Multiplies <paramref name="x" /> by α in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
+    /// x + 1.
     /// </summary>
     /// <param name="x">The 16-byte input block.</param>
-    /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x"/>.</returns>
+    /// <returns>The GF(2<sup>128</sup>) doubling of <paramref name="x" />.</returns>
     private static byte[] GfDouble(byte[] x)
     {
         var result = new byte[x.Length];
@@ -633,7 +638,7 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a"/> and <paramref name="b"/> into <paramref name="result"/>.
+    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
     /// </summary>
     /// <param name="a">The first operand span.</param>
     /// <param name="b">The second operand span.</param>
@@ -645,10 +650,10 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Returns the number of trailing zero bits of <paramref name="n"/>.
+    /// Returns the number of trailing zero bits of <paramref name="n" />.
     /// </summary>
     /// <param name="n">A positive block index.</param>
-    /// <returns>The number of trailing zero bits in <paramref name="n"/>.</returns>
+    /// <returns>The number of trailing zero bits in <paramref name="n" />.</returns>
     private static int Ntz(int n)
     {
         if (n == 0)
@@ -666,7 +671,7 @@ public sealed class OcbModeTransform
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

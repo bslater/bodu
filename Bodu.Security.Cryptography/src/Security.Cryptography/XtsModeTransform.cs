@@ -4,13 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies XEX-based Tweaked CodeBook mode with ciphertext Stealing (XTS) to an underlying
-/// pair of <see cref="IBlockCipher"/> instances, per IEEE Std 1619-2007 / NIST SP 800-38E.
+/// Applies XEX-based Tweaked CodeBook mode with ciphertext Stealing (XTS) to an underlying pair of
+/// <see cref="IBlockCipher" /> instances, per IEEE Std 1619-2007 / NIST SP 800-38E.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -19,53 +17,51 @@ namespace Bodu.Security.Cryptography;
 /// <para>
 /// XTS requires two independent ciphers keyed with different material:
 /// <list type="bullet">
-/// <item><description><c>dataCipher</c> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.</description></item>
-/// <item><description><c>tweakCipher</c> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.</description></item>
+/// <item>
+/// <description>
+/// <c>dataCipher</c> (Key₁) — encrypts or decrypts the data. Shown as <b>E_K₁</b> in the central column of the diagram.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>tweakCipher</c> (Key₂) — encrypts the sector number (tweak). Shown as <b>E_K₂</b> on the left.
+/// </description>
+/// </item>
 /// </list>
 /// Using the same key for both reduces XTS to a single-key construction and weakens security.
 /// </para>
 /// <para>
-/// For each 128-bit block j in a sector, the XEX construction is:
-/// <code>
+/// For each 128-bit block j in a sector, the XEX construction is: <code>
+///<![CDATA[
 /// T_j  = α^j ⊗ tweakCipher.Encrypt(tweak)     // Galois field multiplication
 /// C_j  = dataCipher.Encrypt(P_j ⊕ T_j) ⊕ T_j  // encrypt
 /// P_j  = dataCipher.Decrypt(C_j ⊕ T_j) ⊕ T_j  // decrypt
-/// </code>
-/// The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication:
-/// each <b>·α</b> box doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the
-/// base tweak. The two XOR nodes inside each cell — before and after the data cipher — realize the
-/// <c>⊕ T_j</c> pairs in the equation above.
+///]]>
+/// </code> The horizontal tweak bus in the diagram corresponds to this successive <c>·α</c> multiplication: each <b>·α
+/// </b> box doubles the tweak in GF(2¹²⁸) so the Tⱼ arriving at cell <em>j</em> is αʲ times the base tweak. The two XOR
+/// nodes inside each cell — before and after the data cipher — realize the <c>⊕ T_j</c> pairs in the equation above.
 /// </para>
 /// <para>
-/// GF(2^128) multiplication uses the primitive polynomial x^128 + x^7 + x^2 + x + 1 with
-/// little-endian bit representation (byte 0, bit 0 = coefficient of x^0), identical to IEEE 1619.
+/// GF(2^128) multiplication uses the primitive polynomial x^128 + x^7 + x^2 + x + 1 with little-endian bit
+/// representation (byte 0, bit 0 = coefficient of x^0), identical to IEEE 1619.
 /// </para>
 /// <para>
-/// <strong>When to use XTS.</strong> The standard mode for sector-level disk encryption — used by
-/// BitLocker, FileVault, dm-crypt/LUKS, VeraCrypt, and the IEEE 1619 disk-encryption specification. XTS is
-/// designed specifically for the random-access, fixed-size-block setting where ciphertext expansion is
-/// impossible (the on-disk sector size cannot grow), which means it provides confidentiality but
-/// <em>no authentication</em>. Do not use XTS for protecting messages over untrusted channels — pick an
-/// AEAD mode (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>) for that. For new disk
-/// encryption designs that can afford a per-sector tag, AEAD-based alternatives (Adiantum, AES-XTS-HMAC,
-/// or storage-specific AEAD modes) provide stronger guarantees.
+/// <strong>When to use XTS.</strong> The standard mode for sector-level disk encryption — used by BitLocker, FileVault,
+/// dm-crypt/LUKS, VeraCrypt, and the IEEE 1619 disk-encryption specification. XTS is designed specifically for the
+/// random-access, fixed-size-block setting where ciphertext expansion is impossible (the on-disk sector size cannot
+/// grow), which means it provides confidentiality but <em>no authentication</em>. Do not use XTS for protecting
+/// messages over untrusted channels — pick an AEAD mode (<see cref="GcmModeTransform" />,
+/// <see cref="EaxModeTransform" />) for that. For new disk encryption designs that can afford a per-sector tag,
+/// AEAD-based alternatives (Adiantum, AES-XTS-HMAC, or storage-specific AEAD modes) provide stronger guarantees.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using System.Security.Cryptography;
-/// using Bodu.Security.Cryptography;
-///
-/// // XTS uses two independent keys — Key1 for data, Key2 for the tweak. Never share keys.
-/// using IBlockCipher data  = new AesBlockCipher(key1);
-/// using IBlockCipher tweak = new AesBlockCipher(key2);
-/// byte[] sectorNumber = BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size
-/// Array.Resize(ref sectorNumber, data.BlockSize / 8);
-/// IBlockCipherModeTransform xts = new XtsModeTransform(data, tweak, sectorNumber);
-///
-/// byte[] ciphertext = new byte[plaintext.Length];
-/// int written = xts.Transform(plaintext, ciphertext, encrypt: true);
-/// </code>
+/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // XTS uses two
+/// independent keys — Key1 for data, Key2 for the tweak. Never share keys. using IBlockCipher data = new
+/// AesBlockCipher(key1); using IBlockCipher tweak = new AesBlockCipher(key2); byte[] sectorNumber =
+/// BitConverter.GetBytes((long)42); // little-endian sector number, padded to block size Array.Resize(ref sectorNumber,
+/// data.BlockSize / 8); IBlockCipherModeTransform xts = new XtsModeTransform(data, tweak, sectorNumber); byte[]
+/// ciphertext = new byte[plaintext.Length]; int written = xts.Transform(plaintext, ciphertext, encrypt: true); </code>
 /// </example>
 public sealed class XtsModeTransform
     : IBlockCipherModeTransform
@@ -76,22 +72,19 @@ public sealed class XtsModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="XtsModeTransform"/> class.
+    /// Initializes a new instance of the <see cref="XtsModeTransform" /> class.
     /// </summary>
-    /// <param name="dataCipher">
-    /// The cipher keyed with Key₁, used to encrypt or decrypt data blocks.
-    /// </param>
+    /// <param name="dataCipher">The cipher keyed with Key₁, used to encrypt or decrypt data blocks.</param>
     /// <param name="tweakCipher">
-    /// The cipher keyed with Key₂, used to encrypt the sector number. Must have the same
-    /// block size as <paramref name="dataCipher"/>.
+    /// The cipher keyed with Key₂, used to encrypt the sector number. Must have the same block size as
+    /// <paramref name="dataCipher" />.
     /// </param>
     /// <param name="tweak">
-    /// The sector number encoded as a block-size byte array in little-endian order.
-    /// A defensive copy is taken.
+    /// The sector number encoded as a block-size byte array in little-endian order. A defensive copy is taken.
     /// </param>
-    /// <exception cref="ArgumentNullException">Any argument is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">Any argument is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// Block sizes differ, or <paramref name="tweak"/> length does not equal the block size.
+    /// Block sizes differ, or <paramref name="tweak" /> length does not equal the block size.
     /// </exception>
     public XtsModeTransform(IBlockCipher dataCipher, IBlockCipher tweakCipher, byte[] tweak)
     {
@@ -146,12 +139,13 @@ public sealed class XtsModeTransform
     }
 
     /// <summary>
-    /// Releases the resources used by this instance and zeroes the retained tweak so that
-    /// key-equivalent state does not linger in memory after disposal. The underlying data and
-    /// tweak <see cref="IBlockCipher"/> instances are not disposed by this type — ownership
-    /// remains with the caller.
+    /// Releases the resources used by this instance and zeroes the retained tweak so that key-equivalent state does not
+    /// linger in memory after disposal. The underlying data and tweak <see cref="IBlockCipher" /> instances are not
+    /// disposed by this type — ownership remains with the caller.
     /// </summary>
-    /// <remarks>Idempotent.</remarks>
+    /// <remarks>
+    /// Idempotent.
+    /// </remarks>
     public void Dispose()
     {
         if (this._disposed)
@@ -165,8 +159,8 @@ public sealed class XtsModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Multiplies <paramref name="t1"/> by α in GF(2^128) using the IEEE 1619 polynomial
-    /// x^128 + x^7 + x^2 + x + 1, with little-endian bit ordering (byte 0 = x^0..x^7).
+    /// Multiplies <paramref name="t1" /> by α in GF(2^128) using the IEEE 1619 polynomial x^128 + x^7 + x^2 + x + 1,
+    /// with little-endian bit ordering (byte 0 = x^0..x^7).
     /// </summary>
     /// <param name="t1">The 16-byte tweak block to double in GF(2<sup>128</sup>); updated in place.</param>
     private static void GfDouble(Span<byte> t1)

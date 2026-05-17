@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers;
 using System.Collections.Concurrent;
 using System.Runtime.CompilerServices;
@@ -21,102 +20,91 @@ namespace Bodu.Security.Cryptography;
 /// <img src="../images/diagrams/parallel-merkle-tree.svg" alt="Swim-lane diagram showing the Dispatcher thread reading input chunks, slicing them into blocks, hashing each block into a leaf, and submitting leaves into ch L₀; one worker task per tree level consumes from its own channel, groups F incoming nodes, hashes them, and submits the parent to the next level's channel. Adjacent lanes are shown active at the same timestep to emphasize parallelism."/>
 /// </para>
 /// <para>
-/// The swim-lane diagram above traces a single <c>ComputeHashAsync</c> call across wall-clock time.
-/// Each horizontal band is a <em>distinct .NET thread or async Task</em>, and each vertical column
-/// (<c>t₁…t₄</c>) is a point in time:
+/// The swim-lane diagram above traces a single <c>ComputeHashAsync</c> call across wall-clock time. Each horizontal
+/// band is a <em>distinct .NET thread or async Task</em>, and each vertical column (<c>t₁…t₄</c>) is a point in time:
 /// <list type="number">
-/// <item><description>
-///   <b>Dispatcher lane (producer).</b> The caller's thread inside <c>ComputeHashAsync</c> reads the
-///   input stream in 8×<c>blockSize</c> chunks, slices each chunk into <c>blockSize</c>-wide blocks,
-///   invokes <c>_algorithmFactory()</c> to compute one leaf hash per block, and writes each leaf into
-///   <b>ch L₀</b> — the purple arrows leaving the amber boxes at the top of the diagram.
-/// </description></item>
-/// <item><description>
-///   <b>Level-worker lanes (consumers).</b> One <see cref="Channel{T}"/> and one background
-///   <see cref="Task"/> are created lazily per tree level as the input grows. Each worker awaits on
-///   its channel, accumulates nodes until it has <c>fanOut</c> of them, concatenates and hashes that
-///   group, and enqueues the parent into the next level's channel — the blue and teal boxes, with
-///   purple channel arrows crossing the lane boundaries.
-/// </description></item>
-/// <item><description>
-///   <b>Parallelism.</b> The key insight is the <em>column</em> at <c>t₃</c>: the Dispatcher is still
-///   hashing leaves while the Level 0 worker is hashing its second pair <em>and</em> the Level 1 worker
-///   has already produced its first internal node. Three lanes are active simultaneously — indicated
-///   by the "three lanes active" brace beneath the time axis. Tree reduction therefore <em>overlaps</em>
-///   with continued leaf production rather than running after it.
-/// </description></item>
-/// <item><description>
-///   <b>Root extraction.</b> The bottom lane activates only at the end: the last surviving node on
-///   <c>ch L₂</c> is recognized as the root and returned to the caller.
-/// </description></item>
+/// <item>
+/// <description>
+/// <b>Dispatcher lane (producer).</b> The caller's thread inside <c>ComputeHashAsync</c> reads the input stream in 8×
+/// <c>blockSize</c> chunks, slices each chunk into <c>blockSize</c>-wide blocks, invokes <c>_algorithmFactory()</c> to
+/// compute one leaf hash per block, and writes each leaf into <b>ch L₀</b> — the purple arrows leaving the amber boxes
+/// at the top of the diagram.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Level-worker lanes (consumers).</b> One <see cref="Channel{T}" /> and one background <see cref="Task" /> are
+/// created lazily per tree level as the input grows. Each worker awaits on its channel, accumulates nodes until it has
+/// <c>fanOut</c> of them, concatenates and hashes that group, and enqueues the parent into the next level's channel —
+/// the blue and teal boxes, with purple channel arrows crossing the lane boundaries.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Parallelism.</b> The key insight is the <em>column</em> at <c>t₃</c>: the Dispatcher is still hashing leaves
+/// while the Level 0 worker is hashing its second pair <em>and</em> the Level 1 worker has already produced its first
+/// internal node. Three lanes are active simultaneously — indicated by the "three lanes active" brace beneath the time
+/// axis. Tree reduction therefore <em>overlaps</em> with continued leaf production rather than running after it.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Root extraction.</b> The bottom lane activates only at the end: the last surviving node on <c>ch L₂</c> is
+/// recognized as the root and returned to the caller.
+/// </description>
+/// </item>
 /// </list>
 /// </para>
 /// <para>
-/// A short tail block is zero-padded to a full <c>blockSize</c> before hashing, so every leaf is the
-/// same width regardless of input alignment — the Dispatcher's <c>L₆</c> event in the diagram above
-/// is the tail case. A short final group at any internal level is promoted with its surviving children
-/// only; the Level 1 <c>hash(M₁, N₃)</c> event at <c>t₄</c> is exactly this case (two children, one of
-/// which was itself promoted from a short group).
+/// A short tail block is zero-padded to a full <c>blockSize</c> before hashing, so every leaf is the same width
+/// regardless of input alignment — the Dispatcher's <c>L₆</c> event in the diagram above is the tail case. A short
+/// final group at any internal level is promoted with its surviving children only; the Level 1 <c>hash(M₁, N₃)</c>
+/// event at <c>t₄</c> is exactly this case (two children, one of which was itself promoted from a short group).
 /// </para>
 /// <para>
-/// <b>Reuse:</b> the same instance may be used for multiple sequential hash computations.
-/// At the start of each call, all per-computation state is reset: the level channels and their
-/// worker tasks are discarded and recreated, the input buffer position is cleared, the leaf
-/// index is reset to zero, and the previous root hash is discarded. The algorithm factory,
-/// block size, and fan-out are fixed at construction and are not affected by reset. The
-/// internal block buffer is allocated once at construction and reused across calls; its
-/// contents beyond the current write position are always explicitly zeroed before hashing,
-/// so no data from a previous computation can influence the next.
+/// <b>Reuse:</b> the same instance may be used for multiple sequential hash computations. At the start of each call,
+/// all per-computation state is reset: the level channels and their worker tasks are discarded and recreated, the input
+/// buffer position is cleared, the leaf index is reset to zero, and the previous root hash is discarded. The algorithm
+/// factory, block size, and fan-out are fixed at construction and are not affected by reset. The internal block buffer
+/// is allocated once at construction and reused across calls; its contents beyond the current write position are always
+/// explicitly zeroed before hashing, so no data from a previous computation can influence the next.
 /// </para>
 /// <para>
-/// <b>Thread safety:</b> concurrent calls from multiple threads on the same instance produce
-/// undefined behavior and are not supported. The <c>ComputeHash*</c> APIs must be called
-/// sequentially. If concurrent hashing is required, construct an independent instance per
-/// thread or task; instances do not share any mutable state with one another.
+/// <b>Thread safety:</b> concurrent calls from multiple threads on the same instance produce undefined behavior and are
+/// not supported. The <c>ComputeHash*</c> APIs must be called sequentially. If concurrent hashing is required,
+/// construct an independent instance per thread or task; instances do not share any mutable state with one another.
 /// </para>
 /// <para>
-/// <b>Diagnostics:</b> an optional <see cref="MerkleTreeDiagnostics"/> instance may be
-/// supplied to each <c>ComputeHash</c> call. When present, every leaf and internal node is
-/// recorded as it is produced, enabling post-computation inspection and independent hash
-/// re-validation. Passing distinct instances across calls ensures each computation's trace
-/// remains isolated. Recording incurs additional allocation and should not be enabled in
-/// production paths.
+/// <b>Diagnostics:</b> an optional <see cref="MerkleTreeDiagnostics" /> instance may be supplied to each
+/// <c>ComputeHash</c> call. When present, every leaf and internal node is recorded as it is produced, enabling
+/// post-computation inspection and independent hash re-validation. Passing distinct instances across calls ensures each
+/// computation's trace remains isolated. Recording incurs additional allocation and should not be enabled in production
+/// paths.
 /// </para>
 /// <para>
-/// <b>Shutdown contract:</b> channels are completed strictly bottom-up — level N's channel is
-/// closed only after level N's worker has fully exited. The dashed "EOF · close ch L₀" box at
-/// <c>t₄</c> in the Dispatcher lane closes the lowest channel first; the Level 0 worker then
-/// drains, emits its final parent, and closes <c>ch L₁</c>, and so on up the tree. This ordering
-/// guarantees that every node a worker promotes into level N+1 arrives before level N+1's channel
-/// is closed, eliminating the lost-node race that would otherwise cause finalization to deadlock.
+/// <b>Shutdown contract:</b> channels are completed strictly bottom-up — level N's channel is closed only after level
+/// N's worker has fully exited. The dashed "EOF · close ch L₀" box at <c>t₄</c> in the Dispatcher lane closes the
+/// lowest channel first; the Level 0 worker then drains, emits its final parent, and closes <c>ch L₁</c>, and so on up
+/// the tree. This ordering guarantees that every node a worker promotes into level N+1 arrives before level N+1's
+/// channel is closed, eliminating the lost-node race that would otherwise cause finalization to deadlock.
 /// </para>
 /// <para>
-/// <strong>When to choose ParallelMerkleTreeHash.</strong> Pick this for very large inputs where
-/// leaf hashing dominates the cost and the tree shape (block size, fan-out, leaf algorithm) must
-/// match a specific protocol — multi-gigabyte content stores, distributed integrity checks, log
-/// audits. For smaller inputs the channel/task setup overhead can outweigh the parallel speed-up;
-/// reach for <see cref="MerkleTreeHash"/> when the workload is short or single-threaded simplicity
-/// is preferable. If a fixed tree shape is acceptable, <see cref="Blake3"/>'s built-in tree mode is
-/// faster again and avoids the per-leaf <see cref="HashAlgorithm"/> instantiation cost.
+/// <strong>When to choose ParallelMerkleTreeHash.</strong> Pick this for very large inputs where leaf hashing dominates
+/// the cost and the tree shape (block size, fan-out, leaf algorithm) must match a specific protocol — multi-gigabyte
+/// content stores, distributed integrity checks, log audits. For smaller inputs the channel/task setup overhead can
+/// outweigh the parallel speed-up; reach for <see cref="MerkleTreeHash" /> when the workload is short or
+/// single-threaded simplicity is preferable. If a fixed tree shape is acceptable, <see cref="Blake3" />'s built-in tree
+/// mode is faster again and avoids the per-leaf <see cref="HashAlgorithm" /> instantiation cost.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using System.Security.Cryptography;
-/// using Bodu.Security.Cryptography;
-///
-/// // SHA-256 leaves, 64 KiB blocks, fan-out of 4 — a typical large-content configuration.
-/// using var merkle = new ParallelMerkleTreeHash(
-///     algorithmFactory: () =&gt; SHA256.Create(),
-///     blockSize: 64 * 1024,
-///     fanOut: 4);
-///
-/// using FileStream fs = File.OpenRead("very-large.bin");
-/// byte[] root = await merkle.ComputeHashAsync(fs, cancellationToken);
-/// </code>
+/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // SHA-256 leaves, 64
+/// KiB blocks, fan-out of 4 — a typical large-content configuration. using var merkle = new ParallelMerkleTreeHash(
+/// algorithmFactory: () =&gt; SHA256.Create(), blockSize: 64 * 1024, fanOut: 4); using FileStream fs =
+/// File.OpenRead("very-large.bin"); byte[] root = await merkle.ComputeHashAsync(fs, cancellationToken); </code>
 /// </example>
-/// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide</seealso>
-/// <seealso cref="MerkleTreeHash"/>
+/// <seealso href="../guides/cryptography/hashing.html#pattern-6--merkle-trees">Merkle-tree recipes in the hashing guide
+/// </seealso> <seealso cref="MerkleTreeHash"/>
 public sealed class ParallelMerkleTreeHash
     : IDisposable
 {
@@ -155,29 +143,26 @@ public sealed class ParallelMerkleTreeHash
     private CancellationToken _activeToken;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ParallelMerkleTreeHash"/> class with the specified hash
-    /// algorithm factory, block size, and fan-out.
+    /// Initializes a new instance of the <see cref="ParallelMerkleTreeHash" /> class with the specified hash algorithm
+    /// factory, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
-    ///   A typed factory whose <see cref="IHashAlgorithmFactory{T}.Create"/> method is invoked once
-    ///   per hash operation to obtain a fresh, independent <see cref="HashAlgorithm"/> instance.
-    ///   Must not be <see langword="null"/>. A distinct instance is created per hash operation so
-    ///   that concurrent level workers never share algorithm state.
+    /// A typed factory whose <see cref="IHashAlgorithmFactory{T}.Create" /> method is invoked once per hash operation
+    /// to obtain a fresh, independent <see cref="HashAlgorithm" /> instance. Must not be <see langword="null" />. A
+    /// distinct instance is created per hash operation so that concurrent level workers never share algorithm state.
     /// </param>
     /// <param name="blockSize">
-    ///   The size in bytes of each leaf block. Must be greater than zero. Defaults to 4096.
+    /// The size in bytes of each leaf block. Must be greater than zero. Defaults to 4096.
     /// </param>
     /// <param name="fanOut">
-    ///   The number of child nodes combined into each parent node during tree reduction.
-    ///   Must be at least 2. Defaults to 2. Larger values produce shallower trees but wider
-    ///   internal nodes.
+    /// The number of child nodes combined into each parent node during tree reduction. Must be at least 2. Defaults to
+    /// 2. Larger values produce shallower trees but wider internal nodes.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    ///   <paramref name="algorithmFactory"/> is <see langword="null"/>.
+    /// <paramref name="algorithmFactory" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    ///   <paramref name="blockSize"/> is less than or equal to zero, or
-    ///   <paramref name="fanOut"/> is less than 2.
+    /// <paramref name="blockSize" /> is less than or equal to zero, or <paramref name="fanOut" /> is less than 2.
     /// </exception>
     public ParallelMerkleTreeHash(
         IHashAlgorithmFactory<HashAlgorithm> algorithmFactory,
@@ -187,28 +172,26 @@ public sealed class ParallelMerkleTreeHash
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ParallelMerkleTreeHash"/> class with the specified hash
-    /// algorithm factory delegate, block size, and fan-out.
+    /// Initializes a new instance of the <see cref="ParallelMerkleTreeHash" /> class with the specified hash algorithm
+    /// factory delegate, block size, and fan-out.
     /// </summary>
     /// <param name="algorithmFactory">
-    ///   Factory delegate that returns a fresh, independent <see cref="HashAlgorithm"/> on each call.
-    ///   Must not be <see langword="null"/>. A distinct instance is created per hash operation so
-    ///   that concurrent level workers never share algorithm state.
+    /// Factory delegate that returns a fresh, independent <see cref="HashAlgorithm" /> on each call. Must not be
+    /// <see langword="null" />. A distinct instance is created per hash operation so that concurrent level workers
+    /// never share algorithm state.
     /// </param>
     /// <param name="blockSize">
-    ///   The size in bytes of each leaf block. Must be greater than zero. Defaults to 4096.
+    /// The size in bytes of each leaf block. Must be greater than zero. Defaults to 4096.
     /// </param>
     /// <param name="fanOut">
-    ///   The number of child nodes combined into each parent node during tree reduction.
-    ///   Must be at least 2. Defaults to 2. Larger values produce shallower trees but wider
-    ///   internal nodes.
+    /// The number of child nodes combined into each parent node during tree reduction. Must be at least 2. Defaults to
+    /// 2. Larger values produce shallower trees but wider internal nodes.
     /// </param>
     /// <exception cref="ArgumentNullException">
-    ///   <paramref name="algorithmFactory"/> is <see langword="null"/>.
+    /// <paramref name="algorithmFactory" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    ///   <paramref name="blockSize"/> is less than or equal to zero, or
-    ///   <paramref name="fanOut"/> is less than 2.
+    /// <paramref name="blockSize" /> is less than or equal to zero, or <paramref name="fanOut" /> is less than 2.
     /// </exception>
     public ParallelMerkleTreeHash(
         Func<HashAlgorithm> algorithmFactory,
@@ -224,29 +207,25 @@ public sealed class ParallelMerkleTreeHash
     }
 
     /// <summary>
-    /// Asynchronously reads <paramref name="input"/> in fixed-size blocks, feeds leaf hashes into
-    /// the tree pipeline, and returns the Merkle root hash once all data has been processed.
+    /// Asynchronously reads <paramref name="input" /> in fixed-size blocks, feeds leaf hashes into the tree pipeline,
+    /// and returns the Merkle root hash once all data has been processed.
     /// </summary>
-    /// <param name="input">The readable stream to hash. Must not be <see langword="null"/>.</param>
+    /// <param name="input">The readable stream to hash. Must not be <see langword="null" />.</param>
     /// <param name="diagnostics">
-    ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node produced
-    ///   during this computation. Pass <see langword="null"/> to disable diagnostic recording.
-    ///   Supplying a fresh instance per call ensures each computation's trace is isolated.
+    /// An optional <see cref="MerkleTreeDiagnostics" /> instance that records each node produced during this
+    /// computation. Pass <see langword="null" /> to disable diagnostic recording. Supplying a fresh instance per call
+    /// ensures each computation's trace is isolated.
     /// </param>
     /// <param name="cancellationToken">
-    ///   Token used to cancel the operation. When signaled, the read loop is stopped and all
-    ///   active level workers are drained before the exception is propagated.
+    /// Token used to cancel the operation. When signaled, the read loop is stopped and all active level workers are
+    /// drained before the exception is propagated.
     /// </param>
-    /// <returns>
-    ///   A byte array containing the Merkle root hash of all data read from <paramref name="input"/>.
-    /// </returns>
+    /// <returns>A byte array containing the Merkle root hash of all data read from <paramref name="input" />.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException">
-    ///   <paramref name="input"/> is <see langword="null"/>.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="input" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
     /// <exception cref="OperationCanceledException">
-    ///   <paramref name="cancellationToken"/> was canceled before all data could be read.
+    /// <paramref name="cancellationToken" /> was canceled before all data could be read.
     /// </exception>
     public async Task<byte[]> ComputeHashAsync(
         Stream input,
@@ -289,16 +268,14 @@ public sealed class ParallelMerkleTreeHash
     }
 
     /// <summary>
-    /// Synchronously computes the Merkle root hash of <paramref name="data"/>.
+    /// Synchronously computes the Merkle root hash of <paramref name="data" />.
     /// </summary>
     /// <param name="data">The byte span to hash.</param>
     /// <param name="diagnostics">
-    ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node produced
-    ///   during this computation. Pass <see langword="null"/> to disable diagnostic recording.
+    /// An optional <see cref="MerkleTreeDiagnostics" /> instance that records each node produced during this
+    /// computation. Pass <see langword="null" /> to disable diagnostic recording.
     /// </param>
-    /// <returns>
-    ///   A byte array containing the Merkle root hash of <paramref name="data"/>.
-    /// </returns>
+    /// <returns>A byte array containing the Merkle root hash of <paramref name="data" />.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
     public byte[] ComputeHash(ReadOnlySpan<byte> data, MerkleTreeDiagnostics? diagnostics = null)
@@ -314,41 +291,35 @@ public sealed class ParallelMerkleTreeHash
     }
 
     /// <summary>
-    /// Synchronously computes the Merkle root hash of <paramref name="data"/>.
+    /// Synchronously computes the Merkle root hash of <paramref name="data" />.
     /// </summary>
-    /// <param name="data">The source byte array. Must not be <see langword="null"/>.</param>
+    /// <param name="data">The source byte array. Must not be <see langword="null" />.</param>
     /// <param name="diagnostics">
-    ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node produced
-    ///   during this computation. Pass <see langword="null"/> to disable diagnostic recording.
+    /// An optional <see cref="MerkleTreeDiagnostics" /> instance that records each node produced during this
+    /// computation. Pass <see langword="null" /> to disable diagnostic recording.
     /// </param>
-    /// <returns>
-    ///   A byte array containing the Merkle root hash of <paramref name="data"/>.
-    /// </returns>
+    /// <returns>A byte array containing the Merkle root hash of <paramref name="data" />.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
     public byte[] ComputeHash(byte[] data, MerkleTreeDiagnostics? diagnostics = null) =>
         this.ComputeHash(new ReadOnlySpan<byte>(data), diagnostics);
 
     /// <summary>
-    /// Synchronously computes the Merkle root hash of a region within <paramref name="data"/>.
+    /// Synchronously computes the Merkle root hash of a region within <paramref name="data" />.
     /// </summary>
-    /// <param name="data">The source byte array. Must not be <see langword="null"/>.</param>
+    /// <param name="data">The source byte array. Must not be <see langword="null" />.</param>
     /// <param name="offset">The zero-based index at which to begin reading.</param>
     /// <param name="count">The number of bytes to hash.</param>
     /// <param name="diagnostics">
-    ///   An optional <see cref="MerkleTreeDiagnostics"/> instance that records each node produced
-    ///   during this computation. Pass <see langword="null"/> to disable diagnostic recording.
+    /// An optional <see cref="MerkleTreeDiagnostics" /> instance that records each node produced during this
+    /// computation. Pass <see langword="null" /> to disable diagnostic recording.
     /// </param>
-    /// <returns>
-    ///   A byte array containing the Merkle root hash of the specified region.
-    /// </returns>
+    /// <returns>A byte array containing the Merkle root hash of the specified region.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException">
-    ///   <paramref name="data"/> is <see langword="null"/>.
-    /// </exception>
+    /// <exception cref="ArgumentNullException"><paramref name="data" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    ///   <paramref name="offset"/> or <paramref name="count"/> is negative, or
-    ///   <paramref name="offset"/> + <paramref name="count"/> exceeds the length of <paramref name="data"/>.
+    /// <paramref name="offset" /> or <paramref name="count" /> is negative, or <paramref name="offset" /> +
+    /// <paramref name="count" /> exceeds the length of <paramref name="data" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">No input data was provided.</exception>
     public byte[] ComputeHash(byte[] data, int offset, int count, MerkleTreeDiagnostics? diagnostics = null) =>
@@ -363,17 +334,16 @@ public sealed class ParallelMerkleTreeHash
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Clears the level channel and worker dictionaries, resets the input buffer position, leaf
-    /// index, root hash, and active diagnostics reference, then recreates the level-0 channel and
-    /// its worker so the producer can begin writing immediately.
+    /// Clears the level channel and worker dictionaries, resets the input buffer position, leaf index, root hash, and
+    /// active diagnostics reference, then recreates the level-0 channel and its worker so the producer can begin
+    /// writing immediately.
     /// </para>
     /// <para>
-    /// This method is always the first thing called by every public <c>ComputeHash</c> overload,
-    /// even on the very first use, which avoids the need for any eager initialization in the
-    /// constructor.
+    /// This method is always the first thing called by every public <c>ComputeHash</c> overload, even on the very first
+    /// use, which avoids the need for any eager initialization in the constructor.
     /// </para>
     /// </remarks>
-    /// <param name="diagnostics">The diagnostics sink to capture per-level timings, or <see langword="null"/>.</param>
+    /// <param name="diagnostics">The diagnostics sink to capture per-level timings, or <see langword="null" />.</param>
     /// <param name="activeToken">The cancellation token associated with the current hashing session.</param>
     private void Reset(MerkleTreeDiagnostics? diagnostics, CancellationToken activeToken)
     {
@@ -400,8 +370,8 @@ public sealed class ParallelMerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Fills <see cref="_blockBuffer"/> from <paramref name="data"/>, flushing a leaf hash to
-    /// level 0 each time the buffer reaches <see cref="_blockSize"/>.
+    /// Fills <see cref="_blockBuffer" /> from <paramref name="data" />, flushing a leaf hash to level 0 each time the
+    /// buffer reaches <see cref="_blockSize" />.
     /// </summary>
     /// <param name="data">The input bytes to feed into the current leaf accumulator.</param>
     private void ProcessBytes(ReadOnlySpan<byte> data)
@@ -422,11 +392,11 @@ public sealed class ParallelMerkleTreeHash
     }
 
     /// <summary>
-    /// Hashes <paramref name="length"/> bytes from <paramref name="data"/>, records the leaf node
-    /// if diagnostics are enabled, and submits the hash to level 0.
+    /// Hashes <paramref name="length" /> bytes from <paramref name="data" />, records the leaf node if diagnostics are
+    /// enabled, and submits the hash to level 0.
     /// </summary>
     /// <param name="data">The leaf buffer (owned by the caller until consumed).</param>
-    /// <param name="length">The number of valid bytes in <paramref name="data"/>.</param>
+    /// <param name="length">The number of valid bytes in <paramref name="data" />.</param>
     private void SubmitLeaf(byte[] data, int length)
     {
         var hash = this.HashSpan(data.AsSpan(0, length));
@@ -440,8 +410,8 @@ public sealed class ParallelMerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Appends <paramref name="hash"/> to the intermediate buffer at the specified tree
-    /// <paramref name="level"/>, creating the level's buffer lazily if it does not yet exist.
+    /// Appends <paramref name="hash" /> to the intermediate buffer at the specified tree <paramref name="level" />,
+    /// creating the level's buffer lazily if it does not yet exist.
     /// </summary>
     /// <param name="level">The tree level (0 for leaves, incrementing upward).</param>
     /// <param name="hash">The hash bytes to append.</param>
@@ -455,8 +425,8 @@ public sealed class ParallelMerkleTreeHash
     }
 
     /// <summary>
-    /// Grows the internal level buffer list to include <paramref name="level"/>, allocating
-    /// fresh buffers for any intermediate levels.
+    /// Grows the internal level buffer list to include <paramref name="level" />, allocating fresh buffers for any
+    /// intermediate levels.
     /// </summary>
     /// <param name="level">The zero-based tree level that must be addressable.</param>
     private void EnsureLevelExists(int level)
@@ -496,15 +466,9 @@ public sealed class ParallelMerkleTreeHash
     /// Reads hash nodes from <paramref name="channel" />, groups them by <see cref="_fanOut" />, and promotes each
     /// complete group as a combined parent hash to the next tree level.
     /// </summary>
-    /// <param name="level">
-    /// The tree level served by this worker.
-    /// </param>
-    /// <param name="channel">
-    /// The bounded channel that supplies input hashes for <paramref name="level" />.
-    /// </param>
-    /// <param name="token">
-    /// The cancellation token used to stop the worker.
-    /// </param>
+    /// <param name="level">The tree level served by this worker.</param>
+    /// <param name="channel">The bounded channel that supplies input hashes for <paramref name="level" />.</param>
+    /// <param name="token">The cancellation token used to stop the worker.</param>
     /// <returns>
     /// A task that completes when the worker has drained <paramref name="channel" /> and promoted or resolved any
     /// remaining hashes.
@@ -521,22 +485,21 @@ public sealed class ParallelMerkleTreeHash
     /// <list type="bullet">
     /// <item>
     /// <description>
-    /// If no hashes remain, every input node from this level was already promoted as part of a complete group.
-    /// No further action is required by this worker; the final root will be produced by a higher-level worker.
+    /// If no hashes remain, every input node from this level was already promoted as part of a complete group. No
+    /// further action is required by this worker; the final root will be produced by a higher-level worker.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// If exactly one hash remains and no higher level has been created, this level is the topmost level. The
-    /// remaining hash is assigned directly as the Merkle root without re-hashing, matching the single-threaded
-    /// implementation.
+    /// If exactly one hash remains and no higher level has been created, this level is the topmost level. The remaining
+    /// hash is assigned directly as the Merkle root without re-hashing, matching the single-threaded implementation.
     /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// In all other cases, the remaining hashes represent either a partial group or a single hash that must still
-    /// be merged with hashes already promoted to a higher level. The remainder is combined and promoted so the next
-    /// level can continue the reduction.
+    /// In all other cases, the remaining hashes represent either a partial group or a single hash that must still be
+    /// merged with hashes already promoted to a higher level. The remainder is combined and promoted so the next level
+    /// can continue the reduction.
     /// </description>
     /// </item>
     /// </list>
@@ -589,16 +552,15 @@ public sealed class ParallelMerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Flushes any remaining partial block, then sequentially closes each level's channel and
-    /// awaits its worker before advancing to the next level.
+    /// Flushes any remaining partial block, then sequentially closes each level's channel and awaits its worker before
+    /// advancing to the next level.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Sequential bottom-up shutdown is the core correctness invariant. Level N's channel is
-    /// completed only after level N's worker has fully exited. Because level N's worker is the
-    /// sole writer to level N+1's channel, this ordering guarantees that every promotion into
-    /// level N+1 has landed before level N+1 is closed. The loop terminates naturally when
-    /// the next level has never been created, meaning no further promotions occurred.
+    /// Sequential bottom-up shutdown is the core correctness invariant. Level N's channel is completed only after level
+    /// N's worker has fully exited. Because level N's worker is the sole writer to level N+1's channel, this ordering
+    /// guarantees that every promotion into level N+1 has landed before level N+1 is closed. The loop terminates
+    /// naturally when the next level has never been created, meaning no further promotions occurred.
     /// </para>
     /// </remarks>
     /// <returns>The Merkle root hash.</returns>
@@ -634,16 +596,15 @@ public sealed class ParallelMerkleTreeHash
     }
 
     /// <summary>
-    /// Completes all level channels and awaits their workers using a sequential bottom-up drain,
-    /// suppressing any exceptions that arise during cancellation teardown.
+    /// Completes all level channels and awaits their workers using a sequential bottom-up drain, suppressing any
+    /// exceptions that arise during cancellation teardown.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// Mirrors the shutdown ordering of <see cref="FinalizeAsync"/>: level N's channel is completed
-    /// and its worker is awaited before advancing to level N+1. Because a worker at level N is the
-    /// sole creator of level N+1's channel, awaiting it guarantees all promotions into N+1 have
-    /// landed before N+1's channel is completed. This eliminates zombie workers that would otherwise
-    /// remain blocked on channels that are never completed.
+    /// Mirrors the shutdown ordering of <see cref="FinalizeAsync" />: level N's channel is completed and its worker is
+    /// awaited before advancing to level N+1. Because a worker at level N is the sole creator of level N+1's channel,
+    /// awaiting it guarantees all promotions into N+1 have landed before N+1's channel is completed. This eliminates
+    /// zombie workers that would otherwise remain blocked on channels that are never completed.
     /// </para>
     /// </remarks>
     /// <returns>A task that completes when every level worker has drained and exited.</returns>
@@ -664,14 +625,14 @@ public sealed class ParallelMerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Hashes <paramref name="data"/> using a fresh algorithm instance.
+    /// Hashes <paramref name="data" /> using a fresh algorithm instance.
     /// </summary>
     /// <remarks>
-    /// Uses <see cref="HashAlgorithm.TryComputeHash"/> to operate directly on the span,
-    /// avoiding an intermediate heap copy of the input bytes.
+    /// Uses <see cref="HashAlgorithm.TryComputeHash" /> to operate directly on the span, avoiding an intermediate heap
+    /// copy of the input bytes.
     /// </remarks>
     /// <param name="data">The bytes to hash.</param>
-    /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm"/>.</returns>
+    /// <returns>The hash computed by a freshly-created <see cref="HashAlgorithm" />.</returns>
     private byte[] HashSpan(ReadOnlySpan<byte> data)
     {
         using HashAlgorithm hasher = this._algorithmFactory();
@@ -682,24 +643,22 @@ public sealed class ParallelMerkleTreeHash
     }
 
     /// <summary>
-    /// Combines and hashes a list of child hash values using <see cref="HashAlgorithm.TransformBlock"/>,
-    /// records the resulting node in diagnostics if enabled, and returns the parent hash.
+    /// Combines and hashes a list of child hash values using <see cref="HashAlgorithm.TransformBlock" />, records the
+    /// resulting node in diagnostics if enabled, and returns the parent hash.
     /// </summary>
     /// <remarks>
     /// <para>
     /// Each child hash is fed sequentially into the algorithm's accumulation state via
-    /// <see cref="HashAlgorithm.TransformBlock"/>, avoiding any intermediate allocation for
-    /// the concatenated bytes.
+    /// <see cref="HashAlgorithm.TransformBlock" />, avoiding any intermediate allocation for the concatenated bytes.
     /// </para>
     /// <para>
-    /// When diagnostics are active, a snapshot of the child hashes is captured and recorded
-    /// alongside the result in a single guarded block. This keeps the snapshot and the recording
-    /// co-located, making their shared nullability condition structurally obvious rather than
-    /// relying on a null-forgiving operator across separate statements.
+    /// When diagnostics are active, a snapshot of the child hashes is captured and recorded alongside the result in a
+    /// single guarded block. This keeps the snapshot and the recording co-located, making their shared nullability
+    /// condition structurally obvious rather than relying on a null-forgiving operator across separate statements.
     /// </para>
     /// </remarks>
     /// <param name="hashes">The child hashes being combined.</param>
-    /// <param name="sourceLevel">The tree level that produced <paramref name="hashes"/>.</param>
+    /// <param name="sourceLevel">The tree level that produced <paramref name="hashes" />.</param>
     /// <param name="parentIndex">The zero-based index of the parent node being computed.</param>
     /// <returns>The combined parent hash.</returns>
     private byte[] CombineAndHash(List<byte[]> hashes, int sourceLevel, int parentIndex)
@@ -732,7 +691,7 @@ public sealed class ParallelMerkleTreeHash
     // -----------------------------------------------------------------------------------------
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

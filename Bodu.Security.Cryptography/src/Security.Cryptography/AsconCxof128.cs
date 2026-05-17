@@ -9,17 +9,17 @@ namespace Bodu.Security.Cryptography;
 /// <summary>
 /// Computes a variable-length output using the <c>Ascon-CXOF128</c> customizable extendable output function (CXOF) as
 /// defined in NIST SP 800-232. Supports an optional customization string that domain-separates outputs from
-/// <see cref="AsconXof128"/>. This class cannot be inherited.
+/// <see cref="AsconXof128" />. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Ascon-CXOF128 extends <see cref="AsconXof128"/> with a customization phase. The customization string <c>Z</c> is
-/// absorbed before any message data, using a dedicated domain-separation constant to ensure that different customization
-/// strings produce independent output functions. An empty customization string does <b>not</b> produce the same output as
-/// <see cref="AsconXof128"/>.
+/// Ascon-CXOF128 extends <see cref="AsconXof128" /> with a customization phase. The customization string <c>Z</c> is
+/// absorbed before any message data, using a dedicated domain-separation constant to ensure that different
+/// customization strings produce independent output functions. An empty customization string does <b>not</b> produce
+/// the same output as <see cref="AsconXof128" />.
 /// </para>
 /// <para>
-/// If no customization string is required, prefer <see cref="AsconXof128"/> directly. Use Ascon-CXOF128 when you need
+/// If no customization string is required, prefer <see cref="AsconXof128" /> directly. Use Ascon-CXOF128 when you need
 /// distinct output functions for different application contexts (for example, key derivation vs. masking) from a single
 /// primitive.
 /// </para>
@@ -27,40 +27,71 @@ namespace Bodu.Security.Cryptography;
 /// The lifecycle is:
 /// </para>
 /// <list type="number">
-/// <item><description>Optionally call <see cref="Customize"/> (before any <see cref="AsconXof{T}.Absorb"/> call).</description></item>
-/// <item><description>Call <see cref="AsconXof{T}.Absorb"/> zero or more times.</description></item>
-/// <item><description>Call <see cref="AsconXof{T}.Squeeze"/> to produce output.</description></item>
-/// <item><description>Call <see cref="AsconXof{T}.Initialize"/> to reset for reuse.</description></item>
+/// <item>
+/// <description>
+/// Optionally call <see cref="Customize" /> (before any <see cref="AsconXof{T}.Absorb" /> call).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Call <see cref="AsconXof{T}.Absorb" /> zero or more times.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Call <see cref="AsconXof{T}.Squeeze" /> to produce output.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Call <see cref="AsconXof{T}.Initialize" /> to reset for reuse.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: variable, any positive multiple of 8 bits.</description></item>
-///   <item><description>Customization string: optional bytes absorbed before message data, domain-separates outputs.</description></item>
-///   <item><description>State: 320-bit sponge; rate: 8 bytes (64 bits).</description></item>
-///   <item><description>Permutation: Ascon-p12 for transitions; Ascon-p8 between absorption rounds.</description></item>
-///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
+/// <item>
+/// <description>
+/// Output size: variable, any positive multiple of 8 bits.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Customization string: optional bytes absorbed before message data, domain-separates outputs.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// State: 320-bit sponge; rate: 8 bytes (64 bits).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Permutation: Ascon-p12 for transitions; Ascon-p8 between absorption rounds.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Specification: NIST SP 800-232 (ASCON family).
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Ascon-CXOF128.</strong> Pick the customizable XOF when you need multiple
-/// independent output streams from one primitive — KMAC-style domain separation per protocol layer,
-/// per-purpose KDFs (signing-key vs. encryption-key vs. binding-tag), or hash-based DRBGs that must not
-/// collide across applications. For uncustomized XOF output use <see cref="AsconXof128"/>; for fixed-length
-/// 256-bit hashes use <see cref="AsconHash256"/>; for the AEAD member of the suite use
-/// <see cref="AsconAead128"/>.
+/// <strong>When to choose Ascon-CXOF128.</strong> Pick the customizable XOF when you need multiple independent output
+/// streams from one primitive — KMAC-style domain separation per protocol layer, per-purpose KDFs (signing-key vs.
+/// encryption-key vs. binding-tag), or hash-based DRBGs that must not collide across applications. For uncustomized XOF
+/// output use <see cref="AsconXof128" />; for fixed-length 256-bit hashes use <see cref="AsconHash256" />; for the AEAD
+/// member of the suite use <see cref="AsconAead128" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using var cxof = new AsconCxof128();
-/// cxof.Customize(Encoding.UTF8.GetBytes("my-app-v1"));
-/// cxof.Absorb(message);
-/// byte[] output = cxof.GetHash(32);
-/// </code>
+/// <code language="csharp"> using var cxof = new AsconCxof128(); cxof.Customize(Encoding.UTF8.GetBytes("my-app-v1"));
+/// cxof.Absorb(message); byte[] output = cxof.GetHash(32); </code>
 /// </example>
-/// <seealso cref="AsconXof128"/>
-/// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
+/// <seealso cref="AsconXof128"/> <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)
+/// </seealso>
 public sealed class AsconCxof128
     : AsconXof<AsconCxof128>
 {
@@ -77,19 +108,19 @@ public sealed class AsconCxof128
     private bool _absorbed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconCxof128"/> class.
+    /// Initializes a new instance of the <see cref="AsconCxof128" /> class.
     /// </summary>
     public AsconCxof128()
         : base(Iv0, Iv1, Iv2, Iv3, Iv4, 8, "ASCON-CXOF128")
     { }
 
     /// <summary>
-    /// Absorbs a customization string that domain-separates this instance from other uses of the same primitive. Must be
-    /// called before any call to <see cref="AsconXof{T}.Absorb"/>.
+    /// Absorbs a customization string that domain-separates this instance from other uses of the same primitive. Must
+    /// be called before any call to <see cref="AsconXof{T}.Absorb" />.
     /// </summary>
     /// <param name="customization">
-    /// The customization string. May be empty to indicate the default (un-customized) domain. Calling this method with an
-    /// empty span is distinct from not calling it at all.
+    /// The customization string. May be empty to indicate the default (un-customized) domain. Calling this method with
+    /// an empty span is distinct from not calling it at all.
     /// </param>
     /// <remarks>
     /// <para>
@@ -100,7 +131,8 @@ public sealed class AsconCxof128
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
-    /// <see cref="Customize"/> has already been called on this instance. Call <see cref="AsconXof{T}.Initialize"/> to reset.
+    /// <see cref="Customize" /> has already been called on this instance. Call <see cref="AsconXof{T}.Initialize" /> to
+    /// reset.
     /// </exception>
     public void Customize(ReadOnlySpan<byte> customization)
     {

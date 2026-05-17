@@ -14,14 +14,14 @@ public sealed partial class Whirlpool
     private const int RoundCount = 10;
 
     /// <summary>
-    /// The reduction polynomial for the Galois field <c>GF(2^8)</c> used by Whirlpool:
-    /// <c>x^8 + x^4 + x^3 + x^2 + 1</c>.
+    /// The reduction polynomial for the Galois field <c>GF(2^8)</c> used by Whirlpool: <c>x^8 + x^4 + x^3 + x^2 + 1</c>
+    /// .
     /// </summary>
     private const int GaloisReductionPolynomial = 0x11D;
 
     /// <summary>
-    /// The 256-entry S-box of the original <c>Whirlpool-0</c> function, reproduced verbatim from the 2000
-    /// <c>NESSIE</c> submission.
+    /// The 256-entry S-box of the original <c>Whirlpool-0</c> function, reproduced verbatim from the 2000 <c>NESSIE</c>
+    /// submission.
     /// </summary>
     private static readonly byte[] s_sBoxWhirlpool0 =
     [
@@ -60,8 +60,8 @@ public sealed partial class Whirlpool
     ];
 
     /// <summary>
-    /// The diffusion matrix coefficients common to <c>Whirlpool-0</c> and <c>Whirlpool-T</c>, expressed in the
-    /// order <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable"/>.
+    /// The diffusion matrix coefficients common to <c>Whirlpool-0</c> and <c>Whirlpool-T</c>, expressed in the order
+    /// <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable" />.
     /// </summary>
     private static readonly byte[] s_mdsOriginal =
     [
@@ -70,7 +70,7 @@ public sealed partial class Whirlpool
 
     /// <summary>
     /// The diffusion matrix coefficients used by the final <c>Whirlpool</c> function, expressed in the order
-    /// <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable"/>.
+    /// <c>(c0, c1, …, c7)</c> used by <see cref="BuildMultiplicationTable" />.
     /// </summary>
     private static readonly byte[] s_mdsFinal =
     [
@@ -83,9 +83,9 @@ public sealed partial class Whirlpool
     /// </summary>
     /// <returns>A 256-byte array containing the full 8-bit S-box.</returns>
     /// <remarks>
-    /// The mini-box construction is the one published with <c>Whirlpool-T</c> in 2001 and retained by the
-    /// standardized <c>Whirlpool</c> function in 2003. Each input byte is split into two 4-bit halves which
-    /// are routed through <c>E</c>, <c>E^-1</c> and <c>R</c> in the pattern described in the original paper.
+    /// The mini-box construction is the one published with <c>Whirlpool-T</c> in 2001 and retained by the standardized
+    /// <c>Whirlpool</c> function in 2003. Each input byte is split into two 4-bit halves which are routed through
+    /// <c>E</c>, <c>E^-1</c> and <c>R</c> in the pattern described in the original paper.
     /// </remarks>
     private static byte[] BuildMiniBoxSBox()
     {
@@ -106,12 +106,11 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Multiplies two bytes in the Whirlpool Galois field <c>GF(2^8)</c> defined by
-    /// <c>x^8 + x^4 + x^3 + x^2 + 1</c>.
+    /// Multiplies two bytes in the Whirlpool Galois field <c>GF(2^8)</c> defined by <c>x^8 + x^4 + x^3 + x^2 + 1</c>.
     /// </summary>
     /// <param name="x">The left multiplicand, treated as an unsigned 8-bit value.</param>
     /// <param name="y">The right multiplicand, treated as an unsigned 8-bit value.</param>
-    /// <returns>The product <c>x · y</c> reduced modulo <see cref="GaloisReductionPolynomial"/>.</returns>
+    /// <returns>The product <c>x · y</c> reduced modulo <see cref="GaloisReductionPolynomial" />.</returns>
     private static byte GaloisMultiply(byte x, byte y)
     {
         int a = x;
@@ -135,15 +134,15 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Builds the flat 8 × 256 multiplication table used by <see cref="ApplyRound"/> for the supplied
-    /// <paramref name="sbox"/> and diffusion coefficients <paramref name="mds"/>.
+    /// Builds the flat 8 × 256 multiplication table used by <see cref="ApplyRound" /> for the supplied
+    /// <paramref name="sbox" /> and diffusion coefficients <paramref name="mds" />.
     /// </summary>
     /// <param name="sbox">The 256-byte S-box selected for the configured variant.</param>
     /// <param name="mds">The eight-byte diffusion row for the configured variant.</param>
     /// <returns>
-    /// A flat <see cref="ulong"/> array of length <c>8 × 256</c>, indexed as <c>[column &lt;&lt; 8 | value]</c>,
-    /// where each entry is the diffusion-weighted S-box output rotated so it can be XORed directly into the
-    /// corresponding state word.
+    /// A flat <see cref="ulong" /> array of length <c>8 × 256</c>, indexed as <c>[column &lt;&lt; 8 | value]</c>, where
+    /// each entry is the diffusion-weighted S-box output rotated so it can be XORed directly into the corresponding
+    /// state word.
     /// </returns>
     private static ulong[] BuildMultiplicationTable(byte[] sbox, byte[] mds)
     {
@@ -163,14 +162,13 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Builds the ten 64-bit round constants for the <c>W</c> key schedule using the supplied
-    /// <paramref name="sbox"/>.
+    /// Builds the ten 64-bit round constants for the <c>W</c> key schedule using the supplied <paramref name="sbox" />.
     /// </summary>
     /// <param name="sbox">The 256-byte S-box selected for the configured variant.</param>
     /// <returns>An array of ten big-endian packed round constants.</returns>
     /// <remarks>
-    /// Each round constant packs eight consecutive S-box outputs into the first column of the round key; the
-    /// remaining seven columns are zero by definition of the Whirlpool key schedule.
+    /// Each round constant packs eight consecutive S-box outputs into the first column of the round key; the remaining
+    /// seven columns are zero by definition of the Whirlpool key schedule.
     /// </remarks>
     private static ulong[] BuildRoundConstants(byte[] sbox)
     {

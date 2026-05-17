@@ -4,33 +4,31 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers.Binary;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Serves as the abstract base class for the non-standard wide-block tweakable Serpent engines
-/// (<see cref="Serpent256Cipher"/>, <see cref="Serpent512Cipher"/>, <see cref="Serpent1024Cipher"/>).
+/// Serves as the abstract base class for the non-standard wide-block tweakable Serpent engines (
+/// <see cref="Serpent256Cipher" />, <see cref="Serpent512Cipher" />, <see cref="Serpent1024Cipher" />).
 /// </summary>
 /// <remarks>
 /// <para>
-/// This type extends <see cref="SerpentBlockCipherBase"/> with a 128-bit tweak schedule expressed as five cycling 32-bit
-/// entries <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> (the 32-bit analogue of the Threefish <c>[T0, T1, T0 ^ T1]</c> layout)
-/// and with a round-key schedule sized to match the variant's block width. Derived classes specify the state width (in 32-bit
-/// words) and round count; this class builds the expanded round keys and tweak schedule used at every round-key injection
-/// point.
+/// This type extends <see cref="SerpentBlockCipherBase" /> with a 128-bit tweak schedule expressed as five cycling
+/// 32-bit entries <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> (the 32-bit analogue of the Threefish
+/// <c>[T0, T1, T0 ^ T1]</c> layout) and with a round-key schedule sized to match the variant's block width. Derived
+/// classes specify the state width (in 32-bit words) and round count; this class builds the expanded round keys and
+/// tweak schedule used at every round-key injection point.
 /// </para>
 /// <para>
-/// The round function keeps the Serpent-style structure of key XOR, S-box layer, and linear diffusion, then extends it across
-/// wider states by applying each Serpent operation to four-word groups and adding a word-rotation permutation between groups.
-/// Tweak material is injected into the tail of the state every four rounds.
+/// The round function keeps the Serpent-style structure of key XOR, S-box layer, and linear diffusion, then extends it
+/// across wider states by applying each Serpent operation to four-word groups and adding a word-rotation permutation
+/// between groups. Tweak material is injected into the tail of the state every four rounds.
 /// </para>
-/// <note type="important">
-/// The wide-block tweakable Serpent family is a <b>non-standard, experimental construction</b> developed for this library. It is
-/// not interoperable with canonical Serpent implementations at any block size, and its cryptographic properties have not been
-/// externally analyzed. Use the canonical <see cref="Serpent128Cipher"/> when Serpent compatibility is required.
-/// </note>
+/// <note type="important"> The wide-block tweakable Serpent family is a <b>non-standard, experimental construction</b>
+/// developed for this library. It is not interoperable with canonical Serpent implementations at any block size, and
+/// its cryptographic properties have not been externally analyzed. Use the canonical <see cref="Serpent128Cipher" />
+/// when Serpent compatibility is required. </note>
 /// </remarks>
 public abstract partial class SerpentBlockCipher
     : SerpentBlockCipherBase
@@ -44,13 +42,13 @@ public abstract partial class SerpentBlockCipher
     private protected const int TweakSizeBits = 128;
 
     /// <summary>
-    /// The expanded tweak schedule — five cycling 32-bit entries
-    /// <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> — XOR-injected at the tail of the state every four rounds.
+    /// The expanded tweak schedule — five cycling 32-bit entries <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> —
+    /// XOR-injected at the tail of the state every four rounds.
     /// </summary>
     /// <remarks>
-    /// At injection point <c>j</c>, this class injects <c>tw[j mod 5]</c>, <c>tw[(j + 1) mod 5]</c>, and the injection counter
-    /// into the final three state words. The parity entry prevents the cycle from being a simple repetition of the four raw
-    /// tweak words.
+    /// At injection point <c>j</c>, this class injects <c>tw[j mod 5]</c>, <c>tw[(j + 1) mod 5]</c>, and the injection
+    /// counter into the final three state words. The parity entry prevents the cycle from being a simple repetition of
+    /// the four raw tweak words.
     /// </remarks>
     private protected readonly uint[] _tweakSchedule;
 
@@ -64,16 +62,14 @@ public abstract partial class SerpentBlockCipher
     private protected readonly uint[] _roundKeys;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SerpentBlockCipher"/> class using the specified key and tweak.
+    /// Initializes a new instance of the <see cref="SerpentBlockCipher" /> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">
-    /// The encryption key. Its byte length must equal <see cref="IBlockCipher.BlockSize"/> / 8.
+    /// The encryption key. Its byte length must equal <see cref="IBlockCipher.BlockSize" /> / 8.
     /// </param>
-    /// <param name="tweak">
-    /// The 16-byte (128-bit) tweak value.
-    /// </param>
+    /// <param name="tweak">The 16-byte (128-bit) tweak value.</param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key"/> or <paramref name="tweak"/> does not have the expected length.
+    /// <paramref name="key" /> or <paramref name="tweak" /> does not have the expected length.
     /// </exception>
     private protected SerpentBlockCipher(ReadOnlySpan<byte> key, ReadOnlySpan<byte> tweak)
     {
@@ -97,11 +93,12 @@ public abstract partial class SerpentBlockCipher
     }
 
     /// <summary>
-    /// Gets the number of 32-bit state words in a single block. Equal to <see cref="IBlockCipher.BlockSize"/> divided by 4.
+    /// Gets the number of 32-bit state words in a single block. Equal to <see cref="IBlockCipher.BlockSize" /> divided
+    /// by 4.
     /// </summary>
     /// <remarks>
-    /// This value is supplied by the concrete wide-block variant. It must be a multiple of four because S-box and linear
-    /// transform layers operate on four-word Serpent sub-states.
+    /// This value is supplied by the concrete wide-block variant. It must be a multiple of four because S-box and
+    /// linear transform layers operate on four-word Serpent sub-states.
     /// </remarks>
     private protected abstract int BlockWords { get; }
 
@@ -109,8 +106,8 @@ public abstract partial class SerpentBlockCipher
     /// Gets the total number of cipher rounds executed by this variant.
     /// </summary>
     /// <remarks>
-    /// The round count is supplied by the concrete wide-block variant. Tweak injection occurs after every fourth non-final
-    /// round, and decryption assumes the same round grouping when reversing the injection counter.
+    /// The round count is supplied by the concrete wide-block variant. Tweak injection occurs after every fourth
+    /// non-final round, and decryption assumes the same round grouping when reversing the injection counter.
     /// </remarks>
     private protected abstract int Rounds { get; }
 
@@ -234,18 +231,12 @@ public abstract partial class SerpentBlockCipher
     /// <summary>
     /// XORs a full-width round key into the current cipher state.
     /// </summary>
-    /// <param name="state">
-    /// The cipher state, modified in place.
-    /// </param>
-    /// <param name="source">
-    /// The expanded round-key schedule.
-    /// </param>
-    /// <param name="offset">
-    /// The starting word offset of the round key within <paramref name="source"/>.
-    /// </param>
+    /// <param name="state">The cipher state, modified in place.</param>
+    /// <param name="source">The expanded round-key schedule.</param>
+    /// <param name="offset">The starting word offset of the round key within <paramref name="source" />.</param>
     /// <remarks>
-    /// Round keys are stored contiguously as <c>K_r[0..BlockWords-1]</c>. XORing is its own inverse, so the same helper is
-    /// used by encryption and decryption.
+    /// Round keys are stored contiguously as <c>K_r[0..BlockWords-1]</c>. XORing is its own inverse, so the same helper
+    /// is used by encryption and decryption.
     /// </remarks>
     private static void XorRoundKey(Span<uint> state, uint[] source, int offset)
     {
@@ -254,17 +245,15 @@ public abstract partial class SerpentBlockCipher
     }
 
     /// <summary>
-    /// Applies the Serpent S-box identified by <paramref name="sBoxIndex"/> to every four-word group of <paramref name="state"/>.
+    /// Applies the Serpent S-box identified by <paramref name="sBoxIndex" /> to every four-word group of
+    /// <paramref name="state" />.
     /// </summary>
-    /// <param name="state">
-    /// The cipher state, modified in place.
-    /// </param>
-    /// <param name="sBoxIndex">
-    /// The S-box index in the range <c>0..7</c>.
-    /// </param>
+    /// <param name="state">The cipher state, modified in place.</param>
+    /// <param name="sBoxIndex">The S-box index in the range <c>0..7</c>.</param>
     /// <remarks>
-    /// Canonical Serpent applies one bitsliced S-box to a four-word state. The wide-block variants repeat that operation across
-    /// each independent four-word lane group before the linear layer performs local diffusion and cross-lane rotation.
+    /// Canonical Serpent applies one bitsliced S-box to a four-word state. The wide-block variants repeat that
+    /// operation across each independent four-word lane group before the linear layer performs local diffusion and
+    /// cross-lane rotation.
     /// </remarks>
     private static void ApplySBoxLayer(Span<uint> state, int sBoxIndex)
     {
@@ -285,18 +274,14 @@ public abstract partial class SerpentBlockCipher
     }
 
     /// <summary>
-    /// Applies the inverse Serpent S-box identified by <paramref name="sBoxIndex"/> to every four-word group of
-    /// <paramref name="state"/>.
+    /// Applies the inverse Serpent S-box identified by <paramref name="sBoxIndex" /> to every four-word group of
+    /// <paramref name="state" />.
     /// </summary>
-    /// <param name="state">
-    /// The cipher state, modified in place.
-    /// </param>
-    /// <param name="sBoxIndex">
-    /// The inverse S-box index in the range <c>0..7</c>.
-    /// </param>
+    /// <param name="state">The cipher state, modified in place.</param>
+    /// <param name="sBoxIndex">The inverse S-box index in the range <c>0..7</c>.</param>
     /// <remarks>
-    /// This reverses <see cref="ApplySBoxLayer"/> during decryption by applying the matching inverse S-box to each four-word
-    /// bitsliced lane group.
+    /// This reverses <see cref="ApplySBoxLayer" /> during decryption by applying the matching inverse S-box to each
+    /// four-word bitsliced lane group.
     /// </remarks>
     private static void ApplyInverseSBoxLayer(Span<uint> state, int sBoxIndex)
     {
@@ -317,22 +302,20 @@ public abstract partial class SerpentBlockCipher
     }
 
     /// <summary>
-    /// Applies the Serpent linear transform to each four-word group of <paramref name="state"/> and rotates the word positions
-    /// by one modulo <c><see cref="BlockWords"/></c> for cross-lane diffusion.
+    /// Applies the Serpent linear transform to each four-word group of <paramref name="state" /> and rotates the word
+    /// positions by one modulo <c><see cref="BlockWords"/></c> for cross-lane diffusion.
     /// </summary>
-    /// <param name="state">
-    /// The cipher state, modified in place.
-    /// </param>
+    /// <param name="state">The cipher state, modified in place.</param>
     /// <remarks>
     /// <para>
-    /// The first phase applies the canonical Serpent linear transform independently to each four-word group. The second phase
-    /// is specific to this wide-block construction: it rotates every 32-bit word one position to the left so words migrate
-    /// across four-word groups over successive rounds.
+    /// The first phase applies the canonical Serpent linear transform independently to each four-word group. The second
+    /// phase is specific to this wide-block construction: it rotates every 32-bit word one position to the left so
+    /// words migrate across four-word groups over successive rounds.
     /// </para>
     /// <para>
-    /// The rotation permutation <c>newState[j] = oldState[(j + 1) mod W]</c> is applied in-place via an end-of-state shift.
-    /// It ensures that word positions circulate through every lane within <c>W</c> rounds so each lane receives diffusion
-    /// contributions from every other lane.
+    /// The rotation permutation <c>newState[j] = oldState[(j + 1) mod W]</c> is applied in-place via an end-of-state
+    /// shift. It ensures that word positions circulate through every lane within <c>W</c> rounds so each lane receives
+    /// diffusion contributions from every other lane.
     /// </para>
     /// </remarks>
     private static void ApplyLinearLayer(Span<uint> state)
@@ -361,15 +344,13 @@ public abstract partial class SerpentBlockCipher
     }
 
     /// <summary>
-    /// Inverts <see cref="ApplyLinearLayer"/> by reversing the cross-lane rotation and applying the inverse linear transform to
-    /// each four-word group.
+    /// Inverts <see cref="ApplyLinearLayer" /> by reversing the cross-lane rotation and applying the inverse linear
+    /// transform to each four-word group.
     /// </summary>
-    /// <param name="state">
-    /// The cipher state, modified in place.
-    /// </param>
+    /// <param name="state">The cipher state, modified in place.</param>
     /// <remarks>
-    /// Because encryption performs local linear transforms first and cross-lane rotation second, decryption must undo the
-    /// rotation first and then apply the inverse Serpent linear transform to each four-word group.
+    /// Because encryption performs local linear transforms first and cross-lane rotation second, decryption must undo
+    /// the rotation first and then apply the inverse Serpent linear transform to each four-word group.
     /// </remarks>
     private static void ApplyInverseLinearLayer(Span<uint> state)
     {
@@ -397,18 +378,15 @@ public abstract partial class SerpentBlockCipher
     }
 
     /// <summary>
-    /// Populates <paramref name="schedule"/> with the five-entry tweak schedule derived from the supplied 16-byte tweak.
+    /// Populates <paramref name="schedule" /> with the five-entry tweak schedule derived from the supplied 16-byte
+    /// tweak.
     /// </summary>
-    /// <param name="tweak">
-    /// The 16-byte tweak.
-    /// </param>
-    /// <param name="schedule">
-    /// The destination buffer, sized for five 32-bit entries.
-    /// </param>
+    /// <param name="tweak">The 16-byte tweak.</param>
+    /// <param name="schedule">The destination buffer, sized for five 32-bit entries.</param>
     /// <remarks>
-    /// The schedule stores <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> — the four little-endian tweak words followed by their
-    /// parity. Entries cycle modulo 5 at each tweak-injection point, mirroring the Threefish <c>[T0, T1, T0 ^ T1]</c> layout
-    /// scaled to 32-bit state words.
+    /// The schedule stores <c>[T0, T1, T2, T3, T0 ^ T1 ^ T2 ^ T3]</c> — the four little-endian tweak words followed by
+    /// their parity. Entries cycle modulo 5 at each tweak-injection point, mirroring the Threefish
+    /// <c>[T0, T1, T0 ^ T1]</c> layout scaled to 32-bit state words.
     /// </remarks>
     private static void BuildTweakSchedule(ReadOnlySpan<byte> tweak, uint[] schedule)
     {
@@ -428,16 +406,14 @@ public abstract partial class SerpentBlockCipher
     }
 
     /// <summary>
-    /// Expands <paramref name="key"/> into the <see cref="_roundKeys"/> schedule, producing <c>Rounds + 1</c> round keys of
-    /// <see cref="BlockWords"/> 32-bit words each.
+    /// Expands <paramref name="key" /> into the <see cref="_roundKeys" /> schedule, producing <c>Rounds + 1</c> round
+    /// keys of <see cref="BlockWords" /> 32-bit words each.
     /// </summary>
-    /// <param name="key">
-    /// The raw key bytes; length must equal <c>BlockWords * 4</c>.
-    /// </param>
+    /// <param name="key">The raw key bytes; length must equal <c>BlockWords * 4</c>.</param>
     /// <remarks>
-    /// Uses a widened Serpent prekey recurrence with a window of <see cref="BlockWords"/> words seeded directly from the key.
-    /// After the recurrence, applies the rotating Serpent S-box schedule to each four-word group of successive round keys,
-    /// matching the canonical <c>K_0 → S3, K_1 → S2, …</c> order.
+    /// Uses a widened Serpent prekey recurrence with a window of <see cref="BlockWords" /> words seeded directly from
+    /// the key. After the recurrence, applies the rotating Serpent S-box schedule to each four-word group of successive
+    /// round keys, matching the canonical <c>K_0 → S3, K_1 → S2, …</c> order.
     /// </remarks>
     private void BuildRoundKeys(ReadOnlySpan<byte> key)
     {

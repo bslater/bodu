@@ -15,12 +15,12 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This class implements the raw Twofish block primitive. It operates on 128-bit blocks and supports 128-bit,
-/// 192-bit, and 256-bit keys.
+/// This class implements the raw Twofish block primitive. It operates on 128-bit blocks and supports 128-bit, 192-bit,
+/// and 256-bit keys.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Twofish"/> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract.
+/// Most callers should prefer the higher-level <see cref="Twofish" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract.
 /// </para>
 /// </remarks>
 /// <seealso cref="Twofish"/>
@@ -86,14 +86,12 @@ public sealed class TwofishBlockCipher
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TwofishBlockCipher"/> class using the specified key.
+    /// Initializes a new instance of the <see cref="TwofishBlockCipher" /> class using the specified key.
     /// </summary>
     /// <param name="key">
-    /// The encryption key. Must be 16, 24, or 32 bytes in length. Must not be <see langword="null"/>.
+    /// The encryption key. Must be 16, 24, or 32 bytes in length. Must not be <see langword="null" />.
     /// </param>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="key"/> is not 16, 24, or 32 bytes in length.
-    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="key" /> is not 16, 24, or 32 bytes in length.</exception>
     public TwofishBlockCipher(ReadOnlySpan<byte> key)
     {
         if (key.Length is not (16 or 24 or 32))
@@ -245,18 +243,15 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Expands the user key into whitening subkeys, round subkeys, and key-dependent S-box contribution tables.
     /// </summary>
-    /// <param name="key">
-    /// The Twofish user key, supplied as 16, 24, or 32 bytes.
-    /// </param>
+    /// <param name="key">The Twofish user key, supplied as 16, 24, or 32 bytes.</param>
     /// <remarks>
     /// <para>
-    /// The Twofish key schedule splits the key into even and odd 32-bit word streams, derives the S vector using
-    /// the fixed Reed-Solomon matrix, and then generates K0..K39 using the h() function and the pseudo-Hadamard
-    /// transform.
+    /// The Twofish key schedule splits the key into even and odd 32-bit word streams, derives the S vector using the
+    /// fixed Reed-Solomon matrix, and then generates K0..K39 using the h() function and the pseudo-Hadamard transform.
     /// </para>
     /// <para>
-    /// This implementation also precomputes the MDS output for each key-dependent S-box byte value so that g()
-    /// can be evaluated during encryption and decryption using table lookups and XORs.
+    /// This implementation also precomputes the MDS output for each key-dependent S-box byte value so that g() can be
+    /// evaluated during encryption and decryption using table lookups and XORs.
     /// </para>
     /// </remarks>
     private void InitializeKeySchedule(ReadOnlySpan<byte> key)
@@ -324,16 +319,12 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Evaluates the Twofish g() function for the first round input word.
     /// </summary>
-    /// <param name="x">
-    /// The 32-bit input word to transform.
-    /// </param>
-    /// <returns>
-    /// The MDS-mixed 32-bit output of the key-dependent g() function.
-    /// </returns>
+    /// <param name="x">The 32-bit input word to transform.</param>
+    /// <returns>The MDS-mixed 32-bit output of the key-dependent g() function.</returns>
     /// <remarks>
     /// The four byte lanes are passed through the precomputed key-dependent S-box/MDS contribution tables in
-    /// little-endian byte order. XORing the four contributions is equivalent to applying the MDS matrix to the
-    /// four S-box outputs.
+    /// little-endian byte order. XORing the four contributions is equivalent to applying the MDS matrix to the four
+    /// S-box outputs.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint G0(uint x) =>
@@ -345,15 +336,13 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Evaluates the Twofish g() function for the second round input word.
     /// </summary>
-    /// <param name="x">
-    /// The 32-bit input word to transform.
-    /// </param>
+    /// <param name="x">The 32-bit input word to transform.</param>
     /// <returns>
     /// The MDS-mixed 32-bit output of the key-dependent g() function for the rotated byte-lane ordering.
     /// </returns>
     /// <remarks>
     /// Twofish defines the round function as T0 = g(R0) and T1 = g(ROL(R1, 8)). Rather than rotating
-    /// <paramref name="x"/> first, this method reads the byte lanes using the equivalent shifted table order.
+    /// <paramref name="x" /> first, this method reads the byte lanes using the equivalent shifted table order.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint G1(uint x) =>
@@ -365,19 +354,13 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Applies the Twofish h() function to a repeated byte value using the supplied key-word stream.
     /// </summary>
-    /// <param name="x">
-    /// The byte input to h(), normally 2i or 2i+1 during expanded-key generation.
-    /// </param>
+    /// <param name="x">The byte input to h(), normally 2i or 2i+1 during expanded-key generation.</param>
     /// <param name="l">
     /// The key-word stream used by h(); this is either the even-key stream Me, the odd-key stream Mo, or the
     /// Reed-Solomon-derived S vector depending on the caller.
     /// </param>
-    /// <param name="k">
-    /// The number of 64-bit key words in the original Twofish key.
-    /// </param>
-    /// <returns>
-    /// The 32-bit MDS output produced by the four h() byte lanes.
-    /// </returns>
+    /// <param name="k">The number of 64-bit key words in the original Twofish key.</param>
+    /// <returns>The 32-bit MDS output produced by the four h() byte lanes.</returns>
     private static uint H(byte x, ReadOnlySpan<uint> l, int k)
     {
         uint result = 0;
@@ -395,25 +378,17 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Evaluates one byte lane of the Twofish h() function and returns its MDS column contribution.
     /// </summary>
-    /// <param name="x">
-    /// The byte input for this h() evaluation.
-    /// </param>
-    /// <param name="l">
-    /// The key words used to key the q-permutation cascade.
-    /// </param>
-    /// <param name="k">
-    /// The number of 64-bit key words in the original Twofish key.
-    /// </param>
-    /// <param name="i">
-    /// The byte-lane and MDS column index, in the range 0..3.
-    /// </param>
+    /// <param name="x">The byte input for this h() evaluation.</param>
+    /// <param name="l">The key words used to key the q-permutation cascade.</param>
+    /// <param name="k">The number of 64-bit key words in the original Twofish key.</param>
+    /// <param name="i">The byte-lane and MDS column index, in the range 0..3.</param>
     /// <returns>
     /// The 32-bit contribution of this h() byte lane after key-dependent q substitutions and MDS multiplication.
     /// </returns>
     /// <remarks>
-    /// The q-permutation cascade depends on the key size. A 128-bit key uses the final two keyed layers; 192-bit
-    /// and 256-bit keys prepend one or two additional keyed q layers respectively. The lane index selects the
-    /// q0/q1 ordering defined by the Twofish specification.
+    /// The q-permutation cascade depends on the key size. A 128-bit key uses the final two keyed layers; 192-bit and
+    /// 256-bit keys prepend one or two additional keyed q layers respectively. The lane index selects the q0/q1
+    /// ordering defined by the Twofish specification.
     /// </remarks>
     private static uint HSub(byte x, ReadOnlySpan<uint> l, int k, int i)
     {
@@ -449,15 +424,9 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Multiplies a byte value by one column of the fixed Twofish MDS matrix.
     /// </summary>
-    /// <param name="column">
-    /// The MDS column index, in the range 0..3.
-    /// </param>
-    /// <param name="value">
-    /// The byte value to multiply into the selected MDS column.
-    /// </param>
-    /// <returns>
-    /// A 32-bit little-endian word containing the four row products for the selected MDS column.
-    /// </returns>
+    /// <param name="column">The MDS column index, in the range 0..3.</param>
+    /// <param name="value">The byte value to multiply into the selected MDS column.</param>
+    /// <returns>A 32-bit little-endian word containing the four row products for the selected MDS column.</returns>
     private static uint MdsMultiplyColumn(int column, byte value)
     {
         var z0 = GfMul(s_mds[0, column], value, 0x69);
@@ -471,18 +440,12 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Multiplies two bytes in the finite field GF(2^8) using the specified reduction polynomial byte.
     /// </summary>
-    /// <param name="a">
-    /// The first field element.
-    /// </param>
-    /// <param name="b">
-    /// The second field element.
-    /// </param>
+    /// <param name="a">The first field element.</param>
+    /// <param name="b">The second field element.</param>
     /// <param name="primitive">
     /// The low-byte reduction constant for the field polynomial used by the target Twofish matrix.
     /// </param>
-    /// <returns>
-    /// The product of <paramref name="a"/> and <paramref name="b"/> in GF(2^8).
-    /// </returns>
+    /// <returns>The product of <paramref name="a" /> and <paramref name="b" /> in GF(2^8).</returns>
     /// <remarks>
     /// Twofish uses different field polynomials for the MDS and RS matrices. Passing the reduction byte keeps the
     /// multiplication routine shared while preserving the specified field for each matrix.
@@ -509,24 +472,14 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Constructs one of the fixed Twofish q permutations from its four 4-bit permutation tables.
     /// </summary>
-    /// <param name="t0">
-    /// The first 4-bit permutation table.
-    /// </param>
-    /// <param name="t1">
-    /// The second 4-bit permutation table.
-    /// </param>
-    /// <param name="t2">
-    /// The third 4-bit permutation table.
-    /// </param>
-    /// <param name="t3">
-    /// The fourth 4-bit permutation table.
-    /// </param>
-    /// <returns>
-    /// A 256-entry byte table representing the composed q permutation.
-    /// </returns>
+    /// <param name="t0">The first 4-bit permutation table.</param>
+    /// <param name="t1">The second 4-bit permutation table.</param>
+    /// <param name="t2">The third 4-bit permutation table.</param>
+    /// <param name="t3">The fourth 4-bit permutation table.</param>
+    /// <returns>A 256-entry byte table representing the composed q permutation.</returns>
     /// <remarks>
-    /// The Twofish q permutations are defined over two nibbles using XORs, one-bit nibble rotations, and four
-    /// fixed 4-bit tables. Precomputing the composed 8-bit permutation keeps h() and the key schedule simpler.
+    /// The Twofish q permutations are defined over two nibbles using XORs, one-bit nibble rotations, and four fixed
+    /// 4-bit tables. Precomputing the composed 8-bit permutation keeps h() and the key schedule simpler.
     /// </remarks>
     private static byte[] CreateQ(byte[] t0, byte[] t1, byte[] t2, byte[] t3)
     {
@@ -558,12 +511,8 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Rotates a 4-bit value right by one bit.
     /// </summary>
-    /// <param name="value">
-    /// The low-nibble value to rotate.
-    /// </param>
-    /// <returns>
-    /// The rotated 4-bit value, masked to the low nibble.
-    /// </returns>
+    /// <param name="value">The low-nibble value to rotate.</param>
+    /// <returns>The rotated 4-bit value, masked to the low nibble.</returns>
     /// <remarks>
     /// This operation is used by the q-permutation construction defined by Twofish.
     /// </remarks>
@@ -574,15 +523,9 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Rotates a 32-bit word left by the specified number of bits.
     /// </summary>
-    /// <param name="value">
-    /// The word to rotate.
-    /// </param>
-    /// <param name="bits">
-    /// The number of bits to rotate by.
-    /// </param>
-    /// <returns>
-    /// The rotated 32-bit word.
-    /// </returns>
+    /// <param name="value">The word to rotate.</param>
+    /// <param name="bits">The number of bits to rotate by.</param>
+    /// <returns>The rotated 32-bit word.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint RotateLeft(uint value, int bits) =>
         (value << bits) | (value >> (32 - bits));
@@ -590,21 +533,15 @@ public sealed class TwofishBlockCipher
     /// <summary>
     /// Rotates a 32-bit word right by the specified number of bits.
     /// </summary>
-    /// <param name="value">
-    /// The word to rotate.
-    /// </param>
-    /// <param name="bits">
-    /// The number of bits to rotate by.
-    /// </param>
-    /// <returns>
-    /// The rotated 32-bit word.
-    /// </returns>
+    /// <param name="value">The word to rotate.</param>
+    /// <param name="bits">The number of bits to rotate by.</param>
+    /// <returns>The rotated 32-bit word.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint RotateRight(uint value, int bits) =>
         (value >> bits) | (value << (32 - bits));
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

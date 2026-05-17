@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -12,83 +11,97 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Galois/Counter Mode (GCM) to a 128-bit block cipher, providing single-pass authenticated
-/// encryption with associated data (AEAD) per NIST SP 800-38D.
+/// Applies Galois/Counter Mode (GCM) to a 128-bit block cipher, providing single-pass authenticated encryption with
+/// associated data (AEAD) per NIST SP 800-38D.
 /// </summary>
 /// <remarks>
 /// <para>
 /// GCM combines counter-mode encryption with GHASH authentication over <c>GF(2¹²⁸)</c>:
 /// </para>
 /// <list type="bullet">
-///   <item><description>Hash subkey: <c>H = E_K(0¹²⁸)</c>.</description></item>
-///   <item><description>Initial counter <c>J0 = nonce ‖ 0x00000001</c>; payload counter starts at <c>J0 + 1</c>.</description></item>
-///   <item><description>Ciphertext: <c>C_i = P_i ⊕ E_K(counter_i)</c>, counter incremented per block.</description></item>
-///   <item><description>Tag: <c>T = GHASH_H(AAD ‖ C ‖ len(AAD)‖len(C)) ⊕ E_K(J0)</c>.</description></item>
+/// <item>
+/// <description>
+/// Hash subkey: <c>H = E_K(0¹²⁸)</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Initial counter <c>J0 = nonce ‖ 0x00000001</c>; payload counter starts at <c>J0 + 1</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Ciphertext: <c>C_i = P_i ⊕ E_K(counter_i)</c>, counter incremented per block.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Tag: <c>T = GHASH_H(AAD ‖ C ‖ len(AAD)‖len(C)) ⊕ E_K(J0)</c>.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// GF(2¹²⁸) multiplication uses the irreducible polynomial <c>x¹²⁸ + x⁷ + x² + x + 1</c> with
-/// big-endian bit ordering and the reduction constant <c>0xE1</c> in the most-significant byte.
+/// GF(2¹²⁸) multiplication uses the irreducible polynomial <c>x¹²⁸ + x⁷ + x² + x + 1</c> with big-endian bit ordering
+/// and the reduction constant <c>0xE1</c> in the most-significant byte.
 /// </para>
 /// <para>
-/// <strong>Nonce length.</strong> This implementation accepts only the 96-bit (12-byte) nonce form, which
-/// is what every interoperable GCM consumer uses (TLS 1.2/1.3, IPsec ESP, SSH, QUIC). The
-/// SP 800-38D §7.1 GHASH-based derivation for other nonce lengths is intentionally not supported.
+/// <strong>Nonce length.</strong> This implementation accepts only the 96-bit (12-byte) nonce form, which is what every
+/// interoperable GCM consumer uses (TLS 1.2/1.3, IPsec ESP, SSH, QUIC). The SP 800-38D §7.1 GHASH-based derivation for
+/// other nonce lengths is intentionally not supported.
 /// </para>
 /// <para>
 /// <strong>Lifecycle.</strong> Each instance encrypts or decrypts exactly one message. A second call to
-/// <see cref="Encrypt"/> or <see cref="Decrypt"/> throws <see cref="InvalidOperationException"/>.
-/// The instance must be disposed when finished; <see cref="Dispose"/> clears the GHASH subkey,
-/// initial counter, running counter, and cached associated data. The supplied
-/// <see cref="IBlockCipher"/> is not disposed by this type — ownership remains with the caller.
+/// <see cref="Encrypt" /> or <see cref="Decrypt" /> throws <see cref="InvalidOperationException" />. The instance must
+/// be disposed when finished; <see cref="Dispose" /> clears the GHASH subkey, initial counter, running counter, and
+/// cached associated data. The supplied <see cref="IBlockCipher" /> is not disposed by this type — ownership remains
+/// with the caller.
 /// </para>
 /// <para>
 /// <strong>When to use GCM.</strong> The default modern AEAD mode — single-pass, parallelisable, and
-/// hardware-accelerated on AES-NI / PCLMULQDQ. The cost is fragility under nonce reuse: a single
-/// repeated <c>(key, nonce)</c> pair leaks the GHASH subkey and forfeits authentication forever.
-/// For nonce-misuse resistance prefer <see cref="GcmSivModeTransform"/> or
-/// <see cref="SivModeTransform"/>; for constrained environments prefer <see cref="CcmModeTransform"/>;
-/// for a single-pass alternative without GCM's failure profile prefer <see cref="OcbModeTransform"/>.
+/// hardware-accelerated on AES-NI / PCLMULQDQ. The cost is fragility under nonce reuse: a single repeated
+/// <c>(key, nonce)</c> pair leaks the GHASH subkey and forfeits authentication forever. For nonce-misuse resistance
+/// prefer <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />; for constrained environments prefer
+/// <see cref="CcmModeTransform" />; for a single-pass alternative without GCM's failure profile prefer
+/// <see cref="OcbModeTransform" />.
 /// </para>
 /// <para>
-/// <strong>When to use GCM.</strong> The default modern AEAD mode — TLS 1.2/1.3, IPsec ESP, SSH, QUIC, and
-/// most file-format AEAD layers all use AES-GCM. Single-pass, parallelisable, hardware-accelerated on
-/// AES-NI / PCLMULQDQ, and the fastest AEAD on commodity x86/ARM. The cost is fragility under nonce reuse:
-/// a single repeated <c>(key, nonce)</c> pair leaks the GHASH key and forfeits authentication forever.
-/// Use only when the caller can <em>guarantee</em> nonce uniqueness — usually via a 96-bit counter or
-/// a random nonce drawn from a large enough space. For nonce-misuse resistance prefer
-/// <see cref="GcmSivModeTransform"/> or <see cref="SivModeTransform"/>; for constrained environments prefer
-/// <see cref="CcmModeTransform"/>; for a single-pass alternative without GCM's fragility profile prefer
-/// <see cref="OcbModeTransform"/>.
+/// <strong>When to use GCM.</strong> The default modern AEAD mode — TLS 1.2/1.3, IPsec ESP, SSH, QUIC, and most
+/// file-format AEAD layers all use AES-GCM. Single-pass, parallelisable, hardware-accelerated on AES-NI / PCLMULQDQ,
+/// and the fastest AEAD on commodity x86/ARM. The cost is fragility under nonce reuse: a single repeated
+/// <c>(key, nonce)</c> pair leaks the GHASH key and forfeits authentication forever. Use only when the caller can <em>
+/// guarantee</em> nonce uniqueness — usually via a 96-bit counter or a random nonce drawn from a large enough space.
+/// For nonce-misuse resistance prefer <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />; for
+/// constrained environments prefer <see cref="CcmModeTransform" />; for a single-pass alternative without GCM's
+/// fragility profile prefer <see cref="OcbModeTransform" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using System.Security.Cryptography;
-/// using Bodu.Security.Cryptography;
-/// using Bodu.Security.Cryptography.Extensions;
-///
-/// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = BuildGcmIv(nonce); // standard 96-bit nonce padded to the cipher block size
-/// using IAeadBlockCipherModeTransform gcm = new GcmModeTransform(cipher, iv);
-///
-/// byte[] sealed_   = gcm.Encrypt(plaintext, associatedData: header);
-/// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, iv);
-/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
-/// </code>
+/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// Bodu.Security.Cryptography.Extensions; using IBlockCipher cipher = new AesBlockCipher(key); byte[] iv =
+/// BuildGcmIv(nonce); // standard 96-bit nonce padded to the cipher block size using IAeadBlockCipherModeTransform gcm
+/// = new GcmModeTransform(cipher, iv); byte[] sealed_ = gcm.Encrypt(plaintext, associatedData: header); using
+/// IAeadBlockCipherModeTransform dec = new GcmModeTransform(cipher, iv); byte[] recovered = dec.Decrypt(sealed_,
+/// associatedData: header); </code>
 /// </example>
-/// <seealso href="../guides/cryptography/aead-modes.html#gcm--the-workhorse">GCM walk-through in the AEAD-modes guide</seealso>
-/// <seealso cref="AesBlockCipher"/>
+/// <seealso href="../guides/cryptography/aead-modes.html#gcm--the-workhorse">GCM walk-through in the AEAD-modes guide
+/// </seealso> <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class GcmModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>The fixed GCM block size in bits (128 bits = 16 bytes).</summary>
+    /// <summary>
+    /// The fixed GCM block size in bits (128 bits = 16 bytes).
+    /// </summary>
     private const int BlockSize = 128;
 
-    /// <summary>The required GCM nonce size in bits (96 bits = 12 bytes).</summary>
+    /// <summary>
+    /// The required GCM nonce size in bits (96 bits = 12 bytes).
+    /// </summary>
     private const int NonceSize = 96;
 
-    /// <summary>The GCM authentication tag size in bits (128 bits = 16 bytes).</summary>
+    /// <summary>
+    /// The GCM authentication tag size in bits (128 bits = 16 bytes).
+    /// </summary>
     private const int DefaultTagSize = 128;
 
     private readonly IBlockCipher _cipher;
@@ -101,16 +114,16 @@ public sealed class GcmModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GcmModeTransform"/> class with a 96-bit GCM nonce.
+    /// Initializes a new instance of the <see cref="GcmModeTransform" /> class with a 96-bit GCM nonce.
     /// </summary>
     /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
     /// <param name="nonce">The 96-bit (12-byte) nonce. Must be unique per key.</param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="cipher"/> or <paramref name="nonce"/> is <see langword="null"/>.
+    /// <paramref name="cipher" /> or <paramref name="nonce" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher"/> does not have a 16-byte block size, or <paramref name="nonce"/> is not
-    /// exactly <see cref="NonceSize"/> bytes.
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly
+    /// <see cref="NonceSize" /> bytes.
     /// </exception>
     public GcmModeTransform(IBlockCipher cipher, byte[] nonce)
         : this(
@@ -122,14 +135,14 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GcmModeTransform"/> class with a 96-bit GCM nonce.
+    /// Initializes a new instance of the <see cref="GcmModeTransform" /> class with a 96-bit GCM nonce.
     /// </summary>
     /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
     /// <param name="nonce">The 96-bit (12-byte) nonce. Must be unique per key.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher"/> does not have a 16-byte block size, or <paramref name="nonce"/> is not
-    /// exactly <see cref="NonceSize"/> bytes.
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="nonce" /> is not exactly
+    /// <see cref="NonceSize" /> bytes.
     /// </exception>
     public GcmModeTransform(IBlockCipher cipher, ReadOnlySpan<byte> nonce)
         : this(cipher, nonce, nameof(nonce), useInitialCounterBlock: false)
@@ -137,12 +150,20 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="GcmModeTransform"/> class and derives J0 from a 12-byte nonce or uses a precomputed J0 directly.
+    /// Initializes a new instance of the <see cref="GcmModeTransform" /> class and derives J0 from a 12-byte nonce or
+    /// uses a precomputed J0 directly.
     /// </summary>
     /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
-    /// <param name="nonceOrJ0">Either a 12-byte nonce or a 16-byte precomputed J0, depending on <paramref name="useInitialCounterBlock"/>.</param>
-    /// <param name="parameterName">The name of the parameter from the calling overload, used in <see cref="ArgumentException"/> messages.</param>
-    /// <param name="useInitialCounterBlock">When <see langword="true"/>, treats <paramref name="nonceOrJ0"/> as a precomputed J0 block; otherwise as a 12-byte nonce.</param>
+    /// <param name="nonceOrJ0">
+    /// Either a 12-byte nonce or a 16-byte precomputed J0, depending on <paramref name="useInitialCounterBlock" />.
+    /// </param>
+    /// <param name="parameterName">
+    /// The name of the parameter from the calling overload, used in <see cref="ArgumentException" /> messages.
+    /// </param>
+    /// <param name="useInitialCounterBlock">
+    /// When <see langword="true" />, treats <paramref name="nonceOrJ0" /> as a precomputed J0 block; otherwise as a
+    /// 12-byte nonce.
+    /// </param>
     private GcmModeTransform(
         IBlockCipher cipher,
         ReadOnlySpan<byte> nonceOrJ0,
@@ -201,17 +222,16 @@ public sealed class GcmModeTransform
     public int TagSize => DefaultTagSize;
 
     /// <summary>
-    /// Creates a <see cref="GcmModeTransform"/> from a precomputed 128-bit initial counter block.
-    /// Test-only entry point exposed via <c>InternalsVisibleTo</c> to support test vectors that publish
-    /// <c>J0</c> directly.
+    /// Creates a <see cref="GcmModeTransform" /> from a precomputed 128-bit initial counter block. Test-only entry
+    /// point exposed via <c>InternalsVisibleTo</c> to support test vectors that publish <c>J0</c> directly.
     /// </summary>
     /// <param name="cipher">The 128-bit block cipher used by GCM.</param>
     /// <param name="initialCounterBlock">The precomputed 16-byte initial counter block, <c>J0</c>.</param>
-    /// <returns>A new <see cref="GcmModeTransform"/> initialized with the supplied <c>J0</c>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
+    /// <returns>A new <see cref="GcmModeTransform" /> initialized with the supplied <c>J0</c>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="cipher"/> does not have a 16-byte block size, or <paramref name="initialCounterBlock"/>
-    /// is not exactly 16 bytes.
+    /// <paramref name="cipher" /> does not have a 16-byte block size, or <paramref name="initialCounterBlock" /> is not
+    /// exactly 16 bytes.
     /// </exception>
     internal static GcmModeTransform CreateForTesting(IBlockCipher cipher, ReadOnlySpan<byte> initialCounterBlock) =>
         new GcmModeTransform(cipher, initialCounterBlock, nameof(initialCounterBlock), useInitialCounterBlock: true);
@@ -331,9 +351,9 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Releases all resources used by this instance and clears the GHASH subkey, initial counter,
-    /// running counter, and cached associated data from memory. Idempotent. Does not dispose the
-    /// supplied <see cref="IBlockCipher"/> — ownership remains with the caller.
+    /// Releases all resources used by this instance and clears the GHASH subkey, initial counter, running counter, and
+    /// cached associated data from memory. Idempotent. Does not dispose the supplied <see cref="IBlockCipher" /> —
+    /// ownership remains with the caller.
     /// </summary>
     public void Dispose()
     {
@@ -353,8 +373,8 @@ public sealed class GcmModeTransform
     // ── Private helpers ────────────────────────────────────────────────────────────────────────
 
     /// <summary>
-    /// Ensures the associated-data contribution has been finalized exactly once before payload bytes are
-    /// processed; treats an unset AAD as empty.
+    /// Ensures the associated-data contribution has been finalized exactly once before payload bytes are processed;
+    /// treats an unset AAD as empty.
     /// </summary>
     private void EnsureAssociatedDataProcessed()
     {
@@ -366,11 +386,11 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Applies CTR mode: for each block, computes <c>keystream = E_K(counter)</c>, XORs with input,
-    /// increments the counter.
+    /// Applies CTR mode: for each block, computes <c>keystream = E_K(counter)</c>, XORs with input, increments the
+    /// counter.
     /// </summary>
     /// <param name="input">The input bytes to XOR with the CTR keystream.</param>
-    /// <param name="output">The destination span; must be at least <paramref name="input"/>.Length bytes.</param>
+    /// <param name="output">The destination span; must be at least <paramref name="input" />.Length bytes.</param>
     private void ApplyCtr(ReadOnlySpan<byte> input, Span<byte> output)
     {
         Span<byte> keystream = stackalloc byte[BlockSize / 8];
@@ -395,8 +415,8 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Computes the GCM authentication tag <c>T = GHASH_H(AAD ‖ C ‖ len(AAD)‖len(C)) ⊕ E_K(J0)</c>
-    /// into <paramref name="destination"/>.
+    /// Computes the GCM authentication tag <c>T = GHASH_H(AAD ‖ C ‖ len(AAD)‖len(C)) ⊕ E_K(J0)</c> into
+    /// <paramref name="destination" />.
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="ciphertext">The ciphertext bytes authenticated by the tag.</param>
@@ -432,7 +452,9 @@ public sealed class GcmModeTransform
         }
     }
 
-    /// <summary>Feeds <paramref name="data"/> into the GHASH accumulator <paramref name="y"/> block by block.</summary>
+    /// <summary>
+    /// Feeds <paramref name="data" /> into the GHASH accumulator <paramref name="y" /> block by block.
+    /// </summary>
     /// <param name="y">The running GHASH accumulator (16 bytes); updated in place.</param>
     /// <param name="h">The GHASH subkey.</param>
     /// <param name="data">The input bytes to fold into the GHASH state.</param>
@@ -457,10 +479,12 @@ public sealed class GcmModeTransform
         }
     }
 
-    /// <summary>Processes one 16-byte block through GHASH: <c>y = (y ⊕ block) · H</c>.</summary>
+    /// <summary>
+    /// Processes one 16-byte block through GHASH: <c>y = (y ⊕ block) · H</c>.
+    /// </summary>
     /// <param name="y">The running GHASH accumulator (16 bytes); updated in place.</param>
     /// <param name="h">The GHASH subkey.</param>
-    /// <param name="block">A single 16-byte block to fold into <paramref name="y"/>.</param>
+    /// <param name="block">A single 16-byte block to fold into <paramref name="y" />.</param>
     private static void GhashBlock(Span<byte> y, ReadOnlySpan<byte> h, ReadOnlySpan<byte> block)
     {
         for (var i = 0; i < BlockSize / 8; i++)
@@ -470,9 +494,9 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Multiplies <paramref name="x"/> by <paramref name="h"/> in GF(2¹²⁸) using the GCM irreducible
-    /// polynomial <c>x¹²⁸ + x⁷ + x² + x + 1</c>, with big-endian bit ordering. Result is written into
-    /// <paramref name="result"/> (may alias <paramref name="x"/>).
+    /// Multiplies <paramref name="x" /> by <paramref name="h" /> in GF(2¹²⁸) using the GCM irreducible polynomial
+    /// <c>x¹²⁸ + x⁷ + x² + x + 1</c>, with big-endian bit ordering. Result is written into <paramref name="result" />
+    /// (may alias <paramref name="x" />).
     /// </summary>
     /// <param name="x">The left operand block (16 bytes).</param>
     /// <param name="h">The hash subkey <c>H</c> (16 bytes).</param>
@@ -511,8 +535,8 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Increments the 32-bit big-endian counter in the last 4 bytes of <paramref name="counter"/> per
-    /// NIST SP 800-38D <c>inc32</c>.
+    /// Increments the 32-bit big-endian counter in the last 4 bytes of <paramref name="counter" /> per NIST SP 800-38D
+    /// <c>inc32</c>.
     /// </summary>
     /// <param name="counter">The 16-byte CTR block; its low 32 bits are incremented in place.</param>
     private static void IncrementCounter32(Span<byte> counter)
@@ -522,7 +546,7 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.
@@ -539,8 +563,8 @@ public sealed class GcmModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException"/> if this instance has already encrypted or decrypted
-    /// a message. GCM transforms are single-use; create a fresh instance per message.
+    /// Throws <see cref="InvalidOperationException" /> if this instance has already encrypted or decrypted a message.
+    /// GCM transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted()
     {

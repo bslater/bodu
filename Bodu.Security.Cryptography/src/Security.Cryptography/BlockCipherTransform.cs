@@ -4,69 +4,66 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides a base implementation of <see cref="ICryptoTransform"/> for block cipher algorithms that combine an
-/// <see cref="IBlockCipher"/> engine with an <see cref="IBlockCipherModeTransform"/> and an
-/// <see cref="IPaddingStrategy"/>.
+/// Provides a base implementation of <see cref="ICryptoTransform" /> for block cipher algorithms that combine an
+/// <see cref="IBlockCipher" /> engine with an <see cref="IBlockCipherModeTransform" /> and an
+/// <see cref="IPaddingStrategy" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Block-aligned streaming data is processed via <see cref="TransformBlock"/>, and the final potentially partial
-/// block — including padding application or removal — is handled by <see cref="TransformFinalBlock"/>.
+/// Block-aligned streaming data is processed via <see cref="TransformBlock" />, and the final potentially partial block
+/// — including padding application or removal — is handled by <see cref="TransformFinalBlock" />.
 /// </para>
 /// <para>
-/// When decrypting with a strippable padding mode, such as <see cref="PaddingMode.PKCS7"/>, the last complete
-/// block of ciphertext is deferred until <see cref="TransformFinalBlock"/> is called. This allows padding to be
-/// validated and removed only at the end of the stream.
+/// When decrypting with a strippable padding mode, such as <see cref="PaddingMode.PKCS7" />, the last complete block of
+/// ciphertext is deferred until <see cref="TransformFinalBlock" /> is called. This allows padding to be validated and
+/// removed only at the end of the stream.
 /// </para>
 /// <para>
-/// A <see cref="BlockCipherTransform"/> instance represents a single cryptographic transform operation. Once
-/// <see cref="TransformFinalBlock"/> has completed, the instance is finalized and cannot be used for another
-/// operation. Consequently, <see cref="CanReuseTransform"/> returns <see langword="false"/>. Callers that need to
+/// A <see cref="BlockCipherTransform" /> instance represents a single cryptographic transform operation. Once
+/// <see cref="TransformFinalBlock" /> has completed, the instance is finalized and cannot be used for another
+/// operation. Consequently, <see cref="CanReuseTransform" /> returns <see langword="false" />. Callers that need to
 /// encrypt or decrypt additional data must create a new transform instance.
 /// </para>
 /// <para>
-/// Finalization is distinct from disposal. After <see cref="TransformFinalBlock"/> completes, subsequent transform
-/// calls throw <see cref="InvalidOperationException"/>. After <see cref="Dispose"/> is called, subsequent transform
-/// calls throw <see cref="ObjectDisposedException"/>.
+/// Finalization is distinct from disposal. After <see cref="TransformFinalBlock" /> completes, subsequent transform
+/// calls throw <see cref="InvalidOperationException" />. After <see cref="Dispose" /> is called, subsequent transform
+/// calls throw <see cref="ObjectDisposedException" />.
 /// </para>
 /// <para>
-/// The transform is intentionally not reusable because the underlying block cipher mode transform may contain
-/// mutable chaining, feedback, or counter state. Clearing deferred padding input after finalization is not sufficient
-/// to restore the mode transform to its initial IV or counter state.
+/// The transform is intentionally not reusable because the underlying block cipher mode transform may contain mutable
+/// chaining, feedback, or counter state. Clearing deferred padding input after finalization is not sufficient to
+/// restore the mode transform to its initial IV or counter state.
 /// </para>
 /// <para>
 /// Derived classes need only provide a constructor that calls
-/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingMode, byte[], bool)"/> or
-/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingModeKind, byte[], bool)"/> with the
+/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingMode, byte[], bool)" /> or
+/// <see cref="BlockCipherTransform(IBlockCipher, CipherModeKind, PaddingModeKind, byte[], bool)" /> with the
 /// appropriate arguments. All transform logic is handled by this base class.
 /// </para>
 /// <para>
-/// <strong>How this fits with the rest of the library.</strong> <see cref="BlockCipherTransform"/> is the
-/// glue layer that turns a low-level <see cref="IBlockCipher"/> into the
-/// <see cref="System.Security.Cryptography.ICryptoTransform"/> contract that
-/// <see cref="System.Security.Cryptography.CryptoStream"/>, <c>SymmetricAlgorithm.CreateEncryptor()</c>, and
-/// the rest of the BCL crypto pipeline expect. Every <see cref="System.Security.Cryptography.SymmetricAlgorithm"/>
-/// in this library returns an instance of a derived class from its <c>CreateEncryptor</c> /
-/// <c>CreateDecryptor</c> overrides — for example, <c>BlowfishTransform</c>, <c>CamelliaTransform</c>,
-/// <c>SkipjackTransform</c>, <c>TwofishTransform</c>, <c>SerpentTransform</c>, <c>ThreefishTransform</c>.
+/// <strong>How this fits with the rest of the library.</strong> <see cref="BlockCipherTransform" /> is the glue layer
+/// that turns a low-level <see cref="IBlockCipher" /> into the
+/// <see cref="System.Security.Cryptography.ICryptoTransform" /> contract that
+/// <see cref="System.Security.Cryptography.CryptoStream" />, <c>SymmetricAlgorithm.CreateEncryptor()</c>, and the rest
+/// of the BCL crypto pipeline expect. Every <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> in this
+/// library returns an instance of a derived class from its <c>CreateEncryptor</c> / <c>CreateDecryptor</c> overrides —
+/// for example, <c>BlowfishTransform</c>, <c>CamelliaTransform</c>, <c>SkipjackTransform</c>, <c>TwofishTransform</c>,
+/// <c>SerpentTransform</c>, <c>ThreefishTransform</c>.
 /// </para>
 /// <para>
-/// Derive from this class only when adding a new symmetric algorithm to the library. Most callers never
-/// touch this type directly — they use <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode"/>
-/// and <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding"/> to configure encryption and let
-/// the existing transform infrastructure handle the wiring.
+/// Derive from this class only when adding a new symmetric algorithm to the library. Most callers never touch this type
+/// directly — they use <see cref="System.Security.Cryptography.SymmetricAlgorithm.Mode" /> and
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm.Padding" /> to configure encryption and let the existing
+/// transform infrastructure handle the wiring.
 /// </para>
 /// </remarks>
-/// <seealso cref="IBlockCipher"/>
-/// <seealso cref="IBlockCipherModeTransform"/>
-/// <seealso cref="IPaddingStrategy"/>
+/// <seealso cref="IBlockCipher"/> <seealso cref="IBlockCipherModeTransform"/> <seealso cref="IPaddingStrategy"/>
 public abstract class BlockCipherTransform
     : ICryptoTransform
 {
@@ -108,25 +105,25 @@ public abstract class BlockCipherTransform
     private bool _disposed;
 
     /// <summary>
-    /// Indicates whether <see cref="TransformFinalBlock(byte[], int, int)"/> has completed and this one-shot
-    /// transform can no longer process additional input.
+    /// Indicates whether <see cref="TransformFinalBlock(byte[], int, int)" /> has completed and this one-shot transform
+    /// can no longer process additional input.
     /// </summary>
     private bool _finalized;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlockCipherTransform"/> class using the specified cipher
-    /// engine, mode, padding scheme, initialization vector, and transform direction.
+    /// Initializes a new instance of the <see cref="BlockCipherTransform" /> class using the specified cipher engine,
+    /// mode, padding scheme, initialization vector, and transform direction.
     /// </summary>
     /// <param name="cipher">
-    /// The configured <see cref="IBlockCipher"/> engine to use. Must not be <see langword="null"/>.
+    /// The configured <see cref="IBlockCipher" /> engine to use. Must not be <see langword="null" />.
     /// </param>
     /// <param name="cipherMode">The block cipher mode of operation.</param>
     /// <param name="paddingMode">The padding scheme to apply to the final block.</param>
     /// <param name="iv">The initialization vector for the cipher mode. Must match the cipher block size.</param>
     /// <param name="encrypt">
-    /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
+    /// <see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingMode paddingMode, byte[]? iv, bool encrypt)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
@@ -136,22 +133,22 @@ public abstract class BlockCipherTransform
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlockCipherTransform"/> class using the specified cipher
-    /// engine, mode, extended padding scheme, initialization vector, and transform direction.
+    /// Initializes a new instance of the <see cref="BlockCipherTransform" /> class using the specified cipher engine,
+    /// mode, extended padding scheme, initialization vector, and transform direction.
     /// </summary>
     /// <param name="cipher">
-    /// The configured <see cref="IBlockCipher"/> engine to use. Must not be <see langword="null"/>.
+    /// The configured <see cref="IBlockCipher" /> engine to use. Must not be <see langword="null" />.
     /// </param>
     /// <param name="cipherMode">The block cipher mode of operation.</param>
     /// <param name="paddingMode">
     /// The extended padding scheme to apply to the final block. Accepts values beyond the framework
-    /// <see cref="PaddingMode"/> enum, including <see cref="PaddingModeKind.ISO7816_4"/>.
+    /// <see cref="PaddingMode" /> enum, including <see cref="PaddingModeKind.ISO7816_4" />.
     /// </param>
     /// <param name="iv">The initialization vector for the cipher mode. Must match the cipher block size.</param>
     /// <param name="encrypt">
-    /// <see langword="true"/> to configure for encryption; <see langword="false"/> for decryption.
+    /// <see langword="true" /> to configure for encryption; <see langword="false" /> for decryption.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="cipher"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="cipher" /> is <see langword="null" />.</exception>
     protected BlockCipherTransform(IBlockCipher cipher, CipherModeKind cipherMode, PaddingModeKind paddingMode, byte[]? iv, bool encrypt)
     {
         this._cipher = cipher ?? throw new ArgumentNullException(nameof(cipher));
@@ -168,15 +165,15 @@ public abstract class BlockCipherTransform
 
     /// <inheritdoc />
     /// <remarks>
-    /// The BCL <see cref="ICryptoTransform"/> contract requires this value in <em>bytes</em>; the
-    /// underlying <see cref="IBlockCipher.BlockSize"/> is in <em>bits</em>, so we divide by 8.
+    /// The BCL <see cref="ICryptoTransform" /> contract requires this value in <em>bytes</em>; the underlying
+    /// <see cref="IBlockCipher.BlockSize" /> is in <em>bits</em>, so we divide by 8.
     /// </remarks>
     public int InputBlockSize => this._cipher.BlockSize / 8;
 
     /// <inheritdoc />
     /// <remarks>
-    /// The BCL <see cref="ICryptoTransform"/> contract requires this value in <em>bytes</em>; the
-    /// underlying <see cref="IBlockCipher.BlockSize"/> is in <em>bits</em>, so we divide by 8.
+    /// The BCL <see cref="ICryptoTransform" /> contract requires this value in <em>bytes</em>; the underlying
+    /// <see cref="IBlockCipher.BlockSize" /> is in <em>bits</em>, so we divide by 8.
     /// </remarks>
     public int OutputBlockSize => this._cipher.BlockSize / 8;
 
@@ -200,18 +197,26 @@ public abstract class BlockCipherTransform
     /// <summary>
     /// Transforms a block-aligned region of the input byte array and writes the result to the output buffer.
     /// </summary>
-    /// <param name="inputBuffer">The input data buffer. Must not be <see langword="null"/>.</param>
-    /// <param name="inputOffset">The byte offset within <paramref name="inputBuffer"/> at which to begin reading.</param>
-    /// <param name="inputCount">The number of bytes to process. Must be a multiple of <see cref="InputBlockSize"/>.</param>
-    /// <param name="outputBuffer">The buffer to write the transformed data into. Must not be <see langword="null"/>.</param>
-    /// <param name="outputOffset">The byte offset within <paramref name="outputBuffer"/> at which to begin writing.</param>
-    /// <returns>The number of bytes written to <paramref name="outputBuffer"/>.</returns>
+    /// <param name="inputBuffer">The input data buffer. Must not be <see langword="null" />.</param>
+    /// <param name="inputOffset">
+    /// The byte offset within <paramref name="inputBuffer" /> at which to begin reading.
+    /// </param>
+    /// <param name="inputCount">
+    /// The number of bytes to process. Must be a multiple of <see cref="InputBlockSize" />.
+    /// </param>
+    /// <param name="outputBuffer">
+    /// The buffer to write the transformed data into. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="outputOffset">
+    /// The byte offset within <paramref name="outputBuffer" /> at which to begin writing.
+    /// </param>
+    /// <returns>The number of bytes written to <paramref name="outputBuffer" />.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
     /// This transform has already been finalized and cannot be reused.
     /// </exception>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="inputBuffer"/> or <paramref name="outputBuffer"/> is <see langword="null"/>.
+    /// <paramref name="inputBuffer" /> or <paramref name="outputBuffer" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
     /// The input or output buffer span is invalid or insufficient in length for the requested operation.
@@ -274,19 +279,21 @@ public abstract class BlockCipherTransform
     /// <summary>
     /// Transforms the final block of data, applying or removing padding as appropriate, and returns the result.
     /// </summary>
-    /// <param name="inputBuffer">The final input data buffer. Must not be <see langword="null"/>.</param>
-    /// <param name="inputOffset">The byte offset within <paramref name="inputBuffer"/> at which to begin reading.</param>
-    /// <param name="inputCount">The number of bytes to process from <paramref name="inputBuffer"/>.</param>
+    /// <param name="inputBuffer">The final input data buffer. Must not be <see langword="null" />.</param>
+    /// <param name="inputOffset">
+    /// The byte offset within <paramref name="inputBuffer" /> at which to begin reading.
+    /// </param>
+    /// <param name="inputCount">The number of bytes to process from <paramref name="inputBuffer" />.</param>
     /// <returns>A new byte array containing the transformed and padded, or depadded, final block.</returns>
     /// <exception cref="ObjectDisposedException">This instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
     /// This transform has already been finalized and cannot be reused.
     /// </exception>
-    /// <exception cref="ArgumentNullException"><paramref name="inputBuffer"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">
-    /// The input buffer span is invalid for the requested operation.
+    /// <exception cref="ArgumentNullException"><paramref name="inputBuffer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">The input buffer span is invalid for the requested operation.</exception>
+    /// <exception cref="CryptographicException">
+    /// The padding is invalid or cannot be removed during decryption.
     /// </exception>
-    /// <exception cref="CryptographicException">The padding is invalid or cannot be removed during decryption.</exception>
     public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
     {
         this.ThrowIfDisposed();
@@ -355,7 +362,7 @@ public abstract class BlockCipherTransform
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.
@@ -387,11 +394,13 @@ public abstract class BlockCipherTransform
     /// <summary>
     /// Concatenates an optional deferred byte array with an incoming input span into a single contiguous byte array.
     /// </summary>
-    /// <param name="first">The previously cached partial or complete block, or <see langword="null"/> if none was deferred.</param>
+    /// <param name="first">
+    /// The previously cached partial or complete block, or <see langword="null" /> if none was deferred.
+    /// </param>
     /// <param name="second">The newly arriving data to append.</param>
     /// <returns>
-    /// A new byte array containing <paramref name="first"/> followed by <paramref name="second"/>, or a copy of
-    /// <paramref name="second"/> alone if <paramref name="first"/> is <see langword="null"/> or empty.
+    /// A new byte array containing <paramref name="first" /> followed by <paramref name="second" />, or a copy of
+    /// <paramref name="second" /> alone if <paramref name="first" /> is <see langword="null" /> or empty.
     /// </returns>
     private static byte[] Combine(byte[]? first, ReadOnlySpan<byte> second)
     {

@@ -4,34 +4,34 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.InteropServices;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the <c>Threefish-256</c> block cipher, which operates on 256-bit (32-byte) blocks using a 256-bit key and a 128-bit
-/// tweak.
+/// Implements the <c>Threefish-256</c> block cipher, which operates on 256-bit (32-byte) blocks using a 256-bit key and
+/// a 128-bit tweak.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Threefish is a tweakable block cipher optimized for 64-bit platforms and forms the core primitive of the Skein hash function.
-/// The <c>Threefish-256</c> variant operates on four 64-bit words over 72 rounds using modular addition, bitwise rotation, and XOR.
+/// Threefish is a tweakable block cipher optimized for 64-bit platforms and forms the core primitive of the Skein hash
+/// function. The <c>Threefish-256</c> variant operates on four 64-bit words over 72 rounds using modular addition,
+/// bitwise rotation, and XOR.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Threefish256"/> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="Threefish256Cipher"/> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> (for example via
-/// <see cref="BlockCipherModeFactory"/>) or with an <see cref="IPaddingStrategy"/>.
+/// Most callers should prefer the higher-level <see cref="Threefish256" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="Threefish256Cipher" />
+/// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example
+/// via <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
 /// </para>
 /// </remarks>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
-/// <seealso cref="Threefish256"/>
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// SymmetricAlgorithm</seealso> <seealso cref="Threefish256"/>
 public sealed class Threefish256Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Threefish256Cipher"/> class using the specified key and tweak.
+    /// Initializes a new instance of the <see cref="Threefish256Cipher" /> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 256-bit (32-byte) key used for encryption and decryption.</param>
     /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behavior.</param>
@@ -61,12 +61,15 @@ public sealed class Threefish256Cipher
     protected override int Rounds => 72;
 
     /// <summary>
-    /// Decrypts a single 32-byte ciphertext block using the <c>Threefish-256</c> cipher and writes the result to the specified output buffer.
+    /// Decrypts a single 32-byte ciphertext block using the <c>Threefish-256</c> cipher and writes the result to the
+    /// specified output buffer.
     /// </summary>
     /// <param name="input">The 32-byte ciphertext block to decrypt.</param>
     /// <param name="output">The 32-byte buffer to receive the decrypted plaintext block.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the cipher has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is not 32 bytes.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 32 bytes.
+    /// </exception>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -129,12 +132,15 @@ public sealed class Threefish256Cipher
     }
 
     /// <summary>
-    /// Encrypts a single 32-byte plaintext block using the <c>Threefish-256</c> cipher and writes the result to the specified output buffer.
+    /// Encrypts a single 32-byte plaintext block using the <c>Threefish-256</c> cipher and writes the result to the
+    /// specified output buffer.
     /// </summary>
     /// <param name="input">The 32-byte plaintext block to encrypt.</param>
     /// <param name="output">The 32-byte buffer to receive the encrypted ciphertext block.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the cipher has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is not 32 bytes.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 32 bytes.
+    /// </exception>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();

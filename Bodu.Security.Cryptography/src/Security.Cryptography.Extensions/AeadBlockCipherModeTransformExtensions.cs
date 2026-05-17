@@ -4,13 +4,12 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography.Extensions;
 
 /// <summary>
-/// Extends <see cref="IAeadBlockCipherModeTransform"/> with one-shot encrypt/decrypt overloads that handle the
+/// Extends <see cref="IAeadBlockCipherModeTransform" /> with one-shot encrypt/decrypt overloads that handle the
 /// associated-data step, size the output buffer correctly, and return the ciphertext + tag (or recovered plaintext) as
 /// a single freshly allocated array.
 /// </summary>
@@ -19,10 +18,10 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// AEAD ("authenticated encryption with associated data") modes — GCM, CCM, EAX, GCM-SIV, AES-SIV, Ascon — encrypt
 /// confidential plaintext while simultaneously authenticating the ciphertext together with a separate stream of
 /// associated data that travels in the clear (packet headers, message metadata, …). The
-/// <see cref="IAeadBlockCipherModeTransform"/> contract gives callers maximum control: invoke
-/// <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData"/>, size the output buffer to
+/// <see cref="IAeadBlockCipherModeTransform" /> contract gives callers maximum control: invoke
+/// <see cref="IAeadBlockCipherModeTransform.ProcessAssociatedData" />, size the output buffer to
 /// <c>plaintext.Length + (TagSize / 8)</c> (or <c>ciphertextWithTag.Length - (TagSize / 8)</c>), call
-/// <see cref="IAeadBlockCipherModeTransform.Encrypt"/> or <see cref="IAeadBlockCipherModeTransform.Decrypt"/>, and
+/// <see cref="IAeadBlockCipherModeTransform.Encrypt" /> or <see cref="IAeadBlockCipherModeTransform.Decrypt" />, and
 /// interpret the return value. This class collapses that fixed sequence into a single call that returns a correctly
 /// sized array, matching the shape of <c>AesGcm.Encrypt</c> / <c>AesGcm.Decrypt</c> in the BCL but parameterized over
 /// <em>any</em> AEAD transform implementation.
@@ -31,25 +30,32 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// The API surface is symmetric and intentionally small:
 /// </para>
 /// <list type="bullet">
-///   <item>
-///     <term><c>Encrypt(transform, plaintext)</c></term>
-///     <description>One-shot encrypt with no associated data — equivalent to passing
-///     <see cref="System.ReadOnlySpan{T}.Empty"/>.</description>
-///   </item>
-///   <item>
-///     <term><c>Encrypt(transform, plaintext, associatedData)</c></term>
-///     <description>One-shot encrypt with associated data; returns ciphertext concatenated with the
-///     <see cref="IAeadBlockCipherModeTransform.TagSize"/> / 8 byte authentication tag.</description>
-///   </item>
-///   <item>
-///     <term><c>Decrypt(transform, ciphertextWithTag)</c></term>
-///     <description>One-shot decrypt with no associated data; throws on tag mismatch.</description>
-///   </item>
-///   <item>
-///     <term><c>Decrypt(transform, ciphertextWithTag, associatedData)</c></term>
-///     <description>One-shot decrypt and tag-verify; returns the recovered plaintext, or throws
-///     <see cref="CryptographicException"/> on a failed tag check.</description>
-///   </item>
+/// <item>
+/// <term><c>Encrypt(transform, plaintext)</c></term>
+/// <description>
+/// One-shot encrypt with no associated data — equivalent to passing <see cref="System.ReadOnlySpan{T}.Empty" />.
+/// </description>
+/// </item>
+/// <item>
+/// <term><c>Encrypt(transform, plaintext, associatedData)</c></term>
+/// <description>
+/// One-shot encrypt with associated data; returns ciphertext concatenated with the
+/// <see cref="IAeadBlockCipherModeTransform.TagSize" /> / 8 byte authentication tag.
+/// </description>
+/// </item>
+/// <item>
+/// <term><c>Decrypt(transform, ciphertextWithTag)</c></term>
+/// <description>
+/// One-shot decrypt with no associated data; throws on tag mismatch.
+/// </description>
+/// </item>
+/// <item>
+/// <term><c>Decrypt(transform, ciphertextWithTag, associatedData)</c></term>
+/// <description>
+/// One-shot decrypt and tag-verify; returns the recovered plaintext, or throws <see cref="CryptographicException" /> on
+/// a failed tag check.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
 /// AEAD transforms are <strong>stateful and single-use within a message</strong>: instantiate a new transform per
@@ -60,47 +66,36 @@ namespace Bodu.Security.Cryptography.Extensions;
 /// <c>ciphertextWithTag.Length - (TagSize / 8)</c> on decrypt.
 /// </para>
 /// <example>
-/// <code language="csharp">
-/// using System.Security.Cryptography;
-/// using System.Text;
-/// using Bodu.Security.Cryptography;
-/// using Bodu.Security.Cryptography.Extensions;
-///
-/// byte[] key    = RandomNumberGenerator.GetBytes(32);
-/// byte[] nonce  = RandomNumberGenerator.GetBytes(12);
-/// byte[] header = Encoding.UTF8.GetBytes("v=1;msg=42");
-///
-/// // 1. Encrypt with associated data; receive ciphertext + tag in a single buffer.
-/// using IAeadBlockCipherModeTransform enc = new GcmModeTransform(key, nonce);
-/// byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header);
-///
-/// // 2. Decrypt and verify in one call. A tampered tag or header throws CryptographicException.
-/// using IAeadBlockCipherModeTransform dec = new GcmModeTransform(key, nonce);
-/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
-///
-/// // 3. Same shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform.
-/// using IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce);
-/// byte[] sealedAscon = enc2.Encrypt(plaintext);
+/// <code language="csharp"> using System.Security.Cryptography; using System.Text; using Bodu.Security.Cryptography;
+/// using Bodu.Security.Cryptography.Extensions; byte[] key = RandomNumberGenerator.GetBytes(32); byte[] nonce =
+/// RandomNumberGenerator.GetBytes(12); byte[] header = Encoding.UTF8.GetBytes("v=1;msg=42"); // 1. Encrypt with
+/// associated data; receive ciphertext + tag in a single buffer. using IAeadBlockCipherModeTransform enc = new
+/// GcmModeTransform(key, nonce); byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header); // 2. Decrypt and
+/// verify in one call. A tampered tag or header throws CryptographicException. using IAeadBlockCipherModeTransform dec
+/// = new GcmModeTransform(key, nonce); byte[] recovered = dec.Decrypt(sealed_, associatedData: header); // 3. Same
+/// shape with a different mode — Ascon, EAX, GCM-SIV all interchange behind IAeadBlockCipherModeTransform. using
+/// IAeadBlockCipherModeTransform enc2 = new AsconAead128(key, nonce); byte[] sealedAscon = enc2.Encrypt(plaintext);
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with full encrypt / decrypt examples)</seealso>
+/// <seealso href="../guides/cryptography/aead-modes.html">Using AEAD modes (guide with full encrypt / decrypt examples)
+/// </seealso>
 public static class AeadBlockCipherModeTransformExtensions
 {
     /// <summary>
-    /// Encrypts <paramref name="plaintext"/> and returns a new byte array containing the
-    /// ciphertext concatenated with the authentication tag.
+    /// Encrypts <paramref name="plaintext" /> and returns a new byte array containing the ciphertext concatenated with
+    /// the authentication tag.
     /// </summary>
-    /// <param name="transform">The AEAD transform. Must not be <see langword="null"/>.</param>
+    /// <param name="transform">The AEAD transform. Must not be <see langword="null" />.</param>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <param name="associatedData">
     /// The data to authenticate but not encrypt. May be empty when no associated data is required.
     /// </param>
     /// <returns>
-    /// A newly allocated byte array of length <c>plaintext.Length + (transform.TagSize / 8)</c>, containing
-    /// the ciphertext followed by the <see cref="IAeadBlockCipherModeTransform.TagSize"/> / 8 byte tag.
+    /// A newly allocated byte array of length <c>plaintext.Length + (transform.TagSize / 8)</c>, containing the
+    /// ciphertext followed by the <see cref="IAeadBlockCipherModeTransform.TagSize" /> / 8 byte tag.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
     /// The transform has already had its associated data processed or its plaintext / ciphertext consumed.
     /// </exception>
@@ -123,18 +118,16 @@ public static class AeadBlockCipherModeTransformExtensions
     }
 
     /// <summary>
-    /// Encrypts <paramref name="plaintext"/> with an empty associated-data stream and returns a new
-    /// byte array containing the ciphertext concatenated with the authentication tag.
+    /// Encrypts <paramref name="plaintext" /> with an empty associated-data stream and returns a new byte array
+    /// containing the ciphertext concatenated with the authentication tag.
     /// </summary>
-    /// <param name="transform">The AEAD transform. Must not be <see langword="null"/>.</param>
+    /// <param name="transform">The AEAD transform. Must not be <see langword="null" />.</param>
     /// <param name="plaintext">The data to encrypt.</param>
-    /// <returns>
-    /// A newly allocated byte array of length <c>plaintext.Length + (transform.TagSize / 8)</c>.
-    /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
+    /// <returns>A newly allocated byte array of length <c>plaintext.Length + (transform.TagSize / 8)</c>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The transform has already encrypted or decrypted a message. AEAD transforms are single-use
-    /// per message — construct a fresh instance.
+    /// The transform has already encrypted or decrypted a message. AEAD transforms are single-use per message —
+    /// construct a fresh instance.
     /// </exception>
     public static byte[] Encrypt(
         this IAeadBlockCipherModeTransform transform,
@@ -142,31 +135,31 @@ public static class AeadBlockCipherModeTransformExtensions
         => Encrypt(transform, plaintext, []);
 
     /// <summary>
-    /// Verifies <paramref name="ciphertextWithTag"/> against <paramref name="associatedData"/>, decrypts
-    /// the ciphertext, and returns the recovered plaintext.
+    /// Verifies <paramref name="ciphertextWithTag" /> against <paramref name="associatedData" />, decrypts the
+    /// ciphertext, and returns the recovered plaintext.
     /// </summary>
-    /// <param name="transform">The AEAD transform. Must not be <see langword="null"/>.</param>
+    /// <param name="transform">The AEAD transform. Must not be <see langword="null" />.</param>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize"/> / 8 byte tag.
+    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize" /> / 8 byte tag.
     /// Must be at least <c>transform.TagSize / 8</c> bytes long.
     /// </param>
     /// <param name="associatedData">
     /// The data authenticated alongside the ciphertext. Must match what was supplied at encryption time.
     /// </param>
     /// <returns>
-    /// A newly allocated byte array of length <c>ciphertextWithTag.Length - (transform.TagSize / 8)</c> containing
-    /// the recovered plaintext.
+    /// A newly allocated byte array of length <c>ciphertextWithTag.Length - (transform.TagSize / 8)</c> containing the
+    /// recovered plaintext.
     /// </returns>
-    /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ciphertextWithTag"/> is shorter than <c>transform.TagSize / 8</c> bytes.
+    /// <paramref name="ciphertextWithTag" /> is shorter than <c>transform.TagSize / 8</c> bytes.
     /// </exception>
     /// <exception cref="CryptographicException">
     /// The authentication tag did not verify. The returned buffer is not written in this case.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// The transform has already encrypted or decrypted a message, including after a previous
-    /// tag-mismatch failure. AEAD transforms are single-use per message — construct a fresh instance.
+    /// The transform has already encrypted or decrypted a message, including after a previous tag-mismatch failure.
+    /// AEAD transforms are single-use per message — construct a fresh instance.
     /// </exception>
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,
@@ -193,19 +186,19 @@ public static class AeadBlockCipherModeTransformExtensions
     }
 
     /// <summary>
-    /// Verifies <paramref name="ciphertextWithTag"/> with an empty associated-data stream, decrypts it,
-    /// and returns the recovered plaintext.
+    /// Verifies <paramref name="ciphertextWithTag" /> with an empty associated-data stream, decrypts it, and returns
+    /// the recovered plaintext.
     /// </summary>
-    /// <param name="transform">The AEAD transform. Must not be <see langword="null"/>.</param>
+    /// <param name="transform">The AEAD transform. Must not be <see langword="null" />.</param>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize"/> / 8 byte tag.
+    /// The ciphertext followed immediately by the <see cref="IAeadBlockCipherModeTransform.TagSize" /> / 8 byte tag.
     /// </param>
     /// <returns>A newly allocated byte array containing the recovered plaintext.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="transform"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="transform" /> is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">The authentication tag did not verify.</exception>
     /// <exception cref="InvalidOperationException">
-    /// The transform has already encrypted or decrypted a message, including after a previous
-    /// tag-mismatch failure. AEAD transforms are single-use per message — construct a fresh instance.
+    /// The transform has already encrypted or decrypted a message, including after a previous tag-mismatch failure.
+    /// AEAD transforms are single-use per message — construct a fresh instance.
     /// </exception>
     public static byte[] Decrypt(
         this IAeadBlockCipherModeTransform transform,

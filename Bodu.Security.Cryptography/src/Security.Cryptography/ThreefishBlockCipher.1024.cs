@@ -4,34 +4,34 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.InteropServices;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the <c>Threefish-1024</c> block cipher, which operates on 1024-bit (128-byte) blocks using a 1024-bit key and a
-/// 128-bit tweak.
+/// Implements the <c>Threefish-1024</c> block cipher, which operates on 1024-bit (128-byte) blocks using a 1024-bit key
+/// and a 128-bit tweak.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Threefish is a tweakable block cipher optimized for 64-bit platforms and forms the core primitive of the Skein hash function.
-/// The <c>Threefish-1024</c> variant operates on sixteen 64-bit words over 80 rounds using modular addition, bitwise rotation, and XOR.
+/// Threefish is a tweakable block cipher optimized for 64-bit platforms and forms the core primitive of the Skein hash
+/// function. The <c>Threefish-1024</c> variant operates on sixteen 64-bit words over 80 rounds using modular addition,
+/// bitwise rotation, and XOR.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Threefish1024"/> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="Threefish1024Cipher"/> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> (for example via
-/// <see cref="BlockCipherModeFactory"/>) or with an <see cref="IPaddingStrategy"/>.
+/// Most callers should prefer the higher-level <see cref="Threefish1024" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="Threefish1024Cipher" />
+/// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example
+/// via <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
 /// </para>
 /// </remarks>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
-/// <seealso cref="Threefish1024"/>
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// SymmetricAlgorithm</seealso> <seealso cref="Threefish1024"/>
 public sealed class Threefish1024Cipher
     : ThreefishBlockCipher
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Threefish1024Cipher"/> class using the specified key and tweak.
+    /// Initializes a new instance of the <see cref="Threefish1024Cipher" /> class using the specified key and tweak.
     /// </summary>
     /// <param name="key">The 1024-bit (128-byte) key used for encryption and decryption.</param>
     /// <param name="tweak">The 128-bit (16-byte) tweak value used to modify the block cipher behavior.</param>
@@ -69,12 +69,15 @@ public sealed class Threefish1024Cipher
     protected override int Rounds => 80;
 
     /// <summary>
-    /// Decrypts a single 128-byte ciphertext block using the <c>Threefish-1024</c> cipher and writes the result to the specified output buffer.
+    /// Decrypts a single 128-byte ciphertext block using the <c>Threefish-1024</c> cipher and writes the result to the
+    /// specified output buffer.
     /// </summary>
     /// <param name="input">The 128-byte ciphertext block to decrypt.</param>
     /// <param name="output">The 128-byte buffer to receive the decrypted plaintext block.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the cipher has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is not 128 bytes.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
+    /// </exception>
     public override void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -221,12 +224,15 @@ public sealed class Threefish1024Cipher
     }
 
     /// <summary>
-    /// Encrypts a single 128-byte plaintext block using the <c>Threefish-1024</c> cipher and writes the result to the specified output buffer.
+    /// Encrypts a single 128-byte plaintext block using the <c>Threefish-1024</c> cipher and writes the result to the
+    /// specified output buffer.
     /// </summary>
     /// <param name="input">The 128-byte plaintext block to encrypt.</param>
     /// <param name="output">The 128-byte buffer to receive the encrypted ciphertext block.</param>
     /// <exception cref="ObjectDisposedException">Thrown if the cipher has been disposed.</exception>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> or <paramref name="output"/> is not 128 bytes.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not 128 bytes.
+    /// </exception>
     public override void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();

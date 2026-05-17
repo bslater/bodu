@@ -12,94 +12,117 @@ using Bodu.Extensions;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a 256-bit cryptographic hash using the <c>BLAKE3</c> algorithm designed by Jack
-/// O'Connor, Jean-Philippe Aumasson, Samuel Neves, and Zooko Wilcox-O'Hearn. This class cannot
-/// be inherited.
+/// Computes a 256-bit cryptographic hash using the <c>BLAKE3</c> algorithm designed by Jack O'Connor, Jean-Philippe
+/// Aumasson, Samuel Neves, and Zooko Wilcox-O'Hearn. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// BLAKE3 is a cryptographic hash function that combines the speed of non-cryptographic hashes
-/// with strong security guarantees. It is based on a binary tree structure where each leaf
-/// (chunk) processes up to 1024 bytes of input and each internal (parent) node combines two
-/// child chaining values. All compression is performed by a single ARX-based function derived
-/// from the BLAKE2 and ChaCha families.
+/// BLAKE3 is a cryptographic hash function that combines the speed of non-cryptographic hashes with strong security
+/// guarantees. It is based on a binary tree structure where each leaf (chunk) processes up to 1024 bytes of input and
+/// each internal (parent) node combines two child chaining values. All compression is performed by a single ARX-based
+/// function derived from the BLAKE2 and ChaCha families.
 /// </para>
 /// <para>
-/// Input is divided into 1024-byte chunks, each compressed block-by-block into an 8-word
-/// (256-bit) chaining value. When more than one chunk exists the chaining values are folded
-/// pairwise into parent nodes until a single root chaining value remains. The root compression
-/// call is distinguished by the <c>ROOT</c> domain-separation flag, which enables XOF-style
-/// output extraction; this implementation fixes the output length at 256 bits.
+/// Input is divided into 1024-byte chunks, each compressed block-by-block into an 8-word (256-bit) chaining value. When
+/// more than one chunk exists the chaining values are folded pairwise into parent nodes until a single root chaining
+/// value remains. The root compression call is distinguished by the <c>ROOT</c> domain-separation flag, which enables
+/// XOF-style output extraction; this implementation fixes the output length at 256 bits.
 /// </para>
 /// <para>
-/// This implementation inherits its 64-byte residual buffer, running byte counter, and
-/// defer-on-full-block buffering loop from <see cref="DeferredFinalBlockHashAlgorithm{T}"/>.
-/// The final 64-byte block is not compressed until <see cref="HashAlgorithm.HashFinal"/> is
-/// called, ensuring that chunk-level and tree-level domain flags can be applied correctly.
+/// This implementation inherits its 64-byte residual buffer, running byte counter, and defer-on-full-block buffering
+/// loop from <see cref="DeferredFinalBlockHashAlgorithm{T}" />. The final 64-byte block is not compressed until
+/// <see cref="HashAlgorithm.HashFinal" /> is called, ensuring that chunk-level and tree-level domain flags can be
+/// applied correctly.
 /// </para>
 /// <para>
-/// This implementation supports the standard, unkeyed hash mode only. Keyed-hash and
-/// key-derivation modes are not exposed.
+/// This implementation supports the standard, unkeyed hash mode only. Keyed-hash and key-derivation modes are not
+/// exposed.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 256 bits (32 bytes), fixed.</description></item>
-///   <item><description>Block size: 64 bytes; chunk size: 1024 bytes (the leaf of the hash tree).</description></item>
-///   <item><description>Construction: binary Merkle tree over chunks, ARX compression derived from BLAKE2 / ChaCha.</description></item>
-///   <item><description>Mode: standard unkeyed hash only — keyed hash and KDF modes are not exposed.</description></item>
+/// <item>
+/// <description>
+/// Output size: 256 bits (32 bytes), fixed.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Block size: 64 bytes; chunk size: 1024 bytes (the leaf of the hash tree).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Construction: binary Merkle tree over chunks, ARX compression derived from BLAKE2 / ChaCha.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Mode: standard unkeyed hash only — keyed hash and KDF modes are not exposed.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose BLAKE3.</strong> Reach for BLAKE3 when raw throughput on long inputs is the priority
-/// — its tree structure is naturally parallel-friendly and outperforms <see cref="Blake2b"/>, SHA-2, and SHA-3
-/// on multi-megabyte messages. For short inputs the difference shrinks and any of the BLAKE2 / SHA-2 variants is
-/// fine. Use <see cref="Blake2b"/> if a configurable output size or RFC 7693-compatible MAC mode is required;
-/// use <see cref="MerkleTreeHash"/> or <see cref="ParallelMerkleTreeHash"/> if you want explicit control over the
-/// tree shape and the underlying leaf hash.
+/// <strong>When to choose BLAKE3.</strong> Reach for BLAKE3 when raw throughput on long inputs is the priority — its
+/// tree structure is naturally parallel-friendly and outperforms <see cref="Blake2b" />, SHA-2, and SHA-3 on
+/// multi-megabyte messages. For short inputs the difference shrinks and any of the BLAKE2 / SHA-2 variants is fine. Use
+/// <see cref="Blake2b" /> if a configurable output size or RFC 7693-compatible MAC mode is required; use
+/// <see cref="MerkleTreeHash" /> or <see cref="ParallelMerkleTreeHash" /> if you want explicit control over the tree
+/// shape and the underlying leaf hash.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using var blake3 = new Blake3();
-/// byte[] digest = blake3.ComputeHash(message);
-/// </code>
+/// <code language="csharp"> using var blake3 = new Blake3(); byte[] digest = blake3.ComputeHash(message); </code>
 /// </example>
-/// <seealso cref="Blake2b"/>
-/// <seealso cref="Blake2s"/>
+/// <seealso cref="Blake2b"/> <seealso cref="Blake2s"/>
 public sealed class Blake3
     : DeferredFinalBlockHashAlgorithm<Blake3>
 {
     // ---- domain-separation flags (§2.5 of the BLAKE3 specification) ----
 
-    /// <summary>The flag applied to the first compression block of every chunk.</summary>
+    /// <summary>
+    /// The flag applied to the first compression block of every chunk.
+    /// </summary>
     private const uint FlagChunkStart = 1u;
 
-    /// <summary>The flag applied to the last compression block of every chunk.</summary>
+    /// <summary>
+    /// The flag applied to the last compression block of every chunk.
+    /// </summary>
     private const uint FlagChunkEnd = 2u;
 
-    /// <summary>The flag applied to every parent (non-leaf) node compression call.</summary>
+    /// <summary>
+    /// The flag applied to every parent (non-leaf) node compression call.
+    /// </summary>
     private const uint FlagParent = 4u;
 
-    /// <summary>The flag applied to the root compression call to enable output extraction.</summary>
+    /// <summary>
+    /// The flag applied to the root compression call to enable output extraction.
+    /// </summary>
     private const uint FlagRoot = 8u;
 
     // ---- structural constants ----
 
-    /// <summary>Size, in bytes, of a single compression input block.</summary>
+    /// <summary>
+    /// Size, in bytes, of a single compression input block.
+    /// </summary>
     private const int BlockSize = 64;
 
-    /// <summary>Size, in bytes, of a single input chunk (leaf of the hash tree).</summary>
+    /// <summary>
+    /// Size, in bytes, of a single input chunk (leaf of the hash tree).
+    /// </summary>
     private const int ChunkSize = 1024;
 
-    /// <summary>Output length in bytes.</summary>
+    /// <summary>
+    /// Output length in bytes.
+    /// </summary>
     private const int OutLen = 32;
 
     // ---- initialization vector (first eight words of the SHA-256 IV) ----
 
     /// <summary>
-    /// The BLAKE3 initialization vector, taken from the fractional parts of the square roots of
-    /// the first eight prime numbers, identical to the SHA-256 IV.
+    /// The BLAKE3 initialization vector, taken from the fractional parts of the square roots of the first eight prime
+    /// numbers, identical to the SHA-256 IV.
     /// </summary>
     private static readonly uint[] s_iv =
     [
@@ -126,22 +149,25 @@ public sealed class Blake3
 
     // ---- streaming state ----
 
-    /// <summary>Running chaining value for the chunk currently being compressed.</summary>
+    /// <summary>
+    /// Running chaining value for the chunk currently being compressed.
+    /// </summary>
     /// <remarks>
-    /// Reset to the IV at the start of each new chunk (when the first block of a chunk is
-    /// processed) and updated in place after every compression call. Carries the accumulated
-    /// chaining state block-by-block until the chunk completes.
+    /// Reset to the IV at the start of each new chunk (when the first block of a chunk is processed) and updated in
+    /// place after every compression call. Carries the accumulated chaining state block-by-block until the chunk
+    /// completes.
     /// </remarks>
     private readonly uint[] _chunkCv = new uint[8];
 
-    /// <summary>Chaining-value stack used to build parent nodes as chunks complete.</summary>
+    /// <summary>
+    /// Chaining-value stack used to build parent nodes as chunks complete.
+    /// </summary>
     private readonly List<uint[]> _cvStack = [];
 
     // ---- construction ----
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Blake3"/> class, configured to produce a
-    /// 256-bit digest.
+    /// Initializes a new instance of the <see cref="Blake3" /> class, configured to produce a 256-bit digest.
     /// </summary>
     public Blake3()
         : base(BlockSize * 8)
@@ -153,26 +179,25 @@ public sealed class Blake3
     // ---- HashAlgorithm overrides ----
 
     /// <summary>
-    /// Gets a value indicating whether this transform instance can be reused after a hash
-    /// operation is completed.
+    /// Gets a value indicating whether this transform instance can be reused after a hash operation is completed.
     /// </summary>
     /// <returns>
-    /// <see langword="true"/>; <see cref="Blake3"/> resets its state automatically and may be
-    /// reused across multiple <c>ComputeHash</c> calls.
+    /// <see langword="true" />; <see cref="Blake3" /> resets its state automatically and may be reused across multiple
+    /// <c>ComputeHash</c> calls.
     /// </returns>
     public override bool CanReuseTransform => true;
 
     /// <summary>
     /// Gets a value indicating whether multiple blocks may be transformed in a single
-    /// <see cref="HashAlgorithm.TransformBlock"/> call.
+    /// <see cref="HashAlgorithm.TransformBlock" /> call.
     /// </summary>
-    /// <returns>
-    /// <see langword="true"/>; the implementation accumulates arbitrary-length input internally.
-    /// </returns>
+    /// <returns><see langword="true" />; the implementation accumulates arbitrary-length input internally.</returns>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    /// <remarks>BLAKE3 has a fixed 256-bit default output; the published name is simply <c>"BLAKE3"</c>.</remarks>
+    /// <remarks>
+    /// BLAKE3 has a fixed 256-bit default output; the published name is simply <c>"BLAKE3"</c>.
+    /// </remarks>
     public override string AlgorithmName
     {
         get
@@ -184,9 +209,9 @@ public sealed class Blake3
 
     /// <inheritdoc />
     /// <remarks>
-    /// Clears the CV stack and restores <see cref="_chunkCv"/> to the BLAKE3 initialization vector, ready for a new
+    /// Clears the CV stack and restores <see cref="_chunkCv" /> to the BLAKE3 initialization vector, ready for a new
     /// chunk. The inherited residual buffer and counters are cleared by the base call (which also throws
-    /// <see cref="ObjectDisposedException"/> if the instance has been disposed).
+    /// <see cref="ObjectDisposedException" /> if the instance has been disposed).
     /// </remarks>
     public override void Initialize()
     {
@@ -198,11 +223,10 @@ public sealed class Blake3
     // ---- DeferredFinalBlockHashAlgorithm<T> implementation ----
     /// <inheritdoc />
     /// <remarks>
-    /// Clears the CV stack, zeroes <see cref="_chunkCv"/>, releases the framework
-    /// <see cref="HashAlgorithm.HashValue"/> array, and zeroes
-    /// <see cref="HashAlgorithm.HashSizeValue"/>. The inherited residual buffer is
-    /// cleared by the base implementation when <see cref="Dispose(bool)"/> delegates
-    /// to <c>base.Dispose(disposing)</c>.
+    /// Clears the CV stack, zeroes <see cref="_chunkCv" />, releases the framework
+    /// <see cref="HashAlgorithm.HashValue" /> array, and zeroes <see cref="HashAlgorithm.HashSizeValue" />. The
+    /// inherited residual buffer is cleared by the base implementation when <see cref="Dispose(bool)" /> delegates to
+    /// <c>base.Dispose(disposing)</c>.
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
@@ -218,20 +242,20 @@ public sealed class Blake3
     }
 
     /// <summary>
-    /// Advances the BLAKE3 compression state by one 64-byte block, applying the correct
-    /// chunk-level and tree-level domain flags derived from <paramref name="totalBytesIncludingThisBlock"/>.
+    /// Advances the BLAKE3 compression state by one 64-byte block, applying the correct chunk-level and tree-level
+    /// domain flags derived from <paramref name="totalBytesIncludingThisBlock" />.
     /// </summary>
     /// <param name="block">
-    /// The 64-byte block to compress. Zero-padded by the base class when <paramref name="isFinal"/>
-    /// is <see langword="true"/> and the final message byte count is not a multiple of 64.
+    /// The 64-byte block to compress. Zero-padded by the base class when <paramref name="isFinal" /> is
+    /// <see langword="true" /> and the final message byte count is not a multiple of 64.
     /// </param>
     /// <param name="totalBytesIncludingThisBlock">
-    /// The cumulative byte count including the bytes in this block. Used to derive the chunk
-    /// index, the block position within the chunk, and the true block length for the final block.
+    /// The cumulative byte count including the bytes in this block. Used to derive the chunk index, the block position
+    /// within the chunk, and the true block length for the final block.
     /// </param>
     /// <param name="isFinal">
-    /// <see langword="true"/> for the last compression call, raised by
-    /// <see cref="HashAlgorithm.HashFinal"/>; otherwise <see langword="false"/>.
+    /// <see langword="true" /> for the last compression call, raised by <see cref="HashAlgorithm.HashFinal" />;
+    /// otherwise <see langword="false" />.
     /// </param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block, ulong totalBytesIncludingThisBlock, bool isFinal)
     {
@@ -283,11 +307,10 @@ public sealed class Blake3
 
     /// <inheritdoc />
     /// <remarks>
-    /// For single-chunk input the root chaining value is already in <see cref="_chunkCv"/>
-    /// (with <see cref="FlagRoot"/> applied during <see cref="ProcessBlock"/>). For
-    /// multi-chunk input the CV stack is folded into the final chunk's chaining value via
-    /// <see cref="MergeStackWithFinalChunk"/>, which applies <see cref="FlagRoot"/> on the
-    /// last parent compression.
+    /// For single-chunk input the root chaining value is already in <see cref="_chunkCv" /> (with
+    /// <see cref="FlagRoot" /> applied during <see cref="ProcessBlock" />). For multi-chunk input the CV stack is
+    /// folded into the final chunk's chaining value via <see cref="MergeStackWithFinalChunk" />, which applies
+    /// <see cref="FlagRoot" /> on the last parent compression.
     /// </remarks>
     protected override byte[] ProcessFinalBlock()
     {
@@ -304,22 +327,19 @@ public sealed class Blake3
     }
 
     /// <summary>
-    /// Merges the completed intermediate chunk stack with the final chunk chaining value and
-    /// returns the root chaining value.
+    /// Merges the completed intermediate chunk stack with the final chunk chaining value and returns the root chaining
+    /// value.
     /// </summary>
     /// <param name="rightCv">
-    /// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack"/>
-    /// until finalization so the last parent merge can be marked with <see cref="FlagRoot"/>.
+    /// The chaining value of the final chunk. This value is kept out of <see cref="_cvStack" /> until finalization so
+    /// the last parent merge can be marked with <see cref="FlagRoot" />.
     /// </param>
-    /// <returns>
-    /// An 8-element array containing the 256-bit root chaining value of the complete message.
-    /// </returns>
+    /// <returns>An 8-element array containing the 256-bit root chaining value of the complete message.</returns>
     /// <remarks>
     /// <para>
-    /// Intermediate chunks may already have been folded into balanced subtrees on
-    /// <see cref="_cvStack"/>. Finalization differs from normal chunk pushing because the final
-    /// chunk must not be pre-merged as a non-root parent. Instead, the stack is folded into the
-    /// final chunk from right to left, applying <see cref="FlagRoot"/> to the last parent
+    /// Intermediate chunks may already have been folded into balanced subtrees on <see cref="_cvStack" />. Finalization
+    /// differs from normal chunk pushing because the final chunk must not be pre-merged as a non-root parent. Instead,
+    /// the stack is folded into the final chunk from right to left, applying <see cref="FlagRoot" /> to the last parent
     /// compression.
     /// </para>
     /// </remarks>
@@ -344,28 +364,22 @@ public sealed class Blake3
     // ---- core compression ----
 
     /// <summary>
-    /// Performs the BLAKE3 compression function, transforming a chaining value and a 16-word
-    /// message block into a 16-word output state.
+    /// Performs the BLAKE3 compression function, transforming a chaining value and a 16-word message block into a
+    /// 16-word output state.
     /// </summary>
-    /// <param name="cv">
-    /// The 8-word input chaining value. Must have a length of at least 8.
-    /// </param>
+    /// <param name="cv">The 8-word input chaining value. Must have a length of at least 8.</param>
     /// <param name="blockWords">
     /// The 16-word message block in little-endian order. Must have a length of at least 16.
     /// </param>
-    /// <param name="counter">
-    /// The 64-bit chunk counter encoding the position of this chunk in the input stream.
-    /// </param>
-    /// <param name="blockLen">
-    /// The number of input bytes represented by <paramref name="blockWords"/> (0–64).
-    /// </param>
+    /// <param name="counter">The 64-bit chunk counter encoding the position of this chunk in the input stream.</param>
+    /// <param name="blockLen">The number of input bytes represented by <paramref name="blockWords" /> (0–64).</param>
     /// <param name="flags">
-    /// The bitwise OR of any applicable domain-separation flags (<see cref="FlagChunkStart"/>,
-    /// <see cref="FlagChunkEnd"/>, <see cref="FlagParent"/>, <see cref="FlagRoot"/>).
+    /// The bitwise OR of any applicable domain-separation flags (<see cref="FlagChunkStart" />,
+    /// <see cref="FlagChunkEnd" />, <see cref="FlagParent" />, <see cref="FlagRoot" />).
     /// </param>
     /// <returns>
-    /// A 16-element array containing the post-compression state, whose first eight words form
-    /// the updated chaining value.
+    /// A 16-element array containing the post-compression state, whose first eight words form the updated chaining
+    /// value.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint[] Compress(uint[] cv, uint[] blockWords, ulong counter, uint blockLen, uint flags)
@@ -420,8 +434,8 @@ public sealed class Blake3
     }
 
     /// <summary>
-    /// Applies the BLAKE3 quarter-round mixing function <c>G</c> to four positions in the
-    /// working state, using two message words <paramref name="mx"/> and <paramref name="my"/>.
+    /// Applies the BLAKE3 quarter-round mixing function <c>G</c> to four positions in the working state, using two
+    /// message words <paramref name="mx" /> and <paramref name="my" />.
     /// </summary>
     /// <param name="state">The 16-word working state array, modified in place.</param>
     /// <param name="a">Index of the first state word.</param>
@@ -446,8 +460,8 @@ public sealed class Blake3
     // ---- block and parent processing ----
 
     /// <summary>
-    /// Reads exactly 64 bytes from <paramref name="block"/> into a 16-element little-endian
-    /// uint32 word array, zero-padding any bytes beyond the actual block length.
+    /// Reads exactly 64 bytes from <paramref name="block" /> into a 16-element little-endian uint32 word array,
+    /// zero-padding any bytes beyond the actual block length.
     /// </summary>
     /// <param name="block">The raw block bytes to interpret (0–64 bytes).</param>
     /// <returns>A 16-element array of little-endian uint32 words representing the block.</returns>
@@ -466,18 +480,16 @@ public sealed class Blake3
     }
 
     /// <summary>
-    /// Computes a parent node chaining value by compressing the concatenation of a left and a
-    /// right child chaining value.
+    /// Computes a parent node chaining value by compressing the concatenation of a left and a right child chaining
+    /// value.
     /// </summary>
     /// <param name="leftCv">The 8-word chaining value of the left child.</param>
     /// <param name="rightCv">The 8-word chaining value of the right child.</param>
     /// <param name="isRoot">
-    /// <see langword="true"/> if this parent node is the root of the hash tree, causing
-    /// <see cref="FlagRoot"/> to be applied.
+    /// <see langword="true" /> if this parent node is the root of the hash tree, causing <see cref="FlagRoot" /> to be
+    /// applied.
     /// </param>
-    /// <returns>
-    /// An 8-element array containing the parent node's 256-bit chaining value.
-    /// </returns>
+    /// <returns>An 8-element array containing the parent node's 256-bit chaining value.</returns>
     private static uint[] ParentCv(uint[] leftCv, uint[] rightCv, bool isRoot)
     {
         // The block words for a parent node are the concatenation of the two child CVs.
@@ -499,17 +511,16 @@ public sealed class Blake3
     // ---- tree-merging stack helpers ----
 
     /// <summary>
-    /// Pushes a completed chunk chaining value onto <see cref="_cvStack"/>, merging adjacent
-    /// pairs into parent nodes whenever the binary tree structure requires it.
+    /// Pushes a completed chunk chaining value onto <see cref="_cvStack" />, merging adjacent pairs into parent nodes
+    /// whenever the binary tree structure requires it.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// BLAKE3 uses a Merkle tree with a power-of-two fan-out. The merge condition is: after
-    /// completing chunk at zero-based index <paramref name="chunkIdx"/>, merge the top-of-stack
-    /// entry with the incoming CV while the number of trailing zeros in
-    /// <c>(<paramref name="chunkIdx"/> + 1)</c> is greater than or equal to the current stack
-    /// depth. This ensures that only perfectly balanced subtrees of equal height are merged,
-    /// maintaining the left-to-right ordering of leaves.
+    /// BLAKE3 uses a Merkle tree with a power-of-two fan-out. The merge condition is: after completing chunk at
+    /// zero-based index <paramref name="chunkIdx" />, merge the top-of-stack entry with the incoming CV while the
+    /// number of trailing zeros in <c>(<paramref name="chunkIdx"/> + 1)</c> is greater than or equal to the current
+    /// stack depth. This ensures that only perfectly balanced subtrees of equal height are merged, maintaining the
+    /// left-to-right ordering of leaves.
     /// </para>
     /// </remarks>
     /// <param name="cv">The 8-word chaining value produced by the completed chunk.</param>
@@ -528,15 +539,14 @@ public sealed class Blake3
     }
 
     /// <summary>
-    /// Determines whether the subtrees currently on the stack and the newly completed chunk
-    /// should be merged, based on the binary tree completion invariant.
+    /// Determines whether the subtrees currently on the stack and the newly completed chunk should be merged, based on
+    /// the binary tree completion invariant.
     /// </summary>
     /// <param name="chunkIdx">The zero-based index of the most recently completed chunk.</param>
-    /// <param name="stackDepth">The current depth of <see cref="_cvStack"/>.</param>
+    /// <param name="stackDepth">The current depth of <see cref="_cvStack" />.</param>
     /// <returns>
-    /// <see langword="true"/> if the top entry on the stack represents a subtree of exactly
-    /// the same height as the subtree rooted at the incoming CV, and therefore the two should
-    /// be merged into a parent node.
+    /// <see langword="true" /> if the top entry on the stack represents a subtree of exactly the same height as the
+    /// subtree rooted at the incoming CV, and therefore the two should be merged into a parent node.
     /// </returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static bool IsSubtreeComplete(ulong chunkIdx, int stackDepth)

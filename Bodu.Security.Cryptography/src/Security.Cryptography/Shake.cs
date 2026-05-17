@@ -17,52 +17,74 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Shake"/> is built on the same <c>Keccak-f[1600]</c> permutation as <c>SHA-3</c>, operating over
-/// a 1600-bit (200-byte) state. The two SHAKE variants differ only in their rate and, therefore, their security margin:
+/// <see cref="Shake" /> is built on the same <c>Keccak-f[1600]</c> permutation as <c>SHA-3</c>, operating over a
+/// 1600-bit (200-byte) state. The two SHAKE variants differ only in their rate and, therefore, their security margin:
 /// </para>
 /// <list type="bullet">
-/// <item><description>SHAKE128: rate = 168 bytes, capacity = 32 bytes, security level = 128 bits.</description></item>
-/// <item><description>SHAKE256: rate = 136 bytes, capacity = 64 bytes, security level = 256 bits.</description></item>
+/// <item>
+/// <description>
+/// SHAKE128: rate = 168 bytes, capacity = 32 bytes, security level = 128 bits.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// SHAKE256: rate = 136 bytes, capacity = 64 bytes, security level = 256 bits.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
 /// Unlike the fixed-length SHA-3 variants, SHAKE is an XOF — the output length is independent of the security parameter
-/// and may be any positive multiple of 8 bits. The domain separation byte <c>0x1F</c> distinguishes SHAKE from SHA-3
-/// (<c>0x06</c>) and from raw Keccak. Multi-rate padding (pad10*1) appends the domain byte, zero or more zero bytes, and
+/// and may be any positive multiple of 8 bits. The domain separation byte <c>0x1F</c> distinguishes SHAKE from SHA-3 (
+/// <c>0x06</c>) and from raw Keccak. Multi-rate padding (pad10*1) appends the domain byte, zero or more zero bytes, and
 /// a <c>0x80</c> byte at the last position of the final rate block.
 /// </para>
 /// <para>
-/// When used via <see cref="HashAlgorithm"/>, <c>HashSizeValue</c> holds the desired output length in bits and
-/// <c>securityLevel</c> selects the SHAKE variant. <see cref="HashAlgorithm.ComputeHash(byte[])"/> therefore produces
+/// When used via <see cref="HashAlgorithm" />, <c>HashSizeValue</c> holds the desired output length in bits and
+/// <c>securityLevel</c> selects the SHAKE variant. <see cref="HashAlgorithm.ComputeHash(byte[])" /> therefore produces
 /// exactly <c>outputBits / 8</c> bytes regardless of which security level is chosen.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>State: 1600 bits (200 bytes); Keccak-f[1600] permutation.</description></item>
-///   <item><description>Output size: configurable, any positive multiple of 8 bits.</description></item>
-///   <item><description>Security level: 128 (SHAKE128) or 256 (SHAKE256).</description></item>
-///   <item><description>Domain separation: <c>0x1F</c>; multi-rate padding (pad10*1).</description></item>
-///   <item><description>Specification: NIST FIPS 202.</description></item>
+/// <item>
+/// <description>
+/// State: 1600 bits (200 bytes); Keccak-f[1600] permutation.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Output size: configurable, any positive multiple of 8 bits.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Security level: 128 (SHAKE128) or 256 (SHAKE256).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Domain separation: <c>0x1F</c>; multi-rate padding (pad10*1).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Specification: NIST FIPS 202.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose SHAKE.</strong> Pick SHAKE when an extendable-output function is genuinely required
-/// — KMAC inputs, post-quantum signature schemes, hash-based DRBGs, and any protocol that needs more than the
-/// fixed-length output of SHA-3 / SHA-256. For ordinary fixed-length hashing prefer SHA-3 (FIPS 202) or
-/// <see cref="Blake3"/> (faster on commodity hardware). Use SHAKE128 when 128-bit security is sufficient and
-/// throughput matters; use SHAKE256 when the higher capacity is required.
+/// <strong>When to choose SHAKE.</strong> Pick SHAKE when an extendable-output function is genuinely required — KMAC
+/// inputs, post-quantum signature schemes, hash-based DRBGs, and any protocol that needs more than the fixed-length
+/// output of SHA-3 / SHA-256. For ordinary fixed-length hashing prefer SHA-3 (FIPS 202) or <see cref="Blake3" />
+/// (faster on commodity hardware). Use SHAKE128 when 128-bit security is sufficient and throughput matters; use
+/// SHAKE256 when the higher capacity is required.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// // SHAKE128 producing 256-bit output.
-/// using var shake = new Shake(256, 128);
-/// byte[] digest = shake.ComputeHash(Encoding.UTF8.GetBytes("hello"));
-///
-/// // SHAKE256 producing 512-bit output.
-/// using var shake256 = new Shake(512, 256);
-/// byte[] longer = shake256.ComputeHash(message);
-/// </code>
+/// <code language="csharp"> // SHAKE128 producing 256-bit output. using var shake = new Shake(256, 128); byte[] digest
+/// = shake.ComputeHash(Encoding.UTF8.GetBytes("hello")); // SHAKE256 producing 512-bit output. using var shake256 = new
+/// Shake(512, 256); byte[] longer = shake256.ComputeHash(message); </code>
 /// </example>
 public sealed class Shake
     : BufferedBlockHashAlgorithm<Shake>
@@ -109,25 +131,23 @@ public sealed class Shake
     private readonly int _securityLevel;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Shake"/> class with a 256-bit output using SHAKE128 internals.
+    /// Initializes a new instance of the <see cref="Shake" /> class with a 256-bit output using SHAKE128 internals.
     /// </summary>
     public Shake()
         : this(256, 128)
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Shake"/> class with the specified output size and security level.
+    /// Initializes a new instance of the <see cref="Shake" /> class with the specified output size and security level.
     /// </summary>
-    /// <param name="outputBits">
-    /// The desired output size in bits. Must be a positive value divisible by 8.
-    /// </param>
+    /// <param name="outputBits">The desired output size in bits. Must be a positive value divisible by 8.</param>
     /// <param name="securityLevel">
-    /// The SHAKE security level in bits. Must be either 128 (SHAKE128, rate = 168 bytes) or 256 (SHAKE256,
-    /// rate = 136 bytes).
+    /// The SHAKE security level in bits. Must be either 128 (SHAKE128, rate = 168 bytes) or 256 (SHAKE256, rate = 136
+    /// bytes).
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="outputBits"/> is not a positive multiple of 8, or <paramref name="securityLevel"/> is not
-    /// 128 or 256.
+    /// <paramref name="outputBits" /> is not a positive multiple of 8, or <paramref name="securityLevel" /> is not 128
+    /// or 256.
     /// </exception>
     public Shake(int outputBits, int securityLevel)
         : base(ValidateAndComputeRateBits(outputBits, securityLevel))
@@ -144,8 +164,8 @@ public sealed class Shake
     /// <param name="securityLevel">The candidate SHAKE security level.</param>
     /// <returns>The absorption rate in bits (1344 for SHAKE128, 1088 for SHAKE256).</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="outputBits"/> is not a positive multiple of 8, or <paramref name="securityLevel"/> is not
-    /// 128 or 256.
+    /// <paramref name="outputBits" /> is not a positive multiple of 8, or <paramref name="securityLevel" /> is not 128
+    /// or 256.
     /// </exception>
     private static int ValidateAndComputeRateBits(int outputBits, int securityLevel)
     {
@@ -163,8 +183,8 @@ public sealed class Shake
 
     /// <inheritdoc />
     /// <remarks>
-    /// Returns either <c>"SHAKE128"</c> or <c>"SHAKE256"</c> matching the security level selected at construction.
-    /// The output length is independent of the algorithm name and is reflected by <see cref="HashSize"/>.
+    /// Returns either <c>"SHAKE128"</c> or <c>"SHAKE256"</c> matching the security level selected at construction. The
+    /// output length is independent of the algorithm name and is reflected by <see cref="HashSize" />.
     /// </remarks>
     public override string AlgorithmName
     {
@@ -195,13 +215,11 @@ public sealed class Shake
     /// <value>The current output size in bits. Must be a positive multiple of 8.</value>
     /// <returns>The currently configured output size in bits.</returns>
     /// <remarks>
-    /// Because SHAKE is an XOF, the output length may be changed freely between computations. The security level
-    /// (and therefore the rate) is fixed at construction time and cannot be altered. Changing this property after
-    /// input has already been absorbed throws <see cref="CryptographicUnexpectedOperationException"/>.
+    /// Because SHAKE is an XOF, the output length may be changed freely between computations. The security level (and
+    /// therefore the rate) is fixed at construction time and cannot be altered. Changing this property after input has
+    /// already been absorbed throws <see cref="CryptographicUnexpectedOperationException" />.
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// The assigned value is not a positive multiple of 8.
-    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">The assigned value is not a positive multiple of 8.</exception>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// The hash computation has already started and the algorithm is no longer reconfigurable.
@@ -225,7 +243,9 @@ public sealed class Shake
     }
 
     /// <inheritdoc />
-    /// <remarks>Clears the 1600-bit Keccak state. The inherited residual rate buffer and counters are cleared by the base call.</remarks>
+    /// <remarks>
+    /// Clears the 1600-bit Keccak state. The inherited residual rate buffer and counters are cleared by the base call.
+    /// </remarks>
     public override void Initialize()
     {
         base.Initialize();
@@ -236,8 +256,8 @@ public sealed class Shake
     /// Releases the resources used by this instance and clears the internal sponge state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to
-    /// release only unmanaged resources.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
     {
@@ -253,9 +273,9 @@ public sealed class Shake
 
     /// <inheritdoc />
     /// <remarks>
-    /// Accumulates input bytes in the inherited residual rate buffer. Whenever a complete rate block has been
-    /// gathered the buffer is XORed into the sponge state, the Keccak-f permutation is applied, and the buffer is
-    /// cleared ready for the next block.
+    /// Accumulates input bytes in the inherited residual rate buffer. Whenever a complete rate block has been gathered
+    /// the buffer is XORed into the sponge state, the Keccak-f permutation is applied, and the buffer is cleared ready
+    /// for the next block.
     /// </remarks>
     protected override void HashCore(ReadOnlySpan<byte> source)
     {
@@ -283,11 +303,11 @@ public sealed class Shake
     }
 
     /// <summary>
-    /// Finalizes the hash computation by applying SHAKE multi-rate padding, absorbing the final block, and
-    /// squeezing the requested number of output bytes from the sponge state.
+    /// Finalizes the hash computation by applying SHAKE multi-rate padding, absorbing the final block, and squeezing
+    /// the requested number of output bytes from the sponge state.
     /// </summary>
     /// <returns>
-    /// A byte array of length <see cref="HashAlgorithm.HashSize"/> / 8 containing the squeezed output.
+    /// A byte array of length <see cref="HashAlgorithm.HashSize" /> / 8 containing the squeezed output.
     /// </returns>
     protected override byte[] HashFinal()
     {
@@ -324,8 +344,8 @@ public sealed class Shake
     }
 
     /// <summary>
-    /// Applies the full <c>Keccak-f[1600]</c> permutation — 24 rounds of θ, ρ, π, χ, and ι — to the
-    /// supplied 25-word state array in place.
+    /// Applies the full <c>Keccak-f[1600]</c> permutation — 24 rounds of θ, ρ, π, χ, and ι — to the supplied 25-word
+    /// state array in place.
     /// </summary>
     /// <param name="state">The 25-element state array to permute. Modified in place.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -369,9 +389,11 @@ public sealed class Shake
     /// <summary>
     /// XORs a byte block into the Keccak state using little-endian 64-bit lane interpretation.
     /// </summary>
-    /// <param name="block">The byte block to XOR into the state. Must be at least <paramref name="rateBytes"/> bytes long.</param>
+    /// <param name="block">
+    /// The byte block to XOR into the state. Must be at least <paramref name="rateBytes" /> bytes long.
+    /// </param>
     /// <param name="state">The 25-element state array to update.</param>
-    /// <param name="rateBytes">The number of bytes from <paramref name="block"/> to absorb.</param>
+    /// <param name="rateBytes">The number of bytes from <paramref name="block" /> to absorb.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void XorBlockIntoState(ReadOnlySpan<byte> block, ulong[] state, int rateBytes)
     {

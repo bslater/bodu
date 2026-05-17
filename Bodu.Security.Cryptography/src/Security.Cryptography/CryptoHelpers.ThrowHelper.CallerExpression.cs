@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpers.ThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
 #if !NETSTANDARD2_0_OR_GREATER
-using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -18,13 +17,13 @@ namespace Bodu.Security.Cryptography;
 internal static partial class CryptoHelpers
 {
     /// <summary>
-    /// Throws an <see cref="InvalidOperationException"/> if associated data has already been processed.
+    /// Throws an <see cref="InvalidOperationException" /> if associated data has already been processed.
     /// </summary>
     /// <param name="alreadyProcessed">
-    /// <see langword="true"/> if associated data was already supplied; <see langword="false"/> otherwise.
+    /// <see langword="true" /> if associated data was already supplied; <see langword="false" /> otherwise.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="alreadyProcessed"/> is <see langword="true"/>.
+    /// Thrown when <paramref name="alreadyProcessed" /> is <see langword="true" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfAssociatedDataAlreadyProcessed(bool alreadyProcessed)
@@ -34,13 +33,13 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException"/> if associated data has not yet been processed.
+    /// Throws a <see cref="CryptographicException" /> if associated data has not yet been processed.
     /// </summary>
     /// <param name="alreadyProcessed">
-    /// <see langword="true"/> if associated data has been supplied; <see langword="false"/> if it has not.
+    /// <see langword="true" /> if associated data has been supplied; <see langword="false" /> if it has not.
     /// </param>
     /// <exception cref="CryptographicException">
-    /// Thrown when <paramref name="alreadyProcessed"/> is <see langword="false"/>.
+    /// Thrown when <paramref name="alreadyProcessed" /> is <see langword="false" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfAssociatedDataNotProcessed(bool alreadyProcessed)
@@ -50,13 +49,13 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws an <see cref="InvalidOperationException"/> if the transform has already completed.
+    /// Throws an <see cref="InvalidOperationException" /> if the transform has already completed.
     /// </summary>
     /// <param name="completed">
-    /// <see langword="true"/> if the transform has already produced its output; <see langword="false"/> otherwise.
+    /// <see langword="true" /> if the transform has already produced its output; <see langword="false" /> otherwise.
     /// </param>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when <paramref name="completed"/> is <see langword="true"/>.
+    /// Thrown when <paramref name="completed" /> is <see langword="true" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfAlreadyCompleted(bool completed)
@@ -66,15 +65,13 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException"/> if <paramref name="output"/> is smaller than
-    /// <paramref name="required"/> bytes.
+    /// Throws an <see cref="ArgumentException" /> if <paramref name="output" /> is smaller than
+    /// <paramref name="required" /> bytes.
     /// </summary>
     /// <param name="output">The output buffer to validate.</param>
     /// <param name="required">The minimum number of bytes the buffer must hold.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <c>output.Length &lt; required</c>.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <c>output.Length &lt; required</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfOutputBufferTooSmall(
         Span<byte> output, int required,
@@ -87,15 +84,13 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException"/> if <paramref name="input"/> is shorter than
-    /// <paramref name="tagSize"/> bytes, meaning it cannot contain a complete authentication tag.
+    /// Throws an <see cref="ArgumentException" /> if <paramref name="input" /> is shorter than
+    /// <paramref name="tagSize" /> bytes, meaning it cannot contain a complete authentication tag.
     /// </summary>
     /// <param name="input">The ciphertext-with-tag buffer to validate.</param>
     /// <param name="tagSize">The required tag size in bytes.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <c>input.Length &lt; tagSize</c>.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <c>input.Length &lt; tagSize</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfCiphertextTooShort(
         ReadOnlySpan<byte> input, int tagSize,
@@ -167,27 +162,23 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if the array is <see langword="null"/>, an
-    /// <see cref="ArgumentException"/> if <paramref name="offset"/> or <paramref name="count"/> is out of
-    /// range, or an <see cref="ArgumentException"/> if the segment they define exceeds the bounds of
-    /// <paramref name="array"/>.
+    /// Throws an <see cref="ArgumentNullException" /> if the array is <see langword="null" />, an
+    /// <see cref="ArgumentException" /> if <paramref name="offset" /> or <paramref name="count" /> is out of range, or
+    /// an <see cref="ArgumentException" /> if the segment they define exceeds the bounds of <paramref name="array" />.
     /// </summary>
-    /// <param name="array">The array to validate. Must not be <see langword="null"/>.</param>
+    /// <param name="array">The array to validate. Must not be <see langword="null" />.</param>
     /// <param name="offset">The zero-based starting index within the array.</param>
-    /// <param name="count">The number of elements to access from <paramref name="offset"/>.</param>
+    /// <param name="count">The number of elements to access from <paramref name="offset" />.</param>
     /// <param name="paramArrayName">The name of the array parameter. Supplied automatically by the compiler.</param>
     /// <param name="paramOffsetName">The name of the index parameter. Supplied automatically by the compiler.</param>
     /// <param name="paramCountName">The name of the count parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="array"/> is <see langword="null"/>.
+    /// Thrown when <paramref name="array" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Thrown when <paramref name="offset"/> or <paramref name="count"/> is negative or exceeds
-    /// <c>array.Length</c>.
+    /// Thrown when <paramref name="offset" /> or <paramref name="count" /> is negative or exceeds <c>array.Length</c>.
     /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <c>index + count</c> exceeds <c>array.Length</c>.
-    /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <c>index + count</c> exceeds <c>array.Length</c>.</exception>
     public static void ThrowIfArrayOffsetOrCountInvalid(
         Array array, int offset, int count,
         [CallerArgumentExpression(nameof(array))] string? paramArrayName = null,
@@ -217,11 +208,14 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException" /> if the specified hash size is not one of the permitted hash sizes.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> if the specified hash size is not one of the permitted hash
+    /// sizes.
     /// </summary>
     /// <param name="hashSize">The hash size, in bits, to validate.</param>
     /// <param name="permittedHashSizes">The set of valid hash sizes, in bits.</param>
-    /// <param name="paramHashSizeName">The name of the hash-size parameter. Supplied automatically by the compiler.</param>
+    /// <param name="paramHashSizeName">
+    /// The name of the hash-size parameter. Supplied automatically by the compiler.
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="permittedHashSizes" /> is <see langword="null" />.
     /// </exception>
@@ -245,16 +239,18 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Validates an initialization vector against the configured <paramref name="mode"/>.
+    /// Validates an initialization vector against the configured <paramref name="mode" />.
     /// </summary>
-    /// <param name="iv">The initialization vector to validate, or <see langword="null"/>.</param>
+    /// <param name="iv">The initialization vector to validate, or <see langword="null" />.</param>
     /// <param name="mode">The configured cipher mode.</param>
     /// <param name="blockSizeBits">The required IV size, in bits, when the mode requires one.</param>
-    /// <param name="legalBlockSizes">The legal block sizes (in bits) for the algorithm, used for error formatting.</param>
+    /// <param name="legalBlockSizes">
+    /// The legal block sizes (in bits) for the algorithm, used for error formatting.
+    /// </param>
     /// <param name="paramName">The parameter name. Supplied automatically by the compiler.</param>
     /// <exception cref="CryptographicException">
-    /// Thrown when <paramref name="iv"/> is <see langword="null"/> and <paramref name="mode"/> is not
-    /// <see cref="CipherModeKind.ECB"/>, or when <paramref name="iv"/> is non-null but
+    /// Thrown when <paramref name="iv" /> is <see langword="null" /> and <paramref name="mode" /> is not
+    /// <see cref="CipherModeKind.ECB" />, or when <paramref name="iv" /> is non-null but
     /// <c>iv.Length * 8 != blockSizeBits</c>.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -282,16 +278,16 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException"/> if the byte length of <paramref name="iv"/> does not
-    /// equal <paramref name="blockSizeBits"/> / 8.
+    /// Throws an <see cref="ArgumentException" /> if the byte length of <paramref name="iv" /> does not equal
+    /// <paramref name="blockSizeBits" /> / 8.
     /// </summary>
     /// <param name="iv">The initialization vector to validate.</param>
     /// <param name="blockSizeBits">The required IV size, in bits.</param>
     /// <param name="paramName">The name of the parameter. Supplied automatically by the compiler.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="iv"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException">
-    /// Thrown when <c>iv.Length * 8 != blockSizeBits</c>.
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="iv" /> is <see langword="null" />.
     /// </exception>
+    /// <exception cref="ArgumentException">Thrown when <c>iv.Length * 8 != blockSizeBits</c>.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfIvLengthInvalid(
         byte[] iv, int blockSizeBits,
@@ -305,8 +301,8 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="key"/>, expressed
-    /// in bits, is not one of the values permitted by <paramref name="legalKeySizes"/>.
+    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="key" />, expressed in bits,
+    /// is not one of the values permitted by <paramref name="legalKeySizes" />.
     /// </summary>
     /// <param name="key">The key material to validate.</param>
     /// <param name="keySizeBits">The algorithm's currently configured key size, in bits.</param>
@@ -316,7 +312,7 @@ internal static partial class CryptoHelpers
     /// Thrown when <paramref name="key" /> or <paramref name="legalKeySizes" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown when <c>key.Length * 8</c> is not one of the values produced by <paramref name="legalKeySizes"/>.
+    /// Thrown when <c>key.Length * 8</c> is not one of the values produced by <paramref name="legalKeySizes" />.
     /// </exception>
     public static void ThrowIfInvalidKeySize(
         byte[] key,
@@ -338,8 +334,8 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="tweak"/>
-    /// does not equal <paramref name="tweakSizeBits"/> / 8.
+    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="tweak" /> does not equal
+    /// <paramref name="tweakSizeBits" /> / 8.
     /// </summary>
     /// <param name="tweak">The tweak material to validate.</param>
     /// <param name="tweakSizeBits">The required tweak size, in bits.</param>
@@ -348,9 +344,7 @@ internal static partial class CryptoHelpers
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="tweak" /> or <paramref name="legalTweakSizes" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="CryptographicException">
-    /// Thrown when <c>tweak.Length * 8 != tweakSizeBits</c>.
-    /// </exception>
+    /// <exception cref="CryptographicException">Thrown when <c>tweak.Length * 8 != tweakSizeBits</c>.</exception>
     public static void ThrowIfInvalidTweakSize(
         byte[] tweak,
         int tweakSizeBits,
@@ -370,8 +364,8 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="value"/>
-    /// does not equal <paramref name="blockSizeBits"/> / 8.
+    /// Throws a <see cref="CryptographicException" /> if the byte length of <paramref name="value" /> does not equal
+    /// <paramref name="blockSizeBits" /> / 8.
     /// </summary>
     /// <param name="value">The block-sized value to validate, such as an initialization vector.</param>
     /// <param name="blockSizeBits">The required block size, in bits.</param>
@@ -380,9 +374,7 @@ internal static partial class CryptoHelpers
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="value" /> or <paramref name="legalBlockSizes" /> is <see langword="null" />.
     /// </exception>
-    /// <exception cref="CryptographicException">
-    /// Thrown when <c>value.Length * 8 != blockSizeBits</c>.
-    /// </exception>
+    /// <exception cref="CryptographicException">Thrown when <c>value.Length * 8 != blockSizeBits</c>.</exception>
     public static void ThrowIfInvalidBlockSize(
         byte[] value,
         int blockSizeBits,
@@ -432,8 +424,8 @@ internal static partial class CryptoHelpers
             CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDidNotProduceValue);
 
     /// <summary>
-    /// Returns <see langword="true"/> if <paramref name="sizeBits"/> falls inside any of the ranges
-    /// supplied by <paramref name="legalSizes"/>.
+    /// Returns <see langword="true" /> if <paramref name="sizeBits" /> falls inside any of the ranges supplied by
+    /// <paramref name="legalSizes" />.
     /// </summary>
     private static bool IsValidSize(int sizeBits, KeySizes[] legalSizes)
     {

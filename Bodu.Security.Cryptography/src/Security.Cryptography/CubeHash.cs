@@ -12,39 +12,53 @@ using Bodu.Extensions;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a hash using the <c>CubeHash</c> permutation-based hash algorithm designed by Daniel J. Bernstein and submitted to the
-/// NIST SHA-3 competition. This class cannot be inherited.
+/// Computes a hash using the <c>CubeHash</c> permutation-based hash algorithm designed by Daniel J. Bernstein and
+/// submitted to the NIST SHA-3 competition. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="CubeHash"/> operates on a 1024-bit internal state updated through a sequence of ARX (Addition, Rotation, XOR)
-/// operations. The number of initialization, transformation, and finalization rounds, the hash output size, and the input block size
-/// are all configurable. See <a href="https://en.wikipedia.org/wiki/CubeHash">Wikipedia</a> for an overview.
+/// <see cref="CubeHash" /> operates on a 1024-bit internal state updated through a sequence of ARX (Addition, Rotation,
+/// XOR) operations. The number of initialization, transformation, and finalization rounds, the hash output size, and
+/// the input block size are all configurable. See <a href="https://en.wikipedia.org/wiki/CubeHash">Wikipedia</a> for an
+/// overview.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>State size: 1024 bits (32 × 32-bit words).</description></item>
-///   <item><description>Output size: 224, 256, 384, or 512 bits (default 512); pass the desired size to <see cref="CubeHash(int)"/>.</description></item>
-///   <item><description>Input block size: configurable, <see cref="MinInputBlockSize"/>–<see cref="MaxInputBlockSize"/> bytes (default 32).</description></item>
-///   <item><description>Rounds: initialization, per-block, and finalization counts each independently configurable up to <see cref="MaxRounds"/>; defaults are 16 / 16 / 32.</description></item>
+/// <item>
+/// <description>
+/// State size: 1024 bits (32 × 32-bit words).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Output size: 224, 256, 384, or 512 bits (default 512); pass the desired size to <see cref="CubeHash(int)" />.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Input block size: configurable, <see cref="MinInputBlockSize" />–<see cref="MaxInputBlockSize" /> bytes (default
+/// 32).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Rounds: initialization, per-block, and finalization counts each independently configurable up to
+/// <see cref="MaxRounds" />; defaults are 16 / 16 / 32.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
 /// <strong>When to choose CubeHash.</strong> Pick CubeHash for academic study, cryptographic competition
 /// reproducibility, or interop with code that has settled on a specific CubeHash parameterization. The defaults
-/// (CubeHash 16/32/+160/512) match the SHA-3 competition submission. For new general-purpose cryptographic
-/// hashing prefer SHA-2, SHA-3, or <see cref="Blake2b"/>.
+/// (CubeHash 16/32/+160/512) match the SHA-3 competition submission. For new general-purpose cryptographic hashing
+/// prefer SHA-2, SHA-3, or <see cref="Blake2b" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.Security.Cryptography;
-///
-/// // Default parameters: 512-bit output, 32-byte input block, 16/16/32 rounds.
-/// using var cube = new CubeHash();
-/// byte[] digest = cube.ComputeHash(message);
-/// </code>
+/// <code language="csharp"> using Bodu.Security.Cryptography; // Default parameters: 512-bit output, 32-byte input
+/// block, 16/16/32 rounds. using var cube = new CubeHash(); byte[] digest = cube.ComputeHash(message); </code>
 /// </example>
 public sealed class CubeHash
     : System.Security.Cryptography.HashAlgorithm
@@ -102,8 +116,8 @@ public sealed class CubeHash
 #endif
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CubeHash"/> class with default parameters:
-    /// 512-bit output, 32-byte input block, and 16 / 16 / 32 initialization / transform / finalization rounds.
+    /// Initializes a new instance of the <see cref="CubeHash" /> class with default parameters: 512-bit output, 32-byte
+    /// input block, and 16 / 16 / 32 initialization / transform / finalization rounds.
     /// </summary>
     public CubeHash()
     {
@@ -117,14 +131,12 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CubeHash"/> class with the specified hash output size
-    /// and default algorithm parameters: 32-byte input block and 16 / 16 / 32 initialization / transform / finalization rounds.
+    /// Initializes a new instance of the <see cref="CubeHash" /> class with the specified hash output size and default
+    /// algorithm parameters: 32-byte input block and 16 / 16 / 32 initialization / transform / finalization rounds.
     /// </summary>
-    /// <param name="hashSize">
-    /// The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.
-    /// </param>
+    /// <param name="hashSize">The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.</param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="hashSize"/> is not a permitted hash size.
+    /// <paramref name="hashSize" /> is not a permitted hash size.
     /// </exception>
     public CubeHash(int hashSize)
     {
@@ -139,34 +151,43 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CubeHash"/> class with fully specified algorithm parameters.
+    /// Initializes a new instance of the <see cref="CubeHash" /> class with fully specified algorithm parameters.
     /// </summary>
-    /// <param name="hashSize">
-    /// The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.
-    /// </param>
+    /// <param name="hashSize">The desired hash output size in bits. Must be one of: 224, 256, 384, or 512.</param>
     /// <param name="rounds">
-    /// The number of transformation rounds applied to each full input block.
-    /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
+    /// The number of transformation rounds applied to each full input block. Must be between <see cref="MinRounds" />
+    /// and <see cref="MaxRounds" /> inclusive.
     /// </param>
     /// <param name="transformBlockSize">
-    /// The size, in bytes, of the input block used to trigger a state transformation.
-    /// Must be between <see cref="MinInputBlockSize"/> and <see cref="MaxInputBlockSize"/> inclusive.
+    /// The size, in bytes, of the input block used to trigger a state transformation. Must be between
+    /// <see cref="MinInputBlockSize" /> and <see cref="MaxInputBlockSize" /> inclusive.
     /// </param>
     /// <param name="finalizationRounds">
-    /// The number of finalization rounds applied after all input has been processed.
-    /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
+    /// The number of finalization rounds applied after all input has been processed. Must be between
+    /// <see cref="MinRounds" /> and <see cref="MaxRounds" /> inclusive.
     /// </param>
     /// <param name="initializationRounds">
-    /// The number of initialization rounds to run before processing input data.
-    /// Must be between <see cref="MinRounds"/> and <see cref="MaxRounds"/> inclusive.
+    /// The number of initialization rounds to run before processing input data. Must be between
+    /// <see cref="MinRounds" /> and <see cref="MaxRounds" /> inclusive.
     /// </param>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <para><paramref name="initializationRounds"/>, <paramref name="rounds"/>, or <paramref name="finalizationRounds"/>
-    /// is less than <see cref="MinRounds"/> or greater than <see cref="MaxRounds"/>.</para>
-    /// <para>-or-</para>
-    /// <para><paramref name="transformBlockSize"/> is less than <see cref="MinInputBlockSize"/> or greater than <see cref="MaxInputBlockSize"/>.</para>
-    /// <para>-or-</para>
-    /// <para><paramref name="hashSize"/> is not a permitted hash size.</para>
+    /// <para>
+    /// <paramref name="initializationRounds" />, <paramref name="rounds" />, or <paramref name="finalizationRounds" />
+    /// is less than <see cref="MinRounds" /> or greater than <see cref="MaxRounds" />.
+    /// </para>
+    /// <para>
+    /// -or-
+    /// </para>
+    /// <para>
+    /// <paramref name="transformBlockSize" /> is less than <see cref="MinInputBlockSize" /> or greater than
+    /// <see cref="MaxInputBlockSize" />.
+    /// </para>
+    /// <para>
+    /// -or-
+    /// </para>
+    /// <para>
+    /// <paramref name="hashSize" /> is not a permitted hash size.
+    /// </para>
     /// </exception>
     public CubeHash(int initializationRounds, int rounds, int transformBlockSize, int finalizationRounds, int hashSize)
     {
@@ -188,25 +209,40 @@ public sealed class CubeHash
     /// Gets the fully qualified algorithm name, including the variant and hash output size.
     /// </summary>
     /// <remarks>
-    /// <para>Follows the <see cref="CubeHash"/> naming convention from the original submission: <c>CubeHashr+b/w+f-h</c>, where:</para>
+    /// <para>
+    /// Follows the <see cref="CubeHash" /> naming convention from the original submission: <c>CubeHashr+b/w+f-h</c>,
+    /// where:
+    /// </para>
     /// <list type="bullet">
     /// <item>
-    /// <description><c>r</c> = number of initialization rounds</description>
+    /// <description>
+    /// <c>r</c> = number of initialization rounds
+    /// </description>
     /// </item>
     /// <item>
-    /// <description><c>b</c> = number of transformation rounds per block</description>
+    /// <description>
+    /// <c>b</c> = number of transformation rounds per block
+    /// </description>
     /// </item>
     /// <item>
-    /// <description><c>w</c> = block size in bytes</description>
+    /// <description>
+    /// <c>w</c> = block size in bytes
+    /// </description>
     /// </item>
     /// <item>
-    /// <description><c>f</c> = number of finalization rounds</description>
+    /// <description>
+    /// <c>f</c> = number of finalization rounds
+    /// </description>
     /// </item>
     /// <item>
-    /// <description><c>h</c> = hash size in bits</description>
+    /// <description>
+    /// <c>h</c> = hash size in bits
+    /// </description>
     /// </item>
     /// </list>
-    /// <para>Example: <c>CubeHash16+32/32+32-256</c>.</para>
+    /// <para>
+    /// Example: <c>CubeHash16+32/32+32-256</c>.
+    /// </para>
     /// </remarks>
     public string AlgorithmName
     {
@@ -227,12 +263,16 @@ public sealed class CubeHash
     /// Gets or sets the number of finalization rounds applied after all input has been processed.
     /// </summary>
     /// <remarks>
-    /// Finalization rounds provide additional mixing of the internal state to ensure that the final hash output is highly sensitive to
-    /// every bit of input data. Increasing this value strengthens final-state diffusion.
+    /// Finalization rounds provide additional mixing of the internal state to ensure that the final hash output is
+    /// highly sensitive to every bit of input data. Increasing this value strengthens final-state diffusion.
     /// </remarks>
     /// <exception cref="ObjectDisposedException">Instance has been disposed and its members are accessed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">The hash computation has already started.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Value is less than <see cref="MinRounds"/> or greater than <see cref="MaxRounds"/>.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The hash computation has already started.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Value is less than <see cref="MinRounds" /> or greater than <see cref="MaxRounds" />.
+    /// </exception>
     public int FinalizationRounds
     {
         get
@@ -255,15 +295,17 @@ public sealed class CubeHash
     /// Gets or sets the size, in bits, of the final computed hash output.
     /// </summary>
     /// <remarks>
-    /// The hash size determines the length of the digest returned by the algorithm.
-    /// Valid values are 224, 256, 384, and 512 bits.
+    /// The hash size determines the length of the digest returned by the algorithm. Valid values are 224, 256, 384, and
+    /// 512 bits.
     /// </remarks>
     /// <returns>The hash output size in bits.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Value is not one of the permitted sizes (224, 256, 384, 512).
     /// </exception>
     /// <exception cref="ObjectDisposedException">Instance has been disposed and its members are accessed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">The hash computation has already started.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The hash computation has already started.
+    /// </exception>
     public new int HashSize
     {
         get
@@ -286,12 +328,16 @@ public sealed class CubeHash
     /// Gets or sets the number of initialization rounds to run before processing input data.
     /// </summary>
     /// <remarks>
-    /// Initialization rounds mix the initial state of the algorithm before the first input byte is processed. Increasing this value
-    /// enhances initial diffusion but increases computation time.
+    /// Initialization rounds mix the initial state of the algorithm before the first input byte is processed.
+    /// Increasing this value enhances initial diffusion but increases computation time.
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Value is less than <see cref="MinRounds"/> or greater than <see cref="MaxRounds"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Value is less than <see cref="MinRounds" /> or greater than <see cref="MaxRounds" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Instance has been disposed and its members are accessed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">The hash computation has already started.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The hash computation has already started.
+    /// </exception>
     public int InitializationRounds
     {
         get
@@ -314,11 +360,16 @@ public sealed class CubeHash
     /// Gets or sets the number of transformation rounds applied to each full input block.
     /// </summary>
     /// <remarks>
-    /// A higher number of rounds provides greater mixing of the state per block, which improves security at the cost of speed.
+    /// A higher number of rounds provides greater mixing of the state per block, which improves security at the cost of
+    /// speed.
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Value is less than <see cref="MinRounds"/> or greater than <see cref="MaxRounds"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Value is less than <see cref="MinRounds" /> or greater than <see cref="MaxRounds" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Instance has been disposed and its members are accessed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">The hash computation has already started.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The hash computation has already started.
+    /// </exception>
     public int Rounds
     {
         get
@@ -338,16 +389,22 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Gets or sets the size, in bytes, of the input block used by the CubeHash algorithm to determine when to perform a state transformation.
+    /// Gets or sets the size, in bytes, of the input block used by the CubeHash algorithm to determine when to perform
+    /// a state transformation.
     /// </summary>
     /// <remarks>
-    /// Unlike <see cref="HashAlgorithm.InputBlockSize"/>, which is advisory, this property directly affects the output of the hash
-    /// function. When the number of accumulated input bytes reaches <c>TransformBlockSize</c>, a transformation round is triggered.
-    /// Modifying this value changes the frequency of internal state updates, impacting both performance and security characteristics.
+    /// Unlike <see cref="HashAlgorithm.InputBlockSize" />, which is advisory, this property directly affects the output
+    /// of the hash function. When the number of accumulated input bytes reaches <c>TransformBlockSize</c>, a
+    /// transformation round is triggered. Modifying this value changes the frequency of internal state updates,
+    /// impacting both performance and security characteristics.
     /// </remarks>
-    /// <exception cref="ArgumentOutOfRangeException">Value is not within range <see cref="MinInputBlockSize"/> to <see cref="MaxInputBlockSize"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Value is not within range <see cref="MinInputBlockSize" /> to <see cref="MaxInputBlockSize" />.
+    /// </exception>
     /// <exception cref="ObjectDisposedException">Instance has been disposed and its members are accessed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">The hash computation has already started.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// The hash computation has already started.
+    /// </exception>
     public int TransformBlockSize
     {
         get
@@ -384,9 +441,12 @@ public sealed class CubeHash
     /// Releases the unmanaged resources used by the algorithm and clears the key from memory.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
     /// </param>
-    /// <remarks>Ensures all internal secrets are overwritten with zeros before releasing resources.</remarks>
+    /// <remarks>
+    /// Ensures all internal secrets are overwritten with zeros before releasing resources.
+    /// </remarks>
     protected override void Dispose(bool disposing)
     {
         if (this._disposed) return;
@@ -417,20 +477,28 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Processes a segment of the input byte array and feeds it into the <see cref="CubeHash"/> hashing algorithm. This method updates
-    /// the internal state by processing <paramref name="cbSize"/> bytes starting at the specified <paramref name="ibStart"/> offset.
+    /// Processes a segment of the input byte array and feeds it into the <see cref="CubeHash" /> hashing algorithm.
+    /// This method updates the internal state by processing <paramref name="cbSize" /> bytes starting at the specified
+    /// <paramref name="ibStart" /> offset.
     /// </summary>
     /// <param name="array">The input byte array containing the data to hash.</param>
-    /// <param name="ibStart">The zero-based index in <paramref name="array"/> at which to begin reading data.</param>
-    /// <param name="cbSize">The number of bytes to process from <paramref name="array"/>.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="array"/> is <see langword="null"/>.</exception>
+    /// <param name="ibStart">The zero-based index in <paramref name="array" /> at which to begin reading data.</param>
+    /// <param name="cbSize">The number of bytes to process from <paramref name="array" />.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <para><paramref name="ibStart"/> is less than 0.</para>
-    /// <para>-or-</para>
-    /// <para><paramref name="cbSize"/> is less than 0.</para>
+    /// <para>
+    /// <paramref name="ibStart" /> is less than 0.
+    /// </para>
+    /// <para>
+    /// -or-
+    /// </para>
+    /// <para>
+    /// <paramref name="cbSize" /> is less than 0.
+    /// </para>
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ibStart"/> and <paramref name="cbSize"/> specify a range that exceeds the length of <paramref name="array"/>.
+    /// <paramref name="ibStart" /> and <paramref name="cbSize" /> specify a range that exceeds the length of
+    /// <paramref name="array" />.
     /// </exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// The hash algorithm has already been finalized and cannot accept more input data.
@@ -451,8 +519,8 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Processes the entirety of the input <paramref name="source"/> and feeds it into the <see cref="CubeHash"/> hashing algorithm.
-    /// This method updates the internal hash state accordingly by consuming the entire input span.
+    /// Processes the entirety of the input <paramref name="source" /> and feeds it into the <see cref="CubeHash" />
+    /// hashing algorithm. This method updates the internal hash state accordingly by consuming the entire input span.
     /// </summary>
     /// <param name="source">The input byte span containing the data to hash.</param>
     /// <exception cref="CryptographicUnexpectedOperationException">
@@ -504,9 +572,12 @@ public sealed class CubeHash
     /// Finalizes the hash computation and returns the computed digest in little-endian byte order.
     /// </summary>
     /// <returns>
-    /// A byte array containing the computed hash value. Its length is <see cref="HashAlgorithm.HashSize"/> divided by 8.
+    /// A byte array containing the computed hash value. Its length is <see cref="HashAlgorithm.HashSize" /> divided by
+    /// 8.
     /// </returns>
-    /// <exception cref="CryptographicUnexpectedOperationException">Thrown when the hash algorithm has been disposed or has produced an unexpected finalization state.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// Thrown when the hash algorithm has been disposed or has produced an unexpected finalization state.
+    /// </exception>
     protected override byte[] HashFinal()
     {
         this.ThrowIfDisposed();
@@ -535,7 +606,8 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Ensures the initial state is computed and cached. Reinitializes the existing state array in-place to avoid allocation.
+    /// Ensures the initial state is computed and cached. Reinitializes the existing state array in-place to avoid
+    /// allocation.
     /// </summary>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EnsureInitialized()
@@ -614,7 +686,9 @@ public sealed class CubeHash
     /// XORs a full input block into the state starting at word zero. Uses a direct reinterpretation cast on
     /// little-endian platforms with word-aligned block sizes; falls back to byte-by-byte XOR otherwise.
     /// </summary>
-    /// <param name="block">The input block to XOR into the state. Must have length equal to <see cref="TransformBlockSize"/>.</param>
+    /// <param name="block">
+    /// The input block to XOR into the state. Must have length equal to <see cref="TransformBlockSize" />.
+    /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void XorBlockIntoState(ReadOnlySpan<byte> block)
     {
@@ -634,8 +708,8 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// XORs bytes from <paramref name="source"/> into the state, treating the first byte of <paramref name="source"/> as
-    /// residing at <paramref name="stateByteOffset"/> bytes into the current block.
+    /// XORs bytes from <paramref name="source" /> into the state, treating the first byte of <paramref name="source" />
+    /// as residing at <paramref name="stateByteOffset" /> bytes into the current block.
     /// </summary>
     /// <param name="source">The bytes to XOR into the state.</param>
     /// <param name="stateByteOffset">The byte offset within the current block at which to begin writing.</param>
@@ -650,7 +724,7 @@ public sealed class CubeHash
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

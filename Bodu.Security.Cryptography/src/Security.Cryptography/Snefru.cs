@@ -12,42 +12,51 @@ using Bodu.Extensions;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Base class for the <c>Snefru</c> family of unkeyed hash functions designed by Ralph Merkle, implementing the core compression
-/// routine using S-box substitutions and word rotations over 512-bit blocks.
+/// Base class for the <c>Snefru</c> family of unkeyed hash functions designed by Ralph Merkle, implementing the core
+/// compression routine using S-box substitutions and word rotations over 512-bit blocks.
 /// </summary>
-/// <typeparam name="T">The concrete Snefru variant derived from this class. Must expose a public parameterless constructor.</typeparam>
+/// <typeparam name="T">
+/// The concrete Snefru variant derived from this class. Must expose a public parameterless constructor.
+/// </typeparam>
 /// <remarks>
 /// <para>
-/// <see cref="Snefru{T}"/> is one of the earliest cryptographic hash functions developed and is now considered broken: collision
-/// attacks against the two- and four-pass variants are known, and it should not be used for any new security-sensitive application.
-/// It remains implemented here for interoperability with legacy data and academic study.
+/// <see cref="Snefru{T}" /> is one of the earliest cryptographic hash functions developed and is now considered broken:
+/// collision attacks against the two- and four-pass variants are known, and it should not be used for any new
+/// security-sensitive application. It remains implemented here for interoperability with legacy data and academic
+/// study.
 /// </para>
-/// <para>This base class is extended by:</para>
+/// <para>
+/// This base class is extended by:
+/// </para>
 /// <list type="bullet">
 /// <item>
-/// <description><see cref="Snefru128"/> produces a 128-bit (16-byte) hash with a 4-word internal state.</description>
+/// <description>
+/// <see cref="Snefru128" /> produces a 128-bit (16-byte) hash with a 4-word internal state.
+/// </description>
 /// </item>
 /// <item>
-/// <description><see cref="Snefru256"/> produces a 256-bit (32-byte) hash with an 8-word internal state.</description>
+/// <description>
+/// <see cref="Snefru256" /> produces a 256-bit (32-byte) hash with an 8-word internal state.
+/// </description>
 /// </item>
 /// </list>
 /// <para>
-/// Each input block is processed by 8 rounds consisting of an S-box substitution step followed by a word-wise circular rotation.
-/// After all input has been absorbed, the internal state is serialized in big-endian byte order to produce the final digest.
+/// Each input block is processed by 8 rounds consisting of an S-box substitution step followed by a word-wise circular
+/// rotation. After all input has been absorbed, the internal state is serialized in big-endian byte order to produce
+/// the final digest.
 /// </para>
 /// <para>
-/// <strong>When to choose Snefru.</strong> Academic study and legacy interop only — Snefru has practical
-/// collision attacks against both the 2-pass and 4-pass variants and is one of the earliest cryptographic
-/// hashes ever published. Pick <see cref="Snefru128"/> for 128-bit output and <see cref="Snefru256"/> for
-/// 256-bit output. For any new security-sensitive cryptographic hashing use SHA-2, SHA-3, or
-/// <see cref="Blake2b"/>; for non-cryptographic fingerprinting use a member of <c>Bodu.IO.Hashing</c>.
+/// <strong>When to choose Snefru.</strong> Academic study and legacy interop only — Snefru has practical collision
+/// attacks against both the 2-pass and 4-pass variants and is one of the earliest cryptographic hashes ever published.
+/// Pick <see cref="Snefru128" /> for 128-bit output and <see cref="Snefru256" /> for 256-bit output. For any new
+/// security-sensitive cryptographic hashing use SHA-2, SHA-3, or <see cref="Blake2b" />; for non-cryptographic
+/// fingerprinting use a member of <c>Bodu.IO.Hashing</c>.
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> considered secure by modern cryptographic standards and should <b>not</b> be
-/// used for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <note type="important">This algorithm is <b>not</b> considered secure by modern cryptographic standards and should
+/// <b>not</b> be used for password hashing, digital signatures, or integrity validation in security-sensitive
+/// applications.</note>
 /// </remarks>
-/// <seealso cref="Snefru128"/>
-/// <seealso cref="Snefru256"/>
-/// <seealso cref="BlockHashAlgorithm{T}"/>
+/// <seealso cref="Snefru128"/> <seealso cref="Snefru256"/> <seealso cref="BlockHashAlgorithm{T}"/>
 public abstract partial class Snefru<T>
     : BlockHashAlgorithm<T>
     where T : Snefru<T>, new()
@@ -61,10 +70,12 @@ public abstract partial class Snefru<T>
     private readonly uint[] _state;                                 // internal state used to accumulate the hash output across input blocks.
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Snefru{T}"/> class with the specified output hash size.
+    /// Initializes a new instance of the <see cref="Snefru{T}" /> class with the specified output hash size.
     /// </summary>
     /// <param name="hashSize">The size of the output hash, in bits. Must be either 128 or 256.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize"/> is not one of the supported values.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="hashSize" /> is not one of the supported values.
+    /// </exception>
     protected Snefru(int hashSize)
         : base((64 - (hashSize >> 3)) * 8) // BlockSizeBits = 8 * (64 - outputBytes)
     {
@@ -82,7 +93,9 @@ public abstract partial class Snefru<T>
     public override bool CanTransformMultipleBlocks => true;
 
     /// <inheritdoc />
-    /// <remarks>The format is <c>"Snefru/<i>n</i>"</c>, where <i>n</i> is the configured output size in bits.</remarks>
+    /// <remarks>
+    /// The format is <c>"Snefru/<i>n</i>"</c>, where <i>n</i> is the configured output size in bits.
+    /// </remarks>
     public override string AlgorithmName
     {
         get
@@ -93,7 +106,9 @@ public abstract partial class Snefru<T>
     }
 
     /// <inheritdoc />
-    /// <remarks>Clears the Snefru chaining state to all zeros, as required by the algorithm specification.</remarks>
+    /// <remarks>
+    /// Clears the Snefru chaining state to all zeros, as required by the algorithm specification.
+    /// </remarks>
     public override void Initialize()
     {
         base.Initialize();
@@ -104,7 +119,8 @@ public abstract partial class Snefru<T>
     /// Releases resources used by the algorithm and clears the internal state and working buffer.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
     {
@@ -120,17 +136,24 @@ public abstract partial class Snefru<T>
     }
 
     /// <summary>
-    /// Pads the final input block for the <c>Snefru</c> hash algorithm by appending zeros and encoding the total message length.
+    /// Pads the final input block for the <c>Snefru</c> hash algorithm by appending zeros and encoding the total
+    /// message length.
     /// </summary>
-    /// <param name="block">The final block of unprocessed input, typically containing fewer than <c>BlockSize</c> bytes.</param>
-    /// <param name="messageLength">The total number of bytes processed prior to this block (excluding the current partial block).</param>
+    /// <param name="block">
+    /// The final block of unprocessed input, typically containing fewer than <c>BlockSize</c> bytes.
+    /// </param>
+    /// <param name="messageLength">
+    /// The total number of bytes processed prior to this block (excluding the current partial block).
+    /// </param>
     /// <returns>
-    /// A padded byte array of exactly <c>2 × BlockSize</c> bytes, containing the input block followed by zeros and an 8-byte big-endian
-    /// length field. The result is aligned for final compression and ready for use by <see cref="ProcessBlock(ReadOnlySpan{byte})"/>.
+    /// A padded byte array of exactly <c>2 × BlockSize</c> bytes, containing the input block followed by zeros and an
+    /// 8-byte big-endian length field. The result is aligned for final compression and ready for use by
+    /// <see cref="ProcessBlock(ReadOnlySpan{byte})" />.
     /// </returns>
     /// <remarks>
-    /// Snefru's final padding block is double the standard block size to support its dual-block internal buffer design. The method pads
-    /// the input block with zeros and appends a 64-bit big-endian integer representing the total message length (in bits).
+    /// Snefru's final padding block is double the standard block size to support its dual-block internal buffer design.
+    /// The method pads the input block with zeros and appends a 64-bit big-endian integer representing the total
+    /// message length (in bits).
     /// </remarks>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
@@ -144,11 +167,13 @@ public abstract partial class Snefru<T>
     }
 
     /// <summary>
-    /// Transforms a single 512-bit block using Snefru S-box and rotation rounds. Updates internal state via XOR with permuted buffer values.
+    /// Transforms a single 512-bit block using Snefru S-box and rotation rounds. Updates internal state via XOR with
+    /// permuted buffer values.
     /// </summary>
     /// <param name="block">The 64-byte input block to hash.</param>
     /// <remarks>
-    /// The method performs 8 rounds, each consisting of 4 shifts and S-box applications, to mix input entropy into the state.
+    /// The method performs 8 rounds, each consisting of 4 shifts and S-box applications, to mix input entropy into the
+    /// state.
     /// </remarks>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)
     {

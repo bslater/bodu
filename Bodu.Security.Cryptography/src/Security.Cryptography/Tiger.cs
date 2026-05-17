@@ -12,51 +12,68 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a hash using the <c>Tiger</c> cryptographic hash algorithm by Ross Anderson and Eli Biham (1996),
-/// optimized for 64-bit platforms. Supports output sizes of 128, 160, or 192 bits and both the original
-/// <see cref="TigerHashingVariant.Tiger"/> and <see cref="TigerHashingVariant.Tiger2"/> padding variants. This class cannot be inherited.
+/// Computes a hash using the <c>Tiger</c> cryptographic hash algorithm by Ross Anderson and Eli Biham (1996), optimized
+/// for 64-bit platforms. Supports output sizes of 128, 160, or 192 bits and both the original
+/// <see cref="TigerHashingVariant.Tiger" /> and <see cref="TigerHashingVariant.Tiger2" /> padding variants. This class
+/// cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="Tiger"/> processes input in 512-bit (64-byte) blocks using three 64-bit internal state variables. Each block is
-/// mixed into the state by three passes, and each pass performs eight S-box driven mixing rounds separated by a key schedule
-/// applied to the block words.
+/// <see cref="Tiger" /> processes input in 512-bit (64-byte) blocks using three 64-bit internal state variables. Each
+/// block is mixed into the state by three passes, and each pass performs eight S-box driven mixing rounds separated by
+/// a key schedule applied to the block words.
 /// </para>
 /// <para>
-/// The full 192-bit digest is always computed internally; shorter outputs (<c>Tiger/128</c> and <c>Tiger/160</c>) are produced by
-/// truncation after finalization. The padding byte is selected via <see cref="Variant"/>:
-/// <see cref="TigerHashingVariant.Tiger"/> uses <c>0x01</c> (the original specification) and
-/// <see cref="TigerHashingVariant.Tiger2"/> uses <c>0x80</c>.
+/// The full 192-bit digest is always computed internally; shorter outputs (<c>Tiger/128</c> and <c>Tiger/160</c>) are
+/// produced by truncation after finalization. The padding byte is selected via <see cref="Variant" />:
+/// <see cref="TigerHashingVariant.Tiger" /> uses <c>0x01</c> (the original specification) and
+/// <see cref="TigerHashingVariant.Tiger2" /> uses <c>0x80</c>.
 /// </para>
 /// <para>
-/// Although no longer recommended for new security-sensitive applications, Tiger has not been broken in the classical collision
-/// sense and is still useful for legacy interoperability and as a fast integrity hash.
+/// Although no longer recommended for new security-sensitive applications, Tiger has not been broken in the classical
+/// collision sense and is still useful for legacy interoperability and as a fast integrity hash.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 128, 160, or 192 bits — internally always 192 bits, then truncated.</description></item>
-///   <item><description>Block size: 64 bytes (512 bits); three 64-bit state variables.</description></item>
-///   <item><description>Three passes per block, eight S-box rounds per pass; optimized for 64-bit hosts.</description></item>
-///   <item><description>Padding variant: <see cref="TigerHashingVariant.Tiger"/> (<c>0x01</c>) or <see cref="TigerHashingVariant.Tiger2"/> (<c>0x80</c>).</description></item>
+/// <item>
+/// <description>
+/// Output size: 128, 160, or 192 bits — internally always 192 bits, then truncated.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Block size: 64 bytes (512 bits); three 64-bit state variables.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Three passes per block, eight S-box rounds per pass; optimized for 64-bit hosts.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Padding variant: <see cref="TigerHashingVariant.Tiger" /> (<c>0x01</c>) or <see cref="TigerHashingVariant.Tiger2" />
+/// (<c>0x80</c>).
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Tiger.</strong> Pick Tiger only for legacy interoperability — TigerTree (Merkle hash
-/// of Tiger-192 leaves) is still seen in older P2P and content-addressed storage systems. For any new security
-/// design use a SHA-2 family member or <see cref="Blake2b"/>; for fast non-cryptographic fingerprinting the
-/// algorithms in <c>Bodu.IO.Hashing</c> are usually a better fit.
+/// <strong>When to choose Tiger.</strong> Pick Tiger only for legacy interoperability — TigerTree (Merkle hash of
+/// Tiger-192 leaves) is still seen in older P2P and content-addressed storage systems. For any new security design use
+/// a SHA-2 family member or <see cref="Blake2b" />; for fast non-cryptographic fingerprinting the algorithms in
+/// <c>Bodu.IO.Hashing</c> are usually a better fit.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using var tiger = new Tiger(192) { Variant = TigerHashingVariant.Tiger2 };
-/// byte[] digest = tiger.ComputeHash(message);
-/// </code>
+/// <code language="csharp"> using var tiger = new Tiger(192) { Variant = TigerHashingVariant.Tiger2 }; byte[] digest =
+/// tiger.ComputeHash(message); </code>
 /// </example>
 /// <seealso href="https://www.cs.technion.ac.il/~biham/Reports/Tiger/">Tiger home page (Anderson / Biham)</seealso>
 /// <seealso href="../guides/cryptography/tiger.html">Using Tiger</seealso>
-/// <seealso href="../guides/cryptography/hashing.html#pattern-3--a-cryptographic-digest">Cryptographic digest guide</seealso>
+/// <seealso href="../guides/cryptography/hashing.html#pattern-3--a-cryptographic-digest">Cryptographic digest guide
+/// </seealso>
 public sealed partial class Tiger
     : BlockHashAlgorithm<Tiger>
 {
@@ -70,17 +87,17 @@ public sealed partial class Tiger
     private TigerHashingVariant _variant = TigerHashingVariant.Tiger;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Tiger"/> class with a 192-bit output hash size.
+    /// Initializes a new instance of the <see cref="Tiger" /> class with a 192-bit output hash size.
     /// </summary>
     public Tiger()
         : this(192)
     { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Tiger"/> class with the specified output size.
+    /// Initializes a new instance of the <see cref="Tiger" /> class with the specified output size.
     /// </summary>
     /// <param name="hashSize">The desired output size in bits. Must be one of 128, 160, or 192.</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize"/> is not valid.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="hashSize" /> is not valid.</exception>
     public Tiger(int hashSize)
         : base(512)
     {
@@ -92,15 +109,18 @@ public sealed partial class Tiger
     /// <summary>
     /// Gets the fully qualified algorithm name, including the variant and hash output size.
     /// </summary>
-    /// <value>A string in the form <c>Tiger/x</c>, where <c>x</c> is the number of bits in the final hash output.</value>
+    /// <value>
+    /// A string in the form <c>Tiger/x</c>, where <c>x</c> is the number of bits in the final hash output.
+    /// </value>
     /// <remarks>
     /// <para>
-    /// The name follows the convention <c>Tiger/x</c>, where <c>x</c> is the number of output bits-typically 128, 160, or 192. These
-    /// correspond to the standard Tiger variants: <c>Tiger/128</c>, <c>Tiger/160</c>, and <c>Tiger/192</c>.
+    /// The name follows the convention <c>Tiger/x</c>, where <c>x</c> is the number of output bits-typically 128, 160,
+    /// or 192. These correspond to the standard Tiger variants: <c>Tiger/128</c>, <c>Tiger/160</c>, and
+    /// <c>Tiger/192</c>.
     /// </para>
     /// <para>
-    /// The full 192-bit internal state is always computed. If a shorter output length is selected, the result is truncated after
-    /// finalization to match the configured <see cref="HashSize"/>.
+    /// The full 192-bit internal state is always computed. If a shorter output length is selected, the result is
+    /// truncated after finalization to match the configured <see cref="HashSize" />.
     /// </para>
     /// </remarks>
     public override string AlgorithmName
@@ -122,12 +142,15 @@ public sealed partial class Tiger
     /// Gets or sets the size, in bits, of the final computed hash output.
     /// </summary>
     /// <remarks>
-    /// Valid values are <c>128</c>, <c>160</c>, or <c>192</c>. This determines how many bits of the internal state are returned in the
-    /// final digest. Larger sizes increase output strength but may reduce compatibility with some Tiger implementations.
+    /// Valid values are <c>128</c>, <c>160</c>, or <c>192</c>. This determines how many bits of the internal state are
+    /// returned in the final digest. Larger sizes increase output strength but may reduce compatibility with some Tiger
+    /// implementations.
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">Thrown if the value is not 128, 160, or 192.</exception>
     /// <exception cref="ObjectDisposedException">The algorithm instance has been disposed.</exception>
-    /// <exception cref="CryptographicUnexpectedOperationException">Thrown if the hash computation has already started.</exception>
+    /// <exception cref="CryptographicUnexpectedOperationException">
+    /// Thrown if the hash computation has already started.
+    /// </exception>
     public new int HashSize
     {
         get
@@ -150,24 +173,34 @@ public sealed partial class Tiger
     /// Gets or sets the Tiger variant to use when computing the hash value.
     /// </summary>
     /// <remarks>
-    /// <para>The <see cref="TigerHashingVariant"/> determines the padding byte used in the final message block:</para>
+    /// <para>
+    /// The <see cref="TigerHashingVariant" /> determines the padding byte used in the final message block:
+    /// </para>
     /// <list type="bullet">
     /// <item>
-    /// <description><see cref="TigerHashingVariant.Tiger"/> uses a padding byte of <c>0x01</c> as per the original Tiger specification.</description>
+    /// <description>
+    /// <see cref="TigerHashingVariant.Tiger" /> uses a padding byte of <c>0x01</c> as per the original Tiger
+    /// specification.
+    /// </description>
     /// </item>
     /// <item>
     /// <description>
-    /// <see cref="TigerHashingVariant.Tiger2"/> uses a padding byte of <c>0x80</c> as introduced in the Tiger2 variant to match
-    /// typical Merkle�Damg�rd padding semantics.
+    /// <see cref="TigerHashingVariant.Tiger2" /> uses a padding byte of <c>0x80</c> as introduced in the Tiger2 variant
+    /// to match typical Merkle�Damg�rd padding semantics.
     /// </description>
     /// </item>
     /// </list>
-    /// <para>The variant must be specified before hash computation begins. Changing it after processing has started will throw an exception.</para>
+    /// <para>
+    /// The variant must be specified before hash computation begins. Changing it after processing has started will
+    /// throw an exception.
+    /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown if the assigned value is not a valid <see cref="TigerHashingVariant"/> enumeration value.
+    /// Thrown if the assigned value is not a valid <see cref="TigerHashingVariant" /> enumeration value.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">Thrown if the hash algorithm instance has already been disposed.</exception>
+    /// <exception cref="ObjectDisposedException">
+    /// Thrown if the hash algorithm instance has already been disposed.
+    /// </exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// Thrown if the hash algorithm has already started processing input and is in an immutable state.
     /// </exception>
@@ -190,7 +223,9 @@ public sealed partial class Tiger
     }
 
     /// <inheritdoc />
-    /// <remarks>Restores the three 64-bit chaining variables to their Tiger-specified initial constants.</remarks>
+    /// <remarks>
+    /// Restores the three 64-bit chaining variables to their Tiger-specified initial constants.
+    /// </remarks>
     public override void Initialize()
     {
         base.Initialize();
@@ -203,7 +238,8 @@ public sealed partial class Tiger
     /// Releases resources used by the algorithm and clears the internal state variables.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged resources.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
     {
@@ -255,9 +291,12 @@ public sealed partial class Tiger
     }
 
     /// <summary>
-    /// Finalizes the hash computation and returns the digest, truncated to <see cref="HashSize"/> / 8 bytes where applicable.
+    /// Finalizes the hash computation and returns the digest, truncated to <see cref="HashSize" /> / 8 bytes where
+    /// applicable.
     /// </summary>
-    /// <returns>A byte array of 16, 20, or 24 bytes corresponding to the configured hash size (128, 160, or 192 bits).</returns>
+    /// <returns>
+    /// A byte array of 16, 20, or 24 bytes corresponding to the configured hash size (128, 160, or 192 bits).
+    /// </returns>
     protected override byte[] ProcessFinalBlock()
     {
         Span<byte> output = stackalloc byte[MaxOutputBits / 8];

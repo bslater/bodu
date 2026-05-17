@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
@@ -13,12 +12,15 @@ namespace Bodu.Security.Cryptography;
 internal static partial class CryptoHelpers
 {
     /// <summary>
-    /// Fills the specified byte array with cryptographically secure random bytes, ensuring that no byte is equal to <c>0x00</c>.
+    /// Fills the specified byte array with cryptographically secure random bytes, ensuring that no byte is equal to
+    /// <c>0x00</c>.
     /// </summary>
     /// <param name="buffer">The byte array to fill.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="buffer"/> is <see langword="null"/>.</exception>
-    /// <exception cref="ArgumentException"><paramref name="buffer"/> is empty.</exception>
-    /// <remarks>Delegates to the span-based overload. Random generation is repeated until the buffer contains no zero bytes.</remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="buffer" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException"><paramref name="buffer" /> is empty.</exception>
+    /// <remarks>
+    /// Delegates to the span-based overload. Random generation is repeated until the buffer contains no zero bytes.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void FillWithRandomNonZeroBytes(byte[] buffer)
     {
@@ -28,10 +30,13 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Fills the provided span with cryptographically secure random bytes, ensuring that no byte in the span is equal to <c>0x00</c>.
+    /// Fills the provided span with cryptographically secure random bytes, ensuring that no byte in the span is equal
+    /// to <c>0x00</c>.
     /// </summary>
     /// <param name="buffer">The span to fill.</param>
-    /// <remarks>Loops until all bytes are non-zero. Uses <see cref="RandomNumberGenerator.Fill(Span{byte})"/>.</remarks>
+    /// <remarks>
+    /// Loops until all bytes are non-zero. Uses <see cref="RandomNumberGenerator.Fill(Span{byte})" />.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void FillWithRandomNonZeroBytes(Span<byte> buffer)
     {
@@ -39,19 +44,19 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Attempts to fill the provided span with cryptographically secure random bytes that do not include <c>0x00</c>, redrawing
-    /// each individual zero byte up to a bounded number of times.
+    /// Attempts to fill the provided span with cryptographically secure random bytes that do not include <c>0x00</c>,
+    /// redrawing each individual zero byte up to a bounded number of times.
     /// </summary>
     /// <param name="buffer">The span to fill.</param>
     /// <returns>
-    /// <see langword="true"/> if the buffer was filled successfully without any zero bytes; otherwise, <see langword="false"/>
-    /// once the per-byte redraw limit has been reached for any position.
+    /// <see langword="true" /> if the buffer was filled successfully without any zero bytes; otherwise,
+    /// <see langword="false" /> once the per-byte redraw limit has been reached for any position.
     /// </returns>
     /// <remarks>
-    /// Uses per-byte rejection sampling: the buffer is filled once, and only positions that came up zero are individually
-    /// redrawn. This scales linearly with buffer length rather than exponentially, so the failure probability stays
-    /// negligible (≈ 256<sup>-8</sup> per byte) regardless of how large the buffer is. Intended for performance-sensitive
-    /// scenarios where indefinite retry is undesirable.
+    /// Uses per-byte rejection sampling: the buffer is filled once, and only positions that came up zero are
+    /// individually redrawn. This scales linearly with buffer length rather than exponentially, so the failure
+    /// probability stays negligible (≈ 256<sup>-8</sup> per byte) regardless of how large the buffer is. Intended for
+    /// performance-sensitive scenarios where indefinite retry is undesirable.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static bool TryFillWithRandomNonZeroBytes(Span<byte> buffer)
@@ -119,8 +124,10 @@ internal static partial class CryptoHelpers
     /// Returns a new byte array filled with cryptographically secure random bytes, none of which are zero.
     /// </summary>
     /// <param name="length">The number of random bytes to generate. Must be greater than zero.</param>
-    /// <returns>A <see cref="byte"/> array of the specified length containing only non-zero values.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than or equal to zero.</exception>
+    /// <returns>A <see cref="byte" /> array of the specified length containing only non-zero values.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="length" /> is less than or equal to zero.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static byte[] GetRandomNonZeroBytes(int length)
     {
@@ -131,11 +138,13 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Fills the specified span with random bytes, excluding the given <paramref name="forbidden"/> byte.
+    /// Fills the specified span with random bytes, excluding the given <paramref name="forbidden" /> byte.
     /// </summary>
     /// <param name="forbidden">The byte value to exclude from the result.</param>
     /// <param name="buffer">The span to fill with random bytes.</param>
-    /// <remarks>Repeatedly fills the buffer until <paramref name="forbidden"/> is no longer present.</remarks>
+    /// <remarks>
+    /// Repeatedly fills the buffer until <paramref name="forbidden" /> is no longer present.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static void FillWithRandomBytesExcluding(byte forbidden, Span<byte> buffer)
     {
@@ -185,13 +194,17 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Returns a new array of cryptographically secure random bytes of the specified <paramref name="length"/>, excluding any
-    /// occurrences of the <paramref name="forbidden"/> byte value.
+    /// Returns a new array of cryptographically secure random bytes of the specified <paramref name="length" />,
+    /// excluding any occurrences of the <paramref name="forbidden" /> byte value.
     /// </summary>
     /// <param name="forbidden">The byte value to exclude from the output.</param>
     /// <param name="length">The number of bytes to generate. Must be greater than zero.</param>
-    /// <returns>A <see cref="byte"/> array filled with random bytes that do not include <paramref name="forbidden"/>.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="length"/> is less than or equal to zero.</exception>
+    /// <returns>
+    /// A <see cref="byte" /> array filled with random bytes that do not include <paramref name="forbidden" />.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="length" /> is less than or equal to zero.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     internal static byte[] GetRandomBytesExcluding(byte forbidden, int length)
     {

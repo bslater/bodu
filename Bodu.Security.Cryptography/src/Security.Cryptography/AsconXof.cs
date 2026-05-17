@@ -9,9 +9,9 @@ using System.Runtime.CompilerServices;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Abstract base class for ASCON extendable output functions (XOFs) as defined in NIST SP 800-232. Implements the shared
-/// sponge construction, residual-buffer management, padding, and Ascon-p permutation used by <see cref="AsconXof128"/> and
-/// <see cref="AsconCxof128"/>.
+/// Abstract base class for ASCON extendable output functions (XOFs) as defined in NIST SP 800-232. Implements the
+/// shared sponge construction, residual-buffer management, padding, and Ascon-p permutation used by
+/// <see cref="AsconXof128" /> and <see cref="AsconCxof128" />.
 /// </summary>
 /// <typeparam name="T">
 /// The concrete XOF type derived from this class. Must expose a public parameterless constructor.
@@ -19,49 +19,63 @@ namespace Bodu.Security.Cryptography;
 /// <remarks>
 /// <para>
 /// All ASCON XOF algorithms share a 320-bit internal state of five 64-bit words, a 64-bit (8-byte) rate, and a
-/// variable-length output. They differ in their pre-computed initialization state, in the number of absorption rounds (pb),
-/// and in whether a customization string may be supplied before absorption.
+/// variable-length output. They differ in their pre-computed initialization state, in the number of absorption rounds
+/// (pb), and in whether a customization string may be supplied before absorption.
 /// </para>
 /// <para>
 /// The lifecycle of an instance is:
 /// </para>
 /// <list type="number">
-/// <item><description>Optionally customize (only <see cref="AsconCxof128"/>).</description></item>
-/// <item><description>Call <see cref="Absorb"/> zero or more times to supply input data.</description></item>
 /// <item>
 /// <description>
-/// Call <see cref="Squeeze"/> one or more times to produce output of any length. Once squeezing has begun, no further
+/// Optionally customize (only <see cref="AsconCxof128" />).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Call <see cref="Absorb" /> zero or more times to supply input data.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Call <see cref="Squeeze" /> one or more times to produce output of any length. Once squeezing has begun, no further
 /// data may be absorbed.
 /// </description>
 /// </item>
-/// <item><description>Call <see cref="Initialize"/> to reset the instance and reuse it for a new message.</description></item>
+/// <item>
+/// <description>
+/// Call <see cref="Initialize" /> to reset the instance and reuse it for a new message.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// Padding follows the Ascon convention: the byte immediately after the last absorbed byte is XORed with <c>0x01</c>, and
-/// the remaining rate bytes retain their current state values. The transition from absorption to squeezing always applies
-/// the full 12-round permutation (Ascon-p12). Subsequent squeeze blocks use pb rounds between extractions.
+/// Padding follows the Ascon convention: the byte immediately after the last absorbed byte is XORed with <c>0x01</c>,
+/// and the remaining rate bytes retain their current state values. The transition from absorption to squeezing always
+/// applies the full 12-round permutation (Ascon-p12). Subsequent squeeze blocks use pb rounds between extractions.
 /// </para>
 /// <para>
 /// <strong>Don't derive from this class directly.</strong> Use one of the two concrete XOFs that extend it:
 /// </para>
 /// <list type="bullet">
-///   <item>
-///     <term><see cref="AsconXof128"/></term>
-///     <description>Plain Ascon XOF — variable-length output without a customization string.</description>
-///   </item>
-///   <item>
-///     <term><see cref="AsconCxof128"/></term>
-///     <description>Customizable Ascon XOF — accepts a customization string before absorption to domain-separate output families.</description>
-///   </item>
+/// <item>
+/// <term><see cref="AsconXof128" /></term>
+/// <description>
+/// Plain Ascon XOF — variable-length output without a customization string.
+/// </description>
+/// </item>
+/// <item>
+/// <term><see cref="AsconCxof128" /></term>
+/// <description>
+/// Customizable Ascon XOF — accepts a customization string before absorption to domain-separate output families.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// For fixed-length Ascon hashing use <see cref="AsconHash256"/> or <see cref="AsconHashA256"/>; for the AEAD
-/// member of the Ascon suite use <see cref="AsconAead128"/>.
+/// For fixed-length Ascon hashing use <see cref="AsconHash256" /> or <see cref="AsconHashA256" />; for the AEAD member
+/// of the Ascon suite use <see cref="AsconAead128" />.
 /// </para>
 /// </remarks>
-/// <seealso cref="AsconXof128"/>
-/// <seealso cref="AsconCxof128"/>
-/// <seealso cref="AsconHash{T}"/>
+/// <seealso cref="AsconXof128"/> <seealso cref="AsconCxof128"/> <seealso cref="AsconHash{T}"/>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 public abstract class AsconXof<T>
     : IDisposable
@@ -87,7 +101,7 @@ public abstract class AsconXof<T>
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconXof{T}"/> class with the specified algorithm parameters.
+    /// Initializes a new instance of the <see cref="AsconXof{T}" /> class with the specified algorithm parameters.
     /// </summary>
     /// <param name="iv0">Pre-computed initial state word 0 (result of applying Ascon-p12 to the raw IV).</param>
     /// <param name="iv1">Pre-computed initial state word 1.</param>
@@ -98,11 +112,13 @@ public abstract class AsconXof<T>
     /// Number of Ascon-p rounds applied after each absorbed block and between squeeze blocks. Must be between 1 and 12.
     /// </param>
     /// <param name="algorithmName">
-    /// The canonical algorithm identifier string as defined in NIST SP 800-232. Must not be <see langword="null"/>.
+    /// The canonical algorithm identifier string as defined in NIST SP 800-232. Must not be <see langword="null" />.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="algorithmName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="algorithmName" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="absorptionRounds"/> is less than 1 or greater than 12.
+    /// <paramref name="absorptionRounds" /> is less than 1 or greater than 12.
     /// </exception>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The IV state words are assigned together to mirror the five-word Ascon initial state and keep the algorithm parameter initialization grouped as a single logical operation.")]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1117:Parameters should be on same line or separate lines", Justification = "The five IV words are intentionally kept together on the first line because they form the complete five-word Ascon initial state; the remaining parameters configure behavior rather than state.")]
@@ -154,13 +170,13 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// Absorbs <paramref name="data"/> into the sponge state. May be called multiple times before the first
-    /// <see cref="Squeeze"/>.
+    /// Absorbs <paramref name="data" /> into the sponge state. May be called multiple times before the first
+    /// <see cref="Squeeze" />.
     /// </summary>
     /// <param name="data">The input data to absorb. May be empty.</param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">
-    /// <see cref="Squeeze"/> has already been called; call <see cref="Initialize"/> to reset and start over.
+    /// <see cref="Squeeze" /> has already been called; call <see cref="Initialize" /> to reset and start over.
     /// </exception>
     public virtual void Absorb(ReadOnlySpan<byte> data)
     {
@@ -172,7 +188,7 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// Squeezes <paramref name="output"/><c>.Length</c> bytes from the sponge into <paramref name="output"/>. May be
+    /// Squeezes <paramref name="output" /><c>.Length</c> bytes from the sponge into <paramref name="output" />. May be
     /// called multiple times to produce an unbounded output stream.
     /// </summary>
     /// <param name="output">Destination for the squeezed bytes. May be empty.</param>
@@ -204,12 +220,14 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// Squeezes exactly <paramref name="outputLength"/> bytes and returns them as a new array.
+    /// Squeezes exactly <paramref name="outputLength" /> bytes and returns them as a new array.
     /// </summary>
     /// <param name="outputLength">The number of bytes to produce. Must be greater than zero.</param>
-    /// <returns>A new byte array of length <paramref name="outputLength"/> containing the squeezed output.</returns>
+    /// <returns>A new byte array of length <paramref name="outputLength" /> containing the squeezed output.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="outputLength"/> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="outputLength" /> is less than or equal to zero.
+    /// </exception>
     public byte[] GetHash(int outputLength)
     {
         this.ThrowIfDisposed();
@@ -227,14 +245,14 @@ public abstract class AsconXof<T>
     public static T Create() => new T();
 
     /// <summary>
-    /// Hashes <paramref name="source"/> in a single pass and returns <paramref name="outputLength"/> bytes.
+    /// Hashes <paramref name="source" /> in a single pass and returns <paramref name="outputLength" /> bytes.
     /// </summary>
     /// <param name="source">The input data to hash.</param>
-    /// <param name="outputLength">
-    /// The number of output bytes to produce. Must be greater than zero.
-    /// </param>
-    /// <returns>A byte array of length <paramref name="outputLength"/> containing the XOF output.</returns>
-    /// <exception cref="ArgumentOutOfRangeException"><paramref name="outputLength"/> is less than or equal to zero.</exception>
+    /// <param name="outputLength">The number of output bytes to produce. Must be greater than zero.</param>
+    /// <returns>A byte array of length <paramref name="outputLength" /> containing the XOF output.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="outputLength" /> is less than or equal to zero.
+    /// </exception>
     public static byte[] HashData(ReadOnlySpan<byte> source, int outputLength)
     {
         ThrowHelper.ThrowIfLessThanOrEqual(outputLength, 0);
@@ -257,7 +275,8 @@ public abstract class AsconXof<T>
     /// Releases managed resources and clears the sponge state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> for unmanaged only.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> for unmanaged
+    /// only.
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
@@ -275,7 +294,7 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.
@@ -293,11 +312,11 @@ public abstract class AsconXof<T>
 
     /// <summary>
     /// Finalizes a sponge absorption phase by padding the residual buffer with <c>0x01</c> at the next unused byte
-    /// position, absorbing the padded block, and applying <see cref="_absorptionRounds"/> Ascon-p rounds. Resets the
-    /// residual counter to zero so that the next call to <see cref="Absorb"/> starts from a clean state.
+    /// position, absorbing the padded block, and applying <see cref="_absorptionRounds" /> Ascon-p rounds. Resets the
+    /// residual counter to zero so that the next call to <see cref="Absorb" /> starts from a clean state.
     /// </summary>
     /// <remarks>
-    /// Derived classes (specifically <see cref="AsconCxof128"/>) call this to close the customization phase before
+    /// Derived classes (specifically <see cref="AsconCxof128" />) call this to close the customization phase before
     /// injecting a domain-separation constant.
     /// </remarks>
     protected void FinalizeAbsorptionPhase()
@@ -312,7 +331,7 @@ public abstract class AsconXof<T>
     }
 
     /// <summary>
-    /// XORs <paramref name="value"/> into state word 4 (<c>S4</c>). Used by <see cref="AsconCxof128"/> to inject the
+    /// XORs <paramref name="value" /> into state word 4 (<c>S4</c>). Used by <see cref="AsconCxof128" /> to inject the
     /// customization domain-separation constant after the customization absorption phase is finalized.
     /// </summary>
     /// <param name="value">The value to XOR into <c>S4</c>.</param>
@@ -321,7 +340,7 @@ public abstract class AsconXof<T>
 
 
     /// <summary>
-    /// Accumulates <paramref name="data"/> into the residual buffer, flushing complete 8-byte blocks into the state.
+    /// Accumulates <paramref name="data" /> into the residual buffer, flushing complete 8-byte blocks into the state.
     /// </summary>
     /// <param name="data">The bytes to absorb.</param>
     private void ProcessInputBlocks(ReadOnlySpan<byte> data)

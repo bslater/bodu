@@ -4,31 +4,32 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides high-performance utility methods for one-shot hashing using factory-created <see cref="HashAlgorithm"/> instances.
+/// Provides high-performance utility methods for one-shot hashing using factory-created <see cref="HashAlgorithm" />
+/// instances.
 /// </summary>
 /// <remarks>
 /// <para>
-/// These methods simplify hashing workflows by accepting an <see cref="IHashAlgorithmFactory{T}"/> implementation, allowing
-/// consumers to construct and configure hash algorithms (including keyed or parameterized variants) without managing lifecycle manually.
+/// These methods simplify hashing workflows by accepting an <see cref="IHashAlgorithmFactory{T}" /> implementation,
+/// allowing consumers to construct and configure hash algorithms (including keyed or parameterized variants) without
+/// managing lifecycle manually.
 /// </para>
 /// <para>
-/// This is ideal for use cases that require stateless or ephemeral hashing operations without incremental updates or state reuse.
-/// Each call constructs a fresh algorithm instance, runs the hash, and disposes deterministically — callers do not need to
-/// track <see cref="System.IDisposable"/> lifetimes themselves.
+/// This is ideal for use cases that require stateless or ephemeral hashing operations without incremental updates or
+/// state reuse. Each call constructs a fresh algorithm instance, runs the hash, and disposes deterministically —
+/// callers do not need to track <see cref="System.IDisposable" /> lifetimes themselves.
 /// </para>
 /// <para>
-/// <strong>When to choose this over the BCL.</strong> Pick <see cref="HashAlgorithmHelper"/> when the algorithm
-/// requires per-call configuration (a key, round counts, a variant flag) — the factory consistently applies
-/// it to every fresh instance. For stateless one-shot hashing of unconfigured algorithms (SHA-256, SHA-512)
-/// the BCL's static <c>HashData</c> on each algorithm class is simpler and faster. For tree-hashing workloads
-/// pass the same factory into <see cref="MerkleTreeHash"/> or <see cref="ParallelMerkleTreeHash"/>.
+/// <strong>When to choose this over the BCL.</strong> Pick <see cref="HashAlgorithmHelper" /> when the algorithm
+/// requires per-call configuration (a key, round counts, a variant flag) — the factory consistently applies it to every
+/// fresh instance. For stateless one-shot hashing of unconfigured algorithms (SHA-256, SHA-512) the BCL's static
+/// <c>HashData</c> on each algorithm class is simpler and faster. For tree-hashing workloads pass the same factory into
+/// <see cref="MerkleTreeHash" /> or <see cref="ParallelMerkleTreeHash" />.
 /// </para>
 /// </remarks>
 /// <example>
@@ -45,19 +46,20 @@ namespace Bodu.Security.Cryptography;
 ///]]>
 /// </code>
 /// </example>
-/// <seealso cref="IHashAlgorithmFactory{T}"/>
-/// <seealso cref="HashAlgorithmFactory"/>
+/// <seealso cref="IHashAlgorithmFactory{T}"/> <seealso cref="HashAlgorithmFactory"/>
 /// <seealso cref="DelegateHashAlgorithmFactory{T}"/>
 public static class HashAlgorithmHelper
 {
     /// <summary>
     /// Computes the hash for the given input using a factory-created algorithm.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="HashAlgorithm"/>.</typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm" />.</typeparam>
     /// <param name="factory">The factory used to create the hash algorithm.</param>
     /// <param name="input">The input data to hash.</param>
     /// <returns>The computed hash as a byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="factory" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static byte[] HashData<T>(IHashAlgorithmFactory<T> factory, ReadOnlySpan<byte> input)
         where T : System.Security.Cryptography.HashAlgorithm
@@ -80,11 +82,13 @@ public static class HashAlgorithmHelper
     /// <summary>
     /// Computes the hash of a stream using a factory-created algorithm.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="HashAlgorithm"/>.</typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm" />.</typeparam>
     /// <param name="factory">The factory used to create the hash algorithm.</param>
     /// <param name="stream">The stream to hash.</param>
     /// <returns>The computed hash as a byte array.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> or <paramref name="stream"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="factory" /> or <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static byte[] HashData<T>(IHashAlgorithmFactory<T> factory, Stream stream)
         where T : System.Security.Cryptography.HashAlgorithm
@@ -101,12 +105,14 @@ public static class HashAlgorithmHelper
     /// <summary>
     /// Asynchronously computes the hash of a stream using a factory-created algorithm.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="HashAlgorithm"/>.</typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm" />.</typeparam>
     /// <param name="factory">The factory used to create the hash algorithm.</param>
     /// <param name="stream">The stream to hash.</param>
     /// <param name="cancellationToken">An optional cancellation token.</param>
     /// <returns>A task representing the asynchronous hash computation.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> or <paramref name="stream"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="factory" /> or <paramref name="stream" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">Thrown when the underlying cryptographic algorithm fails.</exception>
     public static async ValueTask<byte[]> HashDataAsync<T>(
         IHashAlgorithmFactory<T> factory,
@@ -126,13 +132,17 @@ public static class HashAlgorithmHelper
     /// <summary>
     /// Attempts to compute the hash and write it to the specified destination buffer.
     /// </summary>
-    /// <typeparam name="T">The type of <see cref="HashAlgorithm"/>.</typeparam>
+    /// <typeparam name="T">The type of <see cref="HashAlgorithm" />.</typeparam>
     /// <param name="factory">The factory used to create the hash algorithm.</param>
     /// <param name="input">The input data to hash.</param>
     /// <param name="destination">The buffer to receive the hash value.</param>
-    /// <param name="bytesWritten">Receives the number of bytes written to <paramref name="destination"/>.</param>
-    /// <returns><see langword="true"/> if the hash fits in the destination buffer; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="factory"/> is <see langword="null"/>.</exception>
+    /// <param name="bytesWritten">Receives the number of bytes written to <paramref name="destination" />.</param>
+    /// <returns>
+    /// <see langword="true" /> if the hash fits in the destination buffer; otherwise, <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="factory" /> is <see langword="null" />.
+    /// </exception>
     public static bool TryHashData<T>(
         IHashAlgorithmFactory<T> factory,
         ReadOnlySpan<byte> input,
@@ -147,7 +157,7 @@ public static class HashAlgorithmHelper
     }
 
     /// <summary>
-    /// Reads all bytes from <paramref name="stream"/> synchronously and feeds them into <paramref name="algorithm"/>.
+    /// Reads all bytes from <paramref name="stream" /> synchronously and feeds them into <paramref name="algorithm" />.
     /// </summary>
     /// <param name="algorithm">The hash algorithm receiving the data.</param>
     /// <param name="stream">The input stream to read from.</param>
@@ -168,7 +178,8 @@ public static class HashAlgorithmHelper
     }
 
     /// <summary>
-    /// Reads all bytes from <paramref name="stream"/> asynchronously and feeds them into <paramref name="algorithm"/>.
+    /// Reads all bytes from <paramref name="stream" /> asynchronously and feeds them into <paramref name="algorithm" />
+    /// .
     /// </summary>
     /// <param name="algorithm">The hash algorithm receiving the data.</param>
     /// <param name="stream">The input stream to read from.</param>

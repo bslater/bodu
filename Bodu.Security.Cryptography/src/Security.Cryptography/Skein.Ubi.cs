@@ -18,7 +18,9 @@ public abstract partial class Skein<T>
     /// hash configurations must equal the words returned here when the algorithm is constructed with no key and the
     /// matching output size.
     /// </summary>
-    /// <returns>A defensive copy of the chaining-value words that <see cref="Initialize"/> would seed the state with.</returns>
+    /// <returns>
+    /// A defensive copy of the chaining-value words that <see cref="Initialize" /> would seed the state with.
+    /// </returns>
     /// <remarks>
     /// The first call computes and caches the IV; subsequent calls return clones of the cached value. Mutating the
     /// returned array does not affect the algorithm's internal state.
@@ -31,10 +33,12 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
-    /// Applies a single Skein <c>UBI</c> (Unique Block Iteration) compression step that folds <paramref name="block"/>
+    /// Applies a single Skein <c>UBI</c> (Unique Block Iteration) compression step that folds <paramref name="block" />
     /// into the chaining state using the supplied tweak fields.
     /// </summary>
-    /// <param name="block">The block to absorb. Must be exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSize"/> bytes long.</param>
+    /// <param name="block">
+    /// The block to absorb. Must be exactly <see cref="BufferedBlockHashAlgorithm{T}.BlockSize" /> bytes long.
+    /// </param>
     /// <param name="type">The UBI block type, which occupies bits 120..125 of the tweak.</param>
     /// <param name="first">Whether this is the first UBI call in the current stage. Sets bit 126 of the tweak.</param>
     /// <param name="final">Whether this is the final UBI call in the current stage. Sets bit 127 of the tweak.</param>
@@ -67,7 +71,7 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
-    /// Packs the 128-bit Skein tweak into 16 bytes ready for <see cref="ThreefishBlockCipher.Rekey"/>.
+    /// Packs the 128-bit Skein tweak into 16 bytes ready for <see cref="ThreefishBlockCipher.Rekey" />.
     /// </summary>
     /// <param name="destination">A 16-byte buffer that will receive the packed tweak.</param>
     /// <param name="position">The position field (cumulative stage byte count through the current block).</param>
@@ -91,7 +95,10 @@ public abstract partial class Skein<T>
     /// Builds the 32-byte configuration block defined by Skein 1.3 §3.5.1 and zero-pads it out to the current state
     /// size.
     /// </summary>
-    /// <param name="destination">A buffer of <see cref="BufferedBlockHashAlgorithm{T}.BlockSize"/> bytes that receives the packed configuration block.</param>
+    /// <param name="destination">
+    /// A buffer of <see cref="BufferedBlockHashAlgorithm{T}.BlockSize" /> bytes that receives the packed configuration
+    /// block.
+    /// </param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void BuildConfigurationBlock(Span<byte> destination)
     {
@@ -131,7 +138,7 @@ public abstract partial class Skein<T>
     }
 
     /// <summary>
-    /// Runs the Skein-MAC <c>KEY</c> UBI phase, absorbing <paramref name="key"/> in state-sized blocks with zero
+    /// Runs the Skein-MAC <c>KEY</c> UBI phase, absorbing <paramref name="key" /> in state-sized blocks with zero
     /// padding on the final partial block when required.
     /// </summary>
     /// <param name="key">The key material to absorb.</param>
@@ -165,7 +172,7 @@ public abstract partial class Skein<T>
 
     /// <summary>
     /// Absorbs message bytes into the chaining state using a one-block lag so that the last UBI call in the message
-    /// phase can be correctly flagged as <c>Final</c> at <see cref="HashFinal"/> time.
+    /// phase can be correctly flagged as <c>Final</c> at <see cref="HashFinal" /> time.
     /// </summary>
     /// <param name="source">The next chunk of input data.</param>
     private void AbsorbMessage(ReadOnlySpan<byte> source)
@@ -217,9 +224,11 @@ public abstract partial class Skein<T>
 
     /// <summary>
     /// Runs the Skein output UBI chain against the finalized chaining value, emitting consecutive state-sized output
-    /// fragments until <paramref name="destination"/> is filled.
+    /// fragments until <paramref name="destination" /> is filled.
     /// </summary>
-    /// <param name="destination">The digest buffer, of length <see cref="System.Security.Cryptography.HashAlgorithm.HashSize"/> / 8.</param>
+    /// <param name="destination">
+    /// The digest buffer, of length <see cref="System.Security.Cryptography.HashAlgorithm.HashSize" /> / 8.
+    /// </param>
     /// <remarks>
     /// <para>
     /// Each output call saves the final chaining value and re-runs UBI over a zero-filled block whose first eight bytes

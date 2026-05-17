@@ -12,10 +12,9 @@ namespace Bodu.Security.Cryptography;
 internal static class Blake2Constants
 {
     /// <summary>
-    /// The BLAKE2 sigma permutation schedule: 10 rows of 16 message-word indices used to select
-    /// the two message words fed into each <c>G</c> mixing call per round. Both BLAKE2b (12 rounds)
-    /// and BLAKE2s (10 rounds) use the same table, wrapping modulo 10 when the round count exceeds
-    /// the row count.
+    /// The BLAKE2 sigma permutation schedule: 10 rows of 16 message-word indices used to select the two message words
+    /// fed into each <c>G</c> mixing call per round. Both BLAKE2b (12 rounds) and BLAKE2s (10 rounds) use the same
+    /// table, wrapping modulo 10 when the round count exceeds the row count.
     /// </summary>
     internal static readonly byte[][] Sigma =
     [

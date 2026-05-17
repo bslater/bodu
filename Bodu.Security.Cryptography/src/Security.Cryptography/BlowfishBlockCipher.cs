@@ -4,40 +4,42 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Buffers.Binary;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides the core Blowfish block cipher engine, implementing low-level encryption and decryption of individual 64-bit blocks.
+/// Provides the core Blowfish block cipher engine, implementing low-level encryption and decryption of individual
+/// 64-bit blocks.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This class implements the Blowfish symmetric block cipher designed by Bruce Schneier. It operates on 64-bit (8-byte) blocks and
-/// accepts a variable-length key of between 32 and 448 bits (4 to 56 bytes). The cipher uses a 16-round Feistel network with four
-/// 256-entry, 32-bit S-boxes and an 18-entry 32-bit P-array, all initialized from the hexadecimal digits of pi (π).
+/// This class implements the Blowfish symmetric block cipher designed by Bruce Schneier. It operates on 64-bit (8-byte)
+/// blocks and accepts a variable-length key of between 32 and 448 bits (4 to 56 bytes). The cipher uses a 16-round
+/// Feistel network with four 256-entry, 32-bit S-boxes and an 18-entry 32-bit P-array, all initialized from the
+/// hexadecimal digits of pi (π).
 /// </para>
 /// <para>
-/// The block operation follows the Blowfish specification directly: split the 64-bit block into two big-endian 32-bit halves,
-/// apply 16 Feistel rounds using the expanded P-array and the four key-dependent S-boxes, undo the final Feistel swap, and apply
-/// the final two P-array words as output whitening. Decryption walks the same Feistel structure in reverse P-array order.
+/// The block operation follows the Blowfish specification directly: split the 64-bit block into two big-endian 32-bit
+/// halves, apply 16 Feistel rounds using the expanded P-array and the four key-dependent S-boxes, undo the final
+/// Feistel swap, and apply the final two P-array words as output whitening. Decryption walks the same Feistel structure
+/// in reverse P-array order.
 /// </para>
 /// <para>
-/// Key schedule expansion is performed in full during construction. The pi-derived P-array is first XORed with cyclic 32-bit
-/// key words, then the all-zero block is repeatedly encrypted to replace every P-array entry and every S-box entry with
-/// key-dependent values. All sensitive expanded state is zeroed securely on disposal.
+/// Key schedule expansion is performed in full during construction. The pi-derived P-array is first XORed with cyclic
+/// 32-bit key words, then the all-zero block is repeatedly encrypted to replace every P-array entry and every S-box
+/// entry with key-dependent values. All sensitive expanded state is zeroed securely on disposal.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Blowfish"/> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="BlowfishBlockCipher"/> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> (for example via
-/// <see cref="BlockCipherModeFactory"/>) or with an <see cref="IPaddingStrategy"/>.
+/// Most callers should prefer the higher-level <see cref="Blowfish" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="BlowfishBlockCipher" />
+/// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example
+/// via <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
 /// </para>
 /// </remarks>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
-/// <seealso cref="Blowfish"/>
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// SymmetricAlgorithm</seealso> <seealso cref="Blowfish"/>
 public sealed partial class BlowfishBlockCipher
     : IBlockCipher
 {
@@ -52,8 +54,8 @@ public sealed partial class BlowfishBlockCipher
     private const int FeistelRounds = 16;
 
     /// <summary>
-    /// Number of 32-bit words in the Blowfish P-array. The first 16 entries are round subkeys and the final two entries are
-    /// used after the final swap as whitening words.
+    /// Number of 32-bit words in the Blowfish P-array. The first 16 entries are round subkeys and the final two entries
+    /// are used after the final swap as whitening words.
     /// </summary>
     private const int PArrayLength = 18;
 
@@ -76,18 +78,16 @@ public sealed partial class BlowfishBlockCipher
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="BlowfishBlockCipher"/> class using the specified key.
+    /// Initializes a new instance of the <see cref="BlowfishBlockCipher" /> class using the specified key.
     /// </summary>
-    /// <param name="key">
-    /// The encryption key. Must be between 4 and 56 bytes (32 to 448 bits) in length.
-    /// </param>
+    /// <param name="key">The encryption key. Must be between 4 and 56 bytes (32 to 448 bits) in length.</param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key"/> is fewer than 4 bytes or more than 56 bytes in length.
+    /// <paramref name="key" /> is fewer than 4 bytes or more than 56 bytes in length.
     /// </exception>
     /// <remarks>
     /// <para>
-    /// The full Blowfish key schedule — including XOR of the P-array with the key bytes and repeated encryption of the all-zeros block
-    /// to expand the P-array and all four S-boxes — is performed in full during construction.
+    /// The full Blowfish key schedule — including XOR of the P-array with the key bytes and repeated encryption of the
+    /// all-zeros block to expand the P-array and all four S-boxes — is performed in full during construction.
     /// </para>
     /// </remarks>
     public BlowfishBlockCipher(ReadOnlySpan<byte> key)
@@ -120,20 +120,20 @@ public sealed partial class BlowfishBlockCipher
     }
 
     /// <summary>
-    /// Decrypts a single 64-bit block using the Blowfish cipher and writes the plaintext to <paramref name="output"/>.
+    /// Decrypts a single 64-bit block using the Blowfish cipher and writes the plaintext to <paramref name="output" />.
     /// </summary>
     /// <param name="input">
-    /// A read-only span containing the ciphertext block to decrypt. Must be at least <see cref="BlockSize"/> / 8 bytes in length.
+    /// A read-only span containing the ciphertext block to decrypt. Must be at least <see cref="BlockSize" /> / 8 bytes
+    /// in length.
     /// </param>
     /// <param name="output">
-    /// A writable span to receive the decrypted plaintext block. Must be at least <see cref="BlockSize"/> / 8 bytes in length.
+    /// A writable span to receive the decrypted plaintext block. Must be at least <see cref="BlockSize" /> / 8 bytes in
+    /// length.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input"/> or <paramref name="output"/> is shorter than <see cref="BlockSize"/> / 8 bytes.
+    /// <paramref name="input" /> or <paramref name="output" /> is shorter than <see cref="BlockSize" /> / 8 bytes.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// The instance has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -152,20 +152,21 @@ public sealed partial class BlowfishBlockCipher
     }
 
     /// <summary>
-    /// Encrypts a single 64-bit block using the Blowfish cipher and writes the ciphertext to <paramref name="output"/>.
+    /// Encrypts a single 64-bit block using the Blowfish cipher and writes the ciphertext to <paramref name="output" />
+    /// .
     /// </summary>
     /// <param name="input">
-    /// A read-only span containing the plaintext block to encrypt. Must be at least <see cref="BlockSize"/> / 8 bytes in length.
+    /// A read-only span containing the plaintext block to encrypt. Must be at least <see cref="BlockSize" /> / 8 bytes
+    /// in length.
     /// </param>
     /// <param name="output">
-    /// A writable span to receive the encrypted ciphertext block. Must be at least <see cref="BlockSize"/> / 8 bytes in length.
+    /// A writable span to receive the encrypted ciphertext block. Must be at least <see cref="BlockSize" /> / 8 bytes
+    /// in length.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input"/> or <paramref name="output"/> is shorter than <see cref="BlockSize"/> / 8 bytes.
+    /// <paramref name="input" /> or <paramref name="output" /> is shorter than <see cref="BlockSize" /> / 8 bytes.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// The instance has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -186,16 +187,12 @@ public sealed partial class BlowfishBlockCipher
     /// <summary>
     /// Applies the Blowfish F function to a 32-bit word.
     /// </summary>
-    /// <param name="x">
-    /// The 32-bit input word.
-    /// </param>
-    /// <returns>
-    /// The transformed 32-bit output word used as the nonlinear Feistel contribution.
-    /// </returns>
+    /// <param name="x">The 32-bit input word.</param>
+    /// <returns>The transformed 32-bit output word used as the nonlinear Feistel contribution.</returns>
     /// <remarks>
-    /// Splits <paramref name="x"/> into four bytes, looks up each byte in its corresponding key-dependent S-box, then combines
-    /// the four 32-bit values using the Blowfish expression <c>((S0[a] + S1[b]) ^ S2[c]) + S3[d]</c>. The additions wrap
-    /// modulo 2^32 through unsigned integer overflow semantics.
+    /// Splits <paramref name="x" /> into four bytes, looks up each byte in its corresponding key-dependent S-box, then
+    /// combines the four 32-bit values using the Blowfish expression <c>((S0[a] + S1[b]) ^ S2[c]) + S3[d]</c>. The
+    /// additions wrap modulo 2^32 through unsigned integer overflow semantics.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private uint F(uint x)
@@ -218,8 +215,8 @@ public sealed partial class BlowfishBlockCipher
     /// <remarks>
     /// Each round applies <c>XL ^= P[i]</c>, mixes the right half with <c>F(XL)</c>, and swaps the halves. After the
     /// sixteenth round the extra Feistel swap is undone, then <c>P[16]</c> and <c>P[17]</c> are applied as the final
-    /// whitening words. This method is also used internally during key expansion while the P-array and S-boxes are still
-    /// being generated.
+    /// whitening words. This method is also used internally during key expansion while the P-array and S-boxes are
+    /// still being generated.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void EncipherBlock(ref uint xl, ref uint xr)
@@ -271,14 +268,14 @@ public sealed partial class BlowfishBlockCipher
     /// <param name="key">The raw Blowfish key (between 4 and 56 bytes).</param>
     /// <remarks>
     /// <para>
-    /// Blowfish key expansion has three specification-defined phases. First, the mutable P-array and S-boxes are initialized
-    /// from the hexadecimal digits of π. Second, each P-array word is XORed with a 32-bit big-endian word assembled from the
-    /// supplied key, cycling through key bytes as required. Third, the all-zero block is repeatedly encrypted with the evolving
-    /// cipher state to replace the P-array and all four S-boxes in pairs.
+    /// Blowfish key expansion has three specification-defined phases. First, the mutable P-array and S-boxes are
+    /// initialized from the hexadecimal digits of π. Second, each P-array word is XORed with a 32-bit big-endian word
+    /// assembled from the supplied key, cycling through key bytes as required. Third, the all-zero block is repeatedly
+    /// encrypted with the evolving cipher state to replace the P-array and all four S-boxes in pairs.
     /// </para>
     /// <para>
-    /// After this method returns, all encryption and decryption operations use only the expanded, key-dependent P-array and
-    /// S-boxes. The original key span is not retained.
+    /// After this method returns, all encryption and decryption operations use only the expanded, key-dependent P-array
+    /// and S-boxes. The original key span is not retained.
     /// </para>
     /// </remarks>
     private void InitializeKeySchedule(ReadOnlySpan<byte> key)
@@ -351,7 +348,7 @@ public sealed partial class BlowfishBlockCipher
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

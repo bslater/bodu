@@ -14,56 +14,63 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Blowfish is a symmetric-key block cipher designed by Bruce Schneier in 1993. It operates on 64-bit (8-byte) blocks and accepts a
-/// variable-length key of between 32 and 448 bits (4 to 56 bytes). The cipher applies a 16-round Feistel network using four 256-entry
-/// S-boxes and an 18-entry P-array, all initialized from the hexadecimal digits of pi (π). The key schedule is computationally
-/// intensive by design, making brute-force attacks significantly more expensive.
+/// Blowfish is a symmetric-key block cipher designed by Bruce Schneier in 1993. It operates on 64-bit (8-byte) blocks
+/// and accepts a variable-length key of between 32 and 448 bits (4 to 56 bytes). The cipher applies a 16-round Feistel
+/// network using four 256-entry S-boxes and an 18-entry P-array, all initialized from the hexadecimal digits of pi (π).
+/// The key schedule is computationally intensive by design, making brute-force attacks significantly more expensive.
 /// </para>
 /// <para>
-/// This class integrates with the .NET <see cref="SymmetricAlgorithm"/> framework and supports standard block cipher modes via the
-/// <see cref="BlockMode"/> property. The default mode is <see cref="CipherModeKind.CBC"/> with
-/// <see cref="PaddingMode.PKCS7"/> padding.
+/// This class integrates with the .NET <see cref="SymmetricAlgorithm" /> framework and supports standard block cipher
+/// modes via the <see cref="BlockMode" /> property. The default mode is <see cref="CipherModeKind.CBC" /> with
+/// <see cref="PaddingMode.PKCS7" /> padding.
 /// </para>
 /// <para>
-/// For further details on the algorithm, see
-/// <a href="https://www.schneier.com/academic/blowfish/">https://www.schneier.com/academic/blowfish/</a>.
+/// For further details on the algorithm, see <a href="https://www.schneier.com/academic/blowfish/">
+/// https://www.schneier.com/academic/blowfish/</a>.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Block size: 64 bits (8 bytes).</description></item>
-///   <item><description>Key size: variable, 32–448 bits (4–56 bytes).</description></item>
-///   <item><description>16-round Feistel network with key-dependent S-boxes initialized from the digits of π.</description></item>
-///   <item><description>Default mode: <see cref="CipherModeKind.CBC"/>; default padding: <see cref="PaddingMode.PKCS7"/>.</description></item>
+/// <item>
+/// <description>
+/// Block size: 64 bits (8 bytes).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Key size: variable, 32–448 bits (4–56 bytes).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// 16-round Feistel network with key-dependent S-boxes initialized from the digits of π.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Default mode: <see cref="CipherModeKind.CBC" />; default padding: <see cref="PaddingMode.PKCS7" />.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Blowfish.</strong> Pick Blowfish only for interoperability with legacy systems that
-/// already use it — its 64-bit block size invites SWEET32 birthday-bound attacks once roughly 32 GiB has been
-/// encrypted under one key. For new designs use <see cref="System.Security.Cryptography.Aes"/>; bcrypt-style
-/// password hashing schemes that derive from Blowfish are not in scope of this class.
+/// <strong>When to choose Blowfish.</strong> Pick Blowfish only for interoperability with legacy systems that already
+/// use it — its 64-bit block size invites SWEET32 birthday-bound attacks once roughly 32 GiB has been encrypted under
+/// one key. For new designs use <see cref="System.Security.Cryptography.Aes" />; bcrypt-style password hashing schemes
+/// that derive from Blowfish are not in scope of this class.
 /// </para>
-/// <note type="important">
-/// Blowfish has a 64-bit block size, which makes it vulnerable to birthday-bound attacks (SWEET32) when large volumes of data are
-/// encrypted under the same key. For new applications, a cipher with a 128-bit or larger block size (such as AES) should be preferred.
-/// </note>
+/// <note type="important"> Blowfish has a 64-bit block size, which makes it vulnerable to birthday-bound attacks
+/// (SWEET32) when large volumes of data are encrypted under the same key. For new applications, a cipher with a 128-bit
+/// or larger block size (such as AES) should be preferred. </note>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using System.Security.Cryptography;
-/// using Bodu.Security.Cryptography;
-/// using Bodu.Security.Cryptography.Extensions;
-///
-/// // Legacy interop only.
-/// using var blowfish = new Blowfish();
-/// blowfish.Key = legacyKeyMaterial;             // 4–56 bytes
-/// blowfish.IV  = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block
-///
-/// byte[] ciphertext = blowfish.Encrypt(legacyPlaintext);
-/// </code>
+/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; using
+/// Bodu.Security.Cryptography.Extensions; // Legacy interop only. using var blowfish = new Blowfish(); blowfish.Key =
+/// legacyKeyMaterial; // 4–56 bytes blowfish.IV = RandomNumberGenerator.GetBytes(8); // matches the 64-bit block byte[]
+/// ciphertext = blowfish.Encrypt(legacyPlaintext); </code>
 /// </example>
-/// <seealso href="../guides/cryptography/blowfish.html">Using Blowfish (guide with full encrypt / decrypt examples)</seealso>
-/// <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
+/// <seealso href="../guides/cryptography/blowfish.html">Using Blowfish (guide with full encrypt / decrypt examples)
+/// </seealso> <seealso href="../guides/cryptography/encryption-basics.html">Encryption basics</seealso>
 /// <seealso href="../guides/cryptography/cipher-modes.html">Cipher block modes</seealso>
 /// <seealso href="../guides/cryptography/padding.html">Padding</seealso>
 public sealed class Blowfish
@@ -97,14 +104,14 @@ public sealed class Blowfish
     private PaddingModeKind _blockPadding = PaddingModeKind.PKCS7;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Blowfish"/> class with default parameters.
+    /// Initializes a new instance of the <see cref="Blowfish" /> class with default parameters.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The default configuration uses a 64-bit block, a 128-bit (16-byte) key, CBC cipher mode, and PKCS7 padding. Call
-    /// <see cref="SymmetricAlgorithm.GenerateKey"/> and <see cref="SymmetricAlgorithm.GenerateIV"/> to produce random key material,
-    /// or assign <see cref="SymmetricAlgorithm.Key"/> and <see cref="SymmetricAlgorithm.IV"/> directly before calling
-    /// <see cref="CreateEncryptor(byte[], byte[])"/> or <see cref="CreateDecryptor(byte[], byte[])"/>.
+    /// <see cref="SymmetricAlgorithm.GenerateKey" /> and <see cref="SymmetricAlgorithm.GenerateIV" /> to produce random
+    /// key material, or assign <see cref="SymmetricAlgorithm.Key" /> and <see cref="SymmetricAlgorithm.IV" /> directly
+    /// before calling <see cref="CreateEncryptor(byte[], byte[])" /> or <see cref="CreateDecryptor(byte[], byte[])" />.
     /// </para>
     /// </remarks>
     public Blowfish()
@@ -127,19 +134,20 @@ public sealed class Blowfish
     /// Gets or sets the block cipher mode of operation used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="CipherModeKind"/> values. The default is <see cref="CipherModeKind.CBC"/>.
+    /// One of the <see cref="CipherModeKind" /> values. The default is <see cref="CipherModeKind.CBC" />.
     /// </value>
     /// <remarks>
     /// <para>
-    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode"/> property for use with
-    /// <see cref="BlockCipherModeFactory"/> and the extended set of modes it supports, including
-    /// <see cref="CipherModeKind.CTR"/> and <see cref="CipherModeKind.OFB"/>, which are not available via the standard
-    /// <see cref="CipherMode"/> enumeration.
+    /// This property replaces the inherited <see cref="SymmetricAlgorithm.Mode" /> property for use with
+    /// <see cref="BlockCipherModeFactory" /> and the extended set of modes it supports, including
+    /// <see cref="CipherModeKind.CTR" /> and <see cref="CipherModeKind.OFB" />, which are not available via the
+    /// standard <see cref="CipherMode" /> enumeration.
     /// </para>
     /// <para>
-    /// When the assigned value has a matching member in <see cref="CipherMode"/> (for example, CBC, ECB, CFB), the inherited
-    /// <see cref="SymmetricAlgorithm.Mode"/> is kept in sync so that consumers inspecting the base property observe a consistent
-    /// mode. Extended modes with no <see cref="CipherMode"/> equivalent leave the base property unchanged.
+    /// When the assigned value has a matching member in <see cref="CipherMode" /> (for example, CBC, ECB, CFB), the
+    /// inherited <see cref="SymmetricAlgorithm.Mode" /> is kept in sync so that consumers inspecting the base property
+    /// observe a consistent mode. Extended modes with no <see cref="CipherMode" /> equivalent leave the base property
+    /// unchanged.
     /// </para>
     /// </remarks>
     public CipherModeKind BlockMode
@@ -163,13 +171,13 @@ public sealed class Blowfish
     /// Gets or sets the extended padding mode used when creating encryptors and decryptors.
     /// </summary>
     /// <value>
-    /// One of the <see cref="PaddingModeKind"/> values. The default is <see cref="PaddingModeKind.PKCS7"/>.
+    /// One of the <see cref="PaddingModeKind" /> values. The default is <see cref="PaddingModeKind.PKCS7" />.
     /// </value>
     /// <remarks>
-    /// When the assigned value has a matching member in <see cref="PaddingMode"/> (for example, PKCS7, Zeros,
-    /// None), the inherited <see cref="SymmetricAlgorithm.Padding"/> is kept in sync. Extended modes with no
-    /// <see cref="PaddingMode"/> equivalent (such as <see cref="PaddingModeKind.ISO7816_4"/>) leave the base
-    /// property unchanged.
+    /// When the assigned value has a matching member in <see cref="PaddingMode" /> (for example, PKCS7, Zeros, None),
+    /// the inherited <see cref="SymmetricAlgorithm.Padding" /> is kept in sync. Extended modes with no
+    /// <see cref="PaddingMode" /> equivalent (such as <see cref="PaddingModeKind.ISO7816_4" />) leave the base property
+    /// unchanged.
     /// </remarks>
     public PaddingModeKind BlockPadding
     {
@@ -184,8 +192,8 @@ public sealed class Blowfish
 
     /// <inheritdoc />
     /// <remarks>
-    /// Also synchronizes <see cref="BlockPadding"/> when the assigned value has a matching member in
-    /// <see cref="PaddingModeKind"/>.
+    /// Also synchronizes <see cref="BlockPadding" /> when the assigned value has a matching member in
+    /// <see cref="PaddingModeKind" />.
     /// </remarks>
     public override PaddingMode Padding
     {
@@ -199,28 +207,32 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Creates a new <see cref="Blowfish"/> instance with default parameters.
+    /// Creates a new <see cref="Blowfish" /> instance with default parameters.
     /// </summary>
-    /// <returns>A new <see cref="Blowfish"/> instance.</returns>
+    /// <returns>A new <see cref="Blowfish" /> instance.</returns>
     public new static Blowfish Create() => new Blowfish();
 
     /// <summary>
-    /// Creates a symmetric <see cref="Blowfish"/> decryptor using the specified key and initialization vector.
+    /// Creates a symmetric <see cref="Blowfish" /> decryptor using the specified key and initialization vector.
     /// </summary>
     /// <param name="rgbKey">
-    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySize"/> and
-    /// <see cref="MaxKeySize"/> bytes in length. Must not be <see langword="null"/>.
+    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySize" /> and
+    /// <see cref="MaxKeySize" /> bytes in length. Must not be <see langword="null" />.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialization vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
-    /// cipher mode other than ECB.
+    /// The initialization vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null" />
+    /// for any cipher mode other than ECB.
     /// </param>
-    /// <returns>A symmetric <see cref="Blowfish"/> decryptor object implementing <see cref="ICryptoTransform"/>.</returns>
+    /// <returns>
+    /// A symmetric <see cref="Blowfish" /> decryptor object implementing <see cref="ICryptoTransform" />.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="rgbKey"/> or <paramref name="rgbIV"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="rgbKey"/> is not within the permitted key size range, or <paramref name="rgbIV"/> has an invalid length for
-    /// the configured <see cref="BlockMode"/>.
+    /// <paramref name="rgbKey" /> is not within the permitted key size range, or <paramref name="rgbIV" /> has an
+    /// invalid length for the configured <see cref="BlockMode" />.
     /// </exception>
     public override ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -233,22 +245,26 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Creates a symmetric <see cref="Blowfish"/> encryptor using the specified key and initialization vector.
+    /// Creates a symmetric <see cref="Blowfish" /> encryptor using the specified key and initialization vector.
     /// </summary>
     /// <param name="rgbKey">
-    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySize"/> and
-    /// <see cref="MaxKeySize"/> bytes in length. Must not be <see langword="null"/>.
+    /// The secret key for the symmetric algorithm. Must be between <see cref="MinKeySize" /> and
+    /// <see cref="MaxKeySize" /> bytes in length. Must not be <see langword="null" />.
     /// </param>
     /// <param name="rgbIV">
-    /// The initialization vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null"/> for any
-    /// cipher mode other than ECB.
+    /// The initialization vector. Must be exactly 8 bytes (64 bits) in length and must not be <see langword="null" />
+    /// for any cipher mode other than ECB.
     /// </param>
-    /// <returns>A symmetric <see cref="Blowfish"/> encryptor object implementing <see cref="ICryptoTransform"/>.</returns>
+    /// <returns>
+    /// A symmetric <see cref="Blowfish" /> encryptor object implementing <see cref="ICryptoTransform" />.
+    /// </returns>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
-    /// <exception cref="ArgumentNullException"><paramref name="rgbKey"/> or <paramref name="rgbIV"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="rgbKey" /> or <paramref name="rgbIV" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="CryptographicException">
-    /// <paramref name="rgbKey"/> is not within the permitted key size range, or <paramref name="rgbIV"/> has an invalid length for
-    /// the configured <see cref="BlockMode"/>.
+    /// <paramref name="rgbKey" /> is not within the permitted key size range, or <paramref name="rgbIV" /> has an
+    /// invalid length for the configured <see cref="BlockMode" />.
     /// </exception>
     public override ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV)
     {
@@ -261,19 +277,19 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Generates a cryptographically random initialization vector (<see cref="SymmetricAlgorithm.IV"/>) suitable for use with the
-    /// Blowfish algorithm.
+    /// Generates a cryptographically random initialization vector (<see cref="SymmetricAlgorithm.IV" />) suitable for
+    /// use with the Blowfish algorithm.
     /// </summary>
     /// <remarks>
     /// <para>
     /// The generated IV length is determined by the algorithm block size.
     /// </para>
     /// <para>
-    /// The generated IV is assigned to <see cref="SymmetricAlgorithm.IV"/>.
+    /// The generated IV is assigned to <see cref="SymmetricAlgorithm.IV" />.
     /// </para>
     /// <para>
-    /// A new IV should be generated for each independent encryption operation when reusing a <see cref="Blowfish"/> instance with
-    /// the same key.
+    /// A new IV should be generated for each independent encryption operation when reusing a <see cref="Blowfish" />
+    /// instance with the same key.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
@@ -285,14 +301,14 @@ public sealed class Blowfish
 
     /// <summary>
     /// Generates a cryptographically random key for use with the Blowfish algorithm using the currently configured
-    /// <see cref="SymmetricAlgorithm.KeySize"/>.
+    /// <see cref="SymmetricAlgorithm.KeySize" />.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// The generated key length is determined by <see cref="SymmetricAlgorithm.KeySize"/>.
+    /// The generated key length is determined by <see cref="SymmetricAlgorithm.KeySize" />.
     /// </para>
     /// <para>
-    /// The generated key is assigned to <see cref="SymmetricAlgorithm.Key"/>.
+    /// The generated key is assigned to <see cref="SymmetricAlgorithm.Key" />.
     /// </para>
     /// </remarks>
     /// <exception cref="ObjectDisposedException">The current instance has been disposed.</exception>
@@ -303,15 +319,16 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="Blowfish"/> instance and, optionally, the managed resources.
+    /// Releases the unmanaged resources used by the <see cref="Blowfish" /> instance and, optionally, the managed
+    /// resources.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged
-    /// resources.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
     /// </param>
     /// <remarks>
-    /// Clears any cached key material and initialization vector before delegating to the base implementation. This method is
-    /// idempotent and safe to call multiple times.
+    /// Clears any cached key material and initialization vector before delegating to the base implementation. This
+    /// method is idempotent and safe to call multiple times.
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
@@ -331,14 +348,14 @@ public sealed class Blowfish
     }
 
     /// <summary>
-    /// Creates a new <see cref="BlowfishBlockCipher"/> engine initialized with the supplied key.
+    /// Creates a new <see cref="BlowfishBlockCipher" /> engine initialized with the supplied key.
     /// </summary>
     /// <param name="key">The key material used to derive the P-array and S-boxes.</param>
-    /// <returns>An <see cref="IBlockCipher"/> configured for single-block encryption and decryption.</returns>
+    /// <returns>An <see cref="IBlockCipher" /> configured for single-block encryption and decryption.</returns>
     private static BlowfishBlockCipher CreateCipher(byte[] key) => new BlowfishBlockCipher(key);
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

@@ -12,13 +12,13 @@ namespace Bodu.Security.Cryptography;
 
 /// <summary>
 /// Provides authenticated encryption with associated data (AEAD) using the <c>Ascon-AEAD128</c> algorithm as defined in
-/// NIST SP 800-232. Accepts a 128-bit key and a 128-bit nonce and produces a 128-bit authentication tag. This class cannot
-/// be inherited.
+/// NIST SP 800-232. Accepts a 128-bit key and a 128-bit nonce and produces a 128-bit authentication tag. This class
+/// cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Ascon-AEAD128 is a permutation-based AEAD scheme built on the 320-bit ASCON sponge. It uses a 128-bit (16-byte) rate,
-/// Ascon-p12 for initialization and finalization, and Ascon-p8 during associated-data and ciphertext processing.
+/// Ascon-AEAD128 is a permutation-based AEAD scheme built on the 320-bit ASCON sponge. It uses a 128-bit (16-byte)
+/// rate, Ascon-p12 for initialization and finalization, and Ascon-p8 during associated-data and ciphertext processing.
 /// </para>
 /// <para>
 /// The algorithm proceeds through four phases:
@@ -38,8 +38,8 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// <b>Encryption / decryption</b>: plaintext or ciphertext is processed in 16-byte blocks, with Ascon-p8 applied between
-/// blocks. The final (possibly partial) block is absorbed without a trailing permutation.
+/// <b>Encryption / decryption</b>: plaintext or ciphertext is processed in 16-byte blocks, with Ascon-p8 applied
+/// between blocks. The final (possibly partial) block is absorbed without a trailing permutation.
 /// </description>
 /// </item>
 /// <item>
@@ -54,42 +54,55 @@ namespace Bodu.Security.Cryptography;
 /// completely breaks confidentiality and authenticity.
 /// </para>
 /// <para>
-/// Call <see cref="ProcessAssociatedData"/> before <see cref="Encrypt"/> or <see cref="Decrypt"/>. Pass an empty span
-/// if there is no associated data.
+/// Call <see cref="ProcessAssociatedData" /> before <see cref="Encrypt" /> or <see cref="Decrypt" />. Pass an empty
+/// span if there is no associated data.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Key size: 128 bits (16 bytes).</description></item>
-///   <item><description>Nonce size: 128 bits (16 bytes), must be unique per key.</description></item>
-///   <item><description>Tag size: 128 bits (16 bytes).</description></item>
-///   <item><description>State: 320-bit sponge; rate: 16 bytes; permutation Ascon-p12 (init/finalize) + Ascon-p8 (absorb).</description></item>
-///   <item><description>Specification: NIST SP 800-232 (ASCON family).</description></item>
+/// <item>
+/// <description>
+/// Key size: 128 bits (16 bytes).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Nonce size: 128 bits (16 bytes), must be unique per key.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Tag size: 128 bits (16 bytes).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// State: 320-bit sponge; rate: 16 bytes; permutation Ascon-p12 (init/finalize) + Ascon-p8 (absorb).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Specification: NIST SP 800-232 (ASCON family).
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Ascon-AEAD128.</strong> The right pick when NIST's lightweight-cryptography
-/// selection is required, or for resource-constrained targets (microcontrollers, IoT) where the Ascon
-/// permutation's small state and short round count are an advantage over GCM's GHASH multiplications. For
-/// general-purpose AEAD on commodity x86/ARM hardware <see cref="GcmModeTransform"/> remains faster thanks
-/// to AES-NI/PCLMULQDQ; for nonce-misuse resistance prefer <see cref="GcmSivModeTransform"/> or
-/// <see cref="SivModeTransform"/>. Unlike the AES-based AEAD modes, Ascon does not depend on a separate
-/// block cipher — pair it with the related <see cref="AsconHash256"/> / <see cref="AsconHashA256"/> hashes
-/// or <see cref="AsconXof128"/> XOF when building a fully Ascon-based protocol.
+/// <strong>When to choose Ascon-AEAD128.</strong> The right pick when NIST's lightweight-cryptography selection is
+/// required, or for resource-constrained targets (microcontrollers, IoT) where the Ascon permutation's small state and
+/// short round count are an advantage over GCM's GHASH multiplications. For general-purpose AEAD on commodity x86/ARM
+/// hardware <see cref="GcmModeTransform" /> remains faster thanks to AES-NI/PCLMULQDQ; for nonce-misuse resistance
+/// prefer <see cref="GcmSivModeTransform" /> or <see cref="SivModeTransform" />. Unlike the AES-based AEAD modes, Ascon
+/// does not depend on a separate block cipher — pair it with the related <see cref="AsconHash256" /> /
+/// <see cref="AsconHashA256" /> hashes or <see cref="AsconXof128" /> XOF when building a fully Ascon-based protocol.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.Security.Cryptography;
-/// using Bodu.Security.Cryptography.Extensions;
-///
-/// // Most callers should reach for the AeadBlockCipherModeTransformExtensions helpers,
-/// // which size the output buffer and return a single freshly allocated array.
-/// using IAeadBlockCipherModeTransform enc = new AsconAead128(key, nonce);
-/// byte[] sealed_   = enc.Encrypt(plaintext, associatedData: header);
-/// using IAeadBlockCipherModeTransform dec = new AsconAead128(key, nonce);
-/// byte[] recovered = dec.Decrypt(sealed_, associatedData: header);
-/// </code>
+/// <code language="csharp"> using Bodu.Security.Cryptography; using Bodu.Security.Cryptography.Extensions; // Most
+/// callers should reach for the AeadBlockCipherModeTransformExtensions helpers, // which size the output buffer and
+/// return a single freshly allocated array. using IAeadBlockCipherModeTransform enc = new AsconAead128(key, nonce);
+/// byte[] sealed_ = enc.Encrypt(plaintext, associatedData: header); using IAeadBlockCipherModeTransform dec = new
+/// AsconAead128(key, nonce); byte[] recovered = dec.Decrypt(sealed_, associatedData: header); </code>
 /// </example>
 /// <seealso href="https://doi.org/10.6028/NIST.SP.800-232">NIST SP 800-232 (ASCON)</seealso>
 /// <seealso cref="IAeadBlockCipherModeTransform"/>
@@ -97,28 +110,45 @@ namespace Bodu.Security.Cryptography;
 public sealed class AsconAead128
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>Length of the Ascon-AEAD128 key is 128 bits (16 bytes).</summary>
+    /// <summary>
+    /// Length of the Ascon-AEAD128 key is 128 bits (16 bytes).
+    /// </summary>
     public const int KeySize = 128;
 
-    /// <summary>Length of the Ascon-AEAD128 nonce is 128 bits (16 bytes).</summary>
+    /// <summary>
+    /// Length of the Ascon-AEAD128 nonce is 128 bits (16 bytes).
+    /// </summary>
     public const int NonceSize = 128;
 
-    /// <summary>Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).</summary>
+    /// <summary>
+    /// Length of the Ascon-AEAD128 authentication tag is 128 bits (16 bytes).
+    /// </summary>
     internal const int TagSizeBits = 128;
 
-    /// <summary>Length of the Ascon-AEAD128 sponge absorption rate is 128 bits (16 bytes).</summary>
+    /// <summary>
+    /// Length of the Ascon-AEAD128 sponge absorption rate is 128 bits (16 bytes).
+    /// </summary>
     private const int RateSizeBits = 128;
 
-    /// <summary>Byte length of <see cref="KeySize"/> (16 bytes). Derived helper used for span-length checks.</summary>
+    /// <summary>
+    /// Byte length of <see cref="KeySize" /> (16 bytes). Derived helper used for span-length checks.
+    /// </summary>
     internal const int KeyBytes = KeySize / 8;
 
-    /// <summary>Byte length of <see cref="NonceSize"/> (16 bytes). Derived helper used for span-length checks.</summary>
+    /// <summary>
+    /// Byte length of <see cref="NonceSize" /> (16 bytes). Derived helper used for span-length checks.
+    /// </summary>
     internal const int NonceBytes = NonceSize / 8;
 
-    /// <summary>Byte length of <see cref="TagSizeBits"/> (16 bytes). Derived helper used for span sizing.</summary>
+    /// <summary>
+    /// Byte length of <see cref="TagSizeBits" /> (16 bytes). Derived helper used for span sizing.
+    /// </summary>
     internal const int TagBytes = TagSizeBits / 8;
 
-    /// <summary>Byte length of <see cref="RateSizeBits"/> (16 bytes). Derived helper used for block iteration over the sponge rate.</summary>
+    /// <summary>
+    /// Byte length of <see cref="RateSizeBits" /> (16 bytes). Derived helper used for block iteration over the sponge
+    /// rate.
+    /// </summary>
     private const int Rate = RateSizeBits / 8;
 
     // IV word for Ascon-AEAD128 (NIST SP 800-232).
@@ -137,20 +167,22 @@ public sealed class AsconAead128
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconAead128"/> class with the specified key and nonce.
+    /// Initializes a new instance of the <see cref="AsconAead128" /> class with the specified key and nonce.
     /// </summary>
     /// <param name="key">
     /// The 128-bit (16-byte) secret key. The key is read during construction and retained internally as key words until
-    /// the instance is disposed. Must not be <see langword="null"/>.
+    /// the instance is disposed. Must not be <see langword="null" />.
     /// </param>
     /// <param name="nonce">
     /// The 128-bit (16-byte) nonce. Must be unique for every message encrypted under the same key. Must not be
-    /// <see langword="null"/>.
+    /// <see langword="null" />.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="key"/> or <paramref name="nonce"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="key" /> or <paramref name="nonce" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key"/> is not exactly <see cref="KeyBytes"/> bytes, or <paramref name="nonce"/> is not exactly
-    /// <see cref="NonceBytes"/> bytes.
+    /// <paramref name="key" /> is not exactly <see cref="KeyBytes" /> bytes, or <paramref name="nonce" /> is not
+    /// exactly <see cref="NonceBytes" /> bytes.
     /// </exception>
     public AsconAead128(byte[] key, byte[] nonce)
         : this(
@@ -160,13 +192,15 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconAead128"/> class with the specified key and nonce spans.
+    /// Initializes a new instance of the <see cref="AsconAead128" /> class with the specified key and nonce spans.
     /// </summary>
     /// <param name="key">The 128-bit (16-byte) secret key.</param>
-    /// <param name="nonce">The 128-bit (16-byte) nonce. Must be unique for every message encrypted under the same key.</param>
+    /// <param name="nonce">
+    /// The 128-bit (16-byte) nonce. Must be unique for every message encrypted under the same key.
+    /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key"/> is not exactly <see cref="KeyBytes"/> bytes, or <paramref name="nonce"/> is not exactly
-    /// <see cref="NonceBytes"/> bytes.
+    /// <paramref name="key" /> is not exactly <see cref="KeyBytes" /> bytes, or <paramref name="nonce" /> is not
+    /// exactly <see cref="NonceBytes" /> bytes.
     /// </exception>
     public AsconAead128(ReadOnlySpan<byte> key, ReadOnlySpan<byte> nonce)
     {
@@ -202,7 +236,7 @@ public sealed class AsconAead128
     /// </summary>
     /// <param name="associatedData">
     /// The bytes to authenticate. May be empty to indicate no associated data. Must be called exactly once before
-    /// <see cref="Encrypt"/> or <see cref="Decrypt"/>.
+    /// <see cref="Encrypt" /> or <see cref="Decrypt" />.
     /// </param>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     /// <exception cref="InvalidOperationException">This method has already been called on this instance.</exception>
@@ -240,7 +274,7 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Encrypts <paramref name="plaintext"/> and appends the 16-byte authentication tag to <paramref name="output"/>.
+    /// Encrypts <paramref name="plaintext" /> and appends the 16-byte authentication tag to <paramref name="output" />.
     /// </summary>
     /// <param name="plaintext">The data to encrypt.</param>
     /// <param name="output">
@@ -249,8 +283,10 @@ public sealed class AsconAead128
     /// </param>
     /// <returns>Total bytes written: <c>plaintext.Length + <see cref="TagBytes"/></c>.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException"><see cref="ProcessAssociatedData"/> has not been called.</exception>
-    /// <exception cref="ArgumentException"><paramref name="output"/> is too small.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <see cref="ProcessAssociatedData" /> has not been called.
+    /// </exception>
+    /// <exception cref="ArgumentException"><paramref name="output" /> is too small.</exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -313,10 +349,10 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Decrypts <paramref name="ciphertextWithTag"/> and verifies the 16-byte authentication tag.
+    /// Decrypts <paramref name="ciphertextWithTag" /> and verifies the 16-byte authentication tag.
     /// </summary>
     /// <param name="ciphertextWithTag">
-    /// The ciphertext followed immediately by the 16-byte authentication tag. Must be at least <see cref="TagBytes"/>
+    /// The ciphertext followed immediately by the 16-byte authentication tag. Must be at least <see cref="TagBytes" />
     /// bytes long.
     /// </param>
     /// <param name="output">
@@ -325,10 +361,12 @@ public sealed class AsconAead128
     /// </param>
     /// <returns>Bytes written: <c>ciphertextWithTag.Length - <see cref="TagBytes"/></c>.</returns>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException"><see cref="ProcessAssociatedData"/> has not been called.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// <see cref="ProcessAssociatedData" /> has not been called.
+    /// </exception>
     /// <exception cref="ArgumentException">
-    /// <paramref name="ciphertextWithTag"/> is shorter than <see cref="TagBytes"/> bytes, or
-    /// <paramref name="output"/> is too small.
+    /// <paramref name="ciphertextWithTag" /> is shorter than <see cref="TagBytes" /> bytes, or
+    /// <paramref name="output" /> is too small.
     /// </exception>
     /// <exception cref="CryptographicException">The authentication tag did not match.</exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
@@ -423,7 +461,8 @@ public sealed class AsconAead128
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
+    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources
+    /// only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -460,13 +499,13 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Validates that <paramref name="value"/> is not <see langword="null"/> and returns it as a
-    /// <see cref="ReadOnlySpan{T}"/>, enabling null-safe constructor chaining from the <c>byte[]</c> overload.
+    /// Validates that <paramref name="value" /> is not <see langword="null" /> and returns it as a
+    /// <see cref="ReadOnlySpan{T}" />, enabling null-safe constructor chaining from the <c>byte[]</c> overload.
     /// </summary>
     /// <param name="value">The byte array to validate.</param>
     /// <param name="paramName">The caller-visible parameter name reported in any exception.</param>
-    /// <returns>A <see cref="ReadOnlySpan{Byte}"/> over <paramref name="value"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/>.</exception>
+    /// <returns>A <see cref="ReadOnlySpan{Byte}" /> over <paramref name="value" />.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="value" /> is <see langword="null" />.</exception>
     private static ReadOnlySpan<byte> ValidateNotNull(byte[] value, string paramName)
     {
         if (value is null)
@@ -476,7 +515,7 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.
@@ -493,7 +532,7 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException"/> if this instance has already completed encryption or decryption.
+    /// Throws <see cref="InvalidOperationException" /> if this instance has already completed encryption or decryption.
     /// </summary>
     private void ThrowIfCompleted()
     {
@@ -502,7 +541,7 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException"/> if <see cref="ProcessAssociatedData"/> has not yet been called.
+    /// Throws <see cref="InvalidOperationException" /> if <see cref="ProcessAssociatedData" /> has not yet been called.
     /// </summary>
     private void ThrowIfAadNotProcessed()
     {
@@ -511,7 +550,7 @@ public sealed class AsconAead128
     }
 
     /// <summary>
-    /// Stores the retained 128-bit key material for an <see cref="AsconAead128"/> instance.
+    /// Stores the retained 128-bit key material for an <see cref="AsconAead128" /> instance.
     /// </summary>
     /// <remarks>
     /// The holder reference is retained by the parent instance, while the contained key words remain clearable during
@@ -523,7 +562,7 @@ public sealed class AsconAead128
         private ulong _k1;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="KeyMaterial128"/> class from the supplied key bytes.
+        /// Initializes a new instance of the <see cref="KeyMaterial128" /> class from the supplied key bytes.
         /// </summary>
         /// <param name="key">The 128-bit key bytes.</param>
         public KeyMaterial128(ReadOnlySpan<byte> key)
@@ -532,10 +571,14 @@ public sealed class AsconAead128
             this._k1 = BinaryPrimitives.ReadUInt64LittleEndian(key[8..]);
         }
 
-        /// <summary>Gets the first 64-bit key word.</summary>
+        /// <summary>
+        /// Gets the first 64-bit key word.
+        /// </summary>
         public ulong K0 => this._k0;
 
-        /// <summary>Gets the second 64-bit key word.</summary>
+        /// <summary>
+        /// Gets the second 64-bit key word.
+        /// </summary>
         public ulong K1 => this._k1;
 
         /// <summary>

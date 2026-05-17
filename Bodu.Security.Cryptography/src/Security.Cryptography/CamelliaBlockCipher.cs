@@ -16,54 +16,71 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Camellia is a symmetric-key block cipher jointly developed by NTT and Mitsubishi Electric and specified in
-/// RFC 3713. It operates on a fixed 128-bit block size and accepts 128-bit, 192-bit, and 256-bit keys. The
-/// 128-bit key variant applies 18 Feistel rounds (three 6-round groups separated by FL/FL<sup>−1</sup> layers),
-/// while the 192-bit and 256-bit key variants apply 24 rounds (four 6-round groups).
+/// Camellia is a symmetric-key block cipher jointly developed by NTT and Mitsubishi Electric and specified in RFC 3713.
+/// It operates on a fixed 128-bit block size and accepts 128-bit, 192-bit, and 256-bit keys. The 128-bit key variant
+/// applies 18 Feistel rounds (three 6-round groups separated by FL/FL<sup>−1</sup> layers), while the 192-bit and
+/// 256-bit key variants apply 24 rounds (four 6-round groups).
 /// </para>
 /// <para>
 /// This implementation keeps the RFC 3713 model visible: the S-box material is represented by the published
-/// <c>SBOX1</c> table, <c>SBOX2</c>/<c>SBOX3</c>/<c>SBOX4</c> are derived exactly as specified, the
-/// <c>SIGMA</c> constants are stored as their 64-bit values, and whitening keys (<c>kw1..kw4</c>) are kept
-/// separate from round keys (<c>k1..k18</c> or <c>k1..k24</c>) and FL/FL<sup>−1</sup> keys
-/// (<c>ke1..ke4</c> or <c>ke1..ke6</c>).
+/// <c>SBOX1</c> table, <c>SBOX2</c>/<c>SBOX3</c>/<c>SBOX4</c> are derived exactly as specified, the <c>SIGMA</c>
+/// constants are stored as their 64-bit values, and whitening keys (<c>kw1..kw4</c>) are kept separate from round keys
+/// (<c>k1..k18</c> or <c>k1..k24</c>) and FL/FL<sup>−1</sup> keys (<c>ke1..ke4</c> or <c>ke1..ke6</c>).
 /// </para>
 /// <para>
-/// The block operation follows the RFC Feistel structure directly: input whitening, repeated applications of the
-/// 64-bit <c>F</c> function, periodic <c>FL</c>/<c>FLINV</c> layers, final half swap, and output whitening. Decryption
+/// The block operation follows the RFC Feistel structure directly: input whitening, repeated applications of the 64-bit
+/// <c>F</c> function, periodic <c>FL</c>/<c>FLINV</c> layers, final half swap, and output whitening. Decryption
 /// reverses the same schedule using the same subkeys in reverse order and swaps <c>FL</c> with <c>FLINV</c>.
 /// </para>
 /// <para>
 /// This type exposes the raw Camellia block primitive. Most callers should prefer the higher-level
-/// <see cref="Camellia"/> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use
-/// <see cref="CamelliaBlockCipher"/> directly only when composing the raw block primitive with an
-/// <see cref="IBlockCipherModeTransform"/> or <see cref="IPaddingStrategy"/>.
+/// <see cref="Camellia" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="CamelliaBlockCipher" />
+/// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> or
+/// <see cref="IPaddingStrategy" />.
 /// </para>
 /// <list type="bullet">
-/// <item><description><b>Block size:</b> 16 bytes (128 bits)</description></item>
-/// <item><description><b>Key sizes:</b> 16 bytes (128 bits), 24 bytes (192 bits), 32 bytes (256 bits)</description></item>
-/// <item><description><b>Rounds:</b> 18 (128-bit key) or 24 (192/256-bit key)</description></item>
+/// <item>
+/// <description>
+/// <b>Block size:</b> 16 bytes (128 bits)
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Key sizes:</b> 16 bytes (128 bits), 24 bytes (192 bits), 32 bytes (256 bits)
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <b>Rounds:</b> 18 (128-bit key) or 24 (192/256-bit key)
+/// </description>
+/// </item>
 /// </list>
 /// </remarks>
-/// <seealso href="https://www.rfc-editor.org/rfc/rfc3713">RFC 3713 — A Description of the Camellia Encryption Algorithm</seealso>
-/// <seealso cref="Camellia"/>
+/// <seealso href="https://www.rfc-editor.org/rfc/rfc3713">RFC 3713 — A Description of the Camellia Encryption Algorithm
+/// </seealso> <seealso cref="Camellia"/>
 public sealed class CamelliaBlockCipher
     : IBlockCipher
 {
     /// <summary>
-    /// Length of the Camellia block is 128 bits (16 bytes). Internal constant kept for span-length validation;
-    /// callers should read <see cref="BlockSize"/> instead.
+    /// Length of the Camellia block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers
+    /// should read <see cref="BlockSize" /> instead.
     /// </summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>Length of the Camellia 128-bit key is 128 bits (16 bytes). Internal use only.</summary>
+    /// <summary>
+    /// Length of the Camellia 128-bit key is 128 bits (16 bytes). Internal use only.
+    /// </summary>
     private const int Key128SizeBits = 128;
 
-    /// <summary>Length of the Camellia 192-bit key is 192 bits (24 bytes). Internal use only.</summary>
+    /// <summary>
+    /// Length of the Camellia 192-bit key is 192 bits (24 bytes). Internal use only.
+    /// </summary>
     private const int Key192SizeBits = 192;
 
-    /// <summary>Length of the Camellia 256-bit key is 256 bits (32 bytes). Internal use only.</summary>
+    /// <summary>
+    /// Length of the Camellia 256-bit key is 256 bits (32 bytes). Internal use only.
+    /// </summary>
     private const int Key256SizeBits = 256;
 
     // SBOX1 from RFC 3713 Appendix A. Camellia defines only this table explicitly;
@@ -115,14 +132,10 @@ public sealed class CamelliaBlockCipher
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CamelliaBlockCipher"/> class using the specified key.
+    /// Initializes a new instance of the <see cref="CamelliaBlockCipher" /> class using the specified key.
     /// </summary>
-    /// <param name="key">
-    /// The encryption key. Must be 16, 24, or 32 bytes (128, 192, or 256 bits) in length.
-    /// </param>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="key"/> is not 16, 24, or 32 bytes in length.
-    /// </exception>
+    /// <param name="key">The encryption key. Must be 16, 24, or 32 bytes (128, 192, or 256 bits) in length.</param>
+    /// <exception cref="ArgumentException"><paramref name="key" /> is not 16, 24, or 32 bytes in length.</exception>
     public CamelliaBlockCipher(ReadOnlySpan<byte> key)
     {
         var keyBits = key.Length * 8;
@@ -142,7 +155,9 @@ public sealed class CamelliaBlockCipher
 
     /// <inheritdoc />
     /// <value>Length of the Camellia block is 128 bits (16 bytes).</value>
-    /// <remarks>The block size is fixed at 128 bits (16 bytes) regardless of key size.</remarks>
+    /// <remarks>
+    /// The block size is fixed at 128 bits (16 bytes) regardless of key size.
+    /// </remarks>
     public int BlockSize => BlockSizeBits;
 
     /// <summary>
@@ -151,13 +166,13 @@ public sealed class CamelliaBlockCipher
     /// <param name="input">The ciphertext block to decrypt. Must be exactly 16 bytes.</param>
     /// <param name="output">The buffer that receives the plaintext block. Must be exactly 16 bytes.</param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input"/> or <paramref name="output"/> is not exactly 16 bytes in length.
+    /// <paramref name="input" /> or <paramref name="output" /> is not exactly 16 bytes in length.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>
-    /// Decryption reverses the Feistel schedule used by <see cref="Encrypt"/>. Because the FL layer and its inverse are
-    /// paired asymmetrically during encryption, decryption applies <c>FLINV</c> to the left half and <c>FL</c> to the right
-    /// half at each reversed FL/FLINV layer boundary.
+    /// Decryption reverses the Feistel schedule used by <see cref="Encrypt" />. Because the FL layer and its inverse
+    /// are paired asymmetrically during encryption, decryption applies <c>FLINV</c> to the left half and <c>FL</c> to
+    /// the right half at each reversed FL/FLINV layer boundary.
     /// </remarks>
     public void Decrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -280,12 +295,12 @@ public sealed class CamelliaBlockCipher
     /// <param name="input">The plaintext block to encrypt. Must be exactly 16 bytes.</param>
     /// <param name="output">The buffer that receives the ciphertext block. Must be exactly 16 bytes.</param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="input"/> or <paramref name="output"/> is not exactly 16 bytes in length.
+    /// <paramref name="input" /> or <paramref name="output" /> is not exactly 16 bytes in length.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>
-    /// Encryption follows RFC 3713 directly: input whitening, groups of six Feistel rounds separated by FL/FLINV layers,
-    /// then a final half swap and output whitening.
+    /// Encryption follows RFC 3713 directly: input whitening, groups of six Feistel rounds separated by FL/FLINV
+    /// layers, then a final half swap and output whitening.
     /// </remarks>
     public void Encrypt(ReadOnlySpan<byte> input, Span<byte> output)
     {
@@ -392,9 +407,10 @@ public sealed class CamelliaBlockCipher
     /// </summary>
     /// <param name="key">The raw key material (16, 24, or 32 bytes).</param>
     /// <remarks>
-    /// The input key is split into <c>KL</c> and <c>KR</c>. For 128-bit keys, <c>KR</c> is zero. For 192-bit keys,
-    /// the second half of <c>KR</c> is the bitwise complement of the supplied 64-bit extension. The auxiliary keys
-    /// <c>KA</c> and, for longer keys, <c>KB</c> are derived by Feistel transformations keyed with <c>SIGMA1..SIGMA6</c>.
+    /// The input key is split into <c>KL</c> and <c>KR</c>. For 128-bit keys, <c>KR</c> is zero. For 192-bit keys, the
+    /// second half of <c>KR</c> is the bitwise complement of the supplied 64-bit extension. The auxiliary keys
+    /// <c>KA</c> and, for longer keys, <c>KB</c> are derived by Feistel transformations keyed with
+    /// <c>SIGMA1..SIGMA6</c>.
     /// </remarks>
     private void ExpandKey(ReadOnlySpan<byte> key)
     {
@@ -473,9 +489,9 @@ public sealed class CamelliaBlockCipher
     /// <param name="kaHi">The upper 64 bits of <c>KA</c>.</param>
     /// <param name="kaLo">The lower 64 bits of <c>KA</c>.</param>
     /// <remarks>
-    /// The 128-bit key schedule derives all whitening, round, and FL-layer keys from rotations of <c>KL</c> and <c>KA</c>.
-    /// The comments below preserve the RFC naming and rotation offsets so test failures can be traced directly back to the
-    /// published schedule.
+    /// The 128-bit key schedule derives all whitening, round, and FL-layer keys from rotations of <c>KL</c> and
+    /// <c>KA</c>. The comments below preserve the RFC naming and rotation offsets so test failures can be traced
+    /// directly back to the published schedule.
     /// </remarks>
     private void Expand128BitKey(ulong klHi, ulong klLo, ulong kaHi, ulong kaLo)
     {
@@ -527,7 +543,8 @@ public sealed class CamelliaBlockCipher
     }
 
     /// <summary>
-    /// Expands a 192-bit or 256-bit key into RFC-order whitening, round, and FL/FL<sup>−1</sup> keys per RFC 3713 §2.4.2.
+    /// Expands a 192-bit or 256-bit key into RFC-order whitening, round, and FL/FL<sup>−1</sup> keys per RFC 3713
+    /// §2.4.2.
     /// </summary>
     /// <param name="klHi">The upper 64 bits of <c>KL</c>.</param>
     /// <param name="klLo">The lower 64 bits of <c>KL</c>.</param>
@@ -538,8 +555,8 @@ public sealed class CamelliaBlockCipher
     /// <param name="kbHi">The upper 64 bits of <c>KB</c>.</param>
     /// <param name="kbLo">The lower 64 bits of <c>KB</c>.</param>
     /// <remarks>
-    /// The extended schedule uses rotations of <c>KL</c>, <c>KR</c>, <c>KA</c>, and <c>KB</c>. It produces 24 data-round keys,
-    /// six FL-layer keys, and four whitening keys.
+    /// The extended schedule uses rotations of <c>KL</c>, <c>KR</c>, <c>KA</c>, and <c>KB</c>. It produces 24
+    /// data-round keys, six FL-layer keys, and four whitening keys.
     /// </remarks>
     private void Expand192Or256BitKey(
         ulong klHi,
@@ -662,8 +679,8 @@ public sealed class CamelliaBlockCipher
     /// <param name="key">The 64-bit subkey.</param>
     /// <returns>The transformed 64-bit output.</returns>
     /// <remarks>
-    /// The FL layer is a key-dependent Boolean mixing layer inserted between 6-round Feistel groups. It splits both
-    /// the data and subkey into 32-bit halves and uses AND, OR, XOR, and a one-bit rotation.
+    /// The FL layer is a key-dependent Boolean mixing layer inserted between 6-round Feistel groups. It splits both the
+    /// data and subkey into 32-bit halves and uses AND, OR, XOR, and a one-bit rotation.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong Fl(ulong x, ulong key)
@@ -687,7 +704,7 @@ public sealed class CamelliaBlockCipher
     /// <param name="key">The 64-bit subkey.</param>
     /// <returns>The inverse-transformed 64-bit output.</returns>
     /// <remarks>
-    /// This reverses <see cref="Fl"/> by applying the two Boolean/XOR updates in the opposite order.
+    /// This reverses <see cref="Fl" /> by applying the two Boolean/XOR updates in the opposite order.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static ulong FlInv(ulong x, ulong key)
@@ -706,15 +723,16 @@ public sealed class CamelliaBlockCipher
 
     /// <summary>
     /// Rotates a 128-bit value left by the specified number of bits. The value is represented as a (hi, lo) pair of
-    /// 64-bit words where <paramref name="hi"/> holds the most-significant bits.
+    /// 64-bit words where <paramref name="hi" /> holds the most-significant bits.
     /// </summary>
     /// <param name="hi">The upper 64 bits of the 128-bit value.</param>
     /// <param name="lo">The lower 64 bits of the 128-bit value.</param>
     /// <param name="bits">The rotation count, masked to the range 0..127.</param>
     /// <returns>The rotated (hi, lo) pair.</returns>
     /// <remarks>
-    /// Camellia's key schedule is specified almost entirely as left rotations of the 128-bit values <c>KL</c>, <c>KR</c>,
-    /// <c>KA</c>, and <c>KB</c>. This helper keeps those rotations expressed in the same high/low half model used by RFC 3713.
+    /// Camellia's key schedule is specified almost entirely as left rotations of the 128-bit values <c>KL</c>,
+    /// <c>KR</c>, <c>KA</c>, and <c>KB</c>. This helper keeps those rotations expressed in the same high/low half model
+    /// used by RFC 3713.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static (ulong hi, ulong lo) RotL128(ulong hi, ulong lo, int bits)
@@ -743,7 +761,8 @@ public sealed class CamelliaBlockCipher
     private static int SBox2(int x) => RotateLeft1(s_sbox1[x]);
 
     /// <summary>
-    /// Applies the Camellia <c>SBOX3</c> derivation: <c>SBOX3[x] = SBOX1[x] &lt;&lt;&lt; 7</c> (equivalently, a single right rotation).
+    /// Applies the Camellia <c>SBOX3</c> derivation: <c>SBOX3[x] = SBOX1[x] &lt;&lt;&lt; 7</c> (equivalently, a single
+    /// right rotation).
     /// </summary>
     /// <param name="x">The 8-bit input index (only the lower 8 bits are used).</param>
     /// <returns>The transformed byte value.</returns>
@@ -775,7 +794,7 @@ public sealed class CamelliaBlockCipher
     private static int RotateRight1(int x) => ((x >> 1) | (x << 7)) & 0xFF;
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

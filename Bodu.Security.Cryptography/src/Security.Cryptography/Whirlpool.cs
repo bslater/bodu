@@ -11,57 +11,78 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Computes a 512-bit cryptographic hash using the <c>Whirlpool</c> algorithm designed by Paulo S. L. M.
-/// Barreto and Vincent Rijmen. Supports all three published revisions: <c>Whirlpool-0</c> (2000),
-/// <c>Whirlpool-T</c> (2001) and the final <c>Whirlpool</c> function standardized by <c>ISO/IEC 10118-3</c>
-/// in 2003. This class cannot be inherited.
+/// Computes a 512-bit cryptographic hash using the <c>Whirlpool</c> algorithm designed by Paulo S. L. M. Barreto and
+/// Vincent Rijmen. Supports all three published revisions: <c>Whirlpool-0</c> (2000), <c>Whirlpool-T</c> (2001) and the
+/// final <c>Whirlpool</c> function standardized by <c>ISO/IEC 10118-3</c> in 2003. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Whirlpool is a Merkle–Damgård construction wrapped around an internal 512-bit block cipher (<c>W</c>)
-/// that borrows the wide-trail design principles of the Rijndael family. Input is consumed in 64-byte
-/// blocks; the final message length (in bits) is appended in a 256-bit big-endian trailer after a single
-/// <c>0x80</c> padding byte, in the standard manner.
+/// Whirlpool is a Merkle–Damgård construction wrapped around an internal 512-bit block cipher (<c>W</c>) that borrows
+/// the wide-trail design principles of the Rijndael family. Input is consumed in 64-byte blocks; the final message
+/// length (in bits) is appended in a 256-bit big-endian trailer after a single <c>0x80</c> padding byte, in the
+/// standard manner.
 /// </para>
 /// <para>
-/// The selected revision is controlled by <see cref="Version"/>. The default is
-/// <see cref="WhirlpoolVersion.WhirlpoolInfo3"/>, which matches the <c>ISO/IEC 10118-3</c> standard.
-/// <see cref="Version"/> may be changed before any input has been consumed; attempting to change it once
-/// hashing has started throws <see cref="CryptographicUnexpectedOperationException"/>. Calling
-/// <see cref="Initialize"/> returns the instance to the reconfigurable state.
+/// The selected revision is controlled by <see cref="Version" />. The default is
+/// <see cref="WhirlpoolVersion.WhirlpoolInfo3" />, which matches the <c>ISO/IEC 10118-3</c> standard.
+/// <see cref="Version" /> may be changed before any input has been consumed; attempting to change it once hashing has
+/// started throws <see cref="CryptographicUnexpectedOperationException" />. Calling <see cref="Initialize" /> returns
+/// the instance to the reconfigurable state.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 512 bits (64 bytes), fixed.</description></item>
-///   <item><description>Block size: 64 bytes (512 bits); 256-bit big-endian length field.</description></item>
-///   <item><description>Internal cipher <c>W</c> on the wide-trail (Rijndael-family) design principle.</description></item>
-///   <item><description>Selectable revision: <see cref="WhirlpoolVersion.WhirlpoolInfo1"/> (2000), <see cref="WhirlpoolVersion.WhirlpoolInfo1"/> (Whirlpool-T, 2001), or <see cref="WhirlpoolVersion.WhirlpoolInfo3"/> (ISO/IEC 10118-3, 2003 — default).</description></item>
+/// <item>
+/// <description>
+/// Output size: 512 bits (64 bytes), fixed.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Block size: 64 bytes (512 bits); 256-bit big-endian length field.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Internal cipher <c>W</c> on the wide-trail (Rijndael-family) design principle.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Selectable revision: <see cref="WhirlpoolVersion.WhirlpoolInfo1" /> (2000),
+/// <see cref="WhirlpoolVersion.WhirlpoolInfo1" /> (Whirlpool-T, 2001), or
+/// <see cref="WhirlpoolVersion.WhirlpoolInfo3" /> (ISO/IEC 10118-3, 2003 — default).
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Whirlpool.</strong> Pick Whirlpool when interoperability with software that produces
-/// or expects ISO/IEC 10118-3 Whirlpool digests is required — TrueCrypt-era disk encryption metadata, certain
-/// European e-government standards, and some content-addressed stores. For a modern 512-bit cryptographic hash
-/// without an interop constraint use SHA-512 or <see cref="Blake2b"/>; both are faster on contemporary hardware.
+/// <strong>When to choose Whirlpool.</strong> Pick Whirlpool when interoperability with software that produces or
+/// expects ISO/IEC 10118-3 Whirlpool digests is required — TrueCrypt-era disk encryption metadata, certain European
+/// e-government standards, and some content-addressed stores. For a modern 512-bit cryptographic hash without an
+/// interop constraint use SHA-512 or <see cref="Blake2b" />; both are faster on contemporary hardware.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using var whirlpool = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo3 };
-/// byte[] digest = whirlpool.ComputeHash(message);
-/// </code>
+/// <code language="csharp"> using var whirlpool = new Whirlpool { Version = WhirlpoolVersion.WhirlpoolInfo3 }; byte[]
+/// digest = whirlpool.ComputeHash(message); </code>
 /// </example>
 public sealed partial class Whirlpool
     : BlockHashAlgorithm<Whirlpool>
 {
-    /// <summary>Length of the Whirlpool compression block is 512 bits (64 bytes).</summary>
+    /// <summary>
+    /// Length of the Whirlpool compression block is 512 bits (64 bytes).
+    /// </summary>
     private const int BlockSizeBits = 512;
 
-    /// <summary>Length of the Whirlpool digest is 512 bits (64 bytes).</summary>
+    /// <summary>
+    /// Length of the Whirlpool digest is 512 bits (64 bytes).
+    /// </summary>
     private const int HashSizeBits = 512;
 
-    /// <summary>Length of the Whirlpool message-length trailer appended during padding is 256 bits (32 bytes).</summary>
+    /// <summary>
+    /// Length of the Whirlpool message-length trailer appended during padding is 256 bits (32 bytes).
+    /// </summary>
     private const int LengthFieldBits = 256;
 
     private readonly ulong[] _state = new ulong[8];
@@ -69,8 +90,8 @@ public sealed partial class Whirlpool
     private bool _inputConsumed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Whirlpool"/> class configured for
-    /// <see cref="WhirlpoolVersion.WhirlpoolInfo3"/>, the standardized <c>ISO/IEC 10118-3</c> revision.
+    /// Initializes a new instance of the <see cref="Whirlpool" /> class configured for
+    /// <see cref="WhirlpoolVersion.WhirlpoolInfo3" />, the standardized <c>ISO/IEC 10118-3</c> revision.
     /// </summary>
     public Whirlpool()
         : base(BlockSizeBits)
@@ -87,7 +108,7 @@ public sealed partial class Whirlpool
     /// <inheritdoc />
     /// <remarks>
     /// Returns one of <c>"Whirlpool-0"</c>, <c>"Whirlpool-T"</c>, or <c>"Whirlpool"</c> matching the configured
-    /// <see cref="Version"/> — corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
+    /// <see cref="Version" /> — corresponding to the 2000, 2001, and ISO/IEC 10118-3 (2003) revisions respectively.
     /// </remarks>
     public override string AlgorithmName
     {
@@ -104,19 +125,19 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Gets or sets the published <see cref="WhirlpoolVersion"/> used to compute the hash value.
+    /// Gets or sets the published <see cref="WhirlpoolVersion" /> used to compute the hash value.
     /// </summary>
     /// <value>The Whirlpool revision selected for subsequent hashing operations.</value>
     /// <returns>The currently configured Whirlpool revision.</returns>
     /// <remarks>
     /// <para>
     /// The revision must be assigned before any input has been consumed. Once
-    /// <see cref="HashAlgorithm.TransformBlock"/> or any <c>ComputeHash</c> overload has started a
-    /// computation, the value becomes immutable until <see cref="Initialize"/> is called.
+    /// <see cref="HashAlgorithm.TransformBlock" /> or any <c>ComputeHash</c> overload has started a computation, the
+    /// value becomes immutable until <see cref="Initialize" /> is called.
     /// </para>
     /// </remarks>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// The assigned value is not a defined <see cref="WhirlpoolVersion"/> member.
+    /// The assigned value is not a defined <see cref="WhirlpoolVersion" /> member.
     /// </exception>
     /// <exception cref="ObjectDisposedException">The hash algorithm instance has been disposed.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
@@ -142,7 +163,9 @@ public sealed partial class Whirlpool
     }
 
     /// <inheritdoc />
-    /// <remarks>Clears the eight 64-bit chaining variables and unlatches the <see cref="Version"/> setter.</remarks>
+    /// <remarks>
+    /// Clears the eight 64-bit chaining variables and unlatches the <see cref="Version" /> setter.
+    /// </remarks>
     public override void Initialize()
     {
         base.Initialize();
@@ -168,8 +191,8 @@ public sealed partial class Whirlpool
     /// Releases resources used by the algorithm and clears the internal state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to
-    /// release only unmanaged resources.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
     {
@@ -258,9 +281,9 @@ public sealed partial class Whirlpool
     }
 
     /// <summary>
-    /// Applies one round of the Whirlpool <c>W</c> cipher to <paramref name="state"/>, combining the
-    /// non-linear substitution, shift-column, MixRows and AddRoundKey operations via the precomputed
-    /// multiplication table <paramref name="mul"/>.
+    /// Applies one round of the Whirlpool <c>W</c> cipher to <paramref name="state" />, combining the non-linear
+    /// substitution, shift-column, MixRows and AddRoundKey operations via the precomputed multiplication table
+    /// <paramref name="mul" />.
     /// </summary>
     /// <param name="state">The eight 64-bit input words.</param>
     /// <param name="roundKey">The eight 64-bit round-key words XORed into the round output.</param>

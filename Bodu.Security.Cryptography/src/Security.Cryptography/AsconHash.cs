@@ -7,27 +7,27 @@
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Abstract base class for ASCON cryptographic hash algorithms as defined in NIST SP 800-232. Implements the shared sponge
-/// construction, padding, and Ascon-p permutation used by all fixed-output ASCON hash variants.
+/// Abstract base class for ASCON cryptographic hash algorithms as defined in NIST SP 800-232. Implements the shared
+/// sponge construction, padding, and Ascon-p permutation used by all fixed-output ASCON hash variants.
 /// </summary>
 /// <typeparam name="T">
 /// The concrete hash algorithm type derived from this class. Must expose a public parameterless constructor.
 /// </typeparam>
 /// <remarks>
 /// <para>
-/// All ASCON hash algorithms share a 320-bit internal state comprising five 64-bit words, a 64-bit (8-byte) rate, and a 256-bit
-/// output. They differ in their pre-computed initialization state and in the number of Ascon-p rounds applied after each absorbed
-/// block. The initial squeeze always uses the full 12-round permutation (Ascon-p12); subsequent squeeze blocks use the same round
-/// count as absorption.
+/// All ASCON hash algorithms share a 320-bit internal state comprising five 64-bit words, a 64-bit (8-byte) rate, and a
+/// 256-bit output. They differ in their pre-computed initialization state and in the number of Ascon-p rounds applied
+/// after each absorbed block. The initial squeeze always uses the full 12-round permutation (Ascon-p12); subsequent
+/// squeeze blocks use the same round count as absorption.
 /// </para>
 /// <para>
-/// Padding follows the Ascon convention: the byte immediately after the last input byte is set to <c>0x01</c> (the little-endian
-/// sentinel bit), and the remaining rate bytes are zero. A padding block is always appended, even when the message length is a
-/// multiple of the eight-byte rate.
+/// Padding follows the Ascon convention: the byte immediately after the last input byte is set to <c>0x01</c> (the
+/// little-endian sentinel bit), and the remaining rate bytes are zero. A padding block is always appended, even when
+/// the message length is a multiple of the eight-byte rate.
 /// </para>
 /// <para>
-/// Concrete derived types supply the five pre-computed post-initialization state words and the absorption round count via the
-/// protected constructor. No further overrides are required.
+/// Concrete derived types supply the five pre-computed post-initialization state words and the absorption round count
+/// via the protected constructor. No further overrides are required.
 /// </para>
 /// </remarks>
 public abstract partial class AsconHash<T>
@@ -46,7 +46,7 @@ public abstract partial class AsconHash<T>
     private AsconState _state;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AsconHash{T}"/> class with the specified algorithm parameters.
+    /// Initializes a new instance of the <see cref="AsconHash{T}" /> class with the specified algorithm parameters.
     /// </summary>
     /// <param name="iv0">Pre-computed initial state word 0 (result of applying Ascon-p12 to the raw IV).</param>
     /// <param name="iv1">Pre-computed initial state word 1.</param>
@@ -57,11 +57,13 @@ public abstract partial class AsconHash<T>
     /// The number of Ascon-p rounds applied after each absorbed block. Must be between 1 and 12 inclusive.
     /// </param>
     /// <param name="algorithmName">
-    /// The canonical algorithm identifier string as defined in NIST SP 800-232. Must not be <see langword="null"/>.
+    /// The canonical algorithm identifier string as defined in NIST SP 800-232. Must not be <see langword="null" />.
     /// </param>
-    /// <exception cref="ArgumentNullException"><paramref name="algorithmName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="algorithmName" /> is <see langword="null" />.
+    /// </exception>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="absorptionRounds"/> is less than 1 or greater than 12.
+    /// <paramref name="absorptionRounds" /> is less than 1 or greater than 12.
     /// </exception>
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The IV state words are assigned together to mirror the five-word Ascon state layout and keep the constructor initialization visually aligned with the algorithm specification.")]
     protected AsconHash(ulong iv0, ulong iv1, ulong iv2, ulong iv3, ulong iv4, int absorptionRounds, string algorithmName)
@@ -101,8 +103,8 @@ public abstract partial class AsconHash<T>
 
     /// <inheritdoc />
     /// <remarks>
-    /// Loads the pre-computed initial state directly — no permutation is needed because the constants
-    /// supplied by the derived class are already the result of applying Ascon-p12 to the raw IV.
+    /// Loads the pre-computed initial state directly — no permutation is needed because the constants supplied by the
+    /// derived class are already the result of applying Ascon-p12 to the raw IV.
     /// </remarks>
     public override void Initialize()
     {
@@ -115,8 +117,8 @@ public abstract partial class AsconHash<T>
     /// Releases the resources used by this instance and clears the internal sponge state.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to release only unmanaged
-    /// resources.
+    /// <see langword="true" /> to release both managed and unmanaged resources; <see langword="false" /> to release
+    /// only unmanaged resources.
     /// </param>
     protected override void Dispose(bool disposing)
     {
@@ -136,10 +138,12 @@ public abstract partial class AsconHash<T>
     /// <param name="block">
     /// The residual input bytes (zero to seven bytes) remaining after all complete 8-byte blocks have been processed.
     /// </param>
-    /// <param name="messageLength">The total number of input bytes consumed before this call. Not used by Ascon padding.</param>
+    /// <param name="messageLength">
+    /// The total number of input bytes consumed before this call. Not used by Ascon padding.
+    /// </param>
     /// <returns>
-    /// An 8-byte array containing the residual bytes followed by <c>0x01</c> at the next position and zero bytes thereafter,
-    /// matching the little-endian word representation used throughout the Ascon sponge state.
+    /// An 8-byte array containing the residual bytes followed by <c>0x01</c> at the next position and zero bytes
+    /// thereafter, matching the little-endian word representation used throughout the Ascon sponge state.
     /// </returns>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength)
     {
@@ -154,9 +158,9 @@ public abstract partial class AsconHash<T>
     }
 
     /// <summary>
-    /// Absorbs a single 8-byte rate block into the sponge state and applies the Ascon-p permutation. Full message blocks use
-    /// the configured absorption round count; the final padded block always uses 12 rounds to match the reference squeeze
-    /// initialization.
+    /// Absorbs a single 8-byte rate block into the sponge state and applies the Ascon-p permutation. Full message
+    /// blocks use the configured absorption round count; the final padded block always uses 12 rounds to match the
+    /// reference squeeze initialization.
     /// </summary>
     /// <param name="block">The 8-byte input block to absorb. Its length must equal the configured block size.</param>
     protected override void ProcessBlock(ReadOnlySpan<byte> block)

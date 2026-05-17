@@ -4,31 +4,29 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Serves as the abstract base class for the non-standard wide-block tweakable Serpent variants (<see cref="Serpent256" />,
-/// <see cref="Serpent512" />, and <see cref="Serpent1024" />).
+/// Serves as the abstract base class for the non-standard wide-block tweakable Serpent variants (
+/// <see cref="Serpent256" />, <see cref="Serpent512" />, and <see cref="Serpent1024" />).
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each variant accepts a key whose size in bits matches its block size (256, 512, or 1024 bits) together with a 128-bit
-/// tweak. Derived classes must implement <see cref="CreateCipher(byte[], byte[])" /> to instantiate the appropriate concrete
-/// engine.
+/// Each variant accepts a key whose size in bits matches its block size (256, 512, or 1024 bits) together with a
+/// 128-bit tweak. Derived classes must implement <see cref="CreateCipher(byte[], byte[])" /> to instantiate the
+/// appropriate concrete engine.
 /// </para>
 /// <para>
-/// The <see cref="BlockMode" /> property replaces the standard <see cref="SymmetricAlgorithm.Mode" /> property, enabling the
-/// use of additional or non-standard block cipher modes such as <see cref="CipherModeKind.CTR" /> and
+/// The <see cref="BlockMode" /> property replaces the standard <see cref="SymmetricAlgorithm.Mode" /> property,
+/// enabling the use of additional or non-standard block cipher modes such as <see cref="CipherModeKind.CTR" /> and
 /// <see cref="CipherModeKind.OFB" />.
 /// </para>
-/// <note type="important">
-/// The wide-block Serpent family is a **non-standard, experimental construction** and is not interoperable with any reference
-/// Serpent implementation. For standard, externally vetted Serpent, use <see cref="Serpent128" />.
-/// </note>
+/// <note type="important"> The wide-block Serpent family is a **non-standard, experimental construction** and is not
+/// interoperable with any reference Serpent implementation. For standard, externally vetted Serpent, use
+/// <see cref="Serpent128" />. </note>
 /// </remarks>
 public abstract class Serpent
     : TweakableSymmetricAlgorithm
@@ -127,8 +125,8 @@ public abstract class Serpent
 
     /// <inheritdoc />
     /// <remarks>
-    /// Marks the instance as disposed, zeroes any retained key and IV buffers, and delegates the tweak buffer cleanup to the
-    /// base implementation.
+    /// Marks the instance as disposed, zeroes any retained key and IV buffers, and delegates the tweak buffer cleanup
+    /// to the base implementation.
     /// </remarks>
     protected override void Dispose(bool disposing)
     {
@@ -147,8 +145,8 @@ public abstract class Serpent
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException" /> whose <see cref="ObjectDisposedException.ObjectName" /> matches the
-    /// concrete algorithm type's <see cref="Type.FullName" /> if the instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> whose <see cref="ObjectDisposedException.ObjectName" /> matches
+    /// the concrete algorithm type's <see cref="Type.FullName" /> if the instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

@@ -4,38 +4,32 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the ISO 10126 padding scheme, which appends <c>N - 1</c> cryptographically
-/// random bytes followed by a trailing byte holding the padding length <c>N</c>.
+/// Implements the ISO 10126 padding scheme, which appends <c>N - 1</c> cryptographically random bytes followed by a
+/// trailing byte holding the padding length <c>N</c>.
 /// </summary>
 /// <remarks>
 /// <para>
-/// A full block of padding is always added when the input is already block-aligned so
-/// that <see cref="Unpad"/> can unambiguously recover the original length. The interior
-/// pad bytes are not reconstructable on decryption, so only the trailing length byte is
-/// validated. ISO 10126 was withdrawn by ISO in 2007; it is supported for interoperability
-/// with existing ciphertexts.
+/// A full block of padding is always added when the input is already block-aligned so that <see cref="Unpad" /> can
+/// unambiguously recover the original length. The interior pad bytes are not reconstructable on decryption, so only the
+/// trailing length byte is validated. ISO 10126 was withdrawn by ISO in 2007; it is supported for interoperability with
+/// existing ciphertexts.
 /// </para>
 /// <para>
-/// <strong>When to choose ISO 10126.</strong> Only for legacy interop. The random pad bytes carry no
-/// security benefit over <see cref="Pkcs7Padding"/> and the standard has been formally withdrawn. For new
-/// designs use PKCS#7 with an authenticated mode, or pair an AEAD mode with <see cref="NoPadding"/>.
+/// <strong>When to choose ISO 10126.</strong> Only for legacy interop. The random pad bytes carry no security benefit
+/// over <see cref="Pkcs7Padding" /> and the standard has been formally withdrawn. For new designs use PKCS#7 with an
+/// authenticated mode, or pair an AEAD mode with <see cref="NoPadding" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.Security.Cryptography;
-///
-/// // Legacy interop only — padding bytes are random; only the final length byte is validated.
-/// IPaddingStrategy padding = new Iso10126Padding();
-/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
-/// byte[] recovered = padding.Unpad(padded, blockSize: 128);
-/// </code>
+/// <code language="csharp"> using Bodu.Security.Cryptography; // Legacy interop only — padding bytes are random; only
+/// the final length byte is validated. IPaddingStrategy padding = new Iso10126Padding(); byte[] padded =
+/// padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes byte[] recovered = padding.Unpad(padded, blockSize:
+/// 128); </code>
 /// </example>
 public sealed class Iso10126Padding
     : IPaddingStrategy
@@ -44,13 +38,14 @@ public sealed class Iso10126Padding
     public bool StripsPaddingOnUnpad => true;
 
     /// <summary>
-    /// Applies ISO 10126 padding to the input data, ensuring the total output is a
-    /// multiple of the block size.
+    /// Applies ISO 10126 padding to the input data, ensuring the total output is a multiple of the block size.
     /// </summary>
     /// <param name="input">The data to pad.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded data as a byte array.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="blockSize" /> is less than or equal to zero.
+    /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
@@ -87,7 +82,9 @@ public sealed class Iso10126Padding
     /// <param name="input">The padded data.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The unpadded data as a byte array.</returns>
-    /// <exception cref="ArgumentException">Thrown if <paramref name="input"/> is empty or not aligned to the block size.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown if <paramref name="input" /> is empty or not aligned to the block size.
+    /// </exception>
     /// <exception cref="CryptographicException">Thrown if the trailing length byte is out of range.</exception>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize)
     {

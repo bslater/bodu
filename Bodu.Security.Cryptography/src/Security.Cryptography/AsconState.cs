@@ -11,13 +11,13 @@ using Bodu.Extensions;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Represents the 320-bit ASCON permutation state as five 64-bit words, and provides the Ascon-p permutation
-/// used by all members of the ASCON algorithm family defined in NIST SP 800-232.
+/// Represents the 320-bit ASCON permutation state as five 64-bit words, and provides the Ascon-p permutation used by
+/// all members of the ASCON algorithm family defined in NIST SP 800-232.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The ASCON permutation operates over a 320-bit state composed of five 64-bit words <c>S0</c>…<c>S4</c>.
-/// Each call to <see cref="Permute"/> applies a sequence of identical rounds, each consisting of three layers:
+/// The ASCON permutation operates over a 320-bit state composed of five 64-bit words <c>S0</c>…<c>S4</c>. Each call to
+/// <see cref="Permute" /> applies a sequence of identical rounds, each consisting of three layers:
 /// </para>
 /// <list type="number">
 /// <item>
@@ -27,49 +27,59 @@ namespace Bodu.Security.Cryptography;
 /// </item>
 /// <item>
 /// <description>
-/// <b>Substitution layer</b>: a 5-bit S-box is applied in bit-sliced fashion across all 64 bit-columns of
-/// the state simultaneously, providing non-linearity.
+/// <b>Substitution layer</b>: a 5-bit S-box is applied in bit-sliced fashion across all 64 bit-columns of the state
+/// simultaneously, providing non-linearity.
 /// </description>
 /// </item>
 /// <item>
 /// <description>
-/// <b>Linear diffusion layer</b>: each word is XORed with two rotated copies of itself using word-specific
-/// rotation constants, ensuring full diffusion across the 320-bit state.
+/// <b>Linear diffusion layer</b>: each word is XORed with two rotated copies of itself using word-specific rotation
+/// constants, ensuring full diffusion across the 320-bit state.
 /// </description>
 /// </item>
 /// </list>
 /// <para>
-/// This struct is declared <see langword="internal"/> and is shared by <see cref="AsconHash{T}"/>,
-/// <see cref="AsconAead128"/>, <see cref="AsconXof128"/>, and <see cref="AsconCxof128"/>.
+/// This struct is declared <see langword="internal" /> and is shared by <see cref="AsconHash{T}" />,
+/// <see cref="AsconAead128" />, <see cref="AsconXof128" />, and <see cref="AsconCxof128" />.
 /// </para>
 /// </remarks>
 internal struct AsconState
 {
-    /// <summary>State word 0.</summary>
+    /// <summary>
+    /// State word 0.
+    /// </summary>
     public ulong S0;
 
-    /// <summary>State word 1.</summary>
+    /// <summary>
+    /// State word 1.
+    /// </summary>
     public ulong S1;
 
-    /// <summary>State word 2.</summary>
+    /// <summary>
+    /// State word 2.
+    /// </summary>
     public ulong S2;
 
-    /// <summary>State word 3.</summary>
+    /// <summary>
+    /// State word 3.
+    /// </summary>
     public ulong S3;
 
-    /// <summary>State word 4.</summary>
+    /// <summary>
+    /// State word 4.
+    /// </summary>
     public ulong S4;
 
     /// <summary>
     /// Applies the Ascon-p permutation with the specified number of rounds to this state.
     /// </summary>
     /// <param name="rounds">
-    /// The number of rounds to apply. Must be between 1 and 12 inclusive. Common values are 6 (Ascon-p6),
-    /// 8 (Ascon-p8), and 12 (Ascon-p12).
+    /// The number of rounds to apply. Must be between 1 and 12 inclusive. Common values are 6 (Ascon-p6), 8 (Ascon-p8),
+    /// and 12 (Ascon-p12).
     /// </param>
     /// <remarks>
-    /// Rounds are numbered 0–11; a call with <paramref name="rounds"/> = <c>r</c> applies rounds
-    /// <c>12 − r</c> through <c>11</c>, preserving the standard constant-addition schedule.
+    /// Rounds are numbered 0–11; a call with <paramref name="rounds" /> = <c>r</c> applies rounds <c>12 − r</c> through
+    /// <c>11</c>, preserving the standard constant-addition schedule.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [System.Diagnostics.CodeAnalysis.SuppressMessage("StyleCop.CSharp.ReadabilityRules", "SA1107:Code should not contain multiple statements on one line", Justification = "The grouped state-word assignments mirror the bit-sliced Ascon permutation steps and preserve a compact, specification-like layout for the five-word state transformation.")]
@@ -108,8 +118,8 @@ internal struct AsconState
     }
 
     /// <summary>
-    /// XORs a 16-byte (128-bit, two-word) rate block into state words <c>S0</c> and <c>S1</c> using
-    /// little-endian word order as specified by NIST SP 800-232.
+    /// XORs a 16-byte (128-bit, two-word) rate block into state words <c>S0</c> and <c>S1</c> using little-endian word
+    /// order as specified by NIST SP 800-232.
     /// </summary>
     /// <param name="block">The 16-byte block to absorb. Must be exactly 16 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,8 +130,8 @@ internal struct AsconState
     }
 
     /// <summary>
-    /// XORs a single 8-byte (64-bit, one-word) rate block into state word <c>S0</c> using little-endian
-    /// word order as specified by NIST SP 800-232.
+    /// XORs a single 8-byte (64-bit, one-word) rate block into state word <c>S0</c> using little-endian word order as
+    /// specified by NIST SP 800-232.
     /// </summary>
     /// <param name="block">The 8-byte block to absorb. Must be exactly 8 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -129,7 +139,7 @@ internal struct AsconState
         this.S0 ^= BinaryPrimitives.ReadUInt64LittleEndian(block);
 
     /// <summary>
-    /// Reads the current rate (128-bit, two-word) as 16 bytes into <paramref name="destination"/>.
+    /// Reads the current rate (128-bit, two-word) as 16 bytes into <paramref name="destination" />.
     /// </summary>
     /// <param name="destination">Destination span. Must be at least 16 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -140,7 +150,7 @@ internal struct AsconState
     }
 
     /// <summary>
-    /// Reads the current rate (64-bit, one-word) as 8 bytes into <paramref name="destination"/>.
+    /// Reads the current rate (64-bit, one-word) as 8 bytes into <paramref name="destination" />.
     /// </summary>
     /// <param name="destination">Destination span. Must be at least 8 bytes.</param>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

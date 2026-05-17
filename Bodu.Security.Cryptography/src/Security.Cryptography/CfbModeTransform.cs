@@ -4,13 +4,11 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies the Cipher Feedback (CFB) mode transformation to an underlying <see cref="IBlockCipher"/>, turning it into a
-/// self-synchronizing stream cipher.
+/// Applies the Cipher Feedback (CFB) mode transformation to an underlying <see cref="IBlockCipher" />, turning it into
+/// a self-synchronizing stream cipher.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -18,42 +16,36 @@ namespace Bodu.Security.Cryptography;
 /// </para>
 /// <para>
 /// Both directions use the cipher's encryption primitive: encryption computes <c>Cᵢ = Pᵢ ⊕ E(IVᵢ)</c> and decryption
-/// <c>Pᵢ = Cᵢ ⊕ E(IVᵢ)</c>, with <c>IV₀</c> supplied by the caller and <c>IVᵢ₊₁ = Cᵢ</c> for subsequent blocks.
-/// See <b>panel 3</b> of the diagram above: the dashed feedback lines carry ciphertext blocks back into the next cipher
-/// input — the cipher runs the same direction (encrypt) for both encryption and decryption, and the plaintext simply XORs
+/// <c>Pᵢ = Cᵢ ⊕ E(IVᵢ)</c>, with <c>IV₀</c> supplied by the caller and <c>IVᵢ₊₁ = Cᵢ</c> for subsequent blocks. See <b>
+/// panel 3</b> of the diagram above: the dashed feedback lines carry ciphertext blocks back into the next cipher input
+/// — the cipher runs the same direction (encrypt) for both encryption and decryption, and the plaintext simply XORs
 /// into or out of the resulting keystream.
 /// </para>
 /// <para>
-/// The initialization vector must equal the cipher block size in length and should be unique and unpredictable per message under a given key.
+/// The initialization vector must equal the cipher block size in length and should be unique and unpredictable per
+/// message under a given key.
 /// </para>
 /// <para>
-/// <strong>When to use CFB.</strong> Pick CFB only for interoperability with legacy formats — it was the
-/// stream-cipher mode of choice in PGP / OpenPGP and certain disk-encryption layouts. CFB removes the padding
-/// requirement that <see cref="CbcModeTransform"/> imposes, but inherits the same lack of authentication and
-/// adds bit-flip propagation across multiple blocks. For new code prefer <see cref="CtrModeTransform"/> for
-/// stream-cipher behavior, or an AEAD mode (<see cref="GcmModeTransform"/>, <see cref="EaxModeTransform"/>)
-/// for authenticated encryption.
+/// <strong>When to use CFB.</strong> Pick CFB only for interoperability with legacy formats — it was the stream-cipher
+/// mode of choice in PGP / OpenPGP and certain disk-encryption layouts. CFB removes the padding requirement that
+/// <see cref="CbcModeTransform" /> imposes, but inherits the same lack of authentication and adds bit-flip propagation
+/// across multiple blocks. For new code prefer <see cref="CtrModeTransform" /> for stream-cipher behavior, or an AEAD
+/// mode (<see cref="GcmModeTransform" />, <see cref="EaxModeTransform" />) for authenticated encryption.
 /// </para>
 /// <para>
-/// CFB is sequential at the block level: each ciphertext block must be produced before the next can be
-/// computed, so the mode does not parallelize within a message.
+/// CFB is sequential at the block level: each ciphertext block must be produced before the next can be computed, so the
+/// mode does not parallelize within a message.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using System.Security.Cryptography;
-/// using Bodu.Security.Cryptography;
-///
-/// // Most callers should set SymmetricAlgorithm.Mode = CipherBlockMode.CFB instead of using this directly.
-/// using IBlockCipher cipher = new AesBlockCipher(key);
-/// byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8);
-/// IBlockCipherModeTransform cfb = new CfbModeTransform(cipher, iv);
-///
-/// byte[] ciphertext = new byte[plaintext.Length];
-/// int written = cfb.Transform(plaintext, ciphertext, encrypt: true);
-/// </code>
+/// <code language="csharp"> using System.Security.Cryptography; using Bodu.Security.Cryptography; // Most callers
+/// should set SymmetricAlgorithm.Mode = CipherBlockMode.CFB instead of using this directly. using IBlockCipher cipher =
+/// new AesBlockCipher(key); byte[] iv = RandomNumberGenerator.GetBytes(cipher.BlockSize / 8); IBlockCipherModeTransform
+/// cfb = new CfbModeTransform(cipher, iv); byte[] ciphertext = new byte[plaintext.Length]; int written =
+/// cfb.Transform(plaintext, ciphertext, encrypt: true); </code>
 /// </example>
-/// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronizing-stream-cipher">CFB walk-through in the cipher-modes guide</seealso>
+/// <seealso href="../guides/cryptography/cipher-modes.html#cfb--self-synchronizing-stream-cipher">CFB walk-through in
+/// the cipher-modes guide</seealso>
 public sealed class CfbModeTransform
     : IBlockCipherModeTransform
 {
@@ -62,11 +54,16 @@ public sealed class CfbModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CfbModeTransform"/> class with the specified cipher and initialization vector.
+    /// Initializes a new instance of the <see cref="CfbModeTransform" /> class with the specified cipher and
+    /// initialization vector.
     /// </summary>
     /// <param name="cipher">The block cipher over which CFB is applied.</param>
-    /// <param name="iv">The initialization vector used as the feedback register for the first block. A defensive copy is taken.</param>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="cipher"/> or <paramref name="iv"/> is <see langword="null"/>.</exception>
+    /// <param name="iv">
+    /// The initialization vector used as the feedback register for the first block. A defensive copy is taken.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="cipher" /> or <paramref name="iv" /> is <see langword="null" />.
+    /// </exception>
     public CfbModeTransform(IBlockCipher cipher, byte[] iv)
     {
         ThrowHelper.ThrowIfNull(cipher);
@@ -119,11 +116,13 @@ public sealed class CfbModeTransform
     }
 
     /// <summary>
-    /// Releases the resources used by this instance and zeroes the running feedback register so
-    /// that key-equivalent state does not linger in memory after disposal. The underlying
-    /// <see cref="IBlockCipher"/> is not disposed by this type — ownership remains with the caller.
+    /// Releases the resources used by this instance and zeroes the running feedback register so that key-equivalent
+    /// state does not linger in memory after disposal. The underlying <see cref="IBlockCipher" /> is not disposed by
+    /// this type — ownership remains with the caller.
     /// </summary>
-    /// <remarks>Idempotent.</remarks>
+    /// <remarks>
+    /// Idempotent.
+    /// </remarks>
     public void Dispose()
     {
         if (this._disposed)

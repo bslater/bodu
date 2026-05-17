@@ -4,29 +4,29 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Implements the canonical <c>Serpent</c> block cipher, which operates on 128-bit (16-byte) blocks using a 128, 192, or
-/// 256-bit key.
+/// Implements the canonical <c>Serpent</c> block cipher, which operates on 128-bit (16-byte) blocks using a 128, 192,
+/// or 256-bit key.
 /// </summary>
 /// <remarks>
 /// <para>
 /// Serpent is a 32-round substitution–permutation network designed by Ross Anderson, Eli Biham, and Lars Knudsen as an
 /// Advanced Encryption Standard (AES) candidate. Each round applies a round-key XOR, one of the eight 4-bit S-boxes
-/// <c>S0..S7</c>, and the bitsliced linear transformation <c>L</c>. The final round replaces <c>L</c> with a post-round key
-/// XOR. Shorter keys are padded to 256 bits by appending a <c>1</c> bit followed by zeros, per the Serpent specification.
+/// <c>S0..S7</c>, and the bitsliced linear transformation <c>L</c>. The final round replaces <c>L</c> with a post-round
+/// key XOR. Shorter keys are padded to 256 bits by appending a <c>1</c> bit followed by zeros, per the Serpent
+/// specification.
 /// </para>
 /// <para>
 /// This class implements the standard Serpent-128 block primitive only. It is interoperable with canonical Serpent test
 /// vectors and does not use the tweak schedule or widened state used by the non-standard wide-block variants.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Serpent128"/> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="Serpent128Cipher"/> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> or <see cref="IPaddingStrategy"/>.
+/// Most callers should prefer the higher-level <see cref="Serpent128" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="Serpent128Cipher" />
+/// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> or
+/// <see cref="IPaddingStrategy" />.
 /// </para>
 /// </remarks>
 /// <seealso cref="Serpent128"/>
@@ -34,8 +34,8 @@ public sealed class Serpent128Cipher
     : SerpentBlockCipherBase
 {
     /// <summary>
-    /// Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation;
-    /// callers should read <see cref="BlockSize"/> instead.
+    /// Length of the Serpent block is 128 bits (16 bytes). Internal constant kept for span-length validation; callers
+    /// should read <see cref="BlockSize" /> instead.
     /// </summary>
     private const int BlockSizeBits = 128;
 
@@ -59,20 +59,20 @@ public sealed class Serpent128Cipher
     /// The expanded round keys (<c>K_0..K_32</c>), each four 32-bit words, laid out contiguously as 132 words.
     /// </summary>
     /// <remarks>
-    /// Round key <c>K_r</c> starts at offset <c>r * 4</c>. Encryption consumes <c>K_0..K_31</c> before each S-box layer and
-    /// <c>K_32</c> after the final S-box layer.
+    /// Round key <c>K_r</c> starts at offset <c>r * 4</c>. Encryption consumes <c>K_0..K_31</c> before each S-box layer
+    /// and <c>K_32</c> after the final S-box layer.
     /// </remarks>
     private readonly uint[] _roundKeys;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Serpent128Cipher"/> class using the specified key.
+    /// Initializes a new instance of the <see cref="Serpent128Cipher" /> class using the specified key.
     /// </summary>
     /// <param name="key">
-    /// The Serpent key. Length must be 16, 24, or 32 bytes (128, 192, or 256 bits). Shorter keys are padded to 256 bits per
-    /// the Serpent specification.
+    /// The Serpent key. Length must be 16, 24, or 32 bytes (128, 192, or 256 bits). Shorter keys are padded to 256 bits
+    /// per the Serpent specification.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="key"/> does not have a length of 16, 24, or 32 bytes.
+    /// <paramref name="key" /> does not have a length of 16, 24, or 32 bytes.
     /// </exception>
     public Serpent128Cipher(ReadOnlySpan<byte> key)
     {
@@ -209,63 +209,52 @@ public sealed class Serpent128Cipher
     }
 
     /// <summary>
-    /// Reads a little-endian <see cref="uint"/> from <paramref name="buffer"/> at the specified <paramref name="offset"/>.
+    /// Reads a little-endian <see cref="uint" /> from <paramref name="buffer" /> at the specified
+    /// <paramref name="offset" />.
     /// </summary>
-    /// <param name="buffer">
-    /// The source byte span.
-    /// </param>
-    /// <param name="offset">
-    /// The byte offset at which to read.
-    /// </param>
-    /// <returns>
-    /// The little-endian <see cref="uint"/> value read from <paramref name="buffer"/>.
-    /// </returns>
+    /// <param name="buffer">The source byte span.</param>
+    /// <param name="offset">The byte offset at which to read.</param>
+    /// <returns>The little-endian <see cref="uint" /> value read from <paramref name="buffer" />.</returns>
     /// <remarks>
-    /// Serpent blocks are represented internally as four little-endian 32-bit words. Keeping this helper local makes the
-    /// block layout explicit at each load site.
+    /// Serpent blocks are represented internally as four little-endian 32-bit words. Keeping this helper local makes
+    /// the block layout explicit at each load site.
     /// </remarks>
     private static uint BinaryReadUInt32LE(ReadOnlySpan<byte> buffer, int offset) =>
         System.Buffers.Binary.BinaryPrimitives.ReadUInt32LittleEndian(buffer.Slice(offset, 4));
 
     /// <summary>
-    /// Writes <paramref name="value"/> to <paramref name="buffer"/> at the specified <paramref name="offset"/> in
+    /// Writes <paramref name="value" /> to <paramref name="buffer" /> at the specified <paramref name="offset" /> in
     /// little-endian byte order.
     /// </summary>
-    /// <param name="buffer">
-    /// The destination byte span.
-    /// </param>
-    /// <param name="offset">
-    /// The byte offset at which to write.
-    /// </param>
-    /// <param name="value">
-    /// The value to write.
-    /// </param>
+    /// <param name="buffer">The destination byte span.</param>
+    /// <param name="offset">The byte offset at which to write.</param>
+    /// <param name="value">The value to write.</param>
     /// <remarks>
-    /// Serpent blocks are emitted as four little-endian 32-bit words, matching the load format and canonical test-vector
-    /// representation used by this implementation.
+    /// Serpent blocks are emitted as four little-endian 32-bit words, matching the load format and canonical
+    /// test-vector representation used by this implementation.
     /// </remarks>
     private static void BinaryWriteUInt32LE(Span<byte> buffer, int offset, uint value) =>
         System.Buffers.Binary.BinaryPrimitives.WriteUInt32LittleEndian(buffer.Slice(offset, 4), value);
 
     /// <summary>
-    /// Expands <paramref name="key"/> into the 132-word round-key schedule.
+    /// Expands <paramref name="key" /> into the 132-word round-key schedule.
     /// </summary>
     /// <param name="key">
     /// The Serpent key (16, 24, or 32 bytes). Keys shorter than 32 bytes are padded per the Serpent specification.
     /// </param>
     /// <param name="roundKeys">
-    /// The destination buffer, which must have exactly <see cref="RoundKeyWordCount"/> entries.
+    /// The destination buffer, which must have exactly <see cref="RoundKeyWordCount" /> entries.
     /// </param>
     /// <remarks>
     /// <para>
-    /// Serpent first pads any key shorter than 256 bits by appending a single <c>1</c> bit followed by zeros. Because valid key
-    /// sizes are byte-aligned here, this implementation writes <c>0x01</c> immediately after the supplied key bytes and clears
-    /// the rest of the 32-byte key buffer.
+    /// Serpent first pads any key shorter than 256 bits by appending a single <c>1</c> bit followed by zeros. Because
+    /// valid key sizes are byte-aligned here, this implementation writes <c>0x01</c> immediately after the supplied key
+    /// bytes and clears the rest of the 32-byte key buffer.
     /// </para>
     /// <para>
-    /// The eight padded words seed the Serpent prekey recurrence. The generated prekey tail is then transformed in groups of
-    /// four words using the key-schedule S-box order <c>K_0 → S3, K_1 → S2, K_2 → S1, K_3 → S0, K_4 → S7, ...</c> to produce
-    /// <c>K_0..K_32</c>.
+    /// The eight padded words seed the Serpent prekey recurrence. The generated prekey tail is then transformed in
+    /// groups of four words using the key-schedule S-box order
+    /// <c>K_0 → S3, K_1 → S2, K_2 → S1, K_3 → S0, K_4 → S7, ...</c> to produce <c>K_0..K_32</c>.
     /// </para>
     /// </remarks>
     private static void BuildRoundKeys(ReadOnlySpan<byte> key, uint[] roundKeys)

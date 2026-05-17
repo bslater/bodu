@@ -4,7 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
@@ -12,42 +11,41 @@ using System.Security.Cryptography;
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Serves as the abstract base class for tweakable symmetric algorithms, which accept an additional tweak value in addition to
-/// the key and initialization vector.
+/// Serves as the abstract base class for tweakable symmetric algorithms, which accept an additional tweak value in
+/// addition to the key and initialization vector.
 /// </summary>
 /// <remarks>
 /// <para>
-/// This class extends <see cref="SymmetricAlgorithm"/> with a <see cref="Tweak"/> property, a <see cref="LegalTweakSizes"/>
-/// enumeration, and tweak-aware <c>CreateEncryptor</c> / <c>CreateDecryptor</c> overloads. It is intended for ciphers such as
-/// Threefish that take a tweak input as part of their cryptographic contract.
+/// This class extends <see cref="SymmetricAlgorithm" /> with a <see cref="Tweak" /> property, a
+/// <see cref="LegalTweakSizes" /> enumeration, and tweak-aware <c>CreateEncryptor</c> / <c>CreateDecryptor</c>
+/// overloads. It is intended for ciphers such as Threefish that take a tweak input as part of their cryptographic
+/// contract.
 /// </para>
 /// <para>
-/// Derived classes must override <see cref="CreateEncryptor(byte[], byte[], byte[])"/>,
-/// <see cref="CreateDecryptor(byte[], byte[], byte[])"/>, and <see cref="GenerateTweak"/>.
+/// Derived classes must override <see cref="CreateEncryptor(byte[], byte[], byte[])" />,
+/// <see cref="CreateDecryptor(byte[], byte[], byte[])" />, and <see cref="GenerateTweak" />.
 /// </para>
 /// <para>
-/// <strong>What is a tweak?</strong> A tweak is a third keying input alongside key and IV — a per-message
-/// (or per-position) value that varies the cipher's behavior without renegotiating the key. Tweaks are
-/// what make tweakable block ciphers a natural fit for disk encryption (the sector number is the tweak),
-/// authenticated modes built from the cipher (the message position is the tweak), and protocols that need
-/// to bind ciphertext to a position or message identifier.
+/// <strong>What is a tweak?</strong> A tweak is a third keying input alongside key and IV — a per-message (or
+/// per-position) value that varies the cipher's behavior without renegotiating the key. Tweaks are what make tweakable
+/// block ciphers a natural fit for disk encryption (the sector number is the tweak), authenticated modes built from the
+/// cipher (the message position is the tweak), and protocols that need to bind ciphertext to a position or message
+/// identifier.
 /// </para>
 /// <para>
-/// <strong>Concrete implementations.</strong> The library ships <see cref="Threefish256"/>,
-/// <see cref="Threefish512"/>, and <see cref="Threefish1024"/> as the production tweakable ciphers (Threefish
-/// is the cipher under the hood of Skein). The <see cref="Serpent256"/>/<see cref="Serpent512"/>/<see cref="Serpent1024"/>
+/// <strong>Concrete implementations.</strong> The library ships <see cref="Threefish256" />,
+/// <see cref="Threefish512" />, and <see cref="Threefish1024" /> as the production tweakable ciphers (Threefish is the
+/// cipher under the hood of Skein). The <see cref="Serpent256" />/<see cref="Serpent512" />/<see cref="Serpent1024" />
 /// wide-block variants are also tweakable but non-standard — see their headers for the experimental-only caveat.
 /// </para>
 /// <para>
 /// <strong>Companion try-pattern helpers.</strong> The
-/// <see cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/> class adds
-/// <c>TryCreateEncryptor</c> and <c>TryCreateDecryptor</c> wrappers that return <see langword="false"/> when
-/// the supplied key/IV/tweak combination is invalid — useful when keying material is user-supplied.
+/// <see cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions" /> class adds
+/// <c>TryCreateEncryptor</c> and <c>TryCreateDecryptor</c> wrappers that return <see langword="false" /> when the
+/// supplied key/IV/tweak combination is invalid — useful when keying material is user-supplied.
 /// </para>
 /// </remarks>
-/// <seealso cref="Threefish256"/>
-/// <seealso cref="Threefish512"/>
-/// <seealso cref="Threefish1024"/>
+/// <seealso cref="Threefish256"/> <seealso cref="Threefish512"/> <seealso cref="Threefish1024"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.TweakableSymmetricAlgorithmExtensions"/>
 public abstract class TweakableSymmetricAlgorithm
     : System.Security.Cryptography.SymmetricAlgorithm
@@ -56,9 +54,9 @@ public abstract class TweakableSymmetricAlgorithm
     /// Specifies the tweak sizes, in bits, that are supported by the algorithm.
     /// </summary>
     /// <remarks>
-    /// Each <see cref="KeySizes"/> entry expresses its minimum, maximum, and skip values in bits. This backing
-    /// field defines the range of acceptable tweak sizes for a given algorithm and is used internally by the
-    /// <see cref="LegalTweakSizes"/> property.
+    /// Each <see cref="KeySizes" /> entry expresses its minimum, maximum, and skip values in bits. This backing field
+    /// defines the range of acceptable tweak sizes for a given algorithm and is used internally by the
+    /// <see cref="LegalTweakSizes" /> property.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "StyleCop.CSharp.NamingRules",
@@ -71,7 +69,8 @@ public abstract class TweakableSymmetricAlgorithm
     /// Stores the currently configured tweak size, in bits, for the algorithm instance.
     /// </summary>
     /// <remarks>
-    /// This backing field represents the effective size of the tweak currently configured via <see cref="TweakSize"/> or <see cref="Tweak"/>.
+    /// This backing field represents the effective size of the tweak currently configured via <see cref="TweakSize" />
+    /// or <see cref="Tweak" />.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
        "StyleCop.CSharp.NamingRules",
@@ -83,9 +82,9 @@ public abstract class TweakableSymmetricAlgorithm
     /// Stores the current tweak value used by the algorithm.
     /// </summary>
     /// <remarks>
-    /// The value stored here is used internally and may be cleared or regenerated via <see cref="Dispose"/>,
-    /// <see cref="GenerateTweak"/>, or changes to <see cref="TweakSize"/>. Defensive copies are used when accessing or assigning
-    /// through the <see cref="Tweak"/> property.
+    /// The value stored here is used internally and may be cleared or regenerated via <see cref="Dispose" />,
+    /// <see cref="GenerateTweak" />, or changes to <see cref="TweakSize" />. Defensive copies are used when accessing
+    /// or assigning through the <see cref="Tweak" /> property.
     /// </remarks>
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "StyleCop.CSharp.NamingRules",
@@ -99,13 +98,13 @@ public abstract class TweakableSymmetricAlgorithm
     /// Gets the tweak sizes, in bits, that are supported by the symmetric algorithm.
     /// </summary>
     /// <value>
-    /// An array of <see cref="KeySizes"/> instances indicating the valid minimum, maximum, and step sizes
-    /// supported for tweak values, all expressed in bits. Divide by 8 to obtain the equivalent byte lengths.
+    /// An array of <see cref="KeySizes" /> instances indicating the valid minimum, maximum, and step sizes supported
+    /// for tweak values, all expressed in bits. Divide by 8 to obtain the equivalent byte lengths.
     /// </value>
     /// <returns>The legal tweak sizes, in bits.</returns>
     /// <remarks>
-    /// This property returns a cloned copy of the internal tweak size definitions to prevent external modification. Override this
-    /// property in derived types to define custom tweak size support for a specific algorithm.
+    /// This property returns a cloned copy of the internal tweak size definitions to prevent external modification.
+    /// Override this property in derived types to define custom tweak size support for a specific algorithm.
     /// </remarks>
     public virtual KeySizes[] LegalTweakSizes =>
         this.LegalTweakSizesValue is null
@@ -115,14 +114,18 @@ public abstract class TweakableSymmetricAlgorithm
     /// <summary>
     /// Gets or sets the tweak value for the symmetric algorithm.
     /// </summary>
-    /// <value>A byte array representing the tweak to be used. Must conform to one of the valid lengths specified by <see cref="LegalTweakSizes"/>.</value>
-    /// <exception cref="ArgumentNullException">Thrown when the value is <see langword="null"/>.</exception>
+    /// <value>
+    /// A byte array representing the tweak to be used. Must conform to one of the valid lengths specified by
+    /// <see cref="LegalTweakSizes" />.
+    /// </value>
+    /// <exception cref="ArgumentNullException">Thrown when the value is <see langword="null" />.</exception>
     /// <exception cref="CryptographicException">
-    /// Thrown when the tweak size is invalid or the tweak has not been set and <see cref="TweakSize"/> is missing or invalid.
+    /// Thrown when the tweak size is invalid or the tweak has not been set and <see cref="TweakSize" /> is missing or
+    /// invalid.
     /// </exception>
     /// <remarks>
-    /// If the tweak is not explicitly set, it will be lazily generated via <see cref="GenerateTweak"/>. Defensive copies are made
-    /// during assignment and retrieval to prevent external mutation.
+    /// If the tweak is not explicitly set, it will be lazily generated via <see cref="GenerateTweak" />. Defensive
+    /// copies are made during assignment and retrieval to prevent external mutation.
     /// </remarks>
     public virtual byte[] Tweak
     {
@@ -149,16 +152,20 @@ public abstract class TweakableSymmetricAlgorithm
     }
 
     /// <summary>
-    /// Gets or sets the tweak size, in bits, of the cryptographic operation for the tweakable cipher (for
-    /// example, 128 bits / 16 bytes for the Threefish family).
+    /// Gets or sets the tweak size, in bits, of the cryptographic operation for the tweakable cipher (for example, 128
+    /// bits / 16 bytes for the Threefish family).
     /// </summary>
     /// <value>
-    /// The tweak size, in bits. Must match one of the values defined in <see cref="LegalTweakSizes"/>.
-    /// Divide by 8 to obtain the equivalent byte length used when allocating the <see cref="Tweak"/> buffer.
+    /// The tweak size, in bits. Must match one of the values defined in <see cref="LegalTweakSizes" />. Divide by 8 to
+    /// obtain the equivalent byte length used when allocating the <see cref="Tweak" /> buffer.
     /// </value>
     /// <returns>The tweak size in bits.</returns>
-    /// <exception cref="CryptographicException">Thrown when the value does not match a valid tweak size defined in <see cref="LegalTweakSizes"/>.</exception>
-    /// <remarks>Changing this value clears the current tweak. A new one can be generated via <see cref="GenerateTweak"/>.</remarks>
+    /// <exception cref="CryptographicException">
+    /// Thrown when the value does not match a valid tweak size defined in <see cref="LegalTweakSizes" />.
+    /// </exception>
+    /// <remarks>
+    /// Changing this value clears the current tweak. A new one can be generated via <see cref="GenerateTweak" />.
+    /// </remarks>
     public virtual int TweakSize
     {
         get
@@ -191,16 +198,17 @@ public abstract class TweakableSymmetricAlgorithm
     /// <param name="rgbKey">The secret key to use for decryption.</param>
     /// <param name="rgbIV">The initialization vector to use for the decryption operation.</param>
     /// <param name="tweak">The tweak value that modifies the decryption process.</param>
-    /// <returns>An <see cref="ICryptoTransform"/> instance that can be used to perform the decryption.</returns>
+    /// <returns>An <see cref="ICryptoTransform" /> instance that can be used to perform the decryption.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="rgbKey"/>, <paramref name="rgbIV"/>, or <paramref name="tweak"/> is <see langword="null"/>.
+    /// Thrown if <paramref name="rgbKey" />, <paramref name="rgbIV" />, or <paramref name="tweak" /> is
+    /// <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
     /// Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints.
     /// </exception>
     /// <remarks>
-    /// This method must be implemented by derived types to support decryption with a tweak, as required by tweakable block ciphers such
-    /// as Threefish.
+    /// This method must be implemented by derived types to support decryption with a tweak, as required by tweakable
+    /// block ciphers such as Threefish.
     /// </remarks>
     public abstract ICryptoTransform CreateDecryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak);
 
@@ -218,27 +226,30 @@ public abstract class TweakableSymmetricAlgorithm
     /// <param name="rgbKey">The secret key to use for encryption.</param>
     /// <param name="rgbIV">The initialization vector to use for the encryption operation.</param>
     /// <param name="tweak">The tweak value that modifies the encryption process.</param>
-    /// <returns>An <see cref="ICryptoTransform"/> instance that can be used to perform the encryption.</returns>
+    /// <returns>An <see cref="ICryptoTransform" /> instance that can be used to perform the encryption.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="rgbKey"/>, <paramref name="rgbIV"/>, or <paramref name="tweak"/> is <see langword="null"/>.
+    /// Thrown if <paramref name="rgbKey" />, <paramref name="rgbIV" />, or <paramref name="tweak" /> is
+    /// <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
     /// Thrown if any input does not conform to the expected size, format, or algorithm-specific constraints.
     /// </exception>
     /// <remarks>
-    /// This method must be implemented by derived types to support encryption with a tweak, as required by tweakable block ciphers such
-    /// as Threefish.
+    /// This method must be implemented by derived types to support encryption with a tweak, as required by tweakable
+    /// block ciphers such as Threefish.
     /// </remarks>
     public abstract ICryptoTransform CreateEncryptor(byte[] rgbKey, byte[]? rgbIV, byte[] tweak);
 
     /// <summary>
-    /// Generates a new tweak value for the algorithm based on the current <see cref="TweakSize"/>.
+    /// Generates a new tweak value for the algorithm based on the current <see cref="TweakSize" />.
     /// </summary>
-    /// <exception cref="CryptographicException">Thrown if <see cref="TweakSize"/> is not configured to a valid size.</exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown if <see cref="TweakSize" /> is not configured to a valid size.
+    /// </exception>
     /// <remarks>
     /// <para>
-    /// This method initializes the tweak with random or algorithm-specific data. The generated size will match the current
-    /// <see cref="TweakSize"/>. If no size has been set, an exception will be thrown.
+    /// This method initializes the tweak with random or algorithm-specific data. The generated size will match the
+    /// current <see cref="TweakSize" />. If no size has been set, an exception will be thrown.
     /// </para>
     /// </remarks>
     public abstract void GenerateTweak();
@@ -248,13 +259,13 @@ public abstract class TweakableSymmetricAlgorithm
     /// </summary>
     /// <param name="length">The tweak size to validate, in bits.</param>
     /// <returns>
-    /// <see langword="true"/> if the specified size matches any of the valid configurations in <see cref="LegalTweakSizes"/>;
-    /// otherwise, <see langword="false"/>.
+    /// <see langword="true" /> if the specified size matches any of the valid configurations in
+    /// <see cref="LegalTweakSizes" />; otherwise, <see langword="false" />.
     /// </returns>
     /// <remarks>
     /// <para>
-    /// This method checks the specified bit length against all entries in <see cref="LegalTweakSizes"/>. A size is considered valid if
-    /// it falls within the defined range and aligns with the specified skip size (if any).
+    /// This method checks the specified bit length against all entries in <see cref="LegalTweakSizes" />. A size is
+    /// considered valid if it falls within the defined range and aligns with the specified skip size (if any).
     /// </para>
     /// </remarks>
     public bool ValidTweakSize(int length)
@@ -297,11 +308,15 @@ public abstract class TweakableSymmetricAlgorithm
     }
 
     /// <summary>
-    /// Throws if the specified <paramref name="tweak"/> is <see langword="null"/> or its size is not valid.
+    /// Throws if the specified <paramref name="tweak" /> is <see langword="null" /> or its size is not valid.
     /// </summary>
     /// <param name="tweak">The tweak value to validate.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="tweak"/> is <see langword="null"/>.</exception>
-    /// <exception cref="CryptographicException">Thrown when <paramref name="tweak"/> is not supported by <see cref="LegalTweakSizes"/>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="tweak" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown when <paramref name="tweak" /> is not supported by <see cref="LegalTweakSizes" />.
+    /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfInvalidTweakSize(byte[] tweak)
     {
@@ -313,8 +328,13 @@ public abstract class TweakableSymmetricAlgorithm
     /// Throws an exception if the specified bit length is not a valid tweak size for this algorithm.
     /// </summary>
     /// <param name="bitLength">The length of the tweak in bits.</param>
-    /// <exception cref="CryptographicException">Thrown if the specified bit length is not among the legal sizes defined by <see cref="LegalTweakSizes"/>.</exception>
-    /// <remarks>This method should be used internally to validate programmatic assignment to <see cref="TweakSize"/> or <see cref="Tweak"/>.</remarks>
+    /// <exception cref="CryptographicException">
+    /// Thrown if the specified bit length is not among the legal sizes defined by <see cref="LegalTweakSizes" />.
+    /// </exception>
+    /// <remarks>
+    /// This method should be used internally to validate programmatic assignment to <see cref="TweakSize" /> or
+    /// <see cref="Tweak" />.
+    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfInvalidTweakSize(int bitLength)
     {
@@ -331,9 +351,11 @@ public abstract class TweakableSymmetricAlgorithm
     /// <summary>
     /// Throws if the tweak has not been set or generated.
     /// </summary>
-    /// <exception cref="CryptographicException">Thrown if the internal tweak value is <see langword="null"/> or empty.</exception>
+    /// <exception cref="CryptographicException">
+    /// Thrown if the internal tweak value is <see langword="null" /> or empty.
+    /// </exception>
     /// <remarks>
-    /// Call this method before using the <see cref="Tweak"/> property to ensure that the tweak has been initialized.
+    /// Call this method before using the <see cref="Tweak" /> property to ensure that the tweak has been initialized.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected void ThrowIfTweakNotSet()
@@ -343,7 +365,7 @@ public abstract class TweakableSymmetricAlgorithm
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

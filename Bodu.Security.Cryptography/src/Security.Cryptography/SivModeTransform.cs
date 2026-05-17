@@ -4,62 +4,70 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Applies Synthetic Initialization Vector (SIV) mode to two underlying <see cref="IBlockCipher"/>
-/// instances, providing deterministic authenticated encryption per RFC 5297 (AES-SIV).
+/// Applies Synthetic Initialization Vector (SIV) mode to two underlying <see cref="IBlockCipher" /> instances,
+/// providing deterministic authenticated encryption per RFC 5297 (AES-SIV).
 /// </summary>
 /// <remarks>
 /// <para>
 /// <img src="../images/diagrams/aead-mode.svg" alt="Generic AEAD data flow — SIV inverts the usual order by running the MAC pipeline first (S2V) to derive a synthetic IV, which is then used as the CTR counter."/>
 /// </para>
 /// <para>
-/// SIV <em>inverts</em> the order shown in the generic AEAD diagram: the bottom pipeline runs <b>first</b>
-/// — S2V/CMAC over the associated data and plaintext produces the synthetic IV, which is both the tag and
-/// the CTR counter base — and only then does the top pipeline encrypt the plaintext under that derived
-/// counter. That reversal is what makes SIV misuse-resistant: re-encrypting the same message yields the
-/// same ciphertext, but confidentiality is not lost beyond confirming message equality.
+/// SIV <em>inverts</em> the order shown in the generic AEAD diagram: the bottom pipeline runs <b>first</b> — S2V/CMAC
+/// over the associated data and plaintext produces the synthetic IV, which is both the tag and the CTR counter base —
+/// and only then does the top pipeline encrypt the plaintext under that derived counter. That reversal is what makes
+/// SIV misuse-resistant: re-encrypting the same message yields the same ciphertext, but confidentiality is not lost
+/// beyond confirming message equality.
 /// </para>
 /// <para>
 /// SIV requires two independent ciphers keyed with different material:
 /// <list type="bullet">
-/// <item><description><c>s2vCipher</c> (K₁) — used by CMAC and S2V to derive the synthetic IV.</description></item>
-/// <item><description><c>ctrCipher</c> (K₂) — used by AES-CTR to encrypt the plaintext.</description></item>
+/// <item>
+/// <description>
+/// <c>s2vCipher</c> (K₁) — used by CMAC and S2V to derive the synthetic IV.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <c>ctrCipher</c> (K₂) — used by AES-CTR to encrypt the plaintext.
+/// </description>
+/// </item>
 /// </list>
 /// </para>
 /// <para>
-/// The S2V algorithm (RFC 5297 Section 2.4) accumulates all associated data blocks and the
-/// plaintext into a single 128-bit tag using CMAC:
-/// <code>
+/// The S2V algorithm (RFC 5297 Section 2.4) accumulates all associated data blocks and the plaintext into a single
+/// 128-bit tag using CMAC: <code>
+///<![CDATA[
 /// D ← CMAC(K₁, 0^128)
 /// for each AD block Sᵢ (i &lt; n): D ← dbl(D) ⊕ CMAC(K₁, Sᵢ)
 /// if |Sₙ| ≥ 128: T ← CMAC(K₁, xorend(Sₙ, D))
 /// else:            T ← CMAC(K₁, dbl(D) ⊕ pad(Sₙ))
 /// SIV ← T
+///]]>
 /// </code>
 /// </para>
 /// <para>
 /// Ciphertext is output as <c>C || SIV</c> (ciphertext then tag), consistent with the
-/// <see cref="IAeadBlockCipherModeTransform"/> convention.
+/// <see cref="IAeadBlockCipherModeTransform" /> convention.
 /// </para>
 /// <para>
-/// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted —
-/// key wrapping (RFC 5297 §6 / RFC 5649), envelope encryption schemes that need stable ciphertext for
-/// deduplication, or any context that cannot maintain a per-message nonce. SIV is two-pass and slower than
-/// <see cref="GcmModeTransform"/> on commodity hardware, but it has the strongest misuse-resistance profile
-/// in this library: re-encrypting the same <c>(plaintext, AAD)</c> tuple produces the same ciphertext, but
-/// distinct messages remain confidential and authentic. <see cref="GcmSivModeTransform"/> is the RFC 8452
-/// alternative — same misuse-resistance category, different MAC (POLYVAL) and key schedule, typically
-/// faster on AES-NI/PCLMULQDQ hardware.
+/// <strong>When to use SIV.</strong> Pick AES-SIV when deterministic authenticated encryption is wanted — key wrapping
+/// (RFC 5297 §6 / RFC 5649), envelope encryption schemes that need stable ciphertext for deduplication, or any context
+/// that cannot maintain a per-message nonce. SIV is two-pass and slower than <see cref="GcmModeTransform" /> on
+/// commodity hardware, but it has the strongest misuse-resistance profile in this library: re-encrypting the same
+/// <c>(plaintext, AAD)</c> tuple produces the same ciphertext, but distinct messages remain confidential and authentic.
+/// <see cref="GcmSivModeTransform" /> is the RFC 8452 alternative — same misuse-resistance category, different MAC
+/// (POLYVAL) and key schedule, typically faster on AES-NI/PCLMULQDQ hardware.
 /// </para>
 /// </remarks>
 /// <example>
 /// <code language="csharp">
+///<![CDATA[
 /// using System.Security.Cryptography;
 /// using Bodu.Security.Cryptography;
 /// using Bodu.Security.Cryptography.Extensions;
@@ -71,18 +79,25 @@ namespace Bodu.Security.Cryptography;
 /// using IAeadBlockCipherModeTransform siv = new SivModeTransform(s2v, ctr, iv);
 ///
 /// byte[] sealed_ = siv.Encrypt(plaintext, associatedData: header);
+///]]>
 /// </code>
 /// </example>
-/// <seealso href="../guides/cryptography/aead-modes.html#siv--misuse-resistant">SIV walk-through in the AEAD-modes guide</seealso>
-/// <seealso cref="AesBlockCipher"/>
+/// <seealso href="../guides/cryptography/aead-modes.html#siv--misuse-resistant">SIV walk-through in the AEAD-modes
+/// guide</seealso> <seealso cref="AesBlockCipher"/>
 /// <seealso cref="Bodu.Security.Cryptography.Extensions.AeadBlockCipherModeTransformExtensions"/>
 public sealed class SivModeTransform
     : IAeadBlockCipherModeTransform, IDisposable
 {
-    /// <summary>Length of the SIV cipher block is 128 bits (16 bytes). Byte length derived inline via <see cref="BlockSizeBits"/> / 8.</summary>
+    /// <summary>
+    /// Length of the SIV cipher block is 128 bits (16 bytes). Byte length derived inline via
+    /// <see cref="BlockSizeBits" /> / 8.
+    /// </summary>
     private const int BlockSizeBits = 128;
 
-    /// <summary>Length of the SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via <see cref="TagSizeBits"/> / 8.</summary>
+    /// <summary>
+    /// Length of the SIV authentication tag is 128 bits (16 bytes). Byte length derived inline via
+    /// <see cref="TagSizeBits" /> / 8.
+    /// </summary>
     private const int TagSizeBits = 128;
 
     private readonly IBlockCipher _s2vCipher;
@@ -93,16 +108,20 @@ public sealed class SivModeTransform
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SivModeTransform"/> class.
+    /// Initializes a new instance of the <see cref="SivModeTransform" /> class.
     /// </summary>
     /// <param name="s2vCipher">The cipher keyed with K₁, used for CMAC and S2V computation.</param>
     /// <param name="ctrCipher">The cipher keyed with K₂, used for CTR encryption.</param>
-    /// <param name="iv">Accepted for interface compatibility; not used by SIV because the synthetic IV is derived from the data.</param>
+    /// <param name="iv">
+    /// Accepted for interface compatibility; not used by SIV because the synthetic IV is derived from the data.
+    /// </param>
     /// <exception cref="ArgumentNullException">
-    /// <paramref name="s2vCipher"/>, <paramref name="ctrCipher"/>, or <paramref name="iv"/> is <see langword="null"/>.
+    /// <paramref name="s2vCipher" />, <paramref name="ctrCipher" />, or <paramref name="iv" /> is
+    /// <see langword="null" />.
     /// </exception>
     /// <exception cref="ArgumentException">
-    /// Either cipher does not have a 16-byte block size, or <paramref name="iv"/> length does not equal the S2V cipher block size.
+    /// Either cipher does not have a 16-byte block size, or <paramref name="iv" /> length does not equal the S2V cipher
+    /// block size.
     /// </exception>
     public SivModeTransform(IBlockCipher s2vCipher, IBlockCipher ctrCipher, byte[] iv)
     {
@@ -231,8 +250,8 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Throws <see cref="InvalidOperationException"/> if this transform has already encrypted or
-    /// decrypted a message. SIV transforms are single-use; create a fresh instance per message.
+    /// Throws <see cref="InvalidOperationException" /> if this transform has already encrypted or decrypted a message.
+    /// SIV transforms are single-use; create a fresh instance per message.
     /// </summary>
     private void ThrowIfCompleted() =>
         CryptoHelpers.ThrowIfAlreadyCompleted(this._completed);
@@ -241,7 +260,8 @@ public sealed class SivModeTransform
     /// Releases the resources used by this instance and clears retained associated-data state from memory.
     /// </summary>
     /// <remarks>
-    /// The supplied <see cref="IBlockCipher"/> instances are not disposed by this type. Ownership remains with the caller.
+    /// The supplied <see cref="IBlockCipher" /> instances are not disposed by this type. Ownership remains with the
+    /// caller.
     /// </remarks>
     public void Dispose()
     {
@@ -253,7 +273,8 @@ public sealed class SivModeTransform
     /// Releases the resources used by this instance.
     /// </summary>
     /// <param name="disposing">
-    /// <see langword="true"/> to release managed resources; <see langword="false"/> to release unmanaged resources only.
+    /// <see langword="true" /> to release managed resources; <see langword="false" /> to release unmanaged resources
+    /// only.
     /// </param>
     private void Dispose(bool disposing)
     {
@@ -284,8 +305,8 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Computes the Synthetic IV using S2V per RFC 5297 Section 2.4.
-    /// S2V(K, S₁, …, Sₙ) where S₁ = AAD and Sₙ = plaintext.
+    /// Computes the Synthetic IV using S2V per RFC 5297 Section 2.4. S2V(K, S₁, …, Sₙ) where S₁ = AAD and Sₙ =
+    /// plaintext.
     /// </summary>
     /// <param name="aad">The associated authenticated data.</param>
     /// <param name="plaintext">The plaintext bytes.</param>
@@ -355,7 +376,7 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Computes AES-CMAC of <paramref name="message"/> using <c>s2vCipher</c> per RFC 4493.
+    /// Computes AES-CMAC of <paramref name="message" /> using <c>s2vCipher</c> per RFC 4493.
     /// </summary>
     /// <param name="message">The message to MAC.</param>
     /// <returns>The 16-byte CMAC tag.</returns>
@@ -445,8 +466,8 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Applies AES-CTR encryption using <paramref name="counter"/> as the initial counter
-    /// block, producing <c>input XOR keystream</c> in <paramref name="output"/>.
+    /// Applies AES-CTR encryption using <paramref name="counter" /> as the initial counter block, producing
+    /// <c>input XOR keystream</c> in <paramref name="output" />.
     /// </summary>
     /// <param name="input">The plaintext or ciphertext bytes.</param>
     /// <param name="output">The destination span.</param>
@@ -479,8 +500,8 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Doubles <paramref name="x"/> in-place in GF(2^128) with big-endian bit order and
-    /// polynomial x^128 + x^7 + x^2 + x + 1.
+    /// Doubles <paramref name="x" /> in-place in GF(2^128) with big-endian bit order and polynomial x^128 + x^7 + x^2 +
+    /// x + 1.
     /// </summary>
     /// <param name="x">The 16-byte block to double in GF(2<sup>128</sup>); updated in place.</param>
     private static void Dbl(byte[] x)
@@ -497,7 +518,7 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Writes the byte-wise XOR of <paramref name="a"/> and <paramref name="b"/> into <paramref name="result"/>.
+    /// Writes the byte-wise XOR of <paramref name="a" /> and <paramref name="b" /> into <paramref name="result" />.
     /// </summary>
     /// <param name="a">The first operand span.</param>
     /// <param name="b">The second operand span.</param>
@@ -509,7 +530,7 @@ public sealed class SivModeTransform
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

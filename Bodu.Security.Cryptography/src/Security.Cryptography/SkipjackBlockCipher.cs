@@ -4,52 +4,58 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides a managed implementation of the <see cref="Skipjack"/> block cipher engine, operating on 64-bit blocks with an 80-bit key
-/// over 32 rounds. Skipjack was designed by the United States National Security Agency (NSA) and declassified in 1998; the
-/// key schedule and Rule A / Rule B alternation are binary-compatible with the NSA reference implementation published in
-/// FIPS PUB 185 (1994).
+/// Provides a managed implementation of the <see cref="Skipjack" /> block cipher engine, operating on 64-bit blocks
+/// with an 80-bit key over 32 rounds. Skipjack was designed by the United States National Security Agency (NSA) and
+/// declassified in 1998; the key schedule and Rule A / Rule B alternation are binary-compatible with the NSA reference
+/// implementation published in FIPS PUB 185 (1994).
 /// </summary>
-/// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso>
+/// <seealso href="https://csrc.nist.gov/csrc/media/publications/fips/185/archive/1994-02-09/documents/fips185.pdf">FIPS
+/// PUB 185 — Escrowed Encryption Standard (Skipjack)</seealso>
 /// <remarks>
 /// <para>
-/// Skipjack is a legacy symmetric block cipher whose 32 rounds alternate between two nonlinear rules known as <em>Rule A</em> and
-/// <em>Rule B</em>. In this implementation the round-key byte pointer advances by one per round and each round uses a constant
-/// equal to <c>k + 1</c>.
+/// Skipjack is a legacy symmetric block cipher whose 32 rounds alternate between two nonlinear rules known as <em>Rule
+/// A</em> and <em>Rule B</em>. In this implementation the round-key byte pointer advances by one per round and each
+/// round uses a constant equal to <c>k + 1</c>.
 /// </para>
 /// <para>
-/// This cipher is included for compatibility and historical purposes only. Due to its small key and block sizes, Skipjack is not
-/// considered secure for use in new systems or applications.
+/// This cipher is included for compatibility and historical purposes only. Due to its small key and block sizes,
+/// Skipjack is not considered secure for use in new systems or applications.
 /// </para>
 /// <list type="bullet">
 /// <item>
-/// <description><b>Block size:</b><c>8 bytes</c> (64 bits)</description>
+/// <description>
+/// <b>Block size:</b><c>8 bytes</c> (64 bits)
+/// </description>
 /// </item>
 /// <item>
-/// <description><b>Key size:</b><c>10 bytes</c> (80 bits)</description>
+/// <description>
+/// <b>Key size:</b><c>10 bytes</c> (80 bits)
+/// </description>
 /// </item>
 /// <item>
-/// <description><b>Rounds:</b><c>32</c> (16 × Rule A + 16 × Rule B)</description>
+/// <description>
+/// <b>Rounds:</b><c>32</c> (16 × Rule A + 16 × Rule B)
+/// </description>
 /// </item>
 /// </list>
 /// <para>
-/// This implementation is constant-time in its control flow, but the S-box lookup table remains data-dependent. As such, this
-/// implementation is <b>not</b> hardened against timing or cache-based side-channel attacks.
+/// This implementation is constant-time in its control flow, but the S-box lookup table remains data-dependent. As
+/// such, this implementation is <b>not</b> hardened against timing or cache-based side-channel attacks.
 /// </para>
 /// <para>
-/// Most callers should prefer the higher-level <see cref="Skipjack"/> class, which exposes the standard
-/// <see cref="System.Security.Cryptography.SymmetricAlgorithm"/> contract. Use <see cref="SkipjackBlockCipher"/> directly only
-/// when composing the raw block primitive with an <see cref="IBlockCipherModeTransform"/> (for example via
-/// <see cref="BlockCipherModeFactory"/>) or with an <see cref="IPaddingStrategy"/>.
+/// Most callers should prefer the higher-level <see cref="Skipjack" /> class, which exposes the standard
+/// <see cref="System.Security.Cryptography.SymmetricAlgorithm" /> contract. Use <see cref="SkipjackBlockCipher" />
+/// directly only when composing the raw block primitive with an <see cref="IBlockCipherModeTransform" /> (for example
+/// via <see cref="BlockCipherModeFactory" />) or with an <see cref="IPaddingStrategy" />.
 /// </para>
 /// </remarks>
-/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs. SymmetricAlgorithm</seealso>
-/// <seealso cref="Skipjack"/>
+/// <seealso href="../guides/cryptography/composing-primitives.html">Composing primitives — direct use vs.
+/// SymmetricAlgorithm</seealso> <seealso cref="Skipjack"/>
 public sealed class SkipjackBlockCipher
     : IBlockCipher
 {
@@ -90,13 +96,11 @@ public sealed class SkipjackBlockCipher
     private bool _disposed = false;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SkipjackBlockCipher"/> class using the supplied 80-bit key.
+    /// Initializes a new instance of the <see cref="SkipjackBlockCipher" /> class using the supplied 80-bit key.
     /// </summary>
-    /// <param name="keyBytes">
-    /// Exactly 10 bytes of key material.
-    /// </param>
+    /// <param name="keyBytes">Exactly 10 bytes of key material.</param>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="keyBytes"/> is not exactly 10 bytes long.
+    /// Thrown if <paramref name="keyBytes" /> is not exactly 10 bytes long.
     /// </exception>
     public SkipjackBlockCipher(ReadOnlySpan<byte> keyBytes)
     {
@@ -124,24 +128,20 @@ public sealed class SkipjackBlockCipher
 
     /// <inheritdoc />
     /// <value>Length of the Skipjack block is 64 bits (8 bytes).</value>
-    /// <remarks>The block size is fixed at 64 bits (8 bytes) and cannot be changed.</remarks>
+    /// <remarks>
+    /// The block size is fixed at 64 bits (8 bytes) and cannot be changed.
+    /// </remarks>
     public int BlockSize => Skipjack.SkipjackBlockSize;
 
     /// <summary>
     /// Decrypts a single 64-bit ciphertext block.
     /// </summary>
-    /// <param name="input">
-    /// Ciphertext of exactly 8 bytes.
-    /// </param>
-    /// <param name="output">
-    /// Buffer that receives the decrypted plaintext. Must be exactly 8 bytes.
-    /// </param>
+    /// <param name="input">Ciphertext of exactly 8 bytes.</param>
+    /// <param name="output">Buffer that receives the decrypted plaintext. Must be exactly 8 bytes.</param>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="input"/> or <paramref name="output"/> is not exactly 8 bytes.
+    /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not exactly 8 bytes.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// The cipher instance has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>
     /// Mirrors the FIPS PUB 185 decrypt sequence, including the word-order swap in the input/output stages. Decryption
     /// applies the inverse round rules in reverse round-key order, using H as the inverse of G.
@@ -220,18 +220,12 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Encrypts a single 64-bit block.
     /// </summary>
-    /// <param name="input">
-    /// The plaintext block to encrypt. Must be exactly 8 bytes.
-    /// </param>
-    /// <param name="output">
-    /// Buffer that receives the 8-byte ciphertext. Must be exactly 8 bytes.
-    /// </param>
+    /// <param name="input">The plaintext block to encrypt. Must be exactly 8 bytes.</param>
+    /// <param name="output">Buffer that receives the 8-byte ciphertext. Must be exactly 8 bytes.</param>
     /// <exception cref="ArgumentException">
-    /// Thrown if <paramref name="input"/> or <paramref name="output"/> is not exactly 8 bytes.
+    /// Thrown if <paramref name="input" /> or <paramref name="output" /> is not exactly 8 bytes.
     /// </exception>
-    /// <exception cref="ObjectDisposedException">
-    /// The cipher instance has been disposed.
-    /// </exception>
+    /// <exception cref="ObjectDisposedException">The cipher instance has been disposed.</exception>
     /// <remarks>
     /// The routine implements the FIPS PUB 185 Skipjack schedule: the key pointer advances by four key bytes inside G
     /// for each round, and the rule counter injected into each round is <c>k + 1</c>.
@@ -296,15 +290,9 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Reads a big-endian 16-bit unsigned integer from the specified byte span.
     /// </summary>
-    /// <param name="s">
-    /// The source byte span.
-    /// </param>
-    /// <param name="o">
-    /// The byte offset at which to read.
-    /// </param>
-    /// <returns>
-    /// The 16-bit value read in big-endian order.
-    /// </returns>
+    /// <param name="s">The source byte span.</param>
+    /// <param name="o">The byte offset at which to read.</param>
+    /// <returns>The 16-bit value read in big-endian order.</returns>
     /// <remarks>
     /// Skipjack represents each 64-bit block as four big-endian 16-bit words. This helper keeps that convention
     /// explicit if the block load/store code is later refactored to use helper calls.
@@ -339,20 +327,14 @@ public sealed class SkipjackBlockCipher
     /// <summary>
     /// Applies the forward Skipjack <c>G</c> permutation to a 16-bit word for the specified round.
     /// </summary>
-    /// <param name="k">
-    /// The zero-based round-key index, in the range 0..31.
-    /// </param>
-    /// <param name="w">
-    /// The 16-bit input word.
-    /// </param>
-    /// <returns>
-    /// The 16-bit output of the forward <c>G</c> permutation.
-    /// </returns>
+    /// <param name="k">The zero-based round-key index, in the range 0..31.</param>
+    /// <param name="w">The 16-bit input word.</param>
+    /// <returns>The 16-bit output of the forward <c>G</c> permutation.</returns>
     /// <remarks>
     /// <para>
-    /// The Skipjack <c>G</c> permutation splits <paramref name="w"/> into two bytes and applies four keyed F-table
-    /// substitutions. For round <paramref name="k"/>, the key bytes are equivalent to
-    /// <c>key[(4k + 0) mod 10]</c> through <c>key[(4k + 3) mod 10]</c>.
+    /// The Skipjack <c>G</c> permutation splits <paramref name="w" /> into two bytes and applies four keyed F-table
+    /// substitutions. For round <paramref name="k" />, the key bytes are equivalent to <c>key[(4k + 0) mod 10]</c>
+    /// through <c>key[(4k + 3) mod 10]</c>.
     /// </para>
     /// <para>
     /// The returned word is formed from the final two internal bytes as <c>g5 || g6</c>.
@@ -377,17 +359,12 @@ public sealed class SkipjackBlockCipher
     }
 
     /// <summary>
-    /// Applies the inverse Skipjack <c>H</c> permutation, where <c>H = G⁻¹</c>, to a 16-bit word for the specified round.
+    /// Applies the inverse Skipjack <c>H</c> permutation, where <c>H = G⁻¹</c>, to a 16-bit word for the specified
+    /// round.
     /// </summary>
-    /// <param name="k">
-    /// The zero-based round-key index, in the range 0..31.
-    /// </param>
-    /// <param name="w">
-    /// The 16-bit input word to inverse-permute.
-    /// </param>
-    /// <returns>
-    /// The 16-bit output of the inverse <c>H</c> permutation.
-    /// </returns>
+    /// <param name="k">The zero-based round-key index, in the range 0..31.</param>
+    /// <param name="w">The 16-bit input word to inverse-permute.</param>
+    /// <returns>The 16-bit output of the inverse <c>H</c> permutation.</returns>
     /// <remarks>
     /// <para>
     /// Decryption uses <c>H</c> to reverse the <c>G</c> permutation applied during encryption. It consumes the same
@@ -414,7 +391,7 @@ public sealed class SkipjackBlockCipher
     }
 
     /// <summary>
-    /// Throws an <see cref="ObjectDisposedException"/> if the algorithm instance has been disposed.
+    /// Throws an <see cref="ObjectDisposedException" /> if the algorithm instance has been disposed.
     /// </summary>
     /// <exception cref="ObjectDisposedException">
     /// Thrown when any public method or property is accessed after the instance has been disposed.

@@ -4,8 +4,6 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
@@ -13,26 +11,21 @@ namespace Bodu.Security.Cryptography;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Zero padding is not self-describing and cannot be unambiguously removed when the plaintext itself may end in zero bytes. Use this
-/// strategy only when the original plaintext length is recorded out-of-band or the data is known never to contain trailing zeros.
+/// Zero padding is not self-describing and cannot be unambiguously removed when the plaintext itself may end in zero
+/// bytes. Use this strategy only when the original plaintext length is recorded out-of-band or the data is known never
+/// to contain trailing zeros.
 /// </para>
 /// <para>
-/// <strong>When to choose zero padding.</strong> Pick zero padding only when the surrounding format already
-/// records the plaintext length explicitly (e.g. a length-prefixed protocol frame or fixed-size record), or
-/// when the plaintext is text that cannot legitimately contain trailing <c>0x00</c> bytes. For ordinary
-/// length-recoverable padding pick <see cref="Pkcs7Padding"/>; for AEAD modes that handle alignment
-/// internally pick <see cref="NoPadding"/>.
+/// <strong>When to choose zero padding.</strong> Pick zero padding only when the surrounding format already records the
+/// plaintext length explicitly (e.g. a length-prefixed protocol frame or fixed-size record), or when the plaintext is
+/// text that cannot legitimately contain trailing <c>0x00</c> bytes. For ordinary length-recoverable padding pick
+/// <see cref="Pkcs7Padding" />; for AEAD modes that handle alignment internally pick <see cref="NoPadding" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.Security.Cryptography;
-///
-/// // Caller is responsible for tracking the original plaintext length —
-/// // Unpad here returns the padded buffer unchanged.
-/// IPaddingStrategy padding = new ZeroPadding();
-/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes
-/// </code>
+/// <code language="csharp"> using Bodu.Security.Cryptography; // Caller is responsible for tracking the original
+/// plaintext length — // Unpad here returns the padded buffer unchanged. IPaddingStrategy padding = new ZeroPadding();
+/// byte[] padded = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes </code>
 /// </example>
 public sealed class ZeroPadding
     : IPaddingStrategy
@@ -46,7 +39,9 @@ public sealed class ZeroPadding
     /// <param name="input">The input data to pad.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The padded input.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if <paramref name="blockSize"/> is less than or equal to zero.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown if <paramref name="blockSize" /> is less than or equal to zero.
+    /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
@@ -70,6 +65,8 @@ public sealed class ZeroPadding
     /// <param name="input">The padded input.</param>
     /// <param name="blockSize">The block size in bits. Must be a positive multiple of 8.</param>
     /// <returns>The original input with zero padding preserved.</returns>
-    /// <remarks>The method does not remove trailing zeros because it cannot distinguish between padding and legitimate data.</remarks>
+    /// <remarks>
+    /// The method does not remove trailing zeros because it cannot distinguish between padding and legitimate data.
+    /// </remarks>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize) => input.ToArray();
 }

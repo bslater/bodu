@@ -4,37 +4,30 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Represents a pass-through padding strategy that adds and removes no bytes, requiring the caller to provide data whose length is
-/// already a multiple of the cipher block size.
+/// Represents a pass-through padding strategy that adds and removes no bytes, requiring the caller to provide data
+/// whose length is already a multiple of the cipher block size.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use this strategy only when the plaintext length is guaranteed to be block-aligned, for example when encrypting fixed-size records
-/// or when another framing layer already handles length information.
+/// Use this strategy only when the plaintext length is guaranteed to be block-aligned, for example when encrypting
+/// fixed-size records or when another framing layer already handles length information.
 /// </para>
 /// <para>
-/// <strong>When to choose no padding.</strong> The right pick under modes that handle alignment themselves —
-/// CTR (<see cref="CtrModeTransform"/>), CTS (<see cref="CtsModeTransform"/>), and every AEAD mode
-/// (<see cref="GcmModeTransform"/>, <see cref="CcmModeTransform"/>, <see cref="EaxModeTransform"/>,
-/// <see cref="GcmSivModeTransform"/>, <see cref="OcbModeTransform"/>, <see cref="SivModeTransform"/>) — none
-/// of which require the caller to align input to the cipher block size. Also the right pick when encrypting
-/// fixed-size on-disk records under XTS. For length-recoverable padding under CBC or ECB use
-/// <see cref="Pkcs7Padding"/>.
+/// <strong>When to choose no padding.</strong> The right pick under modes that handle alignment themselves — CTR (
+/// <see cref="CtrModeTransform" />), CTS (<see cref="CtsModeTransform" />), and every AEAD mode (
+/// <see cref="GcmModeTransform" />, <see cref="CcmModeTransform" />, <see cref="EaxModeTransform" />,
+/// <see cref="GcmSivModeTransform" />, <see cref="OcbModeTransform" />, <see cref="SivModeTransform" />) — none of
+/// which require the caller to align input to the cipher block size. Also the right pick when encrypting fixed-size
+/// on-disk records under XTS. For length-recoverable padding under CBC or ECB use <see cref="Pkcs7Padding" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.Security.Cryptography;
-///
-/// // Caller guarantees that `plaintext.Length` is a multiple of the block size.
-/// IPaddingStrategy padding = new NoPadding();
-/// byte[] aligned = padding.Pad(plaintext, blockSize: 128); // 128 bits = 16 bytes; throws if not aligned
-/// </code>
+/// <code language="csharp"> using Bodu.Security.Cryptography; // Caller guarantees that `plaintext.Length` is a
+/// multiple of the block size. IPaddingStrategy padding = new NoPadding(); byte[] aligned = padding.Pad(plaintext,
+/// blockSize: 128); // 128 bits = 16 bytes; throws if not aligned </code>
 /// </example>
 public sealed class NoPadding
     : IPaddingStrategy
@@ -43,12 +36,15 @@ public sealed class NoPadding
     public bool StripsPaddingOnUnpad => false;
 
     /// <summary>
-    /// Returns a copy of <paramref name="input"/> after verifying that its length is a multiple of <paramref name="blockSize"/>.
+    /// Returns a copy of <paramref name="input" /> after verifying that its length is a multiple of
+    /// <paramref name="blockSize" />.
     /// </summary>
     /// <param name="input">The input data to validate and return.</param>
     /// <param name="blockSize">The required block size in bits. Must be a positive multiple of 8.</param>
-    /// <returns>A new byte array containing the same bytes as <paramref name="input"/>.</returns>
-    /// <exception cref="ArgumentException">Thrown if the length of <paramref name="input"/> is not a multiple of <paramref name="blockSize"/>.</exception>
+    /// <returns>A new byte array containing the same bytes as <paramref name="input" />.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown if the length of <paramref name="input" /> is not a multiple of <paramref name="blockSize" />.
+    /// </exception>
     public byte[] Pad(ReadOnlySpan<byte> input, int blockSize)
     {
         if (blockSize <= 0)
@@ -65,10 +61,10 @@ public sealed class NoPadding
     }
 
     /// <summary>
-    /// Returns a copy of <paramref name="input"/> unchanged, since no padding is ever added by this strategy.
+    /// Returns a copy of <paramref name="input" /> unchanged, since no padding is ever added by this strategy.
     /// </summary>
     /// <param name="input">The input data to return.</param>
     /// <param name="blockSize">The block size in bits. This value is ignored.</param>
-    /// <returns>A new byte array containing the same bytes as <paramref name="input"/>.</returns>
+    /// <returns>A new byte array containing the same bytes as <paramref name="input" />.</returns>
     public byte[] Unpad(ReadOnlySpan<byte> input, int blockSize) => input.ToArray();
 }

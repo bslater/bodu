@@ -1,26 +1,27 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CryptoHelpers.PaddingGuards.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
-using System;
-using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 
 namespace Bodu.Security.Cryptography;
 
 /// <summary>
-/// Provides padding-related always-throw guards and stream-buffer accessors that complement the
-/// <c>ThrowIf*</c> validators living in the <see cref="CryptoHelpers" /> ThrowHelper partials.
+/// Provides padding-related always-throw guards and stream-buffer accessors that complement the <c>ThrowIf*</c>
+/// validators living in the <see cref="CryptoHelpers" /> ThrowHelper partials.
 /// </summary>
 internal static partial class CryptoHelpers
 {
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> indicating that the input contains invalid padding for the specified scheme.
+    /// Throws a <see cref="CryptographicException" /> indicating that the input contains invalid padding for the
+    /// specified scheme.
     /// </summary>
-    /// <param name="paddingScheme">The name of the padding scheme reported in the exception message (for example <c>"PKCS#7"</c>).</param>
+    /// <param name="paddingScheme">
+    /// The name of the padding scheme reported in the exception message (for example <c>"PKCS#7"</c>).
+    /// </param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="paddingScheme" /> is <see langword="null" />.
     /// </exception>
@@ -28,9 +29,9 @@ internal static partial class CryptoHelpers
     /// Always thrown when invoked; the exception message identifies the failing <paramref name="paddingScheme" />.
     /// </exception>
     /// <remarks>
-    /// Intended for use after a constant-time padding validation has determined that the trailing bytes do not match the
-    /// expected layout. The exception type matches the framework convention for invalid padding so that consumers can
-    /// catch <see cref="CryptographicException" /> uniformly.
+    /// Intended for use after a constant-time padding validation has determined that the trailing bytes do not match
+    /// the expected layout. The exception type matches the framework convention for invalid padding so that consumers
+    /// can catch <see cref="CryptographicException" /> uniformly.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     [System.Diagnostics.CodeAnalysis.DoesNotReturn]
@@ -42,10 +43,12 @@ internal static partial class CryptoHelpers
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException" /> indicating that the supplied input is not a valid padded block sequence
-    /// for the specified scheme.
+    /// Throws an <see cref="ArgumentException" /> indicating that the supplied input is not a valid padded block
+    /// sequence for the specified scheme.
     /// </summary>
-    /// <param name="paddingScheme">The name of the padding scheme reported in the exception message (for example <c>"PKCS#7"</c>).</param>
+    /// <param name="paddingScheme">
+    /// The name of the padding scheme reported in the exception message (for example <c>"PKCS#7"</c>).
+    /// </param>
     /// <param name="paramName">The name of the parameter whose value was rejected.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="paddingScheme" /> is <see langword="null" />.
@@ -93,11 +96,12 @@ internal static partial class CryptoHelpers
     /// Thrown when <paramref name="stream" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when the supplied <see cref="MemoryStream" /> was constructed in a mode that does not expose its underlying buffer.
+    /// Thrown when the supplied <see cref="MemoryStream" /> was constructed in a mode that does not expose its
+    /// underlying buffer.
     /// </exception>
     /// <remarks>
-    /// Used by transform helpers that rely on zero-copy access to the stream's buffer; the failure mode corresponds to the
-    /// <see cref="MemoryStream(byte[], bool)" /> overload used to suppress buffer publication.
+    /// Used by transform helpers that rely on zero-copy access to the stream's buffer; the failure mode corresponds to
+    /// the <see cref="MemoryStream(byte[], bool)" /> overload used to suppress buffer publication.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ArraySegment<byte> GetBufferOrThrowIfInaccessible(MemoryStream stream)
