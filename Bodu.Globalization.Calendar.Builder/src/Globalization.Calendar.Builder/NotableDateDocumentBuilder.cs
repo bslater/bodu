@@ -13,32 +13,65 @@ using System.Xml.Linq;
 namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
-/// Provides a fluent interface for constructing a <c>NotableDates</c> document — a collection of named notable date entries —
-/// that can be serialised to schema-valid XML or used directly as an <see cref="INotableDateRuleProvider" />.
+/// Provides a fluent interface for constructing a <c>NotableDates</c> document — a collection of named notable date
+/// entries — that can be serialised to schema-valid XML or used directly as an <see cref="INotableDateRuleProvider" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Use <see cref="Create" /> to obtain a new builder, then call <see cref="AddDate(string, System.Action{NotableDateBuilder})" /> for
-/// each notable date to define. When all entries are configured, call one of:
+/// Use <see cref="Create" /> to obtain a new builder, then call
+/// <see cref="AddDate(string, System.Action{NotableDateBuilder})" /> for each notable date to define. When all entries
+/// are configured, call one of:
 /// </para>
 /// <list type="bullet">
-/// <item><description><see cref="Build" /> — returns the rules as an <see cref="IReadOnlyList{T}" /> of <see cref="NotableDateRule" /> for direct in-process use.</description></item>
-/// <item><description><see cref="ToXDocument" /> — serialises the rules to an <see cref="XDocument" /> matching the <c>NotableDates.xsd</c> schema.</description></item>
-/// <item><description><see cref="ToXml" /> — serialises the rules to an XML string suitable for storage or transmission.</description></item>
-/// <item><description><see cref="ToJsonNode" /> — serialises the rules to a <see cref="JsonObject" /> matching <c>NotableDates.schema.json</c>.</description></item>
-/// <item><description><see cref="ToJson" /> — serialises the rules to an indented JSON string suitable for storage or transmission.</description></item>
-/// <item><description><see cref="ToProvider" /> — wraps the built rules in an <see cref="INotableDateRuleProvider" /> ready for use with <see cref="NotableDateService" />.</description></item>
+/// <item>
+/// <description>
+/// <see cref="Build" /> — returns the rules as an <see cref="IReadOnlyList{T}" /> of <see cref="NotableDateRule" /> for
+/// direct in-process use.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="ToXDocument" /> — serialises the rules to an <see cref="XDocument" /> matching the
+/// <c>NotableDates.xsd</c> schema.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="ToXml" /> — serialises the rules to an XML string suitable for storage or transmission.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="ToJsonNode" /> — serialises the rules to a <see cref="JsonObject" /> matching
+/// <c>NotableDates.schema.json</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="ToJson" /> — serialises the rules to an indented JSON string suitable for storage or transmission.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// <see cref="ToProvider" /> — wraps the built rules in an <see cref="INotableDateRuleProvider" /> ready for use with
+/// <see cref="NotableDateService" />.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// The XML produced by <see cref="ToXDocument" /> and <see cref="ToXml" /> conforms to the <c>urn:bodu:globalization:calendar</c>
-/// namespace and can be round-tripped through <see cref="NotableDateRuleParser.ParseXml(string)" />. The JSON produced by
-/// <see cref="ToJsonNode" /> and <see cref="ToJson" /> conforms to <c>NotableDates.schema.json</c> and can be round-tripped through
+/// The XML produced by <see cref="ToXDocument" /> and <see cref="ToXml" /> conforms to the
+/// <c>urn:bodu:globalization:calendar</c> namespace and can be round-tripped through
+/// <see cref="NotableDateRuleParser.ParseXml(string)" />. The JSON produced by <see cref="ToJsonNode" /> and
+/// <see cref="ToJson" /> conforms to <c>NotableDates.schema.json</c> and can be round-tripped through
 /// <see cref="NotableDateRuleJsonParser.ParseJson(string)" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <para>Defining two notable dates, persisting to XML or JSON, and passing them into the service:</para>
+/// <para>
+/// Defining two notable dates, persisting to XML or JSON, and passing them into the service:
+/// </para>
 /// <code>
+///<![CDATA[
 /// NotableDateDocumentBuilder builder = NotableDateDocumentBuilder.Create()
 ///     .AddDate("Christmas Day", date => date
 ///         .AddRule(rule => rule
@@ -61,21 +94,29 @@ namespace Bodu.Globalization.Calendar.Builder;
 ///
 /// // Or pass directly to the service.
 /// NotableDateService service = new(new[] { builder.ToProvider() });
+///]]>
 /// </code>
 /// </example>
 public sealed class NotableDateDocumentBuilder
 {
-    /// <summary>The XML namespace applied to the produced <c>NotableDates</c> document, matching <c>NotableDates.xsd</c>.</summary>
+    /// <summary>
+    /// The XML namespace applied to the produced <c>NotableDates</c> document, matching <c>NotableDates.xsd</c>.
+    /// </summary>
     private static readonly XNamespace s_schemaNamespace = XNamespace.Get("urn:bodu:globalization:calendar");
 
-    /// <summary>The serializer options shared by <see cref="ToJson" /> for indented output.</summary>
+    /// <summary>
+    /// The serializer options shared by <see cref="ToJson" /> for indented output.
+    /// </summary>
     private static readonly JsonSerializerOptions s_jsonSerializerOptions = new() { WriteIndented = true };
 
-    /// <summary>The notable date entries accumulated by <see cref="AddDate(string, System.Action{NotableDateBuilder})" />, each paired with its canonical name.</summary>
+    /// <summary>
+    /// The notable date entries accumulated by <see cref="AddDate(string, System.Action{NotableDateBuilder})" />, each
+    /// paired with its canonical name.
+    /// </summary>
     private readonly List<(string Name, NotableDateBuilder Builder)> _dates = [];
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="NotableDateDocumentBuilder"/> class.
+    /// Initializes a new instance of the <see cref="NotableDateDocumentBuilder" /> class.
     /// </summary>
     private NotableDateDocumentBuilder() { }
 
@@ -88,10 +129,18 @@ public sealed class NotableDateDocumentBuilder
     /// <summary>
     /// Adds a named notable date entry to the document.
     /// </summary>
-    /// <param name="name">The canonical name of the notable date (e.g. <c>"Christmas Day"</c>). Must not be <see langword="null" /> or whitespace.</param>
-    /// <param name="configure">A callback that configures the <see cref="NotableDateBuilder" /> for this entry. Must not be <see langword="null" />.</param>
+    /// <param name="name">
+    /// The canonical name of the notable date (e.g. <c>"Christmas Day"</c>). Must not be <see langword="null" /> or
+    /// whitespace.
+    /// </param>
+    /// <param name="configure">
+    /// A callback that configures the <see cref="NotableDateBuilder" /> for this entry. Must not be
+    /// <see langword="null" />.
+    /// </param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="name" /> or <paramref name="configure" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="name" /> or <paramref name="configure" /> is <see langword="null" />.
+    /// </exception>
     public NotableDateDocumentBuilder AddDate(string name, Action<NotableDateBuilder> configure)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(name);
@@ -165,7 +214,8 @@ public sealed class NotableDateDocumentBuilder
     }
 
     /// <summary>
-    /// Wraps the built rules in an <see cref="INotableDateRuleProvider" /> suitable for use with <see cref="NotableDateService" />.
+    /// Wraps the built rules in an <see cref="INotableDateRuleProvider" /> suitable for use with
+    /// <see cref="NotableDateService" />.
     /// </summary>
     /// <returns>An <see cref="InlineNotableDateRuleProvider" /> backed by the built rules.</returns>
     /// <exception cref="InvalidOperationException">
@@ -199,14 +249,16 @@ public sealed class NotableDateDocumentBuilder
     public string ToJson() => BuildJsonDocument().ToJsonString(s_jsonSerializerOptions);
 
     /// <summary>
-    /// Creates an independent copy of this document builder, deep-cloning every notable date entry so that
-    /// subsequent mutations of either builder do not bleed across the boundary.
+    /// Creates an independent copy of this document builder, deep-cloning every notable date entry so that subsequent
+    /// mutations of either builder do not bleed across the boundary.
     /// </summary>
-    /// <returns>A new <see cref="NotableDateDocumentBuilder" /> with the same notable date entries as this instance.</returns>
+    /// <returns>
+    /// A new <see cref="NotableDateDocumentBuilder" /> with the same notable date entries as this instance.
+    /// </returns>
     /// <remarks>
     /// <para>
-    /// Intended for the template-factory pattern: configure a baseline document once, clone it for each variant,
-    /// and tweak only the entries that differ between variants.
+    /// Intended for the template-factory pattern: configure a baseline document once, clone it for each variant, and
+    /// tweak only the entries that differ between variants.
     /// </para>
     /// </remarks>
     public NotableDateDocumentBuilder Clone()
@@ -222,7 +274,8 @@ public sealed class NotableDateDocumentBuilder
     /// </summary>
     /// <returns>
     /// An <see cref="XDocument" /> whose root is a <c>&lt;NotableDates&gt;</c> element in the
-    /// <c>urn:bodu:globalization:calendar</c> namespace, containing one child per accumulated notable date entry in the order they were added.
+    /// <c>urn:bodu:globalization:calendar</c> namespace, containing one child per accumulated notable date entry in the
+    /// order they were added.
     /// </returns>
     /// <exception cref="InvalidOperationException">
     /// Thrown when any notable date entry contains no rules, or when a rule has no resolution strategy selected.

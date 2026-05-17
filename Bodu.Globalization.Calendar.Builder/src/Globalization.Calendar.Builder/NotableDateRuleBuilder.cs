@@ -13,22 +13,22 @@ using Bodu.Extensions;
 namespace Bodu.Globalization.Calendar.Builder;
 
 /// <summary>
-/// Provides a fluent interface for constructing a single <see cref="NotableDateRule" /> and its corresponding XML
-/// or JSON representation.
+/// Provides a fluent interface for constructing a single <see cref="NotableDateRule" /> and its corresponding XML or
+/// JSON representation.
 /// </summary>
 /// <remarks>
 /// <para>
 /// A <see cref="NotableDateRuleBuilder" /> is obtained via
-/// <see cref="NotableDateBuilder.AddRule(System.Action{NotableDateRuleBuilder})" />. The builder accumulates rule properties and
-/// produces a domain object, a schema-valid <c>&lt;Rule&gt;</c> XML element, and a schema-valid <c>rule</c> JSON object when the
-/// enclosing document is built.
+/// <see cref="NotableDateBuilder.AddRule(System.Action{NotableDateRuleBuilder})" />. The builder accumulates rule
+/// properties and produces a domain object, a schema-valid <c>&lt;Rule&gt;</c> XML element, and a schema-valid
+/// <c>rule</c> JSON object when the enclosing document is built.
 /// </para>
 /// <para>
-/// Exactly one strategy method — <see cref="Fixed(int, int, bool, bool)" />, <see cref="Fixed(string, int, bool, bool)" />,
-/// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />, <see cref="OffsetFromAnchor(string, int)" />, or
-/// <see cref="Algorithm(string?, Type?, string?, int?)" /> — must be called before the rule can be built or serialised.
-/// Calling a strategy method when a strategy has already been selected throws
-/// <see cref="InvalidOperationException" />; each builder instance commits to its strategy on the first
+/// Exactly one strategy method — <see cref="Fixed(int, int, bool, bool)" />,
+/// <see cref="Fixed(string, int, bool, bool)" />, <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />,
+/// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" /> — must be
+/// called before the rule can be built or serialised. Calling a strategy method when a strategy has already been
+/// selected throws <see cref="InvalidOperationException" />; each builder instance commits to its strategy on the first
 /// successful strategy call.
 /// </para>
 /// </remarks>
@@ -36,107 +36,186 @@ public sealed class NotableDateRuleBuilder
 {
     // Common rule fields
 
-    /// <summary>The rule-level identifier set via <see cref="RuleName(string)" />, or <see langword="null" /> when not authored.</summary>
-    private string? _ruleName;
-
-    /// <summary>The primary category set via <see cref="Category(NotableDateCategory)" />.</summary>
-    private NotableDateCategory _category;
-
-    /// <summary>The non-working flag set via <see cref="NonWorking(bool)" />, or <see langword="null" /> to defer to the calendar default.</summary>
-    private bool? _isNonWorkingDay;
-
-    /// <summary>The inclusive first applicable year set via <see cref="FirstYear(int)" />, or <see langword="null" /> for no lower bound.</summary>
-    private int? _firstYear;
-
-    /// <summary>The inclusive last applicable year set via <see cref="LastYear(int)" />, or <see langword="null" /> for no upper bound.</summary>
-    private int? _lastYear;
-
-    /// <summary>The recurrence cadence set via <see cref="OccurrenceYears(int)" />, or <see langword="null" /> to resolve every applicable year.</summary>
-    private int? _occurrenceYears;
-
-    /// <summary>The duration in days set via <see cref="Duration(int)" />, or <see langword="null" /> to default to <c>1</c> at build time.</summary>
-    private int? _durationDays;
-
-    /// <summary>The integer priority set via <see cref="Priority(int)" /> (lower wins), or <see langword="null" /> to default to <c>100</c> at build time.</summary>
-    private int? _priority;
-
-    /// <summary>The comma-separated territory list set via <see cref="Territory(string)" />, or <see langword="null" /> when unscoped.</summary>
-    private string? _territoryCode;
-
-    /// <summary>The calendar type set via <see cref="CalendarType(Type)" />, or <see langword="null" /> to indicate the Gregorian calendar.</summary>
-    private Type? _calendarType;
-
-    /// <summary>The free-form comment set via <see cref="Comment(string)" />, or <see langword="null" /> when none is authored.</summary>
-    private string? _comment;
-
-    /// <summary>The list of tag values accumulated by <see cref="AddTag(string)" />.</summary>
+    /// <summary>
+    /// The list of tag values accumulated by <see cref="AddTag(string)" />.
+    /// </summary>
     private readonly List<string> _tags = [];
 
-    /// <summary>The observance adjustments accumulated by <see cref="AddAdjustment(string, System.Action{ObservanceAdjustmentBuilder})" />, each paired with its merge key.</summary>
+    /// <summary>
+    /// The observance adjustments accumulated by
+    /// <see cref="AddAdjustment(string, System.Action{ObservanceAdjustmentBuilder})" />, each paired with its merge
+    /// key.
+    /// </summary>
     private readonly List<(string Key, ObservanceAdjustmentBuilder Builder)> _adjustments = [];
+
+    /// <summary>
+    /// The rule-level identifier set via <see cref="RuleName(string)" />, or <see langword="null" /> when not authored.
+    /// </summary>
+    private string? _ruleName;
+
+    /// <summary>
+    /// The primary category set via <see cref="Category(NotableDateCategory)" />.
+    /// </summary>
+    private NotableDateCategory _category;
+
+    /// <summary>
+    /// The non-working flag set via <see cref="NonWorking(bool)" />, or <see langword="null" /> to defer to the
+    /// calendar default.
+    /// </summary>
+    private bool? _isNonWorkingDay;
+
+    /// <summary>
+    /// The inclusive first applicable year set via <see cref="FirstYear(int)" />, or <see langword="null" /> for no
+    /// lower bound.
+    /// </summary>
+    private int? _firstYear;
+
+    /// <summary>
+    /// The inclusive last applicable year set via <see cref="LastYear(int)" />, or <see langword="null" /> for no upper
+    /// bound.
+    /// </summary>
+    private int? _lastYear;
+
+    /// <summary>
+    /// The recurrence cadence set via <see cref="OccurrenceYears(int)" />, or <see langword="null" /> to resolve every
+    /// applicable year.
+    /// </summary>
+    private int? _occurrenceYears;
+
+    /// <summary>
+    /// The duration in days set via <see cref="Duration(int)" />, or <see langword="null" /> to default to <c>1</c> at
+    /// build time.
+    /// </summary>
+    private int? _durationDays;
+
+    /// <summary>
+    /// The integer priority set via <see cref="Priority(int)" /> (lower wins), or <see langword="null" /> to default to
+    /// <c>100</c> at build time.
+    /// </summary>
+    private int? _priority;
+
+    /// <summary>
+    /// The comma-separated territory list set via <see cref="Territory(string)" />, or <see langword="null" /> when
+    /// unscoped.
+    /// </summary>
+    private string? _territoryCode;
+
+    /// <summary>
+    /// The calendar type set via <see cref="CalendarType(Type)" />, or <see langword="null" /> to indicate the
+    /// Gregorian calendar.
+    /// </summary>
+    private Type? _calendarType;
+
+    /// <summary>
+    /// The free-form comment set via <see cref="Comment(string)" />, or <see langword="null" /> when none is authored.
+    /// </summary>
+    private string? _comment;
 
     // Strategy discriminator
 
-    /// <summary>The selected resolution strategy, set by the strategy-specific configurator (<see cref="Fixed(int, int, bool, bool)" />, <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />, <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" />).</summary>
+    /// <summary>
+    /// The selected resolution strategy, set by the strategy-specific configurator (
+    /// <see cref="Fixed(int, int, bool, bool)" />, <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />,
+    /// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" />).
+    /// </summary>
     private DateResolutionStrategy? _strategy;
 
     // Fixed strategy
 
-    /// <summary>The numeric month set by <see cref="Fixed(int, int, bool, bool)" /> when a Gregorian month number is supplied; mutually exclusive with <see cref="_fixedMonthToken" />.</summary>
+    /// <summary>
+    /// The numeric month set by <see cref="Fixed(int, int, bool, bool)" /> when a Gregorian month number is supplied;
+    /// mutually exclusive with <see cref="_fixedMonthToken" />.
+    /// </summary>
     private int? _fixedMonthNumber;
 
-    /// <summary>The textual month token set by <see cref="Fixed(string, int, bool, bool)" /> for non-Gregorian or alias-based months; mutually exclusive with <see cref="_fixedMonthNumber" />.</summary>
+    /// <summary>
+    /// The textual month token set by <see cref="Fixed(string, int, bool, bool)" /> for non-Gregorian or alias-based
+    /// months; mutually exclusive with <see cref="_fixedMonthNumber" />.
+    /// </summary>
     private string? _fixedMonthToken;
 
-    /// <summary>The day-of-month set by either <see cref="Fixed(int, int, bool, bool)" /> overload.</summary>
+    /// <summary>
+    /// The day-of-month set by either <see cref="Fixed(int, int, bool, bool)" /> overload.
+    /// </summary>
     private int? _fixedDay;
 
-    /// <summary>The skip-leap-month flag set by either <see cref="Fixed(int, int, bool, bool)" /> overload, consumed by lunisolar resolution.</summary>
+    /// <summary>
+    /// The skip-leap-month flag set by either <see cref="Fixed(int, int, bool, bool)" /> overload, consumed by
+    /// lunisolar resolution.
+    /// </summary>
     private bool _skipLeapMonth;
 
-    /// <summary>The sweep-calendar-years flag set by either <see cref="Fixed(int, int, bool, bool)" /> overload, consumed by calendars whose year boundary does not align with the Gregorian year.</summary>
+    /// <summary>
+    /// The sweep-calendar-years flag set by either <see cref="Fixed(int, int, bool, bool)" /> overload, consumed by
+    /// calendars whose year boundary does not align with the Gregorian year.
+    /// </summary>
     private bool _sweepCalendarYears;
 
     // DayOfWeekInMonth strategy
 
-    /// <summary>The month component set by <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.</summary>
+    /// <summary>
+    /// The month component set by <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.
+    /// </summary>
     private int? _dowMonth;
 
-    /// <summary>The weekday set by <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.</summary>
+    /// <summary>
+    /// The weekday set by <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.
+    /// </summary>
     private DayOfWeek? _dowDayOfWeek;
 
-    /// <summary>The ordinal occurrence within the month set by <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.</summary>
+    /// <summary>
+    /// The ordinal occurrence within the month set by
+    /// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />.
+    /// </summary>
     private WeekOfMonthOrdinal? _dowWeekOrdinal;
 
     // OffsetFromAnchor strategy
 
-    /// <summary>The name of the anchor rule set by <see cref="OffsetFromAnchor(string, int)" />.</summary>
+    /// <summary>
+    /// The name of the anchor rule set by <see cref="OffsetFromAnchor(string, int)" />.
+    /// </summary>
     private string? _anchorRuleName;
 
-    /// <summary>The signed day offset relative to the anchor set by <see cref="OffsetFromAnchor(string, int)" />.</summary>
+    /// <summary>
+    /// The signed day offset relative to the anchor set by <see cref="OffsetFromAnchor(string, int)" />.
+    /// </summary>
     private int? _offsetDays;
 
     // Algorithm strategy
 
-    /// <summary>The algorithm registry key set by <see cref="Algorithm(string?, Type?, string?, int?)" />, or <see langword="null" /> when resolving via <see cref="_algorithmType" />.</summary>
+    /// <summary>
+    /// The algorithm registry key set by <see cref="Algorithm(string?, Type?, string?, int?)" />, or
+    /// <see langword="null" /> when resolving via <see cref="_algorithmType" />.
+    /// </summary>
     private string? _algorithmKey;
 
-    /// <summary>The algorithm CLR type set by <see cref="Algorithm(string?, Type?, string?, int?)" />, or <see langword="null" /> when resolving via <see cref="_algorithmKey" />.</summary>
+    /// <summary>
+    /// The algorithm CLR type set by <see cref="Algorithm(string?, Type?, string?, int?)" />, or
+    /// <see langword="null" /> when resolving via <see cref="_algorithmKey" />.
+    /// </summary>
     private Type? _algorithmType;
 
-    /// <summary>The optional month token forwarded to the algorithm constructor, set by <see cref="Algorithm(string?, Type?, string?, int?)" />.</summary>
+    /// <summary>
+    /// The optional month token forwarded to the algorithm constructor, set by
+    /// <see cref="Algorithm(string?, Type?, string?, int?)" />.
+    /// </summary>
     private string? _algorithmMonth;
 
-    /// <summary>The optional day-of-month forwarded to the algorithm constructor, set by <see cref="Algorithm(string?, Type?, string?, int?)" />.</summary>
+    /// <summary>
+    /// The optional day-of-month forwarded to the algorithm constructor, set by
+    /// <see cref="Algorithm(string?, Type?, string?, int?)" />.
+    /// </summary>
     private int? _algorithmDay;
 
     /// <summary>
-    /// Sets the optional rule-level identifier. When a notable date is described by more than one rule, this name allows
-    /// <c>&lt;Use&gt;</c> directives to target a specific variant.
+    /// Sets the optional rule-level identifier. When a notable date is described by more than one rule, this name
+    /// allows <c>&lt;Use&gt;</c> directives to target a specific variant.
     /// </summary>
     /// <param name="name">The rule-level identifier. Must not be <see langword="null" /> or whitespace.</param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="name" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="name" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     public NotableDateRuleBuilder RuleName(string name)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(name);
@@ -228,9 +307,14 @@ public sealed class NotableDateRuleBuilder
     /// <summary>
     /// Scopes the rule to the specified territory codes.
     /// </summary>
-    /// <param name="code">A comma-separated list of ISO 3166 territory codes (e.g. <c>"AU"</c>, <c>"AU-NSW,AU-VIC"</c>). Must not be <see langword="null" /> or whitespace.</param>
+    /// <param name="code">
+    /// A comma-separated list of ISO 3166 territory codes (e.g. <c>"AU"</c>, <c>"AU-NSW,AU-VIC"</c>). Must not be
+    /// <see langword="null" /> or whitespace.
+    /// </param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="code" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="code" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     public NotableDateRuleBuilder Territory(string code)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(code);
@@ -245,11 +329,13 @@ public sealed class NotableDateRuleBuilder
     /// <see cref="System.Globalization.HijriCalendar" />).
     /// </summary>
     /// <param name="calendarType">
-    /// The CLR <see cref="Type" /> of the calendar, which must derive from <see cref="System.Globalization.Calendar" />.
-    /// Must not be <see langword="null" />.
+    /// The CLR <see cref="Type" /> of the calendar, which must derive from <see cref="System.Globalization.Calendar" />
+    /// . Must not be <see langword="null" />.
     /// </param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="calendarType" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="calendarType" /> is <see langword="null" />.
+    /// </exception>
     public NotableDateRuleBuilder CalendarType(Type calendarType)
     {
         ThrowHelper.ThrowIfNull(calendarType);
@@ -276,7 +362,9 @@ public sealed class NotableDateRuleBuilder
     /// </summary>
     /// <param name="comment">The comment text. Must not be <see langword="null" />.</param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="comment" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="comment" /> is <see langword="null" />.
+    /// </exception>
     public NotableDateRuleBuilder Comment(string comment)
     {
         ThrowHelper.ThrowIfNull(comment);
@@ -291,7 +379,9 @@ public sealed class NotableDateRuleBuilder
     /// </summary>
     /// <param name="tag">The tag value. Must not be <see langword="null" /> or whitespace.</param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="tag" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="tag" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     public NotableDateRuleBuilder AddTag(string tag)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
@@ -307,7 +397,8 @@ public sealed class NotableDateRuleBuilder
     /// <param name="month">The Gregorian month (1–13).</param>
     /// <param name="day">The day of the month (1–31).</param>
     /// <param name="skipLeapMonth">
-    /// When <see langword="true" />, the resolver skips any intercalary leap month when resolving against a lunisolar calendar.
+    /// When <see langword="true" />, the resolver skips any intercalary leap month when resolving against a lunisolar
+    /// calendar.
     /// </param>
     /// <param name="sweepCalendarYears">
     /// When <see langword="true" />, the resolver checks both overlapping calendar years for non-Gregorian calendars
@@ -315,7 +406,8 @@ public sealed class NotableDateRuleBuilder
     /// </param>
     /// <returns>This builder instance, for method chaining.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
-    /// Thrown when <paramref name="month" /> is less than 1 or greater than 13, or <paramref name="day" /> is less than 1 or greater than 31.
+    /// Thrown when <paramref name="month" /> is less than 1 or greater than 13, or <paramref name="day" /> is less than
+    /// 1 or greater than 31.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when a resolution strategy has already been selected for this rule.
@@ -341,20 +433,26 @@ public sealed class NotableDateRuleBuilder
     /// Selects the <see cref="DateResolutionStrategy.Fixed" /> strategy using a calendar-specific month token and day.
     /// </summary>
     /// <param name="monthToken">
-    /// The month token in the calendar system — either an English Gregorian month name (<c>"January"</c>–<c>"December"</c>), an
-    /// integer (1–13), a Hebrew fixed-position month name (<c>Tishri</c>–<c>AdarII</c>), or a leap-year-dependent Hebrew month alias
-    /// (<c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>, <c>Av</c>, <c>Elul</c>). Must not be <see langword="null" /> or whitespace.
+    /// The month token in the calendar system — either an English Gregorian month name (<c>"January"</c>–
+    /// <c>"December"</c>), an integer (1–13), a Hebrew fixed-position month name (<c>Tishri</c>–<c>AdarII</c>), or a
+    /// leap-year-dependent Hebrew month alias (<c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>,
+    /// <c>Av</c>, <c>Elul</c>). Must not be <see langword="null" /> or whitespace.
     /// </param>
     /// <param name="day">The day of the month in the calendar system (1–31).</param>
     /// <param name="skipLeapMonth">
-    /// When <see langword="true" />, the resolver skips any intercalary leap month when resolving against a lunisolar calendar.
+    /// When <see langword="true" />, the resolver skips any intercalary leap month when resolving against a lunisolar
+    /// calendar.
     /// </param>
     /// <param name="sweepCalendarYears">
     /// When <see langword="true" />, the resolver checks both overlapping calendar years for non-Gregorian calendars.
     /// </param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="monthToken" /> is <see langword="null" />, empty, or whitespace.</exception>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="day" /> is less than 1 or greater than 31.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="monthToken" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="day" /> is less than 1 or greater than 31.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when a resolution strategy has already been selected for this rule.
     /// </exception>
@@ -375,14 +473,18 @@ public sealed class NotableDateRuleBuilder
     }
 
     /// <summary>
-    /// Selects the <see cref="DateResolutionStrategy.DayOfWeekInMonth" /> strategy, resolving to the <em>n</em>th occurrence of a
-    /// specified weekday within a given Gregorian month (for example, the second Monday of October).
+    /// Selects the <see cref="DateResolutionStrategy.DayOfWeekInMonth" /> strategy, resolving to the <em>n</em>th
+    /// occurrence of a specified weekday within a given Gregorian month (for example, the second Monday of October).
     /// </summary>
     /// <param name="month">The Gregorian month (1–12).</param>
     /// <param name="dayOfWeek">The day of the week.</param>
-    /// <param name="weekOrdinal">The ordinal occurrence within the month (e.g. <see cref="WeekOfMonthOrdinal.Second" />).</param>
+    /// <param name="weekOrdinal">
+    /// The ordinal occurrence within the month (e.g. <see cref="WeekOfMonthOrdinal.Second" />).
+    /// </param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="month" /> is less than 1 or greater than 12.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="month" /> is less than 1 or greater than 12.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when a resolution strategy has already been selected for this rule.
     /// </exception>
@@ -400,13 +502,20 @@ public sealed class NotableDateRuleBuilder
     }
 
     /// <summary>
-    /// Selects the <see cref="DateResolutionStrategy.OffsetFromAnchor" /> strategy, resolving by adding a fixed day offset to the
-    /// date produced by another named rule.
+    /// Selects the <see cref="DateResolutionStrategy.OffsetFromAnchor" /> strategy, resolving by adding a fixed day
+    /// offset to the date produced by another named rule.
     /// </summary>
-    /// <param name="anchorRuleName">The canonical name of the anchor <see cref="NotableDateRule" />. Must not be <see langword="null" /> or whitespace.</param>
-    /// <param name="offsetDays">The number of days to add to the anchor date. Negative values move the date backwards.</param>
+    /// <param name="anchorRuleName">
+    /// The canonical name of the anchor <see cref="NotableDateRule" />. Must not be <see langword="null" /> or
+    /// whitespace.
+    /// </param>
+    /// <param name="offsetDays">
+    /// The number of days to add to the anchor date. Negative values move the date backwards.
+    /// </param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="anchorRuleName" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="anchorRuleName" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     /// <exception cref="InvalidOperationException">
     /// Thrown when a resolution strategy has already been selected for this rule.
     /// </exception>
@@ -426,8 +535,14 @@ public sealed class NotableDateRuleBuilder
     /// Selects the <see cref="DateResolutionStrategy.Algorithm" /> strategy, delegating date resolution to a registered
     /// <see cref="INotableDateAlgorithm" /> (for example, Easter Sunday or Lunar New Year).
     /// </summary>
-    /// <param name="key">The registry key used to look up the algorithm. Either <paramref name="key" /> or <paramref name="algorithmType" /> must be supplied.</param>
-    /// <param name="algorithmType">The CLR <see cref="Type" /> of the algorithm implementation, used as a fallback when <paramref name="key" /> is not registered.</param>
+    /// <param name="key">
+    /// The registry key used to look up the algorithm. Either <paramref name="key" /> or
+    /// <paramref name="algorithmType" /> must be supplied.
+    /// </param>
+    /// <param name="algorithmType">
+    /// The CLR <see cref="Type" /> of the algorithm implementation, used as a fallback when <paramref name="key" /> is
+    /// not registered.
+    /// </param>
     /// <param name="month">An optional month token passed to the algorithm's two-argument constructor.</param>
     /// <param name="day">An optional day of month passed to the algorithm's two-argument constructor.</param>
     /// <returns>This builder instance, for method chaining.</returns>
@@ -451,13 +566,19 @@ public sealed class NotableDateRuleBuilder
     /// Adds an <see cref="ObservanceAdjustment" /> to the rule using the specified key and configuration callback.
     /// </summary>
     /// <param name="key">
-    /// The adjustment key used for inheritance merging. Must be unique within this rule's adjustment sequence. Must not be
-    /// <see langword="null" /> or whitespace.
+    /// The adjustment key used for inheritance merging. Must be unique within this rule's adjustment sequence. Must not
+    /// be <see langword="null" /> or whitespace.
     /// </param>
-    /// <param name="configure">A callback that configures the <see cref="ObservanceAdjustmentBuilder" />. Must not be <see langword="null" />.</param>
+    /// <param name="configure">
+    /// A callback that configures the <see cref="ObservanceAdjustmentBuilder" />. Must not be <see langword="null" />.
+    /// </param>
     /// <returns>This builder instance, for method chaining.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.</exception>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="configure" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="configure" /> is <see langword="null" />.
+    /// </exception>
     public NotableDateRuleBuilder AddAdjustment(string key, Action<ObservanceAdjustmentBuilder> configure)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
@@ -482,7 +603,9 @@ public sealed class NotableDateRuleBuilder
     /// <see cref="Build(string)" /> when projecting the tag set onto the immutable rule.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="tag" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="tag" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     public NotableDateRuleBuilder RemoveTag(string tag)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(tag);
@@ -511,11 +634,13 @@ public sealed class NotableDateRuleBuilder
     /// <remarks>
     /// <para>
     /// No-op when no adjustment with the supplied key has been added. Comparison uses
-    /// <see cref="StringComparer.OrdinalIgnoreCase" /> so that callers do not need to remember the exact casing
-    /// of the original <see cref="AddAdjustment(string, Action{ObservanceAdjustmentBuilder})" /> call.
+    /// <see cref="StringComparer.OrdinalIgnoreCase" /> so that callers do not need to remember the exact casing of the
+    /// original <see cref="AddAdjustment(string, Action{ObservanceAdjustmentBuilder})" /> call.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     public NotableDateRuleBuilder RemoveAdjustment(string key)
     {
         ThrowHelper.ThrowIfNullOrWhiteSpace(key);
@@ -541,15 +666,15 @@ public sealed class NotableDateRuleBuilder
     /// Resets the previously selected resolution strategy and clears every strategy-specific field, so that
     /// <see cref="Fixed(int, int, bool, bool)" />, <see cref="Fixed(string, int, bool, bool)" />,
     /// <see cref="DayOfWeekInMonth(int, DayOfWeek, WeekOfMonthOrdinal)" />,
-    /// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" />
-    /// can be called again on the same builder.
+    /// <see cref="OffsetFromAnchor(string, int)" />, or <see cref="Algorithm(string?, Type?, string?, int?)" /> can be
+    /// called again on the same builder.
     /// </summary>
     /// <returns>This builder instance, for method chaining.</returns>
     /// <remarks>
     /// <para>
     /// Intended for the template-factory pattern: clone a configured builder, call <see cref="ClearStrategy" /> on the
-    /// copy, then re-author with a different strategy. Without an explicit reset the single-strategy invariant
-    /// would reject the subsequent strategy call.
+    /// copy, then re-author with a different strategy. Without an explicit reset the single-strategy invariant would
+    /// reject the subsequent strategy call.
     /// </para>
     /// </remarks>
     public NotableDateRuleBuilder ClearStrategy()
@@ -584,8 +709,8 @@ public sealed class NotableDateRuleBuilder
     /// <returns>A new <see cref="NotableDateRuleBuilder" /> with the same configuration as this instance.</returns>
     /// <remarks>
     /// <para>
-    /// Scalar fields are copied by value. Tags are duplicated into an independent list so additions on either side
-    /// do not bleed across the boundary. Each authored adjustment is cloned via
+    /// Scalar fields are copied by value. Tags are duplicated into an independent list so additions on either side do
+    /// not bleed across the boundary. Each authored adjustment is cloned via
     /// <see cref="ObservanceAdjustmentBuilder.Clone" />, so subsequent mutations on the cloned rule's adjustments
     /// remain isolated from the source.
     /// </para>
@@ -633,9 +758,13 @@ public sealed class NotableDateRuleBuilder
     /// <summary>
     /// Builds a <see cref="NotableDateRule" /> record from the current builder state.
     /// </summary>
-    /// <param name="notableDateName">The canonical name of the notable date. Must not be <see langword="null" /> or whitespace.</param>
+    /// <param name="notableDateName">
+    /// The canonical name of the notable date. Must not be <see langword="null" /> or whitespace.
+    /// </param>
     /// <returns>The constructed <see cref="NotableDateRule" />.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="notableDateName" /> is <see langword="null" />, empty, or whitespace.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="notableDateName" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when no resolution strategy has been selected.</exception>
     internal NotableDateRule Build(string notableDateName)
     {
@@ -760,7 +889,9 @@ public sealed class NotableDateRuleBuilder
     /// The canonical name of the notable date. Used to generate the JSON <c>name</c> property when no explicit
     /// <see cref="RuleName(string)" /> has been set.
     /// </param>
-    /// <returns>The constructed <see cref="JsonObject" /> conforming to the rule entry of <c>NotableDates.schema.json</c>.</returns>
+    /// <returns>
+    /// The constructed <see cref="JsonObject" /> conforming to the rule entry of <c>NotableDates.schema.json</c>.
+    /// </returns>
     /// <exception cref="InvalidOperationException">Thrown when no resolution strategy has been selected.</exception>
     internal JsonObject ToJsonNode(string notableDateName)
     {
@@ -946,7 +1077,6 @@ public sealed class NotableDateRuleBuilder
             _ => throw new NotSupportedException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_NotSupported_Strategy, _strategy.Value)),
         };
 
-
     /// <summary>
     /// Builds a <c>&lt;Fixed&gt;</c> element from the current Fixed strategy fields.
     /// </summary>
@@ -1034,7 +1164,8 @@ public sealed class NotableDateRuleBuilder
     }
 
     /// <summary>
-    /// Generates a descriptive rule name from the notable date name and active strategy when no explicit rule name is set.
+    /// Generates a descriptive rule name from the notable date name and active strategy when no explicit rule name is
+    /// set.
     /// </summary>
     /// <param name="notableDateName">The canonical notable date name.</param>
     /// <returns>A descriptive rule name suitable for the XML <c>name</c> attribute.</returns>
@@ -1053,10 +1184,12 @@ public sealed class NotableDateRuleBuilder
     }
 
     /// <summary>
-    /// Throws when a resolution strategy has already been selected for this rule. Called by every strategy
-    /// configurator to enforce that each builder instance commits to exactly one strategy.
+    /// Throws when a resolution strategy has already been selected for this rule. Called by every strategy configurator
+    /// to enforce that each builder instance commits to exactly one strategy.
     /// </summary>
-    /// <exception cref="InvalidOperationException">Thrown when <see cref="_strategy" /> already has a value.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when <see cref="_strategy" /> already has a value.
+    /// </exception>
     private void ThrowIfStrategyAlreadySet()
     {
         if (_strategy.HasValue)

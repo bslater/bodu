@@ -9,23 +9,27 @@ using Bodu.Globalization.Calendar.Builder;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Supplies <see cref="NotableDateRule" /> instances to a <see cref="NotableDateService" /> from an in-memory collection
-/// produced by a <see cref="NotableDateDocumentBuilder" />.
+/// Supplies <see cref="NotableDateRule" /> instances to a <see cref="NotableDateService" /> from an in-memory
+/// collection produced by a <see cref="NotableDateDocumentBuilder" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="InlineNotableDateRuleProvider" /> implements <see cref="INotableDateRuleProvider" /> by wrapping a pre-built list of
-/// rules. It is the return type of <see cref="NotableDateDocumentBuilder.ToProvider" /> and is suitable for use wherever an
-/// <see cref="INotableDateRuleProvider" /> is accepted, including the <see cref="NotableDateService" /> constructor.
+/// <see cref="InlineNotableDateRuleProvider" /> implements <see cref="INotableDateRuleProvider" /> by wrapping a
+/// pre-built list of rules. It is the return type of <see cref="NotableDateDocumentBuilder.ToProvider" /> and is
+/// suitable for use wherever an <see cref="INotableDateRuleProvider" /> is accepted, including the
+/// <see cref="NotableDateService" /> constructor.
 /// </para>
 /// <para>
-/// Unlike <see cref="XmlResourceNotableDateRuleProvider" />, this implementation performs no I/O and does not defer rule
-/// loading — the supplied rules are returned directly from <see cref="LoadRules" />.
+/// Unlike <see cref="XmlResourceNotableDateRuleProvider" />, this implementation performs no I/O and does not defer
+/// rule loading — the supplied rules are returned directly from <see cref="LoadRules" />.
 /// </para>
 /// </remarks>
 /// <example>
-/// <para>Constructing a service from a programmatically built rule set:</para>
+/// <para>
+/// Constructing a service from a programmatically built rule set:
+/// </para>
 /// <code>
+///<![CDATA[
 /// INotableDateRuleProvider provider = NotableDateDocumentBuilder.Create()
 ///     .AddDate("Christmas Day", date => date
 ///         .AddRule(rule => rule
@@ -35,19 +39,24 @@ namespace Bodu.Globalization.Calendar;
 ///     .ToProvider();
 ///
 /// NotableDateService service = new(new[] { provider });
+///]]>
 /// </code>
 /// </example>
 public sealed class InlineNotableDateRuleProvider
     : INotableDateRuleProvider
 {
-    /// <summary>The pre-built rules supplied at construction and returned unchanged from <see cref="LoadRules" />.</summary>
+    /// <summary>
+    /// The pre-built rules supplied at construction and returned unchanged from <see cref="LoadRules" />.
+    /// </summary>
     private readonly IReadOnlyList<NotableDateRule> _rules;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="InlineNotableDateRuleProvider"/> class with the specified rules.
+    /// Initializes a new instance of the <see cref="InlineNotableDateRuleProvider" /> class with the specified rules.
     /// </summary>
     /// <param name="rules">The rules to expose. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="rules" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="rules" /> is <see langword="null" />.
+    /// </exception>
     public InlineNotableDateRuleProvider(IReadOnlyList<NotableDateRule> rules)
     {
         ThrowHelper.ThrowIfNull(rules);
@@ -57,6 +66,8 @@ public sealed class InlineNotableDateRuleProvider
     /// <summary>
     /// Returns all <see cref="NotableDateRule" /> instances supplied at construction time.
     /// </summary>
-    /// <returns>The rules in the order they were added to the original <see cref="NotableDateDocumentBuilder" />.</returns>
+    /// <returns>
+    /// The rules in the order they were added to the original <see cref="NotableDateDocumentBuilder" />.
+    /// </returns>
     public IEnumerable<NotableDateRule> LoadRules() => _rules;
 }
