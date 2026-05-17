@@ -81,8 +81,8 @@ public sealed class PluginNotTrustedException
     /// Gets the reason surfaced by the trust policy.
     /// </summary>
     /// <value>
-    /// The trust policy's stated reason for rejection, or <see langword="null" /> when the policy did not supply one
-    /// or when the exception was created without trust-policy context.
+    /// The trust policy's stated reason for rejection, or <see langword="null" /> when the policy did not supply one or
+    /// when the exception was created without trust-policy context.
     /// </value>
     public string? Reason { get; }
 }
