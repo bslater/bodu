@@ -17,7 +17,10 @@ public static partial class NotableDateOnlyExtensions
     /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns><see langword="true" /> if any notable date covers <paramref name="date" />; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if any notable date covers <paramref name="date" />; otherwise, <see langword="false" />
+    /// .
+    /// </returns>
     public static bool IsNotableDate(this DateOnly date, string? territoryCode = null, Type? calendarType = null) =>
         NotableDateContext.Default.GetNotableDates(date.ToDateTime(TimeOnly.MinValue), territoryCode, calendarType).Count > 0;
 
@@ -27,11 +30,18 @@ public static partial class NotableDateOnlyExtensions
     /// <see cref="NotableDateContext.Default" /> service.
     /// </summary>
     /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
-    /// <param name="filter">The filter that resolved notable dates must satisfy. Must not be <see langword="null" />.</param>
+    /// <param name="filter">
+    /// The filter that resolved notable dates must satisfy. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns><see langword="true" /> if any matching notable date covers <paramref name="date" />; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="filter" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> if any matching notable date covers <paramref name="date" />; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="filter" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsNotableDate(this DateOnly date, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(filter);
@@ -44,11 +54,18 @@ public static partial class NotableDateOnlyExtensions
     /// <see cref="NotableDate" /> from the supplied <see cref="INotableDateService" />.
     /// </summary>
     /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
-    /// <param name="service">The <see cref="INotableDateService" /> consulted for resolution. Must not be <see langword="null" />.</param>
+    /// <param name="service">
+    /// The <see cref="INotableDateService" /> consulted for resolution. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns><see langword="true" /> if any notable date covers <paramref name="date" />; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> if any notable date covers <paramref name="date" />; otherwise, <see langword="false" />
+    /// .
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="service" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsNotableDate(this DateOnly date, INotableDateService service, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(service);
@@ -62,12 +79,21 @@ public static partial class NotableDateOnlyExtensions
     /// <see cref="INotableDateService" />.
     /// </summary>
     /// <param name="date">The <see cref="DateOnly" /> value to evaluate.</param>
-    /// <param name="service">The <see cref="INotableDateService" /> consulted for resolution. Must not be <see langword="null" />.</param>
-    /// <param name="filter">The filter that resolved notable dates must satisfy. Must not be <see langword="null" />.</param>
+    /// <param name="service">
+    /// The <see cref="INotableDateService" /> consulted for resolution. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="filter">
+    /// The filter that resolved notable dates must satisfy. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns><see langword="true" /> if any matching notable date covers <paramref name="date" />; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> or <paramref name="filter" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> if any matching notable date covers <paramref name="date" />; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="service" /> or <paramref name="filter" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsNotableDate(this DateOnly date, INotableDateService service, NotableDateFilter filter, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(service);

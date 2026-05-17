@@ -7,28 +7,48 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Maintains the unified entry set produced by the chronological range-resolution pipeline for a single resolution request.
+/// Maintains the unified entry set produced by the chronological range-resolution pipeline for a single resolution
+/// request.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The cache stores at most one entry per <see cref="NotableDateCacheKey" />. Each entry carries a state flag distinguishing entries
-/// that are eligible for emission from those that are present only as adjustment context. Callers can:
+/// The cache stores at most one entry per <see cref="NotableDateCacheKey" />. Each entry carries a state flag
+/// distinguishing entries that are eligible for emission from those that are present only as adjustment context.
+/// Callers can:
 /// </para>
 /// <list type="bullet">
-///   <item><description>Look up an anchor date by rule name and year via <see cref="ResolveAnchor" /> — used by offset rules to read previously-computed anchors without recalculating them.</description></item>
-///   <item><description>Enumerate emission candidates via <see cref="EmissableEntries" />.</description></item>
-///   <item><description>Probe non-working day context via <see cref="IsNonWorkingDay" /> — used by the adjuster's blocker evaluation.</description></item>
+/// <item>
+/// <description>
+/// Look up an anchor date by rule name and year via <see cref="ResolveAnchor" /> — used by offset rules to read
+/// previously-computed anchors without recalculating them.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Enumerate emission candidates via <see cref="EmissableEntries" />.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Probe non-working day context via <see cref="IsNonWorkingDay" /> — used by the adjuster's blocker evaluation.
+/// </description>
+/// </item>
 /// </list>
 /// </remarks>
 internal sealed class NotableDateRangeResolutionCache
 {
-    /// <summary>The backing dictionary keyed by <see cref="NotableDateCacheKey" />.</summary>
+    /// <summary>
+    /// The backing dictionary keyed by <see cref="NotableDateCacheKey" />.
+    /// </summary>
     private readonly Dictionary<NotableDateCacheKey, NotableDateCacheEntry> _entries = [];
 
     /// <summary>
     /// Gets the live entry sequence in arbitrary order.
     /// </summary>
-    /// <returns>An enumeration of every <see cref="NotableDateCacheEntry" /> currently in the cache. Iteration order is not defined.</returns>
+    /// <returns>
+    /// An enumeration of every <see cref="NotableDateCacheEntry" /> currently in the cache. Iteration order is not
+    /// defined.
+    /// </returns>
     public IEnumerable<NotableDateCacheEntry> Entries => _entries.Values;
 
     /// <summary>
@@ -68,7 +88,9 @@ internal sealed class NotableDateRangeResolutionCache
     /// </summary>
     /// <param name="key">The cache key to look up.</param>
     /// <param name="entry">The matching entry when the method returns <see langword="true" />.</param>
-    /// <returns><see langword="true" /> when an entry with the supplied key exists; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when an entry with the supplied key exists; otherwise, <see langword="false" />.
+    /// </returns>
     public bool TryGet(NotableDateCacheKey key, out NotableDateCacheEntry entry)
     {
         if (_entries.TryGetValue(key, out NotableDateCacheEntry? found))
@@ -119,7 +141,10 @@ internal sealed class NotableDateRangeResolutionCache
     /// <param name="date">The date to test.</param>
     /// <param name="territoryCode">The territory context, or <see langword="null" />.</param>
     /// <param name="calendarType">The calendar context, or <see langword="null" />.</param>
-    /// <returns><see langword="true" /> when at least one entry covers the date and is flagged as non-working; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when at least one entry covers the date and is flagged as non-working; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
     public bool IsNonWorkingDay(DateTime date, string? territoryCode, Type? calendarType)
     {
         DateTime day = date.Date;
@@ -137,7 +162,8 @@ internal sealed class NotableDateRangeResolutionCache
     }
 
     /// <summary>
-    /// Resolves the observed date for the named rule in the supplied year and context, preferring the adjusted date when present.
+    /// Resolves the observed date for the named rule in the supplied year and context, preferring the adjusted date
+    /// when present.
     /// </summary>
     /// <param name="ruleName">The rule name.</param>
     /// <param name="year">The civil year.</param>
@@ -159,8 +185,8 @@ internal sealed class NotableDateRangeResolutionCache
     }
 
     /// <summary>
-    /// Determines whether the supplied notable-date span covers the supplied day, matches the requested territory and calendar
-    /// context, and is flagged as a non-working day.
+    /// Determines whether the supplied notable-date span covers the supplied day, matches the requested territory and
+    /// calendar context, and is flagged as a non-working day.
     /// </summary>
     /// <param name="notable">The notable date under test.</param>
     /// <param name="day">The date to test.</param>
@@ -170,9 +196,9 @@ internal sealed class NotableDateRangeResolutionCache
     private static bool EntryCoversDay(NotableDate notable, DateTime day, string? territoryCode, Type? calendarType)
     {
         if (!notable.IsNonWorkingDay) return false;
-        if (day < notable.Date.Date || day > notable.EndDate.Date) return false;
-
-        return ContextMatches(notable.TerritoryCode, notable.CalendarType, territoryCode, calendarType);
+        return day < notable.Date.Date || day > notable.EndDate.Date
+            ? false
+            : ContextMatches(notable.TerritoryCode, notable.CalendarType, territoryCode, calendarType);
     }
 
     /// <summary>
@@ -193,9 +219,8 @@ internal sealed class NotableDateRangeResolutionCache
 
         if (!TerritoryCode.TryParse(requestedTerritory, out TerritoryCode requested))
             return false;
-        if (!TerritoryCode.TryParse(ownedTerritory, out TerritoryCode owned))
-            return false;
-
-        return requested.Contains(owned) || owned.Contains(requested);
+        return !TerritoryCode.TryParse(ownedTerritory, out TerritoryCode owned)
+            ? false
+            : requested.Contains(owned) || owned.Contains(requested);
     }
 }

@@ -13,17 +13,21 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Custom handlers are looked up by <see cref="ObservanceAdjustment.HandlerKey" /> from an <see cref="IAdjustmentHandlerRegistry" />.
-/// They receive the resolved date plus the surrounding context and return whether the adjustment activates and, if so, the new date.
+/// Custom handlers are looked up by <see cref="ObservanceAdjustment.HandlerKey" /> from an
+/// <see cref="IAdjustmentHandlerRegistry" />. They receive the resolved date plus the surrounding context and return
+/// whether the adjustment activates and, if so, the new date.
 /// </para>
 /// <para>
-/// Register handlers via <see cref="AdjustmentHandlerRegistry" /> and supply the registry to the <see cref="NotableDateService" />
-/// constructor via the <c>adjustmentHandlers</c> parameter.
+/// Register handlers via <see cref="AdjustmentHandlerRegistry" /> and supply the registry to the
+/// <see cref="NotableDateService" /> constructor via the <c>adjustmentHandlers</c> parameter.
 /// </para>
 /// </remarks>
 /// <example>
-/// <para>A custom handler that shifts the observed date when it coincides with another named notable date:</para>
+/// <para>
+/// A custom handler that shifts the observed date when it coincides with another named notable date:
+/// </para>
 /// <code>
+///<![CDATA[
 /// public sealed class ConflictAvoidanceHandler : IAdjustmentHandler
 /// {
 ///     private readonly string _conflictingRuleName;
@@ -43,6 +47,7 @@ namespace Bodu.Globalization.Calendar;
 ///         return new AdjustmentHandlerResult(Activated: true, AdjustedDate: shifted, IsNonWorkingOverride: true);
 ///     }
 /// }
+///]]>
 /// </code>
 /// </example>
 public interface IAdjustmentHandler
@@ -50,7 +55,11 @@ public interface IAdjustmentHandler
     /// <summary>
     /// Evaluates the adjustment and, if active, computes the new date.
     /// </summary>
-    /// <param name="context">The current adjustment context, including the date being evaluated and surrounding metadata.</param>
-    /// <returns>An <see cref="AdjustmentHandlerResult" /> describing whether the handler activated and what date it produced.</returns>
+    /// <param name="context">
+    /// The current adjustment context, including the date being evaluated and surrounding metadata.
+    /// </param>
+    /// <returns>
+    /// An <see cref="AdjustmentHandlerResult" /> describing whether the handler activated and what date it produced.
+    /// </returns>
     AdjustmentHandlerResult Apply(AdjustmentHandlerContext context);
 }

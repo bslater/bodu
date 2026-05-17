@@ -13,13 +13,14 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This resolver caches internal calculation anchors such as <c>Easter Sunday</c> by rule name and year. The cached value
-/// is reused by dependent rules such as <c>Start of Lent</c>, <c>Palm Sunday</c>, <c>Good Friday</c>, and
+/// This resolver caches internal calculation anchors such as <c>Easter Sunday</c> by rule name and year. The cached
+/// value is reused by dependent rules such as <c>Start of Lent</c>, <c>Palm Sunday</c>, <c>Good Friday</c>, and
 /// <c>Easter Monday</c>.
 /// </para>
 /// <para>
-/// Cached anchors are not emitted as notable dates. They are internal calculation facts. A cached anchor becomes visible to
-/// callers only when a corresponding <see cref="NotableDateRule" /> is materialized into a <see cref="NotableDate" />.
+/// Cached anchors are not emitted as notable dates. They are internal calculation facts. A cached anchor becomes
+/// visible to callers only when a corresponding <see cref="NotableDateRule" /> is materialized into a
+/// <see cref="NotableDate" />.
 /// </para>
 /// </remarks>
 internal sealed class CachingCalculationAnchorResolver
@@ -97,12 +98,9 @@ internal sealed class CachingCalculationAnchorResolver
     /// <exception cref="InvalidOperationException">The named anchor rule cannot be found.</exception>
     private DateTime? ResolveCore(CalculationAnchorCacheKey key)
     {
-        if (!_rulesByName.TryGetValue(key.AnchorRuleName, out NotableDateRule? rule))
-        {
-            throw new InvalidOperationException(
-                $"The calculation anchor rule '{key.AnchorRuleName}' could not be found.");
-        }
-
-        return _ruleResolver.ResolveAnchorDate(rule, key.Year);
+        return !_rulesByName.TryGetValue(key.AnchorRuleName, out NotableDateRule? rule)
+            ? throw new InvalidOperationException(
+                $"The calculation anchor rule '{key.AnchorRuleName}' could not be found.")
+            : _ruleResolver.ResolveAnchorDate(rule, key.Year);
     }
 }

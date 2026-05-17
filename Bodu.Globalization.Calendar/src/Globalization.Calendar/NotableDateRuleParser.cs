@@ -21,26 +21,31 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. Schema violations surface as
-/// <see cref="XmlSchemaValidationException" /> so authoring errors are caught at parse time rather than at first query. The JSON
-/// authoring counterpart lives in <see cref="NotableDateRuleJsonParser" /> and produces the same
+/// XML inputs are validated against the embedded <c>NotableDates.xsd</c> schema before parsing. Schema violations
+/// surface as <see cref="XmlSchemaValidationException" /> so authoring errors are caught at parse time rather than at
+/// first query. The JSON authoring counterpart lives in <see cref="NotableDateRuleJsonParser" /> and produces the same
 /// <see cref="ParsedNotableDateDocument" /> output, so downstream loaders can treat both source formats uniformly.
 /// </para>
 /// <para>
 /// The parser is the bottom of the rule-loading stack: it converts authored markup into the in-memory rule objects that
-/// <see cref="XmlResourceNotableDateRuleProvider" /> assembles into a flat rule set, that <see cref="NotableDateService" /> then
-/// resolves into <see cref="NotableDate" /> values. Use the <see cref="ParseXml(string)" /> overloads when only the local rules
-/// matter; use <see cref="ParseDocument(string)" /> when <c>&lt;Use&gt;</c> cherry-pick directives must also be inspected (for
-/// example to walk a graph of imported resources).
+/// <see cref="XmlResourceNotableDateRuleProvider" /> assembles into a flat rule set, that
+/// <see cref="NotableDateService" /> then resolves into <see cref="NotableDate" /> values. Use the
+/// <see cref="ParseXml(string)" /> overloads when only the local rules matter; use <see cref="ParseDocument(string)" />
+/// when <c>&lt;Use&gt;</c> cherry-pick directives must also be inspected (for example to walk a graph of imported
+/// resources).
 /// </para>
 /// <para>
-/// This class replaces <c>NotableDateDefinitionParser</c>. The new schema vocabulary uses <c>Rule</c> as the per-definition element and
-/// names the strategy child elements <c>Fixed</c>, <c>DayOfWeekInMonth</c>, <c>OffsetFromAnchor</c>, and <c>Algorithm</c>.
+/// This class replaces <c>NotableDateDefinitionParser</c>. The new schema vocabulary uses <c>Rule</c> as the
+/// per-definition element and names the strategy child elements <c>Fixed</c>, <c>DayOfWeekInMonth</c>,
+/// <c>OffsetFromAnchor</c>, and <c>Algorithm</c>.
 /// </para>
 /// </remarks>
 /// <example>
-/// <para>Parse an inline XML payload into a list of <see cref="NotableDateRule" /> instances:</para>
+/// <para>
+/// Parse an inline XML payload into a list of <see cref="NotableDateRule" /> instances:
+/// </para>
 /// <code>
+///<![CDATA[
 /// const string xml = """
 ///     &lt;NotableDates xmlns="urn:bodu:globalization:calendar"&gt;
 ///       &lt;Rule name="Australia Day" category="Public" territoryCode="AU" isNonWorkingDay="true"&gt;
@@ -63,6 +68,7 @@ namespace Bodu.Globalization.Calendar;
 /// // When &lt;Use&gt; directives also matter, parse the full document instead:
 /// ParsedNotableDateDocument document = NotableDateRuleParser.ParseDocument(xml);
 /// IReadOnlyList&lt;NotableDateRuleUseGroup&gt; imports = document.UseGroups;
+///]]>
 /// </code>
 /// </example>
 public static class NotableDateRuleParser
@@ -76,12 +82,16 @@ public static class NotableDateRuleParser
     /// <param name="xml">The XML payload. Must not be <see langword="null" /> or whitespace.</param>
     /// <returns>The parsed rules.</returns>
     /// <remarks>
-    /// This convenience overload returns only the rules and discards any <c>Import</c> or <c>Suppress</c> directives. To resolve a
-    /// document graph including imports, call <see cref="ParseDocument(string)" /> instead and feed the result to a loader such as
-    /// <see cref="XmlResourceNotableDateRuleProvider" />.
+    /// This convenience overload returns only the rules and discards any <c>Import</c> or <c>Suppress</c> directives.
+    /// To resolve a document graph including imports, call <see cref="ParseDocument(string)" /> instead and feed the
+    /// result to a loader such as <see cref="XmlResourceNotableDateRuleProvider" />.
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.</exception>
-    /// <exception cref="XmlSchemaValidationException">Thrown when the XML does not conform to the embedded schema.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
+    /// <exception cref="XmlSchemaValidationException">
+    /// Thrown when the XML does not conform to the embedded schema.
+    /// </exception>
     public static List<NotableDateRule> ParseXml(string xml) => [.. ParseDocument(xml).LocalRules];
 
     /// <summary>
@@ -89,17 +99,23 @@ public static class NotableDateRuleParser
     /// </summary>
     /// <param name="document">The XML document. Must not be <see langword="null" />.</param>
     /// <returns>The parsed rules.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="document" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="document" /> is <see langword="null" />.
+    /// </exception>
     public static List<NotableDateRule> ParseXml(XDocument document) => [.. ParseDocument(document).LocalRules];
 
     /// <summary>
-    /// Parses the supplied XML string into a <see cref="ParsedNotableDateDocument" />, exposing local rules together with any
-    /// <c>Import</c> and <c>Suppress</c> directives.
+    /// Parses the supplied XML string into a <see cref="ParsedNotableDateDocument" />, exposing local rules together
+    /// with any <c>Import</c> and <c>Suppress</c> directives.
     /// </summary>
     /// <param name="xml">The XML payload. Must not be <see langword="null" /> or whitespace.</param>
     /// <returns>The parsed document, including imports, suppressions, and rules.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.</exception>
-    /// <exception cref="XmlSchemaValidationException">Thrown when the XML does not conform to the embedded schema.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="xml" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
+    /// <exception cref="XmlSchemaValidationException">
+    /// Thrown when the XML does not conform to the embedded schema.
+    /// </exception>
     public static ParsedNotableDateDocument ParseDocument(string xml)
     {
         if (string.IsNullOrWhiteSpace(xml))
@@ -116,7 +132,9 @@ public static class NotableDateRuleParser
     /// </summary>
     /// <param name="document">The XML document. Must not be <see langword="null" />.</param>
     /// <returns>The parsed document.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="document" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="document" /> is <see langword="null" />.
+    /// </exception>
     public static ParsedNotableDateDocument ParseDocument(XDocument document)
     {
         if (document is null)
@@ -131,9 +149,9 @@ public static class NotableDateRuleParser
     // ----------------------------------------------------------------------------
 
     /// <summary>
-    /// Parses a validated <see cref="XDocument" /> into a <see cref="ParsedNotableDateDocument" />,
-    /// materializing each &lt;NotableDate&gt; child into zero or more <see cref="NotableDateRule" />
-    /// instances along with any &lt;Use&gt; group references.
+    /// Parses a validated <see cref="XDocument" /> into a <see cref="ParsedNotableDateDocument" />, materializing each
+    /// &lt;NotableDate&gt; child into zero or more <see cref="NotableDateRule" /> instances along with any &lt;Use&gt;
+    /// group references.
     /// </summary>
     /// <param name="document">The notable-date XML document to parse; must already be schema-validated.</param>
     /// <returns>The parsed document model.</returns>
@@ -151,8 +169,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Parses a &lt;UseFrom&gt; element into a <see cref="NotableDateRuleUseGroup" />, enumerating
-    /// all child &lt;Use&gt; directives.
+    /// Parses a &lt;UseFrom&gt; element into a <see cref="NotableDateRuleUseGroup" />, enumerating all child
+    /// &lt;Use&gt; directives.
     /// </summary>
     /// <param name="useFromElement">The &lt;UseFrom&gt; XML element.</param>
     /// <returns>The parsed use-group instance.</returns>
@@ -169,9 +187,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Parses a single &lt;Use&gt; directive element into a
-    /// <see cref="NotableDateRuleUseDirective" />, including the optional nested &lt;Rule&gt;
-    /// override body and the <c>clearTags</c> / <c>clearAdjustments</c> flags.
+    /// Parses a single &lt;Use&gt; directive element into a <see cref="NotableDateRuleUseDirective" />, including the
+    /// optional nested &lt;Rule&gt; override body and the <c>clearTags</c> / <c>clearAdjustments</c> flags.
     /// </summary>
     /// <param name="useElement">The &lt;Use&gt; XML element.</param>
     /// <returns>The parsed use directive.</returns>
@@ -205,9 +222,9 @@ public static class NotableDateRuleParser
     /// <param name="ruleElement">The nested &lt;Rule&gt; XML element.</param>
     /// <returns>The parsed override body.</returns>
     /// <remarks>
-    /// The nested form is structurally identical to a standalone &lt;Rule&gt; but every child
-    /// element is optional: the strategy may be absent (inherit the source strategy), and Tag
-    /// and Adjustment children are accumulated for merging by the flatten pipeline.
+    /// The nested form is structurally identical to a standalone &lt;Rule&gt; but every child element is optional: the
+    /// strategy may be absent (inherit the source strategy), and Tag and Adjustment children are accumulated for
+    /// merging by the flatten pipeline.
     /// </remarks>
     private static NotableDateRuleOverrideBody ParseOverrideBody(XElement ruleElement)
     {
@@ -256,9 +273,9 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Applies the strategy-specific attributes on <paramref name="strategyElement" /> to the
-    /// override body. Mirrors <see cref="ApplyStrategySpecifics(NotableDateRule, XElement)" />
-    /// but writes to a <see cref="NotableDateRuleOverrideBody" />.
+    /// Applies the strategy-specific attributes on <paramref name="strategyElement" /> to the override body. Mirrors
+    /// <see cref="ApplyStrategySpecifics(NotableDateRule, XElement)" /> but writes to a
+    /// <see cref="NotableDateRuleOverrideBody" />.
     /// </summary>
     /// <param name="body">The override body receiving strategy-specific fields.</param>
     /// <param name="strategyElement">The XML element describing the strategy.</param>
@@ -303,8 +320,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Enforces the per-rule uniqueness invariant on adjustment keys — the same invariant the
-    /// merge pipeline relies on when deciding between replace and append semantics.
+    /// Enforces the per-rule uniqueness invariant on adjustment keys — the same invariant the merge pipeline relies on
+    /// when deciding between replace and append semantics.
     /// </summary>
     /// <param name="adjustments">The adjustments whose keys are being validated.</param>
     /// <param name="contextElement">The owning XML element used in diagnostic messages.</param>
@@ -320,8 +337,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Expands a single &lt;NotableDate&gt; XML element into its one-or-more
-    /// <see cref="NotableDateRule" /> instances, applying each strategy element's specifics.
+    /// Expands a single &lt;NotableDate&gt; XML element into its one-or-more <see cref="NotableDateRule" /> instances,
+    /// applying each strategy element's specifics.
     /// </summary>
     /// <param name="notableDateElement">The &lt;NotableDate&gt; XML element.</param>
     /// <returns>The sequence of rules derived from the element.</returns>
@@ -377,8 +394,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if <paramref name="localName" /> is a recognized
-    /// calculation-strategy element name (for example <c>Fixed</c>, <c>EasterSunday</c>).
+    /// Returns <see langword="true" /> if <paramref name="localName" /> is a recognized calculation-strategy element
+    /// name (for example <c>Fixed</c>, <c>EasterSunday</c>).
     /// </summary>
     /// <param name="localName">The local name of the XML element.</param>
     /// <returns><see langword="true" /> if the element names a strategy; otherwise <see langword="false" />.</returns>
@@ -386,8 +403,8 @@ public static class NotableDateRuleParser
         localName is "Fixed" or "DayOfWeekInMonth" or "Algorithm" or "OffsetFromAnchor";
 
     /// <summary>
-    /// Applies strategy-specific attributes and child elements (fixed date, Easter offset,
-    /// lunar rule, and so on) onto <paramref name="rule" />, returning the enriched rule.
+    /// Applies strategy-specific attributes and child elements (fixed date, Easter offset, lunar rule, and so on) onto
+    /// <paramref name="rule" />, returning the enriched rule.
     /// </summary>
     /// <param name="rule">The partially-populated rule to enrich.</param>
     /// <param name="strategyElement">The XML element describing the strategy.</param>
@@ -461,8 +478,7 @@ public static class NotableDateRuleParser
     // ----------------------------------------------------------------------------
 
     /// <summary>
-    /// Returns the value of <paramref name="attributeName" /> on <paramref name="element" />,
-    /// throwing if absent.
+    /// Returns the value of <paramref name="attributeName" /> on <paramref name="element" />, throwing if absent.
     /// </summary>
     /// <param name="element">The XML element to inspect.</param>
     /// <param name="attributeName">The required attribute name.</param>
@@ -473,8 +489,8 @@ public static class NotableDateRuleParser
             ?? throw new InvalidOperationException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, attributeName, element.Name.LocalName));
 
     /// <summary>
-    /// Returns the value of <paramref name="attributeName" /> on <paramref name="element" />,
-    /// or <see langword="null" /> if the attribute is absent.
+    /// Returns the value of <paramref name="attributeName" /> on <paramref name="element" />, or
+    /// <see langword="null" /> if the attribute is absent.
     /// </summary>
     /// <param name="element">The XML element to inspect.</param>
     /// <param name="attributeName">The attribute name.</param>
@@ -496,8 +512,7 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Parses <paramref name="attributeName" /> on <paramref name="element" /> as an
-    /// <see cref="int" /> if present.
+    /// Parses <paramref name="attributeName" /> on <paramref name="element" /> as an <see cref="int" /> if present.
     /// </summary>
     /// <param name="element">The XML element to inspect.</param>
     /// <param name="attributeName">The attribute name.</param>
@@ -510,8 +525,7 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Parses <paramref name="attributeName" /> on <paramref name="element" /> as a
-    /// <see cref="bool" /> if present.
+    /// Parses <paramref name="attributeName" /> on <paramref name="element" /> as a <see cref="bool" /> if present.
     /// </summary>
     /// <param name="element">The XML element to inspect.</param>
     /// <param name="attributeName">The attribute name.</param>
@@ -524,9 +538,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Parses a (month, day) pair from <paramref name="element" /> into a
-    /// <see cref="DateTime" /> in the current year, or returns <see langword="null" /> if either
-    /// attribute is absent.
+    /// Parses a (month, day) pair from <paramref name="element" /> into a <see cref="DateTime" /> in the current year,
+    /// or returns <see langword="null" /> if either attribute is absent.
     /// </summary>
     /// <param name="element">The XML element to inspect.</param>
     /// <param name="monthAttr">The attribute name carrying the month name or number.</param>
@@ -547,15 +560,16 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Resolves the value of <paramref name="attributeName" /> on <paramref name="element" />
-    /// to a <see cref="Type" /> assignable to <typeparamref name="TBase" />.
+    /// Resolves the value of <paramref name="attributeName" /> on <paramref name="element" /> to a <see cref="Type" />
+    /// assignable to <typeparamref name="TBase" />.
     /// </summary>
     /// <typeparam name="TBase">The base type the resolved type must be assignable to.</typeparam>
     /// <param name="element">The XML element to inspect.</param>
     /// <param name="attributeName">The attribute name carrying the type name.</param>
     /// <returns>The resolved <see cref="Type" />, or <see langword="null" /> if the attribute is absent.</returns>
-    /// <exception cref="FormatException">The attribute is present but does not resolve to a type
-    /// assignable to <typeparamref name="TBase" />.</exception>
+    /// <exception cref="FormatException">
+    /// The attribute is present but does not resolve to a type assignable to <typeparamref name="TBase" />.
+    /// </exception>
     private static Type? ParseOptionalType<TBase>(XElement element, string attributeName)
     {
         var typeName = GetOptionalAttribute(element, attributeName);
@@ -566,44 +580,62 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Parses <paramref name="monthName" /> as a culture-invariant English month name (e.g. <c>January</c>) or
-    /// an integer month number in the range <c>1</c>–<c>13</c>.
+    /// Parses <paramref name="monthName" /> as a culture-invariant English month name (e.g. <c>January</c>) or an
+    /// integer month number in the range <c>1</c>–<c>13</c>.
     /// </summary>
     /// <remarks>
-    /// Integer months are accepted to support non-Gregorian BCL calendar rules (e.g. <c>month="1"</c> on a
-    /// <c>Fixed</c> rule with <c>calendarType="System.Globalization.ChineseLunisolarCalendar"</c>).
-    /// Lunisolar calendars can carry up to 13 months in intercalary years.
+    /// Integer months are accepted to support non-Gregorian BCL calendar rules (e.g. <c>month="1"</c> on a <c>Fixed</c>
+    /// rule with <c>calendarType="System.Globalization.ChineseLunisolarCalendar"</c>). Lunisolar calendars can carry up
+    /// to 13 months in intercalary years.
     /// </remarks>
     /// <param name="monthName">The month token — either an English month name or an integer 1–13.</param>
     /// <returns>The month number.</returns>
-    /// <exception cref="FormatException"><paramref name="monthName" /> is neither a recognized English month name nor an integer in 1–13.</exception>
+    /// <exception cref="FormatException">
+    /// <paramref name="monthName" /> is neither a recognized English month name nor an integer in 1–13.
+    /// </exception>
     private static int ParseMonth(string monthName)
     {
         ThrowHelper.ThrowIfNullOrEmpty(monthName);
 
-        if (DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
-            return result.Month;
-
-        if (int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
-            && numeric is >= 1 and <= 13)
-            return numeric;
-
-        throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, monthName));
+        return DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result)
+            ? result.Month
+            : int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric) && numeric is >= 1 and <= 13
+                ? numeric
+                : throw new FormatException(string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, monthName));
     }
 
     /// <summary>
-    /// Parses <paramref name="token" /> as a month identifier for a <c>Fixed</c> strategy element, returning
-    /// either an integer month number or a calendar-specific alias string for months whose calendar position
-    /// depends on whether the year is a leap year.
+    /// Parses <paramref name="token" /> as a month identifier for a <c>Fixed</c> strategy element, returning either an
+    /// integer month number or a calendar-specific alias string for months whose calendar position depends on whether
+    /// the year is a leap year.
     /// </summary>
     /// <remarks>
     /// <para>
     /// Accepted forms:
     /// <list type="bullet">
-    ///   <item><description>Full English month name — <c>"January"</c> through <c>"December"</c>.</description></item>
-    ///   <item><description>Integer 1–13 — a direct calendar month number.</description></item>
-    ///   <item><description>Hebrew month name with a fixed calendar position — <c>Tishri</c> (1), <c>Heshvan</c> (2), <c>Kislev</c> (3), <c>Tevet</c> (4), <c>Shevat</c> (5), <c>AdarI</c> (6), <c>AdarII</c> (7); these are stored as integers.</description></item>
-    ///   <item><description>Hebrew month name with a leap-year-dependent position — <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>, <c>Tammuz</c>, <c>Av</c>, <c>Elul</c>; these are stored as alias strings and resolved by the resolver at runtime.</description></item>
+    /// <item>
+    /// <description>
+    /// Full English month name — <c>"January"</c> through <c>"December"</c>.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Integer 1–13 — a direct calendar month number.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Hebrew month name with a fixed calendar position — <c>Tishri</c> (1), <c>Heshvan</c> (2), <c>Kislev</c> (3),
+    /// <c>Tevet</c> (4), <c>Shevat</c> (5), <c>AdarI</c> (6), <c>AdarII</c> (7); these are stored as integers.
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Hebrew month name with a leap-year-dependent position — <c>LastAdar</c>, <c>Nisan</c>, <c>Iyar</c>, <c>Sivan</c>
+    /// , <c>Tammuz</c>, <c>Av</c>, <c>Elul</c>; these are stored as alias strings and resolved by the resolver at
+    /// runtime.
+    /// </description>
+    /// </item>
     /// </list>
     /// </para>
     /// </remarks>
@@ -641,10 +673,9 @@ public static class NotableDateRuleParser
 
         // Hebrew months whose calendar position shifts in leap years — stored as a named alias
         // for runtime resolution by the resolver.
-        if (token is "LastAdar" or "Nisan" or "Iyar" or "Sivan" or "Tammuz" or "Av" or "Elul")
-            return (null, token);
-
-        throw new FormatException(
+        return token is "LastAdar" or "Nisan" or "Iyar" or "Sivan" or "Tammuz" or "Av" or "Elul"
+            ? ((int? numericMonth, string? alias))(null, token)
+            : throw new FormatException(
             string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueHebrew, token));
     }
 
@@ -670,8 +701,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Builds the <see cref="XmlReaderSettings" /> used to validate notable-date XML documents
-    /// against the embedded schema.
+    /// Builds the <see cref="XmlReaderSettings" /> used to validate notable-date XML documents against the embedded
+    /// schema.
     /// </summary>
     /// <returns>Configured reader settings with schema validation enabled.</returns>
     private static XmlReaderSettings CreateValidationSettings()
@@ -687,8 +718,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Validates <paramref name="document" /> against the embedded notable-date schema,
-    /// throwing on the first schema violation.
+    /// Validates <paramref name="document" /> against the embedded notable-date schema, throwing on the first schema
+    /// violation.
     /// </summary>
     /// <param name="document">The XML document to validate.</param>
     /// <exception cref="XmlSchemaValidationException">The document fails schema validation.</exception>
@@ -700,8 +731,8 @@ public static class NotableDateRuleParser
     }
 
     /// <summary>
-    /// Schema-validation event handler that rethrows warnings and errors as
-    /// <see cref="XmlSchemaValidationException" />.
+    /// Schema-validation event handler that rethrows warnings and errors as <see cref="XmlSchemaValidationException" />
+    /// .
     /// </summary>
     /// <param name="sender">The event sender (unused).</param>
     /// <param name="e">The validation event arguments.</param>

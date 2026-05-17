@@ -9,48 +9,69 @@ using Bodu.Extensions;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Evaluates an <see cref="ObservanceAdjustment" /> against a calculated date and applies the configured action when the trigger
-/// activates.
+/// Evaluates an <see cref="ObservanceAdjustment" /> against a calculated date and applies the configured action when
+/// the trigger activates.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The adjuster centralizes every evaluation concern that the previous implementation duplicated across <see cref="NotableDateService"/> and
-/// the partial <c>NotableDateAdjuster</c>: the trigger condition, the rule's territory and calendar scope, the effective year window,
-/// and the action dispatch. This means that callers can apply an adjustment in isolation (for example from inside a custom handler)
-/// without losing any of those guards.
+/// The adjuster centralizes every evaluation concern that the previous implementation duplicated across
+/// <see cref="NotableDateService" /> and the partial <c>NotableDateAdjuster</c>: the trigger condition, the rule's
+/// territory and calendar scope, the effective year window, and the action dispatch. This means that callers can apply
+/// an adjustment in isolation (for example from inside a custom handler) without losing any of those guards.
 /// </para>
 /// <para>
-/// The adjuster also implements every previously-stubbed <see cref="AdjustmentTrigger" /> and <see cref="AdjustmentAction" /> value,
-/// including <see cref="AdjustmentAction.MoveToNextNonWorkingDay" />, <see cref="AdjustmentAction.ReplaceWithNamedDate" />, and the
-/// custom handler dispatch path.
+/// The adjuster also implements every previously-stubbed <see cref="AdjustmentTrigger" /> and
+/// <see cref="AdjustmentAction" /> value, including <see cref="AdjustmentAction.MoveToNextNonWorkingDay" />,
+/// <see cref="AdjustmentAction.ReplaceWithNamedDate" />, and the custom handler dispatch path.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateAdjuster
 {
-    /// <summary>Predicate for determining whether a given date falls on a weekend.</summary>
+    /// <summary>
+    /// Predicate for determining whether a given date falls on a weekend.
+    /// </summary>
     private readonly Func<DateTime, bool> _isWeekend;
 
-    /// <summary>Predicate for determining whether a given date is a non-working day in the specified territory and calendar context.</summary>
+    /// <summary>
+    /// Predicate for determining whether a given date is a non-working day in the specified territory and calendar
+    /// context.
+    /// </summary>
     private readonly Func<DateTime, string?, Type?, bool> _isNonWorkingDay;
 
-    /// <summary>The configured working-week pattern; the complement of the days treated as weekend / non-working.</summary>
+    /// <summary>
+    /// The configured working-week pattern; the complement of the days treated as weekend / non-working.
+    /// </summary>
     private readonly WeekPattern _workingWeek;
 
-    /// <summary>An optional registry of custom <see cref="IAdjustmentHandler" /> instances looked up by key.</summary>
+    /// <summary>
+    /// An optional registry of custom <see cref="IAdjustmentHandler" /> instances looked up by key.
+    /// </summary>
     private readonly IAdjustmentHandlerRegistry? _handlerRegistry;
 
-    /// <summary>An optional callback that resolves another rule's observed date by name, used by <see cref="AdjustmentAction.ReplaceWithNamedDate" />.</summary>
+    /// <summary>
+    /// An optional callback that resolves another rule's observed date by name, used by
+    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />.
+    /// </summary>
     private readonly Func<string, int, string?, Type?, DateTime?>? _resolveByName;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateAdjuster" /> class.
     /// </summary>
     /// <param name="isWeekend">A predicate for weekend evaluation.</param>
-    /// <param name="isNonWorkingDay">A predicate for non-working-day evaluation, scoped by territory and calendar.</param>
+    /// <param name="isNonWorkingDay">
+    /// A predicate for non-working-day evaluation, scoped by territory and calendar.
+    /// </param>
     /// <param name="workingWeek">The working-week pattern used to drive shift-to-weekday actions.</param>
-    /// <param name="handlerRegistry">An optional registry of custom <see cref="IAdjustmentHandler" /> instances.</param>
-    /// <param name="resolveByName">An optional callback used by <see cref="AdjustmentAction.ReplaceWithNamedDate" /> to look up another rule's resolved date for the same year.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="isWeekend" /> or <paramref name="isNonWorkingDay" /> is <see langword="null" />.</exception>
+    /// <param name="handlerRegistry">
+    /// An optional registry of custom <see cref="IAdjustmentHandler" /> instances.
+    /// </param>
+    /// <param name="resolveByName">
+    /// An optional callback used by <see cref="AdjustmentAction.ReplaceWithNamedDate" /> to look up another rule's
+    /// resolved date for the same year.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="isWeekend" /> or <paramref name="isNonWorkingDay" /> is <see langword="null" />.
+    /// </exception>
     public NotableDateAdjuster(
         Func<DateTime, bool> isWeekend,
         Func<DateTime, string?, Type?, bool> isNonWorkingDay,
@@ -116,12 +137,18 @@ internal sealed class NotableDateAdjuster
     /// Applies the supplied adjustment to the supplied date.
     /// </summary>
     /// <param name="adjustment">The adjustment to evaluate. Must not be <see langword="null" />.</param>
-    /// <param name="rule">The originating rule, supplied for diagnostics and custom handlers. Must not be <see langword="null" />.</param>
+    /// <param name="rule">
+    /// The originating rule, supplied for diagnostics and custom handlers. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="originalDate">The currently resolved date.</param>
     /// <param name="territoryCode">The territory currently being resolved, if any.</param>
     /// <param name="calendarType">The calendar currently being resolved, if any.</param>
-    /// <returns>An <see cref="AdjustmentApplyResult" /> describing whether the adjustment activated and what date it produced.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="adjustment" /> or <paramref name="rule" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// An <see cref="AdjustmentApplyResult" /> describing whether the adjustment activated and what date it produced.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="adjustment" /> or <paramref name="rule" /> is <see langword="null" />.
+    /// </exception>
     public AdjustmentApplyResult Apply(
         ObservanceAdjustment adjustment,
         NotableDateRule rule,
@@ -139,15 +166,14 @@ internal sealed class NotableDateAdjuster
         if (adjustment.Trigger == AdjustmentTrigger.Custom)
             return ApplyCustomHandler(adjustment, rule, originalDate, territoryCode, calendarType);
 
-        if (!EvaluateTrigger(adjustment, originalDate, territoryCode, calendarType))
-            return AdjustmentApplyResult.NotActivated(originalDate);
-
-        return ApplyAction(adjustment, rule, originalDate, territoryCode, calendarType);
+        return !EvaluateTrigger(adjustment, originalDate, territoryCode, calendarType)
+            ? AdjustmentApplyResult.NotActivated(originalDate)
+            : ApplyAction(adjustment, rule, originalDate, territoryCode, calendarType);
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> if <paramref name="adjustment" />'s trigger condition
-    /// fires for the given original date, territory, and calendar context.
+    /// Returns <see langword="true" /> if <paramref name="adjustment" />'s trigger condition fires for the given
+    /// original date, territory, and calendar context.
     /// </summary>
     /// <param name="adjustment">The observance adjustment carrying the trigger configuration.</param>
     /// <param name="original">The original resolved date.</param>
@@ -191,8 +217,8 @@ internal sealed class NotableDateAdjuster
     }
 
     /// <summary>
-    /// Applies <paramref name="adjustment" />'s built-in action (shift to weekday, move to
-    /// next non-working day, and so on), returning the result.
+    /// Applies <paramref name="adjustment" />'s built-in action (shift to weekday, move to next non-working day, and so
+    /// on), returning the result.
     /// </summary>
     /// <param name="adjustment">The observance adjustment describing the action.</param>
     /// <param name="rule">The originating notable-date rule.</param>
@@ -236,8 +262,8 @@ internal sealed class NotableDateAdjuster
     }
 
     /// <summary>
-    /// Resolves <paramref name="adjustment" />'s configured <see cref="IAdjustmentHandler" />
-    /// type and delegates the adjustment to it, wrapping its return value.
+    /// Resolves <paramref name="adjustment" />'s configured <see cref="IAdjustmentHandler" /> type and delegates the
+    /// adjustment to it, wrapping its return value.
     /// </summary>
     /// <param name="adjustment">The observance adjustment carrying the custom handler type.</param>
     /// <param name="rule">The originating notable-date rule.</param>
@@ -270,10 +296,9 @@ internal sealed class NotableDateAdjuster
             return AdjustmentApplyResult.NotActivated(original);
         }
 
-        if (result is null || !result.Activated)
-            return AdjustmentApplyResult.NotActivated(original);
-
-        return new AdjustmentApplyResult(
+        return result is null || !result.Activated
+            ? AdjustmentApplyResult.NotActivated(original)
+            : new AdjustmentApplyResult(
             true,
             result.AdjustedDate,
             adjustment.Trigger,
@@ -290,8 +315,8 @@ internal sealed class NotableDateAdjuster
     /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
     /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
     /// <returns>
-    /// The first working day strictly after <paramref name="original" />, or <paramref name="original" /> itself if
-    /// no working day is found within 366 days.
+    /// The first working day strictly after <paramref name="original" />, or <paramref name="original" /> itself if no
+    /// working day is found within 366 days.
     /// </returns>
     private DateTime MoveToNextNonWorkingDay(DateTime original, string? territoryCode, Type? calendarType)
     {
@@ -310,17 +335,19 @@ internal sealed class NotableDateAdjuster
 
     /// <summary>
     /// Resolves the replacement date for an action that targets a named rule (for example,
-    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />), looking up the referenced rule
-    /// via the configured name-resolver and falling back to <paramref name="original" /> if
-    /// no match is found.
+    /// <see cref="AdjustmentAction.ReplaceWithNamedDate" />), looking up the referenced rule via the configured
+    /// name-resolver and falling back to <paramref name="original" /> if no match is found.
     /// </summary>
-    /// <param name="adjustment">The observance adjustment; <see cref="ObservanceAdjustment.TargetRuleName" />
-    /// identifies the replacement rule.</param>
+    /// <param name="adjustment">
+    /// The observance adjustment; <see cref="ObservanceAdjustment.TargetRuleName" /> identifies the replacement rule.
+    /// </param>
     /// <param name="original">The original date.</param>
     /// <param name="territoryCode">The territory code, or <see langword="null" />.</param>
     /// <param name="calendarType">The calendar type, or <see langword="null" />.</param>
-    /// <returns>The resolved replacement date, or <paramref name="original" /> if no target
-    /// rule is configured or no match is found.</returns>
+    /// <returns>
+    /// The resolved replacement date, or <paramref name="original" /> if no target rule is configured or no match is
+    /// found.
+    /// </returns>
     private DateTime ResolveReplacement(ObservanceAdjustment adjustment, DateTime original, string? territoryCode, Type? calendarType)
     {
         if (string.IsNullOrWhiteSpace(adjustment.TargetRuleName) || _resolveByName is null)
@@ -331,8 +358,8 @@ internal sealed class NotableDateAdjuster
     }
 
     /// <summary>
-    /// Projects <paramref name="comparison" /> into the same month/day position of
-    /// <paramref name="year" /> for year-agnostic trigger evaluation.
+    /// Projects <paramref name="comparison" /> into the same month/day position of <paramref name="year" /> for
+    /// year-agnostic trigger evaluation.
     /// </summary>
     /// <param name="comparison">The reference date.</param>
     /// <param name="year">The target year.</param>

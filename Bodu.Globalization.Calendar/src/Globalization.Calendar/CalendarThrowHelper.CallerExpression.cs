@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarThrowHelper.CallerExpression.cs" company="PlaceholderCompany". />
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -33,8 +33,8 @@ internal static partial class CalendarThrowHelper
     }
 
     /// <summary>
-    /// Throws an <see cref="ArgumentException" /> when <paramref name="value" /> is <see langword="null" />,
-    /// empty, or contains only white-space characters.
+    /// Throws an <see cref="ArgumentException" /> when <paramref name="value" /> is <see langword="null" />, empty, or
+    /// contains only white-space characters.
     /// </summary>
     /// <param name="value">The string value to test.</param>
     /// <param name="message">The exception message describing the violated contract.</param>

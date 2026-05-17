@@ -7,14 +7,14 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Maintains the union of chronological windows that have been resolved by the prototype range-resolution pipeline so a consumer
-/// can introspect what is known to the service without re-querying.
+/// Maintains the union of chronological windows that have been resolved by the prototype range-resolution pipeline so a
+/// consumer can introspect what is known to the service without re-querying.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The set keeps a sorted list of disjoint <see cref="DateRange" /> intervals. Adding a new range merges any existing intervals
-/// that overlap or are immediately adjacent so the resulting list always contains the minimum number of disjoint intervals
-/// describing the same coverage.
+/// The set keeps a sorted list of disjoint <see cref="DateRange" /> intervals. Adding a new range merges any existing
+/// intervals that overlap or are immediately adjacent so the resulting list always contains the minimum number of
+/// disjoint intervals describing the same coverage.
 /// </para>
 /// <para>
 /// This type is not thread-safe. The <see cref="NotableDateService" /> coordinates concurrent access externally.
@@ -22,13 +22,18 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </remarks>
 internal sealed class ResolvedWindowSet
 {
-    /// <summary>The backing list of disjoint <see cref="DateRange" /> intervals, kept sorted by start date.</summary>
+    /// <summary>
+    /// The backing list of disjoint <see cref="DateRange" /> intervals, kept sorted by start date.
+    /// </summary>
     private readonly List<DateRange> _ranges = [];
 
     /// <summary>
-    /// Gets the disjoint chronological windows currently tracked, in ascending order of <see cref="DateRange.StartDate" />.
+    /// Gets the disjoint chronological windows currently tracked, in ascending order of
+    /// <see cref="DateRange.StartDate" />.
     /// </summary>
-    /// <returns>A read-only list of disjoint <see cref="DateRange" /> entries. Empty when nothing has been tracked yet.</returns>
+    /// <returns>
+    /// A read-only list of disjoint <see cref="DateRange" /> entries. Empty when nothing has been tracked yet.
+    /// </returns>
     public IReadOnlyList<DateRange> Ranges => _ranges;
 
     /// <summary>
@@ -98,7 +103,9 @@ internal sealed class ResolvedWindowSet
     /// Determines whether <paramref name="range" /> is fully covered by the union of tracked intervals.
     /// </summary>
     /// <param name="range">The range whose coverage is being tested.</param>
-    /// <returns><see langword="true" /> when every day in <paramref name="range" /> lies inside a single tracked interval.</returns>
+    /// <returns>
+    /// <see langword="true" /> when every day in <paramref name="range" /> lies inside a single tracked interval.
+    /// </returns>
     public bool Covers(DateRange range)
     {
         if (!range.IsValid) return false;

@@ -12,19 +12,21 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The plan describes which rules are eligible to contribute to the request, which civil years they will be materialized against,
-/// and which years of each algorithmic anchor must be computed. The pipeline iterates the plan exactly — no rule is processed and
-/// no algorithm is invoked outside of what the plan authorizes.
+/// The plan describes which rules are eligible to contribute to the request, which civil years they will be
+/// materialized against, and which years of each algorithmic anchor must be computed. The pipeline iterates the plan
+/// exactly — no rule is processed and no algorithm is invoked outside of what the plan authorizes.
 /// </para>
 /// <para>
-/// Cross-year observance roll-overs (for example, <c>31 Dec</c> rolling forward to <c>3 Jan</c>) are handled by a fringe pass that
-/// the pipeline runs after the main pass. The plan exposes <see cref="FringeYears" /> so the pipeline knows which adjacent years
-/// to scan for adjustment-driven candidates without polluting <see cref="CandidateYears" />.
+/// Cross-year observance roll-overs (for example, <c>31 Dec</c> rolling forward to <c>3 Jan</c>) are handled by a
+/// fringe pass that the pipeline runs after the main pass. The plan exposes <see cref="FringeYears" /> so the pipeline
+/// knows which adjacent years to scan for adjustment-driven candidates without polluting <see cref="CandidateYears" />.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateRangePlan
 {
-    /// <summary>The civil years that must be resolved for each algorithmic anchor rule name.</summary>
+    /// <summary>
+    /// The civil years that must be resolved for each algorithmic anchor rule name.
+    /// </summary>
     private readonly Dictionary<string, IReadOnlyList<int>> _anchorYearsByName;
 
     /// <summary>
@@ -32,8 +34,12 @@ internal sealed class NotableDateRangePlan
     /// </summary>
     /// <param name="request">The originating request.</param>
     /// <param name="eligibleRules">The rule profiles that may contribute to the request.</param>
-    /// <param name="candidateYears">The civil years considered by the main pass for direct rule materialization.</param>
-    /// <param name="fringeYears">The adjacent civil years scanned by the fringe pass for adjustment-driven candidates.</param>
+    /// <param name="candidateYears">
+    /// The civil years considered by the main pass for direct rule materialization.
+    /// </param>
+    /// <param name="fringeYears">
+    /// The adjacent civil years scanned by the fringe pass for adjustment-driven candidates.
+    /// </param>
     /// <param name="fringeStartDate">The inclusive start of the fringe scan window.</param>
     /// <param name="fringeEndDate">The inclusive end of the fringe scan window.</param>
     /// <param name="anchorYearsByName">The civil years per algorithmic anchor that must be computed.</param>
@@ -58,7 +64,9 @@ internal sealed class NotableDateRangePlan
     /// <summary>
     /// Gets the originating request.
     /// </summary>
-    /// <returns>The <see cref="NotableDateRangeRequest" /> the plan was computed for. Never <see langword="null" />.</returns>
+    /// <returns>
+    /// The <see cref="NotableDateRangeRequest" /> the plan was computed for. Never <see langword="null" />.
+    /// </returns>
     public NotableDateRangeRequest Request { get; }
 
     /// <summary>
@@ -68,35 +76,47 @@ internal sealed class NotableDateRangePlan
     public IReadOnlyList<RuleStaticProfile> EligibleRules { get; }
 
     /// <summary>
-    /// Gets the civil years considered by the main materialization pass — one entry per year that the request window spans.
+    /// Gets the civil years considered by the main materialization pass — one entry per year that the request window
+    /// spans.
     /// </summary>
-    /// <returns>An ordered list of four-digit civil years. Never <see langword="null" /> and never empty for a valid request.</returns>
+    /// <returns>
+    /// An ordered list of four-digit civil years. Never <see langword="null" /> and never empty for a valid request.
+    /// </returns>
     public IReadOnlyList<int> CandidateYears { get; }
 
     /// <summary>
-    /// Gets the adjacent civil years scanned by the fringe pass for rules whose observance adjustment may roll a date from outside
-    /// the request window into it. Empty when the request window does not touch a year boundary inside the fringe distance.
+    /// Gets the adjacent civil years scanned by the fringe pass for rules whose observance adjustment may roll a date
+    /// from outside the request window into it. Empty when the request window does not touch a year boundary inside the
+    /// fringe distance.
     /// </summary>
-    /// <returns>An ordered list of four-digit civil years. Empty when no fringe scan is required; never <see langword="null" />.</returns>
+    /// <returns>
+    /// An ordered list of four-digit civil years. Empty when no fringe scan is required; never <see langword="null" />.
+    /// </returns>
     public IReadOnlyList<int> FringeYears { get; }
 
     /// <summary>
     /// Gets the inclusive start of the fringe scan window — the request start minus the fringe distance.
     /// </summary>
-    /// <returns>The earliest <see cref="DateTime" /> the fringe pass considers when looking for adjustment-driven candidates.</returns>
+    /// <returns>
+    /// The earliest <see cref="DateTime" /> the fringe pass considers when looking for adjustment-driven candidates.
+    /// </returns>
     public DateTime FringeStartDate { get; }
 
     /// <summary>
     /// Gets the inclusive end of the fringe scan window — the request end plus the fringe distance.
     /// </summary>
-    /// <returns>The latest <see cref="DateTime" /> the fringe pass considers when looking for adjustment-driven candidates.</returns>
+    /// <returns>
+    /// The latest <see cref="DateTime" /> the fringe pass considers when looking for adjustment-driven candidates.
+    /// </returns>
     public DateTime FringeEndDate { get; }
 
     /// <summary>
     /// Gets the civil years that must be resolved for each algorithmic anchor name.
     /// </summary>
     /// <param name="anchorRuleName">The algorithmic anchor rule name.</param>
-    /// <returns>The required civil years; an empty list when the anchor has no dependents that touch the request window.</returns>
+    /// <returns>
+    /// The required civil years; an empty list when the anchor has no dependents that touch the request window.
+    /// </returns>
     public IReadOnlyList<int> GetAnchorYears(string anchorRuleName) =>
         _anchorYearsByName.TryGetValue(anchorRuleName, out IReadOnlyList<int>? list)
             ? list

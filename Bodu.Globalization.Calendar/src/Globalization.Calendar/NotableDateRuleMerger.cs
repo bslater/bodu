@@ -9,21 +9,44 @@ using System.Collections.Immutable;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Applies a <see cref="NotableDateRuleUseDirective" /> to an inherited <see cref="NotableDateRule" />, producing the merged rule
-/// that flows through the flatten pipeline.
+/// Applies a <see cref="NotableDateRuleUseDirective" /> to an inherited <see cref="NotableDateRule" />, producing the
+/// merged rule that flows through the flatten pipeline.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Extracted from <see cref="XmlResourceNotableDateRuleProvider" /> so the merge algorithm can be tested in isolation without
-/// bootstrapping an assembly loader. The algorithm is purely functional — it does not read any external state — and matches the
-/// contract documented on <see cref="NotableDateRuleOverrideBody" />:
+/// Extracted from <see cref="XmlResourceNotableDateRuleProvider" /> so the merge algorithm can be tested in isolation
+/// without bootstrapping an assembly loader. The algorithm is purely functional — it does not read any external state —
+/// and matches the contract documented on <see cref="NotableDateRuleOverrideBody" />:
 /// </para>
 /// <list type="number">
-/// <item><description>Scalar fields: override body wins over flat <c>&lt;Use&gt;</c> attributes; flat attributes win over the inherited value.</description></item>
-/// <item><description>Name: override body's name wins, then the flat <c>as</c> attribute's local name, then the inherited name.</description></item>
-/// <item><description>Tags: additive union with the inherited set (set semantics, case-insensitive duplicates coalesced). <c>clearTags</c> discards the inherited baseline first.</description></item>
-/// <item><description>Adjustments: merge by <see cref="ObservanceAdjustment.Key" /> — matching keys replace in place, new keys append. <c>clearAdjustments</c> discards the inherited baseline first.</description></item>
-/// <item><description>Strategy: replaces wholesale when the override body declares one, otherwise inherited.</description></item>
+/// <item>
+/// <description>
+/// Scalar fields: override body wins over flat <c>&lt;Use&gt;</c> attributes; flat attributes win over the inherited
+/// value.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Name: override body's name wins, then the flat <c>as</c> attribute's local name, then the inherited name.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Tags: additive union with the inherited set (set semantics, case-insensitive duplicates coalesced). <c>clearTags</c>
+/// discards the inherited baseline first.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Adjustments: merge by <see cref="ObservanceAdjustment.Key" /> — matching keys replace in place, new keys append.
+/// <c>clearAdjustments</c> discards the inherited baseline first.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Strategy: replaces wholesale when the override body declares one, otherwise inherited.
+/// </description>
+/// </item>
 /// </list>
 /// </remarks>
 internal static class NotableDateRuleMerger
@@ -71,21 +94,17 @@ internal static class NotableDateRuleMerger
     /// <param name="flatLocalName">The <c>as</c> attribute on the <c>&lt;Use&gt;</c> directive, if any.</param>
     /// <param name="bodyName">The name declared inside the override body, if any.</param>
     /// <returns>The resolved name.</returns>
-    private static string ResolveName(string sourceName, string? flatLocalName, string? bodyName)
-    {
-        if (!string.IsNullOrWhiteSpace(bodyName))
-            return bodyName!;
-        if (!string.IsNullOrWhiteSpace(flatLocalName))
-            return flatLocalName!;
-        return sourceName;
-    }
+    private static string ResolveName(string sourceName, string? flatLocalName, string? bodyName) =>
+        !string.IsNullOrWhiteSpace(bodyName) ? bodyName : !string.IsNullOrWhiteSpace(flatLocalName) ? flatLocalName! : sourceName;
 
     /// <summary>
     /// Merges the override tag list into the inherited tag set, optionally clearing the inherited baseline first.
     /// </summary>
     /// <param name="inherited">The tag set from the source rule.</param>
     /// <param name="overrideTags">Additional tags declared in the override body.</param>
-    /// <param name="clearTags">When <see langword="true" />, the inherited tags are discarded before adding override tags.</param>
+    /// <param name="clearTags">
+    /// When <see langword="true" />, the inherited tags are discarded before adding override tags.
+    /// </param>
     /// <returns>The merged tag set.</returns>
     private static ImmutableHashSet<string> MergeTags(
         ImmutableHashSet<string> inherited,
@@ -110,13 +129,15 @@ internal static class NotableDateRuleMerger
     }
 
     /// <summary>
-    /// Merges the override adjustments into the inherited adjustment list. Matching keys replace their inherited counterpart
-    /// in place; non-matching keys are appended. The inherited baseline may be cleared first when <paramref name="clearAdjustments" />
-    /// is <see langword="true" />.
+    /// Merges the override adjustments into the inherited adjustment list. Matching keys replace their inherited
+    /// counterpart in place; non-matching keys are appended. The inherited baseline may be cleared first when
+    /// <paramref name="clearAdjustments" /> is <see langword="true" />.
     /// </summary>
     /// <param name="inherited">The adjustment list from the source rule.</param>
     /// <param name="overrideAdjustments">Adjustments declared in the override body.</param>
-    /// <param name="clearAdjustments">When <see langword="true" />, the inherited adjustments are discarded before merging.</param>
+    /// <param name="clearAdjustments">
+    /// When <see langword="true" />, the inherited adjustments are discarded before merging.
+    /// </param>
     /// <returns>The merged adjustment list.</returns>
     private static ImmutableArray<ObservanceAdjustment> MergeAdjustments(
         ImmutableArray<ObservanceAdjustment> inherited,

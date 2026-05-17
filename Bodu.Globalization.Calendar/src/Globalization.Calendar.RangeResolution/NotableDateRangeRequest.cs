@@ -11,8 +11,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The request identifies the inclusive date range the caller cares about and the optional territory, calendar, and filter
-/// context that should be applied during materialization and emission.
+/// The request identifies the inclusive date range the caller cares about and the optional territory, calendar, and
+/// filter context that should be applied during materialization and emission.
 /// </para>
 /// </remarks>
 internal sealed record NotableDateRangeRequest
@@ -25,7 +25,9 @@ internal sealed record NotableDateRangeRequest
     /// <param name="territoryCode">The optional territory context.</param>
     /// <param name="calendarType">The optional calendar context.</param>
     /// <param name="filter">The optional notable-date filter.</param>
-    /// <exception cref="ArgumentException"><paramref name="endDate" /> is earlier than <paramref name="startDate" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
+    /// </exception>
     public NotableDateRangeRequest(
         DateTime startDate,
         DateTime endDate,
@@ -67,12 +69,17 @@ internal sealed record NotableDateRangeRequest
     /// <summary>
     /// Gets the optional calendar context.
     /// </summary>
-    /// <returns>The CLR <see cref="Type" /> of the requesting calendar, or <see langword="null" /> when unscoped.</returns>
+    /// <returns>
+    /// The CLR <see cref="Type" /> of the requesting calendar, or <see langword="null" /> when unscoped.
+    /// </returns>
     public Type? CalendarType { get; }
 
     /// <summary>
     /// Gets the optional notable-date filter.
     /// </summary>
-    /// <returns>The <see cref="NotableDateFilter" /> applied to the resolution result, or <see langword="null" /> when no filter is supplied.</returns>
+    /// <returns>
+    /// The <see cref="NotableDateFilter" /> applied to the resolution result, or <see langword="null" /> when no filter
+    /// is supplied.
+    /// </returns>
     public NotableDateFilter? Filter { get; }
 }

@@ -17,11 +17,12 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The loader follows a conservative discovery model: it reads a <em>single</em> attribute — <see cref="NotableDatePluginAttribute" /> —
-/// from the plugin assembly and activates the declared type. It does not enumerate the assembly's type list, does not invoke
-/// module initializers of unrelated types, and does not consider any assembly that fails the trust policy. The plugin's static
-/// constructors and module initializer still run at load time (a limitation of .NET assembly loading that cannot be bypassed
-/// without a sandbox); the trust policy is the line of defense against that.
+/// The loader follows a conservative discovery model: it reads a <em>single</em> attribute —
+/// <see cref="NotableDatePluginAttribute" /> — from the plugin assembly and activates the declared type. It does not
+/// enumerate the assembly's type list, does not invoke module initializers of unrelated types, and does not consider
+/// any assembly that fails the trust policy. The plugin's static constructors and module initializer still run at load
+/// time (a limitation of .NET assembly loading that cannot be bypassed without a sandbox); the trust policy is the line
+/// of defense against that.
 /// </para>
 /// <para>
 /// Each plugin is isolated in a dedicated non-collectible <see cref="AssemblyLoadContext" /> so its transitive private
@@ -31,30 +32,54 @@ namespace Bodu.Globalization.Calendar.Plugins;
 /// </remarks>
 public sealed class ExternalPluginLoader
 {
-    /// <summary>The trust policy consulted before any assembly code is loaded into the process.</summary>
+    /// <summary>
+    /// The trust policy consulted before any assembly code is loaded into the process.
+    /// </summary>
     private readonly IPluginTrustPolicy _trustPolicy;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ExternalPluginLoader" /> class.
     /// </summary>
-    /// <param name="trustPolicy">The trust policy to consult before loading each plugin assembly. Must not be <see langword="null" />. Use <see cref="AllowAllPluginTrustPolicy" /> only in development and unit tests; production hosts must supply an allowlist-style policy such as <see cref="FileHashPluginTrustPolicy" /> or <see cref="StrongNamePluginTrustPolicy" />, optionally composed via <see cref="CompositePluginTrustPolicy" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="trustPolicy" /> is <see langword="null" />.</exception>
+    /// <param name="trustPolicy">
+    /// The trust policy to consult before loading each plugin assembly. Must not be <see langword="null" />. Use
+    /// <see cref="AllowAllPluginTrustPolicy" /> only in development and unit tests; production hosts must supply an
+    /// allowlist-style policy such as <see cref="FileHashPluginTrustPolicy" /> or
+    /// <see cref="StrongNamePluginTrustPolicy" />, optionally composed via <see cref="CompositePluginTrustPolicy" />.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="trustPolicy" /> is <see langword="null" />.
+    /// </exception>
     public ExternalPluginLoader(IPluginTrustPolicy trustPolicy)
     {
         _trustPolicy = trustPolicy ?? throw new ArgumentNullException(nameof(trustPolicy));
     }
 
     /// <summary>
-    /// Loads the plugin assembly at <paramref name="assemblyPath" />, verifies it against the configured trust policy, and
-    /// returns an activated <see cref="INotableDatePlugin" /> instance ready for consumption by <see cref="NotableDateService" />.
+    /// Loads the plugin assembly at <paramref name="assemblyPath" />, verifies it against the configured trust policy,
+    /// and returns an activated <see cref="INotableDatePlugin" /> instance ready for consumption by
+    /// <see cref="NotableDateService" />.
     /// </summary>
-    /// <param name="assemblyPath">Absolute or relative path to the plugin assembly. Must not be <see langword="null" /> or whitespace.</param>
+    /// <param name="assemblyPath">
+    /// Absolute or relative path to the plugin assembly. Must not be <see langword="null" /> or whitespace.
+    /// </param>
     /// <returns>The activated plugin instance.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="assemblyPath" /> is <see langword="null" />, empty, or whitespace.</exception>
-    /// <exception cref="FileNotFoundException">Thrown when no file exists at <paramref name="assemblyPath" />.</exception>
-    /// <exception cref="PluginNotTrustedException">Thrown when the configured trust policy rejects the candidate.</exception>
-    /// <exception cref="PluginMissingAttributeException">Thrown when the assembly is missing a valid <see cref="NotableDatePluginAttribute" /> or the declared type does not implement <see cref="INotableDatePlugin" />.</exception>
-    /// <exception cref="PluginActivationException">Thrown when the declared plugin type cannot be instantiated (missing parameterless constructor, constructor threw, and so on).</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="assemblyPath" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
+    /// <exception cref="FileNotFoundException">
+    /// Thrown when no file exists at <paramref name="assemblyPath" />.
+    /// </exception>
+    /// <exception cref="PluginNotTrustedException">
+    /// Thrown when the configured trust policy rejects the candidate.
+    /// </exception>
+    /// <exception cref="PluginMissingAttributeException">
+    /// Thrown when the assembly is missing a valid <see cref="NotableDatePluginAttribute" /> or the declared type does
+    /// not implement <see cref="INotableDatePlugin" />.
+    /// </exception>
+    /// <exception cref="PluginActivationException">
+    /// Thrown when the declared plugin type cannot be instantiated (missing parameterless constructor, constructor
+    /// threw, and so on).
+    /// </exception>
     public INotableDatePlugin Load(string assemblyPath)
     {
         if (string.IsNullOrWhiteSpace(assemblyPath))
@@ -114,15 +139,16 @@ public sealed class ExternalPluginLoader
     }
 
     /// <summary>
-    /// Resolves references a plugin makes through the host's default load context so framework and <c>Bodu.*</c> types stay
-    /// canonical (preventing duplicate <c>Bodu.Globalization.Calendar</c> loads in each plugin context). Private dependencies
-    /// that the plugin bundles alongside its DLL are loaded automatically by the plugin's own <see cref="AssemblyLoadContext" />.
+    /// Resolves references a plugin makes through the host's default load context so framework and <c>Bodu.*</c> types
+    /// stay canonical (preventing duplicate <c>Bodu.Globalization.Calendar</c> loads in each plugin context). Private
+    /// dependencies that the plugin bundles alongside its DLL are loaded automatically by the plugin's own
+    /// <see cref="AssemblyLoadContext" />.
     /// </summary>
     /// <param name="context">The plugin's <see cref="AssemblyLoadContext" /> raising the resolve event.</param>
     /// <param name="name">The <see cref="AssemblyName" /> being requested.</param>
     /// <returns>
-    /// The matching assembly already loaded into <see cref="AssemblyLoadContext.Default" />, or <see langword="null" /> when no
-    /// host-level match is found and the plugin's own context should attempt the load instead.
+    /// The matching assembly already loaded into <see cref="AssemblyLoadContext.Default" />, or <see langword="null" />
+    /// when no host-level match is found and the plugin's own context should attempt the load instead.
     /// </returns>
     private static Assembly? ResolveFromHostOrAlongside(AssemblyLoadContext context, AssemblyName name)
     {

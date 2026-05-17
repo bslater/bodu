@@ -11,11 +11,14 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="NotableDateCategory" /> assigns a notable date to a single primary category. For finer-grained or overlapping
-/// classifications (for example a date that is simultaneously <c>Holiday</c> and <c>Christian</c>), use the
+/// <see cref="NotableDateCategory" /> assigns a notable date to a single primary category. For finer-grained or
+/// overlapping classifications (for example a date that is simultaneously <c>Holiday</c> and <c>Christian</c>), use the
 /// <c>NotableDate.Tags</c> collection in addition to the category.
 /// </para>
-/// <para>The enumeration replaces the earlier <c>NotableDateKind</c> type and uses <c>Category</c> to avoid clashing with <see cref="DateTimeKind" />.</para>
+/// <para>
+/// The enumeration replaces the earlier <c>NotableDateKind</c> type and uses <c>Category</c> to avoid clashing with
+/// <see cref="DateTimeKind" />.
+/// </para>
 /// </remarks>
 public enum NotableDateCategory
 {
@@ -30,7 +33,8 @@ public enum NotableDateCategory
     Holiday,
 
     /// <summary>
-    /// A secular or cultural observance that may or may not involve public closure, and does not belong to a more specific category.
+    /// A secular or cultural observance that may or may not involve public closure, and does not belong to a more
+    /// specific category.
     /// </summary>
     Observance,
 
@@ -55,17 +59,20 @@ public enum NotableDateCategory
     Seasonal,
 
     /// <summary>
-    /// A civic or national commemoration, such as a constitution day or independence memorial, that may not carry a statutory day off.
+    /// A civic or national commemoration, such as a constitution day or independence memorial, that may not carry a
+    /// statutory day off.
     /// </summary>
     Civic,
 
     /// <summary>
-    /// A bank or financial-institution holiday on which banks and financial markets are closed, which may differ from the public holiday schedule.
+    /// A bank or financial-institution holiday on which banks and financial markets are closed, which may differ from
+    /// the public holiday schedule.
     /// </summary>
     Bank,
 
     /// <summary>
-    /// A school holiday or term boundary observed by educational institutions, which may not coincide with public holidays.
+    /// A school holiday or term boundary observed by educational institutions, which may not coincide with public
+    /// holidays.
     /// </summary>
     School,
 

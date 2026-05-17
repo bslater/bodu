@@ -7,19 +7,19 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Bundles the optional configuration accepted by <see cref="NotableDateService" />, keeping the constructor surface
-/// to three parameters — rule providers, working week, and this options bag.
+/// Bundles the optional configuration accepted by <see cref="NotableDateService" />, keeping the constructor surface to
+/// three parameters — rule providers, working week, and this options bag.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Every property is independently optional. Where a property is <see langword="null" /> the service uses its
-/// default behaviour for that concern (for example, <see cref="CollisionResolver" /> defaults to
-/// <see cref="DefaultNotableDateCollisionResolver" />). Construct an instance with a C# 9 object initializer and
-/// pass it to the relevant <see cref="NotableDateService" /> constructor.
+/// Every property is independently optional. Where a property is <see langword="null" /> the service uses its default
+/// behaviour for that concern (for example, <see cref="CollisionResolver" /> defaults to
+/// <see cref="DefaultNotableDateCollisionResolver" />). Construct an instance with a C# 9 object initializer and pass
+/// it to the relevant <see cref="NotableDateService" /> constructor.
 /// </para>
 /// <example>
 /// <code language="csharp">
-/// <![CDATA[
+///<![CDATA[
 /// var options = new NotableDateServiceOptions
 /// {
 ///     OverrideProviders = new[] { myOverrideProvider },
@@ -28,7 +28,7 @@ namespace Bodu.Globalization.Calendar;
 /// };
 ///
 /// var service = new NotableDateService(ruleProviders, WeekPattern.Weekdays, options);
-/// ]]>
+///]]>
 /// </code>
 /// </example>
 /// </remarks>
@@ -51,15 +51,23 @@ public sealed class NotableDateServiceOptions
     /// <summary>
     /// Gets the optional registry used to resolve <see cref="DateResolutionStrategy.Algorithm" /> rules.
     /// </summary>
-    /// <value>An <see cref="INotableDateAlgorithmRegistry" />, or <see langword="null" /> for no algorithm dispatch.</value>
-    /// <returns>The configured registry, or <see langword="null" /> when no algorithm registrations are supplied.</returns>
+    /// <value>
+    /// An <see cref="INotableDateAlgorithmRegistry" />, or <see langword="null" /> for no algorithm dispatch.
+    /// </value>
+    /// <returns>
+    /// The configured registry, or <see langword="null" /> when no algorithm registrations are supplied.
+    /// </returns>
     public INotableDateAlgorithmRegistry? AlgorithmRegistry { get; init; }
 
     /// <summary>
     /// Gets the optional registry of custom <see cref="IAdjustmentHandler" /> instances looked up by key.
     /// </summary>
-    /// <value>An <see cref="IAdjustmentHandlerRegistry" />, or <see langword="null" /> for no custom adjustments.</value>
-    /// <returns>The configured handler registry, or <see langword="null" /> when no custom handlers are supplied.</returns>
+    /// <value>
+    /// An <see cref="IAdjustmentHandlerRegistry" />, or <see langword="null" /> for no custom adjustments.
+    /// </value>
+    /// <returns>
+    /// The configured handler registry, or <see langword="null" /> when no custom handlers are supplied.
+    /// </returns>
     public IAdjustmentHandlerRegistry? AdjustmentHandlers { get; init; }
 
     /// <summary>
@@ -79,13 +87,15 @@ public sealed class NotableDateServiceOptions
     /// <summary>
     /// Gets the optional external plugins loaded via <see cref="Plugins.ExternalPluginLoader" />.
     /// </summary>
-    /// <value>A sequence of <see cref="Plugins.INotableDatePlugin" />, or <see langword="null" /> for no plugins.</value>
+    /// <value>
+    /// A sequence of <see cref="Plugins.INotableDatePlugin" />, or <see langword="null" /> for no plugins.
+    /// </value>
     /// <returns>The configured plugins, or <see langword="null" /> when no plugins are loaded.</returns>
     /// <remarks>
     /// <para>
-    /// Rule providers exposed by plugins are appended to the constructor's <c>ruleProviders</c> argument and participate
-    /// in the normal flatten pipeline. Named algorithms supplied by plugins are registered onto an internal algorithm
-    /// registry that falls back to <see cref="AlgorithmRegistry" /> when supplied (the explicit
+    /// Rule providers exposed by plugins are appended to the constructor's <c>ruleProviders</c> argument and
+    /// participate in the normal flatten pipeline. Named algorithms supplied by plugins are registered onto an internal
+    /// algorithm registry that falls back to <see cref="AlgorithmRegistry" /> when supplied (the explicit
     /// <see cref="AlgorithmRegistry" /> wins on key collision).
     /// </para>
     /// </remarks>

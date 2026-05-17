@@ -16,11 +16,15 @@ public static partial class NotableDateFiscalExtensions
     /// <param name="fiscalYear">The fiscal year whose last working day is requested.</param>
     /// <param name="provider">The provider that defines fiscal year boundaries.</param>
     /// <param name="service">The notable-date service consulted for holiday classification.</param>
-    /// <param name="workingWeek">An optional working-week pattern. When <see langword="null" />, the service's configured working week is used.</param>
+    /// <param name="workingWeek">
+    /// An optional working-week pattern. When <see langword="null" />, the service's configured working week is used.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope.</param>
     /// <returns>The last working day on or before the fiscal year end.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="provider" /> or <paramref name="service" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="provider" /> or <paramref name="service" /> is <see langword="null" />.
+    /// </exception>
     public static DateOnly LastWorkingDayOfFiscalYear(int fiscalYear, IQuarterDefinitionProvider provider, INotableDateService service, WeekPattern? workingWeek = null, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(provider);

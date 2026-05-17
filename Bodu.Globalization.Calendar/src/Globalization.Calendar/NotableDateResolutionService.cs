@@ -13,8 +13,9 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This service is intentionally separate from <see cref="NotableDateService" /> while the revised architecture is being
-/// validated. It owns only the new resolution pipeline and avoids the legacy year-cache and recursive generation model.
+/// This service is intentionally separate from <see cref="NotableDateService" /> while the revised architecture is
+/// being validated. It owns only the new resolution pipeline and avoids the legacy year-cache and recursive generation
+/// model.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateResolutionService
@@ -80,7 +81,9 @@ internal sealed class NotableDateResolutionService
     /// <summary>
     /// Gets the effective rules loaded by this resolution service.
     /// </summary>
-    /// <returns>A read-only list of <see cref="NotableDateRule" /> entries forming the post-merge effective rule set.</returns>
+    /// <returns>
+    /// A read-only list of <see cref="NotableDateRule" /> entries forming the post-merge effective rule set.
+    /// </returns>
     internal IReadOnlyList<NotableDateRule> EffectiveRules { get; }
 
     /// <summary>
@@ -159,7 +162,9 @@ internal sealed class NotableDateResolutionService
     /// <param name="calendarType">The optional calendar type context.</param>
     /// <param name="filter">The optional notable-date filter.</param>
     /// <returns>The resolved notable dates.</returns>
-    /// <exception cref="ArgumentException"><paramref name="endDate" /> is earlier than <paramref name="startDate" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
+    /// </exception>
     public IReadOnlyList<NotableDate> GetNotableDates(
         DateTime startDate,
         DateTime endDate,
@@ -192,10 +197,9 @@ internal sealed class NotableDateResolutionService
     {
         DateTime day = date.Date;
 
-        if (day.IsWeekend(_workingWeek, _weekendProvider))
-            return true;
-
-        return GetNotableDates(day, territoryCode, calendarType)
+        return day.IsWeekend(_workingWeek, _weekendProvider)
+            ? true
+            : GetNotableDates(day, territoryCode, calendarType)
             .Any(notable => notable.IsNonWorkingDay &&
                 notable.Date.Date <= day &&
                 notable.EndDate.Date >= day);

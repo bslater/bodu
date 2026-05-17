@@ -14,9 +14,9 @@ namespace Bodu.Globalization.Calendar.Providers;
 /// Resolves Orthodox Easter Sunday dates.
 /// </summary>
 /// <remarks>
-/// This provider uses the Julian computus and returns the Gregorian-equivalent <see cref="DateTime" /> for the resolved Julian calendar
-/// date. The optional <see cref="SysGlobal.Calendar" /> parameter is accepted only when it is <see langword="null" /> or a
-/// <see cref="SysGlobal.JulianCalendar" />.
+/// This provider uses the Julian computus and returns the Gregorian-equivalent <see cref="DateTime" /> for the resolved
+/// Julian calendar date. The optional <see cref="SysGlobal.Calendar" /> parameter is accepted only when it is
+/// <see langword="null" /> or a <see cref="SysGlobal.JulianCalendar" />.
 /// </remarks>
 public sealed class OrthodoxEasterSundayNotableDateProvider
     : EasterSundayNotableDateProviderBase
@@ -24,7 +24,10 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
     /// <inheritdoc />
     public override int MinSupportedYear => 1;
 
-    /// <summary>A shared <see cref="SysGlobal.JulianCalendar" /> instance used to project Julian Easter dates to Gregorian equivalents.</summary>
+    /// <summary>
+    /// A shared <see cref="SysGlobal.JulianCalendar" /> instance used to project Julian Easter dates to Gregorian
+    /// equivalents.
+    /// </summary>
     private static readonly SysGlobal.JulianCalendar s_julianCalendar = new();
 
     /// <inheritdoc />
@@ -42,7 +45,7 @@ public sealed class OrthodoxEasterSundayNotableDateProvider
     /// <inheritdoc />
     protected override void ValidateCalendar(SysGlobal.Calendar? calendar)
     {
-        if (calendar is null || calendar is SysGlobal.JulianCalendar)
+        if (calendar is null or SysGlobal.JulianCalendar)
         {
             return;
         }

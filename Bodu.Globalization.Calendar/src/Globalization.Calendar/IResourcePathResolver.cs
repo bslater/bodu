@@ -11,13 +11,14 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Implementations translate the logical path syntax used in <c>&lt;UseFrom&gt;</c> directives — which may be absolute (for example
-/// <c>/Bodu/Globalization/Calendar/Resources/uk-all.xml</c>) or relative (for example <c>../regions/uk-england.xml</c>) — into the
-/// fully qualified resource name that the provider uses when loading the file.
+/// Implementations translate the logical path syntax used in <c>&lt;UseFrom&gt;</c> directives — which may be absolute
+/// (for example <c>/Bodu/Globalization/Calendar/Resources/uk-all.xml</c>) or relative (for example
+/// <c>../regions/uk-england.xml</c>) — into the fully qualified resource name that the provider uses when loading the
+/// file.
 /// </para>
 /// <para>
-/// The built-in implementation is <see cref="ResourcePathResolver" />, which resolves paths using a logical <c>/</c>-delimited
-/// hierarchy and supports absolute and relative references including <c>.</c> and <c>..</c> segments.
+/// The built-in implementation is <see cref="ResourcePathResolver" />, which resolves paths using a logical <c>/</c>
+/// -delimited hierarchy and supports absolute and relative references including <c>.</c> and <c>..</c> segments.
 /// </para>
 /// </remarks>
 public interface IResourcePathResolver

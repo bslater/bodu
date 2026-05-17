@@ -14,8 +14,8 @@ namespace Bodu.Extensions;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Each method snaps the underlying fiscal boundary (either the start of the fiscal year or quarter, or the end) to
-/// the nearest working day in the appropriate direction: forward for "first" anchors, backward for "last" anchors.
+/// Each method snaps the underlying fiscal boundary (either the start of the fiscal year or quarter, or the end) to the
+/// nearest working day in the appropriate direction: forward for "first" anchors, backward for "last" anchors.
 /// </para>
 /// <para>
 /// The <see cref="WeekPattern" /> parameter on each method is optional. When <see langword="null" />, the
@@ -37,10 +37,9 @@ public static partial class NotableDateFiscalExtensions
     private static DateOnly SnapForward(DateOnly date, INotableDateService service, WeekPattern? workingWeek, string? territoryCode, Type? calendarType)
     {
         WeekPattern week = workingWeek ?? service.WorkingWeek;
-        if (date.IsWorkingDay(service, week, territoryCode, calendarType))
-            return date;
-
-        return date.NextWorkingDay(service, week, count: 1, territoryCode, calendarType);
+        return date.IsWorkingDay(service, week, territoryCode, calendarType)
+            ? date
+            : date.NextWorkingDay(service, week, count: 1, territoryCode, calendarType);
     }
 
     /// <summary>
@@ -56,9 +55,8 @@ public static partial class NotableDateFiscalExtensions
     private static DateOnly SnapBackward(DateOnly date, INotableDateService service, WeekPattern? workingWeek, string? territoryCode, Type? calendarType)
     {
         WeekPattern week = workingWeek ?? service.WorkingWeek;
-        if (date.IsWorkingDay(service, week, territoryCode, calendarType))
-            return date;
-
-        return date.PreviousWorkingDay(service, week, count: 1, territoryCode, calendarType);
+        return date.IsWorkingDay(service, week, territoryCode, calendarType)
+            ? date
+            : date.PreviousWorkingDay(service, week, count: 1, territoryCode, calendarType);
     }
 }

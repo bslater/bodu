@@ -11,23 +11,31 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The resolution window separates notable dates that should be emitted to callers from dates that are known only because
-/// they may block adjustment candidates. This allows boundary dates from neighbouring ranges to participate in
+/// The resolution window separates notable dates that should be emitted to callers from dates that are known only
+/// because they may block adjustment candidates. This allows boundary dates from neighbouring ranges to participate in
 /// non-working-day checks without polluting the caller's output.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateResolutionWindow
 {
-    /// <summary>The full set of notable dates known to the window, including both emitted and blocker entries.</summary>
+    /// <summary>
+    /// The full set of notable dates known to the window, including both emitted and blocker entries.
+    /// </summary>
     private readonly List<NotableDate> _knownDates = [];
 
-    /// <summary>The subset of <see cref="_knownDates" /> emitted to callers in the resolution output.</summary>
+    /// <summary>
+    /// The subset of <see cref="_knownDates" /> emitted to callers in the resolution output.
+    /// </summary>
     private readonly List<NotableDate> _outputDates = [];
 
-    /// <summary>The subset of <see cref="_knownDates" /> flagged non-working, used for working-day arithmetic.</summary>
+    /// <summary>
+    /// The subset of <see cref="_knownDates" /> flagged non-working, used for working-day arithmetic.
+    /// </summary>
     private readonly List<NotableDate> _nonWorkingDates = [];
 
-    /// <summary>The base occurrences materialized into the window, used to drive observance-adjustment evaluation.</summary>
+    /// <summary>
+    /// The base occurrences materialized into the window, used to drive observance-adjustment evaluation.
+    /// </summary>
     private readonly List<ResolvedNotableDateOccurrence> _baseOccurrences = [];
 
     /// <summary>
@@ -35,7 +43,9 @@ internal sealed class NotableDateResolutionWindow
     /// </summary>
     /// <param name="startDate">The inclusive start of the known chronological window.</param>
     /// <param name="endDate">The inclusive end of the known chronological window.</param>
-    /// <exception cref="ArgumentException"><paramref name="endDate" /> is earlier than <paramref name="startDate" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="endDate" /> is earlier than <paramref name="startDate" />.
+    /// </exception>
     public NotableDateResolutionWindow(DateTime startDate, DateTime endDate)
     {
         DateTime start = startDate.Date;
@@ -63,19 +73,28 @@ internal sealed class NotableDateResolutionWindow
     /// <summary>
     /// Gets the emitted dates in chronological order.
     /// </summary>
-    /// <returns>A read-only chronological snapshot of the dates that should appear in the resolution output. Never <see langword="null" />.</returns>
+    /// <returns>
+    /// A read-only chronological snapshot of the dates that should appear in the resolution output. Never
+    /// <see langword="null" />.
+    /// </returns>
     public IReadOnlyList<NotableDate> OutputDates => Sort(_outputDates);
 
     /// <summary>
     /// Gets all known dates in chronological order, including blockers that are not emitted.
     /// </summary>
-    /// <returns>A read-only chronological snapshot of the full known set, including blocker entries. Never <see langword="null" />.</returns>
+    /// <returns>
+    /// A read-only chronological snapshot of the full known set, including blocker entries. Never
+    /// <see langword="null" />.
+    /// </returns>
     public IReadOnlyList<NotableDate> KnownDates => Sort(_knownDates);
 
     /// <summary>
     /// Gets the base occurrences that have been materialized into the window.
     /// </summary>
-    /// <returns>A read-only list of <see cref="ResolvedNotableDateOccurrence" /> entries ordered by anchor date, priority, name, and territory.</returns>
+    /// <returns>
+    /// A read-only list of <see cref="ResolvedNotableDateOccurrence" /> entries ordered by anchor date, priority, name,
+    /// and territory.
+    /// </returns>
     public IReadOnlyList<ResolvedNotableDateOccurrence> BaseOccurrences => [.. _baseOccurrences
         .OrderBy(occurrence => occurrence.AnchorDate)
         .ThenBy(occurrence => occurrence.Rule.Priority)
@@ -113,7 +132,9 @@ internal sealed class NotableDateResolutionWindow
     /// Determines whether the specified date is inside the known chronological window.
     /// </summary>
     /// <param name="date">The date to test.</param>
-    /// <returns><see langword="true" /> if the date is inside the known window; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> if the date is inside the known window; otherwise, <see langword="false" />.
+    /// </returns>
     public bool Contains(DateTime date)
     {
         DateTime day = date.Date;
@@ -146,7 +167,8 @@ internal sealed class NotableDateResolutionWindow
     }
 
     /// <summary>
-    /// Determines whether the specified date is unavailable because it is a weekend or a known non-working notable date.
+    /// Determines whether the specified date is unavailable because it is a weekend or a known non-working notable
+    /// date.
     /// </summary>
     /// <param name="date">The date to test.</param>
     /// <param name="territoryCode">The optional territory context.</param>
@@ -271,10 +293,9 @@ internal sealed class NotableDateResolutionWindow
         if (!TerritoryCode.TryParse(territoryCode, out TerritoryCode requested))
             return false;
 
-        if (!TerritoryCode.TryParse(date.TerritoryCode, out TerritoryCode owned))
-            return false;
-
-        return requested.Contains(owned) || owned.Contains(requested);
+        return !TerritoryCode.TryParse(date.TerritoryCode, out TerritoryCode owned)
+            ? false
+            : requested.Contains(owned) || owned.Contains(requested);
     }
 
     /// <summary>

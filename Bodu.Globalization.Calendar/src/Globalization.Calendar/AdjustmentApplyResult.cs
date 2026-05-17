@@ -10,7 +10,9 @@ namespace Bodu.Globalization.Calendar;
 /// Captures the outcome of an <see cref="NotableDateAdjuster.Apply" /> invocation.
 /// </summary>
 /// <param name="Activated">Whether the adjustment fired.</param>
-/// <param name="AdjustedDate">The resulting date. Equal to the original date when <paramref name="Activated" /> is <see langword="false" />.</param>
+/// <param name="AdjustedDate">
+/// The resulting date. Equal to the original date when <paramref name="Activated" /> is <see langword="false" />.
+/// </param>
 /// <param name="Trigger">The trigger that produced the result, when activated.</param>
 /// <param name="Action">The action that produced the result, when activated.</param>
 /// <param name="HandlerKey">The custom handler key invoked, when applicable.</param>

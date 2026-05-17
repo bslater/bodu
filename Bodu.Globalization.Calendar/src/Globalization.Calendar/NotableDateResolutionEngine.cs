@@ -14,9 +14,9 @@ namespace Bodu.Globalization.Calendar;
 /// This engine is the integration seam between the rule occurrence resolver and the chronological resolution window.
 /// </para>
 /// <para>
-/// When adjustment processing is enabled, the engine materializes a small padded source window around the requested output
-/// window. This allows adjusted dates whose original anchor lies just outside the requested range to still be projected into
-/// the caller's observed-date output.
+/// When adjustment processing is enabled, the engine materializes a small padded source window around the requested
+/// output window. This allows adjusted dates whose original anchor lies just outside the requested range to still be
+/// projected into the caller's observed-date output.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateResolutionEngine
@@ -32,7 +32,9 @@ internal sealed class NotableDateResolutionEngine
     /// </summary>
     /// <param name="occurrenceResolver">The resolver used to materialize base rule occurrences.</param>
     /// <param name="adjustmentProcessor">The optional processor used to apply observance adjustments.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="occurrenceResolver" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="occurrenceResolver" /> is <see langword="null" />.
+    /// </exception>
     public NotableDateResolutionEngine(
         INotableDateRuleOccurrenceResolver occurrenceResolver,
         INotableDateResolutionAdjustmentProcessor? adjustmentProcessor = null)
@@ -96,7 +98,9 @@ internal sealed class NotableDateResolutionEngine
     /// </summary>
     /// <param name="occurrence">The resolved occurrence.</param>
     /// <param name="request">The original resolution request.</param>
-    /// <returns><see langword="true" /> when the occurrence should be emitted; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when the occurrence should be emitted; otherwise, <see langword="false" />.
+    /// </returns>
     private static bool ShouldEmit(
         ResolvedNotableDateOccurrence occurrence,
         NotableDateResolutionRequest request) =>
@@ -125,10 +129,7 @@ internal sealed class NotableDateResolutionEngine
         if (days < 0 && value <= DateTime.MinValue.AddDays(-days))
             return DateTime.MinValue.Date;
 
-        if (days > 0 && value >= DateTime.MaxValue.AddDays(-days))
-            return DateTime.MaxValue.Date;
-
-        return value.AddDays(days);
+        return days > 0 && value >= DateTime.MaxValue.AddDays(-days) ? DateTime.MaxValue.Date : value.AddDays(days);
     }
 
     /// <summary>

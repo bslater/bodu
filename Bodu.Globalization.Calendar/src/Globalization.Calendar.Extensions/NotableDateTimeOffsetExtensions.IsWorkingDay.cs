@@ -11,18 +11,27 @@ namespace Bodu.Extensions;
 public static partial class NotableDateTimeOffsetExtensions
 {
     /// <summary>
-    /// Determines whether the civil date of <paramref name="instant" /> in <paramref name="timeZone" /> is a working day
-    /// under the supplied <paramref name="workingWeek" /> composed with the holiday catalogue exposed by
+    /// Determines whether the civil date of <paramref name="instant" /> in <paramref name="timeZone" /> is a working
+    /// day under the supplied <paramref name="workingWeek" /> composed with the holiday catalogue exposed by
     /// <paramref name="service" />.
     /// </summary>
     /// <param name="instant">The instant to evaluate.</param>
     /// <param name="timeZone">The zone in which the civil date is taken. Must not be <see langword="null" />.</param>
-    /// <param name="service">The notable-date service consulted for holiday classification. Must not be <see langword="null" />.</param>
-    /// <param name="workingWeek">An optional working-week pattern. When <see langword="null" />, the service's configured working week is used.</param>
+    /// <param name="service">
+    /// The notable-date service consulted for holiday classification. Must not be <see langword="null" />.
+    /// </param>
+    /// <param name="workingWeek">
+    /// An optional working-week pattern. When <see langword="null" />, the service's configured working week is used.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope.</param>
-    /// <returns><see langword="true" /> when the civil date is a working day in <paramref name="timeZone" />; otherwise, <see langword="false" />.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="timeZone" /> or <paramref name="service" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// <see langword="true" /> when the civil date is a working day in <paramref name="timeZone" />; otherwise,
+    /// <see langword="false" />.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="timeZone" /> or <paramref name="service" /> is <see langword="null" />.
+    /// </exception>
     public static bool IsWorkingDay(this DateTimeOffset instant, TimeZoneInfo timeZone, INotableDateService service, WeekPattern? workingWeek = null, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(timeZone);

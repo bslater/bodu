@@ -11,9 +11,9 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Calculation anchors are resolved independently from the public notable-date output window. This allows a rule such as
-/// <c>Start of Lent</c> to calculate <c>Easter Sunday</c> even when Easter Sunday itself is outside the caller's requested
-/// date window.
+/// Calculation anchors are resolved independently from the public notable-date output window. This allows a rule such
+/// as <c>Start of Lent</c> to calculate <c>Easter Sunday</c> even when Easter Sunday itself is outside the caller's
+/// requested date window.
 /// </para>
 /// </remarks>
 internal interface ICalculationAnchorResolver
@@ -28,7 +28,8 @@ internal interface ICalculationAnchorResolver
     /// <paramref name="year" />.
     /// </returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="anchorRuleName" /> is <see langword="null" />, empty, or consists only of white-space characters.
+    /// <paramref name="anchorRuleName" /> is <see langword="null" />, empty, or consists only of white-space
+    /// characters.
     /// </exception>
     /// <exception cref="InvalidOperationException">
     /// The named anchor rule cannot be found, or resolving the rule fails due to invalid rule configuration.

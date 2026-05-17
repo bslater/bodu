@@ -13,18 +13,21 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Paths are resolved using a logical path model where <c>/</c> is the canonical separator.
-/// Backslash characters are accepted as input and normalized to <c>/</c>.
+/// Paths are resolved using a logical path model where <c>/</c> is the canonical separator. Backslash characters are
+/// accepted as input and normalized to <c>/</c>.
 /// </para>
 /// <para>
-/// The resolver does not convert paths to embedded-resource names or file-system paths. Provider-specific mapping should
-/// happen after resolution — <see cref="XmlResourceNotableDateRuleProvider" /> handles the final translation to a manifest
-/// resource name by replacing <c>/</c> with <c>.</c>.
+/// The resolver does not convert paths to embedded-resource names or file-system paths. Provider-specific mapping
+/// should happen after resolution — <see cref="XmlResourceNotableDateRuleProvider" /> handles the final translation to
+/// a manifest resource name by replacing <c>/</c> with <c>.</c>.
 /// </para>
 /// </remarks>
 /// <example>
-/// <para>Resolve relative and absolute child paths:</para>
+/// <para>
+/// Resolve relative and absolute child paths:
+/// </para>
 /// <code>
+///<![CDATA[
 /// IResourcePathResolver resolver = new ResourcePathResolver();
 ///
 /// // Relative resolution — sibling document:
@@ -38,6 +41,7 @@ namespace Bodu.Globalization.Calendar;
 ///     "/Bodu/Globalization/Calendar/Resources/au-all.xml",
 ///     "/Bodu/Globalization/Calendar/Resources/global-public.xml");
 /// // abs: "/Bodu/Globalization/Calendar/Resources/global-public.xml"
+///]]>
 /// </code>
 /// </example>
 public sealed class ResourcePathResolver
@@ -68,7 +72,8 @@ public sealed class ResourcePathResolver
     private static string Normalize(string path) => path.Replace('\\', '/');
 
     /// <summary>
-    /// Returns <see langword="true" /> if <paramref name="path" /> begins with a forward slash and is therefore an absolute path.
+    /// Returns <see langword="true" /> if <paramref name="path" /> begins with a forward slash and is therefore an
+    /// absolute path.
     /// </summary>
     /// <param name="path">The path to test.</param>
     /// <returns><see langword="true" /> if the path is rooted; otherwise <see langword="false" />.</returns>
@@ -106,7 +111,8 @@ public sealed class ResourcePathResolver
     }
 
     /// <summary>
-    /// Returns the parent directory segment of <paramref name="documentPath" /> after normalizing it to an absolute path.
+    /// Returns the parent directory segment of <paramref name="documentPath" /> after normalizing it to an absolute
+    /// path.
     /// </summary>
     /// <param name="documentPath">The fully qualified resource path of a document.</param>
     /// <returns>The parent directory path, or <c>/</c> when the document is at the root.</returns>
@@ -122,16 +128,16 @@ public sealed class ResourcePathResolver
     }
 
     /// <summary>
-    /// Joins <paramref name="parentDirectory" /> and <paramref name="childPath" /> with a single forward slash separator.
+    /// Joins <paramref name="parentDirectory" /> and <paramref name="childPath" /> with a single forward slash
+    /// separator.
     /// </summary>
     /// <param name="parentDirectory">The parent directory path.</param>
     /// <param name="childPath">The relative child path to append.</param>
     /// <returns>The combined path.</returns>
     private static string Combine(string parentDirectory, string childPath)
     {
-        if (string.IsNullOrWhiteSpace(parentDirectory) || parentDirectory == "/")
-            return "/" + childPath.TrimStart('/');
-
-        return parentDirectory.TrimEnd('/') + "/" + childPath.TrimStart('/');
+        return string.IsNullOrWhiteSpace(parentDirectory) || parentDirectory == "/"
+            ? "/" + childPath.TrimStart('/')
+            : parentDirectory.TrimEnd('/') + "/" + childPath.TrimStart('/');
     }
 }

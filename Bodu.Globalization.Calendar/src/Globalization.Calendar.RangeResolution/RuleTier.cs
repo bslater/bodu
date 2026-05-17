@@ -12,8 +12,8 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The tier dictates processing order so that each anchor type is evaluated only after the rules it depends on. Tiers are assigned
-/// once at service construction by <see cref="RuleStaticAnalysis" />.
+/// The tier dictates processing order so that each anchor type is evaluated only after the rules it depends on. Tiers
+/// are assigned once at service construction by <see cref="RuleStaticAnalysis" />.
 /// </para>
 /// </remarks>
 internal enum RuleTier
@@ -35,8 +35,8 @@ internal enum RuleTier
     Algorithmic,
 
     /// <summary>
-    /// The rule's date is calculated as an offset from a rule whose tier is <see cref="Algorithmic" /> (or transitively from another
-    /// <see cref="OffsetFromAlgorithmic" /> rule rooted at an algorithmic anchor).
+    /// The rule's date is calculated as an offset from a rule whose tier is <see cref="Algorithmic" /> (or transitively
+    /// from another <see cref="OffsetFromAlgorithmic" /> rule rooted at an algorithmic anchor).
     /// </summary>
     OffsetFromAlgorithmic,
 }

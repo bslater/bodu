@@ -12,13 +12,15 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// Provides Easter Sunday date calculations based on the given year and calendar system.
 /// </summary>
 /// <remarks>
-/// This implementation uses the Gregorian calendar for years &gt;= 1583 and the Julian calendar otherwise. Results are cached for
-/// performance. Use this algorithm to retrieve the date of Easter Sunday.
+/// This implementation uses the Gregorian calendar for years &gt;= 1583 and the Julian calendar otherwise. Results are
+/// cached for performance. Use this algorithm to retrieve the date of Easter Sunday.
 /// </remarks>
 public sealed class EasterSundayNotableDateAlgorithm
     : INotableDateAlgorithm
 {
-    /// <summary>Shared per-process cache of computed Easter dates, keyed by year and calendar identity string.</summary>
+    /// <summary>
+    /// Shared per-process cache of computed Easter dates, keyed by year and calendar identity string.
+    /// </summary>
     private static readonly ConcurrentDictionary<(int year, string calendarId), DateTime> s_easterCache = new();
 
     /// <inheritdoc />

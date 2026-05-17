@@ -21,17 +21,20 @@ public enum DateResolutionStrategy
     Fixed = 0,
 
     /// <summary>
-    /// Resolved as the n-th occurrence of a specified weekday within a specified month (e.g. the second Monday of March).
+    /// Resolved as the n-th occurrence of a specified weekday within a specified month (e.g. the second Monday of
+    /// March).
     /// </summary>
     DayOfWeekInMonth,
 
     /// <summary>
-    /// Resolved by an algorithmic <see cref="INotableDateAlgorithm" /> implementation looked up via key in the algorithm registry.
+    /// Resolved by an algorithmic <see cref="INotableDateAlgorithm" /> implementation looked up via key in the
+    /// algorithm registry.
     /// </summary>
     Algorithm,
 
     /// <summary>
-    /// Resolved as a fixed integer day offset from another notable date rule referenced by name (e.g. Easter Monday = Easter Sunday + 1).
+    /// Resolved as a fixed integer day offset from another notable date rule referenced by name (e.g. Easter Monday =
+    /// Easter Sunday + 1).
     /// </summary>
     OffsetFromAnchor,
 }

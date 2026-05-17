@@ -10,8 +10,8 @@ namespace Bodu.Globalization.Calendar;
 /// Identifies the condition under which an <see cref="ObservanceAdjustment" /> activates and applies its action.
 /// </summary>
 /// <remarks>
-/// This enumeration replaces <c>NotableDateAdjustmentRuleType</c>. The new name distinguishes the <em>trigger</em> (when an adjustment
-/// fires) from the <em>action</em> (what it does), and removes the redundant <c>...Type</c> suffix.
+/// This enumeration replaces <c>NotableDateAdjustmentRuleType</c>. The new name distinguishes the <em>trigger</em>
+/// (when an adjustment fires) from the <em>action</em> (what it does), and removes the redundant <c>...Type</c> suffix.
 /// </remarks>
 public enum AdjustmentTrigger
 {
@@ -21,12 +21,14 @@ public enum AdjustmentTrigger
     Always = 0,
 
     /// <summary>
-    /// Activates when the calculated date falls on the day of week specified by <see cref="ObservanceAdjustment.DayOfWeek" />.
+    /// Activates when the calculated date falls on the day of week specified by
+    /// <see cref="ObservanceAdjustment.DayOfWeek" />.
     /// </summary>
     IfDayOfWeek,
 
     /// <summary>
-    /// Activates when the calculated date falls on a weekend, as determined by the configured <see cref="Bodu.WorkingDaysOfWeek" />.
+    /// Activates when the calculated date falls on a weekend, as determined by the configured
+    /// <see cref="Bodu.WorkingDaysOfWeek" />.
     /// </summary>
     IfWeekend,
 
@@ -62,7 +64,8 @@ public enum AdjustmentTrigger
     IfNthOccurrenceInMonth,
 
     /// <summary>
-    /// Activation is delegated to a registered <see cref="IAdjustmentHandler" /> looked up by <see cref="ObservanceAdjustment.HandlerKey" />.
+    /// Activation is delegated to a registered <see cref="IAdjustmentHandler" /> looked up by
+    /// <see cref="ObservanceAdjustment.HandlerKey" />.
     /// </summary>
     Custom,
 }

@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
-/// Thrown by <see cref="ExternalPluginLoader" /> when a trusted plugin assembly loads successfully but does not expose a valid
-/// <see cref="NotableDatePluginAttribute" /> naming a type that implements <see cref="INotableDatePlugin" />.
+/// Thrown by <see cref="ExternalPluginLoader" /> when a trusted plugin assembly loads successfully but does not expose
+/// a valid <see cref="NotableDatePluginAttribute" /> naming a type that implements <see cref="INotableDatePlugin" />.
 /// </summary>
 public sealed class PluginMissingAttributeException
     : NotableDatePluginException
@@ -24,11 +24,10 @@ public sealed class PluginMissingAttributeException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class with the specified error message.
+    /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class with the specified error
+    /// message.
     /// </summary>
-    /// <param name="message">
-    /// The message that describes the error.
-    /// </param>
+    /// <param name="message">The message that describes the error.</param>
     public PluginMissingAttributeException(string message)
         : base(message)
     {
@@ -37,15 +36,11 @@ public sealed class PluginMissingAttributeException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class with the specified error message
-    /// and a reference to the inner exception that caused this exception.
+    /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class with the specified error
+    /// message and a reference to the inner exception that caused this exception.
     /// </summary>
-    /// <param name="message">
-    /// The message that describes the error.
-    /// </param>
-    /// <param name="innerException">
-    /// The exception that is the cause of the current exception.
-    /// </param>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
     public PluginMissingAttributeException(string message, Exception innerException)
         : base(message, innerException)
     {
@@ -57,9 +52,7 @@ public sealed class PluginMissingAttributeException
     /// Initializes a new instance of the <see cref="PluginMissingAttributeException" /> class for a plugin assembly
     /// that failed attribute validation.
     /// </summary>
-    /// <param name="assemblyPath">
-    /// The path of the plugin assembly that failed the attribute check.
-    /// </param>
+    /// <param name="assemblyPath">The path of the plugin assembly that failed the attribute check.</param>
     /// <param name="reason">
     /// A human-readable explanation of why the attribute check failed, such as a missing attribute, an unresolved
     /// plugin type, or a declared type that does not implement <see cref="INotableDatePlugin" />.

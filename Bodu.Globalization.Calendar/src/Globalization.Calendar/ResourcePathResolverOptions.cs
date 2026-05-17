@@ -15,8 +15,8 @@ public sealed class ResourcePathResolverOptions
     /// Gets the set of fully qualified resource prefixes recognized by the resolver.
     /// </summary>
     /// <returns>
-    /// An <see cref="IReadOnlySet{T}" /> of case-sensitive, ordinal-compared prefixes. A path that begins with one of these
-    /// prefixes is treated as already fully qualified and is returned unchanged.
+    /// An <see cref="IReadOnlySet{T}" /> of case-sensitive, ordinal-compared prefixes. A path that begins with one of
+    /// these prefixes is treated as already fully qualified and is returned unchanged.
     /// </returns>
     /// <value>The default set contains <c>"Bodu.Globalization.Calendar.Resources."</c>.</value>
     public IReadOnlySet<string> FullyQualifiedResourcePrefixes { get; init; }

@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
-/// Thrown by <see cref="ExternalPluginLoader" /> when the declared plugin type cannot be instantiated — typically because the
-/// type lacks a public parameterless constructor, or because the constructor threw.
+/// Thrown by <see cref="ExternalPluginLoader" /> when the declared plugin type cannot be instantiated — typically
+/// because the type lacks a public parameterless constructor, or because the constructor threw.
 /// </summary>
 public sealed class PluginActivationException
     : NotableDatePluginException
@@ -24,11 +24,10 @@ public sealed class PluginActivationException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PluginActivationException" /> class with the specified error message.
+    /// Initializes a new instance of the <see cref="PluginActivationException" /> class with the specified error
+    /// message.
     /// </summary>
-    /// <param name="message">
-    /// The message that describes the error.
-    /// </param>
+    /// <param name="message">The message that describes the error.</param>
     public PluginActivationException(string message)
         : base(message)
     {
@@ -37,15 +36,11 @@ public sealed class PluginActivationException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PluginActivationException" /> class with the specified error message
-    /// and a reference to the inner exception that caused this exception.
+    /// Initializes a new instance of the <see cref="PluginActivationException" /> class with the specified error
+    /// message and a reference to the inner exception that caused this exception.
     /// </summary>
-    /// <param name="message">
-    /// The message that describes the error.
-    /// </param>
-    /// <param name="innerException">
-    /// The exception that is the cause of the current exception.
-    /// </param>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
     public PluginActivationException(string message, Exception innerException)
         : base(message, innerException)
     {
@@ -56,15 +51,9 @@ public sealed class PluginActivationException
     /// <summary>
     /// Initializes a new instance of the <see cref="PluginActivationException" /> class for a failed plugin activation.
     /// </summary>
-    /// <param name="assemblyPath">
-    /// The path of the plugin assembly whose declared type could not be activated.
-    /// </param>
-    /// <param name="pluginType">
-    /// The declared plugin type, if discoverable.
-    /// </param>
-    /// <param name="innerException">
-    /// The underlying activation failure.
-    /// </param>
+    /// <param name="assemblyPath">The path of the plugin assembly whose declared type could not be activated.</param>
+    /// <param name="pluginType">The declared plugin type, if discoverable.</param>
+    /// <param name="innerException">The underlying activation failure.</param>
     /// <remarks>
     /// This constructor preserves the assembly path and declared plugin type, allowing callers to inspect the failed
     /// activation target in addition to the formatted exception message.

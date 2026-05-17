@@ -7,24 +7,30 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Aggregates the static, year-independent analysis of a notable-date rule set used by the chronological range-resolution
-/// pipeline.
+/// Aggregates the static, year-independent analysis of a notable-date rule set used by the chronological
+/// range-resolution pipeline.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The analysis exposes per-rule <see cref="RuleStaticProfile" /> records and a look-up index for offset-relative dependencies.
-/// It is built once from the effective rule list and re-used by every range-resolution request.
+/// The analysis exposes per-rule <see cref="RuleStaticProfile" /> records and a look-up index for offset-relative
+/// dependencies. It is built once from the effective rule list and re-used by every range-resolution request.
 /// </para>
 /// </remarks>
 internal sealed class RuleStaticAnalysis
 {
-    /// <summary>The case-insensitive look-up of static profiles keyed by canonical rule name.</summary>
+    /// <summary>
+    /// The case-insensitive look-up of static profiles keyed by canonical rule name.
+    /// </summary>
     private readonly Dictionary<string, RuleStaticProfile> _profilesByRuleName;
 
-    /// <summary>The case-insensitive look-up of profiles whose root anchor matches the keyed rule name.</summary>
+    /// <summary>
+    /// The case-insensitive look-up of profiles whose root anchor matches the keyed rule name.
+    /// </summary>
     private readonly Dictionary<string, List<RuleStaticProfile>> _dependentsByAnchor;
 
-    /// <summary>The full set of static profiles in input order.</summary>
+    /// <summary>
+    /// The full set of static profiles in input order.
+    /// </summary>
     private readonly List<RuleStaticProfile> _profiles;
 
     /// <summary>
@@ -32,8 +38,12 @@ internal sealed class RuleStaticAnalysis
     /// </summary>
     /// <param name="profiles">The static profile per rule.</param>
     /// <param name="profilesByRuleName">The case-insensitive lookup of profiles by rule name.</param>
-    /// <param name="dependentsByAnchor">The case-insensitive lookup of profiles whose root anchor is the keyed rule name.</param>
-    /// <param name="globalFringeReach">The maximum absolute reach across every profile, used by the planner to size fringe scans.</param>
+    /// <param name="dependentsByAnchor">
+    /// The case-insensitive lookup of profiles whose root anchor is the keyed rule name.
+    /// </param>
+    /// <param name="globalFringeReach">
+    /// The maximum absolute reach across every profile, used by the planner to size fringe scans.
+    /// </param>
     private RuleStaticAnalysis(
         List<RuleStaticProfile> profiles,
         Dictionary<string, RuleStaticProfile> profilesByRuleName,
@@ -53,18 +63,21 @@ internal sealed class RuleStaticAnalysis
     public IReadOnlyList<RuleStaticProfile> Profiles => _profiles;
 
     /// <summary>
-    /// Gets the maximum absolute day-delta across every rule's observable reach (forward or backward). Used by the planner to size
-    /// the fringe scan distance so that adjustment shifts and multi-day spans extending across year boundaries are admitted into
-    /// the fringe pass.
+    /// Gets the maximum absolute day-delta across every rule's observable reach (forward or backward). Used by the
+    /// planner to size the fringe scan distance so that adjustment shifts and multi-day spans extending across year
+    /// boundaries are admitted into the fringe pass.
     /// </summary>
     /// <remarks>
     /// <para>
-    /// This is intentionally distinct from per-rule reach: the planner needs a single fringe distance to decide which adjacent
-    /// civil years to scan, while the pipeline filters individual fringe-year materializations using each rule's own
-    /// <see cref="RuleStaticProfile.MinObservedReach" /> / <see cref="RuleStaticProfile.MaxObservedReach" />.
+    /// This is intentionally distinct from per-rule reach: the planner needs a single fringe distance to decide which
+    /// adjacent civil years to scan, while the pipeline filters individual fringe-year materializations using each
+    /// rule's own <see cref="RuleStaticProfile.MinObservedReach" /> / <see cref="RuleStaticProfile.MaxObservedReach" />
+    /// .
     /// </para>
     /// </remarks>
-    /// <returns>A non-negative day count expressing the largest possible adjustment shift across the rule set.</returns>
+    /// <returns>
+    /// A non-negative day count expressing the largest possible adjustment shift across the rule set.
+    /// </returns>
     public int GlobalFringeReach { get; }
 
     /// <summary>
@@ -72,7 +85,9 @@ internal sealed class RuleStaticAnalysis
     /// </summary>
     /// <param name="ruleName">The rule name to look up.</param>
     /// <param name="profile">The matching profile when the method returns <see langword="true" />.</param>
-    /// <returns><see langword="true" /> when a profile exists for the supplied rule name; otherwise, <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when a profile exists for the supplied rule name; otherwise, <see langword="false" />.
+    /// </returns>
     public bool TryGetProfile(string ruleName, out RuleStaticProfile profile)
     {
         if (_profilesByRuleName.TryGetValue(ruleName, out RuleStaticProfile? found))
@@ -86,8 +101,8 @@ internal sealed class RuleStaticAnalysis
     }
 
     /// <summary>
-    /// Gets the profiles whose root anchor is the rule with the supplied name. Returns an empty list when the anchor has no
-    /// dependents.
+    /// Gets the profiles whose root anchor is the rule with the supplied name. Returns an empty list when the anchor
+    /// has no dependents.
     /// </summary>
     /// <param name="anchorRuleName">The anchor rule name to look up.</param>
     /// <returns>The dependent profiles, in declaration order.</returns>
@@ -172,11 +187,14 @@ internal sealed class RuleStaticAnalysis
     }
 
     /// <summary>
-    /// Walks the offset-anchor chain to identify the rule's processing tier, root anchor name, and total day offset from the root.
+    /// Walks the offset-anchor chain to identify the rule's processing tier, root anchor name, and total day offset
+    /// from the root.
     /// </summary>
     /// <param name="rule">The rule to classify.</param>
     /// <param name="rulesByName">The case-insensitive rule lookup.</param>
-    /// <returns>The classified tier, root anchor rule name (when applicable), and aggregate offset from the root anchor.</returns>
+    /// <returns>
+    /// The classified tier, root anchor rule name (when applicable), and aggregate offset from the root anchor.
+    /// </returns>
     private static (RuleTier Tier, string? RootAnchorRuleName, int OffsetFromRoot) ClassifyRule(
         NotableDateRule rule,
         IReadOnlyDictionary<string, NotableDateRule> rulesByName)
@@ -199,8 +217,8 @@ internal sealed class RuleStaticAnalysis
     }
 
     /// <summary>
-    /// Walks an <see cref="DateResolutionStrategy.OffsetFromAnchor" /> chain until a non-offset rule is found, summing the offsets
-    /// along the way.
+    /// Walks an <see cref="DateResolutionStrategy.OffsetFromAnchor" /> chain until a non-offset rule is found, summing
+    /// the offsets along the way.
     /// </summary>
     /// <param name="rule">The offset rule.</param>
     /// <param name="rulesByName">The case-insensitive rule lookup.</param>
@@ -264,9 +282,9 @@ internal sealed class RuleStaticAnalysis
     /// <returns>The minimum and maximum day deltas that the adjustment may produce.</returns>
     /// <remarks>
     /// <para>
-    /// The estimate is conservative: it overstates rather than understates so that on-demand expansion is rarely required.
-    /// <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> is bounded by the adjuster's 366-day cap; in practice the chains are
-    /// short and this prototype caps the static estimate at one week.
+    /// The estimate is conservative: it overstates rather than understates so that on-demand expansion is rarely
+    /// required. <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> is bounded by the adjuster's 366-day cap; in
+    /// practice the chains are short and this prototype caps the static estimate at one week.
     /// </para>
     /// </remarks>
     private static (int Min, int Max) EstimateAdjustmentReach(ObservanceAdjustment adjustment)

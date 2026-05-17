@@ -14,8 +14,8 @@ namespace Bodu.Globalization.Calendar.Providers;
 /// Resolves Gregorian Easter Sunday dates.
 /// </summary>
 /// <remarks>
-/// This provider always uses the Gregorian computus. The optional <see cref="SysGlobal.Calendar" /> parameter is accepted only when it
-/// is <see langword="null" /> or a <see cref="SysGlobal.GregorianCalendar" />.
+/// This provider always uses the Gregorian computus. The optional <see cref="SysGlobal.Calendar" /> parameter is
+/// accepted only when it is <see langword="null" /> or a <see cref="SysGlobal.GregorianCalendar" />.
 /// </remarks>
 public sealed class GregorianEasterSundayNotableDateProvider
     : EasterSundayNotableDateProviderBase
@@ -37,7 +37,7 @@ public sealed class GregorianEasterSundayNotableDateProvider
     /// <inheritdoc />
     protected override void ValidateCalendar(SysGlobal.Calendar? calendar)
     {
-        if (calendar is null || calendar is SysGlobal.GregorianCalendar)
+        if (calendar is null or SysGlobal.GregorianCalendar)
         {
             return;
         }

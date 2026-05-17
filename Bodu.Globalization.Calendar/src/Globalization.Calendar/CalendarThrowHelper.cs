@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="CalendarThrowHelper.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,15 +14,14 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Single-use guards are kept at their call sites or expressed as <c>private static</c> helpers on the owning
-/// type. Only guards reused across two or more classes — and that test a condition rather than unconditionally
-/// throwing — belong here.
+/// Single-use guards are kept at their call sites or expressed as <c>private static</c> helpers on the owning type.
+/// Only guards reused across two or more classes — and that test a condition rather than unconditionally throwing —
+/// belong here.
 /// </para>
 /// <para>
-/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in
-/// <c>Bodu.Core</c>: <c>CalendarThrowHelper.cs</c> holds the root declaration, while
-/// <c>CalendarThrowHelper.CallerExpression.cs</c> and <c>CalendarThrowHelper.NetStandard.cs</c> hold the
-/// framework-conditional implementations.
+/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in <c>Bodu.Core</c>:
+/// <c>CalendarThrowHelper.cs</c> holds the root declaration, while <c>CalendarThrowHelper.CallerExpression.cs</c> and
+/// <c>CalendarThrowHelper.NetStandard.cs</c> hold the framework-conditional implementations.
 /// </para>
 /// </remarks>
 [SuppressMessage(

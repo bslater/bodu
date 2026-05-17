@@ -11,11 +11,13 @@ namespace Bodu.Extensions;
 public static partial class NotableDateOnlyExtensions
 {
     /// <summary>
-    /// Returns the inclusive count of working days between <paramref name="startDate" /> and <paramref name="endDate" />, evaluated
-    /// against the ambient <see cref="NotableDateContext.Default" /> service.
+    /// Returns the inclusive count of working days between <paramref name="startDate" /> and
+    /// <paramref name="endDate" />, evaluated against the ambient <see cref="NotableDateContext.Default" /> service.
     /// </summary>
     /// <param name="startDate">One end of the inclusive range.</param>
-    /// <param name="endDate">The other end of the inclusive range. The arguments may appear in either chronological order.</param>
+    /// <param name="endDate">
+    /// The other end of the inclusive range. The arguments may appear in either chronological order.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
     /// <returns>A non-negative count of working days within the range.</returns>
@@ -23,16 +25,23 @@ public static partial class NotableDateOnlyExtensions
         WorkingDaysBetween(startDate, endDate, NotableDateContext.Default, territoryCode, calendarType);
 
     /// <summary>
-    /// Returns the inclusive count of working days between <paramref name="startDate" /> and <paramref name="endDate" />, evaluated
-    /// against the supplied <see cref="INotableDateService" />.
+    /// Returns the inclusive count of working days between <paramref name="startDate" /> and
+    /// <paramref name="endDate" />, evaluated against the supplied <see cref="INotableDateService" />.
     /// </summary>
     /// <param name="startDate">One end of the inclusive range.</param>
-    /// <param name="endDate">The other end of the inclusive range. The arguments may appear in either chronological order.</param>
-    /// <param name="service">The <see cref="INotableDateService" /> consulted for working-day classification. Must not be <see langword="null" />.</param>
+    /// <param name="endDate">
+    /// The other end of the inclusive range. The arguments may appear in either chronological order.
+    /// </param>
+    /// <param name="service">
+    /// The <see cref="INotableDateService" /> consulted for working-day classification. Must not be
+    /// <see langword="null" />.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
     /// <returns>A non-negative count of working days within the range.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="service" /> is <see langword="null" />.
+    /// </exception>
     public static int WorkingDaysBetween(this DateOnly startDate, DateOnly endDate, INotableDateService service, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(service);
@@ -54,18 +63,25 @@ public static partial class NotableDateOnlyExtensions
     }
 
     /// <summary>
-    /// Returns the inclusive count of working days between <paramref name="startDate" /> and <paramref name="endDate" />
-    /// under the supplied <paramref name="workingWeek" />, composed with the holiday catalogue exposed by
-    /// <paramref name="service" />.
+    /// Returns the inclusive count of working days between <paramref name="startDate" /> and
+    /// <paramref name="endDate" /> under the supplied <paramref name="workingWeek" />, composed with the holiday
+    /// catalogue exposed by <paramref name="service" />.
     /// </summary>
     /// <param name="startDate">One end of the inclusive range.</param>
-    /// <param name="endDate">The other end of the inclusive range. The arguments may appear in either chronological order.</param>
-    /// <param name="service">The <see cref="INotableDateService" /> consulted for holiday classification. Must not be <see langword="null" />.</param>
+    /// <param name="endDate">
+    /// The other end of the inclusive range. The arguments may appear in either chronological order.
+    /// </param>
+    /// <param name="service">
+    /// The <see cref="INotableDateService" /> consulted for holiday classification. Must not be <see langword="null" />
+    /// .
+    /// </param>
     /// <param name="workingWeek">The working-week pattern.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
     /// <returns>A non-negative count of working days within the range.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="service" /> is <see langword="null" />.
+    /// </exception>
     public static int WorkingDaysBetween(this DateOnly startDate, DateOnly endDate, INotableDateService service, WeekPattern workingWeek, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(service);
@@ -90,17 +106,22 @@ public static partial class NotableDateOnlyExtensions
     }
 
     /// <summary>
-    /// Returns the inclusive count of working days between <paramref name="startDate" /> and <paramref name="endDate" />
-    /// under the supplied named <paramref name="workingWeek" /> preset.
+    /// Returns the inclusive count of working days between <paramref name="startDate" /> and
+    /// <paramref name="endDate" /> under the supplied named <paramref name="workingWeek" /> preset.
     /// </summary>
     /// <param name="startDate">One end of the inclusive range.</param>
     /// <param name="endDate">The other end of the inclusive range.</param>
-    /// <param name="service">The <see cref="INotableDateService" /> consulted for holiday classification. Must not be <see langword="null" />.</param>
+    /// <param name="service">
+    /// The <see cref="INotableDateService" /> consulted for holiday classification. Must not be <see langword="null" />
+    /// .
+    /// </param>
     /// <param name="workingWeek">The named working-week pattern.</param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
     /// <returns>A non-negative count of working days within the range.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="service" /> is <see langword="null" />.
+    /// </exception>
     public static int WorkingDaysBetween(this DateOnly startDate, DateOnly endDate, INotableDateService service, WorkingDaysOfWeek workingWeek, string? territoryCode = null, Type? calendarType = null) =>
         WorkingDaysBetween(startDate, endDate, service, workingWeek.ToWeekPattern(), territoryCode, calendarType);
 }

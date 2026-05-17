@@ -9,25 +9,35 @@ using System.Collections.Immutable;
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
-/// Composes two or more <see cref="IPluginTrustPolicy" /> instances under AND semantics: every child policy must return trusted
-/// for the candidate to be admitted. The first child to reject short-circuits the evaluation and surfaces its reason.
+/// Composes two or more <see cref="IPluginTrustPolicy" /> instances under AND semantics: every child policy must return
+/// trusted for the candidate to be admitted. The first child to reject short-circuits the evaluation and surfaces its
+/// reason.
 /// </summary>
 /// <remarks>
-/// Typical usage pairs strong-name validation with byte-hash pinning, so a tampered-but-correctly-tokened assembly fails the
-/// hash check while an assembly with the right bytes but the wrong token fails the strong-name check.
+/// Typical usage pairs strong-name validation with byte-hash pinning, so a tampered-but-correctly-tokened assembly
+/// fails the hash check while an assembly with the right bytes but the wrong token fails the strong-name check.
 /// </remarks>
 public sealed class CompositePluginTrustPolicy
     : IPluginTrustPolicy
 {
-    /// <summary>The ordered list of child policies evaluated in sequence; the first rejection short-circuits the rest.</summary>
+    /// <summary>
+    /// The ordered list of child policies evaluated in sequence; the first rejection short-circuits the rest.
+    /// </summary>
     private readonly ImmutableArray<IPluginTrustPolicy> _policies;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="CompositePluginTrustPolicy" /> class.
     /// </summary>
-    /// <param name="policies">The child policies, evaluated in the order supplied. Must not be <see langword="null" /> and must contain at least one non-<see langword="null" /> policy.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="policies" /> is <see langword="null" />.</exception>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="policies" /> is empty or contains a <see langword="null" /> element.</exception>
+    /// <param name="policies">
+    /// The child policies, evaluated in the order supplied. Must not be <see langword="null" /> and must contain at
+    /// least one non-<see langword="null" /> policy.
+    /// </param>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="policies" /> is <see langword="null" />.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="policies" /> is empty or contains a <see langword="null" /> element.
+    /// </exception>
     public CompositePluginTrustPolicy(params IPluginTrustPolicy[] policies)
     {
         if (policies is null) throw new ArgumentNullException(nameof(policies));

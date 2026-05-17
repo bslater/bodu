@@ -11,16 +11,19 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Handlers registered via <see cref="Register(string, IAdjustmentHandler)" /> are looked up case-insensitively by key during
-/// observance-adjustment evaluation. The registry is intended as a composition-time concern: hosts populate it once during
-/// start-up and pass it to <see cref="NotableDateService" /> via the <c>adjustmentHandlers</c> constructor parameter so that
-/// <see cref="ObservanceAdjustment" /> entries declaring <see cref="AdjustmentTrigger.Custom" /> or
+/// Handlers registered via <see cref="Register(string, IAdjustmentHandler)" /> are looked up case-insensitively by key
+/// during observance-adjustment evaluation. The registry is intended as a composition-time concern: hosts populate it
+/// once during start-up and pass it to <see cref="NotableDateService" /> via the <c>adjustmentHandlers</c> constructor
+/// parameter so that <see cref="ObservanceAdjustment" /> entries declaring <see cref="AdjustmentTrigger.Custom" /> or
 /// <see cref="AdjustmentAction.Custom" /> can resolve to a concrete <see cref="IAdjustmentHandler" /> implementation.
 /// </para>
 /// </remarks>
 /// <example>
-/// <para>Register a custom handler and wire it into a service:</para>
+/// <para>
+/// Register a custom handler and wire it into a service:
+/// </para>
 /// <code>
+///<![CDATA[
 /// AdjustmentHandlerRegistry handlers = new AdjustmentHandlerRegistry()
 ///     .Register("conflict-avoidance", new ConflictAvoidanceHandler("Anzac Day"));
 ///
@@ -37,27 +40,35 @@ namespace Bodu.Globalization.Calendar;
 ///     Action = AdjustmentAction.Custom,
 ///     HandlerKey = "conflict-avoidance",
 /// };
+///]]>
 /// </code>
 /// </example>
 public sealed class AdjustmentHandlerRegistry
     : IAdjustmentHandlerRegistry
 {
-    /// <summary>The case-insensitive key-to-handler mapping maintained by this registry.</summary>
+    /// <summary>
+    /// The case-insensitive key-to-handler mapping maintained by this registry.
+    /// </summary>
     private readonly Dictionary<string, IAdjustmentHandler> _handlers = new(StringComparer.OrdinalIgnoreCase);
 
-    /// <summary>Lock protecting read-modify-write access to <see cref="_handlers" />.</summary>
+    /// <summary>
+    /// Lock protecting read-modify-write access to <see cref="_handlers" />.
+    /// </summary>
     private readonly object _gate = new();
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AdjustmentHandlerRegistry"/> class.
+    /// Initializes a new instance of the <see cref="AdjustmentHandlerRegistry" /> class.
     /// </summary>
     public AdjustmentHandlerRegistry() { }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AdjustmentHandlerRegistry"/> class seeded with the supplied handlers.
+    /// Initializes a new instance of the <see cref="AdjustmentHandlerRegistry" /> class seeded with the supplied
+    /// handlers.
     /// </summary>
     /// <param name="handlers">The key/handler pairs to register. Must not be <see langword="null" />.</param>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="handlers" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="handlers" /> is <see langword="null" />.
+    /// </exception>
     public AdjustmentHandlerRegistry(IEnumerable<KeyValuePair<string, IAdjustmentHandler>> handlers)
     {
         if (handlers is null) throw new ArgumentNullException(nameof(handlers));
@@ -72,8 +83,12 @@ public sealed class AdjustmentHandlerRegistry
     /// <param name="key">The handler key. Must not be <see langword="null" /> or whitespace.</param>
     /// <param name="handler">The handler instance. Must not be <see langword="null" />.</param>
     /// <returns>The current registry, for fluent chaining.</returns>
-    /// <exception cref="ArgumentException">Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.</exception>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="handler" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="key" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="handler" /> is <see langword="null" />.
+    /// </exception>
     public AdjustmentHandlerRegistry Register(string key, IAdjustmentHandler handler)
     {
         if (string.IsNullOrWhiteSpace(key))

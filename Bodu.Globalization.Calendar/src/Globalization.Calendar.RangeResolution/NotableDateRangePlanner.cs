@@ -12,23 +12,24 @@ namespace Bodu.Globalization.Calendar.RangeResolution;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Rule selection is deliberately simple: a rule is eligible when it passes the static territory, calendar, and filter checks.
-/// The main pass evaluates each eligible rule for every civil year that the request window spans, materializing the rule's
-/// resolved date and admitting it when it intersects the window.
+/// Rule selection is deliberately simple: a rule is eligible when it passes the static territory, calendar, and filter
+/// checks. The main pass evaluates each eligible rule for every civil year that the request window spans, materializing
+/// the rule's resolved date and admitting it when it intersects the window.
 /// </para>
 /// <para>
-/// Cross-year roll-overs (for example, <c>31 Dec</c> with a forward observance adjustment landing on <c>3 Jan</c>) are handled by
-/// a separate fringe pass at the pipeline level. The planner identifies which adjacent civil years that pass needs to scan and
-/// the fringe day-window itself; the actual fringe materialization lives in the pipeline.
+/// Cross-year roll-overs (for example, <c>31 Dec</c> with a forward observance adjustment landing on <c>3 Jan</c>) are
+/// handled by a separate fringe pass at the pipeline level. The planner identifies which adjacent civil years that pass
+/// needs to scan and the fringe day-window itself; the actual fringe materialization lives in the pipeline.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateRangePlanner
 {
     /// <summary>
-    /// The default fringe distance in days, applied either side of the request window when scanning for adjustment-driven
-    /// candidates. Most observance adjustments shift dates by less than a week (weekend roll-forward, weekday substitute), so
-    /// seven days is a safe envelope that covers <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> chains in typical rule
-    /// sets without inflating the search space.
+    /// The default fringe distance in days, applied either side of the request window when scanning for
+    /// adjustment-driven candidates. Most observance adjustments shift dates by less than a week (weekend roll-forward,
+    /// weekday substitute), so seven days is a safe envelope that covers
+    /// <see cref="AdjustmentAction.MoveToNextNonWorkingDay" /> chains in typical rule sets without inflating the search
+    /// space.
     /// </summary>
     public const int DefaultFringeDays = 7;
 
@@ -49,7 +50,10 @@ internal sealed class NotableDateRangePlanner
     /// Initializes a new instance of the <see cref="NotableDateRangePlanner" /> class with an explicit fringe distance.
     /// </summary>
     /// <param name="analysis">The static rule analysis to use when planning requests.</param>
-    /// <param name="fringeDays">The fringe distance in days, applied either side of the request window when scanning for adjustment-driven candidates.</param>
+    /// <param name="fringeDays">
+    /// The fringe distance in days, applied either side of the request window when scanning for adjustment-driven
+    /// candidates.
+    /// </param>
     /// <exception cref="ArgumentNullException"><paramref name="analysis" /> is <see langword="null" />.</exception>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="fringeDays" /> is negative.</exception>
     public NotableDateRangePlanner(RuleStaticAnalysis analysis, int fringeDays)
@@ -146,15 +150,12 @@ internal sealed class NotableDateRangePlanner
         if (request.CalendarType is not null && rule.CalendarType is not null && rule.CalendarType != request.CalendarType)
             return false;
 
-        if (!RuleMayApplyToTerritory(rule, request.TerritoryCode))
-            return false;
-
-        return true;
+        return RuleMayApplyToTerritory(rule, request.TerritoryCode);
     }
 
     /// <summary>
-    /// Returns <see langword="true" /> when the rule's authored territory list intersects the requested territory using parent /
-    /// child containment semantics.
+    /// Returns <see langword="true" /> when the rule's authored territory list intersects the requested territory using
+    /// parent / child containment semantics.
     /// </summary>
     /// <param name="rule">The rule to check.</param>
     /// <param name="requestedTerritory">The requested territory, or <see langword="null" /> for any.</param>
@@ -188,9 +189,6 @@ internal sealed class NotableDateRangePlanner
 
         if (days < 0 && value <= DateTime.MinValue.AddDays(-days))
             return DateTime.MinValue.Date;
-        if (days > 0 && value >= DateTime.MaxValue.AddDays(-days))
-            return DateTime.MaxValue.Date;
-
-        return value.AddDays(days);
+        return days > 0 && value >= DateTime.MaxValue.AddDays(-days) ? DateTime.MaxValue.Date : value.AddDays(days);
     }
 }

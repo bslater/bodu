@@ -19,23 +19,22 @@ using SysGlobal = System.Globalization;
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Parses authored JSON payloads into <see cref="NotableDateRule" /> instances after schema validation.
-/// Companion to <see cref="NotableDateRuleParser" /> for authors who prefer a JSON authoring format.
+/// Parses authored JSON payloads into <see cref="NotableDateRule" /> instances after schema validation. Companion to
+/// <see cref="NotableDateRuleParser" /> for authors who prefer a JSON authoring format.
 /// </summary>
 /// <remarks>
 /// <para>
-/// JSON inputs are validated against the embedded <c>NotableDates.schema.json</c> (a JSON Schema
-/// draft 2020-12 document that mirrors <c>NotableDates.xsd</c>) before parsing. Schema violations
-/// surface as <see cref="JsonException" /> so authoring errors are caught at parse time rather than
-/// at first query — exactly as the XML pathway surfaces <see cref="System.Xml.Schema.XmlSchemaValidationException" />.
+/// JSON inputs are validated against the embedded <c>NotableDates.schema.json</c> (a JSON Schema draft 2020-12 document
+/// that mirrors <c>NotableDates.xsd</c>) before parsing. Schema violations surface as <see cref="JsonException" /> so
+/// authoring errors are caught at parse time rather than at first query — exactly as the XML pathway surfaces
+/// <see cref="System.Xml.Schema.XmlSchemaValidationException" />.
 /// </para>
 /// <para>
-/// The JSON vocabulary mirrors the XML schema one-for-one: a top-level object with optional
-/// <c>useFrom</c> and <c>notableDates</c> arrays; each rule selects exactly one of <c>fixed</c>,
-/// <c>dayOfWeekInMonth</c>, <c>offsetFromAnchor</c>, or <c>algorithm</c> as its strategy. After
-/// schema validation succeeds, a semantic pass enforces the remaining invariants the XML parser
-/// enforces — unique adjustment keys within a rule, resolvable enum/type names, and the override-body
-/// name/category requirement.
+/// The JSON vocabulary mirrors the XML schema one-for-one: a top-level object with optional <c>useFrom</c> and
+/// <c>notableDates</c> arrays; each rule selects exactly one of <c>fixed</c>, <c>dayOfWeekInMonth</c>,
+/// <c>offsetFromAnchor</c>, or <c>algorithm</c> as its strategy. After schema validation succeeds, a semantic pass
+/// enforces the remaining invariants the XML parser enforces — unique adjustment keys within a rule, resolvable
+/// enum/type names, and the override-body name/category requirement.
 /// </para>
 /// </remarks>
 public static class NotableDateRuleJsonParser
@@ -60,24 +59,34 @@ public static class NotableDateRuleJsonParser
     /// <param name="json">The JSON payload. Must not be <see langword="null" />, empty, or whitespace.</param>
     /// <returns>The parsed rules.</returns>
     /// <remarks>
-    /// This convenience overload returns only the rules and discards any <c>useFrom</c> directives. To
-    /// resolve a document graph including imports, call <see cref="ParseDocument(string)" /> instead and
-    /// feed the result to a loader such as <see cref="JsonResourceNotableDateRuleProvider" />.
+    /// This convenience overload returns only the rules and discards any <c>useFrom</c> directives. To resolve a
+    /// document graph including imports, call <see cref="ParseDocument(string)" /> instead and feed the result to a
+    /// loader such as <see cref="JsonResourceNotableDateRuleProvider" />.
     /// </remarks>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="json" /> is <see langword="null" />, empty, or whitespace.</exception>
-    /// <exception cref="JsonException">Thrown when <paramref name="json" /> is not well-formed JSON, or fails schema validation against the embedded <c>NotableDates.schema.json</c>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="json" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
+    /// <exception cref="JsonException">
+    /// Thrown when <paramref name="json" /> is not well-formed JSON, or fails schema validation against the embedded
+    /// <c>NotableDates.schema.json</c>.
+    /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the document fails semantic validation.</exception>
     public static List<NotableDateRule> ParseJson(string json) =>
         [.. ParseDocument(json).LocalRules];
 
     /// <summary>
-    /// Parses the supplied JSON string into a <see cref="ParsedNotableDateDocument" />, exposing local rules
-    /// together with any <c>useFrom</c> directives, after validating it against the embedded schema.
+    /// Parses the supplied JSON string into a <see cref="ParsedNotableDateDocument" />, exposing local rules together
+    /// with any <c>useFrom</c> directives, after validating it against the embedded schema.
     /// </summary>
     /// <param name="json">The JSON payload. Must not be <see langword="null" />, empty, or whitespace.</param>
     /// <returns>The parsed document, including imports and rules.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="json" /> is <see langword="null" />, empty, or whitespace.</exception>
-    /// <exception cref="JsonException">Thrown when <paramref name="json" /> is not well-formed JSON, or fails schema validation against the embedded <c>NotableDates.schema.json</c>.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="json" /> is <see langword="null" />, empty, or whitespace.
+    /// </exception>
+    /// <exception cref="JsonException">
+    /// Thrown when <paramref name="json" /> is not well-formed JSON, or fails schema validation against the embedded
+    /// <c>NotableDates.schema.json</c>.
+    /// </exception>
     /// <exception cref="InvalidOperationException">Thrown when the document fails semantic validation.</exception>
     public static ParsedNotableDateDocument ParseDocument(string json)
     {
@@ -173,8 +182,8 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Maps an <see cref="OverrideRuleDto" /> onto a <see cref="NotableDateRuleOverrideBody" />, enforcing
-    /// the XSD-mandated <c>name</c> and <c>category</c> requirement on the override body.
+    /// Maps an <see cref="OverrideRuleDto" /> onto a <see cref="NotableDateRuleOverrideBody" />, enforcing the
+    /// XSD-mandated <c>name</c> and <c>category</c> requirement on the override body.
     /// </summary>
     /// <param name="dto">The override DTO to map.</param>
     /// <returns>The mapped <see cref="NotableDateRuleOverrideBody" />.</returns>
@@ -273,11 +282,10 @@ public static class NotableDateRuleJsonParser
     /// <returns>The mapped <see cref="ObservanceAdjustment" />.</returns>
     private static ObservanceAdjustment MapAdjustment(AdjustmentDto dto)
     {
-        if (string.IsNullOrWhiteSpace(dto.Key))
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, "key", "adjustment"));
-
-        return new ObservanceAdjustment
+        return string.IsNullOrWhiteSpace(dto.Key)
+            ? throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, "key", "adjustment"))
+            : new ObservanceAdjustment
         {
             Key = dto.Key,
             Trigger = ParseRequiredEnum<AdjustmentTrigger>(dto.When, "when", "adjustment"),
@@ -321,11 +329,10 @@ public static class NotableDateRuleJsonParser
             throw new InvalidOperationException(
                 string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_RuleMissingStrategy, notableDateName));
 
-        if (count > 1)
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnRule, "<multiple>", notableDateName));
-
-        return result;
+        return count > 1
+            ? throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnRule, "<multiple>", notableDateName))
+            : result;
     }
 
     /// <summary>
@@ -347,11 +354,10 @@ public static class NotableDateRuleJsonParser
         if (count == 0)
             return null;
 
-        if (count > 1)
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnOverrideRule, "<multiple>"));
-
-        return result;
+        return count > 1
+            ? throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_UnknownStrategyElementOnOverrideRule, "<multiple>"))
+            : (DateResolutionStrategy?)result;
     }
 
     /// <summary>
@@ -492,11 +498,10 @@ public static class NotableDateRuleJsonParser
     /// <returns>The validated non-empty string.</returns>
     private static string RequireString(string? value, string fieldName, string contextName)
     {
-        if (string.IsNullOrWhiteSpace(value))
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, fieldName, contextName));
-
-        return value;
+        return string.IsNullOrWhiteSpace(value)
+            ? throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, fieldName, contextName))
+            : value;
     }
 
     /// <summary>
@@ -508,11 +513,10 @@ public static class NotableDateRuleJsonParser
     /// <returns>The validated integer value.</returns>
     private static int RequireInt(int? value, string fieldName, string contextName)
     {
-        if (value is null)
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, fieldName, contextName));
-
-        return value.Value;
+        return value is null
+            ? throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, fieldName, contextName))
+            : value.Value;
     }
 
     /// <summary>
@@ -530,11 +534,10 @@ public static class NotableDateRuleJsonParser
             throw new InvalidOperationException(
                 string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_MissingRequiredAttribute, fieldName, contextName));
 
-        if (!Enum.TryParse<TEnum>(raw, ignoreCase: true, out TEnum result))
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_InvalidAttributeValue, fieldName, contextName));
-
-        return result;
+        return !Enum.TryParse<TEnum>(raw, ignoreCase: true, out TEnum result)
+            ? throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_InvalidAttributeValue, fieldName, contextName))
+            : result;
     }
 
     /// <summary>
@@ -551,11 +554,10 @@ public static class NotableDateRuleJsonParser
         if (string.IsNullOrWhiteSpace(raw))
             return null;
 
-        if (!Enum.TryParse<TEnum>(raw, ignoreCase: true, out TEnum result))
-            throw new InvalidOperationException(
-                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_InvalidAttributeValue, fieldName, contextName));
-
-        return result;
+        return !Enum.TryParse<TEnum>(raw, ignoreCase: true, out TEnum result)
+            ? throw new InvalidOperationException(
+                string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Op_Invalid_InvalidAttributeValue, fieldName, contextName))
+            : (TEnum?)result;
     }
 
     /// <summary>
@@ -563,7 +565,9 @@ public static class NotableDateRuleJsonParser
     /// </summary>
     /// <typeparam name="TBase">The base type the resolved type must be assignable to.</typeparam>
     /// <param name="typeName">The fully qualified type name to resolve, or <see langword="null" />.</param>
-    /// <returns>The resolved <see cref="Type" />, or <see langword="null" /> when the name is absent or unresolvable.</returns>
+    /// <returns>
+    /// The resolved <see cref="Type" />, or <see langword="null" /> when the name is absent or unresolvable.
+    /// </returns>
     private static Type? ParseOptionalType<TBase>(string? typeName)
     {
         if (string.IsNullOrWhiteSpace(typeName))
@@ -579,7 +583,9 @@ public static class NotableDateRuleJsonParser
     /// </summary>
     /// <param name="month">The month token, or <see langword="null" />.</param>
     /// <param name="day">The day of month, or <see langword="null" />.</param>
-    /// <returns>The synthetic <see cref="DateTime" />, or <see langword="null" /> when either input is absent.</returns>
+    /// <returns>
+    /// The synthetic <see cref="DateTime" />, or <see langword="null" /> when either input is absent.
+    /// </returns>
     private static DateTime? ParseOptionalMonthDay(string? month, int? day)
     {
         if (string.IsNullOrWhiteSpace(month) || day is null)
@@ -602,11 +608,10 @@ public static class NotableDateRuleJsonParser
         if (DateTime.TryParseExact(monthName, "MMMM", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime result))
             return result.Month;
 
-        if (int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
-            && numeric is >= 1 and <= 13)
-            return numeric;
-
-        throw new FormatException(
+        return int.TryParse(monthName, NumberStyles.Integer, CultureInfo.InvariantCulture, out var numeric)
+            && numeric is >= 1 and <= 13
+            ? numeric
+            : throw new FormatException(
             string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueGregorian, monthName));
     }
 
@@ -614,7 +619,9 @@ public static class NotableDateRuleJsonParser
     /// Parses a Fixed-strategy month token, returning either a numeric month or a Hebrew calendar alias.
     /// </summary>
     /// <param name="token">The month token to parse.</param>
-    /// <returns>A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.</returns>
+    /// <returns>
+    /// A tuple of <c>(numericMonth, alias)</c>: exactly one of the two is non-<see langword="null" />.
+    /// </returns>
     private static (int? numericMonth, string? alias) ParseMonthToken(string token)
     {
         if (string.IsNullOrWhiteSpace(token))
@@ -642,10 +649,9 @@ public static class NotableDateRuleJsonParser
         if (simpleHebrew is not null)
             return (simpleHebrew, null);
 
-        if (token is "LastAdar" or "Nisan" or "Iyar" or "Sivan" or "Tammuz" or "Av" or "Elul")
-            return (null, token);
-
-        throw new FormatException(
+        return token is "LastAdar" or "Nisan" or "Iyar" or "Sivan" or "Tammuz" or "Av" or "Elul"
+            ? ((int? numericMonth, string? alias))(null, token)
+            : throw new FormatException(
             string.Format(CultureInfo.InvariantCulture, CalendarResourceStrings.Format_Invalid_MonthValueHebrew, token));
     }
 
@@ -691,8 +697,7 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Validates the parsed JSON tree against the embedded schema, throwing on the first
-    /// schema violation.
+    /// Validates the parsed JSON tree against the embedded schema, throwing on the first schema violation.
     /// </summary>
     /// <param name="node">The parsed JSON node to validate.</param>
     /// <exception cref="JsonException">The document fails schema validation.</exception>
@@ -709,8 +714,8 @@ public static class NotableDateRuleJsonParser
     }
 
     /// <summary>
-    /// Flattens a failed schema evaluation into a single diagnostic message that lists each
-    /// failing instance location with the keyword(s) that rejected it.
+    /// Flattens a failed schema evaluation into a single diagnostic message that lists each failing instance location
+    /// with the keyword(s) that rejected it.
     /// </summary>
     /// <param name="results">The failed evaluation results to summarize.</param>
     /// <returns>A semicolon-separated diagnostic message.</returns>

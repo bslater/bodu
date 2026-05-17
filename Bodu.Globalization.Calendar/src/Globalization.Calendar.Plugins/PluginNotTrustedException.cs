@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.Plugins;
 
 /// <summary>
-/// Thrown by <see cref="ExternalPluginLoader" /> when the configured <see cref="IPluginTrustPolicy" /> rejects a candidate
-/// plugin assembly before it is loaded into the process.
+/// Thrown by <see cref="ExternalPluginLoader" /> when the configured <see cref="IPluginTrustPolicy" /> rejects a
+/// candidate plugin assembly before it is loaded into the process.
 /// </summary>
 public sealed class PluginNotTrustedException
     : NotableDatePluginException
@@ -24,11 +24,10 @@ public sealed class PluginNotTrustedException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class with the specified error message.
+    /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class with the specified error
+    /// message.
     /// </summary>
-    /// <param name="message">
-    /// The message that describes the error.
-    /// </param>
+    /// <param name="message">The message that describes the error.</param>
     public PluginNotTrustedException(string message)
         : base(message)
     {
@@ -37,15 +36,11 @@ public sealed class PluginNotTrustedException
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class with the specified error message
-    /// and a reference to the inner exception that caused this exception.
+    /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class with the specified error
+    /// message and a reference to the inner exception that caused this exception.
     /// </summary>
-    /// <param name="message">
-    /// The message that describes the error.
-    /// </param>
-    /// <param name="innerException">
-    /// The exception that is the cause of the current exception.
-    /// </param>
+    /// <param name="message">The message that describes the error.</param>
+    /// <param name="innerException">The exception that is the cause of the current exception.</param>
     public PluginNotTrustedException(string message, Exception innerException)
         : base(message, innerException)
     {
@@ -57,9 +52,7 @@ public sealed class PluginNotTrustedException
     /// Initializes a new instance of the <see cref="PluginNotTrustedException" /> class for a plugin assembly rejected
     /// by a trust policy.
     /// </summary>
-    /// <param name="assemblyPath">
-    /// The path of the rejected plugin assembly.
-    /// </param>
+    /// <param name="assemblyPath">The path of the rejected plugin assembly.</param>
     /// <param name="reason">
     /// The trust policy's stated reason for rejecting the plugin assembly, or <see langword="null" /> when the policy
     /// did not supply one.

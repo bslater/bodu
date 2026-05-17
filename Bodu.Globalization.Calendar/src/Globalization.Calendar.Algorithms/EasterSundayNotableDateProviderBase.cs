@@ -16,14 +16,17 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// <remarks>
 /// <para>
 /// Derived classes supply the Easter Sunday calculation algorithm via <see cref="CalculateDate" /> and declare the
-/// <see cref="Name" />, <see cref="Category" />, and optional <see cref="Comment" /> and <see cref="DefaultCalendarType" />
-/// properties. Results are cached per year in a thread-safe <see cref="ConcurrentDictionary{TKey,TValue}" />.
+/// <see cref="Name" />, <see cref="Category" />, and optional <see cref="Comment" /> and
+/// <see cref="DefaultCalendarType" /> properties. Results are cached per year in a thread-safe
+/// <see cref="ConcurrentDictionary{TKey,TValue}" />.
 /// </para>
 /// </remarks>
 public abstract class EasterSundayNotableDateProviderBase
     : INotableDateProvider
 {
-    /// <summary>Thread-safe per-year cache of computed Easter Sunday dates for this provider.</summary>
+    /// <summary>
+    /// Thread-safe per-year cache of computed Easter Sunday dates for this provider.
+    /// </summary>
     private readonly ConcurrentDictionary<int, DateTime> _dateCache = new();
 
     /// <summary>
@@ -57,8 +60,8 @@ public abstract class EasterSundayNotableDateProviderBase
     /// Gets the non-exclusive tags attached to the produced <see cref="NotableDate" />.
     /// </summary>
     /// <returns>
-    /// An <see cref="ImmutableHashSet{T}" /> containing at least <c>"Christianity"</c> and <c>"Easter"</c>.
-    /// Derived classes may override to add or replace tags.
+    /// An <see cref="ImmutableHashSet{T}" /> containing at least <c>"Christianity"</c> and <c>"Easter"</c>. Derived
+    /// classes may override to add or replace tags.
     /// </returns>
     protected virtual ImmutableHashSet<string> Tags =>
         ImmutableHashSet.Create<string>(
@@ -67,10 +70,13 @@ public abstract class EasterSundayNotableDateProviderBase
             "Easter");
 
     /// <summary>
-    /// Gets the default calendar type associated with this provider, attached to each produced <see cref="NotableDate" />
-    /// when the caller does not supply an explicit calendar.
+    /// Gets the default calendar type associated with this provider, attached to each produced
+    /// <see cref="NotableDate" /> when the caller does not supply an explicit calendar.
     /// </summary>
-    /// <returns>The <see cref="Type" /> of the default calendar, or <see langword="null" /> when no explicit calendar should be attached.</returns>
+    /// <returns>
+    /// The <see cref="Type" /> of the default calendar, or <see langword="null" /> when no explicit calendar should be
+    /// attached.
+    /// </returns>
     protected virtual Type? DefaultCalendarType => null;
 
     /// <inheritdoc />
@@ -102,7 +108,9 @@ public abstract class EasterSundayNotableDateProviderBase
     /// Validates the optional calendar supplied to <see cref="GetDates" />.
     /// </summary>
     /// <param name="calendar">The calendar to validate, or <see langword="null" /> for the default.</param>
-    /// <exception cref="NotSupportedException">Thrown when <paramref name="calendar" /> is not supported by this provider.</exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when <paramref name="calendar" /> is not supported by this provider.
+    /// </exception>
     protected abstract void ValidateCalendar(SysGlobal.Calendar? calendar);
 
     /// <summary>

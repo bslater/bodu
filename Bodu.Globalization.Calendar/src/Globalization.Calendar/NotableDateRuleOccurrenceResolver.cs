@@ -1,8 +1,8 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="NotableDateRuleOccurrenceResolver.cs" company="PlaceholderCompany">
-//     Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
-// ---------------------------------------------------------------------------------------------------------------
+﻿// // ---------------------------------------------------------------------------------------------------------------
+// // <copyright file="NotableDateRuleOccurrenceResolver.cs" company="PlaceholderCompany">
+// //     Copyright (c) PlaceholderCompany. All rights reserved.
+// // </copyright>
+// // ---------------------------------------------------------------------------------------------------------------
 
 namespace Bodu.Globalization.Calendar;
 
@@ -20,14 +20,13 @@ namespace Bodu.Globalization.Calendar;
 /// rule itself also falls inside the requested window.
 /// </para>
 /// </remarks>
-internal sealed class NotableDateRuleOccurrenceResolver
-    : INotableDateRuleOccurrenceResolver
+internal sealed class NotableDateRuleOccurrenceResolver : INotableDateRuleOccurrenceResolver
 {
-    private readonly IReadOnlyList<NotableDateRule> _rules;
-    private readonly NotableDateRuleResolver _ruleResolver;
-    private readonly ICalculationAnchorResolver _calculationAnchors;
     private readonly AnchorRelativeRuleIndex _anchorRelativeRules;
     private readonly IReadOnlyList<string> _anchorRuleNames;
+    private readonly ICalculationAnchorResolver _calculationAnchors;
+    private readonly NotableDateRuleResolver _ruleResolver;
+    private readonly IReadOnlyList<NotableDateRule> _rules;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="NotableDateRuleOccurrenceResolver" /> class.
@@ -51,11 +50,11 @@ internal sealed class NotableDateRuleOccurrenceResolver
         ArgumentNullException.ThrowIfNull(calculationAnchors);
         ArgumentNullException.ThrowIfNull(anchorRelativeRules);
 
-        this._rules = rules;
-        this._ruleResolver = ruleResolver;
-        this._calculationAnchors = calculationAnchors;
-        this._anchorRelativeRules = anchorRelativeRules;
-        this._anchorRuleNames = [.. rules
+        _rules = rules;
+        _ruleResolver = ruleResolver;
+        _calculationAnchors = calculationAnchors;
+        _anchorRelativeRules = anchorRelativeRules;
+        _anchorRuleNames = [.. rules
             .Where(rule => rule.Strategy == DateResolutionStrategy.OffsetFromAnchor)
             .Select(rule => rule.AnchorRuleName)
             .Where(name => !string.IsNullOrWhiteSpace(name))
@@ -83,51 +82,171 @@ internal sealed class NotableDateRuleOccurrenceResolver
     }
 
     /// <summary>
-    /// Resolves rules whose dates can be calculated directly by <see cref="NotableDateRuleResolver" />.
+    /// Creates a materialized notable date from a rule and resolved anchor date.
     /// </summary>
-    /// <param name="request">The resolution request.</param>
-    /// <param name="occurrences">The occurrence list to populate.</param>
-    /// <param name="seen">The de-duplication set.</param>
-    private void ResolveDirectOccurrences(
-        NotableDateResolutionRequest request,
-        List<ResolvedNotableDateOccurrence> occurrences,
-        HashSet<OccurrenceKey> seen)
-    {
-        foreach (NotableDateRule rule in _rules)
+    /// <param name="rule">The source rule.</param>
+    /// <param name="date">The resolved date.</param>
+    /// <param name="territoryCode">The expanded territory code.</param>
+    /// <returns>The materialized notable date.</returns>
+    private static NotableDate BuildNotableDate(
+        NotableDateRule rule,
+        DateTime date,
+        string? territoryCode)
+        => new()
         {
-            if (rule.Strategy == DateResolutionStrategy.OffsetFromAnchor)
+            Date = date.Date,
+            Name = rule.Name,
+            Category = rule.Category,
+            DurationDays = Math.Max(1, rule.DurationDays),
+            IsNonWorkingDay = rule.IsNonWorkingDay == true,
+            CalendarType = rule.CalendarType,
+            TerritoryCode = territoryCode,
+            Tags = rule.Tags,
+            Comment = rule.Comment,
+        };
+
+    /// <summary>
+    /// Enumerates territory codes from a rule that are applicable to the requested context.
+    /// </summary>
+    /// <param name="rule">The rule to inspect.</param>
+    /// <param name="requestedTerritoryCode">The requested territory code.</param>
+    /// <returns>The applicable expanded territory codes.</returns>
+    private static IEnumerable<string?> EnumerateApplicableTerritoryCodes(
+        NotableDateRule rule,
+        string? requestedTerritoryCode)
+    {
+        if (string.IsNullOrWhiteSpace(rule.TerritoryCode))
+        {
+            yield return null;
+            yield break;
+        }
+
+        foreach (var territoryCode in rule.TerritoryCode
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+        {
+            if (string.IsNullOrWhiteSpace(territoryCode))
                 continue;
 
-            if (!IsRuleEligible(rule, request))
+            if (!TerritoryMatches(territoryCode, requestedTerritoryCode))
                 continue;
 
-            foreach (var year in GetCandidateYears(request))
-            {
-                DateTime? anchorDate = ResolveDirectAnchorDate(rule, year);
-
-                if (anchorDate is null)
-                    continue;
-
-                AddOccurrenceIfMatch(rule, anchorDate.Value, request, occurrences, seen);
-            }
+            yield return territoryCode;
         }
     }
 
     /// <summary>
-    /// Resolves a direct rule anchor date, using the calculation-anchor cache for algorithm-backed rules.
+    /// Gets conservative candidate years for resolving rules against the requested window.
     /// </summary>
-    /// <param name="rule">The rule to resolve.</param>
-    /// <param name="year">The civil year to resolve.</param>
-    /// <returns>The resolved anchor date, or <see langword="null" /> when the rule does not apply.</returns>
-    private DateTime? ResolveDirectAnchorDate(NotableDateRule rule, int year)
+    /// <param name="request">The resolution request.</param>
+    /// <returns>The candidate civil years.</returns>
+    private static IEnumerable<int> GetCandidateYears(NotableDateResolutionRequest request)
     {
-        if (rule.Strategy == DateResolutionStrategy.Algorithm &&
-            !string.IsNullOrWhiteSpace(rule.Name))
+        var startYear = request.StartDate.Year;
+        var endYear = request.EndDate.Year;
+
+        for (var year = startYear; year <= endYear; year++)
+            yield return year;
+    }
+
+    /// <summary>
+    /// Determines whether two inclusive date spans intersect.
+    /// </summary>
+    /// <param name="leftStart">The first span start.</param>
+    /// <param name="leftEnd">The first span end.</param>
+    /// <param name="rightStart">The second span start.</param>
+    /// <param name="rightEnd">The second span end.</param>
+    /// <returns><see langword="true" /> when the spans intersect.</returns>
+    private static bool Intersects(
+        DateTime leftStart,
+        DateTime leftEnd,
+        DateTime rightStart,
+        DateTime rightEnd) => rightStart.Date <= leftEnd.Date &&
+        rightEnd.Date >= leftStart.Date;
+
+    /// <summary>
+    /// Determines whether a rule is eligible for the request before date resolution.
+    /// </summary>
+    /// <param name="rule">The rule to test.</param>
+    /// <param name="request">The resolution request.</param>
+    /// <returns><see langword="true" /> when the rule may produce a matching occurrence.</returns>
+    private static bool IsRuleEligible(NotableDateRule rule, NotableDateResolutionRequest request) =>
+        request.Filter?.IsRuleEligible(rule) != false && RuleMayApplyToTerritory(rule, request.TerritoryCode) && (request.CalendarType is null ||
+            rule.CalendarType is null ||
+            rule.CalendarType == request.CalendarType);
+
+    /// <summary>
+    /// Determines whether a rule may apply to the requested territory.
+    /// </summary>
+    /// <param name="rule">The rule to test.</param>
+    /// <param name="requestedTerritoryCode">The requested territory code.</param>
+    /// <returns><see langword="true" /> when the rule may apply.</returns>
+    private static bool RuleMayApplyToTerritory(NotableDateRule rule, string? requestedTerritoryCode)
+    {
+        if (string.IsNullOrWhiteSpace(rule.TerritoryCode))
+            return true;
+
+        foreach (var territoryCode in rule.TerritoryCode
+            .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
         {
-            return _calculationAnchors.Resolve(rule.Name, year);
+            if (TerritoryMatches(territoryCode, requestedTerritoryCode))
+                return true;
         }
 
-        return _ruleResolver.ResolveAnchorDate(rule, year);
+        return false;
+    }
+
+    /// <summary>
+    /// Determines whether a rule territory and requested territory are compatible.
+    /// </summary>
+    /// <param name="ruleTerritoryCode">The rule territory code.</param>
+    /// <param name="requestedTerritoryCode">The requested territory code.</param>
+    /// <returns><see langword="true" /> when the territories are compatible.</returns>
+    private static bool TerritoryMatches(string? ruleTerritoryCode, string? requestedTerritoryCode) =>
+        string.IsNullOrWhiteSpace(requestedTerritoryCode) ||
+            string.IsNullOrWhiteSpace(ruleTerritoryCode) ||
+            (TerritoryCode.TryParse(requestedTerritoryCode, out TerritoryCode requested) && TerritoryCode.TryParse(ruleTerritoryCode, out TerritoryCode owned)
+                && (requested.Contains(owned) || owned.Contains(requested)));
+
+    /// <summary>
+    /// Adds a materialized occurrence when it intersects the requested output window and satisfies the date filter.
+    /// </summary>
+    /// <param name="rule">The rule that produced the occurrence.</param>
+    /// <param name="anchorDate">The resolved occurrence date.</param>
+    /// <param name="request">The resolution request.</param>
+    /// <param name="occurrences">The occurrence list to populate.</param>
+    /// <param name="seen">The de-duplication set.</param>
+    private static void AddOccurrenceIfMatch(
+        NotableDateRule rule,
+        DateTime anchorDate,
+        NotableDateResolutionRequest request,
+        List<ResolvedNotableDateOccurrence> occurrences,
+        HashSet<OccurrenceKey> seen)
+    {
+        foreach (var territoryCode in EnumerateApplicableTerritoryCodes(rule, request.TerritoryCode))
+        {
+            NotableDate notable = BuildNotableDate(rule, anchorDate.Date, territoryCode);
+
+            if (!Intersects(request.StartDate, request.EndDate, notable.Date, notable.EndDate))
+                continue;
+
+            if (request.Filter?.IsMatch(notable) == false)
+                continue;
+
+            OccurrenceKey key = new(
+                notable.Name,
+                notable.Date,
+                notable.TerritoryCode,
+                notable.CalendarType);
+
+            if (!seen.Add(key))
+                continue;
+
+            occurrences.Add(new ResolvedNotableDateOccurrence(
+                rule,
+                notable.Date,
+                territoryCode,
+                notable));
+        }
     }
 
     /// <summary>
@@ -184,195 +303,46 @@ internal sealed class NotableDateRuleOccurrenceResolver
     }
 
     /// <summary>
-    /// Adds a materialized occurrence when it intersects the requested output window and satisfies the date filter.
+    /// Resolves a direct rule anchor date, using the calculation-anchor cache for algorithm-backed rules.
     /// </summary>
-    /// <param name="rule">The rule that produced the occurrence.</param>
-    /// <param name="anchorDate">The resolved occurrence date.</param>
+    /// <param name="rule">The rule to resolve.</param>
+    /// <param name="year">The civil year to resolve.</param>
+    /// <returns>The resolved anchor date, or <see langword="null" /> when the rule does not apply.</returns>
+    private DateTime? ResolveDirectAnchorDate(NotableDateRule rule, int year) =>
+        rule.Strategy == DateResolutionStrategy.Algorithm && !string.IsNullOrWhiteSpace(rule.Name)
+            ? _calculationAnchors.Resolve(rule.Name, year)
+            : _ruleResolver.ResolveAnchorDate(rule, year);
+
+    /// <summary>
+    /// Resolves rules whose dates can be calculated directly by <see cref="NotableDateRuleResolver" />.
+    /// </summary>
     /// <param name="request">The resolution request.</param>
     /// <param name="occurrences">The occurrence list to populate.</param>
     /// <param name="seen">The de-duplication set.</param>
-    private void AddOccurrenceIfMatch(
-        NotableDateRule rule,
-        DateTime anchorDate,
+    private void ResolveDirectOccurrences(
         NotableDateResolutionRequest request,
         List<ResolvedNotableDateOccurrence> occurrences,
         HashSet<OccurrenceKey> seen)
     {
-        foreach (var territoryCode in EnumerateApplicableTerritoryCodes(rule, request.TerritoryCode))
+        foreach (NotableDateRule rule in _rules)
         {
-            NotableDate notable = BuildNotableDate(rule, anchorDate.Date, territoryCode);
-
-            if (!Intersects(request.StartDate, request.EndDate, notable.Date, notable.EndDate))
+            if (rule.Strategy == DateResolutionStrategy.OffsetFromAnchor)
                 continue;
 
-            if (request.Filter is not null && !request.Filter.IsMatch(notable))
+            if (!IsRuleEligible(rule, request))
                 continue;
 
-            OccurrenceKey key = new(
-                notable.Name,
-                notable.Date,
-                notable.TerritoryCode,
-                notable.CalendarType);
+            foreach (var year in GetCandidateYears(request))
+            {
+                DateTime? anchorDate = ResolveDirectAnchorDate(rule, year);
 
-            if (!seen.Add(key))
-                continue;
+                if (anchorDate is null)
+                    continue;
 
-            occurrences.Add(new ResolvedNotableDateOccurrence(
-                rule,
-                notable.Date,
-                territoryCode,
-                notable));
+                AddOccurrenceIfMatch(rule, anchorDate.Value, request, occurrences, seen);
+            }
         }
     }
-
-    /// <summary>
-    /// Creates a materialized notable date from a rule and resolved anchor date.
-    /// </summary>
-    /// <param name="rule">The source rule.</param>
-    /// <param name="date">The resolved date.</param>
-    /// <param name="territoryCode">The expanded territory code.</param>
-    /// <returns>The materialized notable date.</returns>
-    private static NotableDate BuildNotableDate(
-        NotableDateRule rule,
-        DateTime date,
-        string? territoryCode) =>
-        new()
-        {
-            Date = date.Date,
-            Name = rule.Name,
-            Category = rule.Category,
-            DurationDays = Math.Max(1, rule.DurationDays),
-            IsNonWorkingDay = rule.IsNonWorkingDay == true,
-            CalendarType = rule.CalendarType,
-            TerritoryCode = territoryCode,
-            Tags = rule.Tags,
-            Comment = rule.Comment,
-        };
-
-    /// <summary>
-    /// Determines whether a rule is eligible for the request before date resolution.
-    /// </summary>
-    /// <param name="rule">The rule to test.</param>
-    /// <param name="request">The resolution request.</param>
-    /// <returns><see langword="true" /> when the rule may produce a matching occurrence.</returns>
-    private static bool IsRuleEligible(NotableDateRule rule, NotableDateResolutionRequest request)
-    {
-        if (request.Filter is not null && !request.Filter.IsRuleEligible(rule))
-            return false;
-
-        if (!RuleMayApplyToTerritory(rule, request.TerritoryCode))
-            return false;
-
-        if (request.CalendarType is not null &&
-            rule.CalendarType is not null &&
-            rule.CalendarType != request.CalendarType)
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Gets conservative candidate years for resolving rules against the requested window.
-    /// </summary>
-    /// <param name="request">The resolution request.</param>
-    /// <returns>The candidate civil years.</returns>
-    private static IEnumerable<int> GetCandidateYears(NotableDateResolutionRequest request)
-    {
-        var startYear = request.StartDate.Year;
-        var endYear = request.EndDate.Year;
-
-        for (var year = startYear; year <= endYear; year++)
-            yield return year;
-    }
-
-    /// <summary>
-    /// Enumerates territory codes from a rule that are applicable to the requested context.
-    /// </summary>
-    /// <param name="rule">The rule to inspect.</param>
-    /// <param name="requestedTerritoryCode">The requested territory code.</param>
-    /// <returns>The applicable expanded territory codes.</returns>
-    private static IEnumerable<string?> EnumerateApplicableTerritoryCodes(
-        NotableDateRule rule,
-        string? requestedTerritoryCode)
-    {
-        if (string.IsNullOrWhiteSpace(rule.TerritoryCode))
-        {
-            yield return null;
-            yield break;
-        }
-
-        foreach (var territoryCode in rule.TerritoryCode.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-        {
-            if (string.IsNullOrWhiteSpace(territoryCode))
-                continue;
-
-            if (!TerritoryMatches(territoryCode, requestedTerritoryCode))
-                continue;
-
-            yield return territoryCode;
-        }
-    }
-
-    /// <summary>
-    /// Determines whether a rule may apply to the requested territory.
-    /// </summary>
-    /// <param name="rule">The rule to test.</param>
-    /// <param name="requestedTerritoryCode">The requested territory code.</param>
-    /// <returns><see langword="true" /> when the rule may apply.</returns>
-    private static bool RuleMayApplyToTerritory(NotableDateRule rule, string? requestedTerritoryCode)
-    {
-        if (string.IsNullOrWhiteSpace(rule.TerritoryCode))
-            return true;
-
-        foreach (var territoryCode in rule.TerritoryCode.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-        {
-            if (TerritoryMatches(territoryCode, requestedTerritoryCode))
-                return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Determines whether a rule territory and requested territory are compatible.
-    /// </summary>
-    /// <param name="ruleTerritoryCode">The rule territory code.</param>
-    /// <param name="requestedTerritoryCode">The requested territory code.</param>
-    /// <returns><see langword="true" /> when the territories are compatible.</returns>
-    private static bool TerritoryMatches(string? ruleTerritoryCode, string? requestedTerritoryCode)
-    {
-        if (string.IsNullOrWhiteSpace(requestedTerritoryCode) ||
-            string.IsNullOrWhiteSpace(ruleTerritoryCode))
-        {
-            return true;
-        }
-
-        if (!TerritoryCode.TryParse(requestedTerritoryCode, out TerritoryCode requested))
-            return false;
-
-        if (!TerritoryCode.TryParse(ruleTerritoryCode, out TerritoryCode owned))
-            return false;
-
-        return requested.Contains(owned) || owned.Contains(requested);
-    }
-
-    /// <summary>
-    /// Determines whether two inclusive date spans intersect.
-    /// </summary>
-    /// <param name="leftStart">The first span start.</param>
-    /// <param name="leftEnd">The first span end.</param>
-    /// <param name="rightStart">The second span start.</param>
-    /// <param name="rightEnd">The second span end.</param>
-    /// <returns><see langword="true" /> when the spans intersect.</returns>
-    private static bool Intersects(
-        DateTime leftStart,
-        DateTime leftEnd,
-        DateTime rightStart,
-        DateTime rightEnd) =>
-        rightStart.Date <= leftEnd.Date &&
-        rightEnd.Date >= leftStart.Date;
 
     /// <summary>
     /// Identifies a materialized occurrence for de-duplication.

@@ -15,10 +15,14 @@ public static partial class NotableDateTimeExtensions
     /// <paramref name="endDate" />, evaluated against the ambient <see cref="NotableDateContext.Default" /> service.
     /// </summary>
     /// <param name="startDate">One end of the inclusive range.</param>
-    /// <param name="endDate">The other end of the inclusive range. The arguments may appear in either chronological order.</param>
+    /// <param name="endDate">
+    /// The other end of the inclusive range. The arguments may appear in either chronological order.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>An ascending sequence of <see cref="DateTime" /> values, each anchored at midnight of a non-working day.</returns>
+    /// <returns>
+    /// An ascending sequence of <see cref="DateTime" /> values, each anchored at midnight of a non-working day.
+    /// </returns>
     public static IEnumerable<DateTime> EnumerateNonWorkingDays(this DateTime startDate, DateTime endDate, string? territoryCode = null, Type? calendarType = null) =>
         EnumerateNonWorkingDays(startDate, endDate, NotableDateContext.Default, territoryCode, calendarType);
 
@@ -27,12 +31,21 @@ public static partial class NotableDateTimeExtensions
     /// <paramref name="endDate" />, evaluated against the supplied <see cref="INotableDateService" />.
     /// </summary>
     /// <param name="startDate">One end of the inclusive range.</param>
-    /// <param name="endDate">The other end of the inclusive range. The arguments may appear in either chronological order.</param>
-    /// <param name="service">The <see cref="INotableDateService" /> consulted for non-working classification. Must not be <see langword="null" />.</param>
+    /// <param name="endDate">
+    /// The other end of the inclusive range. The arguments may appear in either chronological order.
+    /// </param>
+    /// <param name="service">
+    /// The <see cref="INotableDateService" /> consulted for non-working classification. Must not be
+    /// <see langword="null" />.
+    /// </param>
     /// <param name="territoryCode">An optional territory scope.</param>
     /// <param name="calendarType">An optional calendar scope forwarded to the service for rule resolution.</param>
-    /// <returns>An ascending sequence of <see cref="DateTime" /> values, each anchored at midnight of a non-working day.</returns>
-    /// <exception cref="ArgumentNullException">Thrown when <paramref name="service" /> is <see langword="null" />.</exception>
+    /// <returns>
+    /// An ascending sequence of <see cref="DateTime" /> values, each anchored at midnight of a non-working day.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="service" /> is <see langword="null" />.
+    /// </exception>
     public static IEnumerable<DateTime> EnumerateNonWorkingDays(this DateTime startDate, DateTime endDate, INotableDateService service, string? territoryCode = null, Type? calendarType = null)
     {
         ThrowHelper.ThrowIfNull(service);
@@ -41,7 +54,8 @@ public static partial class NotableDateTimeExtensions
     }
 
     /// <summary>
-    /// Performs the lazy day-by-day walk for <see cref="EnumerateNonWorkingDays(DateTime, DateTime, INotableDateService, string?, Type?)" />.
+    /// Performs the lazy day-by-day walk for
+    /// <see cref="EnumerateNonWorkingDays(DateTime, DateTime, INotableDateService, string?, Type?)" />.
     /// </summary>
     /// <param name="startDate">The start boundary, possibly later than <paramref name="endDate" />.</param>
     /// <param name="endDate">The end boundary.</param>

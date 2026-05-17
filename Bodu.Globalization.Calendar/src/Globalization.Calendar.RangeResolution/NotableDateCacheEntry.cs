@@ -7,8 +7,8 @@
 namespace Bodu.Globalization.Calendar.RangeResolution;
 
 /// <summary>
-/// Represents a single entry in the chronological range-resolution cache, carrying the originating rule profile, the materialized
-/// base notable date, an optional adjusted form, and the entry's emission qualification state.
+/// Represents a single entry in the chronological range-resolution cache, carrying the originating rule profile, the
+/// materialized base notable date, an optional adjusted form, and the entry's emission qualification state.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -23,7 +23,9 @@ internal sealed class NotableDateCacheEntry
     /// Initializes a new instance of the <see cref="NotableDateCacheEntry" /> class.
     /// </summary>
     /// <param name="profile">The static profile of the originating rule.</param>
-    /// <param name="anchorYear">The civil year of the anchor date used to materialize <paramref name="baseNotable" />.</param>
+    /// <param name="anchorYear">
+    /// The civil year of the anchor date used to materialize <paramref name="baseNotable" />.
+    /// </param>
     /// <param name="baseNotable">The materialized base notable date (pre-adjustment).</param>
     /// <param name="state">The initial qualification state.</param>
     /// <exception cref="ArgumentNullException">
@@ -60,10 +62,12 @@ internal sealed class NotableDateCacheEntry
     public NotableDate BaseNotable { get; }
 
     /// <summary>
-    /// Gets or sets the materialized observed notable date produced by an observance adjustment, or <see langword="null" /> when no
-    /// adjustment has been applied.
+    /// Gets or sets the materialized observed notable date produced by an observance adjustment, or
+    /// <see langword="null" /> when no adjustment has been applied.
     /// </summary>
-    /// <returns>The adjusted <see cref="NotableDate" />, or <see langword="null" /> when no adjustment has fired for this entry.</returns>
+    /// <returns>
+    /// The adjusted <see cref="NotableDate" />, or <see langword="null" /> when no adjustment has fired for this entry.
+    /// </returns>
     public NotableDate? Adjusted { get; set; }
 
     /// <summary>
@@ -75,13 +79,18 @@ internal sealed class NotableDateCacheEntry
     /// <summary>
     /// Gets the originating rule.
     /// </summary>
-    /// <returns>The <see cref="NotableDateRule" /> referenced by <see cref="Profile" />. Never <see langword="null" />.</returns>
+    /// <returns>
+    /// The <see cref="NotableDateRule" /> referenced by <see cref="Profile" />. Never <see langword="null" />.
+    /// </returns>
     public NotableDateRule Rule => Profile.Rule;
 
     /// <summary>
     /// Gets a value indicating whether the entry should be emitted to the caller in the resolution output.
     /// </summary>
-    /// <returns><see langword="true" /> when <see cref="State" /> is <see cref="NotableDateCacheState.InWindow" /> or <see cref="NotableDateCacheState.Adjusted" />; otherwise <see langword="false" />.</returns>
+    /// <returns>
+    /// <see langword="true" /> when <see cref="State" /> is <see cref="NotableDateCacheState.InWindow" /> or
+    /// <see cref="NotableDateCacheState.Adjusted" />; otherwise <see langword="false" />.
+    /// </returns>
     public bool IsEmissable =>
-        State == NotableDateCacheState.InWindow || State == NotableDateCacheState.Adjusted;
+        State is NotableDateCacheState.InWindow or NotableDateCacheState.Adjusted;
 }

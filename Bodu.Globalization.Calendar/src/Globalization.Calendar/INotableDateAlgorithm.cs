@@ -10,12 +10,13 @@ namespace Bodu.Globalization.Calendar;
 
 /// <summary>
 /// Computes the anchor date of a single notable event for a supplied year — the calculation strategy plugged in by a
-/// <see cref="NotableDateRule" /> whose <see cref="NotableDateRule.Strategy" /> is <see cref="DateResolutionStrategy.Algorithm" />.
+/// <see cref="NotableDateRule" /> whose <see cref="NotableDateRule.Strategy" /> is
+/// <see cref="DateResolutionStrategy.Algorithm" />.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Algorithms are the extensibility seam for notable dates that cannot be expressed as a fixed month/day or as the
-/// <em>n</em>th weekday of a month — for example Easter Sunday (Computus), Lunar New Year, Vesak, Qingming, or any
+/// Algorithms are the extensibility seam for notable dates that cannot be expressed as a fixed month/day or as the <em>
+/// n</em>th weekday of a month — for example Easter Sunday (Computus), Lunar New Year, Vesak, Qingming, or any
 /// observance whose date varies by year and depends on a non-Gregorian calendar.
 /// </para>
 /// <para>
@@ -24,8 +25,9 @@ namespace Bodu.Globalization.Calendar;
 /// <see cref="GetDate" /> for the requested year, and uses the returned <see cref="DateTime" /> as the anchor of the
 /// emitted <see cref="NotableDate" />. All other rule metadata — <see cref="NotableDate.Name" />,
 /// <see cref="NotableDate.Category" />, <see cref="NotableDate.TerritoryCode" />, <see cref="NotableDate.Tags" />,
-/// duration, and any <see cref="ObservanceAdjustment" /> entries — is layered on top by the service. Algorithms therefore
-/// concern themselves only with <em>when</em> the event falls, never with <em>how</em> it is labeled or scoped.
+/// duration, and any <see cref="ObservanceAdjustment" /> entries — is layered on top by the service. Algorithms
+/// therefore concern themselves only with <em>when</em> the event falls, never with <em>how</em> it is labeled or
+/// scoped.
 /// </para>
 /// <para>
 /// Implementations should be deterministic, side-effect-free, and safe to invoke concurrently. The same algorithm
@@ -47,6 +49,7 @@ namespace Bodu.Globalization.Calendar;
 /// month resolution:
 /// </para>
 /// <code>
+///<![CDATA[
 /// public sealed class MelbourneCupAlgorithm : INotableDateAlgorithm
 /// {
 ///     public DateTime? GetDate(int year, System.Globalization.Calendar? calendar = null)
@@ -72,6 +75,7 @@ namespace Bodu.Globalization.Calendar;
 ///     TerritoryCode = "AU-VIC",
 ///     IsNonWorkingDay = true,
 /// };
+///]]>
 /// </code>
 /// </example>
 public interface INotableDateAlgorithm
@@ -81,13 +85,13 @@ public interface INotableDateAlgorithm
     /// </summary>
     /// <param name="year">The target year for the calculation. Must be greater than or equal to 1.</param>
     /// <param name="calendar">
-    /// An optional <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use. When <see langword="null" />,
-    /// <see cref="SysGlobal.GregorianCalendar" /> is assumed.
+    /// An optional <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use. When
+    /// <see langword="null" />, <see cref="SysGlobal.GregorianCalendar" /> is assumed.
     /// </param>
     /// <returns>
     /// The computed <see cref="DateTime" /> representing the notable event in the given year and calendar system, or
-    /// <see langword="null" /> when no occurrence exists for that year (for example, the year is outside the algorithm's supported
-    /// range or the supplied calendar produces no candidate date).
+    /// <see langword="null" /> when no occurrence exists for that year (for example, the year is outside the
+    /// algorithm's supported range or the supplied calendar produces no candidate date).
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
     /// <exception cref="NotSupportedException">

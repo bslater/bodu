@@ -13,13 +13,13 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// This processor deliberately uses the supplied <see cref="NotableDateResolutionWindow" /> instead of calling back into the
-/// legacy public service cache. That keeps adjustment evaluation inside the new chronological pipeline.
+/// This processor deliberately uses the supplied <see cref="NotableDateResolutionWindow" /> instead of calling back
+/// into the legacy public service cache. That keeps adjustment evaluation inside the new chronological pipeline.
 /// </para>
 /// <para>
-/// When adjustment evaluation asks whether a candidate date outside the known request window is non-working, this processor
-/// can expand the known window and materialize neighbouring occurrences as blockers without emitting those blockers to the
-/// caller.
+/// When adjustment evaluation asks whether a candidate date outside the known request window is non-working, this
+/// processor can expand the known window and materialize neighbouring occurrences as blockers without emitting those
+/// blockers to the caller.
 /// </para>
 /// </remarks>
 internal sealed class NotableDateResolutionAdjustmentProcessor
@@ -36,7 +36,9 @@ internal sealed class NotableDateResolutionAdjustmentProcessor
     /// <param name="workingWeek">The working-week pattern used for weekend checks.</param>
     /// <param name="weekendProvider">The optional custom weekend provider.</param>
     /// <param name="handlerRegistry">The optional custom adjustment handler registry.</param>
-    /// <param name="occurrenceResolver">The optional occurrence resolver used to expand neighbouring blocker dates.</param>
+    /// <param name="occurrenceResolver">
+    /// The optional occurrence resolver used to expand neighbouring blocker dates.
+    /// </param>
     /// <exception cref="ArgumentOutOfRangeException"><paramref name="workingWeek" /> is not defined.</exception>
     /// <exception cref="ArgumentNullException">
     /// <paramref name="weekendProvider" /> is <see langword="null" /> when <paramref name="workingWeek" /> is

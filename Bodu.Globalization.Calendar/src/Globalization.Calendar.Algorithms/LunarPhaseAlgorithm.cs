@@ -11,21 +11,26 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The algorithms are taken from Jean Meeus, <em>Astronomical Algorithms</em> (2nd ed.), Chapter 49.
-/// The accuracy is approximately ±2 minutes of the lunar phase transition for years in the range 1900–2100,
-/// which translates to a date accuracy of better than one calendar day.
+/// The algorithms are taken from Jean Meeus, <em>Astronomical Algorithms</em> (2nd ed.), Chapter 49. The accuracy is
+/// approximately ±2 minutes of the lunar phase transition for years in the range 1900–2100, which translates to a date
+/// accuracy of better than one calendar day.
 /// </para>
 /// <para>
-/// All JDE values are in Terrestrial Dynamical Time (TDT). The difference between TDT and UTC (ΔT) is at most
-/// a few minutes for years in the supported range and is neglected when rounding to the nearest calendar day.
+/// All JDE values are in Terrestrial Dynamical Time (TDT). The difference between TDT and UTC (ΔT) is at most a few
+/// minutes for years in the supported range and is neglected when rounding to the nearest calendar day.
 /// </para>
 /// </remarks>
 internal static class LunarPhaseAlgorithm
 {
-    /// <summary>The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00, kind unspecified), equal to JDE 2451545.0.</summary>
+    /// <summary>
+    /// The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00, kind unspecified), equal to JDE
+    /// 2451545.0.
+    /// </summary>
     private static readonly DateTime s_j2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
-    /// <summary>The mean synodic month length in days (IAU value), used to advance the lunation index between search attempts.</summary>
+    /// <summary>
+    /// The mean synodic month length in days (IAU value), used to advance the lunation index between search attempts.
+    /// </summary>
     private const double SynodicMonth = 29.530588861;
 
     /// <summary>
@@ -72,12 +77,15 @@ internal static class LunarPhaseAlgorithm
     }
 
     /// <summary>
-    /// Estimates the lunation index k near the given year and month.
-    /// For full moons k is a half-integer (e.g. 0.5, 1.5); for new moons k is an integer.
+    /// Estimates the lunation index k near the given year and month. For full moons k is a half-integer (e.g. 0.5,
+    /// 1.5); for new moons k is an integer.
     /// </summary>
     /// <param name="year">The Gregorian year used to anchor the estimate.</param>
     /// <param name="month">The Gregorian month (1–12) used to refine the estimate within the year.</param>
-    /// <param name="fullMoon"><see langword="true" /> to bias toward a full-moon lunation index; <see langword="false" /> for a new-moon index.</param>
+    /// <param name="fullMoon">
+    /// <see langword="true" /> to bias toward a full-moon lunation index; <see langword="false" /> for a new-moon
+    /// index.
+    /// </param>
     /// <returns>The estimated lunation index k.</returns>
     private static double EstimateK(int year, int month, bool fullMoon)
     {
@@ -88,7 +96,8 @@ internal static class LunarPhaseAlgorithm
     }
 
     /// <summary>
-    /// Computes the Julian Day Ephemeris of the lunar phase identified by <paramref name="k" /> using the Meeus Chapter 49 algorithm.
+    /// Computes the Julian Day Ephemeris of the lunar phase identified by <paramref name="k" /> using the Meeus Chapter
+    /// 49 algorithm.
     /// </summary>
     /// <param name="k">
     /// Integer k for a new moon; k + 0.5 for a full moon; k + 0.25 / k + 0.75 for quarter moons.
@@ -201,7 +210,10 @@ internal static class LunarPhaseAlgorithm
     /// Converts a Julian Day Ephemeris to a <see cref="DateTime" /> date.
     /// </summary>
     /// <param name="jde">The Julian Day Ephemeris in Terrestrial Dynamical Time.</param>
-    /// <returns>The corresponding day-only <see cref="DateTime" /> with <see cref="DateTime.Kind" /> set to <see cref="DateTimeKind.Unspecified" />.</returns>
+    /// <returns>
+    /// The corresponding day-only <see cref="DateTime" /> with <see cref="DateTime.Kind" /> set to
+    /// <see cref="DateTimeKind.Unspecified" />.
+    /// </returns>
     private static DateTime JdeToDate(double jde)
     {
         DateTime raw = s_j2000Epoch.AddDays(jde - 2451545.0);

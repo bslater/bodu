@@ -13,39 +13,44 @@ namespace Bodu.Globalization.Calendar.Algorithms;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Qingming (Pure Brightness) is the fifth solar term of the Chinese lunisolar calendar, defined as the moment when the sun's
-/// ecliptic longitude reaches 15°. It falls approximately 15 days after the vernal equinox, typically on 4 or 5 April in the
-/// Gregorian calendar.
+/// Qingming (Pure Brightness) is the fifth solar term of the Chinese lunisolar calendar, defined as the moment when the
+/// sun's ecliptic longitude reaches 15°. It falls approximately 15 days after the vernal equinox, typically on 4 or 5
+/// April in the Gregorian calendar.
 /// </para>
 /// <para>
-/// This algorithm uses the vernal equinox formula from Jean Meeus, <em>Astronomical Algorithms</em> (2nd ed.), Chapter 27, with
-/// the principal correction terms from Table 27.c, plus an offset of one full solar degree (15°) worth of the tropical year to
-/// reach 15° of ecliptic longitude. The result is accurate to within one calendar day for years in the range 1901–2100.
+/// This algorithm uses the vernal equinox formula from Jean Meeus, <em>Astronomical Algorithms</em> (2nd ed.), Chapter
+/// 27, with the principal correction terms from Table 27.c, plus an offset of one full solar degree (15°) worth of the
+/// tropical year to reach 15° of ecliptic longitude. The result is accurate to within one calendar day for years in the
+/// range 1901–2100.
 /// </para>
 /// <para>
-/// Returned dates are expressed in the observer's local civil date. Because Qingming is defined in terms of Universal Time (UT)
-/// astronomical events, observers in East Asia (UTC+8) may observe the festival on the previous Gregorian day in a small number
-/// of years when the solar term transition occurs near local midnight. This edge case is not corrected by this algorithm.
+/// Returned dates are expressed in the observer's local civil date. Because Qingming is defined in terms of Universal
+/// Time (UT) astronomical events, observers in East Asia (UTC+8) may observe the festival on the previous Gregorian day
+/// in a small number of years when the solar term transition occurs near local midnight. This edge case is not
+/// corrected by this algorithm.
 /// </para>
 /// </remarks>
 public sealed class QingmingNotableDateAlgorithm
     : INotableDateAlgorithm
 {
     /// <summary>
-    /// The number of days corresponding to 15° of solar longitude (one solar term), computed as the tropical year length
-    /// (365.2422 days) multiplied by 15/360.
+    /// The number of days corresponding to 15° of solar longitude (one solar term), computed as the tropical year
+    /// length (365.2422 days) multiplied by 15/360.
     /// </summary>
     private const double DegreesToDays15 = 15.0 * 365.2422 / 360.0;
 
-    /// <summary>The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00 UT, kind unspecified), equal to JDE 2451545.0.</summary>
+    /// <summary>
+    /// The J2000.0 epoch expressed as a <see cref="DateTime" /> (2000-01-01T12:00:00 UT, kind unspecified), equal to
+    /// JDE 2451545.0.
+    /// </summary>
     private static readonly DateTime s_j2000Epoch = new DateTime(2000, 1, 1, 12, 0, 0, DateTimeKind.Unspecified);
 
     /// <summary>
     /// Computes the date of the Qingming solar term for the specified year.
     /// </summary>
     /// <param name="year">
-    /// The year for which to calculate Qingming. Must be greater than or equal to 1. Accurate results are produced for years in the
-    /// range 1901–2100; results outside this range become progressively less reliable.
+    /// The year for which to calculate Qingming. Must be greater than or equal to 1. Accurate results are produced for
+    /// years in the range 1901–2100; results outside this range become progressively less reliable.
     /// </param>
     /// <param name="calendar">
     /// An optional <see cref="SysGlobal.Calendar" /> instance representing the calendar system to use for the returned
@@ -56,7 +61,9 @@ public sealed class QingmingNotableDateAlgorithm
     /// <see cref="DateTime.Kind" /> is always <see cref="DateTimeKind.Unspecified" />.
     /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="year" /> is less than 1.</exception>
-    /// <exception cref="NotSupportedException">Thrown when the specified <paramref name="calendar" /> type is unsupported.</exception>
+    /// <exception cref="NotSupportedException">
+    /// Thrown when the specified <paramref name="calendar" /> type is unsupported.
+    /// </exception>
     public DateTime? GetDate(int year, SysGlobal.Calendar? calendar = null)
     {
         if (year < 1)
@@ -70,10 +77,9 @@ public sealed class QingmingNotableDateAlgorithm
 
         SysGlobal.Calendar targetCalendar = calendar ?? new SysGlobal.GregorianCalendar();
 
-        if (targetCalendar.GetType() == typeof(SysGlobal.GregorianCalendar))
-            return dateOnly;
-
-        return new DateTime(
+        return targetCalendar.GetType() == typeof(SysGlobal.GregorianCalendar)
+            ? dateOnly
+            : new DateTime(
             targetCalendar.GetYear(dateOnly),
             targetCalendar.GetMonth(dateOnly),
             targetCalendar.GetDayOfMonth(dateOnly),
@@ -83,8 +89,8 @@ public sealed class QingmingNotableDateAlgorithm
     }
 
     /// <summary>
-    /// Computes the Julian Day Ephemeris (JDE) of the vernal equinox for the given Gregorian year using the Meeus polynomial
-    /// (Table 27.a) and the 24-term correction (Table 27.c).
+    /// Computes the Julian Day Ephemeris (JDE) of the vernal equinox for the given Gregorian year using the Meeus
+    /// polynomial (Table 27.a) and the 24-term correction (Table 27.c).
     /// </summary>
     /// <param name="year">The Gregorian year for which the vernal equinox JDE is computed.</param>
     /// <returns>The Julian Day Ephemeris of the vernal equinox in Terrestrial Dynamical Time.</returns>
@@ -115,7 +121,10 @@ public sealed class QingmingNotableDateAlgorithm
     /// Converts a Julian Day Ephemeris to a <see cref="DateTime" /> relative to the J2000 epoch.
     /// </summary>
     /// <param name="jde">The Julian Day Ephemeris in Terrestrial Dynamical Time.</param>
-    /// <returns>The corresponding <see cref="DateTime" /> with <see cref="DateTime.Kind" /> set to <see cref="DateTimeKind.Unspecified" />.</returns>
+    /// <returns>
+    /// The corresponding <see cref="DateTime" /> with <see cref="DateTime.Kind" /> set to
+    /// <see cref="DateTimeKind.Unspecified" />.
+    /// </returns>
     private static DateTime JdeToDateTime(double jde) =>
         s_j2000Epoch.AddDays(jde - 2451545.0);
 
@@ -128,8 +137,8 @@ public sealed class QingmingNotableDateAlgorithm
         degrees * (Math.PI / 180.0);
 
     /// <summary>
-    /// Periodic correction terms from Meeus Table 27.c for the March equinox. Each entry is
-    /// (amplitude, phase [°], rate [°/Julian century]).
+    /// Periodic correction terms from Meeus Table 27.c for the March equinox. Each entry is (amplitude, phase [°], rate
+    /// [°/Julian century]).
     /// </summary>
     private static readonly (double A, double B, double C)[] s_correctionTerms =
     [

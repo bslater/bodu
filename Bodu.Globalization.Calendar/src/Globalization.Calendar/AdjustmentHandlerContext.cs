@@ -7,16 +7,16 @@
 namespace Bodu.Globalization.Calendar;
 
 /// <summary>
-/// Carries the inputs supplied to an <see cref="IAdjustmentHandler" /> when a custom <see cref="ObservanceAdjustment" /> is being
-/// evaluated against a calculated date.
+/// Carries the inputs supplied to an <see cref="IAdjustmentHandler" /> when a custom
+/// <see cref="ObservanceAdjustment" /> is being evaluated against a calculated date.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The context bundles the four facts a handler needs to make a decision: the <see cref="Date" /> the rule originally resolved
-/// to, the <see cref="Adjustment" /> specification authored on the rule (whose <see cref="ObservanceAdjustment.HandlerKey" /> and
-/// <see cref="ObservanceAdjustment.HandlerParameters" /> carry the handler's configuration), the originating <see cref="Rule" />
-/// (including its name, tags, calendar, and surrounding adjustments), and the <see cref="TerritoryCode" /> /
-/// <see cref="CalendarType" /> currently in scope.
+/// The context bundles the four facts a handler needs to make a decision: the <see cref="Date" /> the rule originally
+/// resolved to, the <see cref="Adjustment" /> specification authored on the rule (whose
+/// <see cref="ObservanceAdjustment.HandlerKey" /> and <see cref="ObservanceAdjustment.HandlerParameters" /> carry the
+/// handler's configuration), the originating <see cref="Rule" /> (including its name, tags, calendar, and surrounding
+/// adjustments), and the <see cref="TerritoryCode" /> / <see cref="CalendarType" /> currently in scope.
 /// </para>
 /// <para>
 /// Handlers should treat the context as read-only. Mutations performed on the embedded <see cref="Rule" /> or

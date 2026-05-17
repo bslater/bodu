@@ -22,16 +22,22 @@ namespace Bodu.Globalization.Calendar;
 /// </remarks>
 internal sealed class NotableDateGenerationContext
 {
-    /// <summary>The full output sequence emitted so far during generation.</summary>
+    /// <summary>
+    /// The full output sequence emitted so far during generation.
+    /// </summary>
     private readonly List<NotableDate> _output = [];
 
-    /// <summary>The subset of <see cref="_output" /> flagged non-working, used for working-day arithmetic during generation.</summary>
+    /// <summary>
+    /// The subset of <see cref="_output" /> flagged non-working, used for working-day arithmetic during generation.
+    /// </summary>
     private readonly List<NotableDate> _nonWorkingDates = [];
 
     /// <summary>
     /// Gets the generated output accumulated so far.
     /// </summary>
-    /// <returns>A read-only snapshot of the dates emitted into the context so far. Never <see langword="null" />.</returns>
+    /// <returns>
+    /// A read-only snapshot of the dates emitted into the context so far. Never <see langword="null" />.
+    /// </returns>
     public IReadOnlyList<NotableDate> Output => _output;
 
     /// <summary>
@@ -57,8 +63,8 @@ internal sealed class NotableDateGenerationContext
     /// <param name="calendarType">The active calendar type, or <see langword="null" /> for any calendar.</param>
     /// <param name="isWeekend">A predicate used to determine whether a date is a weekend.</param>
     /// <returns>
-    /// <see langword="true" /> if the date is a weekend or is already covered by a non-working notable date;
-    /// otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the date is a weekend or is already covered by a non-working notable date; otherwise,
+    /// <see langword="false" />.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="isWeekend" /> is <see langword="null" />.</exception>
     public bool IsNonWorkingDay(
@@ -152,9 +158,8 @@ internal sealed class NotableDateGenerationContext
         if (!TerritoryCode.TryParse(territoryCode, out TerritoryCode requested))
             return false;
 
-        if (!TerritoryCode.TryParse(date.TerritoryCode, out TerritoryCode owned))
-            return false;
-
-        return requested.Contains(owned) || owned.Contains(requested);
+        return !TerritoryCode.TryParse(date.TerritoryCode, out TerritoryCode owned)
+            ? false
+            : requested.Contains(owned) || owned.Contains(requested);
     }
 }

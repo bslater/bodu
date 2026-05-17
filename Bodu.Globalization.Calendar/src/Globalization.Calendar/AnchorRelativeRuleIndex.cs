@@ -11,12 +11,12 @@ namespace Bodu.Globalization.Calendar;
 /// </summary>
 /// <remarks>
 /// <para>
-/// The index supports efficient lookup of rules such as <c>Start of Lent</c>, <c>Palm Sunday</c>,
-/// <c>Good Friday</c>, and <c>Easter Monday</c> after the shared calculation anchor has been resolved.
+/// The index supports efficient lookup of rules such as <c>Start of Lent</c>, <c>Palm Sunday</c>, <c>Good Friday</c>,
+/// and <c>Easter Monday</c> after the shared calculation anchor has been resolved.
 /// </para>
 /// <para>
-/// Once the anchor date is known, a requested date window can be converted into a minimum and maximum offset. Only rules
-/// whose authored offsets fall within that range need to be materialized.
+/// Once the anchor date is known, a requested date window can be converted into a minimum and maximum offset. Only
+/// rules whose authored offsets fall within that range need to be materialized.
 /// </para>
 /// </remarks>
 internal sealed class AnchorRelativeRuleIndex
@@ -70,7 +70,8 @@ internal sealed class AnchorRelativeRuleIndex
     /// <param name="maxOffsetDays">The inclusive maximum offset, in days.</param>
     /// <returns>The matching rules, ordered by offset and then by rule priority and name.</returns>
     /// <exception cref="ArgumentException">
-    /// <paramref name="anchorRuleName" /> is <see langword="null" />, empty, or consists only of white-space characters.
+    /// <paramref name="anchorRuleName" /> is <see langword="null" />, empty, or consists only of white-space
+    /// characters.
     /// </exception>
     public IReadOnlyList<NotableDateRule> FindRules(
         string anchorRuleName,
