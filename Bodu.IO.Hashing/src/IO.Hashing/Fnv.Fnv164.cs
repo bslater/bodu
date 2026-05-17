@@ -7,38 +7,48 @@
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes the hash for the input data using the <c>FNV-1</c> 64-bit hash algorithm. This class cannot be
-/// inherited.
+/// Computes the hash for the input data using the <c>FNV-1</c> 64-bit hash algorithm. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The FNV-1 variant performs multiplication before XOR. The 64-bit configuration uses prime
-/// <c>0x100000001B3</c> and offset basis <c>0xCBF29CE484222325</c>.
+/// The FNV-1 variant performs multiplication before XOR. The 64-bit configuration uses prime <c>0x100000001B3</c> and
+/// offset basis <c>0xCBF29CE484222325</c>.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 64 bits (8 bytes), little-endian.</description></item>
-///   <item><description>Offset basis: <c>0xCBF29CE484222325</c>.</description></item>
-///   <item><description>FNV prime: <c>0x00000100000001B3</c>.</description></item>
-///   <item><description>Variant: FNV-1 (multiply, then XOR).</description></item>
+/// <item>
+/// <description>
+/// Output size: 64 bits (8 bytes), little-endian.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Offset basis: <c>0xCBF29CE484222325</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// FNV prime: <c>0x00000100000001B3</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Variant: FNV-1 (multiply, then XOR).
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Fnv164.</strong> Pick <see cref="Fnv164"/> only when reproducing a digest from
-/// existing FNV-1 64-bit consumers. For new code prefer <see cref="Fnv1a64"/>: same parameters, better
-/// avalanche, identical cost.
+/// <strong>When to choose Fnv164.</strong> Pick <see cref="Fnv164" /> only when reproducing a digest from existing
+/// FNV-1 64-bit consumers. For new code prefer <see cref="Fnv1a64" />: same parameters, better avalanche, identical
+/// cost.
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
-/// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// var fnv = new Fnv164();
-/// byte[] digest = fnv.ComputeHash(System.Text.Encoding.UTF8.GetBytes("key"));
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var fnv = new Fnv164(); byte[]
+/// digest = fnv.ComputeHash(System.Text.Encoding.UTF8.GetBytes("key")); </code>
 /// </example>
 /// </remarks>
 public sealed class Fnv164

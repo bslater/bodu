@@ -9,17 +9,16 @@ using System.Buffers.Binary;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Provides a reusable base class for <c>Adler-32</c> style checksum algorithms using <see cref="uint" />
-/// accumulators.
+/// Provides a reusable base class for <c>Adler-32</c> style checksum algorithms using <see cref="uint" /> accumulators.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Finalization combines the A and B accumulators into a 32-bit hash as
-/// <c><![CDATA[(B << 16) | A]]></c>, written in big-endian byte order.
+/// Finalization combines the A and B accumulators into a 32-bit hash as <c><![CDATA[(B << 16) | A]]></c>, written in
+/// big-endian byte order.
 /// </para>
 /// <para>
-/// Derived classes such as <see cref="Adler32" /> and <see cref="Adler32C" /> supply different moduli
-/// (65521 or 65536) depending on performance or compatibility needs.
+/// Derived classes such as <see cref="Adler32" /> and <see cref="Adler32C" /> supply different moduli (65521 or 65536)
+/// depending on performance or compatibility needs.
 /// </para>
 /// </remarks>
 public abstract class Adler32Base

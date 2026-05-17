@@ -21,53 +21,44 @@ namespace Bodu.IO.Hashing;
 /// MurmurHash3 is a one-shot algorithm. To satisfy the incremental input contract of
 /// <see cref="NonCryptographicHashAlgorithm" />, this base class accumulates all bytes delivered through
 /// <see cref="Append(ReadOnlySpan{byte})" /> into an internal buffer and invokes the derived variant's
-/// <see cref="ComputeHashCore(ReadOnlySpan{byte})" /> from <see cref="GetCurrentHashCore(Span{byte})" /> once
-/// all input is available.
+/// <see cref="ComputeHashCore(ReadOnlySpan{byte})" /> from <see cref="GetCurrentHashCore(Span{byte})" /> once all input
+/// is available.
 /// </para>
 /// <para>
 /// A 32-bit seed can be supplied at construction time to vary the output for the same input, which is useful for
 /// building distributed hash tables and bloom filters. The seed does not affect the algorithm's security posture.
 /// </para>
 /// <para>
-/// Shared mixing primitives (<see cref="FMix32(uint)" />, <see cref="FMix64(ulong)" />) and algorithm constants
-/// are defined here and are available to all derived variants. Supported output sizes are 32 and 128 bits.
+/// Shared mixing primitives (<see cref="FMix32(uint)" />, <see cref="FMix64(ulong)" />) and algorithm constants are
+/// defined here and are available to all derived variants. Supported output sizes are 32 and 128 bits.
 /// </para>
 /// <para>
 /// <strong>When to choose MurmurHash3.</strong> MurmurHash3 has excellent avalanche, strong distribution under
-/// SMHasher's full battery, and is faster than the FNV family on inputs longer than a few dozen bytes — making
-/// it the default choice for non-distributed in-memory hash tables, bloom filters, and content-based sharding.
-/// Pick <see cref="MurmurHash3_32"/> when 32 bits is sufficient and the host is 32-bit-friendly; pick
-/// <see cref="MurmurHash3_128"/> when collision pressure (large key spaces, fingerprinting) calls for more
-/// bits. <see cref="CityHash{T}"/> typically edges MurmurHash3 on long inputs on 64-bit CPUs;
-/// <see cref="Fnv{TSelf}"/> is preferable only for very small fixed-length keys.
+/// SMHasher's full battery, and is faster than the FNV family on inputs longer than a few dozen bytes — making it the
+/// default choice for non-distributed in-memory hash tables, bloom filters, and content-based sharding. Pick
+/// <see cref="MurmurHash3_32" /> when 32 bits is sufficient and the host is 32-bit-friendly; pick
+/// <see cref="MurmurHash3_128" /> when collision pressure (large key spaces, fingerprinting) calls for more bits.
+/// <see cref="CityHash{T}" /> typically edges MurmurHash3 on long inputs on 64-bit CPUs; <see cref="Fnv{TSelf}" /> is
+/// preferable only for very small fixed-length keys.
 /// </para>
 /// <para>
-/// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base
-/// class buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})"/> is called. Memory
-/// consumption therefore grows linearly with input length between resets — avoid feeding it multi-gigabyte
-/// streams. Instances are not thread-safe; share behind explicit synchronization.
+/// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base class
+/// buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})" /> is called. Memory consumption
+/// therefore grows linearly with input length between resets — avoid feeding it multi-gigabyte streams. Instances are
+/// not thread-safe; share behind explicit synchronization.
 /// </para>
-/// <note type="important">
-/// MurmurHash3 is <b>not</b> cryptographically secure. It must <b>not</b> be used for password hashing, digital
-/// signatures, or any application that requires collision resistance under adversarial conditions.
+/// <note type="important"> MurmurHash3 is <b>not</b> cryptographically secure. It must <b>not</b> be used for password
+/// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
 /// </note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// // 32-bit hash, default seed, suitable for in-memory hash tables.
-/// var m32 = new MurmurHash3_32();
-/// uint h32 = BinaryPrimitives.ReadUInt32LittleEndian(m32.ComputeHash(keyBytes));
-///
-/// // 128-bit hash, custom seed for shard isolation across services.
-/// var m128 = new MurmurHash3_128(seed: 0xC2B2AE35u);
-/// byte[] fingerprint = m128.ComputeHash(payload);
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 32-bit hash, default seed,
+/// suitable for in-memory hash tables. var m32 = new MurmurHash3_32(); uint h32 =
+/// BinaryPrimitives.ReadUInt32LittleEndian(m32.ComputeHash(keyBytes)); // 128-bit hash, custom seed for shard isolation
+/// across services. var m128 = new MurmurHash3_128(seed: 0xC2B2AE35u); byte[] fingerprint = m128.ComputeHash(payload);
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="MurmurHash3_32"/>
-/// <seealso cref="MurmurHash3_128"/>
+/// <seealso cref="MurmurHash3_32"/> <seealso cref="MurmurHash3_128"/>
 public abstract class MurmurHash3<T>
     : NonCryptographicHashAlgorithm, IDisposable
     where T : MurmurHash3<T>, new()
@@ -79,8 +70,8 @@ public abstract class MurmurHash3<T>
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="MurmurHash3{T}" /> class with the specified hash output
-    /// size and seed.
+    /// Initializes a new instance of the <see cref="MurmurHash3{T}" /> class with the specified hash output size and
+    /// seed.
     /// </summary>
     /// <param name="hashSize">The desired hash output size in bits. Must be one of 32 or 128.</param>
     /// <param name="seed">The 32-bit seed value used to initialize the hash state.</param>

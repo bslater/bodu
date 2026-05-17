@@ -9,8 +9,8 @@ using Bodu.IO.Hashing.CheckDigits;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Provides shared streaming and one-shot math for the weighted modulus-10 check-digit family used by ISBN-13,
-/// GTIN (EAN / UPC-A), and ABA routing numbers.
+/// Provides shared streaming and one-shot math for the weighted modulus-10 check-digit family used by ISBN-13, GTIN
+/// (EAN / UPC-A), and ABA routing numbers.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -20,23 +20,23 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <c>sum = Σ w_i · d_i  mod 10</c>, <c>check = (10 - sum) mod 10</c>.
 /// </para>
 /// <para>
-/// where <c>w_i</c> is a fixed-period weight pattern indexed from the <em>right-hand</em> data digit. ISBN-13 /
-/// GTIN use the two-element pattern <c>{3, 1}</c> (the check position itself is implicitly weight 1); ABA routing
-/// uses the three-element pattern <c>{1, 7, 3}</c> cycling from the check position.
+/// where <c>w_i</c> is a fixed-period weight pattern indexed from the <em>right-hand</em> data digit. ISBN-13 / GTIN
+/// use the two-element pattern <c>{3, 1}</c> (the check position itself is implicitly weight 1); ABA routing uses the
+/// three-element pattern <c>{1, 7, 3}</c> cycling from the check position.
 /// </para>
 /// <para>
-/// For the two-weight ISBN/GTIN case a dual-hypothesis accumulator analogous to <see cref="Luhn" /> lets a
-/// streaming consumer expose <see cref="AlphanumericCheckDigitAlgorithm.GetCurrentCheckDigit" /> at every prefix
-/// length without buffering. The three-weight ABA case is length-locked at 8 body digits so a simple single-sum
-/// streaming accumulator suffices.
+/// For the two-weight ISBN/GTIN case a dual-hypothesis accumulator analogous to <see cref="Luhn" /> lets a streaming
+/// consumer expose <see cref="AlphanumericCheckDigitAlgorithm.GetCurrentCheckDigit" /> at every prefix length without
+/// buffering. The three-weight ABA case is length-locked at 8 body digits so a simple single-sum streaming accumulator
+/// suffices.
 /// </para>
 /// </remarks>
 internal static class WeightedMod10
 {
 
     /// <summary>
-    /// Computes the ABA routing-number check digit for the supplied 8-digit body using weights <c>{1, 7, 3}</c>
-    /// applied cyclically from the right-hand data digit toward the left.
+    /// Computes the ABA routing-number check digit for the supplied 8-digit body using weights <c>{1, 7, 3}</c> applied
+    /// cyclically from the right-hand data digit toward the left.
     /// </summary>
     /// <param name="digits">The body characters. Each must be an ASCII decimal digit.</param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
@@ -44,8 +44,8 @@ internal static class WeightedMod10
     /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
     /// <remarks>
-    /// This helper is length-agnostic; length enforcement is the responsibility of callers that treat the body
-    /// length as part of their contract (for example, <see cref="AbaRoutingNumber" /> requires eight digits).
+    /// This helper is length-agnostic; length enforcement is the responsibility of callers that treat the body length
+    /// as part of their contract (for example, <see cref="AbaRoutingNumber" /> requires eight digits).
     /// </remarks>
     public static char ComputeAba(ReadOnlySpan<char> digits)
     {
@@ -94,13 +94,13 @@ internal static class WeightedMod10
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a body followed by its trailing check digit, is
-    /// consistent under the ABA routing-number weight pattern <c>{3, 7, 1}</c>.
+    /// Determines whether the supplied sequence, comprising a body followed by its trailing check digit, is consistent
+    /// under the ABA routing-number weight pattern <c>{3, 7, 1}</c>.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid; otherwise, <see langword="false" />
-    /// — including the case where <paramref name="digitsIncludingCheck" /> contains a character outside the range
+    /// <see langword="true" /> if the sequence is empty or evaluates as valid; otherwise, <see langword="false" /> —
+    /// including the case where <paramref name="digitsIncludingCheck" /> contains a character outside the range
     /// <c>'0'</c> to <c>'9'</c>.
     /// </returns>
     public static bool IsValidAba(ReadOnlySpan<char> digitsIncludingCheck)
@@ -119,13 +119,13 @@ internal static class WeightedMod10
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a body followed by its trailing check digit, is
-    /// consistent under the ISBN-13 / GTIN weight pattern <c>{3, 1}</c>.
+    /// Determines whether the supplied sequence, comprising a body followed by its trailing check digit, is consistent
+    /// under the ISBN-13 / GTIN weight pattern <c>{3, 1}</c>.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is empty or evaluates as valid; otherwise, <see langword="false" />
-    /// — including the case where <paramref name="digitsIncludingCheck" /> contains a character outside the range
+    /// <see langword="true" /> if the sequence is empty or evaluates as valid; otherwise, <see langword="false" /> —
+    /// including the case where <paramref name="digitsIncludingCheck" /> contains a character outside the range
     /// <c>'0'</c> to <c>'9'</c>.
     /// </returns>
     public static bool IsValidIsbn13(ReadOnlySpan<char> digitsIncludingCheck)

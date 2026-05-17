@@ -7,23 +7,22 @@
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Computes the check digit of a decimal string using the <c>Verhoeff</c> algorithm. This class cannot be
-/// inherited.
+/// Computes the check digit of a decimal string using the <c>Verhoeff</c> algorithm. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The Verhoeff algorithm, published by the Dutch mathematician Jacobus Verhoeff in 1969, was the first
-/// decimal-digit check-sum capable of detecting all single-digit substitution errors <i>and</i> all adjacent-digit
-/// transpositions. It achieves this by combining a position-dependent permutation with multiplication in the
-/// dihedral group <i>D</i><sub>5</sub>, the group of symmetries of a regular pentagon.
+/// The Verhoeff algorithm, published by the Dutch mathematician Jacobus Verhoeff in 1969, was the first decimal-digit
+/// check-sum capable of detecting all single-digit substitution errors <i>and</i> all adjacent-digit transpositions. It
+/// achieves this by combining a position-dependent permutation with multiplication in the dihedral group <i>D</i><sub>5
+/// </sub>, the group of symmetries of a regular pentagon.
 /// </para>
 /// <para>
-/// In addition to single-digit and adjacent-transposition errors, Verhoeff also catches the common
-/// <i>twin</i> errors (<c>aa → bb</c>) and a significant proportion of other mutation classes.
+/// In addition to single-digit and adjacent-transposition errors, Verhoeff also catches the common <i>twin</i> errors (
+/// <c>aa → bb</c>) and a significant proportion of other mutation classes.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"236"</c>, the computed check digit is <c>'3'</c>, and the resulting
-/// sequence <c>"2363"</c> is therefore valid under Verhoeff.
+/// <b>Worked example.</b> For the body <c>"236"</c>, the computed check digit is <c>'3'</c>, and the resulting sequence
+/// <c>"2363"</c> is therefore valid under Verhoeff.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -78,8 +77,8 @@ public sealed partial class Verhoeff
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a body followed by a trailing Verhoeff check digit,
-    /// is valid — that is, whether the final running value evaluates to zero.
+    /// Determines whether the supplied sequence, comprising a body followed by a trailing Verhoeff check digit, is
+    /// valid — that is, whether the final running value evaluates to zero.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>

@@ -9,22 +9,22 @@ using Bodu.IO.Hashing.CheckDigits;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Computes the check digit of a 13-digit International Standard Book Number using the ISBN-13 weighted
-/// modulus-10 algorithm. This class cannot be inherited.
+/// Computes the check digit of a 13-digit International Standard Book Number using the ISBN-13 weighted modulus-10
+/// algorithm. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The ISBN-13 check scheme, introduced in 2007 by the International ISBN Agency, alternates weights of 1 and 3
-/// across the twelve body digits — the rightmost data digit receives weight 3 — and the check digit is chosen so
-/// that the resulting weighted sum is a multiple of ten.
+/// The ISBN-13 check scheme, introduced in 2007 by the International ISBN Agency, alternates weights of 1 and 3 across
+/// the twelve body digits — the rightmost data digit receives weight 3 — and the check digit is chosen so that the
+/// resulting weighted sum is a multiple of ten.
 /// </para>
 /// <para>
-/// The same algorithm underpins the EAN-13, UPC-A, GTIN-8, and GTIN-14 barcode families — see <see cref="Ean13" />
-/// and its siblings for strict-length variants.
+/// The same algorithm underpins the EAN-13, UPC-A, GTIN-8, and GTIN-14 barcode families — see <see cref="Ean13" /> and
+/// its siblings for strict-length variants.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"978030640615"</c>, the computed check digit is <c>'7'</c>, and the
-/// resulting ISBN-13 <c>"9780306406157"</c> is therefore valid.
+/// <b>Worked example.</b> For the body <c>"978030640615"</c>, the computed check digit is <c>'7'</c>, and the resulting
+/// ISBN-13 <c>"9780306406157"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -60,8 +60,8 @@ public sealed class Isbn13
         WeightedMod10.ComputeIsbn13(digits);
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing ISBN-13
-    /// check digit, is consistent — that is, whether the weighted sum evaluates to a multiple of ten.
+    /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing ISBN-13 check
+    /// digit, is consistent — that is, whether the weighted sum evaluates to a multiple of ten.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>

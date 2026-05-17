@@ -48,19 +48,19 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <remarks>
     /// <para>
     /// This method is the asynchronous counterpart to
-    /// <see cref="AppendData(NonCryptographicHashAlgorithm, Stream, int)" />. It allows large or streaming sources to be
-    /// incorporated into an incremental hash computation without blocking the calling thread.
+    /// <see cref="AppendData(NonCryptographicHashAlgorithm, Stream, int)" />. It allows large or streaming sources to
+    /// be incorporated into an incremental hash computation without blocking the calling thread.
     /// </para>
     /// <para>
-    /// Because only <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> is called, the hash state is
-    /// not finalized after this method returns. The caller retrieves the digest by calling
+    /// Because only <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> is called, the hash state
+    /// is not finalized after this method returns. The caller retrieves the digest by calling
     /// <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> or
     /// <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" /> when all data has been supplied.
     /// </para>
     /// <para>
     /// Multiple <see cref="AppendDataAsync" /> calls — and calls interleaved with the synchronous
-    /// <see cref="AppendData(NonCryptographicHashAlgorithm, Stream, int)" /> — accumulate correctly because both delegate to
-    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> on the same instance.
+    /// <see cref="AppendData(NonCryptographicHashAlgorithm, Stream, int)" /> — accumulate correctly because both
+    /// delegate to <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> on the same instance.
     /// </para>
     /// <para>
     /// The read buffer is rented from <see cref="ArrayPool{T}.Shared" /> and returned in all exit paths, including

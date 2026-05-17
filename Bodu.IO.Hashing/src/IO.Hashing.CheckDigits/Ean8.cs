@@ -9,18 +9,18 @@ using Bodu.IO.Hashing.Checksums;
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Computes the check digit of an 8-digit European Article Number / Global Trade Item Number-8 barcode using the
-/// EAN-8 weighted modulus-10 algorithm. This class cannot be inherited.
+/// Computes the check digit of an 8-digit European Article Number / Global Trade Item Number-8 barcode using the EAN-8
+/// weighted modulus-10 algorithm. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// EAN-8 shares its weight pattern with ISBN-13 / EAN-13 / UPC-A / GTIN-14: alternating 1 and 3 applied from the
-/// check digit leftward. The static helpers on this type enforce a strict 7-digit body length (8-digit full
-/// sequence); the streaming surface is length-agnostic.
+/// EAN-8 shares its weight pattern with ISBN-13 / EAN-13 / UPC-A / GTIN-14: alternating 1 and 3 applied from the check
+/// digit leftward. The static helpers on this type enforce a strict 7-digit body length (8-digit full sequence); the
+/// streaming surface is length-agnostic.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"7351353"</c>, the computed check digit is <c>'7'</c>, and the
-/// resulting EAN-8 <c>"73513537"</c> is therefore valid.
+/// <b>Worked example.</b> For the body <c>"7351353"</c>, the computed check digit is <c>'7'</c>, and the resulting
+/// EAN-8 <c>"73513537"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -29,10 +29,14 @@ public sealed class Ean8
     : CheckDigitAlgorithm
 {
 
-    /// <summary>The required body length of <c>7</c> decimal digits.</summary>
+    /// <summary>
+    /// The required body length of <c>7</c> decimal digits.
+    /// </summary>
     public const int BodyLength = 7;
 
-    /// <summary>The required full-sequence length of <c>8</c> decimal digits.</summary>
+    /// <summary>
+    /// The required full-sequence length of <c>8</c> decimal digits.
+    /// </summary>
     public const int SequenceLength = 8;
     private int _count;
 
@@ -50,29 +54,31 @@ public sealed class Ean8
     public override string AlgorithmName => "EAN-8";
 
     /// <summary>
-    /// Computes the EAN-8 check digit for the supplied body of decimal digits without allocating a streaming
-    /// instance.
+    /// Computes the EAN-8 check digit for the supplied body of decimal digits without allocating a streaming instance.
     /// </summary>
-    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
+    /// <param name="digits">
+    /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
+    /// </param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
     /// <remarks>
-    /// This helper is length-tolerant to support streaming and partial-body use; <see cref="IsValid(ReadOnlySpan{char})" />
-    /// enforces the strict <see cref="SequenceLength" /> domain contract for full validation.
+    /// This helper is length-tolerant to support streaming and partial-body use;
+    /// <see cref="IsValid(ReadOnlySpan{char})" /> enforces the strict <see cref="SequenceLength" /> domain contract for
+    /// full validation.
     /// </remarks>
     public static char Compute(ReadOnlySpan<char> digits) =>
         WeightedMod10.ComputeIsbn13(digits);
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a seven-digit body followed by a trailing EAN-8
-    /// check digit, is consistent.
+    /// Determines whether the supplied sequence, comprising a seven-digit body followed by a trailing EAN-8 check
+    /// digit, is consistent.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as
-    /// valid under EAN-8; otherwise, <see langword="false" />.
+    /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as valid
+    /// under EAN-8; otherwise, <see langword="false" />.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
     {

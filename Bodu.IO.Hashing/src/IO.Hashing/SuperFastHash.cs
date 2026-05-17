@@ -11,44 +11,38 @@ using System.Runtime.CompilerServices;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes a 32-bit non-cryptographic hash using Paul Hsieh's <c>SuperFastHash</c> algorithm, intended for
-/// hash-table keying. This class cannot be inherited.
+/// Computes a 32-bit non-cryptographic hash using Paul Hsieh's <c>SuperFastHash</c> algorithm, intended for hash-table
+/// keying. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The algorithm seeds the running hash with the total length of the input and therefore requires the entire
-/// payload to be visible before finalization. Appended bytes are accumulated in an internal buffer and the
-/// full compute is executed each time the current hash is requested. The finalized 32-bit value is written to
-/// the output buffer in little-endian byte order.
+/// The algorithm seeds the running hash with the total length of the input and therefore requires the entire payload to
+/// be visible before finalization. Appended bytes are accumulated in an internal buffer and the full compute is
+/// executed each time the current hash is requested. The finalized 32-bit value is written to the output buffer in
+/// little-endian byte order.
 /// </para>
 /// <para>
-/// Because the implementation buffers its input, memory use grows linearly with the total number of bytes
-/// appended between calls to <see cref="Reset" />. The algorithm is well suited to short keys — its intended
-/// use case — but should be avoided for very large streams where a block-oriented, fixed-memory hash would be
-/// more appropriate.
+/// Because the implementation buffers its input, memory use grows linearly with the total number of bytes appended
+/// between calls to <see cref="Reset" />. The algorithm is well suited to short keys — its intended use case — but
+/// should be avoided for very large streams where a block-oriented, fixed-memory hash would be more appropriate.
 /// </para>
 /// <para>
-/// <strong>When to choose SuperFastHash.</strong> SuperFastHash predates MurmurHash and was designed by
-/// Paul Hsieh for in-memory hash tables of short keys (32-byte block sums and similar). It has been
-/// superseded by the MurmurHash3 / CityHash / xxHash generation, which beat it on every measurable axis —
-/// pick it only when reproducing a digest from existing SuperFastHash-based code. For new work on short keys
-/// prefer <see cref="MurmurHash3_32"/> or <see cref="Fnv1a32"/>; for streaming and very large inputs prefer
-/// <see cref="CityHash64"/> or a CRC variant via <see cref="Bodu.IO.Hashing.Checksums.Crc"/>.
+/// <strong>When to choose SuperFastHash.</strong> SuperFastHash predates MurmurHash and was designed by Paul Hsieh for
+/// in-memory hash tables of short keys (32-byte block sums and similar). It has been superseded by the MurmurHash3 /
+/// CityHash / xxHash generation, which beat it on every measurable axis — pick it only when reproducing a digest from
+/// existing SuperFastHash-based code. For new work on short keys prefer <see cref="MurmurHash3_32" /> or
+/// <see cref="Fnv1a32" />; for streaming and very large inputs prefer <see cref="CityHash64" /> or a CRC variant via
+/// <see cref="Bodu.IO.Hashing.Checksums.Crc" />.
 /// </para>
 /// <para>
 /// Instances are not thread-safe; share behind explicit synchronization.
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
-/// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// // Suited to short keys; avoid for multi-megabyte streams (the input is fully buffered).
-/// var sfh = new SuperFastHash();
-/// byte[] digest = sfh.ComputeHash(System.Text.Encoding.UTF8.GetBytes("short-key"));
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Suited to short keys; avoid for
+/// multi-megabyte streams (the input is fully buffered). var sfh = new SuperFastHash(); byte[] digest =
+/// sfh.ComputeHash(System.Text.Encoding.UTF8.GetBytes("short-key")); </code>
 /// </example>
 /// </remarks>
 public sealed class SuperFastHash
@@ -76,8 +70,8 @@ public sealed class SuperFastHash
     }
 
     /// <summary>
-    /// Releases the unmanaged resources used by the <see cref="SuperFastHash" /> instance and clears its buffered
-    /// input state.
+    /// Releases the unmanaged resources used by the <see cref="SuperFastHash" /> instance and clears its buffered input
+    /// state.
     /// </summary>
     /// <remarks>
     /// Subsequent calls to <see cref="Append(ReadOnlySpan{byte})" />, <see cref="Reset" />, or
@@ -114,10 +108,10 @@ public sealed class SuperFastHash
     /// <param name="data">The input bytes to hash.</param>
     /// <returns>The 32-bit SuperFastHash value. Returns <c>0</c> when <paramref name="data" /> is empty.</returns>
     /// <remarks>
-    /// The pre-avalanche loop consumes the payload in 4-byte blocks, reading each half as a little-endian
-    /// 16-bit word. Any residual 1, 2, or 3 trailing bytes are folded in by a dedicated tail branch, and the
-    /// final avalanche mixes the result prior to return. The odd-byte tail branches sign-extend the trailing
-    /// byte via <see cref="sbyte" /> to match Hsieh's reference C <c>(signed char)</c> behavior.
+    /// The pre-avalanche loop consumes the payload in 4-byte blocks, reading each half as a little-endian 16-bit word.
+    /// Any residual 1, 2, or 3 trailing bytes are folded in by a dedicated tail branch, and the final avalanche mixes
+    /// the result prior to return. The odd-byte tail branches sign-extend the trailing byte via <see cref="sbyte" /> to
+    /// match Hsieh's reference C <c>(signed char)</c> behavior.
     /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static uint Compute(ReadOnlySpan<byte> data)

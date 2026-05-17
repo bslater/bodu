@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -14,8 +14,8 @@ namespace Bodu.IO.Hashing;
 internal static partial class HashingThrowHelper
 {
     /// <summary>
-    /// Throws an <see cref="ArgumentOutOfRangeException" /> when <paramref name="hashSize" /> is not present
-    /// in <paramref name="validHashSizes" />.
+    /// Throws an <see cref="ArgumentOutOfRangeException" /> when <paramref name="hashSize" /> is not present in
+    /// <paramref name="validHashSizes" />.
     /// </summary>
     /// <param name="hashSize">The hash size requested by the caller, in bits.</param>
     /// <param name="validHashSizes">The set of supported hash sizes for the algorithm.</param>

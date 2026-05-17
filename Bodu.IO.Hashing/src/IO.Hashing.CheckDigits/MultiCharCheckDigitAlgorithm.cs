@@ -9,26 +9,26 @@ using Bodu.IO.Hashing.Checksums;
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Represents the abstract base class from which check-digit algorithms that emit a fixed-length multi-character
-/// check code — most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) — derive.
+/// Represents the abstract base class from which check-digit algorithms that emit a fixed-length multi-character check
+/// code — most notably ISO 7064 MOD 97-10 and its derivatives (IBAN, LEI) — derive.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Parallel in design to <see cref="CheckDigitAlgorithm" />, this base generalizes the output from a single
-/// character to a run of <see cref="CheckLength" /> decimal digits, and broadens the input to whichever subset
-/// of ASCII the concrete algorithm accepts via <see cref="InputAlphabet" />.
+/// Parallel in design to <see cref="CheckDigitAlgorithm" />, this base generalizes the output from a single character
+/// to a run of <see cref="CheckLength" /> decimal digits, and broadens the input to whichever subset of ASCII the
+/// concrete algorithm accepts via <see cref="InputAlphabet" />.
 /// </para>
 /// <para>
 /// The streaming surface — <see cref="Append(ReadOnlySpan{char})" />, <see cref="Reset" />, and the two
-/// <c>GetCurrentCheckDigits</c> overloads — mirrors the familiar hash-algorithm idiom. Reading the current check
-/// code is non-destructive and idempotent. Concrete implementations document their empty-body behavior.
+/// <c>GetCurrentCheckDigits</c> overloads — mirrors the familiar hash-algorithm idiom. Reading the current check code
+/// is non-destructive and idempotent. Concrete implementations document their empty-body behavior.
 /// </para>
 /// <para>
 /// Instances are <b>not</b> thread-safe. Each thread that needs a running check should construct its own instance.
 /// </para>
-/// <note type="important">Check-digit algorithms are error-detection primitives, <b>not</b> cryptographic
-/// functions. They must <b>not</b> be used for password hashing, digital signatures, or integrity validation in
-/// security-sensitive applications.</note>
+/// <note type="important">Check-digit algorithms are error-detection primitives, <b>not</b> cryptographic functions.
+/// They must <b>not</b> be used for password hashing, digital signatures, or integrity validation in security-sensitive
+/// applications.</note>
 /// </remarks>
 public abstract class MultiCharCheckDigitAlgorithm
 {
@@ -85,8 +85,8 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// </summary>
     /// <returns>A string of length <see cref="CheckLength" /> containing the trailing check characters.</returns>
     /// <remarks>
-    /// Allocating convenience wrapper over <see cref="GetCurrentCheckDigits(Span{char})" />. Prefer the span
-    /// overload in hot paths where the allocation is undesirable.
+    /// Allocating convenience wrapper over <see cref="GetCurrentCheckDigits(Span{char})" />. Prefer the span overload
+    /// in hot paths where the allocation is undesirable.
     /// </remarks>
     public string GetCurrentCheckDigits()
     {
@@ -105,14 +105,18 @@ public abstract class MultiCharCheckDigitAlgorithm
     /// <exception cref="ArgumentException">
     /// Thrown when <paramref name="destination" /> is shorter than <see cref="CheckLength" />.
     /// </exception>
-    /// <remarks>This call is non-destructive; the running state is unaffected and the method may be invoked any
-    /// number of times with identical results between appends.</remarks>
+    /// <remarks>
+    /// This call is non-destructive; the running state is unaffected and the method may be invoked any number of times
+    /// with identical results between appends.
+    /// </remarks>
     public abstract int GetCurrentCheckDigits(Span<char> destination);
 
     /// <summary>
     /// Resets the algorithm to its initial state, discarding any characters previously absorbed.
     /// </summary>
-    /// <remarks>Equivalent in behavior to constructing a fresh instance of the same concrete type.</remarks>
+    /// <remarks>
+    /// Equivalent in behavior to constructing a fresh instance of the same concrete type.
+    /// </remarks>
     public abstract void Reset();
 
 }

@@ -10,47 +10,55 @@ using Bodu.Extensions;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes a 32-bit (4-byte) non-cryptographic hash using the <c>CityHash32</c> variant by Google. This class cannot be inherited.
+/// Computes a 32-bit (4-byte) non-cryptographic hash using the <c>CityHash32</c> variant by Google. This class cannot
+/// be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="CityHash32" /> dispatches to one of four internal mixing paths based on input length: a loop over individual bytes for
-/// 0–4 bytes; a four-word path for 5–12 bytes; a six-word path for 13–24 bytes; and a full iterative path consuming 20-byte blocks with
-/// three interleaved accumulators for 25 or more bytes. All paths converge through the <c>Mur</c> and <c>Mix</c> primitives defined in
-/// <see cref="CityHash{T}" />.
+/// <see cref="CityHash32" /> dispatches to one of four internal mixing paths based on input length: a loop over
+/// individual bytes for 0–4 bytes; a four-word path for 5–12 bytes; a six-word path for 13–24 bytes; and a full
+/// iterative path consuming 20-byte blocks with three interleaved accumulators for 25 or more bytes. All paths converge
+/// through the <c>Mur</c> and <c>Mix</c> primitives defined in <see cref="CityHash{T}" />.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 32 bits (4 bytes), little-endian.</description></item>
-///   <item><description>Variant: <c>CityHash32</c>.</description></item>
-///   <item><description>Length-dispatched mixing: 0–4, 5–12, 13–24, and 25+ byte paths.</description></item>
-///   <item><description>Seedless — for seeded variants prefer <see cref="MurmurHash3_32"/>.</description></item>
+/// <item>
+/// <description>
+/// Output size: 32 bits (4 bytes), little-endian.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Variant: <c>CityHash32</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Length-dispatched mixing: 0–4, 5–12, 13–24, and 25+ byte paths.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Seedless — for seeded variants prefer <see cref="MurmurHash3_32" />.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose CityHash32.</strong> Pick <see cref="CityHash32"/> for 32-bit slot indexes when
-/// throughput on long inputs matters — it edges <see cref="MurmurHash3_32"/> on 64-bit hosts. For short
-/// fixed-length keys <see cref="Fnv1a32"/> is simpler and competitive; if a seed is needed (bloom filters,
-/// hash-flooding mitigation) prefer <see cref="MurmurHash3_32"/>.
+/// <strong>When to choose CityHash32.</strong> Pick <see cref="CityHash32" /> for 32-bit slot indexes when throughput
+/// on long inputs matters — it edges <see cref="MurmurHash3_32" /> on 64-bit hosts. For short fixed-length keys
+/// <see cref="Fnv1a32" /> is simpler and competitive; if a seed is needed (bloom filters, hash-flooding mitigation)
+/// prefer <see cref="MurmurHash3_32" />.
 /// </para>
-/// <note type="important">
-/// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing, digital signatures, or
-/// any application requiring adversarial collision resistance.
-/// </note>
+/// <note type="important"> This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for
+/// password hashing, digital signatures, or any application requiring adversarial collision resistance. </note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// var city = new CityHash32();
-/// byte[] digest = city.ComputeHash(System.Text.Encoding.UTF8.GetBytes("session-key"));
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var city = new CityHash32();
+/// byte[] digest = city.ComputeHash(System.Text.Encoding.UTF8.GetBytes("session-key")); </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="CityHash{T}"/>
-/// <seealso cref="CityHash64"/>
-/// <seealso cref="CityHash128"/>
+/// <seealso cref="CityHash{T}"/> <seealso cref="CityHash64"/> <seealso cref="CityHash128"/>
 public sealed class CityHash32
     : CityHash<CityHash32>
 {
@@ -64,7 +72,8 @@ public sealed class CityHash32
     }
 
     /// <summary>
-    /// Computes the 32-bit CityHash of the provided input span, selecting the optimal mixing path based on input length.
+    /// Computes the 32-bit CityHash of the provided input span, selecting the optimal mixing path based on input
+    /// length.
     /// </summary>
     /// <param name="source">The input bytes to hash.</param>
     /// <returns>A 4-byte array containing the little-endian encoded 32-bit hash value.</returns>
@@ -132,9 +141,10 @@ public sealed class CityHash32
     /// <param name="s">The input span. Length must be 25 or greater.</param>
     /// <returns>The 32-bit hash value.</returns>
     /// <remarks>
-    /// The algorithm seeds three accumulators (<c>h</c>, <c>g</c>, <c>f</c>) from the tail of the input, then iterates over
-    /// 20-byte blocks from the start. A three-way permutation is applied after each block to rotate accumulator roles.
-    /// After the loop, each accumulator undergoes a double rotate-multiply finalization before the results are merged.
+    /// The algorithm seeds three accumulators (<c>h</c>, <c>g</c>, <c>f</c>) from the tail of the input, then iterates
+    /// over 20-byte blocks from the start. A three-way permutation is applied after each block to rotate accumulator
+    /// roles. After the loop, each accumulator undergoes a double rotate-multiply finalization before the results are
+    /// merged.
     /// </remarks>
     private static uint Hash32Len25Plus(ReadOnlySpan<byte> s)
     {

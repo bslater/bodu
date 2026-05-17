@@ -10,24 +10,23 @@ namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
 /// Computes the check digit of a 9-character Committee on Uniform Securities Identification Procedures (CUSIP)
-/// identifier using the Luhn-style weighted modulus-10 scheme specified by the American Bankers Association.
-/// This class cannot be inherited.
+/// identifier using the Luhn-style weighted modulus-10 scheme specified by the American Bankers Association. This class
+/// cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// CUSIP body characters are drawn from the decimal digits (<c>'0'</c>–<c>'9'</c>), uppercase Latin letters
-/// (<c>'A'</c>–<c>'Z'</c>, with values 10–35), and the historical sentinels <c>'*'</c>=36, <c>'@'</c>=37 and
-/// <c>'#'</c>=38. The body is eight characters; the ninth character is the check digit.
+/// CUSIP body characters are drawn from the decimal digits (<c>'0'</c>–<c>'9'</c>), uppercase Latin letters (<c>'A'</c>
+/// –<c>'Z'</c>, with values 10–35), and the historical sentinels <c>'*'</c>=36, <c>'@'</c>=37 and <c>'#'</c>=38. The
+/// body is eight characters; the ninth character is the check digit.
 /// </para>
 /// <para>
-/// Each body character's numeric value is multiplied by a positional weight (<c>1</c> at even left-to-right
-/// indices, <c>2</c> at odd indices). The resulting product is split into its tens and units digits, which are
-/// summed before being added to the running total. The check digit is chosen so that the total is a multiple of
-/// ten.
+/// Each body character's numeric value is multiplied by a positional weight (<c>1</c> at even left-to-right indices,
+/// <c>2</c> at odd indices). The resulting product is split into its tens and units digits, which are summed before
+/// being added to the running total. The check digit is chosen so that the total is a multiple of ten.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"03783310"</c> — Apple Inc. — the computed check digit is <c>'0'</c>,
-/// and the resulting CUSIP <c>"037833100"</c> is therefore valid.
+/// <b>Worked example.</b> For the body <c>"03783310"</c> — Apple Inc. — the computed check digit is <c>'0'</c>, and the
+/// resulting CUSIP <c>"037833100"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -36,10 +35,14 @@ public sealed class Cusip
     : AlphanumericCheckDigitAlgorithm
 {
 
-    /// <summary>The required body length of <c>8</c> characters.</summary>
+    /// <summary>
+    /// The required body length of <c>8</c> characters.
+    /// </summary>
     public const int BodyLength = 8;
 
-    /// <summary>The required full-sequence length of <c>9</c> characters.</summary>
+    /// <summary>
+    /// The required full-sequence length of <c>9</c> characters.
+    /// </summary>
     public const int SequenceLength = 9;
     private int _count;
 
@@ -84,14 +87,14 @@ public sealed class Cusip
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising an eight-character body followed by a single-digit
-    /// CUSIP check, is consistent.
+    /// Determines whether the supplied sequence, comprising an eight-character body followed by a single-digit CUSIP
+    /// check, is consistent.
     /// </summary>
     /// <param name="valueIncludingCheck">The complete nine-character CUSIP.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is empty or evaluates as valid under CUSIP; otherwise,
-    /// <see langword="false" /> — including the case where the length is wrong, any body character is outside
-    /// the CUSIP alphabet, or the check character is not a decimal digit.
+    /// <see langword="false" /> — including the case where the length is wrong, any body character is outside the CUSIP
+    /// alphabet, or the check character is not a decimal digit.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {

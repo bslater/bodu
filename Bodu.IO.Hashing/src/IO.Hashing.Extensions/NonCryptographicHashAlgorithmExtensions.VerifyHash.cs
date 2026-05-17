@@ -50,20 +50,23 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     }
 
     /// <summary>
-    /// Verifies that the computed hash of the input data matches the expected hash value expressed as a hexadecimal string.
+    /// Verifies that the computed hash of the input data matches the expected hash value expressed as a hexadecimal
+    /// string.
     /// </summary>
     /// <param name="algorithm">
     /// The <see cref="NonCryptographicHashAlgorithm" /> instance used to compute the hash. Must not be
     /// <see langword="null" />.
     /// </param>
-    /// <param name="input">The input byte array whose hash will be computed. Must not be <see langword="null" />.</param>
+    /// <param name="input">
+    /// The input byte array whose hash will be computed. Must not be <see langword="null" />.
+    /// </param>
     /// <param name="expectedHex">
     /// The expected hash value as a hexadecimal string. Case-insensitive. Must not be <see langword="null" />.
     /// </param>
     /// <returns>
     /// <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />; otherwise,
-    /// <see langword="false" />.
-    /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+    /// <see langword="false" />. Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid
+    /// hexadecimal string.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="algorithm" />, <paramref name="input" />, or <paramref name="expectedHex" /> is

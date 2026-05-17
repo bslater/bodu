@@ -22,31 +22,36 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 64 bits (8 bytes).</description></item>
-///   <item><description>Accumulator width: two 32-bit rolling sums (A and B).</description></item>
-///   <item><description>Modulus: <c>4294967295</c>.</description></item>
+/// <item>
+/// <description>
+/// Output size: 64 bits (8 bytes).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Accumulator width: two 32-bit rolling sums (A and B).
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Modulus: <c>4294967295</c>.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose Fletcher64.</strong> Pick <see cref="Fletcher64"/> for very large datasets where
-/// the 32-bit collision floor becomes a concern — multi-gigabyte file integrity, large block-storage
-/// checksums, or high-throughput logging pipelines. For stronger error detection at comparable width prefer
-/// <see cref="Crc"/> with <see cref="CrcStandard.CRC64_XZ"/> or <see cref="CrcStandard.CRC64_ECMA182"/>.
+/// <strong>When to choose Fletcher64.</strong> Pick <see cref="Fletcher64" /> for very large datasets where the 32-bit
+/// collision floor becomes a concern — multi-gigabyte file integrity, large block-storage checksums, or high-throughput
+/// logging pipelines. For stronger error detection at comparable width prefer <see cref="Crc" /> with
+/// <see cref="CrcStandard.CRC64_XZ" /> or <see cref="CrcStandard.CRC64_ECMA182" />.
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for password
-/// hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing.Checksums;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// var f64 = new Fletcher64();
-/// byte[] checksum = f64.ComputeHash(largePayload);
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing.Checksums; using Bodu.IO.Hashing.Extensions; var f64 = new
+/// Fletcher64(); byte[] checksum = f64.ComputeHash(largePayload); </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="Fletcher{T}"/>
-/// <seealso cref="Fletcher16"/>
-/// <seealso cref="Fletcher32"/>
+/// <seealso cref="Fletcher{T}"/> <seealso cref="Fletcher16"/> <seealso cref="Fletcher32"/>
 public sealed class Fletcher64
     : Fletcher<Fletcher64>
 {

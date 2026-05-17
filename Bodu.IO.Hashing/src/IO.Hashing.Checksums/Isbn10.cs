@@ -15,14 +15,14 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <remarks>
 /// <para>
 /// ISBN-10, in use prior to the global migration to ISBN-13 in 2007, applies weights <c>10, 9, 8, 7, 6, 5, 4, 3, 2</c>
-/// to the nine body digits from left to right. The weighted sum is taken modulo eleven; the check character is
-/// chosen so that the complete weighted sum over ten positions (including the check at weight one) is a multiple
-/// of eleven. When the required check value is ten, the sentinel <c>'X'</c> is emitted.
+/// to the nine body digits from left to right. The weighted sum is taken modulo eleven; the check character is chosen
+/// so that the complete weighted sum over ten positions (including the check at weight one) is a multiple of eleven.
+/// When the required check value is ten, the sentinel <c>'X'</c> is emitted.
 /// </para>
 /// <para>
-/// <b>Worked examples.</b> For the body <c>"030640615"</c>, the computed check character is <c>'2'</c>
-/// (<c>0306406152</c>). For the body <c>"043942089"</c>, the computed check character is <c>'X'</c>
-/// (<c>043942089X</c>), demonstrating the <c>'X'</c>-for-ten sentinel.
+/// <b>Worked examples.</b> For the body <c>"030640615"</c>, the computed check character is <c>'2'</c> (
+/// <c>0306406152</c>). For the body <c>"043942089"</c>, the computed check character is <c>'X'</c> (<c>043942089X</c>),
+/// demonstrating the <c>'X'</c>-for-ten sentinel.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -31,10 +31,14 @@ public sealed class Isbn10
     : AlphanumericCheckDigitAlgorithm
 {
 
-    /// <summary>The required body length of <c>9</c> decimal digits.</summary>
+    /// <summary>
+    /// The required body length of <c>9</c> decimal digits.
+    /// </summary>
     public const int BodyLength = 9;
 
-    /// <summary>The required full-sequence length of <c>10</c> characters.</summary>
+    /// <summary>
+    /// The required full-sequence length of <c>10</c> characters.
+    /// </summary>
     public const int SequenceLength = 10;
     private int _count;
 
@@ -57,18 +61,22 @@ public sealed class Isbn10
     public override CheckDigitOutputAlphabet OutputAlphabet => CheckDigitOutputAlphabet.DecimalDigitsOrX;
 
     /// <summary>
-    /// Computes the ISBN-10 check character for the supplied body of decimal digits without allocating a
-    /// streaming instance.
+    /// Computes the ISBN-10 check character for the supplied body of decimal digits without allocating a streaming
+    /// instance.
     /// </summary>
-    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
-    /// <returns>The check character as an ASCII digit <c>'0'</c> to <c>'9'</c>, or the sentinel <c>'X'</c> for the value ten.</returns>
+    /// <param name="digits">
+    /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
+    /// </param>
+    /// <returns>
+    /// The check character as an ASCII digit <c>'0'</c> to <c>'9'</c>, or the sentinel <c>'X'</c> for the value ten.
+    /// </returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
     /// <remarks>
     /// This helper is length-tolerant to support streaming and partial-body use;
-    /// <see cref="IsValid(ReadOnlySpan{char})" /> enforces the strict <see cref="SequenceLength" /> domain
-    /// contract for full validation.
+    /// <see cref="IsValid(ReadOnlySpan{char})" /> enforces the strict <see cref="SequenceLength" /> domain contract for
+    /// full validation.
     /// </remarks>
     public static char Compute(ReadOnlySpan<char> digits)
     {
@@ -87,14 +95,14 @@ public sealed class Isbn10
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a nine-digit body followed by a trailing ISBN-10
-    /// check character, is consistent.
+    /// Determines whether the supplied sequence, comprising a nine-digit body followed by a trailing ISBN-10 check
+    /// character, is consistent.
     /// </summary>
     /// <param name="valueIncludingCheck">The complete ten-character sequence.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is empty or evaluates as valid under ISBN-10; otherwise,
-    /// <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> has the wrong
-    /// length or contains an unrecognized character.
+    /// <see langword="false" /> — including the case where <paramref name="valueIncludingCheck" /> has the wrong length
+    /// or contains an unrecognized character.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {

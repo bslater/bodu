@@ -14,8 +14,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Finalization combines the A and B accumulators into a 64-bit hash as
-/// <c><![CDATA[(B << 32) | A]]></c>, written in big-endian byte order.
+/// Finalization combines the A and B accumulators into a 64-bit hash as <c><![CDATA[(B << 32) | A]]></c>, written in
+/// big-endian byte order.
 /// </para>
 /// </remarks>
 public abstract class Adler64Base

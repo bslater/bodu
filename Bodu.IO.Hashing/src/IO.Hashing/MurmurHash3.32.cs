@@ -15,51 +15,56 @@ namespace Bodu.IO.Hashing;
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="MurmurHash3_32" /> processes input in 4-byte blocks, applying a pair of multiply-rotate-XOR mixing
-/// steps per block, followed by a tail pass for any remaining 1–3 bytes. The output is finalized using
+/// <see cref="MurmurHash3_32" /> processes input in 4-byte blocks, applying a pair of multiply-rotate-XOR mixing steps
+/// per block, followed by a tail pass for any remaining 1–3 bytes. The output is finalized using
 /// <see cref="MurmurHash3{T}.FMix32(uint)" /> to ensure strong avalanche properties.
 /// </para>
 /// <para>
-/// A 32-bit seed may be supplied at construction time to produce independent hash families for identical input,
-/// which is useful for building distributed hash tables and bloom filters.
+/// A 32-bit seed may be supplied at construction time to produce independent hash families for identical input, which
+/// is useful for building distributed hash tables and bloom filters.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 32 bits (4 bytes), little-endian.</description></item>
-///   <item><description>Variant: <c>MurmurHash3_x86_32</c>.</description></item>
-///   <item><description>Block size: 4 bytes; tail pass for remaining 1–3 bytes.</description></item>
-///   <item><description>Seed: 32 bits, defaults to <c>0</c>.</description></item>
+/// <item>
+/// <description>
+/// Output size: 32 bits (4 bytes), little-endian.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Variant: <c>MurmurHash3_x86_32</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Block size: 4 bytes; tail pass for remaining 1–3 bytes.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Seed: 32 bits, defaults to <c>0</c>.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose MurmurHash3_32.</strong> The default 32-bit hash for in-memory hash tables and
-/// bloom filters. Choose it over <see cref="Fnv1a32"/> when input length exceeds ~16 bytes or when SMHasher
-/// quality matters. Reach for <see cref="MurmurHash3_128"/> when collision pressure (large key spaces,
-/// fingerprinting) calls for more bits, or for <see cref="CityHash32"/> for slightly better throughput on
-/// long inputs on 64-bit CPUs.
+/// <strong>When to choose MurmurHash3_32.</strong> The default 32-bit hash for in-memory hash tables and bloom filters.
+/// Choose it over <see cref="Fnv1a32" /> when input length exceeds ~16 bytes or when SMHasher quality matters. Reach
+/// for <see cref="MurmurHash3_128" /> when collision pressure (large key spaces, fingerprinting) calls for more bits,
+/// or for <see cref="CityHash32" /> for slightly better throughput on long inputs on 64-bit CPUs.
 /// </para>
-/// <note type="important">
-/// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing, digital
-/// signatures, or any application requiring adversarial collision resistance.
-/// </note>
+/// <note type="important"> This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for
+/// password hashing, digital signatures, or any application requiring adversarial collision resistance. </note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// // Default seed, suitable for an in-memory hash table.
-/// var m = new MurmurHash3_32();
-/// byte[] digest = m.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key"));
-///
-/// // Custom seed for a second, independent hash family (useful in bloom filters).
-/// var m2 = new MurmurHash3_32(seed: 0x9E3779B1u);
-/// byte[] digest2 = m2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key"));
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Default seed, suitable for an
+/// in-memory hash table. var m = new MurmurHash3_32(); byte[] digest =
+/// m.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key")); // Custom seed for a second, independent hash
+/// family (useful in bloom filters). var m2 = new MurmurHash3_32(seed: 0x9E3779B1u); byte[] digest2 =
+/// m2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("hash-table-key")); </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="MurmurHash3{T}"/>
-/// <seealso cref="MurmurHash3_128"/>
+/// <seealso cref="MurmurHash3{T}"/> <seealso cref="MurmurHash3_128"/>
 public sealed class MurmurHash3_32
     : MurmurHash3<MurmurHash3_32>
 {

@@ -11,61 +11,68 @@ using Bodu.Extensions;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes a 128-bit (16-byte) non-cryptographic hash using the <c>CityHash128</c> variant by Google. This
-/// class cannot be inherited.
+/// Computes a 128-bit (16-byte) non-cryptographic hash using the <c>CityHash128</c> variant by Google. This class
+/// cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="CityHash128" /> chooses its initial 128-bit seed from the first 16 bytes of input (or from the
-/// fixed constants <c>K0</c>, <c>K1</c> for shorter inputs), then delegates to <c>CityHash128WithSeed</c>.
-/// For inputs shorter than 128 bytes, <c>CityMurmur</c> folds the message into the seeded accumulator; for
-/// longer inputs, a main loop consumes 128-byte blocks using two pairs of seeded weak-hash accumulators
-/// before a tail pass over the remaining 0–127 bytes.
+/// <see cref="CityHash128" /> chooses its initial 128-bit seed from the first 16 bytes of input (or from the fixed
+/// constants <c>K0</c>, <c>K1</c> for shorter inputs), then delegates to <c>CityHash128WithSeed</c>. For inputs shorter
+/// than 128 bytes, <c>CityMurmur</c> folds the message into the seeded accumulator; for longer inputs, a main loop
+/// consumes 128-byte blocks using two pairs of seeded weak-hash accumulators before a tail pass over the remaining
+/// 0–127 bytes.
 /// </para>
 /// <para>
-/// The digest is emitted as two consecutive little-endian 64-bit words (<c>First</c> followed by
-/// <c>Second</c>), matching the encoding convention used by <see cref="CityHash64" />.
+/// The digest is emitted as two consecutive little-endian 64-bit words (<c>First</c> followed by <c>Second</c>),
+/// matching the encoding convention used by <see cref="CityHash64" />.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 128 bits (16 bytes), little-endian, two 64-bit words.</description></item>
-///   <item><description>Variant: <c>CityHash128</c>.</description></item>
-///   <item><description>Length-dispatched mixing: &lt;128-byte and 128+-byte paths.</description></item>
-///   <item><description>Block size on the long path: 128 bytes.</description></item>
+/// <item>
+/// <description>
+/// Output size: 128 bits (16 bytes), little-endian, two 64-bit words.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Variant: <c>CityHash128</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Length-dispatched mixing: &lt;128-byte and 128+-byte paths.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Block size on the long path: 128 bytes.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose CityHash128.</strong> Pick <see cref="CityHash128"/> for low-collision fingerprinting
-/// of large key spaces — content-addressed storage, deduplication, two-hash cuckoo / split-key schemes that
-/// can use the two 64-bit halves independently. <see cref="MurmurHash3_128"/> is the closest alternative; it
-/// supports a constructor seed but is typically slightly slower on long inputs on 64-bit CPUs.
+/// <strong>When to choose CityHash128.</strong> Pick <see cref="CityHash128" /> for low-collision fingerprinting of
+/// large key spaces — content-addressed storage, deduplication, two-hash cuckoo / split-key schemes that can use the
+/// two 64-bit halves independently. <see cref="MurmurHash3_128" /> is the closest alternative; it supports a
+/// constructor seed but is typically slightly slower on long inputs on 64-bit CPUs.
 /// </para>
-/// <note type="important">
-/// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing,
-/// digital signatures, or any application requiring adversarial collision resistance.
-/// </note>
+/// <note type="important"> This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for
+/// password hashing, digital signatures, or any application requiring adversarial collision resistance. </note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// var city = new CityHash128();
-/// byte[] fingerprint = city.ComputeHash(blob);
-/// // fingerprint = [low 64 bits || high 64 bits], each little-endian.
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var city = new CityHash128();
+/// byte[] fingerprint = city.ComputeHash(blob); // fingerprint = [low 64 bits || high 64 bits], each little-endian.
 /// </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="CityHash{T}"/>
-/// <seealso cref="CityHash32"/>
-/// <seealso cref="CityHash64"/>
+/// <seealso cref="CityHash{T}"/> <seealso cref="CityHash32"/> <seealso cref="CityHash64"/>
 public sealed class CityHash128
     : CityHash<CityHash128>
 {
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CityHash128" /> class with a fixed 128-bit (16-byte)
-    /// hash output size.
+    /// Initializes a new instance of the <see cref="CityHash128" /> class with a fixed 128-bit (16-byte) hash output
+    /// size.
     /// </summary>
     public CityHash128()
         : base(128)
@@ -73,8 +80,8 @@ public sealed class CityHash128
     }
 
     /// <summary>
-    /// Computes the 128-bit CityHash of the provided input span, selecting the optimal mixing path based on
-    /// input length.
+    /// Computes the 128-bit CityHash of the provided input span, selecting the optimal mixing path based on input
+    /// length.
     /// </summary>
     /// <param name="source">The input bytes to hash.</param>
     /// <returns>A 16-byte array containing the little-endian encoded 128-bit hash value.</returns>
@@ -89,8 +96,8 @@ public sealed class CityHash128
     }
 
     /// <summary>
-    /// Selects a 128-bit seed for <see cref="CityHash128WithSeed(ReadOnlySpan{byte}, ulong, ulong)" /> based
-    /// on the first 16 bytes of the input, or on fixed constants when the input is shorter.
+    /// Selects a 128-bit seed for <see cref="CityHash128WithSeed(ReadOnlySpan{byte}, ulong, ulong)" /> based on the
+    /// first 16 bytes of the input, or on fixed constants when the input is shorter.
     /// </summary>
     /// <param name="s">The complete input span.</param>
     /// <returns>The 128-bit hash as a <c>(First, Second)</c> tuple.</returns>
@@ -110,8 +117,8 @@ public sealed class CityHash128
 
     /// <summary>
     /// Computes <c>CityHash128WithSeed</c>: for short inputs (&lt; 128 bytes) it delegates to
-    /// <see cref="CityMurmur(ReadOnlySpan{byte}, ulong, ulong)" />; for longer inputs it runs the iterative
-    /// main loop over 128-byte blocks followed by a tail reduction.
+    /// <see cref="CityMurmur(ReadOnlySpan{byte}, ulong, ulong)" />; for longer inputs it runs the iterative main loop
+    /// over 128-byte blocks followed by a tail reduction.
     /// </summary>
     /// <param name="source">The input span to hash.</param>
     /// <param name="seedLow">The low 64 bits of the seed.</param>
@@ -190,8 +197,8 @@ public sealed class CityHash128
     }
 
     /// <summary>
-    /// Computes a 128-bit hash of a &lt; 128-byte input by folding it into the 128-bit seed using a
-    /// Murmur-style mixing loop. This is the short-input specialization invoked by
+    /// Computes a 128-bit hash of a &lt; 128-byte input by folding it into the 128-bit seed using a Murmur-style mixing
+    /// loop. This is the short-input specialization invoked by
     /// <see cref="CityHash128WithSeed(ReadOnlySpan{byte}, ulong, ulong)" />.
     /// </summary>
     /// <param name="source">The input span. Length must be less than 128 bytes.</param>

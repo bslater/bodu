@@ -131,7 +131,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     }
 
     /// <summary>
-    /// Asynchronously verifies that the computed hash of a stream matches the expected hash value held in a memory buffer.
+    /// Asynchronously verifies that the computed hash of a stream matches the expected hash value held in a memory
+    /// buffer.
     /// </summary>
     /// <param name="algorithm">
     /// The <see cref="NonCryptographicHashAlgorithm" /> instance used to compute the hash. Must not be

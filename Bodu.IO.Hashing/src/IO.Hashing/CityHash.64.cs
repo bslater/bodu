@@ -10,47 +10,56 @@ using Bodu.Extensions;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes a 64-bit (8-byte) non-cryptographic hash using the <c>CityHash64</c> variant by Google. This class cannot be inherited.
+/// Computes a 64-bit (8-byte) non-cryptographic hash using the <c>CityHash64</c> variant by Google. This class cannot
+/// be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <see cref="CityHash64" /> selects one of four internal mixing paths depending on the input length: a compact path for 0–16 bytes,
-/// a four-word path for 17–32 bytes, an eight-word path with byte-swap finalization for 33–64 bytes, and a full iterative path that
-/// consumes 64-byte blocks using two pairs of seeded weak hash accumulators for inputs of 65 bytes or more. All paths converge through
-/// the shared <c>HashLen16</c> finalizer, which applies two rounds of multiply-shift-XOR to distribute entropy across all output bits.
+/// <see cref="CityHash64" /> selects one of four internal mixing paths depending on the input length: a compact path
+/// for 0–16 bytes, a four-word path for 17–32 bytes, an eight-word path with byte-swap finalization for 33–64 bytes,
+/// and a full iterative path that consumes 64-byte blocks using two pairs of seeded weak hash accumulators for inputs
+/// of 65 bytes or more. All paths converge through the shared <c>HashLen16</c> finalizer, which applies two rounds of
+/// multiply-shift-XOR to distribute entropy across all output bits.
 /// </para>
 /// <para>
 /// <strong>Parameters at a glance.</strong>
 /// </para>
 /// <list type="bullet">
-///   <item><description>Output size: 64 bits (8 bytes), little-endian.</description></item>
-///   <item><description>Variant: <c>CityHash64</c>.</description></item>
-///   <item><description>Length-dispatched mixing: 0–16, 17–32, 33–64, and 65+ byte paths.</description></item>
-///   <item><description>Block size on the long path: 64 bytes.</description></item>
+/// <item>
+/// <description>
+/// Output size: 64 bits (8 bytes), little-endian.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Variant: <c>CityHash64</c>.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Length-dispatched mixing: 0–16, 17–32, 33–64, and 65+ byte paths.
+/// </description>
+/// </item>
+/// <item>
+/// <description>
+/// Block size on the long path: 64 bytes.
+/// </description>
+/// </item>
 /// </list>
 /// <para>
-/// <strong>When to choose CityHash64.</strong> The general-purpose default for 64-bit non-cryptographic
-/// hashing — fingerprints, content-based sharding, deduplication keys. <see cref="MurmurHash3_128"/> gives
-/// twice the bits at slightly lower throughput on long inputs; <see cref="Fnv1a64"/> is preferable only for
-/// very small fixed-length keys where simplicity matters more than distribution.
+/// <strong>When to choose CityHash64.</strong> The general-purpose default for 64-bit non-cryptographic hashing —
+/// fingerprints, content-based sharding, deduplication keys. <see cref="MurmurHash3_128" /> gives twice the bits at
+/// slightly lower throughput on long inputs; <see cref="Fnv1a64" /> is preferable only for very small fixed-length keys
+/// where simplicity matters more than distribution.
 /// </para>
-/// <note type="important">
-/// This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for password hashing, digital signatures, or any
-/// application requiring adversarial collision resistance.
-/// </note>
+/// <note type="important"> This algorithm is <b>not</b> cryptographically secure and must <b>not</b> be used for
+/// password hashing, digital signatures, or any application requiring adversarial collision resistance. </note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// var city = new CityHash64();
-/// byte[] fingerprint = city.ComputeHash(blob);
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var city = new CityHash64();
+/// byte[] fingerprint = city.ComputeHash(blob); </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="CityHash{T}"/>
-/// <seealso cref="CityHash32"/>
-/// <seealso cref="CityHash128"/>
+/// <seealso cref="CityHash{T}"/> <seealso cref="CityHash32"/> <seealso cref="CityHash128"/>
 public sealed class CityHash64
     : CityHash<CityHash64>
 {
@@ -64,7 +73,8 @@ public sealed class CityHash64
     }
 
     /// <summary>
-    /// Computes the 64-bit CityHash of the provided input span, selecting the optimal mixing path based on input length.
+    /// Computes the 64-bit CityHash of the provided input span, selecting the optimal mixing path based on input
+    /// length.
     /// </summary>
     /// <param name="source">The input bytes to hash.</param>
     /// <returns>An 8-byte array containing the little-endian encoded 64-bit hash value.</returns>
@@ -105,7 +115,8 @@ public sealed class CityHash64
     }
 
     /// <summary>
-    /// Hashes 33 to 64 bytes by reading eight 64-bit words spread across the full input span, including a byte-swap finalization step.
+    /// Hashes 33 to 64 bytes by reading eight 64-bit words spread across the full input span, including a byte-swap
+    /// finalization step.
     /// </summary>
     /// <param name="s">The input span. Length must be in the range [33, 64].</param>
     /// <returns>The 64-bit hash value.</returns>
@@ -137,20 +148,20 @@ public sealed class CityHash64
     }
 
     /// <summary>
-    /// Hashes inputs of 65 bytes or more using two pairs of seeded weak-hash accumulators that consume the
-    /// input in 64-byte blocks.
+    /// Hashes inputs of 65 bytes or more using two pairs of seeded weak-hash accumulators that consume the input in
+    /// 64-byte blocks.
     /// </summary>
     /// <param name="s">The input span. Length must be 65 or greater.</param>
     /// <returns>The 64-bit hash value.</returns>
     /// <remarks>
     /// <para>
-    /// The method seeds the four accumulators (<c>v</c>, <c>w</c>) and the three mixing variables (<c>x</c>,
-    /// <c>y</c>, <c>z</c>) from the tail of the input before processing, ensuring that long and short inputs
-    /// produce well-distributed results.
+    /// The method seeds the four accumulators (<c>v</c>, <c>w</c>) and the three mixing variables (<c>x</c>, <c>y</c>,
+    /// <c>z</c>) from the tail of the input before processing, ensuring that long and short inputs produce
+    /// well-distributed results.
     /// </para>
     /// <para>
-    /// Each 64-byte iteration updates all five variables and swaps <c>x</c> and <c>z</c> to prevent positional
-    /// bias. The final result combines both accumulator pairs through two nested <c>HashLen16</c> calls.
+    /// Each 64-byte iteration updates all five variables and swaps <c>x</c> and <c>z</c> to prevent positional bias.
+    /// The final result combines both accumulator pairs through two nested <c>HashLen16</c> calls.
     /// </para>
     /// </remarks>
     private static ulong Hash64Long(ReadOnlySpan<byte> s)

@@ -7,29 +7,28 @@
 namespace Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Computes the check digit of a decimal string using the <c>Luhn</c> (<c>mod 10</c>) algorithm. This class cannot
-/// be inherited.
+/// Computes the check digit of a decimal string using the <c>Luhn</c> (<c>mod 10</c>) algorithm. This class cannot be
+/// inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// The Luhn algorithm — sometimes called the <i>modulus 10</i> or <i>mod 10</i> algorithm — was designed by Hans
-/// Peter Luhn at IBM in 1954 and entered the public domain shortly afterwards. It is the check-digit scheme used
-/// by most credit card numbers, many national identification numbers, IMEI numbers, and numerous other serial
-/// encodings.
+/// The Luhn algorithm — sometimes called the <i>modulus 10</i> or <i>mod 10</i> algorithm — was designed by Hans Peter
+/// Luhn at IBM in 1954 and entered the public domain shortly afterwards. It is the check-digit scheme used by most
+/// credit card numbers, many national identification numbers, IMEI numbers, and numerous other serial encodings.
 /// </para>
 /// <para>
-/// Working right-to-left over the sequence, every second digit (starting with the digit immediately to the left
-/// of the check digit) is doubled. When doubling produces a two-digit value, the digits are summed — equivalently
-/// one subtracts nine. The check digit is the value that makes the total sum divisible by ten.
+/// Working right-to-left over the sequence, every second digit (starting with the digit immediately to the left of the
+/// check digit) is doubled. When doubling produces a two-digit value, the digits are summed — equivalently one
+/// subtracts nine. The check digit is the value that makes the total sum divisible by ten.
 /// </para>
 /// <para>
 /// Luhn catches all single-digit substitution errors and all adjacent-digit transpositions <i>except</i> the
-/// transposition <c>09 ↔ 90</c>, which preserves the digit sum. It does not reliably detect other mutations such
-/// as twin errors (<c>aa → bb</c>).
+/// transposition <c>09 ↔ 90</c>, which preserves the digit sum. It does not reliably detect other mutations such as
+/// twin errors (<c>aa → bb</c>).
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"7992739871"</c>, the computed check digit is <c>'3'</c>, and the
-/// resulting sequence <c>"79927398713"</c> is therefore valid under Luhn.
+/// <b>Worked example.</b> For the body <c>"7992739871"</c>, the computed check digit is <c>'3'</c>, and the resulting
+/// sequence <c>"79927398713"</c> is therefore valid under Luhn.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -53,10 +52,11 @@ public sealed class Luhn
     public override string AlgorithmName => "Luhn";
 
     /// <summary>
-    /// Computes the Luhn check digit for the supplied body of decimal digits without allocating a streaming
-    /// instance.
+    /// Computes the Luhn check digit for the supplied body of decimal digits without allocating a streaming instance.
     /// </summary>
-    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
+    /// <param name="digits">
+    /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
+    /// </param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.

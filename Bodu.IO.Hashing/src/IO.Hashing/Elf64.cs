@@ -12,40 +12,34 @@ using System.Security.Cryptography;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes a 64-bit non-cryptographic hash using the ELF (Executable and Linkable Format) hash algorithm
-/// originally used in UNIX System V object files. This class cannot be inherited.
+/// Computes a 64-bit non-cryptographic hash using the ELF (Executable and Linkable Format) hash algorithm originally
+/// used in UNIX System V object files. This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// ELF hashing shifts and folds the running hash for each byte of input, periodically XORing the high bits
-/// back into the low bits. An optional <see cref="Seed" /> may be supplied to alter the initial state and
-/// is reconfigurable only while the algorithm has not yet consumed any input. <see cref="Reset" /> returns
-/// the instance to the reconfigurable state.
+/// ELF hashing shifts and folds the running hash for each byte of input, periodically XORing the high bits back into
+/// the low bits. An optional <see cref="Seed" /> may be supplied to alter the initial state and is reconfigurable only
+/// while the algorithm has not yet consumed any input. <see cref="Reset" /> returns the instance to the reconfigurable
+/// state.
 /// </para>
 /// <para>
-/// <strong>When to choose ELF64.</strong> The ELF hash is the symbol-table hash baked into UNIX System V
-/// object files and the GNU dynamic linker's <c>.gnu.hash</c> section — pick it when interoperating with
-/// ELF-format tooling or when reproducing a digest computed by the system linker. For general-purpose
-/// hash-table keying prefer <see cref="Fnv1a64"/> (better avalanche on the same per-byte cost) or
-/// <see cref="MurmurHash3_128"/> (much better distribution on inputs longer than ~16 bytes). The 64-bit
-/// width makes ELF64 a reasonable choice for medium-sized identifier maps where 32 bits would invite
-/// collisions.
+/// <strong>When to choose ELF64.</strong> The ELF hash is the symbol-table hash baked into UNIX System V object files
+/// and the GNU dynamic linker's <c>.gnu.hash</c> section — pick it when interoperating with ELF-format tooling or when
+/// reproducing a digest computed by the system linker. For general-purpose hash-table keying prefer
+/// <see cref="Fnv1a64" /> (better avalanche on the same per-byte cost) or <see cref="MurmurHash3_128" /> (much better
+/// distribution on inputs longer than ~16 bytes). The 64-bit width makes ELF64 a reasonable choice for medium-sized
+/// identifier maps where 32 bits would invite collisions.
 /// </para>
 /// <para>
 /// <strong>Output and lifecycle.</strong> Produces a 64-bit (8-byte) digest in little-endian byte order.
-/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive;
-/// instances are not thread-safe.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive; instances are
+/// not thread-safe.
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
-/// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// var elf = new Elf64();
-/// byte[] digest = elf.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name"));
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var elf = new Elf64(); byte[]
+/// digest = elf.ComputeHash(System.Text.Encoding.ASCII.GetBytes("symbol_name")); </code>
 /// </example>
 /// </remarks>
 public sealed class Elf64

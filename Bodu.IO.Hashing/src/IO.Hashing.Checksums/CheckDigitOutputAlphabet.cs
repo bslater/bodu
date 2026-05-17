@@ -23,8 +23,8 @@ public enum CheckDigitOutputAlphabet
     DecimalDigits,
 
     /// <summary>
-    /// ASCII decimal digits (<c>'0'</c> to <c>'9'</c>) plus the sentinel <c>'X'</c> used to represent the
-    /// check value ten in schemes such as ISBN-10 and ISO 7064 MOD 11-2.
+    /// ASCII decimal digits (<c>'0'</c> to <c>'9'</c>) plus the sentinel <c>'X'</c> used to represent the check value
+    /// ten in schemes such as ISBN-10 and ISO 7064 MOD 11-2.
     /// </summary>
     DecimalDigitsOrX,
 }

@@ -12,9 +12,9 @@ namespace Bodu.IO.Hashing.Checksums;
 /// Identifies the alphabet from which a check-digit or check-character algorithm accepts its body input.
 /// </summary>
 /// <remarks>
-/// Consumed by <see cref="AlphanumericCheckDigitAlgorithm" /> and <see cref="MultiCharCheckDigitAlgorithm" /> so
-/// that test harnesses and diagnostic surfaces can reason about the valid input set without inspecting the
-/// concrete algorithm.
+/// Consumed by <see cref="AlphanumericCheckDigitAlgorithm" /> and <see cref="MultiCharCheckDigitAlgorithm" /> so that
+/// test harnesses and diagnostic surfaces can reason about the valid input set without inspecting the concrete
+/// algorithm.
 /// </remarks>
 public enum CheckDigitInputAlphabet
 {

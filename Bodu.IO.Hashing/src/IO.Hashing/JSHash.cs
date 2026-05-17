@@ -10,38 +10,31 @@ using System.IO.Hashing;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes a 32-bit non-cryptographic hash using Justin Sobel's JSHash bitwise mixing function. This class
-/// cannot be inherited.
+/// Computes a 32-bit non-cryptographic hash using Justin Sobel's JSHash bitwise mixing function. This class cannot be
+/// inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// For each input byte, JSHash updates the running hash as
-/// <c><![CDATA[hash ^= (hash << 5) + (hash >> 2) + byte]]></c>, seeded with <c>0x4E67C6A7</c>. The finalized
-/// hash is written to the output buffer in little-endian byte order.
+/// For each input byte, JSHash updates the running hash as <c><![CDATA[hash ^= (hash << 5) + (hash >> 2) + byte]]></c>,
+/// seeded with <c>0x4E67C6A7</c>. The finalized hash is written to the output buffer in little-endian byte order.
 /// </para>
 /// <para>
-/// <strong>When to choose JSHash.</strong> JSHash is one of the small bitwise-mix hashes — pick it when a
-/// short, dependency-free 32-bit hash is sufficient and the per-byte cost matters. Its distribution is
-/// roughly comparable to <see cref="ApHash"/>, <see cref="SDBM"/>, and <see cref="Pjw32"/>; the choice
-/// between them is usually driven by interop with an existing system. For modern hash-table workloads prefer
-/// <see cref="Fnv1a32"/> (better avalanche, same cost) or <see cref="MurmurHash3_32"/> (markedly better
-/// distribution on inputs longer than ~16 bytes).
+/// <strong>When to choose JSHash.</strong> JSHash is one of the small bitwise-mix hashes — pick it when a short,
+/// dependency-free 32-bit hash is sufficient and the per-byte cost matters. Its distribution is roughly comparable to
+/// <see cref="ApHash" />, <see cref="SDBM" />, and <see cref="Pjw32" />; the choice between them is usually driven by
+/// interop with an existing system. For modern hash-table workloads prefer <see cref="Fnv1a32" /> (better avalanche,
+/// same cost) or <see cref="MurmurHash3_32" /> (markedly better distribution on inputs longer than ~16 bytes).
 /// </para>
 /// <para>
 /// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.
-/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive;
-/// instances are not thread-safe.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive; instances are
+/// not thread-safe.
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
-/// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// var js = new JSHash();
-/// byte[] digest = js.ComputeHash(System.Text.Encoding.UTF8.GetBytes("input-key"));
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; var js = new JSHash(); byte[]
+/// digest = js.ComputeHash(System.Text.Encoding.UTF8.GetBytes("input-key")); </code>
 /// </example>
 /// </remarks>
 public sealed class JSHash
@@ -54,8 +47,8 @@ public sealed class JSHash
     private uint _workingHash = Seed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="JSHash" /> class seeded with the canonical
-    /// <c>0x4E67C6A7</c> initial value.
+    /// Initializes a new instance of the <see cref="JSHash" /> class seeded with the canonical <c>0x4E67C6A7</c>
+    /// initial value.
     /// </summary>
     public JSHash()
         : base(HashLength)

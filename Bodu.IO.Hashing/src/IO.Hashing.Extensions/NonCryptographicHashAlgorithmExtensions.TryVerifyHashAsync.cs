@@ -163,8 +163,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </exception>
     /// <remarks>
     /// <paramref name="input" /> is wrapped in a non-allocating <see cref="MemoryStream" /> and passed to the
-    /// stream-based
-    /// <see cref="VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, byte[], CancellationToken)" /> overload.
+    /// stream-based <see cref="VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, byte[], CancellationToken)" />
+    /// overload.
     /// </remarks>
     public static async Task<bool> TryVerifyHashAsync(
         this NonCryptographicHashAlgorithm algorithm,
@@ -202,8 +202,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>
     /// A task that evaluates to <see langword="true" /> if the computed hash matches <paramref name="expectedHex" />;
-    /// otherwise, <see langword="false" />.
-    /// Returns <see langword="false" /> if <paramref name="expectedHex" /> is not a valid hexadecimal string.
+    /// otherwise, <see langword="false" />. Returns <see langword="false" /> if <paramref name="expectedHex" /> is not
+    /// a valid hexadecimal string.
     /// </returns>
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="algorithm" />, <paramref name="input" />, or <paramref name="expectedHex" /> is
@@ -211,8 +211,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </exception>
     /// <remarks>
     /// <paramref name="input" /> is wrapped in a non-allocating <see cref="MemoryStream" /> and passed to the
-    /// stream-based
-    /// <see cref="VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, string, CancellationToken)" /> overload.
+    /// stream-based <see cref="VerifyHashAsync(NonCryptographicHashAlgorithm, Stream, string, CancellationToken)" />
+    /// overload.
     /// </remarks>
     public static async Task<bool> TryVerifyHashAsync(
         this NonCryptographicHashAlgorithm algorithm,

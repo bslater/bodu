@@ -18,44 +18,35 @@ namespace Bodu.IO.Hashing;
 /// <remarks>
 /// <para>
 /// The default algorithm computes <c>hash = (hash * 33) + c</c> for each input byte <c>c</c>. Setting
-/// <see cref="UseModifiedAlgorithm" /> selects the XOR-modified form, <c>hash = (hash * 33) ^ c</c>, which
-/// may give better distribution in some hash-table workloads.
+/// <see cref="UseModifiedAlgorithm" /> selects the XOR-modified form, <c>hash = (hash * 33) ^ c</c>, which may give
+/// better distribution in some hash-table workloads.
 /// </para>
 /// <para>
-/// Both <see cref="InitialValue" /> and <see cref="UseModifiedAlgorithm" /> are reconfigurable only while the
-/// algorithm has not yet consumed input. <see cref="Reset" /> returns the instance to the reconfigurable
-/// state.
+/// Both <see cref="InitialValue" /> and <see cref="UseModifiedAlgorithm" /> are reconfigurable only while the algorithm
+/// has not yet consumed input. <see cref="Reset" /> returns the instance to the reconfigurable state.
 /// </para>
 /// <para>
-/// <strong>When to choose Bernstein.</strong> djb2 is the canonical "C-style" hash for short string keys —
-/// language symbol tables, environment-variable maps, and small associative containers. Pick it when
-/// interoperating with code that has standardized on djb2 (Perl, Python's older string hash, Tcl variable
-/// tables, etc.) or when the seed/variant flexibility is useful. Empirically the XOR-modified form
-/// (<c>djb2a</c>, <see cref="UseModifiedAlgorithm"/> set to <see langword="true"/>) gives slightly better
-/// avalanche than the default additive form. For new code without an interop constraint, <see cref="Fnv1a32"/>
-/// is a closely related but better-distributing default; <see cref="MurmurHash3_32"/> is preferable for
-/// inputs longer than a few dozen bytes.
+/// <strong>When to choose Bernstein.</strong> djb2 is the canonical "C-style" hash for short string keys — language
+/// symbol tables, environment-variable maps, and small associative containers. Pick it when interoperating with code
+/// that has standardized on djb2 (Perl, Python's older string hash, Tcl variable tables, etc.) or when the seed/variant
+/// flexibility is useful. Empirically the XOR-modified form (<c>djb2a</c>, <see cref="UseModifiedAlgorithm" /> set to
+/// <see langword="true" />) gives slightly better avalanche than the default additive form. For new code without an
+/// interop constraint, <see cref="Fnv1a32" /> is a closely related but better-distributing default;
+/// <see cref="MurmurHash3_32" /> is preferable for inputs longer than a few dozen bytes.
 /// </para>
 /// <para>
 /// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.
-/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive;
-/// instances are not thread-safe.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive; instances are
+/// not thread-safe.
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
-/// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// // Default djb2 with the canonical 5381 seed.
-/// var djb2 = new Bernstein();
-/// byte[] digest = djb2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol"));
-///
-/// // XOR-modified djb2a, generally better distribution.
-/// var djb2a = new Bernstein { UseModifiedAlgorithm = true };
-/// byte[] digestA = djb2a.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol"));
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Default djb2 with the canonical
+/// 5381 seed. var djb2 = new Bernstein(); byte[] digest =
+/// djb2.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol")); // XOR-modified djb2a, generally better
+/// distribution. var djb2a = new Bernstein { UseModifiedAlgorithm = true }; byte[] digestA =
+/// djb2a.ComputeHash(System.Text.Encoding.UTF8.GetBytes("symbol")); </code>
 /// </example>
 /// </remarks>
 public sealed class Bernstein
@@ -75,8 +66,8 @@ public sealed class Bernstein
     private uint _workingHash;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Bernstein" /> class with the canonical djb2 seed
-    /// (<see cref="DefaultInitialValue" />) and the original addition form of the algorithm.
+    /// Initializes a new instance of the <see cref="Bernstein" /> class with the canonical djb2 seed (
+    /// <see cref="DefaultInitialValue" />) and the original addition form of the algorithm.
     /// </summary>
     public Bernstein()
         : this(DefaultInitialValue, useModifiedAlgorithm: false)
@@ -84,13 +75,13 @@ public sealed class Bernstein
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="Bernstein" /> class using the specified initial seed value
-    /// and algorithm variant.
+    /// Initializes a new instance of the <see cref="Bernstein" /> class using the specified initial seed value and
+    /// algorithm variant.
     /// </summary>
     /// <param name="initialValue">The initial seed applied to the running hash accumulator.</param>
     /// <param name="useModifiedAlgorithm">
-    /// <see langword="true" /> to use the XOR-modified form <c>hash = (hash * 33) ^ c</c>;
-    /// <see langword="false" /> to use the original <c>hash = (hash * 33) + c</c>.
+    /// <see langword="true" /> to use the XOR-modified form <c>hash = (hash * 33) ^ c</c>; <see langword="false" /> to
+    /// use the original <c>hash = (hash * 33) + c</c>.
     /// </param>
     public Bernstein(uint initialValue, bool useModifiedAlgorithm)
         : base(HashLength)

@@ -12,8 +12,8 @@ using System.Security.Cryptography;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Computes a 32-bit non-cryptographic hash using the BKDR polynomial rolling algorithm from Kernighan and
-/// Ritchie's "The C Programming Language". This class cannot be inherited.
+/// Computes a 32-bit non-cryptographic hash using the BKDR polynomial rolling algorithm from Kernighan and Ritchie's
+/// "The C Programming Language". This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -23,29 +23,24 @@ namespace Bodu.IO.Hashing;
 /// </para>
 /// <para>
 /// <strong>When to choose BKDR.</strong> BKDR is the polynomial rolling hash from K&amp;R's "The C Programming
-/// Language" — a textbook choice for symbol tables, lexer keyword maps, and other small-string keying tasks.
-/// Pick it when interoperating with code that already uses the K&amp;R formulation, or when the input is a
-/// short identifier and avalanche quality matters less than predictable behavior. For modern hash-table
-/// workloads prefer <see cref="Fnv1a32"/> (better avalanche on the same per-byte cost) or
-/// <see cref="MurmurHash3_32"/> (much better distribution on inputs longer than ~16 bytes).
+/// Language" — a textbook choice for symbol tables, lexer keyword maps, and other small-string keying tasks. Pick it
+/// when interoperating with code that already uses the K&amp;R formulation, or when the input is a short identifier and
+/// avalanche quality matters less than predictable behavior. For modern hash-table workloads prefer
+/// <see cref="Fnv1a32" /> (better avalanche on the same per-byte cost) or <see cref="MurmurHash3_32" /> (much better
+/// distribution on inputs longer than ~16 bytes).
 /// </para>
 /// <para>
 /// <strong>Output and lifecycle.</strong> Produces a 32-bit (4-byte) digest in little-endian byte order.
-/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()"/> is non-destructive;
-/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset"/> returns the instance to its
-/// reconfigurable, pre-input state. Instances are not thread-safe.
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.GetCurrentHash()" /> is non-destructive;
+/// <see cref="System.IO.Hashing.NonCryptographicHashAlgorithm.Reset" /> returns the instance to its reconfigurable,
+/// pre-input state. Instances are not thread-safe.
 /// </para>
-/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used
-/// for password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
+/// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
+/// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// // Default seed (131); appropriate for short identifier keys.
-/// var bkdr = new BKDR();
-/// byte[] digest = bkdr.ComputeHash(System.Text.Encoding.UTF8.GetBytes("Identifier"));
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // Default seed (131); appropriate
+/// for short identifier keys. var bkdr = new BKDR(); byte[] digest =
+/// bkdr.ComputeHash(System.Text.Encoding.UTF8.GetBytes("Identifier")); </code>
 /// </example>
 /// </remarks>
 public sealed class BKDR
@@ -160,12 +155,11 @@ public sealed class BKDR
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the hash algorithm has already
-    /// consumed input, indicating that the instance is in a non-configurable state.
+    /// Throws a <see cref="CryptographicUnexpectedOperationException" /> if the hash algorithm has already consumed
+    /// input, indicating that the instance is in a non-configurable state.
     /// </summary>
     /// <remarks>
-    /// Prevents reconfiguration of the seed once hashing has begun. The guard is cleared by
-    /// <see cref="Reset" />.
+    /// Prevents reconfiguration of the seed once hashing has begun. The guard is cleared by <see cref="Reset" />.
     /// </remarks>
     /// <exception cref="CryptographicUnexpectedOperationException">
     /// Thrown when an attempt is made to modify the algorithm after it has begun consuming input.

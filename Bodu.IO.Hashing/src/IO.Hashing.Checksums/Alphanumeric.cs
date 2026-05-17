@@ -9,20 +9,20 @@ using System.Runtime.CompilerServices;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Provides shared helpers for expanding and validating the ASCII uppercase alphanumeric alphabet used by ISO 7064
-/// MOD 97-10, IBAN, LEI, ISIN, SEDOL, and CUSIP.
+/// Provides shared helpers for expanding and validating the ASCII uppercase alphanumeric alphabet used by ISO 7064 MOD
+/// 97-10, IBAN, LEI, ISIN, SEDOL, and CUSIP.
 /// </summary>
 /// <remarks>
-/// Letter values follow the convention mandated by ISO 7064 and ISO 13616 where <c>'A'</c> expands to 10,
-/// <c>'B'</c> to 11, and so on through <c>'Z'</c> to 35. CUSIP additionally defines sentinels for the punctuation
-/// characters <c>'*'</c> (36), <c>'@'</c> (37), and <c>'#'</c> (38).
+/// Letter values follow the convention mandated by ISO 7064 and ISO 13616 where <c>'A'</c> expands to 10, <c>'B'</c> to
+/// 11, and so on through <c>'Z'</c> to 35. CUSIP additionally defines sentinels for the punctuation characters
+/// <c>'*'</c> (36), <c>'@'</c> (37), and <c>'#'</c> (38).
 /// </remarks>
 internal static class Alphanumeric
 {
 
     /// <summary>
-    /// Expands an ASCII uppercase alphanumeric character, or one of the CUSIP punctuation sentinels
-    /// (<c>'*'</c>=36, <c>'@'</c>=37, <c>'#'</c>=38), to its numeric value.
+    /// Expands an ASCII uppercase alphanumeric character, or one of the CUSIP punctuation sentinels (<c>'*'</c>=36,
+    /// <c>'@'</c>=37, <c>'#'</c>=38), to its numeric value.
     /// </summary>
     /// <param name="ch">The character to expand.</param>
     /// <returns>The integer value in the range 0 to 38.</returns>
@@ -47,8 +47,8 @@ internal static class Alphanumeric
                 "'0'-'9', 'A'-'Z', '*', '@', or '#'"));
     }
     /// <summary>
-    /// Expands an ASCII uppercase alphanumeric character to its numeric value. <c>'0'</c>–<c>'9'</c> map to 0–9
-    /// and <c>'A'</c>–<c>'Z'</c> map to 10–35.
+    /// Expands an ASCII uppercase alphanumeric character to its numeric value. <c>'0'</c>–<c>'9'</c> map to 0–9 and
+    /// <c>'A'</c>–<c>'Z'</c> map to 10–35.
     /// </summary>
     /// <param name="ch">The character to expand.</param>
     /// <returns>The integer value in the range 0 to 35.</returns>
@@ -125,9 +125,9 @@ internal static class Alphanumeric
     }
 
     /// <summary>
-    /// Validates that every character in <paramref name="value" /> is a recognized SEDOL character, i.e. an
-    /// ASCII decimal digit or an uppercase consonant (vowels <c>'A'</c>, <c>'E'</c>, <c>'I'</c>, <c>'O'</c>, and
-    /// <c>'U'</c> are disallowed).
+    /// Validates that every character in <paramref name="value" /> is a recognized SEDOL character, i.e. an ASCII
+    /// decimal digit or an uppercase consonant (vowels <c>'A'</c>, <c>'E'</c>, <c>'I'</c>, <c>'O'</c>, and <c>'U'</c>
+    /// are disallowed).
     /// </summary>
     /// <param name="value">The character sequence to validate.</param>
     /// <param name="paramName">The parameter name used in any thrown exception.</param>

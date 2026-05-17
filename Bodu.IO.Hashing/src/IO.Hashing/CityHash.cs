@@ -12,8 +12,8 @@ using Bodu.Extensions;
 namespace Bodu.IO.Hashing;
 
 /// <summary>
-/// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See
-/// the <a href="https://github.com/google/cityhash">CityHash reference repository</a> for the specification.
+/// Base class for the <c>CityHash</c> family of non-cryptographic hash algorithms developed by Google. See the
+/// <a href="https://github.com/google/cityhash">CityHash reference repository</a> for the specification.
 /// </summary>
 /// <typeparam name="T">
 /// The concrete CityHash variant derived from this class. Must expose a public parameterless constructor.
@@ -23,82 +23,81 @@ namespace Bodu.IO.Hashing;
 /// CityHash is a one-shot algorithm. To satisfy the incremental input contract of
 /// <see cref="NonCryptographicHashAlgorithm" />, this base class accumulates all bytes delivered through
 /// <see cref="Append(ReadOnlySpan{byte})" /> into an internal buffer and invokes the derived variant's
-/// <see cref="ComputeHashCore(ReadOnlySpan{byte})" /> from <see cref="GetCurrentHashCore(Span{byte})" /> once
-/// all input is available.
+/// <see cref="ComputeHashCore(ReadOnlySpan{byte})" /> from <see cref="GetCurrentHashCore(Span{byte})" /> once all input
+/// is available.
 /// </para>
 /// <para>
 /// Shared 32-bit mixing primitives (<see cref="Mix(uint)" />, <see cref="Mur(uint, uint)" />,
-/// <see cref="Permute3(ref uint, ref uint, ref uint)" />) and shared 64-bit primitives
-/// (<see cref="ShiftMix(ulong)" />, <see cref="HashLen16(ulong, ulong)" />,
-/// <see cref="HashLen16(ulong, ulong, ulong)" />,
+/// <see cref="Permute3(ref uint, ref uint, ref uint)" />) and shared 64-bit primitives (<see cref="ShiftMix(ulong)" />,
+/// <see cref="HashLen16(ulong, ulong)" />, <see cref="HashLen16(ulong, ulong, ulong)" />,
 /// <see cref="WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)" />,
 /// <see cref="WeakHashLen32WithSeeds(ReadOnlySpan{byte}, ulong, ulong)" />,
-/// <see cref="Hash64Len0to16(ReadOnlySpan{byte})" />) and algorithm constants are defined here and are
-/// available to all derived variants. Supported output sizes are 32, 64, and 128 bits.
+/// <see cref="Hash64Len0to16(ReadOnlySpan{byte})" />) and algorithm constants are defined here and are available to all
+/// derived variants. Supported output sizes are 32, 64, and 128 bits.
 /// </para>
 /// <para>
-/// <strong>When to choose CityHash.</strong> CityHash was designed for short-to-medium strings on 64-bit
-/// CPUs and tends to outperform <see cref="MurmurHash3{T}"/> on long inputs while matching it on short ones.
-/// It is the typical choice for in-memory hash tables, fingerprinting, and content-based sharding when both
-/// throughput and distribution quality matter. Pick <see cref="CityHash32"/> for 32-bit slot indexes,
-/// <see cref="CityHash64"/> for general-purpose 64-bit hashing, and <see cref="CityHash128"/> for low-collision
-/// fingerprinting of large key spaces. For very small fixed-length keys, <see cref="Fnv{TSelf}"/> is simpler
-/// and competitive; for adversarial inputs use a member of <c>Bodu.Security.Cryptography</c> instead.
+/// <strong>When to choose CityHash.</strong> CityHash was designed for short-to-medium strings on 64-bit CPUs and tends
+/// to outperform <see cref="MurmurHash3{T}" /> on long inputs while matching it on short ones. It is the typical choice
+/// for in-memory hash tables, fingerprinting, and content-based sharding when both throughput and distribution quality
+/// matter. Pick <see cref="CityHash32" /> for 32-bit slot indexes, <see cref="CityHash64" /> for general-purpose 64-bit
+/// hashing, and <see cref="CityHash128" /> for low-collision fingerprinting of large key spaces. For very small
+/// fixed-length keys, <see cref="Fnv{TSelf}" /> is simpler and competitive; for adversarial inputs use a member of
+/// <c>Bodu.Security.Cryptography</c> instead.
 /// </para>
 /// <para>
-/// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base
-/// class buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})"/> is called. Memory
-/// consumption grows linearly with input length between resets — avoid feeding it multi-gigabyte streams.
-/// Instances are not thread-safe; share behind explicit synchronization.
+/// <strong>Buffering caveat.</strong> Because the algorithm needs the whole message before mixing, the base class
+/// buffers every appended byte until <see cref="GetCurrentHashCore(Span{byte})" /> is called. Memory consumption grows
+/// linearly with input length between resets — avoid feeding it multi-gigabyte streams. Instances are not thread-safe;
+/// share behind explicit synchronization.
 /// </para>
-/// <note type="important">
-/// CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password hashing, digital
-/// signatures, or any application that requires collision resistance under adversarial conditions.
+/// <note type="important"> CityHash is <b>not</b> cryptographically secure. It must <b>not</b> be used for password
+/// hashing, digital signatures, or any application that requires collision resistance under adversarial conditions.
 /// </note>
 /// <example>
-/// <code language="csharp">
-/// using Bodu.IO.Hashing;
-/// using Bodu.IO.Hashing.Extensions;
-///
-/// // 64-bit fingerprint of a content blob — typical use case.
-/// var city = new CityHash64();
-/// byte[] fingerprint = city.ComputeHash(blob);
-///
-/// // Stream-hash a moderately sized file. Note: CityHash buffers fully — prefer Crc / xxHash for very large streams.
-/// using FileStream fs = File.OpenRead("payload.bin");
-/// byte[] streamDigest = city.ComputeHash(fs);
-/// </code>
+/// <code language="csharp"> using Bodu.IO.Hashing; using Bodu.IO.Hashing.Extensions; // 64-bit fingerprint of a content
+/// blob — typical use case. var city = new CityHash64(); byte[] fingerprint = city.ComputeHash(blob); // Stream-hash a
+/// moderately sized file. Note: CityHash buffers fully — prefer Crc / xxHash for very large streams. using FileStream
+/// fs = File.OpenRead("payload.bin"); byte[] streamDigest = city.ComputeHash(fs); </code>
 /// </example>
 /// </remarks>
-/// <seealso cref="CityHash32"/>
-/// <seealso cref="CityHash64"/>
-/// <seealso cref="CityHash128"/>
+/// <seealso cref="CityHash32"/> <seealso cref="CityHash64"/> <seealso cref="CityHash128"/>
 public abstract class CityHash<T>
     : NonCryptographicHashAlgorithm, IDisposable
     where T : CityHash<T>, new()
 {
 
-    /// <summary>The first Murmur-style mixing constant used in 32-bit operations.</summary>
+    /// <summary>
+    /// The first Murmur-style mixing constant used in 32-bit operations.
+    /// </summary>
     protected const uint C1 = 0xCC9E2D51U;
 
-    /// <summary>The second Murmur-style mixing constant used in 32-bit operations.</summary>
+    /// <summary>
+    /// The second Murmur-style mixing constant used in 32-bit operations.
+    /// </summary>
     protected const uint C2 = 0x1B873593U;
 
-    /// <summary>The 32-bit finalization magic constant applied during the iterative mixing phase.</summary>
+    /// <summary>
+    /// The 32-bit finalization magic constant applied during the iterative mixing phase.
+    /// </summary>
     protected const uint HashMagic = 0xE6546B64U;
 
-    /// <summary>The first 64-bit mixing constant, derived from the CityHash reference implementation.</summary>
+    /// <summary>
+    /// The first 64-bit mixing constant, derived from the CityHash reference implementation.
+    /// </summary>
     protected const ulong K0 = 0xC3A5C85C97CB3127UL;
 
-    /// <summary>The second 64-bit mixing constant, derived from the CityHash reference implementation.</summary>
+    /// <summary>
+    /// The second 64-bit mixing constant, derived from the CityHash reference implementation.
+    /// </summary>
     protected const ulong K1 = 0xB492B66FBE98F273UL;
 
-    /// <summary>The third 64-bit mixing constant, derived from the CityHash reference implementation.</summary>
+    /// <summary>
+    /// The third 64-bit mixing constant, derived from the CityHash reference implementation.
+    /// </summary>
     protected const ulong K2 = 0x9AE16A3B2F90404FUL;
 
     /// <summary>
-    /// The fourth 64-bit constant used by the 128-bit variant to seed the accumulator from the first 16
-    /// bytes of input.
+    /// The fourth 64-bit constant used by the 128-bit variant to seed the accumulator from the first 16 bytes of input.
     /// </summary>
     protected const ulong K3 = 0xC949D7C7509E6557UL;
 
@@ -113,8 +112,7 @@ public abstract class CityHash<T>
     private bool _disposed;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output
-    /// size.
+    /// Initializes a new instance of the <see cref="CityHash{T}" /> class with the specified hash output size.
     /// </summary>
     /// <param name="hashSize">The desired hash output size in bits. Must be one of 32, 64, or 128.</param>
     /// <exception cref="ArgumentOutOfRangeException">
@@ -156,8 +154,8 @@ public abstract class CityHash<T>
     }
 
     /// <summary>
-    /// Hashes 0 to 16 bytes to a 64-bit value, selecting a byte-, word-, or double-word code path based on
-    /// the exact input length.
+    /// Hashes 0 to 16 bytes to a 64-bit value, selecting a byte-, word-, or double-word code path based on the exact
+    /// input length.
     /// </summary>
     /// <param name="s">The input span. Length must be in the range [0, 16].</param>
     /// <returns>The 64-bit hash value.</returns>
@@ -208,8 +206,8 @@ public abstract class CityHash<T>
     protected static ulong HashLen16(ulong u, ulong v) => HashLen16(u, v, KMul);
 
     /// <summary>
-    /// Combines two 64-bit values into a single 64-bit hash using a caller-supplied multiplier, applying
-    /// two rounds of multiply-shift-XOR to thoroughly distribute entropy across all output bits.
+    /// Combines two 64-bit values into a single 64-bit hash using a caller-supplied multiplier, applying two rounds of
+    /// multiply-shift-XOR to thoroughly distribute entropy across all output bits.
     /// </summary>
     /// <param name="u">The first input value.</param>
     /// <param name="v">The second input value.</param>
@@ -268,8 +266,7 @@ public abstract class CityHash<T>
     }
 
     /// <summary>
-    /// Performs a cyclic three-way permutation of the given values, assigning <c>a ← c</c>, <c>c ← b</c>,
-    /// <c>b ← a</c>.
+    /// Performs a cyclic three-way permutation of the given values, assigning <c>a ← c</c>, <c>c ← b</c>, <c>b ← a</c>.
     /// </summary>
     /// <param name="a">The first value, receives the original value of <paramref name="c" />.</param>
     /// <param name="b">The second value, receives the original value of <paramref name="a" />.</param>
@@ -293,8 +290,7 @@ public abstract class CityHash<T>
 
     /// <summary>
     /// Reads four consecutive 64-bit little-endian words from the specified span and forwards them to
-    /// <see cref="WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)" /> along with the
-    /// provided seeds.
+    /// <see cref="WeakHashLen32WithSeeds(ulong, ulong, ulong, ulong, ulong, ulong)" /> along with the provided seeds.
     /// </summary>
     /// <param name="s">The input span. Must contain at least 32 bytes starting at offset 0.</param>
     /// <param name="a">The first accumulator seed.</param>
@@ -314,8 +310,8 @@ public abstract class CityHash<T>
             b);
 
     /// <summary>
-    /// Computes a weak 64-bit hash of 32 bytes using six provided seed values, returning a pair of
-    /// independent 64-bit outputs.
+    /// Computes a weak 64-bit hash of 32 bytes using six provided seed values, returning a pair of independent 64-bit
+    /// outputs.
     /// </summary>
     /// <param name="w">The first 64-bit word of the input block.</param>
     /// <param name="x">The second 64-bit word of the input block.</param>
@@ -323,9 +319,7 @@ public abstract class CityHash<T>
     /// <param name="z">The fourth 64-bit word of the input block.</param>
     /// <param name="a">The first accumulator seed.</param>
     /// <param name="b">The second accumulator seed.</param>
-    /// <returns>
-    /// A tuple containing two independent 64-bit hash values derived from the mixed input and seeds.
-    /// </returns>
+    /// <returns>A tuple containing two independent 64-bit hash values derived from the mixed input and seeds.</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     protected static (ulong First, ulong Second) WeakHashLen32WithSeeds(
         ulong w, ulong x, ulong y, ulong z, ulong a, ulong b)

@@ -1,4 +1,4 @@
-// ---------------------------------------------------------------------------------------------------------------
+﻿// ---------------------------------------------------------------------------------------------------------------
 // <copyright file="HashingThrowHelper.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
@@ -13,16 +13,15 @@ namespace Bodu.IO.Hashing;
 /// </summary>
 /// <remarks>
 /// <para>
-/// Single-use guards are kept at their call sites or expressed as <c>private static</c> helpers on the owning
-/// type. Only guards reused across two or more classes — and that test a condition rather than unconditionally
-/// throwing — belong here.
+/// Single-use guards are kept at their call sites or expressed as <c>private static</c> helpers on the owning type.
+/// Only guards reused across two or more classes — and that test a condition rather than unconditionally throwing —
+/// belong here.
 /// </para>
 /// <para>
-/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in
-/// <c>Bodu.Core</c>: <c>HashingThrowHelper.cs</c> holds the root declaration, while
-/// <c>HashingThrowHelper.CallerExpression.cs</c> and <c>HashingThrowHelper.NetStandard.cs</c> hold the
-/// framework-conditional implementations. The wildcard <c>&lt;Compile Remove&gt;</c> entries in the project file
-/// select the correct partial for the current target.
+/// The class follows the same partial-file pattern used by <see cref="Bodu.ThrowHelper" /> in <c>Bodu.Core</c>:
+/// <c>HashingThrowHelper.cs</c> holds the root declaration, while <c>HashingThrowHelper.CallerExpression.cs</c> and
+/// <c>HashingThrowHelper.NetStandard.cs</c> hold the framework-conditional implementations. The wildcard
+/// <c>&lt;Compile Remove&gt;</c> entries in the project file select the correct partial for the current target.
 /// </para>
 /// </remarks>
 [SuppressMessage(

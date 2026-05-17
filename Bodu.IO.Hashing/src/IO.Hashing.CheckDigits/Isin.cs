@@ -14,19 +14,19 @@ using Bodu.IO.Hashing.Checksums;
 /// </summary>
 /// <remarks>
 /// <para>
-/// An ISIN comprises a two-letter country code, a nine-character national security identifier, and a single
-/// trailing check digit. To compute the check, every body character is expanded to its numeric value (digits as
-/// themselves, <c>'A'</c>–<c>'Z'</c> to 10–35) and the concatenated string of resulting digits is fed to the
-/// standard Luhn algorithm.
+/// An ISIN comprises a two-letter country code, a nine-character national security identifier, and a single trailing
+/// check digit. To compute the check, every body character is expanded to its numeric value (digits as themselves,
+/// <c>'A'</c>–<c>'Z'</c> to 10–35) and the concatenated string of resulting digits is fed to the standard Luhn
+/// algorithm.
 /// </para>
 /// <para>
-/// Because each letter contributes two digits while each numeral contributes one, the effective digit stream
-/// length varies by country-code and body composition. The streaming surface nevertheless preserves
-/// prefix-equivalence with <see cref="Compute(ReadOnlySpan{char})" />.
+/// Because each letter contributes two digits while each numeral contributes one, the effective digit stream length
+/// varies by country-code and body composition. The streaming surface nevertheless preserves prefix-equivalence with
+/// <see cref="Compute(ReadOnlySpan{char})" />.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"US037833100"</c> — Apple Inc. — the computed check digit is <c>'5'</c>,
-/// and the resulting ISIN <c>"US0378331005"</c> is therefore valid.
+/// <b>Worked example.</b> For the body <c>"US037833100"</c> — Apple Inc. — the computed check digit is <c>'5'</c>, and
+/// the resulting ISIN <c>"US0378331005"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -35,10 +35,14 @@ public sealed class Isin
     : AlphanumericCheckDigitAlgorithm
 {
 
-    /// <summary>The required body length of <c>11</c> characters.</summary>
+    /// <summary>
+    /// The required body length of <c>11</c> characters.
+    /// </summary>
     public const int BodyLength = 11;
 
-    /// <summary>The required full-sequence length of <c>12</c> characters.</summary>
+    /// <summary>
+    /// The required full-sequence length of <c>12</c> characters.
+    /// </summary>
     public const int SequenceLength = 12;
 
     private readonly Luhn luhn = new Luhn();
@@ -76,14 +80,14 @@ public sealed class Isin
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising an eleven-character body followed by a single-digit
-    /// ISIN check, is consistent.
+    /// Determines whether the supplied sequence, comprising an eleven-character body followed by a single-digit ISIN
+    /// check, is consistent.
     /// </summary>
     /// <param name="valueIncludingCheck">The complete twelve-character ISIN.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is empty or evaluates as valid under ISIN; otherwise,
-    /// <see langword="false" /> — including the case where the length is wrong, any body character is outside
-    /// the alphanumeric uppercase alphabet, or the check character is not a decimal digit.
+    /// <see langword="false" /> — including the case where the length is wrong, any body character is outside the
+    /// alphanumeric uppercase alphabet, or the check character is not a decimal digit.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {

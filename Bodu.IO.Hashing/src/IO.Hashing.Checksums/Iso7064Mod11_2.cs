@@ -9,14 +9,14 @@ using Bodu.IO.Hashing.CheckDigits;
 namespace Bodu.IO.Hashing.Checksums;
 
 /// <summary>
-/// Computes the single-character check of a decimal string using the ISO 7064 <c>MOD 11-2</c> pure algorithm.
-/// This class cannot be inherited.
+/// Computes the single-character check of a decimal string using the ISO 7064 <c>MOD 11-2</c> pure algorithm. This
+/// class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
-/// <c>MOD 11-2</c> is the pure ISO 7064 system that uses modulus eleven with radix two. It operates on an
-/// arbitrary sequence of decimal digits and emits a single check character drawn from the alphabet
-/// <c>'0'</c>–<c>'9'</c> plus the sentinel <c>'X'</c> used to represent the value ten.
+/// <c>MOD 11-2</c> is the pure ISO 7064 system that uses modulus eleven with radix two. It operates on an arbitrary
+/// sequence of decimal digits and emits a single check character drawn from the alphabet <c>'0'</c>–<c>'9'</c> plus the
+/// sentinel <c>'X'</c> used to represent the value ten.
 /// </para>
 /// <para>
 /// The working digit is initialized to zero, and for each body digit <c>a</c> it is updated as
@@ -24,8 +24,8 @@ namespace Bodu.IO.Hashing.Checksums;
 /// <c>c = (12 - p) mod 11</c>; the sequence <c>body + c</c> is valid when the same identity holds.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"0794"</c>, the computed check character is <c>'0'</c>, and the
-/// resulting sequence <c>"07940"</c> is therefore valid under <c>MOD 11-2</c>.
+/// <b>Worked example.</b> For the body <c>"0794"</c>, the computed check character is <c>'0'</c>, and the resulting
+/// sequence <c>"07940"</c> is therefore valid under <c>MOD 11-2</c>.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -53,10 +53,12 @@ public sealed class Iso7064Mod11_2
     public override CheckDigitOutputAlphabet OutputAlphabet => CheckDigitOutputAlphabet.DecimalDigitsOrX;
 
     /// <summary>
-    /// Computes the ISO 7064 MOD 11-2 check character for the supplied body of decimal digits without allocating
-    /// a streaming instance.
+    /// Computes the ISO 7064 MOD 11-2 check character for the supplied body of decimal digits without allocating a
+    /// streaming instance.
     /// </summary>
-    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
+    /// <param name="digits">
+    /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
+    /// </param>
     /// <returns>The check character, either an ASCII decimal digit or the sentinel <c>'X'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
@@ -78,14 +80,14 @@ public sealed class Iso7064Mod11_2
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a body followed by a trailing ISO 7064 MOD 11-2
-    /// check character, is consistent.
+    /// Determines whether the supplied sequence, comprising a body followed by a trailing ISO 7064 MOD 11-2 check
+    /// character, is consistent.
     /// </summary>
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check character.</param>
     /// <returns>
     /// <see langword="true" /> if the sequence is empty or evaluates as valid under MOD 11-2; otherwise,
-    /// <see langword="false" /> — including the case where any non-final character is not a decimal digit or the
-    /// final character is neither a decimal digit nor <c>'X'</c>.
+    /// <see langword="false" /> — including the case where any non-final character is not a decimal digit or the final
+    /// character is neither a decimal digit nor <c>'X'</c>.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> valueIncludingCheck)
     {

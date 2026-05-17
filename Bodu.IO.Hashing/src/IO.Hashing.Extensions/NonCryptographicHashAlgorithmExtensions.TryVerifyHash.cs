@@ -237,8 +237,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
         }
     }
     /// <summary>
-    /// Attempts to compute and verify the hash of a byte array, reporting both whether the operation succeeded and whether
-    /// the hash matched.
+    /// Attempts to compute and verify the hash of a byte array, reporting both whether the operation succeeded and
+    /// whether the hash matched.
     /// </summary>
     /// <param name="algorithm">
     /// The <see cref="NonCryptographicHashAlgorithm" /> instance used to compute the hash. Must not be
@@ -257,11 +257,13 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// method itself returns <see langword="false" />.
     /// </param>
     /// <returns>
-    /// <see langword="true" /> if the hash computation and comparison completed without error; <see langword="false" /> if
-    /// <paramref name="input" /> or <paramref name="expectedHash" /> is <see langword="null" />, or an internal exception
-    /// occurred.
+    /// <see langword="true" /> if the hash computation and comparison completed without error; <see langword="false" />
+    /// if <paramref name="input" /> or <paramref name="expectedHash" /> is <see langword="null" />, or an internal
+    /// exception occurred.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="algorithm" /> is <see langword="null" />.
+    /// </exception>
     /// <remarks>
     /// Unlike <see cref="VerifyHash(NonCryptographicHashAlgorithm, byte[], byte[])" />, this overload distinguishes
     /// between a failed operation (return value <see langword="false" />) and a successful but non-matching comparison

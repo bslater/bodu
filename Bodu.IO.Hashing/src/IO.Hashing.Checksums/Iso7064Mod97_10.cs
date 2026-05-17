@@ -9,27 +9,26 @@ namespace Bodu.IO.Hashing.Checksums;
 using Bodu.IO.Hashing.CheckDigits;
 
 /// <summary>
-/// Computes the 2-character check code of an alphanumeric string using the ISO 7064 <c>MOD 97-10</c> pure
-/// algorithm. This class cannot be inherited.
+/// Computes the 2-character check code of an alphanumeric string using the ISO 7064 <c>MOD 97-10</c> pure algorithm.
+/// This class cannot be inherited.
 /// </summary>
 /// <remarks>
 /// <para>
 /// <c>MOD 97-10</c> is the pure ISO 7064 system that uses modulus ninety-seven with radix ten. It underpins the
-/// International Bank Account Number (IBAN, ISO 13616), the Legal Entity Identifier (LEI, ISO 17442), and the
-/// Committee on Uniform Securities Identification Procedures (CUSIP) check computation used for Legal-Entity
-/// Identifier issuance. Letters in the body are expanded by value <c>'A'</c>=10 … <c>'Z'</c>=35 before being
-/// absorbed.
+/// International Bank Account Number (IBAN, ISO 13616), the Legal Entity Identifier (LEI, ISO 17442), and the Committee
+/// on Uniform Securities Identification Procedures (CUSIP) check computation used for Legal-Entity Identifier issuance.
+/// Letters in the body are expanded by value <c>'A'</c>=10 … <c>'Z'</c>=35 before being absorbed.
 /// </para>
 /// <para>
-/// The running remainder <c>r</c> is initialized to zero. Each body character is absorbed as <c>r ← (r·10 + a) mod 97</c>
-/// for a decimal digit or <c>r ← (r·100 + a) mod 97</c> for an uppercase letter (whose value is two decimal
-/// digits). The two-digit check code is <c>(98 - (r · 100) mod 97) mod 97</c>, formatted as two ASCII decimal
-/// digits; the complete sequence <c>body + check</c> is valid when its running remainder, including the check
-/// code, equals <c>1</c>.
+/// The running remainder <c>r</c> is initialized to zero. Each body character is absorbed as
+/// <c>r ← (r·10 + a) mod 97</c> for a decimal digit or <c>r ← (r·100 + a) mod 97</c> for an uppercase letter (whose
+/// value is two decimal digits). The two-digit check code is <c>(98 - (r · 100) mod 97) mod 97</c>, formatted as two
+/// ASCII decimal digits; the complete sequence <c>body + check</c> is valid when its running remainder, including the
+/// check code, equals <c>1</c>.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"794"</c>, the computed check code is <c>"44"</c>, and the resulting
-/// sequence <c>"79444"</c> is therefore valid under MOD 97-10.
+/// <b>Worked example.</b> For the body <c>"794"</c>, the computed check code is <c>"44"</c>, and the resulting sequence
+/// <c>"79444"</c> is therefore valid under MOD 97-10.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -38,7 +37,9 @@ public sealed class Iso7064Mod97_10
     : MultiCharCheckDigitAlgorithm
 {
 
-    /// <summary>The fixed check-code length of <c>2</c> decimal digits.</summary>
+    /// <summary>
+    /// The fixed check-code length of <c>2</c> decimal digits.
+    /// </summary>
     public const int CheckDigits = 2;
 
     private int r;
@@ -75,9 +76,9 @@ public sealed class Iso7064Mod97_10
     }
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a body followed by a two-digit MOD 97-10 check code,
-    /// is consistent — that is, whether its running remainder (with letters expanded and the check code absorbed)
-    /// equals <c>1</c>.
+    /// Determines whether the supplied sequence, comprising a body followed by a two-digit MOD 97-10 check code, is
+    /// consistent — that is, whether its running remainder (with letters expanded and the check code absorbed) equals
+    /// <c>1</c>.
     /// </summary>
     /// <param name="valueIncludingCheck">The complete sequence including the trailing check code.</param>
     /// <returns>

@@ -15,11 +15,12 @@ public static partial class NonCryptographicHashAlgorithmExtensions
 {
 
     /// <summary>
-    /// Feeds a span of bytes into the ongoing hash computation of the specified <see cref="NonCryptographicHashAlgorithm" />
-    /// without finalizing it.
+    /// Feeds a span of bytes into the ongoing hash computation of the specified
+    /// <see cref="NonCryptographicHashAlgorithm" /> without finalizing it.
     /// </summary>
     /// <param name="algorithm">
-    /// The <see cref="NonCryptographicHashAlgorithm" /> instance receiving the data. Must not be <see langword="null" />.
+    /// The <see cref="NonCryptographicHashAlgorithm" /> instance receiving the data. Must not be
+    /// <see langword="null" />.
     /// </param>
     /// <param name="data">The span of bytes to feed into the hash computation.</param>
     /// <exception cref="ArgumentNullException">
@@ -27,9 +28,10 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method is a null-guarded wrapper around <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />,
-    /// intended for use in incremental hashing scenarios where data is supplied in multiple segments. Retrieve the current
-    /// digest at any point by calling <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> or
+    /// This method is a null-guarded wrapper around
+    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />, intended for use in incremental hashing
+    /// scenarios where data is supplied in multiple segments. Retrieve the current digest at any point by calling
+    /// <see cref="NonCryptographicHashAlgorithm.GetCurrentHash()" /> or
     /// <see cref="NonCryptographicHashAlgorithm.GetHashAndReset()" />.
     /// </para>
     /// <para>
@@ -51,7 +53,8 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" />, without finalizing the computation.
     /// </summary>
     /// <param name="algorithm">
-    /// The <see cref="NonCryptographicHashAlgorithm" /> instance receiving the data. Must not be <see langword="null" />.
+    /// The <see cref="NonCryptographicHashAlgorithm" /> instance receiving the data. Must not be
+    /// <see langword="null" />.
     /// </param>
     /// <param name="source">
     /// The stream whose bytes are appended to the current hash state. Must not be <see langword="null" />.
@@ -70,13 +73,13 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// </exception>
     /// <remarks>
     /// <para>
-    /// This method allows large or streaming sources to be incorporated into an incremental hash computation. Because only
-    /// <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> is called, the hash state is not finalized after
-    /// this method returns.
+    /// This method allows large or streaming sources to be incorporated into an incremental hash computation. Because
+    /// only <see cref="NonCryptographicHashAlgorithm.Append(ReadOnlySpan{byte})" /> is called, the hash state is not
+    /// finalized after this method returns.
     /// </para>
     /// <para>
-    /// The read buffer is rented from <see cref="ArrayPool{T}.Shared" /> and returned in all exit paths, including exception
-    /// propagation.
+    /// The read buffer is rented from <see cref="ArrayPool{T}.Shared" /> and returned in all exit paths, including
+    /// exception propagation.
     /// </para>
     /// </remarks>
     public static void AppendData(this NonCryptographicHashAlgorithm algorithm, Stream source, int bufferSize = 4096)

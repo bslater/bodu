@@ -15,13 +15,13 @@ namespace Bodu.IO.Hashing.CheckDigits;
 /// <remarks>
 /// <para>
 /// EAN-13 and ISBN-13 share the same weight pattern — alternating 1 and 3 over the twelve body digits with the
-/// rightmost data digit carrying weight 3 — so a 13-digit ISBN is also a valid EAN-13. The static helpers on this
-/// type enforce a strict 12-digit body length (13-digit full sequence) to make downstream callers' intent
-/// explicit; the streaming surface is length-agnostic.
+/// rightmost data digit carrying weight 3 — so a 13-digit ISBN is also a valid EAN-13. The static helpers on this type
+/// enforce a strict 12-digit body length (13-digit full sequence) to make downstream callers' intent explicit; the
+/// streaming surface is length-agnostic.
 /// </para>
 /// <para>
-/// <b>Worked example.</b> For the body <c>"501234567890"</c>, the computed check digit is <c>'0'</c>, and the
-/// resulting EAN-13 <c>"5012345678900"</c> is therefore valid.
+/// <b>Worked example.</b> For the body <c>"501234567890"</c>, the computed check digit is <c>'0'</c>, and the resulting
+/// EAN-13 <c>"5012345678900"</c> is therefore valid.
 /// </para>
 /// <note type="important">This algorithm is <b>not</b> cryptographically secure and should <b>not</b> be used for
 /// password hashing, digital signatures, or integrity validation in security-sensitive applications.</note>
@@ -30,10 +30,14 @@ public sealed class Ean13
     : CheckDigitAlgorithm
 {
 
-    /// <summary>The required body length of <c>12</c> decimal digits.</summary>
+    /// <summary>
+    /// The required body length of <c>12</c> decimal digits.
+    /// </summary>
     public const int BodyLength = 12;
 
-    /// <summary>The required full-sequence length of <c>13</c> decimal digits.</summary>
+    /// <summary>
+    /// The required full-sequence length of <c>13</c> decimal digits.
+    /// </summary>
     public const int SequenceLength = 13;
     private int _count;
 
@@ -51,29 +55,31 @@ public sealed class Ean13
     public override string AlgorithmName => "EAN-13";
 
     /// <summary>
-    /// Computes the EAN-13 check digit for the supplied body of decimal digits without allocating a streaming
-    /// instance.
+    /// Computes the EAN-13 check digit for the supplied body of decimal digits without allocating a streaming instance.
     /// </summary>
-    /// <param name="digits">The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).</param>
+    /// <param name="digits">
+    /// The body characters. Each must be an ASCII decimal digit (<c>'0'</c> to <c>'9'</c>).
+    /// </param>
     /// <returns>The check digit as an ASCII character in the range <c>'0'</c> to <c>'9'</c>.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="digits" /> contains any character outside the range <c>'0'</c> to <c>'9'</c>.
     /// </exception>
     /// <remarks>
-    /// This helper is length-tolerant to support streaming and partial-body use; <see cref="IsValid(ReadOnlySpan{char})" />
-    /// enforces the strict <see cref="SequenceLength" /> domain contract for full validation.
+    /// This helper is length-tolerant to support streaming and partial-body use;
+    /// <see cref="IsValid(ReadOnlySpan{char})" /> enforces the strict <see cref="SequenceLength" /> domain contract for
+    /// full validation.
     /// </remarks>
     public static char Compute(ReadOnlySpan<char> digits) =>
         WeightedMod10.ComputeIsbn13(digits);
 
     /// <summary>
-    /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing EAN-13
-    /// check digit, is consistent.
+    /// Determines whether the supplied sequence, comprising a twelve-digit body followed by a trailing EAN-13 check
+    /// digit, is consistent.
     /// </summary>
     /// <param name="digitsIncludingCheck">The complete sequence including the trailing check digit.</param>
     /// <returns>
-    /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as
-    /// valid under EAN-13; otherwise, <see langword="false" /> — including the case where
+    /// <see langword="true" /> if the sequence is exactly <see cref="SequenceLength" /> digits and evaluates as valid
+    /// under EAN-13; otherwise, <see langword="false" /> — including the case where
     /// <paramref name="digitsIncludingCheck" /> has the wrong length or contains a non-digit character.
     /// </returns>
     public static bool IsValid(ReadOnlySpan<char> digitsIncludingCheck)
