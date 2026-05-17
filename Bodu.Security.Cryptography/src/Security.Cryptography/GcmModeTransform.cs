@@ -256,7 +256,9 @@ public sealed class GcmModeTransform
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">The instance has already encrypted or decrypted a message.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The instance has already encrypted or decrypted a message.
+    /// </exception>
     public int Encrypt(ReadOnlySpan<byte> plaintext, Span<byte> output)
     {
         this.ThrowIfDisposed();
@@ -296,7 +298,9 @@ public sealed class GcmModeTransform
 
     /// <inheritdoc />
     /// <exception cref="ObjectDisposedException">The instance has been disposed.</exception>
-    /// <exception cref="InvalidOperationException">The instance has already encrypted or decrypted a message.</exception>
+    /// <exception cref="InvalidOperationException">
+    /// The instance has already encrypted or decrypted a message.
+    /// </exception>
     public int Decrypt(ReadOnlySpan<byte> ciphertextWithTag, Span<byte> output)
     {
         this.ThrowIfDisposed();

@@ -145,8 +145,8 @@ internal static partial class CryptoHelpers
     /// Thrown when <paramref name="divisor" /> is zero or negative.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown when <paramref name="value" /> is less than or equal to zero, or when
-    /// <paramref name="value" /> is not evenly divisible by <paramref name="divisor" />.
+    /// Thrown when <paramref name="value" /> is less than or equal to zero, or when <paramref name="value" /> is not
+    /// evenly divisible by <paramref name="divisor" />.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfNotPositiveMultipleOf<T>(
