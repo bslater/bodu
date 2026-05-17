@@ -78,8 +78,8 @@ public sealed class BKDR
     /// The seed multiplier applied to each byte. Must be one of the supported seed constants.
     /// </param>
     /// <exception cref="ArgumentException">
-    /// <paramref name="seed" /> is not one of the supported values (31, 131, 1313, 13131, 131313, 1313131,
-    /// 13131313, 131313131, 1313131313).
+    /// <paramref name="seed" /> is not one of the supported values (31, 131, 1313, 13131, 131313, 1313131, 13131313,
+    /// 131313131, 1313131313).
     /// </exception>
     public BKDR(uint seed)
         : base(HashLength)
@@ -93,12 +93,9 @@ public sealed class BKDR
     /// Gets or sets the seed multiplier applied on each byte update.
     /// </summary>
     /// <value>The seed value. Must be one of the supported seed constants.</value>
-    /// <exception cref="ArgumentException">
-    /// The assigned value is not one of the supported seed values.
-    /// </exception>
+    /// <exception cref="ArgumentException">The assigned value is not one of the supported seed values.</exception>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
-    /// invoked.
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is invoked.
     /// </exception>
     public uint Seed
     {

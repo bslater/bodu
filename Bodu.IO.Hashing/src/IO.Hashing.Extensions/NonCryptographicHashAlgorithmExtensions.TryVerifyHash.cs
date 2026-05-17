@@ -109,7 +109,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <see langword="true" /> if the computed hash matches <paramref name="expectedHash" />; otherwise,
     /// <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="algorithm" /> is <see langword="null" />.
+    /// </exception>
     public static bool TryVerifyHash(
         this NonCryptographicHashAlgorithm algorithm,
         ReadOnlySpan<byte> input,
@@ -179,7 +181,9 @@ public static partial class NonCryptographicHashAlgorithmExtensions
     /// <returns>
     /// <see langword="true" /> if the stream produces a matching hash; otherwise, <see langword="false" />.
     /// </returns>
-    /// <exception cref="ArgumentNullException">Thrown if <paramref name="algorithm" /> is <see langword="null" />.</exception>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown if <paramref name="algorithm" /> is <see langword="null" />.
+    /// </exception>
     public static bool TryVerifyHash(
         this NonCryptographicHashAlgorithm algorithm,
         Stream stream,

@@ -78,8 +78,7 @@ public sealed class Elf64
     /// </summary>
     /// <value>The seed value applied before hashing begins.</value>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
-    /// invoked.
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is invoked.
     /// </exception>
     public ulong Seed
     {

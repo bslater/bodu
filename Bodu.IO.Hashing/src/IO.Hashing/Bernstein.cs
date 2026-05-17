@@ -96,8 +96,7 @@ public sealed class Bernstein
     /// </summary>
     /// <value>The initial hash seed. Defaults to <see cref="DefaultInitialValue" />.</value>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
-    /// invoked.
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is invoked.
     /// </exception>
     public uint InitialValue
     {
@@ -115,12 +114,11 @@ public sealed class Bernstein
     /// Gets or sets a value indicating whether the XOR-modified form of the algorithm is in use.
     /// </summary>
     /// <value>
-    /// <see langword="true" /> when each update performs <c>(hash * 33) ^ c</c>; <see langword="false" /> when
-    /// it performs <c>(hash * 33) + c</c>.
+    /// <see langword="true" /> when each update performs <c>(hash * 33) ^ c</c>; <see langword="false" /> when it
+    /// performs <c>(hash * 33) + c</c>.
     /// </value>
     /// <exception cref="CryptographicUnexpectedOperationException">
-    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is
-    /// invoked.
+    /// The algorithm has already consumed input and cannot be reconfigured until <see cref="Reset" /> is invoked.
     /// </exception>
     public bool UseModifiedAlgorithm
     {
