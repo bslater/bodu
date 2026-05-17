@@ -47,7 +47,7 @@ public static partial class NotableDateOnlyExtensions
         while (remaining > 0)
         {
             if (dayNumber >= DateOnly.MaxValue.DayNumber)
-                throw new ArgumentOutOfRangeException(nameof(count), "Advancing the requested number of non-working days would overrun DateOnly.MaxValue.");
+                throw new ArgumentOutOfRangeException(nameof(count), string.Format(System.Globalization.CultureInfo.InvariantCulture, CalendarResourceStrings.Arg_OutOfRange_AdvanceOverrunNonWorkingDays, "DateOnly.MaxValue"));
 
             dayNumber++;
             var candidate = DateOnly.FromDayNumber(dayNumber);

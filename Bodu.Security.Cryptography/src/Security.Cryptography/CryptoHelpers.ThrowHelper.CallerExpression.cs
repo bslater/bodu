@@ -1,9 +1,10 @@
-﻿// ---------------------------------------------------------------------------------------------------------------
-// <copyright file="CryptoHelpers.ThrowHelper.cs" company="PlaceholderCompany">
+// ---------------------------------------------------------------------------------------------------------------
+// <copyright file="CryptoHelpers.ThrowHelper.CallerExpression.cs" company="PlaceholderCompany">
 //     Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if !NETSTANDARD2_0_OR_GREATER
 using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -29,7 +30,7 @@ internal static partial class CryptoHelpers
     public static void ThrowIfAssociatedDataAlreadyProcessed(bool alreadyProcessed)
     {
         if (alreadyProcessed)
-            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_AssociatedDataAlreadyProcessed);
+            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
     }
 
     /// <summary>
@@ -45,7 +46,7 @@ internal static partial class CryptoHelpers
     public static void ThrowIfAssociatedDataNotProcessed(bool alreadyProcessed)
     {
         if (!alreadyProcessed)
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_AssociatedDataNotProcessed);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataNotProcessed);
     }
 
     /// <summary>
@@ -61,7 +62,7 @@ internal static partial class CryptoHelpers
     public static void ThrowIfAlreadyCompleted(bool completed)
     {
         if (completed)
-            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
+            throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_TransformAlreadyFinalized);
     }
 
     /// <summary>
@@ -81,7 +82,7 @@ internal static partial class CryptoHelpers
     {
         if (output.Length < required)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 paramName);
     }
 
@@ -102,7 +103,7 @@ internal static partial class CryptoHelpers
     {
         if (input.Length < tagSize)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, tagSize),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, tagSize),
                 paramName);
     }
 
@@ -131,7 +132,7 @@ internal static partial class CryptoHelpers
 
         if ((throwIfZero && span.Length == 0) || span.Length % divisor != 0)
             throw new CryptographicException(
-                string.Format(CryptoResourceStrings.CryptographicException_Invalid_BlockLengthMultipleOf, divisor),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_InputLengthBlockMultiple, divisor),
                 paramName);
     }
 
@@ -162,7 +163,7 @@ internal static partial class CryptoHelpers
         if (value <= T.Zero || value % divisor != T.Zero)
             throw new CryptographicException(
                 paramName,
-                string.Format(CryptoResourceStrings.CryptographicException_HashSize_PositiveMultipleOf, divisor));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_HashSizePositiveMultipleOf, divisor));
     }
 
     /// <summary>
@@ -218,15 +219,9 @@ internal static partial class CryptoHelpers
     /// <summary>
     /// Throws an <see cref="ArgumentOutOfRangeException" /> if the specified hash size is not one of the permitted hash sizes.
     /// </summary>
-    /// <param name="hashSize">
-    /// The hash size, in bits, to validate.
-    /// </param>
-    /// <param name="permittedHashSizes">
-    /// The set of valid hash sizes, in bits.
-    /// </param>
-    /// <param name="paramHashSizeName">
-    /// The name of the hash-size parameter. Supplied automatically by the compiler.
-    /// </param>
+    /// <param name="hashSize">The hash size, in bits, to validate.</param>
+    /// <param name="permittedHashSizes">The set of valid hash sizes, in bits.</param>
+    /// <param name="paramHashSizeName">The name of the hash-size parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="permittedHashSizes" /> is <see langword="null" />.
     /// </exception>
@@ -244,7 +239,7 @@ internal static partial class CryptoHelpers
             throw new ArgumentOutOfRangeException(
                 paramHashSizeName,
                 string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidHashSize,
+                    CryptoResourceStrings.Crypt_Invalid_HashSize,
                     hashSize,
                     string.Join(", ", permittedHashSizes)));
     }
@@ -262,10 +257,6 @@ internal static partial class CryptoHelpers
     /// <see cref="CipherModeKind.ECB"/>, or when <paramref name="iv"/> is non-null but
     /// <c>iv.Length * 8 != blockSizeBits</c>.
     /// </exception>
-    /// <remarks>
-    /// The <paramref name="iv"/> array is processed in bytes; <paramref name="blockSizeBits"/> is expressed
-    /// in bits to align with the BCL convention used by <see cref="SymmetricAlgorithm.BlockSize"/>.
-    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfInvalidIVForMode(
         byte[]? iv,
@@ -277,7 +268,7 @@ internal static partial class CryptoHelpers
         if (iv is null)
         {
             if (mode == CipherModeKind.ECB) return;
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_IVRequiredForMode);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_IVRequiredForMode);
         }
 
         ThrowHelper.ThrowIfNull(legalBlockSizes);
@@ -285,7 +276,7 @@ internal static partial class CryptoHelpers
         if (iv.Length != blockSizeBits / 8)
             throw new CryptographicException(
                 string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidIVSize,
+                    CryptoResourceStrings.Crypt_Invalid_IVSize,
                     iv.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalBlockSizes)));
     }
@@ -301,9 +292,6 @@ internal static partial class CryptoHelpers
     /// <exception cref="ArgumentException">
     /// Thrown when <c>iv.Length * 8 != blockSizeBits</c>.
     /// </exception>
-    /// <remarks>
-    /// Engine-level helper called by mode transforms with <see cref="IBlockCipher.BlockSize"/> in bits.
-    /// </remarks>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void ThrowIfIvLengthInvalid(
         byte[] iv, int blockSizeBits,
@@ -312,7 +300,7 @@ internal static partial class CryptoHelpers
         ThrowHelper.ThrowIfNull(iv, paramName);
         if (iv.Length != blockSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.ArgumentException_InvalidIvLength, iv.Length * 8, blockSizeBits),
+                string.Format(CryptoResourceStrings.Arg_Invalid_IvLength, iv.Length * 8, blockSizeBits),
                 paramName);
     }
 
@@ -321,23 +309,15 @@ internal static partial class CryptoHelpers
     /// in bits, is not one of the values permitted by <paramref name="legalKeySizes"/>.
     /// </summary>
     /// <param name="key">The key material to validate.</param>
-    /// <param name="keySizeBits">The algorithm's currently configured key size, in bits. Retained for backwards
-    /// compatibility with callers that pass <c>this.KeySize</c>; the actual decision is driven by
-    /// <paramref name="legalKeySizes"/>.</param>
+    /// <param name="keySizeBits">The algorithm's currently configured key size, in bits.</param>
     /// <param name="legalKeySizes">The legal key sizes for the algorithm (in bits).</param>
     /// <param name="paramKeyName">The name of the key parameter. Supplied automatically by the compiler.</param>
     /// <exception cref="ArgumentNullException">
     /// Thrown when <paramref name="key" /> or <paramref name="legalKeySizes" /> is <see langword="null" />.
     /// </exception>
     /// <exception cref="CryptographicException">
-    /// Thrown when <c>key.Length * 8</c> is not one of the values produced by
-    /// <paramref name="legalKeySizes"/>.
+    /// Thrown when <c>key.Length * 8</c> is not one of the values produced by <paramref name="legalKeySizes"/>.
     /// </exception>
-    /// <remarks>
-    /// The <paramref name="key"/> array is processed in bytes; <paramref name="keySizeBits"/> and
-    /// <paramref name="legalKeySizes"/> are expressed in bits to align with the BCL convention used by
-    /// <see cref="SymmetricAlgorithm.KeySize"/>.
-    /// </remarks>
     public static void ThrowIfInvalidKeySize(
         byte[] key,
         int keySizeBits,
@@ -351,34 +331,10 @@ internal static partial class CryptoHelpers
         if (!IsValidSize(keyBits, legalKeySizes))
             throw new CryptographicException(
                 string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidKeySize,
+                    CryptoResourceStrings.Crypt_Invalid_KeySize,
                     keyBits,
                     CryptoHelpers.FormatLegalSizes(legalKeySizes)),
                 paramKeyName);
-    }
-
-    /// <summary>
-    /// Returns <see langword="true"/> if <paramref name="sizeBits"/> falls inside any of the ranges
-    /// supplied by <paramref name="legalSizes"/>. A range with <see cref="KeySizes.SkipSize"/> equal to
-    /// zero permits only its <see cref="KeySizes.MinSize"/> value.
-    /// </summary>
-    private static bool IsValidSize(int sizeBits, KeySizes[] legalSizes)
-    {
-        foreach (KeySizes range in legalSizes)
-        {
-            if (range.SkipSize == 0)
-            {
-                if (sizeBits == range.MinSize)
-                    return true;
-            }
-            else if (sizeBits >= range.MinSize
-                  && sizeBits <= range.MaxSize
-                  && ((sizeBits - range.MinSize) % range.SkipSize) == 0)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     /// <summary>
@@ -395,10 +351,6 @@ internal static partial class CryptoHelpers
     /// <exception cref="CryptographicException">
     /// Thrown when <c>tweak.Length * 8 != tweakSizeBits</c>.
     /// </exception>
-    /// <remarks>
-    /// The <paramref name="tweak"/> array is processed in bytes; <paramref name="tweakSizeBits"/> is
-    /// expressed in bits to align with the BCL key/block-size convention.
-    /// </remarks>
     public static void ThrowIfInvalidTweakSize(
         byte[] tweak,
         int tweakSizeBits,
@@ -411,7 +363,7 @@ internal static partial class CryptoHelpers
         if (tweak.Length != tweakSizeBits / 8)
             throw new CryptographicException(
                 string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidTweakSize,
+                    CryptoResourceStrings.Crypt_Invalid_TweakSize,
                     tweak.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalTweakSizes)),
                 paramTweakName);
@@ -431,10 +383,6 @@ internal static partial class CryptoHelpers
     /// <exception cref="CryptographicException">
     /// Thrown when <c>value.Length * 8 != blockSizeBits</c>.
     /// </exception>
-    /// <remarks>
-    /// The <paramref name="value"/> array is processed in bytes; <paramref name="blockSizeBits"/> is
-    /// expressed in bits to align with the BCL block-size convention.
-    /// </remarks>
     public static void ThrowIfInvalidBlockSize(
         byte[] value,
         int blockSizeBits,
@@ -447,69 +395,17 @@ internal static partial class CryptoHelpers
         if (value.Length != blockSizeBits / 8)
             throw new CryptographicException(
                 string.Format(
-                    CryptoResourceStrings.CryptographicException_InvalidBlockSize,
+                    CryptoResourceStrings.Crypt_Invalid_BlockSize,
                     value.Length * 8,
                     CryptoHelpers.FormatLegalSizes(legalBlockSizes)),
                 paramValueName);
     }
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> indicating that the input contains invalid padding for the specified scheme.
-    /// </summary>
-    /// <param name="paddingScheme">The name of the padding scheme reported in the exception message (for example <c>"PKCS#7"</c>).</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="paddingScheme" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="CryptographicException">
-    /// Always thrown when invoked; the exception message identifies the failing <paramref name="paddingScheme" />.
-    /// </exception>
-    /// <remarks>
-    /// Intended for use after a constant-time padding validation has determined that the trailing bytes do not match the
-    /// expected layout. The exception type matches the framework convention for invalid padding so that consumers can
-    /// catch <see cref="CryptographicException" /> uniformly.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [System.Diagnostics.CodeAnalysis.DoesNotReturn]
-    public static void ThrowInvalidPadding(string paddingScheme)
-    {
-        ThrowHelper.ThrowIfNull(paddingScheme);
-        throw new CryptographicException(
-            string.Format(CryptoResourceStrings.CryptographicException_InvalidPaddingScheme, paddingScheme));
-    }
-
-    /// <summary>
-    /// Throws an <see cref="ArgumentException" /> indicating that the supplied input is not a valid padded block sequence
-    /// for the specified scheme.
-    /// </summary>
-    /// <param name="paddingScheme">The name of the padding scheme reported in the exception message (for example <c>"PKCS#7"</c>).</param>
-    /// <param name="paramName">The name of the parameter whose value was rejected.</param>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="paddingScheme" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// Always thrown when invoked; the exception message identifies the failing <paramref name="paddingScheme" />.
-    /// </exception>
-    /// <remarks>
-    /// Used by <c>Unpad</c> entry points when the input length is not a positive multiple of the block size, signaling
-    /// that the caller passed something other than the output of a matching <c>Pad</c> operation.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [System.Diagnostics.CodeAnalysis.DoesNotReturn]
-    public static void ThrowInvalidPaddedSequence(string paddingScheme, string? paramName)
-    {
-        ThrowHelper.ThrowIfNull(paddingScheme);
-        throw new ArgumentException(
-            string.Format(CryptoResourceStrings.ArgumentException_InvalidPaddedSequence, paddingScheme),
-            paramName);
-    }
-
-    /// <summary>
     /// Throws a <see cref="CryptographicException" /> when <paramref name="success" /> is <see langword="false" />,
     /// indicating that <see cref="HashAlgorithm.TryComputeHash" /> failed because the destination buffer was too small.
     /// </summary>
-    /// <param name="success">
-    /// The result returned from <see cref="HashAlgorithm.TryComputeHash" /> or an equivalent call.
-    /// </param>
+    /// <param name="success">The result returned from <see cref="HashAlgorithm.TryComputeHash" /> or an equivalent call.</param>
     /// <exception cref="CryptographicException">
     /// Thrown when <paramref name="success" /> is <see langword="false" />.
     /// </exception>
@@ -518,7 +414,7 @@ internal static partial class CryptoHelpers
     {
         if (!success)
             throw new CryptographicException(
-                CryptoResourceStrings.CryptographicException_HashAlgorithmDestinationBufferTooSmall);
+                CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDestinationBufferTooSmall);
     }
 
     /// <summary>
@@ -533,48 +429,30 @@ internal static partial class CryptoHelpers
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static byte[] ThrowIfHashAlgorithmProducedNoValue(byte[]? hash) =>
         hash ?? throw new CryptographicException(
-            CryptoResourceStrings.CryptographicException_HashAlgorithmDidNotProduceValue);
+            CryptoResourceStrings.Crypt_Invalid_HashAlgorithmDidNotProduceValue);
 
     /// <summary>
-    /// Throws a <see cref="CryptographicException" /> indicating that the specified padding mode is not supported.
+    /// Returns <see langword="true"/> if <paramref name="sizeBits"/> falls inside any of the ranges
+    /// supplied by <paramref name="legalSizes"/>.
     /// </summary>
-    /// <typeparam name="T">The enumeration type representing the padding mode (for example <see cref="PaddingMode" /> or <see cref="PaddingModeKind" />).</typeparam>
-    /// <param name="mode">The unsupported padding mode value.</param>
-    /// <exception cref="CryptographicException">
-    /// Always thrown when invoked; the exception message identifies the rejected <paramref name="mode" />.
-    /// </exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    [System.Diagnostics.CodeAnalysis.DoesNotReturn]
-    public static void ThrowUnsupportedPaddingMode<T>(T mode)
-        where T : struct, Enum =>
-        throw new CryptographicException(
-            string.Format(CryptoResourceStrings.CryptographicException_UnsupportedPaddingMode, mode));
-
-    /// <summary>
-    /// Retrieves the underlying buffer of <paramref name="stream" /> via
-    /// <see cref="MemoryStream.TryGetBuffer(out ArraySegment{byte})" />, or throws an
-    /// <see cref="InvalidOperationException" /> if the buffer is not exposed.
-    /// </summary>
-    /// <param name="stream">The <see cref="MemoryStream" /> whose buffer is required.</param>
-    /// <returns>The <see cref="ArraySegment{T}" /> describing the active portion of the stream's buffer.</returns>
-    /// <exception cref="ArgumentNullException">
-    /// Thrown when <paramref name="stream" /> is <see langword="null" />.
-    /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown when the supplied <see cref="MemoryStream" /> was constructed in a mode that does not expose its underlying buffer.
-    /// </exception>
-    /// <remarks>
-    /// Used by transform helpers that rely on zero-copy access to the stream's buffer; the failure mode corresponds to the
-    /// <see cref="MemoryStream(byte[], bool)" /> overload used to suppress buffer publication.
-    /// </remarks>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static ArraySegment<byte> GetBufferOrThrowIfInaccessible(MemoryStream stream)
+    private static bool IsValidSize(int sizeBits, KeySizes[] legalSizes)
     {
-        ThrowHelper.ThrowIfNull(stream);
-        if (!stream.TryGetBuffer(out ArraySegment<byte> segment))
-            throw new InvalidOperationException(
-                CryptoResourceStrings.InvalidOperationException_MemoryStreamBufferInaccessible);
-
-        return segment;
+        foreach (KeySizes range in legalSizes)
+        {
+            if (range.SkipSize == 0)
+            {
+                if (sizeBits == range.MinSize)
+                    return true;
+            }
+            else if (sizeBits >= range.MinSize
+                  && sizeBits <= range.MaxSize
+                  && ((sizeBits - range.MinSize) % range.SkipSize) == 0)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
+
+#endif

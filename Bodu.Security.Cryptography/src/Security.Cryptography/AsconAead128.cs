@@ -212,7 +212,7 @@ public sealed class AsconAead128
         this.ThrowIfCompleted();
 
         if (this._aadProcessed)
-            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_AssociatedDataAlreadyProcessed);
+            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataAlreadyProcessed);
 
         if (!associatedData.IsEmpty)
         {
@@ -260,7 +260,7 @@ public sealed class AsconAead128
         var required = plaintext.Length + TagBytes;
         if (output.Length < required)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, required),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, required),
                 nameof(output));
 
         try
@@ -339,13 +339,13 @@ public sealed class AsconAead128
 
         if (ciphertextWithTag.Length < TagBytes)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_CiphertextTooShort, TagBytes),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_CiphertextTooShort, TagBytes),
                 nameof(ciphertextWithTag));
 
         var ptLen = ciphertextWithTag.Length - TagBytes;
         if (output.Length < ptLen)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_OutputBufferTooSmall, ptLen),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_OutputBufferTooSmall, ptLen),
                 nameof(output));
 
         try
@@ -399,7 +399,7 @@ public sealed class AsconAead128
             if (!CryptographicOperations.FixedTimeEquals(inTag, expectedTag))
             {
                 CryptographicOperations.ZeroMemory(output[..ptLen]);
-                throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
+                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
 
             return ptLen;
@@ -498,7 +498,7 @@ public sealed class AsconAead128
     private void ThrowIfCompleted()
     {
         if (this._completed)
-            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
+            throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_TransformAlreadyFinalized);
     }
 
     /// <summary>
@@ -507,7 +507,7 @@ public sealed class AsconAead128
     private void ThrowIfAadNotProcessed()
     {
         if (!this._aadProcessed)
-            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_AssociatedDataNotProcessed);
+            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_AssociatedDataNotProcessed);
     }
 
     /// <summary>

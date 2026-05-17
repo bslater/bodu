@@ -66,7 +66,7 @@ public static partial class Base32
     {
         var required = GetEncodedLength(bytes.Length, variant, options);
         if (destination.Length < required)
-            throw new ArgumentException("Destination is too small to receive the encoded characters.", nameof(destination));
+            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded, nameof(destination));
 
         if (bytes.IsEmpty)
             return 0;

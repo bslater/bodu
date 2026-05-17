@@ -1,278 +1,204 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
-	<!--
-		Microsoft ResX Schema
+  <!--
+    Microsoft ResX Schema
 
-		Version 1.3
-
-		The primary goals of this format is to allow a simple XML format
-		that is mostly human readable. The generation and parsing of the
-		various data types are done through the TypeConverter classes
-		associated with the data types.
-
-		Example:
-
-		... ado.net/XML headers & schema ...
-		<resheader name="resmimetype">text/microsoft-resx</resheader>
-		<resheader name="version">1.3</resheader>
-		<resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-		<resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-		<data name="Name1">this is my long string</data>
-		<data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-		<data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-			[base64 mime encoded serialized .NET Framework object]
-		</data>
-		<data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-			[base64 mime encoded string representing a byte array form of the .NET Framework object]
-		</data>
-
-		There are any number of "resheader" rows that contain simple
-		name/value pairs.
-
-		Each data row contains a name, and value. The row also contains a
-		type or mimetype. Type corresponds to a .NET class that support
-		text/value conversion through the TypeConverter architecture.
-		Classes that don't support this are serialized and stored with the
-		mimetype set.
-
-		The mimetype is used for serialized objects, and tells the
-		ResXResourceReader how to depersist the object. This is currently not
-		extensible. For a given mimetype the value must be set accordingly:
-
-		Note - application/x-microsoft.net.object.binary.base64 is the format
-		that the ResXResourceWriter will generate, however the reader can
-		read any of the formats listed below.
-
-		mimetype: application/x-microsoft.net.object.binary.base64
-		value   : The object must be serialized with
-			: System.Serialization.Formatters.Binary.BinaryFormatter
-			: and then encoded with base64 encoding.
-
-		mimetype: application/x-microsoft.net.object.soap.base64
-		value   : The object must be serialized with
-			: System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-			: and then encoded with base64 encoding.
-
-		mimetype: application/x-microsoft.net.object.bytearray.base64
-		value   : The object must be serialized into a byte array
-			: using a System.ComponentModel.TypeConverter
-			: and then encoded with base64 encoding.
-	-->
-
-	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-		<xsd:element name="root" msdata:IsDataSet="true">
-			<xsd:complexType>
-				<xsd:choice maxOccurs="unbounded">
-					<xsd:element name="data">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
-							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-						</xsd:complexType>
-					</xsd:element>
-					<xsd:element name="resheader">
-						<xsd:complexType>
-							<xsd:sequence>
-								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-							</xsd:sequence>
-							<xsd:attribute name="name" type="xsd:string" use="required" />
-						</xsd:complexType>
-					</xsd:element>
-				</xsd:choice>
-			</xsd:complexType>
-		</xsd:element>
-	</xsd:schema>
-	<resheader name="resmimetype">
-		<value>text/microsoft-resx</value>
-	</resheader>
-	<resheader name="version">
-		<value>1.3</value>
-	</resheader>
-	<resheader name="reader">
-		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-	<resheader name="writer">
-		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.3500.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-	</resheader>
-
-	<!-- ==================== ArgumentException ==================== -->
-
-	<data name="ArgumentException_KeyNullOrWhiteSpace" xml:space="preserve">
-		<value>Key must not be null or whitespace.</value>
-	</data>
-
-	<data name="ArgumentException_AssemblyPathNullOrWhiteSpace" xml:space="preserve">
-		<value>Assembly path must not be null or whitespace.</value>
-	</data>
-
-	<data name="ArgumentException_PoliciesEmpty" xml:space="preserve">
-		<value>At least one child policy is required.</value>
-	</data>
-
-	<data name="ArgumentException_PoliciesContainNull" xml:space="preserve">
-		<value>Child policies must not be null.</value>
-	</data>
-
-	<!-- {0} = enum value -->
-	<data name="ArgumentException_HinduLunarMonthUndefined" xml:space="preserve">
-		<value>'{0}' is not a defined HinduLunarMonth value.</value>
-	</data>
-
-	<!-- {0} = enum value -->
-	<data name="ArgumentException_HinduPakshaUndefined" xml:space="preserve">
-		<value>'{0}' is not a defined HinduPaksha value.</value>
-	</data>
-
-	<!-- ==================== ArgumentOutOfRangeException ==================== -->
-
-	<data name="ArgumentOutOfRangeException_YearOutOfRange" xml:space="preserve">
-		<value>Year must be greater than or equal to 1.</value>
-	</data>
-
-	<data name="ArgumentOutOfRangeException_TithiOutOfRange" xml:space="preserve">
-		<value>Tithi must be between 1 and 15.</value>
-	</data>
-
-	<!-- ==================== FormatException ==================== -->
-
-	<!-- {0} = the invalid value -->
-	<data name="FormatException_TerritoryCodeInvalid" xml:space="preserve">
-		<value>'{0}' is not a valid ISO 3166-1/3166-2 territory code.</value>
-	</data>
-
-	<!-- {0} = the invalid month token -->
-	<data name="FormatException_InvalidMonthValueGregorian" xml:space="preserve">
-		<value>Invalid month value '{0}'. Expected a full English month name (e.g. 'January') or an integer 1&#x2013;13.</value>
-	</data>
-
-	<!-- {0} = the invalid month token -->
-	<data name="FormatException_InvalidMonthValueHebrew" xml:space="preserve">
-		<value>Invalid month value '{0}'. Expected a full English month name, an integer 1&#x2013;13, or a Hebrew month name.</value>
-	</data>
-
-	<!-- ==================== InvalidOperationException ==================== -->
-
-	<!-- {0} = strategy element local name -->
-	<data name="InvalidOperationException_UnknownStrategyElementOnOverrideRule" xml:space="preserve">
-		<value>Unknown strategy element '{0}' on override rule.</value>
-	</data>
-
-	<!-- {0} = adjustment key; {1} = element local name -->
-	<data name="InvalidOperationException_DuplicateAdjustmentKey" xml:space="preserve">
-		<value>Duplicate adjustment key '{0}' on element '{1}'. Keys must be unique within a single rule or override body.</value>
-	</data>
-
-	<!-- {0} = rule name -->
-	<data name="InvalidOperationException_RuleMissingStrategy" xml:space="preserve">
-		<value>Rule '{0}' is missing a strategy child element.</value>
-	</data>
-
-	<!-- {0} = strategy element local name; {1} = rule name -->
-	<data name="InvalidOperationException_UnknownStrategyElementOnRule" xml:space="preserve">
-		<value>Unknown strategy element '{0}' on rule '{1}'.</value>
-	</data>
-
-	<!-- {0} = attribute name; {1} = element local name -->
-	<data name="InvalidOperationException_MissingRequiredAttribute" xml:space="preserve">
-		<value>Missing required attribute '{0}' on element '{1}'.</value>
-	</data>
-
-	<!-- {0} = attribute name; {1} = element local name -->
-	<data name="InvalidOperationException_InvalidAttributeValue" xml:space="preserve">
-		<value>Invalid value for attribute '{0}' on element '{1}'.</value>
-	</data>
-
-	<!-- {0} = resource name -->
-	<data name="InvalidOperationException_CircularReferenceInResource" xml:space="preserve">
-		<value>Circular reference detected while flattening notable date resource '{0}'.</value>
-	</data>
-
-	<!-- {0} = rule name; {1} = source resource; {2} = referencing resource -->
-	<data name="InvalidOperationException_RuleNotFoundInSource" xml:space="preserve">
-		<value>Notable date rule '{0}' was not found in source resource '{1}' (referenced from '{2}').</value>
-	</data>
-
-	<!-- {0} = rule name; {1} = dependency chain -->
-	<data name="InvalidOperationException_CircularDependencyInRule" xml:space="preserve">
-		<value>Circular dependency detected while resolving notable date rule '{0}': {1}.</value>
-	</data>
-
-	<!-- {0} = anchor rule name; {1} = referencing rule name -->
-	<data name="InvalidOperationException_AnchorRuleNotFound" xml:space="preserve">
-		<value>Anchor rule '{0}' referenced by '{1}' was not found.</value>
-	</data>
-
-	<!-- {0} = resource path -->
-	<data name="InvalidOperationException_ResourcePathEscapesRoot" xml:space="preserve">
-		<value>The resource path '{0}' escapes the resource root.</value>
-	</data>
-
-	<!-- {0} = plugin type full name -->
-	<data name="InvalidOperationException_ActivatorCreateInstanceNull" xml:space="preserve">
-		<value>Activator.CreateInstance returned null for type '{0}'.</value>
-	</data>
-
-	<!-- ==================== NotSupportedException ==================== -->
-
-	<!-- {0} = strategy value -->
-	<data name="NotSupportedException_UnsupportedStrategy" xml:space="preserve">
-		<value>Unsupported strategy: {0}.</value>
-	</data>
-
-	<!-- {0} = strategy value; {1} = rule name -->
-	<data name="NotSupportedException_UnsupportedDateResolutionStrategy" xml:space="preserve">
-		<value>Unsupported date resolution strategy '{0}' on rule '{1}'.</value>
-	</data>
-
-	<!-- {0} = calendar type full name; {1} = provider type name; {2} = supported calendar type full name -->
-	<data name="NotSupportedException_CalendarTypeNotSupported" xml:space="preserve">
-		<value>The calendar type '{0}' is not supported by {1}. Only {2} is supported.</value>
-	</data>
-
-	<!-- ==================== FileNotFoundException ==================== -->
-
-	<!-- {0} = schema resource name; {1} = assembly full name -->
-	<data name="FileNotFoundException_EmbeddedSchemaResourceNotFound" xml:space="preserve">
-		<value>Embedded schema resource '{0}' not found in assembly '{1}'.</value>
-	</data>
-
-	<!-- {0} = resource name; {1} = comma-separated full names of every assembly in the search chain -->
-	<data name="FileNotFoundException_EmbeddedXmlResourceNotFound" xml:space="preserve">
-		<value>Embedded XML resource '{0}' was not found in any of the searched assemblies: {1}.</value>
-	</data>
-
-	<!-- {0} = resolved assembly path -->
-	<data name="FileNotFoundException_PluginAssemblyNotFound" xml:space="preserve">
-		<value>Plugin assembly '{0}' was not found.</value>
-	</data>
-
-	<!-- ==================== XmlSchemaValidationException ==================== -->
-
-	<!-- {0} = validation error message -->
-	<data name="XmlSchemaValidationException_SchemaValidationError" xml:space="preserve">
-		<value>Schema validation error: {0}</value>
-	</data>
-
-	<!-- ==================== JsonException ==================== -->
-
-	<!-- {0} = validation error message -->
-	<data name="JsonException_SchemaValidationError" xml:space="preserve">
-		<value>JSON failed schema validation: {0}</value>
-	</data>
-
-	<!-- ==================== PluginMissingAttributeException ==================== -->
-
-	<data name="PluginMissingAttributeException_PluginAttributeMissing" xml:space="preserve">
-		<value>attribute not present on the assembly</value>
-	</data>
-
-	<!-- {0} = plugin type full name -->
-	<data name="PluginMissingAttributeException_PluginTypeMissingInterface" xml:space="preserve">
-		<value>declared plugin type '{0}' does not implement INotableDatePlugin</value>
-	</data>
-
+    Version 2.0
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Arg_Invalid_AnchorRuleNameNullOrWhiteSpace" xml:space="preserve">
+    <value>The anchor rule name cannot be null, empty, or white-space.</value>
+  </data>
+  <data name="Arg_Invalid_AssemblyChainContainsNull" xml:space="preserve">
+    <value>Assembly chain entries must not be null.</value>
+  </data>
+  <data name="Arg_Invalid_AssemblyChainEmpty" xml:space="preserve">
+    <value>At least one assembly must be supplied.</value>
+  </data>
+  <data name="Arg_Invalid_AssemblyPathNullOrWhiteSpace" xml:space="preserve">
+    <value>Assembly path must not be null or whitespace.</value>
+  </data>
+  <data name="Arg_Invalid_EndDateBeforeStartDate" xml:space="preserve">
+    <value>The end date must not be earlier than the start date.</value>
+  </data>
+  <data name="Arg_Invalid_HinduLunarMonthUndefined" xml:space="preserve">
+    <value>'{0}' is not a defined HinduLunarMonth value.</value>
+  </data>
+  <data name="Arg_Invalid_HinduPakshaUndefined" xml:space="preserve">
+    <value>'{0}' is not a defined HinduPaksha value.</value>
+  </data>
+  <data name="Arg_Invalid_KeyNullOrWhiteSpace" xml:space="preserve">
+    <value>Key must not be null or whitespace.</value>
+  </data>
+  <data name="Arg_Invalid_PoliciesContainNull" xml:space="preserve">
+    <value>Child policies must not be null.</value>
+  </data>
+  <data name="Arg_Invalid_PoliciesEmpty" xml:space="preserve">
+    <value>At least one child policy is required.</value>
+  </data>
+  <data name="Arg_Invalid_RuleNameNullOrWhiteSpace" xml:space="preserve">
+    <value>The rule name cannot be null, empty, or white-space.</value>
+  </data>
+  <data name="Arg_OutOfRange_AdvanceOverrunDays" xml:space="preserve">
+    <value>Advancing the requested number of working days would overrun {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_AdvanceOverrunNonWorkingDays" xml:space="preserve">
+    <value>Advancing the requested number of non-working days would overrun {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_FringeDistanceNegative" xml:space="preserve">
+    <value>The fringe distance must not be negative.</value>
+  </data>
+  <data name="Arg_OutOfRange_RetreatUnderrunDays" xml:space="preserve">
+    <value>Retreating the requested number of working days would underrun {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_RetreatUnderrunNonWorkingDays" xml:space="preserve">
+    <value>Retreating the requested number of non-working days would underrun {0}.</value>
+  </data>
+  <data name="Arg_OutOfRange_Tithi" xml:space="preserve">
+    <value>Tithi must be between 1 and 15.</value>
+  </data>
+  <data name="Arg_OutOfRange_UnsupportedProjection" xml:space="preserve">
+    <value>The requested projection is not supported.</value>
+  </data>
+  <data name="Arg_OutOfRange_WorkingWeekEmpty" xml:space="preserve">
+    <value>The working week must select at least one day.</value>
+  </data>
+  <data name="Arg_OutOfRange_WorkingWeekUndefined" xml:space="preserve">
+    <value>The working-week pattern is not defined.</value>
+  </data>
+  <data name="Arg_OutOfRange_Year" xml:space="preserve">
+    <value>Year must be greater than or equal to 1.</value>
+  </data>
+  <data name="Format_Invalid_JsonSchema" xml:space="preserve">
+    <value>JSON failed schema validation: {0}</value>
+  </data>
+  <data name="Format_Invalid_MonthValueGregorian" xml:space="preserve">
+    <value>Invalid month value '{0}'. Expected a full English month name (e.g. 'January') or an integer 1&#x2013;13.</value>
+  </data>
+  <data name="Format_Invalid_MonthValueHebrew" xml:space="preserve">
+    <value>Invalid month value '{0}'. Expected a full English month name, an integer 1&#x2013;13, or a Hebrew month name.</value>
+  </data>
+  <data name="Format_Invalid_TerritoryCode" xml:space="preserve">
+    <value>'{0}' is not a valid ISO 3166-1/3166-2 territory code.</value>
+  </data>
+  <data name="Format_Invalid_XmlSchema" xml:space="preserve">
+    <value>Schema validation error: {0}</value>
+  </data>
+  <data name="IO_FileNotFound_EmbeddedSchemaResource" xml:space="preserve">
+    <value>Embedded schema resource '{0}' not found in assembly '{1}'.</value>
+  </data>
+  <data name="IO_FileNotFound_EmbeddedXmlResource" xml:space="preserve">
+    <value>Embedded XML resource '{0}' was not found in any of the searched assemblies: {1}.</value>
+  </data>
+  <data name="IO_FileNotFound_PluginAssembly" xml:space="preserve">
+    <value>Plugin assembly '{0}' was not found.</value>
+  </data>
+  <data name="Op_Invalid_ActivatorCreateInstanceNull" xml:space="preserve">
+    <value>Activator.CreateInstance returned null for type '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_AnchorRuleNotFound" xml:space="preserve">
+    <value>Anchor rule '{0}' referenced by '{1}' was not found.</value>
+  </data>
+  <data name="Op_Invalid_CircularDependencyInRule" xml:space="preserve">
+    <value>Circular dependency detected while resolving notable date rule '{0}': {1}.</value>
+  </data>
+  <data name="Op_Invalid_CircularReferenceInResource" xml:space="preserve">
+    <value>Circular reference detected while flattening notable date resource '{0}'.</value>
+  </data>
+  <data name="Op_Invalid_DuplicateAdjustmentKey" xml:space="preserve">
+    <value>Duplicate adjustment key '{0}' on element '{1}'. Keys must be unique within a single rule or override body.</value>
+  </data>
+  <data name="Op_Invalid_InvalidAttributeValue" xml:space="preserve">
+    <value>Invalid value for attribute '{0}' on element '{1}'.</value>
+  </data>
+  <data name="Op_Invalid_MissingRequiredAttribute" xml:space="preserve">
+    <value>Missing required attribute '{0}' on element '{1}'.</value>
+  </data>
+  <data name="Op_Invalid_PluginAttributeMissing" xml:space="preserve">
+    <value>attribute not present on the assembly</value>
+  </data>
+  <data name="Op_Invalid_PluginTypeMissingInterface" xml:space="preserve">
+    <value>declared plugin type '{0}' does not implement INotableDatePlugin</value>
+  </data>
+  <data name="Op_Invalid_ResourcePathEscapesRoot" xml:space="preserve">
+    <value>The resource path '{0}' escapes the resource root.</value>
+  </data>
+  <data name="Op_Invalid_RuleMissingStrategy" xml:space="preserve">
+    <value>Rule '{0}' is missing a strategy child element.</value>
+  </data>
+  <data name="Op_Invalid_RuleNotFoundInSource" xml:space="preserve">
+    <value>Notable date rule '{0}' was not found in source resource '{1}' (referenced from '{2}').</value>
+  </data>
+  <data name="Op_Invalid_UnknownStrategyElementOnOverrideRule" xml:space="preserve">
+    <value>Unknown strategy element '{0}' on override rule.</value>
+  </data>
+  <data name="Op_Invalid_UnknownStrategyElementOnRule" xml:space="preserve">
+    <value>Unknown strategy element '{0}' on rule '{1}'.</value>
+  </data>
+  <data name="Op_NotSupported_CalendarType" xml:space="preserve">
+    <value>The calendar type '{0}' is not supported by {1}. Only {2} is supported.</value>
+  </data>
+  <data name="Op_NotSupported_DateResolutionStrategy" xml:space="preserve">
+    <value>Unsupported date resolution strategy '{0}' on rule '{1}'.</value>
+  </data>
+  <data name="Op_NotSupported_Strategy" xml:space="preserve">
+    <value>Unsupported strategy: {0}.</value>
+  </data>
 </root>

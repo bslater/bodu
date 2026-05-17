@@ -42,7 +42,7 @@ public readonly struct IniComment : IEquatable<IniComment>
     {
         ThrowHelper.ThrowIfNull(text);
         if (prefix != '#' && prefix != ';')
-            throw new ArgumentException("Comment prefix must be '#' or ';'.", nameof(prefix));
+            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniCommentPrefix, nameof(prefix));
 
         Prefix = prefix;
         Text = text;

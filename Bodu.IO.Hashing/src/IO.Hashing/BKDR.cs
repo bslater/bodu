@@ -58,8 +58,6 @@ public sealed class BKDR
     public const uint DefaultSeed = 131U;
 
     private const int HashLength = 4;
-    private const string ReconfigurationNotAllowed =
-        "The algorithm is already in use and cannot be reconfigured after computation has started.";
 
     private static readonly uint[] s_validSeedValues =
     {
@@ -153,7 +151,10 @@ public sealed class BKDR
         if (Array.IndexOf(s_validSeedValues, value) == -1)
         {
             throw new ArgumentException(
-                $"The value {value} is not a supported BKDR seed.",
+                string.Format(
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    HashingResourceStrings.Arg_Invalid_BkdrSeedUnsupported,
+                    value),
                 nameof(value));
         }
     }
@@ -170,10 +171,7 @@ public sealed class BKDR
     /// Thrown when an attempt is made to modify the algorithm after it has begun consuming input.
     /// </exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private void ThrowIfInvalidState()
-    {
-        if (this._started)
-            throw new CryptographicUnexpectedOperationException(ReconfigurationNotAllowed);
-    }
+    private void ThrowIfInvalidState() =>
+        HashingThrowHelper.ThrowIfAlgorithmAlreadyStarted(this._started);
 
 }

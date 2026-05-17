@@ -131,7 +131,11 @@ public sealed class Sedol
                 throw new ArgumentOutOfRangeException(
                     nameof(body),
                     ch,
-                    $"Character '{ch}' (U+{(int)ch:X4}) is not a valid SEDOL character ('0'-'9' or uppercase consonant; vowels A/E/I/O/U are not permitted).");
+                    string.Format(
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        HashingResourceStrings.Arg_OutOfRange_InvalidSedolCharacter,
+                        ch,
+                        (int)ch));
 
             var weight = count < s_weights.Length ? s_weights[count] : 1;
             sum += Alphanumeric.ExpandLetterDigit(ch) * weight;

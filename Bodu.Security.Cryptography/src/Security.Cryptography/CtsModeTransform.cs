@@ -98,7 +98,7 @@ public sealed class CtsModeTransform
         if (input.Length < blockSize)
         {
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.ArgumentException_CtsInputTooShort, blockSize),
+                string.Format(CryptoResourceStrings.Arg_Invalid_CtsInputTooShort, blockSize),
                 nameof(input));
         }
 

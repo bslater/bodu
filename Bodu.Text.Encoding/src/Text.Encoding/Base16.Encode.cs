@@ -67,7 +67,7 @@ public static partial class Base16
 
         var required = bytes.Length * 2;
         if (destination.Length < required)
-            throw new ArgumentException("Destination is too small to receive the encoded characters.", nameof(destination));
+            throw new ArgumentException(EncodingResourceStrings.Arg_Invalid_DestinationTooSmallForEncoded, nameof(destination));
 
         if (bytes.IsEmpty)
             return 0;
@@ -234,7 +234,7 @@ public static partial class Base16
         if ((options & ~BaseFormattingOptions.UpperCase) != 0)
         {
             throw new ArgumentException(
-                "Line breaks, byte spacing, and prefix are not supported when encoding into a pre-allocated character span. Use the string-returning Encode overloads to apply those flags.",
+                EncodingResourceStrings.Arg_Invalid_Base16UnsupportedEncodeOptions,
                 nameof(options));
         }
     }

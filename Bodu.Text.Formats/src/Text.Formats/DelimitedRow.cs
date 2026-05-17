@@ -17,7 +17,7 @@ namespace Bodu.Text.Formats;
 public sealed class DelimitedRow
 {
     private static readonly CompositeFormat s_headerNotFound =
-        CompositeFormat.Parse(FormatsResourceStrings.DelimitedDocument_HeaderNotFound);
+        CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_DelimitedHeaderNotFound);
 
     /// <summary>
     /// The column-name-to-index map built from the document's header row, or <see langword="null" /> when the
@@ -197,7 +197,7 @@ public sealed class DelimitedRow
     /// <summary>Throws an <see cref="InvalidOperationException" /> indicating that no header row was parsed.</summary>
     [DoesNotReturn]
     private static void ThrowNoHeaders() =>
-        throw new InvalidOperationException(FormatsResourceStrings.DelimitedRow_NoHeaders);
+        throw new InvalidOperationException(FormatsResourceStrings.Op_Invalid_DelimitedRowNoHeaders);
 
     /// <summary>Throws a <see cref="KeyNotFoundException" /> for an absent column header.</summary>
     [DoesNotReturn]

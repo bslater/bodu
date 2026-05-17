@@ -114,7 +114,7 @@ public sealed partial class BoduConfigurationPattern
             throw new BoduConfigurationParseException(new BoduConfigurationDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.UnbalancedBracket,
-                ConfigurationResourceStrings.ParseException_UnbalancedBracket,
+                ConfigurationResourceStrings.Format_Invalid_UnbalancedBracket,
                 BoduConfigurationSourceLocation.None));
 
         string body = pattern.Substring(start + 1, close - start - 1);
@@ -172,7 +172,7 @@ public sealed partial class BoduConfigurationPattern
             throw new BoduConfigurationParseException(new BoduConfigurationDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.UnbalancedBrace,
-                ConfigurationResourceStrings.ParseException_UnbalancedBrace,
+                ConfigurationResourceStrings.Format_Invalid_UnbalancedBrace,
                 BoduConfigurationSourceLocation.None));
 
         string body = pattern.Substring(start + 1, close - start - 1);

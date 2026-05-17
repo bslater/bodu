@@ -54,12 +54,12 @@ public sealed class NoPadding
         if (blockSize <= 0)
             throw new ArgumentOutOfRangeException(
                 nameof(blockSize),
-                string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
+                string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
 
         var size = blockSize / 8;
         if (input.Length % size != 0)
             throw new ArgumentException(
-                CryptoResourceStrings.ArgumentException_NoPadding_InputNotAligned,
+                CryptoResourceStrings.Arg_Invalid_NoPaddingInputNotAligned,
                 nameof(input));
         return input.ToArray();
     }

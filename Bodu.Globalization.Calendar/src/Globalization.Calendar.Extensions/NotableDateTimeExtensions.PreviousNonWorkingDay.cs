@@ -47,7 +47,7 @@ public static partial class NotableDateTimeExtensions
         while (remaining > 0)
         {
             if (ticks - DateTime.MinValue.Ticks < DateTimeExtensions.TicksPerDay)
-                throw new ArgumentOutOfRangeException(nameof(count), "Retreating the requested number of non-working days would underrun DateTime.MinValue.");
+                throw new ArgumentOutOfRangeException(nameof(count), string.Format(System.Globalization.CultureInfo.InvariantCulture, CalendarResourceStrings.Arg_OutOfRange_RetreatUnderrunNonWorkingDays, "DateTime.MinValue"));
 
             ticks -= DateTimeExtensions.TicksPerDay;
             var candidate = new DateTime(ticks, dateTime.Kind);

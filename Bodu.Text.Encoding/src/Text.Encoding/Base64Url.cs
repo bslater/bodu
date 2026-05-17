@@ -58,7 +58,7 @@ public static class Base64Url
             Base64Variant.UrlSafe, BaseFormatStyles.AllowMissingPadding, isFinalBlock: true);
 
         if (status != OperationStatus.Done)
-            throw new FormatException("Input is not valid URL-safe Base64.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_UrlSafeBase64);
 
         if (bytesWritten == destination.Length)
             return destination;

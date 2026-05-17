@@ -88,7 +88,7 @@ public static partial class NonCryptographicHashAlgorithmExtensions
             throw new ArgumentOutOfRangeException(
                 nameof(bufferSize),
                 bufferSize,
-                "Buffer size must be greater than zero.");
+                HashingResourceStrings.Arg_OutOfRange_BufferSizeNotPositive);
 
         var buffer = ArrayPool<byte>.Shared.Rent(bufferSize);
         try

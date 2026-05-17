@@ -51,7 +51,7 @@ public static partial class Base64
         var destination = new byte[GetMaxDecodedLength(utf8Source.Length)];
         OperationStatus status = DecodeFromUtf8(utf8Source, destination, out _, out var bytesWritten, Base64Variant.Standard, BaseFormatStyles.IgnoreWhitespace, isFinalBlock: true);
         if (status != OperationStatus.Done)
-            throw new FormatException("Input is not valid Standard Base64.");
+            throw new FormatException(EncodingResourceStrings.Format_Invalid_StandardBase64);
 
         if (bytesWritten == destination.Length)
             return destination;

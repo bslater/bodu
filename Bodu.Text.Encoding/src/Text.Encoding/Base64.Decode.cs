@@ -52,16 +52,16 @@ public static partial class Base64
         {
             var normalized = NormalizeForDecode(chars, scratch, variant, style);
             if (normalized < 0)
-                throw new FormatException("Input contains characters outside the Base64 alphabet.");
+                throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64Alphabet);
 
             buffer = new byte[GetMaxDecodedLength(normalized)];
             if (!Convert.TryFromBase64Chars(scratch.AsSpan(0, normalized), buffer, out var bytesWritten))
-                throw new FormatException("Input is not valid Base64.");
+                throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64);
 
             if (style.HasFlag(BaseFormatStyles.RequireCanonicalEncoding)
                 && !IsCanonicalEncoding(buffer.AsSpan(0, bytesWritten), scratch.AsSpan(0, normalized)))
             {
-                throw new FormatException("Base64 input is not in canonical form — unused trailing bits are non-zero.");
+                throw new FormatException(EncodingResourceStrings.Format_Invalid_Base64NonCanonical);
             }
 
             if (bytesWritten == buffer.Length)

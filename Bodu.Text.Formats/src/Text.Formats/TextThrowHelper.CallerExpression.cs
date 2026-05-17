@@ -4,6 +4,7 @@
 // </copyright>
 // ---------------------------------------------------------------------------------------------------------------
 
+#if !NETSTANDARD2_0_OR_GREATER
 using System.Runtime.CompilerServices;
 
 namespace Bodu.Text.Formats;
@@ -21,7 +22,7 @@ internal static partial class TextThrowHelper
         [CallerArgumentExpression(nameof(stream))] string? paramName = null)
     {
         if (!stream.CanRead)
-            throw new ArgumentException(FormatsResourceStrings.ArgumentException_StreamNotReadable, paramName);
+            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_StreamNotReadable, paramName);
     }
 
     /// <summary>
@@ -35,6 +36,8 @@ internal static partial class TextThrowHelper
         [CallerArgumentExpression(nameof(stream))] string? paramName = null)
     {
         if (!stream.CanWrite)
-            throw new ArgumentException(FormatsResourceStrings.ArgumentException_StreamNotWritable, paramName);
+            throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_StreamNotWritable, paramName);
     }
 }
+
+#endif

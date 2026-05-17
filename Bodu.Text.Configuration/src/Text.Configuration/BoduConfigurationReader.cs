@@ -77,7 +77,7 @@ internal sealed partial class BoduConfigurationReader
             this.EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.LineTooLong,
-                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.ParseException_LineTooLong, this._options.MaxLineLength),
+                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_LineTooLong, this._options.MaxLineLength),
                 new BoduConfigurationSourceLocation(lineNumber, 1, line.Length, path));
             return currentSection;
         }
@@ -120,7 +120,7 @@ internal sealed partial class BoduConfigurationReader
             this.EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.UnterminatedSectionHeader,
-                ConfigurationResourceStrings.ParseException_UnterminatedSectionHeader,
+                ConfigurationResourceStrings.Format_Invalid_UnterminatedSectionHeader,
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, line.Length - firstNonWs, path));
             return GetCurrentSection(document);
         }
@@ -131,7 +131,7 @@ internal sealed partial class BoduConfigurationReader
             this.EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.EmptySectionHeader,
-                ConfigurationResourceStrings.ParseException_EmptySectionHeader,
+                ConfigurationResourceStrings.Format_Invalid_EmptySectionHeader,
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, lastClose - firstNonWs + 1, path));
             return GetCurrentSection(document);
         }
@@ -208,7 +208,7 @@ internal sealed partial class BoduConfigurationReader
             this.EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.MissingEquals,
-                ConfigurationResourceStrings.ParseException_MissingEquals,
+                ConfigurationResourceStrings.Format_Invalid_MissingEquals,
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, line.Length - firstNonWs, path));
             return currentSection;
         }
@@ -227,7 +227,7 @@ internal sealed partial class BoduConfigurationReader
             this.EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.EmptyKey,
-                ConfigurationResourceStrings.ParseException_EmptyKey,
+                ConfigurationResourceStrings.Format_Invalid_EmptyKey,
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, equalsIndex - firstNonWs, path));
             return currentSection;
         }
@@ -237,7 +237,7 @@ internal sealed partial class BoduConfigurationReader
             this.EmitDiagnostic(
                 BoduConfigurationDiagnosticSeverity.Error,
                 BoduConfigurationDiagnosticCode.KeyTooLong,
-                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.ParseException_KeyTooLong, this._options.MaxKeyLength),
+                string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_KeyTooLong, this._options.MaxKeyLength),
                 new BoduConfigurationSourceLocation(lineNumber, firstNonWs + 1, keyText.Length, path));
             return currentSection;
         }
@@ -302,7 +302,7 @@ internal sealed partial class BoduConfigurationReader
                     this.EmitDiagnostic(
                         BoduConfigurationDiagnosticSeverity.Error,
                         BoduConfigurationDiagnosticCode.DuplicateKey,
-                        string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.ParseException_DuplicateKey, rawKey),
+                        string.Format(CultureInfo.InvariantCulture, ConfigurationResourceStrings.Format_Invalid_DuplicateKey, rawKey),
                         loc);
                     return;
 

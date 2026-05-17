@@ -166,7 +166,7 @@ public abstract class AsconXof<T>
     {
         this.ThrowIfDisposed();
         if (this._squeezing)
-            throw new InvalidOperationException(CryptoResourceStrings.CryptographicException_XofSqueezeAfterAbsorb);
+            throw new InvalidOperationException(CryptoResourceStrings.Crypt_Invalid_XofSqueezeAfterAbsorb);
 
         this.ProcessInputBlocks(data);
     }

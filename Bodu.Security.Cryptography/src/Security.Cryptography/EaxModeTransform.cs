@@ -200,7 +200,7 @@ public sealed class EaxModeTransform
             if (!CryptographicOperations.FixedTimeEquals(expectedTag, receivedTag))
             {
                 CryptoHelpers.Clear(output[..plaintextLength]);
-                throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
+                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
 
             CtrEncrypt(ciphertext, output[..plaintextLength], nPrime);

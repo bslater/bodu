@@ -218,8 +218,8 @@ public sealed class ParallelMerkleTreeHash
         this._algorithmFactory = algorithmFactory ?? throw new ArgumentNullException(nameof(algorithmFactory));
         this._blockSize = blockSize > 0 ? blockSize : throw new ArgumentOutOfRangeException(
                                                         nameof(blockSize),
-                                                        string.Format(CryptoResourceStrings.ArgumentOutOfRangeException_BlockSizeMustBeGreaterThan, 0));
-        this._fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), "Fan-out must be at least 2.");
+                                                        string.Format(CryptoResourceStrings.Arg_OutOfRange_BlockSizeMustBeGreaterThan, 0));
+        this._fanOut = fanOut >= 2 ? fanOut : throw new ArgumentOutOfRangeException(nameof(fanOut), CryptoResourceStrings.Arg_OutOfRange_FanOutMinimum);
         this._blockBuffer = new byte[blockSize];
     }
 
@@ -630,7 +630,7 @@ public sealed class ParallelMerkleTreeHash
         }
 
         return this._rootHash ?? throw new InvalidOperationException(
-            CryptoResourceStrings.InvalidOperationException_NoInputData);
+            CryptoResourceStrings.Op_Invalid_NoInputData);
     }
 
     /// <summary>

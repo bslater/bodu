@@ -155,7 +155,7 @@ internal static partial class CryptoHelpers
 
         if (segment.Array is null)
             throw new InvalidOperationException(
-                CryptoResourceStrings.InvalidOperationException_MemoryStreamBufferInaccessible);
+                CryptoResourceStrings.Op_Invalid_MemoryStreamBufferInaccessible);
 
         CryptographicOperations.ZeroMemory(segment.Array.AsSpan(0, segment.Array.Length));
 

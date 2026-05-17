@@ -47,7 +47,7 @@ public static partial class NotableDateTimeExtensions
         while (remaining > 0)
         {
             if (ticks - DateTime.MinValue.Ticks < DateTimeExtensions.TicksPerDay)
-                throw new ArgumentOutOfRangeException(nameof(count), "Retreating the requested number of working days would underrun DateTime.MinValue.");
+                throw new ArgumentOutOfRangeException(nameof(count), string.Format(System.Globalization.CultureInfo.InvariantCulture, CalendarResourceStrings.Arg_OutOfRange_RetreatUnderrunDays, "DateTime.MinValue"));
 
             ticks -= DateTimeExtensions.TicksPerDay;
             var candidate = new DateTime(ticks, dateTime.Kind);
@@ -76,7 +76,7 @@ public static partial class NotableDateTimeExtensions
     {
         ThrowHelper.ThrowIfNull(service);
         ThrowHelper.ThrowIfNegative(count);
-        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), "The working week must select at least one day.");
+        if (workingWeek.Count == 0) throw new ArgumentOutOfRangeException(nameof(workingWeek), CalendarResourceStrings.Arg_OutOfRange_WorkingWeekEmpty);
 
         if (count == 0) return new DateTime(dateTime.Ticks, dateTime.Kind);
 
@@ -85,7 +85,7 @@ public static partial class NotableDateTimeExtensions
         while (remaining > 0)
         {
             if (ticks - DateTime.MinValue.Ticks < DateTimeExtensions.TicksPerDay)
-                throw new ArgumentOutOfRangeException(nameof(count), "Retreating the requested number of working days would underrun DateTime.MinValue.");
+                throw new ArgumentOutOfRangeException(nameof(count), string.Format(System.Globalization.CultureInfo.InvariantCulture, CalendarResourceStrings.Arg_OutOfRange_RetreatUnderrunDays, "DateTime.MinValue"));
 
             ticks -= DateTimeExtensions.TicksPerDay;
             var candidate = new DateTime(ticks, dateTime.Kind);

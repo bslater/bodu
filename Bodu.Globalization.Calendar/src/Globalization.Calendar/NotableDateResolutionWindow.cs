@@ -42,7 +42,7 @@ internal sealed class NotableDateResolutionWindow
         DateTime end = endDate.Date;
 
         if (end < start)
-            throw new ArgumentException("The end date must not be earlier than the start date.", nameof(endDate));
+            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_EndDateBeforeStartDate, nameof(endDate));
 
         StartDate = start;
         EndDate = end;
@@ -196,7 +196,7 @@ internal sealed class NotableDateResolutionWindow
         Type? calendarType)
     {
         if (string.IsNullOrWhiteSpace(ruleName))
-            throw new ArgumentException("The rule name cannot be null, empty, or white-space.", nameof(ruleName));
+            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_RuleNameNullOrWhiteSpace, nameof(ruleName));
 
         foreach (NotableDate notable in Sort(_knownDates))
         {

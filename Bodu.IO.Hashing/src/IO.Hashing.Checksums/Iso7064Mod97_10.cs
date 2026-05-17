@@ -137,8 +137,7 @@ public sealed class Iso7064Mod97_10
     /// <inheritdoc />
     public override int GetCurrentCheckDigits(Span<char> destination)
     {
-        if (destination.Length < CheckLength)
-            throw new ArgumentException($"Destination span must be at least {CheckLength} characters long.", nameof(destination));
+        HashingThrowHelper.ThrowIfDestinationSpanTooShort(destination.Length, CheckLength, nameof(destination));
 
         var full = (r * 100) % 97;
         var check = (98 - full) % 97;

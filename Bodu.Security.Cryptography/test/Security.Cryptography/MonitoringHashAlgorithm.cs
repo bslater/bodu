@@ -207,7 +207,7 @@ public class MonitoringHashAlgorithm
     private void ThrowIfInvalidState()
     {
         if (State != 0)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_ReconfigurationNotAllowed);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

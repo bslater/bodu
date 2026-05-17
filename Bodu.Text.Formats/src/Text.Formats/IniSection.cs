@@ -27,7 +27,7 @@ public sealed class IniSection
 {
     /// <summary>Cached format for the <c>KeyNotFound</c> message.</summary>
     private static readonly CompositeFormat s_keyNotFound =
-        CompositeFormat.Parse(FormatsResourceStrings.IniSection_KeyNotFound);
+        CompositeFormat.Parse(FormatsResourceStrings.Op_Invalid_IniSectionKeyNotFound);
 
     private readonly List<IniEntry> _entries;
     private readonly Dictionary<string, IniEntry> _lookup;
@@ -110,7 +110,7 @@ public sealed class IniSection
         foreach (IniEntry entry in entries)
         {
             if (entry is null)
-                throw new ArgumentException("Entries sequence contains a null entry.", nameof(entries));
+                throw new ArgumentException(FormatsResourceStrings.Arg_Invalid_IniEntriesContainsNull, nameof(entries));
 
             if (_lookup.TryGetValue(entry.Key, out IniEntry? existing))
             {

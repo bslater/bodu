@@ -42,7 +42,7 @@ public sealed partial class BencodeTests
         });
 
         Assert.AreEqual("source", ex.ParamName);
-        StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_StreamNotReadable);
+        StringAssert.Contains(ex.Message, FormatsResourceStrings.Arg_Invalid_StreamNotReadable);
     }
 
     /// <summary>
@@ -104,7 +104,7 @@ public sealed partial class BencodeTests
         });
 
         Assert.AreEqual("destination", ex.ParamName);
-        StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_StreamNotWritable);
+        StringAssert.Contains(ex.Message, FormatsResourceStrings.Arg_Invalid_StreamNotWritable);
     }
 
     /// <summary>

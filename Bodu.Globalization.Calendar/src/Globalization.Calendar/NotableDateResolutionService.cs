@@ -49,7 +49,7 @@ internal sealed class NotableDateResolutionService
         ArgumentNullException.ThrowIfNull(ruleProviders);
 
         if (!Enum.IsDefined(workingWeek))
-            throw new ArgumentOutOfRangeException(nameof(workingWeek), workingWeek, "The working-week pattern is not defined.");
+            throw new ArgumentOutOfRangeException(nameof(workingWeek), workingWeek, CalendarResourceStrings.Arg_OutOfRange_WorkingWeekUndefined);
 
         if (workingWeek == WorkingDaysOfWeek.Custom && weekendProvider is null)
             throw new ArgumentNullException(nameof(weekendProvider));

@@ -117,127 +117,145 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArgumentException_DuplicateDictionaryKey" xml:space="preserve">
+  <data name="Arg_Invalid_DuplicateDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain duplicate keys.</value>
   </data>
-  <data name="ArgumentException_NullDictionaryKey" xml:space="preserve">
+  <data name="Arg_Invalid_IniCommentPrefix" xml:space="preserve">
+    <value>Comment prefix must be '#' or ';'.</value>
+  </data>
+  <data name="Arg_Invalid_IniEntriesContainsNull" xml:space="preserve">
+    <value>Entries sequence contains a null entry.</value>
+  </data>
+  <data name="Arg_Invalid_IniGlobalSectionNotEmpty" xml:space="preserve">
+    <value>Global section must have an empty Name.</value>
+  </data>
+  <data name="Arg_Invalid_IniSectionCannotAddGlobal" xml:space="preserve">
+    <value>Cannot add a section with an empty name; the global section is preallocated.</value>
+  </data>
+  <data name="Arg_Invalid_IniSectionNameEmpty" xml:space="preserve">
+    <value>Section name cannot be empty; the global section is accessed via GlobalSection.</value>
+  </data>
+  <data name="Arg_Invalid_IniSectionsContainsNull" xml:space="preserve">
+    <value>Sections sequence contains a null section.</value>
+  </data>
+  <data name="Arg_Invalid_NullDictionaryKey" xml:space="preserve">
     <value>The dictionary cannot contain null keys.</value>
   </data>
-  <data name="ArgumentException_NullDictionaryValue" xml:space="preserve">
+  <data name="Arg_Invalid_NullDictionaryValue" xml:space="preserve">
     <value>The dictionary cannot contain null values.</value>
   </data>
-  <data name="ArgumentException_NullListElement" xml:space="preserve">
+  <data name="Arg_Invalid_NullListElement" xml:space="preserve">
     <value>The list cannot contain null values.</value>
   </data>
-  <data name="ArgumentException_StreamNotReadable" xml:space="preserve">
+  <data name="Arg_Invalid_StreamNotReadable" xml:space="preserve">
     <value>Stream does not support reading.</value>
   </data>
-  <data name="ArgumentException_StreamNotWritable" xml:space="preserve">
+  <data name="Arg_Invalid_StreamNotWritable" xml:space="preserve">
     <value>Stream does not support writing.</value>
   </data>
-  <data name="ArgumentOutOfRange_UnsupportedBencodedValueType" xml:space="preserve">
+  <data name="Arg_OutOfRange_UnsupportedBencodedValueType" xml:space="preserve">
     <value>Unsupported bencoded value type.</value>
   </data>
-  <data name="BencodeFormatException_IntegerOutOfRange" xml:space="preserve">
+  <data name="Format_Invalid_BencodeIntegerOutOfRange" xml:space="preserve">
     <value>The bencoded integer is outside the supported Int64 range.</value>
   </data>
-  <data name="BencodeFormatException_InvalidInteger" xml:space="preserve">
+  <data name="Format_Invalid_BencodeInvalidInteger" xml:space="preserve">
     <value>Invalid bencoded integer.</value>
   </data>
-  <data name="BencodeFormatException_LeadingZerosInteger" xml:space="preserve">
+  <data name="Format_Invalid_BencodeLeadingZerosInteger" xml:space="preserve">
     <value>Bencoded integers cannot contain leading zeros.</value>
   </data>
-  <data name="BencodeFormatException_NegativeZeroInteger" xml:space="preserve">
+  <data name="Format_Invalid_BencodeNegativeZeroInteger" xml:space="preserve">
     <value>Negative zero is not a valid bencoded integer.</value>
   </data>
-  <data name="BencodeFormatException_NonStringDictionaryKey" xml:space="preserve">
+  <data name="Format_Invalid_BencodeNonStringDictionaryKey" xml:space="preserve">
     <value>Bencoded dictionary keys must be byte strings.</value>
   </data>
-  <data name="BencodeFormatException_StringLengthExceedsInput" xml:space="preserve">
+  <data name="Format_Invalid_BencodeStringLengthExceedsInput" xml:space="preserve">
     <value>The bencoded string length exceeds the available input.</value>
   </data>
-  <data name="BencodeFormatException_StringLengthExpected" xml:space="preserve">
+  <data name="Format_Invalid_BencodeStringLengthExpected" xml:space="preserve">
     <value>Expected a bencoded string length.</value>
   </data>
-  <data name="BencodeFormatException_StringLengthLeadingZeros" xml:space="preserve">
+  <data name="Format_Invalid_BencodeStringLengthLeadingZeros" xml:space="preserve">
     <value>Bencoded string lengths cannot contain leading zeros.</value>
   </data>
-  <data name="BencodeFormatException_StringLengthTooLarge" xml:space="preserve">
+  <data name="Format_Invalid_BencodeStringLengthTooLarge" xml:space="preserve">
     <value>The bencoded string length exceeds Int32.MaxValue.</value>
   </data>
-  <data name="BencodeFormatException_StringMissingSeparator" xml:space="preserve">
+  <data name="Format_Invalid_BencodeStringMissingSeparator" xml:space="preserve">
     <value>Expected ':' after bencoded string length.</value>
   </data>
-  <data name="BencodeFormatException_TrailingData" xml:space="preserve">
+  <data name="Format_Invalid_BencodeTrailingData" xml:space="preserve">
     <value>The bencoded value contains trailing data.</value>
   </data>
-  <data name="BencodeFormatException_UnexpectedEndOfData" xml:space="preserve">
+  <data name="Format_Invalid_BencodeUnexpectedEndOfData" xml:space="preserve">
     <value>Unexpected end of bencoded data.</value>
   </data>
-  <data name="BencodeFormatException_UnexpectedToken" xml:space="preserve">
+  <data name="Format_Invalid_BencodeUnexpectedToken" xml:space="preserve">
     <value>Unexpected bencode token '{0}' at offset {1}.</value>
   </data>
-  <data name="BencodeFormatException_UnorderedDictionaryKeys" xml:space="preserve">
+  <data name="Format_Invalid_BencodeUnorderedDictionaryKeys" xml:space="preserve">
     <value>Bencoded dictionary keys must be unique and sorted by raw byte order.</value>
   </data>
-  <data name="BencodeFormatException_UnterminatedDictionary" xml:space="preserve">
+  <data name="Format_Invalid_BencodeUnterminatedDictionary" xml:space="preserve">
     <value>Unterminated bencoded dictionary.</value>
   </data>
-  <data name="BencodeFormatException_UnterminatedInteger" xml:space="preserve">
+  <data name="Format_Invalid_BencodeUnterminatedInteger" xml:space="preserve">
     <value>Unterminated bencoded integer.</value>
   </data>
-  <data name="BencodeFormatException_UnterminatedList" xml:space="preserve">
+  <data name="Format_Invalid_BencodeUnterminatedList" xml:space="preserve">
     <value>Unterminated bencoded list.</value>
   </data>
-  <data name="DelimitedDocument_HeaderNotFound" xml:space="preserve">
-    <value>The column header '{0}' was not found.</value>
-  </data>
-  <data name="DelimitedFormatException_UnterminatedQuotedField" xml:space="preserve">
+  <data name="Format_Invalid_DelimitedUnterminatedQuotedField" xml:space="preserve">
     <value>Unterminated quoted field starting on line {0}.</value>
   </data>
-  <data name="DelimitedRow_NoHeaders" xml:space="preserve">
-    <value>The document was parsed without a header row; field access by column name is not available.</value>
-  </data>
-  <data name="DotEnvDocument_KeyNotFound" xml:space="preserve">
-    <value>The key '{0}' was not found.</value>
-  </data>
-  <data name="DotEnvFormatException_DuplicateKey" xml:space="preserve">
+  <data name="Format_Invalid_DotEnvDuplicateKey" xml:space="preserve">
     <value>Duplicate key '{0}' on line {1}.</value>
   </data>
-  <data name="DotEnvFormatException_InvalidKey" xml:space="preserve">
+  <data name="Format_Invalid_DotEnvInvalidKey" xml:space="preserve">
     <value>Invalid key '{0}' on line {1}. Keys must start with a letter or underscore and contain only letters, digits, and underscores.</value>
   </data>
-  <data name="DotEnvFormatException_MalformedEntry" xml:space="preserve">
+  <data name="Format_Invalid_DotEnvMalformedEntry" xml:space="preserve">
     <value>Malformed entry on line {0}.</value>
   </data>
-  <data name="DotEnvFormatException_UnterminatedDoubleQuote" xml:space="preserve">
+  <data name="Format_Invalid_DotEnvUnterminatedDoubleQuote" xml:space="preserve">
     <value>Unterminated double-quoted string starting on line {0}.</value>
   </data>
-  <data name="DotEnvFormatException_UnterminatedSingleQuote" xml:space="preserve">
+  <data name="Format_Invalid_DotEnvUnterminatedSingleQuote" xml:space="preserve">
     <value>Unterminated single-quoted string on line {0}.</value>
   </data>
-  <data name="IniFormatException_DuplicateKey" xml:space="preserve">
+  <data name="Format_Invalid_IniDuplicateKey" xml:space="preserve">
     <value>Duplicate key '{0}' on line {1}.</value>
   </data>
-  <data name="IniFormatException_DuplicateSection" xml:space="preserve">
+  <data name="Format_Invalid_IniDuplicateSection" xml:space="preserve">
     <value>Duplicate section '{0}' on line {1}.</value>
   </data>
-  <data name="IniFormatException_GlobalKeyDisallowed" xml:space="preserve">
+  <data name="Format_Invalid_IniGlobalKeyDisallowed" xml:space="preserve">
     <value>Keys are not permitted before the first section header (line {0}).</value>
   </data>
-  <data name="IniFormatException_MalformedSectionHeader" xml:space="preserve">
+  <data name="Format_Invalid_IniMalformedSectionHeader" xml:space="preserve">
     <value>Malformed section header on line {0}.</value>
   </data>
-  <data name="IniFormatException_MissingKey" xml:space="preserve">
+  <data name="Format_Invalid_IniMissingKey" xml:space="preserve">
     <value>Expected a key name on line {0}.</value>
   </data>
-  <data name="IniSection_KeyNotFound" xml:space="preserve">
+  <data name="Op_Invalid_DelimitedHeaderNotFound" xml:space="preserve">
+    <value>The column header '{0}' was not found.</value>
+  </data>
+  <data name="Op_Invalid_DelimitedRowNoHeaders" xml:space="preserve">
+    <value>The document was parsed without a header row; field access by column name is not available.</value>
+  </data>
+  <data name="Op_Invalid_DotEnvKeyNotFound" xml:space="preserve">
+    <value>The key '{0}' was not found.</value>
+  </data>
+  <data name="Op_Invalid_IniSectionKeyNotFound" xml:space="preserve">
     <value>The key '{0}' was not found in the section.</value>
   </data>
-  <data name="InvalidOperationException_IntegerFormatFailed" xml:space="preserve">
+  <data name="Op_Invalid_IntegerFormatFailed" xml:space="preserve">
     <value>The integer value could not be formatted.</value>
   </data>
-  <data name="InvalidOperationException_StringLengthFormatFailed" xml:space="preserve">
+  <data name="Op_Invalid_StringLengthFormatFailed" xml:space="preserve">
     <value>The string length could not be formatted.</value>
   </data>
 </root>

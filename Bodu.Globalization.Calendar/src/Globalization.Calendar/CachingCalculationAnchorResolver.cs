@@ -63,7 +63,7 @@ internal sealed class CachingCalculationAnchorResolver
     public DateTime? Resolve(string anchorRuleName, int year)
     {
         if (string.IsNullOrWhiteSpace(anchorRuleName))
-            throw new ArgumentException("The anchor rule name cannot be null, empty, or white-space.", nameof(anchorRuleName));
+            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_AnchorRuleNameNullOrWhiteSpace, nameof(anchorRuleName));
 
         CalculationAnchorCacheKey key = new(anchorRuleName, year);
 

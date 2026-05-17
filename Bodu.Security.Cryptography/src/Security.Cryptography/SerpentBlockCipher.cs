@@ -79,12 +79,12 @@ public abstract partial class SerpentBlockCipher
     {
         if (key.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidKeySize, key.Length * 8, this.BlockSize),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_KeySize, key.Length * 8, this.BlockSize),
                 nameof(key));
 
         if (tweak.Length != TweakSizeBits / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidTweakSize, tweak.Length * 8, TweakSizeBits),
+                string.Format(CryptoResourceStrings.Crypt_Invalid_TweakSize, tweak.Length * 8, TweakSizeBits),
                 nameof(tweak));
 
         // Build the five-word tweak cycle used by the per-four-round injection points.
@@ -120,7 +120,7 @@ public abstract partial class SerpentBlockCipher
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
 
         var w = this.BlockWords;
         var rounds = this.Rounds;
@@ -173,7 +173,7 @@ public abstract partial class SerpentBlockCipher
         this.ThrowIfDisposed();
         if (input.Length != this.BlockSize / 8 || output.Length != this.BlockSize / 8)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.CryptographicException_InvalidBlockLength, this.BlockSize / 8));
+                string.Format(CryptoResourceStrings.Crypt_Invalid_BlockLength, this.BlockSize / 8));
 
         var w = this.BlockWords;
         var rounds = this.Rounds;

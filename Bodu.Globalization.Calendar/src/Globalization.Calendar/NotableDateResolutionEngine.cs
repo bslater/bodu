@@ -109,7 +109,7 @@ internal sealed class NotableDateResolutionEngine
             NotableDateResolutionProjection.ObservedDate =>
                 Intersects(request.StartDate, request.EndDate, occurrence.BaseDate.Date, occurrence.BaseDate.EndDate),
 
-            _ => throw new ArgumentOutOfRangeException(nameof(request), request.Projection, "The requested projection is not supported."),
+            _ => throw new ArgumentOutOfRangeException(nameof(request), request.Projection, CalendarResourceStrings.Arg_OutOfRange_UnsupportedProjection),
         };
 
     /// <summary>

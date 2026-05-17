@@ -106,7 +106,7 @@ internal sealed class ByteBuffer
     public byte[] GetBytes()
     {
         if (!this.IsFull)
-            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperation_BufferNotFull);
+            throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_BufferNotFull);
 
         this._index = EmptyIndex;
         return this._internalBuffer;

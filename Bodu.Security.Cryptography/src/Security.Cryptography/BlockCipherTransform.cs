@@ -381,7 +381,7 @@ public abstract class BlockCipherTransform
     protected void ThrowIfFinalized()
     {
         if (this._finalized)
-            throw new InvalidOperationException(CryptoResourceStrings.InvalidOperationException_TransformAlreadyFinalized);
+            throw new InvalidOperationException(CryptoResourceStrings.Op_Invalid_TransformAlreadyFinalized);
     }
 
     /// <summary>

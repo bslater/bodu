@@ -175,7 +175,7 @@ public abstract partial class Skein<T>
             if (value.Length > MaxKeySize / 8)
                 throw new CryptographicException(
                     string.Format(
-                        CryptoResourceStrings.CryptographicException_InvalidKeySize,
+                        CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         $"0..{MaxKeySize}"));
 
@@ -212,7 +212,7 @@ public abstract partial class Skein<T>
         this.ThrowIfDisposed();
 
         if (this.KeyValue is null)
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
 
 #if !NET6_0_OR_GREATER
         this.State = 0;
@@ -238,7 +238,7 @@ public abstract partial class Skein<T>
         ThrowHelper.ThrowIfLessThan(cbSize, 0);
         ThrowHelper.ThrowIfArrayLengthIsInsufficient(array, ibStart, cbSize);
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -251,7 +251,7 @@ public abstract partial class Skein<T>
 
 #if !NET6_0_OR_GREATER
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
         this.EnsureChainingStateReadyForHashing();
@@ -270,7 +270,7 @@ public abstract partial class Skein<T>
 
 #if !NET6_0_OR_GREATER
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
         this._finalized = true;
         this.State = 2;
 #endif
@@ -328,7 +328,7 @@ public abstract partial class Skein<T>
     /// <exception cref="InvalidOperationException">Always thrown — this method is not on the happy path.</exception>
     protected override void ProcessBlock(ReadOnlySpan<byte> block) =>
         throw new InvalidOperationException(
-            CryptoResourceStrings.InvalidOperationException_SkeinBypassesProcessBlock);
+            CryptoResourceStrings.Op_Invalid_SkeinBypassesProcessBlock);
 
     /// <summary>
     /// Satisfies the <see cref="BlockHashAlgorithm{T}.PadBlock(ReadOnlySpan{byte}, ulong)" /> contract, but is
@@ -351,7 +351,7 @@ public abstract partial class Skein<T>
     /// </exception>
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
         throw new InvalidOperationException(
-            CryptoResourceStrings.InvalidOperationException_SkeinBypassesPadBlock);
+            CryptoResourceStrings.Op_Invalid_SkeinBypassesPadBlock);
 
     /// <summary>
     /// Satisfies the base final-block processing contract, but is unreachable for Skein because hash
@@ -366,7 +366,7 @@ public abstract partial class Skein<T>
     /// </exception>
     protected override byte[] ProcessFinalBlock() =>
         throw new InvalidOperationException(
-            CryptoResourceStrings.InvalidOperationException_SkeinBypassesProcessFinalBlock);
+            CryptoResourceStrings.Op_Invalid_SkeinBypassesProcessFinalBlock);
 
     /// <summary>
     /// Releases the unmanaged resources used by the algorithm, securely clears all intermediate state, and disposes the

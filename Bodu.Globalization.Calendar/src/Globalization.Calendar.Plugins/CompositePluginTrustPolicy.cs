@@ -32,11 +32,11 @@ public sealed class CompositePluginTrustPolicy
     {
         if (policies is null) throw new ArgumentNullException(nameof(policies));
         if (policies.Length == 0)
-            throw new ArgumentException(CalendarResourceStrings.ArgumentException_PoliciesEmpty, nameof(policies));
+            throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_PoliciesEmpty, nameof(policies));
         foreach (IPluginTrustPolicy? policy in policies)
         {
             if (policy is null)
-                throw new ArgumentException(CalendarResourceStrings.ArgumentException_PoliciesContainNull, nameof(policies));
+                throw new ArgumentException(CalendarResourceStrings.Arg_Invalid_PoliciesContainNull, nameof(policies));
         }
 
         _policies = [.. policies];

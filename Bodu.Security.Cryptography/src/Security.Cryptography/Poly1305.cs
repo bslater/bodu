@@ -164,7 +164,7 @@ public sealed class Poly1305
 
     /// <inheritdoc />
     protected override byte[] PadBlock(ReadOnlySpan<byte> block, ulong messageLength) =>
-        throw new NotSupportedException(CryptoResourceStrings.NotSupportedException_Poly1305DoesNotUsePadding);
+        throw new NotSupportedException(CryptoResourceStrings.Op_NotSupported_Poly1305Padding);
 
     /// <inheritdoc />
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

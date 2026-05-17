@@ -642,7 +642,7 @@ public sealed class NotableDateRuleBuilder
         ThrowHelper.ThrowIfNullOrWhiteSpace(notableDateName);
 
         if (_strategy is null)
-            throw new InvalidOperationException($"A resolution strategy must be selected (Fixed, DayOfWeekInMonth, OffsetFromAnchor, or Algorithm) before building the rule for '{notableDateName}'.");
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyMissingBuild, notableDateName));
 
         var adjustments = _adjustments
             .Select(a => a.Builder.Build(a.Key))
@@ -690,7 +690,7 @@ public sealed class NotableDateRuleBuilder
                 AlgorithmMonth = _algorithmMonth,
                 AlgorithmDay = _algorithmDay,
             },
-            _ => throw new NotSupportedException($"Unsupported strategy: {_strategy.Value}"),
+            _ => throw new NotSupportedException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_NotSupported_Strategy, _strategy.Value)),
         };
     }
 
@@ -707,7 +707,7 @@ public sealed class NotableDateRuleBuilder
     internal XElement ToXElement(string notableDateName, XNamespace ns)
     {
         if (_strategy is null)
-            throw new InvalidOperationException($"A resolution strategy must be selected before serialising the rule for '{notableDateName}'.");
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyMissingSerialise, notableDateName));
 
         var effectiveName = _ruleName ?? GenerateDefaultRuleName(notableDateName);
 
@@ -765,7 +765,7 @@ public sealed class NotableDateRuleBuilder
     internal JsonObject ToJsonNode(string notableDateName)
     {
         if (_strategy is null)
-            throw new InvalidOperationException($"A resolution strategy must be selected before serialising the rule for '{notableDateName}'.");
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyMissingSerialise, notableDateName));
 
         var effectiveName = _ruleName ?? GenerateDefaultRuleName(notableDateName);
 
@@ -809,7 +809,7 @@ public sealed class NotableDateRuleBuilder
                 node["algorithm"] = BuildAlgorithmJsonNode();
                 break;
             default:
-                throw new NotSupportedException($"Unsupported strategy: {_strategy.Value}");
+                throw new NotSupportedException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_NotSupported_Strategy, _strategy.Value));
         }
 
         if (_tags.Count > 0)
@@ -943,7 +943,7 @@ public sealed class NotableDateRuleBuilder
                 new XAttribute("name", _anchorRuleName!),
                 new XAttribute("offset", _offsetDays!.Value.ToString(CultureInfo.InvariantCulture))),
             DateResolutionStrategy.Algorithm => BuildAlgorithmElement(ns),
-            _ => throw new NotSupportedException($"Unsupported strategy: {_strategy.Value}"),
+            _ => throw new NotSupportedException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_NotSupported_Strategy, _strategy.Value)),
         };
 
 
@@ -1060,8 +1060,6 @@ public sealed class NotableDateRuleBuilder
     private void ThrowIfStrategyAlreadySet()
     {
         if (_strategy.HasValue)
-            throw new InvalidOperationException(
-                $"A resolution strategy ('{_strategy.Value}') has already been selected for this rule; " +
-                "each rule must specify exactly one strategy.");
+            throw new InvalidOperationException(string.Format(System.Globalization.CultureInfo.InvariantCulture, BuilderResourceStrings.Op_Invalid_RuleStrategyAlreadySet, _strategy.Value));
     }
 }

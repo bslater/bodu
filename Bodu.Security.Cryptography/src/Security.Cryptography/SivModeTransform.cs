@@ -217,7 +217,7 @@ public sealed class SivModeTransform
             if (!CryptographicOperations.FixedTimeEquals(expectedSiv, receivedSiv))
             {
                 CryptoHelpers.Clear(output[..plaintextLength]);
-                throw new CryptographicException(CryptoResourceStrings.CryptographicException_AuthenticationTagMismatch);
+                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_AuthenticationTagMismatch);
             }
 
             return plaintextLength;

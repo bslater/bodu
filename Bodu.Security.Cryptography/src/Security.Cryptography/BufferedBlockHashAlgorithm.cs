@@ -258,7 +258,7 @@ public abstract class BufferedBlockHashAlgorithm<T>
 
 #if !NET6_0_OR_GREATER
         if (this._finalized)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_AlreadyFinalized);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_AlreadyFinalized);
 #endif
 
         this.HashCore(array.AsSpan(ibStart, cbSize));
@@ -305,6 +305,6 @@ public abstract class BufferedBlockHashAlgorithm<T>
     protected void ThrowIfInvalidState()
     {
         if (this.State != 0)
-            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.CryptographicException_ReconfigurationNotAllowed);
+            throw new CryptographicUnexpectedOperationException(CryptoResourceStrings.Crypt_Invalid_ReconfigurationNotAllowed);
     }
 }

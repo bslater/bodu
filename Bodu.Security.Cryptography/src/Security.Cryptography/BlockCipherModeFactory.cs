@@ -85,7 +85,7 @@ public static class BlockCipherModeFactory
 
             default:
                 throw new NotSupportedException(
-                    string.Format(CryptoResourceStrings.NotSupportedException_UnsupportedCipherMode, mode));
+                    string.Format(CryptoResourceStrings.Op_NotSupported_CipherMode, mode));
         }
     }
 
@@ -104,7 +104,7 @@ public static class BlockCipherModeFactory
         if (iv is null)
         {
             throw new ArgumentException(
-                CryptoResourceStrings.CryptographicException_IVRequiredForMode,
+                CryptoResourceStrings.Crypt_Invalid_IVRequiredForMode,
                 name);
         }
 

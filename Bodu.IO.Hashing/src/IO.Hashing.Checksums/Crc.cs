@@ -274,7 +274,7 @@ public sealed class Crc
     {
         if (previousHash.Length != this.HashLengthInBytes)
             throw new ArgumentException(
-                "Hash length does not match the expected length.",
+                HashingResourceStrings.Arg_Invalid_PreviousHashLengthMismatch,
                 nameof(previousHash));
 
         // Deserialize prior hash value. The width-byte hash is stored little-endian; read into an 8-byte buffer so

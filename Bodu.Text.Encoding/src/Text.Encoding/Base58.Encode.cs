@@ -79,7 +79,7 @@ public static partial class Base58
             // destination for the actual output (rather than the max bound) still succeed.
             if (destination.Length < written)
                 throw new ArgumentException(
-                    $"Destination must be at least {written} characters to encode the provided bytes.",
+                    string.Format(System.Globalization.CultureInfo.InvariantCulture, EncodingResourceStrings.Arg_Invalid_Base58DestinationSize, written),
                     nameof(destination));
 
             scratch.AsSpan(upperBound - written, written).CopyTo(destination);

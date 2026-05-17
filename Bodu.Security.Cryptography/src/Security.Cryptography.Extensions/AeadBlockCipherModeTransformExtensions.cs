@@ -178,7 +178,7 @@ public static class AeadBlockCipherModeTransformExtensions
         var tagBytes = transform.TagSize / 8;
         if (ciphertextWithTag.Length < tagBytes)
             throw new ArgumentException(
-                string.Format(CryptoResourceStrings.ArgumentException_InputTooShortForTag, tagBytes),
+                string.Format(CryptoResourceStrings.Arg_Invalid_InputTooShortForTag, tagBytes),
                 nameof(ciphertextWithTag));
 
         transform.ProcessAssociatedData(associatedData);

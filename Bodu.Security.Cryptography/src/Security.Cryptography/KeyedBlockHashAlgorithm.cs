@@ -120,7 +120,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
             this.ThrowIfDisposed();
 
             if (this.KeyValue is null)
-                throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
+                throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
 
             return this.KeyValue.Copy();
         }
@@ -134,7 +134,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
             if (value.Length != this.KeySizeValue / 8)
                 throw new CryptographicException(
                     string.Format(
-                        CryptoResourceStrings.CryptographicException_InvalidKeySize,
+                        CryptoResourceStrings.Crypt_Invalid_KeySize,
                         value.Length * 8,
                         this.KeySizeValue));
 
@@ -165,7 +165,7 @@ public abstract class KeyedBlockHashAlgorithm<T>
         // callers must explicitly set Key (or invoke GenerateKey on subclasses that
         // support it) before re-initialization.
         if (this.KeyValue is null || this.KeyValue.Length != this.KeySizeValue / 8)
-            throw new CryptographicException(CryptoResourceStrings.CryptographicException_KeyNotSet);
+            throw new CryptographicException(CryptoResourceStrings.Crypt_Invalid_KeyNotSet);
 
         this.OnKeyChanged();
     }

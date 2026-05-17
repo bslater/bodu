@@ -26,7 +26,7 @@ public sealed partial class BencodedDictionaryTests
         });
 
         Assert.AreEqual("items", ex.ParamName);
-        StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_DuplicateDictionaryKey);
+        StringAssert.Contains(ex.Message, FormatsResourceStrings.Arg_Invalid_DuplicateDictionaryKey);
     }
     /// <summary>
     /// Verifies that the constructor rejects a <see langword="null" /> items enumerable.
@@ -58,7 +58,7 @@ public sealed partial class BencodedDictionaryTests
         });
 
         Assert.AreEqual("items", ex.ParamName);
-        StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_NullDictionaryKey);
+        StringAssert.Contains(ex.Message, FormatsResourceStrings.Arg_Invalid_NullDictionaryKey);
     }
 
     /// <summary>
@@ -77,7 +77,7 @@ public sealed partial class BencodedDictionaryTests
         });
 
         Assert.AreEqual("items", ex.ParamName);
-        StringAssert.Contains(ex.Message, FormatsResourceStrings.ArgumentException_NullDictionaryValue);
+        StringAssert.Contains(ex.Message, FormatsResourceStrings.Arg_Invalid_NullDictionaryValue);
     }
 
 }

@@ -98,7 +98,7 @@ public sealed class TwofishBlockCipher
     {
         if (key.Length is not (16 or 24 or 32))
             throw new ArgumentException(
-                CryptoResourceStrings.ArgumentException_Twofish_InvalidKeyLength,
+                CryptoResourceStrings.Arg_Invalid_TwofishKeyLength,
                 nameof(key));
 
         this.InitializeKeySchedule(key);
